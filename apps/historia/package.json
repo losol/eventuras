@@ -7,7 +7,7 @@
   "scripts": {
     "build": "cross-env next build",
     "dev": "next dev --port 3100",
-    "dev:prod": "rm -rf .next && npm run build && npm run start",
+    "dev:prod": "rm -rf .next && pnpm run build && pnpm run start",
     "generate:types": "payload generate:types",
     "lint": "next lint",
     "lint:fix": "next lint --fix",

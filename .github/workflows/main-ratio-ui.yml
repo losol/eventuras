@@ -27,16 +27,21 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+          cache: 'pnpm'
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9.12.3
+          run_install: false
 
       - name: Install dependencies
-        run: npm install
+        run: pnpm install --frozen-lockfile=false
 
       - name: Build Storybook
         working-directory: libs/ratio-ui
-        run: npm run storybook:build -- --output-dir ../../storybook-static
+        run: pnpm run storybook:build -- --output-dir ../../storybook-static
 
-      - name: Install Wrangler CLI
-        run: npm install -g wrangler
 
       - name: Deploy to Cloudflare Pages (Production)
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'

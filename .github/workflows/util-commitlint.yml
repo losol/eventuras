@@ -14,7 +14,7 @@ on:
       node_version:
         description: Node.js version
         required: false
-        default: "18"
+        default: "22"
         type: string
 
 jobs:
@@ -31,10 +31,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node_version }}
-          cache: "npm"
+          cache: 'pnpm'
 
-      - name: Install dependencies
-        run: npm install
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.3
+          run_install: false
 
-      - name: Commitlint all commits in PR
-        run: npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
+      - name: Lint commits
+        run: pnpm exec commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose

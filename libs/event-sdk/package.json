@@ -5,7 +5,8 @@
   "license": "GPL-2.0-or-later",
   "author": "Ole Kristian Losvik",
   "exports": {
-    ".": "./src/client/index.ts"
+    ".": "./src/client/index.ts",
+    "./client": "./src/client/client/index.ts"
   },
   "main": "index.js",
   "scripts": {

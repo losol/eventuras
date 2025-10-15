@@ -5,7 +5,7 @@ FROM mcr.microsoft.com/playwright:v1.50.1-noble AS builder
 
 # Get the needed package files
 WORKDIR /app
-COPY package*.json /app
+COPY package.json pnpm-workspace.yaml /app
 COPY apps/convertoapi/public /app/apps/convertoapi/public
 COPY apps/convertoapi/package.json /app/apps/convertoapi/package.json
 COPY libs/eslint-config/package.json /app/libs/eslint-config/package.json
@@ -13,13 +13,13 @@ COPY libs/eslint-config/package.json /app/libs/eslint-config/package.json
 # Needs the typescript config
 COPY libs/typescript-config /app/libs/typescript-config
 
-# Install production dependencies, ignore scripts
-RUN npm install --omit=dev --ignore-scripts
+# Enable pnpm and install production dependencies, ignore scripts
+RUN corepack enable && corepack prepare pnpm@9.12.3 --activate && pnpm install --prod --ignore-scripts
 
 # Build the app
 COPY /apps/convertoapi /app/apps/convertoapi
 WORKDIR /app/apps/convertoapi
-RUN npm run build
+RUN pnpm run build
 
 
 ##################################
@@ -38,4 +38,4 @@ COPY --chown=pwuser:pwuser --from=builder /app/apps/convertoapi/package.json /ap
 COPY --chown=pwuser:pwuser --from=builder /app/apps/convertoapi/dist /app/dist
 
 # Start the server
-CMD ["npm", "start"]
+CMD ["node", "dist/app.js"]

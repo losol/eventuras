@@ -29,19 +29,25 @@ jobs:
         with:
           node-version-file: .nvmrc
           check-latest: true
-          cache: "npm"
+          cache: 'pnpm'
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.3
+          run_install: false
 
       # Show versions for debugging
-      - run: node -v && npm -v
+      - run: node -v && pnpm -v
 
       # ✅ Install dependencies
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile=false
         env:
           HUSKY: 0
 
       - name: Build site
-        run: npm run build:site
+        run: pnpm run build:site
 
       - name: Publish to Cloudflare Pages
         uses: cloudflare/pages-action@v1

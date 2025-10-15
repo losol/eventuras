@@ -4,32 +4,48 @@
   "type": "module",
   "exports": {
     ".": {
-      "import": "./dist/eventuras-ui.es.js",
+      "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
     "./core/*": {
-      "import": "./dist/core/*.js",
-      "types": "./dist/core/*.d.ts"
+      "import": "./dist/core/*/index.js",
+      "types": "./dist/core/*/index.d.ts"
     },
-    "./core/Heading": {
-      "import": "./dist/core/Heading/index.js"
+    "./layout/*": {
+      "import": "./dist/layout/*/index.js",
+      "types": "./dist/layout/*/index.d.ts"
     },
-    "./core/Text": {
-      "import": "./dist/core/Text/index.js"
+    "./forms": {
+      "import": "./dist/forms/index.js",
+      "types": "./dist/forms/index.d.ts"
     },
-    "./forms/*": "./forms/*",
-    "./ratio-ui.css": "./dist/ratio-ui.css"
+    "./forms/*": {
+      "import": "./dist/forms/*/index.js",
+      "types": "./dist/forms/*/index.d.ts"
+    },
+    "./pages/*": {
+      "import": "./dist/pages/*/index.js",
+      "types": "./dist/pages/*/index.d.ts"
+    },
+    "./next/*": {
+      "import": "./dist/next/*/index.js",
+      "types": "./dist/next/*/index.d.ts"
+    },
+    "./blocks/*": {
+      "import": "./dist/blocks/*/index.js",
+      "types": "./dist/blocks/*/index.d.ts"
+    },
+    "./ratio-ui.css": "./dist/assets/ratio-ui.css"
   },
-  "main": "dist/eventuras-ui.umd.js",
-  "module": "dist/eventuras-ui.es.js",
-  "types": "dist/index.d.ts",
-  "style": "dist/ui.css",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
     "build": "tsc && vite build && storybook build",
-    "dev": "npm run storybook",
+    "dev": "pnpm run storybook",
     "storybook": "storybook dev -p 6006",
     "storybook:build": "storybook build"
   },
@@ -40,30 +56,40 @@
     }
   },
   "dependencies": {
+    "@eventuras/utils": "workspace:*",
+    "@storybook/react": "^9.1.10",
+    "@tabler/icons-react": "^3.35.0",
     "@tailwindcss/postcss": "^4.1.14",
     "@tailwindcss/vite": "^4.1.14",
+    "@react-aria/overlays": "^3.26.0",
     "ajv": "^8.17.1",
     "lucide-react": "^0.545.0",
     "react-aria-components": "^1.13.0",
+    "react-stately": "^3.35.0",
     "tailwindcss-react-aria-components": "^2.0.1"
   },
   "devDependencies": {
-    "@eventuras/eslint-config": "*",
-    "@eventuras/typescript-config": "*",
+    "@eventuras/eslint-config": "workspace:*",
+    "@eventuras/typescript-config": "workspace:*",
     "@storybook/addon-a11y": "^9.1.10",
     "@storybook/addon-docs": "^9.1.10",
     "@storybook/addon-onboarding": "^9.1.10",
     "@storybook/addon-themes": "^9.1.10",
     "@storybook/react-vite": "^9.1.10",
     "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
     "@vitejs/plugin-react": "^5.0.4",
     "autoprefixer": "10.4.21",
+    "clsx": "^2.1.1",
     "eslint-plugin-storybook": "^9.1.10",
     "glob": "11.0.3",
+    "next": "^15.5.5",
     "postcss": "^8.5.6",
+    "react-dom": "^19.2.0",
     "storybook": "^9.1.10",
     "tailwindcss": "^4.1.14",
     "typescript": "5.9.3",
+    "vite": "7.1.10",
     "vite-plugin-dts": "4.5.4"
   },
   "peerDependencies": {

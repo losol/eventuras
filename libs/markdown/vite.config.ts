@@ -12,6 +12,12 @@ export default defineConfig({
       entryRoot: 'src',
       outDir: 'dist',
       include: ['src/**/*'],
+      exclude: [
+        '**/*.test.ts',
+        '**/*.test.tsx',
+        '**/*.spec.ts',
+        '**/*.spec.tsx'
+      ],
       copyDtsFiles: true,
       rollupTypes: false
     })

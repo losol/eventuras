@@ -13,11 +13,11 @@ export default defineConfig({
     dts({
       entryRoot: 'src',
       outDir: 'dist',
-      include: ['src/**/*.ts', 'src/**/*.tsx'],  // Be explicit about what to include
+      include: ['src/**/*.ts', 'src/**/*.tsx'],
       exclude: ['src/**/*.test.ts', 'src/**/*.test.tsx', 'src/**/*.stories.tsx'],
-      copyDtsFiles: false,  // Don't just copy, generate them
-      rollupTypes: false,   // Keep individual .d.ts files to match your structure
-      insertTypesEntry: true,  // Add types field to package.json
+      copyDtsFiles: false,
+      rollupTypes: false,
+      insertTypesEntry: true,
     })
   ],
   resolve: { alias: { '@': resolve(__dirname, './src') } },

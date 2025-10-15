@@ -3,7 +3,7 @@ import createNextIntlPlugin from 'next-intl/plugin';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ['@eventuras/sdk', '@eventuras/scribo'],
+  transpilePackages: ['@eventuras/sdk', '@eventuras/scribo', '@eventuras/ratio-ui', '@eventuras/fides-auth', '@eventuras/smartform', '@eventuras/datatable'],
 
   reactStrictMode: true,
 

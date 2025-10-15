@@ -14,16 +14,22 @@
     }
   },
   "dependencies": {
+    "@lexical/code": "0.35.0",
     "@lexical/hashtag": "0.35.0",
     "@lexical/link": "0.35.0",
+    "@lexical/list": "0.35.0",
     "@lexical/markdown": "0.35.0",
     "@lexical/overflow": "0.35.0",
     "@lexical/react": "^0.35.0",
-    "lexical": "^0.35.0"
+    "@lexical/rich-text": "0.35.0",
+    "@lexical/selection": "0.35.0",
+    "@lexical/table": "0.35.0",
+    "@lexical/utils": "0.35.0",
+    "lexical": "0.35.0"
   },
   "devDependencies": {
-    "@eventuras/eslint-config": "*",
-    "@eventuras/typescript-config": "*",
+    "@eventuras/eslint-config": "workspace:*",
+    "@eventuras/typescript-config": "workspace:*",
     "@swc/core": "^1.13.5",
     "@testing-library/react": "^16.3.0",
     "@types/react": "^19.2.2",
@@ -39,5 +45,10 @@
   "peerDependencies": {
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
+  },
+  "packageManager": "pnpm@9.12.3",
+  "engines": {
+    "node": ">=20.0.0 <23.0.0",
+    "pnpm": ">=9.0.0"
   }
 }

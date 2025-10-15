@@ -17,7 +17,7 @@ pnpm add @eventuras/toast
 Make sure you have the required peer dependencies installed:
 
 ```bash
-npm install xstate uuid
+pnpm install xstate uuid
 ```
 
 ## Quick Start

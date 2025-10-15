@@ -7,15 +7,15 @@
 FROM node:22-alpine AS prune
 WORKDIR /repo
 
-# Install turbo CLI globally (avoids npx quirks)
-RUN npm i -g turbo@^2
+# Enable pnpm and use turbo via pnpm dlx
+RUN corepack enable && corepack prepare pnpm@9.12.3 --activate
 
 # Copy repo so turbo can read turbo.json/workspaces
 COPY . .
 
 # Prune to minimal graph for the idem-idp workspace
 # - Ensure the workspace name matches apps/idem-idp/package.json "name"
-RUN turbo prune --scope=@eventuras/idem-idp --docker
+RUN pnpm dlx turbo@^2 prune --scope=@eventuras/idem-idp --docker
 
 # ---- 1) INSTALL DEPS (LOCKED) ----
 FROM node:22-alpine AS install
@@ -23,7 +23,7 @@ WORKDIR /srv
 
 # Use pruned manifests for deterministic install
 COPY --from=prune /repo/out/json/ ./
-RUN npm ci
+RUN corepack enable && corepack prepare pnpm@9.12.3 --activate && pnpm install --frozen-lockfile=false
 
 # ---- 2) BUILD ----
 FROM node:22-alpine AS build
@@ -36,7 +36,7 @@ COPY --from=install /srv/node_modules ./node_modules
 COPY --from=prune /repo/out/full/ ./
 
 # Build just the idem-idp workspace
-RUN npm run build --workspace=@eventuras/idem-idp
+RUN corepack enable && corepack prepare pnpm@9.12.3 --activate && pnpm -C apps/idem-idp run build
 
 # ---- 3) RUNTIME ----
 FROM node:22-alpine AS runtime

@@ -17,8 +17,8 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@eventuras/datatable": "*",
-    "@eventuras/ratio-ui": "*",
+    "@eventuras/datatable": "workspace:*",
+    "@eventuras/ratio-ui": "workspace:*",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^24",
     "@types/react": "^19",

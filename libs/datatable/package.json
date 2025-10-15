@@ -3,13 +3,16 @@
   "version": "0.4.0",
   "main": "src/index.ts",
   "dependencies": {
-    "@eventuras/ratio-ui": "*",
+    "@eventuras/ratio-ui": "workspace:*",
     "@tanstack/match-sorter-utils": "^8.19.4",
-    "@tanstack/react-table": "^8.21.3"
+    "@tanstack/react-table": "^8.21.3",
+    "@tanstack/table-core": "^8.21.3"
   },
   "devDependencies": {
-    "@eventuras/eslint-config": "*",
-    "@eventuras/typescript-config": "*"
+    "@eventuras/eslint-config": "workspace:*",
+    "@eventuras/typescript-config": "workspace:*",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0"
   },
   "peerDependencies": {
     "react": "^19.1.0",

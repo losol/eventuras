@@ -7,15 +7,15 @@
   "type": "module",
   "main": "src/index.ts",
   "scripts": {
-    "build:sdk": "npm run update:swagger && npm run generate && tsc && vite build",
-    "generate": "npx openapi-typescript-codegen --input swagger.json --output ./src --useOptions --name Eventuras",
+    "build:sdk": "pnpm run update:swagger && pnpm run generate && tsc && vite build",
+    "generate": "pnpm dlx openapi-typescript-codegen --input swagger.json --output ./src --useOptions --name Eventuras",
     "update:swagger": "node --loader ts-node/esm downloadSwagger.ts"
   },
   "dependencies": {
     "dotenv": "^17.2.3"
   },
   "devDependencies": {
-    "@eventuras/typescript-config": "*",
+    "@eventuras/typescript-config": "workspace:*",
     "node-fetch": "^3.3.2",
     "openapi-typescript-codegen": "0.29.0",
     "typescript": "^5.9.3",
