@@ -2,41 +2,9 @@
   "extends": "@eventuras/typescript-config/nextjs",
   "compilerOptions": {
     "paths": {
-      "@/*": ["./src/*", "./public/*"],
-      "@eventuras/datatable": ["../../libs/datatable/src/*"],
-      "@eventuras/event-sdk": ["../../libs/event-sdk/src/client"],
-      "@eventuras/event-sdk/*": ["../../libs/event-sdk/src/client/*"],
-      "@eventuras/fides-auth/*": ["../../libs/fides-auth/src/*"],
-      "@eventuras/markdown": ["../../libs/markdown/dist"],
-      "@eventuras/markdown/*": ["../../libs/markdown/dist/*"],
-      "@eventuras/markdowninput": ["../../libs/markdowninput"],
-      "@eventuras/scribo": ["../../libs/scribo"],
-      "@eventuras/smartform": ["../../libs/smartform"],
-      "@eventuras/sdk": ["../../libs/sdk"],
-      "@eventuras/ratio-ui": ["../../libs/ratio-ui/src"],
-      "@eventuras/ratio-ui/*": ["../../libs/ratio-ui/src/*"],
-      "@eventuras/toast": ["../../libs/toast/src"],
-      "@eventuras/toast/*": ["../../libs/toast/src/*"],
-      "@eventuras/utils": ["../../libs/utils"],
-      "@eventuras/utils/*": ["../../libs/utils/*"]
-    },
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ]
-  },
-  "include": [
-    "i18n.js",
-    "tailwind.config.js",
-    "postcss.config.js",
-    "next-env.d.ts",
-    "next.config.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    "../../libs/toast/src/ToastMachine.ts",
-    "../../libs/toast/src/useToast.ts"
-  ],
-  "exclude": ["node_modules"]
+      "@/*": [
+        "./src/*"
+      ]
+    }
+  }
 }

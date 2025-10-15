@@ -23,12 +23,13 @@
     "changeset:version": "changeset version",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
-    "next:clean": "rimraf \"**/{.next,.turbo,.vercel}\"",
-    "npm:check-update": "npx npm-check-updates --deep",
-    "npm:clean": "npm exec --workspaces -- npx rimraf node_modules && npx rimraf node_modules && npx rimraf package-lock.json",
-    "npm:reinstall": "npm run npm:clean && npm run npm:sort && npm install",
-    "npm:sort": "npx sort-package-json '**/package.json' '!**/node_modules/**'",
-    "npm:update": "npx npm-check-updates --deep -u",
+    "next:clean": "npx rimraf \"**/{.next,.turbo,.vercel}\"",
+    "deps:check": "pnpm dlx npm-check-updates --deep",
+    "deps:update": "pnpm dlx npm-check-updates --deep -u",
+    "pkg:sort": "pnpm dlx sort-package-json '**/package.json' '!**/node_modules/**'",
+    "clean": "pnpm -r exec rm -rf node_modules && rm -rf node_modules pnpm-lock.yaml",
+    "reinstall": "pnpm run clean && pnpm run pkg:sort && pnpm install",
+    "fresh": "pnpm run clean && pnpm install",
     "test": "turbo run test"
   },
   "dependencies": {
@@ -38,9 +39,11 @@
     "@changesets/cli": "^2.29.7",
     "@commitlint/cli": "^20.1.0",
     "@commitlint/config-conventional": "^20.0.0",
-    "@eventuras/eslint-config": "*",
-    "@eventuras/typescript-config": "*",
+    "@eventuras/eslint-config": "workspace:*",
+    "@eventuras/typescript-config": "workspace:*",
     "@types/node": "^24.7.2",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
     "eslint": "^9.37.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.4",
@@ -48,9 +51,9 @@
     "tsx": "^4.20.6",
     "typescript": "^5.9.3"
   },
-  "packageManager": "npm@11.6.2",
+  "packageManager": "pnpm@9.12.3",
   "engines": {
     "node": ">=20.0.0 <23.0.0",
-    "npm": ">=10.0.0 <11.0.0"
+    "pnpm": ">=9.0.0"
   }
 }

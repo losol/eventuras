@@ -6,7 +6,7 @@ on:
       node_version:
         description: "Node version"
         required: false
-        default: "18"
+        default: "22"
         type: string
     secrets:
       TURBO_TOKEN:
@@ -28,13 +28,19 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node_version }}
-          cache: "npm"
+          cache: 'pnpm'
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9.12.3
+          run_install: false
 
       - name: Install dependencies
-        run: npm install
+        run: pnpm install --frozen-lockfile=false
 
       - name: Run Turbo Lint
-        run: npx turbo run lint
+        run: pnpm turbo run lint
 
   build:
     runs-on: ubuntu-latest
@@ -64,10 +70,16 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node_version }}
-          cache: "npm"
+          cache: 'pnpm'
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9.12.3
+          run_install: false
 
       - name: Install dependencies
-        run: npm install
+        run: pnpm install --frozen-lockfile=false
 
-      - name: Run Turbo Lint
-        run: npx turbo run build
+      - name: Run Turbo Build
+        run: pnpm turbo run build

@@ -15,7 +15,7 @@ For production environment these variables should as environment variables.
 To start development server
 
 ```bash
-npm install
+pnpm install
 turbo dev
 ```
 

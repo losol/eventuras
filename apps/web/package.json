@@ -22,12 +22,12 @@
     "defaults, not dead"
   ],
   "dependencies": {
-    "@eventuras/fides-auth": "*",
-    "@eventuras/markdown": "*",
-    "@eventuras/ratio-ui": "*",
-    "@eventuras/scribo": "*",
-    "@eventuras/sdk": "*",
-    "@eventuras/smartform": "*",
+    "@eventuras/fides-auth": "workspace:*",
+    "@eventuras/markdown": "workspace:*",
+    "@eventuras/ratio-ui": "workspace:*",
+    "@eventuras/scribo": "workspace:*",
+    "@eventuras/sdk": "workspace:*",
+    "@eventuras/smartform": "workspace:*",
     "@tabler/icons-react": "^3.35.0",
     "@tailwindcss/postcss": "^4.1.14",
     "@types/debug": "^4.1.12",
@@ -43,7 +43,7 @@
     "xstate": "^5.23.0"
   },
   "devDependencies": {
-    "@eventuras/eslint-config": "*",
+    "@eventuras/eslint-config": "workspace:*",
     "@next/bundle-analyzer": "15.5.5",
     "@types/node": "24.0.3",
     "@types/react": "19.2.2",
@@ -61,6 +61,6 @@
   },
   "engines": {
     "node": ">=22.0.0 <23.0.0",
-    "npm": ">=9.0.0"
+    "pnpm": ">=9.0.0"
   }
 }

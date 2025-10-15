@@ -1,0 +1,8 @@
+packages:
+  - apps/**
+  - docs
+  - libs/**
+  - lab/**
+  - '!**/.next'
+  - '!**/dist'
+  - '!**/node_modules'

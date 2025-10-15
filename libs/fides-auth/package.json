@@ -4,9 +4,19 @@
   "private": "true",
   "description": "auth library eventuras",
   "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./request": "./src/request.ts",
+    "./session": "./src/session.ts",
+    "./session-refresh": "./src/session-refresh.ts",
+    "./session-validation": "./src/session-validation.ts",
+    "./oauth": "./src/oauth.ts",
+    "./utils": "./src/utils.ts",
+    "./types": "./src/types.ts"
+  },
   "dependencies": {
-    "@eventuras/typescript-config": "*",
-    "@eventuras/utils": "*",
+    "@eventuras/typescript-config": "workspace:*",
+    "@eventuras/utils": "workspace:*",
     "jose": "6.1.0",
     "openid-client": "^6.8.1"
   }

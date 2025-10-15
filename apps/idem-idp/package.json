@@ -19,8 +19,8 @@
     "express": "5.1.0"
   },
   "devDependencies": {
-    "@eventuras/eslint-config": "*",
-    "@eventuras/typescript-config": "*",
+    "@eventuras/eslint-config": "workspace:*",
+    "@eventuras/typescript-config": "workspace:*",
     "@types/express": "5.0.3",
     "tsup": "8.5.0",
     "tsx": "^4",

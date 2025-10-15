@@ -7,17 +7,17 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "prebuild": "npm run sync:docs",
+    "prebuild": "pnpm run sync:docs",
     "build": "next build",
     "postbuild": "pagefind --site .next/server/app --output-path public/_pagefind",
-    "predev": "npm run sync:docs",
+    "predev": "pnpm run sync:docs",
     "dev": "next -p 3210",
     "start": "next start",
     "sync:docs": "tsx scripts/sync-docs.ts"
   },
   "dependencies": {
-    "@eventuras/docs": "*",
-    "@eventuras/typescript-config": "*",
+    "@eventuras/docs": "workspace:*",
+    "@eventuras/typescript-config": "workspace:*",
     "next": "15.5.5",
     "nextra": "^4.6.0",
     "nextra-theme-blog": "^4.6.0",
@@ -26,7 +26,7 @@
     "react-dom": "^19.2.0"
   },
   "devDependencies": {
-    "@eventuras/eslint-config": "*",
+    "@eventuras/eslint-config": "workspace:*",
     "@types/node": "^24.0.3",
     "pagefind": "^1.4.0",
     "tsx": "^4.20.6",

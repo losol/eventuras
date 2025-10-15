@@ -11,7 +11,7 @@ The editor should provide simple and intuitive editing of markdown text, with a 
 To start developing Scribo, run the following commands:
 
 ```bash
-npm install
+pnpm install
 vite dev
 ```
 

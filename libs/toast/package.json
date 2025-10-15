@@ -3,13 +3,13 @@
   "version": "0.1.0",
   "main": "src/index.ts",
   "dependencies": {
-    "@eventuras/ratio-ui": "*",
+    "@eventuras/ratio-ui": "workspace:*",
     "@xstate/react": "6.0.0",
     "xstate": "5.23.0"
   },
   "devDependencies": {
-    "@eventuras/eslint-config": "*",
-    "@eventuras/typescript-config": "*"
+    "@eventuras/eslint-config": "workspace:*",
+    "@eventuras/typescript-config": "workspace:*"
   },
   "peerDependencies": {
     "react": "^19.1.0",

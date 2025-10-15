@@ -18,7 +18,7 @@
   "main": "dist/app.js",
   "scripts": {
     "build": "tsc && cp -R public dist",
-    "dev": "npx tsx src/app.ts",
+    "dev": "pnpm dlx tsx src/app.ts",
     "start": "node dist/app.js",
     "test": "echo \"Error: no test specified\" && exit 0"
   },
@@ -31,14 +31,15 @@
     "@swc/cli": "^0.7.8",
     "dotenv": "^17.2.3",
     "fastify": "^5.6.1",
+    "fastify-plugin": "^5.1.0",
     "playwright": "^1.56.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
     "zod": "^4.1.12"
   },
   "devDependencies": {
-    "@eventuras/eslint-config": "*",
-    "@eventuras/typescript-config": "*",
+    "@eventuras/eslint-config": "workspace:*",
+    "@eventuras/typescript-config": "workspace:*",
     "@types/node": "^24.0.3",
     "fastify-tsconfig": "^3.0.0",
     "tsx": "^4.20.6"
