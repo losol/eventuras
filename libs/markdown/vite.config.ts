@@ -23,7 +23,15 @@ export default defineConfig({
       formats: ['es']
     },
     rollupOptions: {
-      external: ['react', 'react-dom', 'react/jsx-runtime', 'markdown-to-jsx'],
+      external: [
+        'react',
+        'react-dom',
+        'react/jsx-runtime',
+        'markdown-to-jsx',
+        '@eventuras/ratio-ui',
+        // for deep imports..:
+        /^@eventuras\/ratio-ui\//
+      ],
       output: {
         preserveModules: true,
         preserveModulesRoot: 'src',

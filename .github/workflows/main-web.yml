@@ -77,7 +77,7 @@ jobs:
         run: npm install
 
       - name: Build web project
-        run: npx turbo run build --filter=@eventuras/web
+        run: npx turbo run build --filter=@eventuras/web...
 
   deploy-preview:
     name: Deploy Preview
