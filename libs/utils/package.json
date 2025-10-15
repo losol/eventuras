@@ -9,6 +9,10 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "debug": "^4.4.3"
+    "debug": "^4.4.3",
+    "pino": "^10.0.0"
+  },
+  "devDependencies": {
+    "@types/debug": "^4.1.12"
   }
 }
