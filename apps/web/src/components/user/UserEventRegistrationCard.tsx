@@ -4,11 +4,11 @@ import { useTranslations } from 'next-intl';
 import { ReactElement } from 'react';
 
 import { Card } from '@eventuras/ratio-ui/core/Card';
-import { Text } from '@eventuras/ratio-ui/core/Text/Text';
+import {Text} from '@eventuras/ratio-ui/core/Text';
 import { Link } from '@eventuras/ratio-ui/next/Link';
 import Environment from '@/utils/Environment';
 import { formatDateSpan } from '@/utils/formatDate';
-import Heading from '@eventuras/ratio-ui/core/Heading/Heading';
+import {Heading} from '@eventuras/ratio-ui/core/Heading';
 
 export type UserEventRegistrationCardProps = {
   eventId: string;

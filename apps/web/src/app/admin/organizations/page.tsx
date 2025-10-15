@@ -5,7 +5,7 @@ import { getV3Organizations } from '@eventuras/event-sdk';
 import Wrapper from '@/components/eventuras/Wrapper';
 import withAuthorization from '@/utils/auth/withAuthorization';
 import { createClient } from '@/utils/apiClient';
-import { List } from '@eventuras/ratio-ui/core/List/List';
+import {List} from '@eventuras/ratio-ui/core/List';
 import { Link } from '@eventuras/ratio-ui/next/Link';
 
 const AdminOrganizationsPage = async () => {

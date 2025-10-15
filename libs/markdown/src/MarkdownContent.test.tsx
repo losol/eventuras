@@ -38,7 +38,7 @@ describe('MarkdownContent', () => {
   })
 
   // blocks raw HTML by default
-  it('blocks raw HTML when disableRawHtml = true (default)', () => {
+  it('blocks raw HTML when enableRawHtml = false (default)', () => {
     render(<MarkdownContent markdown={'<div data-x="1">XSS</div>'} />)
     expect(screen.queryByText('XSS')).not.toBeInTheDocument()
   })
