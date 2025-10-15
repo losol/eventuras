@@ -1,9 +1,9 @@
 import { getTranslations } from 'next-intl/server';
 import { ReactNode } from 'react';
 
-import { Footer } from '@eventuras/ratio-ui/core/Footer/Footer';
-import { Navbar } from '@eventuras/ratio-ui/core/Navbar/Navbar';
-import { List } from '@eventuras/ratio-ui/core/List/List';
+import {Footer} from '@eventuras/ratio-ui/core/Footer';
+import {Navbar} from '@eventuras/ratio-ui/core/Navbar';
+import {List} from '@eventuras/ratio-ui/core/List';
 import getSiteSettings from '@/utils/site/getSiteSettings';
 
 import UserMenu from './UserMenu';

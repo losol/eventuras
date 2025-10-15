@@ -13,7 +13,9 @@ export function isSafeUrl(href?: string): boolean {
   }
 }
 
-export const SafeLink: React.FC<React.AnchorHTMLAttributes<HTMLAnchorElement>> = (p) => {
+export const SafeLink: React.FC<React.AnchorHTMLAttributes<HTMLAnchorElement>> = (
+  p: React.AnchorHTMLAttributes<HTMLAnchorElement>
+) => {
   const href = typeof p.href === 'string' ? p.href : ''
   if (!isSafeUrl(href)) return <span>{p.children}</span>
   return (
@@ -25,10 +27,19 @@ export const SafeLink: React.FC<React.AnchorHTMLAttributes<HTMLAnchorElement>> =
   )
 }
 
-export const SafeImg: React.FC<React.ImgHTMLAttributes<HTMLImageElement>> = (p) => {
+export const SafeImg: React.FC<React.ImgHTMLAttributes<HTMLImageElement>> = (
+  p: React.ImgHTMLAttributes<HTMLImageElement>
+) => {
   // block data: URLs unless you explicitly want them
   const src = typeof p.src === 'string' ? p.src : ''
   const safe = isSafeUrl(src) // permits http/https only
   if (!safe) return null
-  return <img {...p} loading={p.loading ?? 'lazy'} decoding={p.decoding ?? 'async'} referrerPolicy={p.referrerPolicy ?? 'no-referrer'} />
+  return (
+    <img
+      {...p}
+      loading={p.loading ?? 'lazy'}
+      decoding={p.decoding ?? 'async'}
+      referrerPolicy={p.referrerPolicy ?? 'no-referrer'}
+    />
+  )
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
-import { EventCollectionDto, OrderDto } from '@eventuras/sdk';
+import { EventCollectionDto} from '@eventuras/sdk';
 import { Loading, Pagination } from '@eventuras/ratio-ui';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
@@ -11,7 +11,6 @@ import { Link } from '@eventuras/ratio-ui/next/Link';
 import useCreateHook from '@/hooks/createHook';
 import { createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
-import { formatDateSpan } from '@/utils/formatDate';
 
 const columnHelper = createColumnHelper<EventCollectionDto>();
 

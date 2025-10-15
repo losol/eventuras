@@ -5,7 +5,7 @@ import { Definition, DescriptionList, Item, Term } from '@eventuras/ratio-ui';
 import { useTranslations } from 'next-intl';
 
 import { Card } from '@eventuras/ratio-ui/core/Card';
-import Text from '@eventuras/ratio-ui/core/Text/Text';
+import {Text} from '@eventuras/ratio-ui/core/Text';
 import { Link } from '@eventuras/ratio-ui/next/Link';
 
 export type UserProfileCardProps = {

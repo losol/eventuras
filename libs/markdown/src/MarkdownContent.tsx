@@ -1,3 +1,4 @@
+import type React from 'react'
 import Markdown from 'markdown-to-jsx'
 import { Heading } from '@eventuras/ratio-ui/core/Heading'
 import { Text } from '@eventuras/ratio-ui/core/Text'

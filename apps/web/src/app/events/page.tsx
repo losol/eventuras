@@ -8,7 +8,7 @@ import Environment from '@/utils/Environment';
 
 import { getV3Events } from '@eventuras/event-sdk';
 import { createClient } from '@/utils/apiClient';
-import List from '@eventuras/ratio-ui/core/List/List';
+import {List} from '@eventuras/ratio-ui/core/List';
 import Link from 'next/link';
 
 const ORGANIZATION_ID = Number(Environment.NEXT_PUBLIC_ORGANIZATION_ID)!;

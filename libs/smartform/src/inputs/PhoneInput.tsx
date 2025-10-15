@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { PhoneInput as CorePhoneInput, PhoneInputProps } from '@eventuras/ratio-ui/forms/Input/PhoneInput';
+import {PhoneInput as CorePhoneInput, PhoneInputProps} from '@eventuras/ratio-ui/forms/Input';
 
 interface SmartformPhoneInputProps extends Omit<PhoneInputProps, 'onChange'> {
   name: string;
