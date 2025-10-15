@@ -20,6 +20,7 @@ type CommonProps = InputHTMLAttributes<HTMLInputElement> &
   TextareaHTMLAttributes<HTMLTextAreaElement> & {
     'aria-invalid'?: boolean;
     'data-test-id'?: string;
+  [key: string]: any;
   };
 
 export const Input = forwardRef<HTMLElement, ExtendedInputProps>(
