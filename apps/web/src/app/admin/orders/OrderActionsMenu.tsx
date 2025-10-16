@@ -89,7 +89,6 @@ export const OrderActionsMenu = ({ order }: OrderActionsMenuProps) => {
         </Button>
       )}
 
-      {/* @ts-expect-error Drawer component has correct type but TypeScript can't infer it from source */}
       <Drawer
         isOpen={invoiceDrawerOpen}
         onSave={() => setInvoiceDrawerOpen(false)}

@@ -210,7 +210,6 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
         columnFilters={columnFilter}
       />
       {registrationOpen !== null && (
-        // @ts-expect-error Drawer component has correct type but TypeScript can't infer it from source
         <Drawer isOpen={drawerIsOpen} onCancel={() => setRegistrationOpen(null)}>
           <Drawer.Header as="h3" className="text-black">
             <p>Mailer</p>

@@ -16,7 +16,6 @@ const UserDrawer: React.FC = () => {
   return (
     <>
       <Button onClick={showDrawer}>{t('admin.users.labels.createUser')}</Button>
-      {/* @ts-expect-error Drawer component has correct type but TypeScript can't infer it from source */}
       <Drawer isOpen={visible} onCancel={onClose}>
         <UserEditor adminMode />
       </Drawer>

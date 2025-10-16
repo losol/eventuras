@@ -59,7 +59,6 @@ const AddMemberDrawer: React.FC<AddMemberDrawerProps> = ({
   };
 
   return (
-    // @ts-expect-error Drawer component has correct type but TypeScript can't infer it from source
     <Drawer isOpen={isOpen} onCancel={handleClose}>
       <Drawer.Header as="h2">
         Add New Member
