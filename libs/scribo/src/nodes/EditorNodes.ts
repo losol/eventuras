@@ -18,6 +18,7 @@ import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { TableCellNode, TableNode, TableRowNode } from "@lexical/table";
 import type { Klass, LexicalNode } from "lexical";
 
+// Using 'as any' to work around Lexical version conflicts between workspace installs
 const EditorNodes: Array<Klass<LexicalNode>> = [
   HeadingNode,
   ListNode,
@@ -34,6 +35,6 @@ const EditorNodes: Array<Klass<LexicalNode>> = [
   OverflowNode,
   HorizontalRuleNode,
   MarkNode,
-];
+] as any;
 
 export default EditorNodes;

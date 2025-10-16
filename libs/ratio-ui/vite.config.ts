@@ -5,6 +5,38 @@ import { extname, relative, resolve } from 'path';
 import { fileURLToPath } from 'node:url';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
+import fs from 'fs';
+
+// Plugin to preserve 'use client' directives
+function preserveUseClient() {
+  return {
+    name: 'preserve-use-client',
+    enforce: 'post' as const,
+    generateBundle(_options: any, bundle: any) {
+      for (const [fileName, chunk] of Object.entries(bundle)) {
+        if ((chunk as any).type === 'chunk') {
+          const chunkData = chunk as any;
+          // Check if any source module had 'use client'
+          const hasClientDirective = chunkData.moduleIds?.some((id: string) => {
+            try {
+              const content = fs.readFileSync(id, 'utf-8');
+              return content.trimStart().startsWith("'use client'") || content.trimStart().startsWith('"use client"');
+            } catch {
+              return false;
+            }
+          });
+
+          if (hasClientDirective) {
+            const codeStart = chunkData.code.trimStart();
+            if (!codeStart.startsWith("'use client'") && !codeStart.startsWith('"use client"')) {
+              chunkData.code = `'use client';\n${chunkData.code}`;
+            }
+          }
+        }
+      }
+    }
+  };
+}
 
 export default defineConfig({
   plugins: [
@@ -18,7 +50,8 @@ export default defineConfig({
       copyDtsFiles: false,
       rollupTypes: false,
       insertTypesEntry: true,
-    })
+    }),
+    preserveUseClient(),
   ],
   resolve: { alias: { '@': resolve(__dirname, './src') } },
   build: {

@@ -5,6 +5,17 @@
   "description": "utility functions for eventuras",
   "type": "module",
   "main": "src/index.ts",
+  "types": "src/index.ts",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "types": "./src/index.ts"
+    },
+    "./src/*": {
+      "import": "./src/*.ts",
+      "types": "./src/*.ts"
+    }
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
