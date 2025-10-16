@@ -3,7 +3,7 @@
 import { ColumnFilter, createColumnHelper, DataTable } from '@eventuras/datatable';
 import { EventDto, ProductDto, RegistrationDto } from '@eventuras/sdk';
 import { Badge, Button, Drawer, Loading } from '@eventuras/ratio-ui';
-import { Logger } from '@eventuras/utils';
+import { Logger } from '@eventuras/utils/src/Logger';
 import { IconNotes, IconShoppingCart, IconUser } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
@@ -210,6 +210,7 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
         columnFilters={columnFilter}
       />
       {registrationOpen !== null && (
+        // @ts-expect-error Drawer component has correct type but TypeScript can't infer it from source
         <Drawer isOpen={drawerIsOpen} onCancel={() => setRegistrationOpen(null)}>
           <Drawer.Header as="h3" className="text-black">
             <p>Mailer</p>

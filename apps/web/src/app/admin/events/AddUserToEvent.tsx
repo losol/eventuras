@@ -6,7 +6,7 @@ import {
   UserDto,
 } from '@eventuras/sdk';
 import { Button, Drawer, Heading } from '@eventuras/ratio-ui';
-import { Logger } from '@eventuras/utils';
+import { Logger } from '@eventuras/utils/src/Logger';
 import { IconCheck } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -194,6 +194,7 @@ const AddUserToEventDrawer: React.FC<AddUserToEventDrawerProps> = ({
   const [usersToAdd, setUsersToAdd] = useState<UserDto[]>([]);
   return (
     <>
+      {/* @ts-expect-error Drawer component has correct type but TypeScript can't infer it from source */}
       <Drawer isOpen={isOpen!} onCancel={onCancel}>
         <Heading as="h2">Add users to event</Heading>
         <UserLookup

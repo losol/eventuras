@@ -4,7 +4,8 @@ import { Fieldset } from '@eventuras/ratio-ui/forms';
 import { UserDto, UserFormDto } from '@eventuras/sdk';
 import { Form, Input, PhoneInput } from '@eventuras/smartform';
 import { Button } from '@eventuras/ratio-ui';
-import { DATA_TEST_ID, Logger } from '@eventuras/utils';
+import { DATA_TEST_ID } from '@eventuras/utils';
+import { Logger } from '@eventuras/utils/src/Logger';
 import { useTranslations } from 'next-intl';
 import { FC, useState } from 'react';
 

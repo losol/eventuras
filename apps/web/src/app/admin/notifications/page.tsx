@@ -1,6 +1,6 @@
 import { NotificationDto } from '@eventuras/sdk';
 import { Container, Heading, Section, Text } from '@eventuras/ratio-ui';
-import { Logger } from '@eventuras/utils';
+// import { Logger } from '@eventuras/utils/src/Logger';
 
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import Wrapper from '@/components/eventuras/Wrapper';
@@ -34,13 +34,13 @@ export default async function NotificationsPage({ searchParams }: NotificationPa
     }
   });
 
-  Logger.info({ namespace: 'notifications' }, `Notifications: ${JSON.stringify(notifications)}`);
+  // Logger.info({ namespace: 'notifications' }, `Notifications: ${JSON.stringify(notifications)}`);
 
   if (!notifications.ok) {
-    Logger.error(
-      { namespace: 'notifications' },
-      `Failed to fetch notifications, error: ${notifications.error}`
-    );
+    // Logger.error(
+    //   { namespace: 'notifications' },
+    //   `Failed to fetch notifications, error: ${notifications.error}`
+    // );
   }
 
   return (

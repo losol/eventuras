@@ -1,5 +1,5 @@
 import { Container, Heading, Section } from '@eventuras/ratio-ui';
-import { Logger } from '@eventuras/utils';
+import { Logger } from '@eventuras/utils/src/Logger';
 import { getTranslations } from 'next-intl/server';
 
 import Wrapper from '@/components/eventuras/Wrapper';

@@ -13,7 +13,8 @@ import {
   Select,
 } from '@eventuras/smartform';
 import { Button } from '@eventuras/ratio-ui';
-import { DATA_TEST_ID, Logger } from '@eventuras/utils';
+import { DATA_TEST_ID } from '@eventuras/utils';
+import { Logger } from '@eventuras/utils/src/Logger';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
@@ -84,6 +85,7 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
       shouldUnregister={false}
     >
       <HiddenInput name="organizationId" value={Environment.NEXT_PUBLIC_ORGANIZATION_ID} />
+      {/* @ts-expect-error Tabs component has correct type but TypeScript can't infer it from source */}
       <Tabs>
         <Tabs.Item title="Overview">
           <Fieldset label="Settings" disabled={apiState.loading}>

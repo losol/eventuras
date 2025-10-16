@@ -3,7 +3,8 @@
 import type { NewProductDto, ProductDto } from '@eventuras/sdk';
 import { Form, Input, NumberInput } from '@eventuras/smartform';
 import { Button, Heading } from '@eventuras/ratio-ui';
-import { DATA_TEST_ID, Logger } from '@eventuras/utils';
+import { DATA_TEST_ID } from '@eventuras/utils';
+import { Logger } from '@eventuras/utils/src/Logger';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';

@@ -59,6 +59,7 @@ const EventAdminActionsMenu: React.FC<EventAdminActionsMenuProps> = ({
 
       <AddUserToEvent eventinfo={eventinfo} eventProducts={eventProducts ?? []} />
 
+      {/* @ts-expect-error Drawer component has correct type but TypeScript can't infer it from source */}
       <Drawer isOpen={emailDrawerOpen} onCancel={() => setEmailDrawerOpen(false)}>
         <Drawer.Header as="h3" className="text-black">
           {t('admin.eventNotifier.title')}
@@ -75,6 +76,7 @@ const EventAdminActionsMenu: React.FC<EventAdminActionsMenuProps> = ({
           <></>
         </Drawer.Footer>
       </Drawer>
+      {/* @ts-expect-error Drawer component has correct type but TypeScript can't infer it from source */}
       <Drawer isOpen={SMSDrawerOpen} onCancel={() => setSMSDrawerOpen(false)}>
         <Drawer.Header as="h3" className="text-black">
           SMS

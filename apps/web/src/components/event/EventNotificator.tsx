@@ -8,7 +8,7 @@ import {
 } from '@eventuras/sdk';
 import { CheckboxInput, CheckboxLabel, Form, Input } from '@eventuras/smartform';
 import { Button, ButtonGroup, Heading } from '@eventuras/ratio-ui';
-import { Logger } from '@eventuras/utils';
+import { Logger } from '@eventuras/utils/src/Logger';
 import { useTranslations } from 'next-intl';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
@@ -333,7 +333,7 @@ export default function EventNotificator({
         </Button>
         <Button
           type="button"
-          onClick={e => {
+          onClick={(e: React.MouseEvent) => {
             e.preventDefault();
             onClose();
           }}
