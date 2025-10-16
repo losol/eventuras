@@ -22,7 +22,6 @@ const RegistrationView: React.FC<RegistrationViewProps> = ({
 
   return (
     <div>
-      {/* @ts-expect-error Tabs component has correct type but TypeScript can't infer it from source */}
       <Tabs>
         {/* Welcome letter */}
         {eventInfo?.welcomeLetter ? (

@@ -194,7 +194,6 @@ const AddUserToEventDrawer: React.FC<AddUserToEventDrawerProps> = ({
   const [usersToAdd, setUsersToAdd] = useState<UserDto[]>([]);
   return (
     <>
-      {/* @ts-expect-error Drawer component has correct type but TypeScript can't infer it from source */}
       <Drawer isOpen={isOpen!} onCancel={onCancel}>
         <Heading as="h2">Add users to event</Heading>
         <UserLookup
