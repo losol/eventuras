@@ -1,6 +1,6 @@
 import { Container, Heading } from '@eventuras/ratio-ui';
 import { DATA_TEST_ID } from '@eventuras/utils';
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 
 import Wrapper from '@/components/eventuras/Wrapper';
 import { Link } from '@eventuras/ratio-ui/next/Link';
@@ -11,8 +11,8 @@ import AdminEventList from './AdminEventList';
 
 const ORGANIZATION_ID: number = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID);
 
-const AdminPage = () => {
-  const t = useTranslations();
+const AdminPage = async () => {
+  const t = await getTranslations();
   return (
     <Wrapper>
       <Container>

@@ -1,6 +1,6 @@
 'use server';
 
-import { Logger } from '@eventuras/utils';
+import { Logger } from '@eventuras/utils/src/Logger';
 import { revalidatePath } from 'next/cache';
 
 export default async function revalidateRegistrationCache() {

@@ -1,6 +1,6 @@
 import { MarkdownContent } from '@eventuras/markdown';
 import { Container, Heading, Section, Text } from '@eventuras/ratio-ui';
-import { Logger } from '@eventuras/utils';
+import { Logger } from '@eventuras/utils/src/Logger';
 import { redirect } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 

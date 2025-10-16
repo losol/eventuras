@@ -1,7 +1,7 @@
 'use server';
 
 import { EventFormDto } from '@eventuras/sdk';
-import { Logger } from '@eventuras/utils';
+import { Logger } from '@eventuras/utils/src/Logger';
 import { redirect } from 'next/navigation';
 
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';

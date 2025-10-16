@@ -1,6 +1,6 @@
 import { globalGETRateLimit } from '@eventuras/fides-auth/request';
 import { createSession } from '@eventuras/fides-auth/session';
-import { Logger } from '@eventuras/utils';
+import { Logger } from '@eventuras/utils/src/Logger';
 import { decodeJwt } from 'jose';
 import { cookies } from 'next/headers';
 import * as openid from 'openid-client';

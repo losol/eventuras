@@ -1,7 +1,7 @@
 'use client';
 import { InvoiceRequestDto, OrderDto, OrderStatus, PaymentProvider } from '@eventuras/sdk';
 import { Button, Definition, DescriptionList, Drawer, Heading, Term } from '@eventuras/ratio-ui';
-import { Logger } from '@eventuras/utils';
+import { Logger } from '@eventuras/utils/src/Logger';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
@@ -89,6 +89,7 @@ export const OrderActionsMenu = ({ order }: OrderActionsMenuProps) => {
         </Button>
       )}
 
+      {/* @ts-expect-error Drawer component has correct type but TypeScript can't infer it from source */}
       <Drawer
         isOpen={invoiceDrawerOpen}
         onSave={() => setInvoiceDrawerOpen(false)}
