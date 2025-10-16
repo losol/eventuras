@@ -18,6 +18,14 @@ env:
   IMAGE_NAME: historia
 
 jobs:
+  commitlint:
+    if: github.event_name == 'pull_request'
+    uses: ./.github/workflows/util-commitlint.yml
+    with:
+      base_sha: ${{ github.event.pull_request.base.sha }}
+      head_sha: ${{ github.event.pull_request.head.sha }}
+      node_version: "22.x"
+
   docker:
     name: Docker build
     runs-on: ubuntu-latest
