@@ -44,7 +44,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc && vite build && storybook build",
+    "build": "tsc && vite build",
+    "build:all": "pnpm run build && pnpm run storybook:build",
     "dev": "pnpm run storybook",
     "storybook": "storybook dev -p 6006",
     "storybook:build": "storybook build"
