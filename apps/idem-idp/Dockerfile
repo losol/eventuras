@@ -10,8 +10,10 @@ WORKDIR /repo
 # Enable pnpm and use turbo via pnpm dlx
 RUN corepack enable && corepack prepare pnpm@9.12.3 --activate
 
-# Copy repo so turbo can read turbo.json/workspaces
-COPY . .
+# Copy repo files including lockfile for turbo prune
+COPY package.json turbo.json tsconfig.json pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY apps ./apps
+COPY libs ./libs
 
 # Prune to minimal graph for the idem-idp workspace
 # - Ensure the workspace name matches apps/idem-idp/package.json "name"
@@ -29,14 +31,18 @@ RUN corepack enable && corepack prepare pnpm@9.12.3 --activate && pnpm install -
 FROM node:22-alpine AS build
 WORKDIR /srv
 
-# Keep installed node_modules
-COPY --from=install /srv/node_modules ./node_modules
-
-# Bring in pruned source only
+# Bring in pruned source first
 COPY --from=prune /repo/out/full/ ./
 
+# Copy installed node_modules (this preserves the monorepo structure)
+COPY --from=install /srv/node_modules ./node_modules
+COPY --from=install /srv/apps/idem-idp/node_modules ./apps/idem-idp/node_modules
+
+# Enable pnpm and build
+RUN corepack enable && corepack prepare pnpm@9.12.3 --activate
+
 # Build just the idem-idp workspace
-RUN corepack enable && corepack prepare pnpm@9.12.3 --activate && pnpm -C apps/idem-idp run build
+RUN pnpm -C apps/idem-idp run build
 
 # ---- 3) RUNTIME ----
 FROM node:22-alpine AS runtime

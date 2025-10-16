@@ -855,6 +855,9 @@ importers:
       '@lexical/list':
         specifier: 0.35.0
         version: 0.35.0
+      '@lexical/mark':
+        specifier: 0.35.0
+        version: 0.35.0
       '@lexical/markdown':
         specifier: 0.35.0
         version: 0.35.0
