@@ -20,6 +20,14 @@ env:
   TURBO_VERSION: 2.5.8
 
 jobs:
+  commitlint:
+    if: github.event_name == 'pull_request'
+    uses: ./.github/workflows/util-commitlint.yml
+    with:
+      base_sha: ${{ github.event.pull_request.base.sha }}
+      head_sha: ${{ github.event.pull_request.head.sha }}
+      node_version: "22.x"
+
   docker:
     runs-on: ubuntu-latest
     permissions:
