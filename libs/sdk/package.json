@@ -6,6 +6,11 @@
   "author": "Ole Kristian Losvik",
   "type": "module",
   "main": "src/index.ts",
+  "types": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./src/*": "./src/*"
+  },
   "scripts": {
     "build:sdk": "pnpm run update:swagger && pnpm run generate && tsc && vite build",
     "generate": "pnpm dlx openapi-typescript-codegen --input swagger.json --output ./src --useOptions --name Eventuras",

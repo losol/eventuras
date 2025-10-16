@@ -6,5 +6,12 @@
         "./src/*"
       ]
     }
-  }
+  },
+  "include": [
+    "../../libs/typescript-config/next-env.d.ts",
+    "../../libs/typescript-config/**/*.ts",
+    "../../libs/typescript-config/**/*.tsx",
+    "../../libs/typescript-config/.next/types/**/*.ts",
+    ".next/types/**/*.ts"
+  ]
 }

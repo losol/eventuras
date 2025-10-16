@@ -2,6 +2,11 @@
   "name": "@eventuras/markdowninput",
   "version": "0.1.0",
   "main": "src/index.tsx",
+  "types": "src/index.tsx",
+  "exports": {
+    ".": "./src/index.tsx",
+    "./src/*": "./src/*.tsx"
+  },
   "dependencies": {
     "@eventuras/ratio-ui": "workspace:*",
     "@eventuras/scribo": "workspace:*",
@@ -9,7 +14,8 @@
   },
   "devDependencies": {
     "@eventuras/eslint-config": "workspace:*",
-    "@eventuras/typescript-config": "workspace:*"
+    "@eventuras/typescript-config": "workspace:*",
+    "react-hook-form": "^7.65.0"
   },
   "peerDependencies": {
     "react": "^19.1.0",
