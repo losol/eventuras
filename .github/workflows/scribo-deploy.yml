@@ -23,6 +23,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.3
+          run_install: false
+
       # ✅ Setup Node.js from .nvmrc
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -30,12 +36,6 @@ jobs:
           node-version-file: .nvmrc
           check-latest: true
           cache: 'pnpm'
-
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9.12.3
-          run_install: false
 
       # Show versions for debugging
       - run: node -v && pnpm -v

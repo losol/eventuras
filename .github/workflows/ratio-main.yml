@@ -42,11 +42,6 @@ jobs:
       - name: Build Storybook
         run: pnpm --filter @eventuras/ratio-ui run storybook:build
 
-      - name: Verify build output
-        run: |
-          pwd
-          ls -la libs/ratio-ui/storybook-static || echo "storybook-static directory not found"
-
       - name: Deploy to Cloudflare Pages (Production)
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: npx wrangler pages deploy libs/ratio-ui/storybook-static --project-name=${{ secrets.CLOUDFLARE_PAGES_PROJECT }} --branch=main --commit-dirty=true

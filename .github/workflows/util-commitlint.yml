@@ -31,13 +31,15 @@ jobs:
         uses: pnpm/action-setup@v4
         with:
           version: 9.12.3
-          run_install: false
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ inputs.node_version }}
           cache: 'pnpm'
+
+      - name: Install commitlint dependencies
+        run: pnpm install --filter . --frozen-lockfile --prod=false
 
       - name: Lint commits
         run: pnpm exec commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose

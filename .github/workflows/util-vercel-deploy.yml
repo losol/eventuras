@@ -72,18 +72,17 @@ jobs:
         with:
           fetch-depth: 2
 
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9.12.3
+          run_install: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: 'pnpm'
-
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v3
-        with:
-          version: 9.12.3
-          run_install: false
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile=false

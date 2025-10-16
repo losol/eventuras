@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends libc6 && apt-ge
 WORKDIR /app
 
 # Copy only what is needed for turbo to determine the dependency graph
-COPY package.json turbo.json tsconfig.json pnpm-workspace.yaml ./
+COPY package.json turbo.json tsconfig.json pnpm-workspace.yaml pnpm-lock.yaml ./
 
 # Copy source for relevant apps and libs only (historia and its deps)
 COPY apps/historia ./apps/historia

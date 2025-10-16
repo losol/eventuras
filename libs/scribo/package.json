@@ -18,6 +18,7 @@
     "@lexical/hashtag": "0.35.0",
     "@lexical/link": "0.35.0",
     "@lexical/list": "0.35.0",
+    "@lexical/mark": "0.35.0",
     "@lexical/markdown": "0.35.0",
     "@lexical/overflow": "0.35.0",
     "@lexical/react": "^0.35.0",
