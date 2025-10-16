@@ -6,6 +6,7 @@
   "scripts": {
     "analyze": "ANALYZE=true next build",
     "build": "next build",
+    "vercel-build": "pnpm --filter=@eventuras/web^... build && next build",
     "dev": "next dev",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix && prettier . --write",
