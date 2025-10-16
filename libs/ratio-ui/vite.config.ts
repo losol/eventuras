@@ -20,7 +20,9 @@ function preserveUseClient() {
           const hasClientDirective = chunkData.moduleIds?.some((id: string) => {
             try {
               const content = fs.readFileSync(id, 'utf-8');
-              return content.trimStart().startsWith("'use client'") || content.trimStart().startsWith('"use client"');
+              // Remove leading comments to check for 'use client'
+              const withoutComments = content.replace(/^(\s*\/\/.*\n)+/, '').replace(/^(\s*\/\*[\s\S]*?\*\/\s*)/, '');
+              return withoutComments.trimStart().startsWith("'use client'") || withoutComments.trimStart().startsWith('"use client"');
             } catch {
               return false;
             }
