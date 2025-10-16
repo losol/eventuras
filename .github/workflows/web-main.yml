@@ -87,8 +87,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Build dependencies
+        run: pnpm turbo run build --filter=@eventuras/web^...
+
       - name: Build web project
-        run: pnpm turbo run build --filter=@eventuras/web...
+        run: pnpm turbo run build --filter=@eventuras/web
 
   deploy-preview:
     name: Deploy Preview
