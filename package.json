@@ -24,12 +24,13 @@
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
     "next:clean": "npx rimraf \"**/{.next,.turbo,.vercel}\"",
+    "clean:build": "npx rimraf \"**/{.next,.turbo,.vercel,dist,build,storybook-static}\" \"!**/node_modules/**\"",
+    "clean:all": "pnpm run clean:build && pnpm -r exec rm -rf node_modules && rm -rf node_modules pnpm-lock.yaml",
     "deps:check": "pnpm dlx npm-check-updates --deep",
     "deps:update": "pnpm dlx npm-check-updates --deep -u",
     "pkg:sort": "pnpm dlx sort-package-json '**/package.json' '!**/node_modules/**'",
-    "clean": "pnpm -r exec rm -rf node_modules && rm -rf node_modules pnpm-lock.yaml",
-    "reinstall": "pnpm run clean && pnpm run pkg:sort && pnpm install",
-    "fresh": "pnpm run clean && pnpm install",
+    "deps:clean": "pnpm -r exec rm -rf node_modules && rm -rf node_modules pnpm-lock.yaml",
+    "deps:reinstall": "pnpm run clean && pnpm run pkg:sort && pnpm install",
     "test": "turbo run test"
   },
   "dependencies": {

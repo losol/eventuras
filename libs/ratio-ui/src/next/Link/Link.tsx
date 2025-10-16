@@ -1,4 +1,3 @@
-// integrations/next/Link.tsx
 'use client';
 
 import React from 'react';
