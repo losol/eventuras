@@ -209,8 +209,7 @@ export const fillOutPaymentDetails = async (page: Page) => {
   await page.locator('[data-testid="registration-city-input"]').fill('Amsterdam');
   await page.locator('[data-testid="registration-country-input"]').click();
   await page.locator('[data-testid="registration-country-input"]').fill('The Netherlands');
-  debug('Payment submit button clicked');
-
+  debug('Payment details filled');
   return page.locator('[data-testid="registration-payment-submit-button"]').click();
 };
 
@@ -233,13 +232,21 @@ export const registerForEvent = async (
     page.waitForResponse(resp => resp.url().includes('userprofile') && resp.status() === 200),
     page.locator('[data-testid="account-update-button"]').click(),
   ]);
+
   debug('Customize product for event: %s', eventId);
-  await page.locator('[data-testid="product-selection-checkbox"]').click();
+  await page.waitForLoadState('networkidle');
+
+  // Select product checkboxes by looking for checkboxes with IDs starting with "checkbox-product-"
+  const productCheckbox = page.locator('input[type="checkbox"][id^="checkbox-product-"]');
+  await productCheckbox.first().waitFor({ state: 'visible', timeout: 10000 });
+  await productCheckbox.first().click();
   debug('Product checkbox clicked');
-  const submitButton = await page.locator('[data-testid="registration-customize-submit-button"]');
-  expect(submitButton.isEnabled());
+
+  const submitButton = page.locator('[data-testid="registration-customize-submit-button"]');
+  await expect(submitButton).toBeEnabled();
   await submitButton.click();
   debug('Registration customize submit button clicked');
+
   await fillOutPaymentDetails(page);
   await Promise.all([
     page.waitForResponse(resp => resp.url().includes('registrations') && resp.status() === 200),
@@ -267,7 +274,10 @@ export const validateRegistration = async (page: Page, eventId: string) => {
 export const editRegistrationOrders = async (page: Page, eventId: string) => {
   await visitRegistrationPageForEvent(page, eventId);
   await page.locator('[data-testid="edit-registration-button"]').click();
-  await page.locator('[data-testid="product-selection-checkbox"]').first().click();
+
+  // Select product checkbox by ID pattern
+  await page.locator('input[type="checkbox"][id^="checkbox-product-"]').first().click();
+
   await page.locator('[data-testid="registration-customize-submit-button"]').click();
   await fillOutPaymentDetails(page);
 
