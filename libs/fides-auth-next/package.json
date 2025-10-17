@@ -1,7 +1,7 @@
 {
   "name": "@eventuras/fides-auth-next",
   "version": "0.1.0",
-  "private": "true",
+  "private": true,
   "description": "Next.js bindings for @eventuras/fides-auth",
   "main": "src/index.ts",
   "exports": {
