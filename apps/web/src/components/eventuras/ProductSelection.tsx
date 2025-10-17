@@ -1,6 +1,5 @@
 import { Checkbox, CheckBoxDescription, CheckBoxLabel } from '@eventuras/ratio-ui/forms';
 import { ProductDto } from '@eventuras/sdk';
-import { DATA_TEST_ID } from '@eventuras/utils';
 
 import { ProductSelected } from '@/types';
 
@@ -23,7 +22,7 @@ const ProductSelection = ({
           return (
             <Checkbox
               key={product.productId}
-              {...{ [DATA_TEST_ID]: 'product-selection-checkbox' }}
+              testId="product-selection-checkbox"
               id={product.productId}
               title={product.name}
               description={product.description}

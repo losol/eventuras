@@ -1,4 +1,3 @@
-import { DATA_TEST_ID } from '@eventuras/utils';
 import { Portal } from '../..';
 
 export enum ToastType {
@@ -43,7 +42,7 @@ export const Toast: React.FC<ToastProps> = ({ toasts = [] }) => {
           .map(({ id, message, type = ToastType.INFO }) => (
             <div
               key={id}
-              {...{ [DATA_TEST_ID]: (type === ToastType.SUCCESS ? 'toast-success' : 'toast-error') }}
+              data-testid={type === ToastType.SUCCESS ? 'toast-success' : 'toast-error'}
               className={getToastClassName(type)}
             >
               {message}

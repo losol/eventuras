@@ -1,13 +1,12 @@
 import React, { ReactElement } from 'react';
 import { Tab, TabList, TabPanel, Tabs as AriaTabs } from 'react-aria-components';
-import { DATA_TEST_ID } from '@eventuras/utils';
 
 // ✅ Export these so external files can reference them by name
 export type TabItemProps = {
   id?: string;
   title: string;
   children: React.ReactNode | null;
-  [DATA_TEST_ID]?: string;
+  testId?: string;
 };
 
 export type TabsProps = {

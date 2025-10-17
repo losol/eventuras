@@ -1,5 +1,4 @@
 import { Container, Heading } from '@eventuras/ratio-ui';
-import { DATA_TEST_ID } from '@eventuras/utils';
 import { getTranslations } from 'next-intl/server';
 
 import Wrapper from '@/components/eventuras/Wrapper';
@@ -21,7 +20,7 @@ const AdminPage = async () => {
           <Link
             href={`/admin/events/create`}
             variant="button-primary"
-            {...{ [DATA_TEST_ID]: 'add-event-button' }}
+            testId="add-event-button"
           >
             {t('admin.events.labes.create')}
           </Link>

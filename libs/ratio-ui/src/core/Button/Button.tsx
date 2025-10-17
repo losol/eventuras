@@ -38,7 +38,7 @@ export interface ButtonProps
   variant?: keyof typeof buttonStyles;
   block?: boolean;
   className?: string;
-  ['data-test-id']?: string;
+  testId?: string;
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
@@ -60,7 +60,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
     border,
     width,
     height,
-    ['data-test-id']: dataTestId,
+    testId,
     // all other native button props (e.g. id, name, value)
     ...rest
   },
@@ -100,7 +100,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
       aria-label={ariaLabel}
       onClick={onClick}
       className={classes}
-      data-test-id={dataTestId}
+      data-testid={testId}
       {...rest}
     >
       {loading && (

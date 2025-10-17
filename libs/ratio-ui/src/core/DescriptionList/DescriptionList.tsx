@@ -1,5 +1,4 @@
 import React from 'react';
-import { DATA_TEST_ID } from '@eventuras/utils';
 
 const styles = {
   descriptionList: 'divide-y divide-gray-100 dark:divide-gray-800',
@@ -38,12 +37,12 @@ const Term: React.FC<TermProps> = ({ children }) => {
 // Definition component
 interface DefinitionProps {
   children: React.ReactNode;
-  [DATA_TEST_ID]?: string;
+  testId?: string;
 }
 
 const Definition: React.FC<DefinitionProps> = (props) => {
   return (
-    <dd className={styles.definition} {...{ [DATA_TEST_ID]: props[DATA_TEST_ID] }}>
+    <dd className={styles.definition} data-testid={props.testId}>
       {props.children}
     </dd>
   );

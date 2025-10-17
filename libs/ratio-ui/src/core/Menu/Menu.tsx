@@ -1,4 +1,3 @@
-import { DATA_TEST_ID } from '@eventuras/utils';
 import { ReactNode } from 'react';
 import {
   Button,
@@ -38,12 +37,12 @@ const ChevronIcon = () => (
 export type MenuLinkProps = {
   href: string;
   children: ReactNode;
-  [DATA_TEST_ID]?: string;
+  testId?: string;
 };
 
 const MenuLink = (props: MenuLinkProps & MenuItemProps) => {
   return (
-    <MenuItem {...props} {...{ [DATA_TEST_ID]: props[DATA_TEST_ID] }} className={styles.menuItem}>
+    <MenuItem {...props} data-testid={props.testId} className={styles.menuItem}>
       {props.children}
     </MenuItem>
   );
@@ -58,7 +57,7 @@ export type MenuButtonProps = {
   id: string;
   children: ReactNode;
   onClick: () => void;
-  [DATA_TEST_ID]?: string;
+  testId?: string;
 };
 
 /**
@@ -70,7 +69,7 @@ const functionMap: Map<string, () => void> = new Map();
 const MenuButton = (props: MenuButtonProps & MenuItemProps) => {
   functionMap.set(props.id, props.onClick);
   return (
-    <MenuItem {...props} className={styles.menuItem} {...{ [DATA_TEST_ID]: props[DATA_TEST_ID] }}>
+    <MenuItem {...props} className={styles.menuItem} data-testid={props.testId}>
       {props.children}
     </MenuItem>
   );
@@ -79,7 +78,7 @@ const MenuButton = (props: MenuButtonProps & MenuItemProps) => {
 const Menu = (props: MenuProps) => {
   return (
     <MenuTrigger>
-      <Button {...{ [DATA_TEST_ID]: 'logged-in-menu-button' }}>
+      <Button data-testid="logged-in-menu-button">
         <div className={styles.menuTrigger}>
           {props.menuLabel}
           <ChevronIcon />

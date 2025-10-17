@@ -13,7 +13,6 @@ import {
   Select,
 } from '@eventuras/smartform';
 import { Button } from '@eventuras/ratio-ui';
-import { DATA_TEST_ID } from '@eventuras/utils';
 import { Logger } from '@eventuras/utils/src/Logger';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -81,7 +80,7 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
     <Form
       defaultValues={eventinfo}
       onSubmit={onSubmitForm}
-      {...{ [DATA_TEST_ID]: 'event-edit-form' }}
+      testId="event-edit-form"
       shouldUnregister={false}
     >
       <HiddenInput name="organizationId" value={Environment.NEXT_PUBLIC_ORGANIZATION_ID} />
@@ -121,7 +120,7 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
                 value: value,
                 label: value,
               }))}
-              {...{ [DATA_TEST_ID]: 'event-status-select-button' }}
+              testId="event-status-select-button"
             />
             <NumberInput
               name="maxParticipants"
@@ -215,7 +214,7 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
               label="Id"
               placeholder="Event Id"
               disabled
-              {...{ [DATA_TEST_ID]: 'eventeditor-form-eventid' }}
+              testId="eventeditor-form-eventid"
             />
             <Input name="slug" label="Slug" placeholder="Event Slug" disabled />
             <Input

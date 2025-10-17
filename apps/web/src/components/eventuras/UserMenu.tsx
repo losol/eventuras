@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Menu } from '@eventuras/ratio-ui/core/Menu';
-import { DATA_TEST_ID } from '@eventuras/utils';
 import type { SessionStatus } from '@/app/api/session/route';
 
 export type LoggedOutLanguagePack = {
@@ -34,7 +33,7 @@ const UserMenuContentLoggedOut = (props: UserMenuContentLoggedOutProps) => {
     <Button
       onClick={() => props.onLoginRequested()}
       variant="primary"
-      {...{ [DATA_TEST_ID]: 'login-button' }}
+      testId="login-button"
     >
       {props.languagePack.loginLabel}
     </Button>
@@ -45,7 +44,7 @@ const UserMenuContentLoggedIn = (props: UserMenuContentLoggedInProps) => {
   const { accountLabel, adminLabel, userLabel } = props.languagePack;
   return (
     <Menu menuLabel={props.menuLabel}>
-      <Menu.Link {...{ [DATA_TEST_ID]: 'profile-link' }} href="/user">
+      <Menu.Link testId="profile-link" href="/user">
         {userLabel}
       </Menu.Link>
       <Menu.Link href="/user/account">{accountLabel}</Menu.Link>
@@ -131,7 +130,7 @@ const UserMenu = (props: UserMenuProps) => {
 
   if (hasError) {
     return (
-      <Button onClick={handleLogin} variant="primary" {...{ [DATA_TEST_ID]: 'login-button' }}>
+      <Button onClick={handleLogin} variant="primary" testId="login-button">
         🔴 Log in again
       </Button>
     );
