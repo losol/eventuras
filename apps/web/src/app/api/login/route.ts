@@ -1,5 +1,5 @@
-import { globalGETRateLimit } from '@eventuras/fides-auth/request';
-import { getCurrentSession } from '@eventuras/fides-auth/session';
+import {globalGETRateLimit} from '@eventuras/fides-auth-next/request';
+import {getCurrentSession} from '@eventuras/fides-auth-next/session';
 import { NextResponse } from 'next/server';
 
 import { oauthConfig } from '@/utils/oauthConfig';

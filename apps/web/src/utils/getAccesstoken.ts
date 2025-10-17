@@ -1,6 +1,6 @@
 'use server';
 
-import { getCurrentSession } from '@eventuras/fides-auth/session';
+import {getCurrentSession} from '@eventuras/fides-auth-next/session';
 import { cookies } from 'next/headers';
 
 import { oauthConfig } from '@/utils/oauthConfig';

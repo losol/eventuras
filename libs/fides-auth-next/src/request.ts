@@ -1,6 +1,5 @@
 import { headers } from 'next/headers';
-
-import { TokenBucket } from './rate-limit';
+import {TokenBucket} from '@eventuras/fides-auth/rate-limit';
 
 export const globalBucket = new TokenBucket<string>(100, 1);
 

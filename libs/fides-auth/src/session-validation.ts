@@ -2,7 +2,7 @@
 
 import { jwtDecrypt } from 'jose';
 import { getSessionSecretUint8Array } from './utils';
-import { Session } from './session';
+import {Session} from './types';
 
 export interface SessionValidationResult {
   session?: Session;

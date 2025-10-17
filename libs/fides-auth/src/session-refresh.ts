@@ -1,5 +1,5 @@
 import { OAuthConfig, refreshAccesstoken } from "./oauth";
-import { CreateSessionOptions, Session } from "./session";
+import {CreateSessionOptions, Session} from "./types";
 
 export const refreshSession = async (current_session: Session, config: OAuthConfig, options: CreateSessionOptions = {}): Promise<Session | null> => {
 

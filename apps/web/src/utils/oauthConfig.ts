@@ -1,4 +1,4 @@
-import { OAuthConfig } from '@eventuras/fides-auth/oauth';
+import {OAuthConfig} from '@eventuras/fides-auth-next';
 
 import Environment, { EnvironmentVariables } from '@/utils/Environment';
 

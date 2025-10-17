@@ -6,13 +6,12 @@
   "main": "src/index.ts",
   "exports": {
     ".": "./src/index.ts",
-    "./request": "./src/request.ts",
-    "./session": "./src/session.ts",
     "./session-refresh": "./src/session-refresh.ts",
     "./session-validation": "./src/session-validation.ts",
     "./oauth": "./src/oauth.ts",
     "./utils": "./src/utils.ts",
-    "./types": "./src/types.ts"
+    "./types": "./src/types.ts",
+    "./rate-limit": "./src/rate-limit.ts"
   },
   "dependencies": {
     "@eventuras/typescript-config": "workspace:*",
@@ -22,7 +21,6 @@
   },
   "devDependencies": {
     "@types/react": "^19.2.2",
-    "@types/react-dom": "^19.2.2",
-    "next": "^15.5.5"
+    "@types/react-dom": "^19.2.2"
   }
 }

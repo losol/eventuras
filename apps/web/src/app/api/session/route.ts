@@ -1,9 +1,8 @@
 import { createClient } from '@/utils/apiClient';
 import { oauthConfig } from '@/utils/oauthConfig';
 import { getV3Userprofile, UserDto } from '@eventuras/event-sdk';
-import { getCurrentSession } from '@eventuras/fides-auth/session';
-import { refreshSession } from '@eventuras/fides-auth/session-refresh';
-import { accessTokenExpires, createEncryptedJWT } from '@eventuras/fides-auth/utils';
+import {getCurrentSession} from '@eventuras/fides-auth-next/session';
+import {refreshSession, accessTokenExpires, createEncryptedJWT} from '@eventuras/fides-auth-next';
 import { Logger } from '@eventuras/utils/src/Logger';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
