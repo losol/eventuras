@@ -3,7 +3,7 @@ import { DATA_TEST_ID } from '@eventuras/utils';
 import { getTranslations } from 'next-intl/server';
 
 import Wrapper from '@/components/eventuras/Wrapper';
-import { Link } from '@eventuras/ratio-ui/next/Link';
+import { Link } from '@eventuras/ratio-ui-next/Link';
 import withAuthorization from '@/utils/auth/withAuthorization';
 import Environment from '@/utils/Environment';
 

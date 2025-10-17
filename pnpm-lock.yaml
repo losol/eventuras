@@ -377,6 +377,9 @@ importers:
       '@eventuras/ratio-ui':
         specifier: workspace:*
         version: link:../../libs/ratio-ui
+      '@eventuras/ratio-ui-next':
+        specifier: workspace:*
+        version: link:../../libs/ratio-ui-next
       '@eventuras/scribo':
         specifier: workspace:*
         version: link:../../libs/scribo
@@ -825,9 +828,6 @@ importers:
       glob:
         specifier: 11.0.3
         version: 11.0.3
-      next:
-        specifier: ^15.5.5
-        version: 15.5.5(@babel/core@7.28.4)(@playwright/test@1.56.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(sass@1.77.4)
       postcss:
         specifier: ^8.5.6
         version: 8.5.6
@@ -840,6 +840,46 @@ importers:
       tailwindcss:
         specifier: ^4.1.14
         version: 4.1.14
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
+      vite:
+        specifier: 7.1.10
+        version: 7.1.10(@types/node@24.7.2)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.77.4)(tsx@4.20.6)(yaml@2.8.1)
+      vite-plugin-dts:
+        specifier: 4.5.4
+        version: 4.5.4(@types/node@24.7.2)(rollup@4.52.4)(typescript@5.9.3)(vite@7.1.10(@types/node@24.7.2)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.77.4)(tsx@4.20.6)(yaml@2.8.1))
+
+  libs/ratio-ui-next:
+    dependencies:
+      '@eventuras/ratio-ui':
+        specifier: workspace:*
+        version: link:../ratio-ui
+      react:
+        specifier: ^19.1.0
+        version: 19.2.0
+      react-dom:
+        specifier: ^19.1.0
+        version: 19.2.0(react@19.2.0)
+    devDependencies:
+      '@eventuras/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@eventuras/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      '@types/react':
+        specifier: ^19.2.2
+        version: 19.2.2
+      '@types/react-dom':
+        specifier: ^19.2.2
+        version: 19.2.2(@types/react@19.2.2)
+      '@vitejs/plugin-react':
+        specifier: ^5.0.4
+        version: 5.0.4(vite@7.1.10(@types/node@24.7.2)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.77.4)(tsx@4.20.6)(yaml@2.8.1))
+      next:
+        specifier: ^15.5.5
+        version: 15.5.5(@babel/core@7.28.4)(@playwright/test@1.56.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(sass@1.77.4)
       typescript:
         specifier: 5.9.3
         version: 5.9.3

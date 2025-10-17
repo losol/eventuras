@@ -27,10 +27,6 @@
       "import": "./dist/pages/*/index.js",
       "types": "./dist/pages/*/index.d.ts"
     },
-    "./next/*": {
-      "import": "./dist/next/*/index.js",
-      "types": "./dist/next/*/index.d.ts"
-    },
     "./blocks/*": {
       "import": "./dist/blocks/*/index.js",
       "types": "./dist/blocks/*/index.d.ts"
@@ -84,7 +80,6 @@
     "clsx": "^2.1.1",
     "eslint-plugin-storybook": "^9.1.10",
     "glob": "11.0.3",
-    "next": "^15.5.5",
     "postcss": "^8.5.6",
     "react-dom": "^19.2.0",
     "storybook": "^9.1.10",
