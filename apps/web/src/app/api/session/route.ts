@@ -7,7 +7,7 @@ import { Logger } from '@eventuras/logger';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
-const logger = Logger.create({ namespace: 'SessionAPI' });
+const logger = Logger.create({ namespace: 'web:api:session' });
 
 type SessionError = {
   source?: 'session' | 'refresh' | 'userProfile' | 'unknown';

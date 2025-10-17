@@ -2,7 +2,7 @@ import { MarkdownContent } from '@eventuras/markdown';
 import { Container, Heading, Section, Text } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
 
-const logger = Logger.create({ namespace: 'CollectionStaticParams' });
+const logger = Logger.create({ namespace: 'web:app:collections', context: { page: 'CollectionPage' } });
 
 import { redirect } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';

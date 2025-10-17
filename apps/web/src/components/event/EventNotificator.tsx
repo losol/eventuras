@@ -168,7 +168,7 @@ export default function EventNotificator({
 }: EventNotificatorProps) {
   const toast = useToast();
   const t = useTranslations();
-  const logger = Logger.create({ namespace: 'EventNotificator' });
+  const logger = Logger.create({ namespace: 'web:components:event', context: { component: 'EventNotificator' } });
 
   const {
     register,

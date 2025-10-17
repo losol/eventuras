@@ -3,7 +3,7 @@ import { InvoiceRequestDto, OrderDto, OrderStatus, PaymentProvider } from '@even
 import { Button, Definition, DescriptionList, Drawer, Heading, Term } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
 
-const logger = Logger.create({ namespace: 'OrderActionsMenu' });
+const logger = Logger.create({ namespace: 'web:admin:orders', context: { component: 'OrderActionsMenu' } });
 
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';

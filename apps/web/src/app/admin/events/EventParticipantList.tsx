@@ -5,7 +5,7 @@ import { EventDto, ProductDto, RegistrationDto } from '@eventuras/sdk';
 import { Badge, Button, Drawer, Loading } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
 
-const logger = Logger.create({ namespace: 'EventParticipantList' });
+const logger = Logger.create({ namespace: 'web:admin:events', context: { component: 'EventParticipantList' } });
 
 import { IconNotes, IconShoppingCart, IconUser } from '@tabler/icons-react';
 import Link from 'next/link';

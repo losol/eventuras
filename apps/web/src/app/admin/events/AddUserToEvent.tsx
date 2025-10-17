@@ -85,7 +85,7 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
 }) => {
   const toast = useToast();
   const t = useTranslations();
-  const logger = Logger.create({ namespace: 'AddUserToEvent' });
+  const logger = Logger.create({ namespace: 'web:admin:events', context: { component: 'AddUserToEvent' } });
 
   const { control, register, setValue, handleSubmit } = useForm<AddUserToEventFormValues>();
 

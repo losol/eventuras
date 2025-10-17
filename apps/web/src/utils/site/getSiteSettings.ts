@@ -1,6 +1,6 @@
 import { Logger } from '@eventuras/logger';
 
-const logger = Logger.create({ namespace: 'SiteSettings' });
+const logger = Logger.create({ namespace: 'web:utils:site', context: { module: 'getSiteSettings' } });
 
 import Environment from '@/utils/Environment';
 

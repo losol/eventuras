@@ -2,7 +2,7 @@ import { EventInfoStatus } from '@eventuras/sdk';
 import { Container, Heading, Text } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
 
-const logger = Logger.create({ namespace: 'EventStaticParams' });
+const logger = Logger.create({ namespace: 'web:app:events', context: { page: 'EventPage' } });
 
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';

@@ -4,7 +4,7 @@ import { Button } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
 import { useState } from 'react';
 
-const logger = Logger.create({ namespace: 'ExcelExporter' });
+const logger = Logger.create({ namespace: 'web:admin:events', context: { component: 'ExcelExportButton' } });
 
 import Environment from '@/utils/Environment';
 

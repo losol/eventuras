@@ -8,7 +8,7 @@ import * as openid from 'openid-client';
 import Environment from '@/utils/Environment';
 import { oauthConfig, redirect_uri } from '@/utils/oauthConfig';
 
-const logger = Logger.create({ namespace: 'Auth0Login' });
+const logger = Logger.create({ namespace: 'web:api:auth0' });
 
 export async function GET(request: Request): Promise<Response> {
   // 1) Rate limit

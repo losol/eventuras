@@ -9,7 +9,7 @@ import { addMember, setAdmin } from './actions';
 import { UserDto } from '@eventuras/event-sdk';
 import { Logger } from '@eventuras/logger';
 
-const logger = Logger.create({ namespace: 'OrganizationMemberships' });
+const logger = Logger.create({ namespace: 'web:admin:organizations', context: { component: 'OrganizationMemberships' } });
 
 import { useToast } from '@eventuras/toast';
 

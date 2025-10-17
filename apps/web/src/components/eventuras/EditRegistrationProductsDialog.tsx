@@ -4,7 +4,7 @@ import { ProductDto, RegistrationDto } from '@eventuras/sdk';
 import { Button } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
 
-const logger = Logger.create({ namespace: 'EditRegistrationProductsDialog' });
+const logger = Logger.create({ namespace: 'web:components:eventuras', context: { component: 'EditRegistrationProductsDialog' } });
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
