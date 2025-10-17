@@ -487,6 +487,9 @@ importers:
 
   apps/web-e2e:
     dependencies:
+      '@eventuras/utils':
+        specifier: workspace:*
+        version: link:../../libs/utils
       '@playwright/test':
         specifier: 1.56.0
         version: 1.56.0

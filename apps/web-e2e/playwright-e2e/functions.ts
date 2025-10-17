@@ -1,6 +1,6 @@
 const ns = { namespace: 'e2e' };
 import { EventDto } from '@eventuras/sdk';
-import { Logger } from '@eventuras/utils';
+import { Logger } from '@eventuras/utils/src/Logger';
 import { chromium, expect, Page, test as setup } from '@playwright/test';
 import fs from 'fs';
 
