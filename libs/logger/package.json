@@ -1,8 +1,8 @@
 {
-  "name": "@eventuras/utils",
+  "name": "@eventuras/logger",
   "version": "0.4.0",
   "private": "true",
-  "description": "utility functions for eventuras",
+  "description": "Logger utility for eventuras",
   "type": "module",
   "main": "src/index.ts",
   "types": "src/index.ts",
@@ -10,10 +10,6 @@
     ".": {
       "import": "./src/index.ts",
       "types": "./src/index.ts"
-    },
-    "./src/*": {
-      "import": "./src/*.ts",
-      "types": "./src/*.ts"
     }
   },
   "scripts": {

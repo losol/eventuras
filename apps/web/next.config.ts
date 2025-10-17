@@ -10,7 +10,7 @@ const nextConfig = {
     '@eventuras/fides-auth',
     '@eventuras/smartform',
     '@eventuras/datatable',
-    '@eventuras/utils',
+    '@eventuras/logger',
     '@eventuras/toast',
     '@eventuras/markdowninput',
     '@eventuras/event-sdk',

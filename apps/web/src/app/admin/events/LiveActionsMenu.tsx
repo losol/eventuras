@@ -2,7 +2,7 @@
 
 import { ApiError, RegistrationDto, RegistrationStatus } from '@eventuras/sdk';
 import { Button } from '@eventuras/ratio-ui';
-import { Logger } from '@eventuras/utils/src/Logger';
+import { Logger } from '@eventuras/logger';
 import { IconCircleX } from '@tabler/icons-react';
 import { useState } from 'react';
 

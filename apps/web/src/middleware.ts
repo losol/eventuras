@@ -1,5 +1,5 @@
 import {refreshSession, validateSessionJwt, accessTokenExpires, createEncryptedJWT} from '@eventuras/fides-auth-next';
-import { Logger } from '@eventuras/utils/src/Logger';
+import { Logger } from '@eventuras/logger';
 import { NextRequest, NextResponse } from 'next/server';
 
 import { oauthConfig } from './utils/oauthConfig';

@@ -7,7 +7,7 @@ import {
   RegistrationDto,
   RegistrationUpdateDto,
 } from '@eventuras/sdk';
-import { Logger } from '@eventuras/utils/src/Logger';
+import { Logger } from '@eventuras/logger';
 
 import { ApiResult, apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';

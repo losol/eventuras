@@ -1,5 +1,5 @@
 import { Container, Heading, Section } from '@eventuras/ratio-ui';
-import { Logger } from '@eventuras/utils/src/Logger';
+import { Logger } from '@eventuras/logger';
 import { getTranslations } from 'next-intl/server';
 
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';

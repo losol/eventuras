@@ -3,7 +3,7 @@ import { oauthConfig } from '@/utils/oauthConfig';
 import { getV3Userprofile, UserDto } from '@eventuras/event-sdk';
 import {getCurrentSession} from '@eventuras/fides-auth-next/session';
 import {refreshSession, accessTokenExpires, createEncryptedJWT} from '@eventuras/fides-auth-next';
-import { Logger } from '@eventuras/utils/src/Logger';
+import { Logger } from '@eventuras/logger';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 

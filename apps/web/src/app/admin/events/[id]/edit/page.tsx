@@ -1,5 +1,5 @@
 import { Heading } from '@eventuras/ratio-ui';
-import { Logger } from '@eventuras/utils/src/Logger';
+import { Logger } from '@eventuras/logger';
 import { getTranslations } from 'next-intl/server';
 
 import EventEditor from '@/app/admin/events/EventEditor';

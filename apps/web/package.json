@@ -34,7 +34,7 @@
     "@eventuras/sdk": "workspace:*",
     "@eventuras/smartform": "workspace:*",
     "@eventuras/toast": "workspace:^",
-    "@eventuras/utils": "workspace:^",
+    "@eventuras/logger": "workspace:^",
     "@tabler/icons-react": "^3.35.0",
     "@tailwindcss/postcss": "^4.1.14",
     "@types/debug": "^4.1.12",
