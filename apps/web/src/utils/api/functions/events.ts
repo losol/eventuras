@@ -9,7 +9,7 @@ import {
 } from '@eventuras/sdk';
 import { Logger } from '@eventuras/logger';
 
-const logger = Logger.create({ namespace: 'EventUtils' });
+const logger = Logger.create({ namespace: 'web:utils:api', context: { module: 'events' } });
 
 import { ApiResult, apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';

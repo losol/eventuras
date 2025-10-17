@@ -4,18 +4,31 @@ import { EventFormDto } from '@eventuras/sdk';
 import { Logger } from '@eventuras/logger';
 import { redirect } from 'next/navigation';
 
-const logger = Logger.create({ namespace: 'EventActions' });
-
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 import { getAccessToken } from '@/utils/getAccesstoken';
 
 export async function createEvent(formData: FormData) {
-  if (formData.get('organizationId') == null) return;
+  const logger = Logger.create({ 
+    namespace: 'web:admin:events',
+    context: { action: 'createEvent' }
+  });
+
+  // Validate required fields
+  if (formData.get('organizationId') == null) {
+    logger.warn('Missing organizationId in form data');
+    return;
+  }
+
   const organizationId = parseInt(
     formData.get('organizationId')?.toString() ?? Environment.NEXT_PUBLIC_ORGANIZATION_ID
   );
   const title = formData.get('title')?.toString() ?? 'New event';
+
+  logger.info(
+    { organizationId, title },
+    'Creating event'
+  );
 
   const eventuras = createSDK({
     baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
@@ -28,8 +41,6 @@ export async function createEvent(formData: FormData) {
     slug: crypto.randomUUID(),
   };
 
-  logger.info({ event: newEvent }, 'Creating event');
-
   const result = await apiWrapper(() =>
     eventuras.events.postV3Events({
       eventurasOrgId: organizationId,
@@ -38,10 +49,23 @@ export async function createEvent(formData: FormData) {
   );
 
   if (result.ok) {
-    logger.info({ event: result.value }, 'Event created successfully');
-    const nextUrl = `/admin/events/${result.value!.id}/edit`;
+    const eventId = result.value!.id;
+    const nextUrl = `/admin/events/${eventId}/edit`;
+    
+    logger.info(
+      { eventId, redirectTo: nextUrl },
+      'Event created successfully'
+    );
+    
     redirect(nextUrl);
   } else {
-    logger.error({ error: result.error }, 'Failed to create event');
+    logger.error(
+      { 
+        organizationId,
+        errorMessage: result.error?.message ?? 'Unknown error',
+        errorStatus: result.error?.status 
+      },
+      'Failed to create event'
+    );
   }
 }

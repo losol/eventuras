@@ -19,7 +19,7 @@ import {
 } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
 
-const logger = Logger.create({ namespace: 'Registration' });
+const logger = Logger.create({ namespace: 'web:admin:registrations', context: { component: 'Registration' } });
 
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';

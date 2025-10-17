@@ -252,82 +252,96 @@ export class Logger {
   /**
    * Log at trace level (most verbose)
    */
-  trace(data?: Record<string, unknown> | string, ...msg: any[]): void {
+  trace(data?: Record<string, unknown> | string, msg?: string): void {
     if (this.childLogger) {
       if (typeof data === 'string') {
         this.childLogger.trace(data);
+      } else if (msg) {
+        this.childLogger.trace(data, msg);
       } else {
-        this.childLogger.trace(data, ...msg);
+        this.childLogger.trace(data);
       }
     } else {
-      Logger.trace(this.options, data, ...msg);
+      Logger.trace(this.options, data, msg);
     }
   }
 
   /**
    * Log at debug level
    */
-  debug(data?: Record<string, unknown> | string, ...msg: any[]): void {
+  debug(data?: Record<string, unknown> | string, msg?: string): void {
     if (this.childLogger) {
       if (typeof data === 'string') {
         this.childLogger.debug(data);
+      } else if (msg) {
+        this.childLogger.debug(data, msg);
       } else {
-        this.childLogger.debug(data, ...msg);
+        this.childLogger.debug(data);
       }
     } else {
-      Logger.debug(this.options, data, ...msg);
+      Logger.debug(this.options, data, msg);
     }
   }
 
   /**
    * Log at info level
    */
-  info(data?: Record<string, unknown> | string, ...msg: any[]): void {
+  info(data?: Record<string, unknown> | string, msg?: string): void {
     if (this.childLogger) {
       if (typeof data === 'string') {
         this.childLogger.info(data);
+      } else if (msg) {
+        this.childLogger.info(data, msg);
       } else {
-        this.childLogger.info(data, ...msg);
+        this.childLogger.info(data);
       }
     } else {
-      Logger.info(this.options, data, ...msg);
+      Logger.info(this.options, data, msg);
     }
   }
 
   /**
    * Log at warn level
    */
-  warn(data?: Record<string, unknown> | string, ...msg: any[]): void {
+  warn(data?: Record<string, unknown> | string, msg?: string): void {
     if (this.childLogger) {
       if (typeof data === 'string') {
         this.childLogger.warn(data);
+      } else if (msg) {
+        this.childLogger.warn(data, msg);
       } else {
-        this.childLogger.warn(data, ...msg);
+        this.childLogger.warn(data);
       }
     } else {
-      Logger.warn(this.options, data, ...msg);
+      Logger.warn(this.options, data, msg);
     }
   }
 
   /**
    * Log at error level
    */
-  error(errorOrData?: unknown, ...msg: any[]): void {
+  error(errorOrData?: unknown, msg?: string): void {
     if (this.childLogger) {
       // Support: logger.error('message') and logger.error({ error }, 'message')
       if (typeof errorOrData === 'string') {
         this.childLogger.error(errorOrData);
       } else if (errorOrData instanceof Error) {
-        this.childLogger.error({ error: errorOrData }, ...msg);
+        if (msg) {
+          this.childLogger.error({ error: errorOrData }, msg);
+        } else {
+          this.childLogger.error({ error: errorOrData });
+        }
+      } else if (msg) {
+        this.childLogger.error(errorOrData, msg);
       } else {
-        this.childLogger.error(errorOrData, ...msg);
+        this.childLogger.error(errorOrData);
       }
     } else {
       // Fallback to static method
       if (typeof errorOrData === 'object' && errorOrData !== null && 'error' in errorOrData) {
-        Logger.error({ ...this.options, ...(errorOrData as ErrorLoggerOptions) }, ...msg);
+        Logger.error({ ...this.options, ...(errorOrData as ErrorLoggerOptions) }, msg);
       } else {
-        Logger.error(this.options, errorOrData, ...msg);
+        Logger.error(this.options, errorOrData, msg);
       }
     }
   }
@@ -335,22 +349,28 @@ export class Logger {
   /**
    * Log at fatal level (highest severity)
    */
-  fatal(errorOrData?: unknown, ...msg: any[]): void {
+  fatal(errorOrData?: unknown, msg?: string): void {
     if (this.childLogger) {
       // Support: logger.fatal('message') and logger.fatal({ error }, 'message')
       if (typeof errorOrData === 'string') {
         this.childLogger.fatal(errorOrData);
       } else if (errorOrData instanceof Error) {
-        this.childLogger.fatal({ error: errorOrData }, ...msg);
+        if (msg) {
+          this.childLogger.fatal({ error: errorOrData }, msg);
+        } else {
+          this.childLogger.fatal({ error: errorOrData });
+        }
+      } else if (msg) {
+        this.childLogger.fatal(errorOrData, msg);
       } else {
-        this.childLogger.fatal(errorOrData, ...msg);
+        this.childLogger.fatal(errorOrData);
       }
     } else {
       // Fallback to static method
       if (typeof errorOrData === 'object' && errorOrData !== null && 'error' in errorOrData) {
-        Logger.fatal({ ...this.options, ...(errorOrData as ErrorLoggerOptions) }, ...msg);
+        Logger.fatal({ ...this.options, ...(errorOrData as ErrorLoggerOptions) }, msg);
       } else {
-        Logger.fatal(this.options, errorOrData, ...msg);
+        Logger.fatal(this.options, errorOrData, msg);
       }
     }
   }

@@ -5,7 +5,7 @@ import { Form, Input, NumberInput } from '@eventuras/smartform';
 import { Button, Heading } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
 
-const logger = Logger.create({ namespace: 'ProductModal' });
+const logger = Logger.create({ namespace: 'web:admin:events', context: { component: 'ProductModal' } });
 
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';

@@ -11,7 +11,7 @@ import { FC, useState } from 'react';
 import { useToast } from '@eventuras/toast';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 
-const logger = Logger.create({ namespace: 'UserEditor' });
+const logger = Logger.create({ namespace: 'web:admin:users', context: { component: 'UserEditor' } });
 
 interface UserEditorProps {
   user?: UserDto;

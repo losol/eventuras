@@ -1,7 +1,7 @@
 import { Badge, Container, Heading, Section } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
 
-const logger = Logger.create({ namespace: 'EventAdminPage' });
+const logger = Logger.create({ namespace: 'web:admin:events', context: { page: 'EventAdminPage' } });
 
 import Wrapper from '@/components/eventuras/Wrapper';
 import { Link } from '@eventuras/ratio-ui-next/Link';

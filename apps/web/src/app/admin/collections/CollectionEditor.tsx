@@ -20,7 +20,7 @@ export type CollectionEditorProps = {
 
 const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
   const toast = useToast();
-  const logger = Logger.create({ namespace: 'CollectionEditor' });
+  const logger = Logger.create({ namespace: 'web:admin:collections', context: { component: 'CollectionEditor' } });
 
   const [eventListUpdateTrigger, setEventListUpdateTrigger] = useState(0);
   const [eventInfos, setEventInfos] = useState<EventDto[]>([]);

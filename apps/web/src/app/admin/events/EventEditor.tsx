@@ -41,7 +41,7 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
   const eventuras = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
   const toast = useToast();
   const router = useRouter();
-  const logger = Logger.create({ namespace: 'EventEditor', context: { eventId: eventinfo.id } });
+  const logger = Logger.create({ namespace: 'web:admin:events', context: { component: 'EventEditor', eventId: eventinfo.id } });
 
   // Form submit handler
   const onSubmitForm: SubmitHandler<EventFormDto> = async (data: EventFormDto) => {
