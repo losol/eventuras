@@ -1,9 +1,13 @@
 # @eventuras/logger
 
-A flexible logging wrapper for Eventuras that uses Pino for production and debug for development.
+A flexible logging solution for Eventuras with two separate utilities:
+
+- **Logger** - Production-ready structured logging with Pino
+- **Debug** - Development debugging with debug-js
 
 ## Features
 
+### Logger (Production)
 - 🎯 **Scoped loggers** - Create logger instances with persistent context
 - 🎨 **Pretty printing** - Beautiful logs in development mode
 - 🔒 **Auto-redaction** - Protect sensitive data in logs
@@ -11,13 +15,21 @@ A flexible logging wrapper for Eventuras that uses Pino for production and debug
 - 🔍 **Correlation IDs** - Track requests across services
 - 🌐 **Context fields** - Add persistent metadata to all logs
 
+### Debug (Development)
+- 🐛 **Namespace filtering** - Enable/disable debug output by namespace
+- 🎯 **Browser support** - Works in browser with localStorage
+- 📦 **Lightweight** - Only debug-js, no production overhead
+- 🔧 **Development-only** - Separate from production logging
+
 ## Installation
 
 ```bash
 pnpm add @eventuras/logger
 ```
 
-## Basic Usage
+## Logger (Production Logging)
+
+Use `Logger` for all production logging with structured data, context, and levels.
 
 ### Static Methods (One-off logs)
 
@@ -229,20 +241,151 @@ export async function POST(req: Request) {
 }
 ```
 
+## TypeScript
+
+All types are exported:
+
+```typescript
+import type { LoggerOptions, LogLevel, LoggerConfig } from '@eventuras/logger';
+```
+
+---
+
+## Debug (Development Debugging)
+
+Use `Debug` for development-only debugging with namespace filtering. This is completely separate from Logger and uses debug-js.
+
+### Basic Usage
+
+```typescript
+import { Debug } from '@eventuras/logger';
+
+// Create a debug instance for a namespace
+const debug = Debug.create('CollectionEditor');
+
+debug('Loading collection...');
+debug('Collection loaded:', collection);
+debug('User action:', { action: 'save', userId: 123 });
+```
+
+### Quick Debug Calls
+
+```typescript
+import { Debug } from '@eventuras/logger';
+
+// One-off debug without creating an instance
+Debug.log('API', 'Request received:', req);
+Debug.log('EventHandler', 'Processing event:', event);
+```
+
+### Enabling Debug Output
+
+#### In Node.js (Server)
+
+```bash
+# Enable all Eventuras debug output
+DEBUG=eventuras:* node app.js
+
+# Enable specific namespaces
+DEBUG=eventuras:auth*,eventuras:api* node app.js
+
+# Enable specific namespace only
+DEBUG=eventuras:CollectionEditor node app.js
+```
+
+#### In Browser
+
+```javascript
+// In browser console
+localStorage.debug = 'eventuras:*'; // All namespaces
+localStorage.debug = 'eventuras:auth*'; // Auth namespaces only
+localStorage.debug = 'eventuras:CollectionEditor'; // Specific namespace
+
+// Then refresh the page
+```
+
+### Programmatic Control
+
+```typescript
+import { Debug } from '@eventuras/logger';
+
+// Enable debug output
+Debug.enable('eventuras:*');
+
+// Disable debug output
+Debug.disable();
+
+// Check if a namespace is enabled
+if (Debug.isEnabled('CollectionEditor')) {
+  console.log('CollectionEditor debugging is active');
+}
+```
+
+### When to Use Debug vs Logger
+
+**Use Debug when:**
+- 🐛 Debugging during development
+- 🔍 Need to trace code execution flow
+- 💡 Want to toggle output with DEBUG env var
+- 🚫 Don't need logs in production
+
+**Use Logger when:**
+- 📊 Production logging
+- 📝 Need structured data
+- 🔒 Need security (redaction)
+- 📈 Monitoring and analytics
+- 🔍 Correlation IDs and context
+
+### Example: Using Both Together
+
+```typescript
+import { Logger, Debug } from '@eventuras/logger';
+
+const logger = Logger.create({ 
+  namespace: 'CollectionEditor',
+  context: { collectionId: 123 }
+});
+const debug = Debug.create('CollectionEditor');
+
+async function saveCollection(data: CollectionDto) {
+  // Use Debug for development tracing
+  debug('saveCollection called with:', data);
+  
+  try {
+    // Use Logger for production-worthy logs
+    logger.info('Saving collection');
+    
+    debug('Validating data...');
+    validateData(data);
+    
+    debug('Calling API...');
+    const result = await api.save(data);
+    
+    logger.info({ collectionId: result.id }, 'Collection saved successfully');
+    return result;
+  } catch (error) {
+    debug('Error occurred:', error);
+    logger.error({ error }, 'Failed to save collection');
+    throw error;
+  }
+}
+```
+
+In development with `DEBUG=eventuras:*`, you'll see both debug traces and logger output.  
+In production, only Logger output is captured (Debug is silent unless explicitly enabled).
+
+---
+
 ## Migration from Old API
 
 **Before:**
+
 ```typescript
 Logger.info({ namespace: 'CollectionEditor' }, 'Removing event');
 Logger.error({ namespace: 'CollectionEditor' }, 'Failed');
 ```
 
 **After:**
-```typescript
-const logger = Logger.create({ namespace: 'CollectionEditor' });
-logger.info('Removing event');
-logger.error('Failed');
-```
 
 ## TypeScript
 
