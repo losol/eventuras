@@ -20,6 +20,7 @@ export type CollectionEditorProps = {
 
 const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
   const toast = useToast();
+  const logger = Logger.create({ namespace: 'CollectionEditor' });
 
   const [eventListUpdateTrigger, setEventListUpdateTrigger] = useState(0);
   const [eventInfos, setEventInfos] = useState<EventDto[]>([]);
@@ -50,8 +51,8 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
   }, [eventCollection.id, eventListUpdateTrigger]);
 
   const onSubmitForm = async (data: EventCollectionDto) => {
-    Logger.info({ namespace: 'CollectionEditor' }, 'Updating collection...');
-    Logger.info({ namespace: 'EventEditor' }, data);
+    logger.info('Updating collection...');
+    logger.info(data);
     setFormSubmitting(true);
     // set slug
     const newSlug = slugify([data.name, data.id].filter(Boolean).join('-'));
@@ -70,14 +71,14 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
       toast.error('Something went wrong, try again later');
     }
 
-    Logger.info({ namespace: 'eventeditor' }, result);
+    logger.info({ result: result.ok }, 'Update result');
 
     setFormSubmitting(false);
     router.refresh();
   };
 
   const handleRemoveEvent = async (eventId: number) => {
-    Logger.info({ namespace: 'CollectionEditor' }, `Removing event ${eventId} from collection`);
+    logger.info(`Removing event ${eventId} from collection`);
     setRemovingEventId(eventId);
     const result = await apiWrapper(() =>
       eventuras.eventCollectionMapping.deleteV3EventsCollections({
@@ -98,7 +99,7 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
   };
 
   const handleAddEvent = async (eventId: number) => {
-    Logger.info({ namespace: 'CollectionEditor' }, `Adding event ${eventId} to collection`);
+    logger.info(`Adding event ${eventId} to collection`);
     setRemovingEventId(-1);
     setAddingEvent(true);
     const result = await apiWrapper(() =>
@@ -124,7 +125,7 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
     if (addEventId !== null) {
       handleAddEvent(addEventId);
     } else {
-      Logger.error({ namespace: 'CollectionEditor' }, 'Please enter a valid event ID');
+      logger.error('Please enter a valid event ID');
     }
   };
   const minus3Months = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000);
