@@ -3,6 +3,9 @@
 import { ProductDto, RegistrationDto } from '@eventuras/sdk';
 import { Button } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
+
+const logger = Logger.create({ namespace: 'EditRegistrationProductsDialog' });
+
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -30,12 +33,12 @@ const EditRegistrationProductsDialog = (props: EditRegistrationProductsDialogPro
   const router = useRouter();
 
   const onSubmit = async (selected: Map<string, number>) => {
-    Logger.info({ namespace: 'editregistration' }, selected);
+    logger.info({ selected }, 'Updating registration products');
     const updateProductResult = await addProductsToRegistration(
       props.currentRegistration.registrationId!,
       productMapToOrderLineModel(selected)
     ).catch(e => {
-      Logger.error({ namespace: 'editregistration' }, e);
+      logger.error({ error: e }, 'Failed to update registration products');
       return { ok: false };
     });
     if (updateProductResult.ok) {

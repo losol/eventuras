@@ -9,6 +9,8 @@ import {
 } from '@eventuras/sdk';
 import { Logger } from '@eventuras/logger';
 
+const logger = Logger.create({ namespace: 'EventUtils' });
+
 import { ApiResult, apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 
@@ -42,7 +44,7 @@ export const createEventRegistration = async (
       requestBody: newRegistration,
     })
   );
-  Logger.info({ namespace: 'events:createEventRegistration' }, 'products selected', products);
+  logger.info({ products }, 'products selected for registration');
 
   if (!products.length) return registration;
 

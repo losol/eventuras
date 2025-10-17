@@ -1,6 +1,9 @@
 import { MarkdownContent } from '@eventuras/markdown';
 import { Container, Heading, Section, Text } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
+
+const logger = Logger.create({ namespace: 'CollectionStaticParams' });
+
 import { redirect } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
@@ -25,9 +28,9 @@ const dynamicParams = true;
 export async function generateStaticParams() {
   const orgId = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID);
 
-  Logger.info(
-    { namespace: 'collections:staticparams' },
-    `Api Base url: ${Environment.NEXT_PUBLIC_BACKEND_URL}, orgId: ${orgId})`
+  logger.info(
+    { apiBaseUrl: Environment.NEXT_PUBLIC_BACKEND_URL, orgId },
+    'Generating static params for collections'
   );
 
   const eventuras = createSDK({ inferUrl: true });
@@ -42,7 +45,7 @@ export async function generateStaticParams() {
       id: collection.id?.toString(),
       slug: collection.slug,
     }));
-    Logger.info({ namespace: 'collections:staticparams' }, 'Static params:', staticParams);
+    logger.info({ staticParams }, 'Generated static params');
     return staticParams;
   }
 

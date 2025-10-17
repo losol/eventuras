@@ -4,6 +4,8 @@ import { Button } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
 import { useState } from 'react';
 
+const logger = Logger.create({ namespace: 'ExcelExporter' });
+
 import Environment from '@/utils/Environment';
 
 export const ExcelExportButton = (props: { EventinfoId: number }) => {
@@ -47,7 +49,7 @@ export const ExcelExportButton = (props: { EventinfoId: number }) => {
         URL.revokeObjectURL(fileURL);
       }, 500);
     } catch (error) {
-      Logger.error({ namespace: 'ExcelExporter' }, 'Error downloading Excel file:', error);
+      logger.error({ error }, 'Error downloading Excel file');
     } finally {
       setIsLoading(false);
     }

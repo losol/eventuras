@@ -41,12 +41,13 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
   const eventuras = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
   const toast = useToast();
   const router = useRouter();
+  const logger = Logger.create({ namespace: 'EventEditor', context: { eventId: eventinfo.id } });
 
   // Form submit handler
   const onSubmitForm: SubmitHandler<EventFormDto> = async (data: EventFormDto) => {
     setApiState({ error: null, loading: true });
-    Logger.info({ namespace: 'EventEditor' }, 'Updating event...');
-    Logger.info({ namespace: 'EventEditor' }, data);
+    logger.info('Updating event...');
+    logger.debug({ eventData: data }, 'Event form data');
 
     // set slug
     const newSlug = slugify(
@@ -65,11 +66,12 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
     );
 
     if (result.ok) {
+      logger.info('Event information updated successfully');
       toast.success('Event information was updated!');
     } else {
+      logger.error({ error: result.error }, 'Failed to update event');
       toast.error(`Something bad happended: ${result.error}!`);
     }
-    Logger.info({ namespace: 'eventeditor' }, result);
 
     setApiState({ error: null, loading: false });
 

@@ -1,5 +1,7 @@
 import { Logger } from '@eventuras/logger';
 
+const logger = Logger.create({ namespace: 'SiteSettings' });
+
 import Environment from '@/utils/Environment';
 
 export interface FooterLink {
@@ -49,7 +51,7 @@ const getSiteSettings = async (): Promise<SiteInfo | null> => {
       const data = await res.json();
       return data.site;
     } catch (error) {
-      Logger.error({ namespace: 'sitesettings' }, 'Failed to fetch site settings:');
+      logger.error({ error }, 'Failed to fetch site settings');
       return null;
     }
   } else {

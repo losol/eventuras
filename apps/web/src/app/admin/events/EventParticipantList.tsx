@@ -4,6 +4,9 @@ import { ColumnFilter, createColumnHelper, DataTable } from '@eventuras/datatabl
 import { EventDto, ProductDto, RegistrationDto } from '@eventuras/sdk';
 import { Badge, Button, Drawer, Loading } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
+
+const logger = Logger.create({ namespace: 'EventParticipantList' });
+
 import { IconNotes, IconShoppingCart, IconUser } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
@@ -70,7 +73,7 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
 
   const { result: currentRegistration, loading: loadingRegistration } = useCreateHook(
     () => {
-      Logger.info({ namespace: 'admin:eventparticipantlist' }, 'Loading current registrations');
+      logger.info('Loading current registrations');
       return sdk.registrations.getV3Registrations1({
         id: currentSelectedParticipant!.registrationId!,
         includeProducts: true,

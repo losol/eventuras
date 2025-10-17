@@ -4,6 +4,8 @@ import { EventFormDto } from '@eventuras/sdk';
 import { Logger } from '@eventuras/logger';
 import { redirect } from 'next/navigation';
 
+const logger = Logger.create({ namespace: 'EventActions' });
+
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 import { getAccessToken } from '@/utils/getAccesstoken';
@@ -26,7 +28,7 @@ export async function createEvent(formData: FormData) {
     slug: crypto.randomUUID(),
   };
 
-  Logger.info({ namespace: 'eventcreator' }, `Creating event. ${JSON.stringify(newEvent)}`);
+  logger.info({ event: newEvent }, 'Creating event');
 
   const result = await apiWrapper(() =>
     eventuras.events.postV3Events({
@@ -36,10 +38,10 @@ export async function createEvent(formData: FormData) {
   );
 
   if (result.ok) {
-    Logger.info({ namespace: 'admin:events' }, `On submit OK`, result.value);
+    logger.info({ event: result.value }, 'Event created successfully');
     const nextUrl = `/admin/events/${result.value!.id}/edit`;
     redirect(nextUrl);
   } else {
-    Logger.error({ namespace: 'admin:events' }, `On submit Error`, result.error);
+    logger.error({ error: result.error }, 'Failed to create event');
   }
 }

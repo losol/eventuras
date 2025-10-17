@@ -7,6 +7,8 @@ import { Logger } from '@eventuras/logger';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
+const logger = Logger.create({ namespace: 'SessionAPI' });
+
 type SessionError = {
   source?: 'session' | 'refresh' | 'userProfile' | 'unknown';
   code?: string;
@@ -45,7 +47,7 @@ export async function GET(request: Request) {
 
   if (accessTokenExpires(session.tokens.accessToken)) {
     sessionExpired = true;
-    Logger.info({ namespace: 'session:route' }, 'Token expired, refreshing…');
+    logger.info('Token expired, refreshing…');
 
     try {
       const updated = await refreshSession(session, oauthConfig);
@@ -70,7 +72,7 @@ export async function GET(request: Request) {
         detail: message,
       });
 
-      Logger.warn({ namespace: 'eventuras:middleware' }, message, err);
+      logger.warn({ error: err }, message);
 
       const { pathname, search } = new URL(request.url);
       const originUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000';
@@ -168,7 +170,7 @@ export async function POST(request: Request) {
       detail: message,
     });
 
-    Logger.warn({ namespace: 'eventuras:middleware' }, message, err);
+    logger.warn({ error: err }, message);
 
     const res = NextResponse.json({ refreshed: false, errors });
     res.cookies.delete('session');
