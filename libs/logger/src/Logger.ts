@@ -1,48 +1,161 @@
 /**
- * Wrapper class for debug-js. Meant to ease logging, and future-proof possible usage of different logging frameworks.
+ * Wrapper class for debug-js and Pino. Meant to ease logging and future-proof possible usage of different logging frameworks.
  * Uses namespaces to enable or disable logging. See https://www.npmjs.com/package/debug for more information.
  *
- * It now includes Pino as its default logger, with debug to support dev loggin, for namespace filtering only debug
- * is used, but the namespace is forwarded to pino as a helpful reference
+ * It includes Pino as its default logger, with debug to support dev logging. For namespace filtering, only debug
+ * is used, but the namespace is forwarded to pino as a helpful reference.
  *
- * In short use the env var DEBUG to log all eventuras like so:
+ * In short, use the env var DEBUG to log all eventuras like so:
  * DEBUG=eventuras:*
- * or only authentication logs for instance
+ * or only authentication logs for instance:
  * DEBUG=eventuras:auth*
  *
- * In the browser a localstorage var has to be set in the console: localStorage.debug = 'eventuras:*'
+ * In the browser, a localStorage var has to be set in the console: localStorage.debug = 'eventuras:*'
  *
- * Any unused levels such as debug, warn, etc are there just to more easily support future swapping out,
- * e.g. for Pino or Winston. For developer use info should be used - and can then later be filtered out with
- * the env variable DEBUG on specific namespaces.
- * Standard 'npm' levels are:
- * error: 0,
- * warn: 1,
- * info: 2,
- * http: 3,
- * verbose: 4,
- * debug: 5,
- * silly: 6
+ * Standard log levels (Pino):
+ * fatal: 60
+ * error: 50
+ * warn: 40
+ * info: 30
+ * debug: 20
+ * trace: 10
+ *
+ * @example
+ * // Static usage for one-off logs
+ * Logger.info('Simple message');
+ * Logger.error({ error: err }, 'Something failed');
+ *
+ * @example
+ * // Scoped logger with context
+ * const logger = Logger.create({
+ *   namespace: 'CollectionEditor',
+ *   context: { collectionId: 123 }
+ * });
+ * logger.info('Event added', { eventId: 456 });
+ * // Logs: { namespace: 'CollectionEditor', collectionId: 123, eventId: 456, msg: 'Event added' }
  */
 import createDebug from 'debug';
-import pino from 'pino';
+import pino, { type Logger as PinoLogger } from 'pino';
 
 interface DebugCache {
   [key: string]: createDebug.Debugger;
 }
 
+export type LogLevel = 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'fatal';
+
 export type LoggerOptions = {
+  /** If true, only logs in development mode */
   developerOnly?: boolean;
+  /** Namespace for filtering logs (e.g., 'CollectionEditor') */
   namespace?: string;
+  /** Minimum log level for this logger instance */
+  level?: LogLevel;
+  /** Persistent context fields to include in all logs */
+  context?: Record<string, unknown>;
+  /** Correlation ID for request tracking */
+  correlationId?: string;
 };
 
 export type ErrorLoggerOptions = LoggerOptions & {
   error?: unknown;
 };
 
+export type LoggerConfig = {
+  /** Enable pretty printing in development */
+  prettyPrint?: boolean;
+  /** Global minimum log level */
+  level?: LogLevel;
+  /** Paths to redact from logs (e.g., ['password', 'token']) */
+  redact?: string[];
+  /** Optional file path for log output */
+  destination?: string;
+};
+
 export class Logger {
   private static debugCache: DebugCache = {};
-  private static pinoLogger = pino();
+  private static pinoLogger: PinoLogger;
+  private static config: LoggerConfig = {
+    prettyPrint: process.env.NODE_ENV === 'development',
+    level: (process.env.LOG_LEVEL as LogLevel) || 'info',
+    redact: ['password', 'token', 'apiKey', 'authorization', 'secret'],
+  };
+
+  // Instance properties for scoped logger
+  private options: LoggerOptions;
+  private childLogger?: PinoLogger;
+
+  static {
+    // Initialize Pino logger with configuration
+    Logger.pinoLogger = Logger.createPinoInstance();
+  }
+
+  private constructor(options: LoggerOptions = {}) {
+    this.options = options;
+
+    // Create child logger with context if provided
+    if (options.context || options.correlationId || options.namespace) {
+      const bindings: Record<string, unknown> = {
+        ...(options.namespace && { namespace: options.namespace }),
+        ...(options.correlationId && { correlationId: options.correlationId }),
+        ...(options.context || {}),
+      };
+      this.childLogger = Logger.pinoLogger.child(bindings);
+
+      // Set level if specified
+      if (options.level) {
+        this.childLogger.level = options.level;
+      }
+    }
+  }
+
+  private static createPinoInstance(): PinoLogger {
+    const isDev = process.env.NODE_ENV === 'development';
+
+    const options: pino.LoggerOptions = {
+      level: Logger.config.level || 'info',
+      redact: {
+        paths: Logger.config.redact || [],
+        censor: '[REDACTED]',
+      },
+    };
+
+    // Pretty print in development
+    if (Logger.config.prettyPrint && isDev) {
+      return pino({
+        ...options,
+        transport: {
+          target: 'pino-pretty',
+          options: {
+            colorize: true,
+            translateTime: 'HH:MM:ss',
+            ignore: 'pid,hostname',
+          },
+        },
+      });
+    }
+
+    // File destination if specified
+    if (Logger.config.destination) {
+      return pino(options, pino.destination(Logger.config.destination));
+    }
+
+    return pino(options);
+  }
+
+  /**
+   * Configure global logger settings. Call this once at application startup.
+   *
+   * @example
+   * Logger.configure({
+   *   prettyPrint: true,
+   *   level: 'debug',
+   *   redact: ['password', 'apiKey'],
+   * });
+   */
+  static configure(config: Partial<LoggerConfig>): void {
+    Logger.config = { ...Logger.config, ...config };
+    Logger.pinoLogger = Logger.createPinoInstance();
+  }
 
   private static getDebug(namespace: string): createDebug.Debugger {
     const ns = `eventuras:${namespace}`;
@@ -70,9 +183,16 @@ export class Logger {
       if (options.developerOnly && process.env.NODE_ENV !== 'development') {
         return;
       }
-      //use pino outside of dev environment, and debug inside of it to avoid double logging locally
+
+      const logData: Record<string, unknown> = {
+        ...(options.namespace && { namespace: options.namespace }),
+        ...(options.correlationId && { correlationId: options.correlationId }),
+        ...(options.context || {}),
+      };
+
+      // Use pino outside of dev environment, and debug inside of it to avoid double logging locally
       if (process.env.NODE_ENV !== 'development') {
-        pinoFunction({ namespace: options.namespace, msg: msg });
+        pinoFunction({ ...logData, msg: msg });
       } else {
         Logger.getDebug(options.namespace ?? '')(msg);
       }
@@ -92,13 +212,16 @@ export class Logger {
 
       const errorInfo = options.error ? { error: Logger.formatError(options.error) } : {};
 
-      //use pino outside of dev environment, and debug inside of it to avoid double logging locally
+      const logData: Record<string, unknown> = {
+        ...(options.namespace && { namespace: options.namespace }),
+        ...(options.correlationId && { correlationId: options.correlationId }),
+        ...(options.context || {}),
+        ...errorInfo,
+      };
+
+      // Use pino outside of dev environment, and debug inside of it to avoid double logging locally
       if (process.env.NODE_ENV !== 'development') {
-        pinoFunction({
-          namespace: options.namespace,
-          ...errorInfo,
-          msg: msg
-        });
+        pinoFunction({ ...logData, msg: msg });
       } else {
         const debugInstance = Logger.getDebug(options.namespace ?? '');
         if (options.error) {
@@ -118,6 +241,10 @@ export class Logger {
     Logger.pinoLogger.debug.bind(Logger.pinoLogger),
   ).bind(Logger);
 
+  static trace = Logger.wrapLogger(
+    Logger.pinoLogger.trace.bind(Logger.pinoLogger),
+  ).bind(Logger);
+
   static warn = Logger.wrapLogger(
     Logger.pinoLogger.warn.bind(Logger.pinoLogger),
   ).bind(Logger);
@@ -129,4 +256,142 @@ export class Logger {
   static fatal = Logger.wrapErrorLogger(
     Logger.pinoLogger.fatal.bind(Logger.pinoLogger),
   ).bind(Logger);
+
+  /**
+   * Create a scoped logger instance with predefined options.
+   * Use this when you have multiple log calls in the same component/module.
+   *
+   * @example
+   * // Basic scoped logger
+   * const logger = Logger.create({ namespace: 'CollectionEditor' });
+   * logger.info('Something happened');
+   *
+   * @example
+   * // With context fields
+   * const logger = Logger.create({
+   *   namespace: 'API',
+   *   context: { userId: 123, collectionId: 456 },
+   *   correlationId: req.headers['x-correlation-id']
+   * });
+   * logger.info('Event added', { eventId: 789 });
+   * // Logs: { namespace: 'API', userId: 123, collectionId: 456, correlationId: 'abc', eventId: 789, msg: 'Event added' }
+   *
+   * @example
+   * // With custom log level
+   * const logger = Logger.create({
+   *   namespace: 'Debug',
+   *   level: 'debug'
+   * });
+   */
+  static create(options: LoggerOptions = {}): Logger {
+    return new Logger(options);
+  }
+
+  // Instance methods that merge instance options with call-time options
+
+  /**
+   * Log at trace level (most verbose)
+   */
+  trace(data?: Record<string, unknown> | string, ...msg: any[]): void {
+    if (this.childLogger) {
+      if (typeof data === 'string') {
+        this.childLogger.trace(data);
+      } else {
+        this.childLogger.trace(data, ...msg);
+      }
+    } else {
+      Logger.trace(this.options, data, ...msg);
+    }
+  }
+
+  /**
+   * Log at debug level
+   */
+  debug(data?: Record<string, unknown> | string, ...msg: any[]): void {
+    if (this.childLogger) {
+      if (typeof data === 'string') {
+        this.childLogger.debug(data);
+      } else {
+        this.childLogger.debug(data, ...msg);
+      }
+    } else {
+      Logger.debug(this.options, data, ...msg);
+    }
+  }
+
+  /**
+   * Log at info level
+   */
+  info(data?: Record<string, unknown> | string, ...msg: any[]): void {
+    if (this.childLogger) {
+      if (typeof data === 'string') {
+        this.childLogger.info(data);
+      } else {
+        this.childLogger.info(data, ...msg);
+      }
+    } else {
+      Logger.info(this.options, data, ...msg);
+    }
+  }
+
+  /**
+   * Log at warn level
+   */
+  warn(data?: Record<string, unknown> | string, ...msg: any[]): void {
+    if (this.childLogger) {
+      if (typeof data === 'string') {
+        this.childLogger.warn(data);
+      } else {
+        this.childLogger.warn(data, ...msg);
+      }
+    } else {
+      Logger.warn(this.options, data, ...msg);
+    }
+  }
+
+  /**
+   * Log at error level
+   */
+  error(errorOrData?: unknown, ...msg: any[]): void {
+    if (this.childLogger) {
+      // Support: logger.error('message') and logger.error({ error }, 'message')
+      if (typeof errorOrData === 'string') {
+        this.childLogger.error(errorOrData);
+      } else if (errorOrData instanceof Error) {
+        this.childLogger.error({ error: errorOrData }, ...msg);
+      } else {
+        this.childLogger.error(errorOrData, ...msg);
+      }
+    } else {
+      // Fallback to static method
+      if (typeof errorOrData === 'object' && errorOrData !== null && 'error' in errorOrData) {
+        Logger.error({ ...this.options, ...(errorOrData as ErrorLoggerOptions) }, ...msg);
+      } else {
+        Logger.error(this.options, errorOrData, ...msg);
+      }
+    }
+  }
+
+  /**
+   * Log at fatal level (highest severity)
+   */
+  fatal(errorOrData?: unknown, ...msg: any[]): void {
+    if (this.childLogger) {
+      // Support: logger.fatal('message') and logger.fatal({ error }, 'message')
+      if (typeof errorOrData === 'string') {
+        this.childLogger.fatal(errorOrData);
+      } else if (errorOrData instanceof Error) {
+        this.childLogger.fatal({ error: errorOrData }, ...msg);
+      } else {
+        this.childLogger.fatal(errorOrData, ...msg);
+      }
+    } else {
+      // Fallback to static method
+      if (typeof errorOrData === 'object' && errorOrData !== null && 'error' in errorOrData) {
+        Logger.fatal({ ...this.options, ...(errorOrData as ErrorLoggerOptions) }, ...msg);
+      } else {
+        Logger.fatal(this.options, errorOrData, ...msg);
+      }
+    }
+  }
 }
