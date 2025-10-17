@@ -2,7 +2,9 @@
 
 import React from 'react';
 import NextLink from 'next/link';
-import { Link as CoreLink, LinkProps } from '../../core/Link/Link';
+
+// Import core Link component from ratio-ui
+import { Link as CoreLink, type LinkProps } from '@eventuras/ratio-ui/core/Link';
 
 export const Link = React.forwardRef<HTMLAnchorElement, Omit<LinkProps, 'component'>>(
   (props, ref) => (

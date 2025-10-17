@@ -1,12 +1,13 @@
 import NextImage from 'next/image';
 
+// Import core Image component from ratio-ui
 import {
   Image as RatioImage,
   type ImageProps as RatioImageProps,
   type ImageRendererProps,
-} from '../../core/Image';
+} from '@eventuras/ratio-ui/core/Image';
 
-export type { ImageProps } from '../../core/Image';
+export type { ImageProps } from '@eventuras/ratio-ui/core/Image';
 
 const NextImageRenderer = (p: ImageRendererProps) => {
   // Ensure alt is defined for NextImage
@@ -21,4 +22,3 @@ export const Image = (props: RatioImageProps) => {
 
   return <RatioImage {...props} renderer={NextImageRenderer} imgClassName={imgClassName} />;
 };
-

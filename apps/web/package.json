@@ -29,6 +29,7 @@
     "@eventuras/markdown": "workspace:*",
     "@eventuras/markdowninput": "workspace:^",
     "@eventuras/ratio-ui": "workspace:*",
+    "@eventuras/ratio-ui-next": "workspace:*",
     "@eventuras/scribo": "workspace:*",
     "@eventuras/sdk": "workspace:*",
     "@eventuras/smartform": "workspace:*",

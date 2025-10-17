@@ -4,7 +4,7 @@ import { EventDto } from '@eventuras/sdk';
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import Environment from '@/utils/Environment';
 import { formatDateSpan } from '@/utils/formatDate';
-import { Link } from '@eventuras/ratio-ui/next/Link';
+import { Link } from '@eventuras/ratio-ui-next/Link';
 import {Heading} from '@eventuras/ratio-ui/core/Heading';
 import {Text} from '@eventuras/ratio-ui/core/Text';
 import { Calendar, MapPin } from 'lucide-react';

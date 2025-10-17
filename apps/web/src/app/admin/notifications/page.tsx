@@ -4,7 +4,7 @@ import { Container, Heading, Section, Text } from '@eventuras/ratio-ui';
 
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import Wrapper from '@/components/eventuras/Wrapper';
-import { Link } from '@eventuras/ratio-ui/next/Link';
+import { Link } from '@eventuras/ratio-ui-next/Link';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import Environment from '@/utils/Environment';
 import { getAccessToken } from '@/utils/getAccesstoken';

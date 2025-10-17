@@ -6,7 +6,7 @@ import { Logger } from '@eventuras/utils/src/Logger';
 import { IconCircleX } from '@tabler/icons-react';
 import { useState } from 'react';
 
-import { Link } from '@eventuras/ratio-ui/next/Link';
+import { Link } from '@eventuras/ratio-ui-next/Link';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 
 import { statusPatchRequest } from '../registrations/Registration';
