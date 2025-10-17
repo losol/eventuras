@@ -75,7 +75,7 @@ const RegistrationPayment = ({
                 type="radio"
                 id="emailinvoice"
                 value={PaymentProvider.POWER_OFFICE_EMAIL_INVOICE}
-                testId="registration-emailinvoice-input"
+                data-testid="registration-emailinvoice-input"
                 defaultChecked={true}
                 {...register('paymentMethod')}
               />
@@ -85,7 +85,7 @@ const RegistrationPayment = ({
               <input
                 type="radio"
                 id="ehfInvoice"
-                testId="registration-ehfinvoice-input"
+                data-testid="registration-ehfinvoice-input"
                 value={PaymentProvider.POWER_OFFICE_EHFINVOICE}
                 {...register('paymentMethod')}
               />
