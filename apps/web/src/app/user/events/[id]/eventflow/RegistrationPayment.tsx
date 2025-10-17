@@ -3,7 +3,6 @@
 import { Input } from '@eventuras/ratio-ui/forms';
 import { PaymentProvider, UserDto } from '@eventuras/sdk';
 import { Button } from '@eventuras/ratio-ui';
-import { DATA_TEST_ID } from '@eventuras/utils';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -76,7 +75,7 @@ const RegistrationPayment = ({
                 type="radio"
                 id="emailinvoice"
                 value={PaymentProvider.POWER_OFFICE_EMAIL_INVOICE}
-                {...{ [DATA_TEST_ID]: 'registration-emailinvoice-input' }}
+                testId="registration-emailinvoice-input"
                 defaultChecked={true}
                 {...register('paymentMethod')}
               />
@@ -86,7 +85,7 @@ const RegistrationPayment = ({
               <input
                 type="radio"
                 id="ehfInvoice"
-                {...{ [DATA_TEST_ID]: 'registration-ehfinvoice-input' }}
+                testId="registration-ehfinvoice-input"
                 value={PaymentProvider.POWER_OFFICE_EHFINVOICE}
                 {...register('paymentMethod')}
               />
@@ -133,7 +132,7 @@ const RegistrationPayment = ({
               required: 'Zip code is Required',
             })}
             label={t('user.registration.address.zip')}
-            {...{ [DATA_TEST_ID]: 'registration-zipcode-input' }}
+            testId="registration-zipcode-input"
             placeholder="Zip Code"
             errors={errors}
           />
@@ -142,7 +141,7 @@ const RegistrationPayment = ({
               required: 'City is required',
             })}
             label={t('user.registration.address.city')}
-            {...{ [DATA_TEST_ID]: 'registration-city-input' }}
+            testId="registration-city-input"
             placeholder="City"
             errors={errors}
           />
@@ -151,7 +150,7 @@ const RegistrationPayment = ({
               required: 'Country is required',
             })}
             label={t('user.registration.address.country')}
-            {...{ [DATA_TEST_ID]: 'registration-country-input' }}
+            testId="registration-country-input"
             default="Norway"
             placeholder="Country"
             errors={errors}
@@ -168,7 +167,7 @@ const RegistrationPayment = ({
                 required: 'Vat Number is required for business customers',
               })}
               label={t('user.registration.businessinfo.vatNumber')}
-              {...{ [DATA_TEST_ID]: 'registration-vat-input' }}
+              testId="registration-vat-input"
               placeholder="Vat Number"
               errors={errors}
             />
@@ -186,7 +185,7 @@ const RegistrationPayment = ({
           </Button>
         )}
         <Button
-          {...{ [DATA_TEST_ID]: 'registration-payment-submit-button' }}
+          testId="registration-payment-submit-button"
           type="submit"
           variant="primary"
         >

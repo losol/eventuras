@@ -4,7 +4,6 @@ import { Fieldset } from '@eventuras/ratio-ui/forms';
 import { UserDto, UserFormDto } from '@eventuras/sdk';
 import { Form, Input, PhoneInput } from '@eventuras/smartform';
 import { Button } from '@eventuras/ratio-ui';
-import { DATA_TEST_ID } from '@eventuras/utils';
 import { Logger } from '@eventuras/utils/src/Logger';
 import { useTranslations } from 'next-intl';
 import { FC, useState } from 'react';
@@ -15,7 +14,7 @@ import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 interface UserEditorProps {
   user?: UserDto;
   onUserUpdated?: (updatedUser: UserDto) => void;
-  [DATA_TEST_ID]?: string;
+  testId?: string;
   adminMode?: boolean;
   submitButtonLabel?: string;
 }
@@ -105,7 +104,7 @@ const UserEditor: FC<UserEditorProps> = props => {
   };
 
   return (
-    <Form onSubmit={onSubmit} defaultValues={user} {...{ [DATA_TEST_ID]: props[DATA_TEST_ID] }}>
+    <Form onSubmit={onSubmit} defaultValues={user} testId={props.testId}>
       {/* Given Name Field */}
       <Fieldset label={t('common.account.name.legend')}>
         <Input
@@ -121,7 +120,7 @@ const UserEditor: FC<UserEditorProps> = props => {
               message: t('common.account.name.validationText'),
             },
           }}
-          {...{ [DATA_TEST_ID]: 'accounteditor-form-givenname' }}
+          testId="accounteditor-form-givenname"
         />
 
         <Input
@@ -136,7 +135,7 @@ const UserEditor: FC<UserEditorProps> = props => {
               message: t('common.account.name.validationText'),
             },
           }}
-          {...{ [DATA_TEST_ID]: 'accounteditor-form-middlename' }}
+          testId="accounteditor-form-middlename"
         />
         {/* Family Name Field */}
         <Input
@@ -151,7 +150,7 @@ const UserEditor: FC<UserEditorProps> = props => {
               message: t('common.account.name.validationText'),
             },
           }}
-          {...{ [DATA_TEST_ID]: 'accounteditor-form-familyname' }}
+          testId="accounteditor-form-familyname"
         />
       </Fieldset>
       <Fieldset label={t('common.account.contactInfo.legend')}>
@@ -182,7 +181,7 @@ const UserEditor: FC<UserEditorProps> = props => {
               message: t('user.account.phoneNumber.invalidFormatText'),
             },
           }}
-          {...{ [DATA_TEST_ID]: 'accounteditor-form-phonenumber' }}
+          testId="accounteditor-form-phonenumber"
         />
       </Fieldset>
       <Fieldset label={t('common.account.moreInfo.legend')}>
@@ -190,18 +189,18 @@ const UserEditor: FC<UserEditorProps> = props => {
           name="professionalIdentityNumber"
           label={t('common.account.professionalIdentityNumber.label')}
           description={t('common.account.professionalIdentityNumber.description')}
-          {...{ [DATA_TEST_ID]: 'accounteditor-form-professionalIdentityNumber' }}
+          testId="accounteditor-form-professionalIdentityNumber"
         />
         <Input
           name="supplementaryInformation"
           label={t('common.account.supplementaryInformation.label')}
           description={t('common.account.supplementaryInformation.description')}
-          {...{ [DATA_TEST_ID]: 'accounteditor-form-supplementaryInformation' }}
+          testId="accounteditor-form-supplementaryInformation"
         />
       </Fieldset>
 
       {/* Submit Button */}
-      <Button type="submit" {...{ [DATA_TEST_ID]: 'account-update-button' }} loading={isUpdating}>
+      <Button type="submit" testId="account-update-button" loading={isUpdating}>
         {getButtonLabel()}
       </Button>
     </Form>

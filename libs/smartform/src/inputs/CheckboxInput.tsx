@@ -1,7 +1,6 @@
 import React, { FC, InputHTMLAttributes, ReactNode } from 'react';
 import { useFormContext } from 'react-hook-form';
 
-import { DATA_TEST_ID } from '@eventuras/utils';
 
 export const styles = {
   container: 'my-2',

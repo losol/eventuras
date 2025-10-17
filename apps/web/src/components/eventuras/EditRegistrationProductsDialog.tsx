@@ -2,7 +2,6 @@
 
 import { ProductDto, RegistrationDto } from '@eventuras/sdk';
 import { Button } from '@eventuras/ratio-ui';
-import { DATA_TEST_ID } from '@eventuras/utils';
 import { Logger } from '@eventuras/utils/src/Logger';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -57,7 +56,7 @@ const EditRegistrationProductsDialog = (props: EditRegistrationProductsDialogPro
           onClick={() => {
             setEditorOpen(true);
           }}
-          {...{ [DATA_TEST_ID]: 'edit-orders-button' }}
+          testId="edit-orders-button"
         >
           {props.title ?? 'Edit Orders'}
         </Button>
@@ -65,7 +64,7 @@ const EditRegistrationProductsDialog = (props: EditRegistrationProductsDialogPro
       <Dialog
         title="Edit Orders"
         isOpen={editorOpen}
-        {...{ [DATA_TEST_ID]: 'edit-orders-dialog' }}
+        testId="edit-orders-dialog"
         onClose={() => {
           setEditorOpen(false);
           if (props.onClose) {

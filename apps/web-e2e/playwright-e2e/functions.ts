@@ -34,7 +34,7 @@ export const authenticate = async (userName: string, authFile: string) => {
     const page = await context.newPage();
     await page.goto('/');
     await page.waitForLoadState('load');
-    await page.locator('[data-test-id="login-button"]').click();
+    await page.locator('[data-testid="login-button"]').click();
     await page.locator('[id="username"]').fill(userName);
     await page.getByRole('button', { name: 'Continue', exact: true }).click();
     Logger.info(ns, 'authenticate: attempting to fetch login code');
@@ -58,7 +58,7 @@ export const authenticate = async (userName: string, authFile: string) => {
 export const checkIfLoggedIn = async (page: Page) => {
   await page.goto('/user');
   await page.waitForLoadState('networkidle');
-  await expect(page.locator('[data-test-id="logged-in-menu-button"]')).toBeVisible();
+  await expect(page.locator('[data-testid="logged-in-menu-button"]')).toBeVisible();
 };
 
 export const checkIfUnAuthorized = async (page: Page, url: string) => {
@@ -72,7 +72,7 @@ export const checkIfAccessToAdmin = async (page: Page) => {
   Logger.info(ns, 'admin access check');
   await page.goto('/admin');
   await page.waitForLoadState('load');
-  await expect(page.locator('[data-test-id="add-event-button"]')).toBeVisible();
+  await expect(page.locator('[data-testid="add-event-button"]')).toBeVisible();
 };
 
 export const createEvent = async (page: Page, eventName: string) => {
@@ -80,14 +80,14 @@ export const createEvent = async (page: Page, eventName: string) => {
   await page.goto('/admin');
   await page.waitForLoadState('load');
   // Create event with only title before being forwarded to the edit page (automatically)
-  await page.locator('[data-test-id="add-event-button"]').click();
-  await page.locator('[data-test-id="event-title-input"]').click();
-  await page.locator('[data-test-id="event-title-input"]').fill(eventName);
-  await page.locator('[data-test-id="create-event-submit-button"]').click();
+  await page.locator('[data-testid="add-event-button"]').click();
+  await page.locator('[data-testid="event-title-input"]').click();
+  await page.locator('[data-testid="event-title-input"]').fill(eventName);
+  await page.locator('[data-testid="create-event-submit-button"]').click();
   await page.waitForURL('**/edit');
 
   // Fill in overview details
-  await page.locator('[data-test-id="event-status-select-button"]').click();
+  await page.locator('[data-testid="event-status-select-button"]').click();
   await page.getByRole('option', { name: 'RegistrationsOpen' }).click();
   await page.locator('[name="headline"]').fill(`${eventName} headline`);
   await page.locator('[name="category"]').fill(`${eventName} category`);
@@ -161,7 +161,7 @@ export const createEvent = async (page: Page, eventName: string) => {
   //Fill Advanced Tab
   await page.getByRole('tab', { name: 'Advanced' }).click();
 
-  const eventId = await page.locator('[data-test-id="eventeditor-form-eventid"]').inputValue();
+  const eventId = await page.locator('[data-testid="eventeditor-form-eventid"]').inputValue();
   Logger.info(ns, `Event id from test: ${eventId}`);
   const eventSubmission = page.waitForResponse(resp => resp.url().includes(`/events/${eventId}`));
   await page.locator('[type=submit]').click();
@@ -183,34 +183,34 @@ export const createEvent = async (page: Page, eventName: string) => {
 
 export const addProductToEvent = async (page: Page, eventId: string) => {
   await page.goto(`admin/events/${eventId}/products`);
-  await page.locator('[data-test-id="add-product-button"]').click();
-  await page.locator('[data-test-id="product-name-input"]').fill(`testname product for ${eventId}`);
+  await page.locator('[data-testid="add-product-button"]').click();
+  await page.locator('[data-testid="product-name-input"]').fill(`testname product for ${eventId}`);
   await page
-    .locator('[data-test-id="product-description-input"]')
+    .locator('[data-testid="product-description-input"]')
     .fill(`test description - this is a description for product for ${eventId}`);
-  await page.locator('[data-test-id="product-price-input"]').fill('10');
-  await page.locator('[data-test-id="product-vat-input"]').fill('10');
+  await page.locator('[data-testid="product-price-input"]').fill('10');
+  await page.locator('[data-testid="product-vat-input"]').fill('10');
   await page.locator('[type="submit"]').click();
-  await expect(page.locator('[data-test-id="edit-product-button"]')).toBeVisible();
+  await expect(page.locator('[data-testid="edit-product-button"]')).toBeVisible();
 };
 
 export const visitAndClickEventRegistrationButton = async (page: Page, eventId: string) => {
   await page.goto(`/events/${eventId}`);
   await page.waitForLoadState('load');
-  await page.locator('[data-test-id="event-registration-button"]').click();
+  await page.locator('[data-testid="event-registration-button"]').click();
   Logger.info(ns, 'Reg button clicked, waiting for registration page');
 };
 
 export const fillOutPaymentDetails = async (page: Page) => {
-  await page.locator('[data-test-id="registration-zipcode-input"]').click();
-  await page.locator('[data-test-id="registration-zipcode-input"]').fill('12345BC');
-  await page.locator('[data-test-id="registration-city-input"]').click();
-  await page.locator('[data-test-id="registration-city-input"]').fill('Amsterdam');
-  await page.locator('[data-test-id="registration-country-input"]').click();
-  await page.locator('[data-test-id="registration-country-input"]').fill('The Netherlands');
+  await page.locator('[data-testid="registration-zipcode-input"]').click();
+  await page.locator('[data-testid="registration-zipcode-input"]').fill('12345BC');
+  await page.locator('[data-testid="registration-city-input"]').click();
+  await page.locator('[data-testid="registration-city-input"]').fill('Amsterdam');
+  await page.locator('[data-testid="registration-country-input"]').click();
+  await page.locator('[data-testid="registration-country-input"]').fill('The Netherlands');
   Logger.info(ns, 'Payment submit button clicked');
 
-  return page.locator('[data-test-id="registration-payment-submit-button"]').click();
+  return page.locator('[data-testid="registration-payment-submit-button"]').click();
 };
 
 export const registerForEvent = async (
@@ -224,18 +224,18 @@ export const registerForEvent = async (
   await page.waitForURL(`/user/events/${eventId}`);
   Logger.info(ns, 'Registration page reached');
   Logger.info(ns, 'Confirm current account details');
-  await page.locator('[data-test-id="accounteditor-form-givenname"]').fill('Test');
-  await page.locator('[data-test-id="accounteditor-form-familyname"]').fill('Test');
+  await page.locator('[data-testid="accounteditor-form-givenname"]').fill('Test');
+  await page.locator('[data-testid="accounteditor-form-familyname"]').fill('Test');
   // getByRole('textbox', { name: 'Enter phone number' })
   await page.getByRole('textbox', { name: 'Enter phone number' }).fill('12345678');
   await Promise.all([
     page.waitForResponse(resp => resp.url().includes('userprofile') && resp.status() === 200),
-    page.locator('[data-test-id="account-update-button"]').click(),
+    page.locator('[data-testid="account-update-button"]').click(),
   ]);
   Logger.info(ns, 'Customize product', eventId);
-  await page.locator('[data-test-id="product-selection-checkbox"]').click();
+  await page.locator('[data-testid="product-selection-checkbox"]').click();
   Logger.info(ns, 'Product checkbox clicked');
-  const submitButton = await page.locator('[data-test-id="registration-customize-submit-button"]');
+  const submitButton = await page.locator('[data-testid="registration-customize-submit-button"]');
   expect(submitButton.isEnabled());
   await submitButton.click();
   Logger.info(ns, 'Registration customize submit button clicked');
@@ -243,7 +243,7 @@ export const registerForEvent = async (
   await Promise.all([
     page.waitForResponse(resp => resp.url().includes('registrations') && resp.status() === 200),
     page.waitForResponse(resp => resp.url().includes('products') && resp.status() === 200),
-    page.locator('[data-test-id="registration-confirmation-button"]').click(),
+    page.locator('[data-testid="registration-confirmation-button"]').click(),
   ]);
 };
 
@@ -260,19 +260,19 @@ export const validateRegistration = async (page: Page, eventId: string) => {
   const tab = await page.locator('[data-key="tab-registration"]');
   await tab.click();
 
-  await expect(page.locator('[data-test-id="registration-registrationId"]')).toBeVisible();
+  await expect(page.locator('[data-testid="registration-registrationId"]')).toBeVisible();
 };
 
 export const editRegistrationOrders = async (page: Page, eventId: string) => {
   await visitRegistrationPageForEvent(page, eventId);
-  await page.locator('[data-test-id="edit-registration-button"]').click();
-  await page.locator('[data-test-id="product-selection-checkbox"]').first().click();
-  await page.locator('[data-test-id="registration-customize-submit-button"]').click();
+  await page.locator('[data-testid="edit-registration-button"]').click();
+  await page.locator('[data-testid="product-selection-checkbox"]').first().click();
+  await page.locator('[data-testid="registration-customize-submit-button"]').click();
   await fillOutPaymentDetails(page);
 
   await Promise.all([
     page.waitForResponse(resp => resp.url().includes('registrations') && resp.status() === 200),
     page.waitForResponse(resp => resp.url().includes('products') && resp.status() === 200),
-    page.locator('[data-test-id="registration-confirmation-button"]').click(),
+    page.locator('[data-testid="registration-confirmation-button"]').click(),
   ]);
 };

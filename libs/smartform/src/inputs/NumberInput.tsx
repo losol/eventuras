@@ -2,7 +2,6 @@ import React from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import { formStyles, InputLabel, InputProps } from '@eventuras/ratio-ui/forms';
-import { DATA_TEST_ID } from '@eventuras/utils';
 
 export const NumberInput = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   const { id, name, placeholder, label, description, className, defaultValue, validation, disabled } =
@@ -34,7 +33,7 @@ export const NumberInput = React.forwardRef<HTMLInputElement, InputProps>((props
         className={inputClassName}
         aria-invalid={hasError}
         disabled={disabled}
-        {...{ [DATA_TEST_ID]: props[DATA_TEST_ID] }}
+        data-testid={props.testId}
         defaultValue={defaultValue}
         {...register(name, { valueAsNumber: true })}
         ref={e => {

@@ -2,7 +2,6 @@ import { IconChevronDown } from "@tabler/icons-react";
 import React from "react";
 import { Controller, useFormContext } from "react-hook-form";
 
-import { DATA_TEST_ID } from "@eventuras/utils";
 import {
   Button as AriaButton,
   Select as AriaSelect,
@@ -17,7 +16,7 @@ export type SelectProps = {
   label?: string;
   name: string;
   options: { value: string; label: string }[];
-  [DATA_TEST_ID]?: string;
+  testId?: string;
 };
 
 const styles = {
@@ -53,7 +52,7 @@ const Select: React.FC<SelectProps> = (props) => {
           defaultSelectedKey={value}
         >
           <Label className="text-white cursor-default">Registration Type</Label>
-          <AriaButton className={styles.button.base}  {...{ [DATA_TEST_ID]: props[DATA_TEST_ID] }}>
+          <AriaButton className={styles.button.base}  data-testid={props.testId}>
             <SelectValue className="flex-1 truncate placeholder-shown:italic" />
             <IconChevronDown
               className={styles.button.icon}

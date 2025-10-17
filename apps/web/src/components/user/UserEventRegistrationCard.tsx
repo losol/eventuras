@@ -1,5 +1,4 @@
 import { ProductOrderDto } from '@eventuras/sdk';
-import { DATA_TEST_ID } from '@eventuras/utils';
 import { useTranslations } from 'next-intl';
 import { ReactElement } from 'react';
 
@@ -51,7 +50,7 @@ const UserEventRegistrationCard = ({
           variant="button-primary"
           onDark
           linkOverlay
-          {...{ [DATA_TEST_ID]: eventId }}
+          testId={eventId}
         >
           {t('common.buttons.user-event-page')}
         </Link>

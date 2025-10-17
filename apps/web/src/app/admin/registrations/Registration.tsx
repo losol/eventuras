@@ -17,7 +17,6 @@ import {
   Section,
   Term,
 } from '@eventuras/ratio-ui';
-import { DATA_TEST_ID } from '@eventuras/utils';
 import { Logger } from '@eventuras/utils/src/Logger';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -141,7 +140,7 @@ const Registration = ({ registration, adminMode = false }: RegistrationProps) =>
       <DescriptionList>
         <Item>
           <Term>{t('common.registrations.labels.id')}</Term>
-          <Definition {...{ [DATA_TEST_ID]: 'registration-registrationId' }}>
+          <Definition testId="registration-registrationId">
             {registration.registrationId}
           </Definition>
         </Item>
