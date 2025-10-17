@@ -1,26 +1,20 @@
-export type OAuthConfig = {
-  issuer: string;
-  clientId: string;
-  clientSecret: string;
-  redirect_uri: string;
-  scope: string;
-};
-
-export type SessionUser = {
-  name?: string;
-  email?: string;
-  roles?: string[];
-  [key: string]: unknown;
-};
-
-export type SessionTokens = {
-  accessToken: string;
-  refreshToken?: string;
+export interface Tokens {
+  accessToken?: string;
   accessTokenExpiresAt?: Date;
-};
+  refreshToken?: string;
+  refreshTokenExpiresAt?: Date;
+}
 
-export type SessionData = {
-  expiresAt?: string; // ISO string
-  tokens: SessionTokens;
-  user?: SessionUser;
-};
+export interface Session {
+  expiresAt: Date | string;
+  tokens?: Tokens;
+  user?: {
+    name: string;
+    email: string;
+    roles?: string[];
+  };
+}
+
+export interface CreateSessionOptions {
+  sessionDurationDays?: number;
+}

@@ -1,33 +1,12 @@
 import { cookies } from 'next/headers';
-import * as jose from 'jose';
+import {createEncryptedJWT} from '@eventuras/fides-auth/utils';
+import {validateSessionJwt} from '@eventuras/fides-auth/session-validation';
+import type {Session, CreateSessionOptions} from '@eventuras/fides-auth/types';
+import type {OAuthConfig} from '@eventuras/fides-auth/oauth';
 import { cache } from 'react';
 
-import { createEncryptedJWT } from './utils';
-import { OAuthConfig, refreshAccesstoken } from './oauth';
-import { validateSessionJwt } from './session-validation';
-export interface Tokens {
-  accessToken?: string;
-  accessTokenExpiresAt?: Date;
-  refreshToken?: string;
-  refreshTokenExpiresAt?: Date;
-}
-
-export interface Session {
-  expiresAt: Date | string;
-  tokens?: Tokens;
-  user?: {
-    name: string;
-    email: string;
-    roles?: string[];
-  };
-}
-
-export interface CreateSessionOptions {
-  sessionDurationDays?: number;
-}
-
 /**
- * Creates an encrypted JWT containing session data and saves it as a cookie.
+ * Creates an encrypted JWT containing session data.
  *
  * @param session - Session data (expiresAt, tokens, etc.)
  * @param options - Configuration options (e.g., sessionDurationDays)
@@ -44,17 +23,10 @@ export async function createSession(
     session.expiresAt = expiresAt.toISOString();
   }
 
-  // Build the JWT payload
-  const payload: jose.JWTPayload = {
-    ...session,
-  };
-
-  // Generate an encrypted JWT (JWE) with jose
-  const jwt = await createEncryptedJWT(payload);
-
+  // Build the JWT payload and encrypt
+  const jwt = await createEncryptedJWT({...session});
   return jwt;
 }
-
 
 /**
  * Retrieves the current session from the "session" cookie, if any.
@@ -73,15 +45,9 @@ export const getCurrentSession = cache(async (config?: OAuthConfig): Promise<Ses
     return null;
   }
 
-  if (sessionjwt.accessTokenExpiresIn !== undefined && sessionjwt.accessTokenExpiresIn < 300) {
-    console.warn('Access token will expire soon – consider refreshing. Seconds left:', sessionjwt.accessTokenExpiresIn);
-
-  }
   if (sessionjwt.session) {
-    // If the session is valid, return it
     return sessionjwt.session;
   }
 
   return null;
 });
-

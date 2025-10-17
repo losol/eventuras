@@ -365,9 +365,9 @@ importers:
       '@eventuras/event-sdk':
         specifier: workspace:^
         version: link:../../libs/event-sdk
-      '@eventuras/fides-auth':
+      '@eventuras/fides-auth-next':
         specifier: workspace:*
-        version: link:../../libs/fides-auth
+        version: link:../../libs/fides-auth-next
       '@eventuras/markdown':
         specifier: workspace:*
         version: link:../../libs/markdown
@@ -648,6 +648,15 @@ importers:
       '@types/react-dom':
         specifier: ^19.2.2
         version: 19.2.2(@types/react@19.2.2)
+
+  libs/fides-auth-next:
+    dependencies:
+      '@eventuras/fides-auth':
+        specifier: workspace:*
+        version: link:../fides-auth
+      '@eventuras/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
       next:
         specifier: ^15.5.5
         version: 15.5.5(@babel/core@7.28.4)(@playwright/test@1.56.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(sass@1.77.4)

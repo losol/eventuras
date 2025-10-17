@@ -1,5 +1,5 @@
-import { globalGETRateLimit } from '@eventuras/fides-auth/request';
-import { createSession } from '@eventuras/fides-auth/session';
+import {globalGETRateLimit} from '@eventuras/fides-auth-next/request';
+import {createSession} from '@eventuras/fides-auth-next/session';
 import { Logger } from '@eventuras/utils/src/Logger';
 import { decodeJwt } from 'jose';
 import { cookies } from 'next/headers';
