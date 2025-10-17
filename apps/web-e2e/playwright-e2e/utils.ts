@@ -1,7 +1,9 @@
 /* eslint no-process-env: 0 */
 
-import { Logger } from '@eventuras/logger';
+import { Debug } from '@eventuras/logger';
 import dotenv from 'dotenv';
+
+const debug = Debug.create('e2e:utils');
 
 dotenv.config();
 
@@ -11,7 +13,7 @@ export const getTagAndNamespaceFromEmail = (email: string) => {
   return { nameSpace: splitEmail[0], tag: splitEmail[1] };
 };
 export const fetchLoginCode = async (userEmail: string) => {
-  Logger.info({ namespace: 'tests.utils' }, `Fetching login code for user ${userEmail}`);
+  debug('Fetching login code for user: %s', userEmail);
   const APIKEY = process.env.TEST_EMAIL_APP_API_KEY;
   const tagAndNs = getTagAndNamespaceFromEmail(userEmail);
   const result = await fetch(
@@ -28,9 +30,6 @@ export const fetchLoginCode = async (userEmail: string) => {
   } catch (e: any) {
     throw new Error('No login code found in email');
   }
-  Logger.info(
-    { namespace: 'tests.utils', developerOnly: true },
-    `Code fetched succesfully: ${loginCode}`
-  );
+  debug('Code fetched successfully: %s', loginCode);
   return loginCode;
 };

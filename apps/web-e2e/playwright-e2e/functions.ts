@@ -1,7 +1,8 @@
-const ns = { namespace: 'e2e' };
 import { EventDto } from '@eventuras/event-sdk';
-import { Logger } from '@eventuras/logger';
+import { Debug } from '@eventuras/logger';
 import { chromium, expect, Page, test as setup } from '@playwright/test';
+
+const debug = Debug.create('e2e');
 import fs from 'fs';
 
 import { fetchLoginCode } from './utils';
@@ -14,7 +15,7 @@ export const readCreatedEvent = (): CreatedEvent => {
   try {
     createdEvent = JSON.parse(fs.readFileSync('./playwright-e2e/createdEvent.json', 'utf8'));
   } catch (e: any) {
-    Logger.error(ns, 'readCreatedEvent: cant ready createdEvent.json');
+    debug('readCreatedEvent: cant read createdEvent.json');
   }
   return createdEvent;
 };
@@ -37,21 +38,21 @@ export const authenticate = async (userName: string, authFile: string) => {
     await page.locator('[data-testid="login-button"]').click();
     await page.locator('[id="username"]').fill(userName);
     await page.getByRole('button', { name: 'Continue', exact: true }).click();
-    Logger.info(ns, 'authenticate: attempting to fetch login code');
+    debug('authenticate: attempting to fetch login code');
     const loginCode = await fetchLoginCode(userName);
     await page.locator('[id="code"]').fill(loginCode!);
     await page.getByRole('button', { name: 'Continue', exact: true }).click();
-    Logger.info(ns, 'authenticate: filled and clicked continue, waiting for root url');
+    debug('authenticate: filled and clicked continue, waiting for root url');
 
     await page.waitForURL('/');
 
     await page.goto('/user');
     await page.waitForLoadState('networkidle');
-    Logger.info(ns, 'authenticate: expect username to be visible upon login and visiting /user');
+    debug('authenticate: expect username to be visible upon login and visiting /user');
 
     await expect(page.getByText(userName).first()).toBeVisible();
     await context.storageState({ path: authFile });
-    Logger.info({ namespace: 'testing.auth' }, 'Auth Complete');
+    debug('Auth Complete');
   });
 };
 
@@ -69,14 +70,14 @@ export const checkIfUnAuthorized = async (page: Page, url: string) => {
 };
 
 export const checkIfAccessToAdmin = async (page: Page) => {
-  Logger.info(ns, 'admin access check');
+  debug('admin access check');
   await page.goto('/admin');
   await page.waitForLoadState('load');
   await expect(page.locator('[data-testid="add-event-button"]')).toBeVisible();
 };
 
 export const createEvent = async (page: Page, eventName: string) => {
-  Logger.info(ns, 'create simple event', eventName);
+  debug('create simple event: %s', eventName);
   await page.goto('/admin');
   await page.waitForLoadState('load');
   // Create event with only title before being forwarded to the edit page (automatically)
@@ -162,7 +163,7 @@ export const createEvent = async (page: Page, eventName: string) => {
   await page.getByRole('tab', { name: 'Advanced' }).click();
 
   const eventId = await page.locator('[data-testid="eventeditor-form-eventid"]').inputValue();
-  Logger.info(ns, `Event id from test: ${eventId}`);
+  debug('Event id from test: %s', eventId);
   const eventSubmission = page.waitForResponse(resp => resp.url().includes(`/events/${eventId}`));
   await page.locator('[type=submit]').click();
   const jsonResponse = (await eventSubmission.then(r => r.json())) as EventDto;
@@ -198,7 +199,7 @@ export const visitAndClickEventRegistrationButton = async (page: Page, eventId: 
   await page.goto(`/events/${eventId}`);
   await page.waitForLoadState('load');
   await page.locator('[data-testid="event-registration-button"]').click();
-  Logger.info(ns, 'Reg button clicked, waiting for registration page');
+  debug('Reg button clicked, waiting for registration page');
 };
 
 export const fillOutPaymentDetails = async (page: Page) => {
@@ -208,7 +209,7 @@ export const fillOutPaymentDetails = async (page: Page) => {
   await page.locator('[data-testid="registration-city-input"]').fill('Amsterdam');
   await page.locator('[data-testid="registration-country-input"]').click();
   await page.locator('[data-testid="registration-country-input"]').fill('The Netherlands');
-  Logger.info(ns, 'Payment submit button clicked');
+  debug('Payment submit button clicked');
 
   return page.locator('[data-testid="registration-payment-submit-button"]').click();
 };
@@ -222,8 +223,8 @@ export const registerForEvent = async (
     await visitAndClickEventRegistrationButton(page, eventId);
   }
   await page.waitForURL(`/user/events/${eventId}`);
-  Logger.info(ns, 'Registration page reached');
-  Logger.info(ns, 'Confirm current account details');
+  debug('Registration page reached');
+  debug('Confirm current account details');
   await page.locator('[data-testid="accounteditor-form-givenname"]').fill('Test');
   await page.locator('[data-testid="accounteditor-form-familyname"]').fill('Test');
   // getByRole('textbox', { name: 'Enter phone number' })
@@ -232,13 +233,13 @@ export const registerForEvent = async (
     page.waitForResponse(resp => resp.url().includes('userprofile') && resp.status() === 200),
     page.locator('[data-testid="account-update-button"]').click(),
   ]);
-  Logger.info(ns, 'Customize product', eventId);
+  debug('Customize product for event: %s', eventId);
   await page.locator('[data-testid="product-selection-checkbox"]').click();
-  Logger.info(ns, 'Product checkbox clicked');
+  debug('Product checkbox clicked');
   const submitButton = await page.locator('[data-testid="registration-customize-submit-button"]');
   expect(submitButton.isEnabled());
   await submitButton.click();
-  Logger.info(ns, 'Registration customize submit button clicked');
+  debug('Registration customize submit button clicked');
   await fillOutPaymentDetails(page);
   await Promise.all([
     page.waitForResponse(resp => resp.url().includes('registrations') && resp.status() === 200),
@@ -253,7 +254,7 @@ export const visitRegistrationPageForEvent = async (page: Page, eventId: string)
 };
 
 export const validateRegistration = async (page: Page, eventId: string) => {
-  Logger.info(ns, 'Registered for event, validating..');
+  debug('Registered for event, validating...');
   await visitRegistrationPageForEvent(page, eventId);
 
   // Get the registration tab

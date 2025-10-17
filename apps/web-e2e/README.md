@@ -1,77 +1,191 @@
-# Frontend e2e-testing
+# Frontend E2E Testing
 
-Tests are defined in 3 seperate scopes: Admin, User and Anonmous. The first two already are registered and their email adresses need to be defined in the env file. The latter are run with randomly generated usernames each time. Tests are run in serial and therefore require quite some time to finish (over 5 minutes). They do not run in parallel because event registration and editing requires the event to be created first, which are done in the admin tests.
+End-to-end tests for the Eventuras web application using Playwright.
 
+## Table of Contents
 
-## Get started
+- [Overview](#overview)
+- [Getting Started](#getting-started)
+- [Debug Output](#debug-output)
+- [Creating New Tests](#creating-new-tests)
+- [Authentication](#authentication)
+- [OTP Fetching](#otp-fetching)
+- [Test Account Setup](#test-account-setup)
+
+## Overview
+
+Tests are organized into 3 separate scopes:
+
+- **Admin** - Tests requiring admin privileges
+- **User** - Tests for registered users
+- **Anonymous** - Tests for unregistered users (randomly generated each time)
+
+**Important Notes:**
+- Tests run in serial (5+ minutes total) due to dependencies
+- Event creation must happen before registration tests
+- Admin and User accounts must be pre-registered (see [Test Account Setup](#test-account-setup))
+
+## Getting Started
 
 1. Make sure playwright and browsers are installed by running `npx playwright install`. 
 2. Take a look on the .env variables needed
 3. test away!
 
+## Debug Output
 
-# Creating new tests
+This test suite uses the `Debug` utility from `@eventuras/logger` for development-time debugging output.
 
-Each test flow, in principle, runs in its own file, which is a suite of tests bundled together. The reason these files start with a number is to make sure they are run in that specific order (playwright runs tests in alphabetical order), because event creation needs to happen before registration and product editing done after event registration, etc. When creating a new test decide where it sits in the order and number it accordingly. Any 'admin' ran tests start with admin, same for 'user' and 'anonymous', those for now are the different contexts.
+### Using Debug in Tests
 
-A filename then is build up like this
-`{number in order},{admin | user | anonymous}-{testscenario name}.spec.ts`
+Import and create a debug instance:
 
-# OTP fetching
+```typescript
+import { Debug } from '@eventuras/logger';
 
-Testmail.app is used through their API to fetch one time codes for admin and user login and for the anonymous user to register. The api key in use could be a free one - in that case there is a limit of 100 emails per month.
+const debug = Debug.create('e2e:mytest');
+```
 
-# Authentication
+Use with printf-style formatting:
 
-Playwright stores browser state in the playwright-auth folder. Two browser states are stored - admin and user state. This saves having to relogin between tests, as each test runs independently.
+```typescript
+debug('Test step completed');
+debug('User logged in: %s', username);
+debug('Event created with ID: %d', eventId);
+debug('Event: %j', eventObject);
+```
 
-However, if you decide tht the json files in playwright-auth are still valid, you can skip the login between -runs- by running `test:playwright:skiplogin`
+### Running Tests with Debug Output
 
-# Created event
+```bash
+# Enable all e2e debug output
+DEBUG=e2e* pnpm test:playwright
 
-Every time an event is created, the createdEvent.json gets overwritten(or created if first run). This contains the event id created and is reused in user and anonymous testing to assure a 'fresh' event to work with. This may be replaced in the future if the API supports sorting by creation date. Or if database wiping is supported between test runs.
+# Enable specific namespaces
+DEBUG=e2e pnpm test:playwright        # Main test functions
+DEBUG=e2e:utils pnpm test:playwright   # Utility functions
+DEBUG=e2e:test pnpm test:playwright    # Test specs
 
-# To create new test accounts
+# Multiple namespaces
+DEBUG=e2e,e2e:utils pnpm test:playwright
 
-To create new users for test scripts the below needs to be followed, the exception are tests run as anonymous - as that user registers itself.
+# Disable all (default)
+pnpm test:playwright
+```
 
-## Admin - Create and register the new user
+## Creating New Tests
 
-Login to testmail.app.
-Create a new tagged email adress. (for instance {testmailaccount identifier}.admin@inbox.testmail.app)
-Use this to register on eventuras. Use the json email viewer to view the code (https://testmail.app/console)
+Each test flow runs in its own file as a suite of tests. Files are numbered to ensure they run in the correct order (Playwright runs tests alphabetically).
 
-## Admin - Add the user to the organization through the Eventuras API
+### Test File Naming Convention
 
-Create a PUT request to the following endpoint:
+```
+{number}-{scope}-{scenario-name}.spec.ts
+```
 
-`{{baseUrl}}/v3/organizations/{{organizationId}}/members/{{targetUserId}}`
+**Examples:**
+- `001-admin-create-event.spec.ts`
+- `002a-user-register-for-event.spec.ts`
+- `003-anonymous-view-event.spec.ts`
 
-Where
+**Scopes:**
+- `admin` - Requires admin authentication
+- `user` - Requires user authentication
+- `anonymous` - No authentication required
 
-- baseUrl = the base url for the API
-- organizationId = the org id (should be 1)
-- targetUserId = the user that you have created earlier, its id in the system(after registration)
+### Test Dependencies
 
-Make sure you have admin right token to send the request!
+Consider the execution order:
+1. Events must be created (admin) before registration tests
+2. Products must exist before product editing tests
+3. Number your test file appropriately based on dependencies
 
-## Give the user admin rights
+### Event Data Persistence
 
-Make sure the user has admin rights in auth0 first!
-Create a POST request to the following endpoint:
+Every time an event is created, `createdEvent.json` is updated with the event ID. This allows subsequent tests (user/anonymous) to work with a fresh event.
 
-`{{baseUrl}}/v3/organizations/{{organizationId}}/members/{{targetUserId}}/roles`
+## Authentication
 
-With the following Body:
+Playwright stores browser state in the `playwright-auth/` folder with two states:
+- `admin.json` - Admin user session
+- `user.json` - Regular user session
 
-`{
-  "role":"Admin"
-}`
+This avoids re-authentication between test runs.
 
-Confirm the role is added by creating a GET request:
+### Skip Login Between Runs
 
-`{{baseUrl}}/v3/organizations/{{organizationId}}/members/{{targetUserId}}/roles`
+If the auth JSON files are still valid, skip login setup:
 
-# User - To create a test account (user)
+```bash
+pnpm test:playwright:skiplogin
+```
 
-To create a new user account and use it for automated testing, make sure it is registered first(manual process). Once this is done it can be setup in user.auth.setup.ts(it uses the environment variable, which can be changed accordingly).
+## OTP Fetching
+
+[Testmail.app](https://testmail.app) is used to fetch one-time verification codes via their API for:
+- Admin login
+- User login  
+- Anonymous user registration
+
+**Note:** Free API keys have a limit of 100 emails per month.
+
+## Test Account Setup
+
+Anonymous tests register themselves automatically. For Admin and User tests, follow these steps:
+
+### Step 1: Create and Register the User
+
+1. Login to [testmail.app](https://testmail.app)
+2. Create a tagged email address:
+   ```
+   {testmailaccount}.admin@inbox.testmail.app
+   ```
+3. Register on Eventuras using this email
+4. View verification code in the [JSON email viewer](https://testmail.app/console)
+
+### Step 2: Add User to Organization
+
+Create a PUT request to add the user to the organization:
+
+**Endpoint:**
+```
+PUT {{baseUrl}}/v3/organizations/{{organizationId}}/members/{{targetUserId}}
+```
+
+**Parameters:**
+- `baseUrl` - API base URL
+- `organizationId` - Organization ID (typically `1`)
+- `targetUserId` - User ID from registration
+
+**Requirements:** Admin authentication token
+
+### Step 3: Grant Admin Rights (For Admin Users Only)
+
+1. First, ensure the user has admin rights in Auth0
+
+2. Add the admin role via API:
+
+   **Endpoint:**
+   ```
+   POST {{baseUrl}}/v3/organizations/{{organizationId}}/members/{{targetUserId}}/roles
+   ```
+
+   **Body:**
+   ```json
+   {
+     "role": "Admin"
+   }
+   ```
+
+3. Verify the role was added:
+
+   **Endpoint:**
+   ```
+   GET {{baseUrl}}/v3/organizations/{{organizationId}}/members/{{targetUserId}}/roles
+   ```
+
+### Step 4: Configure Test Environment
+
+Once the user is registered and configured:
+
+1. For **Admin users**: Update environment variables with the admin email
+2. For **Regular users**: Update `user.auth.setup.ts` with the user email (uses environment variable)
