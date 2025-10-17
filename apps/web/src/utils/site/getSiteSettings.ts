@@ -1,4 +1,4 @@
-import { Logger } from '@eventuras/utils/src/Logger';
+import { Logger } from '@eventuras/logger';
 
 import Environment from '@/utils/Environment';
 

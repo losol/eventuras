@@ -2,7 +2,7 @@
 
 import { ProductDto, RegistrationDto } from '@eventuras/sdk';
 import { Button } from '@eventuras/ratio-ui';
-import { Logger } from '@eventuras/utils/src/Logger';
+import { Logger } from '@eventuras/logger';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 

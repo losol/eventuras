@@ -23,5 +23,5 @@
   "cms": "@eventuras/historia",
   "idem": "@eventuras/idem-idp",
   "idem-idp": "@eventuras/idem-idp",
-  "utils": "@eventuras/utils"
+  "logger": "@eventuras/logger"
 }

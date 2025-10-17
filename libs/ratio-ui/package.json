@@ -53,7 +53,7 @@
     }
   },
   "dependencies": {
-    "@eventuras/utils": "workspace:*",
+    "@eventuras/logger": "workspace:*",
     "@storybook/react": "^9.1.10",
     "@tabler/icons-react": "^3.35.0",
     "@tailwindcss/postcss": "^4.1.14",

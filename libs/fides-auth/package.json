@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@eventuras/typescript-config": "workspace:*",
-    "@eventuras/utils": "workspace:*",
+    "@eventuras/logger": "workspace:*",
     "jose": "6.1.0",
     "openid-client": "^6.8.1"
   },

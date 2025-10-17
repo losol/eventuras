@@ -91,7 +91,7 @@ If you're working on existing code:
 
 ### Before:
 ```tsx
-import { DATA_TEST_ID } from '@eventuras/utils';
+import { DATA_TEST_ID } from '@eventuras/logger';
 
 <Button {...{ [DATA_TEST_ID]: 'submit-button' }}>
   Submit

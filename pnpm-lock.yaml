@@ -368,6 +368,9 @@ importers:
       '@eventuras/fides-auth-next':
         specifier: workspace:*
         version: link:../../libs/fides-auth-next
+      '@eventuras/logger':
+        specifier: workspace:^
+        version: link:../../libs/logger
       '@eventuras/markdown':
         specifier: workspace:*
         version: link:../../libs/markdown
@@ -392,9 +395,6 @@ importers:
       '@eventuras/toast':
         specifier: workspace:^
         version: link:../../libs/toast
-      '@eventuras/utils':
-        specifier: workspace:^
-        version: link:../../libs/utils
       '@tabler/icons-react':
         specifier: ^3.35.0
         version: 3.35.0(react@19.2.0)
@@ -487,9 +487,9 @@ importers:
 
   apps/web-e2e:
     dependencies:
-      '@eventuras/utils':
+      '@eventuras/logger':
         specifier: workspace:*
-        version: link:../../libs/utils
+        version: link:../../libs/logger
       '@playwright/test':
         specifier: 1.56.0
         version: 1.56.0
@@ -635,12 +635,12 @@ importers:
 
   libs/fides-auth:
     dependencies:
+      '@eventuras/logger':
+        specifier: workspace:*
+        version: link:../logger
       '@eventuras/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
-      '@eventuras/utils':
-        specifier: workspace:*
-        version: link:../utils
       jose:
         specifier: 6.1.0
         version: 6.1.0
@@ -666,6 +666,19 @@ importers:
       next:
         specifier: ^15.5.5
         version: 15.5.5(@babel/core@7.28.4)(@playwright/test@1.56.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(sass@1.77.4)
+
+  libs/logger:
+    dependencies:
+      debug:
+        specifier: ^4.4.3
+        version: 4.4.3(supports-color@5.5.0)
+      pino:
+        specifier: ^10.0.0
+        version: 10.0.0
+    devDependencies:
+      '@types/debug':
+        specifier: ^4.1.12
+        version: 4.1.12
 
   libs/markdown:
     dependencies:
@@ -752,9 +765,9 @@ importers:
 
   libs/ratio-ui:
     dependencies:
-      '@eventuras/utils':
+      '@eventuras/logger':
         specifier: workspace:*
-        version: link:../utils
+        version: link:../logger
       '@react-aria/overlays':
         specifier: ^3.26.0
         version: 3.30.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -1002,12 +1015,12 @@ importers:
 
   libs/smartform:
     dependencies:
+      '@eventuras/logger':
+        specifier: workspace:*
+        version: link:../logger
       '@eventuras/ratio-ui':
         specifier: workspace:*
         version: link:../ratio-ui
-      '@eventuras/utils':
-        specifier: workspace:*
-        version: link:../utils
       '@tabler/icons-react':
         specifier: ^3.31.0
         version: 3.35.0(react@19.2.0)
@@ -1060,19 +1073,6 @@ importers:
         version: link:../typescript-config
 
   libs/typescript-config: {}
-
-  libs/utils:
-    dependencies:
-      debug:
-        specifier: ^4.4.3
-        version: 4.4.3(supports-color@5.5.0)
-      pino:
-        specifier: ^10.0.0
-        version: 10.0.0
-    devDependencies:
-      '@types/debug':
-        specifier: ^4.1.12
-        version: 4.1.12
 
 packages:
 

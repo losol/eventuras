@@ -1,4 +1,4 @@
-import { Logger } from '@eventuras/utils/src/Logger';
+import { Logger } from '@eventuras/logger';
 import { NextRequest, NextResponse } from 'next/server';
 
 import Environment, { EnvironmentVariables } from '@/utils/Environment';

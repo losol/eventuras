@@ -1,6 +1,6 @@
 /* eslint no-process-env: 0 */
 
-import { Logger } from '@eventuras/utils/src/Logger';
+import { Logger } from '@eventuras/logger';
 import dotenv from 'dotenv';
 
 dotenv.config();

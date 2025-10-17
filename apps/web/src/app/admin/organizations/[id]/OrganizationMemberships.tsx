@@ -7,7 +7,7 @@ import MemberProfile from './MemberProfile';
 import AddMemberDrawer from './AddMemberDrawer';
 import { addMember, setAdmin } from './actions';
 import { UserDto } from '@eventuras/event-sdk';
-import { Logger } from '@eventuras/utils/src/Logger';
+import { Logger } from '@eventuras/logger';
 import { useToast } from '@eventuras/toast';
 
 export interface OrganizationMembershipsProps {

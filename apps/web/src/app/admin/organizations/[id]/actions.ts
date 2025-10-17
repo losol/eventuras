@@ -7,7 +7,7 @@ import {
   deleteV3OrganizationsByOrganizationIdMembersByUserIdRoles,
   putV3OrganizationsByOrganizationIdMembersByUserId,
 } from '@eventuras/event-sdk';
-import { Logger } from '@eventuras/utils/src/Logger';
+import { Logger } from '@eventuras/logger';
 
 export async function addMember(orgId: number, userId: string) {
   const logContext = {

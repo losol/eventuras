@@ -1,5 +1,5 @@
 import { Badge, Container, Heading, Section } from '@eventuras/ratio-ui';
-import { Logger } from '@eventuras/utils/src/Logger';
+import { Logger } from '@eventuras/logger';
 
 import Wrapper from '@/components/eventuras/Wrapper';
 import { Link } from '@eventuras/ratio-ui-next/Link';
