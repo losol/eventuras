@@ -3,7 +3,10 @@ import {createEncryptedJWT} from '@eventuras/fides-auth/utils';
 import {validateSessionJwt} from '@eventuras/fides-auth/session-validation';
 import type {Session, CreateSessionOptions} from '@eventuras/fides-auth/types';
 import type {OAuthConfig} from '@eventuras/fides-auth/oauth';
+import { Logger } from '@eventuras/logger';
 import { cache } from 'react';
+
+const logger = Logger.create({ namespace: 'fides-auth-next:session' });
 
 /**
  * Creates an encrypted JWT containing session data.
@@ -33,21 +36,32 @@ export async function createSession(
  * Uses React server components' cache for performance.
  */
 export const getCurrentSession = cache(async (config?: OAuthConfig): Promise<Session | null> => {
-  const sessionCookie = (await cookies()).get('session')?.value ?? null;
+  try {
+    const cookieStore = await cookies();
+    const sessionCookie = cookieStore.get('session')?.value ?? null;
 
-  if (!sessionCookie) {
+    if (!sessionCookie) {
+      return null;
+    }
+
+    const sessionjwt = await validateSessionJwt(sessionCookie);
+
+    if (sessionjwt.status !== 'VALID') {
+      return null;
+    }
+
+    if (sessionjwt.session) {
+      return sessionjwt.session;
+    }
+
+    return null;
+  } catch (error) {
+    // Worker thread errors should not crash the application
+    if (error instanceof Error && error.message.includes('worker')) {
+      logger.error({ error }, 'Worker thread error in getCurrentSession');
+    } else {
+      logger.error({ error }, 'Unexpected error in getCurrentSession');
+    }
     return null;
   }
-
-  const sessionjwt = await validateSessionJwt(sessionCookie);
-
-  if (sessionjwt.status !== 'VALID') {
-    return null;
-  }
-
-  if (sessionjwt.session) {
-    return sessionjwt.session;
-  }
-
-  return null;
 });

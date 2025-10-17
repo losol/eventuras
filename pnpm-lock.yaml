@@ -733,6 +733,9 @@ importers:
       '@eventuras/fides-auth':
         specifier: workspace:*
         version: link:../fides-auth
+      '@eventuras/logger':
+        specifier: workspace:*
+        version: link:../logger
       '@eventuras/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config

@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@eventuras/fides-auth": "workspace:*",
+    "@eventuras/logger": "workspace:*",
     "@eventuras/typescript-config": "workspace:*",
     "next": "^15.5.5"
   },

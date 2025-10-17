@@ -22,8 +22,7 @@ const ProductSelection = ({
           return (
             <Checkbox
               key={product.productId}
-              testId="product-selection-checkbox"
-              id={product.productId}
+              id={`checkbox-product-${product.productId}`}
               title={product.name}
               description={product.description}
               {...register(`products.${product.productId}`)}
