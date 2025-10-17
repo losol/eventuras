@@ -11,6 +11,8 @@ import { FC, useState } from 'react';
 import { useToast } from '@eventuras/toast';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 
+const logger = Logger.create({ namespace: 'UserEditor' });
+
 interface UserEditorProps {
   user?: UserDto;
   onUserUpdated?: (updatedUser: UserDto) => void;
@@ -31,19 +33,18 @@ const UserEditor: FC<UserEditorProps> = props => {
   const t = useTranslations();
   const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
   const [isUpdating, setIsUpdating] = useState(false);
-  const log_namespace = 'user.account';
   const toast = useToast();
 
-  Logger.info({ namespace: log_namespace }, 'UserEditor rendering, user:', user);
+  logger.info({ user }, 'UserEditor rendering');
 
   const createUser = async (form: UserDto) => {
     const user = await apiWrapper(() =>
       sdk.users.postV3Users({ requestBody: form as UserFormDto })
     );
-    Logger.info({ namespace: log_namespace }, 'Created new user with id', user.value?.id);
+    logger.info({ userId: user.value?.id }, 'Created new user');
     if (user.error) {
       toast.error(t('common.labels.error') + ': ' + user.error.message);
-      Logger.error({ namespace: log_namespace }, 'Failed to create new user', user.error);
+      logger.error({ error: user.error }, 'Failed to create new user');
       return user;
     }
 
@@ -53,7 +54,7 @@ const UserEditor: FC<UserEditorProps> = props => {
 
   const updateUser = async (user: UserDto, form: UserDto, adminMode: boolean) => {
     // Update existing user
-    Logger.info({ namespace: log_namespace }, 'Updating user');
+    logger.info({ userId: user.id }, 'Updating user');
     setIsUpdating(true);
     // if adminMode, update user with users endpoint, otherwise use userProfile endpoint
     const updatedUser = adminMode
@@ -67,11 +68,11 @@ const UserEditor: FC<UserEditorProps> = props => {
 
     if (updatedUser.error) {
       toast.error(t('common.labels.error') + ': ' + updatedUser.error.message);
-      Logger.error({ namespace: log_namespace }, 'Failed to update user', updatedUser.error);
+      logger.error({ error: updatedUser.error, userId: user.id }, 'Failed to update user');
       return updatedUser;
     }
 
-    Logger.info({ namespace: log_namespace }, 'Updated user with id', updatedUser.value?.id);
+    logger.info({ userId: updatedUser.value?.id }, 'Updated user successfully');
 
     toast.success(t('user.labels.updateUserSuccess') + ': ' + updatedUser.value?.name);
 

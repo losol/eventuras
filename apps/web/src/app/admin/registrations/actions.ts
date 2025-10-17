@@ -3,7 +3,9 @@
 import { Logger } from '@eventuras/logger';
 import { revalidatePath } from 'next/cache';
 
+const logger = Logger.create({ namespace: 'RegistrationActions' });
+
 export default async function revalidateRegistrationCache() {
-  Logger.info({ namespace: 'cache' }, 'Revalidating registration cache');
+  logger.info('Revalidating registration cache');
   revalidatePath('/admin/registrations');
 }

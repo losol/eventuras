@@ -1,6 +1,9 @@
 import { EventInfoStatus } from '@eventuras/sdk';
 import { Container, Heading, Text } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
+
+const logger = Logger.create({ namespace: 'EventStaticParams' });
+
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
@@ -27,9 +30,9 @@ export const dynamicParams = true;
 export async function generateStaticParams() {
   const orgId = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID);
 
-  Logger.info(
-    { namespace: 'events:staticparams' },
-    `Api Base url: ${Environment.NEXT_PUBLIC_BACKEND_URL}, orgId: ${orgId})`
+  logger.info(
+    { apiBaseUrl: Environment.NEXT_PUBLIC_BACKEND_URL, orgId },
+    'Generating static params for events'
   );
 
   try {
@@ -47,10 +50,10 @@ export async function generateStaticParams() {
         slug: eventInfo.slug!,
       }));
 
-    Logger.info({ namespace: 'events:staticparams' }, 'Static params:', staticParams);
+    logger.info({ staticParams }, 'Generated static params');
     return staticParams;
   } catch (error) {
-    Logger.error({ namespace: 'events:staticparams' }, 'Error generating static params:', error);
+    logger.error({ error }, 'Error generating static params');
     return [];
   }
 }

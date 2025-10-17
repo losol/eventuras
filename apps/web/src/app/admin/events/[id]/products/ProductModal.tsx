@@ -4,6 +4,9 @@ import type { NewProductDto, ProductDto } from '@eventuras/sdk';
 import { Form, Input, NumberInput } from '@eventuras/smartform';
 import { Button, Heading } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
+
+const logger = Logger.create({ namespace: 'ProductModal' });
+
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -56,9 +59,9 @@ const ProductModal: React.FC<ProductModalProps> = ({
     setApiState({ error: null, loading: true });
 
     if (isEditMode && product) {
-      Logger.info({ namespace: 'ProductEditor' }, 'Editing product:', data);
+      logger.info({ product: data }, 'Editing product');
     } else {
-      Logger.info({ namespace: 'ProductEditor' }, 'Adding product:', data);
+      logger.info({ product: data }, 'Adding product');
     }
 
     const result = editMode

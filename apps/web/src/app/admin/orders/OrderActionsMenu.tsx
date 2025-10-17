@@ -2,6 +2,9 @@
 import { InvoiceRequestDto, OrderDto, OrderStatus, PaymentProvider } from '@eventuras/sdk';
 import { Button, Definition, DescriptionList, Drawer, Heading, Term } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
+
+const logger = Logger.create({ namespace: 'OrderActionsMenu' });
+
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
@@ -17,8 +20,7 @@ export const OrderActionsMenu = ({ order }: OrderActionsMenuProps) => {
   const t = useTranslations();
   const [invoiceDrawerOpen, setInvoiceDrawerOpen] = useState(false);
   const router = useRouter();
-  Logger.info({ namespace: 'invoicing:order' }, order);
-  Logger.info({ namespace: 'invoicing:registration' }, order.registration);
+  logger.info({ order: order, registration: order.registration }, 'Order details');
 
   const invoicablePaymentMethods = [
     PaymentProvider.POWER_OFFICE_EMAIL_INVOICE,
@@ -71,7 +73,7 @@ export const OrderActionsMenu = ({ order }: OrderActionsMenuProps) => {
     );
 
     if (invoice.ok) {
-      Logger.info({ namespace: 'invoicing:order' }, 'Invoice sent to accounting system');
+      logger.info('Invoice sent to accounting system');
     }
     router.refresh();
   };

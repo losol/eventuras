@@ -85,6 +85,7 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
 }) => {
   const toast = useToast();
   const t = useTranslations();
+  const logger = Logger.create({ namespace: 'AddUserToEvent' });
 
   const { control, register, setValue, handleSubmit } = useForm<AddUserToEventFormValues>();
 
@@ -110,11 +111,11 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
     const result = await createEventRegistration(newRegistration, productMap);
 
     if (result.ok) {
-      Logger.info({ namespace: 'AddUserToEvent' }, 'User succesfully added to the event!');
+      logger.info('User successfully added to the event!');
       toast.success('User successfully added to the event!');
       onUseradded(user);
     } else {
-      Logger.error({ namespace: 'AddUserToEvent' }, result.error);
+      logger.error({ error: result.error }, 'Failed to add user to event');
       if (result.error!.status === 409) {
         toast.error('That user is already registered to the event');
         return;

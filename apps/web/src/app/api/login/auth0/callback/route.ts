@@ -8,10 +8,12 @@ import * as openid from 'openid-client';
 import Environment from '@/utils/Environment';
 import { oauthConfig, redirect_uri } from '@/utils/oauthConfig';
 
+const logger = Logger.create({ namespace: 'Auth0Login' });
+
 export async function GET(request: Request): Promise<Response> {
   // 1) Rate limit
   if (!globalGETRateLimit()) {
-    Logger.warn({ namespace: 'login:auth0' }, 'Rate limit exceeded');
+    logger.warn('Rate limit exceeded');
     return new Response('Too many requests', { status: 429 });
   }
 
@@ -26,12 +28,12 @@ export async function GET(request: Request): Promise<Response> {
     const storedState = cookieStore.get('oauth_state')?.value;
     const storedCodeVerifier = cookieStore.get('oauth_code_verifier')?.value;
     if (!storedState || !storedCodeVerifier) {
-      Logger.warn({ namespace: 'login:auth0' }, 'Missing state or code verifier');
+      logger.warn('Missing state or code verifier');
       return new Response('Please restart the login process.', { status: 400 });
     }
 
     // 4) Exchange code for tokens
-    Logger.debug({ namespace: 'login:auth0' }, 'Requesting tokens.');
+    logger.debug('Requesting tokens');
     const auth0config = await openid.discovery(
       new URL(oauthConfig.issuer),
       oauthConfig.clientId,
@@ -93,7 +95,7 @@ export async function GET(request: Request): Promise<Response> {
       headers: { Location: returnTo },
     });
   } catch (error) {
-    Logger.error({ namespace: 'login:auth0', error }, 'Auth0 callback error');
+    logger.error({ error }, 'Auth0 callback error');
     return new Response('An unexpected error occurred. Please restart the login process.', {
       status: 500,
     });

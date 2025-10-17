@@ -168,6 +168,7 @@ export default function EventNotificator({
 }: EventNotificatorProps) {
   const toast = useToast();
   const t = useTranslations();
+  const logger = Logger.create({ namespace: 'EventNotificator' });
 
   const {
     register,
@@ -185,10 +186,7 @@ export default function EventNotificator({
     try {
       const validationErrors = validateFormData(data, notificatorType);
       if (validationErrors.length > 0) {
-        Logger.warn(
-          { namespace: 'EventNotificator' },
-          `Form validation failed: ${JSON.stringify(validationErrors)}`
-        );
+        logger.warn(`Form validation failed: ${JSON.stringify(validationErrors)}`);
         toast.error(validationErrors.join('\n'));
         return;
       }
@@ -196,17 +194,18 @@ export default function EventNotificator({
       const body = getBodyDto(eventId, data, notificatorType);
       const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
 
-      Logger.info(
-        { namespace: 'EventNotificator' },
-        `Sending ${notificatorType} notification for event ${eventId}`,
+      logger.info(
         {
+          notificationType: notificatorType,
+          eventId,
           recipientCriteria: {
             statuses: Object.keys(data.registrationStatus || {}).filter(
               k => data.registrationStatus[k]
             ),
             types: Object.keys(data.registrationTypes || {}).filter(k => data.registrationTypes[k]),
           },
-        }
+        },
+        `Sending ${notificatorType} notification for event ${eventId}`
       );
 
       const result =
@@ -226,20 +225,20 @@ export default function EventNotificator({
 
       if (!result.ok) {
         const formatted = parseApiError(result.error);
-        Logger.error({ namespace: 'EventNotificator' }, `Failed to send ${notificatorType}`, {
-          errorType: formatted.type,
-          errorMessage: formatted.message,
-          originalError: formatted.originalError,
-          requestBody: body,
-        });
+        logger.error(
+          {
+            error: formatted.originalError,
+            errorType: formatted.type,
+            errorMessage: formatted.message,
+            requestBody: body,
+          },
+          `Failed to send ${notificatorType}`
+        );
         toast.error(formatted.message);
         return;
       }
 
-      Logger.info(
-        { namespace: 'EventNotificator' },
-        `Successfully sent ${notificatorType} notification for event ${eventId}`
-      );
+      logger.info(`Successfully sent ${notificatorType} notification for event ${eventId}`);
       toast.success(
         notificatorType === EventNotificatorType.EMAIL
           ? t('admin.eventNotifier.form.successFeedbackEmail')
@@ -247,10 +246,9 @@ export default function EventNotificator({
       );
       onClose();
     } catch (error) {
-      Logger.error(
-        { namespace: 'EventNotificator' },
-        `Unexpected error in ${notificatorType} handler`,
-        { error, eventId, notificatorType, data }
+      logger.error(
+        { error, eventId, notificationType: notificatorType, formData: data },
+        `Unexpected error in ${notificatorType} handler`
       );
       toast.error('An unexpected error occurred. Please try again.');
     }

@@ -4,6 +4,8 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { oauthConfig } from './utils/oauthConfig';
 
+const logger = Logger.create({ namespace: 'web:middleware' });
+
 export async function middleware(request: NextRequest) {
   const url = new URL(request.url);
   const pathname = url.pathname;
@@ -24,7 +26,7 @@ export async function middleware(request: NextRequest) {
     try {
       origin = new URL(originHeader);
     } catch {
-      Logger.error({ namespace: 'eventuras:middleware' }, 'Invalid Origin header:', originHeader);
+      logger.warn({ originHeader }, 'Invalid Origin header');
       return new NextResponse(null, { status: 403 });
     }
 
@@ -54,7 +56,7 @@ export async function middleware(request: NextRequest) {
       }
 
       // 2b) Expired → try to refresh
-      Logger.info({ namespace: 'eventuras:middleware' }, 'Token expired, refreshing…');
+      logger.info('Token expired, refreshing…');
       try {
         const updated = await refreshSession(session, oauthConfig);
         const encryptedJwt = await createEncryptedJWT(updated);
@@ -69,7 +71,7 @@ export async function middleware(request: NextRequest) {
         });
         return res;
       } catch (err) {
-        Logger.warn({ namespace: 'eventuras:middleware' }, 'Refresh failed, clearing session', err);
+        logger.warn({ error: err }, 'Refresh failed, clearing session');
 
         const res = NextResponse.redirect(
           new URL('/api/login/auth0', originUrl).toString() +

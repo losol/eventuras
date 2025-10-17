@@ -1,6 +1,8 @@
 import { Badge, Container, Heading, Section } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
 
+const logger = Logger.create({ namespace: 'EventAdminPage' });
+
 import Wrapper from '@/components/eventuras/Wrapper';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
@@ -39,18 +41,18 @@ export default async function EventAdminPage({ params }: Readonly<EventInfoProps
   ]);
 
   if (!eventinfo.ok || !eventinfo.value) {
-    Logger.error({ namespace: 'EditEventinfo' }, `Event ${id} not found`);
+    logger.error(`Event ${id} not found`);
     notFound();
   }
 
   if (!registrations.ok) {
-    Logger.warn({ namespace: 'EventAdminPage' }, 'registrations call failed', registrations.error);
+    logger.warn({ error: registrations.error }, 'registrations call failed');
   }
   if (!eventProducts.ok) {
-    Logger.warn({ namespace: 'EventAdminPage' }, 'products call failed', eventProducts.error);
+    logger.warn({ error: eventProducts.error }, 'products call failed');
   }
   if (!statistics.ok) {
-    Logger.warn({ namespace: 'EventAdminPage' }, 'statistics call failed', statistics.error);
+    logger.warn({ error: statistics.error }, 'statistics call failed');
   }
 
   return (

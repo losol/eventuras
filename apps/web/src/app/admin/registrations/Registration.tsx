@@ -18,6 +18,9 @@ import {
   Term,
 } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
+
+const logger = Logger.create({ namespace: 'Registration' });
+
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
@@ -44,7 +47,6 @@ type TranslationFunction = (
   key: string,
   options?: Record<string, string | number | Date>
 ) => string;
-const logger_namespace = 'Registration';
 
 /**
  * Retrieves status labels translated based on the current language.
@@ -87,13 +89,10 @@ export const updateRegistration = async (
     })
   );
   if (result.ok) {
-    Logger.info({ namespace: logger_namespace }, `Registration ${id} updated successfully`);
+    logger.info({ registrationId: id }, `Registration updated successfully`);
     onUpdate?.(result.value!);
   } else {
-    Logger.error(
-      { namespace: logger_namespace },
-      `Error updating registration ${id}: ${result.error}`
-    );
+    logger.error({ error: result.error, registrationId: id }, `Error updating registration`);
   }
   return result;
 };
@@ -112,15 +111,9 @@ export const statusPatchRequest = async (registrationId: number, status: Registr
   );
 
   if (result.ok) {
-    Logger.info(
-      { namespace: logger_namespace },
-      `Registration ${registrationId} status updated to ${status}`
-    );
+    logger.info({ registrationId, status }, `Registration status updated successfully`);
   } else {
-    Logger.error(
-      { namespace: logger_namespace },
-      `Error updating registration ${registrationId}: ${result.error}`
-    );
+    logger.error({ error: result.error, registrationId }, `Error updating registration status`);
   }
   return result;
 };
