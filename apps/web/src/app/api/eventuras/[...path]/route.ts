@@ -1,16 +1,17 @@
-import { Logger } from '@eventuras/logger';
+import { Debug } from '@eventuras/logger';
 import { NextRequest, NextResponse } from 'next/server';
 
-import Environment, { EnvironmentVariables } from '@/utils/Environment';
+import Environment from '@/utils/Environment';
 import { getAccessToken } from '@/utils/getAccesstoken';
 
+const debug = Debug.create('web:api:forwarder');
 const eventurasAPI_URL = Environment.NEXT_PUBLIC_BACKEND_URL;
 
 function isValidURL(str: string): boolean {
   try {
     new URL(str);
     return true;
-  } catch (e) {
+  } catch {
     return false;
   }
 }
@@ -74,23 +75,13 @@ async function forwarder(request: NextRequest) {
     data = await fResponse.blob();
   }
 
-  if (Environment.get(EnvironmentVariables.NODE_ENV) === 'development') {
-    Logger.info(
-      {
-        developerOnly: true,
-        namespace: 'api:forwarder',
-      },
-      {
-        isBlob: isBlob,
-        forwardUrl,
-        body: JSON.stringify(jBody),
-        method: request.method,
-        status: fResponse.status,
-        data: JSON.stringify(data),
-        token,
-      }
-    );
-  }
+  debug(
+    'Request forwarded: %s %s -> %d %s',
+    request.method,
+    forwardUrl,
+    fResponse.status,
+    isBlob ? '[BLOB]' : JSON.stringify(data)
+  );
 
   const init: ResponseInit = {
     status: fResponse.status,
