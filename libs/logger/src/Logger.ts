@@ -1,16 +1,10 @@
 /**
- * Wrapper class for debug-js and Pino. Meant to ease logging and future-proof possible usage of different logging frameworks.
- * Uses namespaces to enable or disable logging. See https://www.npmjs.com/package/debug for more information.
+ * Production logger using Pino.
  *
- * It includes Pino as its default logger, with debug to support dev logging. For namespace filtering, only debug
- * is used, but the namespace is forwarded to pino as a helpful reference.
+ * This logger is optimized for production use with structured logging, context fields,
+ * correlation IDs, auto-redaction, and configurable log levels.
  *
- * In short, use the env var DEBUG to log all eventuras like so:
- * DEBUG=eventuras:*
- * or only authentication logs for instance:
- * DEBUG=eventuras:auth*
- *
- * In the browser, a localStorage var has to be set in the console: localStorage.debug = 'eventuras:*'
+ * For development debugging, use the Debug utility instead.
  *
  * Standard log levels (Pino):
  * fatal: 60
@@ -34,12 +28,7 @@
  * logger.info('Event added', { eventId: 456 });
  * // Logs: { namespace: 'CollectionEditor', collectionId: 123, eventId: 456, msg: 'Event added' }
  */
-import createDebug from 'debug';
 import pino, { type Logger as PinoLogger } from 'pino';
-
-interface DebugCache {
-  [key: string]: createDebug.Debugger;
-}
 
 export type LogLevel = 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'fatal';
 
@@ -72,7 +61,6 @@ export type LoggerConfig = {
 };
 
 export class Logger {
-  private static debugCache: DebugCache = {};
   private static pinoLogger: PinoLogger;
   private static config: LoggerConfig = {
     prettyPrint: process.env.NODE_ENV === 'development',
@@ -157,15 +145,6 @@ export class Logger {
     Logger.pinoLogger = Logger.createPinoInstance();
   }
 
-  private static getDebug(namespace: string): createDebug.Debugger {
-    const ns = `eventuras:${namespace}`;
-    const exists = ns in Logger.debugCache;
-    if (!exists) {
-      Logger.debugCache[ns] = createDebug(ns);
-    }
-    return Logger.debugCache[ns]!;
-  }
-
   private static formatError(error: unknown): string {
     if (error instanceof Error) {
       return `${error.name}: ${error.message}\nStack: ${error.stack}`;
@@ -173,9 +152,7 @@ export class Logger {
     return String(error);
   }
 
-  private static wrapLogger(
-    pinoFunction: (obj: any, msg?: string | undefined) => void,
-  ) {
+  private static wrapLogger(pinoFunction: (obj: any, msg?: string | undefined) => void) {
     return (
       options: LoggerOptions = { developerOnly: false, namespace: '' },
       ...msg: any | any[]
@@ -190,18 +167,11 @@ export class Logger {
         ...(options.context || {}),
       };
 
-      // Use pino outside of dev environment, and debug inside of it to avoid double logging locally
-      if (process.env.NODE_ENV !== 'development') {
-        pinoFunction({ ...logData, msg: msg });
-      } else {
-        Logger.getDebug(options.namespace ?? '')(msg);
-      }
+      pinoFunction({ ...logData, msg: msg });
     };
   }
 
-  private static wrapErrorLogger(
-    pinoFunction: (obj: any, msg?: string | undefined) => void,
-  ) {
+  private static wrapErrorLogger(pinoFunction: (obj: any, msg?: string | undefined) => void) {
     return (
       options: ErrorLoggerOptions = { developerOnly: false, namespace: '' },
       ...msg: any | any[]
@@ -219,17 +189,7 @@ export class Logger {
         ...errorInfo,
       };
 
-      // Use pino outside of dev environment, and debug inside of it to avoid double logging locally
-      if (process.env.NODE_ENV !== 'development') {
-        pinoFunction({ ...logData, msg: msg });
-      } else {
-        const debugInstance = Logger.getDebug(options.namespace ?? '');
-        if (options.error) {
-          debugInstance(`${msg} - Error: ${Logger.formatError(options.error)}`);
-        } else {
-          debugInstance(msg);
-        }
-      }
+      pinoFunction({ ...logData, msg: msg });
     };
   }
 
