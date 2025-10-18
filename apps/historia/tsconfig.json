@@ -21,6 +21,7 @@
     "resolveJsonModule": true,
     "sourceMap": true,
     "isolatedModules": true,
+    "types": [],
     "plugins": [
       {
         "name": "next"
