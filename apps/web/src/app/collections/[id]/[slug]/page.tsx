@@ -12,7 +12,7 @@ import EventCard from '@/components/event/EventCard';
 import Wrapper from '@/components/eventuras/Wrapper';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
-import Environment from '@/utils/Environment';
+import { appConfig } from '@/config.server';
 
 type EventInfoProps = {
   params: Promise<{
@@ -26,10 +26,10 @@ export const revalidate = 300;
 const dynamicParams = true;
 
 export async function generateStaticParams() {
-  const orgId = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID);
+  const orgId = parseInt(appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID as string);
 
   logger.info(
-    { apiBaseUrl: Environment.NEXT_PUBLIC_BACKEND_URL, orgId },
+    { apiBaseUrl: appConfig.env.NEXT_PUBLIC_BACKEND_URL as string, orgId },
     'Generating static params for collections'
   );
 

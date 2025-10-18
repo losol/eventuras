@@ -4,7 +4,7 @@ import { createContext, useContext } from 'react';
 import { Actor, assign, createMachine, fromPromise } from 'xstate';
 
 import { createSDK } from '@/utils/api/EventurasApi';
-import Environment from '@/utils/Environment';
+import { publicEnv } from '@/config.client';
 
 type SessionUser = {
   name: string;
@@ -73,7 +73,7 @@ const AuthenticationFlowMachine = createMachine({
         src: fromPromise(async ({ input }) => {
           const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
           return sdk.userProfile.getV3Userprofile({
-            eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID, 10),
+            eventurasOrgId: parseInt(publicEnv.NEXT_PUBLIC_ORGANIZATION_ID as string, 10),
           });
         }),
         onDone: {

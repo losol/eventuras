@@ -5,7 +5,7 @@ import { Logger } from '@eventuras/logger';
 import { redirect } from 'next/navigation';
 
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
-import Environment from '@/utils/Environment';
+import { appConfig } from '@/config.server';
 import { getAccessToken } from '@/utils/getAccesstoken';
 
 export async function createEvent(formData: FormData) {
@@ -21,7 +21,7 @@ export async function createEvent(formData: FormData) {
   }
 
   const organizationId = parseInt(
-    formData.get('organizationId')?.toString() ?? Environment.NEXT_PUBLIC_ORGANIZATION_ID
+    formData.get('organizationId')?.toString() ?? appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID as string
   );
   const title = formData.get('title')?.toString() ?? 'New event';
 
@@ -31,7 +31,7 @@ export async function createEvent(formData: FormData) {
   );
 
   const eventuras = createSDK({
-    baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
+    baseUrl: appConfig.env.NEXT_PUBLIC_BACKEND_URL as string,
     authHeader: await getAccessToken(),
   });
 

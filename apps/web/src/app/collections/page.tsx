@@ -6,13 +6,13 @@ import { Card } from '@eventuras/ratio-ui/core/Card';
 import Wrapper from '@/components/eventuras/Wrapper';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
-import Environment from '@/utils/Environment';
+import { publicEnv } from '@/config.client';
 
 const CollectionIndexPage: React.FC = async () => {
   const t = await getTranslations();
   const result = await apiWrapper(() =>
     createSDK({ inferUrl: true }).eventCollection.getV3Eventcollections({
-      eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID),
+  eventurasOrgId: parseInt(String(publicEnv.NEXT_PUBLIC_ORGANIZATION_ID) || '0'),
     })
   );
 

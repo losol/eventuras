@@ -1,11 +1,11 @@
 import { Debug } from '@eventuras/logger';
 import { NextRequest, NextResponse } from 'next/server';
 
-import Environment from '@/utils/Environment';
+import { appConfig } from '@/config.server';
 import { getAccessToken } from '@/utils/getAccesstoken';
 
 const debug = Debug.create('web:api:forwarder');
-const eventurasAPI_URL = Environment.NEXT_PUBLIC_BACKEND_URL;
+const eventurasAPI_URL = appConfig.env.NEXT_PUBLIC_BACKEND_URL as string;
 
 function isValidURL(str: string): boolean {
   try {
@@ -55,7 +55,7 @@ async function forwarder(request: NextRequest) {
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': contentType,
-      'Eventuras-Org-Id': Environment.NEXT_PUBLIC_ORGANIZATION_ID,
+      'Eventuras-Org-Id': appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID as string,
       ...forwardAccept,
     },
     redirect: 'manual',

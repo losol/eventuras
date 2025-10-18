@@ -17,7 +17,7 @@ import { ParticipationTypes } from '@/types';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import { participationMap } from '@/utils/api/mappers';
 import { mapEnum } from '@/utils/enum';
-import Environment from '@/utils/Environment';
+import { publicEnv } from '@/config.client';
 
 type FormValues = {
   subject: string;
@@ -212,13 +212,13 @@ export default function EventNotificator({
         notificatorType === EventNotificatorType.EMAIL
           ? await apiWrapper(() =>
               sdk.notificationsQueueing.postV3NotificationsEmail({
-                eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID, 10),
+                eventurasOrgId: parseInt(publicEnv.NEXT_PUBLIC_ORGANIZATION_ID as string, 10),
                 requestBody: body as EmailNotificationDto,
               })
             )
           : await apiWrapper(() =>
               sdk.notificationsQueueing.postV3NotificationsSms({
-                eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID, 10),
+                eventurasOrgId: parseInt(publicEnv.NEXT_PUBLIC_ORGANIZATION_ID as string, 10),
                 requestBody: body as SmsNotificationDto,
               })
             );

@@ -1,12 +1,12 @@
 import { NextPage } from 'next';
 
 import { Unauthorized } from '@eventuras/ratio-ui/blocks/Unauthorized';
-import Environment from '@/utils/Environment';
+import { appConfig } from '@/config.server';
 import { getAccessToken } from '@/utils/getAccesstoken';
 
 import { createSDK } from '../api/EventurasApi';
 
-const ORGANIZATION_ID: number = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID);
+const ORGANIZATION_ID: number = parseInt(appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID as string);
 
 const withAuthorization = (WrappedComponent: NextPage, role: string): NextPage => {
   const WithAuthorizationWrapper: NextPage = async props => {

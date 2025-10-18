@@ -23,7 +23,7 @@ import { Tabs } from '@eventuras/ratio-ui/core/Tabs';
 import { useToast } from '@eventuras/toast';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import { mapEnum } from '@/utils/enum';
-import Environment from '@/utils/Environment';
+import { publicEnv } from '@/config.client';
 import slugify from '@/utils/slugify';
 
 export type EventEditorProps = {
@@ -85,7 +85,7 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
       testId="event-edit-form"
       shouldUnregister={false}
     >
-      <HiddenInput name="organizationId" value={Environment.NEXT_PUBLIC_ORGANIZATION_ID} />
+      <HiddenInput name="organizationId" value={publicEnv.NEXT_PUBLIC_ORGANIZATION_ID as string} />
       <Tabs>
         <Tabs.Item title="Overview">
           <Fieldset label="Settings" disabled={apiState.loading}>
@@ -101,7 +101,7 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
             <input
               name="organizationId"
               type="hidden"
-              value={Environment.NEXT_PUBLIC_ORGANIZATION_ID}
+              value={publicEnv.NEXT_PUBLIC_ORGANIZATION_ID as string}
             />
 
             <Input name="title" required label="Title" placeholder="Event Title" />

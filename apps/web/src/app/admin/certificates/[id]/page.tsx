@@ -2,9 +2,9 @@ import { Container, Heading, Section } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
 import { getTranslations } from 'next-intl/server';
 
+import { publicEnv } from '@/config.client';
 import Wrapper from '@/components/eventuras/Wrapper';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
-import Environment from '@/utils/Environment';
 import { getAccessToken } from '@/utils/getAccesstoken';
 
 import Certificate from '../Certificate';
@@ -21,7 +21,7 @@ export default async function CertificateDetailPage({ params }: Readonly<Certifi
   const t = await getTranslations();
 
   const eventuras = createSDK({
-    baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
+    baseUrl: publicEnv.NEXT_PUBLIC_BACKEND_URL as string,
     authHeader: await getAccessToken(),
   });
 

@@ -5,7 +5,7 @@ import { getTranslations } from 'next-intl/server';
 import Wrapper from '@/components/eventuras/Wrapper';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import withAuthorization from '@/utils/auth/withAuthorization';
-import Environment from '@/utils/Environment';
+import { appConfig } from '@/config.server';
 import { getAccessToken } from '@/utils/getAccesstoken';
 
 import UserList from './UserList';
@@ -14,12 +14,12 @@ import UsersActionMenu from './UsersActionMenu';
 const AdminUserPage = async () => {
   const t = await getTranslations();
   const eventuras = createSDK({
-    baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
+    baseUrl: appConfig.env.NEXT_PUBLIC_BACKEND_URL as string,
     authHeader: await getAccessToken(),
   });
   const userFetchResult = await apiWrapper(() =>
     eventuras.users.getV3Users1({
-      eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID, 10),
+      eventurasOrgId: parseInt(appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID as string, 10),
     })
   );
   let data: UserDto[] = [];

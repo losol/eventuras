@@ -12,12 +12,12 @@ import { Logger } from '@eventuras/logger';
 const logger = Logger.create({ namespace: 'web:utils:api', context: { module: 'events' } });
 
 import { ApiResult, apiWrapper, createSDK } from '@/utils/api/EventurasApi';
-import Environment from '@/utils/Environment';
+// import { appConfig } from '@/config.server';
 
-const eventuras = new Eventuras();
-export type GetEventsOptions = Parameters<typeof eventuras.events.getV3Events>[0];
+
+export type GetEventsOptions = Parameters<typeof Eventuras.prototype.events.getV3Events>[0];
 export type GetEventRegistrationsOptions = Parameters<
-  typeof eventuras.registrations.getV3Registrations
+  typeof Eventuras.prototype.registrations.getV3Registrations
 >[0];
 
 export const productMapToOrderLineModel = (
@@ -40,7 +40,7 @@ export const createEventRegistration = async (
 
   const registration = apiWrapper(() =>
     sdk.registrations.postV3Registrations({
-      eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID, 10),
+       eventurasOrgId: parseInt((process.env.NEXT_PUBLIC_ORGANIZATION_ID ?? '0') as string, 10),
       requestBody: newRegistration,
     })
   );
@@ -82,7 +82,7 @@ export const updateEventRegistration = async (
   const registration = apiWrapper(() =>
     sdk.registrations.putV3Registrations({
       id,
-      eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID, 10),
+      eventurasOrgId: parseInt((process.env.NEXT_PUBLIC_ORGANIZATION_ID ?? '0') as string, 10),
       requestBody: updatedRegistration,
     })
   );
@@ -108,7 +108,7 @@ export const addProductsToRegistration = (
   return apiWrapper(() =>
     sdk.registrationOrders.postV3RegistrationsProducts({
       id: parseInt(registrationId.toString(), 10),
-      eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID, 10),
+      eventurasOrgId: parseInt((process.env.NEXT_PUBLIC_ORGANIZATION_ID ?? '0') as string, 10),
       requestBody: { lines: products },
     })
   );

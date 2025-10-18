@@ -3,12 +3,12 @@ import { getTranslations } from 'next-intl/server';
 
 import { Link } from '@eventuras/ratio-ui-next/Link';
 import withAuthorization from '@/utils/auth/withAuthorization';
-import Environment from '@/utils/Environment';
+import { publicEnv } from '@/config.client';
 
 import Wrapper from '../../components/eventuras/Wrapper';
 import AdminEventList from './events/AdminEventList';
 
-const ORGANIZATION_ID: number = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID);
+const ORGANIZATION_ID: number = parseInt(String(publicEnv.NEXT_PUBLIC_ORGANIZATION_ID) || '0');
 const AdminPage = async () => {
   const t = await getTranslations();
   return (

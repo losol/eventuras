@@ -4,10 +4,10 @@ import { getTranslations } from 'next-intl/server';
 import { EventGrid } from '@/components/event';
 import Wrapper from '@/components/eventuras/Wrapper';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
-import Environment from '@/utils/Environment';
+import { appConfig } from '@/config.server';
 import getSiteSettings from '@/utils/site/getSiteSettings';
 
-const ORGANIZATION_ID = Number(Environment.NEXT_PUBLIC_ORGANIZATION_ID);
+const ORGANIZATION_ID = Number(appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID as string);
 
 export default async function Homepage() {
   const site = await getSiteSettings();

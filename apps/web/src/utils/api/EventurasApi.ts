@@ -1,6 +1,5 @@
 import { ApiError, ApiError as SDKError, CancelablePromise, Eventuras } from '@eventuras/sdk';
 
-import Environment from '../Environment';
 type Headers = Record<string, string>;
 
 type UrlInfer = {
@@ -59,25 +58,28 @@ export const apiWrapper = <T>(fetchFunction: () => Promise<T> | CancelablePromis
 export const fetcher = <T>(fetchFunction: () => Promise<T>) => handleApiResponse(fetchFunction());
 
 export const createSDK = ({ baseUrl, authHeader, inferUrl }: SDKOptions = {}): Eventuras => {
-  const orgId: string = Environment.NEXT_PUBLIC_ORGANIZATION_ID;
-  const apiVersion = Environment.NEXT_PUBLIC_API_VERSION;
+  // Use runtime environment variables directly so this module stays client-safe
+  const orgId: string = (process.env.NEXT_PUBLIC_ORGANIZATION_ID ?? '') as string;
+  const apiVersion: string = (process.env.NEXT_PUBLIC_API_VERSION ?? '1') as string;
   let token: string | undefined | null;
 
   if (authHeader) {
     token = authHeader.startsWith('Bearer ') ? authHeader.substring(7) : authHeader;
   }
   let apiBaseUrl: string = authHeader
-    ? Environment.NEXT_PUBLIC_BACKEND_URL
-    : Environment.NEXT_PUBLIC_API_BASE_URL;
+    ? ((process.env.NEXT_PUBLIC_BACKEND_URL ?? '') as string)
+    : ((process.env.NEXT_PUBLIC_API_BASE_URL ?? '') as string);
   if (baseUrl) {
     apiBaseUrl = baseUrl;
   } else if (inferUrl) {
     const requiresToken = (inferUrl as UrlInfer).requiresToken;
-    if (!requiresToken || Environment.NEXT_IN_PHASE_PRODUCTION_BUILD) {
+    // Treat NEXT_IN_PHASE_PRODUCTION_BUILD as truthy when set to 'true'
+    const inPhaseProduction = String(process.env.NEXT_IN_PHASE_PRODUCTION_BUILD) === 'true';
+    if (!requiresToken || inPhaseProduction) {
       //when we are building, the router is not available, use direct url instead, tokenless
-      apiBaseUrl = Environment.NEXT_PUBLIC_BACKEND_URL;
+      apiBaseUrl = (process.env.NEXT_PUBLIC_BACKEND_URL ?? '') as string;
     } else if (!token) {
-      apiBaseUrl = Environment.NEXT_PUBLIC_API_BASE_URL;
+      apiBaseUrl = (process.env.NEXT_PUBLIC_API_BASE_URL ?? '') as string;
     }
   }
 

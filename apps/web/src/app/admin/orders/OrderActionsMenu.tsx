@@ -10,7 +10,7 @@ import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
 
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
-import Environment from '@/utils/Environment';
+import { publicEnv } from '@/config.client';
 
 export type OrderActionsMenuProps = {
   order: OrderDto;
@@ -41,7 +41,7 @@ export const OrderActionsMenu = ({ order }: OrderActionsMenuProps) => {
       }
       const eventuras = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
       await eventuras.orders.patchV3Orders({
-        eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID),
+        eventurasOrgId: parseInt(publicEnv.NEXT_PUBLIC_ORGANIZATION_ID as string),
         id: order.orderId,
         requestBody: [
           {
@@ -67,7 +67,7 @@ export const OrderActionsMenu = ({ order }: OrderActionsMenuProps) => {
 
     const invoice = await apiWrapper(() =>
       eventuras.invoices.postV3Invoices({
-        eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID),
+        eventurasOrgId: parseInt(publicEnv.NEXT_PUBLIC_ORGANIZATION_ID as string),
         requestBody: invoiceRequest,
       })
     );

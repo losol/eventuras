@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
 
 import { createSDK } from '@/utils/api/EventurasApi';
-import Environment from '@/utils/Environment';
+import { publicEnv } from '@/config.client';
 
 import ProductModal from './ProductModal';
 import { ProductTable } from './ProductTable';
@@ -24,7 +24,7 @@ const EventProductsEditor: React.FC<EventProductsEditorProps> = ({
   const [products, setProducts] = useState<ProductDto[]>(initialProducts);
   const [currentProduct, setCurrentProduct] = useState<ProductDto | undefined>();
   const t = useTranslations();
-  const eventuras = createSDK({ baseUrl: Environment.NEXT_PUBLIC_API_BASE_URL });
+  const eventuras = createSDK({ baseUrl: publicEnv.NEXT_PUBLIC_API_BASE_URL as string });
 
   const onSubmit = async () => {
     // Refresh the list of products after adding or editing
