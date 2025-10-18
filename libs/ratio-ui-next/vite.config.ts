@@ -1,30 +1,12 @@
-import react from '@vitejs/plugin-react';
+import { defineNextLibConfig } from '@eventuras/vite-config/next-lib';
 import { resolve } from 'path';
-import { defineConfig } from 'vite';
-import dts from 'vite-plugin-dts';
 
-export default defineConfig({
-  plugins: [
-    react(),
-    dts({
-      include: ['src/**/*'],
-      exclude: ['src/**/*.stories.tsx'],
-    }),
-  ],
-  build: {
-    lib: {
-      entry: {
-        'Image/index': resolve(__dirname, 'src/Image/index.ts'),
-        'Link/index': resolve(__dirname, 'src/Link/index.ts'),
-        index: resolve(__dirname, 'src/index.ts'),
-      },
-      formats: ['es'],
-    },
-    rollupOptions: {
-      external: ['react', 'react-dom', 'react/jsx-runtime', 'next', 'next/image', 'next/link', '@eventuras/ratio-ui'],
-      output: {
-        preserveModules: false,
-      },
-    },
+export default defineNextLibConfig({
+  entry: {
+    'Image/index': resolve(__dirname, 'src/Image/index.ts'),
+    'Link/index': resolve(__dirname, 'src/Link/index.ts'),
+    index: resolve(__dirname, 'src/index.ts'),
   },
+  external: ['@eventuras/ratio-ui'],
+  preserveModules: false,
 });

@@ -27,13 +27,12 @@
   "devDependencies": {
     "@eventuras/eslint-config": "workspace:*",
     "@eventuras/typescript-config": "workspace:*",
+    "@eventuras/vite-config": "workspace:*",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
-    "@vitejs/plugin-react": "^5.0.4",
     "next": "^15.5.5",
     "typescript": "5.9.3",
-    "vite": "7.1.10",
-    "vite-plugin-dts": "4.5.4"
+    "vite": "7.1.10"
   },
   "peerDependencies": {
     "next": "^15.0.0",
