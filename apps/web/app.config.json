@@ -33,7 +33,10 @@
       "client": true,
       "type": "string",
       "description": "Default locale for internationalization (e.g., en-US, nb-NO)",
-      "enum": ["en-US", "nb-NO"]
+      "enum": [
+        "en-US",
+        "nb-NO"
+      ]
     },
     "NEXT_PUBLIC_AUTH0_DOMAIN": {
       "required": true,
@@ -44,9 +47,9 @@
     "NEXT_PUBLIC_ORGANIZATION_ID": {
       "required": false,
       "client": true,
-      "type": "string",
+      "type": "int",
       "description": "The unique organization ID used to scope frontend configuration and assets",
-      "default": "1"
+      "default": 1
     },
     "NEXT_PUBLIC_SITE_SETTINGS_URL": {
       "required": false,
@@ -83,7 +86,11 @@
       "client": false,
       "type": "string",
       "description": "Node environment (development, production, test)",
-      "enum": ["development", "production", "test"]
+      "enum": [
+        "development",
+        "production",
+        "test"
+      ]
     },
     "SESSION_SECRET": {
       "required": true,
