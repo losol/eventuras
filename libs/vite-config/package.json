@@ -1,0 +1,30 @@
+{
+  "name": "@eventuras/vite-config",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports": {
+    "./base": "./src/base.ts",
+    "./react-lib": "./src/react-lib.ts",
+    "./vanilla-lib": "./src/vanilla-lib.ts",
+    "./next-lib": "./src/next-lib.ts"
+  },
+  "peerDependencies": {
+    "vite": "^6.0.0"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.0.0-beta.11",
+    "@vitejs/plugin-react": "^4.3.4",
+    "@vitejs/plugin-react-swc": "^3.7.2",
+    "glob": "^11.0.0",
+    "vite-plugin-dts": "^4.3.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vite": "^6.0.11"
+  }
+}
