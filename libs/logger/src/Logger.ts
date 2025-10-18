@@ -50,8 +50,6 @@ export type ErrorLoggerOptions = LoggerOptions & {
 };
 
 export type LoggerConfig = {
-  /** Enable pretty printing in development */
-  prettyPrint?: boolean;
   /** Global minimum log level */
   level?: LogLevel;
   /** Paths to redact from logs (e.g., ['password', 'token']) */
@@ -63,7 +61,6 @@ export type LoggerConfig = {
 export class Logger {
   private static pinoLogger: PinoLogger;
   private static config: LoggerConfig = {
-    prettyPrint: process.env.NODE_ENV === 'development',
     level: (process.env.LOG_LEVEL as LogLevel) || 'info',
     redact: ['password', 'token', 'apiKey', 'authorization', 'secret'],
   };
@@ -96,21 +93,7 @@ export class Logger {
     }
   }
 
-  private static isNextJsEnvironment(): boolean {
-    // Check for Next.js runtime environment
-    return typeof process !== 'undefined' && (
-      process.env.NEXT_RUNTIME !== undefined ||
-      process.env.__NEXT_PROCESSED_ENV !== undefined ||
-      process.env.NEXT_PUBLIC_VERCEL_ENV !== undefined ||
-      // Check if we're in a webpack/Next.js build context
-      (typeof globalThis !== 'undefined' && '__next_require__' in globalThis)
-    );
-  }
-
   private static createPinoInstance(): PinoLogger {
-    const isDev = process.env.NODE_ENV === 'development';
-    const isNextJs = Logger.isNextJsEnvironment();
-
     const options: pino.LoggerOptions = {
       level: Logger.config.level || 'info',
       redact: {
@@ -119,38 +102,12 @@ export class Logger {
       },
     };
 
-    // In Next.js, always use basic pino to avoid any bundling issues
-    // pino-pretty uses worker_threads which causes module resolution errors
-    if (isNextJs) {
-      // Simple JSON output for Next.js - works well with Vercel logs
-      return pino(options);
-    }
-
-    // For non-Next.js environments, try to use pino-pretty in development
-    // Only attempt this in pure Node.js environments
-    if (Logger.config.prettyPrint && isDev && typeof window === 'undefined') {
-      try {
-        const pretty = require('pino-pretty');
-        const stream = pretty({
-          colorize: true,
-          translateTime: 'HH:MM:ss Z',
-          ignore: 'pid,hostname',
-          sync: true,
-        });
-
-        return pino(options, stream);
-      } catch (error) {
-        // Fallback to basic pino if pino-pretty is not available
-        // This is fine - we'll use JSON logging instead
-      }
-    }
-
     // File destination if specified
     if (Logger.config.destination) {
       return pino(options, pino.destination(Logger.config.destination));
     }
 
-    // Default: basic JSON logging
+    // Use standard JSON logging - works well with all log aggregation services
     return pino(options);
   }
 
@@ -159,7 +116,6 @@ export class Logger {
    *
    * @example
    * Logger.configure({
-   *   prettyPrint: true,
    *   level: 'debug',
    *   redact: ['password', 'apiKey'],
    * });
