@@ -82,31 +82,71 @@ Create an `app.config.json` file in your app's root directory:
 
 ### 2. Load and validate configuration
 
+#### Server-Side Usage (Recommended)
+
 ```typescript
 import { createConfig } from '@eventuras/app-config';
-import { resolve } from 'path';
 
-// Load config from app.config.json
-const config = createConfig(resolve('./app.config.json'));
+const config = createConfig('./app.config.json');
 
-// Access environment variables (type-safe!)
+// Method 1: Direct property access (cleanest for server-side)
+const clientId = config.env.AUTH0_CLIENT_ID;
+const clientSecret = config.env.AUTH0_CLIENT_SECRET;
+const sessionSecret = config.env.SESSION_SECRET;
+
+// Method 2: Using get() with type parameter
 const apiUrl = config.get<string>('NEXT_PUBLIC_API_BASE_URL');
 const orgId = config.get<string>('NEXT_PUBLIC_ORGANIZATION_ID');
-const port = config.get<number>('PORT');
-
-// Check if a variable exists
-if (config.has('OPTIONAL_VAR')) {
-  const value = config.get('OPTIONAL_VAR');
-}
-
-// Get all env vars
-const allEnv = config.getAllEnv();
-
-// Get the raw config
-const appConfig = config.getConfig();
-console.log(appConfig.name); // "@eventuras/web"
-console.log(appConfig.runtime?.port); // 3000
 ```
+
+#### Next.js Usage (Client + Server)
+
+For Next.js apps, use the `createEnvironment()` helper for automatic compatibility:
+
+```typescript
+// config.ts
+import { createConfig, createEnvironment } from '@eventuras/app-config';
+import { resolve } from 'path';
+
+// Server-side configuration
+export const appConfig = createConfig(
+  resolve(process.cwd(), 'app.config.json')
+);
+
+// Client-side public environment variables
+export const publicEnv = createEnvironment(
+  resolve(process.cwd(), 'app.config.json')
+);
+```
+
+```typescript
+// In client components - use publicEnv
+'use client';
+
+export default function MyComponent() {
+  const apiUrl = publicEnv.NEXT_PUBLIC_API_BASE_URL; // ✅ Works in client
+  const domain = publicEnv.NEXT_PUBLIC_AUTH0_DOMAIN;  // ✅ Works in client
+  
+  return <div>API: {apiUrl}</div>;
+}
+```
+
+```typescript
+// In server components / API routes - use appConfig.env
+export async function getServerSideProps() {
+  // Recommended: Use appConfig.env for server-side variables
+  const clientSecret = appConfig.env.AUTH0_CLIENT_SECRET;
+  const sessionSecret = appConfig.env.SESSION_SECRET;
+  
+  // Alternative: Use publicEnv.get() (also works server-side)
+  const altSecret = publicEnv.get('AUTH0_CLIENT_SECRET');
+  
+  return { props: {} };
+}
+```
+
+**Why explicit getters for NEXT_PUBLIC_*?**  
+Next.js performs build-time replacement of `process.env.NEXT_PUBLIC_*`. The `createEnvironment()` helper automatically generates getters that access `process.env` directly, ensuring client-side compatibility while still validating all variables server-side.
 
 ### 3. Validation happens automatically
 
@@ -290,12 +330,19 @@ Access client-side variables (NEXT_PUBLIC_*):
 import { config } from '@/config';
 
 export function MyComponent() {
-  // Only NEXT_PUBLIC_* vars are accessible client-side
-  const apiUrl = config.get<string>('NEXT_PUBLIC_API_BASE_URL');
+  // ⚠️ IMPORTANT: For Next.js, NEXT_PUBLIC_* vars MUST access process.env directly
+  // Next.js replaces process.env.NEXT_PUBLIC_* at build time
+  const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+  
+  // Or use the Environment wrapper which does this for you:
+  import { Environment } from '@/config';
+  const apiUrl = Environment.NEXT_PUBLIC_API_BASE_URL;
   
   return <div>API: {apiUrl}</div>;
 }
 ```
+
+**Why the limitation?** Next.js performs build-time replacement of `process.env.NEXT_PUBLIC_*` variables. The `appConfig.get()` method reads from a runtime object, so it won't work for client-side code. Server-side code can use either approach.
 
 ## Benefits Over Manual Validation
 

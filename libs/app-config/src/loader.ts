@@ -8,7 +8,13 @@ import { parseEnvValue, EnvValidationError } from './validator.js';
  */
 export class ConfigLoader {
   private config: AppConfig;
-  private env: Record<string, unknown> = {};
+  private envValues: Record<string, unknown> = {};
+
+  /**
+   * Direct access to environment variables as properties
+   * @example config.env.AUTH0_CLIENT_ID
+   */
+  public readonly env: Record<string, unknown>;
 
   constructor(
     configPath: string,
@@ -30,6 +36,22 @@ export class ConfigLoader {
 
     // Validate and parse all environment variables
     this.validateEnvironment();
+
+    // Create readonly proxy for env access
+    this.env = new Proxy(this.envValues, {
+      get: (target, prop: string) => {
+        if (!(prop in target)) {
+          throw new Error(
+            `Environment variable "${prop}" is not defined in app.config.json.\n` +
+              `Available variables: ${Object.keys(target).join(', ')}`
+          );
+        }
+        return target[prop];
+      },
+      set: () => {
+        throw new Error('Cannot modify environment variables through config.env');
+      },
+    });
   }
 
   /**
@@ -41,7 +63,7 @@ export class ConfigLoader {
     for (const [varName, definition] of Object.entries(this.config.env)) {
       try {
         const value = parseEnvValue(varName, this.processEnv[varName], definition);
-        this.env[varName] = value;
+        this.envValues[varName] = value;
 
         // Set default values back to process.env if they were missing
         if (this.processEnv[varName] === undefined && value !== undefined) {
@@ -67,13 +89,13 @@ export class ConfigLoader {
    * Get a typed environment variable value
    */
   get<T = unknown>(varName: string): T {
-    if (!(varName in this.env)) {
+    if (!(varName in this.envValues)) {
       throw new Error(
         `Environment variable "${varName}" is not defined in app.config.json.\n` +
-          `Available variables: ${Object.keys(this.env).join(', ')}`
+          `Available variables: ${Object.keys(this.envValues).join(', ')}`
       );
     }
-    return this.env[varName] as T;
+    return this.envValues[varName] as T;
   }
 
   /**
@@ -87,14 +109,14 @@ export class ConfigLoader {
    * Get all environment variables as a typed object
    */
   getAllEnv(): Readonly<Record<string, unknown>> {
-    return { ...this.env };
+    return { ...this.envValues };
   }
 
   /**
    * Check if a variable exists
    */
   has(varName: string): boolean {
-    return varName in this.env;
+    return varName in this.envValues;
   }
 }
 
