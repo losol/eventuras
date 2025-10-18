@@ -1,4 +1,5 @@
 import { ApiError, ApiError as SDKError, CancelablePromise, Eventuras } from '@eventuras/sdk';
+import { publicEnv } from '@/config.client';
 
 type Headers = Record<string, string>;
 
@@ -59,7 +60,7 @@ export const fetcher = <T>(fetchFunction: () => Promise<T>) => handleApiResponse
 
 export const createSDK = ({ baseUrl, authHeader, inferUrl }: SDKOptions = {}): Eventuras => {
   // Use runtime environment variables directly so this module stays client-safe
-  const orgId: string = (process.env.NEXT_PUBLIC_ORGANIZATION_ID ?? '') as string;
+  const orgId = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
   const apiVersion: string = (process.env.NEXT_PUBLIC_API_VERSION ?? '1') as string;
   let token: string | undefined | null;
 
@@ -67,8 +68,8 @@ export const createSDK = ({ baseUrl, authHeader, inferUrl }: SDKOptions = {}): E
     token = authHeader.startsWith('Bearer ') ? authHeader.substring(7) : authHeader;
   }
   let apiBaseUrl: string = authHeader
-    ? ((process.env.NEXT_PUBLIC_BACKEND_URL ?? '') as string)
-    : ((process.env.NEXT_PUBLIC_API_BASE_URL ?? '') as string);
+    ? ((publicEnv.NEXT_PUBLIC_BACKEND_URL ?? '') as string)
+    : ((publicEnv.NEXT_PUBLIC_API_BASE_URL ?? '') as string);
   if (baseUrl) {
     apiBaseUrl = baseUrl;
   } else if (inferUrl) {
@@ -77,14 +78,14 @@ export const createSDK = ({ baseUrl, authHeader, inferUrl }: SDKOptions = {}): E
     const inPhaseProduction = String(process.env.NEXT_IN_PHASE_PRODUCTION_BUILD) === 'true';
     if (!requiresToken || inPhaseProduction) {
       //when we are building, the router is not available, use direct url instead, tokenless
-      apiBaseUrl = (process.env.NEXT_PUBLIC_BACKEND_URL ?? '') as string;
+      apiBaseUrl = (publicEnv.NEXT_PUBLIC_BACKEND_URL ?? '') as string;
     } else if (!token) {
-      apiBaseUrl = (process.env.NEXT_PUBLIC_API_BASE_URL ?? '') as string;
+      apiBaseUrl = (publicEnv.NEXT_PUBLIC_API_BASE_URL ?? '') as string;
     }
   }
 
   const headers: Headers = {
-    'Eventuras-Org-Id': orgId,
+    'Eventuras-Org-Id': orgId.toString(),
   };
 
   const config: {

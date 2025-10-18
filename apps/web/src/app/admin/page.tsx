@@ -3,14 +3,14 @@ import { getTranslations } from 'next-intl/server';
 
 import { Link } from '@eventuras/ratio-ui-next/Link';
 import withAuthorization from '@/utils/auth/withAuthorization';
-import { publicEnv } from '@/config.client';
+import { appConfig } from '@/config.server';
 
 import Wrapper from '../../components/eventuras/Wrapper';
 import AdminEventList from './events/AdminEventList';
 
-const ORGANIZATION_ID: number = parseInt(String(publicEnv.NEXT_PUBLIC_ORGANIZATION_ID) || '0');
 const AdminPage = async () => {
   const t = await getTranslations();
+
   return (
     <Wrapper>
       <Container>
@@ -39,7 +39,7 @@ const AdminPage = async () => {
 
         <Heading as="h2">{t('common.events.sectiontitle')}</Heading>
         <Link href={`/admin/events`}>{t('common.labels.allEvents')}</Link>
-        <AdminEventList organizationId={ORGANIZATION_ID} />
+        <AdminEventList organizationId={appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID as number} />
       </Container>
     </Wrapper>
   );

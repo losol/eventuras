@@ -212,13 +212,13 @@ export default function EventNotificator({
         notificatorType === EventNotificatorType.EMAIL
           ? await apiWrapper(() =>
               sdk.notificationsQueueing.postV3NotificationsEmail({
-                eventurasOrgId: parseInt(publicEnv.NEXT_PUBLIC_ORGANIZATION_ID as string, 10),
+                eventurasOrgId: publicEnv.NEXT_PUBLIC_ORGANIZATION_ID,
                 requestBody: body as EmailNotificationDto,
               })
             )
           : await apiWrapper(() =>
               sdk.notificationsQueueing.postV3NotificationsSms({
-                eventurasOrgId: parseInt(publicEnv.NEXT_PUBLIC_ORGANIZATION_ID as string, 10),
+                eventurasOrgId: publicEnv.NEXT_PUBLIC_ORGANIZATION_ID,
                 requestBody: body as SmsNotificationDto,
               })
             );
