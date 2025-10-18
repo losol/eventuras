@@ -1,11 +1,21 @@
 {
   "name": "@eventuras/toast",
   "version": "0.1.0",
-  "main": "src/index.ts",
-  "types": "src/index.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./src/index.ts",
-    "./src/*": "./src/*.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./style.css": "./dist/toast.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch"
   },
   "dependencies": {
     "@eventuras/ratio-ui": "workspace:*",
@@ -15,7 +25,9 @@
   },
   "devDependencies": {
     "@eventuras/eslint-config": "workspace:*",
-    "@eventuras/typescript-config": "workspace:*"
+    "@eventuras/typescript-config": "workspace:*",
+    "@eventuras/vite-config": "workspace:*",
+    "vite": "^7.1.10"
   },
   "peerDependencies": {
     "react": "^19.1.0",
