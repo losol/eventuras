@@ -16,8 +16,16 @@ export interface NextLibConfig extends Omit<ReactLibConfig, 'external'> {
 export function defineNextLibConfig(config: NextLibConfig): UserConfig {
   const { external = [], ...reactConfig } = config;
 
-  // Next.js externals
-  const nextExternals = ['next', 'next/image', 'next/link', 'next/navigation', 'next/router'];
+  // Next.js externals - include all next/* paths to avoid bundling internal modules
+  const nextExternals = [
+    'next',
+    'next/image',
+    'next/link',
+    'next/navigation',
+    'next/router',
+    'next/headers',
+    /^next\//,  // Externalize all next/* imports
+  ];
 
   return defineReactLibConfig({
     ...reactConfig,
