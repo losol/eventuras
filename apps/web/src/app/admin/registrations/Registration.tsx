@@ -25,7 +25,7 @@ import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
 import { apiWrapper, createSDK, fetcher } from '@/utils/api/EventurasApi';
-import Environment from '@/utils/Environment';
+import { publicEnv } from '@/config.client';
 
 import Order from '../orders/Order';
 
@@ -101,7 +101,7 @@ export const statusPatchRequest = async (registrationId: number, status: Registr
   const patchDocument = [{ op: 'replace', path: '/status', value: status }];
 
   const result = await fetcher(() =>
-    fetch(`${Environment.NEXT_PUBLIC_API_BASE_URL}/v3/registrations/${registrationId}`, {
+    fetch(`${publicEnv.NEXT_PUBLIC_API_BASE_URL as string}/v3/registrations/${registrationId}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json-patch+json',

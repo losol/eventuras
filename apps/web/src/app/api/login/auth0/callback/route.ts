@@ -5,7 +5,7 @@ import { decodeJwt } from 'jose';
 import { cookies } from 'next/headers';
 import * as openid from 'openid-client';
 
-import Environment from '@/utils/Environment';
+import { appConfig } from '@/config.server';
 import { oauthConfig, redirect_uri } from '@/utils/oauthConfig';
 
 const logger = Logger.create({ namespace: 'web:api:auth0' });
@@ -20,7 +20,7 @@ export async function GET(request: Request): Promise<Response> {
   try {
     // 2) Reconstruct the public callback URL
     const currentUrl = new URL(request.url);
-    const publicUrl = new URL(Environment.NEXT_PUBLIC_APPLICATION_URL);
+    const publicUrl = new URL(appConfig.env.NEXT_PUBLIC_APPLICATION_URL as string);
     publicUrl.search = currentUrl.search;
 
     // 3) Grab stored PKCE data

@@ -9,13 +9,13 @@ import React, { useState } from 'react';
 
 import { Dialog } from '@eventuras/ratio-ui/layout/Dialog';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
-import Environment from '@/utils/Environment';
+import { publicEnv } from '@/config.client';
 import slugify from '@/utils/slugify';
 
 const CollectionCreator: React.FC = () => {
   const t = useTranslations();
   const [modalOpen, setModalOpen] = useState(false);
-  const organizationId = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID);
+  const organizationId = parseInt(publicEnv.NEXT_PUBLIC_ORGANIZATION_ID as string);
   const eventuras = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
   const router = useRouter();
 

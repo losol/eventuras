@@ -4,7 +4,7 @@ import { Fieldset, Form, Input } from '@eventuras/ratio-ui/forms';
 import { Button } from '@eventuras/ratio-ui';
 import { useTranslations } from 'next-intl';
 
-import Environment from '@/utils/Environment';
+import { publicEnv } from '@/config.client';
 
 import { createEvent } from './actions';
 
@@ -17,7 +17,7 @@ export const CreateEventForm = () => {
         <Input
           name="organizationId"
           type="hidden"
-          value={Environment.NEXT_PUBLIC_ORGANIZATION_ID}
+          value={publicEnv.NEXT_PUBLIC_ORGANIZATION_ID as string}
         />
         <Input
           name="title"

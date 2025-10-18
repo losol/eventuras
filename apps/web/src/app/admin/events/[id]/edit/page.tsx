@@ -5,7 +5,7 @@ import { getTranslations } from 'next-intl/server';
 import EventEditor from '@/app/admin/events/EventEditor';
 import Wrapper from '@/components/eventuras/Wrapper';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
-import Environment from '@/utils/Environment';
+import { appConfig } from '@/config.server';
 import { getAccessToken } from '@/utils/getAccesstoken';
 
 type EditEventinfoProps = {
@@ -19,7 +19,7 @@ export default async function EditEventinfo({ params }: Readonly<EditEventinfoPr
   const t = await getTranslations();
 
   const eventuras = createSDK({
-    baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
+    baseUrl: appConfig.env.NEXT_PUBLIC_BACKEND_URL as string,
     authHeader: await getAccessToken(),
   });
 

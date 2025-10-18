@@ -2,7 +2,7 @@ import { Logger } from '@eventuras/logger';
 
 const logger = Logger.create({ namespace: 'web:utils:site', context: { module: 'getSiteSettings' } });
 
-import Environment from '@/utils/Environment';
+// import { appConfig } from '@/config.server';
 
 export interface FooterLink {
   text: string;
@@ -43,9 +43,9 @@ export interface SiteInfo {
 }
 
 const getSiteSettings = async (): Promise<SiteInfo | null> => {
-  if (Environment.NEXT_PUBLIC_SITE_SETTINGS_URL) {
+  if (process.env.NEXT_PUBLIC_SITE_SETTINGS_URL as string) {
     try {
-      const res = await fetch(Environment.NEXT_PUBLIC_SITE_SETTINGS_URL, {
+      const res = await fetch(process.env.NEXT_PUBLIC_SITE_SETTINGS_URL as string, {
         next: { revalidate: 600 },
       });
       const data = await res.json();
@@ -54,9 +54,7 @@ const getSiteSettings = async (): Promise<SiteInfo | null> => {
       logger.error({ error }, 'Failed to fetch site settings');
       return null;
     }
-  } else {
-    return null;
-  }
+  } else return null;
 };
 
 export default getSiteSettings;

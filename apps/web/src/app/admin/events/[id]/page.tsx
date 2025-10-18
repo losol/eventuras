@@ -6,7 +6,7 @@ const logger = Logger.create({ namespace: 'web:admin:events', context: { page: '
 import Wrapper from '@/components/eventuras/Wrapper';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
-import Environment from '@/utils/Environment';
+import { appConfig } from '@/config.server';
 import { getAccessToken } from '@/utils/getAccesstoken';
 
 import EventAdminActionsMenu from '../EventAdminActionsMenu';
@@ -23,7 +23,7 @@ export default async function EventAdminPage({ params }: Readonly<EventInfoProps
   const { id } = await params;
 
   const eventuras = createSDK({
-    baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
+    baseUrl: appConfig.env.NEXT_PUBLIC_BACKEND_URL as string,
     authHeader: await getAccessToken(),
   });
 

@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
 
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
-import Environment from '@/utils/Environment';
+import { appConfig } from '@/config.server';
 
 type AdminCertificatesActionsMenuProps = {
   eventinfo: EventDto;
@@ -33,7 +33,7 @@ export const AdminCertificatesActionsMenu: React.FC<AdminCertificatesActionsMenu
       return eventuras.eventCertificates.postV3EventCertificatesIssue({
         id: eventinfo.id!,
         send: true,
-        eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID),
+        eventurasOrgId: parseInt(appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID as string),
       });
     });
     onCertificatesSent && onCertificatesSent();

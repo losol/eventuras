@@ -12,7 +12,7 @@ import EventRegistrationButton from '@/app/events/EventRegistrationButton';
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import Wrapper from '@/components/eventuras/Wrapper';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
-import Environment from '@/utils/Environment';
+import { appConfig } from '@/config.server';
 import { formatDateSpan } from '@/utils/formatDate';
 
 import EventNotFound from '../../EventNotFound';
@@ -28,10 +28,10 @@ export const revalidate = 300;
 export const dynamicParams = true;
 
 export async function generateStaticParams() {
-  const orgId = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID);
+  const orgId = parseInt(appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID as string);
 
   logger.info(
-    { apiBaseUrl: Environment.NEXT_PUBLIC_BACKEND_URL, orgId },
+    { apiBaseUrl: appConfig.env.NEXT_PUBLIC_BACKEND_URL as string, orgId },
     'Generating static params for events'
   );
 
@@ -103,7 +103,7 @@ export default async function EventDetailsPage({ params }: Readonly<EventDetails
           {eventinfo.dateStart && (
             <div className="py-3">
               {formatDateSpan(eventinfo.dateStart as string, eventinfo.dateEnd as string, {
-                locale: Environment.NEXT_PUBLIC_DEFAULT_LOCALE,
+                locale: appConfig.env.NEXT_PUBLIC_DEFAULT_LOCALE as string,
               })}
             </div>
           )}

@@ -6,7 +6,7 @@ import { useState } from 'react';
 
 const logger = Logger.create({ namespace: 'web:admin:events', context: { component: 'ExcelExportButton' } });
 
-import Environment from '@/utils/Environment';
+import { publicEnv } from '@/config.client';
 
 export const ExcelExportButton = (props: { EventinfoId: number }) => {
   const [loading, setIsLoading] = useState(false);
@@ -15,7 +15,7 @@ export const ExcelExportButton = (props: { EventinfoId: number }) => {
     setIsLoading(true);
     try {
       const response = await fetch(
-        `${Environment.NEXT_PUBLIC_API_BASE_URL}/v3/registrations?EventId=${props.EventinfoId}`,
+        `${publicEnv.NEXT_PUBLIC_API_BASE_URL as string}/v3/registrations?EventId=${props.EventinfoId}`,
         {
           headers: {
             Accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',

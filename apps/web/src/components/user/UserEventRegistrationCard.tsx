@@ -5,7 +5,7 @@ import { ReactElement } from 'react';
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import {Text} from '@eventuras/ratio-ui/core/Text';
 import { Link } from '@eventuras/ratio-ui-next/Link';
-import Environment from '@/utils/Environment';
+import { appConfig } from '@/config.server';
 import { formatDateSpan } from '@/utils/formatDate';
 import {Heading} from '@eventuras/ratio-ui/core/Heading';
 
@@ -33,7 +33,7 @@ const UserEventRegistrationCard = ({
         {eventTitle}
       </Heading>
       <Text>
-        {formatDateSpan(dateStart, dateEnd, { locale: Environment.NEXT_PUBLIC_DEFAULT_LOCALE })}
+        {formatDateSpan(dateStart, dateEnd, { locale: appConfig.env.NEXT_PUBLIC_DEFAULT_LOCALE as string })}
       </Text>
       {products.length > 0 && (
         <Text as="div">

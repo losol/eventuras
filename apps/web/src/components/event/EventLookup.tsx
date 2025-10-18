@@ -3,8 +3,8 @@ import { AutoCompleteItem, InputAutoComplete } from '@eventuras/ratio-ui';
 import { useCallback } from 'react';
 
 import { createSDK } from '@/utils/api/EventurasApi';
-import Environment from '@/utils/Environment';
-const ORGANIZATION_ID: number = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID);
+import { publicEnv } from '@/config.client';
+const ORGANIZATION_ID: number = parseInt(publicEnv.NEXT_PUBLIC_ORGANIZATION_ID as string);
 let cachedEvents: EventDto[] | null = null;
 const comboRender = (item: AutoCompleteItem, selected?: boolean) => {
   const evt: EventDto = item.original as EventDto;

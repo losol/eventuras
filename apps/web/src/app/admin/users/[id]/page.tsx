@@ -3,7 +3,7 @@ import { Logger } from '@eventuras/logger';
 import { getTranslations } from 'next-intl/server';
 
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
-import Environment from '@/utils/Environment';
+import { appConfig } from '@/config.server';
 import { getAccessToken } from '@/utils/getAccesstoken';
 
 import UserEditor from '../UserEditor';
@@ -18,7 +18,7 @@ const AdminUserDetailPage: React.FC<EventInfoProps> = async props => {
   const t = await getTranslations();
 
   const eventuras = createSDK({
-    baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
+    baseUrl: appConfig.env.NEXT_PUBLIC_BACKEND_URL as string,
     authHeader: await getAccessToken(),
   });
 
