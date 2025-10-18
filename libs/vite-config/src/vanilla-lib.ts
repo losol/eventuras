@@ -47,6 +47,7 @@ export function defineVanillaLibConfig(config: VanillaLibConfig): UserConfig {
         entry: typeof entry === 'string' ? resolve(process.cwd(), entry) : entry,
         ...(name && { name }),
         formats: ['es'],
+        fileName: (format, entryName) => `${entryName}.js`,
       },
       rollupOptions: {
         external,
