@@ -8,6 +8,7 @@
     "build": "next build",
     "vercel-build": "pnpm --filter=@eventuras/web^... build && next build",
     "dev": "next dev",
+    "generate:config-types": "tsx scripts/generate-config-types.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix && prettier . --write",
     "start": "next start"

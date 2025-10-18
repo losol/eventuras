@@ -1,9 +1,7 @@
-import { Section, Heading, Text } from '@eventuras/ratio-ui';
+import { Heading, Text } from '@eventuras/ratio-ui';
 import { getTranslations } from 'next-intl/server';
 
-import { EventGrid } from '@/components/event';
 import Wrapper from '@/components/eventuras/Wrapper';
-import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import { publicEnv } from '@/config.client';
 
 import { getV3Events } from '@eventuras/event-sdk';
@@ -11,7 +9,7 @@ import { createClient } from '@/utils/apiClient';
 import {List} from '@eventuras/ratio-ui/core/List';
 import Link from 'next/link';
 
-const ORGANIZATION_ID = Number(publicEnv.NEXT_PUBLIC_ORGANIZATION_ID as string)!;
+const ORGANIZATION_ID = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
 
 export default async function EventsPage() {
   const t = await getTranslations();

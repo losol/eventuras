@@ -45,11 +45,10 @@
       "description": "Auth0 domain for authentication (e.g., eventuras.eu.auth0.com)"
     },
     "NEXT_PUBLIC_ORGANIZATION_ID": {
-      "required": false,
+      "required": true,
       "client": true,
       "type": "int",
-      "description": "The unique organization ID used to scope frontend configuration and assets",
-      "default": 1
+      "description": "The unique organization ID used to scope frontend configuration and assets"
     },
     "NEXT_PUBLIC_SITE_SETTINGS_URL": {
       "required": false,
