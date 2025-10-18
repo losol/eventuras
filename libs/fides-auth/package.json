@@ -3,15 +3,40 @@
   "version": "0.1.0",
   "private": "true",
   "description": "auth library eventuras",
-  "main": "src/index.ts",
+  "main": "./dist/session-refresh.js",
+  "types": "./dist/session-refresh.d.ts",
   "exports": {
-    ".": "./src/index.ts",
-    "./session-refresh": "./src/session-refresh.ts",
-    "./session-validation": "./src/session-validation.ts",
-    "./oauth": "./src/oauth.ts",
-    "./utils": "./src/utils.ts",
-    "./types": "./src/types.ts",
-    "./rate-limit": "./src/rate-limit.ts"
+    "./session-refresh": {
+      "types": "./dist/session-refresh.d.ts",
+      "import": "./dist/session-refresh.js"
+    },
+    "./session-validation": {
+      "types": "./dist/session-validation.d.ts",
+      "import": "./dist/session-validation.js"
+    },
+    "./oauth": {
+      "types": "./dist/oauth.d.ts",
+      "import": "./dist/oauth.js"
+    },
+    "./utils": {
+      "types": "./dist/utils.d.ts",
+      "import": "./dist/utils.js"
+    },
+    "./types": {
+      "types": "./dist/types.d.ts",
+      "import": "./dist/types.js"
+    },
+    "./rate-limit": {
+      "types": "./dist/rate-limit.d.ts",
+      "import": "./dist/rate-limit.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch"
   },
   "dependencies": {
     "@eventuras/typescript-config": "workspace:*",
@@ -20,7 +45,9 @@
     "openid-client": "^6.8.1"
   },
   "devDependencies": {
+    "@eventuras/vite-config": "workspace:*",
     "@types/react": "^19.2.2",
-    "@types/react-dom": "^19.2.2"
+    "@types/react-dom": "^19.2.2",
+    "vite": "^7.1.10"
   }
 }
