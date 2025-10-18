@@ -85,7 +85,7 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
       testId="event-edit-form"
       shouldUnregister={false}
     >
-      <HiddenInput name="organizationId" value={publicEnv.NEXT_PUBLIC_ORGANIZATION_ID as string} />
+      <HiddenInput name="organizationId" value={publicEnv.NEXT_PUBLIC_ORGANIZATION_ID.toString()} />
       <Tabs>
         <Tabs.Item title="Overview">
           <Fieldset label="Settings" disabled={apiState.loading}>
@@ -101,7 +101,7 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
             <input
               name="organizationId"
               type="hidden"
-              value={publicEnv.NEXT_PUBLIC_ORGANIZATION_ID as string}
+              value={publicEnv.NEXT_PUBLIC_ORGANIZATION_ID.toString()}
             />
 
             <Input name="title" required label="Title" placeholder="Event Title" />

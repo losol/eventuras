@@ -15,7 +15,7 @@ import slugify from '@/utils/slugify';
 const CollectionCreator: React.FC = () => {
   const t = useTranslations();
   const [modalOpen, setModalOpen] = useState(false);
-  const organizationId = parseInt(publicEnv.NEXT_PUBLIC_ORGANIZATION_ID as string);
+  const organizationId = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
   const eventuras = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
   const router = useRouter();
 

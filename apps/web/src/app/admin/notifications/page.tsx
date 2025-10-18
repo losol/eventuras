@@ -25,11 +25,11 @@ export default async function NotificationsPage({ searchParams }: NotificationPa
     if (id) {
       return eventuras.notifications.getV3Notifications1({
         eventId: parseInt(id as string),
-        eventurasOrgId: parseInt(String(publicEnv.NEXT_PUBLIC_ORGANIZATION_ID) || '0'),
+        eventurasOrgId: publicEnv.NEXT_PUBLIC_ORGANIZATION_ID,
       });
     } else {
       return eventuras.notifications.getV3Notifications1({
-        eventurasOrgId: parseInt(String(publicEnv.NEXT_PUBLIC_ORGANIZATION_ID) || '0'),
+        eventurasOrgId: publicEnv.NEXT_PUBLIC_ORGANIZATION_ID,
       });
     }
   });

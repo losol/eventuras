@@ -4,7 +4,7 @@ import { useCallback } from 'react';
 
 import { createSDK } from '@/utils/api/EventurasApi';
 import { publicEnv } from '@/config.client';
-const ORGANIZATION_ID: number = parseInt(publicEnv.NEXT_PUBLIC_ORGANIZATION_ID as string);
+const ORGANIZATION_ID: number = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
 let cachedEvents: EventDto[] | null = null;
 const comboRender = (item: AutoCompleteItem, selected?: boolean) => {
   const evt: EventDto = item.original as EventDto;

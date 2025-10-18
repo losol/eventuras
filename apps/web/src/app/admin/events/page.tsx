@@ -6,9 +6,7 @@ import { Link } from '@eventuras/ratio-ui-next/Link';
 import withAuthorization from '@/utils/auth/withAuthorization';
 import { publicEnv } from '@/config.client';
 
-import AdminEventList from './AdminEventList';
-
-const ORGANIZATION_ID: number = parseInt(String(publicEnv.NEXT_PUBLIC_ORGANIZATION_ID) || '0');
+import AdminEventList from './AdminEventList';;
 
 const AdminPage = async () => {
   const t = await getTranslations();
@@ -26,7 +24,7 @@ const AdminPage = async () => {
           </Link>
         </section>
         <Heading as="h2">{t('common.events.sectiontitle')}</Heading>
-        <AdminEventList organizationId={ORGANIZATION_ID} includePastEvents />
+        <AdminEventList organizationId={publicEnv.NEXT_PUBLIC_ORGANIZATION_ID} includePastEvents />
       </Container>
     </Wrapper>
   );

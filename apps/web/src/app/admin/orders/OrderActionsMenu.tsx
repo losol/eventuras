@@ -41,7 +41,7 @@ export const OrderActionsMenu = ({ order }: OrderActionsMenuProps) => {
       }
       const eventuras = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
       await eventuras.orders.patchV3Orders({
-        eventurasOrgId: parseInt(publicEnv.NEXT_PUBLIC_ORGANIZATION_ID as string),
+        eventurasOrgId: publicEnv.NEXT_PUBLIC_ORGANIZATION_ID,
         id: order.orderId,
         requestBody: [
           {
@@ -67,7 +67,7 @@ export const OrderActionsMenu = ({ order }: OrderActionsMenuProps) => {
 
     const invoice = await apiWrapper(() =>
       eventuras.invoices.postV3Invoices({
-        eventurasOrgId: parseInt(publicEnv.NEXT_PUBLIC_ORGANIZATION_ID as string),
+        eventurasOrgId: publicEnv.NEXT_PUBLIC_ORGANIZATION_ID,
         requestBody: invoiceRequest,
       })
     );

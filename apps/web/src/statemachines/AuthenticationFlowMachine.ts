@@ -73,7 +73,7 @@ const AuthenticationFlowMachine = createMachine({
         src: fromPromise(async ({ input }) => {
           const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
           return sdk.userProfile.getV3Userprofile({
-            eventurasOrgId: parseInt(publicEnv.NEXT_PUBLIC_ORGANIZATION_ID as string, 10),
+            eventurasOrgId: publicEnv.NEXT_PUBLIC_ORGANIZATION_ID,
           });
         }),
         onDone: {

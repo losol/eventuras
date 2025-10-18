@@ -16,7 +16,7 @@ import { formatDateSpan } from '@/utils/formatDate';
 const columnHelper = createColumnHelper<OrderDto>();
 
 const AdminOrdersList: React.FC = () => {
-  const organizationId = parseInt(publicEnv.NEXT_PUBLIC_ORGANIZATION_ID as string);
+  const organizationId = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
   const t = useTranslations();
   const [page, setPage] = useState(1);
   const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });

@@ -17,7 +17,7 @@ export const CreateEventForm = () => {
         <Input
           name="organizationId"
           type="hidden"
-          value={publicEnv.NEXT_PUBLIC_ORGANIZATION_ID as string}
+          value={publicEnv.NEXT_PUBLIC_ORGANIZATION_ID}
         />
         <Input
           name="title"
