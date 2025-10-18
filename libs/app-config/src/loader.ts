@@ -1,5 +1,3 @@
-import { readFileSync } from 'fs';
-import { resolve } from 'path';
 import { AppConfig, appConfigSchema } from './types.js';
 import { parseEnvValue, EnvValidationError } from './validator.js';
 
@@ -17,15 +15,11 @@ export class ConfigLoader {
   public readonly env: Record<string, unknown>;
 
   constructor(
-    configPath: string,
+    configObject: unknown,
     private processEnv: NodeJS.ProcessEnv = process.env
   ) {
-    // Load and parse config file
-    const configFile = readFileSync(resolve(configPath), 'utf-8');
-    const rawConfig = JSON.parse(configFile);
-
     // Validate schema
-    const result = appConfigSchema.safeParse(rawConfig);
+    const result = appConfigSchema.safeParse(configObject);
     if (!result.success) {
       throw new Error(
         `Invalid app.config.json:\n${result.error.issues.map(i => `  - ${i.path.join('.')}: ${i.message}`).join('\n')}`
@@ -121,30 +115,31 @@ export class ConfigLoader {
 }
 
 /**
- * Create a config loader from a config file path
+ * Create a config loader from a config object
  */
-export function createConfig(configPath: string): ConfigLoader {
-  return new ConfigLoader(configPath);
+export function createConfig(configObject: unknown): ConfigLoader {
+  return new ConfigLoader(configObject);
 }
 
 /**
  * Validate app configuration and environment variables.
  * This is useful for running validation explicitly during app initialization.
  *
- * @param configPath - Path to app.config.json
+ * @param configObject - App configuration object (parsed from app.config.json)
  * @throws Error if configuration is invalid or required env vars are missing
  *
  * @example
  * ```typescript
  * // In your app initialization (e.g., layout.tsx or main.ts)
  * import { validate } from '@eventuras/app-config';
+ * import appConfigJson from './app.config.json';
  *
- * validate('./app.config.json');
+ * validate(appConfigJson);
  * console.log('✓ Environment validated successfully');
  * ```
  */
-export function validate(configPath: string): void {
+export function validate(configObject: unknown): void {
   // Simply creating the config will trigger validation
   // If validation fails, an error will be thrown
-  new ConfigLoader(configPath);
+  new ConfigLoader(configObject);
 }
