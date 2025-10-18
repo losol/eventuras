@@ -28,8 +28,30 @@ export class ConfigLoader {
 
     this.config = result.data;
 
-    // Validate and parse all environment variables
-    this.validateEnvironment();
+    // Skip validation during Next.js build/compilation phases
+    // During these phases, Next.js hasn't loaded .env files into process.env yet
+    // NEXT_PHASE is set by Next.js during build
+    // We also check if we're in a bundler context (webpack/turbopack) where env vars aren't available
+    const isNextBuild =
+      this.processEnv.NEXT_PHASE === 'phase-production-build' ||
+      this.processEnv.NEXT_PHASE === 'phase-development-server';
+
+    // Check if env vars are actually missing (likely bundler context)
+    const envVarsMissing = Object.keys(this.config.env).every(
+      varName => this.processEnv[varName] === undefined && !this.config.env[varName]?.default
+    );
+
+    const skipValidation = isNextBuild || envVarsMissing;
+
+    if (!skipValidation) {
+      // Validate and parse all environment variables
+      this.validateEnvironment();
+    } else {
+      // During build/bundling, populate with empty/default values
+      for (const [varName, definition] of Object.entries(this.config.env)) {
+        this.envValues[varName] = definition.default ?? '';
+      }
+    }
 
     // Create readonly proxy for env access
     this.env = new Proxy(this.envValues, {
