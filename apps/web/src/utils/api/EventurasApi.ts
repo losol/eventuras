@@ -60,7 +60,7 @@ export const fetcher = <T>(fetchFunction: () => Promise<T>) => handleApiResponse
 
 export const createSDK = ({ baseUrl, authHeader, inferUrl }: SDKOptions = {}): Eventuras => {
   // Use runtime environment variables directly so this module stays client-safe
-  const orgId = process.env.NEXT_PUBLIC_ORGANIZATION_ID;
+  const orgId = process.env.NEXT_PUBLIC_ORGANIZATION_ID!;
   const apiVersion: string = (process.env.NEXT_PUBLIC_API_VERSION ?? '1') as string;
   let token: string | undefined | null;
 
