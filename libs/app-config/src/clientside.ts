@@ -4,6 +4,38 @@ import { AppConfig } from './types.js';
 export type { AppConfig } from './types.js';
 
 /**
+ * Map environment variable type string to TypeScript type
+ */
+type EnvVarTypeMap = {
+  string: string;
+  url: string;
+  int: number;
+  bool: boolean;
+  json: unknown;
+};
+
+/**
+ * Infer the TypeScript type from an environment variable definition with literal type support
+ */
+type InferEnvVarType<T> =
+  T extends { type: infer Type; required: infer Req }
+    ? Type extends keyof EnvVarTypeMap
+      ? Req extends true
+        ? EnvVarTypeMap[Type]
+        : EnvVarTypeMap[Type] | undefined
+      : unknown
+    : unknown;
+
+/**
+ * Extract public environment variable types from AppConfig
+ */
+export type PublicEnvObject<T> = T extends { env: infer Env }
+  ? {
+      [K in keyof Env as Env[K] extends { client: true } ? K : never]: InferEnvVarType<Env[K]>;
+    }
+  : never;
+
+/**
  * Create explicit getters for NEXT_PUBLIC_* environment variables (client-side only).
  *
  * This is for use in client components and doesn't require fs access.
@@ -19,7 +51,25 @@ export function createPublicEnvGetters(config: AppConfig) {
     if (definition.client && varName.startsWith('NEXT_PUBLIC_')) {
       Object.defineProperty(getters, varName, {
         get() {
-          return process.env[varName];
+          const value = process.env[varName];
+
+          // Type coercion based on definition
+          if (value === undefined) return undefined;
+
+          switch (definition.type) {
+            case 'int':
+              return parseInt(value, 10);
+            case 'bool':
+              return value === 'true' || value === '1';
+            case 'json':
+              try {
+                return JSON.parse(value);
+              } catch {
+                return value;
+              }
+            default:
+              return value;
+          }
         },
         enumerable: true,
       });
@@ -29,10 +79,6 @@ export function createPublicEnvGetters(config: AppConfig) {
   return getters;
 }
 
-export interface PublicEnvObject {
-  [key: string]: unknown;
-}
-
 /**
  * Create a public environment object with explicit NEXT_PUBLIC_* getters.
  *
@@ -40,8 +86,8 @@ export interface PublicEnvObject {
  * Use this in apps/web/src/config.ts for the publicEnv export.
  *
  * @param config - Plain app configuration object
- * @returns An object with explicit NEXT_PUBLIC_* getters
+ * @returns An object with explicit NEXT_PUBLIC_* getters with properly inferred types
  */
-export function createPublicEnv(config: AppConfig): PublicEnvObject {
-  return createPublicEnvGetters(config);
+export function createPublicEnv<const T extends AppConfig>(config: T): PublicEnvObject<T> {
+  return createPublicEnvGetters(config) as PublicEnvObject<T>;
 }
