@@ -11,6 +11,10 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./clientside": {
+      "types": "./dist/clientside.d.ts",
+      "import": "./dist/clientside.js"
+    },
     "./schema": "./schema/app-config.schema.json"
   },
   "files": [
