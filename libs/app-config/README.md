@@ -6,14 +6,6 @@ Declarative environment configuration for Eventuras applications.
 
 `@eventuras/app-config` provides a centralized, type-safe way to manage environment variables across all Eventuras applications. Instead of manually validating env vars in code, you declare them in an `app.config.json` file.
 
-## Features
-
-- ✅ **Declarative**: Define all env vars in a single JSON file
-- ✅ **Type-safe**: Automatic type conversion and validation
-- ✅ **Self-documenting**: Built-in descriptions for each variable
-- ✅ **Validation**: Runtime validation with helpful error messages
-- 7. **Defaults**: Built-in support for default values
-8. **Consistent**: Uses @eventuras/vite-config for building
 
 ## Development
 
@@ -27,9 +19,6 @@ pnpm typecheck
 # Lint
 pnpm lint
 ```
-
-## License
-- ✅ **Schema**: JSON Schema for IDE autocomplete and validation
 
 ## Installation
 
@@ -343,18 +332,3 @@ export function MyComponent() {
 ```
 
 **Why the limitation?** Next.js performs build-time replacement of `process.env.NEXT_PUBLIC_*` variables. The `appConfig.get()` method reads from a runtime object, so it won't work for client-side code. Server-side code can use either approach.
-
-## Benefits Over Manual Validation
-
-1. **Single source of truth**: All env vars documented in one place
-2. **Better error messages**: Descriptive errors with context
-3. **Type safety**: Automatic type conversion
-4. **Self-documenting**: Descriptions built-in
-5. **Reusable**: Same library works for all apps
-6. **Validated**: Runtime checks with helpful errors
-7. **Defaults**: Built-in support for default values
-8. **Consistent**: Uses @eventuras/vite-config for building
-
-## Development
-
-MIT

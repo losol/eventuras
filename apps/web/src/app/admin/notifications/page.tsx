@@ -6,7 +6,7 @@ import { Card } from '@eventuras/ratio-ui/core/Card';
 import Wrapper from '@/components/eventuras/Wrapper';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
-import { publicEnv } from '@/config.client';
+import { appConfig } from '@/config.server';
 import { getAccessToken } from '@/utils/getAccesstoken';
 
 type NotificationPageProps = {
@@ -17,7 +17,7 @@ export default async function NotificationsPage({ searchParams }: NotificationPa
   const { id } = await searchParams;
 
   const eventuras = createSDK({
-    baseUrl: publicEnv.NEXT_PUBLIC_BACKEND_URL as string,
+    baseUrl: appConfig.env.NEXT_PUBLIC_BACKEND_URL as string,
     authHeader: await getAccessToken(),
   });
 
@@ -25,11 +25,11 @@ export default async function NotificationsPage({ searchParams }: NotificationPa
     if (id) {
       return eventuras.notifications.getV3Notifications1({
         eventId: parseInt(id as string),
-        eventurasOrgId: publicEnv.NEXT_PUBLIC_ORGANIZATION_ID,
+        eventurasOrgId: appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID,
       });
     } else {
       return eventuras.notifications.getV3Notifications1({
-        eventurasOrgId: publicEnv.NEXT_PUBLIC_ORGANIZATION_ID,
+        eventurasOrgId: appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID,
       });
     }
   });
