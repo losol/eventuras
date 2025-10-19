@@ -29,7 +29,6 @@ import { useToast } from '@eventuras/toast';
 import { RegistrationProduct } from '@/types';
 import { createEventRegistration } from '@/utils/api/functions/events';
 import { mapEventProductsToView, mapSelectedProductsToQuantity } from '@/utils/api/mappers';
-import { mapEnum } from '@/utils/enum';
 
 type AddUserToEventFormValues = {
   registrationType: string;
@@ -108,15 +107,21 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
         email: user.email,
       },
     };
-    const result = await createEventRegistration(newRegistration, productMap);
 
-    if (result.ok) {
-      logger.info('User successfully added to the event!');
-      toast.success('User successfully added to the event!');
-      onUseradded(user);
-    } else {
-      logger.error({ error: result.error }, 'Failed to add user to event');
-      if (result.error!.status === 409) {
+    try {
+      const result = await createEventRegistration(newRegistration, productMap);
+
+      if (result) {
+        logger.info('User successfully added to the event!');
+        toast.success('User successfully added to the event!');
+        onUseradded(user);
+      } else {
+        logger.error('Failed to add user to event');
+        toast.error(t('common.errors.fatalError.title'));
+      }
+    } catch (error: any) {
+      logger.error({ error }, 'Failed to add user to event');
+      if (error?.status === 409) {
         toast.error('That user is already registered to the event');
         return;
       }

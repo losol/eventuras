@@ -1,7 +1,7 @@
 'use client';
 
 import { Fieldset } from '@eventuras/ratio-ui/forms';
-import { UserDto, UserFormDto } from '@eventuras/sdk';
+import { UserDto, UserFormDto, postV3Users, putV3UsersById, putV3Userprofile } from '@eventuras/event-sdk';
 import { Form, Input, PhoneInput } from '@eventuras/smartform';
 import { Button } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
@@ -9,7 +9,7 @@ import { useTranslations } from 'next-intl';
 import { FC, useState } from 'react';
 
 import { useToast } from '@eventuras/toast';
-import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
+import { createClient } from '@/utils/apiClient';
 
 const logger = Logger.create({ namespace: 'web:admin:users', context: { component: 'UserEditor' } });
 
@@ -31,52 +31,60 @@ const regex = {
 const UserEditor: FC<UserEditorProps> = props => {
   const { adminMode, user, onUserUpdated, submitButtonLabel } = props;
   const t = useTranslations();
-  const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
   const [isUpdating, setIsUpdating] = useState(false);
   const toast = useToast();
 
   logger.info({ user }, 'UserEditor rendering');
 
   const createUser = async (form: UserDto) => {
-    const user = await apiWrapper(() =>
-      sdk.users.postV3Users({ requestBody: form as UserFormDto })
-    );
-    logger.info({ userId: user.value?.id }, 'Created new user');
-    if (user.error) {
-      toast.error(t('common.labels.error') + ': ' + user.error.message);
-      logger.error({ error: user.error }, 'Failed to create new user');
-      return user;
+    const client = await createClient();
+    const response = await postV3Users({
+      body: form as UserFormDto,
+      client,
+    });
+    
+    logger.info({ userId: response.data?.id }, 'Created new user');
+    
+    if (!response.data) {
+      toast.error(t('common.labels.error') + ': ' + (response.error?.toString() || 'Unknown error'));
+      logger.error({ error: response.error }, 'Failed to create new user');
+      return response;
     }
 
     toast.success('User created successfully');
-    return user;
+    return response;
   };
 
   const updateUser = async (user: UserDto, form: UserDto, adminMode: boolean) => {
     // Update existing user
     logger.info({ userId: user.id }, 'Updating user');
     setIsUpdating(true);
+    const client = await createClient();
+    
     // if adminMode, update user with users endpoint, otherwise use userProfile endpoint
-    const updatedUser = adminMode
-      ? await apiWrapper(() =>
-          sdk.users.putV3Users({ id: user.id!, requestBody: form as UserFormDto })
-        )
-      : await apiWrapper(() =>
-          sdk.userProfile.putV3Userprofile({ id: user.id!, requestBody: form as UserFormDto })
-        );
+    const response = adminMode
+      ? await putV3UsersById({
+          path: { id: user.id! },
+          body: form as UserFormDto,
+          client,
+        })
+      : await putV3Userprofile({
+          body: form as UserFormDto,
+          client,
+        });
     setIsUpdating(false);
 
-    if (updatedUser.error) {
-      toast.error(t('common.labels.error') + ': ' + updatedUser.error.message);
-      logger.error({ error: updatedUser.error, userId: user.id }, 'Failed to update user');
-      return updatedUser;
+    if (!response.data) {
+      toast.error(t('common.labels.error') + ': ' + (response.error?.toString() || 'Unknown error'));
+      logger.error({ error: response.error, userId: user.id }, 'Failed to update user');
+      return response;
     }
 
-    logger.info({ userId: updatedUser.value?.id }, 'Updated user successfully');
+    logger.info({ userId: response.data?.id }, 'Updated user successfully');
 
-    toast.success(t('user.labels.updateUserSuccess') + ': ' + updatedUser.value?.name);
+    toast.success(t('user.labels.updateUserSuccess') + ': ' + response.data?.name);
 
-    return updatedUser;
+    return response;
   };
 
   const editMode = !!user;
@@ -92,8 +100,8 @@ const UserEditor: FC<UserEditorProps> = props => {
     } else {
       result = await createUser(form);
     }
-    if (onUserUpdated && result?.value) {
-      onUserUpdated(result.value);
+    if (onUserUpdated && result?.data) {
+      onUserUpdated(result.data);
     }
   };
 

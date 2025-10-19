@@ -5,7 +5,8 @@ import {
   RegistrationDto,
   RegistrationStatus,
   RegistrationType,
-} from '@eventuras/sdk';
+  putV3RegistrationsById,
+} from '@eventuras/event-sdk';
 import { Form, Select } from '@eventuras/smartform';
 import {
   Badge,
@@ -19,12 +20,16 @@ import {
 } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
 
-const logger = Logger.create({ namespace: 'web:admin:registrations', context: { component: 'Registration' } });
+const logger = Logger.create({
+  namespace: 'web:admin',
+  context: { component: 'Registration' },
+});
 
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
-import { apiWrapper, createSDK, fetcher } from '@/utils/api/EventurasApi';
+import { createClient } from '@/utils/apiClient';
+import { fetcher } from '@/utils/api/EventurasApi';
 import { publicEnv } from '@/config.client';
 
 import Order from '../orders/Order';
@@ -54,13 +59,19 @@ type TranslationFunction = (
  * @returns {Array<Object>} An array of objects containing value and label pairs for statuses.
  */
 export const getStatusLabels = (t: TranslationFunction) => [
-  { value: RegistrationStatus.DRAFT, label: t('common.registrations.labels.draft') },
-  { value: RegistrationStatus.CANCELLED, label: t('common.registrations.labels.cancelled') },
-  { value: RegistrationStatus.VERIFIED, label: t('common.registrations.labels.verified') },
-  { value: RegistrationStatus.NOT_ATTENDED, label: t('common.registrations.labels.notAttended') },
-  { value: RegistrationStatus.ATTENDED, label: t('common.registrations.labels.attended') },
-  { value: RegistrationStatus.FINISHED, label: t('common.registrations.labels.finished') },
-  { value: RegistrationStatus.WAITING_LIST, label: t('common.registrations.labels.waitingList') },
+  { value: 'Draft' as RegistrationStatus, label: t('common.registrations.labels.draft') },
+  { value: 'Cancelled' as RegistrationStatus, label: t('common.registrations.labels.cancelled') },
+  { value: 'Verified' as RegistrationStatus, label: t('common.registrations.labels.verified') },
+  {
+    value: 'NotAttended' as RegistrationStatus,
+    label: t('common.registrations.labels.notAttended'),
+  },
+  { value: 'Attended' as RegistrationStatus, label: t('common.registrations.labels.attended') },
+  { value: 'Finished' as RegistrationStatus, label: t('common.registrations.labels.finished') },
+  {
+    value: 'WaitingList' as RegistrationStatus,
+    label: t('common.registrations.labels.waitingList'),
+  },
 ];
 
 /**
@@ -69,11 +80,11 @@ export const getStatusLabels = (t: TranslationFunction) => [
  * @returns {Array<Object>} An array of objects containing value and label pairs for types.
  */
 export const getTypeLabels = (t: TranslationFunction) => [
-  { value: RegistrationType.PARTICIPANT, label: t('common.registrations.labels.participant') },
-  { value: RegistrationType.STUDENT, label: t('common.registrations.labels.student') },
-  { value: RegistrationType.LECTURER, label: t('common.registrations.labels.lecturer') },
-  { value: RegistrationType.STAFF, label: t('common.registrations.labels.staff') },
-  { value: RegistrationType.ARTIST, label: t('common.registrations.labels.artist') },
+  { value: 'Participant' as RegistrationType, label: t('common.registrations.labels.participant') },
+  { value: 'Student' as RegistrationType, label: t('common.registrations.labels.student') },
+  { value: 'Lecturer' as RegistrationType, label: t('common.registrations.labels.lecturer') },
+  { value: 'Staff' as RegistrationType, label: t('common.registrations.labels.staff') },
+  { value: 'Artist' as RegistrationType, label: t('common.registrations.labels.artist') },
 ];
 
 export const updateRegistration = async (
@@ -81,20 +92,24 @@ export const updateRegistration = async (
   updatedRegistration: RegistrationUpdateDto,
   onUpdate?: (registration: RegistrationDto) => void
 ) => {
-  const eventuras = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
-  const result = await apiWrapper(() =>
-    eventuras.registrations.putV3Registrations({
-      id: id,
-      requestBody: updatedRegistration,
-    })
-  );
-  if (result.ok) {
+  const client = await createClient();
+  const response = await putV3RegistrationsById({
+    path: { id },
+    body: updatedRegistration,
+    client,
+  });
+
+  if (response.data) {
     logger.info({ registrationId: id }, `Registration updated successfully`);
-    onUpdate?.(result.value!);
+    onUpdate?.(response.data);
+    return { ok: true, value: response.data };
   } else {
-    logger.error({ error: result.error, registrationId: id }, `Error updating registration`);
+    logger.error(
+      { error: response.error, registrationId: id },
+      `Error updating registration`
+    );
+    return { ok: false, error: response.error };
   }
-  return result;
 };
 
 export const statusPatchRequest = async (registrationId: number, status: RegistrationStatus) => {

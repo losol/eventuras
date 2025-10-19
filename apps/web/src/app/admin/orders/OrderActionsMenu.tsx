@@ -1,15 +1,24 @@
 'use client';
-import { InvoiceRequestDto, OrderDto, OrderStatus, PaymentProvider } from '@eventuras/sdk';
+import {
+  InvoiceRequestDto,
+  OrderDto,
+  OrderStatus,
+  PaymentProvider,
+  postV3Invoices,
+} from '@eventuras/event-sdk';
 import { Button, Definition, DescriptionList, Drawer, Heading, Term } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
 
-const logger = Logger.create({ namespace: 'web:admin:orders', context: { component: 'OrderActionsMenu' } });
+const logger = Logger.create({
+  namespace: 'web:admin:orders',
+  context: { component: 'OrderActionsMenu' },
+});
 
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
 
-import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
+import { createClient } from '@/utils/apiClient';
 import { publicEnv } from '@/config.client';
 
 export type OrderActionsMenuProps = {
@@ -22,12 +31,12 @@ export const OrderActionsMenu = ({ order }: OrderActionsMenuProps) => {
   const router = useRouter();
   logger.info({ order: order, registration: order.registration }, 'Order details');
 
-  const invoicablePaymentMethods = [
-    PaymentProvider.POWER_OFFICE_EMAIL_INVOICE,
-    PaymentProvider.POWER_OFFICE_EHFINVOICE,
+  const invoicablePaymentMethods: PaymentProvider[] = [
+    'PowerOfficeEmailInvoice',
+    'PowerOfficeEHFInvoice',
   ];
 
-  const isOrderVerified = order.status === OrderStatus.VERIFIED;
+  const isOrderVerified = order.status === 'Verified';
   const hasInvoicablePaymentMethod =
     order.paymentMethod != null && invoicablePaymentMethods.includes(order.paymentMethod);
 
@@ -39,40 +48,50 @@ export const OrderActionsMenu = ({ order }: OrderActionsMenuProps) => {
       if (!order.orderId) {
         throw new Error('Order ID is required');
       }
-      const eventuras = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
-      await eventuras.orders.patchV3Orders({
-        eventurasOrgId: publicEnv.NEXT_PUBLIC_ORGANIZATION_ID,
-        id: order.orderId,
-        requestBody: [
+      const orgId = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
+      if (!orgId || isNaN(orgId)) {
+        throw new Error('Organization ID is required');
+      }
+
+      await fetch(`${publicEnv.NEXT_PUBLIC_API_BASE_URL as string}/v3/orders/${order.orderId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json-patch+json',
+          'Eventuras-Org-Id': orgId.toString(),
+        },
+        body: JSON.stringify([
           {
             op: 'replace',
             path: '/status',
-            value: OrderStatus.VERIFIED,
+            value: 'Verified',
           },
-        ],
+        ]),
       });
       router.refresh();
     };
 
   const invoiceOrder = async (order: OrderDto) => {
-    const eventuras = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
-
     if (!order.orderId) {
       throw new Error('Order ID is required');
+    }
+
+    const client = await createClient();
+    const orgId = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
+    if (!orgId || isNaN(orgId)) {
+      throw new Error('Organization ID is required');
     }
 
     const invoiceRequest: InvoiceRequestDto = {
       orderIds: [order.orderId],
     };
 
-    const invoice = await apiWrapper(() =>
-      eventuras.invoices.postV3Invoices({
-        eventurasOrgId: publicEnv.NEXT_PUBLIC_ORGANIZATION_ID,
-        requestBody: invoiceRequest,
-      })
-    );
+    const response = await postV3Invoices({
+      headers: { 'Eventuras-Org-Id': orgId },
+      body: invoiceRequest,
+      client,
+    });
 
-    if (invoice.ok) {
+    if (response.data) {
       logger.info('Invoice sent to accounting system');
     }
     router.refresh();
@@ -80,12 +99,12 @@ export const OrderActionsMenu = ({ order }: OrderActionsMenuProps) => {
 
   return (
     <>
-      {order.status === OrderStatus.DRAFT && (
+      {order.status === 'Draft' && (
         <Button variant="primary" onClick={verifyOrder({ order })}>
           Verify
         </Button>
       )}
-      {order.status !== OrderStatus.DRAFT && (
+      {order.status !== 'Draft' && (
         <Button variant="primary" onClick={() => setInvoiceDrawerOpen(!invoiceDrawerOpen)}>
           {t('admin.labels.invoice')}
         </Button>
@@ -110,7 +129,7 @@ export const OrderActionsMenu = ({ order }: OrderActionsMenuProps) => {
         {shouldShowInvoiceButton && (
           <Button onClick={() => invoiceOrder(order)}>
             Send to accounting system (
-            {order.paymentMethod === PaymentProvider.POWER_OFFICE_EMAIL_INVOICE ? 'email' : 'ehf'})
+            {order.paymentMethod === 'PowerOfficeEmailInvoice' ? 'email' : 'ehf'})
           </Button>
         )}
       </Drawer>

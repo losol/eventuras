@@ -1,13 +1,13 @@
 'use client';
 
-import { RegistrationDto, RegistrationStatus } from '@eventuras/event-sdk';
+import { RegistrationDto, RegistrationStatus, postV3RegistrationsByIdCertificateSend } from '@eventuras/event-sdk';
 import { Button } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
 import { IconCircleX } from '@tabler/icons-react';
 import { useState } from 'react';
 
 import { Link } from '@eventuras/ratio-ui-next/Link';
-import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
+import { createClient } from '@/utils/apiClient';
 
 import { statusPatchRequest } from '../registrations/Registration';
 
@@ -36,20 +36,15 @@ const LiveActionsMenu = ({ registration, onStatusUpdate }: LiveActionsMenuProps)
       setEmailError(null);
       setEmailSuccess(false);
 
-      const eventuras = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
+      const client = await createClient();
 
-      const result = await apiWrapper(() =>
-        eventuras.registrationCertificate.postV3RegistrationsCertificateSend({
-          id: registrationId,
-        })
-      );
+      const response = await postV3RegistrationsByIdCertificateSend({
+        path: { id: registrationId },
+        client,
+      });
 
-      if (!result.ok) {
-        // Handle error properly
-        const errorMessage =
-          typeof result.error === 'string'
-            ? result.error
-            : (result.error as any)?.message || 'Failed to send certificate';
+      if (!response.data) {
+        const errorMessage = response.error ? 'Failed to send certificate' : 'Unknown error';
         throw new Error(errorMessage);
       }
 

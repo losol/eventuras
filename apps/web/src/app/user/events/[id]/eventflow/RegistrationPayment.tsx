@@ -1,7 +1,7 @@
 'use client';
 
 import { Input } from '@eventuras/ratio-ui/forms';
-import { PaymentProvider, UserDto } from '@eventuras/sdk';
+import { UserDto } from '@eventuras/event-sdk';
 import { Button } from '@eventuras/ratio-ui';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
@@ -36,7 +36,7 @@ const RegistrationPayment = ({
 
   useEffect(() => {
     // Use useEffect to update showBusinessFieldset after initial render
-    if (selectedPaymentMethod === PaymentProvider.POWER_OFFICE_EHFINVOICE) {
+    if (selectedPaymentMethod === 'PowerOfficeEHFInvoice') {
       setShowBusinessFieldset(true);
     } else {
       setShowBusinessFieldset(false);
@@ -74,7 +74,7 @@ const RegistrationPayment = ({
               <input
                 type="radio"
                 id="emailinvoice"
-                value={PaymentProvider.POWER_OFFICE_EMAIL_INVOICE}
+                value="PowerOfficeEmailInvoice"
                 data-testid="registration-emailinvoice-input"
                 defaultChecked={true}
                 {...register('paymentMethod')}
@@ -86,7 +86,7 @@ const RegistrationPayment = ({
                 type="radio"
                 id="ehfInvoice"
                 data-testid="registration-ehfinvoice-input"
-                value={PaymentProvider.POWER_OFFICE_EHFINVOICE}
+                value="PowerOfficeEHFInvoice"
                 {...register('paymentMethod')}
               />
               <label htmlFor="ehfInvoice">{t('user.registration.customertype.business')}</label>

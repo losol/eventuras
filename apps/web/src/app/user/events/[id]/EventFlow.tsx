@@ -1,6 +1,6 @@
 'use client';
 
-import { EventDto, ProductDto, RegistrationDto, UserDto } from '@eventuras/sdk';
+import { EventDto, ProductDto, RegistrationDto, UserDto } from '@eventuras/event-sdk';
 import { Loading } from '@eventuras/ratio-ui';
 import { useActor } from '@xstate/react';
 import { useTranslations } from 'next-intl';
