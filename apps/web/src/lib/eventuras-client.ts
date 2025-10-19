@@ -1,16 +1,17 @@
 /**
  * Eventuras API Client Configuration
- * 
- * This module configures the event-sdk client with authentication and base URL.
- * The configuration is applied using interceptors to ensure auth tokens are
- * injected on every request in server-side contexts.
+ *
+ * Configures the event-sdk client with authentication and base URL.
+ *
+ * HTTP request/response logging uses debug level.
+ * Set LOG_LEVEL=debug to see all HTTP traffic.
  */
 
-import { client, type RequestOptions } from '@eventuras/event-sdk/client-next';
+import { client, type RequestOptions } from '@eventuras/event-sdk';
 import { getAccessToken } from '@/utils/getAccesstoken';
-import { Logger } from '@eventuras/logger';
+import { Logger, redactHeaders } from '@eventuras/logger';
 
-const logger = Logger.create({ 
+const logger = Logger.create({
   namespace: 'web:api-client',
   context: { module: 'eventuras-client' }
 });
@@ -18,99 +19,104 @@ const logger = Logger.create({
 let isConfigured = false;
 
 /**
- * Configure the Eventuras API client with base URL and authentication.
- * This should be called once at application startup (e.g., in root layout).
- * 
- * Uses interceptors to dynamically inject auth tokens on each request,
- * ensuring fresh tokens are used even if they're refreshed.
+ * Configure the Eventuras API client.
+ * Called once at application startup.
  */
 export function configureEventurasClient() {
-  if (isConfigured) {
-    return;
-  }
+  if (isConfigured) return;
 
   const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8080';
-  
-  logger.info({ baseUrl }, 'Configuring Eventuras API client');
+  client.setConfig({ baseUrl });
 
-  // Set base configuration
-  client.setConfig({
-    baseUrl,
-  });
-
-  // Add request interceptor for authentication
-  // This runs on every request, ensuring fresh tokens
+  // Inject auth token on every request (server-side only)
   client.interceptors.request.use(async (options: RequestOptions) => {
-    try {
-      // Only add auth on server-side
-      if (typeof window === 'undefined') {
-        logger.debug({ 
-          url: options.url,
-          method: options.method 
-        }, 'API request initiated');
+    if (typeof window === 'undefined') {
+      try {
+        const token = await getAccessToken();
+        if (token) {
+          if (!options.headers) options.headers = new Headers();
 
-        try {
-          const token = await getAccessToken();
-          if (token) {
-            // Initialize headers if not present
-            if (!options.headers) {
-              options.headers = new Headers();
-            }
-            
-            // Convert headers to Headers object if needed
-            if (options.headers instanceof Headers) {
-              options.headers.set('Authorization', `Bearer ${token}`);
-            } else if (Array.isArray(options.headers)) {
-              options.headers.push(['Authorization', `Bearer ${token}`]);
-            } else {
-              (options.headers as Record<string, string>)['Authorization'] = `Bearer ${token}`;
-            }
-            
-            logger.debug('Added auth token to request');
+          if (options.headers instanceof Headers) {
+            options.headers.set('Authorization', `Bearer ${token}`);
+          } else if (Array.isArray(options.headers)) {
+            options.headers.push(['Authorization', `Bearer ${token}`]);
           } else {
-            logger.debug('No auth token available for request');
+            (options.headers as Record<string, string>)['Authorization'] = `Bearer ${token}`;
           }
-        } catch (error) {
-          // Log error but don't fail the request
-          // Some endpoints might not require auth
-          logger.warn({ error }, 'Failed to get access token');
         }
+
+        // Log request (debug level)
+        const fullUrl = options.url?.startsWith('http') ? options.url : `${baseUrl}${options.url || ''}`;
+        logger.debug({
+          request: {
+            url: fullUrl,
+            method: options.method || 'GET',
+            headers: options.headers ? redactHeaders(options.headers) : undefined,
+          },
+        }, 'HTTP request');
+      } catch (error) {
+        logger.warn({ error, url: options.url }, 'Failed to get access token');
       }
-    } catch (error) {
-      // Catch any unexpected errors in the interceptor itself
-      logger.error({ error }, 'Unexpected error in request interceptor');
     }
-    // Request interceptors must return void, they mutate options in place
   });
 
-  // Add error interceptor to log connection failures
-  client.interceptors.error.use(async (error: any, response: any, options: RequestOptions) => {
-    // Check for connection refused errors
-    if (error?.cause?.code === 'ECONNREFUSED' || error?.code === 'ECONNREFUSED') {
+  // Log successful responses (debug level)
+  client.interceptors.response.use(async (response: Response) => {
+    logger.debug({
+      response: {
+        url: response.url,
+        status: response.status,
+        statusText: response.statusText,
+      },
+    }, 'HTTP response');
+    return response;
+  });
+
+  // Log errors with full context
+  client.interceptors.error.use(async (error: unknown, response: unknown, options: RequestOptions) => {
+    const fullUrl = options.url?.startsWith('http') ? options.url : `${baseUrl}${options.url || ''}`;
+    const err = error as { cause?: { code?: string }; code?: string; message?: string };
+    const resp = response as { status?: number; statusText?: string } | undefined;
+
+    // Connection errors (ECONNREFUSED, ETIMEDOUT, etc.)
+    if (err?.cause?.code === 'ECONNREFUSED' || err?.code === 'ECONNREFUSED') {
       logger.error({
-        error,
-        url: options.url,
-        baseUrl,
-        method: options.method,
-        cause: error?.cause,
-      }, 'Connection refused to API backend - is the backend running?');
-    } else if (error) {
-      logger.error({
-        error,
-        url: options.url,
-        method: options.method,
-        status: response?.status,
-      }, 'API request failed');
+        error: {
+          message: err.message,
+          code: err?.cause?.code || err?.code,
+        },
+        request: {
+          url: fullUrl,
+          method: options.method || 'GET',
+          headers: options.headers ? redactHeaders(options.headers) : undefined,
+        },
+      }, 'Connection refused - Backend unreachable');
+      return error;
     }
-    
+
+    // HTTP errors (4xx, 5xx)
+    if (resp?.status && resp.status >= 400) {
+      const logLevel = resp.status >= 500 ? 'error' : 'warn';
+      logger[logLevel]({
+        request: { url: fullUrl, method: options.method || 'GET' },
+        response: { status: resp.status, statusText: resp.statusText },
+      }, `HTTP ${resp.status} ${resp.statusText || ''}`);
+      return error;
+    }
+
+    // Generic errors
+    logger.error({
+      error: {
+        message: err?.message,
+        code: err?.code,
+      },
+      request: { url: fullUrl, method: options.method || 'GET' },
+    }, 'HTTP request failed');
+
     return error;
   });
 
   isConfigured = true;
-  logger.info('Eventuras API client configured successfully');
 }
 
-/**
- * Re-export the configured client for direct use if needed
- */
 export { client };

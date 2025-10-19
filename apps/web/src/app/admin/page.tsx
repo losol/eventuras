@@ -8,8 +8,14 @@ import { appConfig } from '@/config.server';
 import Wrapper from '../../components/eventuras/Wrapper';
 import AdminEventList from './events/AdminEventList';
 
-const AdminPage = async () => {
+interface AdminPageProps {
+  searchParams?: Promise<{ page?: string }>;
+}
+
+const AdminPage = async ({ searchParams }: AdminPageProps = {}) => {
   const t = await getTranslations();
+  const params = searchParams ? await searchParams : {};
+  const page = params.page ? parseInt(params.page, 10) : 1;
 
   return (
     <Wrapper>
@@ -45,6 +51,7 @@ const AdminPage = async () => {
               ? appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID
               : parseInt(appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID as string, 10)
           }
+          page={page}
         />
       </Container>
     </Wrapper>

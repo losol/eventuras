@@ -11,9 +11,9 @@ export { client } from './client-next/client.gen';
 
 // Export client utilities
 export { createClient, createConfig } from './client-next/client';
-export type { 
-  Client, 
-  Config, 
+export type {
+  Client,
+  Config,
   ClientOptions,
-  RequestOptions 
+  RequestOptions
 } from './client-next/client/types.gen';
