@@ -27,7 +27,7 @@ import ProductSelection from '@/components/eventuras/ProductSelection';
 import UserLookup from '@/components/eventuras/UserLookup';
 import { useToast } from '@eventuras/toast';
 import { RegistrationProduct } from '@/types';
-import { createEventRegistration } from '@/utils/api/functions/events';
+import { createEventRegistration } from '@/app/user/events/actions';
 import { mapEventProductsToView, mapSelectedProductsToQuantity } from '@/utils/api/mappers';
 
 type AddUserToEventFormValues = {
@@ -111,22 +111,17 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
     try {
       const result = await createEventRegistration(newRegistration, productMap);
 
-      if (result) {
-        logger.info('User successfully added to the event!');
-        toast.success('User successfully added to the event!');
+      if (result.success) {
+        logger.info({ userId: user.id }, 'User successfully added to the event!');
+        toast.success(result.message || 'User successfully added to the event!');
         onUseradded(user);
       } else {
-        logger.error('Failed to add user to event');
-        toast.error(t('common.errors.fatalError.title'));
+        logger.error({ error: result.error, userId: user.id }, 'Failed to add user to event');
+        toast.error(result.error.message);
       }
-    } catch (error: any) {
-      logger.error({ error }, 'Failed to add user to event');
-      if (error?.status === 409) {
-        toast.error('That user is already registered to the event');
-        return;
-      }
+    } catch (error) {
+      logger.error({ error, userId: user.id }, 'Unexpected error adding user to event');
       toast.error(t('common.errors.fatalError.title'));
-      throw new Error('Failed to add user to event');
     }
   };
 

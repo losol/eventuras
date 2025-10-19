@@ -1,13 +1,47 @@
 import { Container, Heading, Section } from '@eventuras/ratio-ui';
+import { Unauthorized } from '@eventuras/ratio-ui/blocks/Unauthorized';
 import { getTranslations } from 'next-intl/server';
 
 import Wrapper from '@/components/eventuras/Wrapper';
-import withAuthorization from '@/utils/auth/withAuthorization';
+import { checkAuthorization } from '@/utils/auth/checkAuthorization';
+import FatalError from '@/components/FatalError';
 
-import AdminRegistrationsList from './AdminRegistrationsList';
+import RegistrationsTable from './RegistrationsTable';
+import { getRegistrations } from './actions';
 
-const AdminRegistrationsPage = async () => {
+type PageProps = {
+  searchParams: Promise<{ page?: string }>;
+};
+
+export default async function AdminRegistrationsPage({ searchParams }: PageProps) {
+  // Check authorization
+  const authResult = await checkAuthorization('Admin');
+  if (!authResult.authorized) {
+    return <Unauthorized />;
+  }
+
   const t = await getTranslations();
+  const params = await searchParams;
+  const page = params.page ? parseInt(params.page, 10) : 1;
+  const pageSize = 50;
+
+  const response = await getRegistrations(page, pageSize);
+
+  if (!response.ok || !response.data) {
+    return (
+      <Wrapper>
+        <Section className="py-8">
+          <Container>
+            <Heading as="h1">{t('common.registrations.page.title')}</Heading>
+            <FatalError
+              title="Failed to load registrations"
+              description={response.error || 'Unknown error'}
+            />
+          </Container>
+        </Section>
+      </Wrapper>
+    );
+  }
 
   return (
     <Wrapper>
@@ -18,11 +52,13 @@ const AdminRegistrationsPage = async () => {
       </Section>
       <Section>
         <Container>
-          <AdminRegistrationsList />
+          <RegistrationsTable
+            registrations={response.data.data ?? []}
+            currentPage={page}
+            totalPages={response.data.pages ?? 0}
+          />
         </Container>
       </Section>
     </Wrapper>
   );
-};
-
-export default withAuthorization(AdminRegistrationsPage, 'Admin');
+}

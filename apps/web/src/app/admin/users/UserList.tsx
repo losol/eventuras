@@ -1,6 +1,6 @@
 'use client';
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
-import { UserDto } from '@eventuras/sdk';
+import { UserDto } from '@eventuras/event-sdk';
 import { useTranslations } from 'next-intl';
 
 import { Link } from '@eventuras/ratio-ui-next/Link';

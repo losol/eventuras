@@ -11,7 +11,7 @@ import { Card } from '@eventuras/ratio-ui/core/Card';
 import EventCard from '@/components/event/EventCard';
 import Wrapper from '@/components/eventuras/Wrapper';
 import { Link } from '@eventuras/ratio-ui-next/Link';
-import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
+import { getV3Eventcollections, getV3EventcollectionsById, getV3Events } from '@eventuras/event-sdk';
 import { appConfig } from '@/config.server';
 
 type EventInfoProps = {
@@ -37,23 +37,20 @@ export async function generateStaticParams() {
   );
 
   try {
-    const eventuras = createSDK({ inferUrl: true });
-    const collections = await eventuras.eventCollection.getV3Eventcollections({
-      eventurasOrgId: orgId,
+    const response = await getV3Eventcollections({
+      headers: {
+        'Eventuras-Org-Id': orgId,
+      },
     });
 
-    if (!collections) return [];
+    if (!response.data?.data) return [];
 
-    if (collections.data) {
-      const staticParams = collections.data.map(collection => ({
-        id: collection.id?.toString(),
-        slug: collection.slug,
-      }));
-      logger.info({ staticParams }, 'Generated static params');
-      return staticParams;
-    }
-
-    return [];
+    const staticParams = response.data.data.map(collection => ({
+      id: collection.id?.toString(),
+      slug: collection.slug,
+    }));
+    logger.info({ staticParams }, 'Generated static params');
+    return staticParams;
   } catch (error) {
     logger.warn({ error }, 'Error generating static params for collections - this is expected during build time if backend is not running');
     return [];
@@ -63,14 +60,11 @@ export async function generateStaticParams() {
 const CollectionPage: React.FC<EventInfoProps> = async props => {
   const params = await props.params;
   const t = await getTranslations();
-  const eventuras = createSDK({ inferUrl: true });
-  const result = await apiWrapper(() =>
-    eventuras.eventCollection.getV3Eventcollections1({ id: params.id })
-  );
+  const response = await getV3EventcollectionsById({
+    path: { id: params.id },
+  });
 
-  const notFound = !result.ok || !result.value;
-
-  if (notFound)
+  if (!response.data)
     return (
       <>
         <Heading>{t('common.events.detailspage.notfound.title')}</Heading>
@@ -81,17 +75,17 @@ const CollectionPage: React.FC<EventInfoProps> = async props => {
       </>
     );
 
-  const collection = result.value!;
+  const collection = response.data;
 
   if (params.slug !== collection.slug) {
     redirect(`/collections/${collection.id!}/${collection.slug!}`);
   }
 
-  const eventinfos = await apiWrapper(() =>
-    eventuras.events.getV3Events({
-      collectionId: collection.id!,
-    })
-  );
+  const eventsResponse = await getV3Events({
+    query: {
+      CollectionId: collection.id!,
+    },
+  });
 
   return (
     <Wrapper>
@@ -110,12 +104,12 @@ const CollectionPage: React.FC<EventInfoProps> = async props => {
         </Container>
       </Section>
       <Section>
-        {eventinfos.value?.data && eventinfos.value.data.length > 0 ? (
+        {eventsResponse.data?.data && eventsResponse.data.data.length > 0 ? (
           <Container>
             <Heading as="h2" padding="pt-6 pb-3">
               {t('common.collections.detailspage.eventstitle')}
             </Heading>
-            {eventinfos.value.data.map(eventinfo => (
+            {eventsResponse.data.data.map(eventinfo => (
               <EventCard key={eventinfo.id} eventinfo={eventinfo} />
             ))}
           </Container>

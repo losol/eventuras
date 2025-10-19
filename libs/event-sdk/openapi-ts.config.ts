@@ -8,13 +8,12 @@ export default defineConfig({
   output: 'src/client-next',
   plugins: [
     {
-      name: '@hey-api/client-next',
-      // Runtime config will be provided by consuming apps
-      runtimeConfigPath: '../clientConfig',
+      name: '@hey-api/typescript',
+      enums: 'javascript',
     },
-    // {
-    //   name: '@hey-api/typescript',
-    //   // readOnlyWriteOnlyBehavior: 'off',
-    // },
+    {
+      name: '@hey-api/sdk',
+      client: '@hey-api/client-next',
+    },
   ],
 });

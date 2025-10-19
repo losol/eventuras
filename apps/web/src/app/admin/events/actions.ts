@@ -1,11 +1,37 @@
 'use server';
 
 import { Logger } from '@eventuras/logger';
-import { postV3Events, putV3EventsById, EventFormDto } from '@eventuras/event-sdk';
+import {
+  postV3Events,
+  putV3EventsById,
+  postV3EventByIdCertificatesIssue,
+  EventFormDto,
+} from '@eventuras/event-sdk';
 import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 
 import { appConfig } from '@/config.server';
 import { actionError, actionSuccess, type ServerActionResult } from '@/types/serverAction';
+import { client, configureEventurasClient } from '@/lib/eventuras-client';
+
+/**
+ * Get the organization ID from the app configuration
+ * @returns The organization ID as a number, or null if not configured
+ */
+function getOrganizationId(): number | null {
+  const orgId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
+
+  if (typeof orgId === 'number') {
+    return orgId;
+  }
+
+  if (typeof orgId === 'string' && orgId.trim() !== '') {
+    const parsed = parseInt(orgId, 10);
+    return isNaN(parsed) ? null : parsed;
+  }
+
+  return null;
+}
 
 const logger = Logger.create({
   namespace: 'web:admin',
@@ -13,39 +39,31 @@ const logger = Logger.create({
 });
 
 export async function createEvent(
+  prevState: ServerActionResult<{ eventId: number }> | null,
   formData: FormData
 ): Promise<ServerActionResult<{ eventId: number }>> {
+  // Ensure client is configured with auth and base URL
+  configureEventurasClient();
+
   logger.info('Starting event creation');
 
   try {
-    // Extract and validate organization ID
+    // Get organization ID from form or config
     const orgIdFromForm = formData.get('organizationId')?.toString();
-    logger.info({ orgIdFromForm, configOrgId: appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID }, 'Extracting organization ID');
-
-    // Try parsing form value first, then fall back to config
-    let organizationId: number | undefined;
+    let organizationId: number | null = null;
 
     if (orgIdFromForm && orgIdFromForm.trim() !== '') {
-      organizationId = parseInt(orgIdFromForm, 10);
-      logger.info({ orgIdFromForm, parsedOrgId: organizationId }, 'Parsed organization ID from form');
+      const parsed = parseInt(orgIdFromForm, 10);
+      organizationId = isNaN(parsed) ? null : parsed;
+      logger.info({ orgIdFromForm, organizationId }, 'Using organization ID from form');
     } else {
-      // Fall back to config value
-      const configOrgId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
-      if (typeof configOrgId === 'number') {
-        organizationId = configOrgId;
-      } else if (typeof configOrgId === 'string' && configOrgId.trim() !== '') {
-        organizationId = parseInt(configOrgId, 10);
-      }
-      logger.info({ configOrgId, parsedOrgId: organizationId }, 'Using organization ID from config');
+      organizationId = getOrganizationId();
+      logger.info({ organizationId }, 'Using organization ID from config');
     }
 
-    if (!organizationId || isNaN(organizationId)) {
+    if (!organizationId) {
       const errorMsg = 'Invalid or missing organization ID. Please check your configuration.';
-      logger.error({
-        orgIdFromForm,
-        configOrgId: appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID,
-        parsedOrgId: organizationId
-      }, errorMsg);
+      logger.error({ orgIdFromForm, organizationId }, errorMsg);
       return actionError(errorMsg, 'INVALID_ORG_ID', { orgIdFromForm });
     }
 
@@ -68,7 +86,10 @@ export async function createEvent(
       slug
     };
 
-    logger.info({ event: newEvent }, 'Sending create event request to API');    const response = await postV3Events({
+    logger.info({ event: newEvent }, 'Sending create event request to API');
+
+    const response = await postV3Events({
+      client,
       headers: {
         'Eventuras-Org-Id': organizationId
       },
@@ -131,6 +152,9 @@ export async function updateEvent(
   eventId: number,
   eventData: EventFormDto
 ): Promise<ServerActionResult<{ eventId: number }>> {
+  // Ensure client is configured with auth and base URL
+  configureEventurasClient();
+
   updateLogger.info({ eventId }, 'Starting event update');
 
   try {
@@ -158,7 +182,10 @@ export async function updateEvent(
       slug: eventData.slug,
       status: eventData.status,
       type: eventData.type
-    }, 'Prepared update request with organizationId');    const response = await putV3EventsById({
+    }, 'Prepared update request with organizationId');
+
+    const response = await putV3EventsById({
+      client,
       path: {
         id: eventId
       },
@@ -229,6 +256,96 @@ export async function updateEvent(
     return actionError(
       `Failed to update event: ${errorMessage}`,
       'UPDATE_EVENT_FAILED',
+      error instanceof Error ? { name: error.name, message: error.message } : error
+    );
+  }
+}
+
+const certificateLogger = Logger.create({
+  namespace: 'web:admin',
+  context: { module: 'action:issueCertificates' },
+});
+
+/**
+ * Issue and send certificates for an event
+ */
+export async function issueCertificates(
+  eventId: number
+): Promise<ServerActionResult<void>> {
+  // Ensure client is configured with auth and base URL
+  configureEventurasClient();
+
+  certificateLogger.info({ eventId }, 'Issuing certificates for event');
+
+  try {
+    // Validate event ID
+    if (!eventId || isNaN(eventId)) {
+      const errorMsg = 'Invalid event ID';
+      certificateLogger.error({ eventId }, errorMsg);
+      return actionError(errorMsg, 'INVALID_EVENT_ID');
+    }
+
+    // Get organization ID from config
+    const organizationId = getOrganizationId();
+
+    if (!organizationId) {
+      const errorMsg = 'Organization ID not configured';
+      certificateLogger.error({ organizationId }, errorMsg);
+      return actionError(errorMsg, 'MISSING_ORG_ID');
+    }
+
+    certificateLogger.info({ eventId, organizationId }, 'Sending certificate issue request to API');
+
+    const response = await postV3EventByIdCertificatesIssue({
+      client,
+      path: { id: eventId },
+      query: { send: true },
+      headers: {
+        'Eventuras-Org-Id': organizationId,
+      },
+    });
+
+    // The API returns unknown, so we check if there's an error
+    if (response.error) {
+      const errorMsg = 'Failed to issue certificates';
+      certificateLogger.error(
+        {
+          eventId,
+          organizationId,
+          error: response.error,
+        },
+        errorMsg
+      );
+      return actionError(errorMsg, 'API_ERROR');
+    }
+
+    // Revalidate paths that might display certificate status
+    revalidatePath(`/admin/events/${eventId}`);
+    revalidatePath(`/admin/events/${eventId}/certificates`);
+    revalidatePath('/admin/events');
+
+    certificateLogger.info({ eventId }, 'Certificates issued successfully');
+
+    return actionSuccess(undefined, 'Certificates sent successfully!');
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    certificateLogger.error(
+      {
+        eventId,
+        error: error instanceof Error
+          ? {
+              name: error.name,
+              message: error.message,
+              stack: error.stack,
+            }
+          : error,
+      },
+      'Failed to issue certificates'
+    );
+
+    return actionError(
+      `Failed to issue certificates: ${errorMessage}`,
+      'ISSUE_CERTIFICATES_FAILED',
       error instanceof Error ? { name: error.name, message: error.message } : error
     );
   }

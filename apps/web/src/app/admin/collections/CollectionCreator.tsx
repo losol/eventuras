@@ -1,6 +1,6 @@
 'use client';
 
-import { EventCollectionCreateDto } from '@eventuras/sdk';
+import { EventCollectionCreateDto } from '@eventuras/event-sdk';
 import { Form, HiddenInput, Input } from '@eventuras/smartform';
 import { Button } from '@eventuras/ratio-ui';
 import { useRouter } from 'next/navigation';
@@ -8,29 +8,32 @@ import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
 
 import { Dialog } from '@eventuras/ratio-ui/layout/Dialog';
-import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import { publicEnv } from '@/config.client';
-import slugify from '@/utils/slugify';
+import { createCollection } from './actions';
 
 const CollectionCreator: React.FC = () => {
   const t = useTranslations();
   const [modalOpen, setModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const organizationId = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
-  const eventuras = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
   const router = useRouter();
 
-  const createCollection = async (data: EventCollectionCreateDto) => {
-    const slug = slugify(data.name);
-    data.slug = slug;
+  const handleCreateCollection = async (data: EventCollectionCreateDto) => {
+    setIsSubmitting(true);
+    try {
+      const result = await createCollection(data);
 
-    const collection = await apiWrapper(() =>
-      eventuras.eventCollection.postV3Eventcollections({
-        eventurasOrgId: organizationId,
-        requestBody: data,
-      })
-    );
-
-    router.push(`/admin/collections/${collection.value?.id!}`);
+      if (result.success && result.data?.collectionId) {
+        setModalOpen(false);
+        router.push(`/admin/collections/${result.data.collectionId}`);
+        router.refresh();
+      } else if (!result.success) {
+        // Handle error - you might want to show a toast here
+        console.error('Failed to create collection:', result.error.message);
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -39,10 +42,12 @@ const CollectionCreator: React.FC = () => {
         {t('admin.collection.labels.create')}
       </Button>
       <Dialog isOpen={modalOpen} onClose={() => setModalOpen(false)} title={'Add collection'}>
-        <Form onSubmit={data => createCollection(data)}>
+        <Form onSubmit={data => handleCreateCollection(data)}>
           <HiddenInput name="organizationId" value={organizationId.toString()} />
           <Input name="name" label={t('common.labels.name')} />
-          <Button type="submit">{t('admin.collection.labels.create')}</Button>
+          <Button type="submit" loading={isSubmitting}>
+            {t('admin.collection.labels.create')}
+          </Button>
         </Form>
       </Dialog>
     </>

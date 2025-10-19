@@ -1,34 +1,37 @@
 'use client';
 
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
-import { EventCollectionDto} from '@eventuras/sdk';
+import { EventCollectionDto, EventCollectionDtoPageResponseDto } from '@eventuras/event-sdk';
 import { Loading, Pagination } from '@eventuras/ratio-ui';
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 
 import FatalError from '@/components/FatalError';
 import { Link } from '@eventuras/ratio-ui-next/Link';
-import useCreateHook from '@/hooks/createHook';
-import { createSDK } from '@/utils/api/EventurasApi';
-import { publicEnv } from '@/config.client';
+import { getCollections } from './actions';
 
 const columnHelper = createColumnHelper<EventCollectionDto>();
 
 const CollectionsList: React.FC = () => {
-  const organizationId = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
   const t = useTranslations();
   const [page, setPage] = useState(1);
-  const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
+  const [result, setResult] = useState<EventCollectionDtoPageResponseDto | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
   const pageSize = 100;
-  const { loading, result } = useCreateHook(
-    () =>
-      sdk.eventCollection.getV3Eventcollections({
-        page: page,
-        count: pageSize,
-        eventurasOrgId: organizationId,
-      }),
-    [page]
-  );
+
+  useEffect(() => {
+    startTransition(async () => {
+      const response = await getCollections(page, pageSize);
+      if (response.ok && response.data) {
+        setResult(response.data);
+        setError(null);
+      } else {
+        setError(response.error);
+        setResult(null);
+      }
+    });
+  }, [page]);
 
   const renderCollectionActions = (collection: EventCollectionDto) => {
     return (
@@ -57,9 +60,9 @@ const CollectionsList: React.FC = () => {
     }),
   ];
 
-  if (loading) return <Loading />;
-  if (!result)
-    return <FatalError title="No response from admin collections" description="Response is null" />;
+  if (isPending && !result) return <Loading />;
+  if (error) return <FatalError title="Failed to load collections" description={error} />;
+  if (!result) return <FatalError title="No response from admin collections" description="Response is null" />;
   return (
     <>
       <DataTable data={result.data ?? []} columns={columns} />

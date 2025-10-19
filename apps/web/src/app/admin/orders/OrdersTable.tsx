@@ -2,45 +2,31 @@
 
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
 import { OrderDto } from '@eventuras/event-sdk';
-import { Loading, Pagination } from '@eventuras/ratio-ui';
+import { Pagination } from '@eventuras/ratio-ui';
 import { useTranslations } from 'next-intl';
-import { useEffect, useState, useTransition } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 
-import FatalError from '@/components/FatalError';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 import { formatDateSpan } from '@/utils/formatDate';
-import { getOrders } from './actions';
 
 const columnHelper = createColumnHelper<OrderDto>();
 
-type OrdersResponse = {
-  data?: OrderDto[];
-  page?: number;
-  count?: number;
-  total?: number;
-  pages?: number;
+type OrdersTableProps = {
+  orders: OrderDto[];
+  currentPage: number;
+  totalPages: number;
 };
 
-const AdminOrdersList: React.FC = () => {
+export default function OrdersTable({ orders, currentPage, totalPages }: OrdersTableProps) {
   const t = useTranslations();
-  const [page, setPage] = useState(1);
-  const [result, setResult] = useState<OrdersResponse | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
-  const pageSize = 50;
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  useEffect(() => {
-    startTransition(async () => {
-      const response = await getOrders(page, pageSize);
-      if (response.ok && response.data) {
-        setResult(response.data);
-        setError(null);
-      } else {
-        setError(response.error);
-        setResult(null);
-      }
-    });
-  }, [page]);
+  const handlePageChange = (newPage: number) => {
+    const params = new URLSearchParams(searchParams);
+    params.set('page', newPage.toString());
+    router.push(`?${params.toString()}`);
+  };
 
   const renderOrderActions = (order: OrderDto) => {
     return (
@@ -63,7 +49,6 @@ const AdminOrdersList: React.FC = () => {
       header: t('common.labels.name').toString(),
       cell: info => info.getValue(),
     }),
-
     columnHelper.accessor('time', {
       header: t('common.orders.labels.time').toString(),
       cell: info => formatDateSpan(info.row.original.time!.toString(), null, { showTime: true }),
@@ -74,20 +59,15 @@ const AdminOrdersList: React.FC = () => {
     }),
   ];
 
-  if (isPending && !result) return <Loading />;
-  if (error) return <FatalError title="Failed to load orders" description={error} />;
-  if (!result) return <FatalError title="No response from admin orders" description="Response is null" />;
   return (
     <>
-      <DataTable data={result.data ?? []} columns={columns} />
+      <DataTable data={orders} columns={columns} />
       <Pagination
-        currentPage={page}
-        totalPages={result.pages ?? 0}
-        onPreviousPageClick={() => setPage(page - 1)}
-        onNextPageClick={() => setPage(page + 1)}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPreviousPageClick={() => handlePageChange(currentPage - 1)}
+        onNextPageClick={() => handlePageChange(currentPage + 1)}
       />
     </>
   );
-};
-
-export default AdminOrdersList;
+}

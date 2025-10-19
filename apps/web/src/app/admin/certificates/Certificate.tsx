@@ -1,4 +1,4 @@
-import { CertificateDto } from '@eventuras/sdk';
+import { CertificateDto } from '@eventuras/event-sdk';
 import { Definition, DescriptionList, Heading, Item, Term } from '@eventuras/ratio-ui';
 import { useTranslations } from 'next-intl';
 import React from 'react';

@@ -5,11 +5,9 @@ import { Button } from '@eventuras/ratio-ui';
 import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
 
-import { createSDK } from '@/utils/api/EventurasApi';
-import { publicEnv } from '@/config.client';
-
 import ProductModal from './ProductModal';
 import { ProductTable } from './ProductTable';
+import { fetchEventProducts } from './actions';
 
 interface EventProductsEditorProps {
   eventInfo: EventDto;
@@ -24,14 +22,17 @@ const EventProductsEditor: React.FC<EventProductsEditorProps> = ({
   const [products, setProducts] = useState<ProductDto[]>(initialProducts);
   const [currentProduct, setCurrentProduct] = useState<ProductDto | undefined>();
   const t = useTranslations();
-  const eventuras = createSDK({ baseUrl: publicEnv.NEXT_PUBLIC_API_BASE_URL as string });
+
+  const refreshProducts = async () => {
+    const result = await fetchEventProducts(eventInfo.id!);
+    if (result.success && result.data) {
+      setProducts(result.data);
+    }
+  };
 
   const onSubmit = async () => {
     // Refresh the list of products after adding or editing
-    const updatedProducts = await eventuras.eventProducts.getV3EventsProducts({
-      eventId: eventInfo.id!,
-    });
-    setProducts(updatedProducts);
+    await refreshProducts();
 
     // Close the modal
     setProductModalOpen(false);

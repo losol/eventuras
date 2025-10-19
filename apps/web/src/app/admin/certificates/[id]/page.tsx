@@ -2,10 +2,8 @@ import { Container, Heading, Section } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
 import { getTranslations } from 'next-intl/server';
 
-import { publicEnv } from '@/config.client';
+import { getV3CertificatesById } from '@eventuras/event-sdk';
 import Wrapper from '@/components/eventuras/Wrapper';
-import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
-import { getAccessToken } from '@/utils/getAccesstoken';
 
 import Certificate from '../Certificate';
 import { PDFCertificate } from '../PDFCertificate';
@@ -20,25 +18,15 @@ export default async function CertificateDetailPage({ params }: Readonly<Certifi
   const { id } = await params;
   const t = await getTranslations();
 
-  const eventuras = createSDK({
-    baseUrl: publicEnv.NEXT_PUBLIC_BACKEND_URL as string,
-    authHeader: await getAccessToken(),
+  const response = await getV3CertificatesById({
+    path: { id },
   });
 
-  const certificate = await apiWrapper(() =>
-    eventuras.certificates.getV3Certificates({
-      id: id,
-    })
-  );
-
-  if (!certificate.ok) {
+  if (!response.data) {
     Logger.error(
-      { namespace: 'Certifcatedetailpage' },
-      `Failed to fetch certificate with id ${id}, error: ${certificate.error}`
+      { namespace: 'CertificateDetailPage' },
+      `Failed to fetch certificate with id ${id}, error: ${response.error}`
     );
-  }
-
-  if (!certificate.ok) {
     return <div>{t('admin.certificates.labels.notFound')}</div>;
   }
 
@@ -51,7 +39,7 @@ export default async function CertificateDetailPage({ params }: Readonly<Certifi
       </Section>
       <Section className="py-12">
         <Container>
-          <Certificate certificate={certificate.value!} />
+          <Certificate certificate={response.data} />
           <PDFCertificate certificateId={id} />
         </Container>
       </Section>

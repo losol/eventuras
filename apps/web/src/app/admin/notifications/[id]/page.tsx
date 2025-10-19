@@ -3,9 +3,7 @@ import { Logger } from '@eventuras/logger';
 import { getTranslations } from 'next-intl/server';
 
 import Wrapper from '@/components/eventuras/Wrapper';
-import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
-import { appConfig } from '@/config.server';
-import { getAccessToken } from '@/utils/getAccesstoken';
+import { getV3NotificationsById, getV3NotificationsByIdRecipients } from '@eventuras/event-sdk';
 
 type EventInfoProps = {
   params: Promise<{
@@ -13,35 +11,23 @@ type EventInfoProps = {
   }>;
 };
 
-const OrganizationDetailPage: React.FC<EventInfoProps> = async props => {
+const NotificationDetailPage: React.FC<EventInfoProps> = async props => {
   const params = await props.params;
   const t = await getTranslations();
 
-  const eventuras = createSDK({
-    baseUrl: appConfig.env.NEXT_PUBLIC_BACKEND_URL as string,
-    authHeader: await getAccessToken(),
+  const notificationResponse = await getV3NotificationsById({
+    path: { id: params.id },
   });
 
-  const notification = await apiWrapper(() =>
-    eventuras.notifications.getV3Notifications({
-      id: params.id,
-    })
-  );
+  const recipientsResponse = await getV3NotificationsByIdRecipients({
+    path: { id: params.id },
+  });
 
-  const notificationRecipients = await apiWrapper(() =>
-    eventuras.notificationRecipients.getV3NotificationsRecipients({
-      id: params.id,
-    })
-  );
-
-  if (!notification.ok) {
+  if (!notificationResponse.data) {
     Logger.error(
       { namespace: 'notifications' },
-      `Failed to fetch notification id ${params.id}, error: ${notification.error}`
+      `Failed to fetch notification id ${params.id}, error: ${notificationResponse.error}`
     );
-  }
-
-  if (!notification.ok) {
     return <div>{t('admin.organizations.labels.notFound')}</div>;
   }
 
@@ -54,13 +40,13 @@ const OrganizationDetailPage: React.FC<EventInfoProps> = async props => {
       </Section>
       <Section className="py-12">
         <Container>
-          <pre>{JSON.stringify(notification.value!, null, 4)}</pre>
+          <pre>{JSON.stringify(notificationResponse.data, null, 4)}</pre>
           <hr />
-          <pre>{JSON.stringify(notificationRecipients.value!, null, 4)}</pre>
+          <pre>{JSON.stringify(recipientsResponse.data, null, 4)}</pre>
         </Container>
       </Section>
     </Wrapper>
   );
 };
 
-export default OrganizationDetailPage;
+export default NotificationDetailPage;

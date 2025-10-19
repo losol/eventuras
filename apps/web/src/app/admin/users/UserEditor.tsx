@@ -1,7 +1,7 @@
 'use client';
 
 import { Fieldset } from '@eventuras/ratio-ui/forms';
-import { UserDto, UserFormDto, postV3Users, putV3UsersById, putV3Userprofile } from '@eventuras/event-sdk';
+import { UserDto, UserFormDto } from '@eventuras/event-sdk';
 import { Form, Input, PhoneInput } from '@eventuras/smartform';
 import { Button } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
@@ -9,6 +9,7 @@ import { useTranslations } from 'next-intl';
 import { FC, useState } from 'react';
 
 import { useToast } from '@eventuras/toast';
+import { createUser, updateUser, updateUserProfile } from './actions';
 
 const logger = Logger.create({ namespace: 'web:admin:users', context: { component: 'UserEditor' } });
 
@@ -35,44 +36,42 @@ const UserEditor: FC<UserEditorProps> = props => {
 
   logger.info({ user }, 'UserEditor rendering');
 
-  const createUser = async (form: UserDto) => {    const response = await postV3Users({ body: form as UserFormDto });
-    
-    logger.info({ userId: response.data?.id }, 'Created new user');
-    
-    if (!response.data) {
-      toast.error(t('common.labels.error') + ': ' + (response.error?.toString() || 'Unknown error'));
-      logger.error({ error: response.error }, 'Failed to create new user');
-      return response;
+  const handleCreateUser = async (form: UserDto) => {
+    const result = await createUser(form as UserFormDto);
+
+    if (!result.success) {
+      logger.error({ error: result.error, form }, 'Failed to create new user');
+      toast.error(result.error.message);
+      return { success: false, error: result.error };
     }
 
+    logger.info({ userId: result.data.id }, 'Created new user');
     toast.success('User created successfully');
-    return response;
+    return { success: true, data: result.data };
   };
 
-  const updateUser = async (user: UserDto, form: UserDto, adminMode: boolean) => {
+  const handleUpdateUser = async (user: UserDto, form: UserDto, adminMode: boolean) => {
     // Update existing user
     logger.info({ userId: user.id }, 'Updating user');
-    setIsUpdating(true);    
+    setIsUpdating(true);
+
     // if adminMode, update user with users endpoint, otherwise use userProfile endpoint
-    const response = adminMode
-      ? await putV3UsersById({
-          path: { id: user.id! },
-          body: form as UserFormDto
-        })
-      : await putV3Userprofile({ body: form as UserFormDto });
+    const result = adminMode
+      ? await updateUser(user.id!, form as UserFormDto)
+      : await updateUserProfile(form as UserFormDto);
+
     setIsUpdating(false);
 
-    if (!response.data) {
-      toast.error(t('common.labels.error') + ': ' + (response.error?.toString() || 'Unknown error'));
-      logger.error({ error: response.error, userId: user.id }, 'Failed to update user');
-      return response;
+    if (!result.success) {
+      logger.error({ error: result.error, userId: user.id }, 'Failed to update user');
+      toast.error(result.error.message);
+      return { success: false, error: result.error };
     }
 
-    logger.info({ userId: response.data?.id }, 'Updated user successfully');
+    logger.info({ userId: result.data.id }, 'Updated user successfully');
+    toast.success(t('user.labels.updateUserSuccess') + ': ' + result.data.name);
 
-    toast.success(t('user.labels.updateUserSuccess') + ': ' + response.data?.name);
-
-    return response;
+    return { success: true, data: result.data };
   };
 
   const editMode = !!user;
@@ -84,11 +83,11 @@ const UserEditor: FC<UserEditorProps> = props => {
     }
     let result;
     if (editMode) {
-      result = await updateUser(user, form, adminMode || false);
+      result = await handleUpdateUser(user, form, adminMode || false);
     } else {
-      result = await createUser(form);
+      result = await handleCreateUser(form);
     }
-    if (onUserUpdated && result?.data) {
+    if (onUserUpdated && result?.success && result.data) {
       onUserUpdated(result.data);
     }
   };

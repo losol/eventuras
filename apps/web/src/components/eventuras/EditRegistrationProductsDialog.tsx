@@ -15,10 +15,7 @@ import { useState } from 'react';
 import RegistrationCustomize from '@/app/user/events/[id]/eventflow/RegistrationCustomize';
 import { Dialog } from '@eventuras/ratio-ui/layout/Dialog';
 import { useToast } from '@eventuras/toast';
-import {
-  addProductsToRegistration,
-  productMapToOrderLineModel,
-} from '@/utils/api/functions/events';
+import { addProductsToExistingRegistration } from '@/app/user/events/actions';
 
 export type EditRegistrationProductsDialogProps = {
   eventProducts: ProductDto[];
@@ -38,18 +35,19 @@ const EditRegistrationProductsDialog = (props: EditRegistrationProductsDialogPro
   const onSubmit = async (selected: Map<string, number>) => {
     logger.info({ selected }, 'Updating registration products');
     try {
-      const updateProductResult = await addProductsToRegistration(
+      const result = await addProductsToExistingRegistration(
         props.currentRegistration.registrationId!,
-        productMapToOrderLineModel(selected)
+        selected
       );
 
-      if (updateProductResult) {
-        toast.success('Registration edited successfully!');
+      if (result.success) {
+        toast.success(result.message || 'Registration edited successfully!');
         router.refresh();
         setEditorOpen(false);
         if (props.onClose) props.onClose(true);
       } else {
-        toast.error('Something went wrong, please try again later');
+        logger.error({ error: result.error }, 'Failed to update registration products');
+        toast.error(result.error.message);
         setEditorOpen(false);
         if (props.onClose) props.onClose(false);
       }

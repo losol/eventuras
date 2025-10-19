@@ -3,8 +3,7 @@ import { useSelector } from '@xstate/react';
 import { createContext, useContext } from 'react';
 import { Actor, assign, createMachine, fromPromise } from 'xstate';
 
-import { createSDK } from '@/utils/api/EventurasApi';
-import { publicEnv } from '@/config.client';
+import { fetchUserProfile } from '@/app/actions/user-profile';
 
 type SessionUser = {
   name: string;
@@ -70,15 +69,8 @@ const AuthenticationFlowMachine = createMachine({
         },
       },
       invoke: {
-        src: fromPromise(async ({ input }) => {
-          const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
-          const organizationId = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
-          const orgId = typeof organizationId === 'number' 
-            ? organizationId 
-            : parseInt(organizationId as string, 10);
-          return sdk.userProfile.getV3Userprofile({
-            eventurasOrgId: orgId,
-          });
+        src: fromPromise(async () => {
+          return fetchUserProfile();
         }),
         onDone: {
           actions: assign({
