@@ -20,9 +20,7 @@
   "dependencies": {
     "@eventuras/ratio-ui": "workspace:*",
     "@eventuras/logger": "workspace:*",
-    "@tabler/icons-react": "^3.31.0",
-    "react-aria-components": "^1.13.0",
-    "react-hook-form": "^7.65.0"
+    "@tabler/icons-react": "^3.31.0"
   },
   "devDependencies": {
     "@eventuras/eslint-config": "workspace:*",
@@ -32,6 +30,8 @@
   },
   "peerDependencies": {
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "react-hook-form": "^7.65.0",
+    "react-aria-components": "^1.13.0"
   }
 }
