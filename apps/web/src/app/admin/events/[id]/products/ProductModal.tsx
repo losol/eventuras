@@ -1,19 +1,9 @@
 'use client';
 
 import type { NewProductDto, ProductDto } from '@eventuras/event-sdk';
-import {
-  postV3EventsByEventIdProducts,
-  putV3EventsByEventIdProductsByProductId
-} from '@eventuras/event-sdk';
 import { Form, Input, NumberInput } from '@eventuras/smartform';
 import { Button } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
-
-const logger = Logger.create({
-  namespace: 'web:admin',
-  context: { component: 'ProductModal' }
-});
-
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -22,6 +12,12 @@ import { Dialog } from '@eventuras/ratio-ui/layout/Dialog';
 import { useToast } from '@eventuras/toast';
 
 import ConfirmDiscardModal from './ConfirmDiscardModal';
+import { createProduct, updateProduct } from './actions';
+
+const logger = Logger.create({
+  namespace: 'web:admin',
+  context: { component: 'ProductModal' },
+});
 
 interface ProductModalProps {
   isOpen: boolean;
@@ -60,34 +56,32 @@ const ProductModal: React.FC<ProductModalProps> = ({
     setLoading(true);
 
     try {
-      if (isEditMode && product) {
+      if (isEditMode && product?.productId) {
         logger.info({ product: data }, 'Editing product');
-        const response = await putV3EventsByEventIdProductsByProductId({
-          path: { eventId, productId: product.productId! },
-          body: data
-        });
+        const result = await updateProduct(eventId, product.productId, data);
 
-        if (response.data) {
-          onSubmit(response.data);
-          toast.success('Product was updated!');
-        } else {
-          logger.error({ error: response.error }, 'Failed to update product');
-          toast.error('Failed to update product');
+        if (!result.success) {
+          logger.error({ error: result.error }, 'Failed to update product');
+          toast.error(result.error.message);
+          setLoading(false);
+          return;
         }
+
+        onSubmit(result.data);
+        toast.success(result.message || 'Product was updated!');
       } else {
         logger.info({ product: data }, 'Adding product');
-        const response = await postV3EventsByEventIdProducts({
-          path: { eventId },
-          body: data as NewProductDto
-        });
+        const result = await createProduct(eventId, data as NewProductDto);
 
-        if (response.data) {
-          onSubmit(response.data);
-          toast.success('Product was created!');
-        } else {
-          logger.error({ error: response.error }, 'Failed to create product');
-          toast.error('Failed to create product');
+        if (!result.success) {
+          logger.error({ error: result.error }, 'Failed to create product');
+          toast.error(result.error.message);
+          setLoading(false);
+          return;
         }
+
+        onSubmit(result.data);
+        toast.success(result.message || 'Product was created!');
       }
 
       // Close the modal on success

@@ -1,4 +1,4 @@
-import { ProductOrderDto } from '@eventuras/sdk';
+import { ProductOrderDto } from '@eventuras/event-sdk';
 import { useTranslations } from 'next-intl';
 import { ReactElement } from 'react';
 

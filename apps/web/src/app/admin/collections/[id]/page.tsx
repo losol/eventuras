@@ -3,9 +3,7 @@ import { Logger } from '@eventuras/logger';
 import { getTranslations } from 'next-intl/server';
 
 import Wrapper from '@/components/eventuras/Wrapper';
-import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
-import { appConfig } from '@/config.server';
-import { getAccessToken } from '@/utils/getAccesstoken';
+import { getV3EventcollectionsById } from '@eventuras/event-sdk';
 
 import CollectionEditor from '../CollectionEditor';
 
@@ -17,28 +15,17 @@ type EventCollectionProps = {
 
 export default async function CollectionDetailPage({ params }: Readonly<EventCollectionProps>) {
   const { id } = await params;
-
   const t = await getTranslations();
 
-  const eventuras = createSDK({
-    baseUrl: appConfig.env.NEXT_PUBLIC_BACKEND_URL as string,
-    authHeader: await getAccessToken(),
+  const response = await getV3EventcollectionsById({
+    path: { id },
   });
 
-  const collection = await apiWrapper(() =>
-    eventuras.eventCollection.getV3Eventcollections1({
-      id: id,
-    })
-  );
-
-  if (!collection.ok) {
+  if (!response.data) {
     Logger.error(
       { namespace: 'collections' },
-      `Failed to fetch collection ${id}, error: ${collection.error}`
+      `Failed to fetch collection ${id}, error: ${response.error}`
     );
-  }
-
-  if (!collection.ok) {
     return <div>{t('common.event-not-found')}</div>;
   }
 
@@ -46,12 +33,12 @@ export default async function CollectionDetailPage({ params }: Readonly<EventCol
     <Wrapper fluid>
       <Section className="bg-white dark:bg-black   pb-8">
         <Container>
-          <Heading as="h1">{collection.value?.name ?? ''}</Heading>
+          <Heading as="h1">{response.data.name ?? ''}</Heading>
         </Container>
       </Section>
       <Section className="bg-white dark:bg-black   pb-8">
         <Container>
-          <CollectionEditor eventCollection={collection.value!} />
+          <CollectionEditor eventCollection={response.data} />
         </Container>
       </Section>
     </Wrapper>

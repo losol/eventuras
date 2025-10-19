@@ -1,64 +1,78 @@
 'use client';
 
-import { RegistrationDto, RegistrationStatus, postV3RegistrationsByIdCertificateSend } from '@eventuras/event-sdk';
+import { RegistrationDto, RegistrationStatus } from '@eventuras/event-sdk';
 import { Button } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
 import { IconCircleX } from '@tabler/icons-react';
 import { useState } from 'react';
+import { useToast } from '@eventuras/toast';
 
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
-import { statusPatchRequest } from '../registrations/Registration';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { updateRegistrationStatus, sendCertificateEmail } from '../registrations/actions';
 
 interface LiveActionsMenuProps {
   registration: RegistrationDto;
   onStatusUpdate?: (registration: RegistrationDto) => void;
 }
 
-const LiveActionsMenu = ({ registration, onStatusUpdate }: LiveActionsMenuProps) => {
+const LiveActionsMenu = ({ registration }: LiveActionsMenuProps) => {
   const [emailLoading, setEmailLoading] = useState(false);
   const [emailError, setEmailError] = useState<string | null>(null);
   const [emailSuccess, setEmailSuccess] = useState(false);
+  const toast = useToast();
 
-  const handleStatusUpdate = (newStatus: RegistrationStatus) => {
-    // Send PATCH request to update registration status
-    statusPatchRequest(registration.registrationId!, newStatus);
+  const logger = Logger.create({
+    namespace: 'web:admin:events',
+    context: { component: 'LiveActionsMenu' },
+  });
 
-    if (onStatusUpdate) {
-      onStatusUpdate({ ...registration, status: newStatus });
-    }
+  const handleStatusUpdate = async (newStatus: RegistrationStatus) => {
+    // TODO: This functionality is not yet fully implemented
+    toast.error('Status update not yet implemented. Please use the registration edit page.');
+    logger.warn(
+      { registrationId: registration.registrationId, newStatus },
+      'Status update attempted but not implemented'
+    );
+
+    // When ready, uncomment:
+    // const result = await updateRegistrationStatus(registration.registrationId!, newStatus);
+    //
+    // if (!result.success) {
+    //   toast.error(result.error.message);
+    //   logger.error({ error: result.error }, 'Failed to update registration status');
+    //   return;
+    // }
+    //
+    // toast.success(result.message || 'Status updated successfully!');
+    // if (onStatusUpdate) {
+    //   onStatusUpdate({ ...registration, status: newStatus });
+    // }
   };
 
   const handleEmailCertificate = async (registrationId: number) => {
-    try {
-      setEmailLoading(true);
-      setEmailError(null);
-      setEmailSuccess(false);
-      const response = await postV3RegistrationsByIdCertificateSend({
-        path: { id: registrationId }
-      });
+    setEmailLoading(true);
+    setEmailError(null);
+    setEmailSuccess(false);
 
-      if (!response.data) {
-        const errorMessage = response.error ? 'Failed to send certificate' : 'Unknown error';
-        throw new Error(errorMessage);
-      }
+    logger.info({ registrationId }, 'Sending certificate email');
 
-      Logger.info(
-        { namespace: 'certificates:email' },
-        `Certificate sent successfully for registration ${registrationId}`
-      );
+    const result = await sendCertificateEmail(registrationId);
 
-      setEmailSuccess(true);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to send certificate';
+    if (!result.success) {
+      const errorMessage = result.error.message;
       setEmailError(errorMessage);
-      Logger.error(
-        { namespace: 'certificates:email' },
-        `Failed to send certificate for registration ${registrationId}: ${errorMessage}`
-      );
-    } finally {
+      toast.error(errorMessage);
+      logger.error({ error: result.error, registrationId }, 'Failed to send certificate');
       setEmailLoading(false);
+      return;
     }
+
+    logger.info({ registrationId }, 'Certificate sent successfully');
+    toast.success(result.message || 'Certificate sent successfully!');
+    setEmailSuccess(true);
+    setEmailLoading(false);
   };
 
   function renderButtonBasedOnStatus() {

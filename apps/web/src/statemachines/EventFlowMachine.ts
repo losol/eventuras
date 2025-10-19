@@ -7,8 +7,8 @@ import {
 import { assign, createMachine, fromPromise } from 'xstate';
 
 import { PaymentFormValues } from '@/types';
-import { createSDK } from '@/utils/api/EventurasApi';
-import { createEventRegistration, updateEventRegistration } from '@/utils/api/functions/events';
+import { fetchUserEventRegistrations } from '@/app/actions/registrations';
+import { createEventRegistration, updateEventRegistration } from '@/app/user/events/actions';
 import { mapToNewRegistration, mapToUpdatedRegistration } from '@/utils/api/mappers';
 
 export type EventFlowMachineContext = {
@@ -68,23 +68,21 @@ const EventFlowMachine = createMachine({
         'Fetch user registrations - check if user is already registered, or needs to re-register',
       invoke: {
         src: fromPromise(async ({ input }) => {
-          const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
           const { user, eventInfo } = input;
-          return sdk.registrations.getV3Registrations({
-            userId: user.id!,
-            eventId: eventInfo.id,
-            includeProducts: true,
-            includeEventInfo: true,
-            includeOrders: true,
-            includeUserInfo: true,
-          });
+          const result = await fetchUserEventRegistrations(user.id!, eventInfo.id!);
+
+          if (!result.success) {
+            throw new Error(result.error.message);
+          }
+
+          return result.data;
         }),
         input: ({ context }) => ({ user: context.user, eventInfo: context.eventInfo }),
         onDone: {
           target: States.REGISTER_OR_EDIT,
           actions: assign({
-            inEditMode: ({ event }) => event.output.data!.length > 0,
-            registrations: ({ event }) => event.output.data!,
+            inEditMode: ({ event }) => event.output.length > 0,
+            registrations: ({ event }) => event.output,
           }),
         },
 
@@ -210,24 +208,34 @@ const EventFlowMachine = createMachine({
             inEditMode,
             registrations,
           } = input as EventFlowMachineContext;
+
+          let result;
+
           if (!inEditMode) {
             const newRegistrationData = mapToNewRegistration(
               user.id!,
               eventInfo.id!,
               paymentFormValues
             );
-            return createEventRegistration(newRegistrationData, selectedProducts);
+            result = await createEventRegistration(newRegistrationData, selectedProducts);
           } else {
             const registration = registrations[0];
             const updatedRegistration = mapToUpdatedRegistration(registration!, paymentFormValues);
 
-            return updateEventRegistration(
+            result = await updateEventRegistration(
               registration!.registrationId!,
               updatedRegistration,
               input.availableProducts,
               selectedProducts
             );
           }
+
+          // Handle server action result
+          if (!result.success) {
+            throw new Error(result.error.message);
+          }
+
+          return result.data;
         }),
         input: ({ context }) => ({ ...context }),
         onDone: {

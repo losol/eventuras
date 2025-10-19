@@ -13,18 +13,10 @@ import { Logger } from '@eventuras/logger';
 const logger = Logger.create({ namespace: 'web:utils:api', context: { module: 'events' } });
 
 import { publicEnv } from '@/config.client';
+import { productMapToOrderLineModel } from '@/utils/registration-helpers';
 
-
-export const productMapToOrderLineModel = (
-  selectedProducts?: Map<string, number>
-): OrderLineModel[] => {
-  return selectedProducts
-    ? (Array.from(selectedProducts, ([productId, quantity]) => ({
-        productId: parseInt(productId, 10),
-        quantity
-      })) as OrderLineModel[])
-    : [];
-};
+// Re-export for backwards compatibility
+export { productMapToOrderLineModel };
 
 export const createEventRegistration = async (
   newRegistration: NewRegistrationDto,

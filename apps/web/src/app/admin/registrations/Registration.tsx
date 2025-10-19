@@ -5,7 +5,6 @@ import {
   RegistrationDto,
   RegistrationStatus,
   RegistrationType,
-  putV3RegistrationsById
 } from '@eventuras/event-sdk';
 import { Form, Select } from '@eventuras/smartform';
 import {
@@ -18,18 +17,8 @@ import {
   Section,
   Term
 } from '@eventuras/ratio-ui';
-import { Logger } from '@eventuras/logger';
 
-const logger = Logger.create({
-  namespace: 'web:admin',
-  context: { component: 'Registration' }
-});
-
-import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-
-import { fetcher } from '@/utils/api/EventurasApi';
-import { publicEnv } from '@/config.client';
 
 import Order from '../orders/Order';
 
@@ -86,52 +75,14 @@ export const getTypeLabels = (t: TranslationFunction) => [
   { value: 'Artist' as RegistrationType, label: t('common.registrations.labels.artist') },
 ];
 
-export const updateRegistration = async (
-  id: number,
-  updatedRegistration: RegistrationUpdateDto,
-  onUpdate?: (registration: RegistrationDto) => void
-) => {  const response = await putV3RegistrationsById({
-    path: { id },
-    body: updatedRegistration
-  });
-
-  if (response.data) {
-    logger.info({ registrationId: id }, `Registration updated successfully`);
-    onUpdate?.(response.data);
-    return { ok: true, value: response.data };
-  } else {
-    logger.error(
-      { error: response.error, registrationId: id },
-      `Error updating registration`
-    );
-    return { ok: false, error: response.error };
-  }
-};
-
-export const statusPatchRequest = async (registrationId: number, status: RegistrationStatus) => {
-  const patchDocument = [{ op: 'replace', path: '/status', value: status }];
-
-  const result = await fetcher(() =>
-    fetch(`${publicEnv.NEXT_PUBLIC_API_BASE_URL as string}/v3/registrations/${registrationId}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json-patch+json'
-      },
-      body: JSON.stringify(patchDocument)
-    })
-  );
-
-  if (result.ok) {
-    logger.info({ registrationId, status }, `Registration status updated successfully`);
-  } else {
-    logger.error({ error: result.error, registrationId }, `Error updating registration status`);
-  }
-  return result;
-};
-
 const Registration = ({ registration, adminMode = false }: RegistrationProps) => {
-  const router = useRouter();
   const t = useTranslations();
+
+  // TODO: Implement proper registration update functionality
+  // This component needs a complete refactor to handle registration updates correctly
+  const handleUpdateRegistration = async () => {
+    throw new Error('Registration update not yet implemented. Please use the admin panel.');
+  };
 
   if (!registration) {
     return <p>{t('common.registrations.labels.noRegistration')}</p>;
@@ -175,10 +126,11 @@ const Registration = ({ registration, adminMode = false }: RegistrationProps) =>
         )}
         {adminMode && (
           <Form
-            defaultValues={registration}
-            onSubmit={form => {
-              updateRegistration(registration.registrationId!, form, router.refresh);
+            defaultValues={{
+              type: registration.type,
+              status: registration.status,
             }}
+            onSubmit={handleUpdateRegistration}
             className=""
           >
             <Select name="type" options={getTypeLabels(t)} label="Type" />

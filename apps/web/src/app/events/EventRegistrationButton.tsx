@@ -1,4 +1,4 @@
-import { EventDto, EventInfoStatus } from '@eventuras/sdk';
+import { EventDto, EventInfoStatus } from '@eventuras/event-sdk';
 import { Badge } from '@eventuras/ratio-ui';
 import { getTranslations } from 'next-intl/server';
 

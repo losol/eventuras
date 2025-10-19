@@ -3,7 +3,7 @@ import { getTranslations } from 'next-intl/server';
 
 import { EventGrid } from '@/components/event';
 import Wrapper from '@/components/eventuras/Wrapper';
-import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
+import { getV3Events } from '@eventuras/event-sdk';
 import { appConfig } from '@/config.server';
 import getSiteSettings from '@/utils/site/getSiteSettings';
 
@@ -12,9 +12,9 @@ const ORGANIZATION_ID = Number(appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID as stri
 export default async function Homepage() {
   const site = await getSiteSettings();
   const t = await getTranslations();
-  const result = await apiWrapper(() =>
-    createSDK({ inferUrl: true }).events.getV3Events({ organizationId: ORGANIZATION_ID })
-  );
+  const response = await getV3Events({
+    query: { OrganizationId: ORGANIZATION_ID },
+  });
 
   return (
     <Wrapper imageNavbar bgDark fluid>
@@ -33,12 +33,12 @@ export default async function Homepage() {
       </Section>
 
       {/* Events section */}
-      {result.value?.data?.length ? (
+      {response.data?.data?.length ? (
         <Section backgroundColorClass="bg-primary-50 dark:bg-slate-950" padding="py-8" container>
           <Heading as="h2" padding="pb-6">
             {t('common.events.sectiontitle')}
           </Heading>
-          <EventGrid eventinfos={result.value.data} />
+          <EventGrid eventinfos={response.data.data} />
         </Section>
       ) : null}
     </Wrapper>

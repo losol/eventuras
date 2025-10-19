@@ -1,13 +1,45 @@
 import { Container, Heading, Section } from '@eventuras/ratio-ui';
+import { Unauthorized } from '@eventuras/ratio-ui/blocks/Unauthorized';
 import { getTranslations } from 'next-intl/server';
 
 import Wrapper from '@/components/eventuras/Wrapper';
-import withAuthorization from '@/utils/auth/withAuthorization';
+import { checkAuthorization } from '@/utils/auth/checkAuthorization';
+import FatalError from '@/components/FatalError';
 
-import AdminOrdersList from './AdminOrdersList';
+import { getOrders } from './actions';
+import OrdersTable from './OrdersTable';
 
-const AdminOrdersPage = async () => {
+type PageProps = {
+  searchParams: Promise<{ page?: string }>;
+};
+
+export default async function AdminOrdersPage({ searchParams }: PageProps) {
+  // Check authorization
+  const authResult = await checkAuthorization('Admin');
+  if (!authResult.authorized) {
+    return <Unauthorized />;
+  }
+
   const t = await getTranslations();
+  const params = await searchParams;
+  const page = params.page ? parseInt(params.page, 10) : 1;
+  const pageSize = 50;
+
+  const response = await getOrders(page, pageSize);
+
+  if (!response.ok || !response.data) {
+    return (
+      <Wrapper>
+        <Container>
+          <Heading as="h1">{t('admin.orders.page.title')}</Heading>
+          <FatalError
+            title="Failed to load orders"
+            description={response.error || 'Unknown error'}
+          />
+        </Container>
+      </Wrapper>
+    );
+  }
 
   return (
     <Wrapper>
@@ -16,11 +48,13 @@ const AdminOrdersPage = async () => {
       </Container>
       <Section>
         <Container>
-          <AdminOrdersList />
+          <OrdersTable
+            orders={response.data.data}
+            currentPage={page}
+            totalPages={response.data.pages}
+          />
         </Container>
       </Section>
     </Wrapper>
   );
-};
-
-export default withAuthorization(AdminOrdersPage, 'Admin');
+}

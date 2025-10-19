@@ -1,4 +1,4 @@
-import { EventDto } from '@eventuras/sdk';
+import { EventDto } from '@eventuras/event-sdk';
 import { Grid } from '@eventuras/ratio-ui';
 
 import EventCard from '@/components/event/EventCard';

@@ -145,6 +145,8 @@ const EventFlow: React.FC<EventFlowProps> = ({ eventInfo, user, availableProduct
           title={t('common.errorpage.title')}
           description={t('common.errorpage.description')}
           siteInfo={siteInfo}
+          contactUsLabel={t('common.labels.contactUs')}
+          contactUsText={t('common.errorpage.contactUs')}
         />
       );
     default:

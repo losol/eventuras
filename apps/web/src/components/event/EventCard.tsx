@@ -1,5 +1,5 @@
 import { MarkdownContent } from '@eventuras/markdown';
-import { EventDto } from '@eventuras/sdk';
+import { EventDto } from '@eventuras/event-sdk';
 
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import { appConfig } from '@/config.server';

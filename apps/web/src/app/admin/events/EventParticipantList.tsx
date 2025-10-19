@@ -14,10 +14,11 @@ import React, { useMemo, useState } from 'react';
 
 import EventNotificator, { EventNotificatorType } from '@/components/event/EventNotificator';
 import EditRegistrationProductsDialog from '@/components/eventuras/EditRegistrationProductsDialog';
-import useCreateHook from '@/hooks/createHook';
 import { ParticipationTypesKey } from '@/types';
 import { getV3RegistrationsById } from '@eventuras/event-sdk';
 import { participationMap } from '@/utils/api/mappers';
+import { client } from '@/lib/eventuras-client';
+import { useEffect } from 'react';
 
 import LiveActionsMenu from './LiveActionsMenu';
 
@@ -60,6 +61,9 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
     useState<RegistrationDto | null>(null);
   const [editorOpen, setEditorOpen] = useState(false);
 
+  const [currentRegistration, setCurrentRegistration] = useState<RegistrationDto | null>(null);
+  const [loadingRegistration, setLoadingRegistration] = useState(false);
+
   const updateParticipantList = (updatedRegistration: RegistrationDto) => {
     setParticipants(prevParticipants =>
       prevParticipants.map(participant =>
@@ -70,21 +74,36 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
     );
   };
 
-  const { result: currentRegistration, loading: loadingRegistration } = useCreateHook(
-    async () => {
-      logger.info('Loading current registrations');      const response = await getV3RegistrationsById({
-        path: { id: currentSelectedParticipant!.registrationId! },
-        query: {
-          IncludeProducts: true,
-          IncludeOrders: true,
-          IncludeUserInfo: true
-        }
-      });
-      return response.data ?? null;
-    },
-    [currentSelectedParticipant?.registrationId],
-    () => currentSelectedParticipant === null
-  );
+  useEffect(() => {
+    if (currentSelectedParticipant === null) {
+      setCurrentRegistration(null);
+      return;
+    }
+
+    const loadRegistration = async () => {
+      logger.info('Loading current registration');
+      setLoadingRegistration(true);
+      try {
+        const response = await getV3RegistrationsById({
+          client,
+          path: { id: currentSelectedParticipant.registrationId! },
+          query: {
+            IncludeProducts: true,
+            IncludeOrders: true,
+            IncludeUserInfo: true,
+          },
+        });
+        setCurrentRegistration(response.data ?? null);
+      } catch (error) {
+        logger.error({ error }, 'Failed to load registration');
+        setCurrentRegistration(null);
+      } finally {
+        setLoadingRegistration(false);
+      }
+    };
+
+    loadRegistration();
+  }, [currentSelectedParticipant?.registrationId]);
 
   const renderLiveActions = (registration: RegistrationDto) => {
     return <LiveActionsMenu registration={registration} onStatusUpdate={updateParticipantList} />;

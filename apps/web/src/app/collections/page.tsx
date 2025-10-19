@@ -5,7 +5,7 @@ import { getTranslations } from 'next-intl/server';
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import Wrapper from '@/components/eventuras/Wrapper';
 import { Link } from '@eventuras/ratio-ui-next/Link';
-import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
+import { getV3Eventcollections } from '@eventuras/event-sdk';
 import { appConfig } from '@/config.server';
 
 const CollectionIndexPage: React.FC = async () => {
@@ -17,15 +17,13 @@ const CollectionIndexPage: React.FC = async () => {
     ? organizationId
     : parseInt(organizationId as string, 10);
 
-  const result = await apiWrapper(() =>
-    createSDK({ inferUrl: true }).eventCollection.getV3Eventcollections({
-      eventurasOrgId: orgId,
-    })
-  );
+  const response = await getV3Eventcollections({
+    headers: {
+      'Eventuras-Org-Id': orgId,
+    },
+  });
 
-  const notFound = !result.ok || !result.value;
-
-  if (notFound)
+  if (!response.data)
     return (
       <Wrapper>
         <Heading>{t('common.events.detailspage.notfound.title')}</Heading>
@@ -36,7 +34,7 @@ const CollectionIndexPage: React.FC = async () => {
       </Wrapper>
     );
 
-  const collections = result.value!;
+  const collections = response.data;
 
   return (
     <Wrapper>

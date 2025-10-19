@@ -1,4 +1,4 @@
-import { EventInfoStatus } from '@eventuras/sdk';
+import { EventInfoStatus, getV3Events, getV3EventsById } from '@eventuras/event-sdk';
 import { Container, Heading, Text } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
 
@@ -11,7 +11,6 @@ import EventDetails from '@/app/events/EventDetails';
 import EventRegistrationButton from '@/app/events/EventRegistrationButton';
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import Wrapper from '@/components/eventuras/Wrapper';
-import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import { appConfig } from '@/config.server';
 import { formatDateSpan } from '@/utils/formatDate';
 
@@ -39,14 +38,15 @@ export async function generateStaticParams() {
   );
 
   try {
-    const eventuras = createSDK({ inferUrl: true });
-    const eventInfos = await eventuras.events.getV3Events({
-      organizationId: orgId,
+    const response = await getV3Events({
+      query: {
+        OrganizationId: orgId,
+      },
     });
 
-    if (!eventInfos?.data) return [];
+    if (!response.data?.data) return [];
 
-    const staticParams = eventInfos.data
+    const staticParams = response.data.data
       .filter(event => event.id !== undefined && event.slug !== undefined)
       .map(eventInfo => ({
         id: eventInfo.id!.toString(),
@@ -68,14 +68,14 @@ export default async function EventDetailsPage({ params }: Readonly<EventDetails
     return <EventNotFound />;
   }
 
-  const result = await apiWrapper(() => createSDK({ inferUrl: true }).events.getV3Events1({ id }));
+  const response = await getV3EventsById({ path: { id } });
 
   // Handle not found or draft events
-  if (!result.ok || !result.value || result.value.status === EventInfoStatus.DRAFT) {
+  if (!response.data || response.data.status === EventInfoStatus.DRAFT) {
     return <EventNotFound />;
   }
 
-  const eventinfo = result.value;
+  const eventinfo = response.data;
 
   // Redirect if slug doesn't match
   if (slug !== eventinfo.slug && eventinfo.slug) {

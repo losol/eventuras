@@ -1,6 +1,6 @@
 'use client';
 
-import { UserDto } from '@eventuras/sdk';
+import { UserDto } from '@eventuras/event-sdk';
 import { Definition, DescriptionList, Item, Term } from '@eventuras/ratio-ui';
 import { useTranslations } from 'next-intl';
 

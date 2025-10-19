@@ -1,11 +1,16 @@
 import { EventDto } from '@eventuras/event-sdk';
 import { Button, Definition, DescriptionList, Drawer, Heading, Term } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
+import { useToast } from '@eventuras/toast';
 import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
 
-import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
-import { appConfig } from '@/config.server';
+import { issueCertificates } from './actions';
+
+const logger = Logger.create({
+  namespace: 'web:admin:certificates',
+  context: { component: 'AdminCertificatesActionsMenu' },
+});
 
 type AdminCertificatesActionsMenuProps = {
   eventinfo: EventDto;
@@ -17,27 +22,47 @@ export const AdminCertificatesActionsMenu: React.FC<AdminCertificatesActionsMenu
   onCertificatesSent,
 }) => {
   const [certificateDrawerOpen, setCertificateDrawerOpen] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const t = useTranslations();
-  const loggerOptions = { namespace: 'admin:certificates' };
-
-  const eventuras = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
+  const toast = useToast();
 
   const onClose = () => {
     setCertificateDrawerOpen(false);
   };
 
   const onCertificateSubmit = async () => {
-    Logger.info(loggerOptions, 'Sending certificates...');
+    if (!eventinfo.id) {
+      logger.error('Event ID is missing');
+      toast.error('Invalid event');
+      return;
+    }
 
-    const result = await apiWrapper(() => {
-      return eventuras.eventCertificates.postV3EventCertificatesIssue({
-        id: eventinfo.id!,
-        send: true,
-        eventurasOrgId: parseInt(appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID as string),
-      });
-    });
-    onCertificatesSent && onCertificatesSent();
-    onClose();
+    setIsSubmitting(true);
+    logger.info({ eventId: eventinfo.id }, 'Sending certificates...');
+
+    try {
+      const result = await issueCertificates(eventinfo.id);
+
+      if (!result.success) {
+        logger.error({ error: result.error }, 'Failed to issue certificates');
+        toast.error(result.error.message);
+        setIsSubmitting(false);
+        return;
+      }
+
+      toast.success(result.message || 'Certificates sent successfully!');
+      logger.info({ eventId: eventinfo.id }, 'Certificates issued successfully');
+
+      if (onCertificatesSent) {
+        onCertificatesSent();
+      }
+      onClose();
+    } catch (error) {
+      logger.error({ error }, 'Unexpected error sending certificates');
+      toast.error('An unexpected error occurred');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -58,8 +83,10 @@ export const AdminCertificatesActionsMenu: React.FC<AdminCertificatesActionsMenu
           </DescriptionList>
         </Drawer.Body>
         <Drawer.Footer>
-          <Button onClick={onCertificateSubmit}>Send certificates</Button>
-          <Button onClick={() => onClose()} variant="secondary">
+          <Button onClick={onCertificateSubmit} disabled={isSubmitting}>
+            {isSubmitting ? 'Sending...' : 'Send certificates'}
+          </Button>
+          <Button onClick={() => onClose()} variant="secondary" disabled={isSubmitting}>
             Close
           </Button>
         </Drawer.Footer>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { MarkdownContent } from '@eventuras/markdown';
-import { EventDto } from '@eventuras/sdk';
+import { EventDto } from '@eventuras/event-sdk';
 import { Heading } from '@eventuras/ratio-ui';
 import { useTranslations } from 'next-intl';
 import { Link } from '@eventuras/ratio-ui-next/Link';

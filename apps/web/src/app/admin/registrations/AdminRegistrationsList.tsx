@@ -1,37 +1,37 @@
 'use client';
 
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
-import { RegistrationDto } from '@eventuras/sdk';
+import { RegistrationDto, RegistrationDtoPageResponseDto } from '@eventuras/event-sdk';
 import { Loading, Pagination } from '@eventuras/ratio-ui';
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 
 import FatalError from '@/components/FatalError';
 import { Link } from '@eventuras/ratio-ui-next/Link';
-import useCreateHook from '@/hooks/createHook';
-import { createSDK } from '@/utils/api/EventurasApi';
-import { publicEnv } from '@/config.client';
+import { getRegistrations } from './actions';
 
 const columnHelper = createColumnHelper<RegistrationDto>();
 
 const AdminRegistrationsList: React.FC = () => {
-  const organizationId = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
   const t = useTranslations();
   const [page, setPage] = useState(1);
-  const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
+  const [result, setResult] = useState<RegistrationDtoPageResponseDto | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
   const pageSize = 50;
-  const { loading, result } = useCreateHook(
-    () =>
-      sdk.registrations.getV3Registrations({
-        eventurasOrgId: organizationId,
-        includeUserInfo: true,
-        includeEventInfo: true,
-        page,
-        count: pageSize,
-        ordering: ['registrationId', 'desc'],
-      }),
-    [page]
-  );
+
+  useEffect(() => {
+    startTransition(async () => {
+      const response = await getRegistrations(page, pageSize);
+      if (response.ok && response.data) {
+        setResult(response.data);
+        setError(null);
+      } else {
+        setError(response.error);
+        setResult(null);
+      }
+    });
+  }, [page]);
 
   const renderRegistrationActions = (registration: RegistrationDto) => {
     return (
@@ -66,9 +66,9 @@ const AdminRegistrationsList: React.FC = () => {
     }),
   ];
 
-  if (loading) return <Loading />;
-  if (!result)
-    return <FatalError title="No response from admin orders" description="Response is null" />;
+  if (isPending && !result) return <Loading />;
+  if (error) return <FatalError title="Failed to load registrations" description={error} />;
+  if (!result) return <FatalError title="No response from admin registrations" description="Response is null" />;
   return (
     <>
       <DataTable data={result.data ?? []} columns={columns} />
