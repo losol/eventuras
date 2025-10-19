@@ -14,6 +14,11 @@
     }
   },
   "dependencies": {
+  },
+  "devDependencies": {
+    "@eventuras/eslint-config": "workspace:*",
+    "@eventuras/typescript-config": "workspace:*",
+    "@eventuras/vite-config": "workspace:*",
     "@lexical/code": "0.35.0",
     "@lexical/hashtag": "0.35.0",
     "@lexical/link": "0.35.0",
@@ -26,16 +31,11 @@
     "@lexical/selection": "0.35.0",
     "@lexical/table": "0.35.0",
     "@lexical/utils": "0.35.0",
-    "lexical": "0.35.0"
-  },
-  "devDependencies": {
-    "@eventuras/eslint-config": "workspace:*",
-    "@eventuras/typescript-config": "workspace:*",
-    "@eventuras/vite-config": "workspace:*",
     "@swc/core": "^1.13.5",
     "@testing-library/react": "^16.3.0",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
+    "lexical": "0.35.0",
     "lightningcss": "^1.30.2",
     "react": "19.2.0",
     "react-dom": "19.2.0",
@@ -44,6 +44,19 @@
     "vitest": "^3.2.4"
   },
   "peerDependencies": {
+    "@lexical/code": "^0.35.0",
+    "@lexical/hashtag": "^0.35.0",
+    "@lexical/link": "^0.35.0",
+    "@lexical/list": "^0.35.0",
+    "@lexical/mark": "^0.35.0",
+    "@lexical/markdown": "^0.35.0",
+    "@lexical/overflow": "^0.35.0",
+    "@lexical/react": "^0.35.0",
+    "@lexical/rich-text": "^0.35.0",
+    "@lexical/selection": "^0.35.0",
+    "@lexical/table": "^0.35.0",
+    "@lexical/utils": "^0.35.0",
+    "lexical": "^0.35.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
