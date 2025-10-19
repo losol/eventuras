@@ -4,16 +4,14 @@ import { getV3OrganizationsByOrganizationIdSettings } from '@eventuras/event-sdk
 
 import Wrapper from '@/components/eventuras/Wrapper';
 import withAuthorization from '@/utils/auth/withAuthorization';
-import { createClient } from '@/utils/apiClient';
 
 const AdminSystemPage = async () => {
   const t = await getTranslations();
 
   const settings = await getV3OrganizationsByOrganizationIdSettings({
     path: {
-      organizationId: 1,
-    },
-    client: await createClient(),
+      organizationId: 1
+    }
   });
 
   const powerOfficeSetting = settings.data?.find(s => s.name === 'POWER_OFFICE_APP_KEY');

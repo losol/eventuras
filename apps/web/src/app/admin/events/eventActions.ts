@@ -2,7 +2,6 @@
 
 import { Logger } from '@eventuras/logger';
 import { getV3Events, EventDto } from '@eventuras/event-sdk';
-import { createClient } from '@/utils/apiClient';
 
 const logger = Logger.create({ namespace: 'web:admin:events:actions' });
 
@@ -25,7 +24,7 @@ export async function fetchEvents({
   includePastEvents = false,
   page = 1,
   pageSize = 25,
-  startDate,
+  startDate
 }: FetchEventsParams): Promise<FetchEventsResult> {
   logger.info(
     {
@@ -33,14 +32,12 @@ export async function fetchEvents({
       includePastEvents,
       page,
       pageSize,
-      startDate,
+      startDate
     },
     'Fetching events'
   );
 
-  try {
-    const client = await createClient();
-    const response = await getV3Events({
+  try {    const response = await getV3Events({
       query: {
         OrganizationId: organizationId,
         IncludeDraftEvents: true,
@@ -48,9 +45,8 @@ export async function fetchEvents({
         Start: startDate,
         Period: 'Contain',
         Page: page,
-        Count: pageSize,
-      },
-      client,
+        Count: pageSize
+      }
     });
 
     if (!response.data) {
@@ -61,14 +57,14 @@ export async function fetchEvents({
     const result = {
       data: response.data.data ?? [],
       pages: response.data.pages ?? 0,
-      count: response.data.count ?? 0,
+      count: response.data.count ?? 0
     };
 
     logger.info(
       {
         count: result.data.length,
         pages: result.pages,
-        totalCount: result.count,
+        totalCount: result.count
       },
       'Events fetched successfully'
     );

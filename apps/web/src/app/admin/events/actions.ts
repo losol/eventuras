@@ -4,7 +4,6 @@ import { Logger } from '@eventuras/logger';
 import { postV3Events, putV3EventsById, EventFormDto } from '@eventuras/event-sdk';
 import { redirect } from 'next/navigation';
 
-import { createClient } from '@/utils/apiClient';
 import { appConfig } from '@/config.server';
 import { actionError, actionSuccess, type ServerActionResult } from '@/types/serverAction';
 
@@ -66,18 +65,14 @@ export async function createEvent(
     const newEvent: EventFormDto = {
       organizationId,
       title,
-      slug,
+      slug
     };
 
-    logger.info({ event: newEvent }, 'Sending create event request to API');
-
-    const client = await createClient();
-    const response = await postV3Events({
+    logger.info({ event: newEvent }, 'Sending create event request to API');    const response = await postV3Events({
       headers: {
-        'Eventuras-Org-Id': organizationId,
+        'Eventuras-Org-Id': organizationId
       },
-      body: newEvent,
-      client,
+      body: newEvent
     });
 
     if (!response.data) {
@@ -113,8 +108,8 @@ export async function createEvent(
         error: error instanceof Error ? {
           name: error.name,
           message: error.message,
-          stack: error.stack,
-        } : error,
+          stack: error.stack
+        } : error
       },
       'Failed to create event'
     );
@@ -162,16 +157,12 @@ export async function updateEvent(
       title: eventData.title,
       slug: eventData.slug,
       status: eventData.status,
-      type: eventData.type,
-    }, 'Prepared update request with organizationId');
-
-    const client = await createClient();
-    const response = await putV3EventsById({
+      type: eventData.type
+    }, 'Prepared update request with organizationId');    const response = await putV3EventsById({
       path: {
-        id: eventId,
+        id: eventId
       },
-      body: eventData,
-      client,
+      body: eventData
     });
 
     if (!response.data) {
@@ -181,7 +172,7 @@ export async function updateEvent(
       const errorDetails: Record<string, unknown> = {
         hasResponse: !!response.response,
         responseStatus: (response.response as unknown as { status?: number })?.status,
-        responseStatusText: (response.response as unknown as { statusText?: string })?.statusText,
+        responseStatusText: (response.response as unknown as { statusText?: string })?.statusText
       };
 
       if (response.error) {
@@ -229,8 +220,8 @@ export async function updateEvent(
         error: error instanceof Error ? {
           name: error.name,
           message: error.message,
-          stack: error.stack,
-        } : error,
+          stack: error.stack
+        } : error
       },
       'Failed to update event'
     );

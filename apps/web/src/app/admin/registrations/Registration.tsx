@@ -5,7 +5,7 @@ import {
   RegistrationDto,
   RegistrationStatus,
   RegistrationType,
-  putV3RegistrationsById,
+  putV3RegistrationsById
 } from '@eventuras/event-sdk';
 import { Form, Select } from '@eventuras/smartform';
 import {
@@ -16,19 +16,18 @@ import {
   Heading,
   Item,
   Section,
-  Term,
+  Term
 } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
 
 const logger = Logger.create({
   namespace: 'web:admin',
-  context: { component: 'Registration' },
+  context: { component: 'Registration' }
 });
 
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
-import { createClient } from '@/utils/apiClient';
 import { fetcher } from '@/utils/api/EventurasApi';
 import { publicEnv } from '@/config.client';
 
@@ -64,13 +63,13 @@ export const getStatusLabels = (t: TranslationFunction) => [
   { value: 'Verified' as RegistrationStatus, label: t('common.registrations.labels.verified') },
   {
     value: 'NotAttended' as RegistrationStatus,
-    label: t('common.registrations.labels.notAttended'),
+    label: t('common.registrations.labels.notAttended')
   },
   { value: 'Attended' as RegistrationStatus, label: t('common.registrations.labels.attended') },
   { value: 'Finished' as RegistrationStatus, label: t('common.registrations.labels.finished') },
   {
     value: 'WaitingList' as RegistrationStatus,
-    label: t('common.registrations.labels.waitingList'),
+    label: t('common.registrations.labels.waitingList')
   },
 ];
 
@@ -91,12 +90,9 @@ export const updateRegistration = async (
   id: number,
   updatedRegistration: RegistrationUpdateDto,
   onUpdate?: (registration: RegistrationDto) => void
-) => {
-  const client = await createClient();
-  const response = await putV3RegistrationsById({
+) => {  const response = await putV3RegistrationsById({
     path: { id },
-    body: updatedRegistration,
-    client,
+    body: updatedRegistration
   });
 
   if (response.data) {
@@ -119,9 +115,9 @@ export const statusPatchRequest = async (registrationId: number, status: Registr
     fetch(`${publicEnv.NEXT_PUBLIC_API_BASE_URL as string}/v3/registrations/${registrationId}`, {
       method: 'PATCH',
       headers: {
-        'Content-Type': 'application/json-patch+json',
+        'Content-Type': 'application/json-patch+json'
       },
-      body: JSON.stringify(patchDocument),
+      body: JSON.stringify(patchDocument)
     })
   );
 

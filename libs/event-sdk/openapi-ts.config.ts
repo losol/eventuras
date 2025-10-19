@@ -9,6 +9,7 @@ export default defineConfig({
   plugins: [
     {
       name: '@hey-api/client-next',
+      // Runtime config will be provided by consuming apps
       runtimeConfigPath: '../clientConfig',
     },
     // {

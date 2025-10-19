@@ -3,7 +3,6 @@ import { Logger } from '@eventuras/logger';
 import { getTranslations } from 'next-intl/server';
 
 import { getV3RegistrationsById } from '@eventuras/event-sdk';
-import { createClient } from '@/utils/apiClient';
 
 import Registration from '../Registration';
 
@@ -15,17 +14,13 @@ type EventInfoProps = {
 const RegistrationDetailPage: React.FC<EventInfoProps> = async props => {
   const params = await props.params;
   const t = await getTranslations();
-
-  const client = await createClient();
-
   const response = await getV3RegistrationsById({
     path: { id: params.id },
     query: {
       IncludeEventInfo: true,
       IncludeProducts: true,
-      IncludeUserInfo: true,
-    },
-    client,
+      IncludeUserInfo: true
+    }
   });
 
   Logger.debug(

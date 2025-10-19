@@ -4,7 +4,6 @@ import React from 'react';
 
 import Wrapper from '@/components/eventuras/Wrapper';
 import { getV3Userprofile, getV3EventsById, getV3EventsByEventIdProducts } from '@eventuras/event-sdk';
-import { createClient } from '@/utils/apiClient';
 import getSiteSettings from '@/utils/site/getSiteSettings';
 
 import EventFlow from './EventFlow';
@@ -26,14 +25,12 @@ export default async function UserEventPage({ params }: Readonly<UserEventPagePr
     );
   }
 
-  const t = await getTranslations();
-  const client = await createClient();
-  const siteInfo = await getSiteSettings();
+  const t = await getTranslations();  const siteInfo = await getSiteSettings();
 
   const [userResponse, eventInfoResponse, availableProductsResponse] = await Promise.all([
-    getV3Userprofile({ client }),
-    getV3EventsById({ path: { id }, client }),
-    getV3EventsByEventIdProducts({ path: { eventId: id }, client }),
+    getV3Userprofile(),
+    getV3EventsById({ path: { id } }),
+    getV3EventsByEventIdProducts({ path: { eventId: id } }),
   ]);
 
   // Handle user not logged in

@@ -4,21 +4,20 @@ import {
   OrderDto,
   OrderStatus,
   PaymentProvider,
-  postV3Invoices,
+  postV3Invoices
 } from '@eventuras/event-sdk';
 import { Button, Definition, DescriptionList, Drawer, Heading, Term } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
 
 const logger = Logger.create({
   namespace: 'web:admin:orders',
-  context: { component: 'OrderActionsMenu' },
+  context: { component: 'OrderActionsMenu' }
 });
 
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
 
-import { createClient } from '@/utils/apiClient';
 import { publicEnv } from '@/config.client';
 
 export type OrderActionsMenuProps = {
@@ -57,15 +56,15 @@ export const OrderActionsMenu = ({ order }: OrderActionsMenuProps) => {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json-patch+json',
-          'Eventuras-Org-Id': orgId.toString(),
+          'Eventuras-Org-Id': orgId.toString()
         },
         body: JSON.stringify([
           {
             op: 'replace',
             path: '/status',
-            value: 'Verified',
+            value: 'Verified'
           },
-        ]),
+        ])
       });
       router.refresh();
     };
@@ -73,22 +72,18 @@ export const OrderActionsMenu = ({ order }: OrderActionsMenuProps) => {
   const invoiceOrder = async (order: OrderDto) => {
     if (!order.orderId) {
       throw new Error('Order ID is required');
-    }
-
-    const client = await createClient();
-    const orgId = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
+    }    const orgId = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
     if (!orgId || isNaN(orgId)) {
       throw new Error('Organization ID is required');
     }
 
     const invoiceRequest: InvoiceRequestDto = {
-      orderIds: [order.orderId],
+      orderIds: [order.orderId]
     };
 
     const response = await postV3Invoices({
       headers: { 'Eventuras-Org-Id': orgId },
-      body: invoiceRequest,
-      client,
+      body: invoiceRequest
     });
 
     if (response.data) {

@@ -4,14 +4,13 @@ import { notFound } from 'next/navigation';
 import { Logger } from '@eventuras/logger';
 
 import Wrapper from '@/components/eventuras/Wrapper';
-import { createClient } from '@/utils/apiClient';
 import { getV3EventsById, getV3EventsByEventIdProducts } from '@eventuras/event-sdk';
 
 import EventProductsEditor from './EventProductsEditor';
 
 const logger = Logger.create({
   namespace: 'web:admin',
-  context: { page: 'EventProductsPage' },
+  context: { page: 'EventProductsPage' }
 });
 
 type EventProductsPage = {
@@ -25,11 +24,9 @@ const EventProducts: React.FC<EventProductsPage> = async props => {
   const eventId = parseInt(params.id, 10);
   const t = await getTranslations();
 
-  const client = await createClient();
-
   const [eventInfoRes, productsRes] = await Promise.all([
-    getV3EventsById({ path: { id: eventId }, client }),
-    getV3EventsByEventIdProducts({ path: { eventId }, client }),
+    getV3EventsById({ path: { id: eventId } }),
+    getV3EventsByEventIdProducts({ path: { eventId } }),
   ]);
 
   const eventInfo = eventInfoRes.data;

@@ -3,7 +3,6 @@ import { Logger } from '@eventuras/logger';
 import { getTranslations } from 'next-intl/server';
 
 import { getV3UsersById } from '@eventuras/event-sdk';
-import { createClient } from '@/utils/apiClient';
 
 import UserEditor from '../UserEditor';
 
@@ -15,12 +14,8 @@ type EventInfoProps = {
 const AdminUserDetailPage: React.FC<EventInfoProps> = async props => {
   const params = await props.params;
   const t = await getTranslations();
-
-  const client = await createClient();
-
   const response = await getV3UsersById({
-    path: { id: params.id },
-    client,
+    path: { id: params.id }
   });
 
   if (!response.data) {

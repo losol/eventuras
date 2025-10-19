@@ -5,8 +5,12 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getLocale } from 'next-intl/server';
 
 import getSiteSettings from '@/utils/site/getSiteSettings';
+import { configureEventurasClient } from '@/lib/eventuras-client';
 
 import Providers from './Providers';
+
+// Configure the Eventuras API client on app startup
+configureEventurasClient();
 
 const siteSettings = await getSiteSettings();
 export const metadata: Metadata = {

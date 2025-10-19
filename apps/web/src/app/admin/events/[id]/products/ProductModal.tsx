@@ -3,7 +3,7 @@
 import type { NewProductDto, ProductDto } from '@eventuras/event-sdk';
 import {
   postV3EventsByEventIdProducts,
-  putV3EventsByEventIdProductsByProductId,
+  putV3EventsByEventIdProductsByProductId
 } from '@eventuras/event-sdk';
 import { Form, Input, NumberInput } from '@eventuras/smartform';
 import { Button } from '@eventuras/ratio-ui';
@@ -11,7 +11,7 @@ import { Logger } from '@eventuras/logger';
 
 const logger = Logger.create({
   namespace: 'web:admin',
-  context: { component: 'ProductModal' },
+  context: { component: 'ProductModal' }
 });
 
 import { useTranslations } from 'next-intl';
@@ -20,7 +20,6 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { Dialog } from '@eventuras/ratio-ui/layout/Dialog';
 import { useToast } from '@eventuras/toast';
-import { createClient } from '@/utils/apiClient';
 
 import ConfirmDiscardModal from './ConfirmDiscardModal';
 
@@ -37,7 +36,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
   onSubmit,
   onClose,
   product,
-  eventId,
+  eventId
 }) => {
   const [loading, setLoading] = useState(false);
   const toast = useToast();
@@ -61,14 +60,11 @@ const ProductModal: React.FC<ProductModalProps> = ({
     setLoading(true);
 
     try {
-      const client = await createClient();
-
       if (isEditMode && product) {
         logger.info({ product: data }, 'Editing product');
         const response = await putV3EventsByEventIdProductsByProductId({
           path: { eventId, productId: product.productId! },
-          body: data,
-          client,
+          body: data
         });
 
         if (response.data) {
@@ -82,8 +78,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
         logger.info({ product: data }, 'Adding product');
         const response = await postV3EventsByEventIdProducts({
           path: { eventId },
-          body: data as NewProductDto,
-          client,
+          body: data as NewProductDto
         });
 
         if (response.data) {
