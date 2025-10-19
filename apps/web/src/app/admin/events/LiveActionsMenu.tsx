@@ -7,7 +7,6 @@ import { IconCircleX } from '@tabler/icons-react';
 import { useState } from 'react';
 
 import { Link } from '@eventuras/ratio-ui-next/Link';
-import { createClient } from '@/utils/apiClient';
 
 import { statusPatchRequest } from '../registrations/Registration';
 
@@ -35,12 +34,8 @@ const LiveActionsMenu = ({ registration, onStatusUpdate }: LiveActionsMenuProps)
       setEmailLoading(true);
       setEmailError(null);
       setEmailSuccess(false);
-
-      const client = await createClient();
-
       const response = await postV3RegistrationsByIdCertificateSend({
-        path: { id: registrationId },
-        client,
+        path: { id: registrationId }
       });
 
       if (!response.data) {

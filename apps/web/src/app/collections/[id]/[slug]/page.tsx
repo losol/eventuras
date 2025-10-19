@@ -36,23 +36,28 @@ export async function generateStaticParams() {
     'Generating static params for collections'
   );
 
-  const eventuras = createSDK({ inferUrl: true });
-  const collections = await eventuras.eventCollection.getV3Eventcollections({
-    eventurasOrgId: orgId,
-  });
+  try {
+    const eventuras = createSDK({ inferUrl: true });
+    const collections = await eventuras.eventCollection.getV3Eventcollections({
+      eventurasOrgId: orgId,
+    });
 
-  if (!collections) return [];
+    if (!collections) return [];
 
-  if (collections.data) {
-    const staticParams = collections.data.map(collection => ({
-      id: collection.id?.toString(),
-      slug: collection.slug,
-    }));
-    logger.info({ staticParams }, 'Generated static params');
-    return staticParams;
+    if (collections.data) {
+      const staticParams = collections.data.map(collection => ({
+        id: collection.id?.toString(),
+        slug: collection.slug,
+      }));
+      logger.info({ staticParams }, 'Generated static params');
+      return staticParams;
+    }
+
+    return [];
+  } catch (error) {
+    logger.warn({ error }, 'Error generating static params for collections - this is expected during build time if backend is not running');
+    return [];
   }
-
-  return [];
 }
 
 const CollectionPage: React.FC<EventInfoProps> = async props => {

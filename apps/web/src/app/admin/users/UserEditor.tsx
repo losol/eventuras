@@ -9,7 +9,6 @@ import { useTranslations } from 'next-intl';
 import { FC, useState } from 'react';
 
 import { useToast } from '@eventuras/toast';
-import { createClient } from '@/utils/apiClient';
 
 const logger = Logger.create({ namespace: 'web:admin:users', context: { component: 'UserEditor' } });
 
@@ -25,7 +24,7 @@ const regex = {
   internationalPhoneNumber: /^\+[1-9]{1}[0-9]{1,14}$/,
   letters: /^[\p{L}]+$/u,
   lettersAndSpace: /^[\p{L} ]+$/u,
-  lettersSpaceAndHyphen: /^[\p{L} -]+$/u,
+  lettersSpaceAndHyphen: /^[\p{L} -]+$/u
 };
 
 const UserEditor: FC<UserEditorProps> = props => {
@@ -36,12 +35,7 @@ const UserEditor: FC<UserEditorProps> = props => {
 
   logger.info({ user }, 'UserEditor rendering');
 
-  const createUser = async (form: UserDto) => {
-    const client = await createClient();
-    const response = await postV3Users({
-      body: form as UserFormDto,
-      client,
-    });
+  const createUser = async (form: UserDto) => {    const response = await postV3Users({ body: form as UserFormDto });
     
     logger.info({ userId: response.data?.id }, 'Created new user');
     
@@ -58,20 +52,14 @@ const UserEditor: FC<UserEditorProps> = props => {
   const updateUser = async (user: UserDto, form: UserDto, adminMode: boolean) => {
     // Update existing user
     logger.info({ userId: user.id }, 'Updating user');
-    setIsUpdating(true);
-    const client = await createClient();
-    
+    setIsUpdating(true);    
     // if adminMode, update user with users endpoint, otherwise use userProfile endpoint
     const response = adminMode
       ? await putV3UsersById({
           path: { id: user.id! },
-          body: form as UserFormDto,
-          client,
+          body: form as UserFormDto
         })
-      : await putV3Userprofile({
-          body: form as UserFormDto,
-          client,
-        });
+      : await putV3Userprofile({ body: form as UserFormDto });
     setIsUpdating(false);
 
     if (!response.data) {
@@ -126,8 +114,8 @@ const UserEditor: FC<UserEditorProps> = props => {
             required: t('user.account.name.requiredText'),
             pattern: {
               value: regex.lettersSpaceAndHyphen,
-              message: t('common.account.name.validationText'),
-            },
+              message: t('common.account.name.validationText')
+            }
           }}
           testId="accounteditor-form-givenname"
         />
@@ -141,8 +129,8 @@ const UserEditor: FC<UserEditorProps> = props => {
           validation={{
             pattern: {
               value: regex.lettersSpaceAndHyphen,
-              message: t('common.account.name.validationText'),
-            },
+              message: t('common.account.name.validationText')
+            }
           }}
           testId="accounteditor-form-middlename"
         />
@@ -156,8 +144,8 @@ const UserEditor: FC<UserEditorProps> = props => {
             required: t('user.account.name.requiredText'),
             pattern: {
               value: regex.lettersSpaceAndHyphen,
-              message: t('common.account.name.validationText'),
-            },
+              message: t('common.account.name.validationText')
+            }
           }}
           testId="accounteditor-form-familyname"
         />
@@ -187,8 +175,8 @@ const UserEditor: FC<UserEditorProps> = props => {
             required: adminMode ? false : t('user.account.phoneNumber.requiredText'),
             pattern: {
               value: regex.internationalPhoneNumber,
-              message: t('user.account.phoneNumber.invalidFormatText'),
-            },
+              message: t('user.account.phoneNumber.invalidFormatText')
+            }
           }}
           testId="accounteditor-form-phonenumber"
         />

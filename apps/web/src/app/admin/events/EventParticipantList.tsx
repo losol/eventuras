@@ -17,7 +17,6 @@ import EditRegistrationProductsDialog from '@/components/eventuras/EditRegistrat
 import useCreateHook from '@/hooks/createHook';
 import { ParticipationTypesKey } from '@/types';
 import { getV3RegistrationsById } from '@eventuras/event-sdk';
-import { createClient } from '@/utils/apiClient';
 import { participationMap } from '@/utils/api/mappers';
 
 import LiveActionsMenu from './LiveActionsMenu';
@@ -51,7 +50,7 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
   participants: initialParticipants = [],
   event,
   eventProducts = [],
-  filteredStatus,
+  filteredStatus
 }) => {
   const t = useTranslations();
 
@@ -73,16 +72,13 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
 
   const { result: currentRegistration, loading: loadingRegistration } = useCreateHook(
     async () => {
-      logger.info('Loading current registrations');
-      const client = await createClient();
-      const response = await getV3RegistrationsById({
+      logger.info('Loading current registrations');      const response = await getV3RegistrationsById({
         path: { id: currentSelectedParticipant!.registrationId! },
         query: {
           IncludeProducts: true,
           IncludeOrders: true,
-          IncludeUserInfo: true,
-        },
-        client,
+          IncludeUserInfo: true
+        }
       });
       return response.data ?? null;
     },
@@ -142,21 +138,21 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
   const columns = [
     columnHelper.display({
       header: t('common.labels.id').toString(),
-      cell: info => <Badge>{info.row.original.registrationId}</Badge>,
+      cell: info => <Badge>{info.row.original.registrationId}</Badge>
     }),
     columnHelper.accessor('user.name', {
-      header: t('admin.participantColumns.name').toString(),
+      header: t('admin.participantColumns.name').toString()
     }),
 
     columnHelper.accessor('user.phoneNumber', {
-      header: t('admin.participantColumns.telephone').toString(),
+      header: t('admin.participantColumns.telephone').toString()
     }),
     columnHelper.accessor('user.email', {
-      header: t('admin.participantColumns.email').toString(),
+      header: t('admin.participantColumns.email').toString()
     }),
     columnHelper.accessor('products', {
       header: t('admin.participantColumns.products').toString(),
-      cell: info => renderProducts(info.row.original),
+      cell: info => renderProducts(info.row.original)
     }),
     columnHelper.accessor('status', {
       header: t('admin.participantColumns.status').toString(),
@@ -183,17 +179,17 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
             <Badge>{registration.status}</Badge>
           </>
         );
-      },
+      }
     }),
     columnHelper.display({
       id: 'live',
       header: t('admin.participantColumns.live'),
-      cell: info => renderLiveActions(info.row.original),
+      cell: info => renderLiveActions(info.row.original)
     }),
     columnHelper.display({
       id: 'actions',
       header: t('admin.participantColumns.actions').toString(),
-      cell: info => renderEventItemActions(info.row.original),
+      cell: info => renderEventItemActions(info.row.original)
     }),
   ];
   const drawerIsOpen = registrationOpen !== null;
@@ -202,7 +198,7 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
     return [
       {
         id: 'status',
-        value: filteredStatus,
+        value: filteredStatus
       },
     ];
   }, [filteredStatus]);

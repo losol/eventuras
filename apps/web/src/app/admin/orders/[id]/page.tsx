@@ -3,7 +3,6 @@ import { Logger } from '@eventuras/logger';
 import { getTranslations } from 'next-intl/server';
 
 import { getV3OrdersById } from '@eventuras/event-sdk';
-import { createClient } from '@/utils/apiClient';
 
 import Order from '../Order';
 
@@ -15,16 +14,12 @@ type EventInfoProps = {
 const OrderDetailPage: React.FC<EventInfoProps> = async props => {
   const params = await props.params;
   const t = await getTranslations();
-
-  const client = await createClient();
-
   const response = await getV3OrdersById({
     path: { id: params.id },
     query: {
       IncludeRegistration: true,
-      IncludeUser: true,
-    },
-    client,
+      IncludeUser: true
+    }
   });
 
   if (!response.data) {
