@@ -727,6 +727,13 @@ importers:
       '@hey-api/openapi-ts':
         specifier: ^0.85.2
         version: 0.85.2(typescript@5.9.3)
+    devDependencies:
+      '@eventuras/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
 
   libs/fides-auth:
     dependencies:
