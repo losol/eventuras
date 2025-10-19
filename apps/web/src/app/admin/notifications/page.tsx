@@ -21,15 +21,21 @@ export default async function NotificationsPage({ searchParams }: NotificationPa
     authHeader: await getAccessToken(),
   });
 
+  // Get organization ID with proper type handling
+  const organizationId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
+  if (!organizationId || typeof organizationId !== 'number') {
+    throw new Error('NEXT_PUBLIC_ORGANIZATION_ID is not configured properly');
+  }
+
   const notifications = await apiWrapper(() => {
     if (id) {
       return eventuras.notifications.getV3Notifications1({
         eventId: parseInt(id as string),
-        eventurasOrgId: appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID,
+        eventurasOrgId: organizationId,
       });
     } else {
       return eventuras.notifications.getV3Notifications1({
-        eventurasOrgId: appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID,
+        eventurasOrgId: organizationId,
       });
     }
   });

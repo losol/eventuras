@@ -1,4 +1,4 @@
-import { EventDto } from '@eventuras/sdk';
+import { EventDto } from '@eventuras/event-sdk';
 import { Button, Definition, DescriptionList, Drawer, Heading, Term } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
 import { useTranslations } from 'next-intl';

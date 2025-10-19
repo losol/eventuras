@@ -17,9 +17,16 @@ const AdminUserPage = async () => {
     baseUrl: appConfig.env.NEXT_PUBLIC_BACKEND_URL as string,
     authHeader: await getAccessToken(),
   });
+
+  // Get organization ID with proper type handling
+  const organizationId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
+  const orgId = typeof organizationId === 'number'
+    ? organizationId
+    : parseInt(organizationId as string, 10);
+
   const userFetchResult = await apiWrapper(() =>
     eventuras.users.getV3Users1({
-      eventurasOrgId: parseInt(appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID as string, 10),
+      eventurasOrgId: orgId,
     })
   );
   let data: UserDto[] = [];

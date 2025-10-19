@@ -10,9 +10,16 @@ import { appConfig } from '@/config.server';
 
 const CollectionIndexPage: React.FC = async () => {
   const t = await getTranslations();
+
+  // Get organization ID with proper type handling
+  const organizationId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
+  const orgId = typeof organizationId === 'number'
+    ? organizationId
+    : parseInt(organizationId as string, 10);
+
   const result = await apiWrapper(() =>
     createSDK({ inferUrl: true }).eventCollection.getV3Eventcollections({
-      eventurasOrgId: appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID,
+      eventurasOrgId: orgId,
     })
   );
 

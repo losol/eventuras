@@ -1,7 +1,7 @@
 'use client';
 
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
-import { ProductOrdersSummaryDto } from '@eventuras/sdk';
+import { ProductOrdersSummaryDto } from '@eventuras/event-sdk';
 import { Badge } from '@eventuras/ratio-ui';
 import React from 'react';
 

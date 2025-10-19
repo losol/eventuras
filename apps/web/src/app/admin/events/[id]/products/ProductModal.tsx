@@ -1,6 +1,6 @@
 'use client';
 
-import type { NewProductDto, ProductDto } from '@eventuras/sdk';
+import type { NewProductDto, ProductDto } from '@eventuras/event-sdk';
 import { Form, Input, NumberInput } from '@eventuras/smartform';
 import { Button, Heading } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';

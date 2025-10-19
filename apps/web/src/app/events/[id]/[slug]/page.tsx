@@ -28,7 +28,10 @@ export const revalidate = 300;
 export const dynamicParams = true;
 
 export async function generateStaticParams() {
-  const orgId = parseInt(appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID as string);
+  const organizationId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
+  const orgId = typeof organizationId === 'number'
+    ? organizationId
+    : parseInt(organizationId as string, 10);
 
   logger.info(
     { apiBaseUrl: appConfig.env.NEXT_PUBLIC_BACKEND_URL as string, orgId },

@@ -39,7 +39,13 @@ const AdminPage = async () => {
 
         <Heading as="h2">{t('common.events.sectiontitle')}</Heading>
         <Link href={`/admin/events`}>{t('common.labels.allEvents')}</Link>
-        <AdminEventList organizationId={appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID as number} />
+        <AdminEventList
+          organizationId={
+            typeof appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID === 'number'
+              ? appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID
+              : parseInt(appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID as string, 10)
+          }
+        />
       </Container>
     </Wrapper>
   );

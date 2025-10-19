@@ -4,7 +4,17 @@ import { useCallback } from 'react';
 
 import { createSDK } from '@/utils/api/EventurasApi';
 import { publicEnv } from '@/config.client';
-const ORGANIZATION_ID: number = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
+
+// Get organization ID with fallback
+const getOrganizationId = (): number => {
+  const orgId = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
+  if (typeof orgId === 'number') return orgId;
+  const parsed = parseInt(orgId as string, 10);
+  if (isNaN(parsed)) throw new Error('Invalid NEXT_PUBLIC_ORGANIZATION_ID');
+  return parsed;
+};
+
+const ORGANIZATION_ID: number = getOrganizationId();
 let cachedEvents: EventDto[] | null = null;
 const comboRender = (item: AutoCompleteItem, selected?: boolean) => {
   const evt: EventDto = item.original as EventDto;

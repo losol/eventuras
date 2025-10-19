@@ -21,7 +21,12 @@
     "content": {
       "description": "Her kan du lage ditt arrangement, husk å skrive inn både tittel og slug",
       "title": "Nytt arrangement"
-    }
+    },
+    "form": {
+      "titlePlaceholder": "Arrangementstittel"
+    },
+    "success": "Arrangement opprettet!",
+    "error": "Kunne ikke opprette arrangement. Prøv igjen."
   },
   "editEvent": {
     "content": {
