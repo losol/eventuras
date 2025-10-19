@@ -3,8 +3,8 @@ import { getTranslations } from 'next-intl/server';
 import React from 'react';
 
 import Wrapper from '@/components/eventuras/Wrapper';
-import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
-import { getAccessToken } from '@/utils/getAccesstoken';
+import { getV3Userprofile, getV3EventsById, getV3EventsByEventIdProducts } from '@eventuras/event-sdk';
+import { createClient } from '@/utils/apiClient';
 import getSiteSettings from '@/utils/site/getSiteSettings';
 
 import EventFlow from './EventFlow';
@@ -27,18 +27,17 @@ export default async function UserEventPage({ params }: Readonly<UserEventPagePr
   }
 
   const t = await getTranslations();
-  const accessToken = await getAccessToken();
-  const eventuras = createSDK({ authHeader: accessToken });
+  const client = await createClient();
   const siteInfo = await getSiteSettings();
 
-  const [userResult, eventInfoResult, availableProductsResult] = await Promise.all([
-    apiWrapper(() => eventuras.userProfile.getV3Userprofile({})),
-    apiWrapper(() => eventuras.events.getV3Events1({ id })),
-    apiWrapper(() => eventuras.eventProducts.getV3EventsProducts({ eventId: id })),
+  const [userResponse, eventInfoResponse, availableProductsResponse] = await Promise.all([
+    getV3Userprofile({ client }),
+    getV3EventsById({ path: { id }, client }),
+    getV3EventsByEventIdProducts({ path: { eventId: id }, client }),
   ]);
 
   // Handle user not logged in
-  if (!userResult.value) {
+  if (!userResponse.data) {
     return (
       <Wrapper>
         <Heading>{t('user.loginRequired')}</Heading>
@@ -47,7 +46,7 @@ export default async function UserEventPage({ params }: Readonly<UserEventPagePr
   }
 
   // Handle event not found
-  if (!eventInfoResult.value) {
+  if (!eventInfoResponse.data) {
     return (
       <Wrapper>
         <Heading>{t('user.events.eventNotFound')}</Heading>
@@ -58,19 +57,19 @@ export default async function UserEventPage({ params }: Readonly<UserEventPagePr
   return (
     <Wrapper>
       <section className="mt-16">
-        {eventInfoResult.value.title && (
+        {eventInfoResponse.data.title && (
           <>
             <p className="text-sm text-gray-600">{t('user.events.registration.titleLabel')}</p>
             <Heading as="h1" padding="pt-0 my-5">
-              {eventInfoResult.value.title}
+              {eventInfoResponse.data.title}
             </Heading>
           </>
         )}
 
         <EventFlow
-          user={userResult.value}
-          eventInfo={eventInfoResult.value}
-          availableProducts={availableProductsResult.value ?? []}
+          user={userResponse.data}
+          eventInfo={eventInfoResponse.data}
+          availableProducts={availableProductsResponse.data ?? []}
           siteInfo={siteInfo!}
         />
       </section>

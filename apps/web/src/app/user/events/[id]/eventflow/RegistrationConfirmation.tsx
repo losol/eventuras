@@ -1,4 +1,4 @@
-import { EventDto, PaymentProvider, ProductDto } from '@eventuras/sdk';
+import { EventDto, ProductDto } from '@eventuras/event-sdk';
 import { Button, Heading } from '@eventuras/ratio-ui';
 import { useTranslations } from 'next-intl';
 
@@ -39,14 +39,14 @@ const RegistrationConfirmation: React.FC<RegistrationConfirmationProps> = ({
       )}
       <Heading as="h2">{t('user.registration.labels.paymentDetails')}</Heading>
       <ul className="py-6">
-        <li>{`${t('user.registration.customertype.legend')}:${paymentDetails.paymentMethod === PaymentProvider.POWER_OFFICE_EMAIL_INVOICE ? t('user.registration.customertype.private') : t('user.registration.customertype.business')}`}</li>
+        <li>{`${t('user.registration.customertype.legend')}:${paymentDetails.paymentMethod === 'PowerOfficeEmailInvoice' ? t('user.registration.customertype.private') : t('user.registration.customertype.business')}`}</li>
         <li>{`${t('user.registration.user.name')}:${paymentDetails.username}`}</li>
         <li>{`${t('user.registration.user.email')}:${paymentDetails.email}`}</li>
         <li>{`${t('user.registration.user.phoneNumber')}:${paymentDetails.phoneNumber}`}</li>
         <li>{`${t('user.registration.address.city')}:${paymentDetails.city}`}</li>
         <li>{`${t('user.registration.address.country')}:${paymentDetails.country}`}</li>
         <li>{`${t('user.registration.address.zip')}:${paymentDetails.zip}`}</li>
-        {paymentDetails.paymentMethod === PaymentProvider.POWER_OFFICE_EHFINVOICE && (
+        {paymentDetails.paymentMethod === 'PowerOfficeEHFInvoice' && (
           <>
             <li>{`${t('user.registration.businessinfo.vatNumber')}:${paymentDetails.vatNumber}`}</li>
             <li>{`${t('user.registration.businessinfo.invoiceReference')}:${paymentDetails.invoiceReference}`}</li>

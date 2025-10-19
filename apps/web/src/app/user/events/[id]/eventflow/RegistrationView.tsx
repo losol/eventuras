@@ -1,5 +1,5 @@
 import { MarkdownContent } from '@eventuras/markdown';
-import { EventDto, RegistrationDto } from '@eventuras/sdk';
+import { EventDto, RegistrationDto } from '@eventuras/event-sdk';
 import { Button, Heading } from '@eventuras/ratio-ui';
 import { useTranslations } from 'next-intl';
 

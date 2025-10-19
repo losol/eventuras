@@ -16,7 +16,8 @@ import EventNotificator, { EventNotificatorType } from '@/components/event/Event
 import EditRegistrationProductsDialog from '@/components/eventuras/EditRegistrationProductsDialog';
 import useCreateHook from '@/hooks/createHook';
 import { ParticipationTypesKey } from '@/types';
-import { createSDK } from '@/utils/api/EventurasApi';
+import { getV3RegistrationsById } from '@eventuras/event-sdk';
+import { createClient } from '@/utils/apiClient';
 import { participationMap } from '@/utils/api/mappers';
 
 import LiveActionsMenu from './LiveActionsMenu';
@@ -53,7 +54,6 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
   filteredStatus,
 }) => {
   const t = useTranslations();
-  const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
 
   const [participants, setParticipants] = useState<RegistrationDto[]>(initialParticipants);
   const [registrationOpen, setRegistrationOpen] = useState<RegistrationDto | null>(null);
@@ -72,14 +72,19 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
   };
 
   const { result: currentRegistration, loading: loadingRegistration } = useCreateHook(
-    () => {
+    async () => {
       logger.info('Loading current registrations');
-      return sdk.registrations.getV3Registrations1({
-        id: currentSelectedParticipant!.registrationId!,
-        includeProducts: true,
-        includeOrders: true,
-        includeUserInfo: true,
+      const client = await createClient();
+      const response = await getV3RegistrationsById({
+        path: { id: currentSelectedParticipant!.registrationId! },
+        query: {
+          IncludeProducts: true,
+          IncludeOrders: true,
+          IncludeUserInfo: true,
+        },
+        client,
       });
+      return response.data ?? null;
     },
     [currentSelectedParticipant?.registrationId],
     () => currentSelectedParticipant === null

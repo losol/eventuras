@@ -1,11 +1,9 @@
 import {
-  ApiError,
   EventDto,
-  EventInfoStatus,
   ProductDto,
   RegistrationDto,
   UserDto,
-} from '@eventuras/sdk';
+} from '@eventuras/event-sdk';
 import { assign, createMachine, fromPromise } from 'xstate';
 
 import { PaymentFormValues } from '@/types';
@@ -22,7 +20,7 @@ export type EventFlowMachineContext = {
   selectedProducts: Map<string, number>;
   paymentFormValues: PaymentFormValues;
   result: RegistrationDto;
-  error: ApiError;
+  error: Error;
 };
 
 export enum States {
@@ -108,16 +106,16 @@ const EventFlowMachine = createMachine({
           // No existing registration, but event registration status allows creating new
           guard: ({ context }) =>
             !context.inEditMode &&
-            (context.eventInfo.status === EventInfoStatus.REGISTRATIONS_OPEN ||
-              context.eventInfo.status === EventInfoStatus.WAITING_LIST),
+            (context.eventInfo.status === 'RegistrationsOpen' ||
+              context.eventInfo.status === 'WaitingList'),
           target: States.VALIDATE_ACCOUNT_DETAILS,
         },
         {
           // Needs an better error message
           guard: ({ context }) =>
             !context.inEditMode &&
-            context.eventInfo.status !== EventInfoStatus.REGISTRATIONS_OPEN &&
-            context.eventInfo.status !== EventInfoStatus.WAITING_LIST,
+            context.eventInfo.status !== 'RegistrationsOpen' &&
+            context.eventInfo.status !== 'WaitingList',
           target: States.ERROR,
         },
       ],

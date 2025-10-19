@@ -1,4 +1,4 @@
-import { OrderDto, OrderStatus } from '@eventuras/sdk';
+import { OrderDto, OrderStatus } from '@eventuras/event-sdk';
 import {
   Badge,
   Definition,

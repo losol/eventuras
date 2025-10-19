@@ -1,10 +1,13 @@
 'use client';
 
-import { ProductDto, RegistrationDto } from '@eventuras/sdk';
+import { ProductDto, RegistrationDto } from '@eventuras/event-sdk';
 import { Button } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
 
-const logger = Logger.create({ namespace: 'web:components:eventuras', context: { component: 'EditRegistrationProductsDialog' } });
+const logger = Logger.create({
+  namespace: 'web:components:eventuras',
+  context: { component: 'EditRegistrationProductsDialog' },
+});
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -34,23 +37,28 @@ const EditRegistrationProductsDialog = (props: EditRegistrationProductsDialogPro
 
   const onSubmit = async (selected: Map<string, number>) => {
     logger.info({ selected }, 'Updating registration products');
-    const updateProductResult = await addProductsToRegistration(
-      props.currentRegistration.registrationId!,
-      productMapToOrderLineModel(selected)
-    ).catch(e => {
-      logger.error({ error: e }, 'Failed to update registration products');
-      return { ok: false };
-    });
-    if (updateProductResult.ok) {
-      toast.success('Registration edited successfully!');
-      router.refresh();
-    } else {
-      toast.error('Something went wrong, please try again later');
-    }
-    router.refresh();
+    try {
+      const updateProductResult = await addProductsToRegistration(
+        props.currentRegistration.registrationId!,
+        productMapToOrderLineModel(selected)
+      );
 
-    setEditorOpen(false);
-    if (props.onClose) props.onClose(updateProductResult.ok);
+      if (updateProductResult) {
+        toast.success('Registration edited successfully!');
+        router.refresh();
+        setEditorOpen(false);
+        if (props.onClose) props.onClose(true);
+      } else {
+        toast.error('Something went wrong, please try again later');
+        setEditorOpen(false);
+        if (props.onClose) props.onClose(false);
+      }
+    } catch (e) {
+      logger.error({ error: e }, 'Failed to update registration products');
+      toast.error('Something went wrong, please try again later');
+      setEditorOpen(false);
+      if (props.onClose) props.onClose(false);
+    }
   };
   return (
     <>

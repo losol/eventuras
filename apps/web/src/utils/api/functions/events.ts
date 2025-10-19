@@ -1,24 +1,20 @@
 import {
-  ApiError,
-  Eventuras,
   NewRegistrationDto,
   OrderLineModel,
   ProductDto,
   RegistrationDto,
   RegistrationUpdateDto,
-} from '@eventuras/sdk';
+  postV3Registrations,
+  postV3RegistrationsByIdProducts,
+  putV3RegistrationsById,
+} from '@eventuras/event-sdk';
 import { Logger } from '@eventuras/logger';
 
 const logger = Logger.create({ namespace: 'web:utils:api', context: { module: 'events' } });
 
-import { ApiResult, apiWrapper, createSDK } from '@/utils/api/EventurasApi';
-// import { appConfig } from '@/config.server';
+import { createClient } from '@/utils/apiClient';
+import { publicEnv } from '@/config.client';
 
-
-export type GetEventsOptions = Parameters<typeof Eventuras.prototype.events.getV3Events>[0];
-export type GetEventRegistrationsOptions = Parameters<
-  typeof Eventuras.prototype.registrations.getV3Registrations
->[0];
 
 export const productMapToOrderLineModel = (
   selectedProducts?: Map<string, number>
@@ -34,29 +30,38 @@ export const productMapToOrderLineModel = (
 export const createEventRegistration = async (
   newRegistration: NewRegistrationDto,
   selectedProducts?: Map<string, number>
-): Promise<ApiResult<RegistrationDto, ApiError>> => {
-  const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
+): Promise<RegistrationDto | null> => {
+  const client = await createClient();
   const products = productMapToOrderLineModel(selectedProducts);
+  const orgId = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
 
-  const registration = apiWrapper(() =>
-    sdk.registrations.postV3Registrations({
-       eventurasOrgId: parseInt((process.env.NEXT_PUBLIC_ORGANIZATION_ID ?? '0') as string, 10),
-      requestBody: newRegistration,
-    })
-  );
+  if (!orgId || isNaN(orgId)) {
+    logger.error('Organization ID is not configured or invalid');
+    throw new Error('Organization ID is required');
+  }
+
+  const registrationResponse = await postV3Registrations({
+    headers: { 'Eventuras-Org-Id': orgId },
+    body: newRegistration,
+    client,
+  });
+
+  if (!registrationResponse.data) {
+    logger.error({ error: registrationResponse.error }, 'Failed to create registration');
+    return null;
+  }
+
   logger.info({ products }, 'products selected for registration');
 
-  if (!products.length) return registration;
+  if (!products.length) {
+    return registrationResponse.data;
+  }
 
-  return registration.then(async apiResult => {
-    if (!apiResult.ok) {
-      return apiResult;
-    }
-    const result: RegistrationDto = apiResult.value!;
-    const registrationId = result.registrationId!.toString();
+  // Add products to the registration
+  const registrationId = registrationResponse.data.registrationId!;
+  const productsResponse = await addProductsToRegistration(registrationId, products);
 
-    return addProductsToRegistration(registrationId, products);
-  });
+  return productsResponse;
 };
 
 export const updateEventRegistration = async (
@@ -64,8 +69,15 @@ export const updateEventRegistration = async (
   updatedRegistration: RegistrationUpdateDto,
   availableProducts: ProductDto[],
   selectedProducts?: Map<string, number>
-): Promise<ApiResult<RegistrationDto, ApiError>> => {
-  const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
+): Promise<RegistrationDto | null> => {
+  const client = await createClient();
+  const orgId = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
+
+  if (!orgId || isNaN(orgId)) {
+    logger.error('Organization ID is not configured or invalid');
+    throw new Error('Organization ID is required');
+  }
+
   /*
     we may have not selected any products, which would result in an empty map.
     However, because we are updating an existing event we may actually need to send a 'quantity:0' for
@@ -79,37 +91,50 @@ export const updateEventRegistration = async (
     }
   });
   const products = productMapToOrderLineModel(selectedProducts);
-  const registration = apiWrapper(() =>
-    sdk.registrations.putV3Registrations({
-      id,
-      eventurasOrgId: parseInt((process.env.NEXT_PUBLIC_ORGANIZATION_ID ?? '0') as string, 10),
-      requestBody: updatedRegistration,
-    })
-  );
-  if (!products.length) return registration;
 
-  return registration.then(async apiResult => {
-    if (!apiResult.ok) {
-      return apiResult;
-    }
-    const result: RegistrationDto = apiResult.value!;
-    const registrationId = result.registrationId!.toString();
-
-    return addProductsToRegistration(registrationId, products);
+  const registrationResponse = await putV3RegistrationsById({
+    path: { id },
+    headers: { 'Eventuras-Org-Id': orgId },
+    body: updatedRegistration,
+    client,
   });
+
+  if (!registrationResponse.data) {
+    logger.error({ error: registrationResponse.error }, 'Failed to update registration');
+    return null;
+  }
+
+  if (!products.length) {
+    return registrationResponse.data;
+  }
+
+  const registrationId = registrationResponse.data.registrationId!;
+  return addProductsToRegistration(registrationId, products);
 };
 
-export const addProductsToRegistration = (
+export const addProductsToRegistration = async (
   registrationId: string | number,
   products: OrderLineModel[]
-) => {
-  const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
+): Promise<RegistrationDto | null> => {
+  const client = await createClient();
+  const orgId = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
 
-  return apiWrapper(() =>
-    sdk.registrationOrders.postV3RegistrationsProducts({
-      id: parseInt(registrationId.toString(), 10),
-      eventurasOrgId: parseInt((process.env.NEXT_PUBLIC_ORGANIZATION_ID ?? '0') as string, 10),
-      requestBody: { lines: products },
-    })
-  );
+  if (!orgId || isNaN(orgId)) {
+    logger.error('Organization ID is not configured or invalid');
+    throw new Error('Organization ID is required');
+  }
+
+  const response = await postV3RegistrationsByIdProducts({
+    path: { id: parseInt(registrationId.toString(), 10) },
+    headers: { 'Eventuras-Org-Id': orgId },
+    body: { lines: products },
+    client,
+  });
+
+  if (!response.data) {
+    logger.error({ error: response.error }, 'Failed to add products to registration');
+    return null;
+  }
+
+  return response.data;
 };

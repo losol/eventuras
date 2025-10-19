@@ -1,4 +1,4 @@
-import { UserDto } from '@eventuras/sdk';
+import { UserDto } from '@eventuras/event-sdk';
 import { useSelector } from '@xstate/react';
 import { createContext, useContext } from 'react';
 import { Actor, assign, createMachine, fromPromise } from 'xstate';
