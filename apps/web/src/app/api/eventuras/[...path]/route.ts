@@ -49,13 +49,20 @@ async function forwarder(request: NextRequest) {
     request.method === 'PATCH' ? 'application/json-patch+json' : 'application/json';
   const forwardAccept = hasAcceptHeaders ? { Accept: acceptHeaders! } : null;
   const token = await getAccessToken();
+
+  // Get organization ID with proper handling
+  const organizationId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
+  const orgIdHeader = typeof organizationId === 'number'
+    ? organizationId.toString()
+    : (organizationId as string) ?? '';
+
   const fResponse = await fetch(forwardUrl, {
     method: request.method,
     body: request.method === 'GET' ? null : JSON.stringify(jBody),
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': contentType,
-      'Eventuras-Org-Id': appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID as string,
+      'Eventuras-Org-Id': orgIdHeader,
       ...forwardAccept,
     },
     redirect: 'manual',

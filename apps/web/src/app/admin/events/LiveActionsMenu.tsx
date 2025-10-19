@@ -1,6 +1,6 @@
 'use client';
 
-import { ApiError, RegistrationDto, RegistrationStatus } from '@eventuras/sdk';
+import { RegistrationDto, RegistrationStatus } from '@eventuras/event-sdk';
 import { Button } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
 import { IconCircleX } from '@tabler/icons-react';
@@ -45,11 +45,11 @@ const LiveActionsMenu = ({ registration, onStatusUpdate }: LiveActionsMenuProps)
       );
 
       if (!result.ok) {
-        // Handle ApiError properly
+        // Handle error properly
         const errorMessage =
           typeof result.error === 'string'
             ? result.error
-            : (result.error as ApiError)?.message || 'Failed to send certificate';
+            : (result.error as any)?.message || 'Failed to send certificate';
         throw new Error(errorMessage);
       }
 
@@ -74,14 +74,10 @@ const LiveActionsMenu = ({ registration, onStatusUpdate }: LiveActionsMenuProps)
   function renderButtonBasedOnStatus() {
     switch (registration.status) {
       case 'Draft':
-        return (
-          <Button onClick={() => handleStatusUpdate(RegistrationStatus.VERIFIED)}>Verify</Button>
-        );
+        return <Button onClick={() => handleStatusUpdate('Verified')}>Verify</Button>;
       case 'Verified':
       case 'NotAttended':
-        return (
-          <Button onClick={() => handleStatusUpdate(RegistrationStatus.ATTENDED)}>Checkin</Button>
-        );
+        return <Button onClick={() => handleStatusUpdate('Attended')}>Checkin</Button>;
       case 'Cancelled':
         return <IconCircleX />;
       default:
@@ -107,9 +103,7 @@ const LiveActionsMenu = ({ registration, onStatusUpdate }: LiveActionsMenuProps)
             </div>
           );
         }
-        return (
-          <Button onClick={() => handleStatusUpdate(RegistrationStatus.FINISHED)}>Finish</Button>
-        );
+        return <Button onClick={() => handleStatusUpdate('Finished')}>Finish</Button>;
     }
   }
 

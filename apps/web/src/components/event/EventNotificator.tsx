@@ -208,17 +208,24 @@ export default function EventNotificator({
         `Sending ${notificatorType} notification for event ${eventId}`
       );
 
+      const organizationId = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
+      if (!organizationId || typeof organizationId !== 'number') {
+        logger.error('Organization ID is not configured');
+        toast.error('Configuration error: Organization ID missing');
+        return;
+      }
+
       const result =
         notificatorType === EventNotificatorType.EMAIL
           ? await apiWrapper(() =>
               sdk.notificationsQueueing.postV3NotificationsEmail({
-                eventurasOrgId: publicEnv.NEXT_PUBLIC_ORGANIZATION_ID,
+                eventurasOrgId: organizationId,
                 requestBody: body as EmailNotificationDto,
               })
             )
           : await apiWrapper(() =>
               sdk.notificationsQueueing.postV3NotificationsSms({
-                eventurasOrgId: publicEnv.NEXT_PUBLIC_ORGANIZATION_ID,
+                eventurasOrgId: organizationId,
                 requestBody: body as SmsNotificationDto,
               })
             );

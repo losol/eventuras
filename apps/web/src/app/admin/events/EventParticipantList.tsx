@@ -1,7 +1,7 @@
 'use client';
 
 import { ColumnFilter, createColumnHelper, DataTable } from '@eventuras/datatable';
-import { EventDto, ProductDto, RegistrationDto } from '@eventuras/sdk';
+import { EventDto, ProductDto, RegistrationDto } from '@eventuras/event-sdk';
 import { Badge, Button, Drawer, Loading } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
 

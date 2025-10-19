@@ -1,5 +1,5 @@
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
-import type { ProductDto } from '@eventuras/sdk';
+import type { ProductDto } from '@eventuras/event-sdk';
 import { Badge } from '@eventuras/ratio-ui';
 import { IconEye, IconPencil } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';

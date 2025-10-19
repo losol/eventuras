@@ -2,7 +2,7 @@
 
 import { Fieldset } from '@eventuras/ratio-ui/forms';
 import { MarkdownInput } from '@eventuras/markdowninput';
-import { ApiError, EventDto, EventFormDto, EventInfoStatus, EventInfoType } from '@eventuras/sdk';
+import { EventDto, EventFormDto } from '@eventuras/event-sdk';
 import {
   CheckboxInput,
   CheckboxLabel,
@@ -16,66 +16,108 @@ import { Button } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 
 import { Tabs } from '@eventuras/ratio-ui/core/Tabs';
 import { useToast } from '@eventuras/toast';
-import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
-import { mapEnum } from '@/utils/enum';
 import { publicEnv } from '@/config.client';
 import slugify from '@/utils/slugify';
+import { updateEvent } from './actions';
 
 export type EventEditorProps = {
   eventinfo: EventDto;
 };
 
 type ApiState = {
-  error: ApiError | null;
+  error: string | null;
   loading: boolean;
 };
 
 const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
+  console.log('EventEditor rendering with eventinfo:', eventinfo);
   const t = useTranslations();
   const [apiState, setApiState] = useState<ApiState>({ error: null, loading: false });
-  const eventuras = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
   const toast = useToast();
   const router = useRouter();
   const logger = Logger.create({ namespace: 'web:admin:events', context: { component: 'EventEditor', eventId: eventinfo.id } });
+
+  // Log the event data when component mounts
+  useEffect(() => {
+    logger.debug({
+      eventId: eventinfo.id,
+      eventTitle: eventinfo.title,
+      eventSlug: eventinfo.slug,
+      eventStatus: eventinfo.status,
+      eventType: eventinfo.type,
+      eventCity: eventinfo.city,
+      hasDateStart: !!eventinfo.dateStart,
+      hasDateEnd: !!eventinfo.dateEnd,
+      featured: eventinfo.featured,
+      published: eventinfo.published,
+    }, 'EventEditor loaded with event data');
+  }, [eventinfo, logger]);
 
   // Form submit handler
   const onSubmitForm: SubmitHandler<EventFormDto> = async (data: EventFormDto) => {
     setApiState({ error: null, loading: true });
     logger.info('Updating event...');
-    logger.debug({ eventData: data }, 'Event form data');
+    logger.debug({
+      eventId: eventinfo.id,
+      formTitle: data.title,
+      formSlug: data.slug,
+      formOrgId: data.organizationId,
+      formStatus: data.status,
+      formType: data.type,
+      formCity: data.city,
+    }, 'Event form data before processing');
+
+    // Use the organization ID from config
+    // Events belong to this organization and we're just maintaining that relationship
+    const orgId = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
+
+    if (!orgId || isNaN(orgId)) {
+      logger.error({ orgId, typeOfOrgId: typeof orgId }, 'Organization ID is not configured or invalid');
+      toast.error('Configuration error: Organization ID is missing or invalid');
+      setApiState({ error: 'Organization ID is not configured', loading: false });
+      return;
+    }
+
+    data.organizationId = orgId;
+    logger.debug({ organizationId: data.organizationId }, 'Using configured organizationId for update');
 
     // set slug
+    const year = data.dateStart ? new Date(data.dateStart).getFullYear() : undefined;
     const newSlug = slugify(
-      [data.title, data.city, data.dateStart?.year, data.id].filter(Boolean).join('-')
+      [data.title, data.city, year, data.id].filter(Boolean).join('-')
     );
     data.slug = newSlug;
 
-    // Remember to set loading state
-    setApiState({ error: null, loading: true });
+    const result = await updateEvent(eventinfo.id!, data);
 
-    const result = await apiWrapper(() =>
-      eventuras.events.putV3Events({
-        id: eventinfo.id!,
-        requestBody: data,
-      })
-    );
-
-    if (result.ok) {
+    if (result.success) {
       logger.info('Event information updated successfully');
       toast.success('Event information was updated!');
+      setApiState({ error: null, loading: false });
+      router.push(`/admin/events/${eventinfo.id}`);
     } else {
-      logger.error({ error: result.error }, 'Failed to update event');
-      toast.error(`Something bad happended: ${result.error}!`);
+      logger.error(
+        {
+          eventId: eventinfo.id,
+          errorCode: result.error.code,
+          errorMessage: result.error.message,
+          errorDetails: result.error.details,
+        },
+        'Failed to update event'
+      );
+
+      // Provide user-friendly error message with more context
+      const userMessage = result.error.message;
+      const errorCode = result.error.code ? ` (${result.error.code})` : '';
+      toast.error(`Could not update event: ${userMessage}${errorCode}`);
+
+      setApiState({ error: result.error.message, loading: false });
     }
-
-    setApiState({ error: null, loading: false });
-
-    router.push(`/admin/events/${eventinfo.id}`);
   };
 
   return (
@@ -85,7 +127,10 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
       testId="event-edit-form"
       shouldUnregister={false}
     >
-      <HiddenInput name="organizationId" value={publicEnv.NEXT_PUBLIC_ORGANIZATION_ID.toString()} />
+      <HiddenInput
+        name="organizationId"
+        value={publicEnv.NEXT_PUBLIC_ORGANIZATION_ID?.toString() ?? ''}
+      />
       <Tabs>
         <Tabs.Item title="Overview">
           <Fieldset label="Settings" disabled={apiState.loading}>
@@ -101,7 +146,7 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
             <input
               name="organizationId"
               type="hidden"
-              value={publicEnv.NEXT_PUBLIC_ORGANIZATION_ID.toString()}
+              value={publicEnv.NEXT_PUBLIC_ORGANIZATION_ID?.toString() ?? ''}
             />
 
             <Input name="title" required label="Title" placeholder="Event Title" />
@@ -110,18 +155,27 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
             <Select
               name="type"
               label="Type"
-              options={mapEnum(EventInfoType, (value: any) => ({
-                value: value,
-                label: value,
-              }))}
+              options={[
+                { value: 'Course', label: 'Course' },
+                { value: 'Conference', label: 'Conference' },
+                { value: 'OnlineCourse', label: 'OnlineCourse' },
+                { value: 'Social', label: 'Social' },
+                { value: 'Other', label: 'Other' },
+              ]}
             />
             <Select
               name="status"
               label="Status"
-              options={mapEnum(EventInfoStatus, (value: any) => ({
-                value: value,
-                label: value,
-              }))}
+              options={[
+                { value: 'Draft', label: 'Draft' },
+                { value: 'Planned', label: 'Planned' },
+                { value: 'RegistrationsOpen', label: 'RegistrationsOpen' },
+                { value: 'WaitingList', label: 'WaitingList' },
+                { value: 'RegistrationsClosed', label: 'RegistrationsClosed' },
+                { value: 'Finished', label: 'Finished' },
+                { value: 'Archived', label: 'Archived' },
+                { value: 'Cancelled', label: 'Cancelled' },
+              ]}
               testId="event-status-select-button"
             />
             <NumberInput

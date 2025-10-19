@@ -21,7 +21,12 @@
     "content": {
       "description": "Here you can create your event, be sure to enter both title and slug",
       "title": "Create event"
-    }
+    },
+    "form": {
+      "titlePlaceholder": "Event Title"
+    },
+    "success": "Event created successfully!",
+    "error": "Failed to create event. Please try again."
   },
   "editEvent": {
     "content": {

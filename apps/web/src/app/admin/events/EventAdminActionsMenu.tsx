@@ -1,6 +1,6 @@
 'use client';
 
-import { EventDto, ProductDto } from '@eventuras/sdk';
+import { EventDto, ProductDto } from '@eventuras/event-sdk';
 import { Button, ButtonGroup, Drawer } from '@eventuras/ratio-ui';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
