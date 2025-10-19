@@ -1,10 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Menu } from '@eventuras/ratio-ui/core/Menu';
-import type { SessionStatus } from '@/app/api/session/route';
+import { getAuthStatus, type AuthStatus } from '@/utils/auth/getAuthStatus';
 
 export type LoggedOutLanguagePack = {
   loginLabel: string;
@@ -53,52 +52,32 @@ const UserMenuContentLoggedIn = (props: UserMenuContentLoggedInProps) => {
   );
 };
 
-function useSessionStatus(): { status: SessionStatus | null; loading: boolean } {
-  const [status, setStatus] = useState<SessionStatus | null>(null);
+function useAuthStatus(): { status: AuthStatus | null; loading: boolean } {
+  const [status, setStatus] = useState<AuthStatus | null>(null);
   const [loading, setLoading] = useState(true);
-  const [refreshAttempted, setRefreshAttempted] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
 
-    const fetchStatus = async () => {
+    const checkAuth = async () => {
       try {
-        const res = await fetch('/api/session');
-        let data: SessionStatus = await res.json();
-
-        if (data.sessionExpired && !refreshAttempted) {
-          setRefreshAttempted(true);
-          const refreshRes = await fetch('/api/session', { method: 'POST' });
-          const refreshData: SessionStatus = await refreshRes.json();
-
-          if (refreshData.authenticated) {
-            data = refreshData;
-          }
-        }
-
+        const data = await getAuthStatus();
         if (isMounted) {
           setStatus(data);
           setLoading(false);
         }
       } catch {
         if (isMounted) {
-          setStatus({
-            authenticated: false,
-            sessionExpired: true,
-            errors: [
-              {
-                source: 'unknown',
-                message: 'Failed to fetch session status',
-              },
-            ],
-          });
+          setStatus({ authenticated: false });
           setLoading(false);
         }
       }
     };
 
-    fetchStatus();
-    const interval = setInterval(fetchStatus, 5000);
+    // Initial check and periodic refresh
+    checkAuth();
+    const interval = setInterval(checkAuth, 30000);
+
     return () => {
       isMounted = false;
       clearInterval(interval);
@@ -114,26 +93,17 @@ interface UserMenuProps {
 }
 
 const UserMenu = (props: UserMenuProps) => {
-  const router = useRouter();
-  const { status, loading } = useSessionStatus();
+  const { status, loading: sessionLoading } = useAuthStatus();
 
-  const handleLogin = async () => {
-    router.push('/api/login');
+  const handleLogin = () => {
+    // Use window.location.href for OAuth redirect to avoid CORS preflight
+    // router.push() triggers a fetch request which causes CORS issues with Auth0
+    window.location.href = '/api/login';
   };
 
   // Don't render anything until status is loaded
-  if (loading) {
+  if (sessionLoading) {
     return null;
-  }
-
-  const hasError = Array.isArray(status?.errors) && status.errors.length > 0;
-
-  if (hasError) {
-    return (
-      <Button onClick={handleLogin} variant="primary" testId="login-button">
-        🔴 Log in again
-      </Button>
-    );
   }
 
   if (!status || !status.authenticated || !status.user) {
@@ -145,7 +115,8 @@ const UserMenu = (props: UserMenuProps) => {
     );
   }
 
-  const userName = status.user.name ?? '';
+  // Get user name and roles from auth status (JWT token)
+  const userName = status.user.name || status.user.email || '';
   const isAdmin = status.user.roles?.includes('Admin') ?? false;
 
   return (

@@ -3,8 +3,8 @@ import { Logger } from '@eventuras/logger';
 import { notFound } from 'next/navigation';
 
 import Wrapper from '@/components/eventuras/Wrapper';
-import { 
-  getV3EventsById, 
+import {
+  getV3EventsById,
   getV3Registrations,
   getV3EventsByEventIdProducts,
   getV3EventsByEventIdStatistics
@@ -13,9 +13,9 @@ import {
 import EventAdminActionsMenu from '../EventAdminActionsMenu';
 import ParticipantsSection from './ParticipantsSection';
 
-const logger = Logger.create({ 
-  namespace: 'web:admin:events', 
-  context: { page: 'EventAdminPage' } 
+const logger = Logger.create({
+  namespace: 'web:admin:events',
+  context: { page: 'EventAdminPage' }
 });
 
 type EventInfoProps = {
@@ -29,12 +29,12 @@ export default async function EventAdminPage({ params }: Readonly<EventInfoProps
 
   const [eventinfoRes, registrationsRes, eventProductsRes, statisticsRes] = await Promise.all([
     getV3EventsById({ path: { id } }),
-    getV3Registrations({ 
-      query: { 
-        EventId: id, 
-        IncludeUserInfo: true, 
-        IncludeProducts: true 
-      } 
+    getV3Registrations({
+      query: {
+        EventId: id,
+        IncludeUserInfo: true,
+        IncludeProducts: true
+      }
     }),
     getV3EventsByEventIdProducts({ path: { eventId: id } }),
     getV3EventsByEventIdStatistics({ path: { eventId: id } }),

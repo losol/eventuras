@@ -9,7 +9,7 @@ import { getV3Events } from '@eventuras/event-sdk';
 import {List} from '@eventuras/ratio-ui/core/List';
 import Link from 'next/link';
 
-const logger = Logger.create({ 
+const logger = Logger.create({
   namespace: 'web:events-page',
   context: { page: 'EventsPage' }
 });
@@ -32,22 +32,22 @@ export default async function EventsPage() {
     });
 
     if (eventinfos.error) {
-      logger.error({ 
+      logger.error({
         error: eventinfos.error,
-        organizationId: ORGANIZATION_ID 
+        organizationId: ORGANIZATION_ID
       }, 'Failed to fetch events');
       fetchError = true;
     } else {
-      logger.info({ 
+      logger.info({
         count: eventinfos.data?.count || 0,
-        organizationId: ORGANIZATION_ID 
+        organizationId: ORGANIZATION_ID
       }, 'Successfully fetched events');
     }
   } catch (error) {
-    logger.warn({ 
+    logger.warn({
       error,
       organizationId: ORGANIZATION_ID,
-      backendUrl: process.env.NEXT_PUBLIC_BACKEND_URL 
+      backendUrl: process.env.NEXT_PUBLIC_BACKEND_URL
     }, 'Exception while fetching events - this is expected during build time if backend is not running');
     fetchError = true;
   }

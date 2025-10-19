@@ -3,7 +3,7 @@
 import { Logger } from '@eventuras/logger';
 import { getV3Events, EventDto } from '@eventuras/event-sdk';
 
-const logger = Logger.create({ namespace: 'web:admin:events:actions' });
+const logger = Logger.create({ namespace: 'web:admin', context: { module: 'eventActions' } });
 
 export interface FetchEventsParams {
   organizationId: number;
@@ -26,7 +26,7 @@ export async function fetchEvents({
   pageSize = 25,
   startDate
 }: FetchEventsParams): Promise<FetchEventsResult> {
-  logger.info(
+  logger.debug(
     {
       organizationId,
       includePastEvents,
@@ -37,7 +37,8 @@ export async function fetchEvents({
     'Fetching events'
   );
 
-  try {    const response = await getV3Events({
+  try {
+    const response = await getV3Events({
       query: {
         OrganizationId: organizationId,
         IncludeDraftEvents: true,
@@ -50,7 +51,7 @@ export async function fetchEvents({
     });
 
     if (!response.data) {
-      logger.warn({ response }, 'No data in response');
+      logger.warn('No data in response from getV3Events');
       throw new Error('No data received from API');
     }
 
@@ -60,7 +61,7 @@ export async function fetchEvents({
       count: response.data.count ?? 0
     };
 
-    logger.info(
+    logger.debug(
       {
         count: result.data.length,
         pages: result.pages,
@@ -71,7 +72,25 @@ export async function fetchEvents({
 
     return result;
   } catch (error) {
-    logger.error(error, 'Failed to fetch events');
+    const errorWithCause = error as { cause?: { code?: string }; code?: string; message?: string };
+    const errorCode = errorWithCause?.cause?.code || errorWithCause?.code;
+
+    logger.error(
+      {
+        error: {
+          message: errorWithCause?.message,
+          code: errorCode,
+          cause: errorWithCause?.cause,
+        },
+        request: {
+          organizationId,
+          page,
+          pageSize,
+          includePastEvents,
+        }
+      },
+      `Failed to fetch events${errorCode ? ` (${errorCode})` : ''}`
+    );
     throw error;
   }
 }

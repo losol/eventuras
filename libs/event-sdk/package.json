@@ -22,11 +22,10 @@
     "dist"
   ],
   "scripts": {
-    "build": "openapi-ts && tsc",
-    "generate": "openapi-ts"
+    "build": "openapi-ts && tsc"
   },
   "dependencies": {
-    "@hey-api/openapi-ts": "^0.85.2"
+    "@hey-api/openapi-ts": "0.86.0"
   },
   "devDependencies": {
     "@eventuras/typescript-config": "workspace:*",
