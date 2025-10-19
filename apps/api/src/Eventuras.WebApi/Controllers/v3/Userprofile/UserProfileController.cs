@@ -97,7 +97,7 @@ public class UserProfileController : Controller
 
     // PUT /v3/userprofile
     [HttpPut()]
-    public async Task<UserDto> UpdateUser(string id, [FromBody] UserFormDto dto,
+    public async Task<UserDto> UpdateUser([FromBody] UserFormDto dto,
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
@@ -105,13 +105,13 @@ public class UserProfileController : Controller
             throw new BadHttpRequestException($"Invalid request body. {ModelState.FormatErrors()}");
         }
 
-        var requestingUser = HttpContext.User.GetUserId();
-        if (requestingUser != id)
+        var userId = HttpContext.User.GetUserId();
+        if (string.IsNullOrEmpty(userId))
         {
-            throw new NotAccessibleException($"User {requestingUser} cannot update user {id}.");
+            throw new NotAccessibleException("User ID not found in authentication context.");
         }
 
-        var user = await _userRetrievalService.GetUserByIdAsync(id, null, cancellationToken);
+        var user = await _userRetrievalService.GetUserByIdAsync(userId, null, cancellationToken);
         dto.CopyTo(user);
 
         await _userManagementService.UpdateUserAsync(user, cancellationToken);
