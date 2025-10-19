@@ -1,11 +1,12 @@
 'use server';
 
-import { getV3Registrations } from '@eventuras/event-sdk';
+import { getV3Registrations, client } from '@eventuras/event-sdk';
 import type { RegistrationDto } from '@eventuras/event-sdk';
 import { Logger } from '@eventuras/logger';
 
 import { actionError, actionSuccess, type ServerActionResult } from '@/types/serverAction';
 import { appConfig } from '@/config.server';
+import { configureEventurasClient } from '@/lib/eventuras-client';
 
 const logger = Logger.create({
   namespace: 'web:actions',
@@ -38,6 +39,8 @@ export async function fetchUserEventRegistrations(
   userId: string,
   eventId: number
 ): Promise<ServerActionResult<RegistrationDto[]>> {
+  await configureEventurasClient();
+
   const orgId = getOrganizationId();
 
   if (!orgId) {
@@ -53,6 +56,7 @@ export async function fetchUserEventRegistrations(
 
   try {
     const response = await getV3Registrations({
+      client,
       query: {
         UserId: userId,
         EventId: eventId,
