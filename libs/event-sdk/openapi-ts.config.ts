@@ -5,7 +5,7 @@ export default defineConfig({
     path: './swagger.json',
     // exclude: 'components/schemas/EventFormDtoJsonPatchDocument',
   },
-  output: 'src/client',
+  output: 'src/client-next',
   plugins: [
     {
       name: '@hey-api/client-next',

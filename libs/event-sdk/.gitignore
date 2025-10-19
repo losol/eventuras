@@ -1,0 +1,19 @@
+# Build output
+dist/
+
+# Generated client code
+src/client/
+
+# Dependencies
+node_modules/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Turbo
+.turbo/
+
+# OS
+.DS_Store
