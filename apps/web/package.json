@@ -25,6 +25,7 @@
   ],
   "dependencies": {
     "@eventuras/app-config": "workspace:^",
+    "@eventuras/core": "workspace:^",
     "@eventuras/datatable": "workspace:^",
     "@eventuras/event-sdk": "workspace:^",
     "@eventuras/fides-auth-next": "workspace:*",

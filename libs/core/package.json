@@ -1,0 +1,31 @@
+{
+  "name": "@eventuras/core",
+  "version": "0.1.0",
+  "private": "true",
+  "description": "Core utilities for Eventuras",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./regex": {
+      "types": "./dist/regex/index.d.ts",
+      "import": "./dist/regex/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@eventuras/vite-config": "workspace:*",
+    "vite": "^7.1.10"
+  }
+}
