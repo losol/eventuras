@@ -21,11 +21,19 @@ let isConfigured = false;
 /**
  * Configure the Eventuras API client.
  * Called once at application startup.
+ * @throws {Error} If NEXT_PUBLIC_BACKEND_URL is not set
  */
-export function configureEventurasClient() {
+export async function configureEventurasClient() {
   if (isConfigured) return;
 
-  const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8080';
+  const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+  if (!baseUrl) {
+    throw new Error(
+      'NEXT_PUBLIC_BACKEND_URL environment variable is required. Please set it in your .env.local file.'
+    );
+  }
+
   client.setConfig({ baseUrl });
 
   // Inject auth token on every request (server-side only)

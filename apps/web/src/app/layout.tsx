@@ -10,7 +10,7 @@ import { configureEventurasClient } from '@/lib/eventuras-client';
 import Providers from './Providers';
 
 // Configure the Eventuras API client on app startup
-configureEventurasClient();
+await configureEventurasClient();
 
 const siteSettings = await getSiteSettings();
 export const metadata: Metadata = {

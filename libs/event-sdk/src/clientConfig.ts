@@ -4,7 +4,7 @@ import type { CreateClientConfig } from './client-next/client.gen';
  * Default client configuration for event-sdk.
  * This provides a base configuration that can be overridden by consuming applications.
  *
- * For Next.js applications with authentication, you should:
+ * For Next.js applications with authentication, you MUST:
  * 1. Call client.setConfig() with your baseUrl and auth logic, OR
  * 2. Use interceptors to inject auth headers dynamically
  *
@@ -25,7 +25,15 @@ import type { CreateClientConfig } from './client-next/client.gen';
  * });
  * ```
  */
-export const createClientConfig: CreateClientConfig = (config) => ({
-  ...(config || {}),
-  baseUrl: config?.baseUrl || 'http://localhost:8080',
-});
+export const createClientConfig: CreateClientConfig = (config) => {
+  if (!config?.baseUrl) {
+    throw new Error(
+      'event-sdk: baseUrl is required. Please configure the client with client.setConfig({ baseUrl: "..." }) before making any requests.'
+    );
+  }
+
+  return {
+    ...(config || {}),
+    baseUrl: config.baseUrl,
+  };
+};

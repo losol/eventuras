@@ -43,7 +43,7 @@ export async function createEvent(
   formData: FormData
 ): Promise<ServerActionResult<{ eventId: number }>> {
   // Ensure client is configured with auth and base URL
-  configureEventurasClient();
+  await configureEventurasClient();
 
   logger.info('Starting event creation');
 
@@ -153,7 +153,7 @@ export async function updateEvent(
   eventData: EventFormDto
 ): Promise<ServerActionResult<{ eventId: number }>> {
   // Ensure client is configured with auth and base URL
-  configureEventurasClient();
+  await configureEventurasClient();
 
   updateLogger.info({ eventId }, 'Starting event update');
 
@@ -273,7 +273,7 @@ export async function issueCertificates(
   eventId: number
 ): Promise<ServerActionResult<void>> {
   // Ensure client is configured with auth and base URL
-  configureEventurasClient();
+  await configureEventurasClient();
 
   certificateLogger.info({ eventId }, 'Issuing certificates for event');
 
