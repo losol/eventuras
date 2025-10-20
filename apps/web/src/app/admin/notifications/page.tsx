@@ -47,6 +47,7 @@ export default async function NotificationsPage({ searchParams }: NotificationPa
   }
 
   return (
+    <>
     <Section className="bg-white dark:bg-black   pb-8">
         <Container>
           <Heading as="h1">Notifications</Heading>
@@ -71,5 +72,6 @@ export default async function NotificationsPage({ searchParams }: NotificationPa
           })}
         </Container>
       </Section>
+      </>
   );
 }

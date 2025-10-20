@@ -40,6 +40,7 @@ export default async function AdminCollectionsPage({ searchParams }: PageProps) 
   }
 
   return (
+    <>
     <Container>
         <Heading as="h1">{t('common.collections.page.title')}</Heading>
         <CollectionCreator />
@@ -53,5 +54,6 @@ export default async function AdminCollectionsPage({ searchParams }: PageProps) 
           />
         </Container>
       </Section>
+      </>
   );
 }

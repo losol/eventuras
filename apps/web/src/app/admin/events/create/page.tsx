@@ -7,7 +7,9 @@ export default function CreateEventPage() {
   const t = useTranslations();
 
   return (
+    <>
     <Heading>{t('admin.createEvent.content.title')}</Heading>
       <CreateEventForm />
+    </>
   );
 }

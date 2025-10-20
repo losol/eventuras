@@ -7,6 +7,7 @@ const CertificatesPage = async () => {
   const t = await getTranslations();
 
   return (
+    <>
     <Container>
         <Heading as="h1">{t('admin.certificates.page.title')}</Heading>
       </Container>
@@ -15,6 +16,7 @@ const CertificatesPage = async () => {
           <p>{t('admin.certificates.page.description')}</p>
         </Container>
       </Section>
+      </>
   );
 };
 

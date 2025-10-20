@@ -12,6 +12,7 @@ const AdminOrganizationsPage = async () => {
   const organizations = await getV3Organizations();
 
   return (
+    <>
     <Section className="py-8">
         <Container>
           <Heading as="h1">{t('admin.organizations.page.title')}</Heading>
@@ -30,6 +31,7 @@ const AdminOrganizationsPage = async () => {
           </List>
         </Container>
       </Section>
+      </>
   );
 };
 
