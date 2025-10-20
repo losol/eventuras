@@ -54,10 +54,21 @@
   },
   "description": "Description",
   "edit": "Edit",
+  "access-denied": "Access denied. You don't have permission to view this resource.",
+  "backend-unavailable": "Unable to connect to the server. Please check your internet connection or try again later.",
+  "back-to-event": "Back to event",
+  "back-to-events": "Back to events",
+  "connection-error": "Connection Error",
+  "error": "Error",
+  "error-loading-event": "Failed to load event. Please try again.",
   "errormessages": {
     "event-not-found": "Event not found",
     "user-not-found": "User not found"
   },
+  "event-not-found": "Event not found",
+  "network-error": "Network error occurred. Please check your connection and try again.",
+  "server-error": "Server error occurred. Please try again later.",
+  "try-again-later": "Please try again in a few moments.",
   "errorpage": {
     "contactUs": "Please contact us!",
     "description": "Do not now anything more.",
