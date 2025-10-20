@@ -14,7 +14,7 @@ import { Logger } from '@eventuras/logger';
 import { revalidatePath } from 'next/cache';
 
 import { appConfig } from '@/config.server';
-import { actionError, actionSuccess, type ServerActionResult } from '@/types/serverAction';
+import { actionError, actionSuccess, type ServerActionResult } from '@eventuras/core-nextjs/actions';
 import { client } from '@/lib/eventuras-client';
 import { productMapToOrderLineModel } from '@/utils/registration-helpers';
 
