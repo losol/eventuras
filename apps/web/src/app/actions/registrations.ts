@@ -4,7 +4,7 @@ import { getV3Registrations, client } from '@eventuras/event-sdk';
 import type { RegistrationDto } from '@eventuras/event-sdk';
 import { Logger } from '@eventuras/logger';
 
-import { actionError, actionSuccess, type ServerActionResult } from '@/types/serverAction';
+import { actionError, actionSuccess, type ServerActionResult } from '@eventuras/core-nextjs/actions';
 import { appConfig } from '@/config.server';
 import { configureEventurasClient } from '@/lib/eventuras-client';
 

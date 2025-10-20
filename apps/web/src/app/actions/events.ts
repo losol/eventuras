@@ -4,7 +4,7 @@ import { getV3Events } from '@eventuras/event-sdk';
 import type { EventDto } from '@eventuras/event-sdk';
 import { Logger } from '@eventuras/logger';
 
-import { actionError, actionSuccess, type ServerActionResult } from '@/types/serverAction';
+import { actionError, actionSuccess, type ServerActionResult } from '@eventuras/core-nextjs/actions';
 import { appConfig } from '@/config.server';
 
 const logger = Logger.create({
