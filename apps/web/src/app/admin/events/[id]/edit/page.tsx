@@ -1,4 +1,5 @@
-import { Heading, Section, Text } from '@eventuras/ratio-ui';
+import { Heading } from '@eventuras/ratio-ui';
+import { Error } from '@eventuras/ratio-ui/blocks/Error';
 import { Logger } from '@eventuras/logger';
 import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
@@ -93,6 +94,18 @@ export default async function EditEventinfo({ params }: Readonly<EditEventinfoPr
   }
 
   if (pageState.type === 'http-error') {
+    const errorType = pageState.status === 403
+      ? 'forbidden'
+      : pageState.status && pageState.status >= 500
+      ? 'server-error'
+      : 'generic';
+
+    const errorTitle = pageState.status === 403
+      ? t('common.access-denied')
+      : pageState.status && pageState.status >= 500
+      ? t('common.server-error')
+      : t('common.error');
+
     const errorMessage = pageState.status === 403
       ? t('common.access-denied')
       : pageState.status && pageState.status >= 500
@@ -101,17 +114,13 @@ export default async function EditEventinfo({ params }: Readonly<EditEventinfoPr
 
     return (
       <Wrapper>
-        <Section className="py-12">
-          <Heading as="h1" className="text-red-600 dark:text-red-400">
-            {t('common.error')}
-          </Heading>
-          <Text className="mt-4">{errorMessage}</Text>
+        <Error type={errorType} tone="error">
+          <Error.Title>{errorTitle}</Error.Title>
+          <Error.Description>{errorMessage}</Error.Description>
           {pageState.message && (
-            <Text className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-              {pageState.message}
-            </Text>
+            <Error.Details>{pageState.message}</Error.Details>
           )}
-          <div className="mt-6 flex gap-4">
+          <Error.Actions>
             <Link
               href={`/admin/events/${id}`}
               className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors"
@@ -124,8 +133,8 @@ export default async function EditEventinfo({ params }: Readonly<EditEventinfoPr
             >
               {t('common.back-to-events')}
             </Link>
-          </div>
-        </Section>
+          </Error.Actions>
+        </Error>
       </Wrapper>
     );
   }
@@ -137,23 +146,19 @@ export default async function EditEventinfo({ params }: Readonly<EditEventinfoPr
 
   return (
     <Wrapper>
-      <Section className="py-12">
-        <Heading as="h1" className="text-red-600 dark:text-red-400">
-          {t('common.connection-error')}
-        </Heading>
-        <Text className="mt-4">{errorMessage}</Text>
-        <Text className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-          {t('common.try-again-later')}
-        </Text>
-        <div className="mt-6">
+      <Error type="network-error" tone="error">
+        <Error.Title>{t('common.connection-error')}</Error.Title>
+        <Error.Description>{errorMessage}</Error.Description>
+        <Error.Details>{t('common.try-again-later')}</Error.Details>
+        <Error.Actions>
           <Link
             href="/admin/events"
-            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors inline-block"
+            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
           >
             {t('common.back-to-events')}
           </Link>
-        </div>
-      </Section>
+        </Error.Actions>
+      </Error>
     </Wrapper>
   );
 }
