@@ -28,7 +28,7 @@ export async function fetchEvents({
   startDate
 }: FetchEventsParams): Promise<FetchEventsResult> {
   // Ensure client is configured with auth and base URL
-  configureEventurasClient();
+  await configureEventurasClient();
 
   logger.debug(
     {

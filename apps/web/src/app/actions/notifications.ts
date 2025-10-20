@@ -42,7 +42,7 @@ function getOrganizationId(): number | null {
 export async function sendEmailNotification(
   notification: EmailNotificationDto
 ): Promise<ServerActionResult<void>> {
-  configureEventurasClient();
+  await configureEventurasClient();
 
   const organizationId = getOrganizationId();
 
@@ -111,7 +111,7 @@ export async function sendEmailNotification(
 export async function sendSmsNotification(
   notification: SmsNotificationDto
 ): Promise<ServerActionResult<void>> {
-  configureEventurasClient();
+  await configureEventurasClient();
 
   const organizationId = getOrganizationId();
 

@@ -25,7 +25,7 @@ export interface AuthorizationResult {
  */
 export async function checkAuthorization(requiredRole: string): Promise<AuthorizationResult> {
   // Ensure client is configured with IPv4 fetch
-  configureEventurasClient();
+  await configureEventurasClient();
 
   try {
     // Get current user using configured client
