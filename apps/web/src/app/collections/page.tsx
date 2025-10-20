@@ -3,7 +3,6 @@ import { Heading, Section, Text } from '@eventuras/ratio-ui';
 import { getTranslations } from 'next-intl/server';
 
 import { Card } from '@eventuras/ratio-ui/core/Card';
-import Wrapper from '@/components/eventuras/Wrapper';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 import { getV3Eventcollections } from '@eventuras/event-sdk';
 import { appConfig } from '@/config.server';
@@ -25,19 +24,19 @@ const CollectionIndexPage: React.FC = async () => {
 
   if (!response.data)
     return (
-      <Wrapper>
+      <>
         <Heading>{t('common.events.detailspage.notfound.title')}</Heading>
         <Text className="py-6">{t('common.events.detailspage.notfound.description')}</Text>
         <Link href="/" variant="button-primary">
           {t('common.events.detailspage.notfound.back')}
         </Link>
-      </Wrapper>
+      </>
     );
 
   const collections = response.data;
 
   return (
-    <Wrapper>
+    <>
       <Section className="py-16">
         <Heading as="h1" padding="pt-6 pb-3">
           Collections
@@ -61,7 +60,7 @@ const CollectionIndexPage: React.FC = async () => {
             </Card>
           ))}
       </Section>
-    </Wrapper>
+    </>
   );
 };
 

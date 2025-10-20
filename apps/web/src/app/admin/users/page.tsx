@@ -2,7 +2,6 @@ import { UserDto } from '@eventuras/event-sdk';
 import { Container, Heading } from '@eventuras/ratio-ui';
 import { getTranslations } from 'next-intl/server';
 
-import Wrapper from '@/components/eventuras/Wrapper';
 import { getV3Users } from '@eventuras/event-sdk';
 import withAuthorization from '@/utils/auth/withAuthorization';
 import { appConfig } from '@/config.server';
@@ -28,13 +27,11 @@ const AdminUserPage = async () => {
   const data: UserDto[] = response.data?.data ?? [];
 
   return (
-    <Wrapper>
-      <Container>
+    <Container>
         <Heading as="h1">{t('admin.users.page.title')}</Heading>
         <UsersActionMenu />
         <UserList users={data} />
       </Container>
-    </Wrapper>
   );
 };
 

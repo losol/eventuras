@@ -5,7 +5,6 @@ import { Link } from '@eventuras/ratio-ui-next/Link';
 import withAuthorization from '@/utils/auth/withAuthorization';
 import { appConfig } from '@/config.server';
 
-import Wrapper from '../../components/eventuras/Wrapper';
 import AdminEventList from './events/AdminEventList';
 
 interface AdminPageProps {
@@ -18,8 +17,7 @@ const AdminPage = async ({ searchParams }: AdminPageProps = {}) => {
   const page = params.page ? parseInt(params.page, 10) : 1;
 
   return (
-    <Wrapper>
-      <Container>
+    <Container>
         <Heading as="h1">{t('admin.title')}</Heading>
         <section className="py-10">
           <Link
@@ -54,7 +52,6 @@ const AdminPage = async ({ searchParams }: AdminPageProps = {}) => {
           page={page}
         />
       </Container>
-    </Wrapper>
   );
 };
 

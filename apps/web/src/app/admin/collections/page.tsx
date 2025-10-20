@@ -2,7 +2,6 @@ import { Container, Heading, Section } from '@eventuras/ratio-ui';
 import { Unauthorized } from '@eventuras/ratio-ui/blocks/Unauthorized';
 import { getTranslations } from 'next-intl/server';
 
-import Wrapper from '@/components/eventuras/Wrapper';
 import { checkAuthorization } from '@/utils/auth/checkAuthorization';
 import FatalError from '@/components/FatalError';
 
@@ -30,21 +29,18 @@ export default async function AdminCollectionsPage({ searchParams }: PageProps) 
 
   if (!response.ok || !response.data) {
     return (
-      <Wrapper>
-        <Container>
+      <Container>
           <Heading as="h1">{t('common.collections.page.title')}</Heading>
           <FatalError
             title="Failed to load collections"
             description={response.error || 'Unknown error'}
           />
         </Container>
-      </Wrapper>
     );
   }
 
   return (
-    <Wrapper>
-      <Container>
+    <Container>
         <Heading as="h1">{t('common.collections.page.title')}</Heading>
         <CollectionCreator />
       </Container>
@@ -57,6 +53,5 @@ export default async function AdminCollectionsPage({ searchParams }: PageProps) 
           />
         </Container>
       </Section>
-    </Wrapper>
   );
 }

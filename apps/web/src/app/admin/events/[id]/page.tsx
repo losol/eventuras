@@ -3,7 +3,6 @@ import { Error } from '@eventuras/ratio-ui/blocks/Error';
 import { Logger } from '@eventuras/logger';
 import { notFound } from 'next/navigation';
 
-import Wrapper from '@/components/eventuras/Wrapper';
 import {
   getV3EventsById,
   getV3Registrations,
@@ -78,7 +77,7 @@ export default async function EventAdminPage({ params }: Readonly<EventInfoProps
   );
 
   return (
-    <Wrapper fluid>
+    <>
       <Section className="bg-white dark:bg-black pb-8">
         <Container>
           <Heading as="h1">{eventinfo.title}</Heading>
@@ -109,6 +108,6 @@ export default async function EventAdminPage({ params }: Readonly<EventInfoProps
         statistics={statisticsRes.data ?? {}}
         eventProducts={eventProductsRes.data ?? []}
       />
-    </Wrapper>
+    </>
   );
 }

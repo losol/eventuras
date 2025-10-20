@@ -9,7 +9,6 @@ import { getTranslations } from 'next-intl/server';
 
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import EventCard from '@/components/event/EventCard';
-import Wrapper from '@/components/eventuras/Wrapper';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 import { getV3Eventcollections, getV3EventcollectionsById, getV3Events } from '@eventuras/event-sdk';
 import { appConfig } from '@/config.server';
@@ -88,7 +87,7 @@ const CollectionPage: React.FC<EventInfoProps> = async props => {
   });
 
   return (
-    <Wrapper>
+    <>
       {collection?.featuredImageUrl && (
         <Card
           className="mx-auto min-h-[33vh]"
@@ -119,7 +118,7 @@ const CollectionPage: React.FC<EventInfoProps> = async props => {
           </Container>
         )}
       </Section>
-    </Wrapper>
+    </>
   );
 };
 

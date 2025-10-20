@@ -2,7 +2,6 @@ import { Container, Heading, Section } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
 import { getTranslations } from 'next-intl/server';
 
-import Wrapper from '@/components/eventuras/Wrapper';
 import { getV3EventcollectionsById } from '@eventuras/event-sdk';
 
 import CollectionEditor from '../CollectionEditor';
@@ -30,7 +29,7 @@ export default async function CollectionDetailPage({ params }: Readonly<EventCol
   }
 
   return (
-    <Wrapper fluid>
+    <>
       <Section className="bg-white dark:bg-black   pb-8">
         <Container>
           <Heading as="h1">{response.data.name ?? ''}</Heading>
@@ -41,6 +40,6 @@ export default async function CollectionDetailPage({ params }: Readonly<EventCol
           <CollectionEditor eventCollection={response.data} />
         </Container>
       </Section>
-    </Wrapper>
+    </>
   );
 }

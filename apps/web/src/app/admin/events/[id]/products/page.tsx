@@ -3,7 +3,6 @@ import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { Logger } from '@eventuras/logger';
 
-import Wrapper from '@/components/eventuras/Wrapper';
 import { getV3EventsById, getV3EventsByEventIdProducts } from '@eventuras/event-sdk';
 
 import EventProductsEditor from './EventProductsEditor';
@@ -42,7 +41,7 @@ const EventProducts: React.FC<EventProductsPage> = async props => {
   }
 
   return (
-    <Wrapper fluid>
+    <>
       <Section className="bg-white dark:bg-black py-10">
         <Container>
           <Heading as="h1" padding="pt-6 mb-3">
@@ -55,7 +54,7 @@ const EventProducts: React.FC<EventProductsPage> = async props => {
           <EventProductsEditor eventInfo={eventInfo} products={products ?? []} />
         </Container>
       </Section>
-    </Wrapper>
+    </>
   );
 };
 

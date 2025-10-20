@@ -2,7 +2,6 @@ import { Section, Heading, Text } from '@eventuras/ratio-ui';
 import { getTranslations } from 'next-intl/server';
 
 import { EventGrid } from '@/components/event';
-import Wrapper from '@/components/eventuras/Wrapper';
 import { getV3Events } from '@eventuras/event-sdk';
 import { appConfig } from '@/config.server';
 import getSiteSettings from '@/utils/site/getSiteSettings';
@@ -17,7 +16,7 @@ export default async function Homepage() {
   });
 
   return (
-    <Wrapper imageNavbar bgDark fluid>
+    <>
       {/* Hero section with background image */}
       <Section
         backgroundImageUrl="/assets/images/mountains.jpg"
@@ -41,6 +40,6 @@ export default async function Homepage() {
           <EventGrid eventinfos={response.data.data} />
         </Section>
       ) : null}
-    </Wrapper>
+    </>
   );
 }

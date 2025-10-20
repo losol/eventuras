@@ -3,8 +3,6 @@ import { Logger } from '@eventuras/logger';
 import { getTranslations } from 'next-intl/server';
 
 import { getV3CertificatesById } from '@eventuras/event-sdk';
-import Wrapper from '@/components/eventuras/Wrapper';
-
 import Certificate from '../Certificate';
 import { PDFCertificate } from '../PDFCertificate';
 
@@ -31,7 +29,7 @@ export default async function CertificateDetailPage({ params }: Readonly<Certifi
   }
 
   return (
-    <Wrapper fluid>
+    <>
       <Section className="bg-white dark:bg-black   pb-8">
         <Container>
           <Heading as="h1">Order</Heading>
@@ -43,6 +41,6 @@ export default async function CertificateDetailPage({ params }: Readonly<Certifi
           <PDFCertificate certificateId={id} />
         </Container>
       </Section>
-    </Wrapper>
+    </>
   );
 }

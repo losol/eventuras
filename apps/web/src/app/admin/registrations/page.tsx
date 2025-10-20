@@ -2,7 +2,6 @@ import { Container, Heading, Section } from '@eventuras/ratio-ui';
 import { Unauthorized } from '@eventuras/ratio-ui/blocks/Unauthorized';
 import { getTranslations } from 'next-intl/server';
 
-import Wrapper from '@/components/eventuras/Wrapper';
 import { checkAuthorization } from '@/utils/auth/checkAuthorization';
 import FatalError from '@/components/FatalError';
 
@@ -29,8 +28,7 @@ export default async function AdminRegistrationsPage({ searchParams }: PageProps
 
   if (!response.ok || !response.data) {
     return (
-      <Wrapper>
-        <Section className="py-8">
+      <Section className="py-8">
           <Container>
             <Heading as="h1">{t('common.registrations.page.title')}</Heading>
             <FatalError
@@ -39,13 +37,11 @@ export default async function AdminRegistrationsPage({ searchParams }: PageProps
             />
           </Container>
         </Section>
-      </Wrapper>
     );
   }
 
   return (
-    <Wrapper>
-      <Section className="py-8">
+    <Section className="py-8">
         <Container>
           <Heading as="h1">{t('common.registrations.page.title')}</Heading>
         </Container>
@@ -59,6 +55,5 @@ export default async function AdminRegistrationsPage({ searchParams }: PageProps
           />
         </Container>
       </Section>
-    </Wrapper>
   );
 }
