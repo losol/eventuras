@@ -29,6 +29,31 @@ const isValidName = regex.lettersSpaceAndHyphen.test('Jean-Pierre');
 - `lettersAndSpace` - Unicode letters and spaces
 - `lettersSpaceAndHyphen` - Unicode letters, spaces, and hyphens
 
+### DateTime Utilities
+
+Utilities for formatting dates and date ranges.
+
+#### Usage
+
+```typescript
+// Import all datetime utilities
+import { datetime } from '@eventuras/core';
+
+// Or import specific utilities
+import { formatDate, formatDateSpan } from '@eventuras/core/datetime';
+
+// Format a single date
+const formatted = formatDate(new Date(), { locale: 'en-US', showTime: true });
+
+// Format a date range
+const dateSpan = formatDateSpan('2025-01-01', '2025-01-31', { locale: 'nb-NO' });
+```
+
+#### Available Functions
+
+- `formatDate(date, options?)` - Format a single date with locale and time options
+- `formatDateSpan(startDate, endDate?, options?)` - Format a date range
+
 ## Development
 
 ```bash

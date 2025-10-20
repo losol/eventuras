@@ -7,7 +7,7 @@ import { useTranslations } from 'next-intl';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import { Link } from '@eventuras/ratio-ui-next/Link';
-import { formatDateSpan } from '@/utils/formatDate';
+import { formatDateSpan } from '@eventuras/core/datetime';
 
 const columnHelper = createColumnHelper<OrderDto>();
 

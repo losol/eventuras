@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl';
 import React from 'react';
 
 import { Card } from '@eventuras/ratio-ui/core/Card';
-import { formatDateSpan } from '@/utils/formatDate';
+import { formatDateSpan } from '@eventuras/core/datetime';
 
 type CertificateProps = {
   certificate: CertificateDto;

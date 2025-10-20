@@ -8,7 +8,7 @@ import { useEffect, useState, useTransition } from 'react';
 
 import FatalError from '@/components/FatalError';
 import { Link } from '@eventuras/ratio-ui-next/Link';
-import { formatDateSpan } from '@/utils/formatDate';
+import { formatDateSpan } from '@eventuras/core/datetime';
 import { getOrders } from './actions';
 
 const columnHelper = createColumnHelper<OrderDto>();
