@@ -41,6 +41,7 @@ export default async function AdminRegistrationsPage({ searchParams }: PageProps
   }
 
   return (
+    <>
     <Section className="py-8">
         <Container>
           <Heading as="h1">{t('common.registrations.page.title')}</Heading>
@@ -55,5 +56,6 @@ export default async function AdminRegistrationsPage({ searchParams }: PageProps
           />
         </Container>
       </Section>
+      </>
   );
 }
