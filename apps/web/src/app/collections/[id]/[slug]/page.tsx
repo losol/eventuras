@@ -12,6 +12,7 @@ import EventCard from '@/components/event/EventCard';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 import { getV3Eventcollections, getV3EventcollectionsById, getV3Events } from '@eventuras/event-sdk';
 import { appConfig } from '@/config.server';
+import { getPublicClient } from '@/lib/eventuras-public-client';
 
 type EventInfoProps = {
   params: Promise<{
@@ -20,9 +21,11 @@ type EventInfoProps = {
   }>;
 };
 
+// Incremental Static Regeneration - revalidate every 5 minutes
 export const revalidate = 300;
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const dynamicParams = true;
+
+// Allow generating new collection pages on-demand
+export const dynamicParams = true;
 
 export async function generateStaticParams() {
   const organizationId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
@@ -36,7 +39,10 @@ export async function generateStaticParams() {
   );
 
   try {
+    // Use public client for anonymous API access during static generation
+    const publicClient = getPublicClient();
     const response = await getV3Eventcollections({
+      client: publicClient,
       headers: {
         'Eventuras-Org-Id': orgId,
       },
@@ -59,7 +65,11 @@ export async function generateStaticParams() {
 const CollectionPage: React.FC<EventInfoProps> = async props => {
   const params = await props.params;
   const t = await getTranslations();
+
+  // Use public client for anonymous API access
+  const publicClient = getPublicClient();
   const response = await getV3EventcollectionsById({
+    client: publicClient,
     path: { id: params.id },
   });
 
@@ -81,6 +91,7 @@ const CollectionPage: React.FC<EventInfoProps> = async props => {
   }
 
   const eventsResponse = await getV3Events({
+    client: publicClient,
     query: {
       CollectionId: collection.id!,
     },

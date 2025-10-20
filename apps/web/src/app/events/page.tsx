@@ -7,6 +7,7 @@ import { publicEnv } from '@/config.client';
 import { getV3Events } from '@eventuras/event-sdk';
 import {List} from '@eventuras/ratio-ui/core/List';
 import Link from 'next/link';
+import { getPublicClient } from '@/lib/eventuras-public-client';
 
 const logger = Logger.create({
   namespace: 'web:events-page',
@@ -14,6 +15,9 @@ const logger = Logger.create({
 });
 
 const ORGANIZATION_ID = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
+
+// Incremental Static Regeneration - revalidate every 5 minutes
+export const revalidate = 300;
 
 export default async function EventsPage() {
   const t = await getTranslations();
@@ -24,7 +28,10 @@ export default async function EventsPage() {
   let fetchError = false;
 
   try {
+    // Use public client for anonymous API access
+    const publicClient = getPublicClient();
     eventinfos = await getV3Events({
+      client: publicClient,
       query: {
         OrganizationId: ORGANIZATION_ID
       }

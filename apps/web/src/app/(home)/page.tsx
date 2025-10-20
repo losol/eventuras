@@ -5,13 +5,21 @@ import { EventGrid } from '@/components/event';
 import { getV3Events } from '@eventuras/event-sdk';
 import { appConfig } from '@/config.server';
 import getSiteSettings from '@/utils/site/getSiteSettings';
+import { getPublicClient } from '@/lib/eventuras-public-client';
 
 const ORGANIZATION_ID = Number(appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID as string);
+
+// Incremental Static Regeneration - revalidate every 5 minutes
+export const revalidate = 300;
 
 export default async function Homepage() {
   const site = await getSiteSettings();
   const t = await getTranslations();
+
+  // Use public client for anonymous API access
+  const publicClient = getPublicClient();
   const response = await getV3Events({
+    client: publicClient,
     query: { OrganizationId: ORGANIZATION_ID },
   });
 

@@ -12,6 +12,7 @@ import EventRegistrationButton from '@/app/events/EventRegistrationButton';
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import { appConfig } from '@/config.server';
 import { formatDateSpan } from '@eventuras/core/datetime';
+import { getPublicClient } from '@/lib/eventuras-public-client';
 
 import EventNotFound from '../../EventNotFound';
 
@@ -22,6 +23,16 @@ type EventDetailsPageProps = {
   }>;
 };
 
+/**
+ * Incremental Static Regeneration (ISR) Configuration:
+ *
+ * - revalidate: Pages are regenerated in the background every 5 minutes
+ *   This keeps content fresh without requiring a full rebuild
+ *
+ * - dynamicParams: true allows new event pages to be generated on-demand
+ *   When a user visits an event not in generateStaticParams, it will be
+ *   generated on the first request and cached for subsequent requests
+ */
 export const revalidate = 300;
 export const dynamicParams = true;
 
@@ -37,7 +48,10 @@ export async function generateStaticParams() {
   );
 
   try {
+    // Use public client for anonymous API access during static generation
+    const publicClient = getPublicClient();
     const response = await getV3Events({
+      client: publicClient,
       query: {
         OrganizationId: orgId,
       },
@@ -67,7 +81,12 @@ export default async function EventDetailsPage({ params }: Readonly<EventDetails
     return <EventNotFound />;
   }
 
-  const response = await getV3EventsById({ path: { id } });
+  // Use public client for anonymous API access
+  const publicClient = getPublicClient();
+  const response = await getV3EventsById({
+    client: publicClient,
+    path: { id }
+  });
 
   // Handle not found or draft events
   if (!response.data || response.data.status === EventInfoStatus.DRAFT) {
