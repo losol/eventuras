@@ -11,7 +11,7 @@ import {
 import { useTranslations } from 'next-intl';
 
 import { Card } from '@eventuras/ratio-ui/core/Card';
-import { formatDateSpan } from '@/utils/formatDate';
+import { formatDateSpan } from '@eventuras/core/datetime';
 
 import { OrderActionsMenu } from './OrderActionsMenu';
 

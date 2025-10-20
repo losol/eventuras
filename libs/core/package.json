@@ -14,6 +14,10 @@
     "./regex": {
       "types": "./dist/regex/index.d.ts",
       "import": "./dist/regex/index.js"
+    },
+    "./datetime": {
+      "types": "./dist/datetime/index.d.ts",
+      "import": "./dist/datetime/index.js"
     }
   },
   "files": [

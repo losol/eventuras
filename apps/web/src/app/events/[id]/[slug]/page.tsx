@@ -12,7 +12,7 @@ import EventRegistrationButton from '@/app/events/EventRegistrationButton';
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import Wrapper from '@/components/eventuras/Wrapper';
 import { appConfig } from '@/config.server';
-import { formatDateSpan } from '@/utils/formatDate';
+import { formatDateSpan } from '@eventuras/core/datetime';
 
 import EventNotFound from '../../EventNotFound';
 

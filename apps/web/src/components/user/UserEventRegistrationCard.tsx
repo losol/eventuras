@@ -6,7 +6,7 @@ import { Card } from '@eventuras/ratio-ui/core/Card';
 import {Text} from '@eventuras/ratio-ui/core/Text';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 import { appConfig } from '@/config.server';
-import { formatDateSpan } from '@/utils/formatDate';
+import { formatDateSpan } from '@eventuras/core/datetime';
 import {Heading} from '@eventuras/ratio-ui/core/Heading';
 
 export type UserEventRegistrationCardProps = {

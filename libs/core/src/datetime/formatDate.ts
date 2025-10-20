@@ -53,3 +53,4 @@ const formatDateSpan = (
 };
 
 export { formatDate, formatDateSpan };
+export type { FormatDateOptions };

@@ -3,7 +3,7 @@ import { EventDto } from '@eventuras/event-sdk';
 
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import { appConfig } from '@/config.server';
-import { formatDateSpan } from '@/utils/formatDate';
+import { formatDateSpan } from '@eventuras/core/datetime';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 import {Heading} from '@eventuras/ratio-ui/core/Heading';
 import {Text} from '@eventuras/ratio-ui/core/Text';
