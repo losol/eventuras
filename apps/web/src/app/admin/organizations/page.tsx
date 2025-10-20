@@ -2,7 +2,6 @@ import { Container, Heading, Section } from '@eventuras/ratio-ui';
 import { getTranslations } from 'next-intl/server';
 import { getV3Organizations } from '@eventuras/event-sdk';
 
-import Wrapper from '@/components/eventuras/Wrapper';
 import withAuthorization from '@/utils/auth/withAuthorization';
 import {List} from '@eventuras/ratio-ui/core/List';
 import { Link } from '@eventuras/ratio-ui-next/Link';
@@ -13,8 +12,7 @@ const AdminOrganizationsPage = async () => {
   const organizations = await getV3Organizations();
 
   return (
-    <Wrapper>
-      <Section className="py-8">
+    <Section className="py-8">
         <Container>
           <Heading as="h1">{t('admin.organizations.page.title')}</Heading>
         </Container>
@@ -32,7 +30,6 @@ const AdminOrganizationsPage = async () => {
           </List>
         </Container>
       </Section>
-    </Wrapper>
   );
 };
 

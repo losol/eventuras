@@ -2,7 +2,6 @@ import { Container, Heading, Section } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
 import { getTranslations } from 'next-intl/server';
 
-import Wrapper from '@/components/eventuras/Wrapper';
 import { getV3NotificationsById, getV3NotificationsByIdRecipients } from '@eventuras/event-sdk';
 
 type EventInfoProps = {
@@ -32,7 +31,7 @@ const NotificationDetailPage: React.FC<EventInfoProps> = async props => {
   }
 
   return (
-    <Wrapper fluid>
+    <>
       <Section className="bg-white dark:bg-black   pb-8">
         <Container>
           <Heading as="h1">Notification</Heading>
@@ -45,7 +44,7 @@ const NotificationDetailPage: React.FC<EventInfoProps> = async props => {
           <pre>{JSON.stringify(recipientsResponse.data, null, 4)}</pre>
         </Container>
       </Section>
-    </Wrapper>
+    </>
   );
 };
 

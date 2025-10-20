@@ -2,7 +2,6 @@ import { Heading, Text } from '@eventuras/ratio-ui';
 import { getTranslations } from 'next-intl/server';
 import { Logger } from '@eventuras/logger';
 
-import Wrapper from '@/components/eventuras/Wrapper';
 import { publicEnv } from '@/config.client';
 
 import { getV3Events } from '@eventuras/event-sdk';
@@ -53,7 +52,7 @@ export default async function EventsPage() {
   }
 
   return (
-    <Wrapper>
+    <>
       <Heading as="h1" padding="pb-4">
         {t('common.events.sectiontitle')}
       </Heading>
@@ -77,6 +76,6 @@ export default async function EventsPage() {
           ))}
         </List>
       )}
-    </Wrapper>
+    </>
   );
 }

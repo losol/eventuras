@@ -6,7 +6,6 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 
 import EventEditor from '@/app/admin/events/EventEditor';
-import Wrapper from '@/components/eventuras/Wrapper';
 import { getV3EventsById } from '@eventuras/event-sdk';
 
 type EditEventinfoProps = {
@@ -86,10 +85,10 @@ export default async function EditEventinfo({ params }: Readonly<EditEventinfoPr
   // Render based on page state
   if (pageState.type === 'success') {
     return (
-      <Wrapper>
+      <>
         <Heading>{t(`admin.editEvent.content.title`)}</Heading>
         <EventEditor eventinfo={pageState.data!} />
-      </Wrapper>
+      </>
     );
   }
 
@@ -113,8 +112,7 @@ export default async function EditEventinfo({ params }: Readonly<EditEventinfoPr
       : t('common.error-loading-event');
 
     return (
-      <Wrapper>
-        <Error type={errorType} tone="error">
+      <Error type={errorType} tone="error">
           <Error.Title>{errorTitle}</Error.Title>
           <Error.Description>{errorMessage}</Error.Description>
           {pageState.message && (
@@ -135,7 +133,6 @@ export default async function EditEventinfo({ params }: Readonly<EditEventinfoPr
             </Link>
           </Error.Actions>
         </Error>
-      </Wrapper>
     );
   }
 
@@ -145,8 +142,7 @@ export default async function EditEventinfo({ params }: Readonly<EditEventinfoPr
     : t('common.network-error');
 
   return (
-    <Wrapper>
-      <Error type="network-error" tone="error">
+    <Error type="network-error" tone="error">
         <Error.Title>{t('common.connection-error')}</Error.Title>
         <Error.Description>{errorMessage}</Error.Description>
         <Error.Details>{t('common.try-again-later')}</Error.Details>
@@ -159,6 +155,5 @@ export default async function EditEventinfo({ params }: Readonly<EditEventinfoPr
           </Link>
         </Error.Actions>
       </Error>
-    </Wrapper>
   );
 }

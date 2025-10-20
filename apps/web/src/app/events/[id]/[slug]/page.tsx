@@ -10,7 +10,6 @@ import { Suspense } from 'react';
 import EventDetails from '@/app/events/EventDetails';
 import EventRegistrationButton from '@/app/events/EventRegistrationButton';
 import { Card } from '@eventuras/ratio-ui/core/Card';
-import Wrapper from '@/components/eventuras/Wrapper';
 import { appConfig } from '@/config.server';
 import { formatDateSpan } from '@eventuras/core/datetime';
 
@@ -82,10 +81,8 @@ export default async function EventDetailsPage({ params }: Readonly<EventDetails
     redirect(`/events/${eventinfo.id}/${encodeURI(eventinfo.slug)}`);
   }
 
-  const hasFeaturedImage = Boolean(eventinfo.featuredImageUrl);
-
   return (
-    <Wrapper imageNavbar={hasFeaturedImage} bgDark={hasFeaturedImage} fluid>
+    <>
       {eventinfo.featuredImageUrl && (
         <Card className="mx-auto min-h-[33vh]" backgroundImageUrl={eventinfo.featuredImageUrl} />
       )}
@@ -122,6 +119,6 @@ export default async function EventDetailsPage({ params }: Readonly<EventDetails
       <Suspense fallback={<div>Loading event details...</div>}>
         <EventDetails eventinfo={eventinfo} />
       </Suspense>
-    </Wrapper>
+    </>
   );
 }

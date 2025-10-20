@@ -2,7 +2,6 @@ import { NotificationDto } from '@eventuras/event-sdk';
 import { Container, Heading, Section, Text } from '@eventuras/ratio-ui';
 
 import { Card } from '@eventuras/ratio-ui/core/Card';
-import Wrapper from '@/components/eventuras/Wrapper';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 import { getV3Notifications } from '@eventuras/event-sdk';
 import { appConfig } from '@/config.server';
@@ -38,20 +37,17 @@ export default async function NotificationsPage({ searchParams }: NotificationPa
 
   if (!response.data) {
     return (
-      <Wrapper fluid>
-        <Section className="bg-white dark:bg-black pb-8">
+      <Section className="bg-white dark:bg-black pb-8">
           <Container>
             <Heading as="h1">Notifications</Heading>
             <Text>Failed to load notifications</Text>
           </Container>
         </Section>
-      </Wrapper>
     );
   }
 
   return (
-    <Wrapper fluid>
-      <Section className="bg-white dark:bg-black   pb-8">
+    <Section className="bg-white dark:bg-black   pb-8">
         <Container>
           <Heading as="h1">Notifications</Heading>
           {id && (
@@ -75,6 +71,5 @@ export default async function NotificationsPage({ searchParams }: NotificationPa
           })}
         </Container>
       </Section>
-    </Wrapper>
   );
 }

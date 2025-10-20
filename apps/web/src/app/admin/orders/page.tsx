@@ -2,7 +2,6 @@ import { Container, Heading, Section } from '@eventuras/ratio-ui';
 import { Unauthorized } from '@eventuras/ratio-ui/blocks/Unauthorized';
 import { getTranslations } from 'next-intl/server';
 
-import Wrapper from '@/components/eventuras/Wrapper';
 import { checkAuthorization } from '@/utils/auth/checkAuthorization';
 import FatalError from '@/components/FatalError';
 
@@ -29,21 +28,18 @@ export default async function AdminOrdersPage({ searchParams }: PageProps) {
 
   if (!response.ok || !response.data) {
     return (
-      <Wrapper>
-        <Container>
+      <Container>
           <Heading as="h1">{t('admin.orders.page.title')}</Heading>
           <FatalError
             title="Failed to load orders"
             description={response.error || 'Unknown error'}
           />
         </Container>
-      </Wrapper>
     );
   }
 
   return (
-    <Wrapper>
-      <Container>
+    <><Container>
         <Heading as="h1">{t('admin.orders.page.title')}</Heading>
       </Container>
       <Section>
@@ -55,6 +51,6 @@ export default async function AdminOrdersPage({ searchParams }: PageProps) {
           />
         </Container>
       </Section>
-    </Wrapper>
+      </>
   );
 }

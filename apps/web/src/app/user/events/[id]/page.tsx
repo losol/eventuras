@@ -2,7 +2,6 @@ import { Heading } from '@eventuras/ratio-ui';
 import { getTranslations } from 'next-intl/server';
 import React from 'react';
 
-import Wrapper from '@/components/eventuras/Wrapper';
 import { getV3Userprofile, getV3EventsById, getV3EventsByEventIdProducts } from '@eventuras/event-sdk';
 import getSiteSettings from '@/utils/site/getSiteSettings';
 
@@ -19,9 +18,7 @@ export default async function UserEventPage({ params }: Readonly<UserEventPagePr
 
   if (isNaN(id)) {
     return (
-      <Wrapper>
-        <Heading>Invalid event ID</Heading>
-      </Wrapper>
+      <Heading>Invalid event ID</Heading>
     );
   }
 
@@ -37,42 +34,36 @@ export default async function UserEventPage({ params }: Readonly<UserEventPagePr
   // Handle user not logged in
   if (!userResponse.data) {
     return (
-      <Wrapper>
-        <Heading>{t('user.loginRequired')}</Heading>
-      </Wrapper>
+      <Heading>{t('user.loginRequired')}</Heading>
     );
   }
 
   // Handle event not found
   if (!eventInfoResponse.data) {
     return (
-      <Wrapper>
-        <Heading>{t('user.events.eventNotFound')}</Heading>
-      </Wrapper>
+      <Heading>{t('user.events.eventNotFound')}</Heading>
     );
   }
 
   return (
-    <Wrapper>
-      <section className="mt-16">
-        {eventInfoResponse.data.title && (
-          <>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              {t('user.events.registration.titleLabel')}
-            </p>
-            <Heading as="h1" padding="pt-0 my-5">
-              {eventInfoResponse.data.title}
-            </Heading>
-          </>
-        )}
+    <section className="mt-16">
+      {eventInfoResponse.data.title && (
+        <>
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            {t('user.events.registration.titleLabel')}
+          </p>
+          <Heading as="h1" padding="pt-0 my-5">
+            {eventInfoResponse.data.title}
+          </Heading>
+        </>
+      )}
 
-        <EventFlowContainer
-          user={userResponse.data}
-          eventInfo={eventInfoResponse.data}
-          availableProducts={availableProductsResponse.data ?? []}
-          siteInfo={siteInfo!}
-        />
-      </section>
-    </Wrapper>
+      <EventFlowContainer
+        user={userResponse.data}
+        eventInfo={eventInfoResponse.data}
+        availableProducts={availableProductsResponse.data ?? []}
+        siteInfo={siteInfo!}
+      />
+    </section>
   );
 }
