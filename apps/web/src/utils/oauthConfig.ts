@@ -1,4 +1,4 @@
-import { OAuthConfig } from '@eventuras/fides-auth-next';
+import type { OAuthConfig } from '@eventuras/fides-auth-next';
 
 import { appConfig } from '@/config.server';
 
