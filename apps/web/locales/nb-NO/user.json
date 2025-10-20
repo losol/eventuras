@@ -44,6 +44,7 @@
       "viewRegistration": "Vis registrering"
     },
     "cancellationpage": {
+      "title": "Avbryt påmelding",
       "description": "Send en epost før avbestillingsfristen hvis du ikke vil delta!"
     },
     "eventNotFound": "Vi fant ikke noe arrangement her",
@@ -122,7 +123,21 @@
     "quantity": "Antall",
     "status": "Status",
     "steps": {
+      "account": {
+        "label": "Konto",
+        "title": "Bekreft kontoinformasjon"
+      },
+      "products": {
+        "label": "Produkter",
+        "title": "Velg produkter"
+      },
+      "payment": {
+        "label": "Betaling",
+        "title": "Betalingsinformasjon"
+      },
       "confirmation": {
+        "label": "Bekreft",
+        "title": "Bekreft påmelding",
         "description": "Se over bestillingen før du sender den inn!"
       }
     },
