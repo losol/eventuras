@@ -33,6 +33,9 @@ export default buildSite
         '@lexical/utils',
         // Also externalize any sub-exports from @lexical/react
         /^@lexical\//,
+        // Externalize Prism.js to avoid bundling all language grammars
+        'prismjs',
+        /^prismjs\//,
       ],
     });
 
