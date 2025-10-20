@@ -11,15 +11,12 @@ Common validation regex patterns for form validation and data processing.
 #### Usage
 
 ```typescript
-// Import all regex patterns
-import { regex } from '@eventuras/core';
-
-// Or import specific patterns
+// Import specific patterns from @eventuras/core/regex
 import { internationalPhoneNumber, lettersSpaceAndHyphen } from '@eventuras/core/regex';
 
 // Use in validation
-const isValidPhone = regex.internationalPhoneNumber.test('+4712345678');
-const isValidName = regex.lettersSpaceAndHyphen.test('Jean-Pierre');
+const isValidPhone = internationalPhoneNumber.test('+4712345678');
+const isValidName = lettersSpaceAndHyphen.test('Jean-Pierre');
 ```
 
 #### Available Patterns
@@ -33,13 +30,10 @@ const isValidName = regex.lettersSpaceAndHyphen.test('Jean-Pierre');
 
 Utilities for formatting dates and date ranges.
 
-#### Usage
+#### Usage Examples
 
 ```typescript
-// Import all datetime utilities
-import { datetime } from '@eventuras/core';
-
-// Or import specific utilities
+// Import specific utilities from @eventuras/core/datetime
 import { formatDate, formatDateSpan } from '@eventuras/core/datetime';
 
 // Format a single date

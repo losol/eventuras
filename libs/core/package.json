@@ -4,13 +4,7 @@
   "private": "true",
   "description": "Core utilities for Eventuras",
   "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    },
     "./regex": {
       "types": "./dist/regex/index.d.ts",
       "import": "./dist/regex/index.js"
