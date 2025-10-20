@@ -6,6 +6,10 @@ import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 import { getV3Eventcollections } from '@eventuras/event-sdk';
 import { appConfig } from '@/config.server';
+import { getPublicClient } from '@/lib/eventuras-public-client';
+
+// Incremental Static Regeneration - revalidate every 5 minutes
+export const revalidate = 300;
 
 const CollectionIndexPage: React.FC = async () => {
   const t = await getTranslations();
@@ -16,7 +20,10 @@ const CollectionIndexPage: React.FC = async () => {
     ? organizationId
     : parseInt(organizationId as string, 10);
 
+  // Use public client for anonymous API access
+  const publicClient = getPublicClient();
   const response = await getV3Eventcollections({
+    client: publicClient,
     headers: {
       'Eventuras-Org-Id': orgId,
     },
