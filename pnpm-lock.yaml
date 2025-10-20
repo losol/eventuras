@@ -420,6 +420,12 @@ importers:
       '@eventuras/app-config':
         specifier: workspace:^
         version: link:../../libs/app-config
+      '@eventuras/core':
+        specifier: workspace:^
+        version: link:../../libs/core
+      '@eventuras/core-nextjs':
+        specifier: workspace:^
+        version: link:../../libs/core-nextjs
       '@eventuras/datatable':
         specifier: workspace:^
         version: link:../../libs/datatable
@@ -642,6 +648,30 @@ importers:
       vite:
         specifier: ^7.1.10
         version: 7.1.10(@types/node@22.18.11)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.77.4)(tsx@4.20.6)(yaml@2.8.1)
+
+  libs/core:
+    devDependencies:
+      '@eventuras/vite-config':
+        specifier: workspace:*
+        version: link:../vite-config
+      vite:
+        specifier: ^7.1.10
+        version: 7.1.10(@types/node@24.7.2)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.77.4)(tsx@4.20.6)(yaml@2.8.1)
+
+  libs/core-nextjs:
+    devDependencies:
+      '@eventuras/vite-config':
+        specifier: workspace:*
+        version: link:../vite-config
+      next:
+        specifier: ^15.5.5
+        version: 15.5.5(@playwright/test@1.56.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(sass@1.77.4)
+      react:
+        specifier: ^19.2.0
+        version: 19.2.0
+      vite:
+        specifier: ^7.1.10
+        version: 7.1.10(@types/node@24.7.2)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.77.4)(tsx@4.20.6)(yaml@2.8.1)
 
   libs/datatable:
     dependencies:

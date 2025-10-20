@@ -9,7 +9,7 @@ import type { NewProductDto, ProductDto } from '@eventuras/event-sdk';
 import { Logger } from '@eventuras/logger';
 import { revalidatePath } from 'next/cache';
 
-import { actionError, actionSuccess, type ServerActionResult } from '@/types/serverAction';
+import { actionError, actionSuccess, type ServerActionResult } from '@eventuras/core-nextjs/actions';
 
 const logger = Logger.create({
   namespace: 'web:admin:products',

@@ -12,7 +12,7 @@ import {
 } from '@eventuras/event-sdk';
 import { client } from '@/lib/eventuras-client';
 import { appConfig } from '@/config.server';
-import { actionError, actionSuccess, type ServerActionResult } from '@/types/serverAction';
+import { actionError, actionSuccess, type ServerActionResult } from '@eventuras/core-nextjs/actions';
 
 const logger = Logger.create({ namespace: 'web:admin:registrations', context: { module: 'actions' } });
 

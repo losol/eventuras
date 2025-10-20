@@ -15,7 +15,7 @@ import { revalidatePath } from 'next/cache';
 
 import { client } from '@/lib/eventuras-client';
 import { appConfig } from '@/config.server';
-import { actionError, actionSuccess, type ServerActionResult } from '@/types/serverAction';
+import { actionError, actionSuccess, type ServerActionResult } from '@eventuras/core-nextjs/actions';
 import slugify from '@/utils/slugify';
 
 const logger = Logger.create({

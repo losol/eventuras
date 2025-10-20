@@ -11,7 +11,7 @@ import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 
 import { appConfig } from '@/config.server';
-import { actionError, actionSuccess, type ServerActionResult } from '@/types/serverAction';
+import { actionError, actionSuccess, type ServerActionResult } from '@eventuras/core-nextjs/actions';
 import { client, configureEventurasClient } from '@/lib/eventuras-client';
 
 /**
