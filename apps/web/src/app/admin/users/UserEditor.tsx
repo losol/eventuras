@@ -7,6 +7,7 @@ import { Button } from '@eventuras/ratio-ui';
 import { Logger } from '@eventuras/logger';
 import { useTranslations } from 'next-intl';
 import { FC, useState } from 'react';
+import * as regex from '@eventuras/core/regex';
 
 import { useToast } from '@eventuras/toast';
 import { createUser, updateUser, updateUserProfile } from './actions';
@@ -20,13 +21,6 @@ interface UserEditorProps {
   adminMode?: boolean;
   submitButtonLabel?: string;
 }
-
-const regex = {
-  internationalPhoneNumber: /^\+[1-9]{1}[0-9]{1,14}$/,
-  letters: /^[\p{L}]+$/u,
-  lettersAndSpace: /^[\p{L} ]+$/u,
-  lettersSpaceAndHyphen: /^[\p{L} -]+$/u
-};
 
 const UserEditor: FC<UserEditorProps> = props => {
   const { adminMode, user, onUserUpdated, submitButtonLabel } = props;
