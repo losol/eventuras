@@ -67,7 +67,6 @@ export default async function EventAdminPage({ params }: Readonly<EventInfoProps
     }, 'Failed to load statistics');
   }
 
-  // Check if we have any errors OR if responses are null (simulated error state)
   const hasPartialErrors = !!(
     registrationsRes?.error ||
     eventProductsRes?.error ||
