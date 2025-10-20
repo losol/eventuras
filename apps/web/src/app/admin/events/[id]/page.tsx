@@ -1,4 +1,5 @@
 import { Container, Heading, Section } from '@eventuras/ratio-ui';
+import { Error } from '@eventuras/ratio-ui/blocks/Error';
 import { Logger } from '@eventuras/logger';
 import { notFound } from 'next/navigation';
 
@@ -40,25 +41,41 @@ export default async function EventAdminPage({ params }: Readonly<EventInfoProps
     getV3EventsByEventIdStatistics({ path: { eventId: id } }),
   ]);
 
-  const eventinfo = eventinfoRes.data;
-  const registrations = registrationsRes.data;
-  const eventProducts = eventProductsRes.data;
-  const statistics = statisticsRes.data;
+  const eventinfo = eventinfoRes?.data;
 
   if (!eventinfo) {
-    logger.error({ eventId: id, error: eventinfoRes.error }, `Event ${id} not found`);
+    logger.error({ eventId: id, error: eventinfoRes?.error }, `Event ${id} not found`);
     notFound();
   }
 
-  if (registrationsRes.error) {
-    logger.warn({ error: registrationsRes.error }, 'registrations call failed');
+  if (registrationsRes?.error) {
+    logger.warn({
+      eventId: id,
+      error: registrationsRes.error,
+    }, 'Failed to load registrations');
   }
-  if (eventProductsRes.error) {
-    logger.warn({ error: eventProductsRes.error }, 'products call failed');
+  if (eventProductsRes?.error) {
+    logger.warn({
+      eventId: id,
+      error: eventProductsRes.error,
+    }, 'Failed to load event products');
   }
-  if (statisticsRes.error) {
-    logger.warn({ error: statisticsRes.error }, 'statistics call failed');
+  if (statisticsRes?.error) {
+    logger.warn({
+      eventId: id,
+      error: statisticsRes.error,
+    }, 'Failed to load statistics');
   }
+
+  // Check if we have any errors OR if responses are null (simulated error state)
+  const hasPartialErrors = !!(
+    registrationsRes?.error ||
+    eventProductsRes?.error ||
+    statisticsRes?.error ||
+    !registrationsRes ||
+    !eventProductsRes ||
+    !statisticsRes
+  );
 
   return (
     <Wrapper fluid>
@@ -66,13 +83,31 @@ export default async function EventAdminPage({ params }: Readonly<EventInfoProps
         <Container>
           <Heading as="h1">{eventinfo.title}</Heading>
           <EventAdminActionsMenu eventinfo={eventinfo} />
+
+          {hasPartialErrors && (
+            <div className="mt-4">
+              <Error type="generic" tone="warning">
+                <Error.Title>Some Data Could Not Be Loaded</Error.Title>
+                <Error.Description>
+                  The event information loaded successfully, but some additional data is temporarily unavailable:
+                </Error.Description>
+                <Error.Details>
+                  <ul className="text-sm list-disc list-inside space-y-1">
+                    {(!registrationsRes || !!registrationsRes?.error) && <li>Participant registrations</li>}
+                    {(!eventProductsRes || !!eventProductsRes?.error) && <li>Event products</li>}
+                    {(!statisticsRes || !!statisticsRes?.error) && <li>Event statistics</li>}
+                  </ul>
+                </Error.Details>
+              </Error>
+            </div>
+          )}
         </Container>
       </Section>
       <ParticipantsSection
         eventInfo={eventinfo}
-        participants={registrations?.data ?? []}
-        statistics={statistics ?? {}}
-        eventProducts={eventProducts ?? []}
+        participants={registrationsRes.data?.data ?? []}
+        statistics={statisticsRes.data ?? {}}
+        eventProducts={eventProductsRes.data ?? []}
       />
     </Wrapper>
   );

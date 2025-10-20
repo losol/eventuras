@@ -207,6 +207,74 @@ export function ProductForm() {
 }
 ```
 
+## UI Component Development Workflow
+
+### Component Creation Process
+
+When creating new UI components in `libs/ratio-ui`:
+
+1. **Create the component first** - Focus on implementing the component functionality and structure
+2. **Ask about Storybook stories** - After the component is complete and working, ask if the user would like Storybook stories created for documentation and testing
+
+**Example workflow:**
+
+```typescript
+// 1. Create the component
+export function MyComponent({ children, ...props }) {
+  return <div {...props}>{children}</div>;
+}
+
+// 2. After completion, agent asks:
+// "Would you like me to create Storybook stories for this component?"
+```
+
+**Benefits:**
+
+- Faster iteration on component functionality
+- Stories are created with full knowledge of the final component API
+- User can decide if documentation is needed at that moment
+- Avoids premature documentation for components that might change
+
+### Link Component Preference
+
+**Always prefer using `Link` from `@eventuras/ratio-ui-next` instead of Next.js Link.**
+
+**Example usage:**
+
+```typescript
+import { Link } from '@eventuras/ratio-ui-next';
+
+// Basic link
+<Link href="/admin">Go to Admin</Link>
+
+// Link styled as a button
+<Link href="/events" variant="button-primary">
+  View Events
+</Link>
+
+// Other variants available
+<Link href="/home" variant="button-primary">Home</Link>
+<Link href="/docs" variant="button-outline">Documentation</Link>
+```
+
+**Creating New Variants:**
+
+When existing variants don't meet design requirements, create new variants in the Link component rather than adding custom styling. This maintains consistency and reusability.
+
+```typescript
+// In ratio-ui-next/Link component
+const variants = {
+  'button-primary': '...',
+  'button-secondary': '...',
+  'button-danger': '...', // New variant
+};
+```
+
+**When to use native Next.js Link:**
+
+- Only in exceptional cases (e.g., global-error.tsx where ratio-ui might not be available)
+- Should be explicitly documented with a comment explaining why
+
 ## Development Environment Tips
 
 ### Monorepo Navigation

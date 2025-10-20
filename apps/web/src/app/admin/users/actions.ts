@@ -11,7 +11,7 @@ import { Logger } from '@eventuras/logger';
 import { revalidatePath } from 'next/cache';
 
 import { actionError, actionSuccess, type ServerActionResult } from '@/types/serverAction';
-import { client } from '@/lib/eventuras-client';
+import { client, configureEventurasClient } from '@/lib/eventuras-client';
 
 const logger = Logger.create({
   namespace: 'web:users',
@@ -24,6 +24,8 @@ const logger = Logger.create({
 export async function createUser(
   userData: UserFormDto
 ): Promise<ServerActionResult<UserDto>> {
+  await configureEventurasClient();
+
   logger.info('Creating new user');
 
   try {
@@ -53,6 +55,9 @@ export async function updateUser(
   userId: string,
   userData: UserFormDto
 ): Promise<ServerActionResult<UserDto>> {
+  // Ensure client is configured
+  await configureEventurasClient();
+
   logger.info({ userId }, 'Updating user');
 
   try {
@@ -83,7 +88,22 @@ export async function updateUser(
 export async function updateUserProfile(
   userData: UserFormDto
 ): Promise<ServerActionResult<UserDto>> {
-  logger.info('Updating user profile');
+  await configureEventurasClient();
+
+  const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const clientConfig = client.getConfig();
+
+  logger.info(
+    {
+      backendUrl: baseUrl,
+      endpoint: '/v3/userprofile',
+      fullUrl: baseUrl ? `${baseUrl}/v3/userprofile` : 'undefined',
+      clientBaseUrl: clientConfig.baseUrl,
+      nodeVersion: process.version,
+      platform: process.platform,
+    },
+    'Updating user profile'
+  );
 
   try {
     const response = await putV3Userprofile({
@@ -100,7 +120,27 @@ export async function updateUserProfile(
     revalidatePath('/user/profile');
     return actionSuccess(response.data, 'Profile updated successfully!');
   } catch (error) {
-    logger.error({ error }, 'Unexpected error updating user profile');
+    const err = error as {
+      cause?: { code?: string; message?: string; errno?: number; syscall?: string; address?: string; port?: number };
+      code?: string;
+      message?: string
+    };
+
+    logger.error(
+      {
+        error,
+        backendUrl: baseUrl,
+        endpoint: '/v3/userprofile',
+        fullUrl: baseUrl ? `${baseUrl}/v3/userprofile` : 'undefined',
+        errorCode: err?.cause?.code || err?.code,
+        errorMessage: err?.message,
+        syscall: err?.cause?.syscall,
+        address: err?.cause?.address,
+        port: err?.cause?.port,
+        errno: err?.cause?.errno,
+      },
+      'Unexpected error updating user profile'
+    );
     return actionError('An unexpected error occurred');
   }
 }
