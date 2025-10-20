@@ -6,7 +6,7 @@ export { default as ButtonGroup } from './core/Button/ButtonGroup';
 export type { BoxProps } from './layout/Box/Box';
 export { default as Container } from './layout/Container/Container';
 export { Definition, DescriptionList, Item, Term } from './core/DescriptionList/DescriptionList';
-export { default as Drawer } from './layout/Drawer/Drawer';
+// Drawer removed from barrel - import from '@eventuras/ratio-ui/layout/Drawer' instead
 export { default as Grid } from './layout/Grid/Grid';
 export { default as Heading } from './core/Heading/Heading';
 export { default as Loading } from './core/Loading/Loading';
