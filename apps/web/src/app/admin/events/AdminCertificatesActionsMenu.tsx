@@ -1,5 +1,8 @@
+'use client';
+
 import { EventDto } from '@eventuras/event-sdk';
-import { Button, Definition, DescriptionList, Drawer, Heading, Term } from '@eventuras/ratio-ui';
+import { Button, Definition, DescriptionList, Heading, Term } from '@eventuras/ratio-ui';
+import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
 import { Logger } from '@eventuras/logger';
 import { useToast } from '@eventuras/toast';
 import { useTranslations } from 'next-intl';

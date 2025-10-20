@@ -1,3 +1,5 @@
+'use client';
+
 import {
   EventDto,
   NewRegistrationDto,
@@ -5,7 +7,8 @@ import {
   RegistrationType,
   UserDto,
 } from '@eventuras/event-sdk';
-import { Button, Drawer, Heading } from '@eventuras/ratio-ui';
+import { Button, Heading } from '@eventuras/ratio-ui';
+import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
 import { Logger } from '@eventuras/logger';
 import { IconCheck } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';

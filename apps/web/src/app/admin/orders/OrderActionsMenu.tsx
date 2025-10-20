@@ -2,11 +2,11 @@
 import {
   InvoiceRequestDto,
   OrderDto,
-  OrderStatus,
   PaymentProvider,
   postV3Invoices
 } from '@eventuras/event-sdk';
-import { Button, Definition, DescriptionList, Drawer, Heading, Term } from '@eventuras/ratio-ui';
+import { Button, Definition, DescriptionList, Heading, Term } from '@eventuras/ratio-ui';
+import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
 import { Logger } from '@eventuras/logger';
 
 const logger = Logger.create({

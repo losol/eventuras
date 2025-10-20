@@ -2,7 +2,8 @@
 
 import { ColumnFilter, createColumnHelper, DataTable } from '@eventuras/datatable';
 import { EventDto, ProductDto, RegistrationDto } from '@eventuras/event-sdk';
-import { Badge, Button, Drawer, Loading } from '@eventuras/ratio-ui';
+import { Badge, Button, Loading } from '@eventuras/ratio-ui';
+import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
 import { Logger } from '@eventuras/logger';
 
 const logger = Logger.create({ namespace: 'web:admin:events', context: { component: 'EventParticipantList' } });
