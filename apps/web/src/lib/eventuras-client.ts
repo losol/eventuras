@@ -9,7 +9,7 @@
 
 import { client, type RequestOptions } from '@eventuras/event-sdk';
 import { getAccessToken } from '@/utils/getAccesstoken';
-import { Logger, redactHeaders } from '@eventuras/logger';
+import { Logger } from '@eventuras/logger';
 
 const logger = Logger.create({
   namespace: 'web:api-client',
@@ -41,7 +41,21 @@ export async function configureEventurasClient() {
     if (typeof window === 'undefined') {
       try {
         const token = await getAccessToken();
-        if (token) {
+
+        // Log request details (debug level)
+        const fullUrl = options.url?.startsWith('http') ? options.url : `${baseUrl}${options.url || ''}`;
+
+        if (!token) {
+          // Log warning but allow request to proceed for public endpoints
+          logger.warn({
+            url: fullUrl,
+            method: options.method || 'GET',
+          }, 'No valid access token available for API request');
+
+          // Don't set Authorization header if no token
+          // Public endpoints will work, authenticated ones will return 401
+        } else {
+          // Set the token
           if (!options.headers) options.headers = new Headers();
 
           if (options.headers instanceof Headers) {
@@ -51,19 +65,18 @@ export async function configureEventurasClient() {
           } else {
             (options.headers as Record<string, string>)['Authorization'] = `Bearer ${token}`;
           }
-        }
 
-        // Log request (debug level)
-        const fullUrl = options.url?.startsWith('http') ? options.url : `${baseUrl}${options.url || ''}`;
-        logger.debug({
-          request: {
-            url: fullUrl,
-            method: options.method || 'GET',
-            headers: options.headers ? redactHeaders(options.headers) : undefined,
-          },
-        }, 'HTTP request');
+          logger.debug({
+            request: {
+              url: fullUrl,
+              method: options.method || 'GET',
+              hasAuth: true,
+            },
+          }, 'HTTP request with authentication');
+        }
       } catch (error) {
-        logger.warn({ error, url: options.url }, 'Failed to get access token');
+        logger.error({ error, url: options.url }, 'Failed to get access token for API request');
+        // Let request proceed without auth - API will return 401 if needed
       }
     }
   });
@@ -86,6 +99,15 @@ export async function configureEventurasClient() {
     const err = error as { cause?: { code?: string }; code?: string; message?: string };
     const resp = response as { status?: number; statusText?: string } | undefined;
 
+    // Authentication/Authorization errors (401/403)
+    if (resp?.status === 401 || resp?.status === 403) {
+      logger.warn({
+        request: { url: fullUrl, method: options.method || 'GET' },
+        response: { status: resp.status, statusText: resp.statusText },
+      }, `Authentication failed (${resp.status}) - Token may be invalid or expired`);
+      return error;
+    }
+
     // Connection errors (ECONNREFUSED, ETIMEDOUT, etc.)
     if (err?.cause?.code === 'ECONNREFUSED' || err?.code === 'ECONNREFUSED') {
       logger.error({
@@ -96,13 +118,12 @@ export async function configureEventurasClient() {
         request: {
           url: fullUrl,
           method: options.method || 'GET',
-          headers: options.headers ? redactHeaders(options.headers) : undefined,
         },
       }, 'Connection refused - Backend unreachable');
       return error;
     }
 
-    // HTTP errors (4xx, 5xx)
+    // Other HTTP errors (4xx, 5xx)
     if (resp?.status && resp.status >= 400) {
       const logLevel = resp.status >= 500 ? 'error' : 'warn';
       logger[logLevel]({

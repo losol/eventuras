@@ -33,8 +33,11 @@ export async function getAuthStatus(): Promise<AuthStatus> {
     const session = await getCurrentSession(oauthConfig);
 
     if (!session?.user) {
-      return { authenticated: true };
+      // If we have a token but no user session, treat as unauthenticated
+      return { authenticated: false };
     }
+
+    logger.info({ roles: session.user.roles }, 'User authenticated');
 
     return {
       authenticated: true,

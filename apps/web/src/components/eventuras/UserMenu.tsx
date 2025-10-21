@@ -1,131 +1,155 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Menu } from '@eventuras/ratio-ui/core/Menu';
-import { getAuthStatus, type AuthStatus } from '@/utils/auth/getAuthStatus';
+import { useAuthSelector, useAuthActions } from '@/auth/authMachine';
 
-export type LoggedOutLanguagePack = {
+/**
+ * Translation strings for the user menu
+ */
+export type UserMenuTranslations = {
+  // Logged out state
   loginLabel: string;
-};
 
-export type LogginInLanguagePack = {
+  // Logged in state
   userLabel: string;
   accountLabel: string;
   adminLabel: string;
-  logoutButtonLabel: string;
 };
 
-export type UserMenuContentLoggedOutProps = {
-  onLoginRequested: () => void;
-  languagePack: LoggedOutLanguagePack;
-};
+export interface UserMenuProps {
+  translations: UserMenuTranslations;
+}
 
-export type UserMenuContentLoggedInProps = {
-  menuLabel: string;
-  isAdmin: boolean;
-  languagePack: LogginInLanguagePack;
-};
+/**
+ * Redirects to OAuth login endpoint
+ * Uses window.location to avoid CORS preflight issues with Auth0
+ */
+function redirectToLogin() {
+  window.location.href = '/api/login';
+}
 
-const UserMenuContentLoggedOut = (props: UserMenuContentLoggedOutProps) => {
+/**
+ * User menu button component - used for both login button and user name display
+ * Provides consistent styling and loading states
+ */
+function UserMenuButton({
+  label,
+  onClick,
+  loading = false,
+  testId
+}: {
+  label: string;
+  onClick: () => void;
+  loading?: boolean;
+  testId?: string;
+}) {
   return (
     <Button
-      onClick={() => props.onLoginRequested()}
+      onClick={onClick}
       variant="primary"
-      testId="login-button"
+      loading={loading}
+      testId={testId}
     >
-      {props.languagePack.loginLabel}
+      {label}
     </Button>
   );
-};
-
-const UserMenuContentLoggedIn = (props: UserMenuContentLoggedInProps) => {
-  const { accountLabel, adminLabel, userLabel } = props.languagePack;
-  return (
-    <Menu menuLabel={props.menuLabel}>
-      <Menu.Link testId="profile-link" href="/user">
-        {userLabel}
-      </Menu.Link>
-      <Menu.Link href="/user/account">{accountLabel}</Menu.Link>
-      {props.isAdmin && <Menu.Link href="/admin">{adminLabel}</Menu.Link>}
-    </Menu>
-  );
-};
-
-function useAuthStatus(): { status: AuthStatus | null; loading: boolean } {
-  const [status, setStatus] = useState<AuthStatus | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    const checkAuth = async () => {
-      try {
-        const data = await getAuthStatus();
-        if (isMounted) {
-          setStatus(data);
-          setLoading(false);
-        }
-      } catch {
-        if (isMounted) {
-          setStatus({ authenticated: false });
-          setLoading(false);
-        }
-      }
-    };
-
-    // Initial check and periodic refresh
-    checkAuth();
-    const interval = setInterval(checkAuth, 30000);
-
-    return () => {
-      isMounted = false;
-      clearInterval(interval);
-    };
-  }, []);
-
-  return { status, loading };
 }
 
-interface UserMenuProps {
-  loggedInContent: LogginInLanguagePack;
-  LoggedOutContent: LoggedOutLanguagePack;
-}
+/**
+ * Login button displayed when user is not authenticated
+ */
+function LoginButton({ label }: { label: string }) {
+  const [isLoading, setIsLoading] = useState(false);
 
-const UserMenu = (props: UserMenuProps) => {
-  const { status, loading: sessionLoading } = useAuthStatus();
-
-  const handleLogin = () => {
-    // Use window.location.href for OAuth redirect to avoid CORS preflight
-    // router.push() triggers a fetch request which causes CORS issues with Auth0
-    window.location.href = '/api/login';
+  const handleClick = () => {
+    setIsLoading(true);
+    redirectToLogin();
   };
 
-  // Don't render anything until status is loaded
-  if (sessionLoading) {
-    return null;
-  }
-
-  if (!status || !status.authenticated || !status.user) {
-    return (
-      <UserMenuContentLoggedOut
-        onLoginRequested={handleLogin}
-        languagePack={props.LoggedOutContent}
-      />
-    );
-  }
-
-  // Get user name and roles from auth status (JWT token)
-  const userName = status.user.name || status.user.email || '';
-  const isAdmin = status.user.roles?.includes('Admin') ?? false;
-
   return (
-    <UserMenuContentLoggedIn
-      isAdmin={isAdmin}
-      menuLabel={userName}
-      languagePack={props.loggedInContent}
+    <UserMenuButton
+      label={label}
+      onClick={handleClick}
+      loading={isLoading}
+      testId="login-button"
     />
   );
-};
+}
 
-export default UserMenu;
+/**
+ * User menu dropdown displayed when user is authenticated
+ */
+function UserDropdownMenu({
+  userName,
+  isAdmin,
+  hasWarning,
+  translations,
+  onLogout,
+}: {
+  userName: string;
+  isAdmin: boolean;
+  hasWarning: boolean;
+  translations: Pick<UserMenuTranslations, 'userLabel' | 'accountLabel' | 'adminLabel'>;
+  onLogout: () => void;
+}) {
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const handleLogout = () => {
+    setIsLoggingOut(true);
+    onLogout();
+    // Redirect to logout endpoint which clears cookies
+    window.location.href = '/api/logout';
+  };
+
+  // Add warning indicator to menu label if session is unstable
+  const menuLabel = hasWarning ? `⚠️ ${userName}` : userName;
+
+  return (
+    <Menu menuLabel={menuLabel}>
+      <Menu.Link testId="profile-link" href="/user">
+        {translations.userLabel}
+      </Menu.Link>
+      <Menu.Link href="/user/account">{translations.accountLabel}</Menu.Link>
+      {isAdmin && <Menu.Link href="/admin">{translations.adminLabel}</Menu.Link>}
+      <Menu.Button id="logout-button" onClick={handleLogout} isDisabled={isLoggingOut}>
+        {isLoggingOut ? 'Logging out...' : 'Logg ut'}
+      </Menu.Button>
+    </Menu>
+  );
+}
+
+/**
+ * User menu component that displays login button or user menu based on auth status
+ * Now powered by XState authentication machine for robust state management
+ */
+export default function UserMenu({ translations }: UserMenuProps) {
+  const authState = useAuthSelector();
+  const { isAuthenticated, isAdmin, user, status } = authState;
+  const { logout } = useAuthActions();
+
+  // Show minimal placeholder during initialization to avoid flash
+  // This creates a smooth transition to either login button or user menu
+  if (status.isInitializing) {
+    return <div className="w-20 h-10" aria-label="Loading..." />;
+  }
+
+  // Show login button if not authenticated
+  if (!isAuthenticated) {
+    return <LoginButton label={translations.loginLabel} />;
+  }
+
+  // Show warning indicator if token is being refreshed
+  const hasWarning = status.isRefreshingToken;
+
+  return (
+    <UserDropdownMenu
+      userName={user?.name || 'User'}
+      isAdmin={isAdmin}
+      hasWarning={hasWarning}
+      translations={translations}
+      onLogout={logout}
+    />
+  );
+}

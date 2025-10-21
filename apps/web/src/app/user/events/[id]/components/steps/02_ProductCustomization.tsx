@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import { useEffect } from 'react';
 
 import ProductSelection from '@/components/eventuras/ProductSelection';
-import { useAuthSelector } from '@/statemachines/AuthenticationFlowMachine';
+import { useAuthSelector } from '@/auth/authMachine';
 import { ProductSelected } from '@/types';
 import { mapSelectedProductsToQuantity } from '@/utils/api/mappers';
 import { logStepEntry, logStepComplete, logUserAction } from '../../lib/eventFlowLogger';

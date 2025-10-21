@@ -28,13 +28,19 @@ const UserEditor: FC<UserEditorProps> = props => {
   const [isUpdating, setIsUpdating] = useState(false);
   const toast = useToast();
 
-  logger.info({ user }, 'UserEditor rendering');
+  // Never log PII (email, name, etc.) - only log user ID if available
+  if (user?.id) {
+    logger.info({ userId: user.id }, 'UserEditor rendering');
+  } else {
+    logger.info('UserEditor rendering (new user)');
+  }
 
   const handleCreateUser = async (form: UserDto) => {
     const result = await createUser(form as UserFormDto);
 
     if (!result.success) {
-      logger.error({ error: result.error, form }, 'Failed to create new user');
+      // Never log PII - don't include form data in logs
+      logger.error({ error: result.error }, 'Failed to create new user');
       toast.error(result.error.message);
       return { success: false, error: result.error };
     }

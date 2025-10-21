@@ -11,7 +11,7 @@ import { List } from '@eventuras/ratio-ui/core/List';
 
 import getSiteSettings from '@/utils/site/getSiteSettings';
 import { configureEventurasClient } from '@/lib/eventuras-client';
-import UserMenuWithTranslations from '@/components/eventuras/UserMenuWithTranslations';
+import UserMenu from '@/components/eventuras/UserMenu';
 
 import Providers from './Providers';
 
@@ -43,15 +43,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               bgColor="bg-transparent w-full py-1"
               LinkComponent={Link}
             >
-              <UserMenuWithTranslations
-                loggedInContent={{
+              <UserMenu
+                translations={{
+                  loginLabel: t('common.labels.login'),
                   accountLabel: t('common.labels.account'),
                   adminLabel: t('common.labels.admin'),
-                  logoutButtonLabel: t('common.labels.logout'),
                   userLabel: t('common.labels.user'),
-                }}
-                loggedOutContent={{
-                  loginLabel: t('common.labels.login'),
                 }}
               />
             </Navbar>

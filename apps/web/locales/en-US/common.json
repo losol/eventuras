@@ -21,7 +21,27 @@
   },
   "auth": {
     "login": "Login",
-    "logout": "Logout"
+    "logout": "Logout",
+    "refreshing": "Refreshing your session...",
+    "sessionExpired": {
+      "title": "Session Expired",
+      "description": "Your session has expired. Please log in again to continue.",
+      "loginButton": "Log in"
+    },
+    "sessionWarning": {
+      "title": {
+        "expired": "Your session has expired",
+        "invalid": "Your session is no longer valid"
+      },
+      "description": {
+        "expired": "Your session has expired. You will be redirected to the login page shortly.",
+        "invalid": "Your session is no longer valid. You will be redirected to the login page shortly."
+      },
+      "countdownText": "You have <strong>{seconds} seconds</strong> to save your work",
+      "tip": "Tip: Copy any changes you have made before you are redirected.",
+      "loginNow": "Login now",
+      "giveMoreTime": "Give me more time ({seconds}s)"
+    }
   },
   "buttons": {
     "back": "Back",

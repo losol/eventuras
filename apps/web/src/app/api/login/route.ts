@@ -1,7 +1,8 @@
 import {globalGETRateLimit} from '@eventuras/fides-auth-next/request';
-import {getCurrentSession} from '@eventuras/fides-auth-next/session';
+import {getCurrentSession, accessTokenExpires} from '@eventuras/fides-auth-next';
 import { Logger } from '@eventuras/logger';
 import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 
 import { oauthConfig } from '@/utils/oauthConfig';
 
@@ -26,16 +27,28 @@ export async function GET() {
     const session = await getCurrentSession(oauthConfig);
 
     if (session !== null) {
-      // If a session exists, redirect to the homepage
-      console.log('[LOGIN] Session exists, redirecting to homepage', {
-        user: session.user?.email,
-        expiresAt: session.expiresAt
-      });
-      logger.info({
-        user: session.user?.email,
-        expiresAt: session.expiresAt
-      }, 'Session exists, redirecting to homepage');
-      return NextResponse.redirect(new URL('/', process.env.NEXT_PUBLIC_APPLICATION_URL));
+      // Check if the session is actually valid (access token not expired and refresh token exists)
+      const tokenExpired = session.tokens?.accessToken
+        ? accessTokenExpires(session.tokens.accessToken, 10)
+        : true;
+
+      const hasRefreshToken = !!session.tokens?.refreshToken;
+
+      if (!tokenExpired && hasRefreshToken) {
+        // Valid session exists, redirect to the homepage
+        console.log('[LOGIN] Valid session exists, redirecting to homepage', {
+          user: session.user?.email,
+        });
+        logger.info({
+          user: session.user?.email,
+        }, 'Valid session exists, redirecting to homepage');
+        return NextResponse.redirect(new URL('/', process.env.NEXT_PUBLIC_APPLICATION_URL));
+      } else {
+        // Session exists but is invalid/expired - clear it
+        console.log('[LOGIN] Session expired or invalid, clearing and proceeding to Auth0');
+        logger.info('Session expired or invalid, clearing and proceeding to Auth0');
+        (await cookies()).delete('session');
+      }
     }
 
     console.log('[LOGIN] No session found, redirecting to Auth0');
