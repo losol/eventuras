@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react';
-import { LoaderCircle } from 'lucide-react';
+import { LoaderCircle } from '../../icons';
 import { BoxSpacingProps, buildSpacingClasses } from '../../layout/Box/Box';
 
 export const defaultButtonPadding = 'px-4 py-1';

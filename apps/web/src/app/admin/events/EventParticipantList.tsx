@@ -8,7 +8,7 @@ import { Logger } from '@eventuras/logger';
 
 const logger = Logger.create({ namespace: 'web:admin:events', context: { component: 'EventParticipantList' } });
 
-import { IconNotes, IconShoppingCart, IconUser } from '@tabler/icons-react';
+import { FileText, ShoppingCart, User } from '@eventuras/ratio-ui/icons';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import React, { useMemo, useState } from 'react';
@@ -117,14 +117,14 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
           <div className="mr-2">
             <Button variant="light">
               <Link href={`/admin/users/${info.userId}`}>
-                <IconUser color="black" />
+                <User color="black" />
               </Link>
             </Button>
           </div>
           <div className="mr-2">
             <Button variant="light">
               <Link href={`/admin/registrations/${info.registrationId}`}>
-                <IconNotes color="black" />
+                <FileText color="black" />
               </Link>
             </Button>
           </div>
@@ -142,7 +142,7 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
               currentSelectedParticipant.userId === info.userId ? (
                 <Loading />
               ) : (
-                <IconShoppingCart color="black" />
+                <ShoppingCart color="black" />
               )}
             </Button>
           )}

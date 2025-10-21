@@ -1,4 +1,4 @@
-import { IconChevronDown } from "@tabler/icons-react";
+import { ChevronDown } from "@eventuras/ratio-ui/icons";
 import React from "react";
 import { Controller, useFormContext } from "react-hook-form";
 
@@ -54,7 +54,7 @@ const Select: React.FC<SelectProps> = (props) => {
           <Label className="text-white cursor-default">Registration Type</Label>
           <AriaButton className={styles.button.base}  data-testid={props.testId}>
             <SelectValue className="flex-1 truncate placeholder-shown:italic" />
-            <IconChevronDown
+            <ChevronDown
               className={styles.button.icon}
               aria-hidden="true"
             />

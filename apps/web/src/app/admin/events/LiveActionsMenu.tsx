@@ -2,8 +2,8 @@
 
 import { RegistrationDto, RegistrationStatus } from '@eventuras/event-sdk';
 import { Button } from '@eventuras/ratio-ui';
+import { CircleX } from '@eventuras/ratio-ui/icons';
 import { Logger } from '@eventuras/logger';
-import { IconCircleX } from '@tabler/icons-react';
 import { useState } from 'react';
 import { useToast } from '@eventuras/toast';
 
@@ -83,7 +83,7 @@ const LiveActionsMenu = ({ registration }: LiveActionsMenuProps) => {
       case 'NotAttended':
         return <Button onClick={() => handleStatusUpdate('Attended')}>Checkin</Button>;
       case 'Cancelled':
-        return <IconCircleX />;
+        return <CircleX />;
       default:
         if (registration.certificateId) {
           return (

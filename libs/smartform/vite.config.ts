@@ -6,7 +6,6 @@ export default defineReactLibConfig({
     // Peer dependencies
     'react-hook-form',
     'react-aria-components',
-    '@tabler/icons-react',
     // Workspace packages - should not be bundled
     '@eventuras/ratio-ui',
     '@eventuras/logger',

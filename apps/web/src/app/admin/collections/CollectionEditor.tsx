@@ -4,8 +4,8 @@ import { MarkdownInput } from '@eventuras/markdowninput';
 import { EventCollectionDto, EventDto, getV3Events } from '@eventuras/event-sdk';
 import { CheckboxInput, CheckboxLabel, Form, Input } from '@eventuras/smartform';
 import { Button, Loading, Section } from '@eventuras/ratio-ui';
+import { Trash2 } from '@eventuras/ratio-ui/icons';
 import { Logger } from '@eventuras/logger';
-import { IconTrash } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -155,7 +155,7 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
               <Loading />
             ) : (
               <button onClick={() => handleRemoveEvent(eventInfo.id!)} aria-label="Delete event">
-                <IconTrash size={24} />
+                <Trash2 size={24} />
               </button>
             )}
           </div>

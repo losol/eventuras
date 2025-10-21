@@ -7,7 +7,7 @@ import { formatDateSpan } from '@eventuras/core/datetime';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 import {Heading} from '@eventuras/ratio-ui/core/Heading';
 import {Text} from '@eventuras/ratio-ui/core/Text';
-import { Calendar, MapPin } from 'lucide-react';
+import { Calendar, MapPin } from '@eventuras/ratio-ui/icons';
 
 interface EventCardProps {
   eventinfo: EventDto;

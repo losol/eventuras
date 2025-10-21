@@ -19,7 +19,7 @@ pnpm add @eventuras/ratio-ui
 Ratio UI requires the following peer dependencies to be installed in your project:
 
 ```bash
-pnpm add react react-dom react-aria-components react-stately @react-aria/overlays clsx lucide-react @tabler/icons-react
+pnpm add react react-dom react-aria-components react-stately @react-aria/overlays clsx lucide-react
 ```
 
 **Why external dependencies?**  
