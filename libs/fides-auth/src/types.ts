@@ -6,7 +6,6 @@ export interface Tokens {
 }
 
 export interface Session {
-  expiresAt: Date | string;
   tokens?: Tokens;
   user?: {
     name: string;
