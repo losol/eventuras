@@ -1,11 +1,15 @@
-import { Container, Heading, Section } from '@eventuras/ratio-ui';
+;
 import { Logger } from '@eventuras/logger';
 import { getTranslations } from 'next-intl/server';
-
 import { getV3RegistrationsById } from '@eventuras/event-sdk';
-
 import Registration from '../Registration';
+import { Container } from '@eventuras/ratio-ui/layout/Container';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Section } from '@eventuras/ratio-ui/layout/Section';
 
+;
+;
+;
 type EventInfoProps = {
   params: Promise<{
     id: number;
@@ -22,12 +26,10 @@ const RegistrationDetailPage: React.FC<EventInfoProps> = async props => {
       IncludeUserInfo: true
     }
   });
-
   Logger.debug(
     { namespace: 'common:registrations' },
     `Registration detail page: with data ${JSON.stringify(response.data)}`
   );
-
   if (!response.data) {
     Logger.error(
       { namespace: 'common:registrations' },
@@ -35,7 +37,6 @@ const RegistrationDetailPage: React.FC<EventInfoProps> = async props => {
     );
     return <div>{t('common.registrations.labels.notFound')}</div>;
   }
-
   return (
     <>
       <Section className="bg-white dark:bg-black pb-8">
@@ -51,5 +52,4 @@ const RegistrationDetailPage: React.FC<EventInfoProps> = async props => {
     </>
   );
 };
-
 export default RegistrationDetailPage;

@@ -1,34 +1,30 @@
 'use client';
-
 import { EventDto, ProductDto, RegistrationDto, UserDto } from '@eventuras/event-sdk';
-import { Loading } from '@eventuras/ratio-ui';
+import { Loading } from '@eventuras/ratio-ui/core/Loading';
+
+;
+;
 import { useActor } from '@xstate/react';
 import { useTranslations } from 'next-intl';
-
 import UserEditor from '@/app/(admin)/admin/users/UserEditor';
 import FatalError from '@/components/FatalError';
 import EventFlowMachine, { Events, States } from '@/statemachines/EventFlowMachine';
 import { PaymentFormValues, ProductSelected } from '@/types';
 import { SiteInfo } from '@/utils/site/getSiteSettings';
-
 import RegistrationCancellation from './eventflow/RegistrationCancellation';
 import RegistrationConfirmation from './eventflow/RegistrationConfirmation';
 import RegistrationCustomize from './eventflow/RegistrationCustomize';
 import RegistrationPayment from './eventflow/RegistrationPayment';
 import RegistrationView from './eventflow/RegistrationView';
-
 export interface EventFlowProps {
   eventInfo: EventDto;
   user: UserDto;
-
   availableProducts: ProductDto[];
   siteInfo: SiteInfo;
   registration?: RegistrationDto;
 }
-
 const EventFlow: React.FC<EventFlowProps> = ({ eventInfo, user, availableProducts, siteInfo }) => {
   const t = useTranslations();
-
   const [xState, send] = useActor(EventFlowMachine, {
     input: {
       eventInfo,
@@ -138,7 +134,6 @@ const EventFlow: React.FC<EventFlowProps> = ({ eventInfo, user, availableProduct
       );
     case xState.matches(States.SUBMITTING):
       return <Loading />;
-
     case xState.matches('error'):
       return (
         <FatalError
@@ -153,5 +148,4 @@ const EventFlow: React.FC<EventFlowProps> = ({ eventInfo, user, availableProduct
       return <Loading />;
   }
 };
-
 export default EventFlow;

@@ -1,32 +1,29 @@
-import { Container, Heading, Section } from '@eventuras/ratio-ui';
+;
 import { Error } from '@eventuras/ratio-ui/blocks/Error';
 import { Logger } from '@eventuras/logger';
 import { notFound } from 'next/navigation';
-
+import { Container } from '@eventuras/ratio-ui/layout/Container';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Section } from '@eventuras/ratio-ui/layout/Section';
 import {
   getV3EventsById,
   getV3Registrations,
   getV3EventsByEventIdProducts,
   getV3EventsByEventIdStatistics
 } from '@eventuras/event-sdk';
-
 import EventAdminActionsMenu from '../EventAdminActionsMenu';
 import ParticipantsSection from './ParticipantsSection';
-
 const logger = Logger.create({
   namespace: 'web:admin:events',
   context: { page: 'EventAdminPage' }
 });
-
 type EventInfoProps = {
   params: Promise<{
     id: number;
   }>;
 };
-
 export default async function EventAdminPage({ params }: Readonly<EventInfoProps>) {
   const { id } = await params;
-
   const [eventinfoRes, registrationsRes, eventProductsRes, statisticsRes] = await Promise.all([
     getV3EventsById({ path: { id } }),
     getV3Registrations({
@@ -39,14 +36,11 @@ export default async function EventAdminPage({ params }: Readonly<EventInfoProps
     getV3EventsByEventIdProducts({ path: { eventId: id } }),
     getV3EventsByEventIdStatistics({ path: { eventId: id } }),
   ]);
-
   const eventinfo = eventinfoRes?.data;
-
   if (!eventinfo) {
     logger.error({ eventId: id, error: eventinfoRes?.error }, `Event ${id} not found`);
     notFound();
   }
-
   if (registrationsRes?.error) {
     logger.warn({
       eventId: id,
@@ -65,7 +59,6 @@ export default async function EventAdminPage({ params }: Readonly<EventInfoProps
       error: statisticsRes.error,
     }, 'Failed to load statistics');
   }
-
   // Check if we have any errors OR if responses are null (simulated error state)
   const hasPartialErrors = !!(
     registrationsRes?.error ||
@@ -75,14 +68,12 @@ export default async function EventAdminPage({ params }: Readonly<EventInfoProps
     !eventProductsRes ||
     !statisticsRes
   );
-
   return (
     <>
       <Section className="bg-white dark:bg-black pb-8">
         <Container>
           <Heading as="h1">{eventinfo.title}</Heading>
           <EventAdminActionsMenu eventinfo={eventinfo} />
-
           {hasPartialErrors && (
             <div className="mt-4">
               <Error type="generic" tone="warning">

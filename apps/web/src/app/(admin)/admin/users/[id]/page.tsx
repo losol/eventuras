@@ -1,11 +1,15 @@
-import { Container, Heading, Section } from '@eventuras/ratio-ui';
+;
 import { Logger } from '@eventuras/logger';
 import { getTranslations } from 'next-intl/server';
-
 import { getV3UsersById } from '@eventuras/event-sdk';
-
 import UserEditor from '../UserEditor';
+import { Container } from '@eventuras/ratio-ui/layout/Container';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Section } from '@eventuras/ratio-ui/layout/Section';
 
+;
+;
+;
 type EventInfoProps = {
   params: Promise<{
     id: string;
@@ -17,18 +21,15 @@ const AdminUserDetailPage: React.FC<EventInfoProps> = async props => {
   const response = await getV3UsersById({
     path: { id: params.id }
   });
-
   if (!response.data) {
     Logger.error(
       { namespace: 'EditEventinfo' },
       `Failed to fetch user id ${params.id}, error: ${response.error}`
     );
   }
-
   if (!response.data) {
     return <div>{t('admin.users.labels.userNotFound')}</div>;
   }
-
   return (
     <>
       <Section className="bg-white dark:bg-black pb-8">
@@ -44,5 +45,4 @@ const AdminUserDetailPage: React.FC<EventInfoProps> = async props => {
     </>
   );
 };
-
 export default AdminUserDetailPage;

@@ -1,14 +1,13 @@
 'use client';
-
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
 import { EventDto } from '@eventuras/event-sdk';
-import { Pagination } from '@eventuras/ratio-ui';
+import { Pagination } from '@eventuras/ratio-ui/core/Pagination';
+
+;
+;
 import { useRouter, useSearchParams } from 'next/navigation';
-
 import { Link } from '@eventuras/ratio-ui-next/Link';
-
 const columnHelper = createColumnHelper<EventDto>();
-
 interface AdminEventListClientProps {
   events: EventDto[];
   currentPage: number;
@@ -22,7 +21,6 @@ interface AdminEventListClientProps {
     view: string;
   };
 }
-
 export function AdminEventListClient({
   events,
   currentPage,
@@ -32,13 +30,11 @@ export function AdminEventListClient({
 }: AdminEventListClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-
   const handlePageChange = (newPage: number) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set('page', newPage.toString());
     router.push(`?${params.toString()}`);
   };
-
   const renderEventItemActions = (info: EventDto) => {
     return (
       <div className="flex flex-row">
@@ -48,7 +44,6 @@ export function AdminEventListClient({
       </div>
     );
   };
-
   const columns = [
     columnHelper.accessor('title', {
       header: translations.title,
@@ -68,7 +63,6 @@ export function AdminEventListClient({
       cell: info => renderEventItemActions(info.row.original),
     }),
   ];
-
   return (
     <>
       <DataTable data={events} columns={columns} pageSize={pageSize} />

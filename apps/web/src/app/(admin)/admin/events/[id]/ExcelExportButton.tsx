@@ -1,16 +1,14 @@
 'use client';
-
-import { Button } from '@eventuras/ratio-ui';
+;
 import { Logger } from '@eventuras/logger';
 import { useState } from 'react';
+import { Button } from '@eventuras/ratio-ui/core/Button';
 
+;
 const logger = Logger.create({ namespace: 'web:admin:events', context: { component: 'ExcelExportButton' } });
-
 import { publicEnv } from '@/config.client';
-
 export const ExcelExportButton = (props: { EventinfoId: number }) => {
   const [loading, setIsLoading] = useState(false);
-
   const downloadExcelFile = async () => {
     setIsLoading(true);
     try {
@@ -22,27 +20,20 @@ export const ExcelExportButton = (props: { EventinfoId: number }) => {
           },
         }
       );
-
       if (!response.ok) {
         throw new Error('Failed to download the Excel file');
       }
-
       const blob = await response.blob();
-
       if (blob.size === 0) {
         throw new Error('Received empty blob for Excel file');
       }
-
       const fileURL = URL.createObjectURL(blob);
-
       const link = document.createElement('a');
       link.href = fileURL;
       link.download = 'Registrations.xlsx'; // Specify the download filename
       link.style.display = 'none';
-
       document.body.appendChild(link);
       link.click();
-
       // Add a slight delay to ensure the download starts
       setTimeout(() => {
         document.body.removeChild(link);
@@ -54,7 +45,6 @@ export const ExcelExportButton = (props: { EventinfoId: number }) => {
       setIsLoading(false);
     }
   };
-
   return (
     <Button loading={loading} onClick={downloadExcelFile}>
       Excel

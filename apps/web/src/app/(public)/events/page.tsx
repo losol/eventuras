@@ -1,32 +1,28 @@
-import { Heading, Text } from '@eventuras/ratio-ui';
+;
 import { getTranslations } from 'next-intl/server';
 import { Logger } from '@eventuras/logger';
-
 import { publicEnv } from '@/config.client';
-
 import { getV3Events } from '@eventuras/event-sdk';
 import {List} from '@eventuras/ratio-ui/core/List';
 import Link from 'next/link';
 import { getPublicClient } from '@/lib/eventuras-public-client';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Text } from '@eventuras/ratio-ui/core/Text';
 
+;
+;
 const logger = Logger.create({
   namespace: 'web:events-page',
   context: { page: 'EventsPage' }
 });
-
 const ORGANIZATION_ID = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
-
 // Incremental Static Regeneration - revalidate every 5 minutes
 export const revalidate = 300;
-
 export default async function EventsPage() {
   const t = await getTranslations();
-
   logger.info({ organizationId: ORGANIZATION_ID }, 'Fetching events for organization');
-
   let eventinfos;
   let fetchError = false;
-
   try {
     // Use public client for anonymous API access
     const publicClient = getPublicClient();
@@ -36,7 +32,6 @@ export default async function EventsPage() {
         OrganizationId: ORGANIZATION_ID
       }
     });
-
     if (eventinfos.error) {
       logger.error({
         error: eventinfos.error,
@@ -57,20 +52,17 @@ export default async function EventsPage() {
     }, 'Exception while fetching events - this is expected during build time if backend is not running');
     fetchError = true;
   }
-
   return (
     <>
       <Heading as="h1" padding="pb-4">
         {t('common.events.sectiontitle')}
       </Heading>
-
       {/* Show error message if fetch failed */}
       {fetchError && (
         <Text>
           Unable to load events. Please try again later.
         </Text>
       )}
-
       {/* Events section */}
       {!fetchError && eventinfos?.data?.count && eventinfos.data.data && (
         <List>

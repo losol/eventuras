@@ -1,17 +1,18 @@
 'use client';
-
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
 import { RegistrationDto, RegistrationDtoPageResponseDto } from '@eventuras/event-sdk';
-import { Loading, Pagination } from '@eventuras/ratio-ui';
+import { Loading } from '@eventuras/ratio-ui/core/Loading';
+import { Pagination } from '@eventuras/ratio-ui/core/Pagination';
+
+;
+;
+;
 import { useTranslations } from 'next-intl';
 import { useEffect, useState, useTransition } from 'react';
-
 import FatalError from '@/components/FatalError';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 import { getRegistrations } from './actions';
-
 const columnHelper = createColumnHelper<RegistrationDto>();
-
 const AdminRegistrationsList: React.FC = () => {
   const t = useTranslations();
   const [page, setPage] = useState(1);
@@ -19,7 +20,6 @@ const AdminRegistrationsList: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const pageSize = 50;
-
   useEffect(() => {
     startTransition(async () => {
       const response = await getRegistrations(page, pageSize);
@@ -32,7 +32,6 @@ const AdminRegistrationsList: React.FC = () => {
       }
     });
   }, [page]);
-
   const renderRegistrationActions = (registration: RegistrationDto) => {
     return (
       <div className="flex flex-row">
@@ -42,7 +41,6 @@ const AdminRegistrationsList: React.FC = () => {
       </div>
     );
   };
-
   const columns = [
     columnHelper.accessor('registrationId', {
       header: t('common.orders.labels.id').toString(),
@@ -65,7 +63,6 @@ const AdminRegistrationsList: React.FC = () => {
       cell: info => renderRegistrationActions(info.row.original),
     }),
   ];
-
   if (isPending && !result) return <Loading />;
   if (error) return <FatalError title="Failed to load registrations" description={error} />;
   if (!result) return <FatalError title="No response from admin registrations" description="Response is null" />;
@@ -81,5 +78,4 @@ const AdminRegistrationsList: React.FC = () => {
     </>
   );
 };
-
 export default AdminRegistrationsList;

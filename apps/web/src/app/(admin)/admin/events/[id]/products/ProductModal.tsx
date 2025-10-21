@@ -1,24 +1,22 @@
 'use client';
-
 import type { NewProductDto, ProductDto } from '@eventuras/event-sdk';
 import { Form, Input, NumberInput } from '@eventuras/smartform';
-import { Button } from '@eventuras/ratio-ui';
+import { Button } from '@eventuras/ratio-ui/core/Button';
+
+;
+;
 import { Logger } from '@eventuras/logger';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-
 import { Dialog } from '@eventuras/ratio-ui/layout/Dialog';
 import { useToast } from '@eventuras/toast';
-
 import ConfirmDiscardModal from './ConfirmDiscardModal';
 import { createProduct, updateProduct } from './actions';
-
 const logger = Logger.create({
   namespace: 'web:admin',
   context: { component: 'ProductModal' },
 });
-
 interface ProductModalProps {
   isOpen: boolean;
   onSubmit: (values: ProductDto) => void;
@@ -26,7 +24,6 @@ interface ProductModalProps {
   product?: ProductDto;
   eventId: number;
 }
-
 const ProductModal: React.FC<ProductModalProps> = ({
   isOpen,
   onSubmit,
@@ -36,54 +33,44 @@ const ProductModal: React.FC<ProductModalProps> = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const toast = useToast();
-
   const [confirmDiscardChanges, setConfirmDiscardChanges] = useState(false);
   const { reset } = useForm<ProductDto>({ defaultValues: product || {} });
   const t = useTranslations();
-
   useEffect(() => {
     reset(product || {});
   }, [product, reset]);
-
   const isEditMode = Boolean(product);
   const buttonText = isEditMode ? t('common.labels.edit') : t('common.labels.save');
   const titleText = isEditMode
     ? t('admin.products.modal.title.edit')
     : t('admin.products.modal.title.add-product');
-
   // Product modal submit handler
   const submitProduct: SubmitHandler<ProductDto> = async (data: ProductDto) => {
     setLoading(true);
-
     try {
       if (isEditMode && product?.productId) {
         logger.info({ product: data }, 'Editing product');
         const result = await updateProduct(eventId, product.productId, data);
-
         if (!result.success) {
           logger.error({ error: result.error }, 'Failed to update product');
           toast.error(result.error.message);
           setLoading(false);
           return;
         }
-
         onSubmit(result.data);
         toast.success(result.message || 'Product was updated!');
       } else {
         logger.info({ product: data }, 'Adding product');
         const result = await createProduct(eventId, data as NewProductDto);
-
         if (!result.success) {
           logger.error({ error: result.error }, 'Failed to create product');
           toast.error(result.error.message);
           setLoading(false);
           return;
         }
-
         onSubmit(result.data);
         toast.success(result.message || 'Product was created!');
       }
-
       // Close the modal on success
       onClose();
     } catch (error) {
@@ -93,12 +80,10 @@ const ProductModal: React.FC<ProductModalProps> = ({
       setLoading(false);
     }
   };
-
   return (
     <>
       <Dialog isOpen={isOpen} onClose={onClose} title={titleText}>
         <div className="fixed inset-0 z-40 bg-blue/30" aria-hidden="true" />
-
         <div className="fixed inset-0 z-50 flex items-center justify-center min-h-screen">
           <div className="w-full max-w-md p-6 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
             <Form onSubmit={submitProduct} className="mt-2 space-y-6" defaultValues={product}>
@@ -147,7 +132,6 @@ const ProductModal: React.FC<ProductModalProps> = ({
           </div>
         </div>
       </Dialog>
-
       <ConfirmDiscardModal
         isOpen={confirmDiscardChanges}
         onClose={() => setConfirmDiscardChanges(false)}
@@ -158,5 +142,4 @@ const ProductModal: React.FC<ProductModalProps> = ({
     </>
   );
 };
-
 export default ProductModal;

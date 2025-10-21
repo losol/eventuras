@@ -1,29 +1,29 @@
 'use client';
-
 import { MarkdownContent } from '@eventuras/markdown';
 import { EventDto, RegistrationDto } from '@eventuras/event-sdk';
-import { Button, Heading } from '@eventuras/ratio-ui';
+import { Button } from '@eventuras/ratio-ui/core/Button';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+
+;
+;
+;
 import { useTranslations } from 'next-intl';
 import { useEffect } from 'react';
-
 import Registration from '@/app/(admin)/admin/registrations/Registration';
 import { Tabs } from '@eventuras/ratio-ui/core/Tabs';
 import { logStepEntry, logUserAction } from '../../lib/eventFlowLogger';
-
 export interface Step05RegistrationViewProps {
   eventInfo: EventDto;
   registration?: RegistrationDto;
   onEdit?: () => void;
   onCancel?: () => void;
 }
-
 const Step05RegistrationView: React.FC<Step05RegistrationViewProps> = ({
   eventInfo,
   registration,
   onCancel,
 }) => {
   const t = useTranslations();
-
   useEffect(() => {
     logStepEntry('05', 'RegistrationView', {
       eventId: eventInfo.id,
@@ -32,12 +32,10 @@ const Step05RegistrationView: React.FC<Step05RegistrationViewProps> = ({
       hasProgram: !!eventInfo.program,
     });
   }, [eventInfo.id, eventInfo.welcomeLetter, eventInfo.program, registration?.registrationId]);
-
   const handleCancel = () => {
     logUserAction('Cancel registration requested');
     onCancel?.();
   };
-
   return (
     <div>
       <Tabs>
@@ -50,7 +48,6 @@ const Step05RegistrationView: React.FC<Step05RegistrationViewProps> = ({
             </div>
           </Tabs.Item>
         ) : null}
-
         {/* Program */}
         {eventInfo?.program ? (
           <Tabs.Item title={t('common.labels.program')} id="tab-program">
@@ -62,7 +59,6 @@ const Step05RegistrationView: React.FC<Step05RegistrationViewProps> = ({
             </div>
           </Tabs.Item>
         ) : null}
-
         {/* Registration */}
         <Tabs.Item
           id="tab-registration"
@@ -76,7 +72,6 @@ const Step05RegistrationView: React.FC<Step05RegistrationViewProps> = ({
             </Button>
           )}
         </Tabs.Item>
-
         {/* Practical info */}
         {eventInfo?.practicalInformation ? (
           <Tabs.Item title={t('common.labels.practicalInfo')}>
@@ -88,5 +83,4 @@ const Step05RegistrationView: React.FC<Step05RegistrationViewProps> = ({
     </div>
   );
 };
-
 export default Step05RegistrationView;

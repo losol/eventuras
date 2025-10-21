@@ -1,12 +1,14 @@
-import { Container, Heading } from '@eventuras/ratio-ui';
+;
 import { getTranslations } from 'next-intl/server';
-
 import { Link } from '@eventuras/ratio-ui-next/Link';
 import withAuthorization from '@/utils/auth/withAuthorization';
 import { publicEnv } from '@/config.client';
-
 import AdminEventList from './AdminEventList';;
+import { Container } from '@eventuras/ratio-ui/layout/Container';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
 
+;
+;
 const AdminPage = async () => {
   const t = await getTranslations();
   return (
@@ -26,5 +28,4 @@ const AdminPage = async () => {
       </Container>
   );
 };
-
 export default withAuthorization(AdminPage, 'Admin');

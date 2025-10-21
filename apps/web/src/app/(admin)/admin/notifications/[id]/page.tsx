@@ -1,27 +1,28 @@
-import { Container, Heading, Section } from '@eventuras/ratio-ui';
+;
 import { Logger } from '@eventuras/logger';
 import { getTranslations } from 'next-intl/server';
-
 import { getV3NotificationsById, getV3NotificationsByIdRecipients } from '@eventuras/event-sdk';
+import { Container } from '@eventuras/ratio-ui/layout/Container';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Section } from '@eventuras/ratio-ui/layout/Section';
 
+;
+;
+;
 type EventInfoProps = {
   params: Promise<{
     id: number;
   }>;
 };
-
 const NotificationDetailPage: React.FC<EventInfoProps> = async props => {
   const params = await props.params;
   const t = await getTranslations();
-
   const notificationResponse = await getV3NotificationsById({
     path: { id: params.id },
   });
-
   const recipientsResponse = await getV3NotificationsByIdRecipients({
     path: { id: params.id },
   });
-
   if (!notificationResponse.data) {
     Logger.error(
       { namespace: 'notifications' },
@@ -29,7 +30,6 @@ const NotificationDetailPage: React.FC<EventInfoProps> = async props => {
     );
     return <div>{t('admin.organizations.labels.notFound')}</div>;
   }
-
   return (
     <>
       <Section className="bg-white dark:bg-black   pb-8">
@@ -47,5 +47,4 @@ const NotificationDetailPage: React.FC<EventInfoProps> = async props => {
     </>
   );
 };
-
 export default NotificationDetailPage;

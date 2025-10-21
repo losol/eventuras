@@ -1,25 +1,26 @@
-import { Container, Heading, Section } from '@eventuras/ratio-ui';
+;
 import { Logger } from '@eventuras/logger';
 import { getTranslations } from 'next-intl/server';
-
 import { getV3EventcollectionsById } from '@eventuras/event-sdk';
-
 import CollectionEditor from '../CollectionEditor';
+import { Container } from '@eventuras/ratio-ui/layout/Container';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Section } from '@eventuras/ratio-ui/layout/Section';
 
+;
+;
+;
 type EventCollectionProps = {
   params: Promise<{
     id: number;
   }>;
 };
-
 export default async function CollectionDetailPage({ params }: Readonly<EventCollectionProps>) {
   const { id } = await params;
   const t = await getTranslations();
-
   const response = await getV3EventcollectionsById({
     path: { id },
   });
-
   if (!response.data) {
     Logger.error(
       { namespace: 'collections' },
@@ -27,7 +28,6 @@ export default async function CollectionDetailPage({ params }: Readonly<EventCol
     );
     return <div>{t('common.event-not-found')}</div>;
   }
-
   return (
     <>
       <Section className="bg-white dark:bg-black   pb-8">

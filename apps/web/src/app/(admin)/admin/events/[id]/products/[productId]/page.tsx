@@ -1,50 +1,49 @@
-import { Container, Heading, Section, Text } from '@eventuras/ratio-ui';
+;
 import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { Logger } from '@eventuras/logger';
-
 import { Link } from '@eventuras/ratio-ui-next/Link';
 import { getV3ProductsByProductIdSummary } from '@eventuras/event-sdk';
 import { appConfig } from '@/config.server';
-
 import DeliverySummary from '../DeliverySummary';
+import { Container } from '@eventuras/ratio-ui/layout/Container';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Section } from '@eventuras/ratio-ui/layout/Section';
+import { Text } from '@eventuras/ratio-ui/core/Text';
 
+;
+;
+;
+;
 const logger = Logger.create({
   namespace: 'web:admin:products',
   context: { page: 'ProductSummaryPage' },
 });
-
 type EventProductsPage = {
   params: Promise<{
     id: string;
     productId: string;
   }>;
 };
-
 const EventProducts: React.FC<EventProductsPage> = async props => {
   const params = await props.params;
   const eventId = parseInt(params.id);
   const productId = parseInt(params.productId);
   const t = await getTranslations();
-
   // Get organization ID
   const orgIdStr = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
   const organizationId = typeof orgIdStr === 'number' ? orgIdStr : parseInt(orgIdStr as string, 10);
-
   logger.info({ productId, organizationId }, 'Fetching product summary');
-
   const response = await getV3ProductsByProductIdSummary({
     path: { productId },
     headers: {
       'Eventuras-Org-Id': organizationId,
     },
   });
-
   if (!response.data) {
     logger.error({ productId, error: response.error }, 'Product summary not found');
     notFound();
   }
-
   const productSummary = response.data;
   const byRegistrationStatus = productSummary.statistics?.byRegistrationStatus;
   const totals = {
@@ -58,7 +57,6 @@ const EventProducts: React.FC<EventProductsPage> = async props => {
     cancelled: byRegistrationStatus?.cancelled ?? 0,
     waitingList: byRegistrationStatus?.waitingList ?? 0,
   };
-
   return (
     <>
       <Section className="bg-white dark:bg-black py-10">
@@ -89,5 +87,4 @@ const EventProducts: React.FC<EventProductsPage> = async props => {
     </>
   );
 };
-
 export default EventProducts;

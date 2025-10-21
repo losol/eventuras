@@ -1,11 +1,11 @@
-import { Definition, DescriptionList, Item, Term } from '@eventuras/ratio-ui';
+;
 import { OrganizationDto } from '@eventuras/event-sdk';
+import { Definition, DescriptionList, Item, Term } from '@eventuras/ratio-ui/core/DescriptionList';
 
 /** Renders org fields with DescriptionList */
 export const OrganizationDetails: React.FC<{ org: OrganizationDto }> = ({ org }) => {
   // guard against empty strings
   const has = (v?: string | null) => !!(v && v.trim().length);
-
   return (
     <DescriptionList>
       {/* Name */}
@@ -13,7 +13,6 @@ export const OrganizationDetails: React.FC<{ org: OrganizationDto }> = ({ org })
         <Term>Name</Term>
         <Definition data-testid="org-name">{org.name}</Definition>
       </Item>
-
       {/* Description */}
       {has(org.description) && (
         <Item>
@@ -21,7 +20,6 @@ export const OrganizationDetails: React.FC<{ org: OrganizationDto }> = ({ org })
           <Definition data-testid="org-description">{org.description}</Definition>
         </Item>
       )}
-
       {/* URL */}
       {has(org.url) && (
         <Item>
@@ -33,7 +31,6 @@ export const OrganizationDetails: React.FC<{ org: OrganizationDto }> = ({ org })
           </Definition>
         </Item>
       )}
-
       {/* Phone */}
       {has(org.phone) && (
         <Item>
@@ -41,7 +38,6 @@ export const OrganizationDetails: React.FC<{ org: OrganizationDto }> = ({ org })
           <Definition data-testid="org-phone">{org.phone}</Definition>
         </Item>
       )}
-
       {/* Email */}
       {has(org.email) && (
         <Item>
@@ -49,7 +45,6 @@ export const OrganizationDetails: React.FC<{ org: OrganizationDto }> = ({ org })
           <Definition data-testid="org-email">{org.email}</Definition>
         </Item>
       )}
-
       {/* Logo URL */}
       {has(org.logoUrl) && (
         <Item>

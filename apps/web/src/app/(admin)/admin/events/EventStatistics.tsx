@@ -1,16 +1,16 @@
 'use client';
 import { EventStatisticsDto } from '@eventuras/event-sdk';
-import { NumberCard } from '@eventuras/ratio-ui';
+import { NumberCard } from '@eventuras/ratio-ui/visuals/NumberCard';
+
+;
+;
 import { useTranslations } from 'next-intl';
-
 import { ParticipationTypes, ParticipationTypesKey } from '@/types';
-
 type EventStatisticsProps = {
   statistics: EventStatisticsDto;
   highlightedSelection?: string | null;
   onSelectionChanged?: (selection: string) => void;
 };
-
 const EventStatistics: React.FC<EventStatisticsProps> = ({
   statistics,
   onSelectionChanged,
@@ -28,11 +28,9 @@ const EventStatistics: React.FC<EventStatisticsProps> = ({
     [ParticipationTypes.waitingList]: byStatus?.waitingList ?? 0,
     [ParticipationTypes.cancelled]: byStatus?.cancelled ?? 0,
   };
-
   const toggleSelection = (currentSelection: ParticipationTypes) => {
     onSelectionChanged && onSelectionChanged(currentSelection);
   };
-
   return (
     <div className="grid gap-1 grid-cols-3  md:grid-cols-4 break-words">
       {Object.keys(ParticipationTypes).map((key: string) => {
@@ -52,5 +50,4 @@ const EventStatistics: React.FC<EventStatisticsProps> = ({
     </div>
   );
 };
-
 export default EventStatistics;

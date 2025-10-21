@@ -1,45 +1,42 @@
-import { Container, Heading, Section } from '@eventuras/ratio-ui';
+;
 import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { Logger } from '@eventuras/logger';
-
 import { getV3EventsById, getV3EventsByEventIdProducts } from '@eventuras/event-sdk';
-
 import EventProductsEditor from './EventProductsEditor';
+import { Container } from '@eventuras/ratio-ui/layout/Container';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Section } from '@eventuras/ratio-ui/layout/Section';
 
+;
+;
+;
 const logger = Logger.create({
   namespace: 'web:admin',
   context: { page: 'EventProductsPage' }
 });
-
 type EventProductsPage = {
   params: Promise<{
     id: string;
   }>;
 };
-
 const EventProducts: React.FC<EventProductsPage> = async props => {
   const params = await props.params;
   const eventId = parseInt(params.id, 10);
   const t = await getTranslations();
-
   const [eventInfoRes, productsRes] = await Promise.all([
     getV3EventsById({ path: { id: eventId } }),
     getV3EventsByEventIdProducts({ path: { eventId } }),
   ]);
-
   const eventInfo = eventInfoRes.data;
   const products = productsRes.data;
-
   if (!eventInfo) {
     logger.error({ eventId, error: eventInfoRes.error }, `Event ${eventId} not found`);
     notFound();
   }
-
   if (productsRes.error) {
     logger.warn({ error: productsRes.error }, 'products call failed');
   }
-
   return (
     <>
       <Section className="bg-white dark:bg-black py-10">
@@ -57,5 +54,4 @@ const EventProducts: React.FC<EventProductsPage> = async props => {
     </>
   );
 };
-
 export default EventProducts;

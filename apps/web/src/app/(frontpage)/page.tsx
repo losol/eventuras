@@ -1,28 +1,27 @@
-import { Section, Heading, Text } from '@eventuras/ratio-ui';
+;
 import { getTranslations } from 'next-intl/server';
-
 import { EventGrid } from '@/components/event';
 import { getV3Events } from '@eventuras/event-sdk';
 import { appConfig } from '@/config.server';
 import getSiteSettings from '@/utils/site/getSiteSettings';
 import { getPublicClient } from '@/lib/eventuras-public-client';
+import { Section } from '@eventuras/ratio-ui/layout/Section';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Text } from '@eventuras/ratio-ui/core/Text';
+import UserMenu from '@/components/eventuras/UserMenu';
 
 const ORGANIZATION_ID = Number(appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID as string);
-
 // Incremental Static Regeneration - revalidate every 5 minutes
 export const revalidate = 300;
-
 export default async function Homepage() {
   const site = await getSiteSettings();
   const t = await getTranslations();
-
   // Use public client for anonymous API access
   const publicClient = getPublicClient();
   const response = await getV3Events({
     client: publicClient,
     query: { OrganizationId: ORGANIZATION_ID },
   });
-
   return (
     <>
       {/* Hero section with background image */}
@@ -33,12 +32,25 @@ export default async function Homepage() {
         className="text-white"
         container
       >
-        <Heading as="h1" padding="pb-4" onDark>
-          {site?.frontpage.title ?? 'Eventuras'}
-        </Heading>
-        <Text padding="pb-2">{site?.frontpage.introduction ?? 'Eventuras for your life!'}</Text>
+        <div className="flex justify-between items-start">
+          <div className="flex-1">
+            <Heading as="h1" padding="pb-4" onDark>
+              {site?.frontpage.title ?? 'Eventuras'}
+            </Heading>
+            <Text padding="pb-2">{site?.frontpage.introduction ?? 'Eventuras for your life!'}</Text>
+          </div>
+          <div className="ml-4">
+            <UserMenu
+              translations={{
+                loginLabel: t('common:buttons.login'),
+                userLabel: t('common:user.profile'),
+                accountLabel: t('common.user.account'),
+                adminLabel: t('common.labels.admin'),
+              }}
+            />
+          </div>
+        </div>
       </Section>
-
       {/* Events section */}
       {response.data?.data?.length ? (
         <Section backgroundColorClass="bg-primary-50 dark:bg-slate-950" padding="py-8" container>

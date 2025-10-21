@@ -1,5 +1,6 @@
 'use client';
-
+import { Button } from '@eventuras/ratio-ui/core/Button';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import {
   EventDto,
   NewRegistrationDto,
@@ -7,7 +8,6 @@ import {
   RegistrationType,
   UserDto,
 } from '@eventuras/event-sdk';
-import { Button, Heading } from '@eventuras/ratio-ui';
 import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
 import { Check } from '@eventuras/ratio-ui/icons';
 import { Logger } from '@eventuras/logger';
@@ -25,19 +25,16 @@ import {
   SelectValue,
 } from 'react-aria-components';
 import { Controller, useForm } from 'react-hook-form';
-
 import ProductSelection from '@/components/eventuras/ProductSelection';
 import UserLookup from '@/components/eventuras/UserLookup';
 import { useToast } from '@eventuras/toast';
 import { RegistrationProduct } from '@/types';
 import { createEventRegistration } from '@/app/(user)/user/events/actions';
 import { mapEventProductsToView, mapSelectedProductsToQuantity } from '@/utils/api/mappers';
-
 type AddUserToEventFormValues = {
   registrationType: string;
   products: any;
 };
-
 type AddUserCardProps = {
   user: UserDto;
   eventinfo: EventDto;
@@ -45,7 +42,6 @@ type AddUserCardProps = {
   products: RegistrationProduct[];
   onRemove: (u: UserDto) => void;
 };
-
 export const AddUserButton: React.FC = () => {
   return (
     <>
@@ -53,7 +49,6 @@ export const AddUserButton: React.FC = () => {
     </>
   );
 };
-
 const RegistrationListBoxItem = (props: ListBoxItemProps & { children: React.ReactNode }) => (
   <ListBoxItem
     {...props}
@@ -71,13 +66,11 @@ const RegistrationListBoxItem = (props: ListBoxItemProps & { children: React.Rea
     )}
   </ListBoxItem>
 );
-
 const renderRegistrationTypeItem = (value: any) => (
   <RegistrationListBoxItem textValue={value} value={value} id={value} key={value}>
     {value}
   </RegistrationListBoxItem>
 );
-
 const AddUserCard: React.FC<AddUserCardProps> = ({
   user,
   eventinfo,
@@ -88,13 +81,10 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
   const toast = useToast();
   const t = useTranslations();
   const logger = Logger.create({ namespace: 'web:admin:events', context: { component: 'AddUserToEvent' } });
-
   const { control, register, setValue, handleSubmit } = useForm<AddUserToEventFormValues>();
-
   useEffect(() => {
     setValue('registrationType', 'Participant'); //default to participant
   }, [setValue]);
-
   const onSubmitForm = async (values: AddUserToEventFormValues) => {
     const productMap =
       products && products?.length
@@ -110,10 +100,8 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
         email: user.email,
       },
     };
-
     try {
       const result = await createEventRegistration(newRegistration, productMap);
-
       if (result.success) {
         logger.info({ userId: user.id }, 'User successfully added to the event!');
         toast.success(result.message || 'User successfully added to the event!');
@@ -127,7 +115,6 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
       toast.error(t('common.errors.fatalError.title'));
     }
   };
-
   return (
     <form className="" onSubmit={handleSubmit(onSubmitForm)}>
       <p>Name: {user.name}</p>
@@ -164,7 +151,6 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
           );
         }}
       />
-
       {products.length > 0 && (
         <>
           <Heading as="h4">Choose Products</Heading>
@@ -186,7 +172,6 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
     </form>
   );
 };
-
 export type AddUserToEventDrawerProps = {
   eventinfo: EventDto;
   eventProducts: ProductDto[];
@@ -194,7 +179,6 @@ export type AddUserToEventDrawerProps = {
   isOpen?: boolean;
   onCancel?: () => void;
 };
-
 const AddUserToEventDrawer: React.FC<AddUserToEventDrawerProps> = ({
   eventinfo,
   eventProducts,
@@ -231,13 +215,11 @@ const AddUserToEventDrawer: React.FC<AddUserToEventDrawerProps> = ({
     </>
   );
 };
-
 export type AddUserToEventProps = {
   eventinfo: EventDto;
   eventProducts: ProductDto[];
   isOpen?: boolean;
 };
-
 const AddUserToEvent: React.FC<AddUserToEventProps> = props => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
@@ -256,5 +238,4 @@ const AddUserToEvent: React.FC<AddUserToEventProps> = props => {
     </>
   );
 };
-
 export default AddUserToEvent;

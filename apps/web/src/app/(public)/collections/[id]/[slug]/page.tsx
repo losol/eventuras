@@ -1,43 +1,43 @@
 import { MarkdownContent } from '@eventuras/markdown';
-import { Container, Heading, Section, Text } from '@eventuras/ratio-ui';
+import { Container } from '@eventuras/ratio-ui/layout/Container';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Section } from '@eventuras/ratio-ui/layout/Section';
+import { Text } from '@eventuras/ratio-ui/core/Text';
+
+;
+;
+;
+;
+;
 import { Logger } from '@eventuras/logger';
-
 const logger = Logger.create({ namespace: 'web:app:collections', context: { page: 'CollectionPage' } });
-
 import { redirect } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
-
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import EventCard from '@/components/event/EventCard';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 import { getV3Eventcollections, getV3EventcollectionsById, getV3Events } from '@eventuras/event-sdk';
 import { appConfig } from '@/config.server';
 import { getPublicClient } from '@/lib/eventuras-public-client';
-
 type EventInfoProps = {
   params: Promise<{
     id: number;
     slug: string;
   }>;
 };
-
 // Incremental Static Regeneration - revalidate every 5 minutes
 export const revalidate = 300;
-
 // Allow generating new collection pages on-demand
 export const dynamicParams = true;
-
 export async function generateStaticParams() {
   const organizationId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
   const orgId = typeof organizationId === 'number'
     ? organizationId
     : parseInt(organizationId as string, 10);
-
   logger.info(
     { apiBaseUrl: appConfig.env.NEXT_PUBLIC_BACKEND_URL as string, orgId },
     'Generating static params for collections'
   );
-
   try {
     // Use public client for anonymous API access during static generation
     const publicClient = getPublicClient();
@@ -47,9 +47,7 @@ export async function generateStaticParams() {
         'Eventuras-Org-Id': orgId,
       },
     });
-
     if (!response.data?.data) return [];
-
     const staticParams = response.data.data.map(collection => ({
       id: collection.id?.toString(),
       slug: collection.slug,
@@ -61,18 +59,15 @@ export async function generateStaticParams() {
     return [];
   }
 }
-
 const CollectionPage: React.FC<EventInfoProps> = async props => {
   const params = await props.params;
   const t = await getTranslations();
-
   // Use public client for anonymous API access
   const publicClient = getPublicClient();
   const response = await getV3EventcollectionsById({
     client: publicClient,
     path: { id: params.id },
   });
-
   if (!response.data)
     return (
       <>
@@ -83,20 +78,16 @@ const CollectionPage: React.FC<EventInfoProps> = async props => {
         </Link>
       </>
     );
-
   const collection = response.data;
-
   if (params.slug !== collection.slug) {
     redirect(`/collections/${collection.id!}/${collection.slug!}`);
   }
-
   const eventsResponse = await getV3Events({
     client: publicClient,
     query: {
       CollectionId: collection.id!,
     },
   });
-
   return (
     <>
       {collection?.featuredImageUrl && (
@@ -132,5 +123,4 @@ const CollectionPage: React.FC<EventInfoProps> = async props => {
     </>
   );
 };
-
 export default CollectionPage;

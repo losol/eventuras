@@ -1,9 +1,12 @@
 import { EventDto, ProductDto } from '@eventuras/event-sdk';
-import { Button, Heading } from '@eventuras/ratio-ui';
+import { Button } from '@eventuras/ratio-ui/core/Button';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+
+;
+;
+;
 import { useTranslations } from 'next-intl';
-
 import { PaymentFormValues, ProductSelected } from '@/types';
-
 export interface RegistrationConfirmationProps {
   eventInfo: EventDto;
   products: ProductDto[];
@@ -20,11 +23,9 @@ const RegistrationConfirmation: React.FC<RegistrationConfirmationProps> = ({
   paymentDetails,
 }) => {
   const t = useTranslations();
-
   return (
     <div>
       <p>{t('user.registration.steps.confirmation.description')}</p>
-
       {products.length > 0 && (
         <>
           <Heading as="h2">{t('common.labels.products')}</Heading>
@@ -53,7 +54,6 @@ const RegistrationConfirmation: React.FC<RegistrationConfirmationProps> = ({
           </>
         )}
       </ul>
-
       <div>
         {onBack && (
           <Button onClick={onBack} variant="outline">
@@ -73,5 +73,4 @@ const RegistrationConfirmation: React.FC<RegistrationConfirmationProps> = ({
     </div>
   );
 };
-
 export default RegistrationConfirmation;

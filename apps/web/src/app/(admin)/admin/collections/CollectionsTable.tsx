@@ -1,32 +1,28 @@
 'use client';
-
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
 import { EventCollectionDto } from '@eventuras/event-sdk';
-import { Pagination } from '@eventuras/ratio-ui';
+import { Pagination } from '@eventuras/ratio-ui/core/Pagination';
+
+;
+;
 import { useTranslations } from 'next-intl';
 import { useRouter, useSearchParams } from 'next/navigation';
-
 import { Link } from '@eventuras/ratio-ui-next/Link';
-
 const columnHelper = createColumnHelper<EventCollectionDto>();
-
 type CollectionsTableProps = {
   collections: EventCollectionDto[];
   currentPage: number;
   totalPages: number;
 };
-
 export default function CollectionsTable({ collections, currentPage, totalPages }: CollectionsTableProps) {
   const t = useTranslations();
   const router = useRouter();
   const searchParams = useSearchParams();
-
   const handlePageChange = (newPage: number) => {
     const params = new URLSearchParams(searchParams);
     params.set('page', newPage.toString());
     router.push(`?${params.toString()}`);
   };
-
   const renderCollectionActions = (collection: EventCollectionDto) => {
     return (
       <div className="flex flex-row">
@@ -36,7 +32,6 @@ export default function CollectionsTable({ collections, currentPage, totalPages 
       </div>
     );
   };
-
   const columns = [
     columnHelper.accessor('id', {
       header: t('common.labels.id').toString(),
@@ -53,7 +48,6 @@ export default function CollectionsTable({ collections, currentPage, totalPages 
       cell: info => renderCollectionActions(info.row.original),
     }),
   ];
-
   return (
     <>
       <DataTable data={collections} columns={columns} />

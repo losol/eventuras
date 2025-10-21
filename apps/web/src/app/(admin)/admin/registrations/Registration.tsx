@@ -1,4 +1,9 @@
 'use client';
+import { Badge } from '@eventuras/ratio-ui/core/Badge';
+import { Button } from '@eventuras/ratio-ui/core/Button';
+import { Definition, DescriptionList, Item, Term } from '@eventuras/ratio-ui/core/DescriptionList';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Section } from '@eventuras/ratio-ui/layout/Section';
 import {
   PaymentProvider,
   RegistrationCustomerInfoDto,
@@ -7,26 +12,13 @@ import {
   RegistrationType,
 } from '@eventuras/event-sdk';
 import { Form, Select } from '@eventuras/smartform';
-import {
-  Badge,
-  Button,
-  Definition,
-  DescriptionList,
-  Heading,
-  Item,
-  Section,
-  Term
-} from '@eventuras/ratio-ui';
-
+;
 import { useTranslations } from 'next-intl';
-
 import Order from '../orders/Order';
-
 interface RegistrationProps {
   registration?: RegistrationDto;
   adminMode?: boolean;
 }
-
 // Replace with the real type from the SDK when it's available
 export type RegistrationUpdateDto = {
   status?: RegistrationStatus;
@@ -35,12 +27,10 @@ export type RegistrationUpdateDto = {
   customer?: RegistrationCustomerInfoDto;
   paymentMethod?: PaymentProvider;
 };
-
 type TranslationFunction = (
   key: string,
   options?: Record<string, string | number | Date>
 ) => string;
-
 /**
  * Retrieves status labels translated based on the current language.
  * @param {function} t - The translation function from next-translate.
@@ -61,7 +51,6 @@ export const getStatusLabels = (t: TranslationFunction) => [
     label: t('common.registrations.labels.waitingList')
   },
 ];
-
 /**
  * Retrieves type labels translated based on the current language.
  * @param {function} t - The translation function from next-translate.
@@ -74,22 +63,18 @@ export const getTypeLabels = (t: TranslationFunction) => [
   { value: 'Staff' as RegistrationType, label: t('common.registrations.labels.staff') },
   { value: 'Artist' as RegistrationType, label: t('common.registrations.labels.artist') },
 ];
-
 const Registration = ({ registration, adminMode = false }: RegistrationProps) => {
   const t = useTranslations();
-
   // TODO: Implement proper registration update functionality
   // This component needs a complete refactor to handle registration updates correctly
   const handleUpdateRegistration = async () => {
     throw new Error('Registration update not yet implemented. Please use the admin panel.');
   };
-
   if (!registration) {
     return <p>{t('common.registrations.labels.noRegistration')}</p>;
   }
   const statusLabel = getStatusLabels(t).find(label => label.value === registration.status)?.label;
   const typeLabel = getTypeLabels(t).find(label => label.value === registration.type)?.label;
-
   return (
     <>
       <DescriptionList>
@@ -103,7 +88,6 @@ const Registration = ({ registration, adminMode = false }: RegistrationProps) =>
           <Term>{t('common.registrations.labels.userName')}</Term>
           <Definition>{registration.user?.name}</Definition>
         </Item>
-
         <Item>
           <Term>{t('common.registrations.labels.eventTitle')}</Term>
           <Definition>{registration.event?.title}</Definition>
@@ -135,12 +119,10 @@ const Registration = ({ registration, adminMode = false }: RegistrationProps) =>
           >
             <Select name="type" options={getTypeLabels(t)} label="Type" />
             <Select name="status" options={getStatusLabels(t)} label="Status" />
-
             <Button type="submit">{t('common.labels.save')}</Button>
           </Form>
         )}
       </DescriptionList>
-
       {registration.products && (
         <Section>
           <Heading as="h2">{t('common.registrations.labels.products')}</Heading>
@@ -151,12 +133,10 @@ const Registration = ({ registration, adminMode = false }: RegistrationProps) =>
           </ul>
         </Section>
       )}
-
       <Section>
         <Heading as="h2">{t('common.registrations.labels.notes')}</Heading>
         <p>{registration.notes ?? t('common.registrations.labels.notesEmpty')}</p>
       </Section>
-
       {registration.orders && (
         <Section>
           <Heading as="h2">{t('common.registrations.labels.orders')}</Heading>
@@ -170,5 +150,4 @@ const Registration = ({ registration, adminMode = false }: RegistrationProps) =>
     </>
   );
 };
-
 export default Registration;

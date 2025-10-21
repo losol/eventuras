@@ -1,23 +1,18 @@
 'use client';
-
 import { EventDto, ProductDto } from '@eventuras/event-sdk';
-import { Button, ButtonGroup } from '@eventuras/ratio-ui';
+import { Button, ButtonGroup } from '@eventuras/ratio-ui/core/Button';
 import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-
 import EventNotificator, { EventNotificatorType } from '@/components/event/EventNotificator';
 import { Link } from '@eventuras/ratio-ui-next/Link';
-
 import { ExcelExportButton } from './[id]/ExcelExportButton';
 import AddUserToEvent from './AddUserToEvent';
 import { AdminCertificatesActionsMenu } from './AdminCertificatesActionsMenu';
-
 export interface EventAdminActionsMenuProps {
   eventinfo: EventDto;
   eventProducts?: ProductDto[];
 }
-
 const EventAdminActionsMenu: React.FC<EventAdminActionsMenuProps> = ({
   eventinfo,
   eventProducts = [],
@@ -25,7 +20,6 @@ const EventAdminActionsMenu: React.FC<EventAdminActionsMenuProps> = ({
   const [emailDrawerOpen, setEmailDrawerOpen] = useState<boolean>(false);
   const [SMSDrawerOpen, setSMSDrawerOpen] = useState<boolean>(false);
   const t = useTranslations();
-
   return (
     <>
       <ButtonGroup>
@@ -57,9 +51,7 @@ const EventAdminActionsMenu: React.FC<EventAdminActionsMenuProps> = ({
         </Link>
         <ExcelExportButton EventinfoId={eventinfo.id!} />
       </ButtonGroup>
-
       <AddUserToEvent eventinfo={eventinfo} eventProducts={eventProducts ?? []} />
-
       <Drawer isOpen={emailDrawerOpen} onCancel={() => setEmailDrawerOpen(false)}>
         <Drawer.Header as="h3" className="text-black">
           {t('admin.eventNotifier.title')}
@@ -95,5 +87,4 @@ const EventAdminActionsMenu: React.FC<EventAdminActionsMenuProps> = ({
     </>
   );
 };
-
 export default EventAdminActionsMenu;

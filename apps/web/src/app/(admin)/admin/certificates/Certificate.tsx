@@ -1,18 +1,18 @@
 import { CertificateDto } from '@eventuras/event-sdk';
-import { Definition, DescriptionList, Heading, Item, Term } from '@eventuras/ratio-ui';
+import { Definition, DescriptionList, Item, Term } from '@eventuras/ratio-ui/core/DescriptionList';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+
+;
+;
 import { useTranslations } from 'next-intl';
 import React from 'react';
-
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import { formatDateSpan } from '@eventuras/core/datetime';
-
 type CertificateProps = {
   certificate: CertificateDto;
 };
-
 const Certificate: React.FC<CertificateProps> = ({ certificate }) => {
   const t = useTranslations();
-
   return (
     <Card>
       <Heading>Kursbevis</Heading>
@@ -38,5 +38,4 @@ const Certificate: React.FC<CertificateProps> = ({ certificate }) => {
     </Card>
   );
 };
-
 export default Certificate;

@@ -1,29 +1,28 @@
 'use client';
 import { EventDto, EventStatisticsDto, ProductDto, RegistrationDto } from '@eventuras/event-sdk';
-import { Container, Section } from '@eventuras/ratio-ui';
+import { Container } from '@eventuras/ratio-ui/layout/Container';
+import { Section } from '@eventuras/ratio-ui/layout/Section';
+
+;
+;
+;
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
-
 import { ParticipationTypes, ParticipationTypesKey } from '@/types';
-
 import EventParticipantList from '../EventParticipantList';
 import EventStatistics from '../EventStatistics';
-
 export type ParticipantsSectionProps = {
   statistics: EventStatisticsDto;
   participants: RegistrationDto[];
   eventInfo: EventDto;
   eventProducts: ProductDto[];
 };
-
 const initialSelectedStatistics = {
   [ParticipationTypes.active]: false,
   [ParticipationTypes.waitingList]: false,
   [ParticipationTypes.cancelled]: false,
 };
-
 export type StatisticsSelection = typeof initialSelectedStatistics;
-
 const ParticipantsSection: React.FC<ParticipantsSectionProps> = props => {
   const router = useRouter();
   const [selectedStatistic, setSelectedStatistic] =
@@ -68,5 +67,4 @@ const ParticipantsSection: React.FC<ParticipantsSectionProps> = props => {
     </>
   );
 };
-
 export default ParticipantsSection;

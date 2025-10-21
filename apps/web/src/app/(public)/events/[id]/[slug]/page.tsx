@@ -1,5 +1,8 @@
 import { EventInfoStatus, getV3Events, getV3EventsById } from '@eventuras/event-sdk';
-import { Container, Heading, Text } from '@eventuras/ratio-ui';
+import { Container } from '@eventuras/ratio-ui/layout/Container';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Section } from '@eventuras/ratio-ui/layout/Section';
+import { Text } from '@eventuras/ratio-ui/core/Text';
 import { Logger } from '@eventuras/logger';
 
 const logger = Logger.create({ namespace: 'web:app:events', context: { page: 'EventPage' } });
@@ -105,7 +108,7 @@ export default async function EventDetailsPage({ params }: Readonly<EventDetails
       {eventinfo.featuredImageUrl && (
         <Card className="mx-auto min-h-[33vh]" backgroundImageUrl={eventinfo.featuredImageUrl} />
       )}
-      <section className="py-16">
+      <Section className="py-16">
         <Container>
           <Heading as="h1" padding="pt-6 pb-3">
             {eventinfo.title ?? 'Mysterious Event'}
@@ -133,7 +136,7 @@ export default async function EventDetailsPage({ params }: Readonly<EventDetails
             <EventRegistrationButton event={eventinfo} />
           </Suspense>
         </Container>
-      </section>
+      </Section>
 
       <Suspense fallback={<div>Loading event details...</div>}>
         <EventDetails eventinfo={eventinfo} />

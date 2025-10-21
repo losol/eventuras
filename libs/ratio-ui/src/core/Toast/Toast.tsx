@@ -1,4 +1,4 @@
-import { Portal } from '../..';
+import { Portal } from '../../layout/Portal';
 
 export enum ToastType {
   SUCCESS = 'success',

@@ -1,8 +1,8 @@
 'use client';
-
 import { Fieldset } from '@eventuras/ratio-ui/forms';
 import { MarkdownInput } from '@eventuras/markdowninput';
 import { EventDto, EventFormDto } from '@eventuras/event-sdk';
+import { Button } from '@eventuras/ratio-ui/core/Button';
 import {
   CheckboxInput,
   CheckboxLabel,
@@ -12,28 +12,24 @@ import {
   NumberInput,
   Select,
 } from '@eventuras/smartform';
-import { Button } from '@eventuras/ratio-ui';
+;
 import { Logger } from '@eventuras/logger';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useState, useEffect } from 'react';
 import { SubmitHandler } from 'react-hook-form';
-
 import { Tabs } from '@eventuras/ratio-ui/core/Tabs';
 import { useToast } from '@eventuras/toast';
 import { publicEnv } from '@/config.client';
 import slugify from '@/utils/slugify';
 import { updateEvent } from './actions';
-
 export type EventEditorProps = {
   eventinfo: EventDto;
 };
-
 type ApiState = {
   error: string | null;
   loading: boolean;
 };
-
 const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
   console.log('EventEditor rendering with eventinfo:', eventinfo);
   const t = useTranslations();
@@ -41,7 +37,6 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
   const toast = useToast();
   const router = useRouter();
   const logger = Logger.create({ namespace: 'web:admin:events', context: { component: 'EventEditor', eventId: eventinfo.id } });
-
   // Log the event data when component mounts
   useEffect(() => {
     logger.debug({
@@ -57,7 +52,6 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
       published: eventinfo.published,
     }, 'EventEditor loaded with event data');
   }, [eventinfo, logger]);
-
   // Form submit handler
   const onSubmitForm: SubmitHandler<EventFormDto> = async (data: EventFormDto) => {
     setApiState({ error: null, loading: true });
@@ -71,30 +65,24 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
       formType: data.type,
       formCity: data.city,
     }, 'Event form data before processing');
-
     // Use the organization ID from config
     // Events belong to this organization and we're just maintaining that relationship
     const orgId = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
-
     if (!orgId || isNaN(orgId)) {
       logger.error({ orgId, typeOfOrgId: typeof orgId }, 'Organization ID is not configured or invalid');
       toast.error('Configuration error: Organization ID is missing or invalid');
       setApiState({ error: 'Organization ID is not configured', loading: false });
       return;
     }
-
     data.organizationId = orgId;
     logger.debug({ organizationId: data.organizationId }, 'Using configured organizationId for update');
-
     // set slug
     const year = data.dateStart ? new Date(data.dateStart).getFullYear() : undefined;
     const newSlug = slugify(
       [data.title, data.city, year, data.id].filter(Boolean).join('-')
     );
     data.slug = newSlug;
-
     const result = await updateEvent(eventinfo.id!, data);
-
     if (result.success) {
       logger.info('Event information updated successfully');
       toast.success('Event information was updated!');
@@ -110,16 +98,13 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
         },
         'Failed to update event'
       );
-
       // Provide user-friendly error message with more context
       const userMessage = result.error.message;
       const errorCode = result.error.code ? ` (${result.error.code})` : '';
       toast.error(`Could not update event: ${userMessage}${errorCode}`);
-
       setApiState({ error: result.error.message, loading: false });
     }
   };
-
   return (
     <Form
       defaultValues={eventinfo}
@@ -148,7 +133,6 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
               type="hidden"
               value={publicEnv.NEXT_PUBLIC_ORGANIZATION_ID?.toString() ?? ''}
             />
-
             <Input name="title" required label="Title" placeholder="Event Title" />
             <Input name="headline" label="Headline" placeholder="Event Headline" />
             <Input name="category" label="Category" placeholder="Event Category" />
@@ -286,7 +270,6 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
           </Fieldset>
         </Tabs.Item>
       </Tabs>
-
       <Button loading={apiState.loading} type="submit">
         {t('common.buttons.submit')}
       </Button>
