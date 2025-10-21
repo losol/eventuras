@@ -1,4 +1,4 @@
-import { OrderDto, OrderStatus } from '@eventuras/event-sdk';
+import { OrderDto, OrderStatus } from '@eventuras/sdk';
 import {
   Badge,
   Definition,
@@ -11,7 +11,7 @@ import {
 import { useTranslations } from 'next-intl';
 
 import { Card } from '@eventuras/ratio-ui/core/Card';
-import { formatDateSpan } from '@eventuras/core/datetime';
+import { formatDateSpan } from '@/utils/formatDate';
 
 import { OrderActionsMenu } from './OrderActionsMenu';
 

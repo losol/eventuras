@@ -1,17 +1,18 @@
 'use client';
 
 import { MarkdownInput } from '@eventuras/markdowninput';
-import { EventCollectionDto, EventDto, getV3Events } from '@eventuras/event-sdk';
+import { EventCollectionDto, EventDto } from '@eventuras/sdk';
 import { CheckboxInput, CheckboxLabel, Form, Input } from '@eventuras/smartform';
 import { Button, Loading, Section } from '@eventuras/ratio-ui';
-import { Logger } from '@eventuras/logger';
-import { IconTrash } from '@tabler/icons-react';
+import { DATA_TEST_ID, Logger } from '@eventuras/utils';
+import { Trash2 } from '@eventuras/ratio-ui/icons';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import EventLookup from '@/components/event/EventLookup';
 import { useToast } from '@eventuras/toast';
-import { updateCollection, addEventToCollection, removeEventFromCollection } from './actions';
+import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
+import slugify from '@/utils/slugify';
 
 export type CollectionEditorProps = {
   eventCollection: EventCollectionDto;
@@ -19,10 +20,6 @@ export type CollectionEditorProps = {
 
 const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
   const toast = useToast();
-  const logger = Logger.create({
-    namespace: 'web:admin:collections',
-    context: { component: 'CollectionEditor' }
-  });
 
   const [eventListUpdateTrigger, setEventListUpdateTrigger] = useState(0);
   const [eventInfos, setEventInfos] = useState<EventDto[]>([]);
@@ -31,18 +28,19 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
   const [addingEvent, setAddingEvent] = useState(false);
   const [removingEventId, setRemovingEventId] = useState(-1);
 
+  const eventuras = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
   const router = useRouter();
 
   useEffect(() => {
     const fetchEventInfos = async () => {
-      const response = await getV3Events({
-        query: {
-          CollectionId: eventCollection.id!,
-        },
-      });
+      const result = await apiWrapper(() =>
+        eventuras.events.getV3Events({
+          collectionId: eventCollection.id!,
+        })
+      );
 
-      if (response.data?.data) {
-        setEventInfos(response.data.data);
+      if (result.ok) {
+        setEventInfos(result.value?.data ?? []);
       }
     };
 
@@ -52,52 +50,72 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
   }, [eventCollection.id, eventListUpdateTrigger]);
 
   const onSubmitForm = async (data: EventCollectionDto) => {
-    logger.info('Updating collection...');
+    Logger.info({ namespace: 'CollectionEditor' }, 'Updating collection...');
+    Logger.info({ namespace: 'EventEditor' }, data);
     setFormSubmitting(true);
+    // set slug
+    const newSlug = slugify([data.name, data.id].filter(Boolean).join('-'));
+    data.slug = newSlug;
 
-    try {
-      const result = await updateCollection(data);
+    const result = await apiWrapper(() =>
+      eventuras.eventCollection.putV3Eventcollections({
+        id: data.id!,
+        requestBody: data,
+      })
+    );
 
-      if (result.success) {
-        toast.success(result.message || 'Collection successfully updated!');
-        router.refresh();
-      } else {
-        toast.error(result.error.message || 'Something went wrong, try again later');
-      }
-    } finally {
-      setFormSubmitting(false);
+    if (result.ok) {
+      toast.success('Collection successfully updated!');
+    } else {
+      toast.error('Something went wrong, try again later');
     }
+
+    Logger.info({ namespace: 'eventeditor' }, result);
+
+    setFormSubmitting(false);
+    router.refresh();
   };
 
   const handleRemoveEvent = async (eventId: number) => {
-    logger.info(`Removing event ${eventId} from collection`);
+    Logger.info({ namespace: 'CollectionEditor' }, `Removing event ${eventId} from collection`);
     setRemovingEventId(eventId);
+    const result = await apiWrapper(() =>
+      eventuras.eventCollectionMapping.deleteV3EventsCollections({
+        eventId: eventId,
+        collectionId: eventCollection.id!,
+      })
+    );
 
-    const result = await removeEventFromCollection(eventId, eventCollection.id!);
-
-    if (result.success) {
+    if (result.ok) {
       setEventListUpdateTrigger(prev => prev + 1);
-      toast.success(result.message || 'Event successfully removed');
-      setRemovingEventId(-1);
+    }
+
+    if (result.ok) {
+      toast.success('Event successfully removed');
     } else {
-      toast.error(result.error.message || 'Something went wrong, try again later');
-      setRemovingEventId(-1);
+      toast.error('Something went wrong, try again later');
     }
   };
 
   const handleAddEvent = async (eventId: number) => {
-    logger.info(`Adding event ${eventId} to collection`);
+    Logger.info({ namespace: 'CollectionEditor' }, `Adding event ${eventId} to collection`);
+    setRemovingEventId(-1);
     setAddingEvent(true);
+    const result = await apiWrapper(() =>
+      eventuras.eventCollectionMapping.putV3EventsCollections({
+        eventId: eventId,
+        collectionId: eventCollection.id!,
+      })
+    );
 
-    const result = await addEventToCollection(eventId, eventCollection.id!);
-
-    if (result.success) {
+    if (result.ok) {
       setEventListUpdateTrigger(prev => prev + 1);
-      toast.success(result.message || 'Event successfully added');
-    } else {
-      toast.error(result.error.message || 'Something went wrong, try again later');
     }
-
+    if (result.ok) {
+      toast.success('Event Successfully Added');
+    } else {
+      toast.error('Something went wrong, try again later');
+    }
     setAddingEvent(false);
     setAddEventId(null);
   };
@@ -106,21 +124,17 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
     if (addEventId !== null) {
       handleAddEvent(addEventId);
     } else {
-      logger.error('Please enter a valid event ID');
+      Logger.error({ namespace: 'CollectionEditor' }, 'Please enter a valid event ID');
     }
   };
-
-  // Calculate date 3 months ago for event lookup constraints
-  const minus3Months = new Date();
-  minus3Months.setMonth(minus3Months.getMonth() - 3);
-
+  const minus3Months = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000);
   return (
     <>
       <Section>
         <Form
           defaultValues={eventCollection}
           onSubmit={onSubmitForm}
-          testId="event-collection-edit-form"
+          {...{ [DATA_TEST_ID]: 'event-collection-edit-form' }}
         >
           <Input name="name" label="Name" placeholder="Collection Name" required />
           <MarkdownInput
@@ -155,7 +169,7 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
               <Loading />
             ) : (
               <button onClick={() => handleRemoveEvent(eventInfo.id!)} aria-label="Delete event">
-                <IconTrash size={24} />
+                <Trash2 size={24} />
               </button>
             )}
           </div>
@@ -171,7 +185,11 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
               setAddEventId(item.id!);
             }}
             eventLookupConstraints={{
-              start: minus3Months.toISOString(),
+              start: {
+                year: minus3Months.getFullYear(),
+                month: minus3Months.getMonth(),
+                day: minus3Months.getDate(),
+              },
             }}
           />
           <Button

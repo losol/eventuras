@@ -3,6 +3,15 @@
   "compilerOptions": {
     "paths": {
       "@/*": ["./src/*"],
+      "@eventuras/utils": ["../../libs/utils"],
+      "@eventuras/sdk": ["../../libs/sdk"]
     },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
+  "include": ["**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
 }

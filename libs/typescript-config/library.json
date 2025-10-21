@@ -3,11 +3,13 @@
   "display": "Library",
   "extends": "./base.json",
   "compilerOptions": {
-    "emitDeclarationOnly": false,
+    "declaration": true,
+    "emitDeclarationOnly": true,
     "outDir": "dist",
-    "noEmit": false
+    "noEmit": false,
+    "incremental": false,
+    "isolatedModules": false
   },
-  "include": [
-    "src/**/*"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"]
 }

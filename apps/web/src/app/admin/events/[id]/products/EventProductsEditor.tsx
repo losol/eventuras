@@ -1,13 +1,16 @@
 'use client';
 
-import type { EventDto, ProductDto } from '@eventuras/event-sdk';
+import type { EventDto, ProductDto } from '@eventuras/sdk';
 import { Button } from '@eventuras/ratio-ui';
+import { DATA_TEST_ID } from '@eventuras/utils';
 import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
 
+import { createSDK } from '@/utils/api/EventurasApi';
+import Environment from '@/utils/Environment';
+
 import ProductModal from './ProductModal';
 import { ProductTable } from './ProductTable';
-import { fetchEventProducts } from './actions';
 
 interface EventProductsEditorProps {
   eventInfo: EventDto;
@@ -22,17 +25,14 @@ const EventProductsEditor: React.FC<EventProductsEditorProps> = ({
   const [products, setProducts] = useState<ProductDto[]>(initialProducts);
   const [currentProduct, setCurrentProduct] = useState<ProductDto | undefined>();
   const t = useTranslations();
-
-  const refreshProducts = async () => {
-    const result = await fetchEventProducts(eventInfo.id!);
-    if (result.success && result.data) {
-      setProducts(result.data);
-    }
-  };
+  const eventuras = createSDK({ baseUrl: Environment.NEXT_PUBLIC_API_BASE_URL });
 
   const onSubmit = async () => {
     // Refresh the list of products after adding or editing
-    await refreshProducts();
+    const updatedProducts = await eventuras.eventProducts.getV3EventsProducts({
+      eventId: eventInfo.id!,
+    });
+    setProducts(updatedProducts);
 
     // Close the modal
     setProductModalOpen(false);
@@ -50,7 +50,7 @@ const EventProductsEditor: React.FC<EventProductsEditorProps> = ({
 
   return (
     <div>
-      <Button testId="add-product-button" onClick={() => openProductModal()}>
+      <Button {...{ [DATA_TEST_ID]: 'add-product-button' }} onClick={() => openProductModal()}>
         {t('admin.products.labels.addnewproduct')}
       </Button>
 

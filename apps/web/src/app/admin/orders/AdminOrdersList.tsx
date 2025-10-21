@@ -1,46 +1,39 @@
 'use client';
 
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
-import { OrderDto } from '@eventuras/event-sdk';
+import { OrderDto } from '@eventuras/sdk';
 import { Loading, Pagination } from '@eventuras/ratio-ui';
 import { useTranslations } from 'next-intl';
-import { useEffect, useState, useTransition } from 'react';
+import { useState } from 'react';
 
 import FatalError from '@/components/FatalError';
-import { Link } from '@eventuras/ratio-ui-next/Link';
-import { formatDateSpan } from '@eventuras/core/datetime';
-import { getOrders } from './actions';
+import { Link } from '@eventuras/ratio-ui/next/Link';
+import useCreateHook from '@/hooks/createHook';
+import { createSDK } from '@/utils/api/EventurasApi';
+import Environment from '@/utils/Environment';
+import { formatDateSpan } from '@/utils/formatDate';
 
 const columnHelper = createColumnHelper<OrderDto>();
 
-type OrdersResponse = {
-  data?: OrderDto[];
-  page?: number;
-  count?: number;
-  total?: number;
-  pages?: number;
-};
-
 const AdminOrdersList: React.FC = () => {
+  const organizationId = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID);
   const t = useTranslations();
   const [page, setPage] = useState(1);
-  const [result, setResult] = useState<OrdersResponse | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
+  const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
   const pageSize = 50;
-
-  useEffect(() => {
-    startTransition(async () => {
-      const response = await getOrders(page, pageSize);
-      if (response.ok && response.data) {
-        setResult(response.data);
-        setError(null);
-      } else {
-        setError(response.error);
-        setResult(null);
-      }
-    });
-  }, [page]);
+  const { loading, result } = useCreateHook(
+    () =>
+      sdk.orders.getV3Orders1({
+        organizationId: organizationId,
+        eventurasOrgId: organizationId,
+        includeUser: true,
+        includeRegistration: true,
+        page,
+        count: pageSize,
+        ordering: ['time:desc'],
+      }),
+    [page]
+  );
 
   const renderOrderActions = (order: OrderDto) => {
     return (
@@ -74,9 +67,9 @@ const AdminOrdersList: React.FC = () => {
     }),
   ];
 
-  if (isPending && !result) return <Loading />;
-  if (error) return <FatalError title="Failed to load orders" description={error} />;
-  if (!result) return <FatalError title="No response from admin orders" description="Response is null" />;
+  if (loading) return <Loading />;
+  if (!result)
+    return <FatalError title="No response from admin orders" description="Response is null" />;
   return (
     <>
       <DataTable data={result.data ?? []} columns={columns} />

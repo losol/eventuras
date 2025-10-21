@@ -1,35 +1,38 @@
 import { NextPage } from 'next';
-import { Unauthorized } from '@eventuras/ratio-ui/blocks/Unauthorized';
-import { checkAuthorization } from './checkAuthorization';
 
-/**
- * Higher-order component that wraps a page with authorization checks.
- * Uses event-sdk via server action to verify user has required role.
- *
- * @param WrappedComponent - The Next.js page component to protect
- * @param role - The required role name (e.g., 'Admin', 'SuperAdmin')
- * @returns A new page component that checks authorization before rendering
- *
- * @example
- * ```tsx
- * const AdminPage = async () => {
- *   return <div>Admin Content</div>;
- * };
- *
- * export default withAuthorization(AdminPage, 'Admin');
- * ```
- */
+import { Unauthorized } from '@eventuras/ratio-ui/blocks/Unauthorized';
+import Environment from '@/utils/Environment';
+import { getAccessToken } from '@/utils/getAccesstoken';
+
+import { createSDK } from '../api/EventurasApi';
+
+const ORGANIZATION_ID: number = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID);
+
 const withAuthorization = (WrappedComponent: NextPage, role: string): NextPage => {
   const WithAuthorizationWrapper: NextPage = async props => {
-    // Check authorization using server action
-    const authResult = await checkAuthorization(role);
+    const eventuras = createSDK({
+      inferUrl: { enabled: true },
+      authHeader: await getAccessToken(),
+    });
 
-    // If not authorized, show unauthorized page
-    if (!authResult.authorized) {
+    // Check if user is logged in
+    const appUser = await eventuras.users.getV3UsersMe({}).catch(() => null);
+
+    if (!appUser) {
       return <Unauthorized />;
     }
 
-    // User is authorized, render the wrapped component
+    const roles = await eventuras.organizationMemberRoles.getV3OrganizationsMembersRoles({
+      organizationId: ORGANIZATION_ID,
+      userId: appUser.id!,
+      eventurasOrgId: ORGANIZATION_ID,
+    });
+
+    // Check if user has the required role
+    if (!roles.includes(role)) {
+      return <Unauthorized />;
+    }
+
     return <WrappedComponent {...props} />;
   };
 

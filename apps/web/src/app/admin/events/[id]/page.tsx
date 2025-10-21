@@ -1,22 +1,15 @@
-import { Container, Heading, Section } from '@eventuras/ratio-ui';
-import { Error } from '@eventuras/ratio-ui/blocks/Error';
-import { Logger } from '@eventuras/logger';
-import { notFound } from 'next/navigation';
+import { Badge, Container, Heading, Section } from '@eventuras/ratio-ui';
+import { Logger } from '@eventuras/utils';
 
-import {
-  getV3EventsById,
-  getV3Registrations,
-  getV3EventsByEventIdProducts,
-  getV3EventsByEventIdStatistics
-} from '@eventuras/event-sdk';
+import Wrapper from '@/components/eventuras/Wrapper';
+import { Link } from '@eventuras/ratio-ui/next/Link';
+import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
+import Environment from '@/utils/Environment';
+import { getAccessToken } from '@/utils/getAccesstoken';
 
 import EventAdminActionsMenu from '../EventAdminActionsMenu';
 import ParticipantsSection from './ParticipantsSection';
-
-const logger = Logger.create({
-  namespace: 'web:admin:events',
-  context: { page: 'EventAdminPage' }
-});
+import { notFound } from 'next/navigation';
 
 type EventInfoProps = {
   params: Promise<{
@@ -27,87 +20,53 @@ type EventInfoProps = {
 export default async function EventAdminPage({ params }: Readonly<EventInfoProps>) {
   const { id } = await params;
 
-  const [eventinfoRes, registrationsRes, eventProductsRes, statisticsRes] = await Promise.all([
-    getV3EventsById({ path: { id } }),
-    getV3Registrations({
-      query: {
-        EventId: id,
-        IncludeUserInfo: true,
-        IncludeProducts: true
-      }
-    }),
-    getV3EventsByEventIdProducts({ path: { eventId: id } }),
-    getV3EventsByEventIdStatistics({ path: { eventId: id } }),
+  const eventuras = createSDK({
+    baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
+    authHeader: await getAccessToken(),
+  });
+
+  const [eventinfo, registrations, eventProducts, statistics] = await Promise.all([
+    apiWrapper(() => eventuras.events.getV3Events1({ id })),
+    apiWrapper(() =>
+      eventuras.registrations.getV3Registrations({
+        eventId: id,
+        includeUserInfo: true,
+        includeProducts: true,
+      })
+    ),
+    apiWrapper(() => eventuras.eventProducts.getV3EventsProducts({ eventId: id })),
+    apiWrapper(() => eventuras.eventStatistics.getV3EventsStatistics({ eventId: id })),
   ]);
 
-  const eventinfo = eventinfoRes?.data;
-
-  if (!eventinfo) {
-    logger.error({ eventId: id, error: eventinfoRes?.error }, `Event ${id} not found`);
+  if (!eventinfo.ok || !eventinfo.value) {
+    Logger.error({ namespace: 'EditEventinfo' }, `Event ${id} not found`);
     notFound();
   }
 
-  if (registrationsRes?.error) {
-    logger.warn({
-      eventId: id,
-      error: registrationsRes.error,
-    }, 'Failed to load registrations');
+  if (!registrations.ok) {
+    Logger.warn({ namespace: 'EventAdminPage' }, 'registrations call failed', registrations.error);
   }
-  if (eventProductsRes?.error) {
-    logger.warn({
-      eventId: id,
-      error: eventProductsRes.error,
-    }, 'Failed to load event products');
+  if (!eventProducts.ok) {
+    Logger.warn({ namespace: 'EventAdminPage' }, 'products call failed', eventProducts.error);
   }
-  if (statisticsRes?.error) {
-    logger.warn({
-      eventId: id,
-      error: statisticsRes.error,
-    }, 'Failed to load statistics');
+  if (!statistics.ok) {
+    Logger.warn({ namespace: 'EventAdminPage' }, 'statistics call failed', statistics.error);
   }
-
-  // Check if we have any errors OR if responses are null (simulated error state)
-  const hasPartialErrors = !!(
-    registrationsRes?.error ||
-    eventProductsRes?.error ||
-    statisticsRes?.error ||
-    !registrationsRes ||
-    !eventProductsRes ||
-    !statisticsRes
-  );
 
   return (
-    <>
+    <Wrapper fluid>
       <Section className="bg-white dark:bg-black pb-8">
         <Container>
-          <Heading as="h1">{eventinfo.title}</Heading>
-          <EventAdminActionsMenu eventinfo={eventinfo} />
-
-          {hasPartialErrors && (
-            <div className="mt-4">
-              <Error type="generic" tone="warning">
-                <Error.Title>Some Data Could Not Be Loaded</Error.Title>
-                <Error.Description>
-                  The event information loaded successfully, but some additional data is temporarily unavailable:
-                </Error.Description>
-                <Error.Details>
-                  <ul className="text-sm list-disc list-inside space-y-1">
-                    {(!registrationsRes || !!registrationsRes?.error) && <li>Participant registrations</li>}
-                    {(!eventProductsRes || !!eventProductsRes?.error) && <li>Event products</li>}
-                    {(!statisticsRes || !!statisticsRes?.error) && <li>Event statistics</li>}
-                  </ul>
-                </Error.Details>
-              </Error>
-            </div>
-          )}
+          <Heading as="h1">{eventinfo.value!.title}</Heading>
+          <EventAdminActionsMenu eventinfo={eventinfo.value!} />
         </Container>
       </Section>
       <ParticipantsSection
-        eventInfo={eventinfo}
-        participants={registrationsRes.data?.data ?? []}
-        statistics={statisticsRes.data ?? {}}
-        eventProducts={eventProductsRes.data ?? []}
+        eventInfo={eventinfo.value!}
+        participants={registrations.value?.data ?? []}
+        statistics={statistics.value ?? {}}
+        eventProducts={eventProducts.value ?? []}
       />
-    </>
+    </Wrapper>
   );
 }

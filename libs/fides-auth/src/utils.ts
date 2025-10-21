@@ -1,4 +1,4 @@
-import { Logger } from '@eventuras/logger';
+import { Logger } from '@eventuras/utils';
 import * as jose from 'jose';
 
 const algorithm = 'aes-256-gcm';

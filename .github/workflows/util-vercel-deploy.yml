@@ -72,43 +72,47 @@ jobs:
         with:
           fetch-depth: 2
 
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v3
+      - name: Cache Node.js modules
+        uses: actions/cache@v4
         with:
-          version: 9.12.3
-          run_install: false
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-          cache: 'pnpm'
+          cache: "npm"
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile=false
+      - name: Npm CI
+        run: npm ci
 
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
 
       - name: Pull Vercel Environment Information
-        run: pnpm dlx vercel pull --yes --environment=${{ inputs.vercel_environment }} --token=${{ secrets.vercel_token }}
+        run: vercel pull --yes --environment=${{ inputs.vercel_environment }} --token=${{ secrets.vercel_token }}
 
       - name: Build Project Artifacts (Dev)
         if: ${{ inputs.vercel_environment != 'production' }}
-        run: pnpm dlx vercel build --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Build Project Artifacts (Production)
         if: ${{ inputs.vercel_environment == 'production' }}
-        run: pnpm dlx vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Deploy Project Artifacts to Vercel (Dev)
         if: ${{ inputs.vercel_environment != 'production' }}
         run: |
-          DEPLOY_URL=$(pnpm dlx vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} | grep "https://" | xargs)
+          DEPLOY_URL=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} | grep "https://" | xargs)
           echo "DEPLOY_URL=$DEPLOY_URL" >> $GITHUB_ENV
 
       - name: Deploy Project Artifacts to Vercel (Production)
         if: ${{ inputs.vercel_environment == 'production' }}
         run: |
-          DEPLOY_URL=$(pnpm dlx vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }} | grep "https://" | xargs)
+          DEPLOY_URL=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }} | grep "https://" | xargs)
           echo "DEPLOY_URL=$DEPLOY_URL" >> $GITHUB_ENV
 
       - name: Set Custom URL
@@ -119,8 +123,8 @@ jobs:
             exit 1
           fi
           echo "Alias from $DEPLOY_URL to ${{ inputs.url }}"
-          pnpm dlx vercel alias --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ secrets.VERCEL_ORG_ID }} set "$DEPLOY_URL" "${{ inputs.url }}"
+          vercel alias --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ secrets.VERCEL_ORG_ID }} set "$DEPLOY_URL" "${{ inputs.url }}"
 
       - name: Promote
         if: ${{ inputs.promote }}
-        run: pnpm dlx vercel promote --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ secrets.VERCEL_ORG_ID }} --yes $DEPLOY_URL
+        run: vercel promote --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ secrets.VERCEL_ORG_ID }} --yes $DEPLOY_URL

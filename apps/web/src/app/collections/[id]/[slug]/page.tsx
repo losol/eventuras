@@ -1,18 +1,15 @@
 import { MarkdownContent } from '@eventuras/markdown';
 import { Container, Heading, Section, Text } from '@eventuras/ratio-ui';
-import { Logger } from '@eventuras/logger';
-
-const logger = Logger.create({ namespace: 'web:app:collections', context: { page: 'CollectionPage' } });
-
+import { Logger } from '@eventuras/utils';
 import { redirect } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import EventCard from '@/components/event/EventCard';
-import { Link } from '@eventuras/ratio-ui-next/Link';
-import { getV3Eventcollections, getV3EventcollectionsById, getV3Events } from '@eventuras/event-sdk';
-import { appConfig } from '@/config.server';
-import { getPublicClient } from '@/lib/eventuras-public-client';
+import Wrapper from '@/components/eventuras/Wrapper';
+import { Link } from '@eventuras/ratio-ui/next/Link';
+import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
+import Environment from '@/utils/Environment';
 
 type EventInfoProps = {
   params: Promise<{
@@ -21,59 +18,48 @@ type EventInfoProps = {
   }>;
 };
 
-// Incremental Static Regeneration - revalidate every 5 minutes
 export const revalidate = 300;
-
-// Allow generating new collection pages on-demand
-export const dynamicParams = true;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const dynamicParams = true;
 
 export async function generateStaticParams() {
-  const organizationId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
-  const orgId = typeof organizationId === 'number'
-    ? organizationId
-    : parseInt(organizationId as string, 10);
+  const orgId = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID);
 
-  logger.info(
-    { apiBaseUrl: appConfig.env.NEXT_PUBLIC_BACKEND_URL as string, orgId },
-    'Generating static params for collections'
+  Logger.info(
+    { namespace: 'collections:staticparams' },
+    `Api Base url: ${Environment.NEXT_PUBLIC_BACKEND_URL}, orgId: ${orgId})`
   );
 
-  try {
-    // Use public client for anonymous API access during static generation
-    const publicClient = getPublicClient();
-    const response = await getV3Eventcollections({
-      client: publicClient,
-      headers: {
-        'Eventuras-Org-Id': orgId,
-      },
-    });
+  const eventuras = createSDK({ inferUrl: true });
+  const collections = await eventuras.eventCollection.getV3Eventcollections({
+    eventurasOrgId: orgId,
+  });
 
-    if (!response.data?.data) return [];
+  if (!collections) return [];
 
-    const staticParams = response.data.data.map(collection => ({
+  if (collections.data) {
+    const staticParams = collections.data.map(collection => ({
       id: collection.id?.toString(),
       slug: collection.slug,
     }));
-    logger.info({ staticParams }, 'Generated static params');
+    Logger.info({ namespace: 'collections:staticparams' }, 'Static params:', staticParams);
     return staticParams;
-  } catch (error) {
-    logger.warn({ error }, 'Error generating static params for collections - this is expected during build time if backend is not running');
-    return [];
   }
+
+  return [];
 }
 
 const CollectionPage: React.FC<EventInfoProps> = async props => {
   const params = await props.params;
   const t = await getTranslations();
+  const eventuras = createSDK({ inferUrl: true });
+  const result = await apiWrapper(() =>
+    eventuras.eventCollection.getV3Eventcollections1({ id: params.id })
+  );
 
-  // Use public client for anonymous API access
-  const publicClient = getPublicClient();
-  const response = await getV3EventcollectionsById({
-    client: publicClient,
-    path: { id: params.id },
-  });
+  const notFound = !result.ok || !result.value;
 
-  if (!response.data)
+  if (notFound)
     return (
       <>
         <Heading>{t('common.events.detailspage.notfound.title')}</Heading>
@@ -84,21 +70,20 @@ const CollectionPage: React.FC<EventInfoProps> = async props => {
       </>
     );
 
-  const collection = response.data;
+  const collection = result.value!;
 
   if (params.slug !== collection.slug) {
     redirect(`/collections/${collection.id!}/${collection.slug!}`);
   }
 
-  const eventsResponse = await getV3Events({
-    client: publicClient,
-    query: {
-      CollectionId: collection.id!,
-    },
-  });
+  const eventinfos = await apiWrapper(() =>
+    eventuras.events.getV3Events({
+      collectionId: collection.id!,
+    })
+  );
 
   return (
-    <>
+    <Wrapper>
       {collection?.featuredImageUrl && (
         <Card
           className="mx-auto min-h-[33vh]"
@@ -114,12 +99,12 @@ const CollectionPage: React.FC<EventInfoProps> = async props => {
         </Container>
       </Section>
       <Section>
-        {eventsResponse.data?.data && eventsResponse.data.data.length > 0 ? (
+        {eventinfos.value?.data && eventinfos.value.data.length > 0 ? (
           <Container>
             <Heading as="h2" padding="pt-6 pb-3">
               {t('common.collections.detailspage.eventstitle')}
             </Heading>
-            {eventsResponse.data.data.map(eventinfo => (
+            {eventinfos.value.data.map(eventinfo => (
               <EventCard key={eventinfo.id} eventinfo={eventinfo} />
             ))}
           </Container>
@@ -129,7 +114,7 @@ const CollectionPage: React.FC<EventInfoProps> = async props => {
           </Container>
         )}
       </Section>
-    </>
+    </Wrapper>
   );
 };
 

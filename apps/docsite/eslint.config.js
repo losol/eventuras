@@ -1,6 +1,6 @@
-import {nextJsConfig} from '@eventuras/eslint-config/next-js';
+import eventurasConfig from '@eventuras/eslint-config/next.js';
 
 /** @type {import("eslint").Linter.Config[]} */
 export default [
-  ...nextJsConfig,
+  ...eventurasConfig,
 ];

@@ -1,5 +1,3 @@
-'use client';
-
 import { MarkdownInput } from '@eventuras/markdowninput';
 import {
   EmailNotificationDto,
@@ -7,23 +5,19 @@ import {
   RegistrationStatus,
   SmsNotificationDto,
   EventParticipantsFilterDto,
-} from '@eventuras/event-sdk';
+} from '@eventuras/sdk';
 import { CheckboxInput, CheckboxLabel, Form, Input } from '@eventuras/smartform';
 import { Button, ButtonGroup, Heading } from '@eventuras/ratio-ui';
-import { Logger } from '@eventuras/logger';
+import { Logger } from '@eventuras/utils';
 import { useTranslations } from 'next-intl';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { useToast } from '@eventuras/toast';
 import { ParticipationTypes } from '@/types';
+import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 import { participationMap } from '@/utils/api/mappers';
 import { mapEnum } from '@/utils/enum';
-import { sendEmailNotification, sendSmsNotification } from '@/app/actions/notifications';
-
-const logger = Logger.create({
-  namespace: 'web:components:event',
-  context: { component: 'EventNotificator' },
-});
+import Environment from '@/utils/Environment';
 
 type FormValues = {
   subject: string;
@@ -42,6 +36,62 @@ export type EventNotificatorProps = {
   eventId: number;
   notificatorType: EventNotificatorType;
   onClose: () => void;
+};
+
+interface ApiErrorDetails {
+  field?: string;
+  message: string;
+  code?: string;
+}
+interface FormattedError {
+  type: 'validation' | 'network' | 'authentication' | 'server' | 'client' | 'unknown';
+  message: string;
+  details?: ApiErrorDetails[];
+  originalError?: any;
+}
+
+const parseApiError = (error: any): FormattedError => {
+  if (!error?.body && (error?.message?.includes('fetch') || error?.message?.includes('network'))) {
+    return {
+      type: 'network',
+      message: 'Network connection failed. Please try again.',
+      originalError: error,
+    };
+  }
+  if (error?.status === 401 || error?.status === 403) {
+    return {
+      type: 'authentication',
+      message: 'Not authorized. Please log in again.',
+      originalError: error,
+    };
+  }
+  if (error?.status === 400 && error?.body?.errors) {
+    const details: ApiErrorDetails[] = [];
+    Object.entries(error.body.errors).forEach(([field, messages]) => {
+      (Array.isArray(messages) ? messages : [messages]).forEach((msg: string) => {
+        details.push({ field, message: msg, code: 'validation_error' });
+      });
+    });
+    if (details.length > 0) {
+      const fieldMessages = details
+        .map(d => `• ${d.field?.replace(/([A-Z])/g, ' $1').toLowerCase()}: ${d.message}`)
+        .join('\n');
+      return {
+        type: 'validation',
+        message: `Validation failed:\n${fieldMessages}`,
+        details,
+        originalError: error,
+      };
+    }
+  }
+  if (error?.status >= 500) {
+    return { type: 'server', message: 'Server error. Try again shortly.', originalError: error };
+  }
+  if (error?.status >= 400 && error?.status < 500) {
+    const msg = error.body?.message || error.body?.title || `Request failed (${error.status})`;
+    return { type: 'client', message: `Request error: ${msg}`, originalError: error };
+  }
+  return { type: 'unknown', message: error?.message || 'Unexpected error.', originalError: error };
 };
 
 const validateFormData = (data: FormValues, type: EventNotificatorType): string[] => {
@@ -133,62 +183,74 @@ export default function EventNotificator({
 
   const onSubmitForm: SubmitHandler<FormValues> = async data => {
     try {
-      // Validate form data
       const validationErrors = validateFormData(data, notificatorType);
       if (validationErrors.length > 0) {
-        logger.warn({ validationErrors }, 'Form validation failed');
+        Logger.warn(
+          { namespace: 'EventNotificator' },
+          `Form validation failed: ${JSON.stringify(validationErrors)}`
+        );
         toast.error(validationErrors.join('\n'));
         return;
       }
 
-      // Build notification DTO
-      const notificationDto = getBodyDto(eventId, data, notificatorType);
+      const body = getBodyDto(eventId, data, notificatorType);
+      const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
 
-      logger.info(
+      Logger.info(
+        { namespace: 'EventNotificator' },
+        `Sending ${notificatorType} notification for event ${eventId}`,
         {
-          notificationType: notificatorType,
-          eventId,
           recipientCriteria: {
             statuses: Object.keys(data.registrationStatus || {}).filter(
               k => data.registrationStatus[k]
             ),
             types: Object.keys(data.registrationTypes || {}).filter(k => data.registrationTypes[k]),
           },
-        },
-        `Sending ${notificatorType} notification`
+        }
       );
 
-      // Call appropriate server action
       const result =
         notificatorType === EventNotificatorType.EMAIL
-          ? await sendEmailNotification(notificationDto as EmailNotificationDto)
-          : await sendSmsNotification(notificationDto as SmsNotificationDto);
+          ? await apiWrapper(() =>
+              sdk.notificationsQueueing.postV3NotificationsEmail({
+                eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID, 10),
+                requestBody: body as EmailNotificationDto,
+              })
+            )
+          : await apiWrapper(() =>
+              sdk.notificationsQueueing.postV3NotificationsSms({
+                eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID, 10),
+                requestBody: body as SmsNotificationDto,
+              })
+            );
 
-      if (!result.success) {
-        logger.error(
-          {
-            error: result.error,
-            eventId,
-            notificationType: notificatorType,
-          },
-          `Failed to send ${notificatorType} notification`
-        );
-        toast.error(result.error.message);
+      if (!result.ok) {
+        const formatted = parseApiError(result.error);
+        Logger.error({ namespace: 'EventNotificator' }, `Failed to send ${notificatorType}`, {
+          errorType: formatted.type,
+          errorMessage: formatted.message,
+          originalError: formatted.originalError,
+          requestBody: body,
+        });
+        toast.error(formatted.message);
         return;
       }
 
-      logger.info({ eventId }, `Successfully sent ${notificatorType} notification`);
+      Logger.info(
+        { namespace: 'EventNotificator' },
+        `Successfully sent ${notificatorType} notification for event ${eventId}`
+      );
       toast.success(
-        result.message ||
-          (notificatorType === EventNotificatorType.EMAIL
-            ? t('admin.eventNotifier.form.successFeedbackEmail')
-            : t('admin.eventNotifier.form.successFeedbackSMS'))
+        notificatorType === EventNotificatorType.EMAIL
+          ? t('admin.eventNotifier.form.successFeedbackEmail')
+          : t('admin.eventNotifier.form.successFeedbackSMS')
       );
       onClose();
     } catch (error) {
-      logger.error(
-        { error, eventId, notificationType: notificatorType },
-        `Unexpected error in ${notificatorType} handler`
+      Logger.error(
+        { namespace: 'EventNotificator' },
+        `Unexpected error in ${notificatorType} handler`,
+        { error, eventId, notificatorType, data }
       );
       toast.error('An unexpected error occurred. Please try again.');
     }
@@ -271,7 +333,7 @@ export default function EventNotificator({
         </Button>
         <Button
           type="button"
-          onClick={(e: React.MouseEvent) => {
+          onClick={e => {
             e.preventDefault();
             onClose();
           }}

@@ -1,18 +1,17 @@
 {
   "extends": "@eventuras/typescript-config/react-library.json",
   "compilerOptions": {
-    "lib": ["ES2023", "DOM", "DOM.Iterable"],
-    "target": "ES2022",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "skipLibCheck": true,
-    "noEmit": false
+    "paths": {
+      "@eventuras/datatable/*": ["../../libs/datatable/src/*"],
+      "@eventuras/ratio-ui": ["../../libs/ratio-ui/src"],
+      "@eventuras/ratio-ui/*": ["../../libs/ratio-ui/src/*"]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"]
+  "include": ["/src"],
+  "exclude": ["node_modules", "dist", "src/client"]
 }

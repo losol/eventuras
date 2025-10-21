@@ -1,4 +1,4 @@
-import { IconX } from '@tabler/icons-react';
+import { X } from '../icons';
 import { HTMLAttributes, ReactNode } from 'react';
 
 import { Button, Heading, Portal } from '../..';
@@ -90,7 +90,7 @@ const Drawer: DrawerComponent = (props: DrawerProps) => {
             className="absolute top-0 right-0 m-4"
             variant="secondary"
           >
-            <IconX />
+            <X />
           </Button>
         )}
         {filteredChildren}

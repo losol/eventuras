@@ -1,8 +1,10 @@
 import { Container, Heading, Section } from '@eventuras/ratio-ui';
-import { Logger } from '@eventuras/logger';
+import { Logger } from '@eventuras/utils';
 import { getTranslations } from 'next-intl/server';
 
-import { getV3OrdersById } from '@eventuras/event-sdk';
+import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
+import Environment from '@/utils/Environment';
+import { getAccessToken } from '@/utils/getAccesstoken';
 
 import Order from '../Order';
 
@@ -14,22 +16,28 @@ type EventInfoProps = {
 const OrderDetailPage: React.FC<EventInfoProps> = async props => {
   const params = await props.params;
   const t = await getTranslations();
-  const response = await getV3OrdersById({
-    path: { id: params.id },
-    query: {
-      IncludeRegistration: true,
-      IncludeUser: true
-    }
+
+  const eventuras = createSDK({
+    baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
+    authHeader: await getAccessToken(),
   });
 
-  if (!response.data) {
+  const order = await apiWrapper(() =>
+    eventuras.orders.getV3Orders({
+      id: params.id,
+      includeRegistration: true,
+      includeUser: true,
+    })
+  );
+
+  if (!order.ok) {
     Logger.error(
       { namespace: 'EditEventinfo' },
-      `Failed to fetch order id ${params.id}, error: ${response.error}`
+      `Failed to fetch order id ${params.id}, error: ${order.error}`
     );
   }
 
-  if (!response.data) {
+  if (!order.ok) {
     return <div>{t('admin.orders.labels.notFound')}</div>;
   }
 
@@ -42,7 +50,7 @@ const OrderDetailPage: React.FC<EventInfoProps> = async props => {
       </Section>
       <Section className="py-12">
         <Container>
-          <Order order={response.data} admin />
+          <Order order={order.value!} admin />
         </Container>
       </Section>
     </>

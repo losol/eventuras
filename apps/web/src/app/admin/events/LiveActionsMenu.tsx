@@ -1,89 +1,89 @@
 'use client';
 
-import { RegistrationDto, RegistrationStatus } from '@eventuras/event-sdk';
+import { ApiError, RegistrationDto, RegistrationStatus } from '@eventuras/sdk';
 import { Button } from '@eventuras/ratio-ui';
-import { Logger } from '@eventuras/logger';
-import { IconCircleX } from '@tabler/icons-react';
+import { Logger } from '@eventuras/utils';
+import { CircleX } from '@eventuras/ratio-ui/icons';
 import { useState } from 'react';
-import { useToast } from '@eventuras/toast';
 
-import { Link } from '@eventuras/ratio-ui-next/Link';
+import { Link } from '@eventuras/ratio-ui/next/Link';
+import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { updateRegistrationStatus, sendCertificateEmail } from '../registrations/actions';
+import { statusPatchRequest } from '../registrations/Registration';
 
 interface LiveActionsMenuProps {
   registration: RegistrationDto;
   onStatusUpdate?: (registration: RegistrationDto) => void;
 }
 
-const LiveActionsMenu = ({ registration }: LiveActionsMenuProps) => {
+const LiveActionsMenu = ({ registration, onStatusUpdate }: LiveActionsMenuProps) => {
   const [emailLoading, setEmailLoading] = useState(false);
   const [emailError, setEmailError] = useState<string | null>(null);
   const [emailSuccess, setEmailSuccess] = useState(false);
-  const toast = useToast();
 
-  const logger = Logger.create({
-    namespace: 'web:admin:events',
-    context: { component: 'LiveActionsMenu' },
-  });
+  const handleStatusUpdate = (newStatus: RegistrationStatus) => {
+    // Send PATCH request to update registration status
+    statusPatchRequest(registration.registrationId!, newStatus);
 
-  const handleStatusUpdate = async (newStatus: RegistrationStatus) => {
-    // TODO: This functionality is not yet fully implemented
-    toast.error('Status update not yet implemented. Please use the registration edit page.');
-    logger.warn(
-      { registrationId: registration.registrationId, newStatus },
-      'Status update attempted but not implemented'
-    );
-
-    // When ready, uncomment:
-    // const result = await updateRegistrationStatus(registration.registrationId!, newStatus);
-    //
-    // if (!result.success) {
-    //   toast.error(result.error.message);
-    //   logger.error({ error: result.error }, 'Failed to update registration status');
-    //   return;
-    // }
-    //
-    // toast.success(result.message || 'Status updated successfully!');
-    // if (onStatusUpdate) {
-    //   onStatusUpdate({ ...registration, status: newStatus });
-    // }
+    if (onStatusUpdate) {
+      onStatusUpdate({ ...registration, status: newStatus });
+    }
   };
 
   const handleEmailCertificate = async (registrationId: number) => {
-    setEmailLoading(true);
-    setEmailError(null);
-    setEmailSuccess(false);
+    try {
+      setEmailLoading(true);
+      setEmailError(null);
+      setEmailSuccess(false);
 
-    logger.info({ registrationId }, 'Sending certificate email');
+      const eventuras = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
 
-    const result = await sendCertificateEmail(registrationId);
+      const result = await apiWrapper(() =>
+        eventuras.registrationCertificate.postV3RegistrationsCertificateSend({
+          id: registrationId,
+        })
+      );
 
-    if (!result.success) {
-      const errorMessage = result.error.message;
+      if (!result.ok) {
+        // Handle ApiError properly
+        const errorMessage =
+          typeof result.error === 'string'
+            ? result.error
+            : (result.error as ApiError)?.message || 'Failed to send certificate';
+        throw new Error(errorMessage);
+      }
+
+      Logger.info(
+        { namespace: 'certificates:email' },
+        `Certificate sent successfully for registration ${registrationId}`
+      );
+
+      setEmailSuccess(true);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to send certificate';
       setEmailError(errorMessage);
-      toast.error(errorMessage);
-      logger.error({ error: result.error, registrationId }, 'Failed to send certificate');
+      Logger.error(
+        { namespace: 'certificates:email' },
+        `Failed to send certificate for registration ${registrationId}: ${errorMessage}`
+      );
+    } finally {
       setEmailLoading(false);
-      return;
     }
-
-    logger.info({ registrationId }, 'Certificate sent successfully');
-    toast.success(result.message || 'Certificate sent successfully!');
-    setEmailSuccess(true);
-    setEmailLoading(false);
   };
 
   function renderButtonBasedOnStatus() {
     switch (registration.status) {
       case 'Draft':
-        return <Button onClick={() => handleStatusUpdate('Verified')}>Verify</Button>;
+        return (
+          <Button onClick={() => handleStatusUpdate(RegistrationStatus.VERIFIED)}>Verify</Button>
+        );
       case 'Verified':
       case 'NotAttended':
-        return <Button onClick={() => handleStatusUpdate('Attended')}>Checkin</Button>;
+        return (
+          <Button onClick={() => handleStatusUpdate(RegistrationStatus.ATTENDED)}>Checkin</Button>
+        );
       case 'Cancelled':
-        return <IconCircleX />;
+        return <CircleX />;
       default:
         if (registration.certificateId) {
           return (
@@ -107,7 +107,9 @@ const LiveActionsMenu = ({ registration }: LiveActionsMenuProps) => {
             </div>
           );
         }
-        return <Button onClick={() => handleStatusUpdate('Finished')}>Finish</Button>;
+        return (
+          <Button onClick={() => handleStatusUpdate(RegistrationStatus.FINISHED)}>Finish</Button>
+        );
     }
   }
 

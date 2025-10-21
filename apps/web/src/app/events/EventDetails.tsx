@@ -1,9 +1,9 @@
 import React from 'react';
 import { MarkdownContent } from '@eventuras/markdown';
-import { EventDto } from '@eventuras/event-sdk';
+import { EventDto } from '@eventuras/sdk';
 import { Heading } from '@eventuras/ratio-ui';
 import { useTranslations } from 'next-intl';
-import { Link } from '@eventuras/ratio-ui-next/Link';
+import { Link } from '@eventuras/ratio-ui/next/Link';
 import { NavList } from '@eventuras/ratio-ui/core/NavList';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 

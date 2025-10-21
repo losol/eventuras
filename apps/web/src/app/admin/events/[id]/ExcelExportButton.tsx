@@ -1,12 +1,10 @@
 'use client';
 
 import { Button } from '@eventuras/ratio-ui';
-import { Logger } from '@eventuras/logger';
+import { Logger } from '@eventuras/utils';
 import { useState } from 'react';
 
-const logger = Logger.create({ namespace: 'web:admin:events', context: { component: 'ExcelExportButton' } });
-
-import { publicEnv } from '@/config.client';
+import Environment from '@/utils/Environment';
 
 export const ExcelExportButton = (props: { EventinfoId: number }) => {
   const [loading, setIsLoading] = useState(false);
@@ -15,7 +13,7 @@ export const ExcelExportButton = (props: { EventinfoId: number }) => {
     setIsLoading(true);
     try {
       const response = await fetch(
-        `${publicEnv.NEXT_PUBLIC_API_BASE_URL as string}/v3/registrations?EventId=${props.EventinfoId}`,
+        `${Environment.NEXT_PUBLIC_API_BASE_URL}/v3/registrations?EventId=${props.EventinfoId}`,
         {
           headers: {
             Accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -49,7 +47,7 @@ export const ExcelExportButton = (props: { EventinfoId: number }) => {
         URL.revokeObjectURL(fileURL);
       }, 500);
     } catch (error) {
-      logger.error({ error }, 'Error downloading Excel file');
+      Logger.error({ namespace: 'ExcelExporter' }, 'Error downloading Excel file:', error);
     } finally {
       setIsLoading(false);
     }

@@ -1,4 +1,5 @@
 import { Heading } from '../../core/Heading';
+import { DATA_TEST_ID } from '@eventuras/utils';
 import { Overlay } from '@react-aria/overlays';
 import React, { ReactNode } from 'react';
 import { Dialog as AriaDialog } from 'react-aria-components';
@@ -7,14 +8,14 @@ export type DialogProps = {
   onClose: () => void;
   title: string;
   children: ReactNode;
-  testId?: string;
+  [DATA_TEST_ID]?: string;
 };
 
 export const Dialog = (props: DialogProps) => {
   return (
     <DialogModal
       isOpen={props.isOpen}
-      testId={props.testId}
+      {...{ [DATA_TEST_ID]: props[DATA_TEST_ID] }}
       onClickOutside={props.onClose}
     >
       <AriaDialog className="relative z-10">
@@ -31,7 +32,7 @@ export interface DialogModalProps {
   children: React.ReactNode;
   isOpen: boolean;
   onClickOutside?: () => void;
-  testId?: string;
+  [DATA_TEST_ID]?: string;
 }
 
 function DialogModal(props: Readonly<DialogModalProps>) {
@@ -42,7 +43,7 @@ function DialogModal(props: Readonly<DialogModalProps>) {
   return (
     <Overlay>
       <div
-        data-testid={props.testId}
+        {...{ [DATA_TEST_ID]: props[DATA_TEST_ID] }}
         className="flex min-h-full min-w-full items-start justify-center p-4 text-center fixed inset-0 z-100 overflow-auto h-full bg-black/50"
         id="underlay"
         role="button"

@@ -70,12 +70,7 @@
         "AUTH0_API_AUDIENCE",
         "SESSION_SECRET"
       ],
-      "outputs": [
-        ".next/**",
-        "!.next/cache/**",
-        "dist/**",
-        "storybook-static/**"
-      ],
+      "outputs": [".next/**", "!.next/cache/**"],
       "inputs": [
         "$TURBO_DEFAULT$",
         ".env.production.local",

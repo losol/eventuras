@@ -1,14 +1,15 @@
 import { Container, Heading, Section } from '@eventuras/ratio-ui';
 import { getTranslations } from 'next-intl/server';
 
+import Wrapper from '@/components/eventuras/Wrapper';
 import withAuthorization from '@/utils/auth/withAuthorization';
 
 const CertificatesPage = async () => {
   const t = await getTranslations();
 
   return (
-    <>
-    <Container>
+    <Wrapper>
+      <Container>
         <Heading as="h1">{t('admin.certificates.page.title')}</Heading>
       </Container>
       <Section>
@@ -16,7 +17,7 @@ const CertificatesPage = async () => {
           <p>{t('admin.certificates.page.description')}</p>
         </Container>
       </Section>
-      </>
+    </Wrapper>
   );
 };
 

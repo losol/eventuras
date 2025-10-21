@@ -1,8 +1,10 @@
 import { Container, Heading, Section } from '@eventuras/ratio-ui';
-import { Logger } from '@eventuras/logger';
+import { Logger } from '@eventuras/utils';
 import { getTranslations } from 'next-intl/server';
 
-import { getV3RegistrationsById } from '@eventuras/event-sdk';
+import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
+import Environment from '@/utils/Environment';
+import { getAccessToken } from '@/utils/getAccesstoken';
 
 import Registration from '../Registration';
 
@@ -14,24 +16,30 @@ type EventInfoProps = {
 const RegistrationDetailPage: React.FC<EventInfoProps> = async props => {
   const params = await props.params;
   const t = await getTranslations();
-  const response = await getV3RegistrationsById({
-    path: { id: params.id },
-    query: {
-      IncludeEventInfo: true,
-      IncludeProducts: true,
-      IncludeUserInfo: true
-    }
+
+  const eventuras = createSDK({
+    baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
+    authHeader: await getAccessToken(),
   });
+
+  const registration = await apiWrapper(() =>
+    eventuras.registrations.getV3Registrations1({
+      id: params.id,
+      includeEventInfo: true,
+      includeProducts: true,
+      includeUserInfo: true,
+    })
+  );
 
   Logger.debug(
     { namespace: 'common:registrations' },
-    `Registration detail page: with data ${JSON.stringify(response.data)}`
+    `Registration detail page: with data ${JSON.stringify(registration.value)}`
   );
 
-  if (!response.data) {
+  if (!registration.ok) {
     Logger.error(
       { namespace: 'common:registrations' },
-      `Failed to fetch registration id ${params.id}, error: ${response.error}`
+      `Failed to fetch order id ${params.id}, error: ${registration.error}`
     );
     return <div>{t('common.registrations.labels.notFound')}</div>;
   }
@@ -45,7 +53,7 @@ const RegistrationDetailPage: React.FC<EventInfoProps> = async props => {
       </Section>
       <Section className="py-12">
         <Container>
-          <Registration registration={response.data} adminMode />
+          <Registration registration={registration.value!} adminMode />
         </Container>
       </Section>
     </>

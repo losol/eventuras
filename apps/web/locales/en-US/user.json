@@ -44,7 +44,6 @@
       "viewRegistration": "Registration"
     },
     "cancellationpage": {
-      "title": "Cancel Registration",
       "description": "Send an email to the event organizer if you want to cancel your registration. "
     },
     "eventNotFound": "Event was not found",
@@ -125,22 +124,8 @@
     "quantity": "Quantity",
     "status": "Status",
     "steps": {
-      "account": {
-        "label": "Account",
-        "title": "Verify Your Account"
-      },
-      "products": {
-        "label": "Products",
-        "title": "Select Products"
-      },
-      "payment": {
-        "label": "Payment",
-        "title": "Payment Information"
-      },
       "confirmation": {
-        "label": "Confirm",
-        "title": "Confirm Registration",
-        "description": "Please review your registration details before submitting."
+        "description": "You are about to confirm the registration, please double check details below before         submitting."
       }
     },
     "title": "Registration",

@@ -1,5 +1,6 @@
 // core/Link.tsx
 import React from 'react';
+import { DATA_TEST_ID } from '@eventuras/utils';
 import { BoxSpacingProps, buildSpacingClasses } from '../../layout/Box/Box';
 import { buttonStyles } from '../Button/Button';
 
@@ -13,7 +14,7 @@ export interface LinkProps extends BoxSpacingProps {
   linkOverlay?: boolean;
   component?: React.ElementType; // e.g. next/link
   componentProps?: Record<string, unknown>;
-  testId?: string;
+  [DATA_TEST_ID]?: string;
 }
 
 export const Link = React.forwardRef<HTMLElement, LinkProps>(
@@ -29,7 +30,7 @@ export const Link = React.forwardRef<HTMLElement, LinkProps>(
       variant,
       linkOverlay = false,
       padding, margin, border, width, height,
-      testId,
+      [DATA_TEST_ID]: testId,
       ...rest
     },
     ref
@@ -57,17 +58,13 @@ export const Link = React.forwardRef<HTMLElement, LinkProps>(
       .filter(Boolean)
       .join(' ');
 
-    // For Next.js Link, we need to pass data-testid via componentProps
-    const finalComponentProps = testId
-      ? { ...componentProps, 'data-testid': testId }
-      : componentProps;
-
     return (
       <Component
         href={href}
         className={classes}
         ref={ref}
-        {...finalComponentProps}
+        {...(testId ? { [DATA_TEST_ID]: testId } : {})}
+        {...componentProps}
         {...rest}
       >
         {children}

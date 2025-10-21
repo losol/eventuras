@@ -1,8 +1,10 @@
 import { Container, Heading, Section } from '@eventuras/ratio-ui';
-import { Logger } from '@eventuras/logger';
+import { Logger } from '@eventuras/utils';
 import { getTranslations } from 'next-intl/server';
 
-import { getV3UsersById } from '@eventuras/event-sdk';
+import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
+import Environment from '@/utils/Environment';
+import { getAccessToken } from '@/utils/getAccesstoken';
 
 import UserEditor from '../UserEditor';
 
@@ -14,18 +16,26 @@ type EventInfoProps = {
 const AdminUserDetailPage: React.FC<EventInfoProps> = async props => {
   const params = await props.params;
   const t = await getTranslations();
-  const response = await getV3UsersById({
-    path: { id: params.id }
+
+  const eventuras = createSDK({
+    baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
+    authHeader: await getAccessToken(),
   });
 
-  if (!response.data) {
+  const user = await apiWrapper(() =>
+    eventuras.users.getV3Users({
+      id: params.id,
+    })
+  );
+
+  if (!user.ok) {
     Logger.error(
       { namespace: 'EditEventinfo' },
-      `Failed to fetch user id ${params.id}, error: ${response.error}`
+      `Failed to fetch order id ${params.id}, error: ${user.error}`
     );
   }
 
-  if (!response.data) {
+  if (!user.ok) {
     return <div>{t('admin.users.labels.userNotFound')}</div>;
   }
 
@@ -38,7 +48,7 @@ const AdminUserDetailPage: React.FC<EventInfoProps> = async props => {
       </Section>
       <Section className="py-12">
         <Container>
-          <UserEditor user={response.data} adminMode />
+          <UserEditor user={user.value!} adminMode />
         </Container>
       </Section>
     </>

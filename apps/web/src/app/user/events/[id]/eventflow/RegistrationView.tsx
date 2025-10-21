@@ -1,6 +1,7 @@
 import { MarkdownContent } from '@eventuras/markdown';
-import { EventDto, RegistrationDto } from '@eventuras/event-sdk';
+import { EventDto, RegistrationDto } from '@eventuras/sdk';
 import { Button, Heading } from '@eventuras/ratio-ui';
+import { DATA_TEST_ID } from '@eventuras/utils';
 import { useTranslations } from 'next-intl';
 
 import Registration from '@/app/admin/registrations/Registration';
@@ -48,7 +49,7 @@ const RegistrationView: React.FC<RegistrationViewProps> = ({
         <Tabs.Item
           id="tab-registration"
           title={t('common.labels.registration')}
-          testId="registrationview-registration-tab"
+          {...{ [DATA_TEST_ID]: 'registrationview-registration-tab' }}
         >
           <Registration registration={registration} />
           {onCancel && <Button onClick={onCancel}>{t('common.buttons.cancel')}</Button>}

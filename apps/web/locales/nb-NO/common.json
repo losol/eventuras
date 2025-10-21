@@ -21,27 +21,7 @@
   },
   "auth": {
     "login": "Logg inn",
-    "logout": "Logg ut",
-    "refreshing": "Fornyer økten din...",
-    "sessionExpired": {
-      "title": "Økten har utløpt",
-      "description": "Din økt har utløpt. Vennligst logg inn på nytt for å fortsette.",
-      "loginButton": "Logg inn"
-    },
-    "sessionWarning": {
-      "title": {
-        "expired": "Din økt har utløpt",
-        "invalid": "Din økt er ikke lenger gyldig"
-      },
-      "description": {
-        "expired": "Sesjonen din har utløpt. Du vil bli sendt til påloggingssiden om kort tid.",
-        "invalid": "Sesjonen din er ikke lenger gyldig. Du vil bli sendt til påloggingssiden om kort tid."
-      },
-      "countdownText": "Du har <strong>{seconds} sekunder</strong> til å lagre arbeidet ditt",
-      "tip": "Tips: Kopier eventuelle endringer du har gjort før du blir redirectet.",
-      "loginNow": "Logg inn nå",
-      "giveMoreTime": "Gi meg mer tid ({seconds}s)"
-    }
+    "logout": "Logg ut"
   },
   "buttons": {
     "back": "Tilbake",
@@ -57,7 +37,6 @@
     "save": "Lagre",
     "send": "Send",
     "submit": "Lagre",
-    "submitting": "Lagrer...",
     "user-event-page": "Deltakerinfo",
     "user-registration-page": "Registering",
     "userEventPage": "Deltakerinformasjon",
@@ -74,21 +53,10 @@
   },
   "description": "Beskrivelse",
   "edit": "Endre",
-  "access-denied": "Ingen tilgang. Du har ikke tillatelse til å se denne ressursen.",
-  "backend-unavailable": "Kunne ikke koble til serveren. Sjekk internettforbindelsen din eller prøv igjen senere.",
-  "back-to-event": "Tilbake til arrangement",
-  "back-to-events": "Tilbake til arrangementer",
-  "connection-error": "Tilkoblingsfeil",
-  "error": "Feil",
-  "error-loading-event": "Kunne ikke laste arrangement. Vennligst prøv igjen.",
   "errormessages": {
     "event-not-found": "Fant ikke arrangementet",
     "user-not-found": "Fant ikke brukeren din"
   },
-  "event-not-found": "Arrangement ikke funnet",
-  "network-error": "Nettverksfeil oppstod. Sjekk forbindelsen din og prøv igjen.",
-  "server-error": "Serverfeil oppstod. Vennligst prøv igjen senere.",
-  "try-again-later": "Vennligst prøv igjen om litt.",
   "errorpage": {
     "contactUs": "Vi beklager feilen, og håper du kan sende oss en e-post, så skal vi ordne opp!",
     "description": "Vet ikke mer...",

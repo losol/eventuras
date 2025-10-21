@@ -25,7 +25,7 @@ interface SubComponentProps {
 export interface CheckboxProps
   extends CheckboxComponentProps,
     Omit<InputHTMLAttributes<HTMLInputElement>, 'id' | 'children' | 'className'> {
-  testId?: string;
+  'data-test-id'?: string;
   children?: ReactNode;
 }
 
@@ -58,7 +58,7 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>((props, ref) 
     id,
     disabled,
     defaultChecked,
-    testId,
+    'data-test-id': dataTestId,
     ...rest
   } = props;
 
@@ -82,7 +82,7 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>((props, ref) 
         id={id}
         disabled={disabled}
         defaultChecked={defaultChecked}
-        data-testid={testId}
+        data-test-id={dataTestId}
         {...rest}
       />
       {enhancedChildren}

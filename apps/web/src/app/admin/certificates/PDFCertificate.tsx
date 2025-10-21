@@ -3,7 +3,7 @@
 import { Button } from '@eventuras/ratio-ui';
 import { useState } from 'react';
 
-import { publicEnv } from '@/config.client';
+import Environment from '@/utils/Environment';
 
 export const PDFCertificate = (props: { certificateId: number | string }) => {
   const [loading, setIsLoading] = useState(false);
@@ -14,7 +14,7 @@ export const PDFCertificate = (props: { certificateId: number | string }) => {
       onClick={async () => {
         setIsLoading(true);
         const result = await fetch(
-          `${publicEnv.NEXT_PUBLIC_API_BASE_URL as string}/v3/certificates/${props.certificateId}?format=Pdf`,
+          `${Environment.NEXT_PUBLIC_API_BASE_URL}/v3/certificates/${props.certificateId}?format=Pdf`,
           {
             headers: {
               Accept: 'application/pdf',

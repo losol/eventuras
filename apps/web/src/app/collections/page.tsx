@@ -3,47 +3,36 @@ import { Heading, Section, Text } from '@eventuras/ratio-ui';
 import { getTranslations } from 'next-intl/server';
 
 import { Card } from '@eventuras/ratio-ui/core/Card';
-import { Link } from '@eventuras/ratio-ui-next/Link';
-import { getV3Eventcollections } from '@eventuras/event-sdk';
-import { appConfig } from '@/config.server';
-import { getPublicClient } from '@/lib/eventuras-public-client';
-
-// Incremental Static Regeneration - revalidate every 5 minutes
-export const revalidate = 300;
+import Wrapper from '@/components/eventuras/Wrapper';
+import { Link } from '@eventuras/ratio-ui/next/Link';
+import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
+import Environment from '@/utils/Environment';
 
 const CollectionIndexPage: React.FC = async () => {
   const t = await getTranslations();
+  const result = await apiWrapper(() =>
+    createSDK({ inferUrl: true }).eventCollection.getV3Eventcollections({
+      eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID),
+    })
+  );
 
-  // Get organization ID with proper type handling
-  const organizationId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
-  const orgId = typeof organizationId === 'number'
-    ? organizationId
-    : parseInt(organizationId as string, 10);
+  const notFound = !result.ok || !result.value;
 
-  // Use public client for anonymous API access
-  const publicClient = getPublicClient();
-  const response = await getV3Eventcollections({
-    client: publicClient,
-    headers: {
-      'Eventuras-Org-Id': orgId,
-    },
-  });
-
-  if (!response.data)
+  if (notFound)
     return (
-      <>
+      <Wrapper>
         <Heading>{t('common.events.detailspage.notfound.title')}</Heading>
         <Text className="py-6">{t('common.events.detailspage.notfound.description')}</Text>
         <Link href="/" variant="button-primary">
           {t('common.events.detailspage.notfound.back')}
         </Link>
-      </>
+      </Wrapper>
     );
 
-  const collections = response.data;
+  const collections = result.value!;
 
   return (
-    <>
+    <Wrapper>
       <Section className="py-16">
         <Heading as="h1" padding="pt-6 pb-3">
           Collections
@@ -67,7 +56,7 @@ const CollectionIndexPage: React.FC = async () => {
             </Card>
           ))}
       </Section>
-    </>
+    </Wrapper>
   );
 };
 

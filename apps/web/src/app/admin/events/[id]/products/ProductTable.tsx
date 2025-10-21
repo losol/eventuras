@@ -1,10 +1,11 @@
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
-import type { ProductDto } from '@eventuras/event-sdk';
+import type { ProductDto } from '@eventuras/sdk';
 import { Badge } from '@eventuras/ratio-ui';
-import { IconEye, IconPencil } from '@tabler/icons-react';
+import { DATA_TEST_ID } from '@eventuras/utils';
+import { Eye, Pencil } from '@eventuras/ratio-ui/icons';
 import { useTranslations } from 'next-intl';
 
-import { Link } from '@eventuras/ratio-ui-next/Link';
+import { Link } from '@eventuras/ratio-ui/next/Link';
 
 const columnHelper = createColumnHelper<ProductDto>();
 
@@ -48,17 +49,17 @@ export const ProductTable: React.FC<ProductTableProps> = ({ products, onEdit }) 
             href={`./products/${info.getValue()}`}
             className="text-white bg-blue-500 hover:bg-blue-700 rounded-sm  "
             aria-label="View"
-            testId="view-product-button"
+            {...{ [DATA_TEST_ID]: 'view-product-button' }}
           >
-            <IconEye />
+            <Eye />
           </Link>
           <button
             onClick={() => onEdit(info.row.original)}
             className="text-white bg-blue-500 hover:bg-blue-700 rounded-sm p-2"
             aria-label="Edit"
-            data-testid="edit-product-button"
+            {...{ [DATA_TEST_ID]: 'edit-product-button' }}
           >
-            <IconPencil />
+            <Pencil />
           </button>
         </div>
       ),

@@ -1,18 +1,12 @@
 import { Container, Heading, Section, Text } from '@eventuras/ratio-ui';
 import { getTranslations } from 'next-intl/server';
-import { notFound } from 'next/navigation';
-import { Logger } from '@eventuras/logger';
 
-import { Link } from '@eventuras/ratio-ui-next/Link';
-import { getV3ProductsByProductIdSummary } from '@eventuras/event-sdk';
-import { appConfig } from '@/config.server';
+import { Link } from '@eventuras/ratio-ui/next/Link';
+import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
+import Environment from '@/utils/Environment';
+import { getAccessToken } from '@/utils/getAccesstoken';
 
 import DeliverySummary from '../DeliverySummary';
-
-const logger = Logger.create({
-  namespace: 'web:admin:products',
-  context: { page: 'ProductSummaryPage' },
-});
 
 type EventProductsPage = {
   params: Promise<{
@@ -27,26 +21,15 @@ const EventProducts: React.FC<EventProductsPage> = async props => {
   const productId = parseInt(params.productId);
   const t = await getTranslations();
 
-  // Get organization ID
-  const orgIdStr = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
-  const organizationId = typeof orgIdStr === 'number' ? orgIdStr : parseInt(orgIdStr as string, 10);
+  const eventuras = createSDK({ authHeader: await getAccessToken() });
+  const productSummary = await apiWrapper(() =>
+    eventuras.products.getV3ProductsSummary({
+      productId: productId,
+      eventurasOrgId: parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID),
+    })
+  );
 
-  logger.info({ productId, organizationId }, 'Fetching product summary');
-
-  const response = await getV3ProductsByProductIdSummary({
-    path: { productId },
-    headers: {
-      'Eventuras-Org-Id': organizationId,
-    },
-  });
-
-  if (!response.data) {
-    logger.error({ productId, error: response.error }, 'Product summary not found');
-    notFound();
-  }
-
-  const productSummary = response.data;
-  const byRegistrationStatus = productSummary.statistics?.byRegistrationStatus;
+  const byRegistrationStatus = productSummary.value?.statistics?.byRegistrationStatus;
   const totals = {
     active:
       (byRegistrationStatus?.draft ?? 0) +
@@ -64,7 +47,7 @@ const EventProducts: React.FC<EventProductsPage> = async props => {
       <Section className="bg-white dark:bg-black py-10">
         <Container>
           <Heading as="h1" padding="pt-6 mb-3">
-            {productSummary.product?.name}
+            {productSummary.value?.product?.name}
           </Heading>
           <Link
             href={`/admin/events/${eventId}/products/edit`}
@@ -82,7 +65,7 @@ const EventProducts: React.FC<EventProductsPage> = async props => {
       <Section className="py-10">
         <Container>
           <div className="flex flex-col">
-            <DeliverySummary deliverySummary={productSummary.orderSummary ?? []} />
+            <DeliverySummary deliverySummary={productSummary.value?.orderSummary ?? []} />
           </div>
         </Container>
       </Section>

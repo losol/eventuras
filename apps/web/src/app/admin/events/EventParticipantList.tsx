@@ -1,25 +1,20 @@
 'use client';
 
 import { ColumnFilter, createColumnHelper, DataTable } from '@eventuras/datatable';
-import { EventDto, ProductDto, RegistrationDto } from '@eventuras/event-sdk';
-import { Badge, Button, Loading } from '@eventuras/ratio-ui';
-import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
-import { Logger } from '@eventuras/logger';
-
-const logger = Logger.create({ namespace: 'web:admin:events', context: { component: 'EventParticipantList' } });
-
-import { IconNotes, IconShoppingCart, IconUser } from '@tabler/icons-react';
+import { EventDto, ProductDto, RegistrationDto } from '@eventuras/sdk';
+import { Badge, Button, Drawer, Loading } from '@eventuras/ratio-ui';
+import { Logger } from '@eventuras/utils';
+import { FileText, ShoppingCart, User } from '@eventuras/ratio-ui/icons';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import React, { useMemo, useState } from 'react';
 
 import EventNotificator, { EventNotificatorType } from '@/components/event/EventNotificator';
 import EditRegistrationProductsDialog from '@/components/eventuras/EditRegistrationProductsDialog';
+import useCreateHook from '@/hooks/createHook';
 import { ParticipationTypesKey } from '@/types';
-import { getV3RegistrationsById } from '@eventuras/event-sdk';
+import { createSDK } from '@/utils/api/EventurasApi';
 import { participationMap } from '@/utils/api/mappers';
-import { client } from '@/lib/eventuras-client';
-import { useEffect } from 'react';
 
 import LiveActionsMenu from './LiveActionsMenu';
 
@@ -52,18 +47,16 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
   participants: initialParticipants = [],
   event,
   eventProducts = [],
-  filteredStatus
+  filteredStatus,
 }) => {
   const t = useTranslations();
+  const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
 
   const [participants, setParticipants] = useState<RegistrationDto[]>(initialParticipants);
   const [registrationOpen, setRegistrationOpen] = useState<RegistrationDto | null>(null);
   const [currentSelectedParticipant, setCurrentSelectedParticipant] =
     useState<RegistrationDto | null>(null);
   const [editorOpen, setEditorOpen] = useState(false);
-
-  const [currentRegistration, setCurrentRegistration] = useState<RegistrationDto | null>(null);
-  const [loadingRegistration, setLoadingRegistration] = useState(false);
 
   const updateParticipantList = (updatedRegistration: RegistrationDto) => {
     setParticipants(prevParticipants =>
@@ -75,36 +68,19 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
     );
   };
 
-  useEffect(() => {
-    if (currentSelectedParticipant === null) {
-      setCurrentRegistration(null);
-      return;
-    }
-
-    const loadRegistration = async () => {
-      logger.info('Loading current registration');
-      setLoadingRegistration(true);
-      try {
-        const response = await getV3RegistrationsById({
-          client,
-          path: { id: currentSelectedParticipant.registrationId! },
-          query: {
-            IncludeProducts: true,
-            IncludeOrders: true,
-            IncludeUserInfo: true,
-          },
-        });
-        setCurrentRegistration(response.data ?? null);
-      } catch (error) {
-        logger.error({ error }, 'Failed to load registration');
-        setCurrentRegistration(null);
-      } finally {
-        setLoadingRegistration(false);
-      }
-    };
-
-    loadRegistration();
-  }, [currentSelectedParticipant?.registrationId]);
+  const { result: currentRegistration, loading: loadingRegistration } = useCreateHook(
+    () => {
+      Logger.info({ namespace: 'admin:eventparticipantlist' }, 'Loading current registrations');
+      return sdk.registrations.getV3Registrations1({
+        id: currentSelectedParticipant!.registrationId!,
+        includeProducts: true,
+        includeOrders: true,
+        includeUserInfo: true,
+      });
+    },
+    [currentSelectedParticipant?.registrationId],
+    () => currentSelectedParticipant === null
+  );
 
   const renderLiveActions = (registration: RegistrationDto) => {
     return <LiveActionsMenu registration={registration} onStatusUpdate={updateParticipantList} />;
@@ -117,14 +93,14 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
           <div className="mr-2">
             <Button variant="light">
               <Link href={`/admin/users/${info.userId}`}>
-                <IconUser color="black" />
+                <User color="black" />
               </Link>
             </Button>
           </div>
           <div className="mr-2">
             <Button variant="light">
               <Link href={`/admin/registrations/${info.registrationId}`}>
-                <IconNotes color="black" />
+                <FileText color="black" />
               </Link>
             </Button>
           </div>
@@ -142,7 +118,7 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
               currentSelectedParticipant.userId === info.userId ? (
                 <Loading />
               ) : (
-                <IconShoppingCart color="black" />
+                <ShoppingCart color="black" />
               )}
             </Button>
           )}
@@ -158,21 +134,21 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
   const columns = [
     columnHelper.display({
       header: t('common.labels.id').toString(),
-      cell: info => <Badge>{info.row.original.registrationId}</Badge>
+      cell: info => <Badge>{info.row.original.registrationId}</Badge>,
     }),
     columnHelper.accessor('user.name', {
-      header: t('admin.participantColumns.name').toString()
+      header: t('admin.participantColumns.name').toString(),
     }),
 
     columnHelper.accessor('user.phoneNumber', {
-      header: t('admin.participantColumns.telephone').toString()
+      header: t('admin.participantColumns.telephone').toString(),
     }),
     columnHelper.accessor('user.email', {
-      header: t('admin.participantColumns.email').toString()
+      header: t('admin.participantColumns.email').toString(),
     }),
     columnHelper.accessor('products', {
       header: t('admin.participantColumns.products').toString(),
-      cell: info => renderProducts(info.row.original)
+      cell: info => renderProducts(info.row.original),
     }),
     columnHelper.accessor('status', {
       header: t('admin.participantColumns.status').toString(),
@@ -199,17 +175,17 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
             <Badge>{registration.status}</Badge>
           </>
         );
-      }
+      },
     }),
     columnHelper.display({
       id: 'live',
       header: t('admin.participantColumns.live'),
-      cell: info => renderLiveActions(info.row.original)
+      cell: info => renderLiveActions(info.row.original),
     }),
     columnHelper.display({
       id: 'actions',
       header: t('admin.participantColumns.actions').toString(),
-      cell: info => renderEventItemActions(info.row.original)
+      cell: info => renderEventItemActions(info.row.original),
     }),
   ];
   const drawerIsOpen = registrationOpen !== null;
@@ -218,7 +194,7 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
     return [
       {
         id: 'status',
-        value: filteredStatus
+        value: filteredStatus,
       },
     ];
   }, [filteredStatus]);

@@ -2,51 +2,33 @@
 
 import { Fieldset, Form, Input } from '@eventuras/ratio-ui/forms';
 import { Button } from '@eventuras/ratio-ui';
+import { DATA_TEST_ID } from '@eventuras/utils';
 import { useTranslations } from 'next-intl';
-import { useActionState, useEffect } from 'react';
-import { useToast } from '@eventuras/toast';
 
-import { publicEnv } from '@/config.client';
+import Environment from '@/utils/Environment';
 
 import { createEvent } from './actions';
 
 export const CreateEventForm = () => {
   const t = useTranslations();
-  const toast = useToast();
-
-  const [state, formAction, isPending] = useActionState(createEvent, null);
-
-  // Show toast notifications based on action result
-  useEffect(() => {
-    if (state?.success) {
-      toast.success(t('admin.createEvent.success'));
-    } else if (state?.error) {
-      toast.error(state.error.message);
-    }
-  }, [state, toast, t]);
 
   return (
-    <Form action={formAction}>
+    <Form action={createEvent}>
       <Fieldset>
         <Input
           name="organizationId"
           type="hidden"
-          value={publicEnv.NEXT_PUBLIC_ORGANIZATION_ID?.toString() ?? ''}
+          value={Environment.NEXT_PUBLIC_ORGANIZATION_ID}
         />
         <Input
           name="title"
-          placeholder={t('admin.createEvent.form.titlePlaceholder')}
-          testId="event-title-input"
-          required
+          placeholder="Event Title"
+          {...{ [DATA_TEST_ID]: 'event-title-input' }}
         />
       </Fieldset>
 
-      <Button
-        type="submit"
-        testId="create-event-submit-button"
-        disabled={isPending}
-      >
-        {isPending ? t('common.buttons.submitting') : t('common.buttons.submit')}
+      <Button type="submit" {...{ [DATA_TEST_ID]: 'create-event-submit-button' }}>
+        {t('common.buttons.submit')}
       </Button>
     </Form>
   );

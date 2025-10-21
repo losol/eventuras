@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react';
-import { LoaderCircle } from 'lucide-react';
+import { LoaderCircle } from '../icons';
 import { BoxSpacingProps, buildSpacingClasses } from '../../layout/Box/Box';
 
 export const defaultButtonPadding = 'px-4 py-1';
@@ -38,7 +38,7 @@ export interface ButtonProps
   variant?: keyof typeof buttonStyles;
   block?: boolean;
   className?: string;
-  testId?: string;
+  ['data-test-id']?: string;
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
@@ -60,7 +60,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
     border,
     width,
     height,
-    testId,
+    ['data-test-id']: dataTestId,
     // all other native button props (e.g. id, name, value)
     ...rest
   },
@@ -100,7 +100,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
       aria-label={ariaLabel}
       onClick={onClick}
       className={classes}
-      data-testid={testId}
+      data-test-id={dataTestId}
       {...rest}
     >
       {loading && (

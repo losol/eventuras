@@ -1,13 +1,13 @@
 import { MarkdownContent } from '@eventuras/markdown';
-import { EventDto } from '@eventuras/event-sdk';
+import { EventDto } from '@eventuras/sdk';
 
 import { Card } from '@eventuras/ratio-ui/core/Card';
-import { appConfig } from '@/config.server';
-import { formatDateSpan } from '@eventuras/core/datetime';
-import { Link } from '@eventuras/ratio-ui-next/Link';
-import {Heading} from '@eventuras/ratio-ui/core/Heading';
-import {Text} from '@eventuras/ratio-ui/core/Text';
-import { Calendar, MapPin } from 'lucide-react';
+import Environment from '@/utils/Environment';
+import { formatDateSpan } from '@/utils/formatDate';
+import { Link } from '@eventuras/ratio-ui/next/Link';
+import Heading from '@eventuras/ratio-ui/core/Heading/Heading';
+import Text from '@eventuras/ratio-ui/core/Text/Text';
+import { Calendar, MapPin } from '@eventuras/ratio-ui/icons';
 
 interface EventCardProps {
   eventinfo: EventDto;
@@ -35,7 +35,7 @@ const EventCard: React.FC<EventCardProps> = ({ eventinfo }) => {
       )}
       <Text icon={<Calendar size={16} />} padding="pt-1">
         {formatDateSpan(eventinfo.dateStart as string, eventinfo.dateEnd as string, {
-          locale: appConfig.env.NEXT_PUBLIC_DEFAULT_LOCALE as string,
+          locale: Environment.NEXT_PUBLIC_DEFAULT_LOCALE,
         })}
       </Text>
     </Card>

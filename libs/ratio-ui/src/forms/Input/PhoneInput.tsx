@@ -56,8 +56,6 @@ export interface PhoneInputProps {
   disabled?: boolean;
   /** Change callback with parsed parts */
   onChange?: (value: PhoneInputChange) => void;
-  /** Test ID for the phone number input */
-  testId?: string;
 }
 
 // Basic phone validation rules
@@ -93,7 +91,6 @@ export function PhoneInput({
   errors,
   disabled,
   onChange,
-  testId,
 }: PhoneInputProps) {
   // Memoize default country calculation
   const defaultCountry = useMemo(
@@ -338,7 +335,6 @@ export function PhoneInput({
           placeholder="Enter phone number"
           className="p-2 bg-gray-50 dark:bg-gray-900 border-0 rounded-none focus:ring-0 flex-1 w-full"
           noWrapper
-          testId={testId}
         />
       </div>
 

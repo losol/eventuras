@@ -1,37 +1,35 @@
 'use client';
 
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
-import { EventCollectionDto, EventCollectionDtoPageResponseDto } from '@eventuras/event-sdk';
+import { EventCollectionDto, OrderDto } from '@eventuras/sdk';
 import { Loading, Pagination } from '@eventuras/ratio-ui';
 import { useTranslations } from 'next-intl';
-import { useEffect, useState, useTransition } from 'react';
+import { useState } from 'react';
 
 import FatalError from '@/components/FatalError';
-import { Link } from '@eventuras/ratio-ui-next/Link';
-import { getCollections } from './actions';
+import { Link } from '@eventuras/ratio-ui/next/Link';
+import useCreateHook from '@/hooks/createHook';
+import { createSDK } from '@/utils/api/EventurasApi';
+import Environment from '@/utils/Environment';
+import { formatDateSpan } from '@/utils/formatDate';
 
 const columnHelper = createColumnHelper<EventCollectionDto>();
 
 const CollectionsList: React.FC = () => {
+  const organizationId = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID);
   const t = useTranslations();
   const [page, setPage] = useState(1);
-  const [result, setResult] = useState<EventCollectionDtoPageResponseDto | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
+  const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
   const pageSize = 100;
-
-  useEffect(() => {
-    startTransition(async () => {
-      const response = await getCollections(page, pageSize);
-      if (response.ok && response.data) {
-        setResult(response.data);
-        setError(null);
-      } else {
-        setError(response.error);
-        setResult(null);
-      }
-    });
-  }, [page]);
+  const { loading, result } = useCreateHook(
+    () =>
+      sdk.eventCollection.getV3Eventcollections({
+        page: page,
+        count: pageSize,
+        eventurasOrgId: organizationId,
+      }),
+    [page]
+  );
 
   const renderCollectionActions = (collection: EventCollectionDto) => {
     return (
@@ -60,9 +58,9 @@ const CollectionsList: React.FC = () => {
     }),
   ];
 
-  if (isPending && !result) return <Loading />;
-  if (error) return <FatalError title="Failed to load collections" description={error} />;
-  if (!result) return <FatalError title="No response from admin collections" description="Response is null" />;
+  if (loading) return <Loading />;
+  if (!result)
+    return <FatalError title="No response from admin collections" description="Response is null" />;
   return (
     <>
       <DataTable data={result.data ?? []} columns={columns} />

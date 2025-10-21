@@ -1,123 +1,10 @@
-import {
-  validateSessionJwt,
-  accessTokenExpires,
-  refreshCurrentSession,
-  createSession,
-  setSessionCookie,
-} from '@eventuras/fides-auth-next';
-import type { Session } from '@eventuras/fides-auth-next';
-import { Logger } from '@eventuras/logger';
+import { refreshSession } from '@eventuras/fides-auth/session-refresh';
+import { validateSessionJwt } from '@eventuras/fides-auth/session-validation';
+import { accessTokenExpires, createEncryptedJWT } from '@eventuras/fides-auth/utils';
+import { Logger } from '@eventuras/utils/src/Logger';
 import { NextRequest, NextResponse } from 'next/server';
 
 import { oauthConfig } from './utils/oauthConfig';
-
-const logger = Logger.create({ namespace: 'web:middleware' });
-
-/**
- * Validates CORS for non-GET requests.
- * Ensures Origin header matches Host or X-Forwarded-Host.
- */
-function validateCorsHeaders(request: NextRequest): NextResponse | null {
-  const originHeader = request.headers.get('Origin');
-  const hostHeader = request.headers.get('Host');
-  const forwardedHost = request.headers.get('X-Forwarded-Host');
-
-  if (!originHeader || (!hostHeader && !forwardedHost)) {
-    logger.warn({
-      hasOrigin: !!originHeader,
-      hasHost: !!hostHeader,
-      hasForwardedHost: !!forwardedHost
-    }, 'CORS validation failed: missing required headers');
-    return new NextResponse(null, { status: 403 });
-  }
-
-  let origin: URL;
-  try {
-    origin = new URL(originHeader);
-  } catch {
-    logger.warn({ originHeader }, 'Invalid Origin header');
-    return new NextResponse(null, { status: 403 });
-  }
-
-  if (hostHeader !== origin.host && forwardedHost !== origin.host) {
-    logger.warn({
-      originHost: origin.host,
-      hostHeader,
-      forwardedHost
-    }, 'CORS validation failed: origin mismatch');
-    return new NextResponse(null, { status: 403 });
-  }
-
-  return null;
-}
-
-/**
- * Validates the session and returns session status.
- */
-async function validateSession(sessionCookie: string) {
-  const { status, session } = await validateSessionJwt(sessionCookie);
-
-  logger.debug({ status }, 'Session validation result');
-
-  return { status, session };
-}
-
-/**
- * Handles session refresh when access token is expired.
- * Sets a temporary cookie to signal client-side that refresh is happening.
- */
-async function handleSessionRefresh(session: Session): Promise<NextResponse | null> {
-  if (!session?.tokens?.accessToken) {
-    logger.warn('Cannot refresh: no access token in session');
-    return null;
-  }
-
-  // Check if token is expired
-  if (!accessTokenExpires(session.tokens.accessToken)) {
-    logger.debug('Access token still valid, no refresh needed');
-    return null;
-  }
-
-  logger.info('Access token expired, attempting refresh');
-
-  try {
-    const updatedSession = await refreshCurrentSession(oauthConfig);
-
-    if (!updatedSession) {
-      logger.warn('Session refresh returned null - refresh token likely expired');
-      return null;
-    }
-
-    // Return response with updated session cookie
-    const response = NextResponse.next();
-    const encryptedJwt = await createSession(updatedSession);
-    await setSessionCookie(encryptedJwt);
-
-    // Clear any refresh-in-progress signal
-    response.cookies.delete('auth-refreshing');
-
-    logger.info('Session refreshed successfully');
-    return response;
-  } catch (error) {
-    // Refresh token is invalid or expired - this is expected after long inactivity
-    logger.warn({ error }, 'Session refresh failed - refresh token invalid or expired');
-    return null;
-  }
-}
-
-/**
- * Redirects to login page with returnTo parameter.
- */
-function redirectToLogin(pathname: string, search: string, originUrl: string): NextResponse {
-  const loginUrl = new URL('/api/login/auth0', originUrl);
-  loginUrl.searchParams.set('returnTo', pathname + search);
-
-  logger.info({ returnTo: pathname + search }, 'Redirecting to login');
-
-  const response = NextResponse.redirect(loginUrl.toString());
-  response.cookies.delete('session');
-  return response;
-}
 
 export async function middleware(request: NextRequest) {
   const url = new URL(request.url);
@@ -125,84 +12,88 @@ export async function middleware(request: NextRequest) {
   const search = url.search;
   const originUrl = url.origin;
 
-  logger.debug({ method: request.method, pathname }, 'Middleware processing request');
-
-  // ─── 1) CORS validation for non-GET requests ─────────────────────────────
+  // ─── 1) If this is *not* a GET, do your CORS/origin checks ─────────────
   if (request.method !== 'GET') {
-    const corsError = validateCorsHeaders(request);
-    if (corsError) {
-      return corsError;
+    const originHeader = request.headers.get('Origin');
+    const hostHeader = request.headers.get('Host');
+    const forwardedHost = request.headers.get('X-Forwarded-Host');
+
+    if (!originHeader || (!hostHeader && !forwardedHost)) {
+      return new NextResponse(null, { status: 403 });
     }
 
-    // After validating headers, continue
+    let origin: URL;
+    try {
+      origin = new URL(originHeader);
+    } catch {
+      Logger.error({ namespace: 'eventuras:middleware' }, 'Invalid Origin header:', originHeader);
+      return new NextResponse(null, { status: 403 });
+    }
+
+    if (hostHeader !== origin.host && forwardedHost !== origin.host) {
+      return new NextResponse(null, { status: 403 });
+    }
+
+    // after validating headers, just continue
     return NextResponse.next();
   }
 
-  // ─── 2) Session validation for protected routes ──────────────────────────
+  // ─── 2) Only add auth to GETs on /user/* and /admin/* ────────────────────────────
+  if (request.method !== 'GET') {
+    return NextResponse.next();
+  }
+
   const sessionCookie = request.cookies.get('session')?.value;
+  if (sessionCookie) {
+    const { status, session } = await validateSessionJwt(sessionCookie);
 
-  logger.info({ sessionCookie: !!sessionCookie, pathname }, 'Session cookie status');
+    if (status === 'VALID' && session?.tokens?.accessToken) {
+      const token = session.tokens.accessToken;
 
-  if (!sessionCookie) {
-    logger.debug('No session cookie found, redirecting to login');
-    return redirectToLogin(pathname, search, originUrl);
-  }
+      // 2a) Not expired? Let them through.
+      if (!accessTokenExpires(token)) {
+        return NextResponse.next();
+      }
 
-  const { status, session } = await validateSession(sessionCookie);
+      // 2b) Expired → try to refresh
+      Logger.info({ namespace: 'eventuras:middleware' }, 'Token expired, refreshing…');
+      try {
+        const updated = await refreshSession(session, oauthConfig);
+        const encryptedJwt = await createEncryptedJWT(updated);
 
-  if (status === 'INVALID') {
-    logger.warn('Invalid session detected, redirecting to login');
-    return redirectToLogin(pathname, search, originUrl);
-  }
+        const res = NextResponse.next();
+        res.cookies.set('session', encryptedJwt, {
+          path: '/',
+          maxAge: 60 * 60 * 24 * 30,
+          sameSite: 'lax',
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+        });
+        return res;
+      } catch (err) {
+        Logger.warn({ namespace: 'eventuras:middleware' }, 'Refresh failed, clearing session', err);
 
-  if (status === 'EXPIRED') {
-    logger.info('Session expired, attempting refresh');
-
-    // Try to refresh before redirecting
-    if (session) {
-      const refreshResponse = await handleSessionRefresh(session);
-      if (refreshResponse) {
-        logger.info('Session refreshed successfully');
-        return refreshResponse;
+        const res = NextResponse.redirect(
+          new URL('/api/login/auth0', originUrl).toString() +
+            `?returnTo=${encodeURIComponent(pathname + search)}`
+        );
+        res.cookies.delete('session');
+        return res;
       }
     }
-
-    logger.warn('Session expired and refresh failed, redirecting to login');
-    return redirectToLogin(pathname, search, originUrl);
   }
 
-  // ─── 3) Token refresh if needed ───────────────────────────────────────────
-  // Even if session JWT is valid, the access token might be expired
-  if (session) {
-    const refreshResponse = await handleSessionRefresh(session);
+  // ─── 3) No valid session → redirect to login ────────────────────────────
+  /* build the return‑to URL */
+  const loginUrl = new URL('/api/login/auth0', originUrl);
+  loginUrl.searchParams.set('returnTo', pathname + search);
 
-    if (refreshResponse) {
-      // Token was refreshed successfully
-      logger.info('Token refreshed in middleware');
-      return refreshResponse;
-    }
-
-    // handleSessionRefresh returns null in two cases:
-    // 1. Token is still valid (no refresh needed) - this is OK
-    // 2. Refresh failed - need to check if token is actually expired
-
-    if (session.tokens?.accessToken && accessTokenExpires(session.tokens.accessToken)) {
-      // Access token is expired AND refresh failed
-      logger.warn('Access token expired and refresh failed, redirecting to login');
-      return redirectToLogin(pathname, search, originUrl);
-    }
-  }
-
-  // ─── 4) All checks passed ─────────────────────────────────────────────────
-  logger.debug('Request authorized, proceeding');
-  return NextResponse.next();
+  /* redirect + delete the cookie */
+  const res = NextResponse.redirect(loginUrl.toString());
+  res.cookies.delete('session');
+  return res;
 }
 
 export const config = {
-  matcher: [
-    '/admin/:path*',
-    '/admin', // Match /admin exactly
-    '/user/:path*',
-    '/user', // Match /user exactly
-  ],
+  matcher: ['/admin/:path*', '/user/:path*'],
 };

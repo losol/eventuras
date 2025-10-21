@@ -1,14 +1,16 @@
 import {
+  ApiError,
   EventDto,
+  EventInfoStatus,
   ProductDto,
   RegistrationDto,
   UserDto,
-} from '@eventuras/event-sdk';
+} from '@eventuras/sdk';
 import { assign, createMachine, fromPromise } from 'xstate';
 
 import { PaymentFormValues } from '@/types';
-import { fetchUserEventRegistrations } from '@/app/actions/registrations';
-import { createEventRegistration, updateEventRegistration } from '@/app/user/events/actions';
+import { createSDK } from '@/utils/api/EventurasApi';
+import { createEventRegistration, updateEventRegistration } from '@/utils/api/functions/events';
 import { mapToNewRegistration, mapToUpdatedRegistration } from '@/utils/api/mappers';
 
 export type EventFlowMachineContext = {
@@ -20,7 +22,7 @@ export type EventFlowMachineContext = {
   selectedProducts: Map<string, number>;
   paymentFormValues: PaymentFormValues;
   result: RegistrationDto;
-  error: Error;
+  error: ApiError;
 };
 
 export enum States {
@@ -68,21 +70,23 @@ const EventFlowMachine = createMachine({
         'Fetch user registrations - check if user is already registered, or needs to re-register',
       invoke: {
         src: fromPromise(async ({ input }) => {
+          const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
           const { user, eventInfo } = input;
-          const result = await fetchUserEventRegistrations(user.id!, eventInfo.id!);
-
-          if (!result.success) {
-            throw new Error(result.error.message);
-          }
-
-          return result.data;
+          return sdk.registrations.getV3Registrations({
+            userId: user.id!,
+            eventId: eventInfo.id,
+            includeProducts: true,
+            includeEventInfo: true,
+            includeOrders: true,
+            includeUserInfo: true,
+          });
         }),
         input: ({ context }) => ({ user: context.user, eventInfo: context.eventInfo }),
         onDone: {
           target: States.REGISTER_OR_EDIT,
           actions: assign({
-            inEditMode: ({ event }) => event.output.length > 0,
-            registrations: ({ event }) => event.output,
+            inEditMode: ({ event }) => event.output.data!.length > 0,
+            registrations: ({ event }) => event.output.data!,
           }),
         },
 
@@ -104,16 +108,16 @@ const EventFlowMachine = createMachine({
           // No existing registration, but event registration status allows creating new
           guard: ({ context }) =>
             !context.inEditMode &&
-            (context.eventInfo.status === 'RegistrationsOpen' ||
-              context.eventInfo.status === 'WaitingList'),
+            (context.eventInfo.status === EventInfoStatus.REGISTRATIONS_OPEN ||
+              context.eventInfo.status === EventInfoStatus.WAITING_LIST),
           target: States.VALIDATE_ACCOUNT_DETAILS,
         },
         {
           // Needs an better error message
           guard: ({ context }) =>
             !context.inEditMode &&
-            context.eventInfo.status !== 'RegistrationsOpen' &&
-            context.eventInfo.status !== 'WaitingList',
+            context.eventInfo.status !== EventInfoStatus.REGISTRATIONS_OPEN &&
+            context.eventInfo.status !== EventInfoStatus.WAITING_LIST,
           target: States.ERROR,
         },
       ],
@@ -208,34 +212,24 @@ const EventFlowMachine = createMachine({
             inEditMode,
             registrations,
           } = input as EventFlowMachineContext;
-
-          let result;
-
           if (!inEditMode) {
             const newRegistrationData = mapToNewRegistration(
               user.id!,
               eventInfo.id!,
               paymentFormValues
             );
-            result = await createEventRegistration(newRegistrationData, selectedProducts);
+            return createEventRegistration(newRegistrationData, selectedProducts);
           } else {
             const registration = registrations[0];
             const updatedRegistration = mapToUpdatedRegistration(registration!, paymentFormValues);
 
-            result = await updateEventRegistration(
+            return updateEventRegistration(
               registration!.registrationId!,
               updatedRegistration,
               input.availableProducts,
               selectedProducts
             );
           }
-
-          // Handle server action result
-          if (!result.success) {
-            throw new Error(result.error.message);
-          }
-
-          return result.data;
         }),
         input: ({ context }) => ({ ...context }),
         onDone: {

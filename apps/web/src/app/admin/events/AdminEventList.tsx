@@ -1,55 +1,94 @@
-import { getTranslations } from 'next-intl/server';
+'use client';
 
-import { fetchEvents } from './eventActions';
-import { AdminEventListClient } from './AdminEventListClient';
+import { createColumnHelper, DataTable } from '@eventuras/datatable';
+import { EventDto, LocalDate, PeriodMatchingKind } from '@eventuras/sdk';
+import { Loading, Pagination } from '@eventuras/ratio-ui';
+import { useTranslations } from 'next-intl';
+import { useState } from 'react';
 
+import FatalError from '@/components/FatalError';
+import { Link } from '@eventuras/ratio-ui/next/Link';
+import useCreateHook from '@/hooks/createHook';
+import { createSDK } from '@/utils/api/EventurasApi';
+
+const columnHelper = createColumnHelper<EventDto>();
 interface AdminEventListProps {
   organizationId: number;
   includePastEvents?: boolean;
   pageSize?: number;
-  page?: number;
 }
 
-function aMonthAgo(): string {
-  const today = new Date();
-  const monthAgo = new Date(today.setDate(today.getDate() - 31)).toISOString().split('T')[0];
-  return monthAgo!;
-}
-
-/**
- * Server Component that fetches events and passes data to client component
- */
-const AdminEventList = async ({
+const AdminEventList: React.FC<AdminEventListProps> = ({
   organizationId,
   includePastEvents = false,
   pageSize = 25,
-  page = 1,
-}: AdminEventListProps) => {
-  const t = await getTranslations();
+}) => {
+  const t = useTranslations();
+  const [page, setPage] = useState(1);
+  const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
 
-  // Fetch data (errors will be caught by error boundary)
-  const result = await fetchEvents({
-    organizationId,
-    includePastEvents,
-    page,
-    pageSize,
-    startDate: includePastEvents ? undefined : aMonthAgo(),
-  });
+  function aMonthAgo(): string {
+    const today = new Date();
+    const weekAgo = new Date(today.setDate(today.getDate() - 31)).toISOString().split('T')[0];
+    return weekAgo!;
+  }
 
+  const { loading, result } = useCreateHook(
+    () =>
+      sdk.events.getV3Events({
+        organizationId,
+        includeDraftEvents: true,
+        includePastEvents: includePastEvents,
+        start: includePastEvents ? undefined : (aMonthAgo() as LocalDate),
+        period: PeriodMatchingKind.CONTAIN,
+        page,
+        count: pageSize,
+      }),
+    [page]
+  );
+
+  const renderEventItemActions = (info: EventDto) => {
+    return (
+      <div className="flex flex-row">
+        <Link variant="button-outline" href={`/admin/events/${info.id}`}>
+          {t('common.labels.view')}
+        </Link>
+      </div>
+    );
+  };
+
+  const columns = [
+    columnHelper.accessor('title', {
+      header: t('admin.eventColumns.title').toString(),
+      cell: info => <Link href={`/admin/events/${info.row.original.id}`}> {info.getValue()}</Link>,
+    }),
+    columnHelper.accessor('location', {
+      header: t('admin.eventColumns.location').toString(),
+      cell: info => info.getValue(),
+    }),
+    columnHelper.accessor('dateStart', {
+      header: t('admin.eventColumns.when').toString(),
+      cell: info => info.getValue(),
+      enableSorting: true,
+    }),
+    columnHelper.accessor('id', {
+      header: t('admin.eventColumns.actions').toString(),
+      cell: info => renderEventItemActions(info.row.original),
+    }),
+  ];
+  if (loading) return <Loading />;
+  if (!result)
+    return <FatalError title="No response from admin events" description="Response is null" />;
   return (
-    <AdminEventListClient
-      events={result.data}
-      currentPage={page}
-      totalPages={result.pages}
-      pageSize={pageSize}
-      translations={{
-        title: t('admin.eventColumns.title'),
-        location: t('admin.eventColumns.location'),
-        when: t('admin.eventColumns.when'),
-        actions: t('admin.eventColumns.actions'),
-        view: t('common.labels.view'),
-      }}
-    />
+    <>
+      <DataTable data={result.data ?? []} columns={columns} pageSize={pageSize} />
+      <Pagination
+        currentPage={page}
+        totalPages={result.pages ?? 0}
+        onPreviousPageClick={() => setPage(page - 1)}
+        onNextPageClick={() => setPage(page + 1)}
+      />
+    </>
   );
 };
 

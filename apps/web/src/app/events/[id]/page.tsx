@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 
-import { getV3EventsById } from '@eventuras/event-sdk';
+import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 
 type EventInfoProps = {
   params: Promise<{
@@ -10,12 +10,12 @@ type EventInfoProps = {
 
 export default async function EventPage({ params }: Readonly<EventInfoProps>) {
   const { id } = await params;
-  const response = await getV3EventsById({
-    path: { id },
-  });
+  const eventInfoQuery = await apiWrapper(() =>
+    createSDK({ inferUrl: true }).events.getV3Events1({ id: id })
+  );
 
-  if (!response.data) return <div>Event not found</div>;
+  if (!eventInfoQuery.ok || !eventInfoQuery.value) return <div>Event not found</div>;
 
-  const eventinfo = response.data;
+  const eventinfo = eventInfoQuery.value;
   redirect(`/events/${eventinfo.id!}/${encodeURI(eventinfo.slug!)}`);
 }

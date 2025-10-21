@@ -2,8 +2,7 @@
 
 ## Installation
 
-`pnpm install` as usual. But you might need to install playwright dependencies with
-`npx playwright install`.
+`npm install` as usual. But you might need to install playwright dependencies with `npx playwright install`.
 
 Copy `.env.template` to `.env` and fill in the values.
 

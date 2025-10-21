@@ -1,8 +1,11 @@
 import { Container, Heading, Section } from '@eventuras/ratio-ui';
-import { Logger } from '@eventuras/logger';
+import { Logger } from '@eventuras/utils';
 import { getTranslations } from 'next-intl/server';
 
-import { getV3NotificationsById, getV3NotificationsByIdRecipients } from '@eventuras/event-sdk';
+import Wrapper from '@/components/eventuras/Wrapper';
+import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
+import Environment from '@/utils/Environment';
+import { getAccessToken } from '@/utils/getAccesstoken';
 
 type EventInfoProps = {
   params: Promise<{
@@ -10,28 +13,40 @@ type EventInfoProps = {
   }>;
 };
 
-const NotificationDetailPage: React.FC<EventInfoProps> = async props => {
+const OrganizationDetailPage: React.FC<EventInfoProps> = async props => {
   const params = await props.params;
   const t = await getTranslations();
 
-  const notificationResponse = await getV3NotificationsById({
-    path: { id: params.id },
+  const eventuras = createSDK({
+    baseUrl: Environment.NEXT_PUBLIC_BACKEND_URL,
+    authHeader: await getAccessToken(),
   });
 
-  const recipientsResponse = await getV3NotificationsByIdRecipients({
-    path: { id: params.id },
-  });
+  const notification = await apiWrapper(() =>
+    eventuras.notifications.getV3Notifications({
+      id: params.id,
+    })
+  );
 
-  if (!notificationResponse.data) {
+  const notificationRecipients = await apiWrapper(() =>
+    eventuras.notificationRecipients.getV3NotificationsRecipients({
+      id: params.id,
+    })
+  );
+
+  if (!notification.ok) {
     Logger.error(
       { namespace: 'notifications' },
-      `Failed to fetch notification id ${params.id}, error: ${notificationResponse.error}`
+      `Failed to fetch notification id ${params.id}, error: ${notification.error}`
     );
+  }
+
+  if (!notification.ok) {
     return <div>{t('admin.organizations.labels.notFound')}</div>;
   }
 
   return (
-    <>
+    <Wrapper fluid>
       <Section className="bg-white dark:bg-black   pb-8">
         <Container>
           <Heading as="h1">Notification</Heading>
@@ -39,13 +54,13 @@ const NotificationDetailPage: React.FC<EventInfoProps> = async props => {
       </Section>
       <Section className="py-12">
         <Container>
-          <pre>{JSON.stringify(notificationResponse.data, null, 4)}</pre>
+          <pre>{JSON.stringify(notification.value!, null, 4)}</pre>
           <hr />
-          <pre>{JSON.stringify(recipientsResponse.data, null, 4)}</pre>
+          <pre>{JSON.stringify(notificationRecipients.value!, null, 4)}</pre>
         </Container>
       </Section>
-    </>
+    </Wrapper>
   );
 };
 
-export default NotificationDetailPage;
+export default OrganizationDetailPage;

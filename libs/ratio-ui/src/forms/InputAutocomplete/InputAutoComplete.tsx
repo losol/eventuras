@@ -36,7 +36,7 @@ export const InputAutoComplete = (props: InputAutoCompleteProps) => {
   const [loading, setLoading] = useState<boolean>(false);
 
   let list = useAsyncList<AutoCompleteItem>({
-    async load({filterText}: { filterText?: string }) {
+    async load({ filterText }) {
       if ((filterText ?? '').length < props.minimumAmountOfCharacters) {
         return createSet([
           {
@@ -71,7 +71,7 @@ export const InputAutoComplete = (props: InputAutoCompleteProps) => {
       onInputChange={(value) => { list.setFilterText(value) }}
       onSelectionChange={(key) => {
         if (props.onItemSelected) {
-          const item = list.items.filter((i: AutoCompleteItem) => i.id === key)[0]
+          const item = list.items.filter(i => i.id === key)[0]
           if (item) {
             props.onItemSelected(item.original);
 

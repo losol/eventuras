@@ -1,12 +1,14 @@
+import { DATA_TEST_ID } from '@eventuras/utils';
 import { ReactNode } from 'react';
 import {
-  Button as AriaButton,
+  Button,
   Menu as AriaMenu,
   MenuItem,
   MenuItemProps,
   MenuTrigger,
   Popover,
 } from 'react-aria-components';
+import { ChevronDown } from '../icons';
 
 const styles = {
   menuWrapper: 'top-16 w-56 text-right',
@@ -19,30 +21,18 @@ const styles = {
 };
 
 const ChevronIcon = () => (
-  <svg
-    className="ml-2 h-5 w-5"
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 20 20"
-    fill="currentColor"
-    aria-hidden="true"
-  >
-    <path
-      fillRule="evenodd"
-      d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-      clipRule="evenodd"
-    />
-  </svg>
+  <ChevronDown className="ml-2 h-5 w-5" aria-hidden="true" />
 );
 
 export type MenuLinkProps = {
   href: string;
   children: ReactNode;
-  testId?: string;
+  [DATA_TEST_ID]?: string;
 };
 
 const MenuLink = (props: MenuLinkProps & MenuItemProps) => {
   return (
-    <MenuItem {...props} data-testid={props.testId} className={styles.menuItem}>
+    <MenuItem {...props} {...{ [DATA_TEST_ID]: props[DATA_TEST_ID] }} className={styles.menuItem}>
       {props.children}
     </MenuItem>
   );
@@ -57,7 +47,7 @@ export type MenuButtonProps = {
   id: string;
   children: ReactNode;
   onClick: () => void;
-  testId?: string;
+  [DATA_TEST_ID]?: string;
 };
 
 /**
@@ -69,7 +59,7 @@ const functionMap: Map<string, () => void> = new Map();
 const MenuButton = (props: MenuButtonProps & MenuItemProps) => {
   functionMap.set(props.id, props.onClick);
   return (
-    <MenuItem {...props} className={styles.menuItem} data-testid={props.testId}>
+    <MenuItem {...props} className={styles.menuItem} {...{ [DATA_TEST_ID]: props[DATA_TEST_ID] }}>
       {props.children}
     </MenuItem>
   );
@@ -78,13 +68,12 @@ const MenuButton = (props: MenuButtonProps & MenuItemProps) => {
 const Menu = (props: MenuProps) => {
   return (
     <MenuTrigger>
-      <AriaButton
-        data-testid="logged-in-menu-button"
-        className="inline-flex items-center gap-2 border font-bold bg-primary-700 dark:bg-primary-950 hover:bg-primary-700 text-white rounded-full px-4 py-1 m-1 transition-all duration-500 transform ease-in-out active:scale-110 hover:shadow-sm"
-      >
-        {props.menuLabel}
-        <ChevronIcon />
-      </AriaButton>
+      <Button {...{ [DATA_TEST_ID]: 'logged-in-menu-button' }}>
+        <div className={styles.menuTrigger}>
+          {props.menuLabel}
+          <ChevronIcon />
+        </div>
+      </Button>
       <Popover>
         <AriaMenu
           className={styles.menuItemsList}

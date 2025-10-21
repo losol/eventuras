@@ -1,25 +1,26 @@
 import { Heading } from '@eventuras/ratio-ui';
 import { getTranslations } from 'next-intl/server';
 
-import { getV3UsersMe } from '@eventuras/event-sdk';
+import Wrapper from '@/components/eventuras/Wrapper';
+import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
+import { getAccessToken } from '@/utils/getAccesstoken';
 
 import UserEditor from '../../admin/users/UserEditor';
 
 const UserAccountPage = async () => {
+  const eventuras = createSDK({ authHeader: await getAccessToken() });
   const t = await getTranslations();
 
-  // Fetch user profile - this uses the authenticated client
-  const response = await getV3UsersMe();
-
-  if (!response.data) {
-    return <div>{t('user.page.profileNotFound')}</div>;
+  const result = await apiWrapper(() => eventuras.users.getV3UsersMe({}));
+  if (!result.ok || !result.value) {
+    return <Wrapper>{t('user.page.profileNotFound')}</Wrapper>;
   }
 
   return (
-    <>
+    <Wrapper>
       <Heading>{t('user.profile.page.heading')}</Heading>
-      <UserEditor user={response.data} />
-    </>
+      <UserEditor user={result.value} />
+    </Wrapper>
   );
 };
 

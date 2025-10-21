@@ -3,19 +3,10 @@
   "display": "React Library",
   "extends": "./base.json",
   "compilerOptions": {
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
     "jsx": "react-jsx",
     "lib": ["ES2022", "DOM"],
-    "types": [
-      "react",
-      "react-dom"
-    ],
-    "skipLibCheck": true,
-    "noEmit": false,
+    "downlevelIteration": true,
+    "noEmit": true,
     "outDir": "dist"
-  },
-  "include": [
-    "src/**/*"
-  ]
+  }
 }

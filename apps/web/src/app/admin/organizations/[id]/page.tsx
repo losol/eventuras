@@ -1,6 +1,8 @@
 import { Heading, Section } from '@eventuras/ratio-ui';
 import { getTranslations } from 'next-intl/server';
 
+import Wrapper from '@/components/eventuras/Wrapper';
+import { createClient } from '@/utils/apiClient';
 import { getV3OrganizationsByOrganizationId, getV3Users } from '@eventuras/event-sdk';
 import { OrganizationDetails } from './OrganizationDetails';
 import OrganizationMemberships from './OrganizationMemberships';
@@ -29,23 +31,26 @@ const OrganizationDetailPage: React.FC<EventInfoProps> = async props => {
   const t = await getTranslations();
 
   // fetch org
+  const client = await createClient();
   const organization = await getV3OrganizationsByOrganizationId({
     path: {
-      organizationId: params.id
-    }
+      organizationId: params.id,
+    },
+    client,
   });
 
   // fetch org member
   const members = await getV3Users({
     query: {
       OrganizationId: params.id,
-      IncludeOrgMembership: true
-    }
+      IncludeOrgMembership: true,
+    },
+    client,
   });
 
   // render
   return (
-    <>
+    <Wrapper>
       <Section container>
         <Heading as="h1">{organization.data?.name}</Heading>
       </Section>
@@ -64,7 +69,7 @@ const OrganizationDetailPage: React.FC<EventInfoProps> = async props => {
           members={members.data?.data ?? []}
         />
       </Section>
-    </>
+    </Wrapper>
   );
 };
 

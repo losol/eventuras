@@ -7,10 +7,7 @@ import MemberProfile from './MemberProfile';
 import AddMemberDrawer from './AddMemberDrawer';
 import { addMember, setAdmin } from './actions';
 import { UserDto } from '@eventuras/event-sdk';
-import { Logger } from '@eventuras/logger';
-
-const logger = Logger.create({ namespace: 'web:admin:organizations', context: { component: 'OrganizationMemberships' } });
-
+import { Logger } from '@eventuras/utils';
 import { useToast } from '@eventuras/toast';
 
 export interface OrganizationMembershipsProps {
@@ -34,7 +31,11 @@ export default function OrganizationMemberships({
 
   // validate + call server action (receives ID from the drawer)
   const handleAddMember = async (enteredId: string) => {
-    logger.debug({ organizationId, enteredId }, '[client] received from drawer');
+    Logger.debug(
+      { namespace: 'organization:memberships', developerOnly: true },
+      '[client] received from drawer',
+      { organizationId, enteredId }
+    );
     const trimmedUserId = enteredId?.trim();
 
     if (!trimmedUserId) {
@@ -50,12 +51,17 @@ export default function OrganizationMemberships({
     }
 
     try {
-      logger.debug({ organizationId, trimmedUserId }, '[client] invoking action');
-      const res = await addMember(organizationId, trimmedUserId);
-      logger.info(
-        { organizationId, userId: trimmedUserId, result: res },
-        '[client] member added successfully'
+      Logger.debug(
+        { namespace: 'organization:memberships', developerOnly: true },
+        '[client] invoking action',
+        { organizationId, trimmedUserId }
       );
+      const res = await addMember(organizationId, trimmedUserId);
+      Logger.info({ namespace: 'organization:memberships' }, '[client] member added successfully', {
+        organizationId,
+        userId: trimmedUserId,
+        result: res,
+      });
 
       toast.success('Member added successfully!');
 
@@ -64,7 +70,11 @@ export default function OrganizationMemberships({
       // close drawer
       setIsDrawerOpen(false);
     } catch (e) {
-      logger.error({ error: e, organizationId, userId: trimmedUserId }, '[client] failed to add member');
+      Logger.error(
+        { namespace: 'organization:memberships', error: e },
+        '[client] failed to add member',
+        { organizationId, userId: trimmedUserId }
+      );
 
       toast.error('Failed to add member. Please check the user ID and try again.');
     }
@@ -88,9 +98,17 @@ export default function OrganizationMemberships({
     );
 
     try {
-      logger.debug({ organizationId, userId, makeAdmin }, '[client] toggling admin status');
+      Logger.debug(
+        { namespace: 'organization:memberships', developerOnly: true },
+        '[client] toggling admin status',
+        { organizationId, userId, makeAdmin }
+      );
       await setAdmin(organizationId, userId, makeAdmin);
-      logger.info({ organizationId, userId, makeAdmin }, '[client] admin status updated');
+      Logger.info({ namespace: 'organization:memberships' }, '[client] admin status updated', {
+        organizationId,
+        userId,
+        makeAdmin,
+      });
 
       toast.success(
         makeAdmin ? `${userName} is now an admin!` : `Admin privileges removed from ${userName}`
@@ -98,9 +116,10 @@ export default function OrganizationMemberships({
 
       router.refresh();
     } catch (e) {
-      logger.error(
-        { error: e, organizationId, userId, makeAdmin },
-        '[client] failed to toggle admin status'
+      Logger.error(
+        { namespace: 'organization:memberships', error: e },
+        '[client] failed to toggle admin status',
+        { organizationId, userId, makeAdmin }
       );
 
       toast.error(

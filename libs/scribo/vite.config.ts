@@ -1,41 +1,32 @@
-import { defineReactLibConfig } from '@eventuras/vite-config/react-lib';
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react-swc';
 import { resolve } from 'path';
 
 // Check build mode
 const buildSite = process.env.BUILD_SITE === 'true';
 
-export default buildSite
-  ? // Build demo site
-    {
-      build: {
-        outDir: 'dist/site',
+export default defineConfig({
+  plugins: [react()],
+  build: buildSite
+    ? {
+      // Build demo site
+      outDir: 'dist/site',
+      }
+    : {
+      // Build library
+        lib: {
+          entry: resolve(__dirname, 'src/main.tsx'),
+          name: 'Scribo',
+          fileName: 'scribo',
+        },
+        rollupOptions: {
+          external: ['react', 'react-dom'],
+          output: {
+            globals: {
+              react: 'React',
+              'react-dom': 'ReactDOM',
+            },
+          },
+        },
       },
-    }
-  : // Build library
-    defineReactLibConfig({
-      entry: 'src/main.tsx',
-      useSWC: true,
-      external: [
-        // Externalize all Lexical packages to avoid bundling them
-        'lexical',
-        '@lexical/code',
-        '@lexical/hashtag',
-        '@lexical/history',
-        '@lexical/link',
-        '@lexical/list',
-        '@lexical/markdown',
-        '@lexical/mark',
-        '@lexical/overflow',
-        '@lexical/react',
-        '@lexical/rich-text',
-        '@lexical/selection',
-        '@lexical/text',
-        '@lexical/utils',
-        // Also externalize any sub-exports from @lexical/react
-        /^@lexical\//,
-        // Externalize Prism.js to avoid bundling all language grammars
-        'prismjs',
-        /^prismjs\//,
-      ],
-    });
-
+});

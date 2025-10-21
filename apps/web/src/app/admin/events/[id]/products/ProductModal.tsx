@@ -1,23 +1,18 @@
 'use client';
 
-import type { NewProductDto, ProductDto } from '@eventuras/event-sdk';
+import type { NewProductDto, ProductDto } from '@eventuras/sdk';
 import { Form, Input, NumberInput } from '@eventuras/smartform';
-import { Button } from '@eventuras/ratio-ui';
-import { Logger } from '@eventuras/logger';
+import { Button, Heading } from '@eventuras/ratio-ui';
+import { DATA_TEST_ID, Logger } from '@eventuras/utils';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { Dialog } from '@eventuras/ratio-ui/layout/Dialog';
 import { useToast } from '@eventuras/toast';
+import { ApiState, apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 
 import ConfirmDiscardModal from './ConfirmDiscardModal';
-import { createProduct, updateProduct } from './actions';
-
-const logger = Logger.create({
-  namespace: 'web:admin',
-  context: { component: 'ProductModal' },
-});
 
 interface ProductModalProps {
   isOpen: boolean;
@@ -32,9 +27,10 @@ const ProductModal: React.FC<ProductModalProps> = ({
   onSubmit,
   onClose,
   product,
-  eventId
+  eventId,
 }) => {
-  const [loading, setLoading] = useState(false);
+  const [apiState, setApiState] = useState<ApiState>({ error: null, loading: false });
+  const eventuras = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
   const toast = useToast();
 
   const [confirmDiscardChanges, setConfirmDiscardChanges] = useState(false);
@@ -53,45 +49,43 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
   // Product modal submit handler
   const submitProduct: SubmitHandler<ProductDto> = async (data: ProductDto) => {
-    setLoading(true);
+    setApiState({ error: null, loading: true });
+    const editMode = data.productId;
 
-    try {
-      if (isEditMode && product?.productId) {
-        logger.info({ product: data }, 'Editing product');
-        const result = await updateProduct(eventId, product.productId, data);
+    // Remember to set loading state
+    setApiState({ error: null, loading: true });
 
-        if (!result.success) {
-          logger.error({ error: result.error }, 'Failed to update product');
-          toast.error(result.error.message);
-          setLoading(false);
-          return;
-        }
-
-        onSubmit(result.data);
-        toast.success(result.message || 'Product was updated!');
-      } else {
-        logger.info({ product: data }, 'Adding product');
-        const result = await createProduct(eventId, data as NewProductDto);
-
-        if (!result.success) {
-          logger.error({ error: result.error }, 'Failed to create product');
-          toast.error(result.error.message);
-          setLoading(false);
-          return;
-        }
-
-        onSubmit(result.data);
-        toast.success(result.message || 'Product was created!');
-      }
-
-      // Close the modal on success
-      onClose();
-    } catch (error) {
-      logger.error({ error }, 'Unexpected error in submitProduct');
-      toast.error('An unexpected error occurred');
-    } finally {
-      setLoading(false);
+    if (isEditMode && product) {
+      Logger.info({ namespace: 'ProductEditor' }, 'Editing product:', data);
+    } else {
+      Logger.info({ namespace: 'ProductEditor' }, 'Adding product:', data);
     }
+
+    const result = editMode
+      ? await apiWrapper(() =>
+          eventuras.eventProducts.putV3EventsProducts({
+            eventId: eventId,
+            productId: product!.productId!,
+            requestBody: data,
+          })
+        )
+      : await apiWrapper(() =>
+          eventuras.eventProducts.postV3EventsProducts({
+            eventId: eventId,
+            requestBody: data as NewProductDto,
+          })
+        );
+
+    if (result.ok) {
+      onSubmit(result.value);
+      toast.success('Product was updated!');
+    } else {
+      toast.error(`Something bad happended: ${result.error}!`);
+    }
+
+    // Close the modal
+    setApiState({ error: null, loading: false });
+    onClose();
   };
 
   return (
@@ -106,28 +100,28 @@ const ProductModal: React.FC<ProductModalProps> = ({
                 name="name"
                 label={t('common.products.labels.name')}
                 placeholder={t('common.products.labels.name')}
-                testId="product-name-input"
+                {...{ [DATA_TEST_ID]: 'product-name-input' }}
                 required
               />
               <Input
                 name="description"
                 label={t('common.products.labels.description')}
                 placeholder={t('common.products.labels.description')}
-                testId="product-description-input"
+                {...{ [DATA_TEST_ID]: 'product-description-input' }}
                 multiline
               />
               <NumberInput
                 name="price"
                 label={t('common.products.labels.price')}
                 placeholder="1234"
-                testId="product-price-input"
+                {...{ [DATA_TEST_ID]: 'product-price-input' }}
                 required
               />
               <NumberInput
                 name="vatPercent"
                 label={t('common.products.labels.vatPercent')}
                 placeholder="0"
-                testId="product-vat-input"
+                {...{ [DATA_TEST_ID]: 'product-vat-input' }}
                 defaultValue={0}
                 required
               />
@@ -135,9 +129,9 @@ const ProductModal: React.FC<ProductModalProps> = ({
                 name="minimumQuantity"
                 label={t('common.products.labels.minimumQuantity')}
                 placeholder="0"
-                testId="product-minimum-quantity-input"
+                {...{ [DATA_TEST_ID]: 'product-minimum-quantity-input' }}
               />
-              <Button type="submit" disabled={loading}>
+              <Button type="submit" disabled={apiState.loading}>
                 {buttonText}
               </Button>
               <Button type="reset" variant="secondary" onClick={onClose}>

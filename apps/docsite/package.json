@@ -1,24 +1,24 @@
 {
   "name": "@eventuras/docsite",
-  "version": "0.6.1",
+  "version": "0.1.0",
   "description": "",
   "license": "GPL-2.0-or-later",
   "author": "Ole Kristian Losvik",
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "prebuild": "pnpm run sync:docs",
+    "prebuild": "npm run sync:docs",
     "build": "next build",
     "postbuild": "pagefind --site .next/server/app --output-path public/_pagefind",
-    "predev": "pnpm run sync:docs",
+    "predev": "npm run sync:docs",
     "dev": "next -p 3210",
     "start": "next start",
     "sync:docs": "tsx scripts/sync-docs.ts"
   },
   "dependencies": {
-    "@eventuras/docs": "workspace:*",
-    "@eventuras/typescript-config": "workspace:*",
-    "next": "15.5.5",
+    "@eventuras/docs": "*",
+    "@eventuras/typescript-config": "*",
+    "next": "15.5.4",
     "nextra": "^4.6.0",
     "nextra-theme-blog": "^4.6.0",
     "nextra-theme-docs": "^4.6.0",
@@ -26,10 +26,10 @@
     "react-dom": "^19.2.0"
   },
   "devDependencies": {
-    "@eventuras/eslint-config": "workspace:*",
+    "@eventuras/eslint-config": "*",
     "@types/node": "^24.0.3",
     "pagefind": "^1.4.0",
-    "tsx": "^4.20.6",
+    "tsx": "^4.19.2",
     "typescript": "^5.9.3"
   }
 }

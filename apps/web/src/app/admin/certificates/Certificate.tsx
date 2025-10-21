@@ -1,10 +1,10 @@
-import { CertificateDto } from '@eventuras/event-sdk';
+import { CertificateDto } from '@eventuras/sdk';
 import { Definition, DescriptionList, Heading, Item, Term } from '@eventuras/ratio-ui';
 import { useTranslations } from 'next-intl';
 import React from 'react';
 
 import { Card } from '@eventuras/ratio-ui/core/Card';
-import { formatDateSpan } from '@eventuras/core/datetime';
+import { formatDateSpan } from '@/utils/formatDate';
 
 type CertificateProps = {
   certificate: CertificateDto;

@@ -1,16 +1,18 @@
 'use client';
-import { UserDto, getV3Users } from '@eventuras/event-sdk';
+import { UserDto } from '@eventuras/sdk';
 import { AutoCompleteDataProvider, InputAutoComplete } from '@eventuras/ratio-ui';
 
+import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 
 export type UserLookupProps = {
   onUserSelected?: (u: UserDto) => Promise<any> | void;
 };
 
 const UserLookup = (props: UserLookupProps) => {
+  const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
   const inputDataProvider: AutoCompleteDataProvider = async (input: string) => {
-    const result = await getV3Users({ query: { Query: input } });
-    const data = result.data?.data ?? [];
+    const result = await apiWrapper(() => sdk.users.getV3Users1({ query: input }));
+    const data = result.value?.data ?? [];
     return {
       ok: true,
       error: null,
@@ -18,9 +20,9 @@ const UserLookup = (props: UserLookupProps) => {
         return {
           id: u.id!,
           label: u.name!,
-          original: u
+          original: u,
         };
-      })
+      }),
     };
   };
   return (

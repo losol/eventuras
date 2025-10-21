@@ -1,5 +1,5 @@
-import { PageOverlay } from '@eventuras/ratio-ui/core/PageOverlay';
-import { Error } from '@eventuras/ratio-ui/blocks/Error';
+import { ErrorPage } from '@eventuras/ratio-ui/pages/ErrorPage';
+import { getTranslations } from 'next-intl/server';
 import { SiteInfo } from '@/utils/site/getSiteSettings';
 
 interface FatalErrorProps {
@@ -7,74 +7,37 @@ interface FatalErrorProps {
   description: string;
   additional?: string;
   siteInfo?: SiteInfo | null;
-  contactUsLabel?: string;
-  contactUsText?: string;
 }
 
-/**
- * Server-side error display component.
- * Translations should be passed as props from the parent component.
- */
-const FatalError: React.FC<FatalErrorProps> = ({
+/** See: {@link import('@eventuras/ratio-ui/blocks/ErrorPage').ErrorPageProps} */
+const FatalError: React.FC<FatalErrorProps> = async ({
   title,
   description,
   additional,
   siteInfo,
-  contactUsLabel,
-  contactUsText,
 }) => {
+  // ➜ i18n strings
+  const t = await getTranslations();
+
+  // ➜ Render generic ErrorPage with fatal tone
   return (
-    <PageOverlay variant="error" fullScreen>
-      <Error type="server-error" tone="error">
-        <Error.Title>{title}</Error.Title>
-        <Error.Description>
-          {description ||
-            'An unexpected error occurred. Our team has been notified and is working on it.'}
-        </Error.Description>
-        {additional && <Error.Details>{additional}</Error.Details>}
-        {(siteInfo?.contactInformation?.support || siteInfo?.publisher || contactUsText) && (
-          <Error.Details>
-            <div className="text-sm space-y-2">
-              {contactUsLabel && <p className="font-medium">{contactUsLabel}</p>}
-              {contactUsText && <p>{contactUsText}</p>}
-              {siteInfo?.contactInformation?.support?.email && (
-                <p>
-                  Support Email:{' '}
-                  <a
-                    href={`mailto:${siteInfo.contactInformation.support.email}`}
-                    className="text-blue-400 hover:text-blue-300 underline"
-                  >
-                    {siteInfo.contactInformation.support.email}
-                  </a>
-                </p>
-              )}
-              {siteInfo?.publisher?.phone && (
-                <p>
-                  Phone:{' '}
-                  <a
-                    href={`tel:${siteInfo.publisher.phone}`}
-                    className="text-blue-400 hover:text-blue-300 underline"
-                  >
-                    {siteInfo.publisher.phone}
-                  </a>
-                </p>
-              )}
-              {siteInfo?.publisher?.email && (
-                <p>
-                  Email:{' '}
-                  <a
-                    href={`mailto:${siteInfo.publisher.email}`}
-                    className="text-blue-400 hover:text-blue-300 underline"
-                  >
-                    {siteInfo.publisher.email}
-                  </a>
-                </p>
-              )}
-            </div>
-          </Error.Details>
-        )}
-      </Error>
-    </PageOverlay>
+    <ErrorPage tone="fatal" fullScreen>
+      <ErrorPage.Title>{title}</ErrorPage.Title>
+
+      <ErrorPage.Description>{description}</ErrorPage.Description>
+
+      {additional && <ErrorPage.Extra>{additional}</ErrorPage.Extra>}
+
+      {/* ➜ Project-specific contact block (kept in app) */}
+      {siteInfo?.contactInformation?.support && (
+        <ErrorPage.Extra>
+          <h2 className="text-lg font-semibold">{t('common.labels.contactUs')}</h2>
+          <p className="mt-1">{t('common.errorpage.contactUs')}</p>
+          <p className="mt-1">{siteInfo.contactInformation.support.name}</p>
+          <p className="mt-1">{siteInfo.contactInformation.support.email}</p>
+        </ErrorPage.Extra>
+      )}
+    </ErrorPage>
   );
 };
 

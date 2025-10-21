@@ -1,37 +1,18 @@
 {
   "name": "@eventuras/smartform",
   "version": "0.1.0",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    },
-    "./style.css": "./dist/smartform.css"
-  },
-  "files": [
-    "dist"
-  ],
-  "scripts": {
-    "build": "vite build",
-    "dev": "vite build --watch"
-  },
+  "main": "src/index.ts",
   "dependencies": {
-    "@eventuras/ratio-ui": "workspace:*",
-    "@eventuras/logger": "workspace:*",
-    "@tabler/icons-react": "^3.31.0"
+    "@eventuras/ratio-ui": "*",
+    "lucide-react": "^0.545.0",
+    "react-hook-form": "^7.65.0"
   },
   "devDependencies": {
-    "@eventuras/eslint-config": "workspace:*",
-    "@eventuras/typescript-config": "workspace:*",
-    "@eventuras/vite-config": "workspace:*",
-    "vite": "^7.1.10"
+    "@eventuras/eslint-config": "*",
+    "@eventuras/typescript-config": "*"
   },
   "peerDependencies": {
     "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "react-hook-form": "^7.65.0",
-    "react-aria-components": "^1.13.0"
+    "react-dom": "^19.1.0"
   }
 }

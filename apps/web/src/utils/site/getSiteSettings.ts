@@ -1,6 +1,6 @@
-import { Logger } from '@eventuras/logger';
+import { Logger } from '@eventuras/utils';
 
-const logger = Logger.create({ namespace: 'web:utils:site', context: { module: 'getSiteSettings' } });
+import Environment from '@/utils/Environment';
 
 export interface FooterLink {
   text: string;
@@ -40,46 +40,19 @@ export interface SiteInfo {
   };
 }
 
-/**
- * Fetches site settings from the configured URL.
- * Uses Next.js fetch caching with 10-minute revalidation.
- *
- * @returns Site information or null if not configured or fetch fails
- */
 const getSiteSettings = async (): Promise<SiteInfo | null> => {
-  const siteSettingsUrl = process.env.NEXT_PUBLIC_SITE_SETTINGS_URL;
-
-  if (!siteSettingsUrl) {
-    logger.debug('NEXT_PUBLIC_SITE_SETTINGS_URL not configured');
-    return null;
-  }
-
-  try {
-    logger.info({ url: siteSettingsUrl }, 'Fetching site settings');
-
-    const res = await fetch(siteSettingsUrl, {
-      next: { revalidate: 600 }, // Revalidate every 10 minutes
-    });
-
-    if (!res.ok) {
-      logger.error(
-        { status: res.status, statusText: res.statusText, url: siteSettingsUrl },
-        'Failed to fetch site settings - bad response'
-      );
+  if (Environment.NEXT_PUBLIC_SITE_SETTINGS_URL) {
+    try {
+      const res = await fetch(Environment.NEXT_PUBLIC_SITE_SETTINGS_URL, {
+        next: { revalidate: 600 },
+      });
+      const data = await res.json();
+      return data.site;
+    } catch (error) {
+      Logger.error({ namespace: 'sitesettings' }, 'Failed to fetch site settings:');
       return null;
     }
-
-    const data = await res.json();
-
-    if (!data?.site) {
-      logger.error({ data }, 'Site settings response missing site property');
-      return null;
-    }
-
-    logger.info('Site settings fetched successfully');
-    return data.site;
-  } catch (error) {
-    logger.error({ error, url: siteSettingsUrl }, 'Failed to fetch site settings');
+  } else {
     return null;
   }
 };

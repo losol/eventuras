@@ -1,3 +1,17 @@
 {
   "extends": "@eventuras/typescript-config/react-library.json",
+  "compilerOptions": {
+    "paths": {
+      "@eventuras/datatable/*": ["../../libs/datatable/src/*"],
+      "@eventuras/ratio-ui": ["../../libs/ratio-ui/src"],
+      "@eventuras/ratio-ui/*": ["../../libs/ratio-ui/src/*"]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }

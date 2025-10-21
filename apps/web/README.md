@@ -15,7 +15,7 @@ For production environment these variables should as environment variables.
 To start development server
 
 ```bash
-pnpm install
+npm install
 turbo dev
 ```
 
@@ -32,7 +32,7 @@ npm run storybook
 
 ## Logging
 
-Use `import { Logger } from '@eventuras/logger'` for Logging - it internally uses debugger and you can assign namespaces to filter out unwanted logs.
+Use `import { Logger } from '@eventuras/utils'` for Logging - it internally uses debugger and you can assign namespaces to filter out unwanted logs.
 Using console.log will throw an eslint error - which means for commits no console.log(or any use of console) will be allowed.
 
 ## API swagger documentation

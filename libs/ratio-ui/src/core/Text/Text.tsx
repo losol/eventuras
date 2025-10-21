@@ -1,4 +1,5 @@
 import React from 'react';
+import { DATA_TEST_ID } from "@eventuras/utils";
 import {
   BoxSpacingProps,
   buildSpacingClasses,
@@ -10,7 +11,7 @@ export interface TextProps extends BoxSpacingProps {
   as?: 'div' | 'span' | 'p';
   className?: string;
   icon?: React.ReactNode;
-  testId?: string;
+  [DATA_TEST_ID]?: string;
 }
 
 export const Text: React.FC<TextProps> = ({
@@ -24,7 +25,7 @@ export const Text: React.FC<TextProps> = ({
   border,
   width,
   height,
-  testId,
+  [DATA_TEST_ID]: testId,
   ...restHtmlProps
 }) => {
   // 1) Only one of text/children
@@ -48,7 +49,7 @@ export const Text: React.FC<TextProps> = ({
   return (
     <Component
       className={classes}
-      data-testid={testId}
+      {...(testId ? { [DATA_TEST_ID]: testId } : {})}
       {...restHtmlProps}
     >
       {icon && <span className="mr-2 inline-flex items-center">{icon}</span>}

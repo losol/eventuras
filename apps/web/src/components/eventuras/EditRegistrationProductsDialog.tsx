@@ -1,21 +1,18 @@
 'use client';
 
-import { ProductDto, RegistrationDto } from '@eventuras/event-sdk';
+import { ProductDto, RegistrationDto } from '@eventuras/sdk';
 import { Button } from '@eventuras/ratio-ui';
-import { Logger } from '@eventuras/logger';
-
-const logger = Logger.create({
-  namespace: 'web:components:eventuras',
-  context: { component: 'EditRegistrationProductsDialog' },
-});
-
+import { DATA_TEST_ID, Logger } from '@eventuras/utils';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import RegistrationCustomize from '@/app/user/events/[id]/eventflow/RegistrationCustomize';
 import { Dialog } from '@eventuras/ratio-ui/layout/Dialog';
 import { useToast } from '@eventuras/toast';
-import { addProductsToExistingRegistration } from '@/app/user/events/actions';
+import {
+  addProductsToRegistration,
+  productMapToOrderLineModel,
+} from '@/utils/api/functions/events';
 
 export type EditRegistrationProductsDialogProps = {
   eventProducts: ProductDto[];
@@ -33,30 +30,24 @@ const EditRegistrationProductsDialog = (props: EditRegistrationProductsDialogPro
   const router = useRouter();
 
   const onSubmit = async (selected: Map<string, number>) => {
-    logger.info({ selected }, 'Updating registration products');
-    try {
-      const result = await addProductsToExistingRegistration(
-        props.currentRegistration.registrationId!,
-        selected
-      );
-
-      if (result.success) {
-        toast.success(result.message || 'Registration edited successfully!');
-        router.refresh();
-        setEditorOpen(false);
-        if (props.onClose) props.onClose(true);
-      } else {
-        logger.error({ error: result.error }, 'Failed to update registration products');
-        toast.error(result.error.message);
-        setEditorOpen(false);
-        if (props.onClose) props.onClose(false);
-      }
-    } catch (e) {
-      logger.error({ error: e }, 'Failed to update registration products');
+    Logger.info({ namespace: 'editregistration' }, selected);
+    const updateProductResult = await addProductsToRegistration(
+      props.currentRegistration.registrationId!,
+      productMapToOrderLineModel(selected)
+    ).catch(e => {
+      Logger.error({ namespace: 'editregistration' }, e);
+      return { ok: false };
+    });
+    if (updateProductResult.ok) {
+      toast.success('Registration edited successfully!');
+      router.refresh();
+    } else {
       toast.error('Something went wrong, please try again later');
-      setEditorOpen(false);
-      if (props.onClose) props.onClose(false);
     }
+    router.refresh();
+
+    setEditorOpen(false);
+    if (props.onClose) props.onClose(updateProductResult.ok);
   };
   return (
     <>
@@ -65,7 +56,7 @@ const EditRegistrationProductsDialog = (props: EditRegistrationProductsDialogPro
           onClick={() => {
             setEditorOpen(true);
           }}
-          testId="edit-orders-button"
+          {...{ [DATA_TEST_ID]: 'edit-orders-button' }}
         >
           {props.title ?? 'Edit Orders'}
         </Button>
@@ -73,7 +64,7 @@ const EditRegistrationProductsDialog = (props: EditRegistrationProductsDialogPro
       <Dialog
         title="Edit Orders"
         isOpen={editorOpen}
-        testId="edit-orders-dialog"
+        {...{ [DATA_TEST_ID]: 'edit-orders-dialog' }}
         onClose={() => {
           setEditorOpen(false);
           if (props.onClose) {

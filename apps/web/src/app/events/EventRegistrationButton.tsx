@@ -1,8 +1,9 @@
-import { EventDto, EventInfoStatus } from '@eventuras/event-sdk';
+import { EventDto, EventInfoStatus } from '@eventuras/sdk';
 import { Badge } from '@eventuras/ratio-ui';
+import { DATA_TEST_ID } from '@eventuras/utils';
 import { getTranslations } from 'next-intl/server';
 
-import { Link } from '@eventuras/ratio-ui-next/Link';
+import { Link } from '@eventuras/ratio-ui/next/Link';
 
 export type EventRegistrationButtonProps = {
   event: EventDto;
@@ -41,7 +42,7 @@ export default async function EventRegistrationButton({ event }: EventRegistrati
         href={`/user/events/${event.id}`}
         variant="button-primary"
         block
-        testId="event-registration-button"
+        {...{ [DATA_TEST_ID]: 'event-registration-button' }}
       >
         {t('common.buttons.register-cta')}
       </Link>

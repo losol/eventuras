@@ -1,17 +1,16 @@
-import { Debug } from '@eventuras/logger';
+import { Logger } from '@eventuras/utils';
 import { NextRequest, NextResponse } from 'next/server';
 
-import { appConfig } from '@/config.server';
+import Environment, { EnvironmentVariables } from '@/utils/Environment';
 import { getAccessToken } from '@/utils/getAccesstoken';
 
-const debug = Debug.create('web:api:forwarder');
-const eventurasAPI_URL = appConfig.env.NEXT_PUBLIC_BACKEND_URL as string;
+const eventurasAPI_URL = Environment.NEXT_PUBLIC_BACKEND_URL;
 
 function isValidURL(str: string): boolean {
   try {
     new URL(str);
     return true;
-  } catch {
+  } catch (e) {
     return false;
   }
 }
@@ -49,20 +48,13 @@ async function forwarder(request: NextRequest) {
     request.method === 'PATCH' ? 'application/json-patch+json' : 'application/json';
   const forwardAccept = hasAcceptHeaders ? { Accept: acceptHeaders! } : null;
   const token = await getAccessToken();
-
-  // Get organization ID with proper handling
-  const organizationId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
-  const orgIdHeader = typeof organizationId === 'number'
-    ? organizationId.toString()
-    : (organizationId as string) ?? '';
-
   const fResponse = await fetch(forwardUrl, {
     method: request.method,
     body: request.method === 'GET' ? null : JSON.stringify(jBody),
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': contentType,
-      'Eventuras-Org-Id': orgIdHeader,
+      'Eventuras-Org-Id': Environment.NEXT_PUBLIC_ORGANIZATION_ID,
       ...forwardAccept,
     },
     redirect: 'manual',
@@ -82,13 +74,23 @@ async function forwarder(request: NextRequest) {
     data = await fResponse.blob();
   }
 
-  debug(
-    'Request forwarded: %s %s -> %d %s',
-    request.method,
-    forwardUrl,
-    fResponse.status,
-    isBlob ? '[BLOB]' : JSON.stringify(data)
-  );
+  if (Environment.get(EnvironmentVariables.NODE_ENV) === 'development') {
+    Logger.info(
+      {
+        developerOnly: true,
+        namespace: 'api:forwarder',
+      },
+      {
+        isBlob: isBlob,
+        forwardUrl,
+        body: JSON.stringify(jBody),
+        method: request.method,
+        status: fResponse.status,
+        data: JSON.stringify(data),
+        token,
+      }
+    );
+  }
 
   const init: ResponseInit = {
     status: fResponse.status,

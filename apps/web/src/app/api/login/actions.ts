@@ -1,7 +1,7 @@
 'use server';
 
-import {globalPOSTRateLimit} from '@eventuras/fides-auth-next/request';
-import {getCurrentSession} from '@eventuras/fides-auth-next/session';
+import { globalPOSTRateLimit } from '@eventuras/fides-auth/request';
+import { getCurrentSession } from '@eventuras/fides-auth/session';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 

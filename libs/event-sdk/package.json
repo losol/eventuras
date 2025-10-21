@@ -1,34 +1,17 @@
 {
   "name": "@eventuras/event-sdk",
-  "version": "0.5.0",
+  "version": "0.0.3",
   "description": "Event api sdk",
   "license": "GPL-2.0-or-later",
   "author": "Ole Kristian Losvik",
-  "type": "module",
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    },
-    "./client-next": {
-      "types": "./dist/client-exports.d.ts",
-      "import": "./dist/client-exports.js"
-    }
+    ".": "./src/client/index.ts"
   },
-  "files": [
-    "dist"
-  ],
+  "main": "index.js",
   "scripts": {
-    "build": "openapi-ts && tsc"
+    "build": "openapi-ts"
   },
   "dependencies": {
-    "@hey-api/openapi-ts": "0.86.0"
-  },
-  "devDependencies": {
-    "@eventuras/typescript-config": "workspace:*",
-    "typescript": "^5.9.3"
+    "@hey-api/openapi-ts": "^0.85.1"
   }
 }

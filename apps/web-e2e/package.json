@@ -17,8 +17,6 @@
     "test:playwright:ui": "playwright test --ui"
   },
   "dependencies": {
-    "@eventuras/event-sdk": "workspace:*",
-    "@eventuras/logger": "workspace:*",
     "@playwright/test": "1.56.0",
     "dotenv": "17.2.3"
   },

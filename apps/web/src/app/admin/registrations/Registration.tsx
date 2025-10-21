@@ -5,7 +5,7 @@ import {
   RegistrationDto,
   RegistrationStatus,
   RegistrationType,
-} from '@eventuras/event-sdk';
+} from '@eventuras/sdk';
 import { Form, Select } from '@eventuras/smartform';
 import {
   Badge,
@@ -15,10 +15,14 @@ import {
   Heading,
   Item,
   Section,
-  Term
+  Term,
 } from '@eventuras/ratio-ui';
-
+import { DATA_TEST_ID, Logger } from '@eventuras/utils';
+import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+
+import { apiWrapper, createSDK, fetcher } from '@/utils/api/EventurasApi';
+import Environment from '@/utils/Environment';
 
 import Order from '../orders/Order';
 
@@ -40,6 +44,7 @@ type TranslationFunction = (
   key: string,
   options?: Record<string, string | number | Date>
 ) => string;
+const logger_namespace = 'Registration';
 
 /**
  * Retrieves status labels translated based on the current language.
@@ -47,19 +52,13 @@ type TranslationFunction = (
  * @returns {Array<Object>} An array of objects containing value and label pairs for statuses.
  */
 export const getStatusLabels = (t: TranslationFunction) => [
-  { value: 'Draft' as RegistrationStatus, label: t('common.registrations.labels.draft') },
-  { value: 'Cancelled' as RegistrationStatus, label: t('common.registrations.labels.cancelled') },
-  { value: 'Verified' as RegistrationStatus, label: t('common.registrations.labels.verified') },
-  {
-    value: 'NotAttended' as RegistrationStatus,
-    label: t('common.registrations.labels.notAttended')
-  },
-  { value: 'Attended' as RegistrationStatus, label: t('common.registrations.labels.attended') },
-  { value: 'Finished' as RegistrationStatus, label: t('common.registrations.labels.finished') },
-  {
-    value: 'WaitingList' as RegistrationStatus,
-    label: t('common.registrations.labels.waitingList')
-  },
+  { value: RegistrationStatus.DRAFT, label: t('common.registrations.labels.draft') },
+  { value: RegistrationStatus.CANCELLED, label: t('common.registrations.labels.cancelled') },
+  { value: RegistrationStatus.VERIFIED, label: t('common.registrations.labels.verified') },
+  { value: RegistrationStatus.NOT_ATTENDED, label: t('common.registrations.labels.notAttended') },
+  { value: RegistrationStatus.ATTENDED, label: t('common.registrations.labels.attended') },
+  { value: RegistrationStatus.FINISHED, label: t('common.registrations.labels.finished') },
+  { value: RegistrationStatus.WAITING_LIST, label: t('common.registrations.labels.waitingList') },
 ];
 
 /**
@@ -68,21 +67,67 @@ export const getStatusLabels = (t: TranslationFunction) => [
  * @returns {Array<Object>} An array of objects containing value and label pairs for types.
  */
 export const getTypeLabels = (t: TranslationFunction) => [
-  { value: 'Participant' as RegistrationType, label: t('common.registrations.labels.participant') },
-  { value: 'Student' as RegistrationType, label: t('common.registrations.labels.student') },
-  { value: 'Lecturer' as RegistrationType, label: t('common.registrations.labels.lecturer') },
-  { value: 'Staff' as RegistrationType, label: t('common.registrations.labels.staff') },
-  { value: 'Artist' as RegistrationType, label: t('common.registrations.labels.artist') },
+  { value: RegistrationType.PARTICIPANT, label: t('common.registrations.labels.participant') },
+  { value: RegistrationType.STUDENT, label: t('common.registrations.labels.student') },
+  { value: RegistrationType.LECTURER, label: t('common.registrations.labels.lecturer') },
+  { value: RegistrationType.STAFF, label: t('common.registrations.labels.staff') },
+  { value: RegistrationType.ARTIST, label: t('common.registrations.labels.artist') },
 ];
 
-const Registration = ({ registration, adminMode = false }: RegistrationProps) => {
-  const t = useTranslations();
+export const updateRegistration = async (
+  id: number,
+  updatedRegistration: RegistrationUpdateDto,
+  onUpdate?: (registration: RegistrationDto) => void
+) => {
+  const eventuras = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
+  const result = await apiWrapper(() =>
+    eventuras.registrations.putV3Registrations({
+      id: id,
+      requestBody: updatedRegistration,
+    })
+  );
+  if (result.ok) {
+    Logger.info({ namespace: logger_namespace }, `Registration ${id} updated successfully`);
+    onUpdate?.(result.value!);
+  } else {
+    Logger.error(
+      { namespace: logger_namespace },
+      `Error updating registration ${id}: ${result.error}`
+    );
+  }
+  return result;
+};
 
-  // TODO: Implement proper registration update functionality
-  // This component needs a complete refactor to handle registration updates correctly
-  const handleUpdateRegistration = async () => {
-    throw new Error('Registration update not yet implemented. Please use the admin panel.');
-  };
+export const statusPatchRequest = async (registrationId: number, status: RegistrationStatus) => {
+  const patchDocument = [{ op: 'replace', path: '/status', value: status }];
+
+  const result = await fetcher(() =>
+    fetch(`${Environment.NEXT_PUBLIC_API_BASE_URL}/v3/registrations/${registrationId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json-patch+json',
+      },
+      body: JSON.stringify(patchDocument),
+    })
+  );
+
+  if (result.ok) {
+    Logger.info(
+      { namespace: logger_namespace },
+      `Registration ${registrationId} status updated to ${status}`
+    );
+  } else {
+    Logger.error(
+      { namespace: logger_namespace },
+      `Error updating registration ${registrationId}: ${result.error}`
+    );
+  }
+  return result;
+};
+
+const Registration = ({ registration, adminMode = false }: RegistrationProps) => {
+  const router = useRouter();
+  const t = useTranslations();
 
   if (!registration) {
     return <p>{t('common.registrations.labels.noRegistration')}</p>;
@@ -95,7 +140,7 @@ const Registration = ({ registration, adminMode = false }: RegistrationProps) =>
       <DescriptionList>
         <Item>
           <Term>{t('common.registrations.labels.id')}</Term>
-          <Definition testId="registration-registrationId">
+          <Definition {...{ [DATA_TEST_ID]: 'registration-registrationId' }}>
             {registration.registrationId}
           </Definition>
         </Item>
@@ -126,11 +171,10 @@ const Registration = ({ registration, adminMode = false }: RegistrationProps) =>
         )}
         {adminMode && (
           <Form
-            defaultValues={{
-              type: registration.type,
-              status: registration.status,
+            defaultValues={registration}
+            onSubmit={form => {
+              updateRegistration(registration.registrationId!, form, router.refresh);
             }}
-            onSubmit={handleUpdateRegistration}
             className=""
           >
             <Select name="type" options={getTypeLabels(t)} label="Type" />

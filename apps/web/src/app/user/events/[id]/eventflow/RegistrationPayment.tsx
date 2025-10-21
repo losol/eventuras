@@ -1,8 +1,9 @@
 'use client';
 
 import { Input } from '@eventuras/ratio-ui/forms';
-import { UserDto } from '@eventuras/event-sdk';
+import { PaymentProvider, UserDto } from '@eventuras/sdk';
 import { Button } from '@eventuras/ratio-ui';
+import { DATA_TEST_ID } from '@eventuras/utils';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -36,7 +37,7 @@ const RegistrationPayment = ({
 
   useEffect(() => {
     // Use useEffect to update showBusinessFieldset after initial render
-    if (selectedPaymentMethod === 'PowerOfficeEHFInvoice') {
+    if (selectedPaymentMethod === PaymentProvider.POWER_OFFICE_EHFINVOICE) {
       setShowBusinessFieldset(true);
     } else {
       setShowBusinessFieldset(false);
@@ -74,8 +75,8 @@ const RegistrationPayment = ({
               <input
                 type="radio"
                 id="emailinvoice"
-                value="PowerOfficeEmailInvoice"
-                data-testid="registration-emailinvoice-input"
+                value={PaymentProvider.POWER_OFFICE_EMAIL_INVOICE}
+                {...{ [DATA_TEST_ID]: 'registration-emailinvoice-input' }}
                 defaultChecked={true}
                 {...register('paymentMethod')}
               />
@@ -85,8 +86,8 @@ const RegistrationPayment = ({
               <input
                 type="radio"
                 id="ehfInvoice"
-                data-testid="registration-ehfinvoice-input"
-                value="PowerOfficeEHFInvoice"
+                {...{ [DATA_TEST_ID]: 'registration-ehfinvoice-input' }}
+                value={PaymentProvider.POWER_OFFICE_EHFINVOICE}
                 {...register('paymentMethod')}
               />
               <label htmlFor="ehfInvoice">{t('user.registration.customertype.business')}</label>
@@ -132,7 +133,7 @@ const RegistrationPayment = ({
               required: 'Zip code is Required',
             })}
             label={t('user.registration.address.zip')}
-            testId="registration-zipcode-input"
+            {...{ [DATA_TEST_ID]: 'registration-zipcode-input' }}
             placeholder="Zip Code"
             errors={errors}
           />
@@ -141,7 +142,7 @@ const RegistrationPayment = ({
               required: 'City is required',
             })}
             label={t('user.registration.address.city')}
-            testId="registration-city-input"
+            {...{ [DATA_TEST_ID]: 'registration-city-input' }}
             placeholder="City"
             errors={errors}
           />
@@ -150,7 +151,7 @@ const RegistrationPayment = ({
               required: 'Country is required',
             })}
             label={t('user.registration.address.country')}
-            testId="registration-country-input"
+            {...{ [DATA_TEST_ID]: 'registration-country-input' }}
             default="Norway"
             placeholder="Country"
             errors={errors}
@@ -167,7 +168,7 @@ const RegistrationPayment = ({
                 required: 'Vat Number is required for business customers',
               })}
               label={t('user.registration.businessinfo.vatNumber')}
-              testId="registration-vat-input"
+              {...{ [DATA_TEST_ID]: 'registration-vat-input' }}
               placeholder="Vat Number"
               errors={errors}
             />
@@ -185,7 +186,7 @@ const RegistrationPayment = ({
           </Button>
         )}
         <Button
-          testId="registration-payment-submit-button"
+          {...{ [DATA_TEST_ID]: 'registration-payment-submit-button' }}
           type="submit"
           variant="primary"
         >

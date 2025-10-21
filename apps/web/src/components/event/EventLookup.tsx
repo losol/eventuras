@@ -1,11 +1,10 @@
-'use client';
-
-import { EventDto } from '@eventuras/event-sdk';
+import { EventDto, LocalDate } from '@eventuras/sdk';
 import { AutoCompleteItem, InputAutoComplete } from '@eventuras/ratio-ui';
 import { useCallback } from 'react';
 
-import { fetchEventsForLookup } from '@/app/actions/events';
-
+import { createSDK } from '@/utils/api/EventurasApi';
+import Environment from '@/utils/Environment';
+const ORGANIZATION_ID: number = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID);
 let cachedEvents: EventDto[] | null = null;
 const comboRender = (item: AutoCompleteItem, selected?: boolean) => {
   const evt: EventDto = item.original as EventDto;
@@ -27,43 +26,34 @@ const comboRender = (item: AutoCompleteItem, selected?: boolean) => {
 };
 
 export type EventLookupConstraints = {
-  start?: string;
+  start: LocalDate;
 };
-
 export type EventLookupProps = {
   id?: string;
   eventLookupConstraints?: EventLookupConstraints;
-  onEventSelected?: (event: EventDto) => Promise<void> | void;
+  onEventSelected?: (event: EventDto) => Promise<any> | void;
 };
 
 const EventLookup = (props: EventLookupProps) => {
   const dataProvider = useCallback(async (input: string) => {
     const tester = new RegExp(`${input}`, 'gi');
-    let data: EventDto[] = [];
-
+    let data = null;
     if (!cachedEvents) {
-      const result = await fetchEventsForLookup();
-
-      if (!result.success || !result.data) {
-        return {
-          ok: false,
-          error: new Error(result.success ? 'No data' : result.error.message),
-          value: [],
-        };
-      }
-
-      data = result.data;
+      const result = await createSDK({ inferUrl: true }).events.getV3Events({
+        organizationId: ORGANIZATION_ID,
+        ...props.eventLookupConstraints,
+      });
+      data = result.data ?? [];
       cachedEvents = data;
     } else {
       data = cachedEvents;
     }
-
     return {
       ok: true,
       error: null,
       value: data
         .filter((evt: EventDto) => {
-          return tester.test(evt.title ?? '');
+          return tester.test(evt.title!);
         })
         .map((evt: EventDto) => {
           return {

@@ -1,77 +1,81 @@
 'use client';
 
 import { Fieldset } from '@eventuras/ratio-ui/forms';
-import { UserDto, UserFormDto } from '@eventuras/event-sdk';
+import { UserDto, UserFormDto } from '@eventuras/sdk';
 import { Form, Input, PhoneInput } from '@eventuras/smartform';
 import { Button } from '@eventuras/ratio-ui';
-import { Logger } from '@eventuras/logger';
+import { DATA_TEST_ID, Logger } from '@eventuras/utils';
 import { useTranslations } from 'next-intl';
 import { FC, useState } from 'react';
-import * as regex from '@eventuras/core/regex';
 
 import { useToast } from '@eventuras/toast';
-import { createUser, updateUser, updateUserProfile } from './actions';
-
-const logger = Logger.create({ namespace: 'web:admin:users', context: { component: 'UserEditor' } });
+import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
 
 interface UserEditorProps {
   user?: UserDto;
   onUserUpdated?: (updatedUser: UserDto) => void;
-  testId?: string;
+  [DATA_TEST_ID]?: string;
   adminMode?: boolean;
   submitButtonLabel?: string;
 }
 
+const regex = {
+  internationalPhoneNumber: /^\+[1-9]{1}[0-9]{1,14}$/,
+  letters: /^[\p{L}]+$/u,
+  lettersAndSpace: /^[\p{L} ]+$/u,
+  lettersSpaceAndHyphen: /^[\p{L} -]+$/u,
+};
+
 const UserEditor: FC<UserEditorProps> = props => {
   const { adminMode, user, onUserUpdated, submitButtonLabel } = props;
   const t = useTranslations();
+  const sdk = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
   const [isUpdating, setIsUpdating] = useState(false);
+  const log_namespace = 'user.account';
   const toast = useToast();
 
-  // Never log PII (email, name, etc.) - only log user ID if available
-  if (user?.id) {
-    logger.info({ userId: user.id }, 'UserEditor rendering');
-  } else {
-    logger.info('UserEditor rendering (new user)');
-  }
+  Logger.info({ namespace: log_namespace }, 'UserEditor rendering, user:', user);
 
-  const handleCreateUser = async (form: UserDto) => {
-    const result = await createUser(form as UserFormDto);
-
-    if (!result.success) {
-      // Never log PII - don't include form data in logs
-      logger.error({ error: result.error }, 'Failed to create new user');
-      toast.error(result.error.message);
-      return { success: false, error: result.error };
+  const createUser = async (form: UserDto) => {
+    const user = await apiWrapper(() =>
+      sdk.users.postV3Users({ requestBody: form as UserFormDto })
+    );
+    Logger.info({ namespace: log_namespace }, 'Created new user with id', user.value?.id);
+    if (user.error) {
+      toast.error(t('common.labels.error') + ': ' + user.error.message);
+      Logger.error({ namespace: log_namespace }, 'Failed to create new user', user.error);
+      return user;
     }
 
-    logger.info({ userId: result.data.id }, 'Created new user');
     toast.success('User created successfully');
-    return { success: true, data: result.data };
+    return user;
   };
 
-  const handleUpdateUser = async (user: UserDto, form: UserDto, adminMode: boolean) => {
+  const updateUser = async (user: UserDto, form: UserDto, adminMode: boolean) => {
     // Update existing user
-    logger.info({ userId: user.id }, 'Updating user');
+    Logger.info({ namespace: log_namespace }, 'Updating user');
     setIsUpdating(true);
-
     // if adminMode, update user with users endpoint, otherwise use userProfile endpoint
-    const result = adminMode
-      ? await updateUser(user.id!, form as UserFormDto)
-      : await updateUserProfile(form as UserFormDto);
-
+    const updatedUser = adminMode
+      ? await apiWrapper(() =>
+          sdk.users.putV3Users({ id: user.id!, requestBody: form as UserFormDto })
+        )
+      : await apiWrapper(() =>
+          sdk.userProfile.putV3Userprofile({ id: user.id!, requestBody: form as UserFormDto })
+        );
     setIsUpdating(false);
 
-    if (!result.success) {
-      logger.error({ error: result.error, userId: user.id }, 'Failed to update user');
-      toast.error(result.error.message);
-      return { success: false, error: result.error };
+    if (updatedUser.error) {
+      toast.error(t('common.labels.error') + ': ' + updatedUser.error.message);
+      Logger.error({ namespace: log_namespace }, 'Failed to update user', updatedUser.error);
+      return updatedUser;
     }
 
-    logger.info({ userId: result.data.id }, 'Updated user successfully');
-    toast.success(t('user.labels.updateUserSuccess') + ': ' + result.data.name);
+    Logger.info({ namespace: log_namespace }, 'Updated user with id', updatedUser.value?.id);
 
-    return { success: true, data: result.data };
+    toast.success(t('user.labels.updateUserSuccess') + ': ' + updatedUser.value?.name);
+
+    return updatedUser;
   };
 
   const editMode = !!user;
@@ -83,12 +87,12 @@ const UserEditor: FC<UserEditorProps> = props => {
     }
     let result;
     if (editMode) {
-      result = await handleUpdateUser(user, form, adminMode || false);
+      result = await updateUser(user, form, adminMode || false);
     } else {
-      result = await handleCreateUser(form);
+      result = await createUser(form);
     }
-    if (onUserUpdated && result?.success && result.data) {
-      onUserUpdated(result.data);
+    if (onUserUpdated && result?.value) {
+      onUserUpdated(result.value);
     }
   };
 
@@ -100,7 +104,7 @@ const UserEditor: FC<UserEditorProps> = props => {
   };
 
   return (
-    <Form onSubmit={onSubmit} defaultValues={user} testId={props.testId}>
+    <Form onSubmit={onSubmit} defaultValues={user} {...{ [DATA_TEST_ID]: props[DATA_TEST_ID] }}>
       {/* Given Name Field */}
       <Fieldset label={t('common.account.name.legend')}>
         <Input
@@ -113,10 +117,10 @@ const UserEditor: FC<UserEditorProps> = props => {
             required: t('user.account.name.requiredText'),
             pattern: {
               value: regex.lettersSpaceAndHyphen,
-              message: t('common.account.name.validationText')
-            }
+              message: t('common.account.name.validationText'),
+            },
           }}
-          testId="accounteditor-form-givenname"
+          {...{ [DATA_TEST_ID]: 'accounteditor-form-givenname' }}
         />
 
         <Input
@@ -128,10 +132,10 @@ const UserEditor: FC<UserEditorProps> = props => {
           validation={{
             pattern: {
               value: regex.lettersSpaceAndHyphen,
-              message: t('common.account.name.validationText')
-            }
+              message: t('common.account.name.validationText'),
+            },
           }}
-          testId="accounteditor-form-middlename"
+          {...{ [DATA_TEST_ID]: 'accounteditor-form-middlename' }}
         />
         {/* Family Name Field */}
         <Input
@@ -143,10 +147,10 @@ const UserEditor: FC<UserEditorProps> = props => {
             required: t('user.account.name.requiredText'),
             pattern: {
               value: regex.lettersSpaceAndHyphen,
-              message: t('common.account.name.validationText')
-            }
+              message: t('common.account.name.validationText'),
+            },
           }}
-          testId="accounteditor-form-familyname"
+          {...{ [DATA_TEST_ID]: 'accounteditor-form-familyname' }}
         />
       </Fieldset>
       <Fieldset label={t('common.account.contactInfo.legend')}>
@@ -174,10 +178,10 @@ const UserEditor: FC<UserEditorProps> = props => {
             required: adminMode ? false : t('user.account.phoneNumber.requiredText'),
             pattern: {
               value: regex.internationalPhoneNumber,
-              message: t('user.account.phoneNumber.invalidFormatText')
-            }
+              message: t('user.account.phoneNumber.invalidFormatText'),
+            },
           }}
-          testId="accounteditor-form-phonenumber"
+          {...{ [DATA_TEST_ID]: 'accounteditor-form-phonenumber' }}
         />
       </Fieldset>
       <Fieldset label={t('common.account.moreInfo.legend')}>
@@ -185,18 +189,18 @@ const UserEditor: FC<UserEditorProps> = props => {
           name="professionalIdentityNumber"
           label={t('common.account.professionalIdentityNumber.label')}
           description={t('common.account.professionalIdentityNumber.description')}
-          testId="accounteditor-form-professionalIdentityNumber"
+          {...{ [DATA_TEST_ID]: 'accounteditor-form-professionalIdentityNumber' }}
         />
         <Input
           name="supplementaryInformation"
           label={t('common.account.supplementaryInformation.label')}
           description={t('common.account.supplementaryInformation.description')}
-          testId="accounteditor-form-supplementaryInformation"
+          {...{ [DATA_TEST_ID]: 'accounteditor-form-supplementaryInformation' }}
         />
       </Fieldset>
 
       {/* Submit Button */}
-      <Button type="submit" testId="account-update-button" loading={isUpdating}>
+      <Button type="submit" {...{ [DATA_TEST_ID]: 'account-update-button' }} loading={isUpdating}>
         {getButtonLabel()}
       </Button>
     </Form>

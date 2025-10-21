@@ -1,6 +1,6 @@
 'use client';
 
-import { EventCollectionCreateDto } from '@eventuras/event-sdk';
+import { EventCollectionCreateDto } from '@eventuras/sdk';
 import { Form, HiddenInput, Input } from '@eventuras/smartform';
 import { Button } from '@eventuras/ratio-ui';
 import { useRouter } from 'next/navigation';
@@ -8,32 +8,29 @@ import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
 
 import { Dialog } from '@eventuras/ratio-ui/layout/Dialog';
-import { publicEnv } from '@/config.client';
-import { createCollection } from './actions';
+import { apiWrapper, createSDK } from '@/utils/api/EventurasApi';
+import Environment from '@/utils/Environment';
+import slugify from '@/utils/slugify';
 
 const CollectionCreator: React.FC = () => {
   const t = useTranslations();
   const [modalOpen, setModalOpen] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const organizationId = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
+  const organizationId = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID);
+  const eventuras = createSDK({ inferUrl: { enabled: true, requiresToken: true } });
   const router = useRouter();
 
-  const handleCreateCollection = async (data: EventCollectionCreateDto) => {
-    setIsSubmitting(true);
-    try {
-      const result = await createCollection(data);
+  const createCollection = async (data: EventCollectionCreateDto) => {
+    const slug = slugify(data.name);
+    data.slug = slug;
 
-      if (result.success && result.data?.collectionId) {
-        setModalOpen(false);
-        router.push(`/admin/collections/${result.data.collectionId}`);
-        router.refresh();
-      } else if (!result.success) {
-        // Handle error - you might want to show a toast here
-        console.error('Failed to create collection:', result.error.message);
-      }
-    } finally {
-      setIsSubmitting(false);
-    }
+    const collection = await apiWrapper(() =>
+      eventuras.eventCollection.postV3Eventcollections({
+        eventurasOrgId: organizationId,
+        requestBody: data,
+      })
+    );
+
+    router.push(`/admin/collections/${collection.value?.id!}`);
   };
 
   return (
@@ -42,12 +39,10 @@ const CollectionCreator: React.FC = () => {
         {t('admin.collection.labels.create')}
       </Button>
       <Dialog isOpen={modalOpen} onClose={() => setModalOpen(false)} title={'Add collection'}>
-        <Form onSubmit={data => handleCreateCollection(data)}>
+        <Form onSubmit={data => createCollection(data)}>
           <HiddenInput name="organizationId" value={organizationId.toString()} />
           <Input name="name" label={t('common.labels.name')} />
-          <Button type="submit" loading={isSubmitting}>
-            {t('admin.collection.labels.create')}
-          </Button>
+          <Button type="submit">{t('admin.collection.labels.create')}</Button>
         </Form>
       </Dialog>
     </>

@@ -1,6 +1,6 @@
 {
   "name": "@eventuras/idem-idp",
-  "version": "0.5.0",
+  "version": "0.0.2",
   "description": "Eventuras identity provider",
   "license": "GPL-3.0-or-later",
   "author": "Eventuras team",
@@ -19,8 +19,8 @@
     "express": "5.1.0"
   },
   "devDependencies": {
-    "@eventuras/eslint-config": "workspace:*",
-    "@eventuras/typescript-config": "workspace:*",
+    "@eventuras/eslint-config": "*",
+    "@eventuras/typescript-config": "*",
     "@types/express": "5.0.3",
     "tsup": "8.5.0",
     "tsx": "^4",

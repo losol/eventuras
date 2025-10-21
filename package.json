@@ -4,7 +4,6 @@
   "private": true,
   "license": "GPL-2.0+",
   "workspaces": [
-    "apps/api",
     "apps/docsite",
     "apps/historia",
     "apps/idem-idp",
@@ -16,48 +15,34 @@
     "lab/**"
   ],
   "scripts": {
-    "build": "turbo run build --concurrency 30",
-    "build:dev": "turbo run build --filter=@eventuras/web... --concurrency 20",
-    "changeset": "changeset",
-    "changeset:release": "changeset publish",
-    "changeset:suggest": "tsx scripts/changeset-suggest.ts --since origin/main --write",
-    "changeset:version": "changeset version",
-    "dev": "turbo dev --concurrency 20",
-    "dev:web": "turbo dev --filter=@eventuras/web... --concurrency 20",
+    "build": "turbo run build",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
-    "next:clean": "npx rimraf \"**/{.next,.turbo,.vercel}\"",
-    "clean:build": "npx rimraf \"**/{.next,.turbo,.vercel,dist,build,storybook-static}\" \"!**/node_modules/**\"",
-    "clean:all": "pnpm run clean:build && pnpm -r exec rm -rf node_modules && rm -rf node_modules pnpm-lock.yaml",
-    "deps:check": "pnpm dlx npm-check-updates --deep",
-    "deps:update": "pnpm dlx npm-check-updates --deep -u",
-    "pkg:sort": "pnpm dlx sort-package-json '**/package.json' '!**/node_modules/**'",
-    "deps:clean": "pnpm -r exec rm -rf node_modules && rm -rf node_modules pnpm-lock.yaml",
-    "deps:reinstall": "pnpm run clean && pnpm run pkg:sort && pnpm install",
+    "next:clean": "rimraf \"**/{.next,.turbo,.vercel}\"",
+    "npm:check-update": "npx npm-check-updates --deep",
+    "npm:clean": "npm exec --workspaces -- npx rimraf node_modules && npx rimraf node_modules && npx rimraf package-lock.json",
+    "npm:reinstall": "npm run npm:clean && npm run npm:sort && npm install",
+    "npm:sort": "npx sort-package-json '**/package.json' '!**/node_modules/**'",
+    "npm:update": "npx npm-check-updates --deep -u",
     "test": "turbo run test"
   },
   "dependencies": {
     "turbo": "^2.5.8"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.29.7",
     "@commitlint/cli": "^20.1.0",
     "@commitlint/config-conventional": "^20.0.0",
-    "@eventuras/eslint-config": "workspace:*",
-    "@eventuras/typescript-config": "workspace:*",
-    "@types/node": "^24.7.2",
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
+    "@eventuras/eslint-config": "*",
+    "@eventuras/typescript-config": "*",
     "eslint": "^9.37.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.4",
     "prettier": "^3.6.2",
-    "tsx": "^4.20.6",
     "typescript": "^5.9.3"
   },
-  "packageManager": "pnpm@9.12.3",
+  "packageManager": "npm@11.6.2",
   "engines": {
     "node": ">=20.0.0 <23.0.0",
-    "pnpm": ">=9.0.0"
+    "npm": ">=10.0.0 <11.0.0"
   }
 }

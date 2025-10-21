@@ -1,29 +1,26 @@
 import { Container, Heading } from '@eventuras/ratio-ui';
+import { DATA_TEST_ID } from '@eventuras/utils';
 import { getTranslations } from 'next-intl/server';
 
-import { Link } from '@eventuras/ratio-ui-next/Link';
+import { Link } from '@eventuras/ratio-ui/next/Link';
 import withAuthorization from '@/utils/auth/withAuthorization';
-import { appConfig } from '@/config.server';
+import Environment from '@/utils/Environment';
 
+import Wrapper from '../../components/eventuras/Wrapper';
 import AdminEventList from './events/AdminEventList';
 
-interface AdminPageProps {
-  searchParams?: Promise<{ page?: string }>;
-}
-
-const AdminPage = async ({ searchParams }: AdminPageProps = {}) => {
+const ORGANIZATION_ID: number = parseInt(Environment.NEXT_PUBLIC_ORGANIZATION_ID);
+const AdminPage = async () => {
   const t = await getTranslations();
-  const params = searchParams ? await searchParams : {};
-  const page = params.page ? parseInt(params.page, 10) : 1;
-
   return (
-    <Container>
+    <Wrapper>
+      <Container>
         <Heading as="h1">{t('admin.title')}</Heading>
         <section className="py-10">
           <Link
             href={`/admin/events/create`}
             variant="button-primary"
-            testId="add-event-button"
+            {...{ [DATA_TEST_ID]: 'add-event-button' }}
           >
             {t('admin.events.labes.create')}
           </Link>
@@ -43,15 +40,9 @@ const AdminPage = async ({ searchParams }: AdminPageProps = {}) => {
 
         <Heading as="h2">{t('common.events.sectiontitle')}</Heading>
         <Link href={`/admin/events`}>{t('common.labels.allEvents')}</Link>
-        <AdminEventList
-          organizationId={
-            typeof appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID === 'number'
-              ? appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID
-              : parseInt(appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID as string, 10)
-          }
-          page={page}
-        />
+        <AdminEventList organizationId={ORGANIZATION_ID} />
       </Container>
+    </Wrapper>
   );
 };
 

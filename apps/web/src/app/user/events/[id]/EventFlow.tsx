@@ -1,7 +1,8 @@
 'use client';
 
-import { EventDto, ProductDto, RegistrationDto, UserDto } from '@eventuras/event-sdk';
+import { EventDto, ProductDto, RegistrationDto, UserDto } from '@eventuras/sdk';
 import { Loading } from '@eventuras/ratio-ui';
+import { DATA_TEST_ID } from '@eventuras/utils';
 import { useActor } from '@xstate/react';
 import { useTranslations } from 'next-intl';
 
@@ -71,7 +72,7 @@ const EventFlow: React.FC<EventFlowProps> = ({ eventInfo, user, availableProduct
             });
           }}
           submitButtonLabel={t('common.labels.next')}
-          testId="registration-account-step"
+          {...{ [DATA_TEST_ID]: 'registration-account-step' }}
         />
       );
     case xState.matches(States.SHOW_REGISTRATION_VIEW):
@@ -145,8 +146,6 @@ const EventFlow: React.FC<EventFlowProps> = ({ eventInfo, user, availableProduct
           title={t('common.errorpage.title')}
           description={t('common.errorpage.description')}
           siteInfo={siteInfo}
-          contactUsLabel={t('common.labels.contactUs')}
-          contactUsText={t('common.errorpage.contactUs')}
         />
       );
     default:

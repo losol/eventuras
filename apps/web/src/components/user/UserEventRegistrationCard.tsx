@@ -1,13 +1,14 @@
-import { ProductOrderDto } from '@eventuras/event-sdk';
+import { ProductOrderDto } from '@eventuras/sdk';
+import { DATA_TEST_ID } from '@eventuras/utils';
 import { useTranslations } from 'next-intl';
 import { ReactElement } from 'react';
 
 import { Card } from '@eventuras/ratio-ui/core/Card';
-import {Text} from '@eventuras/ratio-ui/core/Text';
-import { Link } from '@eventuras/ratio-ui-next/Link';
-import { appConfig } from '@/config.server';
-import { formatDateSpan } from '@eventuras/core/datetime';
-import {Heading} from '@eventuras/ratio-ui/core/Heading';
+import { Text } from '@eventuras/ratio-ui/core/Text/Text';
+import { Link } from '@eventuras/ratio-ui/next/Link';
+import Environment from '@/utils/Environment';
+import { formatDateSpan } from '@/utils/formatDate';
+import Heading from '@eventuras/ratio-ui/core/Heading/Heading';
 
 export type UserEventRegistrationCardProps = {
   eventId: string;
@@ -33,7 +34,7 @@ const UserEventRegistrationCard = ({
         {eventTitle}
       </Heading>
       <Text>
-        {formatDateSpan(dateStart, dateEnd, { locale: appConfig.env.NEXT_PUBLIC_DEFAULT_LOCALE as string })}
+        {formatDateSpan(dateStart, dateEnd, { locale: Environment.NEXT_PUBLIC_DEFAULT_LOCALE })}
       </Text>
       {products.length > 0 && (
         <Text as="div">
@@ -50,7 +51,7 @@ const UserEventRegistrationCard = ({
           variant="button-primary"
           onDark
           linkOverlay
-          testId={eventId}
+          {...{ [DATA_TEST_ID]: eventId }}
         >
           {t('common.buttons.user-event-page')}
         </Link>

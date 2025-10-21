@@ -8,6 +8,7 @@ import { formStyles } from '../styles/formStyles';
 import { InputLabel } from '../common/InputLabel';
 import { InputError } from '../common/InputError';
 import { InputDescription } from '../common/InputDescription';
+import { DATA_TEST_ID } from '@eventuras/utils';
 
 interface ExtendedInputProps extends InputProps {
   multiline?: boolean;
@@ -18,8 +19,7 @@ interface ExtendedInputProps extends InputProps {
 type CommonProps = InputHTMLAttributes<HTMLInputElement> &
   TextareaHTMLAttributes<HTMLTextAreaElement> & {
     'aria-invalid'?: boolean;
-    'data-testid'?: string;
-  [key: string]: any;
+    'data-test-id'?: string;
   };
 
 export const Input = forwardRef<HTMLElement, ExtendedInputProps>(
@@ -38,7 +38,6 @@ export const Input = forwardRef<HTMLElement, ExtendedInputProps>(
       cols,
       noMargin = false,
       noWrapper = false,
-      testId,
       ...rest
     },
     forwardedRef
@@ -73,7 +72,6 @@ export const Input = forwardRef<HTMLElement, ExtendedInputProps>(
       placeholder,
       disabled,
       'aria-invalid': hasError ? true : undefined,
-      'data-testid': testId,
       name,
       ...rest,
     };
@@ -83,6 +81,7 @@ export const Input = forwardRef<HTMLElement, ExtendedInputProps>(
         ref={assignRef as React.Ref<HTMLTextAreaElement>}
         rows={rows ?? 3} // ✅ keep rows for initial height
         {...commonProps}
+        {...{ [DATA_TEST_ID]: commonProps[DATA_TEST_ID] }}
       />
     ) : (
       <input

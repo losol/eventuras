@@ -1,16 +1,13 @@
-'use client';
-
 import {
   EventDto,
   NewRegistrationDto,
   ProductDto,
   RegistrationType,
   UserDto,
-} from '@eventuras/event-sdk';
-import { Button, Heading } from '@eventuras/ratio-ui';
-import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
-import { Logger } from '@eventuras/logger';
-import { IconCheck } from '@tabler/icons-react';
+} from '@eventuras/sdk';
+import { Button, Drawer, Heading } from '@eventuras/ratio-ui';
+import { Logger } from '@eventuras/utils';
+import { Check } from '@eventuras/ratio-ui/icons';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
@@ -30,8 +27,9 @@ import ProductSelection from '@/components/eventuras/ProductSelection';
 import UserLookup from '@/components/eventuras/UserLookup';
 import { useToast } from '@eventuras/toast';
 import { RegistrationProduct } from '@/types';
-import { createEventRegistration } from '@/app/user/events/actions';
+import { createEventRegistration } from '@/utils/api/functions/events';
 import { mapEventProductsToView, mapSelectedProductsToQuantity } from '@/utils/api/mappers';
+import { mapEnum } from '@/utils/enum';
 
 type AddUserToEventFormValues = {
   registrationType: string;
@@ -65,7 +63,7 @@ const RegistrationListBoxItem = (props: ListBoxItemProps & { children: React.Rea
           {props.children}
         </span>
         <span className="w-5 flex items-center text-black group-focus:text-white">
-          {isSelected && <IconCheck className="h-5 w-5" aria-hidden="true" />}
+          {isSelected && <Check className="h-5 w-5" aria-hidden="true" />}
         </span>
       </>
     )}
@@ -87,13 +85,12 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
 }) => {
   const toast = useToast();
   const t = useTranslations();
-  const logger = Logger.create({ namespace: 'web:admin:events', context: { component: 'AddUserToEvent' } });
 
   const { control, register, setValue, handleSubmit } = useForm<AddUserToEventFormValues>();
 
   useEffect(() => {
-    setValue('registrationType', 'Participant'); //default to participant
-  }, [setValue]);
+    setValue('registrationType', RegistrationType.PARTICIPANT); //default to participant
+  }, []);
 
   const onSubmitForm = async (values: AddUserToEventFormValues) => {
     const productMap =
@@ -110,21 +107,20 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
         email: user.email,
       },
     };
+    const result = await createEventRegistration(newRegistration, productMap);
 
-    try {
-      const result = await createEventRegistration(newRegistration, productMap);
-
-      if (result.success) {
-        logger.info({ userId: user.id }, 'User successfully added to the event!');
-        toast.success(result.message || 'User successfully added to the event!');
-        onUseradded(user);
-      } else {
-        logger.error({ error: result.error, userId: user.id }, 'Failed to add user to event');
-        toast.error(result.error.message);
+    if (result.ok) {
+      Logger.info({ namespace: 'AddUserToEvent' }, 'User succesfully added to the event!');
+      toast.success('User successfully added to the event!');
+      onUseradded(user);
+    } else {
+      Logger.error({ namespace: 'AddUserToEvent' }, result.error);
+      if (result.error!.status === 409) {
+        toast.error('That user is already registered to the event');
+        return;
       }
-    } catch (error) {
-      logger.error({ error, userId: user.id }, 'Unexpected error adding user to event');
       toast.error(t('common.errors.fatalError.title'));
+      throw new Error('Failed to add user to event');
     }
   };
 
@@ -136,17 +132,10 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
         control={control}
         name="registrationType"
         render={({ field: { onChange, onBlur } }) => {
-          const registrationTypeOptions: RegistrationType[] = [
-            'Participant',
-            'Student',
-            'Staff',
-            'Lecturer',
-            'Artist',
-          ];
           return (
             <Select
               className="flex flex-col gap-1 w-[200px]"
-              defaultSelectedKey="Participant"
+              defaultSelectedKey={RegistrationType.PARTICIPANT}
               onBlur={onBlur}
               onSelectionChange={onChange}
             >
@@ -157,7 +146,7 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
               </AriaButton>
               <Popover className="max-h-60 w-(--trigger-width) overflow-auto rounded-md bg-white text-base shadow-lg ring-1 ring-black/5 entering:animate-in entering:fade-in exiting:animate-out exiting:fade-out">
                 <ListBox className="outline-hidden p-1">
-                  {registrationTypeOptions.map(value => renderRegistrationTypeItem(value))}
+                  {mapEnum(RegistrationType, (value: any) => renderRegistrationTypeItem(value))}
                 </ListBox>
               </Popover>
             </Select>
