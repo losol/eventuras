@@ -47,24 +47,9 @@ export async function validateSessionJwt(
     };
   }
 
-  // Expired session?
-  const expiresAt = new Date(payload.expiresAt).getTime();
-  const now = Date.now();
+  logger.debug('Session validated successfully');
 
-  if (expiresAt < now) {
-    const expiredMinutesAgo = Math.floor((now - expiresAt) / 1000 / 60);
-    logger.info({ expiredMinutesAgo }, 'Session has expired');
-    return {
-      session: payload,
-      status: 'EXPIRED',
-      reason: 'Session expired'
-    };
-  }
-
-  const remainingMinutes = Math.floor((expiresAt - now) / 1000 / 60);
-  logger.debug({ remainingMinutes }, 'Session validated successfully');
-
-  // It's valid, return how many seconds remain
+  // It's valid
   return {
     session: payload,
     status: 'VALID',
@@ -77,10 +62,6 @@ export function isSession(object: unknown): object is Session {
     return false;
   }
 
-  if (typeof (object as any).expiresAt !== 'string') {
-    return false;
-  }
-
   if (
     'tokens' in object &&
     typeof (object as any).tokens !== 'object'
@@ -89,8 +70,8 @@ export function isSession(object: unknown): object is Session {
   }
 
   if (
-    'userProfile' in object &&
-    typeof (object as any).userProfile !== 'object'
+    'user' in object &&
+    typeof (object as any).user !== 'object'
   ) {
     return false;
   }

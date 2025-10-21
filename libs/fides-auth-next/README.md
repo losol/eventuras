@@ -103,7 +103,6 @@ const session = await getCurrentSession();
 
 // Create and save new session
 await createAndPersistSession({
-  expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
   tokens: { accessToken, refreshToken },
   user: { name: 'John', email: 'john@example.com' },
 });
@@ -208,7 +207,6 @@ export async function GET(request: Request) {
 
   // 3. Create and persist session
   await createAndPersistSession({
-    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
     tokens: {
       accessToken: tokens.access_token,
       refreshToken: tokens.refresh_token,

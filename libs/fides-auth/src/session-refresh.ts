@@ -34,7 +34,7 @@ export const refreshSession = async (
     logger.info({
       hasNewAccessToken: !!updatedSession.tokens.accessToken,
       hasNewRefreshToken: !!newtokens.refresh_token,
-      expiresIn: newtokens.expires_in
+      expiresIn: newtokens.expires_in,
     }, 'Session refreshed successfully');
 
     return updatedSession;
