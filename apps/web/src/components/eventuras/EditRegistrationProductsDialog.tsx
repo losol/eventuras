@@ -12,10 +12,10 @@ const logger = Logger.create({
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import RegistrationCustomize from '@/app/user/events/[id]/eventflow/RegistrationCustomize';
+import RegistrationCustomize from '@/app/(user)/user/events/[id]/eventflow/RegistrationCustomize';
 import { Dialog } from '@eventuras/ratio-ui/layout/Dialog';
 import { useToast } from '@eventuras/toast';
-import { addProductsToExistingRegistration } from '@/app/user/events/actions';
+import { addProductsToExistingRegistration } from '@/app/(user)/user/events/actions';
 
 export type EditRegistrationProductsDialogProps = {
   eventProducts: ProductDto[];

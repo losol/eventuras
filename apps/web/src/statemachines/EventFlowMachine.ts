@@ -7,8 +7,8 @@ import {
 import { assign, createMachine, fromPromise } from 'xstate';
 
 import { PaymentFormValues } from '@/types';
-import { fetchUserEventRegistrations } from '@/app/actions/registrations';
-import { createEventRegistration, updateEventRegistration } from '@/app/user/events/actions';
+import { fetchUserEventRegistrations } from '@/app/(admin)/admin/actions/registrations';
+import { createEventRegistration, updateEventRegistration } from '@/app/(user)/user/events/actions';
 import { mapToNewRegistration, mapToUpdatedRegistration } from '@/utils/api/mappers';
 
 export type EventFlowMachineContext = {

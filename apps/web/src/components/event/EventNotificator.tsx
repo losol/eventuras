@@ -18,7 +18,7 @@ import { useToast } from '@eventuras/toast';
 import { ParticipationTypes } from '@/types';
 import { participationMap } from '@/utils/api/mappers';
 import { mapEnum } from '@/utils/enum';
-import { sendEmailNotification, sendSmsNotification } from '@/app/actions/notifications';
+import { sendEmailNotification, sendSmsNotification } from '@/app/(admin)/admin/actions/notifications';
 
 const logger = Logger.create({
   namespace: 'web:components:event',
