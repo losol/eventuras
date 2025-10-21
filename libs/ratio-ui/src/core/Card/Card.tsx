@@ -5,12 +5,14 @@ import Container from '../../layout/Container/Container';
 export interface CardProps extends BoxProps {
   dark?: boolean;
   container?: boolean;
+  variant?: 'default' | 'wide';
   children?: ReactNode;
 }
 
 export const Card: React.FC<CardProps> = ({
   dark = false,
   container = false,
+  variant = 'default',
   children,
   // and these from BoxProps
   padding, margin, backgroundColorClass, backgroundImageUrl, className, style, ...rest
@@ -23,7 +25,9 @@ export const Card: React.FC<CardProps> = ({
     ? 'text-white'
     : 'text-slate-900 dark:text-gray-100';
 
-  const cardClasses = [baseClasses, backgroundColorClasses, textColorClasses, className]
+  const variantClasses = variant === 'wide' ? 'mx-auto min-h-[33vh]' : '';
+
+  const cardClasses = [baseClasses, backgroundColorClasses, textColorClasses, variantClasses, className]
 
   const combinedStyle = getBackgroundStyle(backgroundImageUrl) || style
 

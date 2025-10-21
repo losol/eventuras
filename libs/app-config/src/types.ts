@@ -71,7 +71,7 @@ export const appConfigSchema = z.object({
   name: z.string(),
   type: z.literal('app'),
   description: z.string().optional(),
-  env: z.record(envVarDefinitionSchema),
+  env: z.record(z.string(), envVarDefinitionSchema),
   build: z
     .object({
       outDir: z.string().optional(),

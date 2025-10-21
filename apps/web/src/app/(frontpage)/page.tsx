@@ -45,7 +45,7 @@ export default async function Homepage() {
               translations={{
                 loginLabel: t('common:buttons.login'),
                 userLabel: t('common:user.profile'),
-                accountLabel: t('common.user.account'),
+                accountLabel: t('common:labels.account'),
                 adminLabel: t('common.labels.admin'),
               }}
             />

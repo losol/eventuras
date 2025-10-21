@@ -3,6 +3,13 @@
   "version": "0.7.1",
   "type": "module",
   "main": "src/main.tsx",
+  "exports": {
+    ".": {
+      "import": "./dist/main.js",
+      "types": "./dist/main.d.ts"
+    },
+    "./style.css": "./dist/scribo.css"
+  },
   "scripts": {
     "build": "vite build",
     "build:site": "BUILD_SITE=true vite build",
