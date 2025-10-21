@@ -19,8 +19,7 @@
   },
   "dependencies": {
     "@eventuras/ratio-ui": "workspace:*",
-    "@eventuras/logger": "workspace:*",
-    "@tabler/icons-react": "^3.31.0"
+    "@eventuras/logger": "workspace:*"
   },
   "devDependencies": {
     "@eventuras/eslint-config": "workspace:*",

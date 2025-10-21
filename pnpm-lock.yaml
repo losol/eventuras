@@ -462,9 +462,6 @@ importers:
       '@eventuras/toast':
         specifier: workspace:^
         version: link:../../libs/toast
-      '@tabler/icons-react':
-        specifier: ^3.35.0
-        version: 3.35.0(react@19.2.0)
       '@tailwindcss/postcss':
         specifier: ^4.1.14
         version: 4.1.14
@@ -952,9 +949,6 @@ importers:
       '@swc/helpers':
         specifier: ^0.5.17
         version: 0.5.17
-      '@tabler/icons-react':
-        specifier: ^3.35.0
-        version: 3.35.0(react@19.2.0)
       '@tailwindcss/postcss':
         specifier: ^4.1.14
         version: 4.1.14
@@ -1193,9 +1187,6 @@ importers:
       '@eventuras/ratio-ui':
         specifier: workspace:*
         version: link:../ratio-ui
-      '@tabler/icons-react':
-        specifier: ^3.31.0
-        version: 3.35.0(react@19.2.0)
       react:
         specifier: ^19.1.0
         version: 19.2.0
@@ -5060,14 +5051,6 @@ packages:
   '@szmarczak/http-timer@5.0.1':
     resolution: {integrity: sha512-+PmQX0PiAYPMeVYe237LJAYvOMYW1j2rH5YROyS3b4CTVJum34HfRvKvAzozHAQG0TnHNdUfY9nCeUyRAs//cw==}
     engines: {node: '>=14.16'}
-
-  '@tabler/icons-react@3.35.0':
-    resolution: {integrity: sha512-XG7t2DYf3DyHT5jxFNp5xyLVbL4hMJYJhiSdHADzAjLRYfL7AnjlRfiHDHeXxkb2N103rEIvTsBRazxXtAUz2g==}
-    peerDependencies:
-      react: '>= 16'
-
-  '@tabler/icons@3.35.0':
-    resolution: {integrity: sha512-yYXe+gJ56xlZFiXwV9zVoe3FWCGuZ/D7/G4ZIlDtGxSx5CGQK110wrnT29gUj52kEZoxqF7oURTk97GQxELOFQ==}
 
   '@tailwindcss/node@4.1.14':
     resolution: {integrity: sha512-hpz+8vFk3Ic2xssIA3e01R6jkmsAhvkQdXlEbRTk6S10xDAtiQiM3FyvZVGsucefq764euO/b8WUW9ysLdThHw==}
@@ -17311,13 +17294,6 @@ snapshots:
   '@szmarczak/http-timer@5.0.1':
     dependencies:
       defer-to-connect: 2.0.1
-
-  '@tabler/icons-react@3.35.0(react@19.2.0)':
-    dependencies:
-      '@tabler/icons': 3.35.0
-      react: 19.2.0
-
-  '@tabler/icons@3.35.0': {}
 
   '@tailwindcss/node@4.1.14':
     dependencies:

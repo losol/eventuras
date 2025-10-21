@@ -11,7 +11,6 @@ export default defineReactLibConfig({
     /^@internationalized\//,
     /^@swc\/helpers/,
     /^lucide-react/,
-    /^@tabler\/icons-react/,
     'clsx',
   ],
 });

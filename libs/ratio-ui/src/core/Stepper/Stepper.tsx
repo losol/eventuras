@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconCheck } from '@tabler/icons-react';
+import { Check } from '../../icons';
 
 export type StepStatus = 'complete' | 'current' | 'upcoming' | 'error';
 
@@ -60,7 +60,7 @@ const StepContent: React.FC<{ step: Step; variant: StepperVariant }> = ({ step, 
   return (
     <div className={getStepStatusClasses(step.status, variant)}>
       {showCheck ? (
-        <IconCheck size={20} strokeWidth={3} />
+        <Check size={20} strokeWidth={3} />
       ) : variant !== 'dots' ? (
         <span>{step.number}</span>
       ) : null}
