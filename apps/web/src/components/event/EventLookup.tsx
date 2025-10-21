@@ -4,7 +4,7 @@ import { EventDto } from '@eventuras/event-sdk';
 import { AutoCompleteItem, InputAutoComplete } from '@eventuras/ratio-ui';
 import { useCallback } from 'react';
 
-import { fetchEventsForLookup } from '@/app/actions/events';
+import { fetchEventsForLookup } from '@/app/(admin)/admin/actions/events';
 
 let cachedEvents: EventDto[] | null = null;
 const comboRender = (item: AutoCompleteItem, selected?: boolean) => {
