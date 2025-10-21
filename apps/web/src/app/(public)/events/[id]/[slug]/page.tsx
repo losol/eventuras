@@ -12,6 +12,7 @@ import { redirect } from 'next/navigation';
 
 import { formatDateSpan } from '@eventuras/core/datetime';
 import { Card } from '@eventuras/ratio-ui/core/Card';
+import { Calendar, MapPin } from '@eventuras/ratio-ui/icons';
 
 import EventDetails from '@/app/(public)/events/EventDetails';
 import EventRegistrationButton from '@/app/(public)/events/EventRegistrationButton';
@@ -105,12 +106,13 @@ export default async function EventDetailsPage({ params }: Readonly<EventDetails
 
   return (
     <>
-      {eventinfo.featuredImageUrl && (
-        <Card className="mx-auto min-h-[33vh]" backgroundImageUrl={eventinfo.featuredImageUrl} />
-      )}
-      <Section className="py-16">
+      <Section className="pb-8">
         <Container>
-          <Heading as="h1" padding="pt-6 pb-3">
+          {eventinfo.featuredImageUrl && (
+            <Card variant="wide" backgroundImageUrl={eventinfo.featuredImageUrl} />
+          )}
+
+          <Heading as="h1" padding="pt-3 pb-3">
             {eventinfo.title ?? 'Mysterious Event'}
           </Heading>
 
@@ -123,20 +125,30 @@ export default async function EventDetailsPage({ params }: Readonly<EventDetails
           <Text text={eventinfo.description ?? ''} className="py-3" />
 
           {eventinfo.dateStart && (
-            <div className="py-3">
-              {formatDateSpan(eventinfo.dateStart as string, eventinfo.dateEnd as string, {
-                locale: appConfig.env.NEXT_PUBLIC_DEFAULT_LOCALE as string,
-              })}
+            <div className="flex items-center gap-2 py-0">
+              <Calendar className="h-5 w-5 mb-5 text-gray-600" />
+              <span>
+                {formatDateSpan(eventinfo.dateStart as string, eventinfo.dateEnd as string, {
+                  locale: appConfig.env.NEXT_PUBLIC_DEFAULT_LOCALE as string,
+                })}
+              </span>
             </div>
           )}
 
-          {eventinfo.city && <div className="py-2">{eventinfo.city}</div>}
+          {eventinfo.city && (
+            <div className="flex items-center gap-2 py-0 mb-4">
+              <MapPin className="h-5 w-5 text-gray-600" />
+              <span>{eventinfo.city}</span>
+            </div>
+          )}
 
           <Suspense fallback={<div>Loading registration options...</div>}>
             <EventRegistrationButton event={eventinfo} />
           </Suspense>
+
         </Container>
       </Section>
+
 
       <Suspense fallback={<div>Loading event details...</div>}>
         <EventDetails eventinfo={eventinfo} />

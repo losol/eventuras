@@ -1,5 +1,6 @@
 'use client';
 import MarkdownEditor from '@eventuras/scribo';
+import '@eventuras/scribo/style.css';
 import { useRef } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 

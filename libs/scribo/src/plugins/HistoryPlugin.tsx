@@ -140,7 +140,11 @@ function getChangeType(
   }
 
   const nextDirtyNode = dirtyNodes[0];
-  
+
+  if (!nextDirtyNode) {
+    return OTHER;
+  }
+
   const prevDirtyNode = prevEditorState._nodeMap.get(nextDirtyNode.__key);
 
   if (
@@ -299,6 +303,7 @@ function createMergeActionGetter(
       if (dirtyLeaves.size === 1) {
         const dirtyLeafKey = Array.from(dirtyLeaves)[0];
         if (
+          dirtyLeafKey &&
           isTextNodeUnchanged(dirtyLeafKey, prevEditorState, nextEditorState)
         ) {
           return HISTORY_MERGE;

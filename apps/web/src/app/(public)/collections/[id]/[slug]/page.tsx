@@ -97,7 +97,7 @@ const CollectionPage: React.FC<EventInfoProps> = async props => {
     <>
       {collection?.featuredImageUrl && (
         <Card
-          className="mx-auto min-h-[33vh]"
+          variant="wide"
           {...(collection?.featuredImageUrl && { backgroundImage: collection.featuredImageUrl })}
         ></Card>
       )}
