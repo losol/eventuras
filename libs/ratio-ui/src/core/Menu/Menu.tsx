@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import {
-  Button,
+  Button as AriaButton,
   Menu as AriaMenu,
   MenuItem,
   MenuItemProps,
@@ -78,12 +78,13 @@ const MenuButton = (props: MenuButtonProps & MenuItemProps) => {
 const Menu = (props: MenuProps) => {
   return (
     <MenuTrigger>
-      <Button data-testid="logged-in-menu-button">
-        <div className={styles.menuTrigger}>
-          {props.menuLabel}
-          <ChevronIcon />
-        </div>
-      </Button>
+      <AriaButton
+        data-testid="logged-in-menu-button"
+        className="inline-flex items-center gap-2 border font-bold bg-primary-700 dark:bg-primary-950 hover:bg-primary-700 text-white rounded-full px-4 py-1 m-1 transition-all duration-500 transform ease-in-out active:scale-110 hover:shadow-sm"
+      >
+        {props.menuLabel}
+        <ChevronIcon />
+      </AriaButton>
       <Popover>
         <AriaMenu
           className={styles.menuItemsList}

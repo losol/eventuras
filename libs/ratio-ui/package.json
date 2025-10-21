@@ -15,6 +15,10 @@
       "import": "./dist/layout/*/index.js",
       "types": "./dist/layout/*/index.d.ts"
     },
+    "./components/*": {
+      "import": "./dist/components/*/index.js",
+      "types": "./dist/components/*/index.d.ts"
+    },
     "./forms": {
       "import": "./dist/forms/index.js",
       "types": "./dist/forms/index.d.ts"
