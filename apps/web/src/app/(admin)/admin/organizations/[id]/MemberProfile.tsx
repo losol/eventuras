@@ -1,19 +1,17 @@
 'use client';
-
 import React from 'react';
 import { Badge } from '@eventuras/ratio-ui/core/Badge';
-import {
-  Heading,
-  DescriptionList,
-  Item,
-  Term,
-  Definition,
-  Section,
-  Container,
-} from '@eventuras/ratio-ui';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Section } from '@eventuras/ratio-ui/layout/Section';
+import { Container } from '@eventuras/ratio-ui/layout/Container';
+
+;
+import { DescriptionList, Item, Term, Definition } from '@eventuras/ratio-ui/core/DescriptionList';
+;
+;
+;
 import { UserDto } from '@eventuras/event-sdk';
 import { Card } from '@eventuras/ratio-ui/core/Card';
-
 /** Props for MemberProfile */
 export interface MemberProfileProps {
   /** User data to render */
@@ -23,13 +21,10 @@ export interface MemberProfileProps {
   /** Callback for admin toggle */
   onToggleAdmin?: (userId: string, makeAdmin: boolean) => void;
 }
-
 /** Simple value guard */
 const has = (v?: string | null) => !!(v && v.trim().length);
-
 /** Yes/No label */
 const yesno = (b?: boolean) => (b ? 'Yes' : 'No');
-
 /**
  * Member profile using DescriptionList.
  * See {@link MemberProfileProps}.
@@ -41,7 +36,6 @@ export const MemberProfile: React.FC<MemberProfileProps> = ({
 }) => {
   // archived badge?
   const archivedBadge = user.archived ? <Badge>Archived</Badge> : null;
-
   // check if user is Admin in this organization
   const isAdminInOrg = () => {
     if (!organizationId) return false;
@@ -50,21 +44,18 @@ export const MemberProfile: React.FC<MemberProfileProps> = ({
     );
     return !!membership?.roles?.some((r: any) => r.role === 'Admin');
   };
-
   // handle admin toggle
   const handleAdminToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (onToggleAdmin && (user as any).id) {
       onToggleAdmin((user as any).id, e.target.checked);
     }
   };
-
   return (
     <Card margin="my-1">
       <Heading as="h2" padding="py-3">
         {user.name ?? 'Member'}
         {archivedBadge}
       </Heading>
-
       {/* Identity */}
       <DescriptionList>
         {/* Name */}
@@ -72,12 +63,10 @@ export const MemberProfile: React.FC<MemberProfileProps> = ({
           <Term>Name</Term>
           <Definition>{has(user.name) ? user.name : '—'}</Definition>
         </Item>
-
         <Item>
           <Term>Id</Term>
           <Definition>{has(user.id) ? user.id : '—'}</Definition>
         </Item>
-
         {/* Contact */}
         <Item>
           <Term>Email</Term>
@@ -91,12 +80,10 @@ export const MemberProfile: React.FC<MemberProfileProps> = ({
             )}
           </Definition>
         </Item>
-
         <Item>
           <Term>Phone</Term>
           <Definition>{has(user.phoneNumber) ? user.phoneNumber : '—'}</Definition>
         </Item>
-
         {/* Notes */}
         {has(user.supplementaryInformation) && (
           <Item>
@@ -104,7 +91,6 @@ export const MemberProfile: React.FC<MemberProfileProps> = ({
             <Definition>{user.supplementaryInformation}</Definition>
           </Item>
         )}
-
         {/* Memberships */}
         {user.organizationMembership && user.organizationMembership.length > 0 && (
           <Item>
@@ -129,5 +115,4 @@ export const MemberProfile: React.FC<MemberProfileProps> = ({
     </Card>
   );
 };
-
 export default MemberProfile;

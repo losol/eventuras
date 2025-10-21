@@ -1,18 +1,21 @@
 'use client';
-
 import { ColumnFilter, createColumnHelper, DataTable } from '@eventuras/datatable';
 import { EventDto, ProductDto, RegistrationDto } from '@eventuras/event-sdk';
-import { Badge, Button, Loading } from '@eventuras/ratio-ui';
+import { Badge } from '@eventuras/ratio-ui/core/Badge';
+import { Button } from '@eventuras/ratio-ui/core/Button';
+import { Loading } from '@eventuras/ratio-ui/core/Loading';
+
+;
+;
+;
+;
 import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
 import { Logger } from '@eventuras/logger';
-
 const logger = Logger.create({ namespace: 'web:admin:events', context: { component: 'EventParticipantList' } });
-
 import { FileText, ShoppingCart, User } from '@eventuras/ratio-ui/icons';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import React, { useMemo, useState } from 'react';
-
 import EventNotificator, { EventNotificatorType } from '@/components/event/EventNotificator';
 import EditRegistrationProductsDialog from '@/components/eventuras/EditRegistrationProductsDialog';
 import { ParticipationTypesKey } from '@/types';
@@ -20,11 +23,8 @@ import { getV3RegistrationsById } from '@eventuras/event-sdk';
 import { participationMap } from '@/utils/api/mappers';
 import { client } from '@/lib/eventuras-client';
 import { useEffect } from 'react';
-
 import LiveActionsMenu from './LiveActionsMenu';
-
 const columnHelper = createColumnHelper<RegistrationDto>();
-
 interface AdminEventListProps {
   participants: RegistrationDto[];
   event: EventDto;
@@ -32,12 +32,10 @@ interface AdminEventListProps {
   filteredStatus?: string;
   onUpdated?: () => void;
 }
-
 function renderProducts(registration: RegistrationDto) {
   if (!registration.products || registration.products.length === 0) {
     return '';
   }
-
   return registration.products
     .map(product => {
       const displayQuantity = product.product!.enableQuantity && product.quantity! > 1;
@@ -47,7 +45,6 @@ function renderProducts(registration: RegistrationDto) {
     })
     .join(', ');
 }
-
 const EventParticipantList: React.FC<AdminEventListProps> = ({
   participants: initialParticipants = [],
   event,
@@ -55,16 +52,13 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
   filteredStatus
 }) => {
   const t = useTranslations();
-
   const [participants, setParticipants] = useState<RegistrationDto[]>(initialParticipants);
   const [registrationOpen, setRegistrationOpen] = useState<RegistrationDto | null>(null);
   const [currentSelectedParticipant, setCurrentSelectedParticipant] =
     useState<RegistrationDto | null>(null);
   const [editorOpen, setEditorOpen] = useState(false);
-
   const [currentRegistration, setCurrentRegistration] = useState<RegistrationDto | null>(null);
   const [loadingRegistration, setLoadingRegistration] = useState(false);
-
   const updateParticipantList = (updatedRegistration: RegistrationDto) => {
     setParticipants(prevParticipants =>
       prevParticipants.map(participant =>
@@ -74,13 +68,11 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
       )
     );
   };
-
   useEffect(() => {
     if (currentSelectedParticipant === null) {
       setCurrentRegistration(null);
       return;
     }
-
     const loadRegistration = async () => {
       logger.info('Loading current registration');
       setLoadingRegistration(true);
@@ -102,14 +94,11 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
         setLoadingRegistration(false);
       }
     };
-
     loadRegistration();
   }, [currentSelectedParticipant?.registrationId]);
-
   const renderLiveActions = (registration: RegistrationDto) => {
     return <LiveActionsMenu registration={registration} onStatusUpdate={updateParticipantList} />;
   };
-
   const renderEventItemActions = (info: RegistrationDto) => {
     return (
       <div className="flex flex-col items-end">
@@ -150,7 +139,6 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
       </div>
     );
   };
-
   /**
    * To allow tanstack to filter or sort or do any sort of computation it needs a properly formed *accessor key* which is
    * a string or a function which will tell tanstack where to get its data from.
@@ -163,7 +151,6 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
     columnHelper.accessor('user.name', {
       header: t('admin.participantColumns.name').toString()
     }),
-
     columnHelper.accessor('user.phoneNumber', {
       header: t('admin.participantColumns.telephone').toString()
     }),
@@ -222,7 +209,6 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
       },
     ];
   }, [filteredStatus]);
-
   return (
     <>
       <DataTable
@@ -251,7 +237,6 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
           </Drawer.Footer>
         </Drawer>
       )}
-
       {currentRegistration && eventProducts && editorOpen && (
         <EditRegistrationProductsDialog
           eventProducts={eventProducts}
@@ -272,5 +257,4 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
     </>
   );
 };
-
 export default EventParticipantList;

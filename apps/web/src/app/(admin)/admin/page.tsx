@@ -1,21 +1,21 @@
-import { Container, Heading } from '@eventuras/ratio-ui';
+;
 import { getTranslations } from 'next-intl/server';
-
 import { Link } from '@eventuras/ratio-ui-next/Link';
 import withAuthorization from '@/utils/auth/withAuthorization';
 import { appConfig } from '@/config.server';
-
 import AdminEventList from './events/AdminEventList';
+import { Container } from '@eventuras/ratio-ui/layout/Container';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
 
+;
+;
 interface AdminPageProps {
   searchParams?: Promise<{ page?: string }>;
 }
-
 const AdminPage = async ({ searchParams }: AdminPageProps = {}) => {
   const t = await getTranslations();
   const params = searchParams ? await searchParams : {};
   const page = params.page ? parseInt(params.page, 10) : 1;
-
   return (
     <Container>
         <Heading as="h1">{t('admin.title')}</Heading>
@@ -40,7 +40,6 @@ const AdminPage = async ({ searchParams }: AdminPageProps = {}) => {
             {t('admin.labels.collections')}
           </Link>
         </section>
-
         <Heading as="h2">{t('common.events.sectiontitle')}</Heading>
         <Link href={`/admin/events`}>{t('common.labels.allEvents')}</Link>
         <AdminEventList
@@ -54,5 +53,4 @@ const AdminPage = async ({ searchParams }: AdminPageProps = {}) => {
       </Container>
   );
 };
-
 export default withAuthorization(AdminPage, 'Admin');

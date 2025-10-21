@@ -1,38 +1,38 @@
 'use client';
-
 import { MarkdownInput } from '@eventuras/markdowninput';
 import { EventCollectionDto, EventDto, getV3Events } from '@eventuras/event-sdk';
 import { CheckboxInput, CheckboxLabel, Form, Input } from '@eventuras/smartform';
-import { Button, Loading, Section } from '@eventuras/ratio-ui';
+import { Button } from '@eventuras/ratio-ui/core/Button';
+import { Loading } from '@eventuras/ratio-ui/core/Loading';
+import { Section } from '@eventuras/ratio-ui/layout/Section';
+
+;
+;
+;
+;
 import { Trash2 } from '@eventuras/ratio-ui/icons';
 import { Logger } from '@eventuras/logger';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-
 import EventLookup from '@/components/event/EventLookup';
 import { useToast } from '@eventuras/toast';
 import { updateCollection, addEventToCollection, removeEventFromCollection } from './actions';
-
 export type CollectionEditorProps = {
   eventCollection: EventCollectionDto;
 };
-
 const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
   const toast = useToast();
   const logger = Logger.create({
     namespace: 'web:admin:collections',
     context: { component: 'CollectionEditor' }
   });
-
   const [eventListUpdateTrigger, setEventListUpdateTrigger] = useState(0);
   const [eventInfos, setEventInfos] = useState<EventDto[]>([]);
   const [addEventId, setAddEventId] = useState<number | null>(null);
   const [formSubmitting, setFormSubmitting] = useState(false);
   const [addingEvent, setAddingEvent] = useState(false);
   const [removingEventId, setRemovingEventId] = useState(-1);
-
   const router = useRouter();
-
   useEffect(() => {
     const fetchEventInfos = async () => {
       const response = await getV3Events({
@@ -40,24 +40,19 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
           CollectionId: eventCollection.id!,
         },
       });
-
       if (response.data?.data) {
         setEventInfos(response.data.data);
       }
     };
-
     if (eventCollection?.id) {
       fetchEventInfos();
     }
   }, [eventCollection.id, eventListUpdateTrigger]);
-
   const onSubmitForm = async (data: EventCollectionDto) => {
     logger.info('Updating collection...');
     setFormSubmitting(true);
-
     try {
       const result = await updateCollection(data);
-
       if (result.success) {
         toast.success(result.message || 'Collection successfully updated!');
         router.refresh();
@@ -68,13 +63,10 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
       setFormSubmitting(false);
     }
   };
-
   const handleRemoveEvent = async (eventId: number) => {
     logger.info(`Removing event ${eventId} from collection`);
     setRemovingEventId(eventId);
-
     const result = await removeEventFromCollection(eventId, eventCollection.id!);
-
     if (result.success) {
       setEventListUpdateTrigger(prev => prev + 1);
       toast.success(result.message || 'Event successfully removed');
@@ -84,24 +76,19 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
       setRemovingEventId(-1);
     }
   };
-
   const handleAddEvent = async (eventId: number) => {
     logger.info(`Adding event ${eventId} to collection`);
     setAddingEvent(true);
-
     const result = await addEventToCollection(eventId, eventCollection.id!);
-
     if (result.success) {
       setEventListUpdateTrigger(prev => prev + 1);
       toast.success(result.message || 'Event successfully added');
     } else {
       toast.error(result.error.message || 'Something went wrong, try again later');
     }
-
     setAddingEvent(false);
     setAddEventId(null);
   };
-
   const handleAddEventClick = () => {
     if (addEventId !== null) {
       handleAddEvent(addEventId);
@@ -109,11 +96,9 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
       logger.error('Please enter a valid event ID');
     }
   };
-
   // Calculate date 3 months ago for event lookup constraints
   const minus3Months = new Date();
   minus3Months.setMonth(minus3Months.getMonth() - 3);
-
   return (
     <>
       <Section>
@@ -138,7 +123,6 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
             label="Featured Image Caption"
             placeholder="Image Caption"
           />
-
           <Button type="submit" loading={formSubmitting}>
             Submit
           </Button>
@@ -146,11 +130,9 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
       </Section>
       <Section>
         <h2>Events</h2>
-
         {eventInfos.map(eventInfo => (
           <div key={eventInfo.id} className="flex justify-between items-center p-2">
             <span>{eventInfo.title}</span>
-
             {removingEventId === eventInfo.id ? (
               <Loading />
             ) : (
@@ -186,5 +168,4 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
     </>
   );
 };
-
 export default CollectionEditor;

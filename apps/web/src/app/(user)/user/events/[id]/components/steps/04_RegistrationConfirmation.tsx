@@ -1,13 +1,15 @@
 'use client';
-
 import { EventDto, ProductDto } from '@eventuras/event-sdk';
-import { Button, Heading } from '@eventuras/ratio-ui';
+import { Button } from '@eventuras/ratio-ui/core/Button';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+
+;
+;
+;
 import { useTranslations } from 'next-intl';
 import { useEffect } from 'react';
-
 import { PaymentFormValues, ProductSelected } from '@/types';
 import { logStepEntry, logStepComplete, logUserAction } from '../../lib/eventFlowLogger';
-
 export interface Step04RegistrationConfirmationProps {
   eventInfo: EventDto;
   products: ProductDto[];
@@ -16,7 +18,6 @@ export interface Step04RegistrationConfirmationProps {
   onSubmit?: () => void;
   onBack?: () => void;
 }
-
 const Step04RegistrationConfirmation: React.FC<Step04RegistrationConfirmationProps> = ({
   onSubmit,
   onBack,
@@ -26,7 +27,6 @@ const Step04RegistrationConfirmation: React.FC<Step04RegistrationConfirmationPro
   eventInfo,
 }) => {
   const t = useTranslations();
-
   useEffect(() => {
     logStepEntry('04', 'RegistrationConfirmation', {
       eventId: eventInfo.id,
@@ -34,29 +34,24 @@ const Step04RegistrationConfirmation: React.FC<Step04RegistrationConfirmationPro
       selectedProductCount: selectedProducts.length,
     });
   }, [eventInfo.id, products.length, selectedProducts.length]);
-
   const handleSubmit = () => {
     logStepComplete('04', 'RegistrationConfirmation', {
       eventId: eventInfo.id,
     });
     onSubmit?.();
   };
-
   const handleBack = () => {
     logUserAction('Back from confirmation');
     onBack?.();
   };
-
   return (
     <div className="max-w-2xl mx-auto">
       <Heading as="h2" className="mb-6">
         {t('user.registration.steps.confirmation.title')}
       </Heading>
-
       <p className="mb-6 text-gray-600 dark:text-gray-400">
         {t('user.registration.steps.confirmation.description')}
       </p>
-
       {products.length > 0 && (
         <div className="mb-8">
           <Heading as="h3" className="mb-4">
@@ -77,7 +72,6 @@ const Step04RegistrationConfirmation: React.FC<Step04RegistrationConfirmationPro
           </ul>
         </div>
       )}
-
       <div className="mb-8">
         <Heading as="h3" className="mb-4">
           {t('user.registration.labels.paymentDetails')}
@@ -147,7 +141,6 @@ const Step04RegistrationConfirmation: React.FC<Step04RegistrationConfirmationPro
           )}
         </dl>
       </div>
-
       <div className="flex gap-4">
         {onBack && (
           <Button onClick={handleBack} variant="outline">
@@ -163,5 +156,4 @@ const Step04RegistrationConfirmation: React.FC<Step04RegistrationConfirmationPro
     </div>
   );
 };
-
 export default Step04RegistrationConfirmation;

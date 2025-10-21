@@ -1,26 +1,25 @@
 import React from 'react';
 import { MarkdownContent } from '@eventuras/markdown';
 import { EventDto } from '@eventuras/event-sdk';
-import { Heading } from '@eventuras/ratio-ui';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+
+;
+;
 import { useTranslations } from 'next-intl';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 import { NavList } from '@eventuras/ratio-ui/core/NavList';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
-
 type EventProps = {
   eventinfo: EventDto;
   bgClassNames?: string;
 };
-
 /**
  * Renders event details with top sticky navigation for sections.
  * @param props - See {@link EventProps}.
  */
 const EventDetails: React.FC<EventProps> = ({ eventinfo }) => {
   const t = useTranslations();
-
   if (!eventinfo) return <div>{t('common.events.event-not-found')}</div>;
-
   const sections = [
     {
       id: 'information',
@@ -41,11 +40,9 @@ const EventDetails: React.FC<EventProps> = ({ eventinfo }) => {
       content: eventinfo.practicalInformation,
     },
   ];
-
   return (
     <Section className="pb-24">
       <NavList items={sections} LinkComponent={Link} sticky />
-
       {sections.map(section => (
         <Section key={section.id} id={section.id} container>
           <Heading as="h2">{section.title}</Heading>
@@ -55,5 +52,4 @@ const EventDetails: React.FC<EventProps> = ({ eventinfo }) => {
     </Section>
   );
 };
-
 export default EventDetails;

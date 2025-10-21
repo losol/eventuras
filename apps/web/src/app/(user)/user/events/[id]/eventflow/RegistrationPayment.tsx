@@ -1,21 +1,20 @@
 'use client';
-
 import { Input } from '@eventuras/ratio-ui/forms';
 import { UserDto } from '@eventuras/event-sdk';
-import { Button } from '@eventuras/ratio-ui';
+import { Button } from '@eventuras/ratio-ui/core/Button';
+
+;
+;
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-
 import { PaymentFormValues } from '@/types';
-
 export type RegistrationPaymentProps = {
   onSubmit: (values: PaymentFormValues) => void;
   onBack?: () => void;
   userProfile: UserDto;
   initialValues?: PaymentFormValues;
 };
-
 const RegistrationPayment = ({
   userProfile,
   onSubmit,
@@ -29,11 +28,8 @@ const RegistrationPayment = ({
     watch,
     setValue,
   } = useForm<PaymentFormValues>();
-
   const [showBusinessFieldset, setShowBusinessFieldset] = useState(false);
-
   const selectedPaymentMethod = watch('paymentMethod');
-
   useEffect(() => {
     // Use useEffect to update showBusinessFieldset after initial render
     if (selectedPaymentMethod === 'PowerOfficeEHFInvoice') {
@@ -42,7 +38,6 @@ const RegistrationPayment = ({
       setShowBusinessFieldset(false);
     }
   }, [selectedPaymentMethod]);
-
   useEffect(() => {
     // reuse initial values if given
     if (initialValues) {
@@ -52,16 +47,13 @@ const RegistrationPayment = ({
       });
     }
   }, [initialValues]);
-
   const onSubmitForm: SubmitHandler<PaymentFormValues> = (data: PaymentFormValues) => {
     onSubmit(data);
   };
   const t = useTranslations();
-
   const formClassName = 'px-8 pt-6 pb-8 mb-4';
   const fieldsetClassName = 'text-lg pt-3 pb-6';
   const fieldsetLegendClassName = 'text-lg border-b-2 pt-4 pb-2';
-
   return (
     <>
       <form onSubmit={handleSubmit(onSubmitForm)} className={formClassName}>
@@ -93,7 +85,6 @@ const RegistrationPayment = ({
             </li>
           </ul>
         </fieldset>
-
         <fieldset className={fieldsetClassName}>
           <legend className={fieldsetLegendClassName} hidden>
             {t('user.registration.user.legend')}
@@ -156,7 +147,6 @@ const RegistrationPayment = ({
             errors={errors}
           />
         </fieldset>
-
         {showBusinessFieldset && (
           <fieldset className={fieldsetClassName}>
             <legend className={fieldsetLegendClassName}>
@@ -195,5 +185,4 @@ const RegistrationPayment = ({
     </>
   );
 };
-
 export default RegistrationPayment;

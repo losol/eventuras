@@ -1,29 +1,32 @@
 import { NotificationDto } from '@eventuras/event-sdk';
-import { Container, Heading, Section, Text } from '@eventuras/ratio-ui';
+import { Container } from '@eventuras/ratio-ui/layout/Container';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Section } from '@eventuras/ratio-ui/layout/Section';
+import { Text } from '@eventuras/ratio-ui/core/Text';
 
+;
+;
+;
+;
+;
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 import { getV3Notifications } from '@eventuras/event-sdk';
 import { appConfig } from '@/config.server';
-
 type NotificationPageProps = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
-
 type NotificationListResponse = {
   total: number;
   data: NotificationDto[];
 };
-
 export default async function NotificationsPage({ searchParams }: NotificationPageProps) {
   const { id } = await searchParams;
-
   // Get organization ID with proper type handling
   const organizationId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
   if (!organizationId || typeof organizationId !== 'number') {
     throw new Error('NEXT_PUBLIC_ORGANIZATION_ID is not configured properly');
   }
-
   const response = await getV3Notifications({
     headers: {
       'Eventuras-Org-Id': organizationId,
@@ -32,9 +35,7 @@ export default async function NotificationsPage({ searchParams }: NotificationPa
       EventId: parseInt(id as string),
     } : undefined,
   });
-
   const notificationData = response.data as NotificationListResponse;
-
   if (!response.data) {
     return (
       <Section className="bg-white dark:bg-black pb-8">
@@ -45,7 +46,6 @@ export default async function NotificationsPage({ searchParams }: NotificationPa
         </Section>
     );
   }
-
   return (
     <>
     <Section className="bg-white dark:bg-black   pb-8">

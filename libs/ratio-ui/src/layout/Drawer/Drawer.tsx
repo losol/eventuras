@@ -1,7 +1,9 @@
 import { HTMLAttributes, ReactNode } from 'react';
 import { X } from '../../icons';
 
-import { Button, Heading, Portal } from '../..';
+import { Button  } from '../../core/Button';
+import { Heading } from '../../core/Heading';
+import { Portal } from '../../layout/Portal';
 import React from 'react';
 
 /**

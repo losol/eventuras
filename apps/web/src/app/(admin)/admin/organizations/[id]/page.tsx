@@ -1,14 +1,16 @@
-import { Heading, Section } from '@eventuras/ratio-ui';
+;
 import { getTranslations } from 'next-intl/server';
-
 import { getV3OrganizationsByOrganizationId, getV3Users } from '@eventuras/event-sdk';
 import { OrganizationDetails } from './OrganizationDetails';
 import OrganizationMemberships from './OrganizationMemberships';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Section } from '@eventuras/ratio-ui/layout/Section';
 
+;
+;
 type EventInfoProps = {
   params: Promise<{ id: number }>;
 };
-
 /** Shape from backend (selected fields) */
 interface Organization {
   organizationId: number;
@@ -20,21 +22,18 @@ interface Organization {
   logoUrl?: string | null;
   logoBase64?: string | null;
 }
-
 /** Server page for /admin/organizations/[id] */
 const OrganizationDetailPage: React.FC<EventInfoProps> = async props => {
   // read route params
   const params = await props.params;
   // i18n
   const t = await getTranslations();
-
   // fetch org
   const organization = await getV3OrganizationsByOrganizationId({
     path: {
       organizationId: params.id
     }
   });
-
   // fetch org member
   const members = await getV3Users({
     query: {
@@ -42,18 +41,15 @@ const OrganizationDetailPage: React.FC<EventInfoProps> = async props => {
       IncludeOrgMembership: true
     }
   });
-
   // render
   return (
     <>
       <Section container>
         <Heading as="h1">{organization.data?.name}</Heading>
       </Section>
-
       <Section className="py-12" container>
         <OrganizationDetails org={organization.data as Organization} />
       </Section>
-
       <Section container>
         <Heading as="h2" padding="py-3">
           Organization members
@@ -67,5 +63,4 @@ const OrganizationDetailPage: React.FC<EventInfoProps> = async props => {
     </>
   );
 };
-
 export default OrganizationDetailPage;

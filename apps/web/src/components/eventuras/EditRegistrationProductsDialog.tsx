@@ -1,22 +1,20 @@
 'use client';
-
 import { ProductDto, RegistrationDto } from '@eventuras/event-sdk';
-import { Button } from '@eventuras/ratio-ui';
-import { Logger } from '@eventuras/logger';
+import { Button } from '@eventuras/ratio-ui/core/Button';
 
+;
+;
+import { Logger } from '@eventuras/logger';
 const logger = Logger.create({
   namespace: 'web:components:eventuras',
   context: { component: 'EditRegistrationProductsDialog' },
 });
-
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-
 import RegistrationCustomize from '@/app/(user)/user/events/[id]/eventflow/RegistrationCustomize';
 import { Dialog } from '@eventuras/ratio-ui/layout/Dialog';
 import { useToast } from '@eventuras/toast';
 import { addProductsToExistingRegistration } from '@/app/(user)/user/events/actions';
-
 export type EditRegistrationProductsDialogProps = {
   eventProducts: ProductDto[];
   currentRegistration: RegistrationDto;
@@ -26,12 +24,10 @@ export type EditRegistrationProductsDialogProps = {
   withButton?: boolean;
   onClose?: (registrationChanged: boolean) => void;
 };
-
 const EditRegistrationProductsDialog = (props: EditRegistrationProductsDialogProps) => {
   const [editorOpen, setEditorOpen] = useState<boolean>(props.startOpened ?? false);
   const toast = useToast();
   const router = useRouter();
-
   const onSubmit = async (selected: Map<string, number>) => {
     logger.info({ selected }, 'Updating registration products');
     try {
@@ -39,7 +35,6 @@ const EditRegistrationProductsDialog = (props: EditRegistrationProductsDialogPro
         props.currentRegistration.registrationId!,
         selected
       );
-
       if (result.success) {
         toast.success(result.message || 'Registration edited successfully!');
         router.refresh();
@@ -99,5 +94,4 @@ const EditRegistrationProductsDialog = (props: EditRegistrationProductsDialogPro
     </>
   );
 };
-
 export default EditRegistrationProductsDialog;

@@ -1,6 +1,6 @@
 'use client';
-
 import { RankingInfo, rankItem } from '@tanstack/match-sorter-utils';
+import { Pagination } from '@eventuras/ratio-ui/core/Pagination';
 import {
   ColumnFilter,
   ColumnFiltersState,
@@ -14,10 +14,8 @@ import {
 } from '@tanstack/react-table';
 import { useEffect } from 'react';
 import React from 'react';
-
 import { DebouncedInput } from '@eventuras/ratio-ui/forms';
-import { Pagination } from '@eventuras/ratio-ui';
-
+;
 type DataTableProps = {
   columns: any[];
   data: any[];
@@ -27,7 +25,6 @@ type DataTableProps = {
   enableGlobalSearch?: boolean;
   columnFilters?: ColumnFilter[];
 };
-
 declare module '@tanstack/table-core' {
   interface FilterFns {
     fuzzy: FilterFn<unknown>;
@@ -36,7 +33,6 @@ declare module '@tanstack/table-core' {
     itemRank: RankingInfo;
   }
 }
-
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   // Rank the item
   const itemRank = rankItem(row.getValue(columnId), value);
@@ -44,11 +40,9 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   addMeta({
     itemRank,
   });
-
   // Return if the item should be filtered in/out
   return itemRank.passed;
 };
-
 const DataTable = (props: DataTableProps) => {
   const { columns, data, clientsidePagination, pageSize = 25, state } = props;
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
@@ -56,13 +50,11 @@ const DataTable = (props: DataTableProps) => {
   const handleClientPageChange = (newPage: number) => {
     table.setPageIndex(newPage);
   };
-
   useEffect(() => {
     if (props.columnFilters) {
       setColumnFilters(props.columnFilters);
     }
   }, [props.columnFilters]);
-
   const table = useReactTable({
     columns,
     data: data,
@@ -86,11 +78,9 @@ const DataTable = (props: DataTableProps) => {
       columnFilters,
     },
   });
-
   useEffect(() => {
     if (clientsidePagination) table.setPageSize(pageSize);
   }, []);
-
   return (
     <>
       {props.enableGlobalSearch && (
@@ -129,7 +119,6 @@ const DataTable = (props: DataTableProps) => {
           ))}
         </tbody>
       </table>
-
       {clientsidePagination && table.getPageCount() > 1 ? (
         <Pagination
           currentPage={table.getState().pagination.pageIndex + 1}
@@ -143,7 +132,6 @@ const DataTable = (props: DataTableProps) => {
     </>
   );
 };
-
 export default DataTable;
 export type { ColumnFilter, ColumnSort, TableState } from '@tanstack/react-table';
 export { createColumnHelper } from '@tanstack/react-table';

@@ -1,22 +1,23 @@
 'use client';
-
 import { Input } from '@eventuras/ratio-ui/forms';
 import { UserDto } from '@eventuras/event-sdk';
-import { Button, Heading } from '@eventuras/ratio-ui';
+import { Button } from '@eventuras/ratio-ui/core/Button';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+
+;
+;
+;
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-
 import { PaymentFormValues } from '@/types';
 import { logStepEntry, logStepComplete, logUserAction } from '../../lib/eventFlowLogger';
-
 export type Step03PaymentConfigurationProps = {
   onSubmit: (values: PaymentFormValues) => void;
   onBack?: () => void;
   userProfile: UserDto;
   initialValues?: PaymentFormValues;
 };
-
 const Step03PaymentConfiguration = ({
   userProfile,
   onSubmit,
@@ -30,18 +31,15 @@ const Step03PaymentConfiguration = ({
     watch,
     setValue,
   } = useForm<PaymentFormValues>();
-
   const [showBusinessFieldset, setShowBusinessFieldset] = useState(false);
   const selectedPaymentMethod = watch('paymentMethod');
   const t = useTranslations();
-
   useEffect(() => {
     logStepEntry('03', 'PaymentConfiguration', {
       userId: userProfile.id,
       hasInitialValues: !!initialValues,
     });
   }, [userProfile.id, initialValues]);
-
   useEffect(() => {
     if (selectedPaymentMethod === 'PowerOfficeEHFInvoice') {
       setShowBusinessFieldset(true);
@@ -49,7 +47,6 @@ const Step03PaymentConfiguration = ({
       setShowBusinessFieldset(false);
     }
   }, [selectedPaymentMethod]);
-
   useEffect(() => {
     if (initialValues) {
       const formKeys = Object.keys(initialValues) as Array<keyof PaymentFormValues>;
@@ -58,7 +55,6 @@ const Step03PaymentConfiguration = ({
       });
     }
   }, [initialValues, setValue]);
-
   const onSubmitForm: SubmitHandler<PaymentFormValues> = (data: PaymentFormValues) => {
     logStepComplete('03', 'PaymentConfiguration', {
       paymentMethod: data.paymentMethod,
@@ -66,22 +62,18 @@ const Step03PaymentConfiguration = ({
     });
     onSubmit(data);
   };
-
   const handleBack = () => {
     logUserAction('Back from payment configuration');
     onBack?.();
   };
-
   const formClassName = 'space-y-6';
   const fieldsetClassName = 'space-y-4';
   const fieldsetLegendClassName = 'text-lg font-semibold border-b-2 pb-2 mb-4';
-
   return (
     <div className="max-w-2xl mx-auto">
       <Heading as="h2" className="mb-6">
         {t('user.registration.steps.payment.title')}
       </Heading>
-
       <form onSubmit={handleSubmit(onSubmitForm)} className={formClassName}>
         <fieldset className={fieldsetClassName}>
           <legend className={fieldsetLegendClassName}>
@@ -117,7 +109,6 @@ const Step03PaymentConfiguration = ({
             </li>
           </ul>
         </fieldset>
-
         <fieldset className={fieldsetClassName}>
           <legend className={fieldsetLegendClassName} hidden>
             {t('user.registration.user.legend')}
@@ -147,7 +138,6 @@ const Step03PaymentConfiguration = ({
             hidden
           />
         </fieldset>
-
         <fieldset className={fieldsetClassName}>
           <legend className={fieldsetLegendClassName}>
             {t('user.registration.address.legend')}
@@ -181,7 +171,6 @@ const Step03PaymentConfiguration = ({
             errors={errors}
           />
         </fieldset>
-
         {showBusinessFieldset && (
           <fieldset className={fieldsetClassName}>
             <legend className={fieldsetLegendClassName}>
@@ -204,7 +193,6 @@ const Step03PaymentConfiguration = ({
             />
           </fieldset>
         )}
-
         <div className="flex gap-4 pt-4">
           {onBack && (
             <Button type="button" onClick={handleBack} variant="outline">
@@ -219,5 +207,4 @@ const Step03PaymentConfiguration = ({
     </div>
   );
 };
-
 export default Step03PaymentConfiguration;

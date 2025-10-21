@@ -1,32 +1,28 @@
 'use client';
-
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
 import { RegistrationDto } from '@eventuras/event-sdk';
-import { Pagination } from '@eventuras/ratio-ui';
+import { Pagination } from '@eventuras/ratio-ui/core/Pagination';
+
+;
+;
 import { useTranslations } from 'next-intl';
 import { useRouter, useSearchParams } from 'next/navigation';
-
 import { Link } from '@eventuras/ratio-ui-next/Link';
-
 const columnHelper = createColumnHelper<RegistrationDto>();
-
 type RegistrationsTableProps = {
   registrations: RegistrationDto[];
   currentPage: number;
   totalPages: number;
 };
-
 export default function RegistrationsTable({ registrations, currentPage, totalPages }: RegistrationsTableProps) {
   const t = useTranslations();
   const router = useRouter();
   const searchParams = useSearchParams();
-
   const handlePageChange = (newPage: number) => {
     const params = new URLSearchParams(searchParams);
     params.set('page', newPage.toString());
     router.push(`?${params.toString()}`);
   };
-
   const renderRegistrationActions = (registration: RegistrationDto) => {
     return (
       <div className="flex flex-row">
@@ -36,7 +32,6 @@ export default function RegistrationsTable({ registrations, currentPage, totalPa
       </div>
     );
   };
-
   const columns = [
     columnHelper.accessor('registrationId', {
       header: t('common.orders.labels.id').toString(),
@@ -59,7 +54,6 @@ export default function RegistrationsTable({ registrations, currentPage, totalPa
       cell: info => renderRegistrationActions(info.row.original),
     }),
   ];
-
   return (
     <>
       <DataTable data={registrations} columns={columns} />

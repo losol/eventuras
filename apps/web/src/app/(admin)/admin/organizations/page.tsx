@@ -1,16 +1,19 @@
-import { Container, Heading, Section } from '@eventuras/ratio-ui';
+;
 import { getTranslations } from 'next-intl/server';
 import { getV3Organizations } from '@eventuras/event-sdk';
-
 import withAuthorization from '@/utils/auth/withAuthorization';
 import {List} from '@eventuras/ratio-ui/core/List';
 import { Link } from '@eventuras/ratio-ui-next/Link';
+import { Container } from '@eventuras/ratio-ui/layout/Container';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Section } from '@eventuras/ratio-ui/layout/Section';
 
+;
+;
+;
 const AdminOrganizationsPage = async () => {
   const t = await getTranslations();
-
   const organizations = await getV3Organizations();
-
   return (
     <>
     <Section className="py-8">
@@ -34,5 +37,4 @@ const AdminOrganizationsPage = async () => {
       </>
   );
 };
-
 export default withAuthorization(AdminOrganizationsPage, 'Admin');

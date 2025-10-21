@@ -1,11 +1,15 @@
-import { Container, Heading, Section } from '@eventuras/ratio-ui';
+;
 import { getTranslations } from 'next-intl/server';
-
 import withAuthorization from '@/utils/auth/withAuthorization';
+import { Container } from '@eventuras/ratio-ui/layout/Container';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Section } from '@eventuras/ratio-ui/layout/Section';
 
+;
+;
+;
 const CertificatesPage = async () => {
   const t = await getTranslations();
-
   return (
     <>
     <Container>
@@ -19,5 +23,4 @@ const CertificatesPage = async () => {
       </>
   );
 };
-
 export default withAuthorization(CertificatesPage, 'Admin');

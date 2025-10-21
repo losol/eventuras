@@ -1,12 +1,12 @@
 import { EventDto } from '@eventuras/event-sdk';
-import { Grid } from '@eventuras/ratio-ui';
+import { Grid } from '@eventuras/ratio-ui/layout/Grid';
 
+;
+;
 import EventCard from '@/components/event/EventCard';
-
 interface EventGridProps {
   eventinfos: EventDto[];
 }
-
 const EventGrid: React.FC<EventGridProps> = ({ eventinfos }) => {
   return (
     <Grid>
@@ -16,5 +16,4 @@ const EventGrid: React.FC<EventGridProps> = ({ eventinfos }) => {
     </Grid>
   );
 };
-
 export default EventGrid;

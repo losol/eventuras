@@ -1,6 +1,7 @@
 'use client';
-
 import { MarkdownInput } from '@eventuras/markdowninput';
+import { Button, ButtonGroup } from '@eventuras/ratio-ui/core/Button';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import {
   EmailNotificationDto,
   RegistrationType,
@@ -9,41 +10,35 @@ import {
   EventParticipantsFilterDto,
 } from '@eventuras/event-sdk';
 import { CheckboxInput, CheckboxLabel, Form, Input } from '@eventuras/smartform';
-import { Button, ButtonGroup, Heading } from '@eventuras/ratio-ui';
+;
 import { Logger } from '@eventuras/logger';
 import { useTranslations } from 'next-intl';
 import { SubmitHandler, useForm } from 'react-hook-form';
-
 import { useToast } from '@eventuras/toast';
 import { ParticipationTypes } from '@/types';
 import { participationMap } from '@/utils/api/mappers';
 import { mapEnum } from '@/utils/enum';
 import { sendEmailNotification, sendSmsNotification } from '@/app/(admin)/admin/actions/notifications';
-
 const logger = Logger.create({
   namespace: 'web:components:event',
   context: { component: 'EventNotificator' },
 });
-
 type FormValues = {
   subject: string;
   body: string;
   registrationStatus: Record<string, boolean>;
   registrationTypes: Record<string, boolean>;
 };
-
 export enum EventNotificatorType {
   EMAIL = 'email',
   SMS = 'sms',
 }
-
 export type EventNotificatorProps = {
   eventTitle: string;
   eventId: number;
   notificatorType: EventNotificatorType;
   onClose: () => void;
 };
-
 const validateFormData = (data: FormValues, type: EventNotificatorType): string[] => {
   const errs: string[] = [];
   if (!data.body?.trim())
@@ -58,7 +53,6 @@ const validateFormData = (data: FormValues, type: EventNotificatorType): string[
     errs.push('Select at least one registration type');
   return errs;
 };
-
 const getBodyDto = (
   eventId: number,
   data: FormValues,
@@ -68,7 +62,6 @@ const getBodyDto = (
   const regStatusKeys = Object.keys(data.registrationStatus || {}).filter(
     k => data.registrationStatus[k]
   );
-
   const registrationStatuses: RegistrationStatus[] = regStatusKeys.flatMap(key => {
     const k = key as keyof typeof participationMap;
     // `participationMap[k]` may be an array of strings; coerce each to RegistrationStatus
@@ -84,7 +77,6 @@ const getBodyDto = (
         : (v as unknown as RegistrationStatus);
     });
   });
-
   const registrationTypes: RegistrationType[] = Object.keys(data.registrationTypes || {})
     .filter(k => data.registrationTypes[k])
     .map(k => {
@@ -97,18 +89,15 @@ const getBodyDto = (
       return (RegistrationType as any)[k] as RegistrationType;
     })
     .filter((v): v is RegistrationType => v !== undefined);
-
   const eventParticipants: EventParticipantsFilterDto = {
     eventId,
     registrationStatuses,
     registrationTypes,
   };
-
   return type === EventNotificatorType.EMAIL
     ? { subject: data.subject, bodyMarkdown: data.body, eventParticipants }
     : { message: data.body, eventParticipants };
 };
-
 // -- Component
 export default function EventNotificator({
   eventTitle,
@@ -118,7 +107,6 @@ export default function EventNotificator({
 }: EventNotificatorProps) {
   const toast = useToast();
   const t = useTranslations();
-
   const {
     register,
     formState: { isSubmitting },
@@ -130,7 +118,6 @@ export default function EventNotificator({
       registrationTypes: {},
     },
   });
-
   const onSubmitForm: SubmitHandler<FormValues> = async data => {
     try {
       // Validate form data
@@ -140,10 +127,8 @@ export default function EventNotificator({
         toast.error(validationErrors.join('\n'));
         return;
       }
-
       // Build notification DTO
       const notificationDto = getBodyDto(eventId, data, notificatorType);
-
       logger.info(
         {
           notificationType: notificatorType,
@@ -157,13 +142,11 @@ export default function EventNotificator({
         },
         `Sending ${notificatorType} notification`
       );
-
       // Call appropriate server action
       const result =
         notificatorType === EventNotificatorType.EMAIL
           ? await sendEmailNotification(notificationDto as EmailNotificationDto)
           : await sendSmsNotification(notificationDto as SmsNotificationDto);
-
       if (!result.success) {
         logger.error(
           {
@@ -176,7 +159,6 @@ export default function EventNotificator({
         toast.error(result.error.message);
         return;
       }
-
       logger.info({ eventId }, `Successfully sent ${notificatorType} notification`);
       toast.success(
         result.message ||
@@ -193,14 +175,12 @@ export default function EventNotificator({
       toast.error('An unexpected error occurred. Please try again.');
     }
   };
-
   return (
     <Form onSubmit={onSubmitForm} className="text-black w-72">
       <div>
         <Heading as="h4">{t('common.events.event')}</Heading>
         <p>{eventTitle}</p>
       </div>
-
       {/* Registration Status Selection */}
       <div>
         <p>{t('admin.eventNotifier.form.status.label')}</p>
@@ -216,7 +196,6 @@ export default function EventNotificator({
           </CheckboxInput>
         ))}
       </div>
-
       {/* Registration Type Selection */}
       <div>
         <p>{t('admin.eventNotifier.form.type.label')}</p>
@@ -232,7 +211,6 @@ export default function EventNotificator({
           </CheckboxInput>
         ))}
       </div>
-
       {/* Subject field for emails */}
       {notificatorType === EventNotificatorType.EMAIL && (
         <div>
@@ -243,7 +221,6 @@ export default function EventNotificator({
           />
         </div>
       )}
-
       {/* Message body */}
       <div>
         {notificatorType === EventNotificatorType.EMAIL ? (
@@ -263,7 +240,6 @@ export default function EventNotificator({
           />
         )}
       </div>
-
       {/* Actions */}
       <ButtonGroup margin="my-4">
         <Button type="submit" variant="primary" disabled={isSubmitting}>

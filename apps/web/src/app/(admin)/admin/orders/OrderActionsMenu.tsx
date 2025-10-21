@@ -1,46 +1,40 @@
 'use client';
+import { Button } from '@eventuras/ratio-ui/core/Button';
+import { Definition, DescriptionList, Term } from '@eventuras/ratio-ui/core/DescriptionList';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import {
   InvoiceRequestDto,
   OrderDto,
   PaymentProvider,
   postV3Invoices
 } from '@eventuras/event-sdk';
-import { Button, Definition, DescriptionList, Heading, Term } from '@eventuras/ratio-ui';
+;
 import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
 import { Logger } from '@eventuras/logger';
-
 const logger = Logger.create({
   namespace: 'web:admin:orders',
   context: { component: 'OrderActionsMenu' }
 });
-
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
-
 import { publicEnv } from '@/config.client';
-
 export type OrderActionsMenuProps = {
   order: OrderDto;
 };
-
 export const OrderActionsMenu = ({ order }: OrderActionsMenuProps) => {
   const t = useTranslations();
   const [invoiceDrawerOpen, setInvoiceDrawerOpen] = useState(false);
   const router = useRouter();
   logger.info({ order: order, registration: order.registration }, 'Order details');
-
   const invoicablePaymentMethods: PaymentProvider[] = [
     'PowerOfficeEmailInvoice',
     'PowerOfficeEHFInvoice',
   ];
-
   const isOrderVerified = order.status === 'Verified';
   const hasInvoicablePaymentMethod =
     order.paymentMethod != null && invoicablePaymentMethods.includes(order.paymentMethod);
-
   const shouldShowInvoiceButton = isOrderVerified && hasInvoicablePaymentMethod;
-
   const verifyOrder =
     ({ order }: { order: OrderDto }) =>
     async () => {
@@ -51,7 +45,6 @@ export const OrderActionsMenu = ({ order }: OrderActionsMenuProps) => {
       if (!orgId || isNaN(orgId)) {
         throw new Error('Organization ID is required');
       }
-
       await fetch(`${publicEnv.NEXT_PUBLIC_API_BASE_URL as string}/v3/orders/${order.orderId}`, {
         method: 'PATCH',
         headers: {
@@ -68,7 +61,6 @@ export const OrderActionsMenu = ({ order }: OrderActionsMenuProps) => {
       });
       router.refresh();
     };
-
   const invoiceOrder = async (order: OrderDto) => {
     if (!order.orderId) {
       throw new Error('Order ID is required');
@@ -76,22 +68,18 @@ export const OrderActionsMenu = ({ order }: OrderActionsMenuProps) => {
     if (!orgId || isNaN(orgId)) {
       throw new Error('Organization ID is required');
     }
-
     const invoiceRequest: InvoiceRequestDto = {
       orderIds: [order.orderId]
     };
-
     const response = await postV3Invoices({
       headers: { 'Eventuras-Org-Id': orgId },
       body: invoiceRequest
     });
-
     if (response.data) {
       logger.info('Invoice sent to accounting system');
     }
     router.refresh();
   };
-
   return (
     <>
       {order.status === 'Draft' && (
@@ -104,7 +92,6 @@ export const OrderActionsMenu = ({ order }: OrderActionsMenuProps) => {
           {t('admin.labels.invoice')}
         </Button>
       )}
-
       <Drawer
         isOpen={invoiceDrawerOpen}
         onSave={() => setInvoiceDrawerOpen(false)}

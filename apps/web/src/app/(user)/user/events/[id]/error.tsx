@@ -1,18 +1,17 @@
 'use client';
-
-import { Heading } from '@eventuras/ratio-ui';
+;
 import { useEffect } from 'react';
-
 import FatalError from '@/components/FatalError';
 import { SiteInfo } from '@/utils/site/getSiteSettings';
 import { eventFlowLogger } from './lib/eventFlowLogger';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
 
+;
 interface ErrorBoundaryProps {
   error: Error & { digest?: string };
   reset: () => void;
   siteInfo?: SiteInfo;
 }
-
 export default function Error({ error, reset, siteInfo }: ErrorBoundaryProps) {
   useEffect(() => {
     // Log the error when component mounts
@@ -25,7 +24,6 @@ export default function Error({ error, reset, siteInfo }: ErrorBoundaryProps) {
       'Event flow error boundary triggered'
     );
   }, [error]);
-
   if (siteInfo) {
     return (
       <FatalError
@@ -37,7 +35,6 @@ export default function Error({ error, reset, siteInfo }: ErrorBoundaryProps) {
       />
     );
   }
-
   return (
     <div className="flex flex-col items-center justify-center min-h-[400px] p-8">
       <Heading as="h2" className="text-red-600 dark:text-red-400">

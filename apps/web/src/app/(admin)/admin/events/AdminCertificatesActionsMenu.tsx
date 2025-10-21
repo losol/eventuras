@@ -1,25 +1,26 @@
 'use client';
-
 import { EventDto } from '@eventuras/event-sdk';
-import { Button, Definition, DescriptionList, Heading, Term } from '@eventuras/ratio-ui';
+import { Button } from '@eventuras/ratio-ui/core/Button';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+
+;
+import { Definition, DescriptionList, Term } from '@eventuras/ratio-ui/core/DescriptionList';
+;
+;
 import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
 import { Logger } from '@eventuras/logger';
 import { useToast } from '@eventuras/toast';
 import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
-
 import { issueCertificates } from './actions';
-
 const logger = Logger.create({
   namespace: 'web:admin:certificates',
   context: { component: 'AdminCertificatesActionsMenu' },
 });
-
 type AdminCertificatesActionsMenuProps = {
   eventinfo: EventDto;
   onCertificatesSent?: () => void;
 };
-
 export const AdminCertificatesActionsMenu: React.FC<AdminCertificatesActionsMenuProps> = ({
   eventinfo,
   onCertificatesSent,
@@ -28,34 +29,27 @@ export const AdminCertificatesActionsMenu: React.FC<AdminCertificatesActionsMenu
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const t = useTranslations();
   const toast = useToast();
-
   const onClose = () => {
     setCertificateDrawerOpen(false);
   };
-
   const onCertificateSubmit = async () => {
     if (!eventinfo.id) {
       logger.error('Event ID is missing');
       toast.error('Invalid event');
       return;
     }
-
     setIsSubmitting(true);
     logger.info({ eventId: eventinfo.id }, 'Sending certificates...');
-
     try {
       const result = await issueCertificates(eventinfo.id);
-
       if (!result.success) {
         logger.error({ error: result.error }, 'Failed to issue certificates');
         toast.error(result.error.message);
         setIsSubmitting(false);
         return;
       }
-
       toast.success(result.message || 'Certificates sent successfully!');
       logger.info({ eventId: eventinfo.id }, 'Certificates issued successfully');
-
       if (onCertificatesSent) {
         onCertificatesSent();
       }
@@ -67,7 +61,6 @@ export const AdminCertificatesActionsMenu: React.FC<AdminCertificatesActionsMenu
       setIsSubmitting(false);
     }
   };
-
   return (
     <>
       <Button onClick={() => setCertificateDrawerOpen(!certificateDrawerOpen)} variant="outline">

@@ -1,10 +1,11 @@
 'use client';
-
 import { useState } from 'react';
-import { Button } from '@eventuras/ratio-ui';
+import { Button } from '@eventuras/ratio-ui/core/Button';
+
+;
+;
 import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
 import { Input } from '@eventuras/ratio-ui/forms';
-
 interface AddMemberDrawerProps {
   isOpen: boolean;
   onClose: () => void;
@@ -12,7 +13,6 @@ interface AddMemberDrawerProps {
   organizationId: number;
   organizationName?: string;
 }
-
 const AddMemberDrawer: React.FC<AddMemberDrawerProps> = ({
   isOpen,
   onClose,
@@ -23,16 +23,13 @@ const AddMemberDrawer: React.FC<AddMemberDrawerProps> = ({
   const [userId, setUserId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
   const handleSave = async () => {
     if (!userId.trim()) {
       setError('User ID is required');
       return;
     }
-
     setIsLoading(true);
     setError(null);
-
     try {
       await onAddMember(userId.trim());
       handleClose();
@@ -43,21 +40,18 @@ const AddMemberDrawer: React.FC<AddMemberDrawerProps> = ({
       setIsLoading(false);
     }
   };
-
   const handleClose = () => {
     setUserId('');
     setError(null);
     setIsLoading(false);
     onClose();
   };
-
   const handleUserIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserId(e.target.value);
     if (error) {
       setError(null); // Clear error when user starts typing
     }
   };
-
   return (
     <Drawer isOpen={isOpen} onCancel={handleClose}>
       <Drawer.Header as="h2">
@@ -68,7 +62,6 @@ const AddMemberDrawer: React.FC<AddMemberDrawerProps> = ({
           </span>
         )}
       </Drawer.Header>
-
       <Drawer.Body>
         <div className="space-y-4">
           <div>
@@ -88,7 +81,6 @@ const AddMemberDrawer: React.FC<AddMemberDrawerProps> = ({
               </p>
             )}
           </div>
-
           <div className="bg-blue-50 dark:bg-blue-950 p-3 rounded-md">
             <div className="text-sm text-blue-800 dark:text-blue-200">
               <h4 className="font-medium mb-1">How to find a User ID:</h4>
@@ -101,7 +93,6 @@ const AddMemberDrawer: React.FC<AddMemberDrawerProps> = ({
           </div>
         </div>
       </Drawer.Body>
-
       <Drawer.Footer>
         <div className="flex gap-2 justify-end">
           <Button variant="secondary" onClick={handleClose} disabled={isLoading}>
@@ -115,5 +106,4 @@ const AddMemberDrawer: React.FC<AddMemberDrawerProps> = ({
     </Drawer>
   );
 };
-
 export default AddMemberDrawer;

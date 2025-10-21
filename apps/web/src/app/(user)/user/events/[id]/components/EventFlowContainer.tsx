@@ -1,34 +1,31 @@
 'use client';
-
 import { EventDto, ProductDto, UserDto } from '@eventuras/event-sdk';
-import { Loading } from '@eventuras/ratio-ui';
+import { Loading } from '@eventuras/ratio-ui/core/Loading';
+
+;
+;
 import type { Step } from '@eventuras/ratio-ui/core/Stepper';
 import { Stepper } from '@eventuras/ratio-ui/core/Stepper';
 import { useTranslations } from 'next-intl';
 import { useToast } from '@eventuras/toast';
 import { useEffect } from 'react';
-
 import FatalError from '@/components/FatalError';
 import { PaymentFormValues, ProductSelected } from '@/types';
 import { SiteInfo } from '@/utils/site/getSiteSettings';
-
 import { useEventFlowMachine } from '../hooks/useEventFlowMachine';
 import { eventFlowLogger } from '../lib/eventFlowLogger';
-
 import Step01AccountValidation from './steps/01_AccountValidation';
 import Step02ProductCustomization from './steps/02_ProductCustomization';
 import Step03PaymentConfiguration from './steps/03_PaymentConfiguration';
 import Step04RegistrationConfirmation from './steps/04_RegistrationConfirmation';
 import Step05RegistrationView from './steps/05_RegistrationView';
 import Step06RegistrationCancellation from './steps/06_RegistrationCancellation';
-
 export interface EventFlowContainerProps {
   eventInfo: EventDto;
   user: UserDto;
   availableProducts: ProductDto[];
   siteInfo: SiteInfo;
 }
-
 const EventFlowContainer: React.FC<EventFlowContainerProps> = ({
   eventInfo,
   user,
@@ -46,9 +43,7 @@ const EventFlowContainer: React.FC<EventFlowContainerProps> = ({
     States,
     Events,
   } = useEventFlowMachine({ eventInfo, user, availableProducts });
-
   const inEditMode = context.inEditMode;
-
   // Helper to get selected products
   const getSelectedProducts = (): ProductSelected[] => {
     const stateSelected = context.selectedProducts;
@@ -63,7 +58,6 @@ const EventFlowContainer: React.FC<EventFlowContainerProps> = ({
     }
     return [];
   };
-
   // Get current step number for stepper component
   const getCurrentStepInfo = (): { currentStep: number; steps: Step[] } => {
     const baseSteps: Step[] = [
@@ -72,9 +66,7 @@ const EventFlowContainer: React.FC<EventFlowContainerProps> = ({
       { number: 3, label: t('user.registration.steps.payment.label'), status: 'upcoming' },
       { number: 4, label: t('user.registration.steps.confirmation.label'), status: 'upcoming' },
     ];
-
     let currentStep = 0;
-
     // Map states to step numbers
     if (xState.matches(States.VALIDATE_ACCOUNT_DETAILS)) {
       currentStep = 1;
@@ -85,19 +77,15 @@ const EventFlowContainer: React.FC<EventFlowContainerProps> = ({
     } else if (xState.matches(States.CONFIRM_REGISTRATION)) {
       currentStep = 4;
     }
-
     // Mark completed steps
     const steps = baseSteps.map((step, index) => ({
       ...step,
       status: (index + 1 < currentStep ? 'complete' : index + 1 === currentStep ? 'current' : 'upcoming') as Step['status'],
     }));
-
     return { currentStep, steps };
   };
-
   const stepInfo = getCurrentStepInfo();
   const showStepper = stepInfo.currentStep > 0 && !isLoading && !isError;
-
   // Show error toast when state machine enters error state
   useEffect(() => {
     if (isError && context.error) {
@@ -105,7 +93,6 @@ const EventFlowContainer: React.FC<EventFlowContainerProps> = ({
       toast.error(t('common.errors.fatalError.description'));
     }
   }, [isError, context.error, toast, t]);
-
   // Render loading state
   if (isLoading) {
     return (
@@ -115,7 +102,6 @@ const EventFlowContainer: React.FC<EventFlowContainerProps> = ({
       </div>
     );
   }
-
   // Render error state
   if (isError) {
     return (
@@ -128,7 +114,6 @@ const EventFlowContainer: React.FC<EventFlowContainerProps> = ({
       />
     );
   }
-
   return (
     <div className="space-y-8">
       {/* Step indicator - responsive: dots on mobile, numbered on desktop */}
@@ -154,7 +139,6 @@ const EventFlowContainer: React.FC<EventFlowContainerProps> = ({
           </div>
         </div>
       )}
-
       {/* Step content */}
       <div>
         {xState.matches(States.SHOW_CANCELLATION_VIEW) && (
@@ -165,7 +149,6 @@ const EventFlowContainer: React.FC<EventFlowContainerProps> = ({
             }}
           />
         )}
-
         {xState.matches(States.VALIDATE_ACCOUNT_DETAILS) && (
           <Step01AccountValidation
             user={user}
@@ -177,7 +160,6 @@ const EventFlowContainer: React.FC<EventFlowContainerProps> = ({
             }}
           />
         )}
-
         {xState.matches(States.SHOW_REGISTRATION_VIEW) && (
           <Step05RegistrationView
             eventInfo={eventInfo}
@@ -190,7 +172,6 @@ const EventFlowContainer: React.FC<EventFlowContainerProps> = ({
             }}
           />
         )}
-
         {xState.matches(States.CUSTOMIZE_PRODUCTS) && (
           <Step02ProductCustomization
             products={availableProducts}
@@ -206,7 +187,6 @@ const EventFlowContainer: React.FC<EventFlowContainerProps> = ({
             }}
           />
         )}
-
         {xState.matches(States.CONFIGURE_PAYMENT) && (
           <Step03PaymentConfiguration
             initialValues={context.paymentFormValues}
@@ -222,7 +202,6 @@ const EventFlowContainer: React.FC<EventFlowContainerProps> = ({
             }}
           />
         )}
-
         {xState.matches(States.CONFIRM_REGISTRATION) && (
           <Step04RegistrationConfirmation
             eventInfo={eventInfo}
@@ -243,5 +222,4 @@ const EventFlowContainer: React.FC<EventFlowContainerProps> = ({
     </div>
   );
 };
-
 export default EventFlowContainer;

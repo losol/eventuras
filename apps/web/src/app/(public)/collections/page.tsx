@@ -1,25 +1,27 @@
 import { MarkdownContent } from '@eventuras/markdown';
-import { Heading, Section, Text } from '@eventuras/ratio-ui';
-import { getTranslations } from 'next-intl/server';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Section } from '@eventuras/ratio-ui/layout/Section';
+import { Text } from '@eventuras/ratio-ui/core/Text';
 
+;
+;
+;
+;
+import { getTranslations } from 'next-intl/server';
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 import { getV3Eventcollections } from '@eventuras/event-sdk';
 import { appConfig } from '@/config.server';
 import { getPublicClient } from '@/lib/eventuras-public-client';
-
 // Incremental Static Regeneration - revalidate every 5 minutes
 export const revalidate = 300;
-
 const CollectionIndexPage: React.FC = async () => {
   const t = await getTranslations();
-
   // Get organization ID with proper type handling
   const organizationId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
   const orgId = typeof organizationId === 'number'
     ? organizationId
     : parseInt(organizationId as string, 10);
-
   // Use public client for anonymous API access
   const publicClient = getPublicClient();
   const response = await getV3Eventcollections({
@@ -28,7 +30,6 @@ const CollectionIndexPage: React.FC = async () => {
       'Eventuras-Org-Id': orgId,
     },
   });
-
   if (!response.data)
     return (
       <>
@@ -39,9 +40,7 @@ const CollectionIndexPage: React.FC = async () => {
         </Link>
       </>
     );
-
   const collections = response.data;
-
   return (
     <>
       <Section className="py-16">
@@ -70,5 +69,4 @@ const CollectionIndexPage: React.FC = async () => {
     </>
   );
 };
-
 export default CollectionIndexPage;

@@ -1,11 +1,14 @@
 import { MarkdownContent } from '@eventuras/markdown';
 import { EventDto, RegistrationDto } from '@eventuras/event-sdk';
-import { Button, Heading } from '@eventuras/ratio-ui';
-import { useTranslations } from 'next-intl';
+import { Button } from '@eventuras/ratio-ui/core/Button';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
 
+;
+;
+;
+import { useTranslations } from 'next-intl';
 import Registration from '@/app/(admin)/admin/registrations/Registration';
 import { Tabs } from '@eventuras/ratio-ui/core/Tabs';
-
 export interface RegistrationViewProps {
   eventInfo: EventDto;
   registration?: RegistrationDto;
@@ -18,7 +21,6 @@ const RegistrationView: React.FC<RegistrationViewProps> = ({
   onCancel,
 }) => {
   const t = useTranslations();
-
   return (
     <div>
       <Tabs>
@@ -31,7 +33,6 @@ const RegistrationView: React.FC<RegistrationViewProps> = ({
             </div>
           </Tabs.Item>
         ) : null}
-
         {/* Program */}
         {eventInfo?.program ? (
           <Tabs.Item title={t('common.labels.program')} id="tab-program">
@@ -43,7 +44,6 @@ const RegistrationView: React.FC<RegistrationViewProps> = ({
             </div>
           </Tabs.Item>
         ) : null}
-
         {/* Registration */}
         <Tabs.Item
           id="tab-registration"
@@ -53,7 +53,6 @@ const RegistrationView: React.FC<RegistrationViewProps> = ({
           <Registration registration={registration} />
           {onCancel && <Button onClick={onCancel}>{t('common.buttons.cancel')}</Button>}
         </Tabs.Item>
-
         {/* Practical info */}
         {eventInfo?.practicalInformation ? (
           <Tabs.Item title={t('common.labels.practicalInfo')}>
@@ -65,5 +64,4 @@ const RegistrationView: React.FC<RegistrationViewProps> = ({
     </div>
   );
 };
-
 export default RegistrationView;

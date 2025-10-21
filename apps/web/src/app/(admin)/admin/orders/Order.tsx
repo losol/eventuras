@@ -1,28 +1,23 @@
 import { OrderDto, OrderStatus } from '@eventuras/event-sdk';
-import {
-  Badge,
-  Definition,
-  DescriptionList,
-  Heading,
-  Item,
-  Section,
-  Term,
-} from '@eventuras/ratio-ui';
-import { useTranslations } from 'next-intl';
+import { Badge } from '@eventuras/ratio-ui/core/Badge';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Section } from '@eventuras/ratio-ui/layout/Section';
 
+;
+import { Definition, DescriptionList, Item, Term } from '@eventuras/ratio-ui/core/DescriptionList';
+;
+;
+;
+import { useTranslations } from 'next-intl';
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import { formatDateSpan } from '@eventuras/core/datetime';
-
 import { OrderActionsMenu } from './OrderActionsMenu';
-
 type OrderProps = {
   order: OrderDto;
   admin?: boolean;
 };
-
 const Order: React.FC<OrderProps> = ({ admin, order }) => {
   const t = useTranslations();
-
   const statusDescriptions = {
     Draft: t('common.order.status.labels.draft'),
     Verified: t('common.order.status.labels.verified'),
@@ -30,7 +25,6 @@ const Order: React.FC<OrderProps> = ({ admin, order }) => {
     Cancelled: t('common.order.status.labels.cancelled'),
     Refunded: t('common.order.status.labels.refunded'),
   };
-
   return (
     <Card>
       <DescriptionList>
@@ -88,5 +82,4 @@ const Order: React.FC<OrderProps> = ({ admin, order }) => {
     </Card>
   );
 };
-
 export default Order;

@@ -1,17 +1,16 @@
 'use client';
-
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
 import { ProductOrdersSummaryDto } from '@eventuras/event-sdk';
-import { Badge } from '@eventuras/ratio-ui';
-import React from 'react';
+import { Badge } from '@eventuras/ratio-ui/core/Badge';
 
+;
+;
+import React from 'react';
 interface DeliverySummaryProps {
   deliverySummary: ProductOrdersSummaryDto[];
 }
-
 const DeliverySummary: React.FC<DeliverySummaryProps> = ({ deliverySummary }) => {
   const columnHelper = createColumnHelper<ProductOrdersSummaryDto>();
-
   const columns = [
     columnHelper.accessor(row => row.user?.name, {
       header: 'User Name',
@@ -39,8 +38,6 @@ const DeliverySummary: React.FC<DeliverySummaryProps> = ({ deliverySummary }) =>
       enableSorting: true,
     }),
   ];
-
   return <DataTable data={deliverySummary} columns={columns} pageSize={100} clientsidePagination />;
 };
-
 export default DeliverySummary;

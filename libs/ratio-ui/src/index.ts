@@ -1,19 +1,6 @@
 import './ratio-ui.css';
-// This file is deprecated. No new exports should be added here, and it will be removed in the future.
-export { default as Badge } from './core/Badge/Badge';
-export { default as Button, buttonStyles } from './core/Button/Button';
-export { default as ButtonGroup } from './core/Button/ButtonGroup';
-export type { BoxProps } from './layout/Box/Box';
-export { default as Container } from './layout/Container/Container';
-export { Definition, DescriptionList, Item, Term } from './core/DescriptionList/DescriptionList';
-// Drawer removed from barrel - import from '@eventuras/ratio-ui/layout/Drawer' instead
-export { default as Grid } from './layout/Grid/Grid';
-export { default as Heading } from './core/Heading/Heading';
-export { default as Loading } from './core/Loading/Loading';
-export { default as NumberCard } from './visuals/NumberCard/NumberCard';
-export { default as Pagination } from './core/Pagination/Pagination';
-export { default as Portal } from './layout/Portal/Portal';
-export { default as Section } from './layout/Section/Section';
-export { default as Text } from './core/Text/Text';
-export { InputAutoComplete } from './forms/InputAutocomplete/InputAutoComplete';
-export type { AutoCompleteItem, AutoCompleteDataProvider } from './forms/InputAutocomplete/InputAutoComplete';
+
+// Barrel exports removed. Use direct path imports instead:
+// ;
+// ;
+// etc.

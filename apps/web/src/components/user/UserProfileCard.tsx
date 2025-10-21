@@ -1,17 +1,15 @@
 'use client';
-
 import { UserDto } from '@eventuras/event-sdk';
-import { Definition, DescriptionList, Item, Term } from '@eventuras/ratio-ui';
-import { useTranslations } from 'next-intl';
+import { Definition, DescriptionList, Item, Term } from '@eventuras/ratio-ui/core/DescriptionList';
 
+;
+import { useTranslations } from 'next-intl';
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import {Text} from '@eventuras/ratio-ui/core/Text';
 import { Link } from '@eventuras/ratio-ui-next/Link';
-
 export type UserProfileCardProps = {
   profile: UserDto;
 };
-
 const UserProfileCard = ({ profile }: UserProfileCardProps) => {
   const t = useTranslations();
   return (
@@ -23,14 +21,12 @@ const UserProfileCard = ({ profile }: UserProfileCardProps) => {
             <Definition>{profile.name}</Definition>
           </Item>
         )}
-
         {profile.email && (
           <Item>
             <Term>{t('common.labels.email')}</Term>
             <Definition>{profile.email}</Definition>
           </Item>
         )}
-
         {profile.phoneNumber && (
           <Item>
             <Term>{t('common.labels.phoneNumber')}</Term>
@@ -46,5 +42,4 @@ const UserProfileCard = ({ profile }: UserProfileCardProps) => {
     </Card>
   );
 };
-
 export default UserProfileCard;

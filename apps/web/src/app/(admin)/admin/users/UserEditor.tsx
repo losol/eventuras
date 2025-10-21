@@ -1,19 +1,18 @@
 'use client';
-
 import { Fieldset } from '@eventuras/ratio-ui/forms';
 import { UserDto, UserFormDto } from '@eventuras/event-sdk';
 import { Form, Input, PhoneInput } from '@eventuras/smartform';
-import { Button } from '@eventuras/ratio-ui';
+import { Button } from '@eventuras/ratio-ui/core/Button';
+
+;
+;
 import { Logger } from '@eventuras/logger';
 import { useTranslations } from 'next-intl';
 import { FC, useState } from 'react';
 import * as regex from '@eventuras/core/regex';
-
 import { useToast } from '@eventuras/toast';
 import { createUser, updateUser, updateUserProfile } from './actions';
-
 const logger = Logger.create({ namespace: 'web:admin:users', context: { component: 'UserEditor' } });
-
 interface UserEditorProps {
   user?: UserDto;
   onUserUpdated?: (updatedUser: UserDto) => void;
@@ -21,61 +20,48 @@ interface UserEditorProps {
   adminMode?: boolean;
   submitButtonLabel?: string;
 }
-
 const UserEditor: FC<UserEditorProps> = props => {
   const { adminMode, user, onUserUpdated, submitButtonLabel } = props;
   const t = useTranslations();
   const [isUpdating, setIsUpdating] = useState(false);
   const toast = useToast();
-
   // Never log PII (email, name, etc.) - only log user ID if available
   if (user?.id) {
     logger.info({ userId: user.id }, 'UserEditor rendering');
   } else {
     logger.info('UserEditor rendering (new user)');
   }
-
   const handleCreateUser = async (form: UserDto) => {
     const result = await createUser(form as UserFormDto);
-
     if (!result.success) {
       // Never log PII - don't include form data in logs
       logger.error({ error: result.error }, 'Failed to create new user');
       toast.error(result.error.message);
       return { success: false, error: result.error };
     }
-
     logger.info({ userId: result.data.id }, 'Created new user');
     toast.success('User created successfully');
     return { success: true, data: result.data };
   };
-
   const handleUpdateUser = async (user: UserDto, form: UserDto, adminMode: boolean) => {
     // Update existing user
     logger.info({ userId: user.id }, 'Updating user');
     setIsUpdating(true);
-
     // if adminMode, update user with users endpoint, otherwise use userProfile endpoint
     const result = adminMode
       ? await updateUser(user.id!, form as UserFormDto)
       : await updateUserProfile(form as UserFormDto);
-
     setIsUpdating(false);
-
     if (!result.success) {
       logger.error({ error: result.error, userId: user.id }, 'Failed to update user');
       toast.error(result.error.message);
       return { success: false, error: result.error };
     }
-
     logger.info({ userId: result.data.id }, 'Updated user successfully');
     toast.success(t('user.labels.updateUserSuccess') + ': ' + result.data.name);
-
     return { success: true, data: result.data };
   };
-
   const editMode = !!user;
-
   const onSubmit = async (form: UserDto, event?: React.BaseSyntheticEvent) => {
     // Prevent default form submission to avoid page refresh
     if (event && typeof event.preventDefault === 'function') {
@@ -91,14 +77,12 @@ const UserEditor: FC<UserEditorProps> = props => {
       onUserUpdated(result.data);
     }
   };
-
   const getButtonLabel = () => {
     if (submitButtonLabel) {
       return submitButtonLabel;
     }
     return editMode ? t('user.account.update.label') : t('user.account.create.label');
   };
-
   return (
     <Form onSubmit={onSubmit} defaultValues={user} testId={props.testId}>
       {/* Given Name Field */}
@@ -118,7 +102,6 @@ const UserEditor: FC<UserEditorProps> = props => {
           }}
           testId="accounteditor-form-givenname"
         />
-
         <Input
           name="middleName"
           label={t('common.labels.middleName')}
@@ -164,7 +147,6 @@ const UserEditor: FC<UserEditorProps> = props => {
           validation={{ required: t('user.account.email.requiredText') }}
           disabled={editMode} // Disable editing email field for existing users
         />
-
         {/* Phone Field */}
         <PhoneInput
           name="phoneNumber"
@@ -194,7 +176,6 @@ const UserEditor: FC<UserEditorProps> = props => {
           testId="accounteditor-form-supplementaryInformation"
         />
       </Fieldset>
-
       {/* Submit Button */}
       <Button type="submit" testId="account-update-button" loading={isUpdating}>
         {getButtonLabel()}
@@ -202,5 +183,4 @@ const UserEditor: FC<UserEditorProps> = props => {
     </Form>
   );
 };
-
 export default UserEditor;
