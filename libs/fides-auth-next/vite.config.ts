@@ -5,5 +5,6 @@ export default defineNextLibConfig({
     index: 'src/index.ts',
     session: 'src/session.ts',
     request: 'src/request.ts',
+    'state-machine/index': 'src/state-machine/index.ts',
   },
 });
