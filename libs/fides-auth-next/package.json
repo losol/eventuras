@@ -17,6 +17,10 @@
     "./request": {
       "types": "./dist/request.d.ts",
       "import": "./dist/request.js"
+    },
+    "./state-machine": {
+      "types": "./dist/state-machine/index.d.ts",
+      "import": "./dist/state-machine/index.js"
     }
   },
   "files": [
@@ -30,7 +34,12 @@
     "@eventuras/fides-auth": "workspace:*",
     "@eventuras/logger": "workspace:*",
     "@eventuras/typescript-config": "workspace:*",
-    "next": "^15.5.5"
+    "next": "^15.5.5",
+    "xstate": "^5.23.0"
+  },
+  "peerDependencies": {
+    "@xstate/react": "^5.0.0",
+    "react": "^18.0.0 || ^19.0.0"
   },
   "devDependencies": {
     "@eventuras/vite-config": "workspace:*",
