@@ -12,14 +12,13 @@ const logger = Logger.create({ namespace: 'fides-auth-next:session' });
 /**
  * Creates an encrypted JWT containing session data.
  *
- * @param session - Session data (expiresAt, tokens, etc.)
+ * @param session - Session data (tokens, user, etc.)
  * @param options - Configuration options (e.g., sessionDurationDays)
  * @returns Encrypted JWT string
  *
  * @example
  * ```ts
  * const jwt = await createSession({
- *   expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
  *   tokens: {
  *     accessToken: 'token',
  *     refreshToken: 'refresh',
@@ -189,7 +188,6 @@ export async function refreshCurrentSession(
  * ```ts
  * // After successful OAuth callback
  * await createAndPersistSession({
- *   expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
  *   tokens: {
  *     accessToken: tokens.access_token,
  *     refreshToken: tokens.refresh_token,
