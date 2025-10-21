@@ -22,11 +22,11 @@
   },
   "dependencies": {
     "debug": "^4.4.3",
-    "pino": "^10.0.0"
+    "pino": "^10.1.0"
   },
   "devDependencies": {
     "@types/debug": "^4.1.12",
     "@eventuras/vite-config": "workspace:*",
-    "vite": "^7.1.10"
+    "vite": "^7.1.11"
   }
 }
