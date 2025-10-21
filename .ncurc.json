@@ -1,6 +1,14 @@
+// use same lexical versions as https://github.com/payloadcms/payload/blob/main/packages/richtext-lexical/package.json
 {
   "reject": [
     "lexical",
+    "@lexical/code",
+    "@lexical/list",
+    "@lexical/mark",
+    "@lexical/rich-text",
+    "@lexical/selection",
+    "@lexical/table",
+    "@lexical/utils",
     "@lexical/hashtag",
     "@lexical/link",
     "@lexical/markdown",

@@ -10,9 +10,9 @@
     "./rules": "./rules/index.js"
   },
   "devDependencies": {
-    "@eslint/js": "^9.37.0",
-    "@next/eslint-plugin-next": "^15.5.5",
-    "eslint": "^9.37.0",
+    "@eslint/js": "^9.38.0",
+    "@next/eslint-plugin-next": "^15.5.6",
+    "eslint": "^9.38.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-json-files": "^5.1.2",
@@ -23,6 +23,6 @@
     "eslint-plugin-turbo": "^2.5.8",
     "globals": "^16.4.0",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.46.1"
+    "typescript-eslint": "^8.46.2"
   }
 }

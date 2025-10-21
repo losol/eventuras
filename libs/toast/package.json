@@ -20,14 +20,14 @@
   "dependencies": {
     "@eventuras/ratio-ui": "workspace:*",
     "@xstate/react": "6.0.0",
-    "uuid": "^11.1.0",
+    "uuid": "^13.0.0",
     "xstate": "5.23.0"
   },
   "devDependencies": {
     "@eventuras/eslint-config": "workspace:*",
     "@eventuras/typescript-config": "workspace:*",
     "@eventuras/vite-config": "workspace:*",
-    "vite": "^7.1.10"
+    "vite": "^7.1.11"
   },
   "peerDependencies": {
     "react": "^19.1.0",
