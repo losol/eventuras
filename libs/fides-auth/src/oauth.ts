@@ -1,4 +1,7 @@
+import { Logger } from '@eventuras/logger';
 import * as openid from 'openid-client';
+
+const logger = Logger.create({ namespace: 'fides-auth:oauth' });
 
 export const AuthProviders = {
   Auth0: 'auth0',
@@ -19,45 +22,80 @@ export type OAuthConfig = {
 
 
 export async function getAuth0ClientConfig(auth0Config: OAuthConfig): Promise<openid.Configuration> {
-  const config = await openid.discovery(
-    new URL(auth0Config.issuer),
-    auth0Config.clientId,
-    auth0Config.clientSecret,
-    openid.ClientSecretPost(auth0Config.clientSecret)
-  );
-  return config;
+  logger.debug({ issuer: auth0Config.issuer }, 'Discovering Auth0 configuration');
+
+  try {
+    const config = await openid.discovery(
+      new URL(auth0Config.issuer),
+      auth0Config.clientId,
+      auth0Config.clientSecret,
+      openid.ClientSecretPost(auth0Config.clientSecret)
+    );
+
+    logger.info('Auth0 configuration discovered successfully');
+    return config;
+  } catch (error) {
+    logger.error({ error, issuer: auth0Config.issuer }, 'Failed to discover Auth0 configuration');
+    throw error;
+  }
 }
 
 export async function refreshAccesstoken(
   oAuthConfig: OAuthConfig,
   refreshToken: string,
 ): Promise<openid.TokenEndpointResponse> {
+  logger.debug({ issuer: oAuthConfig.issuer }, 'Starting token refresh');
 
-  const config = await openid.discovery(new URL(oAuthConfig.issuer), oAuthConfig.clientId, oAuthConfig.clientSecret);
+  try {
+    const config = await openid.discovery(
+      new URL(oAuthConfig.issuer),
+      oAuthConfig.clientId,
+      oAuthConfig.clientSecret
+    );
 
-  const tokens = await openid.refreshTokenGrant(
-    config,
-    refreshToken,
-    {
-      scope: oAuthConfig.scope,
-    },
-  );
+    const tokens = await openid.refreshTokenGrant(
+      config,
+      refreshToken,
+      {
+        scope: oAuthConfig.scope,
+      },
+    );
 
-  return tokens;
+    logger.info({
+      hasAccessToken: !!tokens.access_token,
+      hasRefreshToken: !!tokens.refresh_token,
+      expiresIn: tokens.expires_in
+    }, 'Token refresh successful');
+
+    return tokens;
+  } catch (error) {
+    logger.error({ error, issuer: oAuthConfig.issuer }, 'Token refresh failed');
+    throw error;
+  }
 }
 
 /**
  * Performs OpenID Connect discovery for your OAuth provider.
- * 
+ *
  * @param config - The OAuth configuration parameters including issuer, clientId, and clientSecret.
  * @returns A Promise that resolves to the discovered configuration.
  */
 export async function discoverOpenIdConfig(config: OAuthConfig) {
-  return await openid.discovery(
-    new URL(config.issuer),
-    config.clientId,
-    config.clientSecret
-  );
+  logger.debug({ issuer: config.issuer }, 'Starting OpenID discovery');
+
+  try {
+    const discoveredConfig = await openid.discovery(
+      new URL(config.issuer),
+      config.clientId,
+      config.clientSecret
+    );
+
+    logger.info('OpenID discovery successful');
+    return discoveredConfig;
+  } catch (error) {
+    logger.error({ error, issuer: config.issuer }, 'OpenID discovery failed');
+    throw error;
+  }
 }
 
 export interface PKCEOptions {
@@ -78,6 +116,8 @@ export interface PKCEOptions {
  *  - parameters: A Record<string,string> with the assembled parameters.
  */
 export async function buildPKCEOptions(config: OAuthConfig): Promise<PKCEOptions> {
+  logger.debug('Generating PKCE parameters');
+
   const code_verifier = openid.randomPKCECodeVerifier();
   const code_challenge = await openid.calculatePKCECodeChallenge(code_verifier);
   const state = openid.randomState();
@@ -90,11 +130,16 @@ export async function buildPKCEOptions(config: OAuthConfig): Promise<PKCEOptions
     state,
   };
 
+  logger.info({
+    redirectUri: config.redirect_uri,
+    scope: parameters.scope
+  }, 'PKCE parameters generated');
+
   return { code_verifier, code_challenge, state, parameters };
 }
 
 /**
- * Returns an authorization URL by discovering OpenID Connect configuration 
+ * Returns an authorization URL by discovering OpenID Connect configuration
  * and building the URL with PKCE parameters.
  *
  * @param config - Your OAuth configuration.
@@ -105,6 +150,16 @@ export async function buildAuthorizationUrl(
   config: OAuthConfig,
   pkceOptions: PKCEOptions
 ): Promise<URL> {
-  const server = await discoverOpenIdConfig(config);
-  return openid.buildAuthorizationUrl(server, pkceOptions.parameters);
+  logger.debug({ issuer: config.issuer }, 'Building authorization URL');
+
+  try {
+    const server = await discoverOpenIdConfig(config);
+    const authUrl = openid.buildAuthorizationUrl(server, pkceOptions.parameters);
+
+    logger.info({ authUrl: authUrl.origin }, 'Authorization URL built successfully');
+    return authUrl;
+  } catch (error) {
+    logger.error({ error, issuer: config.issuer }, 'Failed to build authorization URL');
+    throw error;
+  }
 }
