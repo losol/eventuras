@@ -191,9 +191,9 @@ function Details({
   className?: string;
 }) {
   return (
-    <p className={clsx('text-sm text-gray-600 dark:text-gray-400 mb-6 max-w-2xl', className)}>
+    <div className={clsx('text-sm text-gray-600 dark:text-gray-400 mb-6 max-w-2xl', className)}>
       {children}
-    </p>
+    </div>
   );
 }
 
