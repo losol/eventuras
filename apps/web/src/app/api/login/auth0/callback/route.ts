@@ -77,7 +77,6 @@ export async function GET(request: Request): Promise<Response> {
 
     const jwt = await createSession(
       {
-        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
         tokens: {
           accessToken: tokens.access_token!,
           accessTokenExpiresAt: tokens.expires_in
@@ -117,9 +116,14 @@ export async function GET(request: Request): Promise<Response> {
     cookieStore2.delete('returnTo');
 
     // 8) Redirect back
+    const redirectUrl = new URL(returnTo, currentUrl.origin);
+    redirectUrl.searchParams.set('login', 'success');
+
+    logger.debug({ redirectUrl: redirectUrl.toString() }, 'Redirecting after successful login');
+
     return new Response(null, {
       status: 302,
-      headers: { Location: returnTo },
+      headers: { Location: redirectUrl.toString() },
     });
   } catch (error) {
     logger.error({ error }, 'Auth0 callback error');

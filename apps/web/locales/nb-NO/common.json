@@ -21,7 +21,27 @@
   },
   "auth": {
     "login": "Logg inn",
-    "logout": "Logg ut"
+    "logout": "Logg ut",
+    "refreshing": "Fornyer økten din...",
+    "sessionExpired": {
+      "title": "Økten har utløpt",
+      "description": "Din økt har utløpt. Vennligst logg inn på nytt for å fortsette.",
+      "loginButton": "Logg inn"
+    },
+    "sessionWarning": {
+      "title": {
+        "expired": "Din økt har utløpt",
+        "invalid": "Din økt er ikke lenger gyldig"
+      },
+      "description": {
+        "expired": "Sesjonen din har utløpt. Du vil bli sendt til påloggingssiden om kort tid.",
+        "invalid": "Sesjonen din er ikke lenger gyldig. Du vil bli sendt til påloggingssiden om kort tid."
+      },
+      "countdownText": "Du har <strong>{seconds} sekunder</strong> til å lagre arbeidet ditt",
+      "tip": "Tips: Kopier eventuelle endringer du har gjort før du blir redirectet.",
+      "loginNow": "Logg inn nå",
+      "giveMoreTime": "Gi meg mer tid ({seconds}s)"
+    }
   },
   "buttons": {
     "back": "Tilbake",

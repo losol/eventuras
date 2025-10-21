@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
 
+import { SessionWarningOverlay } from '@/components/SessionWarningOverlay';
+
 /**
  * User layout that wraps all user pages.
  * User pages require authentication and must be rendered dynamically.
@@ -9,5 +11,10 @@ import type { ReactNode } from 'react';
 export const dynamic = 'force-dynamic';
 
 export default function UserLayout({ children }: { children: ReactNode }) {
-  return <>{children}</>;
+  return (
+    <>
+      <SessionWarningOverlay />
+      {children}
+    </>
+  );
 }
