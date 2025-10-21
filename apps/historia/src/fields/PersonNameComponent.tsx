@@ -1,8 +1,7 @@
 'use client'
 import React, { useEffect } from 'react'
+import { FieldLabel, TextInput, useField, useFormFields } from '@payloadcms/ui'
 import { TextFieldClientProps } from 'payload'
-
-import { useField, TextInput, FieldLabel, useFormFields } from '@payloadcms/ui'
 
 // import 'index.scss'
 

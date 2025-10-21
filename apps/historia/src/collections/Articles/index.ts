@@ -1,22 +1,22 @@
 import type { CollectionConfig } from 'payload';
 
-import { authenticated } from '../../access/authenticated';
-import { generatePreviewPath } from '../../utilities/generatePreviewPath';
-import { revalidateArticle } from './hooks/revalidateArticle';
-
+import { admins } from '@/access/admins';
+import { publishedOnly } from '@/access/publishedOnly';
+import { contributors } from '@/fields/contributors';
+import { image } from '@/fields/image';
+import { lead } from '@/fields/lead';
+import { license } from '@/fields/license';
+import { publishedAt } from '@/fields/publishedAt';
+import { relatedContent } from '@/fields/relatedContent';
+import resourceId from '@/fields/resourceId';
 import { slugField } from '@/fields/slug';
 import { storyField } from '@/fields/story';
-import { image } from '@/fields/image';
-import { contributors } from '@/fields/contributors';
-import { license } from '@/fields/license';
-import { topics } from '@/fields/topics';
-import { lead } from '@/fields/lead';
-import { publishedOnly } from '@/access/publishedOnly';
-import { admins } from '@/access/admins';
-import { relatedContent } from '@/fields/relatedContent';
-import { publishedAt } from '@/fields/publishedAt';
 import { title } from '@/fields/title';
-import resourceId from '@/fields/resourceId';
+import { topics } from '@/fields/topics';
+
+import { revalidateArticle } from './hooks/revalidateArticle';
+import { authenticated } from '../../access/authenticated';
+import { generatePreviewPath } from '../../utilities/generatePreviewPath';
 
 
 export const Articles: CollectionConfig = {

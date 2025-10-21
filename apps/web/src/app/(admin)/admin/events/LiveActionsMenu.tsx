@@ -1,16 +1,15 @@
 'use client';
-import { RegistrationDto, RegistrationStatus } from '@eventuras/event-sdk';
-import { Button } from '@eventuras/ratio-ui/core/Button';
-
-;
-;
-import { CircleX } from '@eventuras/ratio-ui/icons';
-import { Logger } from '@eventuras/logger';
 import { useState } from 'react';
-import { useToast } from '@eventuras/toast';
+
+import { RegistrationDto, RegistrationStatus } from '@eventuras/event-sdk';
+import { Logger } from '@eventuras/logger';
+import { Button } from '@eventuras/ratio-ui/core/Button';
+import { CircleX } from '@eventuras/ratio-ui/icons';
 import { Link } from '@eventuras/ratio-ui-next/Link';
+import { useToast } from '@eventuras/toast';
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { updateRegistrationStatus, sendCertificateEmail } from '../registrations/actions';
+import { sendCertificateEmail, updateRegistrationStatus } from '../registrations/actions';
 interface LiveActionsMenuProps {
   registration: RegistrationDto;
   onStatusUpdate?: (registration: RegistrationDto) => void;

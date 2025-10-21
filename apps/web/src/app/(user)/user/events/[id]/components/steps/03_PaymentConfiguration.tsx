@@ -1,17 +1,16 @@
 'use client';
-import { Input } from '@eventuras/ratio-ui/forms';
+import { useEffect, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { useTranslations } from 'next-intl';
+
 import { UserDto } from '@eventuras/event-sdk';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Input } from '@eventuras/ratio-ui/forms';
 
-;
-;
-;
-import { useTranslations } from 'next-intl';
-import { useEffect, useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
 import { PaymentFormValues } from '@/types';
-import { logStepEntry, logStepComplete, logUserAction } from '../../lib/eventFlowLogger';
+
+import { logStepComplete, logStepEntry, logUserAction } from '../../lib/eventFlowLogger';
 export type Step03PaymentConfigurationProps = {
   onSubmit: (values: PaymentFormValues) => void;
   onBack?: () => void;

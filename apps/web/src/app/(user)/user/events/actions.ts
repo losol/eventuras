@@ -1,20 +1,25 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
+
+import {
+  actionError,
+  actionSuccess,
+  type ServerActionResult,
+} from '@eventuras/core-nextjs/actions';
 import {
   NewRegistrationDto,
   OrderLineModel,
-  ProductDto,
-  RegistrationDto,
-  RegistrationUpdateDto,
   postV3Registrations,
   postV3RegistrationsByIdProducts,
+  ProductDto,
   putV3RegistrationsById,
+  RegistrationDto,
+  RegistrationUpdateDto,
 } from '@eventuras/event-sdk';
 import { Logger } from '@eventuras/logger';
-import { revalidatePath } from 'next/cache';
 
 import { appConfig } from '@/config.server';
-import { actionError, actionSuccess, type ServerActionResult } from '@eventuras/core-nextjs/actions';
 import { client } from '@/lib/eventuras-client';
 import { productMapToOrderLineModel } from '@/utils/registration-helpers';
 
@@ -116,7 +121,10 @@ export async function createEventRegistration(
     revalidatePath(`/user/events/${newRegistration.eventId}`);
     return actionSuccess(registrationWithProducts, 'Registration created successfully!');
   } catch (error) {
-    logger.error({ error, userId: newRegistration.userId }, 'Unexpected error creating registration');
+    logger.error(
+      { error, userId: newRegistration.userId },
+      'Unexpected error creating registration'
+    );
     return actionError('An unexpected error occurred');
   }
 }

@@ -1,7 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 
-import { fetchEvents } from './eventActions';
 import { AdminEventListClient } from './AdminEventListClient';
+import { fetchEvents } from './eventActions';
 
 interface AdminEventListProps {
   organizationId: number;

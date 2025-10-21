@@ -1,17 +1,18 @@
 import type { CollectionConfig } from 'payload';
+
 import { admins } from '@/access/admins';
 import { anyone } from '@/access/anyone';
 import { config } from '@/fields/config';
-import { storyField } from '@/fields/story';
 import { contentLocations } from '@/fields/contentLocations';
-import { image } from '@/fields/image';
-import { program } from '@/fields/program';
-import { startDate } from '@/fields/startDate';
 import { endDate } from '@/fields/endDate';
-import { title } from '@/fields/title';
+import { image } from '@/fields/image';
 import { lead } from '@/fields/lead';
-import { slugField } from '@/fields/slug';
+import { program } from '@/fields/program';
 import resourceId from '@/fields/resourceId';
+import { slugField } from '@/fields/slug';
+import { startDate } from '@/fields/startDate';
+import { storyField } from '@/fields/story';
+import { title } from '@/fields/title';
 
 
 

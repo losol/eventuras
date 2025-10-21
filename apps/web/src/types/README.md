@@ -49,7 +49,7 @@ import { actionError, type ServerActionResult } from '@/types/serverAction';
 
 const logger = Logger.create({
   namespace: 'web:admin',
-  context: { module: 'action:createEvent' }
+  context: { module: 'action:createEvent' },
 });
 
 export async function createEvent(
@@ -74,7 +74,6 @@ export async function createEvent(
 
     // For redirects, use Next.js redirect() which throws
     redirect(`/admin/events/${result.id}/edit`);
-
   } catch (error) {
     // Check if it's a Next.js redirect (expected behavior)
     if (error && typeof error === 'object' && 'digest' in error) {
@@ -85,12 +84,8 @@ export async function createEvent(
     // Handle actual errors
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     logger.error({ error }, 'Failed to create event');
-    
-    return actionError(
-      `Failed to create event: ${errorMessage}`,
-      'CREATE_EVENT_FAILED',
-      error
-    );
+
+    return actionError(`Failed to create event: ${errorMessage}`, 'CREATE_EVENT_FAILED', error);
   }
 }
 ```
@@ -119,7 +114,7 @@ export const CreateEventForm = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    
+
     if (isSubmitting) return;
     setIsSubmitting(true);
 
@@ -129,7 +124,7 @@ export const CreateEventForm = () => {
 
     try {
       const result = await createEvent(formData);
-      
+
       // If result is returned (not redirected), handle it
       if (!result.success) {
         logger.error({ error: result.error }, 'Action failed');
@@ -146,7 +141,7 @@ export const CreateEventForm = () => {
         logger.info('Redirect caught');
         throw error; // Re-throw to allow redirect
       }
-      
+
       // Handle unexpected errors
       logger.error({ error }, 'Unexpected error');
       toast.error(t('admin.createEvent.error'));
@@ -236,7 +231,7 @@ setIsSubmitting(true);
 // ❌ Old way - silent failures, no error handling
 export async function createEvent(formData: FormData) {
   const title = formData.get('title')?.toString() ?? 'New event';
-  
+
   try {
     const result = await api.create({ title });
     redirect(`/events/${result.id}`);
@@ -265,15 +260,14 @@ export async function createEvent(
 
     logger.info({ title }, 'Creating event');
     const result = await api.create({ title });
-    
+
     logger.info({ eventId: result.id }, 'Event created');
     redirect(`/events/${result.id}`);
-    
   } catch (error) {
     if (error && typeof error === 'object' && 'digest' in error) {
       throw error;
     }
-    
+
     logger.error({ error }, 'Failed to create event');
     return actionError('Failed to create event', 'CREATE_FAILED');
   }

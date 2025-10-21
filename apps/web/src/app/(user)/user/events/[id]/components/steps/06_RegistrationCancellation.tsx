@@ -1,14 +1,14 @@
 'use client';
-;
-import { useTranslations } from 'next-intl';
 import { useEffect } from 'react';
-import { SiteInfo } from '@/utils/site/getSiteSettings';
-import { logStepEntry, logUserAction } from '../../lib/eventFlowLogger';
+import { useTranslations } from 'next-intl';
+
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 
-;
-;
+import { SiteInfo } from '@/utils/site/getSiteSettings';
+
+import { logStepEntry, logUserAction } from '../../lib/eventFlowLogger';
+
 export type Step06RegistrationCancellationProps = {
   onBack?: () => void;
   siteInfo?: SiteInfo;

@@ -1,10 +1,10 @@
 'use client';
-;
 import { useState } from 'react';
-import { publicEnv } from '@/config.client';
+
 import { Button } from '@eventuras/ratio-ui/core/Button';
 
-;
+import { publicEnv } from '@/config.client';
+
 export const PDFCertificate = (props: { certificateId: number | string }) => {
   const [loading, setIsLoading] = useState(false);
   return (

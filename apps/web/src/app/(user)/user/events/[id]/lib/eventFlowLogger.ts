@@ -19,7 +19,7 @@ export function logStepEntry(step: number | string, stepName: string, context?: 
     {
       step,
       stepName,
-      ...context
+      ...context,
     },
     `[STEP ${step}] Entering ${stepName}`
   );
@@ -33,7 +33,7 @@ export function logStepComplete(step: number | string, stepName: string, context
     {
       step,
       stepName,
-      ...context
+      ...context,
     },
     `[STEP ${step}] Completed ${stepName}`
   );
@@ -53,7 +53,7 @@ export function logStepError(
       step,
       stepName,
       error,
-      ...context
+      ...context,
     },
     `[STEP ${step}] Error in ${stepName}`
   );
@@ -62,18 +62,13 @@ export function logStepError(
 /**
  * Log state machine transition
  */
-export function logStateTransition(
-  from: string,
-  to: string,
-  event?: string,
-  context?: LogContext
-) {
+export function logStateTransition(from: string, to: string, event?: string, context?: LogContext) {
   eventFlowLogger.info(
     {
       from,
       to,
       event,
-      ...context
+      ...context,
     },
     `State transition: ${from} → ${to}${event ? ` (${event})` : ''}`
   );
@@ -86,7 +81,7 @@ export function logUserAction(action: string, context?: LogContext) {
   eventFlowLogger.info(
     {
       action,
-      ...context
+      ...context,
     },
     `User action: ${action}`
   );

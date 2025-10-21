@@ -1,14 +1,14 @@
-;
-import { Error } from '@eventuras/ratio-ui/blocks/Error';
-import { Logger } from '@eventuras/logger';
-import { getTranslations } from 'next-intl/server';
-import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import EventEditor from '@/app/(admin)/admin/events/EventEditor';
+import { notFound } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
+
 import { getV3EventsById } from '@eventuras/event-sdk';
+import { Logger } from '@eventuras/logger';
+import { Error } from '@eventuras/ratio-ui/blocks/Error';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 
-;
+import EventEditor from '@/app/(admin)/admin/events/EventEditor';
+
 type EditEventinfoProps = {
   params: Promise<{
     id: number;
@@ -16,7 +16,7 @@ type EditEventinfoProps = {
 };
 const logger = Logger.create({
   namespace: 'web:admin',
-  context: { module: 'page:editEvent' }
+  context: { module: 'page:editEvent' },
 });
 type PageState =
   | { type: 'success'; data: Awaited<ReturnType<typeof getV3EventsById>>['data'] }
@@ -29,7 +29,7 @@ export default async function EditEventinfo({ params }: Readonly<EditEventinfoPr
   let pageState: PageState;
   try {
     const response = await getV3EventsById({
-      path: { id }
+      path: { id },
     });
     if (response.data) {
       logger.info({ eventId: id }, 'Successfully fetched event for editing');
@@ -42,15 +42,18 @@ export default async function EditEventinfo({ params }: Readonly<EditEventinfoPr
         notFound();
       }
       // Other HTTP errors
-      logger.error({
-        eventId: id,
-        error: response.error,
-        status: error.status
-      }, 'Failed to fetch event for editing');
+      logger.error(
+        {
+          eventId: id,
+          error: response.error,
+          status: error.status,
+        },
+        'Failed to fetch event for editing'
+      );
       pageState = {
         type: 'http-error',
         status: error.status,
-        message: error.message
+        message: error.message,
       };
     } else {
       // Unexpected - no data and no error
@@ -60,15 +63,18 @@ export default async function EditEventinfo({ params }: Readonly<EditEventinfoPr
   } catch (err) {
     // Network errors, connection refused, etc.
     const error = err as { cause?: { code?: string }; code?: string; message?: string };
-    logger.error({
-      eventId: id,
-      error: err,
-      code: error?.cause?.code || error?.code
-    }, 'Exception while fetching event for editing');
+    logger.error(
+      {
+        eventId: id,
+        error: err,
+        code: error?.cause?.code || error?.code,
+      },
+      'Exception while fetching event for editing'
+    );
     pageState = {
       type: 'network-error',
       code: error?.cause?.code || error?.code,
-      message: error?.message
+      message: error?.message,
     };
   }
   // Render based on page state
@@ -81,55 +87,36 @@ export default async function EditEventinfo({ params }: Readonly<EditEventinfoPr
     );
   }
   if (pageState.type === 'http-error') {
-    const errorType = pageState.status === 403
-      ? 'forbidden'
-      : pageState.status && pageState.status >= 500
-      ? 'server-error'
-      : 'generic';
-    const errorTitle = pageState.status === 403
-      ? t('common.access-denied')
-      : pageState.status && pageState.status >= 500
-      ? t('common.server-error')
-      : t('common.error');
-    const errorMessage = pageState.status === 403
-      ? t('common.access-denied')
-      : pageState.status && pageState.status >= 500
-      ? t('common.server-error')
-      : t('common.error-loading-event');
+    const errorType =
+      pageState.status === 403
+        ? 'forbidden'
+        : pageState.status && pageState.status >= 500
+          ? 'server-error'
+          : 'generic';
+    const errorTitle =
+      pageState.status === 403
+        ? t('common.access-denied')
+        : pageState.status && pageState.status >= 500
+          ? t('common.server-error')
+          : t('common.error');
+    const errorMessage =
+      pageState.status === 403
+        ? t('common.access-denied')
+        : pageState.status && pageState.status >= 500
+          ? t('common.server-error')
+          : t('common.error-loading-event');
     return (
       <Error type={errorType} tone="error">
-          <Error.Title>{errorTitle}</Error.Title>
-          <Error.Description>{errorMessage}</Error.Description>
-          {pageState.message && (
-            <Error.Details>{pageState.message}</Error.Details>
-          )}
-          <Error.Actions>
-            <Link
-              href={`/admin/events/${id}`}
-              className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors"
-            >
-              {t('common.back-to-event')}
-            </Link>
-            <Link
-              href="/admin/events"
-              className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-            >
-              {t('common.back-to-events')}
-            </Link>
-          </Error.Actions>
-        </Error>
-    );
-  }
-  // network-error
-  const errorMessage = pageState.code === 'ECONNREFUSED'
-    ? t('common.backend-unavailable')
-    : t('common.network-error');
-  return (
-    <Error type="network-error" tone="error">
-        <Error.Title>{t('common.connection-error')}</Error.Title>
+        <Error.Title>{errorTitle}</Error.Title>
         <Error.Description>{errorMessage}</Error.Description>
-        <Error.Details>{t('common.try-again-later')}</Error.Details>
+        {pageState.message && <Error.Details>{pageState.message}</Error.Details>}
         <Error.Actions>
+          <Link
+            href={`/admin/events/${id}`}
+            className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors"
+          >
+            {t('common.back-to-event')}
+          </Link>
           <Link
             href="/admin/events"
             className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
@@ -138,5 +125,24 @@ export default async function EditEventinfo({ params }: Readonly<EditEventinfoPr
           </Link>
         </Error.Actions>
       </Error>
+    );
+  }
+  // network-error
+  const errorMessage =
+    pageState.code === 'ECONNREFUSED' ? t('common.backend-unavailable') : t('common.network-error');
+  return (
+    <Error type="network-error" tone="error">
+      <Error.Title>{t('common.connection-error')}</Error.Title>
+      <Error.Description>{errorMessage}</Error.Description>
+      <Error.Details>{t('common.try-again-later')}</Error.Details>
+      <Error.Actions>
+        <Link
+          href="/admin/events"
+          className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+        >
+          {t('common.back-to-events')}
+        </Link>
+      </Error.Actions>
+    </Error>
   );
 }

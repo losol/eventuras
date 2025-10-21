@@ -1,5 +1,6 @@
-import { PageOverlay } from '@eventuras/ratio-ui/core/PageOverlay';
 import { Error } from '@eventuras/ratio-ui/blocks/Error';
+import { PageOverlay } from '@eventuras/ratio-ui/core/PageOverlay';
+
 import { SiteInfo } from '@/utils/site/getSiteSettings';
 
 interface FatalErrorProps {

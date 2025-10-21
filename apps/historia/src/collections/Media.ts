@@ -1,16 +1,16 @@
-import type { CollectionConfig } from 'payload';
-
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-import { anyone } from '@/access/anyone';
+import type { CollectionConfig } from 'payload';
+
 import { admins } from '@/access/admins';
-import { license } from '@/fields/license';
-import { contributors } from '@/fields/contributors';
-import { contentPersons } from '@/fields/contentPersons';
+import { anyone } from '@/access/anyone';
 import { contentLocations } from '@/fields/contentLocations';
-import { name } from '@/fields/name';
+import { contentPersons } from '@/fields/contentPersons';
+import { contributors } from '@/fields/contributors';
 import { description } from '@/fields/description';
+import { license } from '@/fields/license';
+import { name } from '@/fields/name';
 import { relatedContent } from '@/fields/relatedContent';
 import { title } from '@/fields/title';
 

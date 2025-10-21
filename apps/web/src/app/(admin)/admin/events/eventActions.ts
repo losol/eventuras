@@ -1,7 +1,8 @@
 'use server';
 
+import { EventDto, getV3Events } from '@eventuras/event-sdk';
 import { Logger } from '@eventuras/logger';
-import { getV3Events, EventDto } from '@eventuras/event-sdk';
+
 import { client, configureEventurasClient } from '@/lib/eventuras-client';
 
 const logger = Logger.create({ namespace: 'web:admin', context: { module: 'eventActions' } });
@@ -25,7 +26,7 @@ export async function fetchEvents({
   includePastEvents = false,
   page = 1,
   pageSize = 25,
-  startDate
+  startDate,
 }: FetchEventsParams): Promise<FetchEventsResult> {
   // Ensure client is configured with auth and base URL
   await configureEventurasClient();
@@ -36,7 +37,7 @@ export async function fetchEvents({
       includePastEvents,
       page,
       pageSize,
-      startDate
+      startDate,
     },
     'Fetching events'
   );
@@ -51,8 +52,8 @@ export async function fetchEvents({
         Start: startDate,
         Period: 'Contain',
         Page: page,
-        Count: pageSize
-      }
+        Count: pageSize,
+      },
     });
 
     if (!response.data) {
@@ -63,14 +64,14 @@ export async function fetchEvents({
     const result = {
       data: response.data.data ?? [],
       pages: response.data.pages ?? 0,
-      count: response.data.count ?? 0
+      count: response.data.count ?? 0,
     };
 
     logger.debug(
       {
         count: result.data.length,
         pages: result.pages,
-        totalCount: result.count
+        totalCount: result.count,
       },
       'Events fetched successfully'
     );
@@ -93,7 +94,7 @@ export async function fetchEvents({
           pageSize,
           includePastEvents,
           startDate,
-        }
+        },
       },
       `Failed to fetch events${errorCode ? ` (${errorCode})` : ''}`
     );

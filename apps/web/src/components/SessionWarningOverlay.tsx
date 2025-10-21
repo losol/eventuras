@@ -1,9 +1,11 @@
 'use client';
 
-import { useEffect, useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { SessionWarning } from '@eventuras/ratio-ui/blocks/SessionWarning';
+
 import { Logger } from '@eventuras/logger';
+import { SessionWarning } from '@eventuras/ratio-ui/blocks/SessionWarning';
+
 import { useAuthSelector } from '@/auth/authMachine';
 
 const logger = Logger.create({
@@ -54,8 +56,8 @@ export function SessionWarningOverlay() {
       onDismiss={handleDismiss}
       isLoading={isLoggingIn}
       messages={{
-        title: (reason) => t(`auth.sessionWarning.title.${reason}`),
-        description: (reason) => t(`auth.sessionWarning.description.${reason}`),
+        title: reason => t(`auth.sessionWarning.title.${reason}`),
+        description: reason => t(`auth.sessionWarning.description.${reason}`),
         tip: t('auth.sessionWarning.tip'),
         loginButton: t('auth.sessionWarning.loginNow'),
         dismissButton: t('buttons.cancel'),

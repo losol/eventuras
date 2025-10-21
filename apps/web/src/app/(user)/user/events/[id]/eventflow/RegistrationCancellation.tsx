@@ -1,10 +1,10 @@
 'use client';
-;
 import { useTranslations } from 'next-intl';
-import { SiteInfo } from '@/utils/site/getSiteSettings';
+
 import { Button } from '@eventuras/ratio-ui/core/Button';
 
-;
+import { SiteInfo } from '@/utils/site/getSiteSettings';
+
 export type RegistrationCancellationProps = {
   onBack?: () => void;
   siteInfo?: SiteInfo;

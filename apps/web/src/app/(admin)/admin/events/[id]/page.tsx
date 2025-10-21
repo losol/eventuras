@@ -1,21 +1,22 @@
-;
-import { Error } from '@eventuras/ratio-ui/blocks/Error';
-import { Logger } from '@eventuras/logger';
 import { notFound } from 'next/navigation';
-import { Container } from '@eventuras/ratio-ui/layout/Container';
-import { Heading } from '@eventuras/ratio-ui/core/Heading';
-import { Section } from '@eventuras/ratio-ui/layout/Section';
+
 import {
+  getV3EventsByEventIdProducts,
+  getV3EventsByEventIdStatistics,
   getV3EventsById,
   getV3Registrations,
-  getV3EventsByEventIdProducts,
-  getV3EventsByEventIdStatistics
 } from '@eventuras/event-sdk';
-import EventAdminActionsMenu from '../EventAdminActionsMenu';
+import { Logger } from '@eventuras/logger';
+import { Error } from '@eventuras/ratio-ui/blocks/Error';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Container } from '@eventuras/ratio-ui/layout/Container';
+import { Section } from '@eventuras/ratio-ui/layout/Section';
+
 import ParticipantsSection from './ParticipantsSection';
+import EventAdminActionsMenu from '../EventAdminActionsMenu';
 const logger = Logger.create({
   namespace: 'web:admin:events',
-  context: { page: 'EventAdminPage' }
+  context: { page: 'EventAdminPage' },
 });
 type EventInfoProps = {
   params: Promise<{
@@ -30,8 +31,8 @@ export default async function EventAdminPage({ params }: Readonly<EventInfoProps
       query: {
         EventId: id,
         IncludeUserInfo: true,
-        IncludeProducts: true
-      }
+        IncludeProducts: true,
+      },
     }),
     getV3EventsByEventIdProducts({ path: { eventId: id } }),
     getV3EventsByEventIdStatistics({ path: { eventId: id } }),
@@ -42,22 +43,31 @@ export default async function EventAdminPage({ params }: Readonly<EventInfoProps
     notFound();
   }
   if (registrationsRes?.error) {
-    logger.warn({
-      eventId: id,
-      error: registrationsRes.error,
-    }, 'Failed to load registrations');
+    logger.warn(
+      {
+        eventId: id,
+        error: registrationsRes.error,
+      },
+      'Failed to load registrations'
+    );
   }
   if (eventProductsRes?.error) {
-    logger.warn({
-      eventId: id,
-      error: eventProductsRes.error,
-    }, 'Failed to load event products');
+    logger.warn(
+      {
+        eventId: id,
+        error: eventProductsRes.error,
+      },
+      'Failed to load event products'
+    );
   }
   if (statisticsRes?.error) {
-    logger.warn({
-      eventId: id,
-      error: statisticsRes.error,
-    }, 'Failed to load statistics');
+    logger.warn(
+      {
+        eventId: id,
+        error: statisticsRes.error,
+      },
+      'Failed to load statistics'
+    );
   }
   // Check if we have any errors OR if responses are null (simulated error state)
   const hasPartialErrors = !!(
@@ -79,11 +89,14 @@ export default async function EventAdminPage({ params }: Readonly<EventInfoProps
               <Error type="generic" tone="warning">
                 <Error.Title>Some Data Could Not Be Loaded</Error.Title>
                 <Error.Description>
-                  The event information loaded successfully, but some additional data is temporarily unavailable:
+                  The event information loaded successfully, but some additional data is temporarily
+                  unavailable:
                 </Error.Description>
                 <Error.Details>
                   <ul className="text-sm list-disc list-inside space-y-1">
-                    {(!registrationsRes || !!registrationsRes?.error) && <li>Participant registrations</li>}
+                    {(!registrationsRes || !!registrationsRes?.error) && (
+                      <li>Participant registrations</li>
+                    )}
                     {(!eventProductsRes || !!eventProductsRes?.error) && <li>Event products</li>}
                     {(!statisticsRes || !!statisticsRes?.error) && <li>Event statistics</li>}
                   </ul>

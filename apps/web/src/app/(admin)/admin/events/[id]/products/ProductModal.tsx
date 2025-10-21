@@ -1,18 +1,17 @@
 'use client';
-import type { NewProductDto, ProductDto } from '@eventuras/event-sdk';
-import { Form, Input, NumberInput } from '@eventuras/smartform';
-import { Button } from '@eventuras/ratio-ui/core/Button';
-
-;
-;
-import { Logger } from '@eventuras/logger';
-import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { useTranslations } from 'next-intl';
+
+import type { NewProductDto, ProductDto } from '@eventuras/event-sdk';
+import { Logger } from '@eventuras/logger';
+import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Dialog } from '@eventuras/ratio-ui/layout/Dialog';
+import { Form, Input, NumberInput } from '@eventuras/smartform';
 import { useToast } from '@eventuras/toast';
-import ConfirmDiscardModal from './ConfirmDiscardModal';
+
 import { createProduct, updateProduct } from './actions';
+import ConfirmDiscardModal from './ConfirmDiscardModal';
 const logger = Logger.create({
   namespace: 'web:admin',
   context: { component: 'ProductModal' },
@@ -29,7 +28,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
   onSubmit,
   onClose,
   product,
-  eventId
+  eventId,
 }) => {
   const [loading, setLoading] = useState(false);
   const toast = useToast();

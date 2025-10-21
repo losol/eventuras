@@ -1,5 +1,6 @@
-import { Debug } from '@eventuras/logger';
 import { NextRequest, NextResponse } from 'next/server';
+
+import { Debug } from '@eventuras/logger';
 
 import { appConfig } from '@/config.server';
 import { getAccessToken } from '@/utils/getAccesstoken';
@@ -52,9 +53,10 @@ async function forwarder(request: NextRequest) {
 
   // Get organization ID with proper handling
   const organizationId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
-  const orgIdHeader = typeof organizationId === 'number'
-    ? organizationId.toString()
-    : (organizationId as string) ?? '';
+  const orgIdHeader =
+    typeof organizationId === 'number'
+      ? organizationId.toString()
+      : ((organizationId as string) ?? '');
 
   const fResponse = await fetch(forwardUrl, {
     method: request.method,

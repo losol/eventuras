@@ -1,24 +1,27 @@
+import path from 'path';
+import { fileURLToPath } from 'url';
+
 import { postgresAdapter } from '@payloadcms/db-postgres';
 import { sqliteAdapter } from '@payloadcms/db-sqlite';
-import sharp from 'sharp';
-import path from 'path';
 import { buildConfig } from 'payload';
-import { fileURLToPath } from 'url';
-import { Media } from './collections/Media';
-import { Pages } from './collections/Pages';
-import { Users } from './collections/Users';
-import { plugins } from './plugins';
+import sharp from 'sharp';
+
 import { defaultLexical } from '@/fields/defaultLexical';
+
 import { Articles } from './collections/Articles';
 import { Happenings } from './collections/Happenings';
 import { Licenses } from './collections/Licenses';
+import { Media } from './collections/Media';
 import { Notes } from './collections/Notes';
 import { Organizations } from './collections/Organizations';
+import { Pages } from './collections/Pages';
 import { Persons } from './collections/Persons';
 import { Places } from './collections/Places';
-import { Topics } from './collections/Topics';
 import { Projects } from './collections/Projects';
+import { Topics } from './collections/Topics';
+import { Users } from './collections/Users';
 import { Websites } from './collections/Websites';
+import { plugins } from './plugins';
 
 const locales = process.env.CMS_LOCALES ? process.env.CMS_LOCALES.split(',') : ['en'];
 const defaultLocale = process.env.CMS_DEFAULT_LOCALE ?? 'en';

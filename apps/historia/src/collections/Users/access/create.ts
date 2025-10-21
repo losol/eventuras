@@ -1,8 +1,7 @@
 import type { Access } from 'payload';
 
-import type { User } from '../../../payload-types';
-
 import { isSystemAdmin } from '../../../access/isSystemAdmin';
+import type { User } from '../../../payload-types';
 import { getUserTenantIDs } from '../../../utilities/getUserTenantIDs';
 
 export const createAccess: Access<User> = ({ req }) => {

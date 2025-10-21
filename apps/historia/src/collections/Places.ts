@@ -1,12 +1,14 @@
 import type { CollectionConfig } from 'payload';
+
+import { description } from '@/fields/description';
+import { geoPoint } from '@/fields/geopoint';
+import { image } from '@/fields/image';
+import resourceId from '@/fields/resourceId';
+import { slugField } from '@/fields/slug';
+import { storyField } from '@/fields/story';
+
 import { admins } from '../access/admins';
 import { anyone } from '../access/anyone';
-import { storyField } from '@/fields/story';
-import { geoPoint } from '@/fields/geopoint';
-import { description } from '@/fields/description';
-import { slugField } from '@/fields/slug';
-import resourceId from '@/fields/resourceId';
-import { image } from '@/fields/image';
 
 export const Places: CollectionConfig = {
   slug: 'places',

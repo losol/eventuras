@@ -1,12 +1,12 @@
 'use client';
-;
-import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
-import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import UserEditor from '@/app/(admin)/admin/users/UserEditor';
-import { Button } from '@eventuras/ratio-ui/core/Button';
+import { useTranslations } from 'next-intl';
 
-;
+import { Button } from '@eventuras/ratio-ui/core/Button';
+import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
+
+import UserEditor from '@/app/(admin)/admin/users/UserEditor';
+
 const UserDrawer: React.FC = () => {
   const t = useTranslations();
   const [visible, setVisible] = useState(false);

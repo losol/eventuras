@@ -1,6 +1,5 @@
 import type { CollectionAfterLoginHook } from 'payload';
-
-import { mergeHeaders, generateCookie, getCookieExpiration } from 'payload';
+import { generateCookie, getCookieExpiration, mergeHeaders } from 'payload';
 
 export const setCookieBasedOnDomain: CollectionAfterLoginHook = async ({ req, user }) => {
   const relatedOrg = await req.payload.find({

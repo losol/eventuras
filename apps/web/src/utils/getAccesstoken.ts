@@ -1,12 +1,13 @@
 'use server';
 
+import { cookies } from 'next/headers';
+
 import {
-  getCurrentSession,
   accessTokenExpires,
+  getCurrentSession,
   refreshCurrentSession,
 } from '@eventuras/fides-auth-next';
 import { Logger } from '@eventuras/logger';
-import { cookies } from 'next/headers';
 
 import { oauthConfig } from '@/utils/oauthConfig';
 

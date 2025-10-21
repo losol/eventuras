@@ -1,16 +1,16 @@
 'use client';
+import { useActor } from '@xstate/react';
+import { useTranslations } from 'next-intl';
+
 import { EventDto, ProductDto, RegistrationDto, UserDto } from '@eventuras/event-sdk';
 import { Loading } from '@eventuras/ratio-ui/core/Loading';
 
-;
-;
-import { useActor } from '@xstate/react';
-import { useTranslations } from 'next-intl';
 import UserEditor from '@/app/(admin)/admin/users/UserEditor';
 import FatalError from '@/components/FatalError';
 import EventFlowMachine, { Events, States } from '@/statemachines/EventFlowMachine';
 import { PaymentFormValues, ProductSelected } from '@/types';
 import { SiteInfo } from '@/utils/site/getSiteSettings';
+
 import RegistrationCancellation from './eventflow/RegistrationCancellation';
 import RegistrationConfirmation from './eventflow/RegistrationConfirmation';
 import RegistrationCustomize from './eventflow/RegistrationCustomize';

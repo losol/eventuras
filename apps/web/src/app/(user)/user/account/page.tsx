@@ -1,10 +1,10 @@
-;
 import { getTranslations } from 'next-intl/server';
+
 import { getV3UsersMe } from '@eventuras/event-sdk';
-import UserEditor from '@/app/(admin)/admin/users/UserEditor';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 
-;
+import UserEditor from '@/app/(admin)/admin/users/UserEditor';
+
 const UserAccountPage = async () => {
   const t = await getTranslations();
   // Fetch user profile - this uses the authenticated client

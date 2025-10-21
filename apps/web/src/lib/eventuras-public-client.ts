@@ -13,7 +13,7 @@ import { Logger } from '@eventuras/logger';
 
 const logger = Logger.create({
   namespace: 'web:api-client',
-  context: { module: 'eventuras-public-client' }
+  context: { module: 'eventuras-public-client' },
 });
 
 /**

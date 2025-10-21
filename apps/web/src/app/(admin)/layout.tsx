@@ -1,13 +1,13 @@
 import type { ReactNode } from 'react';
-import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
+import { getTranslations } from 'next-intl/server';
 
-import { Navbar } from '@eventuras/ratio-ui/core/Navbar';
 import { Footer } from '@eventuras/ratio-ui/core/Footer';
 import { List } from '@eventuras/ratio-ui/core/List';
+import { Navbar } from '@eventuras/ratio-ui/core/Navbar';
 
-import getSiteSettings from '@/utils/site/getSiteSettings';
 import UserMenu from '@/components/eventuras/UserMenu';
+import getSiteSettings from '@/utils/site/getSiteSettings';
 
 /**
  * (admin) Route Group Layout

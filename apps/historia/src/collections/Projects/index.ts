@@ -1,19 +1,20 @@
 import type { CollectionConfig } from 'payload';
-import { populatePublishedAt } from '../../hooks/populatePublishedAt';
-import { revalidateDelete, revalidatePage } from './hooks/revalidateProject';
-import { admins } from '@/access/admins';
-import { slugField } from '@/fields/slug';
-import { image } from '@/fields/image';
-import { storyField } from '@/fields/story';
 
+import { admins } from '@/access/admins';
 import { anyone } from '@/access/anyone';
-import { publishedAt } from '@/fields/publishedAt';
-import { title } from '@/fields/title';
-import { startDate } from '@/fields/startDate';
 import { endDate } from '@/fields/endDate';
-import { partners } from '@/fields/partners';
+import { image } from '@/fields/image';
 import { lead } from '@/fields/lead';
+import { partners } from '@/fields/partners';
+import { publishedAt } from '@/fields/publishedAt';
 import resourceId from '@/fields/resourceId';
+import { slugField } from '@/fields/slug';
+import { startDate } from '@/fields/startDate';
+import { storyField } from '@/fields/story';
+import { title } from '@/fields/title';
+
+import { revalidateDelete, revalidatePage } from './hooks/revalidateProject';
+import { populatePublishedAt } from '../../hooks/populatePublishedAt';
 
 
 export const Projects: CollectionConfig<'projects'> = {

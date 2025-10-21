@@ -1,5 +1,5 @@
-import { PageOverlay } from '@eventuras/ratio-ui/core/PageOverlay';
 import { Error } from '@eventuras/ratio-ui/blocks/Error';
+import { PageOverlay } from '@eventuras/ratio-ui/core/PageOverlay';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
 /**
@@ -17,11 +17,7 @@ export default function NotFound() {
           The page you&apos;re looking for doesn&apos;t exist or has been moved.
         </Error.Description>
         <Error.Actions>
-          <Link
-            href="/"
-          >
-            Go to Home
-          </Link>
+          <Link href="/">Go to Home</Link>
         </Error.Actions>
       </Error>
     </PageOverlay>

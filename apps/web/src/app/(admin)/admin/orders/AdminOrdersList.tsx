@@ -1,17 +1,16 @@
 'use client';
+import { useEffect, useState, useTransition } from 'react';
+import { useTranslations } from 'next-intl';
+
+import { formatDateSpan } from '@eventuras/core/datetime';
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
 import { OrderDto } from '@eventuras/event-sdk';
 import { Loading } from '@eventuras/ratio-ui/core/Loading';
 import { Pagination } from '@eventuras/ratio-ui/core/Pagination';
-
-;
-;
-;
-import { useTranslations } from 'next-intl';
-import { useEffect, useState, useTransition } from 'react';
-import FatalError from '@/components/FatalError';
 import { Link } from '@eventuras/ratio-ui-next/Link';
-import { formatDateSpan } from '@eventuras/core/datetime';
+
+import FatalError from '@/components/FatalError';
+
 import { getOrders } from './actions';
 const columnHelper = createColumnHelper<OrderDto>();
 type OrdersResponse = {
@@ -71,7 +70,8 @@ const AdminOrdersList: React.FC = () => {
   ];
   if (isPending && !result) return <Loading />;
   if (error) return <FatalError title="Failed to load orders" description={error} />;
-  if (!result) return <FatalError title="No response from admin orders" description="Response is null" />;
+  if (!result)
+    return <FatalError title="No response from admin orders" description="Response is null" />;
   return (
     <>
       <DataTable data={result.data ?? []} columns={columns} />

@@ -1,6 +1,9 @@
 import { Logger } from '@eventuras/logger';
 
-const logger = Logger.create({ namespace: 'web:utils:site', context: { module: 'getSiteSettings' } });
+const logger = Logger.create({
+  namespace: 'web:utils:site',
+  context: { module: 'getSiteSettings' },
+});
 
 export interface FooterLink {
   text: string;

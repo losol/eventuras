@@ -1,13 +1,13 @@
-import { MarkdownContent } from '@eventuras/markdown';
-import { EventDto } from '@eventuras/event-sdk';
-
-import { Card } from '@eventuras/ratio-ui/core/Card';
-import { appConfig } from '@/config.server';
 import { formatDateSpan } from '@eventuras/core/datetime';
-import { Link } from '@eventuras/ratio-ui-next/Link';
-import {Heading} from '@eventuras/ratio-ui/core/Heading';
-import {Text} from '@eventuras/ratio-ui/core/Text';
+import { EventDto } from '@eventuras/event-sdk';
+import { MarkdownContent } from '@eventuras/markdown';
+import { Card } from '@eventuras/ratio-ui/core/Card';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Text } from '@eventuras/ratio-ui/core/Text';
 import { Calendar, MapPin } from '@eventuras/ratio-ui/icons';
+import { Link } from '@eventuras/ratio-ui-next/Link';
+
+import { appConfig } from '@/config.server';
 
 interface EventCardProps {
   eventinfo: EventDto;

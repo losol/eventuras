@@ -1,20 +1,20 @@
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder';
+import { multiTenantPlugin } from '@payloadcms/plugin-multi-tenant';
 import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs';
 import { redirectsPlugin } from '@payloadcms/plugin-redirects';
-import { seoPlugin } from '@payloadcms/plugin-seo';
 import { searchPlugin } from '@payloadcms/plugin-search';
-import { Plugin } from 'payload';
-import { revalidateRedirects } from '@/hooks/revalidateRedirects';
+import { seoPlugin } from '@payloadcms/plugin-seo';
 import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types';
 import { FixedToolbarFeature, HeadingFeature, lexicalEditor } from '@payloadcms/richtext-lexical';
-import { searchFields } from '@/search/fieldOverrides';
-import { beforeSyncWithSearch } from '@/search/beforeSync';
 import { s3Storage } from '@payloadcms/storage-s3';
-import { multiTenantPlugin } from '@payloadcms/plugin-multi-tenant';
+import { Plugin } from 'payload';
 
-import { Article, Config, Note, Page } from '@/payload-types';
-import { getServerSideURL } from '@/utilities/getURL';
 import { isSystemAdmin } from '@/access/isSystemAdmin';
+import { revalidateRedirects } from '@/hooks/revalidateRedirects';
+import { Article, Config, Note, Page } from '@/payload-types';
+import { beforeSyncWithSearch } from '@/search/beforeSync';
+import { searchFields } from '@/search/fieldOverrides';
+import { getServerSideURL } from '@/utilities/getURL';
 import { getUserTenantIDs } from '@/utilities/getUserTenantIDs';
 
 const generateTitle: GenerateTitle<Article | Note | Page> = ({ doc }) => {

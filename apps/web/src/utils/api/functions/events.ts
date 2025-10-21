@@ -1,12 +1,12 @@
 import {
   NewRegistrationDto,
   OrderLineModel,
-  ProductDto,
-  RegistrationDto,
-  RegistrationUpdateDto,
   postV3Registrations,
   postV3RegistrationsByIdProducts,
-  putV3RegistrationsById
+  ProductDto,
+  putV3RegistrationsById,
+  RegistrationDto,
+  RegistrationUpdateDto,
 } from '@eventuras/event-sdk';
 import { Logger } from '@eventuras/logger';
 
@@ -21,7 +21,8 @@ export { productMapToOrderLineModel };
 export const createEventRegistration = async (
   newRegistration: NewRegistrationDto,
   selectedProducts?: Map<string, number>
-): Promise<RegistrationDto | null> => {  const products = productMapToOrderLineModel(selectedProducts);
+): Promise<RegistrationDto | null> => {
+  const products = productMapToOrderLineModel(selectedProducts);
   const orgId = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
 
   if (!orgId || isNaN(orgId)) {
@@ -31,7 +32,7 @@ export const createEventRegistration = async (
 
   const registrationResponse = await postV3Registrations({
     headers: { 'Eventuras-Org-Id': orgId },
-    body: newRegistration
+    body: newRegistration,
   });
 
   if (!registrationResponse.data) {
@@ -57,7 +58,8 @@ export const updateEventRegistration = async (
   updatedRegistration: RegistrationUpdateDto,
   availableProducts: ProductDto[],
   selectedProducts?: Map<string, number>
-): Promise<RegistrationDto | null> => {  const orgId = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
+): Promise<RegistrationDto | null> => {
+  const orgId = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
 
   if (!orgId || isNaN(orgId)) {
     logger.error('Organization ID is not configured or invalid');
@@ -81,7 +83,7 @@ export const updateEventRegistration = async (
   const registrationResponse = await putV3RegistrationsById({
     path: { id },
     headers: { 'Eventuras-Org-Id': orgId },
-    body: updatedRegistration
+    body: updatedRegistration,
   });
 
   if (!registrationResponse.data) {
@@ -100,7 +102,8 @@ export const updateEventRegistration = async (
 export const addProductsToRegistration = async (
   registrationId: string | number,
   products: OrderLineModel[]
-): Promise<RegistrationDto | null> => {  const orgId = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
+): Promise<RegistrationDto | null> => {
+  const orgId = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
 
   if (!orgId || isNaN(orgId)) {
     logger.error('Organization ID is not configured or invalid');
@@ -110,7 +113,7 @@ export const addProductsToRegistration = async (
   const response = await postV3RegistrationsByIdProducts({
     path: { id: parseInt(registrationId.toString(), 10) },
     headers: { 'Eventuras-Org-Id': orgId },
-    body: { lines: products }
+    body: { lines: products },
   });
 
   if (!response.data) {

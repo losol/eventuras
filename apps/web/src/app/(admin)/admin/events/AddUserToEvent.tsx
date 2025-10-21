@@ -1,18 +1,4 @@
 'use client';
-import { Button } from '@eventuras/ratio-ui/core/Button';
-import { Heading } from '@eventuras/ratio-ui/core/Heading';
-import {
-  EventDto,
-  NewRegistrationDto,
-  ProductDto,
-  RegistrationType,
-  UserDto,
-} from '@eventuras/event-sdk';
-import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
-import { Check } from '@eventuras/ratio-ui/icons';
-import { Logger } from '@eventuras/logger';
-import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import {
   Button as AriaButton,
@@ -25,11 +11,27 @@ import {
   SelectValue,
 } from 'react-aria-components';
 import { Controller, useForm } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
+
+import {
+  EventDto,
+  NewRegistrationDto,
+  ProductDto,
+  RegistrationType,
+  UserDto,
+} from '@eventuras/event-sdk';
+import { Logger } from '@eventuras/logger';
+import { Button } from '@eventuras/ratio-ui/core/Button';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Check } from '@eventuras/ratio-ui/icons';
+import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
+import { useToast } from '@eventuras/toast';
+
+import { createEventRegistration } from '@/app/(user)/user/events/actions';
 import ProductSelection from '@/components/eventuras/ProductSelection';
 import UserLookup from '@/components/eventuras/UserLookup';
-import { useToast } from '@eventuras/toast';
 import { RegistrationProduct } from '@/types';
-import { createEventRegistration } from '@/app/(user)/user/events/actions';
 import { mapEventProductsToView, mapSelectedProductsToQuantity } from '@/utils/api/mappers';
 type AddUserToEventFormValues = {
   registrationType: string;
@@ -80,7 +82,10 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
 }) => {
   const toast = useToast();
   const t = useTranslations();
-  const logger = Logger.create({ namespace: 'web:admin:events', context: { component: 'AddUserToEvent' } });
+  const logger = Logger.create({
+    namespace: 'web:admin:events',
+    context: { component: 'AddUserToEvent' },
+  });
   const { control, register, setValue, handleSubmit } = useForm<AddUserToEventFormValues>();
   useEffect(() => {
     setValue('registrationType', 'Participant'); //default to participant

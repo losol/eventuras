@@ -1,10 +1,12 @@
 import type { CollectionConfig } from 'payload';
+
+import { meta } from '@/fields/meta';
+import { name } from '@/fields/name';
+import { summary } from '@/fields/summary';
+import { title } from '@/fields/title';
+
 import { admins } from '../access/admins';
 import { anyone } from '../access/anyone';
-import { name } from '@/fields/name';
-import { title } from '@/fields/title';
-import { summary } from '@/fields/summary';
-import { meta } from '@/fields/meta';
 
 export const Websites: CollectionConfig = {
   slug: 'websites',

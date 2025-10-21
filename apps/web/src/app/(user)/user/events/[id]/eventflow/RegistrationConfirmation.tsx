@@ -1,11 +1,9 @@
+import { useTranslations } from 'next-intl';
+
 import { EventDto, ProductDto } from '@eventuras/event-sdk';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 
-;
-;
-;
-import { useTranslations } from 'next-intl';
 import { PaymentFormValues, ProductSelected } from '@/types';
 export interface RegistrationConfirmationProps {
   eventInfo: EventDto;
@@ -61,11 +59,7 @@ const RegistrationConfirmation: React.FC<RegistrationConfirmationProps> = ({
           </Button>
         )}
         {onSubmit && (
-          <Button
-            variant="primary"
-            onClick={onSubmit}
-            testId="registration-confirmation-button"
-          >
+          <Button variant="primary" onClick={onSubmit} testId="registration-confirmation-button">
             {t('common.labels.confirmRegistration')}
           </Button>
         )}

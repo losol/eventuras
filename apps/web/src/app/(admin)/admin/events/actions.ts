@@ -1,17 +1,22 @@
 'use server';
 
-import { Logger } from '@eventuras/logger';
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
+
 import {
+  actionError,
+  actionSuccess,
+  type ServerActionResult,
+} from '@eventuras/core-nextjs/actions';
+import {
+  EventFormDto,
+  postV3EventByIdCertificatesIssue,
   postV3Events,
   putV3EventsById,
-  postV3EventByIdCertificatesIssue,
-  EventFormDto,
 } from '@eventuras/event-sdk';
-import { redirect } from 'next/navigation';
-import { revalidatePath } from 'next/cache';
+import { Logger } from '@eventuras/logger';
 
 import { appConfig } from '@/config.server';
-import { actionError, actionSuccess, type ServerActionResult } from '@eventuras/core-nextjs/actions';
 import { client, configureEventurasClient } from '@/lib/eventuras-client';
 
 /**
@@ -35,7 +40,7 @@ function getOrganizationId(): number | null {
 
 const logger = Logger.create({
   namespace: 'web:admin',
-  context: { module: 'action:createEvent' }
+  context: { module: 'action:createEvent' },
 });
 
 export async function createEvent(
@@ -83,7 +88,7 @@ export async function createEvent(
     const newEvent: EventFormDto = {
       organizationId,
       title,
-      slug
+      slug,
     };
 
     logger.info({ event: newEvent }, 'Sending create event request to API');
@@ -91,9 +96,9 @@ export async function createEvent(
     const response = await postV3Events({
       client,
       headers: {
-        'Eventuras-Org-Id': organizationId
+        'Eventuras-Org-Id': organizationId,
       },
-      body: newEvent
+      body: newEvent,
     });
 
     if (!response.data) {
@@ -113,11 +118,15 @@ export async function createEvent(
 
     // Redirect to edit page
     redirect(`/admin/events/${eventId}/edit`);
-
   } catch (error) {
     // Handle redirect errors (Next.js redirects throw NEXT_REDIRECT)
-    if (error && typeof error === 'object' && 'digest' in error &&
-        typeof error.digest === 'string' && error.digest.startsWith('NEXT_REDIRECT')) {
+    if (
+      error &&
+      typeof error === 'object' &&
+      'digest' in error &&
+      typeof error.digest === 'string' &&
+      error.digest.startsWith('NEXT_REDIRECT')
+    ) {
       logger.info('Redirect initiated successfully');
       throw error; // Re-throw redirect
     }
@@ -126,11 +135,14 @@ export async function createEvent(
     const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
     logger.error(
       {
-        error: error instanceof Error ? {
-          name: error.name,
-          message: error.message,
-          stack: error.stack
-        } : error
+        error:
+          error instanceof Error
+            ? {
+                name: error.name,
+                message: error.message,
+                stack: error.stack,
+              }
+            : error,
       },
       'Failed to create event'
     );
@@ -145,7 +157,7 @@ export async function createEvent(
 
 const updateLogger = Logger.create({
   namespace: 'web:admin',
-  context: { module: 'action:updateEvent' }
+  context: { module: 'action:updateEvent' },
 });
 
 export async function updateEvent(
@@ -174,22 +186,25 @@ export async function updateEvent(
       return actionError(errorMsg, 'MISSING_ORG_ID');
     }
 
-    updateLogger.debug({
-      eventId,
-      organizationId: eventData.organizationId,
-      updateDataKeys: Object.keys(eventData),
-      title: eventData.title,
-      slug: eventData.slug,
-      status: eventData.status,
-      type: eventData.type
-    }, 'Prepared update request with organizationId');
+    updateLogger.debug(
+      {
+        eventId,
+        organizationId: eventData.organizationId,
+        updateDataKeys: Object.keys(eventData),
+        title: eventData.title,
+        slug: eventData.slug,
+        status: eventData.status,
+        type: eventData.type,
+      },
+      'Prepared update request with organizationId'
+    );
 
     const response = await putV3EventsById({
       client,
       path: {
-        id: eventId
+        id: eventId,
       },
-      body: eventData
+      body: eventData,
     });
 
     if (!response.data) {
@@ -199,7 +214,7 @@ export async function updateEvent(
       const errorDetails: Record<string, unknown> = {
         hasResponse: !!response.response,
         responseStatus: (response.response as unknown as { status?: number })?.status,
-        responseStatusText: (response.response as unknown as { statusText?: string })?.statusText
+        responseStatusText: (response.response as unknown as { statusText?: string })?.statusText,
       };
 
       if (response.error) {
@@ -219,36 +234,28 @@ export async function updateEvent(
       };
 
       if (err) {
-        userMessage = err.body?.message
-          || err.message
-          || err.statusText
-          || userMessage;
+        userMessage = err.body?.message || err.message || err.statusText || userMessage;
       }
 
-      return actionError(
-        userMessage,
-        'API_ERROR',
-        errorDetails
-      );
+      return actionError(userMessage, 'API_ERROR', errorDetails);
     }
 
     updateLogger.info({ eventId }, 'Event updated successfully');
 
-    return actionSuccess(
-      { eventId },
-      'Event updated successfully'
-    );
-
+    return actionSuccess({ eventId }, 'Event updated successfully');
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
     updateLogger.error(
       {
         eventId,
-        error: error instanceof Error ? {
-          name: error.name,
-          message: error.message,
-          stack: error.stack
-        } : error
+        error:
+          error instanceof Error
+            ? {
+                name: error.name,
+                message: error.message,
+                stack: error.stack,
+              }
+            : error,
       },
       'Failed to update event'
     );
@@ -269,9 +276,7 @@ const certificateLogger = Logger.create({
 /**
  * Issue and send certificates for an event
  */
-export async function issueCertificates(
-  eventId: number
-): Promise<ServerActionResult<void>> {
+export async function issueCertificates(eventId: number): Promise<ServerActionResult<void>> {
   // Ensure client is configured with auth and base URL
   await configureEventurasClient();
 
@@ -332,13 +337,14 @@ export async function issueCertificates(
     certificateLogger.error(
       {
         eventId,
-        error: error instanceof Error
-          ? {
-              name: error.name,
-              message: error.message,
-              stack: error.stack,
-            }
-          : error,
+        error:
+          error instanceof Error
+            ? {
+                name: error.name,
+                message: error.message,
+                stack: error.stack,
+              }
+            : error,
       },
       'Failed to issue certificates'
     );

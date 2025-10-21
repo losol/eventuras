@@ -1,23 +1,18 @@
 'use client';
+import { InvoiceRequestDto, OrderDto, PaymentProvider, postV3Invoices } from '@eventuras/event-sdk';
+import { Logger } from '@eventuras/logger';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Definition, DescriptionList, Term } from '@eventuras/ratio-ui/core/DescriptionList';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
-import {
-  InvoiceRequestDto,
-  OrderDto,
-  PaymentProvider,
-  postV3Invoices
-} from '@eventuras/event-sdk';
-;
 import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
-import { Logger } from '@eventuras/logger';
 const logger = Logger.create({
   namespace: 'web:admin:orders',
-  context: { component: 'OrderActionsMenu' }
+  context: { component: 'OrderActionsMenu' },
 });
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import React, { useState } from 'react';
+
 import { publicEnv } from '@/config.client';
 export type OrderActionsMenuProps = {
   order: OrderDto;
@@ -49,31 +44,32 @@ export const OrderActionsMenu = ({ order }: OrderActionsMenuProps) => {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json-patch+json',
-          'Eventuras-Org-Id': orgId.toString()
+          'Eventuras-Org-Id': orgId.toString(),
         },
         body: JSON.stringify([
           {
             op: 'replace',
             path: '/status',
-            value: 'Verified'
+            value: 'Verified',
           },
-        ])
+        ]),
       });
       router.refresh();
     };
   const invoiceOrder = async (order: OrderDto) => {
     if (!order.orderId) {
       throw new Error('Order ID is required');
-    }    const orgId = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
+    }
+    const orgId = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
     if (!orgId || isNaN(orgId)) {
       throw new Error('Organization ID is required');
     }
     const invoiceRequest: InvoiceRequestDto = {
-      orderIds: [order.orderId]
+      orderIds: [order.orderId],
     };
     const response = await postV3Invoices({
       headers: { 'Eventuras-Org-Id': orgId },
-      body: invoiceRequest
+      body: invoiceRequest,
     });
     if (response.data) {
       logger.info('Invoice sent to accounting system');

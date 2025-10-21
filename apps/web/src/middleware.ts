@@ -1,13 +1,14 @@
-import {
-  validateSessionJwt,
-  accessTokenExpires,
-  refreshCurrentSession,
-  createSession,
-  setSessionCookie,
-} from '@eventuras/fides-auth-next';
-import type { Session } from '@eventuras/fides-auth-next';
-import { Logger } from '@eventuras/logger';
 import { NextRequest, NextResponse } from 'next/server';
+
+import type { Session } from '@eventuras/fides-auth-next';
+import {
+  accessTokenExpires,
+  createSession,
+  refreshCurrentSession,
+  setSessionCookie,
+  validateSessionJwt,
+} from '@eventuras/fides-auth-next';
+import { Logger } from '@eventuras/logger';
 
 import { oauthConfig } from './utils/oauthConfig';
 
@@ -23,11 +24,14 @@ function validateCorsHeaders(request: NextRequest): NextResponse | null {
   const forwardedHost = request.headers.get('X-Forwarded-Host');
 
   if (!originHeader || (!hostHeader && !forwardedHost)) {
-    logger.warn({
-      hasOrigin: !!originHeader,
-      hasHost: !!hostHeader,
-      hasForwardedHost: !!forwardedHost
-    }, 'CORS validation failed: missing required headers');
+    logger.warn(
+      {
+        hasOrigin: !!originHeader,
+        hasHost: !!hostHeader,
+        hasForwardedHost: !!forwardedHost,
+      },
+      'CORS validation failed: missing required headers'
+    );
     return new NextResponse(null, { status: 403 });
   }
 
@@ -40,11 +44,14 @@ function validateCorsHeaders(request: NextRequest): NextResponse | null {
   }
 
   if (hostHeader !== origin.host && forwardedHost !== origin.host) {
-    logger.warn({
-      originHost: origin.host,
-      hostHeader,
-      forwardedHost
-    }, 'CORS validation failed: origin mismatch');
+    logger.warn(
+      {
+        originHost: origin.host,
+        hostHeader,
+        forwardedHost,
+      },
+      'CORS validation failed: origin mismatch'
+    );
     return new NextResponse(null, { status: 403 });
   }
 

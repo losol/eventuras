@@ -21,13 +21,14 @@ Tests are organized into 3 separate scopes:
 - **Anonymous** - Tests for unregistered users (randomly generated each time)
 
 **Important Notes:**
+
 - Tests run in serial (5+ minutes total) due to dependencies
 - Event creation must happen before registration tests
 - Admin and User accounts must be pre-registered (see [Test Account Setup](#test-account-setup))
 
 ## Getting Started
 
-1. Make sure playwright and browsers are installed by running `npx playwright install`. 
+1. Make sure playwright and browsers are installed by running `npx playwright install`.
 2. Take a look on the .env variables needed
 3. test away!
 
@@ -83,11 +84,13 @@ Each test flow runs in its own file as a suite of tests. Files are numbered to e
 ```
 
 **Examples:**
+
 - `001-admin-create-event.spec.ts`
 - `002a-user-register-for-event.spec.ts`
 - `003-anonymous-view-event.spec.ts`
 
 **Scopes:**
+
 - `admin` - Requires admin authentication
 - `user` - Requires user authentication
 - `anonymous` - No authentication required
@@ -95,6 +98,7 @@ Each test flow runs in its own file as a suite of tests. Files are numbered to e
 ### Test Dependencies
 
 Consider the execution order:
+
 1. Events must be created (admin) before registration tests
 2. Products must exist before product editing tests
 3. Number your test file appropriately based on dependencies
@@ -106,6 +110,7 @@ Every time an event is created, `createdEvent.json` is updated with the event ID
 ## Authentication
 
 Playwright stores browser state in the `playwright-auth/` folder with two states:
+
 - `admin.json` - Admin user session
 - `user.json` - Regular user session
 
@@ -122,8 +127,9 @@ pnpm test:playwright:skiplogin
 ## OTP Fetching
 
 [Testmail.app](https://testmail.app) is used to fetch one-time verification codes via their API for:
+
 - Admin login
-- User login  
+- User login
 - Anonymous user registration
 
 **Note:** Free API keys have a limit of 100 emails per month.
@@ -147,11 +153,13 @@ Anonymous tests register themselves automatically. For Admin and User tests, fol
 Create a PUT request to add the user to the organization:
 
 **Endpoint:**
+
 ```
 PUT {{baseUrl}}/v3/organizations/{{organizationId}}/members/{{targetUserId}}
 ```
 
 **Parameters:**
+
 - `baseUrl` - API base URL
 - `organizationId` - Organization ID (typically `1`)
 - `targetUserId` - User ID from registration
@@ -165,11 +173,13 @@ PUT {{baseUrl}}/v3/organizations/{{organizationId}}/members/{{targetUserId}}
 2. Add the admin role via API:
 
    **Endpoint:**
+
    ```
    POST {{baseUrl}}/v3/organizations/{{organizationId}}/members/{{targetUserId}}/roles
    ```
 
    **Body:**
+
    ```json
    {
      "role": "Admin"
@@ -179,6 +189,7 @@ PUT {{baseUrl}}/v3/organizations/{{organizationId}}/members/{{targetUserId}}
 3. Verify the role was added:
 
    **Endpoint:**
+
    ```
    GET {{baseUrl}}/v3/organizations/{{organizationId}}/members/{{targetUserId}}/roles
    ```

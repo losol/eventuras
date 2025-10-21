@@ -1,9 +1,8 @@
 'use client';
-import { UserDto, getV3Users } from '@eventuras/event-sdk';
-import { InputAutoComplete } from '@eventuras/ratio-ui/forms/InputAutocomplete';
+import { getV3Users, UserDto } from '@eventuras/event-sdk';
 import type { AutoCompleteDataProvider } from '@eventuras/ratio-ui/forms/InputAutocomplete';
+import { InputAutoComplete } from '@eventuras/ratio-ui/forms/InputAutocomplete';
 
-;
 export type UserLookupProps = {
   onUserSelected?: (u: UserDto) => Promise<any> | void;
 };
@@ -18,9 +17,9 @@ const UserLookup = (props: UserLookupProps) => {
         return {
           id: u.id!,
           label: u.name!,
-          original: u
+          original: u,
         };
-      })
+      }),
     };
   };
   return (

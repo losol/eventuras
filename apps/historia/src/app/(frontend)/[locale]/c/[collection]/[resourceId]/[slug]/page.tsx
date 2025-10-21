@@ -1,18 +1,19 @@
-import type { Metadata } from 'next';
-import { PayloadRedirects } from '@/components/PayloadRedirects';
-import configPromise from '@payload-config';
-import { CollectionSlug, getPayload } from 'payload';
-import { draftMode } from 'next/headers';
 import React, { cache } from 'react';
+import configPromise from '@payload-config';
+import type { Metadata } from 'next';
+import { draftMode } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { CollectionSlug, getPayload } from 'payload';
 
-import { getLocalizedCollectionName, getOriginalCollectionName, pageCollections, PageCollectionsType } from '../../pageCollections';
+import { RenderBlocks } from '@/blocks/RenderBlocks';
+import { LivePreviewListener } from '@/components/LivePreviewListener';
+import { PayloadRedirects } from '@/components/PayloadRedirects';
+import RichText from '@/components/RichText';
 import { Hero } from '@/heros/Hero';
 import { generateMeta } from '@/utilities/generateMeta';
+
 import PageClient from './page.client';
-import { LivePreviewListener } from '@/components/LivePreviewListener';
-import { RenderBlocks } from '@/blocks/RenderBlocks';
-import RichText from '@/components/RichText';
-import { redirect } from 'next/navigation';
+import { getLocalizedCollectionName, getOriginalCollectionName, pageCollections,PageCollectionsType } from '../../pageCollections';
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise });

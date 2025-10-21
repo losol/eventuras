@@ -1,17 +1,15 @@
 'use client';
-import { EventDto } from '@eventuras/event-sdk';
-import { Button } from '@eventuras/ratio-ui/core/Button';
-import { Heading } from '@eventuras/ratio-ui/core/Heading';
-
-;
-import { Definition, DescriptionList, Term } from '@eventuras/ratio-ui/core/DescriptionList';
-;
-;
-import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
-import { Logger } from '@eventuras/logger';
-import { useToast } from '@eventuras/toast';
-import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
+import { useTranslations } from 'next-intl';
+
+import { EventDto } from '@eventuras/event-sdk';
+import { Logger } from '@eventuras/logger';
+import { Button } from '@eventuras/ratio-ui/core/Button';
+import { Definition, DescriptionList, Term } from '@eventuras/ratio-ui/core/DescriptionList';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
+import { useToast } from '@eventuras/toast';
+
 import { issueCertificates } from './actions';
 const logger = Logger.create({
   namespace: 'web:admin:certificates',

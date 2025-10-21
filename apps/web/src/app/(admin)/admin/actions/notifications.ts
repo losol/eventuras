@@ -1,15 +1,20 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
+
 import {
+  actionError,
+  actionSuccess,
+  type ServerActionResult,
+} from '@eventuras/core-nextjs/actions';
+import {
+  type EmailNotificationDto,
   postV3NotificationsEmail,
   postV3NotificationsSms,
-  type EmailNotificationDto,
   type SmsNotificationDto,
 } from '@eventuras/event-sdk';
 import { Logger } from '@eventuras/logger';
-import { revalidatePath } from 'next/cache';
 
-import { actionError, actionSuccess, type ServerActionResult } from '@eventuras/core-nextjs/actions';
 import { appConfig } from '@/config.server';
 import { client, configureEventurasClient } from '@/lib/eventuras-client';
 

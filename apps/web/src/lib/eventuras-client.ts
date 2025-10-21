@@ -8,12 +8,13 @@
  */
 
 import { client, type RequestOptions } from '@eventuras/event-sdk';
-import { getAccessToken } from '@/utils/getAccesstoken';
 import { Logger } from '@eventuras/logger';
+
+import { getAccessToken } from '@/utils/getAccesstoken';
 
 const logger = Logger.create({
   namespace: 'web:api-client',
-  context: { module: 'eventuras-client' }
+  context: { module: 'eventuras-client' },
 });
 
 let isConfigured = false;
@@ -43,14 +44,19 @@ export async function configureEventurasClient() {
         const token = await getAccessToken();
 
         // Log request details (debug level)
-        const fullUrl = options.url?.startsWith('http') ? options.url : `${baseUrl}${options.url || ''}`;
+        const fullUrl = options.url?.startsWith('http')
+          ? options.url
+          : `${baseUrl}${options.url || ''}`;
 
         if (!token) {
           // Log warning but allow request to proceed for public endpoints
-          logger.warn({
-            url: fullUrl,
-            method: options.method || 'GET',
-          }, 'No valid access token available for API request');
+          logger.warn(
+            {
+              url: fullUrl,
+              method: options.method || 'GET',
+            },
+            'No valid access token available for API request'
+          );
 
           // Don't set Authorization header if no token
           // Public endpoints will work, authenticated ones will return 401
@@ -66,13 +72,16 @@ export async function configureEventurasClient() {
             (options.headers as Record<string, string>)['Authorization'] = `Bearer ${token}`;
           }
 
-          logger.debug({
-            request: {
-              url: fullUrl,
-              method: options.method || 'GET',
-              hasAuth: true,
+          logger.debug(
+            {
+              request: {
+                url: fullUrl,
+                method: options.method || 'GET',
+                hasAuth: true,
+              },
             },
-          }, 'HTTP request with authentication');
+            'HTTP request with authentication'
+          );
         }
       } catch (error) {
         logger.error({ error, url: options.url }, 'Failed to get access token for API request');
@@ -83,67 +92,86 @@ export async function configureEventurasClient() {
 
   // Log successful responses (debug level)
   client.interceptors.response.use(async (response: Response) => {
-    logger.debug({
-      response: {
-        url: response.url,
-        status: response.status,
-        statusText: response.statusText,
+    logger.debug(
+      {
+        response: {
+          url: response.url,
+          status: response.status,
+          statusText: response.statusText,
+        },
       },
-    }, 'HTTP response');
+      'HTTP response'
+    );
     return response;
   });
 
   // Log errors with full context
-  client.interceptors.error.use(async (error: unknown, response: unknown, options: RequestOptions) => {
-    const fullUrl = options.url?.startsWith('http') ? options.url : `${baseUrl}${options.url || ''}`;
-    const err = error as { cause?: { code?: string }; code?: string; message?: string };
-    const resp = response as { status?: number; statusText?: string } | undefined;
+  client.interceptors.error.use(
+    async (error: unknown, response: unknown, options: RequestOptions) => {
+      const fullUrl = options.url?.startsWith('http')
+        ? options.url
+        : `${baseUrl}${options.url || ''}`;
+      const err = error as { cause?: { code?: string }; code?: string; message?: string };
+      const resp = response as { status?: number; statusText?: string } | undefined;
 
-    // Authentication/Authorization errors (401/403)
-    if (resp?.status === 401 || resp?.status === 403) {
-      logger.warn({
-        request: { url: fullUrl, method: options.method || 'GET' },
-        response: { status: resp.status, statusText: resp.statusText },
-      }, `Authentication failed (${resp.status}) - Token may be invalid or expired`);
-      return error;
-    }
+      // Authentication/Authorization errors (401/403)
+      if (resp?.status === 401 || resp?.status === 403) {
+        logger.warn(
+          {
+            request: { url: fullUrl, method: options.method || 'GET' },
+            response: { status: resp.status, statusText: resp.statusText },
+          },
+          `Authentication failed (${resp.status}) - Token may be invalid or expired`
+        );
+        return error;
+      }
 
-    // Connection errors (ECONNREFUSED, ETIMEDOUT, etc.)
-    if (err?.cause?.code === 'ECONNREFUSED' || err?.code === 'ECONNREFUSED') {
-      logger.error({
-        error: {
-          message: err.message,
-          code: err?.cause?.code || err?.code,
+      // Connection errors (ECONNREFUSED, ETIMEDOUT, etc.)
+      if (err?.cause?.code === 'ECONNREFUSED' || err?.code === 'ECONNREFUSED') {
+        logger.error(
+          {
+            error: {
+              message: err.message,
+              code: err?.cause?.code || err?.code,
+            },
+            request: {
+              url: fullUrl,
+              method: options.method || 'GET',
+            },
+          },
+          'Connection refused - Backend unreachable'
+        );
+        return error;
+      }
+
+      // Other HTTP errors (4xx, 5xx)
+      if (resp?.status && resp.status >= 400) {
+        const logLevel = resp.status >= 500 ? 'error' : 'warn';
+        logger[logLevel](
+          {
+            request: { url: fullUrl, method: options.method || 'GET' },
+            response: { status: resp.status, statusText: resp.statusText },
+          },
+          `HTTP ${resp.status} ${resp.statusText || ''}`
+        );
+        return error;
+      }
+
+      // Generic errors
+      logger.error(
+        {
+          error: {
+            message: err?.message,
+            code: err?.code,
+          },
+          request: { url: fullUrl, method: options.method || 'GET' },
         },
-        request: {
-          url: fullUrl,
-          method: options.method || 'GET',
-        },
-      }, 'Connection refused - Backend unreachable');
+        'HTTP request failed'
+      );
+
       return error;
     }
-
-    // Other HTTP errors (4xx, 5xx)
-    if (resp?.status && resp.status >= 400) {
-      const logLevel = resp.status >= 500 ? 'error' : 'warn';
-      logger[logLevel]({
-        request: { url: fullUrl, method: options.method || 'GET' },
-        response: { status: resp.status, statusText: resp.statusText },
-      }, `HTTP ${resp.status} ${resp.statusText || ''}`);
-      return error;
-    }
-
-    // Generic errors
-    logger.error({
-      error: {
-        message: err?.message,
-        code: err?.code,
-      },
-      request: { url: fullUrl, method: options.method || 'GET' },
-    }, 'HTTP request failed');
-
-    return error;
-  });
+  );
 
   isConfigured = true;
 }

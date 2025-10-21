@@ -1,13 +1,14 @@
-import { ProductOrderDto } from '@eventuras/event-sdk';
-import { useTranslations } from 'next-intl';
 import { ReactElement } from 'react';
+import { useTranslations } from 'next-intl';
 
-import { Card } from '@eventuras/ratio-ui/core/Card';
-import {Text} from '@eventuras/ratio-ui/core/Text';
-import { Link } from '@eventuras/ratio-ui-next/Link';
-import { appConfig } from '@/config.server';
 import { formatDateSpan } from '@eventuras/core/datetime';
-import {Heading} from '@eventuras/ratio-ui/core/Heading';
+import { ProductOrderDto } from '@eventuras/event-sdk';
+import { Card } from '@eventuras/ratio-ui/core/Card';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Text } from '@eventuras/ratio-ui/core/Text';
+import { Link } from '@eventuras/ratio-ui-next/Link';
+
+import { appConfig } from '@/config.server';
 
 export type UserEventRegistrationCardProps = {
   eventId: string;
@@ -33,7 +34,9 @@ const UserEventRegistrationCard = ({
         {eventTitle}
       </Heading>
       <Text>
-        {formatDateSpan(dateStart, dateEnd, { locale: appConfig.env.NEXT_PUBLIC_DEFAULT_LOCALE as string })}
+        {formatDateSpan(dateStart, dateEnd, {
+          locale: appConfig.env.NEXT_PUBLIC_DEFAULT_LOCALE as string,
+        })}
       </Text>
       {products.length > 0 && (
         <Text as="div">

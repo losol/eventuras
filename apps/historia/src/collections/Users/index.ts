@@ -1,12 +1,12 @@
+import { tenantsArrayField } from '@payloadcms/plugin-multi-tenant/fields';
 import type { CollectionConfig } from 'payload';
 
-import { admins, adminsFieldLevel } from '../../access/admins';
-import { ensureFirstUserIsAdmin } from './hooks/ensureFirstUserIsAdmin';
-import { tenantsArrayField } from '@payloadcms/plugin-multi-tenant/fields';
-import { setCookieBasedOnDomain } from './hooks/setCookieBasedOnDomain';
 import { createAccess } from './access/create';
-import { updateAndDeleteAccess } from './access/updateAndDelete';
 import { readAccess } from './access/read';
+import { updateAndDeleteAccess } from './access/updateAndDelete';
+import { ensureFirstUserIsAdmin } from './hooks/ensureFirstUserIsAdmin';
+import { setCookieBasedOnDomain } from './hooks/setCookieBasedOnDomain';
+import { admins, adminsFieldLevel } from '../../access/admins';
 
 const defaultTenantArrayField = tenantsArrayField({
   tenantsArrayFieldName: 'tenants',

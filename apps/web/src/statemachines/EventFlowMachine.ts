@@ -1,14 +1,10 @@
-import {
-  EventDto,
-  ProductDto,
-  RegistrationDto,
-  UserDto,
-} from '@eventuras/event-sdk';
 import { assign, createMachine, fromPromise } from 'xstate';
 
-import { PaymentFormValues } from '@/types';
+import { EventDto, ProductDto, RegistrationDto, UserDto } from '@eventuras/event-sdk';
+
 import { fetchUserEventRegistrations } from '@/app/(admin)/admin/actions/registrations';
 import { createEventRegistration, updateEventRegistration } from '@/app/(user)/user/events/actions';
+import { PaymentFormValues } from '@/types';
 import { mapToNewRegistration, mapToUpdatedRegistration } from '@/utils/api/mappers';
 
 export type EventFlowMachineContext = {

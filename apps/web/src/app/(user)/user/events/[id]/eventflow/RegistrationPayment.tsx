@@ -1,13 +1,12 @@
 'use client';
-import { Input } from '@eventuras/ratio-ui/forms';
-import { UserDto } from '@eventuras/event-sdk';
-import { Button } from '@eventuras/ratio-ui/core/Button';
-
-;
-;
-import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { useTranslations } from 'next-intl';
+
+import { UserDto } from '@eventuras/event-sdk';
+import { Button } from '@eventuras/ratio-ui/core/Button';
+import { Input } from '@eventuras/ratio-ui/forms';
+
 import { PaymentFormValues } from '@/types';
 export type RegistrationPaymentProps = {
   onSubmit: (values: PaymentFormValues) => void;
@@ -174,11 +173,7 @@ const RegistrationPayment = ({
             {t('common.buttons.back')}
           </Button>
         )}
-        <Button
-          testId="registration-payment-submit-button"
-          type="submit"
-          variant="primary"
-        >
+        <Button testId="registration-payment-submit-button" type="submit" variant="primary">
           {t('common.buttons.continue')}
         </Button>
       </form>

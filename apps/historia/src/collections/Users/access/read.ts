@@ -1,11 +1,12 @@
-import type { User } from '@/payload-types';
-import type { Access, Where } from 'payload';
 import { getTenantFromCookie } from '@payloadcms/plugin-multi-tenant/utilities';
+import type { Access, Where } from 'payload';
 
-import { isSystemAdmin } from '../../../access/isSystemAdmin';
-import { getUserTenantIDs } from '../../../utilities/getUserTenantIDs';
+import type { User } from '@/payload-types';
+
 import { isAccessingSelf } from './isAccessingSelf';
+import { isSystemAdmin } from '../../../access/isSystemAdmin';
 import { getCollectionIDType } from '../../../utilities/getCollectionIDType';
+import { getUserTenantIDs } from '../../../utilities/getUserTenantIDs';
 
 export const readAccess: Access<User> = ({ req, id }) => {
   if (!req?.user) {

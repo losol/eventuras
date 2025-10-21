@@ -1,6 +1,7 @@
+import type { Block } from 'payload';
+
 import { description } from '@/fields/description';
 import { title } from '@/fields/title';
-import type { Block } from 'payload';
 
 export const Session: Block = {
   interfaceName: 'SessionBlock',

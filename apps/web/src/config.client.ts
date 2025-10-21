@@ -9,10 +9,11 @@ import {
   AppConfig,
   createPublicEnv,
   defineGetter,
-  parseIntValue
+  parseIntValue,
 } from '@eventuras/app-config/clientside';
-import appConfig from '../app.config.json';
+
 import type { WebPublicEnv } from './config.client.generated';
+import appConfig from '../app.config.json';
 
 /**
  * Client-side public environment variables - use publicEnv.NEXT_PUBLIC_*
@@ -35,14 +36,31 @@ const _publicEnv = createPublicEnv(appConfig as AppConfig);
 // This allows Next.js to statically analyze and replace at build time
 defineGetter(_publicEnv, 'NEXT_PUBLIC_API_BASE_URL', () => process.env.NEXT_PUBLIC_API_BASE_URL);
 defineGetter(_publicEnv, 'NEXT_PUBLIC_API_VERSION', () => process.env.NEXT_PUBLIC_API_VERSION);
-defineGetter(_publicEnv, 'NEXT_PUBLIC_APPLICATION_URL', () => process.env.NEXT_PUBLIC_APPLICATION_URL);
-defineGetter(_publicEnv, 'NEXT_PUBLIC_LOGOUT_URL_REDIRECT', () => process.env.NEXT_PUBLIC_LOGOUT_URL_REDIRECT);
-defineGetter(_publicEnv, 'NEXT_PUBLIC_DEFAULT_LOCALE', () => process.env.NEXT_PUBLIC_DEFAULT_LOCALE);
+defineGetter(
+  _publicEnv,
+  'NEXT_PUBLIC_APPLICATION_URL',
+  () => process.env.NEXT_PUBLIC_APPLICATION_URL
+);
+defineGetter(
+  _publicEnv,
+  'NEXT_PUBLIC_LOGOUT_URL_REDIRECT',
+  () => process.env.NEXT_PUBLIC_LOGOUT_URL_REDIRECT
+);
+defineGetter(
+  _publicEnv,
+  'NEXT_PUBLIC_DEFAULT_LOCALE',
+  () => process.env.NEXT_PUBLIC_DEFAULT_LOCALE
+);
 defineGetter(_publicEnv, 'NEXT_PUBLIC_AUTH0_DOMAIN', () => process.env.NEXT_PUBLIC_AUTH0_DOMAIN);
-defineGetter(_publicEnv, 'NEXT_PUBLIC_ORGANIZATION_ID', () => parseIntValue(process.env.NEXT_PUBLIC_ORGANIZATION_ID));
-defineGetter(_publicEnv, 'NEXT_PUBLIC_SITE_SETTINGS_URL', () => process.env.NEXT_PUBLIC_SITE_SETTINGS_URL);
+defineGetter(_publicEnv, 'NEXT_PUBLIC_ORGANIZATION_ID', () =>
+  parseIntValue(process.env.NEXT_PUBLIC_ORGANIZATION_ID)
+);
+defineGetter(
+  _publicEnv,
+  'NEXT_PUBLIC_SITE_SETTINGS_URL',
+  () => process.env.NEXT_PUBLIC_SITE_SETTINGS_URL
+);
 defineGetter(_publicEnv, 'NEXT_PUBLIC_BACKEND_URL', () => process.env.NEXT_PUBLIC_BACKEND_URL);
 
 // Export with proper typing
 export const publicEnv = _publicEnv as WebPublicEnv;
-

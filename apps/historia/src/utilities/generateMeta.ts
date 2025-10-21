@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
 
-import type { Article, Media, Page, Config } from '../payload-types';
-
 import { getServerSideURL } from './getURL';
+import type { Article, Config, Media, Page } from '../payload-types';
 
 const getImageURL = (image?: Media | Config['db']['defaultIDType'] | null) => {
   const serverUrl = getServerSideURL();

@@ -1,12 +1,14 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { useAuthActions } from '@/auth/authMachine';
+
 import { Logger } from '@eventuras/logger';
+
+import { useAuthActions } from '@/auth/authMachine';
 
 const logger = Logger.create({
   namespace: 'web:auth',
-  context: { component: 'LoginSuccessHandler' }
+  context: { component: 'LoginSuccessHandler' },
 });
 
 /**

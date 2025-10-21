@@ -1,12 +1,13 @@
 'use client';
-;
 import { useEffect } from 'react';
-import FatalError from '@/components/FatalError';
-import { SiteInfo } from '@/utils/site/getSiteSettings';
-import { eventFlowLogger } from './lib/eventFlowLogger';
+
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 
-;
+import FatalError from '@/components/FatalError';
+import { SiteInfo } from '@/utils/site/getSiteSettings';
+
+import { eventFlowLogger } from './lib/eventFlowLogger';
+
 interface ErrorBoundaryProps {
   error: Error & { digest?: string };
   reset: () => void;
@@ -19,7 +20,7 @@ export default function Error({ error, reset, siteInfo }: ErrorBoundaryProps) {
       {
         error,
         digest: error.digest,
-        stack: error.stack
+        stack: error.stack,
       },
       'Event flow error boundary triggered'
     );

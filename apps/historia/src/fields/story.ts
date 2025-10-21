@@ -1,4 +1,5 @@
 import { Block, Field } from 'payload';
+
 import { Content } from '@/blocks/Content/config';
 
 /**

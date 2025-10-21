@@ -1,9 +1,6 @@
 'use client';
-import { Badge } from '@eventuras/ratio-ui/core/Badge';
-import { Button } from '@eventuras/ratio-ui/core/Button';
-import { Definition, DescriptionList, Item, Term } from '@eventuras/ratio-ui/core/DescriptionList';
-import { Heading } from '@eventuras/ratio-ui/core/Heading';
-import { Section } from '@eventuras/ratio-ui/layout/Section';
+import { useTranslations } from 'next-intl';
+
 import {
   PaymentProvider,
   RegistrationCustomerInfoDto,
@@ -11,9 +8,13 @@ import {
   RegistrationStatus,
   RegistrationType,
 } from '@eventuras/event-sdk';
+import { Badge } from '@eventuras/ratio-ui/core/Badge';
+import { Button } from '@eventuras/ratio-ui/core/Button';
+import { Definition, DescriptionList, Item, Term } from '@eventuras/ratio-ui/core/DescriptionList';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Section } from '@eventuras/ratio-ui/layout/Section';
 import { Form, Select } from '@eventuras/smartform';
-;
-import { useTranslations } from 'next-intl';
+
 import Order from '../orders/Order';
 interface RegistrationProps {
   registration?: RegistrationDto;
@@ -42,13 +43,13 @@ export const getStatusLabels = (t: TranslationFunction) => [
   { value: 'Verified' as RegistrationStatus, label: t('common.registrations.labels.verified') },
   {
     value: 'NotAttended' as RegistrationStatus,
-    label: t('common.registrations.labels.notAttended')
+    label: t('common.registrations.labels.notAttended'),
   },
   { value: 'Attended' as RegistrationStatus, label: t('common.registrations.labels.attended') },
   { value: 'Finished' as RegistrationStatus, label: t('common.registrations.labels.finished') },
   {
     value: 'WaitingList' as RegistrationStatus,
-    label: t('common.registrations.labels.waitingList')
+    label: t('common.registrations.labels.waitingList'),
   },
 ];
 /**

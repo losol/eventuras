@@ -1,9 +1,10 @@
 'use server';
 
-import { getAccessToken } from '@/utils/getAccesstoken';
 import { getCurrentSession } from '@eventuras/fides-auth-next/session';
-import { oauthConfig } from '@/utils/oauthConfig';
 import { Logger } from '@eventuras/logger';
+
+import { getAccessToken } from '@/utils/getAccesstoken';
+import { oauthConfig } from '@/utils/oauthConfig';
 
 const logger = Logger.create({ namespace: 'web:utils:getAuthStatus' });
 

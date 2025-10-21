@@ -1,13 +1,13 @@
 'use client';
-import { Fieldset, Form, Input } from '@eventuras/ratio-ui/forms';
-import { Button } from '@eventuras/ratio-ui/core/Button';
-
-;
-;
-import { useTranslations } from 'next-intl';
 import { useActionState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
+
+import { Button } from '@eventuras/ratio-ui/core/Button';
+import { Fieldset, Form, Input } from '@eventuras/ratio-ui/forms';
 import { useToast } from '@eventuras/toast';
+
 import { publicEnv } from '@/config.client';
+
 import { createEvent } from './actions';
 export const CreateEventForm = () => {
   const t = useTranslations();
@@ -36,11 +36,7 @@ export const CreateEventForm = () => {
           required
         />
       </Fieldset>
-      <Button
-        type="submit"
-        testId="create-event-submit-button"
-        disabled={isPending}
-      >
+      <Button type="submit" testId="create-event-submit-button" disabled={isPending}>
         {isPending ? t('common.buttons.submitting') : t('common.buttons.submit')}
       </Button>
     </Form>

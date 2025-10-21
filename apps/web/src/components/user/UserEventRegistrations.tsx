@@ -1,12 +1,10 @@
-import { RegistrationDto } from '@eventuras/event-sdk';
-import { Grid } from '@eventuras/ratio-ui/layout/Grid';
-import { Heading } from '@eventuras/ratio-ui/core/Heading';
-
-;
-;
-;
-import { useTranslations } from 'next-intl';
 import { ReactElement } from 'react';
+import { useTranslations } from 'next-intl';
+
+import { RegistrationDto } from '@eventuras/event-sdk';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Grid } from '@eventuras/ratio-ui/layout/Grid';
+
 import UserEventRegistrationCard from './UserEventRegistrationCard';
 export type UserEventRegistrationsProps = {
   registrations: RegistrationDto[];

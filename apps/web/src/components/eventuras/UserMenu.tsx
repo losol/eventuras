@@ -1,9 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Menu } from '@eventuras/ratio-ui/core/Menu';
-import { useAuthSelector, useAuthActions } from '@/auth/authMachine';
+
+import { useAuthActions, useAuthSelector } from '@/auth/authMachine';
 
 /**
  * Translation strings for the user menu
@@ -38,7 +40,7 @@ function UserMenuButton({
   label,
   onClick,
   loading = false,
-  testId
+  testId,
 }: {
   label: string;
   onClick: () => void;
@@ -46,12 +48,7 @@ function UserMenuButton({
   testId?: string;
 }) {
   return (
-    <Button
-      onClick={onClick}
-      variant="primary"
-      loading={loading}
-      testId={testId}
-    >
+    <Button onClick={onClick} variant="primary" loading={loading} testId={testId}>
       {label}
     </Button>
   );
@@ -69,12 +66,7 @@ function LoginButton({ label }: { label: string }) {
   };
 
   return (
-    <UserMenuButton
-      label={label}
-      onClick={handleClick}
-      loading={isLoading}
-      testId="login-button"
-    />
+    <UserMenuButton label={label} onClick={handleClick} loading={isLoading} testId="login-button" />
   );
 }
 

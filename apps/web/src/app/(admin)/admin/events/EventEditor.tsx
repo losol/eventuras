@@ -1,8 +1,15 @@
 'use client';
-import { Fieldset } from '@eventuras/ratio-ui/forms';
-import { MarkdownInput } from '@eventuras/markdowninput';
+import { useEffect, useState } from 'react';
+import { SubmitHandler } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
+
 import { EventDto, EventFormDto } from '@eventuras/event-sdk';
+import { Logger } from '@eventuras/logger';
+import { MarkdownInput } from '@eventuras/markdowninput';
 import { Button } from '@eventuras/ratio-ui/core/Button';
+import { Tabs } from '@eventuras/ratio-ui/core/Tabs';
+import { Fieldset } from '@eventuras/ratio-ui/forms';
 import {
   CheckboxInput,
   CheckboxLabel,
@@ -12,16 +19,11 @@ import {
   NumberInput,
   Select,
 } from '@eventuras/smartform';
-;
-import { Logger } from '@eventuras/logger';
-import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
-import { useState, useEffect } from 'react';
-import { SubmitHandler } from 'react-hook-form';
-import { Tabs } from '@eventuras/ratio-ui/core/Tabs';
 import { useToast } from '@eventuras/toast';
+
 import { publicEnv } from '@/config.client';
 import slugify from '@/utils/slugify';
+
 import { updateEvent } from './actions';
 export type EventEditorProps = {
   eventinfo: EventDto;
@@ -36,51 +38,64 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
   const [apiState, setApiState] = useState<ApiState>({ error: null, loading: false });
   const toast = useToast();
   const router = useRouter();
-  const logger = Logger.create({ namespace: 'web:admin:events', context: { component: 'EventEditor', eventId: eventinfo.id } });
+  const logger = Logger.create({
+    namespace: 'web:admin:events',
+    context: { component: 'EventEditor', eventId: eventinfo.id },
+  });
   // Log the event data when component mounts
   useEffect(() => {
-    logger.debug({
-      eventId: eventinfo.id,
-      eventTitle: eventinfo.title,
-      eventSlug: eventinfo.slug,
-      eventStatus: eventinfo.status,
-      eventType: eventinfo.type,
-      eventCity: eventinfo.city,
-      hasDateStart: !!eventinfo.dateStart,
-      hasDateEnd: !!eventinfo.dateEnd,
-      featured: eventinfo.featured,
-      published: eventinfo.published,
-    }, 'EventEditor loaded with event data');
+    logger.debug(
+      {
+        eventId: eventinfo.id,
+        eventTitle: eventinfo.title,
+        eventSlug: eventinfo.slug,
+        eventStatus: eventinfo.status,
+        eventType: eventinfo.type,
+        eventCity: eventinfo.city,
+        hasDateStart: !!eventinfo.dateStart,
+        hasDateEnd: !!eventinfo.dateEnd,
+        featured: eventinfo.featured,
+        published: eventinfo.published,
+      },
+      'EventEditor loaded with event data'
+    );
   }, [eventinfo, logger]);
   // Form submit handler
   const onSubmitForm: SubmitHandler<EventFormDto> = async (data: EventFormDto) => {
     setApiState({ error: null, loading: true });
     logger.info('Updating event...');
-    logger.debug({
-      eventId: eventinfo.id,
-      formTitle: data.title,
-      formSlug: data.slug,
-      formOrgId: data.organizationId,
-      formStatus: data.status,
-      formType: data.type,
-      formCity: data.city,
-    }, 'Event form data before processing');
+    logger.debug(
+      {
+        eventId: eventinfo.id,
+        formTitle: data.title,
+        formSlug: data.slug,
+        formOrgId: data.organizationId,
+        formStatus: data.status,
+        formType: data.type,
+        formCity: data.city,
+      },
+      'Event form data before processing'
+    );
     // Use the organization ID from config
     // Events belong to this organization and we're just maintaining that relationship
     const orgId = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
     if (!orgId || isNaN(orgId)) {
-      logger.error({ orgId, typeOfOrgId: typeof orgId }, 'Organization ID is not configured or invalid');
+      logger.error(
+        { orgId, typeOfOrgId: typeof orgId },
+        'Organization ID is not configured or invalid'
+      );
       toast.error('Configuration error: Organization ID is missing or invalid');
       setApiState({ error: 'Organization ID is not configured', loading: false });
       return;
     }
     data.organizationId = orgId;
-    logger.debug({ organizationId: data.organizationId }, 'Using configured organizationId for update');
+    logger.debug(
+      { organizationId: data.organizationId },
+      'Using configured organizationId for update'
+    );
     // set slug
     const year = data.dateStart ? new Date(data.dateStart).getFullYear() : undefined;
-    const newSlug = slugify(
-      [data.title, data.city, year, data.id].filter(Boolean).join('-')
-    );
+    const newSlug = slugify([data.title, data.city, year, data.id].filter(Boolean).join('-'));
     data.slug = newSlug;
     const result = await updateEvent(eventinfo.id!, data);
     if (result.success) {

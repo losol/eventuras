@@ -1,19 +1,18 @@
 'use client';
 import { ProductDto, RegistrationDto } from '@eventuras/event-sdk';
-import { Button } from '@eventuras/ratio-ui/core/Button';
-
-;
-;
 import { Logger } from '@eventuras/logger';
+import { Button } from '@eventuras/ratio-ui/core/Button';
 const logger = Logger.create({
   namespace: 'web:components:eventuras',
   context: { component: 'EditRegistrationProductsDialog' },
 });
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import RegistrationCustomize from '@/app/(user)/user/events/[id]/eventflow/RegistrationCustomize';
+import { useRouter } from 'next/navigation';
+
 import { Dialog } from '@eventuras/ratio-ui/layout/Dialog';
 import { useToast } from '@eventuras/toast';
+
+import RegistrationCustomize from '@/app/(user)/user/events/[id]/eventflow/RegistrationCustomize';
 import { addProductsToExistingRegistration } from '@/app/(user)/user/events/actions';
 export type EditRegistrationProductsDialogProps = {
   eventProducts: ProductDto[];

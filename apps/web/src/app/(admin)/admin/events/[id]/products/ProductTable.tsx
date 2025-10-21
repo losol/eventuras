@@ -1,11 +1,9 @@
+import { useTranslations } from 'next-intl';
+
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
 import type { ProductDto } from '@eventuras/event-sdk';
 import { Badge } from '@eventuras/ratio-ui/core/Badge';
-
-;
-;
 import { Eye, Pencil } from '@eventuras/ratio-ui/icons';
-import { useTranslations } from 'next-intl';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 const columnHelper = createColumnHelper<ProductDto>();
 interface ProductTableProps {
