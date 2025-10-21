@@ -1,19 +1,17 @@
-;
-import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
+
+import { getV3EventsByEventIdProducts, getV3EventsById } from '@eventuras/event-sdk';
 import { Logger } from '@eventuras/logger';
-import { getV3EventsById, getV3EventsByEventIdProducts } from '@eventuras/event-sdk';
-import EventProductsEditor from './EventProductsEditor';
-import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 
-;
-;
-;
+import EventProductsEditor from './EventProductsEditor';
+
 const logger = Logger.create({
   namespace: 'web:admin',
-  context: { page: 'EventProductsPage' }
+  context: { page: 'EventProductsPage' },
 });
 type EventProductsPage = {
   params: Promise<{

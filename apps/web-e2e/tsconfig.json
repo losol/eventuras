@@ -2,7 +2,7 @@
   "extends": "@eventuras/typescript-config/nextjs",
   "compilerOptions": {
     "paths": {
-      "@/*": ["./src/*"],
-    },
-  },
+      "@/*": ["./src/*"]
+    }
+  }
 }

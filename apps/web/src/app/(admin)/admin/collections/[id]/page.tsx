@@ -1,15 +1,13 @@
-;
-import { Logger } from '@eventuras/logger';
 import { getTranslations } from 'next-intl/server';
+
 import { getV3EventcollectionsById } from '@eventuras/event-sdk';
-import CollectionEditor from '../CollectionEditor';
-import { Container } from '@eventuras/ratio-ui/layout/Container';
+import { Logger } from '@eventuras/logger';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 
-;
-;
-;
+import CollectionEditor from '../CollectionEditor';
+
 type EventCollectionProps = {
   params: Promise<{
     id: number;

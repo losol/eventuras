@@ -1,15 +1,15 @@
 'use client';
-import { EventCollectionCreateDto } from '@eventuras/event-sdk';
-import { Form, HiddenInput, Input } from '@eventuras/smartform';
-import { Button } from '@eventuras/ratio-ui/core/Button';
-
-;
-;
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import React, { useState } from 'react';
+
+import { EventCollectionCreateDto } from '@eventuras/event-sdk';
+import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Dialog } from '@eventuras/ratio-ui/layout/Dialog';
+import { Form, HiddenInput, Input } from '@eventuras/smartform';
+
 import { publicEnv } from '@/config.client';
+
 import { createCollection } from './actions';
 const CollectionCreator: React.FC = () => {
   const t = useTranslations();

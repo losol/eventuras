@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+
 import { Contributors as ContributorsType } from '@/payload-types';
 
 interface ContributorsProps {

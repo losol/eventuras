@@ -1,15 +1,13 @@
-;
-import { Logger } from '@eventuras/logger';
 import { getTranslations } from 'next-intl/server';
+
 import { getV3RegistrationsById } from '@eventuras/event-sdk';
-import Registration from '../Registration';
-import { Container } from '@eventuras/ratio-ui/layout/Container';
+import { Logger } from '@eventuras/logger';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 
-;
-;
-;
+import Registration from '../Registration';
+
 type EventInfoProps = {
   params: Promise<{
     id: number;
@@ -23,8 +21,8 @@ const RegistrationDetailPage: React.FC<EventInfoProps> = async props => {
     query: {
       IncludeEventInfo: true,
       IncludeProducts: true,
-      IncludeUserInfo: true
-    }
+      IncludeUserInfo: true,
+    },
   });
   Logger.debug(
     { namespace: 'common:registrations' },

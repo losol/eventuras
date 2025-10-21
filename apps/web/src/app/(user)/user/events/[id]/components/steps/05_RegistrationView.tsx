@@ -1,16 +1,15 @@
 'use client';
-import { MarkdownContent } from '@eventuras/markdown';
+import { useEffect } from 'react';
+import { useTranslations } from 'next-intl';
+
 import { EventDto, RegistrationDto } from '@eventuras/event-sdk';
+import { MarkdownContent } from '@eventuras/markdown';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
-
-;
-;
-;
-import { useTranslations } from 'next-intl';
-import { useEffect } from 'react';
-import Registration from '@/app/(admin)/admin/registrations/Registration';
 import { Tabs } from '@eventuras/ratio-ui/core/Tabs';
+
+import Registration from '@/app/(admin)/admin/registrations/Registration';
+
 import { logStepEntry, logUserAction } from '../../lib/eventFlowLogger';
 export interface Step05RegistrationViewProps {
   eventInfo: EventDto;

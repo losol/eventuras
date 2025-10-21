@@ -1,11 +1,12 @@
 import type { CollectionConfig } from 'payload';
+
 import { admins } from '@/access/admins';
 import { anyone } from '@/access/anyone';
-import { name } from '@/fields/name';
 import { description } from '@/fields/description';
-import { slugField } from '@/fields/slug';
-import resourceId from '@/fields/resourceId';
 import { image } from '@/fields/image';
+import { name } from '@/fields/name';
+import resourceId from '@/fields/resourceId';
+import { slugField } from '@/fields/slug';
 
 export const Organizations: CollectionConfig = {
   slug: 'organizations',

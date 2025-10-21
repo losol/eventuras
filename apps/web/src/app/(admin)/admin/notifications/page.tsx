@@ -1,17 +1,12 @@
 import { NotificationDto } from '@eventuras/event-sdk';
-import { Container } from '@eventuras/ratio-ui/layout/Container';
-import { Heading } from '@eventuras/ratio-ui/core/Heading';
-import { Section } from '@eventuras/ratio-ui/layout/Section';
-import { Text } from '@eventuras/ratio-ui/core/Text';
-
-;
-;
-;
-;
-;
-import { Card } from '@eventuras/ratio-ui/core/Card';
-import { Link } from '@eventuras/ratio-ui-next/Link';
 import { getV3Notifications } from '@eventuras/event-sdk';
+import { Card } from '@eventuras/ratio-ui/core/Card';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Text } from '@eventuras/ratio-ui/core/Text';
+import { Container } from '@eventuras/ratio-ui/layout/Container';
+import { Section } from '@eventuras/ratio-ui/layout/Section';
+import { Link } from '@eventuras/ratio-ui-next/Link';
+
 import { appConfig } from '@/config.server';
 type NotificationPageProps = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -31,24 +26,26 @@ export default async function NotificationsPage({ searchParams }: NotificationPa
     headers: {
       'Eventuras-Org-Id': organizationId,
     },
-    query: id ? {
-      EventId: parseInt(id as string),
-    } : undefined,
+    query: id
+      ? {
+          EventId: parseInt(id as string),
+        }
+      : undefined,
   });
   const notificationData = response.data as NotificationListResponse;
   if (!response.data) {
     return (
       <Section className="bg-white dark:bg-black pb-8">
-          <Container>
-            <Heading as="h1">Notifications</Heading>
-            <Text>Failed to load notifications</Text>
-          </Container>
-        </Section>
+        <Container>
+          <Heading as="h1">Notifications</Heading>
+          <Text>Failed to load notifications</Text>
+        </Container>
+      </Section>
     );
   }
   return (
     <>
-    <Section className="bg-white dark:bg-black   pb-8">
+      <Section className="bg-white dark:bg-black   pb-8">
         <Container>
           <Heading as="h1">Notifications</Heading>
           {id && (
@@ -72,6 +69,6 @@ export default async function NotificationsPage({ searchParams }: NotificationPa
           })}
         </Container>
       </Section>
-      </>
+    </>
   );
 }

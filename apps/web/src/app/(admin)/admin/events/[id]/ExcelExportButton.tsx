@@ -1,11 +1,13 @@
 'use client';
-;
-import { Logger } from '@eventuras/logger';
 import { useState } from 'react';
+
+import { Logger } from '@eventuras/logger';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 
-;
-const logger = Logger.create({ namespace: 'web:admin:events', context: { component: 'ExcelExportButton' } });
+const logger = Logger.create({
+  namespace: 'web:admin:events',
+  context: { component: 'ExcelExportButton' },
+});
 import { publicEnv } from '@/config.client';
 export const ExcelExportButton = (props: { EventinfoId: number }) => {
   const [loading, setIsLoading] = useState(false);

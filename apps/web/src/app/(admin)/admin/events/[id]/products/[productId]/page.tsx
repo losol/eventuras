@@ -1,20 +1,18 @@
-;
-import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
-import { Logger } from '@eventuras/logger';
-import { Link } from '@eventuras/ratio-ui-next/Link';
-import { getV3ProductsByProductIdSummary } from '@eventuras/event-sdk';
-import { appConfig } from '@/config.server';
-import DeliverySummary from '../DeliverySummary';
-import { Container } from '@eventuras/ratio-ui/layout/Container';
-import { Heading } from '@eventuras/ratio-ui/core/Heading';
-import { Section } from '@eventuras/ratio-ui/layout/Section';
-import { Text } from '@eventuras/ratio-ui/core/Text';
+import { getTranslations } from 'next-intl/server';
 
-;
-;
-;
-;
+import { getV3ProductsByProductIdSummary } from '@eventuras/event-sdk';
+import { Logger } from '@eventuras/logger';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Text } from '@eventuras/ratio-ui/core/Text';
+import { Container } from '@eventuras/ratio-ui/layout/Container';
+import { Section } from '@eventuras/ratio-ui/layout/Section';
+import { Link } from '@eventuras/ratio-ui-next/Link';
+
+import { appConfig } from '@/config.server';
+
+import DeliverySummary from '../DeliverySummary';
+
 const logger = Logger.create({
   namespace: 'web:admin:products',
   context: { page: 'ProductSummaryPage' },

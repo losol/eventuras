@@ -1,22 +1,23 @@
 import type { CollectionConfig } from 'payload';
+
+import { admins } from '@/access/admins';
+import { anyone } from '@/access/anyone';
+import { Archive } from "@/blocks/ArchiveBlock/config";
+import { Content } from "@/blocks/Content/config";
+import { contributors } from '@/fields/contributors';
+import { image } from '@/fields/image';
+import { lead } from '@/fields/lead';
+import { license } from '@/fields/license';
+import { name } from '@/fields/name';
+import { publishedAt } from '@/fields/publishedAt';
+import resourceId from '@/fields/resourceId';
+import { slugField } from '@/fields/slug';
+import { storyField } from '@/fields/story';
+import { title } from '@/fields/title';
+
+import { revalidateDelete, revalidatePage } from './hooks/revalidatePage';
 import { populatePublishedAt } from '../../hooks/populatePublishedAt';
 import { generatePreviewPath } from '../../utilities/generatePreviewPath';
-import { revalidateDelete, revalidatePage } from './hooks/revalidatePage';
-import { admins } from '@/access/admins';
-import { slugField } from '@/fields/slug';
-import { image } from '@/fields/image';
-import { storyField } from '@/fields/story';
-import { contributors } from '@/fields/contributors';
-import { license } from '@/fields/license';
-
-import { anyone } from '@/access/anyone';
-import { publishedAt } from '@/fields/publishedAt';
-import { title } from '@/fields/title';
-import { lead } from '@/fields/lead';
-import { name } from '@/fields/name';
-import resourceId from '@/fields/resourceId';
-import { Content } from "@/blocks/Content/config";
-import { Archive } from "@/blocks/ArchiveBlock/config";
 
 
 export const Pages: CollectionConfig<'pages'> = {

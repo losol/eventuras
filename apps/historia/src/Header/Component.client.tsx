@@ -1,10 +1,10 @@
 'use client'
-import { useHeaderTheme } from '@/providers/HeaderTheme'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
 
 import { Logo } from '@/components/Logo/Logo'
+import { useHeaderTheme } from '@/providers/HeaderTheme'
 
 export const HeaderClient: React.FC = () => {
   const [theme, setTheme] = useState<string | null>(null);

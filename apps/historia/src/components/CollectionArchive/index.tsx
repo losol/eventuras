@@ -1,6 +1,7 @@
 import React from 'react';
+
 import { Card } from '@/components/Card';
-import type { Article, Happening, Page, Person, Organization, Project, Note } from '@/payload-types';
+import type { Article, Happening, Note, Organization, Page, Person, Project } from '@/payload-types';
 
 export type ArchiveDocument = Article | Happening | Page | Project | Note;
 

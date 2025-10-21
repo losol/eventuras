@@ -1,14 +1,13 @@
 'use client'
+import React from 'react'
+import Link from 'next/link'
+import { usePathname } from "next/navigation";
+
+import { getDocUrl } from '@/app/(frontend)/[locale]/c/[collection]/pageCollections';
+import { Media } from '@/components/Media'
+import type { Article, Happening, Note, Organization, Page, Person, Project } from '@/payload-types'
 import { cn } from '@/utilities/cn'
 import useClickableCard from '@/utilities/useClickableCard'
-import Link from 'next/link'
-import React from 'react'
-
-import type { Article, Page, Project, Note, Happening, Person, Organization } from '@/payload-types'
-
-import { Media } from '@/components/Media'
-import { usePathname } from "next/navigation";
-import { getDocUrl } from '@/app/(frontend)/[locale]/c/[collection]/pageCollections';
 
 export const Card: React.FC<{
   className?: string

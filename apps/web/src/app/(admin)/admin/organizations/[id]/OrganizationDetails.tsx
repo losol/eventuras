@@ -1,4 +1,3 @@
-;
 import { OrganizationDto } from '@eventuras/event-sdk';
 import { Definition, DescriptionList, Item, Term } from '@eventuras/ratio-ui/core/DescriptionList';
 

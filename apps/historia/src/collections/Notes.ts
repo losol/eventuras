@@ -1,13 +1,15 @@
 import type { CollectionConfig } from 'payload';
+
+import { relatedContent } from '@/fields/relatedContent';
+import resourceId from '@/fields/resourceId';
+import { richText } from '@/fields/richText';
+import { slugField } from '@/fields/slug';
+import { title } from '@/fields/title';
+import { topics } from '@/fields/topics';
+
 import { admins } from '../access/admins';
 import { anyone } from '../access/anyone';
 import { image } from '../fields/image';
-import { richText } from '@/fields/richText';
-import { slugField } from '@/fields/slug';
-import { topics } from '@/fields/topics';
-import { title } from '@/fields/title';
-import { relatedContent } from '@/fields/relatedContent';
-import resourceId from '@/fields/resourceId';
 
 
 export const Notes: CollectionConfig = {

@@ -1,16 +1,15 @@
 'use client';
+import { useEffect, useState, useTransition } from 'react';
+import { useTranslations } from 'next-intl';
+
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
 import { RegistrationDto, RegistrationDtoPageResponseDto } from '@eventuras/event-sdk';
 import { Loading } from '@eventuras/ratio-ui/core/Loading';
 import { Pagination } from '@eventuras/ratio-ui/core/Pagination';
-
-;
-;
-;
-import { useTranslations } from 'next-intl';
-import { useEffect, useState, useTransition } from 'react';
-import FatalError from '@/components/FatalError';
 import { Link } from '@eventuras/ratio-ui-next/Link';
+
+import FatalError from '@/components/FatalError';
+
 import { getRegistrations } from './actions';
 const columnHelper = createColumnHelper<RegistrationDto>();
 const AdminRegistrationsList: React.FC = () => {
@@ -65,7 +64,10 @@ const AdminRegistrationsList: React.FC = () => {
   ];
   if (isPending && !result) return <Loading />;
   if (error) return <FatalError title="Failed to load registrations" description={error} />;
-  if (!result) return <FatalError title="No response from admin registrations" description="Response is null" />;
+  if (!result)
+    return (
+      <FatalError title="No response from admin registrations" description="Response is null" />
+    );
   return (
     <>
       <DataTable data={result.data ?? []} columns={columns} />

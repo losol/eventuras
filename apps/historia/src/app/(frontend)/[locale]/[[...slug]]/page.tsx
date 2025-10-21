@@ -1,15 +1,16 @@
-import configPromise from '@payload-config';
-import { getPayload } from 'payload';
-import { draftMode } from 'next/headers';
 import React, { cache } from 'react';
+import configPromise from '@payload-config';
+import { draftMode } from 'next/headers';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { getPayload } from 'payload';
 
 import { RenderBlocks } from '@/blocks/RenderBlocks';
-import { Hero } from '@/heros/Hero';
-import PageClient from './page.client';
 import { LivePreviewListener } from '@/components/LivePreviewListener';
+import { Hero } from '@/heros/Hero';
 import { PagesSelect } from '@/payload-types';
-import Link from 'next/link';
+
+import PageClient from './page.client';
 
 // Read locales and default locale from environment variables, fallback to 'en'
 const locales = process.env.CMS_LOCALES?.split(',') || ['en'];

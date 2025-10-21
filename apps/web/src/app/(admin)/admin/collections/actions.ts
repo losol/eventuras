@@ -1,26 +1,31 @@
 'use server';
 
-import { Logger } from '@eventuras/logger';
+import { revalidatePath } from 'next/cache';
+
 import {
+  actionError,
+  actionSuccess,
+  type ServerActionResult,
+} from '@eventuras/core-nextjs/actions';
+import {
+  deleteV3EventsByEventIdCollectionsByCollectionId,
+  EventCollectionCreateDto,
+  EventCollectionDto,
+  EventCollectionDtoPageResponseDto,
   getV3Eventcollections,
   postV3Eventcollections,
   putV3EventcollectionsById,
-  deleteV3EventsByEventIdCollectionsByCollectionId,
   putV3EventsByEventIdCollectionsByCollectionId,
-  EventCollectionDtoPageResponseDto,
-  EventCollectionCreateDto,
-  EventCollectionDto,
 } from '@eventuras/event-sdk';
-import { revalidatePath } from 'next/cache';
+import { Logger } from '@eventuras/logger';
 
-import { client } from '@/lib/eventuras-client';
 import { appConfig } from '@/config.server';
-import { actionError, actionSuccess, type ServerActionResult } from '@eventuras/core-nextjs/actions';
+import { client } from '@/lib/eventuras-client';
 import slugify from '@/utils/slugify';
 
 const logger = Logger.create({
   namespace: 'web:admin:collections',
-  context: { module: 'actions' }
+  context: { module: 'actions' },
 });
 
 export async function getCollections(page: number = 1, pageSize: number = 100) {
@@ -30,7 +35,10 @@ export async function getCollections(page: number = 1, pageSize: number = 100) {
     const { data, error } = await getV3Eventcollections({
       client,
       headers: {
-        'Eventuras-Org-Id': typeof organizationId === 'number' ? organizationId : parseInt(organizationId as string, 10),
+        'Eventuras-Org-Id':
+          typeof organizationId === 'number'
+            ? organizationId
+            : parseInt(organizationId as string, 10),
       },
       query: {
         Page: page,

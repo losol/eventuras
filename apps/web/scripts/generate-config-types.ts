@@ -68,7 +68,7 @@ ${publicVars.join('\n')}
   console.log('✅ Generated types at:', OUTPUT_PATH);
 }
 
-generateTypes().catch((error) => {
+generateTypes().catch(error => {
   console.error('❌ Failed to generate types:', error);
   process.exit(1);
 });

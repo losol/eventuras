@@ -1,8 +1,9 @@
 'use server';
 
 import { getV3Orders, OrderDto } from '@eventuras/event-sdk';
-import { client } from '@/lib/eventuras-client';
+
 import { appConfig } from '@/config.server';
+import { client } from '@/lib/eventuras-client';
 
 export interface GetOrdersResult {
   data: OrderDto[];
@@ -17,10 +18,16 @@ export async function getOrders(page: number = 1, pageSize: number = 50) {
     const { data, error } = await getV3Orders({
       client,
       headers: {
-        'Eventuras-Org-Id': typeof organizationId === 'number' ? organizationId : parseInt(organizationId as string, 10),
+        'Eventuras-Org-Id':
+          typeof organizationId === 'number'
+            ? organizationId
+            : parseInt(organizationId as string, 10),
       },
       query: {
-        OrganizationId: typeof organizationId === 'number' ? organizationId : parseInt(organizationId as string, 10),
+        OrganizationId:
+          typeof organizationId === 'number'
+            ? organizationId
+            : parseInt(organizationId as string, 10),
         IncludeUser: true,
         IncludeRegistration: true,
         Page: page,

@@ -45,6 +45,8 @@ export const config = [
       'playwright-report/**',
       'out/**',
       'test-results/**',
+      '**/migrations/**',
+      '**/.next/**',
     ],
   },
 ];

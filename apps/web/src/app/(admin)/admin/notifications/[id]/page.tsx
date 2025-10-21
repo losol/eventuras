@@ -1,14 +1,11 @@
-;
-import { Logger } from '@eventuras/logger';
 import { getTranslations } from 'next-intl/server';
+
 import { getV3NotificationsById, getV3NotificationsByIdRecipients } from '@eventuras/event-sdk';
-import { Container } from '@eventuras/ratio-ui/layout/Container';
+import { Logger } from '@eventuras/logger';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 
-;
-;
-;
 type EventInfoProps = {
   params: Promise<{
     id: number;

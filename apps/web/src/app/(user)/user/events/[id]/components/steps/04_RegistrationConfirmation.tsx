@@ -1,15 +1,14 @@
 'use client';
+import { useEffect } from 'react';
+import { useTranslations } from 'next-intl';
+
 import { EventDto, ProductDto } from '@eventuras/event-sdk';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 
-;
-;
-;
-import { useTranslations } from 'next-intl';
-import { useEffect } from 'react';
 import { PaymentFormValues, ProductSelected } from '@/types';
-import { logStepEntry, logStepComplete, logUserAction } from '../../lib/eventFlowLogger';
+
+import { logStepComplete, logStepEntry, logUserAction } from '../../lib/eventFlowLogger';
 export interface Step04RegistrationConfirmationProps {
   eventInfo: EventDto;
   products: ProductDto[];
@@ -148,7 +147,11 @@ const Step04RegistrationConfirmation: React.FC<Step04RegistrationConfirmationPro
           </Button>
         )}
         {onSubmit && (
-          <Button variant="primary" onClick={handleSubmit} testId="registration-confirmation-button">
+          <Button
+            variant="primary"
+            onClick={handleSubmit}
+            testId="registration-confirmation-button"
+          >
             {t('common.labels.confirmRegistration')}
           </Button>
         )}

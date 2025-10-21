@@ -1,20 +1,18 @@
-;
 import { getTranslations } from 'next-intl/server';
+
 import { getV3OrganizationsByOrganizationIdSettings } from '@eventuras/event-sdk';
-import withAuthorization from '@/utils/auth/withAuthorization';
-import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 
-;
-;
-;
+import withAuthorization from '@/utils/auth/withAuthorization';
+
 const AdminSystemPage = async () => {
   const t = await getTranslations();
   const settings = await getV3OrganizationsByOrganizationIdSettings({
     path: {
-      organizationId: 1
-    }
+      organizationId: 1,
+    },
   });
   const powerOfficeSetting = settings.data?.find(s => s.name === 'POWER_OFFICE_APP_KEY');
   return (

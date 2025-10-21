@@ -1,6 +1,8 @@
-import { getUserTenantIDs } from '@/utilities/getUserTenantIDs';
-import { isSystemAdmin } from './isSystemAdmin';
 import { Access } from 'payload';
+
+import { getUserTenantIDs } from '@/utilities/getUserTenantIDs';
+
+import { isSystemAdmin } from './isSystemAdmin';
 
 /**
  * Tenant admins and super admins can will be allowed access

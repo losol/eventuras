@@ -1,14 +1,12 @@
 import React from 'react';
-import { MarkdownContent } from '@eventuras/markdown';
-import { EventDto } from '@eventuras/event-sdk';
-import { Heading } from '@eventuras/ratio-ui/core/Heading';
-
-;
-;
 import { useTranslations } from 'next-intl';
-import { Link } from '@eventuras/ratio-ui-next/Link';
+
+import { EventDto } from '@eventuras/event-sdk';
+import { MarkdownContent } from '@eventuras/markdown';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { NavList } from '@eventuras/ratio-ui/core/NavList';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
+import { Link } from '@eventuras/ratio-ui-next/Link';
 type EventProps = {
   eventinfo: EventDto;
   bgClassNames?: string;

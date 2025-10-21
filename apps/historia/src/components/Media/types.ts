@@ -1,5 +1,5 @@
-import type { StaticImageData } from 'next/image'
 import type { ElementType, Ref } from 'react'
+import type { StaticImageData } from 'next/image'
 
 import type { Media as MediaType } from '@/payload-types'
 

@@ -1,19 +1,18 @@
 'use client';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { useTranslations } from 'next-intl';
+
 import { ProductDto } from '@eventuras/event-sdk';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 
-;
-;
-;
-import { useTranslations } from 'next-intl';
-import { useForm } from 'react-hook-form';
-import { useEffect } from 'react';
-import ProductSelection from '@/components/eventuras/ProductSelection';
 import { useAuthSelector } from '@/auth/authMachine';
+import ProductSelection from '@/components/eventuras/ProductSelection';
 import { ProductSelected } from '@/types';
 import { mapSelectedProductsToQuantity } from '@/utils/api/mappers';
-import { logStepEntry, logStepComplete, logUserAction } from '../../lib/eventFlowLogger';
+
+import { logStepComplete, logStepEntry, logUserAction } from '../../lib/eventFlowLogger';
 type SubmitCallback = (values: Map<string, number>) => void;
 export type Step02ProductCustomizationProps = {
   products: ProductDto[];

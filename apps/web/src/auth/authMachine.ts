@@ -6,7 +6,9 @@
  */
 
 import { createActor } from 'xstate';
-import { createAuthMachine, createAuthHooks } from '@eventuras/fides-auth-next/state-machine';
+
+import { createAuthHooks, createAuthMachine } from '@eventuras/fides-auth-next/state-machine';
+
 import { getAuthStatus } from '@/utils/auth/getAuthStatus';
 
 /**

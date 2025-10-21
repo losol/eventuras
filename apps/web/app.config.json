@@ -33,10 +33,7 @@
       "client": true,
       "type": "string",
       "description": "Default locale for internationalization (e.g., en-US, nb-NO)",
-      "enum": [
-        "en-US",
-        "nb-NO"
-      ]
+      "enum": ["en-US", "nb-NO"]
     },
     "NEXT_PUBLIC_AUTH0_DOMAIN": {
       "required": true,
@@ -85,11 +82,7 @@
       "client": false,
       "type": "string",
       "description": "Node environment (development, production, test)",
-      "enum": [
-        "development",
-        "production",
-        "test"
-      ]
+      "enum": ["development", "production", "test"]
     },
     "SESSION_SECRET": {
       "required": true,

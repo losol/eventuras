@@ -1,16 +1,14 @@
-;
-import { Logger } from '@eventuras/logger';
 import { getTranslations } from 'next-intl/server';
+
 import { getV3CertificatesById } from '@eventuras/event-sdk';
-import Certificate from '../Certificate';
-import { PDFCertificate } from '../PDFCertificate';
-import { Container } from '@eventuras/ratio-ui/layout/Container';
+import { Logger } from '@eventuras/logger';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 
-;
-;
-;
+import Certificate from '../Certificate';
+import { PDFCertificate } from '../PDFCertificate';
+
 type CertificateInfoProps = {
   params: Promise<{
     id: number;

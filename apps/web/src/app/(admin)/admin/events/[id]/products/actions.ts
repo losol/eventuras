@@ -1,15 +1,19 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
+
+import {
+  actionError,
+  actionSuccess,
+  type ServerActionResult,
+} from '@eventuras/core-nextjs/actions';
+import type { NewProductDto, ProductDto } from '@eventuras/event-sdk';
 import {
   getV3EventsByEventIdProducts,
   postV3EventsByEventIdProducts,
   putV3EventsByEventIdProductsByProductId,
 } from '@eventuras/event-sdk';
-import type { NewProductDto, ProductDto } from '@eventuras/event-sdk';
 import { Logger } from '@eventuras/logger';
-import { revalidatePath } from 'next/cache';
-
-import { actionError, actionSuccess, type ServerActionResult } from '@eventuras/core-nextjs/actions';
 
 const logger = Logger.create({
   namespace: 'web:admin:products',

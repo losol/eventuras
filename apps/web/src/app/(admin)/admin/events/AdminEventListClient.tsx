@@ -1,11 +1,9 @@
 'use client';
+import { useRouter, useSearchParams } from 'next/navigation';
+
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
 import { EventDto } from '@eventuras/event-sdk';
 import { Pagination } from '@eventuras/ratio-ui/core/Pagination';
-
-;
-;
-import { useRouter, useSearchParams } from 'next/navigation';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 const columnHelper = createColumnHelper<EventDto>();
 interface AdminEventListClientProps {

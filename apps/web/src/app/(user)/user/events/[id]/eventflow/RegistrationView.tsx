@@ -1,14 +1,12 @@
-import { MarkdownContent } from '@eventuras/markdown';
+import { useTranslations } from 'next-intl';
+
 import { EventDto, RegistrationDto } from '@eventuras/event-sdk';
+import { MarkdownContent } from '@eventuras/markdown';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
-
-;
-;
-;
-import { useTranslations } from 'next-intl';
-import Registration from '@/app/(admin)/admin/registrations/Registration';
 import { Tabs } from '@eventuras/ratio-ui/core/Tabs';
+
+import Registration from '@/app/(admin)/admin/registrations/Registration';
 export interface RegistrationViewProps {
   eventInfo: EventDto;
   registration?: RegistrationDto;

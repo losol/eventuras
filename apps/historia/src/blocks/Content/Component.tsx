@@ -1,6 +1,6 @@
 import React from 'react'
-import RichText from '@/components/RichText'
 
+import RichText from '@/components/RichText'
 import type { ContentBlock as ContentBlockProps } from '@/payload-types'
 
 export const ContentBlock: React.FC<ContentBlockProps> = (props) => {

@@ -1,4 +1,5 @@
 import type { Access } from 'payload';
+
 import { User } from '../payload-types';
 
 export const isSystemAdminAccess: Access = ({ req }): boolean => {

@@ -1,6 +1,7 @@
-import {buildAuthorizationUrl, buildPKCEOptions} from '@eventuras/fides-auth-next';
-import {globalGETRateLimit} from '@eventuras/fides-auth-next/request';
 import { NextRequest, NextResponse } from 'next/server';
+
+import { buildAuthorizationUrl, buildPKCEOptions } from '@eventuras/fides-auth-next';
+import { globalGETRateLimit } from '@eventuras/fides-auth-next/request';
 
 import { oauthConfig } from '@/utils/oauthConfig';
 

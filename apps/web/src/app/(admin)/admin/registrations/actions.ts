@@ -1,20 +1,29 @@
 'use server';
 
-import { Logger } from '@eventuras/logger';
 import { revalidatePath } from 'next/cache';
+
+import {
+  actionError,
+  actionSuccess,
+  type ServerActionResult,
+} from '@eventuras/core-nextjs/actions';
 import {
   getV3Registrations,
-  putV3RegistrationsById,
   postV3RegistrationsByIdCertificateSend,
-  RegistrationDtoPageResponseDto,
+  putV3RegistrationsById,
   RegistrationDto,
+  RegistrationDtoPageResponseDto,
   RegistrationStatus,
 } from '@eventuras/event-sdk';
-import { client } from '@/lib/eventuras-client';
-import { appConfig } from '@/config.server';
-import { actionError, actionSuccess, type ServerActionResult } from '@eventuras/core-nextjs/actions';
+import { Logger } from '@eventuras/logger';
 
-const logger = Logger.create({ namespace: 'web:admin:registrations', context: { module: 'actions' } });
+import { appConfig } from '@/config.server';
+import { client } from '@/lib/eventuras-client';
+
+const logger = Logger.create({
+  namespace: 'web:admin:registrations',
+  context: { module: 'actions' },
+});
 
 export default async function revalidateRegistrationCache() {
   logger.info('Revalidating registration cache');
@@ -28,7 +37,10 @@ export async function getRegistrations(page: number = 1, pageSize: number = 50) 
     const { data, error } = await getV3Registrations({
       client,
       headers: {
-        'Eventuras-Org-Id': typeof organizationId === 'number' ? organizationId : parseInt(organizationId as string, 10),
+        'Eventuras-Org-Id':
+          typeof organizationId === 'number'
+            ? organizationId
+            : parseInt(organizationId as string, 10),
       },
       query: {
         IncludeUserInfo: true,
@@ -94,10 +106,7 @@ export async function updateRegistration(
     });
 
     if (!response.data) {
-      logger.error(
-        { error: response.error, registrationId: id },
-        'Failed to update registration'
-      );
+      logger.error({ error: response.error, registrationId: id }, 'Failed to update registration');
       return actionError('Failed to update registration');
     }
 
@@ -123,10 +132,7 @@ export async function updateRegistrationStatus(
 
   // TODO: Replace with proper implementation
   // This is temporarily disabled pending proper PATCH support or full implementation
-  return actionError(
-    'Registration status update not yet fully implemented',
-    'NOT_IMPLEMENTED'
-  );
+  return actionError('Registration status update not yet fully implemented', 'NOT_IMPLEMENTED');
 
   // When ready, uncomment and implement:
   // try {
@@ -172,10 +178,7 @@ export async function sendCertificateEmail(
     });
 
     if (!response.data) {
-      logger.error(
-        { error: response.error, registrationId },
-        'Failed to send certificate email'
-      );
+      logger.error({ error: response.error, registrationId }, 'Failed to send certificate email');
       return actionError('Failed to send certificate email');
     }
 
@@ -187,4 +190,3 @@ export async function sendCertificateEmail(
     return actionError('An unexpected error occurred');
   }
 }
-

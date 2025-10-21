@@ -1,20 +1,21 @@
 import { EventInfoStatus, getV3Events, getV3EventsById } from '@eventuras/event-sdk';
-import { Container } from '@eventuras/ratio-ui/layout/Container';
-import { Heading } from '@eventuras/ratio-ui/core/Heading';
-import { Section } from '@eventuras/ratio-ui/layout/Section';
-import { Text } from '@eventuras/ratio-ui/core/Text';
 import { Logger } from '@eventuras/logger';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Text } from '@eventuras/ratio-ui/core/Text';
+import { Container } from '@eventuras/ratio-ui/layout/Container';
+import { Section } from '@eventuras/ratio-ui/layout/Section';
 
 const logger = Logger.create({ namespace: 'web:app:events', context: { page: 'EventPage' } });
 
-import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
+import { redirect } from 'next/navigation';
+
+import { formatDateSpan } from '@eventuras/core/datetime';
+import { Card } from '@eventuras/ratio-ui/core/Card';
 
 import EventDetails from '@/app/(public)/events/EventDetails';
 import EventRegistrationButton from '@/app/(public)/events/EventRegistrationButton';
-import { Card } from '@eventuras/ratio-ui/core/Card';
 import { appConfig } from '@/config.server';
-import { formatDateSpan } from '@eventuras/core/datetime';
 import { getPublicClient } from '@/lib/eventuras-public-client';
 
 import EventNotFound from '../../EventNotFound';
@@ -41,9 +42,8 @@ export const dynamicParams = true;
 
 export async function generateStaticParams() {
   const organizationId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
-  const orgId = typeof organizationId === 'number'
-    ? organizationId
-    : parseInt(organizationId as string, 10);
+  const orgId =
+    typeof organizationId === 'number' ? organizationId : parseInt(organizationId as string, 10);
 
   logger.info(
     { apiBaseUrl: appConfig.env.NEXT_PUBLIC_BACKEND_URL as string, orgId },
@@ -88,7 +88,7 @@ export default async function EventDetailsPage({ params }: Readonly<EventDetails
   const publicClient = getPublicClient();
   const response = await getV3EventsById({
     client: publicClient,
-    path: { id }
+    path: { id },
   });
 
   // Handle not found or draft events

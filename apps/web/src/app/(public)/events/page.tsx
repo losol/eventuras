@@ -1,19 +1,18 @@
-;
-import { getTranslations } from 'next-intl/server';
-import { Logger } from '@eventuras/logger';
-import { publicEnv } from '@/config.client';
-import { getV3Events } from '@eventuras/event-sdk';
-import {List} from '@eventuras/ratio-ui/core/List';
 import Link from 'next/link';
-import { getPublicClient } from '@/lib/eventuras-public-client';
+import { getTranslations } from 'next-intl/server';
+
+import { getV3Events } from '@eventuras/event-sdk';
+import { Logger } from '@eventuras/logger';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { List } from '@eventuras/ratio-ui/core/List';
 import { Text } from '@eventuras/ratio-ui/core/Text';
 
-;
-;
+import { publicEnv } from '@/config.client';
+import { getPublicClient } from '@/lib/eventuras-public-client';
+
 const logger = Logger.create({
   namespace: 'web:events-page',
-  context: { page: 'EventsPage' }
+  context: { page: 'EventsPage' },
 });
 const ORGANIZATION_ID = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
 // Incremental Static Regeneration - revalidate every 5 minutes
@@ -29,27 +28,36 @@ export default async function EventsPage() {
     eventinfos = await getV3Events({
       client: publicClient,
       query: {
-        OrganizationId: ORGANIZATION_ID
-      }
+        OrganizationId: ORGANIZATION_ID,
+      },
     });
     if (eventinfos.error) {
-      logger.error({
-        error: eventinfos.error,
-        organizationId: ORGANIZATION_ID
-      }, 'Failed to fetch events');
+      logger.error(
+        {
+          error: eventinfos.error,
+          organizationId: ORGANIZATION_ID,
+        },
+        'Failed to fetch events'
+      );
       fetchError = true;
     } else {
-      logger.info({
-        count: eventinfos.data?.count || 0,
-        organizationId: ORGANIZATION_ID
-      }, 'Successfully fetched events');
+      logger.info(
+        {
+          count: eventinfos.data?.count || 0,
+          organizationId: ORGANIZATION_ID,
+        },
+        'Successfully fetched events'
+      );
     }
   } catch (error) {
-    logger.warn({
-      error,
-      organizationId: ORGANIZATION_ID,
-      backendUrl: process.env.NEXT_PUBLIC_BACKEND_URL
-    }, 'Exception while fetching events - this is expected during build time if backend is not running');
+    logger.warn(
+      {
+        error,
+        organizationId: ORGANIZATION_ID,
+        backendUrl: process.env.NEXT_PUBLIC_BACKEND_URL,
+      },
+      'Exception while fetching events - this is expected during build time if backend is not running'
+    );
     fetchError = true;
   }
   return (
@@ -58,11 +66,7 @@ export default async function EventsPage() {
         {t('common.events.sectiontitle')}
       </Heading>
       {/* Show error message if fetch failed */}
-      {fetchError && (
-        <Text>
-          Unable to load events. Please try again later.
-        </Text>
-      )}
+      {fetchError && <Text>Unable to load events. Please try again later.</Text>}
       {/* Events section */}
       {!fetchError && eventinfos?.data?.count && eventinfos.data.data && (
         <List>

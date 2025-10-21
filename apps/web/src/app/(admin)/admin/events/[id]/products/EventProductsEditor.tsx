@@ -1,14 +1,13 @@
 'use client';
+import React, { useState } from 'react';
+import { useTranslations } from 'next-intl';
+
 import type { EventDto, ProductDto } from '@eventuras/event-sdk';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 
-;
-;
-import { useTranslations } from 'next-intl';
-import React, { useState } from 'react';
+import { fetchEventProducts } from './actions';
 import ProductModal from './ProductModal';
 import { ProductTable } from './ProductTable';
-import { fetchEventProducts } from './actions';
 interface EventProductsEditorProps {
   eventInfo: EventDto;
   products: ProductDto[];

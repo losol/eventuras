@@ -1,11 +1,14 @@
 'use client';
+import { useState } from 'react';
+import { useTranslations } from 'next-intl';
+
 import { EventDto, ProductDto } from '@eventuras/event-sdk';
 import { Button, ButtonGroup } from '@eventuras/ratio-ui/core/Button';
 import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
-import { useTranslations } from 'next-intl';
-import { useState } from 'react';
-import EventNotificator, { EventNotificatorType } from '@/components/event/EventNotificator';
 import { Link } from '@eventuras/ratio-ui-next/Link';
+
+import EventNotificator, { EventNotificatorType } from '@/components/event/EventNotificator';
+
 import { ExcelExportButton } from './[id]/ExcelExportButton';
 import AddUserToEvent from './AddUserToEvent';
 import { AdminCertificatesActionsMenu } from './AdminCertificatesActionsMenu';

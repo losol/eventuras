@@ -1,13 +1,12 @@
-;
 import { getTranslations } from 'next-intl/server';
+
 import { getV3OrganizationsByOrganizationId, getV3Users } from '@eventuras/event-sdk';
-import { OrganizationDetails } from './OrganizationDetails';
-import OrganizationMemberships from './OrganizationMemberships';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 
-;
-;
+import { OrganizationDetails } from './OrganizationDetails';
+import OrganizationMemberships from './OrganizationMemberships';
+
 type EventInfoProps = {
   params: Promise<{ id: number }>;
 };
@@ -31,15 +30,15 @@ const OrganizationDetailPage: React.FC<EventInfoProps> = async props => {
   // fetch org
   const organization = await getV3OrganizationsByOrganizationId({
     path: {
-      organizationId: params.id
-    }
+      organizationId: params.id,
+    },
   });
   // fetch org member
   const members = await getV3Users({
     query: {
       OrganizationId: params.id,
-      IncludeOrgMembership: true
-    }
+      IncludeOrgMembership: true,
+    },
   });
   // render
   return (

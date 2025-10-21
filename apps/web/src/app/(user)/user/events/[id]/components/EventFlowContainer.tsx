@@ -1,25 +1,25 @@
 'use client';
+import { useEffect } from 'react';
+import { useTranslations } from 'next-intl';
+
 import { EventDto, ProductDto, UserDto } from '@eventuras/event-sdk';
 import { Loading } from '@eventuras/ratio-ui/core/Loading';
-
-;
-;
 import type { Step } from '@eventuras/ratio-ui/core/Stepper';
 import { Stepper } from '@eventuras/ratio-ui/core/Stepper';
-import { useTranslations } from 'next-intl';
 import { useToast } from '@eventuras/toast';
-import { useEffect } from 'react';
+
 import FatalError from '@/components/FatalError';
 import { PaymentFormValues, ProductSelected } from '@/types';
 import { SiteInfo } from '@/utils/site/getSiteSettings';
-import { useEventFlowMachine } from '../hooks/useEventFlowMachine';
-import { eventFlowLogger } from '../lib/eventFlowLogger';
+
 import Step01AccountValidation from './steps/01_AccountValidation';
 import Step02ProductCustomization from './steps/02_ProductCustomization';
 import Step03PaymentConfiguration from './steps/03_PaymentConfiguration';
 import Step04RegistrationConfirmation from './steps/04_RegistrationConfirmation';
 import Step05RegistrationView from './steps/05_RegistrationView';
 import Step06RegistrationCancellation from './steps/06_RegistrationCancellation';
+import { useEventFlowMachine } from '../hooks/useEventFlowMachine';
+import { eventFlowLogger } from '../lib/eventFlowLogger';
 export interface EventFlowContainerProps {
   eventInfo: EventDto;
   user: UserDto;
@@ -80,7 +80,11 @@ const EventFlowContainer: React.FC<EventFlowContainerProps> = ({
     // Mark completed steps
     const steps = baseSteps.map((step, index) => ({
       ...step,
-      status: (index + 1 < currentStep ? 'complete' : index + 1 === currentStep ? 'current' : 'upcoming') as Step['status'],
+      status: (index + 1 < currentStep
+        ? 'complete'
+        : index + 1 === currentStep
+          ? 'current'
+          : 'upcoming') as Step['status'],
     }));
     return { currentStep, steps };
   };

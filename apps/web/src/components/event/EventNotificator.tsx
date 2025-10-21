@@ -1,24 +1,28 @@
 'use client';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { useTranslations } from 'next-intl';
+
+import {
+  EmailNotificationDto,
+  EventParticipantsFilterDto,
+  RegistrationStatus,
+  RegistrationType,
+  SmsNotificationDto,
+} from '@eventuras/event-sdk';
+import { Logger } from '@eventuras/logger';
 import { MarkdownInput } from '@eventuras/markdowninput';
 import { Button, ButtonGroup } from '@eventuras/ratio-ui/core/Button';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
-import {
-  EmailNotificationDto,
-  RegistrationType,
-  RegistrationStatus,
-  SmsNotificationDto,
-  EventParticipantsFilterDto,
-} from '@eventuras/event-sdk';
 import { CheckboxInput, CheckboxLabel, Form, Input } from '@eventuras/smartform';
-;
-import { Logger } from '@eventuras/logger';
-import { useTranslations } from 'next-intl';
-import { SubmitHandler, useForm } from 'react-hook-form';
 import { useToast } from '@eventuras/toast';
+
+import {
+  sendEmailNotification,
+  sendSmsNotification,
+} from '@/app/(admin)/admin/actions/notifications';
 import { ParticipationTypes } from '@/types';
 import { participationMap } from '@/utils/api/mappers';
 import { mapEnum } from '@/utils/enum';
-import { sendEmailNotification, sendSmsNotification } from '@/app/(admin)/admin/actions/notifications';
 const logger = Logger.create({
   namespace: 'web:components:event',
   context: { component: 'EventNotificator' },

@@ -1,9 +1,10 @@
 import type { CollectionConfig } from 'payload';
+
 import { admins } from '@/access/admins';
 import { anyone } from '@/access/anyone';
 import { description } from '@/fields/description';
-import { url } from '@/fields/url';
 import { title } from '@/fields/title';
+import { url } from '@/fields/url';
 
 export const Licenses: CollectionConfig = {
   slug: 'licenses',

@@ -1,10 +1,11 @@
 'use client'; // Error boundaries must be Client Components
 
-import { PageOverlay } from '@eventuras/ratio-ui/core/PageOverlay';
-import { Error } from '@eventuras/ratio-ui/blocks/Error';
 import { useEffect } from 'react';
-import { Logger } from '@eventuras/logger';
 import Link from 'next/link';
+
+import { Logger } from '@eventuras/logger';
+import { Error } from '@eventuras/ratio-ui/blocks/Error';
+import { PageOverlay } from '@eventuras/ratio-ui/core/PageOverlay';
 
 const logger = Logger.create({ namespace: 'web:admin:error', context: { section: 'admin' } });
 

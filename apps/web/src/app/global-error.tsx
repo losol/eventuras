@@ -1,8 +1,9 @@
 'use client'; // Global error must be a Client Component
 
-import { PageOverlay } from '@eventuras/ratio-ui/core/PageOverlay';
-import { Error } from '@eventuras/ratio-ui/blocks/Error';
 import { useEffect } from 'react';
+
+import { Error } from '@eventuras/ratio-ui/blocks/Error';
+import { PageOverlay } from '@eventuras/ratio-ui/core/PageOverlay';
 
 /**
  * Global error handler

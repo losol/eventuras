@@ -1,7 +1,11 @@
 'use server';
 
-import { getV3UsersMe, getV3OrganizationsByOrganizationIdMembersByUserIdRoles } from '@eventuras/event-sdk';
+import {
+  getV3OrganizationsByOrganizationIdMembersByUserIdRoles,
+  getV3UsersMe,
+} from '@eventuras/event-sdk';
 import { Logger } from '@eventuras/logger';
+
 import { appConfig } from '@/config.server';
 import { client, configureEventurasClient } from '@/lib/eventuras-client';
 

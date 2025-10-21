@@ -1,5 +1,7 @@
 import { NextPage } from 'next';
+
 import { Unauthorized } from '@eventuras/ratio-ui/blocks/Unauthorized';
+
 import { checkAuthorization } from './checkAuthorization';
 
 /**

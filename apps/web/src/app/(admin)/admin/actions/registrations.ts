@@ -1,10 +1,14 @@
 'use server';
 
-import { getV3Registrations, client } from '@eventuras/event-sdk';
+import {
+  actionError,
+  actionSuccess,
+  type ServerActionResult,
+} from '@eventuras/core-nextjs/actions';
 import type { RegistrationDto } from '@eventuras/event-sdk';
+import { client, getV3Registrations } from '@eventuras/event-sdk';
 import { Logger } from '@eventuras/logger';
 
-import { actionError, actionSuccess, type ServerActionResult } from '@eventuras/core-nextjs/actions';
 import { appConfig } from '@/config.server';
 import { configureEventurasClient } from '@/lib/eventuras-client';
 
@@ -49,10 +53,7 @@ export async function fetchUserEventRegistrations(
     return actionError(errorMsg, 'MISSING_ORG_ID');
   }
 
-  logger.info(
-    { userId, eventId, organizationId: orgId },
-    'Fetching user event registrations'
-  );
+  logger.info({ userId, eventId, organizationId: orgId }, 'Fetching user event registrations');
 
   try {
     const response = await getV3Registrations({

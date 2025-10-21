@@ -1,8 +1,9 @@
-import {globalGETRateLimit} from '@eventuras/fides-auth-next/request';
-import {getCurrentSession, accessTokenExpires} from '@eventuras/fides-auth-next';
-import { Logger } from '@eventuras/logger';
-import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
+import { NextResponse } from 'next/server';
+
+import { accessTokenExpires, getCurrentSession } from '@eventuras/fides-auth-next';
+import { globalGETRateLimit } from '@eventuras/fides-auth-next/request';
+import { Logger } from '@eventuras/logger';
 
 import { oauthConfig } from '@/utils/oauthConfig';
 
@@ -18,7 +19,9 @@ export async function GET() {
     if (!rateLimitOk) {
       console.log('[LOGIN] Rate limit exceeded');
       logger.warn('Rate limit exceeded');
-      return NextResponse.redirect(new URL('/rate-limited', process.env.NEXT_PUBLIC_APPLICATION_URL));
+      return NextResponse.redirect(
+        new URL('/rate-limited', process.env.NEXT_PUBLIC_APPLICATION_URL)
+      );
     }
     console.log('[LOGIN] Rate limit OK');
 
@@ -39,9 +42,12 @@ export async function GET() {
         console.log('[LOGIN] Valid session exists, redirecting to homepage', {
           user: session.user?.email,
         });
-        logger.info({
-          user: session.user?.email,
-        }, 'Valid session exists, redirecting to homepage');
+        logger.info(
+          {
+            user: session.user?.email,
+          },
+          'Valid session exists, redirecting to homepage'
+        );
         return NextResponse.redirect(new URL('/', process.env.NEXT_PUBLIC_APPLICATION_URL));
       } else {
         // Session exists but is invalid/expired - clear it
@@ -65,7 +71,7 @@ export async function GET() {
       status: 500,
       headers: {
         'Content-Type': 'text/plain',
-      }
+      },
     });
   }
 }

@@ -1,11 +1,11 @@
 'use client';
 
-import { useHeaderTheme } from '@/providers/HeaderTheme';
 import React, { useEffect } from 'react';
 
-import { Contributors, Image } from '@/payload-types';
 import { Contributors as ContributersComponent } from '@/components/Contributors';
 import RichText from '@/components/RichText';
+import { Contributors, Image } from '@/payload-types';
+import { useHeaderTheme } from '@/providers/HeaderTheme';
 
 interface HeroProps {
   title?: string | null;

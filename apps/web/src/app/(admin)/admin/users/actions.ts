@@ -1,16 +1,21 @@
 'use server';
 
-import {
-  UserDto,
-  UserFormDto,
-  postV3Users,
-  putV3UsersById,
-  putV3Userprofile,
-} from '@eventuras/event-sdk';
-import { Logger } from '@eventuras/logger';
 import { revalidatePath } from 'next/cache';
 
-import { actionError, actionSuccess, type ServerActionResult } from '@eventuras/core-nextjs/actions';
+import {
+  actionError,
+  actionSuccess,
+  type ServerActionResult,
+} from '@eventuras/core-nextjs/actions';
+import {
+  postV3Users,
+  putV3Userprofile,
+  putV3UsersById,
+  UserDto,
+  UserFormDto,
+} from '@eventuras/event-sdk';
+import { Logger } from '@eventuras/logger';
+
 import { client, configureEventurasClient } from '@/lib/eventuras-client';
 
 const logger = Logger.create({
@@ -21,9 +26,7 @@ const logger = Logger.create({
 /**
  * Create a new user
  */
-export async function createUser(
-  userData: UserFormDto
-): Promise<ServerActionResult<UserDto>> {
+export async function createUser(userData: UserFormDto): Promise<ServerActionResult<UserDto>> {
   await configureEventurasClient();
 
   logger.info('Creating new user');
@@ -121,9 +124,16 @@ export async function updateUserProfile(
     return actionSuccess(response.data, 'Profile updated successfully!');
   } catch (error) {
     const err = error as {
-      cause?: { code?: string; message?: string; errno?: number; syscall?: string; address?: string; port?: number };
+      cause?: {
+        code?: string;
+        message?: string;
+        errno?: number;
+        syscall?: string;
+        address?: string;
+        port?: number;
+      };
       code?: string;
-      message?: string
+      message?: string;
     };
 
     logger.error(

@@ -1,18 +1,17 @@
-;
-import { Unauthorized } from '@eventuras/ratio-ui/blocks/Unauthorized';
 import { getTranslations } from 'next-intl/server';
-import { checkAuthorization } from '@/utils/auth/checkAuthorization';
-import FatalError from '@/components/FatalError';
-import CollectionCreator from './CollectionCreator';
-import CollectionsTable from './CollectionsTable';
-import { getCollections } from './actions';
-import { Container } from '@eventuras/ratio-ui/layout/Container';
+
+import { Unauthorized } from '@eventuras/ratio-ui/blocks/Unauthorized';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 
-;
-;
-;
+import FatalError from '@/components/FatalError';
+import { checkAuthorization } from '@/utils/auth/checkAuthorization';
+
+import { getCollections } from './actions';
+import CollectionCreator from './CollectionCreator';
+import CollectionsTable from './CollectionsTable';
+
 type PageProps = {
   searchParams: Promise<{ page?: string }>;
 };
@@ -30,17 +29,17 @@ export default async function AdminCollectionsPage({ searchParams }: PageProps) 
   if (!response.ok || !response.data) {
     return (
       <Container>
-          <Heading as="h1">{t('common.collections.page.title')}</Heading>
-          <FatalError
-            title="Failed to load collections"
-            description={response.error || 'Unknown error'}
-          />
-        </Container>
+        <Heading as="h1">{t('common.collections.page.title')}</Heading>
+        <FatalError
+          title="Failed to load collections"
+          description={response.error || 'Unknown error'}
+        />
+      </Container>
     );
   }
   return (
     <>
-    <Container>
+      <Container>
         <Heading as="h1">{t('common.collections.page.title')}</Heading>
         <CollectionCreator />
       </Container>
@@ -53,6 +52,6 @@ export default async function AdminCollectionsPage({ searchParams }: PageProps) 
           />
         </Container>
       </Section>
-      </>
+    </>
   );
 }

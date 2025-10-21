@@ -1,12 +1,10 @@
 'use client';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
+
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
 import { RegistrationDto } from '@eventuras/event-sdk';
 import { Pagination } from '@eventuras/ratio-ui/core/Pagination';
-
-;
-;
-import { useTranslations } from 'next-intl';
-import { useRouter, useSearchParams } from 'next/navigation';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 const columnHelper = createColumnHelper<RegistrationDto>();
 type RegistrationsTableProps = {
@@ -14,7 +12,11 @@ type RegistrationsTableProps = {
   currentPage: number;
   totalPages: number;
 };
-export default function RegistrationsTable({ registrations, currentPage, totalPages }: RegistrationsTableProps) {
+export default function RegistrationsTable({
+  registrations,
+  currentPage,
+  totalPages,
+}: RegistrationsTableProps) {
   const t = useTranslations();
   const router = useRouter();
   const searchParams = useSearchParams();

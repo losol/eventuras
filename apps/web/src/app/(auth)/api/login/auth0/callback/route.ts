@@ -1,9 +1,10 @@
-import {globalGETRateLimit} from '@eventuras/fides-auth-next/request';
-import {createSession} from '@eventuras/fides-auth-next/session';
-import { Logger } from '@eventuras/logger';
 import { decodeJwt } from 'jose';
 import { cookies } from 'next/headers';
 import * as openid from 'openid-client';
+
+import { globalGETRateLimit } from '@eventuras/fides-auth-next/request';
+import { createSession } from '@eventuras/fides-auth-next/session';
+import { Logger } from '@eventuras/logger';
 
 import { appConfig } from '@/config.server';
 import { oauthConfig, redirect_uri } from '@/utils/oauthConfig';
@@ -23,19 +24,25 @@ export async function GET(request: Request): Promise<Response> {
     const currentUrl = new URL(request.url);
     const publicUrl = new URL(appConfig.env.NEXT_PUBLIC_APPLICATION_URL as string);
     publicUrl.search = currentUrl.search;
-    logger.debug({
-      currentUrl: currentUrl.toString(),
-      publicUrl: publicUrl.toString(),
-    }, 'callback URL');
+    logger.debug(
+      {
+        currentUrl: currentUrl.toString(),
+        publicUrl: publicUrl.toString(),
+      },
+      'callback URL'
+    );
 
     // 3) Grab stored PKCE data
     const cookieStore = await cookies();
     const storedState = cookieStore.get('oauth_state')?.value;
     const storedCodeVerifier = cookieStore.get('oauth_code_verifier')?.value;
-    logger.debug({
-      hasState: !!storedState,
-      hasCodeVerifier: !!storedCodeVerifier,
-    }, 'Retrieving PKCE data from cookies');
+    logger.debug(
+      {
+        hasState: !!storedState,
+        hasCodeVerifier: !!storedCodeVerifier,
+      },
+      'Retrieving PKCE data from cookies'
+    );
 
     if (!storedState || !storedCodeVerifier) {
       logger.warn('Missing state or code verifier');
@@ -43,11 +50,14 @@ export async function GET(request: Request): Promise<Response> {
     }
 
     // 4) Exchange code for tokens
-    logger.debug({
-      issuer: oauthConfig.issuer,
-      clientId: oauthConfig.clientId,
-      redirectUri: redirect_uri,
-    }, 'Exchanging authorization code for tokens');
+    logger.debug(
+      {
+        issuer: oauthConfig.issuer,
+        clientId: oauthConfig.clientId,
+        redirectUri: redirect_uri,
+      },
+      'Exchanging authorization code for tokens'
+    );
     const auth0config = await openid.discovery(
       new URL(oauthConfig.issuer),
       oauthConfig.clientId,
@@ -66,14 +76,17 @@ export async function GET(request: Request): Promise<Response> {
 
     // 5) Build our session JWT
     const idToken = decodeJwt(tokens.id_token ?? '');
-    logger.debug({
-      user: {
-        id: idToken.sub,
+    logger.debug(
+      {
+        user: {
+          id: idToken.sub,
+        },
+        hasAccessToken: !!tokens.access_token,
+        hasRefreshToken: !!tokens.refresh_token,
+        expiresIn: tokens.expires_in,
       },
-      hasAccessToken: !!tokens.access_token,
-      hasRefreshToken: !!tokens.refresh_token,
-      expiresIn: tokens.expires_in,
-    }, 'Creating session from tokens');
+      'Creating session from tokens'
+    );
 
     const jwt = await createSession(
       {

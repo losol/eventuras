@@ -1,20 +1,20 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+
+import { UserDto } from '@eventuras/event-sdk';
+import { Logger } from '@eventuras/logger';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 
-;
-;
-;
-;
-import MemberProfile from './MemberProfile';
-import AddMemberDrawer from './AddMemberDrawer';
 import { addMember, setAdmin } from './actions';
-import { UserDto } from '@eventuras/event-sdk';
-import { Logger } from '@eventuras/logger';
-const logger = Logger.create({ namespace: 'web:admin:organizations', context: { component: 'OrganizationMemberships' } });
+import AddMemberDrawer from './AddMemberDrawer';
+import MemberProfile from './MemberProfile';
+const logger = Logger.create({
+  namespace: 'web:admin:organizations',
+  context: { component: 'OrganizationMemberships' },
+});
 import { useToast } from '@eventuras/toast';
 export interface OrganizationMembershipsProps {
   organizationId: number;
@@ -60,7 +60,10 @@ export default function OrganizationMemberships({
       // close drawer
       setIsDrawerOpen(false);
     } catch (e) {
-      logger.error({ error: e, organizationId, userId: trimmedUserId }, '[client] failed to add member');
+      logger.error(
+        { error: e, organizationId, userId: trimmedUserId },
+        '[client] failed to add member'
+      );
       toast.error('Failed to add member. Please check the user ID and try again.');
     }
   };

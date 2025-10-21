@@ -1,12 +1,17 @@
-;
-import { getTranslations } from 'next-intl/server';
 import React from 'react';
-import { getV3Userprofile, getV3EventsById, getV3EventsByEventIdProducts } from '@eventuras/event-sdk';
-import getSiteSettings from '@/utils/site/getSiteSettings';
-import EventFlowContainer from './components/EventFlowContainer';
+import { getTranslations } from 'next-intl/server';
+
+import {
+  getV3EventsByEventIdProducts,
+  getV3EventsById,
+  getV3Userprofile,
+} from '@eventuras/event-sdk';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 
-;
+import getSiteSettings from '@/utils/site/getSiteSettings';
+
+import EventFlowContainer from './components/EventFlowContainer';
+
 type UserEventPageProps = {
   params: Promise<{
     id: number;
@@ -15,9 +20,7 @@ type UserEventPageProps = {
 export default async function UserEventPage({ params }: Readonly<UserEventPageProps>) {
   const { id } = await params;
   if (isNaN(id)) {
-    return (
-      <Heading>Invalid event ID</Heading>
-    );
+    return <Heading>Invalid event ID</Heading>;
   }
   const t = await getTranslations();
   const siteInfo = await getSiteSettings();
@@ -28,15 +31,11 @@ export default async function UserEventPage({ params }: Readonly<UserEventPagePr
   ]);
   // Handle user not logged in
   if (!userResponse.data) {
-    return (
-      <Heading>{t('user.loginRequired')}</Heading>
-    );
+    return <Heading>{t('user.loginRequired')}</Heading>;
   }
   // Handle event not found
   if (!eventInfoResponse.data) {
-    return (
-      <Heading>{t('user.events.eventNotFound')}</Heading>
-    );
+    return <Heading>{t('user.events.eventNotFound')}</Heading>;
   }
   return (
     <section className="mt-16">

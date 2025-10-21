@@ -1,28 +1,29 @@
 'use client';
 import { ColumnFilter, createColumnHelper, DataTable } from '@eventuras/datatable';
 import { EventDto, ProductDto, RegistrationDto } from '@eventuras/event-sdk';
+import { Logger } from '@eventuras/logger';
 import { Badge } from '@eventuras/ratio-ui/core/Badge';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Loading } from '@eventuras/ratio-ui/core/Loading';
-
-;
-;
-;
-;
 import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
-import { Logger } from '@eventuras/logger';
-const logger = Logger.create({ namespace: 'web:admin:events', context: { component: 'EventParticipantList' } });
-import { FileText, ShoppingCart, User } from '@eventuras/ratio-ui/icons';
+const logger = Logger.create({
+  namespace: 'web:admin:events',
+  context: { component: 'EventParticipantList' },
+});
+import React, { useMemo, useState } from 'react';
+import { useEffect } from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import React, { useMemo, useState } from 'react';
+
+import { getV3RegistrationsById } from '@eventuras/event-sdk';
+import { FileText, ShoppingCart, User } from '@eventuras/ratio-ui/icons';
+
 import EventNotificator, { EventNotificatorType } from '@/components/event/EventNotificator';
 import EditRegistrationProductsDialog from '@/components/eventuras/EditRegistrationProductsDialog';
-import { ParticipationTypesKey } from '@/types';
-import { getV3RegistrationsById } from '@eventuras/event-sdk';
-import { participationMap } from '@/utils/api/mappers';
 import { client } from '@/lib/eventuras-client';
-import { useEffect } from 'react';
+import { ParticipationTypesKey } from '@/types';
+import { participationMap } from '@/utils/api/mappers';
+
 import LiveActionsMenu from './LiveActionsMenu';
 const columnHelper = createColumnHelper<RegistrationDto>();
 interface AdminEventListProps {
@@ -49,7 +50,7 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
   participants: initialParticipants = [],
   event,
   eventProducts = [],
-  filteredStatus
+  filteredStatus,
 }) => {
   const t = useTranslations();
   const [participants, setParticipants] = useState<RegistrationDto[]>(initialParticipants);
@@ -146,20 +147,20 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
   const columns = [
     columnHelper.display({
       header: t('common.labels.id').toString(),
-      cell: info => <Badge>{info.row.original.registrationId}</Badge>
+      cell: info => <Badge>{info.row.original.registrationId}</Badge>,
     }),
     columnHelper.accessor('user.name', {
-      header: t('admin.participantColumns.name').toString()
+      header: t('admin.participantColumns.name').toString(),
     }),
     columnHelper.accessor('user.phoneNumber', {
-      header: t('admin.participantColumns.telephone').toString()
+      header: t('admin.participantColumns.telephone').toString(),
     }),
     columnHelper.accessor('user.email', {
-      header: t('admin.participantColumns.email').toString()
+      header: t('admin.participantColumns.email').toString(),
     }),
     columnHelper.accessor('products', {
       header: t('admin.participantColumns.products').toString(),
-      cell: info => renderProducts(info.row.original)
+      cell: info => renderProducts(info.row.original),
     }),
     columnHelper.accessor('status', {
       header: t('admin.participantColumns.status').toString(),
@@ -186,17 +187,17 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
             <Badge>{registration.status}</Badge>
           </>
         );
-      }
+      },
     }),
     columnHelper.display({
       id: 'live',
       header: t('admin.participantColumns.live'),
-      cell: info => renderLiveActions(info.row.original)
+      cell: info => renderLiveActions(info.row.original),
     }),
     columnHelper.display({
       id: 'actions',
       header: t('admin.participantColumns.actions').toString(),
-      cell: info => renderEventItemActions(info.row.original)
+      cell: info => renderEventItemActions(info.row.original),
     }),
   ];
   const drawerIsOpen = registrationOpen !== null;
@@ -205,7 +206,7 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
     return [
       {
         id: 'status',
-        value: filteredStatus
+        value: filteredStatus,
       },
     ];
   }, [filteredStatus]);

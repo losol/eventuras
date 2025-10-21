@@ -1,18 +1,20 @@
 'use client';
-import { Fieldset } from '@eventuras/ratio-ui/forms';
-import { UserDto, UserFormDto } from '@eventuras/event-sdk';
-import { Form, Input, PhoneInput } from '@eventuras/smartform';
-import { Button } from '@eventuras/ratio-ui/core/Button';
-
-;
-;
-import { Logger } from '@eventuras/logger';
-import { useTranslations } from 'next-intl';
 import { FC, useState } from 'react';
+import { useTranslations } from 'next-intl';
+
 import * as regex from '@eventuras/core/regex';
+import { UserDto, UserFormDto } from '@eventuras/event-sdk';
+import { Logger } from '@eventuras/logger';
+import { Button } from '@eventuras/ratio-ui/core/Button';
+import { Fieldset } from '@eventuras/ratio-ui/forms';
+import { Form, Input, PhoneInput } from '@eventuras/smartform';
 import { useToast } from '@eventuras/toast';
+
 import { createUser, updateUser, updateUserProfile } from './actions';
-const logger = Logger.create({ namespace: 'web:admin:users', context: { component: 'UserEditor' } });
+const logger = Logger.create({
+  namespace: 'web:admin:users',
+  context: { component: 'UserEditor' },
+});
 interface UserEditorProps {
   user?: UserDto;
   onUserUpdated?: (updatedUser: UserDto) => void;
@@ -97,8 +99,8 @@ const UserEditor: FC<UserEditorProps> = props => {
             required: t('user.account.name.requiredText'),
             pattern: {
               value: regex.lettersSpaceAndHyphen,
-              message: t('common.account.name.validationText')
-            }
+              message: t('common.account.name.validationText'),
+            },
           }}
           testId="accounteditor-form-givenname"
         />
@@ -111,8 +113,8 @@ const UserEditor: FC<UserEditorProps> = props => {
           validation={{
             pattern: {
               value: regex.lettersSpaceAndHyphen,
-              message: t('common.account.name.validationText')
-            }
+              message: t('common.account.name.validationText'),
+            },
           }}
           testId="accounteditor-form-middlename"
         />
@@ -126,8 +128,8 @@ const UserEditor: FC<UserEditorProps> = props => {
             required: t('user.account.name.requiredText'),
             pattern: {
               value: regex.lettersSpaceAndHyphen,
-              message: t('common.account.name.validationText')
-            }
+              message: t('common.account.name.validationText'),
+            },
           }}
           testId="accounteditor-form-familyname"
         />
@@ -156,8 +158,8 @@ const UserEditor: FC<UserEditorProps> = props => {
             required: adminMode ? false : t('user.account.phoneNumber.requiredText'),
             pattern: {
               value: regex.internationalPhoneNumber,
-              message: t('user.account.phoneNumber.invalidFormatText')
-            }
+              message: t('user.account.phoneNumber.invalidFormatText'),
+            },
           }}
           testId="accounteditor-form-phonenumber"
         />

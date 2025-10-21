@@ -1,8 +1,8 @@
 import React from 'react'
 
+import { ArchiveBlock } from "@/blocks/ArchiveBlock/Component";
 import { ContentBlock } from '@/blocks/Content/Component'
 import { FormBlock } from '@/blocks/Form/Component'
-import { ArchiveBlock } from "@/blocks/ArchiveBlock/Component";
 
 // Extend block components to include `disableInnerContainer`
 const blockComponents: {

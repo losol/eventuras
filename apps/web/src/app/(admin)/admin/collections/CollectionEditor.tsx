@@ -1,22 +1,20 @@
 'use client';
-import { MarkdownInput } from '@eventuras/markdowninput';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+
 import { EventCollectionDto, EventDto, getV3Events } from '@eventuras/event-sdk';
-import { CheckboxInput, CheckboxLabel, Form, Input } from '@eventuras/smartform';
+import { Logger } from '@eventuras/logger';
+import { MarkdownInput } from '@eventuras/markdowninput';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Loading } from '@eventuras/ratio-ui/core/Loading';
-import { Section } from '@eventuras/ratio-ui/layout/Section';
-
-;
-;
-;
-;
 import { Trash2 } from '@eventuras/ratio-ui/icons';
-import { Logger } from '@eventuras/logger';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import EventLookup from '@/components/event/EventLookup';
+import { Section } from '@eventuras/ratio-ui/layout/Section';
+import { CheckboxInput, CheckboxLabel, Form, Input } from '@eventuras/smartform';
 import { useToast } from '@eventuras/toast';
-import { updateCollection, addEventToCollection, removeEventFromCollection } from './actions';
+
+import EventLookup from '@/components/event/EventLookup';
+
+import { addEventToCollection, removeEventFromCollection, updateCollection } from './actions';
 export type CollectionEditorProps = {
   eventCollection: EventCollectionDto;
 };
@@ -24,7 +22,7 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
   const toast = useToast();
   const logger = Logger.create({
     namespace: 'web:admin:collections',
-    context: { component: 'CollectionEditor' }
+    context: { component: 'CollectionEditor' },
   });
   const [eventListUpdateTrigger, setEventListUpdateTrigger] = useState(0);
   const [eventInfos, setEventInfos] = useState<EventDto[]>([]);

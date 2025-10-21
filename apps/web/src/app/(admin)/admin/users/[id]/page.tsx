@@ -1,15 +1,13 @@
-;
-import { Logger } from '@eventuras/logger';
 import { getTranslations } from 'next-intl/server';
+
 import { getV3UsersById } from '@eventuras/event-sdk';
-import UserEditor from '../UserEditor';
-import { Container } from '@eventuras/ratio-ui/layout/Container';
+import { Logger } from '@eventuras/logger';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 
-;
-;
-;
+import UserEditor from '../UserEditor';
+
 type EventInfoProps = {
   params: Promise<{
     id: string;
@@ -19,7 +17,7 @@ const AdminUserDetailPage: React.FC<EventInfoProps> = async props => {
   const params = await props.params;
   const t = await getTranslations();
   const response = await getV3UsersById({
-    path: { id: params.id }
+    path: { id: params.id },
   });
   if (!response.data) {
     Logger.error(
