@@ -34,7 +34,9 @@
     "pkg:sort": "pnpm dlx sort-package-json '**/package.json' '!**/node_modules/**'",
     "deps:clean": "pnpm -r exec rm -rf node_modules && rm -rf node_modules pnpm-lock.yaml",
     "deps:reinstall": "pnpm run clean && pnpm run pkg:sort && pnpm install",
-    "test": "turbo run test"
+    "test": "turbo run test",
+    "openapi:update": "cd apps/api && pnpm openapi:update && cd ../.. && cd libs/event-sdk && pnpm build",
+    "openapi:update:prod": "cd apps/api && pnpm openapi:update:prod && cd ../.. && cd libs/event-sdk && pnpm build"
   },
   "dependencies": {
     "turbo": "^2.5.8"

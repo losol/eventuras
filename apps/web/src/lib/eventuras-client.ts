@@ -18,15 +18,14 @@ const logger = Logger.create({
 });
 
 let isConfigured = false;
+let configuredBaseUrl: string | null = null;
 
 /**
  * Configure the Eventuras API client.
- * Called once at application startup.
+ * Can be called multiple times - will reconfigure if baseUrl changes or if not yet configured.
  * @throws {Error} If NEXT_PUBLIC_BACKEND_URL is not set
  */
 export async function configureEventurasClient() {
-  if (isConfigured) return;
-
   const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   if (!baseUrl) {
@@ -35,7 +34,14 @@ export async function configureEventurasClient() {
     );
   }
 
+  // Only skip if already configured with the same baseUrl
+  if (isConfigured && configuredBaseUrl === baseUrl) {
+    return;
+  }
+
+  logger.info({ baseUrl }, 'Configuring Eventuras API client');
   client.setConfig({ baseUrl });
+  configuredBaseUrl = baseUrl;
 
   // Inject auth token on every request (server-side only)
   client.interceptors.request.use(async (options: RequestOptions) => {
@@ -43,10 +49,21 @@ export async function configureEventurasClient() {
       try {
         const token = await getAccessToken();
 
-        // Log request details (debug level)
+        // Log request details
         const fullUrl = options.url?.startsWith('http')
           ? options.url
           : `${baseUrl}${options.url || ''}`;
+
+        logger.info(
+          {
+            request: {
+              url: fullUrl,
+              method: options.method || 'GET',
+              baseUrl,
+            },
+          },
+          'API request interceptor - about to make request'
+        );
 
         if (!token) {
           // Log warning but allow request to proceed for public endpoints
@@ -137,9 +154,11 @@ export async function configureEventurasClient() {
             request: {
               url: fullUrl,
               method: options.method || 'GET',
+              baseUrl,
             },
+            configuredBaseUrl: baseUrl,
           },
-          'Connection refused - Backend unreachable'
+          'Connection refused - Backend unreachable. Check if backend is running on the configured baseUrl.'
         );
         return error;
       }

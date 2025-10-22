@@ -1,0 +1,6 @@
+# Keep the OpenAPI specification checked in
+!eventuras-v3.json
+
+# Ignore any temporary or generated docs
+*.tmp
+*.draft

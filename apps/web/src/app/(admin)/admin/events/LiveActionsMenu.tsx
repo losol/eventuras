@@ -8,13 +8,13 @@ import { CircleX } from '@eventuras/ratio-ui/icons';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 import { useToast } from '@eventuras/toast';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { sendCertificateEmail, updateRegistrationStatus } from '../registrations/actions';
 interface LiveActionsMenuProps {
   registration: RegistrationDto;
   onStatusUpdate?: (registration: RegistrationDto) => void;
 }
-const LiveActionsMenu = ({ registration }: LiveActionsMenuProps) => {
+
+const LiveActionsMenu = ({ registration, onStatusUpdate }: LiveActionsMenuProps) => {
   const [emailLoading, setEmailLoading] = useState(false);
   const [emailError, setEmailError] = useState<string | null>(null);
   const [emailSuccess, setEmailSuccess] = useState(false);
@@ -24,25 +24,22 @@ const LiveActionsMenu = ({ registration }: LiveActionsMenuProps) => {
     context: { component: 'LiveActionsMenu' },
   });
   const handleStatusUpdate = async (newStatus: RegistrationStatus) => {
-    // TODO: This functionality is not yet fully implemented
-    toast.error('Status update not yet implemented. Please use the registration edit page.');
-    logger.warn(
-      { registrationId: registration.registrationId, newStatus },
-      'Status update attempted but not implemented'
-    );
-    // When ready, uncomment:
-    // const result = await updateRegistrationStatus(registration.registrationId!, newStatus);
-    //
-    // if (!result.success) {
-    //   toast.error(result.error.message);
-    //   logger.error({ error: result.error }, 'Failed to update registration status');
-    //   return;
-    // }
-    //
-    // toast.success(result.message || 'Status updated successfully!');
-    // if (onStatusUpdate) {
-    //   onStatusUpdate({ ...registration, status: newStatus });
-    // }
+    logger.info({ registrationId: registration.registrationId, newStatus }, 'Updating registration status');
+
+    const result = await updateRegistrationStatus(registration.registrationId!, newStatus);
+
+    if (!result.success) {
+      toast.error(result.error.message);
+      logger.error({ error: result.error, registrationId: registration.registrationId }, 'Failed to update registration status');
+      return;
+    }
+
+    toast.success(result.message || 'Status updated successfully!');
+    logger.info({ registrationId: registration.registrationId, newStatus }, 'Status updated successfully');
+
+    if (onStatusUpdate && result.data) {
+      onStatusUpdate(result.data);
+    }
   };
   const handleEmailCertificate = async (registrationId: number) => {
     setEmailLoading(true);
