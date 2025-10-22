@@ -1,12 +1,11 @@
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asp.Versioning;
 using Eventuras.Services.Orders;
 using Eventuras.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Eventuras.WebApi.Controllers.v3.Orders;
 
@@ -85,8 +84,17 @@ public class OrdersController : ControllerBase
     }
 
     [HttpPatch("{id:int}")]
-    [Consumes("application/json-patch+json")]
-    public async Task<IActionResult> PatchOrder(int id, [FromBody] JsonPatchDocument<OrderDto> patchDoc, CancellationToken cancellationToken = default)
+    [SwaggerOperation(
+        Summary = "Partially update an order",
+        Description = "Updates specific fields of an order. Only Status, Comments, and PaymentMethod can be modified."
+    )]
+    [ProducesResponseType(typeof(OrderDto), 200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(404)]
+    public async Task<IActionResult> PatchOrder(
+        int id,
+        [FromBody] OrderPatchDto patchDto,
+        CancellationToken cancellationToken = default)
     {
         var order = await _orderRetrievalService.GetOrderByIdAsync(id, new OrderRetrievalOptions
         {
@@ -100,21 +108,12 @@ public class OrdersController : ControllerBase
             return NotFound("Order not found.");
         }
 
-        // Only supports replace for now.
-        if (patchDoc.Operations.Exists(op => op.OperationType != Microsoft.AspNetCore.JsonPatch.Operations.OperationType.Replace))
-        {
-            return BadRequest("Only replace operations are supported at this time.");
-        }
-
-        var orderDto = new OrderDto(order);
-        patchDoc.ApplyTo(orderDto, ModelState);
-
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        orderDto.CopyTo(order);
+        patchDto.ApplyTo(order);
 
         await _orderManagementService.UpdateOrderAsync(order, cancellationToken);
 

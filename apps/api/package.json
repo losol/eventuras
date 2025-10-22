@@ -5,5 +5,14 @@
   "license": "LGPL-3.0-or-later",
   "author": "",
   "main": "index.js",
-  "scripts": {}
+  "exports": {
+    "./openapi": "./docs/eventuras-v3.json"
+  },
+  "files": [
+    "docs/eventuras-v3.json"
+  ],
+  "scripts": {
+    "openapi:update": "./scripts/update-openapi.sh",
+    "openapi:update:prod": "./scripts/update-openapi.sh https://api.eventuras.com"
+  }
 }
