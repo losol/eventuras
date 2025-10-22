@@ -28,6 +28,7 @@
     "@hey-api/openapi-ts": "0.86.1"
   },
   "devDependencies": {
+    "@eventuras/api": "workspace:*",
     "@eventuras/typescript-config": "workspace:*",
     "typescript": "^5.9.3"
   }

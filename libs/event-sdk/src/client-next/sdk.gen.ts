@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { DeleteV3EventcollectionsByIdData, DeleteV3EventcollectionsByIdResponses, DeleteV3EventsByEventIdCollectionsByCollectionIdData, DeleteV3EventsByEventIdCollectionsByCollectionIdResponses, DeleteV3EventsByEventIdProductsByProductIdData, DeleteV3EventsByEventIdProductsByProductIdResponses, DeleteV3EventsByEventIdProductsByProductIdVariantsByIdData, DeleteV3EventsByEventIdProductsByProductIdVariantsByIdResponses, DeleteV3EventsByIdData, DeleteV3EventsByIdResponses, DeleteV3OrdersByIdData, DeleteV3OrdersByIdResponses, DeleteV3OrganizationsByOrganizationIdData, DeleteV3OrganizationsByOrganizationIdMembersByUserIdData, DeleteV3OrganizationsByOrganizationIdMembersByUserIdResponses, DeleteV3OrganizationsByOrganizationIdMembersByUserIdRolesData, DeleteV3OrganizationsByOrganizationIdMembersByUserIdRolesResponses, DeleteV3OrganizationsByOrganizationIdResponses, DeleteV3RegistrationsByIdData, DeleteV3RegistrationsByIdResponses, GetV3CertificatesByIdData, GetV3CertificatesByIdResponses, GetV3EventByIdCertificatesData, GetV3EventByIdCertificatesPreviewData, GetV3EventByIdCertificatesPreviewResponses, GetV3EventByIdCertificatesResponses, GetV3EventcollectionsByIdData, GetV3EventcollectionsByIdResponses, GetV3EventcollectionsData, GetV3EventcollectionsResponses, GetV3EventsByEventIdProductsByProductIdVariantsData, GetV3EventsByEventIdProductsByProductIdVariantsResponses, GetV3EventsByEventIdProductsData, GetV3EventsByEventIdProductsResponses, GetV3EventsByEventIdStatisticsData, GetV3EventsByEventIdStatisticsResponses, GetV3EventsByIdData, GetV3EventsByIdResponses, GetV3EventsData, GetV3EventsResponses, GetV3InvoicesByIdData, GetV3InvoicesByIdResponses, GetV3NotificationsByIdData, GetV3NotificationsByIdRecipientsData, GetV3NotificationsByIdRecipientsResponses, GetV3NotificationsByIdResponses, GetV3NotificationsData, GetV3NotificationsResponses, GetV3OnlinecoursesByIdData, GetV3OnlinecoursesByIdResponses, GetV3OnlinecoursesData, GetV3OnlinecoursesResponses, GetV3OrdersByIdData, GetV3OrdersByIdResponses, GetV3OrdersData, GetV3OrdersResponses, GetV3OrganizationsByOrganizationIdData, GetV3OrganizationsByOrganizationIdMembersByUserIdRolesData, GetV3OrganizationsByOrganizationIdMembersByUserIdRolesResponses, GetV3OrganizationsByOrganizationIdResponses, GetV3OrganizationsByOrganizationIdSettingsData, GetV3OrganizationsByOrganizationIdSettingsResponses, GetV3OrganizationsData, GetV3OrganizationsResponses, GetV3ProductsByProductIdSummaryData, GetV3ProductsByProductIdSummaryResponses, GetV3RegistrationsByIdData, GetV3RegistrationsByIdOrdersData, GetV3RegistrationsByIdOrdersResponses, GetV3RegistrationsByIdResponses, GetV3RegistrationsData, GetV3RegistrationsErrors, GetV3RegistrationsResponses, GetV3UserprofileData, GetV3UserprofileResponses, GetV3UsersByIdData, GetV3UsersByIdResponses, GetV3UsersData, GetV3UsersMeData, GetV3UsersMeResponses, GetV3UsersResponses, PatchV3EventsByIdData, PatchV3EventsByIdResponses, PatchV3OrdersByIdData, PatchV3OrdersByIdResponses, PatchV3RegistrationsByIdData, PatchV3RegistrationsByIdResponses, PostV3EventByIdCertificatesIssueData, PostV3EventByIdCertificatesIssueResponses, PostV3EventByIdCertificatesUpdateData, PostV3EventByIdCertificatesUpdateResponses, PostV3EventcollectionsData, PostV3EventcollectionsResponses, PostV3EventsByEventIdProductsByProductIdVariantsData, PostV3EventsByEventIdProductsByProductIdVariantsResponses, PostV3EventsByEventIdProductsData, PostV3EventsByEventIdProductsResponses, PostV3EventsData, PostV3EventsResponses, PostV3InvoicesData, PostV3InvoicesResponses, PostV3NotificationsEmailData, PostV3NotificationsEmailResponses, PostV3NotificationsSmsData, PostV3NotificationsSmsResponses, PostV3OrdersData, PostV3OrdersResponses, PostV3OrganizationsByOrganizationIdMembersByUserIdRolesData, PostV3OrganizationsByOrganizationIdMembersByUserIdRolesResponses, PostV3OrganizationsByOrganizationIdSettingsData, PostV3OrganizationsByOrganizationIdSettingsResponses, PostV3OrganizationsData, PostV3OrganizationsResponses, PostV3RegistrationsByIdCertificateSendData, PostV3RegistrationsByIdCertificateSendResponses, PostV3RegistrationsByIdOrdersData, PostV3RegistrationsByIdOrdersResponses, PostV3RegistrationsByIdProductsData, PostV3RegistrationsByIdProductsResponses, PostV3RegistrationsData, PostV3RegistrationsMeByEventIdData, PostV3RegistrationsMeByEventIdResponses, PostV3RegistrationsResponses, PostV3UsersData, PostV3UsersResponses, PutV3EventcollectionsByIdData, PutV3EventcollectionsByIdResponses, PutV3EventsByEventIdCollectionsByCollectionIdData, PutV3EventsByEventIdCollectionsByCollectionIdResponses, PutV3EventsByEventIdProductsByProductIdData, PutV3EventsByEventIdProductsByProductIdResponses, PutV3EventsByIdData, PutV3EventsByIdResponses, PutV3OrdersByIdData, PutV3OrdersByIdResponses, PutV3OrganizationsByOrganizationIdData, PutV3OrganizationsByOrganizationIdMembersByUserIdData, PutV3OrganizationsByOrganizationIdMembersByUserIdResponses, PutV3OrganizationsByOrganizationIdResponses, PutV3OrganizationsByOrganizationIdSettingsData, PutV3OrganizationsByOrganizationIdSettingsResponses, PutV3RegistrationsByIdData, PutV3RegistrationsByIdResponses, PutV3UserprofileData, PutV3UserprofileResponses, PutV3UsersByIdData, PutV3UsersByIdResponses } from './types.gen';
+import type { DeleteV3EventcollectionsByIdData, DeleteV3EventcollectionsByIdResponses, DeleteV3EventsByEventIdCollectionsByCollectionIdData, DeleteV3EventsByEventIdCollectionsByCollectionIdResponses, DeleteV3EventsByEventIdProductsByProductIdData, DeleteV3EventsByEventIdProductsByProductIdResponses, DeleteV3EventsByEventIdProductsByProductIdVariantsByIdData, DeleteV3EventsByEventIdProductsByProductIdVariantsByIdResponses, DeleteV3EventsByIdData, DeleteV3EventsByIdResponses, DeleteV3OrdersByIdData, DeleteV3OrdersByIdResponses, DeleteV3OrganizationsByOrganizationIdData, DeleteV3OrganizationsByOrganizationIdMembersByUserIdData, DeleteV3OrganizationsByOrganizationIdMembersByUserIdResponses, DeleteV3OrganizationsByOrganizationIdMembersByUserIdRolesData, DeleteV3OrganizationsByOrganizationIdMembersByUserIdRolesResponses, DeleteV3OrganizationsByOrganizationIdResponses, DeleteV3RegistrationsByIdData, DeleteV3RegistrationsByIdResponses, GetV3CertificatesByIdData, GetV3CertificatesByIdResponses, GetV3EventByIdCertificatesData, GetV3EventByIdCertificatesPreviewData, GetV3EventByIdCertificatesPreviewResponses, GetV3EventByIdCertificatesResponses, GetV3EventcollectionsByIdData, GetV3EventcollectionsByIdResponses, GetV3EventcollectionsData, GetV3EventcollectionsResponses, GetV3EventsByEventIdProductsByProductIdVariantsData, GetV3EventsByEventIdProductsByProductIdVariantsResponses, GetV3EventsByEventIdProductsData, GetV3EventsByEventIdProductsResponses, GetV3EventsByEventIdStatisticsData, GetV3EventsByEventIdStatisticsResponses, GetV3EventsByIdData, GetV3EventsByIdResponses, GetV3EventsData, GetV3EventsResponses, GetV3InvoicesByIdData, GetV3InvoicesByIdResponses, GetV3NotificationsByIdData, GetV3NotificationsByIdRecipientsData, GetV3NotificationsByIdRecipientsResponses, GetV3NotificationsByIdResponses, GetV3NotificationsData, GetV3NotificationsResponses, GetV3OnlinecoursesByIdData, GetV3OnlinecoursesByIdResponses, GetV3OnlinecoursesData, GetV3OnlinecoursesResponses, GetV3OrdersByIdData, GetV3OrdersByIdResponses, GetV3OrdersData, GetV3OrdersResponses, GetV3OrganizationsByOrganizationIdData, GetV3OrganizationsByOrganizationIdMembersByUserIdRolesData, GetV3OrganizationsByOrganizationIdMembersByUserIdRolesResponses, GetV3OrganizationsByOrganizationIdResponses, GetV3OrganizationsByOrganizationIdSettingsData, GetV3OrganizationsByOrganizationIdSettingsResponses, GetV3OrganizationsData, GetV3OrganizationsResponses, GetV3ProductsByProductIdSummaryData, GetV3ProductsByProductIdSummaryResponses, GetV3RegistrationsByIdData, GetV3RegistrationsByIdOrdersData, GetV3RegistrationsByIdOrdersResponses, GetV3RegistrationsByIdResponses, GetV3RegistrationsData, GetV3RegistrationsErrors, GetV3RegistrationsResponses, GetV3UserprofileData, GetV3UserprofileResponses, GetV3UsersByIdData, GetV3UsersByIdResponses, GetV3UsersData, GetV3UsersMeData, GetV3UsersMeResponses, GetV3UsersResponses, PatchV3EventsByIdData, PatchV3EventsByIdErrors, PatchV3EventsByIdResponses, PatchV3OrdersByIdData, PatchV3OrdersByIdErrors, PatchV3OrdersByIdResponses, PatchV3RegistrationsByIdData, PatchV3RegistrationsByIdErrors, PatchV3RegistrationsByIdResponses, PostV3EventByIdCertificatesIssueData, PostV3EventByIdCertificatesIssueResponses, PostV3EventByIdCertificatesUpdateData, PostV3EventByIdCertificatesUpdateResponses, PostV3EventcollectionsData, PostV3EventcollectionsResponses, PostV3EventsByEventIdProductsByProductIdVariantsData, PostV3EventsByEventIdProductsByProductIdVariantsResponses, PostV3EventsByEventIdProductsData, PostV3EventsByEventIdProductsResponses, PostV3EventsData, PostV3EventsResponses, PostV3InvoicesData, PostV3InvoicesResponses, PostV3NotificationsEmailData, PostV3NotificationsEmailResponses, PostV3NotificationsSmsData, PostV3NotificationsSmsResponses, PostV3OrdersData, PostV3OrdersResponses, PostV3OrganizationsByOrganizationIdMembersByUserIdRolesData, PostV3OrganizationsByOrganizationIdMembersByUserIdRolesResponses, PostV3OrganizationsByOrganizationIdSettingsData, PostV3OrganizationsByOrganizationIdSettingsResponses, PostV3OrganizationsData, PostV3OrganizationsResponses, PostV3RegistrationsByIdCertificateSendData, PostV3RegistrationsByIdCertificateSendResponses, PostV3RegistrationsByIdOrdersData, PostV3RegistrationsByIdOrdersResponses, PostV3RegistrationsByIdProductsData, PostV3RegistrationsByIdProductsResponses, PostV3RegistrationsData, PostV3RegistrationsMeByEventIdData, PostV3RegistrationsMeByEventIdResponses, PostV3RegistrationsResponses, PostV3UsersData, PostV3UsersResponses, PutV3EventcollectionsByIdData, PutV3EventcollectionsByIdResponses, PutV3EventsByEventIdCollectionsByCollectionIdData, PutV3EventsByEventIdCollectionsByCollectionIdResponses, PutV3EventsByEventIdProductsByProductIdData, PutV3EventsByEventIdProductsByProductIdResponses, PutV3EventsByIdData, PutV3EventsByIdResponses, PutV3OrdersByIdData, PutV3OrdersByIdResponses, PutV3OrganizationsByOrganizationIdData, PutV3OrganizationsByOrganizationIdMembersByUserIdData, PutV3OrganizationsByOrganizationIdMembersByUserIdResponses, PutV3OrganizationsByOrganizationIdResponses, PutV3OrganizationsByOrganizationIdSettingsData, PutV3OrganizationsByOrganizationIdSettingsResponses, PutV3RegistrationsByIdData, PutV3RegistrationsByIdResponses, PutV3UserprofileData, PutV3UserprofileResponses, PutV3UsersByIdData, PutV3UsersByIdResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -354,10 +354,12 @@ export const getV3EventsById = <ThrowOnError extends boolean = false>(options: O
 };
 
 /**
- * Partially updates a specific event by its ID using JSON Patch.
+ * Partially updates a specific event by its ID.
+ *
+ * Updates specific fields of an event. For comprehensive updates with all fields, use PUT endpoint with EventFormDto instead.
  */
 export const patchV3EventsById = <ThrowOnError extends boolean = false>(options: Options<PatchV3EventsByIdData, ThrowOnError>) => {
-    return (options.client ?? client).patch<PatchV3EventsByIdResponses, unknown, ThrowOnError>({
+    return (options.client ?? client).patch<PatchV3EventsByIdResponses, PatchV3EventsByIdErrors, ThrowOnError>({
         security: [
             {
                 scheme: 'bearer',
@@ -566,8 +568,13 @@ export const getV3OrdersById = <ThrowOnError extends boolean = false>(options: O
     });
 };
 
+/**
+ * Partially update an order
+ *
+ * Updates specific fields of an order. Only Status, Comments, and PaymentMethod can be modified.
+ */
 export const patchV3OrdersById = <ThrowOnError extends boolean = false>(options: Options<PatchV3OrdersByIdData, ThrowOnError>) => {
-    return (options.client ?? client).patch<PatchV3OrdersByIdResponses, unknown, ThrowOnError>({
+    return (options.client ?? client).patch<PatchV3OrdersByIdResponses, PatchV3OrdersByIdErrors, ThrowOnError>({
         security: [
             {
                 scheme: 'bearer',
@@ -575,7 +582,11 @@ export const patchV3OrdersById = <ThrowOnError extends boolean = false>(options:
             }
         ],
         url: '/v3/orders/{id}',
-        ...options
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+        }
     });
 };
 
@@ -953,8 +964,13 @@ export const getV3RegistrationsById = <ThrowOnError extends boolean = false>(opt
     });
 };
 
+/**
+ * Partially update a registration
+ *
+ * Updates specific fields of a registration. Only Status, Type, and Notes can be modified.
+ */
 export const patchV3RegistrationsById = <ThrowOnError extends boolean = false>(options: Options<PatchV3RegistrationsByIdData, ThrowOnError>) => {
-    return (options.client ?? client).patch<PatchV3RegistrationsByIdResponses, unknown, ThrowOnError>({
+    return (options.client ?? client).patch<PatchV3RegistrationsByIdResponses, PatchV3RegistrationsByIdErrors, ThrowOnError>({
         security: [
             {
                 scheme: 'bearer',
@@ -962,7 +978,11 @@ export const patchV3RegistrationsById = <ThrowOnError extends boolean = false>(o
             }
         ],
         url: '/v3/registrations/{id}',
-        ...options
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+        }
     });
 };
 

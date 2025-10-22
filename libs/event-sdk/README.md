@@ -32,7 +32,7 @@ const events = await getV3Events({ client });
 
 ### Generating the SDK
 
-The SDK is generated from the OpenAPI specification (`swagger.json`):
+The SDK is generated from the OpenAPI specification exported by `@eventuras/api`:
 
 ```bash
 pnpm build
@@ -40,13 +40,29 @@ pnpm build
 
 This will:
 
-1. Generate TypeScript types and client code from `swagger.json` using `@hey-api/openapi-ts`
+1. Generate TypeScript types and client code from the OpenAPI spec using `@hey-api/openapi-ts`
 2. Compile TypeScript to JavaScript with type declarations
+
+### Updating the OpenAPI Specification
+
+The OpenAPI specification must be updated whenever the API changes:
+
+```bash
+# From the repository root:
+pnpm openapi:update
+
+# This will:
+# 1. Start the API (or use running instance)
+# 2. Fetch apps/api/docs/eventuras-v3.json
+# 3. Regenerate libs/event-sdk automatically
+```
 
 ### Configuration
 
 - `openapi-ts.config.ts`: Configuration for the OpenAPI TypeScript generator
+  - Uses `@eventuras/api/openapi` export to access the spec
 - `tsconfig.json`: TypeScript compiler options (outputs to `dist/`)
+- Source spec: `@eventuras/api/openapi` → `apps/api/docs/eventuras-v3.json`
 
 ## Known Issues
 
