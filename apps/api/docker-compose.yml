@@ -6,7 +6,7 @@ services:
     environment:
       ConnectionStrings__DefaultConnection: "Host=db;Database=eventuras;Username=eventuras;Password=Str0ng!Pasword"
     ports:
-      - "5100:80"
+      - "5000:80"
     depends_on:
       db:
         condition: service_healthy
