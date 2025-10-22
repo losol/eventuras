@@ -33,8 +33,14 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
         // Set host name
         options.AddServer(new OpenApiServer
         {
-            Url = "http://localhost:8080",
-            Description = "Dev server"
+            Url = "https://localhost:5001",
+            Description = "Dev server (HTTPS)"
+        });
+
+        options.AddServer(new OpenApiServer
+        {
+            Url = "http://localhost:5000",
+            Description = "Dev server (HTTP)"
         });
 
 

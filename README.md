@@ -84,13 +84,12 @@ cd eventuras
 docker-compose up
 ```
 
-The application will be available at `http://localhost:5100`.
+The applications will be available at
+- **Backend API HTTP**: `http://localhost:5000`
+- **Backend API HTTPS**: `https://localhost:5001`
+- **Backend API Swagger UI**: `http://localhost:5000/swagger` - only available if ASPNETCORE_ENVIRONMENT=Development
+- **Backend API Integration tests**: `https://localhost:5002`
 
-**Default login credentials:**
-```
-Username: admin@email.com
-Password: Str0ng!PaSsw0rd
-```
 
 ## 📖 Documentation
 - **Docs**: Take a look at the `docs` folder

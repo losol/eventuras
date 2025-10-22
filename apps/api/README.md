@@ -91,7 +91,10 @@ dotnet run --project src/Eventuras.WebApi
 
 The API will be available at:
 - **HTTP**: `http://localhost:5000`
+- **HTTPS**: `https://localhost:5001`
 - **Swagger UI**: `http://localhost:5000/swagger` - only available if ASPNETCORE_ENVIRONMENT=Development
+- **Integration tests**: `https://localhost:5002`
+
 
 ## Development
 
