@@ -30,7 +30,7 @@
 
 A powerful collection of shared libraries powering the Eventuras ecosystem:
 
-- **`@eventuras/sdk`** — TypeScript SDK for API integration
+- **`@eventuras/event-sdk`** — TypeScript SDK for API integration
 - **`@eventuras/smartform`** — Intelligent form system with validation
 - **`@eventuras/ratio-ui`** — UI components and design system
 - **`@eventuras/fides-auth`** — Authentication and authorization
