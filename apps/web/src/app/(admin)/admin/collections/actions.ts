@@ -20,7 +20,7 @@ import {
 import { Logger } from '@eventuras/logger';
 
 import { appConfig } from '@/config.server';
-import { client } from '@/lib/eventuras-client';
+import { client, configureEventurasClient } from '@/lib/eventuras-client';
 import slugify from '@/utils/slugify';
 
 const logger = Logger.create({
@@ -77,6 +77,8 @@ export async function getCollections(page: number = 1, pageSize: number = 100) {
 export async function createCollection(
   data: EventCollectionCreateDto
 ): Promise<ServerActionResult<{ collectionId: number }>> {
+  await configureEventurasClient();
+
   logger.info('Creating collection...');
 
   try {
@@ -117,6 +119,8 @@ export async function createCollection(
 export async function updateCollection(
   data: EventCollectionDto
 ): Promise<ServerActionResult<void>> {
+  await configureEventurasClient();
+
   logger.info({ collectionId: data.id }, 'Updating collection...');
 
   try {
@@ -157,6 +161,8 @@ export async function addEventToCollection(
   eventId: number,
   collectionId: number
 ): Promise<ServerActionResult<void>> {
+  await configureEventurasClient();
+
   logger.info({ eventId, collectionId }, 'Adding event to collection...');
 
   try {
@@ -189,6 +195,8 @@ export async function removeEventFromCollection(
   eventId: number,
   collectionId: number
 ): Promise<ServerActionResult<void>> {
+  await configureEventurasClient();
+
   logger.info({ eventId, collectionId }, 'Removing event from collection...');
 
   try {

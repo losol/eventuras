@@ -5,10 +5,11 @@ import { revalidatePath } from 'next/cache';
 import {
   actionError,
   actionSuccess,
-  type ServerActionResult,
+  ServerActionResult,
 } from '@eventuras/core-nextjs/actions';
 import {
   getV3Registrations,
+  patchV3RegistrationsById,
   postV3RegistrationsByIdCertificateSend,
   putV3RegistrationsById,
   RegistrationDto,
@@ -18,7 +19,7 @@ import {
 import { Logger } from '@eventuras/logger';
 
 import { appConfig } from '@/config.server';
-import { client } from '@/lib/eventuras-client';
+import { client, configureEventurasClient } from '@/lib/eventuras-client';
 
 const logger = Logger.create({
   namespace: 'web:admin:registrations',
@@ -120,44 +121,42 @@ export async function updateRegistration(
 }
 
 /**
- * Update registration status
- * TODO: This should use PATCH when the SDK properly supports it
- * For now, we use PUT with only the status field
+ * Update registration status using PATCH endpoint
  */
 export async function updateRegistrationStatus(
   registrationId: number,
   status: RegistrationStatus
 ): Promise<ServerActionResult<RegistrationDto>> {
-  logger.info({ registrationId, status }, 'Updating registration status - NOT IMPLEMENTED');
+  // Ensure client is configured for this server action execution
+  await configureEventurasClient();
 
-  // TODO: Replace with proper implementation
-  // This is temporarily disabled pending proper PATCH support or full implementation
-  return actionError('Registration status update not yet fully implemented', 'NOT_IMPLEMENTED');
+  const orgId = getOrganizationId();
 
-  // When ready, uncomment and implement:
-  // try {
-  //   const response = await putV3RegistrationsById({
-  //     client,
-  //     path: { id: registrationId },
-  //     headers: { 'Eventuras-Org-Id': orgId },
-  //     body: { status },
-  //   });
-  //
-  //   if (!response.data) {
-  //     logger.error(
-  //       { error: response.error, registrationId },
-  //       'Failed to update registration status'
-  //     );
-  //     return actionError('Failed to update registration status');
-  //   }
-  //
-  //   logger.info({ registrationId, status }, 'Registration status updated successfully');
-  //   revalidatePath('/admin/registrations');
-  //   return actionSuccess(response.data, 'Status updated successfully');
-  // } catch (error) {
-  //   logger.error({ error, registrationId }, 'Unexpected error updating registration status');
-  //   return actionError('An unexpected error occurred');
-  // }
+  logger.info({ registrationId, status }, 'Updating registration status via PATCH');
+
+  try {
+    const response = await patchV3RegistrationsById({
+      client,
+      path: { id: registrationId },
+      headers: { 'Eventuras-Org-Id': orgId },
+      body: { status },
+    });
+
+    if (!response.data) {
+      logger.error(
+        { error: response.error, registrationId, status },
+        'Failed to update registration status'
+      );
+      return actionError('Failed to update registration status');
+    }
+
+    logger.info({ registrationId, status }, 'Registration status updated successfully');
+    revalidatePath('/admin/registrations');
+    return actionSuccess(response.data, 'Status updated successfully!');
+  } catch (error) {
+    logger.error({ error, registrationId, status }, 'Unexpected error updating registration status');
+    return actionError('An unexpected error occurred');
+  }
 }
 
 /**

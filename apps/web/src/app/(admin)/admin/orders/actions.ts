@@ -3,7 +3,7 @@
 import { getV3Orders, OrderDto } from '@eventuras/event-sdk';
 
 import { appConfig } from '@/config.server';
-import { client } from '@/lib/eventuras-client';
+import { client, configureEventurasClient } from '@/lib/eventuras-client';
 
 export interface GetOrdersResult {
   data: OrderDto[];
@@ -12,6 +12,8 @@ export interface GetOrdersResult {
 }
 
 export async function getOrders(page: number = 1, pageSize: number = 50) {
+  await configureEventurasClient();
+
   try {
     const organizationId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
 
