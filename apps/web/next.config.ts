@@ -3,7 +3,6 @@ import createNextIntlPlugin from 'next-intl/plugin';
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   transpilePackages: [
-    '@eventuras/sdk',
     '@eventuras/scribo',
     '@eventuras/markdowninput',
     '@eventuras/smartform',

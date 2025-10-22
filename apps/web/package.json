@@ -36,7 +36,6 @@
     "@eventuras/ratio-ui": "workspace:*",
     "@eventuras/ratio-ui-next": "workspace:*",
     "@eventuras/scribo": "workspace:*",
-    "@eventuras/sdk": "workspace:*",
     "@eventuras/smartform": "workspace:*",
     "@eventuras/toast": "workspace:^",
     "@tailwindcss/postcss": "^4.1.15",

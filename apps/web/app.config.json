@@ -4,12 +4,6 @@
   "type": "app",
   "description": "Main web frontend for Eventuras - participant and organizer interface",
   "env": {
-    "NEXT_PUBLIC_API_BASE_URL": {
-      "required": true,
-      "client": true,
-      "type": "url",
-      "description": "Base URL for the Eventuras API (e.g., https://api.eventuras.losol.io)"
-    },
     "NEXT_PUBLIC_API_VERSION": {
       "required": true,
       "client": true,
