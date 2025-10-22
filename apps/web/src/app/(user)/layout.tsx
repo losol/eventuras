@@ -9,6 +9,9 @@ import { Navbar } from '@eventuras/ratio-ui/core/Navbar';
 import UserMenu from '@/components/eventuras/UserMenu';
 import getSiteSettings from '@/utils/site/getSiteSettings';
 
+// Force dynamic rendering for all user routes since they use authentication
+export const dynamic = 'force-dynamic';
+
 /**
  * (user) Route Group Layout
  * For user area: /user/*

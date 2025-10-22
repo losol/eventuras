@@ -43,9 +43,9 @@ export default async function Homepage() {
           <div className="ml-4">
             <UserMenu
               translations={{
-                loginLabel: t('common:buttons.login'),
-                userLabel: t('common:user.profile'),
-                accountLabel: t('common:labels.account'),
+                loginLabel: t('common.buttons.login'),
+                userLabel: t('common.user.profile'),
+                accountLabel: t('common.labels.account'),
                 adminLabel: t('common.labels.admin'),
               }}
             />

@@ -9,6 +9,9 @@ import { Navbar } from '@eventuras/ratio-ui/core/Navbar';
 import UserMenu from '@/components/eventuras/UserMenu';
 import getSiteSettings from '@/utils/site/getSiteSettings';
 
+// Force dynamic rendering for all admin routes since they use authentication
+export const dynamic = 'force-dynamic';
+
 /**
  * (admin) Route Group Layout
  * For admin area: /admin/*
