@@ -15,19 +15,30 @@ public class OpenApiSpecTests : IClassFixture<CustomWebApiApplicationFactory<Pro
         _factory = factory;
     }
 
+    private static string GetOpenApiSpecPath()
+    {
+        // Find the API project root by looking for the .csproj file
+        var directory = new DirectoryInfo(Directory.GetCurrentDirectory());
+
+        while (directory != null && !File.Exists(Path.Combine(directory.FullName, "Eventuras.sln")))
+        {
+            directory = directory.Parent;
+        }
+
+        if (directory == null)
+        {
+            throw new DirectoryNotFoundException(
+                "Could not find API project root. Expected to find Eventuras.sln in parent directories.");
+        }
+
+        return Path.Combine(directory.FullName, "docs", "eventuras-v3.json");
+    }
+
     [Fact]
     public void OpenApiSpec_ShouldExist()
     {
         // Arrange
-        var openApiSpecPath = Path.Combine(
-            Directory.GetCurrentDirectory(),
-            "..",
-            "..",
-            "..",
-            "..",
-            "docs",
-            "eventuras-v3.json"
-        );
+        var openApiSpecPath = GetOpenApiSpecPath();
 
         // Act & Assert
         Assert.True(
@@ -41,15 +52,7 @@ public class OpenApiSpecTests : IClassFixture<CustomWebApiApplicationFactory<Pro
     public void OpenApiSpec_ShouldBeValidJson()
     {
         // Arrange
-        var openApiSpecPath = Path.Combine(
-            Directory.GetCurrentDirectory(),
-            "..",
-            "..",
-            "..",
-            "..",
-            "docs",
-            "eventuras-v3.json"
-        );
+        var openApiSpecPath = GetOpenApiSpecPath();
 
         // Skip if file doesn't exist (let the other test fail)
         if (!File.Exists(openApiSpecPath))
@@ -72,15 +75,7 @@ public class OpenApiSpecTests : IClassFixture<CustomWebApiApplicationFactory<Pro
     public void OpenApiSpec_ShouldContainRequiredOpenApiFields()
     {
         // Arrange
-        var openApiSpecPath = Path.Combine(
-            Directory.GetCurrentDirectory(),
-            "..",
-            "..",
-            "..",
-            "..",
-            "docs",
-            "eventuras-v3.json"
-        );
+        var openApiSpecPath = GetOpenApiSpecPath();
 
         // Skip if file doesn't exist (let the other test fail)
         if (!File.Exists(openApiSpecPath))
@@ -122,15 +117,7 @@ public class OpenApiSpecTests : IClassFixture<CustomWebApiApplicationFactory<Pro
     public async Task OpenApiSpec_ShouldMatchGeneratedSpec()
     {
         // Arrange
-        var openApiSpecPath = Path.Combine(
-            Directory.GetCurrentDirectory(),
-            "..",
-            "..",
-            "..",
-            "..",
-            "docs",
-            "eventuras-v3.json"
-        );
+        var openApiSpecPath = GetOpenApiSpecPath();
 
         // Skip if file doesn't exist (let the other test fail)
         if (!File.Exists(openApiSpecPath))
