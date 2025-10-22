@@ -10,7 +10,6 @@ using Eventuras.Services.Registrations;
 using Eventuras.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Annotations;
@@ -219,37 +218,38 @@ public class RegistrationsController : ControllerBase
 
 
     [HttpPatch("{id}")]
-    [Consumes("application/json-patch+json")]
-    public async Task<IActionResult> UpdateRegistration(int id, [FromBody] JsonPatchDocument<RegistrationDto> patchDoc, CancellationToken cancellationToken)
+    [SwaggerOperation(
+        Summary = "Partially update a registration",
+        Description = "Updates specific fields of a registration. Only Status, Type, and Notes can be modified."
+    )]
+    [ProducesResponseType(typeof(RegistrationDto), 200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(404)]
+    public async Task<IActionResult> PatchRegistration(
+        int id,
+        [FromBody] RegistrationPatchDto patchDto,
+        CancellationToken cancellationToken)
     {
-        _logger.LogInformation("UpdateRegistration called with ID: {id}, and patchDoc: {patchDoc}", id, patchDoc);
-
-        var registration = await _registrationRetrievalService.GetRegistrationByIdAsync(id, RetrievalOptions(null), cancellationToken);
-        if (registration == null)
-        {
-            return NotFound("Registration not found.");
-        }
-
-        if (patchDoc.Operations.Any(o => o.path.Equals("/id", StringComparison.OrdinalIgnoreCase)))
-        {
-            return BadRequest("No id patching.");
-        }
-
-
-        var registrationDto = new RegistrationDto(registration);
-
-        patchDoc.ApplyTo(registrationDto, ModelState);
+        _logger.LogInformation("PatchRegistration called with ID: {id}, Status: {status}, Type: {type}",
+            id, patchDto.Status, patchDto.Type);
 
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        registrationDto.CopyTo(registration);
+        var registration = await _registrationRetrievalService.GetRegistrationByIdAsync(id, null, cancellationToken);
+        if (registration == null)
+        {
+            return NotFound("Registration not found.");
+        }
+
+        patchDto.ApplyTo(registration);
 
         await _registrationManagementService.UpdateRegistrationAsync(registration, cancellationToken);
 
-        return Ok(registrationDto);
+        var updatedDto = new RegistrationDto(registration);
+        return Ok(updatedDto);
     }
 
 
@@ -274,7 +274,8 @@ public class RegistrationsController : ControllerBase
             return NotFound("Registration not found.");
         }
 
-        registration.MarkAsCancelled();
+        registration.Status = Registration.RegistrationStatus.Cancelled;
+        registration.AddLog("Registration cancelled");
 
         await _registrationManagementService.UpdateRegistrationAsync(registration, cancellationToken);
 

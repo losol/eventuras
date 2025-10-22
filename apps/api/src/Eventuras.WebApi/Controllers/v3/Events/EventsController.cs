@@ -7,9 +7,9 @@ using Eventuras.Domain;
 using Eventuras.Services.Events;
 using Eventuras.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Eventuras.WebApi.Controllers.v3.Events;
 
@@ -145,44 +145,48 @@ public class EventsController : ControllerBase
 
     // PATCH: v3/events/{id}
     /// <summary>
-    /// Partially updates a specific event by its ID using JSON Patch.
+    /// Partially updates a specific event by its ID.
     /// </summary>
     /// <param name="id">The ID of the event to update.</param>
-    /// <param name="patchDoc">The JSON Patch document with updates.</param>
+    /// <param name="patchDto">The patch DTO with field updates.</param>
+    /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>The updated event.</returns>
     [HttpPatch("{id:int}")]
-    public async Task<IActionResult> JsonPatchWithModelState(int id, [FromBody] JsonPatchDocument<EventFormDto> patchDoc)
+    [SwaggerOperation(
+        Summary = "Partially update an event",
+        Description = "Updates specific fields of an event. For comprehensive updates with all fields, use PUT endpoint with EventFormDto instead."
+    )]
+    [ProducesResponseType(typeof(EventDto), 200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(404)]
+    public async Task<IActionResult> PatchEvent(
+        int id,
+        [FromBody] EventPatchDto patchDto,
+        CancellationToken cancellationToken = default)
     {
-
-        // Log the start of the patch operation
-        _logger.LogInformation($"Starting JSON Patch operation for event with ID {id}.");
-
-        var entity = await _eventInfoService.GetEventInfoByIdAsync(id);
-
-        // Log a warning if the event entity is null (not found).
-        if (entity == null)
-        {
-            _logger.LogWarning($"Event with ID {id} not found for JSON Patch operation.");
-            return NotFound();
-        }
-
-        var updateModel = EventFormDto.FromEntity(entity);
-        patchDoc.ApplyTo(updateModel, ModelState);
+        _logger.LogInformation("Starting PATCH operation for event with ID {id}.", id);
 
         if (!ModelState.IsValid)
         {
-            _logger.LogWarning("Invalid model state during JSON Patch operation.");
-            return ValidationProblem();
+            _logger.LogWarning("Invalid model state during PATCH operation.");
+            return BadRequest(ModelState);
         }
 
-        updateModel.CopyTo(entity);
+        var entity = await _eventInfoService.GetEventInfoByIdAsync(id, cancellationToken);
+
+        if (entity == null)
+        {
+            _logger.LogWarning("Event with ID {id} not found for PATCH operation.", id);
+            return NotFound("Event not found.");
+        }
+
+        patchDto.ApplyTo(entity);
+
         await _eventManagementService.UpdateEventAsync(entity);
 
-        // Log the successful completion of the patch operation.
-        _logger.LogInformation($"Successfully completed JSON Patch operation for event with ID {id}.");
+        _logger.LogInformation("Successfully completed PATCH operation for event with ID {id}.", id);
 
         return Ok(new EventDto(entity));
-
     }
 
 
