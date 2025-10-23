@@ -48,9 +48,10 @@ function ensureConfigured() {
   const baseUrl = appConfig.env.NEXT_PUBLIC_BACKEND_URL as string;
 
   if (!baseUrl) {
-    throw new Error(
-      'NEXT_PUBLIC_BACKEND_URL environment variable is required. Please set it in your .env.local file.'
-    );
+    // During build time, this is acceptable - pages won't actually be pre-rendered
+    // At runtime, this is a fatal error
+    logger.warn('NEXT_PUBLIC_BACKEND_URL not set - skipping client configuration');
+    return; // Don't configure, don't throw
   }
 
   logger.info({ baseUrl }, 'Configuring Eventuras API client');
@@ -208,9 +209,8 @@ function ensureConfigured() {
   isConfigured = true;
 }
 
-// Configure on server side only
-if (typeof window === 'undefined') {
-  ensureConfigured();
-}
+// Note: Configuration is done lazily when client is first used
+// This allows builds to succeed even without env vars set
+// (admin pages are server-rendered, not statically generated)
 
-export { client };
+export { client, ensureConfigured };

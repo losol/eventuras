@@ -25,8 +25,13 @@
  * if they need to pass it explicitly (though the global client is usually enough).
  */
 
-// Import for side-effect: ensures client is configured
-import './eventuras-client';
+// Import and ensure configuration before re-exporting
+import { ensureConfigured } from './eventuras-client';
+
+// Ensure client is configured (lazy - only runs on first import)
+if (typeof window === 'undefined') {
+  ensureConfigured();
+}
 
 // Re-export everything from the SDK
 export * from '@eventuras/event-sdk';
