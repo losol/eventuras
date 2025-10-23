@@ -8,11 +8,6 @@ export interface SessionWarningProps {
   isOpen: boolean;
 
   /**
-   * The reason for the session warning (e.g., 'expired', 'invalid').
-   */
-  reason: string;
-
-  /**
    * Callback when user clicks "login now" button.
    */
   onLoginNow: () => void;
@@ -28,11 +23,11 @@ export interface SessionWarningProps {
   isLoading?: boolean;
 
   /**
-   * Translation function or object with warning messages.
+   * Warning messages to display.
    */
   messages: {
-    title: (reason: string) => string;
-    description: (reason: string) => string;
+    title: string;
+    description: string;
     tip?: string;
     loginButton: string;
     dismissButton: string;
@@ -49,13 +44,12 @@ export interface SessionWarningProps {
  * @example
  * ```tsx
  * <SessionWarning
- *   isOpen={!!warning}
- *   reason={warning}
+ *   isOpen={isExpired}
  *   onLoginNow={() => router.refresh()}
  *   onDismiss={() => setWarning(null)}
  *   messages={{
- *     title: (reason) => t(`title.${reason}`),
- *     description: (reason) => t(`description.${reason}`),
+ *     title: t('title.expired'),
+ *     description: t('description.expired'),
  *     tip: t('tip'),
  *     loginButton: t('login'),
  *     dismissButton: t('dismiss'),
@@ -65,7 +59,6 @@ export interface SessionWarningProps {
  */
 export function SessionWarning({
   isOpen,
-  reason,
   onLoginNow,
   onDismiss,
   isLoading = false,
@@ -73,14 +66,11 @@ export function SessionWarning({
 }: SessionWarningProps) {
   if (!isOpen) return null;
 
-  const title = messages.title(reason);
-  const description = messages.description(reason);
-
   return (
     <PageOverlay variant="warning" fullScreen>
       <div className="space-y-4">
-        <h1 className="text-2xl font-bold">{title}</h1>
-        <p className="text-lg">{description}</p>
+        <h1 className="text-2xl font-bold">{messages.title}</h1>
+        <p className="text-lg">{messages.description}</p>
 
         {messages.tip && (
           <p className="text-sm text-gray-600 dark:text-gray-400">

@@ -39,7 +39,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
         />
       </Navbar>
 
-      <main id="main-content" className="container mx-auto">
+      <main id="main-content">
         {children}
       </main>
 

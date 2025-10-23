@@ -36,8 +36,13 @@ export function SessionWarningOverlay() {
   const handleLoginNow = useCallback(() => {
     logger.info('User clicked login, redirecting to login endpoint');
     setIsLoggingIn(true);
-    // The /api/login route will detect and clear the invalid session
-    window.location.href = '/api/login';
+    
+    // Capture current URL to return after login
+    const returnTo = window.location.pathname + window.location.search;
+    const loginUrl = `/api/login/auth0?returnTo=${encodeURIComponent(returnTo)}`;
+    
+    logger.info({ returnTo }, 'Redirecting to login with returnTo');
+    window.location.href = loginUrl;
   }, []);
 
   const handleDismiss = useCallback(() => {
@@ -51,16 +56,15 @@ export function SessionWarningOverlay() {
   return (
     <SessionWarning
       isOpen={status.isSessionExpired}
-      reason="expired"
       onLoginNow={handleLoginNow}
       onDismiss={handleDismiss}
       isLoading={isLoggingIn}
       messages={{
-        title: reason => t(`auth.sessionWarning.title.${reason}`),
-        description: reason => t(`auth.sessionWarning.description.${reason}`),
-        tip: t('auth.sessionWarning.tip'),
-        loginButton: t('auth.sessionWarning.loginNow'),
-        dismissButton: t('buttons.cancel'),
+        title: t('common.auth.sessionWarning.title.expired'),
+        description: t('common.auth.sessionWarning.description.expired'),
+        tip: t('common.auth.sessionWarning.tip'),
+        loginButton: t('common.auth.sessionWarning.loginNow'),
+        dismissButton: t('common.buttons.cancel'),
       }}
     />
   );
