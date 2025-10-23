@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 
+import '@eventuras/scribo/style.css';
 import { type ServerActionResult } from '@eventuras/core-nextjs/actions';
 import { Logger } from '@eventuras/logger';
 import { MarkdownInput } from '@eventuras/markdowninput';

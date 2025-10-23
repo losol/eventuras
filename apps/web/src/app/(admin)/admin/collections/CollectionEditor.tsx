@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+import '@eventuras/scribo/style.css';
 import { Logger } from '@eventuras/logger';
 import { MarkdownInput } from '@eventuras/markdowninput';
 import { Button } from '@eventuras/ratio-ui/core/Button';

@@ -1,6 +1,5 @@
 'use client';
 import MarkdownEditor from '@eventuras/scribo';
-import '@eventuras/scribo/style.css';
 import { useRef, useState } from 'react';
 
 export type MarkdownInputProps = {
