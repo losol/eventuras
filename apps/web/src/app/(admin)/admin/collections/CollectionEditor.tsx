@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { EventCollectionDto, EventDto, getV3Events } from '@eventuras/event-sdk';
 import { Logger } from '@eventuras/logger';
 import { MarkdownInput } from '@eventuras/markdowninput';
 import { Button } from '@eventuras/ratio-ui/core/Button';
@@ -13,6 +12,7 @@ import { CheckboxInput, CheckboxLabel, Form, Input } from '@eventuras/smartform'
 import { useToast } from '@eventuras/toast';
 
 import EventLookup from '@/components/event/EventLookup';
+import { EventCollectionDto, EventDto, getV3Events } from "@/lib/eventuras-sdk";
 
 import { addEventToCollection, removeEventFromCollection, updateCollection } from './actions';
 export type CollectionEditorProps = {

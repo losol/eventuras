@@ -1,3 +1,5 @@
+import { Logger } from '@eventuras/logger';
+
 import {
   NewRegistrationDto,
   OrderLineModel,
@@ -7,8 +9,7 @@ import {
   putV3RegistrationsById,
   RegistrationDto,
   RegistrationUpdateDto,
-} from '@eventuras/event-sdk';
-import { Logger } from '@eventuras/logger';
+} from "@/lib/eventuras-sdk";
 
 const logger = Logger.create({ namespace: 'web:utils:api', context: { module: 'events' } });
 

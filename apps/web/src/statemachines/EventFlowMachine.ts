@@ -1,9 +1,8 @@
 import { assign, createMachine, fromPromise } from 'xstate';
 
-import { EventDto, ProductDto, RegistrationDto, UserDto } from '@eventuras/event-sdk';
-
 import { fetchUserEventRegistrations } from '@/app/(admin)/admin/actions/registrations';
 import { createEventRegistration, updateEventRegistration } from '@/app/(user)/user/events/actions';
+import { EventDto, ProductDto, RegistrationDto, UserDto } from "@/lib/eventuras-sdk";
 import { PaymentFormValues } from '@/types';
 import { mapToNewRegistration, mapToUpdatedRegistration } from '@/utils/api/mappers';
 

@@ -7,6 +7,10 @@ import {
   actionSuccess,
   type ServerActionResult,
 } from '@eventuras/core-nextjs/actions';
+import { Logger } from '@eventuras/logger';
+
+import { appConfig } from '@/config.server';
+import { client } from '@/lib/eventuras-client';
 import {
   NewRegistrationDto,
   OrderLineModel,
@@ -16,11 +20,7 @@ import {
   putV3RegistrationsById,
   RegistrationDto,
   RegistrationUpdateDto,
-} from '@eventuras/event-sdk';
-import { Logger } from '@eventuras/logger';
-
-import { appConfig } from '@/config.server';
-import { client } from '@/lib/eventuras-client';
+} from "@/lib/eventuras-sdk";
 import { productMapToOrderLineModel } from '@/utils/registration-helpers';
 
 const logger = Logger.create({

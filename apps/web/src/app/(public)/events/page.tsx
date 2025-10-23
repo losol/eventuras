@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 
-import { getV3Events } from '@eventuras/event-sdk';
 import { Logger } from '@eventuras/logger';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { List } from '@eventuras/ratio-ui/core/List';
@@ -10,6 +9,7 @@ import { Text } from '@eventuras/ratio-ui/core/Text';
 import { publicEnv } from '@/config.client';
 import { appConfig } from '@/config.server';
 import { getPublicClient } from '@/lib/eventuras-public-client';
+import { getV3Events } from "@/lib/eventuras-public-sdk";
 
 const logger = Logger.create({
   namespace: 'web:events-page',

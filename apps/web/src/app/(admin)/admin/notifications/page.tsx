@@ -1,5 +1,3 @@
-import { NotificationDto } from '@eventuras/event-sdk';
-import { getV3Notifications } from '@eventuras/event-sdk';
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Text } from '@eventuras/ratio-ui/core/Text';
@@ -8,6 +6,8 @@ import { Section } from '@eventuras/ratio-ui/layout/Section';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
 import { appConfig } from '@/config.server';
+import { NotificationDto } from "@/lib/eventuras-sdk";
+import { getV3Notifications } from "@/lib/eventuras-sdk";
 type NotificationPageProps = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };

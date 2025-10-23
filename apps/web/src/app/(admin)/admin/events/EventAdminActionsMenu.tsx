@@ -2,12 +2,12 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 
-import { EventDto, ProductDto } from '@eventuras/event-sdk';
 import { Button, ButtonGroup } from '@eventuras/ratio-ui/core/Button';
 import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
 import EventNotificator, { EventNotificatorType } from '@/components/event/EventNotificator';
+import { EventDto, ProductDto } from "@/lib/eventuras-sdk";
 
 import { ExcelExportButton } from './[id]/ExcelExportButton';
 import AddUserToEvent from './AddUserToEvent';

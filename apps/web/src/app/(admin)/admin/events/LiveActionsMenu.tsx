@@ -1,12 +1,13 @@
 'use client';
 import { useState } from 'react';
 
-import { RegistrationDto, RegistrationStatus } from '@eventuras/event-sdk';
 import { Logger } from '@eventuras/logger';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { CircleX } from '@eventuras/ratio-ui/icons';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 import { useToast } from '@eventuras/toast';
+
+import { RegistrationDto, RegistrationStatus } from "@/lib/eventuras-sdk";
 
 import { sendCertificateEmail, updateRegistrationStatus } from '../registrations/actions';
 interface LiveActionsMenuProps {

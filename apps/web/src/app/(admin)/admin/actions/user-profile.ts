@@ -1,9 +1,9 @@
 'use server';
 
-import { getV3Userprofile } from '@eventuras/event-sdk';
 import { Logger } from '@eventuras/logger';
 
 import { appConfig } from '@/config.server';
+import { getV3Userprofile } from "@/lib/eventuras-sdk";
 
 const logger = Logger.create({
   namespace: 'web:actions:user-profile',

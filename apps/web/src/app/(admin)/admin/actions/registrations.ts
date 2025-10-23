@@ -5,11 +5,11 @@ import {
   actionSuccess,
   type ServerActionResult,
 } from '@eventuras/core-nextjs/actions';
-import type { RegistrationDto } from '@eventuras/event-sdk';
-import { client, getV3Registrations } from '@eventuras/event-sdk';
 import { Logger } from '@eventuras/logger';
 
 import { appConfig } from '@/config.server';
+import type { RegistrationDto } from "@/lib/eventuras-sdk";
+import { client, getV3Registrations } from "@/lib/eventuras-sdk";
 
 const logger = Logger.create({
   namespace: 'web:actions',

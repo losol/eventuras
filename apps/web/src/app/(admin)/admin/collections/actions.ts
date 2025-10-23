@@ -7,6 +7,10 @@ import {
   actionSuccess,
   type ServerActionResult,
 } from '@eventuras/core-nextjs/actions';
+import { Logger } from '@eventuras/logger';
+
+import { appConfig } from '@/config.server';
+import { client } from '@/lib/eventuras-client';
 import {
   deleteV3EventsByEventIdCollectionsByCollectionId,
   EventCollectionCreateDto,
@@ -16,11 +20,7 @@ import {
   postV3Eventcollections,
   putV3EventcollectionsById,
   putV3EventsByEventIdCollectionsByCollectionId,
-} from '@eventuras/event-sdk';
-import { Logger } from '@eventuras/logger';
-
-import { appConfig } from '@/config.server';
-import { client } from '@/lib/eventuras-client';
+} from "@/lib/eventuras-sdk";
 import slugify from '@/utils/slugify';
 
 const logger = Logger.create({

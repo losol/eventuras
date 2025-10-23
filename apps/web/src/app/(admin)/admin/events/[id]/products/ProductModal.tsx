@@ -3,12 +3,13 @@ import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
 
-import type { NewProductDto, ProductDto } from '@eventuras/event-sdk';
 import { Logger } from '@eventuras/logger';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Dialog } from '@eventuras/ratio-ui/layout/Dialog';
 import { Form, Input, NumberInput } from '@eventuras/smartform';
 import { useToast } from '@eventuras/toast';
+
+import type { NewProductDto, ProductDto } from "@/lib/eventuras-sdk";
 
 import { createProduct, updateProduct } from './actions';
 import ConfirmDiscardModal from './ConfirmDiscardModal';

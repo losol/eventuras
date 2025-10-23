@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 
-import { getV3EventsById } from '@eventuras/event-sdk';
+import { getV3EventsById } from "@/lib/eventuras-public-sdk";
 
 type EventInfoProps = {
   params: Promise<{

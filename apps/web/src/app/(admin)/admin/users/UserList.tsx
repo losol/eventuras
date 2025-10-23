@@ -2,8 +2,9 @@
 import { useTranslations } from 'next-intl';
 
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
-import { UserDto } from '@eventuras/event-sdk';
 import { Link } from '@eventuras/ratio-ui-next/Link';
+
+import { UserDto } from "@/lib/eventuras-sdk";
 const columnHelper = createColumnHelper<UserDto>();
 interface UserListProps {
   users: UserDto[];

@@ -2,13 +2,6 @@
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
 
-import {
-  EmailNotificationDto,
-  EventParticipantsFilterDto,
-  RegistrationStatus,
-  RegistrationType,
-  SmsNotificationDto,
-} from '@eventuras/event-sdk';
 import { Logger } from '@eventuras/logger';
 import { MarkdownInput } from '@eventuras/markdowninput';
 import { Button, ButtonGroup } from '@eventuras/ratio-ui/core/Button';
@@ -20,6 +13,12 @@ import {
   sendEmailNotification,
   sendSmsNotification,
 } from '@/app/(admin)/admin/actions/notifications';
+import type {
+  EmailNotificationDto,
+  EventParticipantsFilterDto,
+  SmsNotificationDto,
+} from '@/lib/eventuras-sdk';
+import { RegistrationStatus, RegistrationType } from '@/lib/eventuras-sdk';
 import { ParticipationTypes } from '@/types';
 import { participationMap } from '@/utils/api/mappers';
 import { mapEnum } from '@/utils/enum';

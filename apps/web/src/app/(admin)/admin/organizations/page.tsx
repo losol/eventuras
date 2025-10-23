@@ -1,12 +1,12 @@
 import { getTranslations } from 'next-intl/server';
 
-import { getV3Organizations } from '@eventuras/event-sdk';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { List } from '@eventuras/ratio-ui/core/List';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
+import { getV3Organizations } from "@/lib/eventuras-sdk";
 import withAuthorization from '@/utils/auth/withAuthorization';
 
 const AdminOrganizationsPage = async () => {

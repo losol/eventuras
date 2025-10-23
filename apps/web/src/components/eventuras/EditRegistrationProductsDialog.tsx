@@ -1,7 +1,8 @@
 'use client';
-import { ProductDto, RegistrationDto } from '@eventuras/event-sdk';
 import { Logger } from '@eventuras/logger';
 import { Button } from '@eventuras/ratio-ui/core/Button';
+
+import { ProductDto, RegistrationDto } from "@/lib/eventuras-sdk";
 const logger = Logger.create({
   namespace: 'web:components:eventuras',
   context: { component: 'EditRegistrationProductsDialog' },

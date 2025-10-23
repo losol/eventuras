@@ -11,17 +11,17 @@ const logger = Logger.create({
 import { redirect } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
-import {
-  getV3Eventcollections,
-  getV3EventcollectionsById,
-  getV3Events,
-} from '@eventuras/event-sdk';
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
 import EventCard from '@/components/event/EventCard';
 import { appConfig } from '@/config.server';
 import { getPublicClient } from '@/lib/eventuras-public-client';
+import {
+  getV3Eventcollections,
+  getV3EventcollectionsById,
+  getV3Events,
+} from "@/lib/eventuras-public-sdk";
 type EventInfoProps = {
   params: Promise<{
     id: number;

@@ -7,16 +7,16 @@ import {
   actionSuccess,
   type ServerActionResult,
 } from '@eventuras/core-nextjs/actions';
+import { Logger } from '@eventuras/logger';
+
+import { appConfig } from '@/config.server';
+import { client } from '@/lib/eventuras-client';
 import {
   type EmailNotificationDto,
   postV3NotificationsEmail,
   postV3NotificationsSms,
   type SmsNotificationDto,
-} from '@eventuras/event-sdk';
-import { Logger } from '@eventuras/logger';
-
-import { appConfig } from '@/config.server';
-import { client } from '@/lib/eventuras-client';
+} from "@/lib/eventuras-sdk";
 
 const logger = Logger.create({
   namespace: 'web:actions',

@@ -1,13 +1,14 @@
 'use client';
 import React from 'react';
 
-import { UserDto } from '@eventuras/event-sdk';
 import { Badge } from '@eventuras/ratio-ui/core/Badge';
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Definition, DescriptionList, Item, Term } from '@eventuras/ratio-ui/core/DescriptionList';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
+
+import { UserDto } from "@/lib/eventuras-sdk";
 /** Props for MemberProfile */
 export interface MemberProfileProps {
   /** User data to render */

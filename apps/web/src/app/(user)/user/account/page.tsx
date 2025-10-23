@@ -1,9 +1,9 @@
 import { getTranslations } from 'next-intl/server';
 
-import { getV3UsersMe } from '@eventuras/event-sdk';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 
 import UserEditor from '@/app/(admin)/admin/users/UserEditor';
+import { getV3UsersMe } from "@/lib/eventuras-sdk";
 
 const UserAccountPage = async () => {
   const t = await getTranslations();

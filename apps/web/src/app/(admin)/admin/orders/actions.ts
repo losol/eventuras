@@ -1,9 +1,8 @@
 'use server';
 
-import { getV3Orders, OrderDto } from '@eventuras/event-sdk';
-
 import { appConfig } from '@/config.server';
 import { client } from '@/lib/eventuras-client';
+import { getV3Orders, OrderDto } from "@/lib/eventuras-sdk";
 
 export interface GetOrdersResult {
   data: OrderDto[];

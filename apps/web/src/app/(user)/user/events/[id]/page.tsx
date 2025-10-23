@@ -1,13 +1,13 @@
 import React from 'react';
 import { getTranslations } from 'next-intl/server';
 
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+
 import {
   getV3EventsByEventIdProducts,
   getV3EventsById,
   getV3Userprofile,
-} from '@eventuras/event-sdk';
-import { Heading } from '@eventuras/ratio-ui/core/Heading';
-
+} from "@/lib/eventuras-sdk";
 import getSiteSettings from '@/utils/site/getSiteSettings';
 
 import EventFlowContainer from './components/EventFlowContainer';

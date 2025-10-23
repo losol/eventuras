@@ -7,17 +7,17 @@ import {
   actionSuccess,
   type ServerActionResult,
 } from '@eventuras/core-nextjs/actions';
+import { Logger } from '@eventuras/logger';
+
+import { appConfig } from '@/config.server';
+import { client } from '@/lib/eventuras-client';
 import {
   postV3Users,
   putV3Userprofile,
   putV3UsersById,
   UserDto,
   UserFormDto,
-} from '@eventuras/event-sdk';
-import { Logger } from '@eventuras/logger';
-
-import { appConfig } from '@/config.server';
-import { client } from '@/lib/eventuras-client';
+} from "@/lib/eventuras-sdk";
 
 const logger = Logger.create({
   namespace: 'web:users',

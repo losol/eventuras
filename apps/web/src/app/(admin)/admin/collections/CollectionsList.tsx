@@ -3,12 +3,12 @@ import { useEffect, useState, useTransition } from 'react';
 import { useTranslations } from 'next-intl';
 
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
-import { EventCollectionDto, EventCollectionDtoPageResponseDto } from '@eventuras/event-sdk';
 import { Loading } from '@eventuras/ratio-ui/core/Loading';
 import { Pagination } from '@eventuras/ratio-ui/core/Pagination';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
 import FatalError from '@/components/FatalError';
+import { EventCollectionDto, EventCollectionDtoPageResponseDto } from "@/lib/eventuras-sdk";
 
 import { getCollections } from './actions';
 const columnHelper = createColumnHelper<EventCollectionDto>();

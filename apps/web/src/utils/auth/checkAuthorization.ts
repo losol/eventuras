@@ -1,13 +1,13 @@
 'use server';
 
-import {
-  getV3OrganizationsByOrganizationIdMembersByUserIdRoles,
-  getV3UsersMe,
-} from '@eventuras/event-sdk';
 import { Logger } from '@eventuras/logger';
 
 import { appConfig } from '@/config.server';
 import { client } from '@/lib/eventuras-client';
+import {
+  getV3OrganizationsByOrganizationIdMembersByUserIdRoles,
+  getV3UsersMe,
+} from "@/lib/eventuras-sdk";
 
 const logger = Logger.create({ namespace: 'web:admin', context: { module: 'checkAuthorization' } });
 

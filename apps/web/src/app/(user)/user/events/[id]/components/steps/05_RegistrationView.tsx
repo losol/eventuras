@@ -2,13 +2,13 @@
 import { useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 
-import { EventDto, RegistrationDto } from '@eventuras/event-sdk';
 import { MarkdownContent } from '@eventuras/markdown';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Tabs } from '@eventuras/ratio-ui/core/Tabs';
 
 import Registration from '@/app/(admin)/admin/registrations/Registration';
+import { EventDto, RegistrationDto } from "@/lib/eventuras-sdk";
 
 import { logStepEntry, logUserAction } from '../../lib/eventFlowLogger';
 export interface Step05RegistrationViewProps {

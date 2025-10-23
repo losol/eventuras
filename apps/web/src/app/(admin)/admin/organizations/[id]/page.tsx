@@ -1,8 +1,9 @@
 import { getTranslations } from 'next-intl/server';
 
-import { getV3OrganizationsByOrganizationId, getV3Users } from '@eventuras/event-sdk';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
+
+import { getV3OrganizationsByOrganizationId, getV3Users } from "@/lib/eventuras-sdk";
 
 import { OrganizationDetails } from './OrganizationDetails';
 import OrganizationMemberships from './OrganizationMemberships';

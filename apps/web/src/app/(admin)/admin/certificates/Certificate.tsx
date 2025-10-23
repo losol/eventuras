@@ -2,10 +2,11 @@ import React from 'react';
 import { useTranslations } from 'next-intl';
 
 import { formatDateSpan } from '@eventuras/core/datetime';
-import { CertificateDto } from '@eventuras/event-sdk';
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Definition, DescriptionList, Item, Term } from '@eventuras/ratio-ui/core/DescriptionList';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
+
+import { CertificateDto } from "@/lib/eventuras-sdk";
 type CertificateProps = {
   certificate: CertificateDto;
 };

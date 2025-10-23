@@ -1,11 +1,12 @@
 'use client';
 import { useTranslations } from 'next-intl';
 
-import { UserDto } from '@eventuras/event-sdk';
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Definition, DescriptionList, Item, Term } from '@eventuras/ratio-ui/core/DescriptionList';
 import { Text } from '@eventuras/ratio-ui/core/Text';
 import { Link } from '@eventuras/ratio-ui-next/Link';
+
+import { UserDto } from "@/lib/eventuras-sdk";
 export type UserProfileCardProps = {
   profile: UserDto;
 };

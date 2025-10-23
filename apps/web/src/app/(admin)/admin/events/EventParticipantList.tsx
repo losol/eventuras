@@ -1,16 +1,17 @@
 'use client';
 
-import { ColumnFilter, DataTable } from '@eventuras/datatable';
-import { EventDto, ProductDto, RegistrationDto } from '@eventuras/event-sdk';
-import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
 import React, { useMemo, useState, useTransition } from 'react';
 import { useTranslations } from 'next-intl';
 
+import { ColumnFilter, DataTable } from '@eventuras/datatable';
+import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
+
 import EventNotificator, { EventNotificatorType } from '@/components/event/EventNotificator';
 import EditRegistrationProductsDialog from '@/components/eventuras/EditRegistrationProductsDialog';
+import { EventDto, ProductDto, RegistrationDto } from "@/lib/eventuras-sdk";
 
-import { createParticipantColumns } from './ParticipantTableColumns';
 import { getRegistrationDetails } from './participantActions';
+import { createParticipantColumns } from './ParticipantTableColumns';
 
 
 interface AdminEventListProps {

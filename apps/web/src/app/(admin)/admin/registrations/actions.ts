@@ -7,6 +7,10 @@ import {
   actionSuccess,
   ServerActionResult,
 } from '@eventuras/core-nextjs/actions';
+import { Logger } from '@eventuras/logger';
+
+import { appConfig } from '@/config.server';
+import { client } from '@/lib/eventuras-client';
 import {
   getV3Registrations,
   patchV3RegistrationsById,
@@ -15,11 +19,7 @@ import {
   RegistrationDto,
   RegistrationDtoPageResponseDto,
   RegistrationStatus,
-} from '@eventuras/event-sdk';
-import { Logger } from '@eventuras/logger';
-
-import { appConfig } from '@/config.server';
-import { client } from '@/lib/eventuras-client';
+} from "@/lib/eventuras-sdk";
 
 const logger = Logger.create({
   namespace: 'web:admin:registrations',
