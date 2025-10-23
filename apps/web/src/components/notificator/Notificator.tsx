@@ -134,7 +134,7 @@ export default function Notificator<T = unknown>({
           <Input
             name="subject"
             label={t('admin.eventNotifier.form.subject.label')}
-            placeholder={t('admin.eventNotifier.form.subject.placeholder')}
+            placeholder={t('admin.eventNotifier.form.subject.label')}
           />
         </div>
       )}
@@ -146,7 +146,7 @@ export default function Notificator<T = unknown>({
             <MarkdownInput
               name="body"
               label={t('admin.eventNotifier.form.body.label')}
-              placeholder={t('admin.eventNotifier.form.body.placeholder')}
+              placeholder={t('admin.eventNotifier.form.body.label')}
             />
           </div>
         ) : (
@@ -154,7 +154,7 @@ export default function Notificator<T = unknown>({
             name="body"
             multiline
             label={t('admin.eventNotifier.form.body.label')}
-            placeholder={t('admin.eventNotifier.form.body.placeholder')}
+            placeholder={t('admin.eventNotifier.form.body.label')}
             rows={6}
           />
         )}
