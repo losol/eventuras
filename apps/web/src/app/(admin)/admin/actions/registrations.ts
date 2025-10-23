@@ -10,7 +10,6 @@ import { client, getV3Registrations } from '@eventuras/event-sdk';
 import { Logger } from '@eventuras/logger';
 
 import { appConfig } from '@/config.server';
-import { configureEventurasClient } from '@/lib/eventuras-client';
 
 const logger = Logger.create({
   namespace: 'web:actions',
@@ -43,8 +42,6 @@ export async function fetchUserEventRegistrations(
   userId: string,
   eventId: number
 ): Promise<ServerActionResult<RegistrationDto[]>> {
-  await configureEventurasClient();
-
   const orgId = getOrganizationId();
 
   if (!orgId) {

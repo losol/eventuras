@@ -3,7 +3,7 @@
 import { EventDto, getV3Events } from '@eventuras/event-sdk';
 import { Logger } from '@eventuras/logger';
 
-import { client, configureEventurasClient } from '@/lib/eventuras-client';
+import { client } from '@/lib/eventuras-client';
 
 const logger = Logger.create({ namespace: 'web:admin', context: { module: 'eventActions' } });
 
@@ -28,9 +28,6 @@ export async function fetchEvents({
   pageSize = 25,
   startDate,
 }: FetchEventsParams): Promise<FetchEventsResult> {
-  // Ensure client is configured with auth and base URL
-  await configureEventurasClient();
-
   logger.debug(
     {
       organizationId,

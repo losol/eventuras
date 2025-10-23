@@ -16,7 +16,7 @@ import {
 import { Logger } from '@eventuras/logger';
 
 import { appConfig } from '@/config.server';
-import { client, configureEventurasClient } from '@/lib/eventuras-client';
+import { client } from '@/lib/eventuras-client';
 
 const logger = Logger.create({
   namespace: 'web:actions',
@@ -47,8 +47,6 @@ function getOrganizationId(): number | null {
 export async function sendEmailNotification(
   notification: EmailNotificationDto
 ): Promise<ServerActionResult<void>> {
-  await configureEventurasClient();
-
   const organizationId = getOrganizationId();
 
   if (!organizationId) {
@@ -116,8 +114,6 @@ export async function sendEmailNotification(
 export async function sendSmsNotification(
   notification: SmsNotificationDto
 ): Promise<ServerActionResult<void>> {
-  await configureEventurasClient();
-
   const organizationId = getOrganizationId();
 
   if (!organizationId) {

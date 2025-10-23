@@ -11,46 +11,33 @@
 import { createClient } from '@eventuras/event-sdk';
 import { Logger } from '@eventuras/logger';
 
+import { appConfig } from '@/config.server';
+
 const logger = Logger.create({
   namespace: 'web:api-client',
   context: { module: 'eventuras-public-client' },
 });
 
-/**
- * Create and configure a public (non-authenticated) API client.
- * This client is suitable for:
- * - Static generation (generateStaticParams)
- * - Public event listings
- * - Any endpoint marked [AllowAnonymous] in the API
- *
- * @throws {Error} If NEXT_PUBLIC_BACKEND_URL is not set
- */
-export function createPublicClient() {
-  const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+const baseUrl = appConfig.env.NEXT_PUBLIC_BACKEND_URL as string;
 
-  if (!baseUrl) {
-    throw new Error(
-      'NEXT_PUBLIC_BACKEND_URL environment variable is required. Please set it in your .env.local file.'
-    );
-  }
-
-  logger.debug({ baseUrl }, 'Creating public API client');
-
-  return createClient({ baseUrl });
+if (!baseUrl) {
+  throw new Error(
+    'NEXT_PUBLIC_BACKEND_URL environment variable is required. Please set it in your .env.local file.'
+  );
 }
 
-/**
- * Singleton instance of the public client for reuse.
- * Initialized lazily on first access.
- */
-let publicClientInstance: ReturnType<typeof createClient> | null = null;
+logger.debug({ baseUrl }, 'Creating public API client');
 
 /**
- * Get or create the singleton public client instance.
+ * Singleton instance of the public client.
+ * Configured automatically on module load.
+ */
+const publicClientInstance = createClient({ baseUrl });
+
+/**
+ * Get the public client instance.
+ * @returns The configured public client for anonymous API access
  */
 export function getPublicClient() {
-  if (!publicClientInstance) {
-    publicClientInstance = createPublicClient();
-  }
   return publicClientInstance;
 }

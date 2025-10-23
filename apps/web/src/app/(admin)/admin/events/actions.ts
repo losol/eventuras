@@ -17,7 +17,7 @@ import {
 import { Logger } from '@eventuras/logger';
 
 import { appConfig } from '@/config.server';
-import { client, configureEventurasClient } from '@/lib/eventuras-client';
+import { client } from '@/lib/eventuras-client';
 
 /**
  * Get the organization ID from the app configuration
@@ -47,9 +47,6 @@ export async function createEvent(
   prevState: ServerActionResult<{ eventId: number }> | null,
   formData: FormData
 ): Promise<ServerActionResult<{ eventId: number }>> {
-  // Ensure client is configured with auth and base URL
-  await configureEventurasClient();
-
   logger.info('Starting event creation');
 
   try {
@@ -164,9 +161,6 @@ export async function updateEvent(
   eventId: number,
   eventData: EventFormDto
 ): Promise<ServerActionResult<{ eventId: number }>> {
-  // Ensure client is configured with auth and base URL
-  await configureEventurasClient();
-
   updateLogger.info({ eventId }, 'Starting event update');
 
   try {
@@ -277,9 +271,6 @@ const certificateLogger = Logger.create({
  * Issue and send certificates for an event
  */
 export async function issueCertificates(eventId: number): Promise<ServerActionResult<void>> {
-  // Ensure client is configured with auth and base URL
-  await configureEventurasClient();
-
   certificateLogger.info({ eventId }, 'Issuing certificates for event');
 
   try {
