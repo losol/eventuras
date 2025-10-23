@@ -6,9 +6,9 @@ import { useTranslations } from 'next-intl';
 import { ColumnFilter, DataTable } from '@eventuras/datatable';
 import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
 
-import EventNotificator, { EventNotificatorType } from '@/components/event/EventNotificator';
+import { EventNotificator, NotificationType } from '@/components/notificator';
 import EditRegistrationProductsDialog from '@/components/eventuras/EditRegistrationProductsDialog';
-import { EventDto, ProductDto, RegistrationDto } from "@/lib/eventuras-sdk";
+import type { EventDto, ProductDto, RegistrationDto } from '@/lib/eventuras-sdk';
 
 import { getRegistrationDetails } from './participantActions';
 import { createParticipantColumns } from './ParticipantTableColumns';
@@ -119,7 +119,7 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
               eventTitle={event.title!}
               eventId={event.id!}
               onClose={() => setRegistrationOpen(null)}
-              notificatorType={EventNotificatorType.EMAIL}
+              notificationType={NotificationType.EMAIL}
             />
           </Drawer.Body>
           <Drawer.Footer>
