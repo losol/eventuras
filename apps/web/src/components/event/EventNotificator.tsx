@@ -17,8 +17,8 @@ import type {
   EmailNotificationDto,
   EventParticipantsFilterDto,
   SmsNotificationDto,
-} from '@/lib/eventuras-sdk';
-import { RegistrationStatus, RegistrationType } from '@/lib/eventuras-sdk';
+} from '@/lib/eventuras-types';
+import { RegistrationStatus, RegistrationType } from '@/lib/eventuras-types';
 import { ParticipationTypes } from '@/types';
 import { participationMap } from '@/utils/api/mappers';
 import { mapEnum } from '@/utils/enum';

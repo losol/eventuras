@@ -2,15 +2,15 @@
 import type { AutoCompleteDataProvider } from '@eventuras/ratio-ui/forms/InputAutocomplete';
 import { InputAutoComplete } from '@eventuras/ratio-ui/forms/InputAutocomplete';
 
-import { getV3Users, UserDto } from "@/lib/eventuras-sdk";
+import { searchUsers } from '@/app/(admin)/admin/actions/users';
+import type { UserDto } from '@/lib/eventuras-types';
 
 export type UserLookupProps = {
-  onUserSelected?: (u: UserDto) => Promise<any> | void;
+  onUserSelected?: (u: UserDto) => Promise<void> | void;
 };
 const UserLookup = (props: UserLookupProps) => {
   const inputDataProvider: AutoCompleteDataProvider = async (input: string) => {
-    const result = await getV3Users({ query: { Query: input } });
-    const data = result.data?.data ?? [];
+    const data = await searchUsers(input);
     return {
       ok: true,
       error: null,
