@@ -38,13 +38,13 @@
     "@eventuras/scribo": "workspace:*",
     "@eventuras/smartform": "workspace:*",
     "@eventuras/toast": "workspace:^",
-    "@tailwindcss/postcss": "^4.1.15",
+    "@tailwindcss/postcss": "^4.1.16",
     "@types/debug": "^4.1.12",
     "@xstate/react": "^6.0.0",
     "jose": "6.1.0",
     "lucide-react": "^0.546.0",
     "next": "15.5.6",
-    "next-intl": "^4.3.12",
+    "next-intl": "^4.4.0",
     "openid-client": "^6.8.1",
     "pino": "^10.1.0",
     "react": "^19.2.0",
@@ -56,7 +56,7 @@
   },
   "devDependencies": {
     "@eventuras/eslint-config": "workspace:*",
-    "@next/bundle-analyzer": "15.5.6",
+    "@next/bundle-analyzer": "16.0.0",
     "@types/node": "24.0.3",
     "@types/react": "19.2.2",
     "@types/react-dom": "^19.2.2",
@@ -65,7 +65,7 @@
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.6",
     "prettier": "^3.6.2",
-    "tailwindcss": "^4.1.15",
+    "tailwindcss": "^4.1.16",
     "typescript": "5.9.3"
   },
   "optionalDependencies": {

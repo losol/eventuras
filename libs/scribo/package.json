@@ -47,8 +47,8 @@
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "typescript": "^5.9.3",
-    "vite": "^7.1.11",
-    "vitest": "^3.2.4"
+    "vite": "^7.1.12",
+    "vitest": "^4.0.2"
   },
   "peerDependencies": {
     "@lexical/code": "^0.35.0",
