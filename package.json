@@ -31,12 +31,13 @@
     "clean:all": "pnpm run clean:build && pnpm -r exec rm -rf node_modules && rm -rf node_modules pnpm-lock.yaml",
     "deps:check": "pnpm dlx npm-check-updates --deep",
     "deps:update": "pnpm dlx npm-check-updates --deep -u",
-    "pkg:sort": "pnpm dlx sort-package-json '**/package.json' '!**/node_modules/**'",
+    "deps:sort": "pnpm dlx sort-package-json '**/package.json' '!**/node_modules/**'",
     "deps:clean": "pnpm -r exec rm -rf node_modules && rm -rf node_modules pnpm-lock.yaml",
-    "deps:reinstall": "pnpm run clean && pnpm run pkg:sort && pnpm install",
+    "deps:reinstall": "pnpm run clean && pnpm run deps:sort && pnpm install",
     "test": "turbo run test",
     "openapi:update": "cd apps/api && pnpm openapi:update && cd ../.. && cd libs/event-sdk && pnpm build",
-    "openapi:update:prod": "cd apps/api && pnpm openapi:update:prod && cd ../.. && cd libs/event-sdk && pnpm build"
+    "openapi:update:prod": "cd apps/api && pnpm openapi:update:prod && cd ../.. && cd libs/event-sdk && pnpm build",
+    "prepare": "simple-git-hooks"
   },
   "dependencies": {
     "turbo": "^2.5.8"
@@ -51,11 +52,14 @@
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
     "eslint": "^9.38.0",
-    "husky": "^9.1.7",
-    "lint-staged": "^16.2.6",
     "prettier": "^3.6.2",
+    "simple-git-hooks": "^2.13.1",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm deps:sort && pnpm lint:fix",
+    "commit-msg": "npx --no -- commitlint --edit $1"
   },
   "packageManager": "pnpm@10.19.0",
   "engines": {
