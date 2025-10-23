@@ -6,6 +6,7 @@ import { ToastRenderer, ToastsContext } from '@eventuras/toast';
 
 import { authService } from '@/auth/authMachine';
 import { LoginSuccessHandler } from '@/components/auth/LoginSuccessHandler';
+import { SessionWarningOverlay } from '@/components/SessionWarningOverlay';
 
 const logger = Logger.create({
   namespace: 'web:app',
@@ -50,6 +51,7 @@ export default function Providers({ children }: ProvidersProps) {
     <ToastsContext.Provider>
       <ToastRenderer />
       <LoginSuccessHandler />
+      <SessionWarningOverlay />
       {children}
     </ToastsContext.Provider>
   );

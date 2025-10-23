@@ -83,7 +83,21 @@ export function createAuthMachine(options: AuthMachineConfig) {
           throw new Error('Session expired');
         }
       } catch (error) {
-        logger.error({ error }, 'Session monitor error');
+        // Log error details - handle OAuth errors specially
+        const errorDetails: Record<string, unknown> = {
+          message: error instanceof Error ? error.message : 'Unknown error',
+        };
+
+        // Extract OAuth error details if present
+        if (error && typeof error === 'object') {
+          const oauthError = error as any;
+          if (oauthError.code) errorDetails.code = oauthError.code;
+          if (oauthError.error) errorDetails.error = oauthError.error;
+          if (oauthError.error_description) errorDetails.error_description = oauthError.error_description;
+          if (oauthError.status) errorDetails.status = oauthError.status;
+        }
+
+        logger.error(errorDetails, 'Session monitor error');
         throw error;
       }
 

@@ -37,7 +37,7 @@
       },
       "giveMoreTime": "Gi meg mer tid ({seconds}s)",
       "loginNow": "Logg inn nå",
-      "tip": "Tips: Kopier eventuelle endringer du har gjort før du blir redirectet.",
+      "tip": "Tips: Kopier eventuelle endringer du har gjort før du blir logget ut.",
       "title": {
         "expired": "Din økt har utløpt",
         "invalid": "Din økt er ikke lenger gyldig"
