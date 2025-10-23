@@ -7,7 +7,7 @@ import {
 import { Logger } from '@eventuras/logger';
 
 import { appConfig } from '@/config.server';
-import { client, configureEventurasClient } from '@/lib/eventuras-client';
+import { client } from '@/lib/eventuras-client';
 
 const logger = Logger.create({ namespace: 'web:admin', context: { module: 'checkAuthorization' } });
 
@@ -28,9 +28,6 @@ export interface AuthorizationResult {
  * @returns Authorization result with user info and roles
  */
 export async function checkAuthorization(requiredRole: string): Promise<AuthorizationResult> {
-  // Ensure client is configured with IPv4 fetch
-  await configureEventurasClient();
-
   try {
     // Get current user using configured client
     const userResult = await getV3UsersMe({ client });

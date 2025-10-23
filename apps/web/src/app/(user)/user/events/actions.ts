@@ -20,7 +20,7 @@ import {
 import { Logger } from '@eventuras/logger';
 
 import { appConfig } from '@/config.server';
-import { client, configureEventurasClient } from '@/lib/eventuras-client';
+import { client } from '@/lib/eventuras-client';
 import { productMapToOrderLineModel } from '@/utils/registration-helpers';
 
 const logger = Logger.create({
@@ -75,8 +75,6 @@ export async function createEventRegistration(
   newRegistration: NewRegistrationDto,
   selectedProducts?: Map<string, number>
 ): Promise<ServerActionResult<RegistrationDto>> {
-  await configureEventurasClient();
-
   const orgId = getOrganizationId();
   const products = productMapToOrderLineModel(selectedProducts);
 
@@ -140,8 +138,6 @@ export async function updateEventRegistration(
   availableProducts: ProductDto[],
   selectedProducts?: Map<string, number>
 ): Promise<ServerActionResult<RegistrationDto>> {
-  await configureEventurasClient();
-
   const orgId = getOrganizationId();
 
   logger.info({ registrationId: id }, 'Updating event registration');
@@ -208,8 +204,6 @@ export async function addProductsToExistingRegistration(
   registrationId: number,
   selectedProducts: Map<string, number>
 ): Promise<ServerActionResult<RegistrationDto>> {
-  await configureEventurasClient();
-
   logger.info({ registrationId }, 'Adding products to existing registration');
 
   try {

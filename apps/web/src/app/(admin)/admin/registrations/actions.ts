@@ -19,7 +19,7 @@ import {
 import { Logger } from '@eventuras/logger';
 
 import { appConfig } from '@/config.server';
-import { client, configureEventurasClient } from '@/lib/eventuras-client';
+import { client } from '@/lib/eventuras-client';
 
 const logger = Logger.create({
   namespace: 'web:admin:registrations',
@@ -127,9 +127,6 @@ export async function updateRegistrationStatus(
   registrationId: number,
   status: RegistrationStatus
 ): Promise<ServerActionResult<RegistrationDto>> {
-  // Ensure client is configured for this server action execution
-  await configureEventurasClient();
-
   const orgId = getOrganizationId();
 
   logger.info({ registrationId, status }, 'Updating registration status via PATCH');

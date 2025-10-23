@@ -10,7 +10,7 @@
 
 set -e
 
-API_URL="${1:-https://localhost:5001}"
+API_URL="${1:-http://localhost:5000}"
 OPENAPI_ENDPOINT="${API_URL}/swagger/v3/swagger.json"
 OUTPUT_DIR="$(dirname "$0")/../docs"
 OUTPUT_FILE="${OUTPUT_DIR}/eventuras-v3.json"

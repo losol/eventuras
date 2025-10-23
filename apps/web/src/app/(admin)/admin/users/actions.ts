@@ -16,7 +16,8 @@ import {
 } from '@eventuras/event-sdk';
 import { Logger } from '@eventuras/logger';
 
-import { client, configureEventurasClient } from '@/lib/eventuras-client';
+import { appConfig } from '@/config.server';
+import { client } from '@/lib/eventuras-client';
 
 const logger = Logger.create({
   namespace: 'web:users',
@@ -27,8 +28,6 @@ const logger = Logger.create({
  * Create a new user
  */
 export async function createUser(userData: UserFormDto): Promise<ServerActionResult<UserDto>> {
-  await configureEventurasClient();
-
   logger.info('Creating new user');
 
   try {
@@ -58,9 +57,6 @@ export async function updateUser(
   userId: string,
   userData: UserFormDto
 ): Promise<ServerActionResult<UserDto>> {
-  // Ensure client is configured
-  await configureEventurasClient();
-
   logger.info({ userId }, 'Updating user');
 
   try {
@@ -91,9 +87,7 @@ export async function updateUser(
 export async function updateUserProfile(
   userData: UserFormDto
 ): Promise<ServerActionResult<UserDto>> {
-  await configureEventurasClient();
-
-  const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const baseUrl = appConfig.env.NEXT_PUBLIC_BACKEND_URL as string;
   const clientConfig = client.getConfig();
 
   logger.info(

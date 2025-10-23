@@ -8,6 +8,7 @@ import { List } from '@eventuras/ratio-ui/core/List';
 import { Text } from '@eventuras/ratio-ui/core/Text';
 
 import { publicEnv } from '@/config.client';
+import { appConfig } from '@/config.server';
 import { getPublicClient } from '@/lib/eventuras-public-client';
 
 const logger = Logger.create({
@@ -54,7 +55,7 @@ export default async function EventsPage() {
       {
         error,
         organizationId: ORGANIZATION_ID,
-        backendUrl: process.env.NEXT_PUBLIC_BACKEND_URL,
+        backendUrl: appConfig.env.NEXT_PUBLIC_BACKEND_URL,
       },
       'Exception while fetching events - this is expected during build time if backend is not running'
     );

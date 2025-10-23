@@ -2,6 +2,10 @@
  * Eventuras API Client Configuration
  *
  * Configures the event-sdk client with authentication and base URL.
+ * The client is automatically configured when this module is imported on the server.
+ *
+ * ⚠️ WARNING: This client is SERVER-SIDE ONLY!
+ * Do not import this in client components. Use server actions instead.
  *
  * HTTP request/response logging uses debug level.
  * Set LOG_LEVEL=debug to see all HTTP traffic.
@@ -17,16 +21,27 @@ const logger = Logger.create({
   context: { module: 'eventuras-client' },
 });
 
-let isConfigured = false;
-let configuredBaseUrl: string | null = null;
+// Guard: Throw error if imported on client side
+if (typeof window !== 'undefined') {
+  throw new Error(
+    '❌ eventuras-client is SERVER-SIDE ONLY!\n\n' +
+    'You are trying to import @/lib/eventuras-client in a client component.\n' +
+    'This will not work because:\n' +
+    '  1. Server-side configuration (appConfig) is not available in the browser\n' +
+    '  2. Authentication tokens should not be exposed to the client\n\n' +
+    'Solutions:\n' +
+    '  - Use server actions for data mutations\n' +
+    '  - Use server components for data fetching\n' +
+    '  - If you need the client in a client component, you are doing something wrong!'
+  );
+}
 
-/**
- * Configure the Eventuras API client.
- * Can be called multiple times - will reconfigure if baseUrl changes or if not yet configured.
- * @throws {Error} If NEXT_PUBLIC_BACKEND_URL is not set
- */
-export async function configureEventurasClient() {
-  const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+// Only configure on server side
+if (typeof window === 'undefined') {
+  // Dynamic import to avoid bundling server-only code in client bundle
+  const { appConfig } = await import('@/config.server');
+
+  const baseUrl = appConfig.env.NEXT_PUBLIC_BACKEND_URL as string;
 
   if (!baseUrl) {
     throw new Error(
@@ -34,76 +49,70 @@ export async function configureEventurasClient() {
     );
   }
 
-  // Only skip if already configured with the same baseUrl
-  if (isConfigured && configuredBaseUrl === baseUrl) {
-    return;
-  }
-
   logger.info({ baseUrl }, 'Configuring Eventuras API client');
+
+  // Configure base URL immediately on module load
   client.setConfig({ baseUrl });
-  configuredBaseUrl = baseUrl;
 
   // Inject auth token on every request (server-side only)
   client.interceptors.request.use(async (options: RequestOptions) => {
-    if (typeof window === 'undefined') {
-      try {
-        const token = await getAccessToken();
+    try {
+      const token = await getAccessToken();
 
-        // Log request details
-        const fullUrl = options.url?.startsWith('http')
-          ? options.url
-          : `${baseUrl}${options.url || ''}`;
+      // Log request details
+      const fullUrl = options.url?.startsWith('http')
+        ? options.url
+        : `${baseUrl}${options.url || ''}`;
 
-        logger.info(
+      logger.info(
+        {
+          request: {
+            url: fullUrl,
+            method: options.method || 'GET',
+            baseUrl,
+          },
+        },
+        'API request interceptor - about to make request'
+      );
+
+      if (!token) {
+        // Log warning but allow request to proceed for public endpoints
+        logger.warn(
+          {
+            url: fullUrl,
+            method: options.method || 'GET',
+          },
+          'No valid access token available for API request'
+        );
+
+        // Don't set Authorization header if no token
+        // Public endpoints will work, authenticated ones will return 401
+      } else {
+        // Set the token
+        if (!options.headers) options.headers = new Headers();
+
+        if (options.headers instanceof Headers) {
+          options.headers.set('Authorization', `Bearer ${token}`);
+        } else if (Array.isArray(options.headers)) {
+          options.headers.push(['Authorization', `Bearer ${token}`]);
+        } else {
+          (options.headers as Record<string, string>)['Authorization'] = `Bearer ${token}`;
+        }
+
+        logger.debug(
           {
             request: {
               url: fullUrl,
               method: options.method || 'GET',
-              baseUrl,
+              hasAuth: true,
             },
           },
-          'API request interceptor - about to make request'
+          'HTTP request with authentication'
         );
-
-        if (!token) {
-          // Log warning but allow request to proceed for public endpoints
-          logger.warn(
-            {
-              url: fullUrl,
-              method: options.method || 'GET',
-            },
-            'No valid access token available for API request'
-          );
-
-          // Don't set Authorization header if no token
-          // Public endpoints will work, authenticated ones will return 401
-        } else {
-          // Set the token
-          if (!options.headers) options.headers = new Headers();
-
-          if (options.headers instanceof Headers) {
-            options.headers.set('Authorization', `Bearer ${token}`);
-          } else if (Array.isArray(options.headers)) {
-            options.headers.push(['Authorization', `Bearer ${token}`]);
-          } else {
-            (options.headers as Record<string, string>)['Authorization'] = `Bearer ${token}`;
-          }
-
-          logger.debug(
-            {
-              request: {
-                url: fullUrl,
-                method: options.method || 'GET',
-                hasAuth: true,
-              },
-            },
-            'HTTP request with authentication'
-          );
-        }
-      } catch (error) {
-        logger.error({ error, url: options.url }, 'Failed to get access token for API request');
-        // Let request proceed without auth - API will return 401 if needed
       }
+    } catch (error) {
+      logger.error({ error, url: options.url }, 'Failed to get access token for API request');
+      // Let request proceed without auth - API will return 401 if needed
     }
   });
 
@@ -191,8 +200,6 @@ export async function configureEventurasClient() {
       return error;
     }
   );
-
-  isConfigured = true;
 }
 
 export { client };

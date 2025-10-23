@@ -2,15 +2,13 @@ import type { Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale } from 'next-intl/server';
 
-import { configureEventurasClient } from '@/lib/eventuras-client';
+// Import client for side-effect: configures SDK client on app startup
+import '@/lib/eventuras-client';
 import getSiteSettings from '@/utils/site/getSiteSettings';
 
 import Providers from './Providers';
 
 import '@eventuras/ratio-ui/ratio-ui.css';
-
-// Configure the Eventuras API client on app startup
-await configureEventurasClient();
 
 const siteSettings = await getSiteSettings();
 export const metadata: Metadata = {

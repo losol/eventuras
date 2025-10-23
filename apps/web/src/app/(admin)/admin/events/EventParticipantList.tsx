@@ -20,7 +20,6 @@ import { FileText, ShoppingCart, User } from '@eventuras/ratio-ui/icons';
 
 import EventNotificator, { EventNotificatorType } from '@/components/event/EventNotificator';
 import EditRegistrationProductsDialog from '@/components/eventuras/EditRegistrationProductsDialog';
-import { client } from '@/lib/eventuras-client';
 import { ParticipationTypesKey } from '@/types';
 import { participationMap } from '@/utils/api/mappers';
 
@@ -79,7 +78,6 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
       setLoadingRegistration(true);
       try {
         const response = await getV3RegistrationsById({
-          client,
           path: { id: currentSelectedParticipant.registrationId! },
           query: {
             IncludeProducts: true,
