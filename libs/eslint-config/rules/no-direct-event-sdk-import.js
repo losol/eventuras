@@ -41,7 +41,8 @@ export default {
       filename.includes('eventuras-sdk.ts') ||
       filename.includes('eventuras-client.ts') ||
       filename.includes('eventuras-public-sdk.ts') ||
-      filename.includes('eventuras-public-client.ts')
+      filename.includes('eventuras-public-client.ts') ||
+      filename.includes('eventuras-types.ts')
     ) {
       return {};
     }

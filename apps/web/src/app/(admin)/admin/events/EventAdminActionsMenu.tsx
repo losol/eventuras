@@ -6,8 +6,8 @@ import { Button, ButtonGroup } from '@eventuras/ratio-ui/core/Button';
 import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
-import EventNotificator, { EventNotificatorType } from '@/components/event/EventNotificator';
-import { EventDto, ProductDto } from "@/lib/eventuras-sdk";
+import { EventNotificator, NotificationType } from '@/components/notificator';
+import type { EventDto, ProductDto } from '@/lib/eventuras-sdk';
 
 import { ExcelExportButton } from './[id]/ExcelExportButton';
 import AddUserToEvent from './AddUserToEvent';
@@ -64,7 +64,7 @@ const EventAdminActionsMenu: React.FC<EventAdminActionsMenuProps> = ({
             eventTitle={eventinfo.title!}
             eventId={eventinfo.id!}
             onClose={() => setEmailDrawerOpen(false)}
-            notificatorType={EventNotificatorType.EMAIL}
+            notificationType={NotificationType.EMAIL}
           />
         </Drawer.Body>
         <Drawer.Footer>
@@ -80,7 +80,7 @@ const EventAdminActionsMenu: React.FC<EventAdminActionsMenuProps> = ({
             eventTitle={eventinfo.title!}
             eventId={eventinfo.id!}
             onClose={() => setSMSDrawerOpen(false)}
-            notificatorType={EventNotificatorType.SMS}
+            notificationType={NotificationType.SMS}
           />
         </Drawer.Body>
         <Drawer.Footer>
