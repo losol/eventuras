@@ -1,8 +1,7 @@
 'use client';
 import MarkdownEditor from '@eventuras/scribo';
 import '@eventuras/scribo/style.css';
-import { useRef } from 'react';
-import { Controller, useFormContext } from 'react-hook-form';
+import { useRef, useState } from 'react';
 
 export type MarkdownInputProps = {
   id?: string;
@@ -10,6 +9,7 @@ export type MarkdownInputProps = {
   maxLength?: number;
   label?: string;
   placeholder?: string;
+  defaultValue?: string;
 };
 
 const styles = {
@@ -17,47 +17,44 @@ const styles = {
   editor: 'w-full',
 };
 
+/**
+ * MarkdownInput component that works with native forms (FormData API)
+ * No longer requires react-hook-form
+ */
 const MarkdownInput = (props: MarkdownInputProps) => {
-  const { control } = useFormContext();
-  const toCompile = useRef('');
-  const plain = useRef('');
+  const [value, setValue] = useState(props.defaultValue ?? '');
+  const [error, setError] = useState<string | null>(null);
+  const plainTextRef = useRef('');
   const id = props.id ?? props.name;
+
+  const handleChange = (markdown: string, { plainText }: { plainText: string }) => {
+    setValue(markdown);
+    plainTextRef.current = plainText;
+
+    // Validate maxLength if provided
+    if (props.maxLength && plainText.length >= props.maxLength) {
+      setError(`Maximum ${props.maxLength} characters allowed`);
+    } else {
+      setError(null);
+    }
+  };
+
   return (
     <div className={styles.wrapper}>
       {props.label && <label htmlFor={id}>{props.label}</label>}
-      <Controller
-        control={control}
-        name={props.name}
-        shouldUnregister={false}
-        rules={{
-          validate: (): boolean => {
-            if (!props.maxLength) return true;
-            return plain.current.length < props.maxLength;
-          },
-        }}
-        render={({ field: { onChange, onBlur, value }, formState: { errors } }) => {
-          return (
-            <>
-              <MarkdownEditor
-                onChange={(markdown, { plainText }) => {
-                  onChange(markdown);
-                  toCompile.current = markdown;
-                  plain.current = plainText;
-                }}
-                className={styles.editor}
-                onBlur={onBlur}
-                initialMarkdown={value}
-                placeholder={props.placeholder}
-              />
-              {errors[props.name] && (
-                <span role="alert" className="text-red-500 bg-black">
-                  Please provide a maximum of 300 characters{' '}
-                </span>
-              )}
-            </>
-          );
-        }}
+      {/* Hidden input to submit markdown value with the form */}
+      <input type="hidden" name={props.name} value={value} />
+      <MarkdownEditor
+        onChange={handleChange}
+        className={styles.editor}
+        initialMarkdown={props.defaultValue}
+        placeholder={props.placeholder}
       />
+      {error && (
+        <span role="alert" className="text-red-500 bg-black">
+          {error}
+        </span>
+      )}
     </div>
   );
 };
