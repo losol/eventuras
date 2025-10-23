@@ -28,11 +28,9 @@ export function getPublicClient() {
     return publicClientInstance;
   }
 
-  // Lazy load config only when needed
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { appConfig } = require('@/config.server');
-
-  const baseUrl = appConfig.env.NEXT_PUBLIC_BACKEND_URL as string;
+  // Read directly from process.env for Next.js build-time inlining
+  // This ensures the value is available during static generation
+  const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   if (!baseUrl) {
     // During build time, create a dummy client
