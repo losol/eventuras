@@ -1,30 +1,18 @@
 'use client';
-import { ColumnFilter, createColumnHelper, DataTable } from '@eventuras/datatable';
-import { EventDto, ProductDto, RegistrationDto } from '@eventuras/event-sdk';
-import { Logger } from '@eventuras/logger';
-import { Badge } from '@eventuras/ratio-ui/core/Badge';
-import { Button } from '@eventuras/ratio-ui/core/Button';
-import { Loading } from '@eventuras/ratio-ui/core/Loading';
-import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
-const logger = Logger.create({
-  namespace: 'web:admin:events',
-  context: { component: 'EventParticipantList' },
-});
-import React, { useMemo, useState } from 'react';
-import { useEffect } from 'react';
-import Link from 'next/link';
-import { useTranslations } from 'next-intl';
 
-import { getV3RegistrationsById } from '@eventuras/event-sdk';
-import { FileText, ShoppingCart, User } from '@eventuras/ratio-ui/icons';
+import { ColumnFilter, DataTable } from '@eventuras/datatable';
+import { EventDto, ProductDto, RegistrationDto } from '@eventuras/event-sdk';
+import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
+import React, { useMemo, useState, useTransition } from 'react';
+import { useTranslations } from 'next-intl';
 
 import EventNotificator, { EventNotificatorType } from '@/components/event/EventNotificator';
 import EditRegistrationProductsDialog from '@/components/eventuras/EditRegistrationProductsDialog';
-import { ParticipationTypesKey } from '@/types';
-import { participationMap } from '@/utils/api/mappers';
 
-import LiveActionsMenu from './LiveActionsMenu';
-const columnHelper = createColumnHelper<RegistrationDto>();
+import { createParticipantColumns } from './ParticipantTableColumns';
+import { getRegistrationDetails } from './participantActions';
+
+
 interface AdminEventListProps {
   participants: RegistrationDto[];
   event: EventDto;
@@ -32,19 +20,7 @@ interface AdminEventListProps {
   filteredStatus?: string;
   onUpdated?: () => void;
 }
-function renderProducts(registration: RegistrationDto) {
-  if (!registration.products || registration.products.length === 0) {
-    return '';
-  }
-  return registration.products
-    .map(product => {
-      const displayQuantity = product.product!.enableQuantity && product.quantity! > 1;
-      return displayQuantity
-        ? `${product.quantity} x ${product.product!.name}`
-        : product.product!.name;
-    })
-    .join(', ');
-}
+
 const EventParticipantList: React.FC<AdminEventListProps> = ({
   participants: initialParticipants = [],
   event,
@@ -52,14 +28,21 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
   filteredStatus,
 }) => {
   const t = useTranslations();
+  const [isPending, startTransition] = useTransition();
+
+  // Participant list state
   const [participants, setParticipants] = useState<RegistrationDto[]>(initialParticipants);
+
+  // Email drawer state
   const [registrationOpen, setRegistrationOpen] = useState<RegistrationDto | null>(null);
-  const [currentSelectedParticipant, setCurrentSelectedParticipant] =
-    useState<RegistrationDto | null>(null);
-  const [editorOpen, setEditorOpen] = useState(false);
-  const [currentRegistration, setCurrentRegistration] = useState<RegistrationDto | null>(null);
-  const [loadingRegistration, setLoadingRegistration] = useState(false);
-  const updateParticipantList = (updatedRegistration: RegistrationDto) => {
+
+  // Product editor state
+  const [selectedRegistration, setSelectedRegistration] = useState<RegistrationDto | null>(null);
+  const [fullRegistration, setFullRegistration] = useState<RegistrationDto | null>(null);
+  const [isProductEditorOpen, setIsProductEditorOpen] = useState(false);
+
+  // Update participant in list after status change
+  const handleStatusUpdate = (updatedRegistration: RegistrationDto) => {
     setParticipants(prevParticipants =>
       prevParticipants.map(participant =>
         participant.registrationId === updatedRegistration.registrationId
@@ -68,146 +51,51 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
       )
     );
   };
-  useEffect(() => {
-    if (currentSelectedParticipant === null) {
-      setCurrentRegistration(null);
-      return;
-    }
-    const loadRegistration = async () => {
-      logger.info('Loading current registration');
-      setLoadingRegistration(true);
-      try {
-        const response = await getV3RegistrationsById({
-          path: { id: currentSelectedParticipant.registrationId! },
-          query: {
-            IncludeProducts: true,
-            IncludeOrders: true,
-            IncludeUserInfo: true,
-          },
-        });
-        setCurrentRegistration(response.data ?? null);
-      } catch (error) {
-        logger.error({ error }, 'Failed to load registration');
-        setCurrentRegistration(null);
-      } finally {
-        setLoadingRegistration(false);
+
+  // Load full registration details when opening product editor
+  const handleProductsClick = async (registration: RegistrationDto) => {
+    setSelectedRegistration(registration);
+    setIsProductEditorOpen(true);
+
+    startTransition(async () => {
+      const details = await getRegistrationDetails(registration.registrationId!);
+      if (details) {
+        setFullRegistration(details);
       }
-    };
-    loadRegistration();
-  }, [currentSelectedParticipant?.registrationId]);
-  const renderLiveActions = (registration: RegistrationDto) => {
-    return <LiveActionsMenu registration={registration} onStatusUpdate={updateParticipantList} />;
+    });
   };
-  const renderEventItemActions = (info: RegistrationDto) => {
-    return (
-      <div className="flex flex-col items-end">
-        <div className="flex flex-row">
-          <div className="mr-2">
-            <Button variant="light">
-              <Link href={`/admin/users/${info.userId}`}>
-                <User color="black" />
-              </Link>
-            </Button>
-          </div>
-          <div className="mr-2">
-            <Button variant="light">
-              <Link href={`/admin/registrations/${info.registrationId}`}>
-                <FileText color="black" />
-              </Link>
-            </Button>
-          </div>
-          {eventProducts?.length !== 0 && (
-            <Button
-              variant="light"
-              onClick={() => {
-                setCurrentSelectedParticipant(info);
-                setEditorOpen(true);
-              }}
-            >
-              {!currentRegistration &&
-              loadingRegistration &&
-              currentSelectedParticipant !== null &&
-              currentSelectedParticipant.userId === info.userId ? (
-                <Loading />
-              ) : (
-                <ShoppingCart color="black" />
-              )}
-            </Button>
-          )}
-        </div>
-      </div>
-    );
-  };
-  /**
-   * To allow tanstack to filter or sort or do any sort of computation it needs a properly formed *accessor key* which is
-   * a string or a function which will tell tanstack where to get its data from.
-   */
-  const columns = [
-    columnHelper.display({
-      header: t('common.labels.id').toString(),
-      cell: info => <Badge>{info.row.original.registrationId}</Badge>,
-    }),
-    columnHelper.accessor('user.name', {
-      header: t('admin.participantColumns.name').toString(),
-    }),
-    columnHelper.accessor('user.phoneNumber', {
-      header: t('admin.participantColumns.telephone').toString(),
-    }),
-    columnHelper.accessor('user.email', {
-      header: t('admin.participantColumns.email').toString(),
-    }),
-    columnHelper.accessor('products', {
-      header: t('admin.participantColumns.products').toString(),
-      cell: info => renderProducts(info.row.original),
-    }),
-    columnHelper.accessor('status', {
-      header: t('admin.participantColumns.status').toString(),
-      filterFn: (row, _columnId, value) => {
-        /*
-          This filters out participants based on status. The filter assumes values of 'participant,waitinglist,cancelled'
-          Status types are mapped accordingly, as the actual RegistrationStatus could be verified,draft[...],waitinglist,cancelled,
-          This filter maps the given value to the actual registrationstatus and returns true if the status mapping returns a hit.
-        */
-        const status = row.original.status!;
-        const key = Object.keys(participationMap).filter(key => {
-          const k = key as ParticipationTypesKey;
-          const values: string[] = participationMap[k];
-          return values.indexOf(status) > -1;
-        })[0];
-        return key?.toLowerCase() === value.toLowerCase();
-      },
-      cell: info => {
-        const registration = info.row.original;
-        return (
-          <>
-            <Badge>{registration.type}</Badge>
-            &nbsp;
-            <Badge>{registration.status}</Badge>
-          </>
-        );
-      },
-    }),
-    columnHelper.display({
-      id: 'live',
-      header: t('admin.participantColumns.live'),
-      cell: info => renderLiveActions(info.row.original),
-    }),
-    columnHelper.display({
-      id: 'actions',
-      header: t('admin.participantColumns.actions').toString(),
-      cell: info => renderEventItemActions(info.row.original),
-    }),
-  ];
-  const drawerIsOpen = registrationOpen !== null;
+
+  // Check if a specific registration is currently loading
+  const isLoadingRegistration = React.useCallback(
+    (registration: RegistrationDto) => {
+      return (
+        isPending &&
+        selectedRegistration?.registrationId === registration.registrationId &&
+        !fullRegistration
+      );
+    },
+    [isPending, selectedRegistration, fullRegistration]
+  );
+
+  // Table columns configuration
+  const columns = useMemo(
+    () =>
+      createParticipantColumns({
+        t: (key: string) => t(key).toString(),
+        eventProducts,
+        onProductsClick: handleProductsClick,
+        onStatusUpdate: handleStatusUpdate,
+        isLoadingRegistration,
+      }),
+    [t, eventProducts, isLoadingRegistration]
+  );
+
+  // Column filters based on status
   const columnFilter: ColumnFilter[] = useMemo(() => {
     if (!filteredStatus) return [];
-    return [
-      {
-        id: 'status',
-        value: filteredStatus,
-      },
-    ];
+    return [{ id: 'status', value: filteredStatus }];
   }, [filteredStatus]);
+
   return (
     <>
       <DataTable
@@ -218,8 +106,10 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
         enableGlobalSearch={true}
         columnFilters={columnFilter}
       />
-      {registrationOpen !== null && (
-        <Drawer isOpen={drawerIsOpen} onCancel={() => setRegistrationOpen(null)}>
+
+      {/* Email notification drawer */}
+      {registrationOpen && (
+        <Drawer isOpen={true} onCancel={() => setRegistrationOpen(null)}>
           <Drawer.Header as="h3" className="text-black">
             <p>Mailer</p>
           </Drawer.Header>
@@ -236,24 +126,29 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
           </Drawer.Footer>
         </Drawer>
       )}
-      {currentRegistration && eventProducts && editorOpen && (
+
+      {/* Product editor dialog */}
+      {fullRegistration && eventProducts && isProductEditorOpen && (
         <EditRegistrationProductsDialog
           eventProducts={eventProducts}
-          currentRegistration={currentRegistration}
+          currentRegistration={fullRegistration}
           startOpened={true}
           withButton={false}
-          title={currentRegistration.user?.name ?? undefined}
-          description={`Edit products for user ${currentRegistration.user?.email}`}
+          title={fullRegistration.user?.name ?? undefined}
+          description={`Edit products for user ${fullRegistration.user?.email}`}
           onClose={(registrationUpdated: boolean) => {
             if (registrationUpdated) {
-              //force reload of participant data along with registration
-              setCurrentSelectedParticipant(null);
+              // Reset state to force reload
+              setSelectedRegistration(null);
+              setFullRegistration(null);
             }
-            setEditorOpen(false);
+            setIsProductEditorOpen(false);
           }}
         />
       )}
     </>
   );
 };
+
 export default EventParticipantList;
+
