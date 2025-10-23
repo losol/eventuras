@@ -8,32 +8,12 @@ This package provides Markdown form input for React using the Scribo editor. Wor
 pnpm add @eventuras/markdowninput
 ```
 
-### Peer Dependencies
-
-This package requires the following peer dependencies:
-
-```bash
-pnpm add react react-dom
-```
-
-**Prism.js for syntax highlighting:**  
-The markdown editor uses Prism.js for code syntax highlighting but does not bundle it. You need to install `prismjs` and import the language grammars you need in your application.
-
-Example:
-
-```tsx
-import 'prismjs';
-import 'prismjs/components/prism-javascript';
-import 'prismjs/components/prism-typescript';
-import 'prismjs/components/prism-markdown';
-// Import other languages as needed
-```
-
 ## Usage
 
-The markdown input works with native HTML forms using the FormData API. The component includes a hidden input field that stores the markdown value and will be submitted with the form.
+**Important**: You must import the Scribo CSS file for the editor to display correctly:
 
 ```tsx
+import '@eventuras/scribo/style.css';
 import { MarkdownInput } from '@eventuras/markdowninput';
 
 function MyForm() {
@@ -74,3 +54,24 @@ function MyForm() {
 - ✅ Markdown editor with rich formatting toolbar
 - ✅ Character limit validation
 - ✅ Support for links, lists, code blocks, and more
+
+## Peer Dependencies
+
+This package requires the following peer dependencies:
+
+```bash
+pnpm add react react-dom
+```
+
+**Prism.js for syntax highlighting:**  
+The markdown editor uses Prism.js for code syntax highlighting but does not bundle it. You need to install `prismjs` and import the language grammars you need in your application.
+
+Example:
+
+```tsx
+import 'prismjs';
+import 'prismjs/components/prism-javascript';
+import 'prismjs/components/prism-typescript';
+import 'prismjs/components/prism-markdown';
+// Import other languages as needed
+```

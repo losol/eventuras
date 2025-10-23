@@ -4,6 +4,7 @@ import { SubmitHandler } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
+import '@eventuras/scribo/style.css';
 import { Logger } from '@eventuras/logger';
 import { MarkdownInput } from '@eventuras/markdowninput';
 import { Button } from '@eventuras/ratio-ui/core/Button';

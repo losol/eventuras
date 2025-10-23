@@ -14,6 +14,19 @@ Test the [scribo editor online demo](https://scribo.losol.no/).
 pnpm add @eventuras/scribo
 ```
 
+## Usage
+
+**Important**: You must import the CSS file for Scribo to display correctly:
+
+```tsx
+import '@eventuras/scribo/style.css';
+import MarkdownEditor from '@eventuras/scribo';
+
+function MyComponent() {
+  return <MarkdownEditor defaultValue="# Hello World" />;
+}
+```
+
 ### Peer Dependencies
 
 Scribo requires the following peer dependencies:

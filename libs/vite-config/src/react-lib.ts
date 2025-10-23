@@ -189,7 +189,6 @@ export function defineReactLibConfig(config: ReactLibConfig): UserConfig {
       ...viteConfig.resolve,
     },
     build: {
-      ...viteConfig.build,
       lib: {
         entry: entryPoints,
         formats: ['es'],
@@ -206,7 +205,18 @@ export function defineReactLibConfig(config: ReactLibConfig): UserConfig {
           ...viteConfig.build?.rollupOptions?.output,
         },
       },
+      // Spread other build options from viteConfig except lib and rollupOptions
+      ...Object.fromEntries(
+        Object.entries(viteConfig.build || {}).filter(
+          ([key]) => key !== 'lib' && key !== 'rollupOptions'
+        )
+      ),
     },
-    ...viteConfig,
+    // Spread other viteConfig options except build, plugins, and resolve
+    ...Object.fromEntries(
+      Object.entries(viteConfig).filter(
+        ([key]) => key !== 'build' && key !== 'plugins' && key !== 'resolve'
+      )
+    ),
   });
 }

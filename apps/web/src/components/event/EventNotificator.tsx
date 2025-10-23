@@ -2,6 +2,7 @@
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
 
+import '@eventuras/scribo/style.css';
 import { Logger } from '@eventuras/logger';
 import { MarkdownInput } from '@eventuras/markdowninput';
 import { Button, ButtonGroup } from '@eventuras/ratio-ui/core/Button';

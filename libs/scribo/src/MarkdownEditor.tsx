@@ -19,7 +19,6 @@ import EditorTheme from "./themes/EditorTheme";
 import ContentEditable from "./ui/ContentEditable";
 import Placeholder from "./ui/Placeholder";
 import {HistoryPlugin} from '@lexical/react/LexicalHistoryPlugin';
-import "./MarkdownEditor.css";
 import LinkPlugin from "./plugins/LinkPlugin";
 import FloatingLinkEditorPlugin from "./plugins/FloatingLinkEditorPlugin";
 import AutoLinkPlugin from "./plugins/AutoLinkPlugin";
