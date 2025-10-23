@@ -6,7 +6,7 @@ import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Tabs } from '@eventuras/ratio-ui/core/Tabs';
 
 import Registration from '@/app/(admin)/admin/registrations/Registration';
-import { EventDto, RegistrationDto } from "@/lib/eventuras-sdk";
+import { EventDto, RegistrationDto } from '@/lib/eventuras-sdk';
 export interface RegistrationViewProps {
   eventInfo: EventDto;
   registration?: RegistrationDto;

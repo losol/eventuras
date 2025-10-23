@@ -6,7 +6,7 @@ import { Definition, DescriptionList, Item, Term } from '@eventuras/ratio-ui/cor
 import { Text } from '@eventuras/ratio-ui/core/Text';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
-import { UserDto } from "@/lib/eventuras-sdk";
+import { UserDto } from '@/lib/eventuras-sdk';
 export type UserProfileCardProps = {
   profile: UserDto;
 };

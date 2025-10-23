@@ -14,7 +14,7 @@ import {
   RegistrationDto,
   RegistrationStatus,
   RegistrationType,
-} from "@/lib/eventuras-sdk";
+} from '@/lib/eventuras-sdk';
 
 import Order from '../orders/Order';
 interface RegistrationProps {

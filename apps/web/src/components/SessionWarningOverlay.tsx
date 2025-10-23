@@ -36,11 +36,11 @@ export function SessionWarningOverlay() {
   const handleLoginNow = useCallback(() => {
     logger.info('User clicked login, redirecting to login endpoint');
     setIsLoggingIn(true);
-    
+
     // Capture current URL to return after login
     const returnTo = window.location.pathname + window.location.search;
     const loginUrl = `/api/login/auth0?returnTo=${encodeURIComponent(returnTo)}`;
-    
+
     logger.info({ returnTo }, 'Redirecting to login with returnTo');
     window.location.href = loginUrl;
   }, []);

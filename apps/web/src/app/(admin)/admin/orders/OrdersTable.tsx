@@ -7,7 +7,7 @@ import { createColumnHelper, DataTable } from '@eventuras/datatable';
 import { Pagination } from '@eventuras/ratio-ui/core/Pagination';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
-import { OrderDto } from "@/lib/eventuras-sdk";
+import { OrderDto } from '@/lib/eventuras-sdk';
 const columnHelper = createColumnHelper<OrderDto>();
 type OrdersTableProps = {
   orders: OrderDto[];

@@ -20,7 +20,7 @@ import {
   putV3RegistrationsById,
   RegistrationDto,
   RegistrationUpdateDto,
-} from "@/lib/eventuras-sdk";
+} from '@/lib/eventuras-sdk';
 import { productMapToOrderLineModel } from '@/utils/registration-helpers';
 
 const logger = Logger.create({

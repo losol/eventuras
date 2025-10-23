@@ -3,7 +3,7 @@
 import { Logger } from '@eventuras/logger';
 
 import { client } from '@/lib/eventuras-client';
-import { EventDto, getV3Events } from "@/lib/eventuras-sdk";
+import { EventDto, getV3Events } from '@/lib/eventuras-sdk';
 
 const logger = Logger.create({ namespace: 'web:admin', context: { module: 'eventActions' } });
 

@@ -6,7 +6,7 @@ import {
   RegistrationStatus,
   RegistrationType,
   RegistrationUpdateDto,
-} from "@/lib/eventuras-sdk";
+} from '@/lib/eventuras-sdk';
 import { ParticipationTypes, PaymentFormValues, RegistrationProduct } from '@/types';
 
 /**

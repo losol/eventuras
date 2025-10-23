@@ -39,9 +39,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
         />
       </Navbar>
 
-      <main id="main-content">
-        {children}
-      </main>
+      <main id="main-content">{children}</main>
 
       <Footer siteTitle={site?.name} publisher={site?.publisher}>
         <List className="list-none text-gray-800 dark:text-gray-300 font-medium">

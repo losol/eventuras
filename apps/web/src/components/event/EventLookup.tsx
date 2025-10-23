@@ -5,7 +5,7 @@ import type { AutoCompleteItem } from '@eventuras/ratio-ui/forms/InputAutocomple
 import { InputAutoComplete } from '@eventuras/ratio-ui/forms/InputAutocomplete';
 
 import { fetchEventsForLookup } from '@/app/(admin)/admin/actions/events';
-import { EventDto } from "@/lib/eventuras-sdk";
+import { EventDto } from '@/lib/eventuras-sdk';
 let cachedEvents: EventDto[] | null = null;
 const comboRender = (item: AutoCompleteItem, selected?: boolean) => {
   const evt: EventDto = item.original as EventDto;

@@ -8,7 +8,7 @@ import { Pagination } from '@eventuras/ratio-ui/core/Pagination';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
 import FatalError from '@/components/FatalError';
-import { EventCollectionDto, EventCollectionDtoPageResponseDto } from "@/lib/eventuras-sdk";
+import { EventCollectionDto, EventCollectionDtoPageResponseDto } from '@/lib/eventuras-sdk';
 
 import { getCollections } from './actions';
 const columnHelper = createColumnHelper<EventCollectionDto>();

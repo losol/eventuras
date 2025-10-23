@@ -6,7 +6,7 @@ import { createColumnHelper, DataTable } from '@eventuras/datatable';
 import { Pagination } from '@eventuras/ratio-ui/core/Pagination';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
-import { RegistrationDto } from "@/lib/eventuras-sdk";
+import { RegistrationDto } from '@/lib/eventuras-sdk';
 const columnHelper = createColumnHelper<RegistrationDto>();
 type RegistrationsTableProps = {
   registrations: RegistrationDto[];

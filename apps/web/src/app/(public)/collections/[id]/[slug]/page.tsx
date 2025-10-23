@@ -21,7 +21,7 @@ import {
   getV3Eventcollections,
   getV3EventcollectionsById,
   getV3Events,
-} from "@/lib/eventuras-public-sdk";
+} from '@/lib/eventuras-public-sdk';
 type EventInfoProps = {
   params: Promise<{
     id: number;

@@ -8,7 +8,7 @@ import {
   deleteV3OrganizationsByOrganizationIdMembersByUserIdRoles,
   postV3OrganizationsByOrganizationIdMembersByUserIdRoles,
   putV3OrganizationsByOrganizationIdMembersByUserId,
-} from "@/lib/eventuras-sdk";
+} from '@/lib/eventuras-sdk';
 
 export async function addMember(orgId: number, userId: string) {
   const logContext = {

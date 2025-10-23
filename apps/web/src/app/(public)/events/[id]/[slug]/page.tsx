@@ -4,7 +4,7 @@ import { Text } from '@eventuras/ratio-ui/core/Text';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 
-import { EventInfoStatus, getV3Events, getV3EventsById } from "@/lib/eventuras-public-sdk";
+import { EventInfoStatus, getV3Events, getV3EventsById } from '@/lib/eventuras-public-sdk';
 
 const logger = Logger.create({ namespace: 'web:app:events', context: { page: 'EventPage' } });
 
@@ -146,10 +146,8 @@ export default async function EventDetailsPage({ params }: Readonly<EventDetails
           <Suspense fallback={<div>Loading registration options...</div>}>
             <EventRegistrationButton event={eventinfo} />
           </Suspense>
-
         </Container>
       </Section>
-
 
       <Suspense fallback={<div>Loading event details...</div>}>
         <EventDetails eventinfo={eventinfo} />

@@ -4,7 +4,6 @@ import { SubmitHandler } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
-import '@eventuras/scribo/style.css';
 import { Logger } from '@eventuras/logger';
 import { MarkdownInput } from '@eventuras/markdowninput';
 import { Button } from '@eventuras/ratio-ui/core/Button';
@@ -22,10 +21,12 @@ import {
 import { useToast } from '@eventuras/toast';
 
 import { publicEnv } from '@/config.client';
-import { EventDto, EventFormDto } from "@/lib/eventuras-sdk";
+import { EventDto, EventFormDto } from '@/lib/eventuras-sdk';
 import slugify from '@/utils/slugify';
 
 import { updateEvent } from './actions';
+
+import '@eventuras/scribo/style.css';
 export type EventEditorProps = {
   eventinfo: EventDto;
 };

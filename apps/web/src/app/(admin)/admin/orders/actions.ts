@@ -2,7 +2,7 @@
 
 import { appConfig } from '@/config.server';
 import { client } from '@/lib/eventuras-client';
-import { getV3Orders, OrderDto } from "@/lib/eventuras-sdk";
+import { getV3Orders, OrderDto } from '@/lib/eventuras-sdk';
 
 export interface GetOrdersResult {
   data: OrderDto[];

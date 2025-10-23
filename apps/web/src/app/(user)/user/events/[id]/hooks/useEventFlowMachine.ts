@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { useActor } from '@xstate/react';
 
-import { EventDto, ProductDto, UserDto } from "@/lib/eventuras-sdk";
+import { EventDto, ProductDto, UserDto } from '@/lib/eventuras-sdk';
 import EventFlowMachine, { Events, States } from '@/statemachines/EventFlowMachine';
 
 import { logStateTransition, logStepError } from '../lib/eventFlowLogger';

@@ -6,7 +6,7 @@ import { Loading } from '@eventuras/ratio-ui/core/Loading';
 
 import UserEditor from '@/app/(admin)/admin/users/UserEditor';
 import FatalError from '@/components/FatalError';
-import { EventDto, ProductDto, RegistrationDto, UserDto } from "@/lib/eventuras-sdk";
+import { EventDto, ProductDto, RegistrationDto, UserDto } from '@/lib/eventuras-sdk';
 import EventFlowMachine, { Events, States } from '@/statemachines/EventFlowMachine';
 import { PaymentFormValues, ProductSelected } from '@/types';
 import { SiteInfo } from '@/utils/site/getSiteSettings';

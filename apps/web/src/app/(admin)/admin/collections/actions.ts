@@ -20,7 +20,7 @@ import {
   postV3Eventcollections,
   putV3EventcollectionsById,
   putV3EventsByEventIdCollectionsByCollectionId,
-} from "@/lib/eventuras-sdk";
+} from '@/lib/eventuras-sdk';
 import slugify from '@/utils/slugify';
 
 const logger = Logger.create({

@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Grid } from '@eventuras/ratio-ui/layout/Grid';
 
-import { RegistrationDto } from "@/lib/eventuras-sdk";
+import { RegistrationDto } from '@/lib/eventuras-sdk';
 
 import UserEventRegistrationCard from './UserEventRegistrationCard';
 export type UserEventRegistrationsProps = {

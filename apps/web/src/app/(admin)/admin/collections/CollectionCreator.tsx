@@ -8,7 +8,7 @@ import { Dialog } from '@eventuras/ratio-ui/layout/Dialog';
 import { Form, HiddenInput, Input } from '@eventuras/smartform';
 
 import { publicEnv } from '@/config.client';
-import { EventCollectionCreateDto } from "@/lib/eventuras-sdk";
+import { EventCollectionCreateDto } from '@/lib/eventuras-sdk';
 
 import { createCollection } from './actions';
 const CollectionCreator: React.FC = () => {

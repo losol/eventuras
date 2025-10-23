@@ -4,7 +4,7 @@ import { Heading } from '@eventuras/ratio-ui/core/Heading';
 
 import UserEventRegistrations from '@/components/user/UserEventRegistrations';
 import UserProfileCard from '@/components/user/UserProfileCard';
-import { getV3Registrations, getV3UsersMe } from "@/lib/eventuras-sdk";
+import { getV3Registrations, getV3UsersMe } from '@/lib/eventuras-sdk';
 
 const UserPage = async () => {
   const t = await getTranslations();

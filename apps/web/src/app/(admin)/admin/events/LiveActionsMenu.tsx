@@ -7,7 +7,7 @@ import { CircleX } from '@eventuras/ratio-ui/icons';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 import { useToast } from '@eventuras/toast';
 
-import { RegistrationDto, RegistrationStatus } from "@/lib/eventuras-sdk";
+import { RegistrationDto, RegistrationStatus } from '@/lib/eventuras-sdk';
 
 import { sendCertificateEmail, updateRegistrationStatus } from '../registrations/actions';
 interface LiveActionsMenuProps {
@@ -25,18 +25,27 @@ const LiveActionsMenu = ({ registration, onStatusUpdate }: LiveActionsMenuProps)
     context: { component: 'LiveActionsMenu' },
   });
   const handleStatusUpdate = async (newStatus: RegistrationStatus) => {
-    logger.info({ registrationId: registration.registrationId, newStatus }, 'Updating registration status');
+    logger.info(
+      { registrationId: registration.registrationId, newStatus },
+      'Updating registration status'
+    );
 
     const result = await updateRegistrationStatus(registration.registrationId!, newStatus);
 
     if (!result.success) {
       toast.error(result.error.message);
-      logger.error({ error: result.error, registrationId: registration.registrationId }, 'Failed to update registration status');
+      logger.error(
+        { error: result.error, registrationId: registration.registrationId },
+        'Failed to update registration status'
+      );
       return;
     }
 
     toast.success(result.message || 'Status updated successfully!');
-    logger.info({ registrationId: registration.registrationId, newStatus }, 'Status updated successfully');
+    logger.info(
+      { registrationId: registration.registrationId, newStatus },
+      'Status updated successfully'
+    );
 
     if (onStatusUpdate && result.data) {
       onStatusUpdate(result.data);

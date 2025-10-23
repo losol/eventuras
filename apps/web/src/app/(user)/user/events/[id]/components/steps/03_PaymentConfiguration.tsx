@@ -7,7 +7,7 @@ import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Input } from '@eventuras/ratio-ui/forms';
 
-import { UserDto } from "@/lib/eventuras-sdk";
+import { UserDto } from '@/lib/eventuras-sdk';
 import { PaymentFormValues } from '@/types';
 
 import { logStepComplete, logStepEntry, logUserAction } from '../../lib/eventFlowLogger';

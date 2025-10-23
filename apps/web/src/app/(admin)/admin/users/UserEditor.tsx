@@ -9,7 +9,7 @@ import { Fieldset } from '@eventuras/ratio-ui/forms';
 import { Form, Input, PhoneInput } from '@eventuras/smartform';
 import { useToast } from '@eventuras/toast';
 
-import { UserDto, UserFormDto } from "@/lib/eventuras-sdk";
+import { UserDto, UserFormDto } from '@/lib/eventuras-sdk';
 
 import { createUser, updateUser, updateUserProfile } from './actions';
 const logger = Logger.create({

@@ -6,7 +6,7 @@ import { Button } from '@eventuras/ratio-ui/core/Button';
 
 import { useAuthSelector } from '@/auth/authMachine';
 import ProductSelection from '@/components/eventuras/ProductSelection';
-import { ProductDto } from "@/lib/eventuras-sdk";
+import { ProductDto } from '@/lib/eventuras-sdk';
 import { ProductSelected } from '@/types';
 import { mapSelectedProductsToQuantity } from '@/utils/api/mappers';
 type SubmitCallback = (values: Map<string, number>) => void;

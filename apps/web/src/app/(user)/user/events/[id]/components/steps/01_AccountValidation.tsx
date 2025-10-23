@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 
 import UserEditor from '@/app/(admin)/admin/users/UserEditor';
-import { UserDto } from "@/lib/eventuras-sdk";
+import { UserDto } from '@/lib/eventuras-sdk';
 
 import { logStepComplete, logStepEntry } from '../../lib/eventFlowLogger';
 

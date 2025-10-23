@@ -8,7 +8,7 @@ import { Heading } from '@eventuras/ratio-ui/core/Heading';
 
 import { useAuthSelector } from '@/auth/authMachine';
 import ProductSelection from '@/components/eventuras/ProductSelection';
-import { ProductDto } from "@/lib/eventuras-sdk";
+import { ProductDto } from '@/lib/eventuras-sdk';
 import { ProductSelected } from '@/types';
 import { mapSelectedProductsToQuantity } from '@/utils/api/mappers';
 

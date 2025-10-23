@@ -4,8 +4,8 @@ import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
 
 import { appConfig } from '@/config.server';
-import { UserDto } from "@/lib/eventuras-sdk";
-import { getV3Users } from "@/lib/eventuras-sdk";
+import { UserDto } from '@/lib/eventuras-sdk';
+import { getV3Users } from '@/lib/eventuras-sdk';
 import withAuthorization from '@/utils/auth/withAuthorization';
 
 import UserList from './UserList';

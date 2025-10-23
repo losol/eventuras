@@ -9,7 +9,7 @@ import { Section } from '@eventuras/ratio-ui/layout/Section';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
 import { appConfig } from '@/config.server';
-import { getV3ProductsByProductIdSummary } from "@/lib/eventuras-sdk";
+import { getV3ProductsByProductIdSummary } from '@/lib/eventuras-sdk';
 
 import DeliverySummary from '../DeliverySummary';
 

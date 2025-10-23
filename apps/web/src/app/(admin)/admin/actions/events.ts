@@ -8,8 +8,8 @@ import {
 import { Logger } from '@eventuras/logger';
 
 import { appConfig } from '@/config.server';
-import type { EventDto } from "@/lib/eventuras-sdk";
-import { getV3Events } from "@/lib/eventuras-sdk";
+import type { EventDto } from '@/lib/eventuras-sdk';
+import { getV3Events } from '@/lib/eventuras-sdk';
 
 const logger = Logger.create({
   namespace: 'web:actions',

@@ -7,7 +7,7 @@ import { NavList } from '@eventuras/ratio-ui/core/NavList';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
-import { EventDto } from "@/lib/eventuras-public-sdk";
+import { EventDto } from '@/lib/eventuras-public-sdk';
 type EventProps = {
   eventinfo: EventDto;
   bgClassNames?: string;

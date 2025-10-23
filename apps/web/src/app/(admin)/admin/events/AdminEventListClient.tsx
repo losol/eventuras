@@ -5,7 +5,7 @@ import { createColumnHelper, DataTable } from '@eventuras/datatable';
 import { Pagination } from '@eventuras/ratio-ui/core/Pagination';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
-import { EventDto } from "@/lib/eventuras-sdk";
+import { EventDto } from '@/lib/eventuras-sdk';
 const columnHelper = createColumnHelper<EventDto>();
 interface AdminEventListClientProps {
   events: EventDto[];

@@ -1,4 +1,4 @@
-import { PaymentProvider, ProductOrderDto } from "@/lib/eventuras-sdk";
+import { PaymentProvider, ProductOrderDto } from '@/lib/eventuras-sdk';
 
 export type LocalesType = {
   component: {
