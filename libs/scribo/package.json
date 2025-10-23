@@ -2,7 +2,6 @@
   "name": "@eventuras/scribo",
   "version": "0.7.1",
   "type": "module",
-  "main": "src/main.tsx",
   "exports": {
     ".": {
       "import": "./dist/main.js",
@@ -10,6 +9,7 @@
     },
     "./style.css": "./dist/scribo.css"
   },
+  "main": "src/main.tsx",
   "scripts": {
     "build": "vite build",
     "build:site": "BUILD_SITE=true vite build",
@@ -20,8 +20,7 @@
       "rollup": "npm:@rollup/wasm-node"
     }
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "@eventuras/eslint-config": "workspace:*",
     "@eventuras/typescript-config": "workspace:*",

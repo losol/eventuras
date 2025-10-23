@@ -1,8 +1,6 @@
 {
   "name": "@eventuras/toast",
   "version": "0.1.0",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -10,6 +8,8 @@
     },
     "./style.css": "./dist/toast.css"
   },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],

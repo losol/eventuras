@@ -4,10 +4,10 @@
   "description": "The backend API for Eventuras - a comprehensive platform for knowledge managent, courses, events, and conferences.",
   "license": "LGPL-3.0-or-later",
   "author": "",
-  "main": "index.js",
   "exports": {
     "./openapi": "./docs/eventuras-v3.json"
   },
+  "main": "index.js",
   "files": [
     "docs/eventuras-v3.json"
   ],
