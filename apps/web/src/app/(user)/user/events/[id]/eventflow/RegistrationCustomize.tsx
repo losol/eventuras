@@ -2,11 +2,11 @@
 import { useForm } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
 
-import { ProductDto } from '@eventuras/event-sdk';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 
 import { useAuthSelector } from '@/auth/authMachine';
 import ProductSelection from '@/components/eventuras/ProductSelection';
+import { ProductDto } from "@/lib/eventuras-sdk";
 import { ProductSelected } from '@/types';
 import { mapSelectedProductsToQuantity } from '@/utils/api/mappers';
 type SubmitCallback = (values: Map<string, number>) => void;

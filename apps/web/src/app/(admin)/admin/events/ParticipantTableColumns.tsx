@@ -1,11 +1,12 @@
+import Link from 'next/link';
+
 import { createColumnHelper } from '@eventuras/datatable';
-import { ProductDto, RegistrationDto } from '@eventuras/event-sdk';
 import { Badge } from '@eventuras/ratio-ui/core/Badge';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Loading } from '@eventuras/ratio-ui/core/Loading';
 import { FileText, ShoppingCart, User } from '@eventuras/ratio-ui/icons';
-import Link from 'next/link';
 
+import { ProductDto, RegistrationDto } from "@/lib/eventuras-sdk";
 import { ParticipationTypesKey } from '@/types';
 import { participationMap } from '@/utils/api/mappers';
 

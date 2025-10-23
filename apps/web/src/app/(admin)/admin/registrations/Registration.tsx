@@ -1,19 +1,20 @@
 'use client';
 import { useTranslations } from 'next-intl';
 
-import {
-  PaymentProvider,
-  RegistrationCustomerInfoDto,
-  RegistrationDto,
-  RegistrationStatus,
-  RegistrationType,
-} from '@eventuras/event-sdk';
 import { Badge } from '@eventuras/ratio-ui/core/Badge';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Definition, DescriptionList, Item, Term } from '@eventuras/ratio-ui/core/DescriptionList';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 import { Form, Select } from '@eventuras/smartform';
+
+import {
+  PaymentProvider,
+  RegistrationCustomerInfoDto,
+  RegistrationDto,
+  RegistrationStatus,
+  RegistrationType,
+} from "@/lib/eventuras-sdk";
 
 import Order from '../orders/Order';
 interface RegistrationProps {

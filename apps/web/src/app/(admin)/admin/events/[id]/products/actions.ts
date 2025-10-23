@@ -7,13 +7,14 @@ import {
   actionSuccess,
   type ServerActionResult,
 } from '@eventuras/core-nextjs/actions';
-import type { NewProductDto, ProductDto } from '@eventuras/event-sdk';
+import { Logger } from '@eventuras/logger';
+
+import type { NewProductDto, ProductDto } from "@/lib/eventuras-sdk";
 import {
   getV3EventsByEventIdProducts,
   postV3EventsByEventIdProducts,
   putV3EventsByEventIdProductsByProductId,
-} from '@eventuras/event-sdk';
-import { Logger } from '@eventuras/logger';
+} from "@/lib/eventuras-sdk";
 
 const logger = Logger.create({
   namespace: 'web:admin:products',

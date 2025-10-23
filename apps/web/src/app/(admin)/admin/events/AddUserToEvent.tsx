@@ -14,13 +14,6 @@ import { Controller, useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
-import {
-  EventDto,
-  NewRegistrationDto,
-  ProductDto,
-  RegistrationType,
-  UserDto,
-} from '@eventuras/event-sdk';
 import { Logger } from '@eventuras/logger';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
@@ -31,6 +24,13 @@ import { useToast } from '@eventuras/toast';
 import { createEventRegistration } from '@/app/(user)/user/events/actions';
 import ProductSelection from '@/components/eventuras/ProductSelection';
 import UserLookup from '@/components/eventuras/UserLookup';
+import {
+  EventDto,
+  NewRegistrationDto,
+  ProductDto,
+  RegistrationType,
+  UserDto,
+} from "@/lib/eventuras-sdk";
 import { RegistrationProduct } from '@/types';
 import { mapEventProductsToView, mapSelectedProductsToQuantity } from '@/utils/api/mappers';
 type AddUserToEventFormValues = {

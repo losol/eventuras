@@ -1,6 +1,6 @@
-import { ProductDto } from '@eventuras/event-sdk';
 import { Checkbox, CheckBoxDescription, CheckBoxLabel } from '@eventuras/ratio-ui/forms';
 
+import { ProductDto } from "@/lib/eventuras-sdk";
 import { ProductSelected } from '@/types';
 
 export type ProductSelectionProps = {

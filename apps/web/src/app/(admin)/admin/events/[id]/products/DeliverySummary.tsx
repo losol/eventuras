@@ -2,8 +2,9 @@
 import React from 'react';
 
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
-import { ProductOrdersSummaryDto } from '@eventuras/event-sdk';
 import { Badge } from '@eventuras/ratio-ui/core/Badge';
+
+import { ProductOrdersSummaryDto } from "@/lib/eventuras-sdk";
 interface DeliverySummaryProps {
   deliverySummary: ProductOrdersSummaryDto[];
 }

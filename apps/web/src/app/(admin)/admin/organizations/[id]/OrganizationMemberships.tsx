@@ -2,11 +2,12 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { UserDto } from '@eventuras/event-sdk';
 import { Logger } from '@eventuras/logger';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
+
+import { UserDto } from "@/lib/eventuras-sdk";
 
 import { addMember, setAdmin } from './actions';
 import AddMemberDrawer from './AddMemberDrawer';

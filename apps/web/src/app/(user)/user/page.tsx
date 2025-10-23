@@ -1,10 +1,10 @@
 import { getTranslations } from 'next-intl/server';
 
-import { getV3Registrations, getV3UsersMe } from '@eventuras/event-sdk';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 
 import UserEventRegistrations from '@/components/user/UserEventRegistrations';
 import UserProfileCard from '@/components/user/UserProfileCard';
+import { getV3Registrations, getV3UsersMe } from "@/lib/eventuras-sdk";
 
 const UserPage = async () => {
   const t = await getTranslations();

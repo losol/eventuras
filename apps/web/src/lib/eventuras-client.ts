@@ -25,21 +25,25 @@ const logger = Logger.create({
 if (typeof window !== 'undefined') {
   throw new Error(
     '❌ eventuras-client is SERVER-SIDE ONLY!\n\n' +
-    'You are trying to import @/lib/eventuras-client in a client component.\n' +
-    'This will not work because:\n' +
-    '  1. Server-side configuration (appConfig) is not available in the browser\n' +
-    '  2. Authentication tokens should not be exposed to the client\n\n' +
-    'Solutions:\n' +
-    '  - Use server actions for data mutations\n' +
-    '  - Use server components for data fetching\n' +
-    '  - If you need the client in a client component, you are doing something wrong!'
+      'You are trying to import @/lib/eventuras-client in a client component.\n' +
+      'This will not work because:\n' +
+      '  1. Server-side configuration (appConfig) is not available in the browser\n' +
+      '  2. Authentication tokens should not be exposed to the client\n\n' +
+      'Solutions:\n' +
+      '  - Use server actions for data mutations\n' +
+      '  - Use server components for data fetching\n' +
+      '  - If you need the client in a client component, you are doing something wrong!'
   );
 }
 
-// Only configure on server side
-if (typeof window === 'undefined') {
-  // Dynamic import to avoid bundling server-only code in client bundle
-  const { appConfig } = await import('@/config.server');
+let isConfigured = false;
+
+function ensureConfigured() {
+  if (isConfigured) return;
+
+  // Synchronous import - config.server is a regular module
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { appConfig } = require('@/config.server');
 
   const baseUrl = appConfig.env.NEXT_PUBLIC_BACKEND_URL as string;
 
@@ -51,7 +55,7 @@ if (typeof window === 'undefined') {
 
   logger.info({ baseUrl }, 'Configuring Eventuras API client');
 
-  // Configure base URL immediately on module load
+  // Configure base URL
   client.setConfig({ baseUrl });
 
   // Inject auth token on every request (server-side only)
@@ -200,6 +204,13 @@ if (typeof window === 'undefined') {
       return error;
     }
   );
+
+  isConfigured = true;
+}
+
+// Configure on server side only
+if (typeof window === 'undefined') {
+  ensureConfigured();
 }
 
 export { client };

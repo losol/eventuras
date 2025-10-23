@@ -1,7 +1,8 @@
 'use server';
 
-import { getV3RegistrationsById } from '@eventuras/event-sdk';
 import { Logger } from '@eventuras/logger';
+
+import { getV3RegistrationsById } from "@/lib/eventuras-sdk";
 
 const logger = Logger.create({
   namespace: 'web:admin:events',

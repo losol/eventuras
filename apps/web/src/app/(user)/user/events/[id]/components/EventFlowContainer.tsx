@@ -2,13 +2,13 @@
 import { useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 
-import { EventDto, ProductDto, UserDto } from '@eventuras/event-sdk';
 import { Loading } from '@eventuras/ratio-ui/core/Loading';
 import type { Step } from '@eventuras/ratio-ui/core/Stepper';
 import { Stepper } from '@eventuras/ratio-ui/core/Stepper';
 import { useToast } from '@eventuras/toast';
 
 import FatalError from '@/components/FatalError';
+import { EventDto, ProductDto, UserDto } from "@/lib/eventuras-sdk";
 import { PaymentFormValues, ProductSelected } from '@/types';
 import { SiteInfo } from '@/utils/site/getSiteSettings';
 

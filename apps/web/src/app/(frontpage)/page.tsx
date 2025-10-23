@@ -1,6 +1,5 @@
 import { getTranslations } from 'next-intl/server';
 
-import { getV3Events } from '@eventuras/event-sdk';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Text } from '@eventuras/ratio-ui/core/Text';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
@@ -8,7 +7,7 @@ import { Section } from '@eventuras/ratio-ui/layout/Section';
 import { EventGrid } from '@/components/event';
 import UserMenu from '@/components/eventuras/UserMenu';
 import { appConfig } from '@/config.server';
-import { getPublicClient } from '@/lib/eventuras-public-client';
+import { getV3Events,publicClient } from '@/lib/eventuras-public-sdk';
 import getSiteSettings from '@/utils/site/getSiteSettings';
 
 const ORGANIZATION_ID = Number(appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID as string);
@@ -17,8 +16,7 @@ export const revalidate = 300;
 export default async function Homepage() {
   const site = await getSiteSettings();
   const t = await getTranslations();
-  // Use public client for anonymous API access
-  const publicClient = getPublicClient();
+  // Use public client for anonymous API access (ISR-safe)
   const response = await getV3Events({
     client: publicClient,
     query: { OrganizationId: ORGANIZATION_ID },

@@ -2,8 +2,6 @@ import type { Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale } from 'next-intl/server';
 
-// Import client for side-effect: configures SDK client on app startup
-import '@/lib/eventuras-client';
 import getSiteSettings from '@/utils/site/getSiteSettings';
 
 import Providers from './Providers';

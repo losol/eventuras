@@ -2,13 +2,13 @@ import { ReactElement } from 'react';
 import { useTranslations } from 'next-intl';
 
 import { formatDateSpan } from '@eventuras/core/datetime';
-import { ProductOrderDto } from '@eventuras/event-sdk';
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Text } from '@eventuras/ratio-ui/core/Text';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
 import { appConfig } from '@/config.server';
+import { ProductOrderDto } from "@/lib/eventuras-sdk";
 
 export type UserEventRegistrationCardProps = {
   eventId: string;

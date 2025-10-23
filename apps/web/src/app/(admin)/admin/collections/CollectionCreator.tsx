@@ -3,12 +3,12 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
-import { EventCollectionCreateDto } from '@eventuras/event-sdk';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Dialog } from '@eventuras/ratio-ui/layout/Dialog';
 import { Form, HiddenInput, Input } from '@eventuras/smartform';
 
 import { publicEnv } from '@/config.client';
+import { EventCollectionCreateDto } from "@/lib/eventuras-sdk";
 
 import { createCollection } from './actions';
 const CollectionCreator: React.FC = () => {

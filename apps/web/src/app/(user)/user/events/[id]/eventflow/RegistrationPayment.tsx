@@ -3,10 +3,10 @@ import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
 
-import { UserDto } from '@eventuras/event-sdk';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Input } from '@eventuras/ratio-ui/forms';
 
+import { UserDto } from "@/lib/eventuras-sdk";
 import { PaymentFormValues } from '@/types';
 export type RegistrationPaymentProps = {
   onSubmit: (values: PaymentFormValues) => void;

@@ -1,7 +1,8 @@
 'use server';
 
-import { getV3Userprofile, type UserDto } from '@eventuras/event-sdk';
 import { Logger } from '@eventuras/logger';
+
+import { getV3Userprofile, type UserDto } from "@/lib/eventuras-sdk";
 
 const logger = Logger.create({ namespace: 'web:utils:getUserProfile' });
 

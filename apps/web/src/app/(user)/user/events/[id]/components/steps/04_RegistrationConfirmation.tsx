@@ -2,10 +2,10 @@
 import { useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 
-import { EventDto, ProductDto } from '@eventuras/event-sdk';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 
+import { EventDto, ProductDto } from "@/lib/eventuras-sdk";
 import { PaymentFormValues, ProductSelected } from '@/types';
 
 import { logStepComplete, logStepEntry, logUserAction } from '../../lib/eventFlowLogger';

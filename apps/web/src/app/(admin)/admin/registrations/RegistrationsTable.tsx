@@ -3,9 +3,10 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
-import { RegistrationDto } from '@eventuras/event-sdk';
 import { Pagination } from '@eventuras/ratio-ui/core/Pagination';
 import { Link } from '@eventuras/ratio-ui-next/Link';
+
+import { RegistrationDto } from "@/lib/eventuras-sdk";
 const columnHelper = createColumnHelper<RegistrationDto>();
 type RegistrationsTableProps = {
   registrations: RegistrationDto[];

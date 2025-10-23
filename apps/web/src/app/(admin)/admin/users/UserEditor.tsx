@@ -3,12 +3,13 @@ import { FC, useState } from 'react';
 import { useTranslations } from 'next-intl';
 
 import * as regex from '@eventuras/core/regex';
-import { UserDto, UserFormDto } from '@eventuras/event-sdk';
 import { Logger } from '@eventuras/logger';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Fieldset } from '@eventuras/ratio-ui/forms';
 import { Form, Input, PhoneInput } from '@eventuras/smartform';
 import { useToast } from '@eventuras/toast';
+
+import { UserDto, UserFormDto } from "@/lib/eventuras-sdk";
 
 import { createUser, updateUser, updateUserProfile } from './actions';
 const logger = Logger.create({

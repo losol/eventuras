@@ -2,12 +2,13 @@
 
 import { revalidatePath } from 'next/cache';
 
+import { Logger } from '@eventuras/logger';
+
 import {
   deleteV3OrganizationsByOrganizationIdMembersByUserIdRoles,
   postV3OrganizationsByOrganizationIdMembersByUserIdRoles,
   putV3OrganizationsByOrganizationIdMembersByUserId,
-} from '@eventuras/event-sdk';
-import { Logger } from '@eventuras/logger';
+} from "@/lib/eventuras-sdk";
 
 export async function addMember(orgId: number, userId: string) {
   const logContext = {

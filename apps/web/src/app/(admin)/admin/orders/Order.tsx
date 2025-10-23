@@ -1,12 +1,13 @@
 import { useTranslations } from 'next-intl';
 
 import { formatDateSpan } from '@eventuras/core/datetime';
-import { OrderDto, OrderStatus } from '@eventuras/event-sdk';
 import { Badge } from '@eventuras/ratio-ui/core/Badge';
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Definition, DescriptionList, Item, Term } from '@eventuras/ratio-ui/core/DescriptionList';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
+
+import { OrderDto, OrderStatus } from "@/lib/eventuras-sdk";
 
 import { OrderActionsMenu } from './OrderActionsMenu';
 type OrderProps = {

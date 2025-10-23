@@ -2,8 +2,9 @@
 import React, { useState } from 'react';
 import { useTranslations } from 'next-intl';
 
-import type { EventDto, ProductDto } from '@eventuras/event-sdk';
 import { Button } from '@eventuras/ratio-ui/core/Button';
+
+import type { EventDto, ProductDto } from "@/lib/eventuras-sdk";
 
 import { fetchEventProducts } from './actions';
 import ProductModal from './ProductModal';

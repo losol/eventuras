@@ -1,9 +1,10 @@
-import { EventInfoStatus, getV3Events, getV3EventsById } from '@eventuras/event-sdk';
 import { Logger } from '@eventuras/logger';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Text } from '@eventuras/ratio-ui/core/Text';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
+
+import { EventInfoStatus, getV3Events, getV3EventsById } from "@/lib/eventuras-public-sdk";
 
 const logger = Logger.create({ namespace: 'web:app:events', context: { page: 'EventPage' } });
 

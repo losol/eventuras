@@ -8,16 +8,16 @@ import {
   actionSuccess,
   type ServerActionResult,
 } from '@eventuras/core-nextjs/actions';
+import { Logger } from '@eventuras/logger';
+
+import { appConfig } from '@/config.server';
+import { client } from '@/lib/eventuras-client';
 import {
   EventFormDto,
   postV3EventByIdCertificatesIssue,
   postV3Events,
   putV3EventsById,
-} from '@eventuras/event-sdk';
-import { Logger } from '@eventuras/logger';
-
-import { appConfig } from '@/config.server';
-import { client } from '@/lib/eventuras-client';
+} from "@/lib/eventuras-sdk";
 
 /**
  * Get the organization ID from the app configuration

@@ -2,13 +2,14 @@
 import React, { useState } from 'react';
 import { useTranslations } from 'next-intl';
 
-import { EventDto } from '@eventuras/event-sdk';
 import { Logger } from '@eventuras/logger';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Definition, DescriptionList, Term } from '@eventuras/ratio-ui/core/DescriptionList';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
 import { useToast } from '@eventuras/toast';
+
+import { EventDto } from "@/lib/eventuras-sdk";
 
 import { issueCertificates } from './actions';
 const logger = Logger.create({

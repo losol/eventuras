@@ -1,6 +1,5 @@
 import { getTranslations } from 'next-intl/server';
 
-import { getV3Eventcollections } from '@eventuras/event-sdk';
 import { MarkdownContent } from '@eventuras/markdown';
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
@@ -10,6 +9,7 @@ import { Link } from '@eventuras/ratio-ui-next/Link';
 
 import { appConfig } from '@/config.server';
 import { getPublicClient } from '@/lib/eventuras-public-client';
+import { getV3Eventcollections } from "@/lib/eventuras-public-sdk";
 // Incremental Static Regeneration - revalidate every 5 minutes
 export const revalidate = 300;
 const CollectionIndexPage: React.FC = async () => {

@@ -28,6 +28,7 @@ export const config = [
     },
     rules: {
       'eventuras/no-invalid-testid': 'error',
+      'eventuras/no-direct-event-sdk-import': 'error',
     },
   },
   {

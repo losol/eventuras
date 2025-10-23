@@ -1,5 +1,4 @@
 import { formatDateSpan } from '@eventuras/core/datetime';
-import { EventDto } from '@eventuras/event-sdk';
 import { MarkdownContent } from '@eventuras/markdown';
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
@@ -8,6 +7,7 @@ import { Calendar, MapPin } from '@eventuras/ratio-ui/icons';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
 import { appConfig } from '@/config.server';
+import { EventDto } from "@/lib/eventuras-sdk";
 
 interface EventCardProps {
   eventinfo: EventDto;

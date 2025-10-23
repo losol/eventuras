@@ -4,12 +4,12 @@ import { useTranslations } from 'next-intl';
 
 import { formatDateSpan } from '@eventuras/core/datetime';
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
-import { OrderDto } from '@eventuras/event-sdk';
 import { Loading } from '@eventuras/ratio-ui/core/Loading';
 import { Pagination } from '@eventuras/ratio-ui/core/Pagination';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
 import FatalError from '@/components/FatalError';
+import { OrderDto } from "@/lib/eventuras-sdk";
 
 import { getOrders } from './actions';
 const columnHelper = createColumnHelper<OrderDto>();

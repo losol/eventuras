@@ -2,10 +2,10 @@
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { EventDto, EventStatisticsDto, ProductDto, RegistrationDto } from '@eventuras/event-sdk';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 
+import { EventDto, EventStatisticsDto, ProductDto, RegistrationDto } from "@/lib/eventuras-sdk";
 import { ParticipationTypes, ParticipationTypesKey } from '@/types';
 
 import EventParticipantList from '../EventParticipantList';
