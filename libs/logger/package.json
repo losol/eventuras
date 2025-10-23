@@ -4,14 +4,14 @@
   "private": "true",
   "description": "Logger utility for eventuras",
   "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     }
   },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
@@ -25,8 +25,8 @@
     "pino": "^10.1.0"
   },
   "devDependencies": {
-    "@types/debug": "^4.1.12",
     "@eventuras/vite-config": "workspace:*",
+    "@types/debug": "^4.1.12",
     "vite": "^7.1.12"
   }
 }

@@ -1,8 +1,6 @@
 {
   "name": "@eventuras/smartform",
   "version": "0.1.0",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -10,6 +8,8 @@
     },
     "./style.css": "./dist/smartform.css"
   },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
@@ -18,8 +18,8 @@
     "dev": "vite build --watch"
   },
   "dependencies": {
-    "@eventuras/ratio-ui": "workspace:*",
-    "@eventuras/logger": "workspace:*"
+    "@eventuras/logger": "workspace:*",
+    "@eventuras/ratio-ui": "workspace:*"
   },
   "devDependencies": {
     "@eventuras/eslint-config": "workspace:*",
@@ -29,8 +29,8 @@
   },
   "peerDependencies": {
     "react": "^19.1.0",
+    "react-aria-components": "^1.13.0",
     "react-dom": "^19.1.0",
-    "react-hook-form": "^7.65.0",
-    "react-aria-components": "^1.13.0"
+    "react-hook-form": "^7.65.0"
   }
 }

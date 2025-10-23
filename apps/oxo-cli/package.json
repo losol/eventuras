@@ -1,12 +1,50 @@
 {
   "name": "@eventuras/oxo",
-  "description": "Eventuras CLI tools",
   "version": "0.0.1",
+  "description": "Eventuras CLI tools",
+  "keywords": [
+    "oclif"
+  ],
+  "homepage": "https://github.com/losol/eventuras",
+  "bugs": "https://github.com/losol/eventuras/issues",
+  "repository": "losol/eventuras",
+  "license": "MIT",
   "author": "Ole Kristian Losvik",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "bin": {
     "oxo": "./bin/run.js"
   },
-  "bugs": "https://github.com/losol/eventuras/issues",
+  "files": [
+    "./bin",
+    "./dist",
+    "./oclif.manifest.json"
+  ],
+  "scripts": {
+    "build": "shx rm -rf dist && tsc -b",
+    "lint": "eslint",
+    "prepack": "oclif manifest && oclif readme",
+    "postpack": "shx rm -f oclif.manifest.json",
+    "test": "mocha --forbid-only \"test/**/*.test.ts\"",
+    "posttest": "pnpm run lint",
+    "version": "oclif readme && git add README.md"
+  },
+  "oclif": {
+    "bin": "oxo",
+    "commands": "./dist/commands",
+    "dirname": "oxo",
+    "plugins": [
+      "@oclif/plugin-help",
+      "@oclif/plugin-plugins"
+    ],
+    "topicSeparator": " ",
+    "topics": {
+      "hello": {
+        "description": "Say hello to the world and others"
+      }
+    }
+  },
   "dependencies": {
     "@oclif/core": "^4",
     "@oclif/plugin-help": "^6",
@@ -32,44 +70,6 @@
   "engines": {
     "node": ">=18.0.0"
   },
-  "files": [
-    "./bin",
-    "./dist",
-    "./oclif.manifest.json"
-  ],
-  "homepage": "https://github.com/losol/eventuras",
-  "keywords": [
-    "oclif"
-  ],
-  "license": "MIT",
-  "main": "dist/index.js",
-  "type": "module",
-  "oclif": {
-    "bin": "oxo",
-    "dirname": "oxo",
-    "commands": "./dist/commands",
-    "plugins": [
-      "@oclif/plugin-help",
-      "@oclif/plugin-plugins"
-    ],
-    "topicSeparator": " ",
-    "topics": {
-      "hello": {
-        "description": "Say hello to the world and others"
-      }
-    }
-  },
-  "repository": "losol/eventuras",
-  "scripts": {
-    "build": "shx rm -rf dist && tsc -b",
-    "lint": "eslint",
-    "postpack": "shx rm -f oclif.manifest.json",
-    "posttest": "pnpm run lint",
-    "prepack": "oclif manifest && oclif readme",
-    "test": "mocha --forbid-only \"test/**/*.test.ts\"",
-    "version": "oclif readme && git add README.md"
-  },
-  "types": "dist/index.d.ts",
   "publishConfig": {
     "access": "public"
   }
