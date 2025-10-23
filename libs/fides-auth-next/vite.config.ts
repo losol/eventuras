@@ -7,4 +7,18 @@ export default defineNextLibConfig({
     request: 'src/request.ts',
     'state-machine/index': 'src/state-machine/index.ts',
   },
+  external: [
+    // State management
+    'xstate',
+    '@xstate/react',
+    /^@xstate\//,
+
+    // React internals
+    'use-sync-external-store',
+    /^use-sync-external-store\//,
+
+    // Workspace dependencies
+    '@eventuras/fides-auth',
+    '@eventuras/logger',
+  ],
 });
