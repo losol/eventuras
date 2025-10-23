@@ -8,7 +8,7 @@ import { Text } from '@eventuras/ratio-ui/core/Text';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
 import { appConfig } from '@/config.server';
-import { ProductOrderDto } from "@/lib/eventuras-sdk";
+import { ProductOrderDto } from '@/lib/eventuras-sdk';
 
 export type UserEventRegistrationCardProps = {
   eventId: string;

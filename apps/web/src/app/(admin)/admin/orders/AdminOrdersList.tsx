@@ -9,7 +9,7 @@ import { Pagination } from '@eventuras/ratio-ui/core/Pagination';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
 import FatalError from '@/components/FatalError';
-import { OrderDto } from "@/lib/eventuras-sdk";
+import { OrderDto } from '@/lib/eventuras-sdk';
 
 import { getOrders } from './actions';
 const columnHelper = createColumnHelper<OrderDto>();

@@ -8,8 +8,8 @@ import {
 import { Logger } from '@eventuras/logger';
 
 import { appConfig } from '@/config.server';
-import type { RegistrationDto } from "@/lib/eventuras-sdk";
-import { client, getV3Registrations } from "@/lib/eventuras-sdk";
+import type { RegistrationDto } from '@/lib/eventuras-sdk';
+import { client, getV3Registrations } from '@/lib/eventuras-sdk';
 
 const logger = Logger.create({
   namespace: 'web:actions',

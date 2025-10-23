@@ -17,7 +17,7 @@ import {
   putV3UsersById,
   UserDto,
   UserFormDto,
-} from "@/lib/eventuras-sdk";
+} from '@/lib/eventuras-sdk';
 
 const logger = Logger.create({
   namespace: 'web:users',

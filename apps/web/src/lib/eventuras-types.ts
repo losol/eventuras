@@ -12,16 +12,16 @@
 
 // Re-export all types
 export type {
+  CertificateDto,
   EmailNotificationDto,
-  SmsNotificationDto,
-  EventParticipantsFilterDto,
+  EventCollectionDto,
   EventDto,
+  EventParticipantsFilterDto,
+  OrganizationDto,
   ProductDto,
   RegistrationDto,
+  SmsNotificationDto,
   UserDto,
-  OrganizationDto,
-  CertificateDto,
-  EventCollectionDto,
 } from '@eventuras/event-sdk';
 
 // Re-export enums (these have runtime values)

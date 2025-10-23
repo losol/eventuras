@@ -17,7 +17,7 @@ import {
   postV3EventByIdCertificatesIssue,
   postV3Events,
   putV3EventsById,
-} from "@/lib/eventuras-sdk";
+} from '@/lib/eventuras-sdk';
 
 /**
  * Get the organization ID from the app configuration

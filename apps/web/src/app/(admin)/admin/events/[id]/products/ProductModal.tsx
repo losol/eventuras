@@ -9,7 +9,7 @@ import { Dialog } from '@eventuras/ratio-ui/layout/Dialog';
 import { Form, Input, NumberInput } from '@eventuras/smartform';
 import { useToast } from '@eventuras/toast';
 
-import type { NewProductDto, ProductDto } from "@/lib/eventuras-sdk";
+import type { NewProductDto, ProductDto } from '@/lib/eventuras-sdk';
 
 import { createProduct, updateProduct } from './actions';
 import ConfirmDiscardModal from './ConfirmDiscardModal';

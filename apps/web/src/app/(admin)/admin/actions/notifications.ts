@@ -16,7 +16,7 @@ import {
   postV3NotificationsEmail,
   postV3NotificationsSms,
   type SmsNotificationDto,
-} from "@/lib/eventuras-sdk";
+} from '@/lib/eventuras-sdk';
 
 const logger = Logger.create({
   namespace: 'web:actions',

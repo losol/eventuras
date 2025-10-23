@@ -1,6 +1,6 @@
 import { Definition, DescriptionList, Item, Term } from '@eventuras/ratio-ui/core/DescriptionList';
 
-import { OrganizationDto } from "@/lib/eventuras-sdk";
+import { OrganizationDto } from '@/lib/eventuras-sdk';
 
 /** Renders org fields with DescriptionList */
 export const OrganizationDetails: React.FC<{ org: OrganizationDto }> = ({ org }) => {

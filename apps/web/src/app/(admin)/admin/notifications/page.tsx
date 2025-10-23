@@ -6,8 +6,8 @@ import { Section } from '@eventuras/ratio-ui/layout/Section';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
 import { appConfig } from '@/config.server';
-import { NotificationDto } from "@/lib/eventuras-sdk";
-import { getV3Notifications } from "@/lib/eventuras-sdk";
+import { NotificationDto } from '@/lib/eventuras-sdk';
+import { getV3Notifications } from '@/lib/eventuras-sdk';
 type NotificationPageProps = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };

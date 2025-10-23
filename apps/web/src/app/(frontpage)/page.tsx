@@ -7,7 +7,7 @@ import { Section } from '@eventuras/ratio-ui/layout/Section';
 import { EventGrid } from '@/components/event';
 import UserMenu from '@/components/eventuras/UserMenu';
 import { appConfig } from '@/config.server';
-import { getV3Events,publicClient } from '@/lib/eventuras-public-sdk';
+import { getV3Events, publicClient } from '@/lib/eventuras-public-sdk';
 import getSiteSettings from '@/utils/site/getSiteSettings';
 
 const ORGANIZATION_ID = Number(appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID as string);

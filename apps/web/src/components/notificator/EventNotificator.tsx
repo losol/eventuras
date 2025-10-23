@@ -16,10 +16,7 @@ import { ParticipationTypes } from '@/types';
 import { participationMap } from '@/utils/api/mappers';
 import { mapEnum } from '@/utils/enum';
 
-import Notificator, {
-  FilterGroup,
-  NotificationType,
-} from './Notificator';
+import Notificator, { FilterGroup, NotificationType } from './Notificator';
 
 type EventFormValues = {
   subject: string;
@@ -97,7 +94,12 @@ export default function EventNotificator({
       .filter(k => data.registrationTypes[k])
       .map(k => {
         const num = Number(k);
-        if (!Number.isNaN(num) && Object.values(RegistrationType as Record<string, unknown>).includes(num as unknown as RegistrationType)) {
+        if (
+          !Number.isNaN(num) &&
+          Object.values(RegistrationType as Record<string, unknown>).includes(
+            num as unknown as RegistrationType
+          )
+        ) {
           return num as unknown as RegistrationType;
         }
         return (RegistrationType as Record<string, unknown>)[k] as RegistrationType;

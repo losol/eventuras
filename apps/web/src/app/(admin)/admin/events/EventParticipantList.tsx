@@ -6,13 +6,12 @@ import { useTranslations } from 'next-intl';
 import { ColumnFilter, DataTable } from '@eventuras/datatable';
 import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
 
-import { EventNotificator, NotificationType } from '@/components/notificator';
 import EditRegistrationProductsDialog from '@/components/eventuras/EditRegistrationProductsDialog';
+import { EventNotificator, NotificationType } from '@/components/notificator';
 import type { EventDto, ProductDto, RegistrationDto } from '@/lib/eventuras-sdk';
 
 import { getRegistrationDetails } from './participantActions';
 import { createParticipantColumns } from './ParticipantTableColumns';
-
 
 interface AdminEventListProps {
   participants: RegistrationDto[];
@@ -152,4 +151,3 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
 };
 
 export default EventParticipantList;
-

@@ -9,7 +9,7 @@ import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
 import { useToast } from '@eventuras/toast';
 
-import { EventDto } from "@/lib/eventuras-sdk";
+import { EventDto } from '@/lib/eventuras-sdk';
 
 import { issueCertificates } from './actions';
 const logger = Logger.create({

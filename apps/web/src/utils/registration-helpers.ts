@@ -1,4 +1,4 @@
-import { OrderLineModel } from "@/lib/eventuras-sdk";
+import { OrderLineModel } from '@/lib/eventuras-sdk';
 
 /**
  * Convert selected products map to OrderLineModel array

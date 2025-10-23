@@ -6,7 +6,7 @@ import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Loading } from '@eventuras/ratio-ui/core/Loading';
 import { FileText, ShoppingCart, User } from '@eventuras/ratio-ui/icons';
 
-import { ProductDto, RegistrationDto } from "@/lib/eventuras-sdk";
+import { ProductDto, RegistrationDto } from '@/lib/eventuras-sdk';
 import { ParticipationTypesKey } from '@/types';
 import { participationMap } from '@/utils/api/mappers';
 

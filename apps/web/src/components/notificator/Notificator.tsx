@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 
-import '@eventuras/scribo/style.css';
 import { type ServerActionResult } from '@eventuras/core-nextjs/actions';
 import { Logger } from '@eventuras/logger';
 import { MarkdownInput } from '@eventuras/markdowninput';
@@ -11,6 +10,8 @@ import { Button, ButtonGroup } from '@eventuras/ratio-ui/core/Button';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Checkbox, CheckBoxLabel, Form, Input } from '@eventuras/ratio-ui/forms';
 import { useToast } from '@eventuras/toast';
+
+import '@eventuras/scribo/style.css';
 
 const logger = Logger.create({ namespace: 'web:components:notificator' });
 
@@ -85,10 +86,7 @@ export default function Notificator<T = unknown>({
       const result = await sendNotification(dto);
 
       if (!result.success) {
-        logger.error(
-          { error: result.error, notificationType },
-          'Failed to send notification'
-        );
+        logger.error({ error: result.error, notificationType }, 'Failed to send notification');
         toast.error(result.error.message || t('admin.eventNotifier.form.error'));
         return;
       }
@@ -96,10 +94,7 @@ export default function Notificator<T = unknown>({
       toast.success(result.message || t('admin.eventNotifier.form.success'));
       onClose();
     } catch (error) {
-      logger.error(
-        { error, notificationType },
-        'Failed to send notification'
-      );
+      logger.error({ error, notificationType }, 'Failed to send notification');
       toast.error(t('admin.eventNotifier.form.error'));
     } finally {
       setIsSubmitting(false);

@@ -8,7 +8,7 @@ import { Stepper } from '@eventuras/ratio-ui/core/Stepper';
 import { useToast } from '@eventuras/toast';
 
 import FatalError from '@/components/FatalError';
-import { EventDto, ProductDto, UserDto } from "@/lib/eventuras-sdk";
+import { EventDto, ProductDto, UserDto } from '@/lib/eventuras-sdk';
 import { PaymentFormValues, ProductSelected } from '@/types';
 import { SiteInfo } from '@/utils/site/getSiteSettings';
 

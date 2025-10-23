@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl';
 
 import { Button } from '@eventuras/ratio-ui/core/Button';
 
-import type { EventDto, ProductDto } from "@/lib/eventuras-sdk";
+import type { EventDto, ProductDto } from '@/lib/eventuras-sdk';
 
 import { fetchEventProducts } from './actions';
 import ProductModal from './ProductModal';

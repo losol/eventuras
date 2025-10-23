@@ -1,7 +1,7 @@
 import { Grid } from '@eventuras/ratio-ui/layout/Grid';
 
 import EventCard from '@/components/event/EventCard';
-import { EventDto } from "@/lib/eventuras-sdk";
+import { EventDto } from '@/lib/eventuras-sdk';
 interface EventGridProps {
   eventinfos: EventDto[];
 }

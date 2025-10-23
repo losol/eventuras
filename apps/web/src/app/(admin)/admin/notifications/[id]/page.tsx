@@ -5,7 +5,7 @@ import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 
-import { getV3NotificationsById, getV3NotificationsByIdRecipients } from "@/lib/eventuras-sdk";
+import { getV3NotificationsById, getV3NotificationsByIdRecipients } from '@/lib/eventuras-sdk';
 
 type EventInfoProps = {
   params: Promise<{

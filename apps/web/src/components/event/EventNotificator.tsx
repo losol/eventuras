@@ -2,7 +2,6 @@
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
 
-import '@eventuras/scribo/style.css';
 import { Logger } from '@eventuras/logger';
 import { MarkdownInput } from '@eventuras/markdowninput';
 import { Button, ButtonGroup } from '@eventuras/ratio-ui/core/Button';
@@ -23,6 +22,8 @@ import { RegistrationStatus, RegistrationType } from '@/lib/eventuras-types';
 import { ParticipationTypes } from '@/types';
 import { participationMap } from '@/utils/api/mappers';
 import { mapEnum } from '@/utils/enum';
+
+import '@eventuras/scribo/style.css';
 const logger = Logger.create({
   namespace: 'web:components:event',
   context: { component: 'EventNotificator' },

@@ -7,7 +7,7 @@ import { client } from '@/lib/eventuras-client';
 import {
   getV3OrganizationsByOrganizationIdMembersByUserIdRoles,
   getV3UsersMe,
-} from "@/lib/eventuras-sdk";
+} from '@/lib/eventuras-sdk';
 
 const logger = Logger.create({ namespace: 'web:admin', context: { module: 'checkAuthorization' } });
 

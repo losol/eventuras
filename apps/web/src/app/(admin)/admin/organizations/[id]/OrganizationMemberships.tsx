@@ -7,7 +7,7 @@ import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 
-import { UserDto } from "@/lib/eventuras-sdk";
+import { UserDto } from '@/lib/eventuras-sdk';
 
 import { addMember, setAdmin } from './actions';
 import AddMemberDrawer from './AddMemberDrawer';

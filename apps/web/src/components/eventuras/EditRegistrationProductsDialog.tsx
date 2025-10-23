@@ -2,7 +2,7 @@
 import { Logger } from '@eventuras/logger';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 
-import { ProductDto, RegistrationDto } from "@/lib/eventuras-sdk";
+import { ProductDto, RegistrationDto } from '@/lib/eventuras-sdk';
 const logger = Logger.create({
   namespace: 'web:components:eventuras',
   context: { component: 'EditRegistrationProductsDialog' },

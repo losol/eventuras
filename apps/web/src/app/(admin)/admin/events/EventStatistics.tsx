@@ -3,7 +3,7 @@ import { useTranslations } from 'next-intl';
 
 import { NumberCard } from '@eventuras/ratio-ui/visuals/NumberCard';
 
-import { EventStatisticsDto } from "@/lib/eventuras-sdk";
+import { EventStatisticsDto } from '@/lib/eventuras-sdk';
 import { ParticipationTypes, ParticipationTypesKey } from '@/types';
 type EventStatisticsProps = {
   statistics: EventStatisticsDto;

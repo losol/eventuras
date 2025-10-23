@@ -7,7 +7,7 @@ import {
   getV3EventsByEventIdProducts,
   getV3EventsById,
   getV3Userprofile,
-} from "@/lib/eventuras-sdk";
+} from '@/lib/eventuras-sdk';
 import getSiteSettings from '@/utils/site/getSiteSettings';
 
 import EventFlowContainer from './components/EventFlowContainer';

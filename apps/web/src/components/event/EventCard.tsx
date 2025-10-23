@@ -7,7 +7,7 @@ import { Calendar, MapPin } from '@eventuras/ratio-ui/icons';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
 import { appConfig } from '@/config.server';
-import { EventDto } from "@/lib/eventuras-sdk";
+import { EventDto } from '@/lib/eventuras-sdk';
 
 interface EventCardProps {
   eventinfo: EventDto;

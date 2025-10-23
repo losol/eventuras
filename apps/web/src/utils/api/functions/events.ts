@@ -9,7 +9,7 @@ import {
   putV3RegistrationsById,
   RegistrationDto,
   RegistrationUpdateDto,
-} from "@/lib/eventuras-sdk";
+} from '@/lib/eventuras-sdk';
 
 const logger = Logger.create({ namespace: 'web:utils:api', context: { module: 'events' } });
 

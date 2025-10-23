@@ -9,7 +9,7 @@ import { Text } from '@eventuras/ratio-ui/core/Text';
 import { publicEnv } from '@/config.client';
 import { appConfig } from '@/config.server';
 import { getPublicClient } from '@/lib/eventuras-public-client';
-import { getV3Events } from "@/lib/eventuras-public-sdk";
+import { getV3Events } from '@/lib/eventuras-public-sdk';
 
 const logger = Logger.create({
   namespace: 'web:events-page',

@@ -6,7 +6,7 @@ import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Definition, DescriptionList, Item, Term } from '@eventuras/ratio-ui/core/DescriptionList';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 
-import { CertificateDto } from "@/lib/eventuras-sdk";
+import { CertificateDto } from '@/lib/eventuras-sdk';
 type CertificateProps = {
   certificate: CertificateDto;
 };

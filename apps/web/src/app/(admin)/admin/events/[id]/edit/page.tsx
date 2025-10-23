@@ -7,7 +7,7 @@ import { Error } from '@eventuras/ratio-ui/blocks/Error';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 
 import EventEditor from '@/app/(admin)/admin/events/EventEditor';
-import { getV3EventsById } from "@/lib/eventuras-sdk";
+import { getV3EventsById } from '@/lib/eventuras-sdk';
 
 type EditEventinfoProps = {
   params: Promise<{

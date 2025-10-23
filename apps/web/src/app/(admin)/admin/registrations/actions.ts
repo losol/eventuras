@@ -2,11 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 
-import {
-  actionError,
-  actionSuccess,
-  ServerActionResult,
-} from '@eventuras/core-nextjs/actions';
+import { actionError, actionSuccess, ServerActionResult } from '@eventuras/core-nextjs/actions';
 import { Logger } from '@eventuras/logger';
 
 import { appConfig } from '@/config.server';
@@ -19,7 +15,7 @@ import {
   RegistrationDto,
   RegistrationDtoPageResponseDto,
   RegistrationStatus,
-} from "@/lib/eventuras-sdk";
+} from '@/lib/eventuras-sdk';
 
 const logger = Logger.create({
   namespace: 'web:admin:registrations',
@@ -151,7 +147,10 @@ export async function updateRegistrationStatus(
     revalidatePath('/admin/registrations');
     return actionSuccess(response.data, 'Status updated successfully!');
   } catch (error) {
-    logger.error({ error, registrationId, status }, 'Unexpected error updating registration status');
+    logger.error(
+      { error, registrationId, status },
+      'Unexpected error updating registration status'
+    );
     return actionError('An unexpected error occurred');
   }
 }

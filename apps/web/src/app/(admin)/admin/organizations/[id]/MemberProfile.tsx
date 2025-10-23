@@ -8,7 +8,7 @@ import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 
-import { UserDto } from "@/lib/eventuras-sdk";
+import { UserDto } from '@/lib/eventuras-sdk';
 /** Props for MemberProfile */
 export interface MemberProfileProps {
   /** User data to render */

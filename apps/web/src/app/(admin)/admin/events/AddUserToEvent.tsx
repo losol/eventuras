@@ -30,7 +30,7 @@ import {
   ProductDto,
   RegistrationType,
   UserDto,
-} from "@/lib/eventuras-sdk";
+} from '@/lib/eventuras-sdk';
 import { RegistrationProduct } from '@/types';
 import { mapEventProductsToView, mapSelectedProductsToQuantity } from '@/utils/api/mappers';
 type AddUserToEventFormValues = {

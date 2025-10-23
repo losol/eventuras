@@ -7,7 +7,7 @@ import { Definition, DescriptionList, Item, Term } from '@eventuras/ratio-ui/cor
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 
-import { OrderDto, OrderStatus } from "@/lib/eventuras-sdk";
+import { OrderDto, OrderStatus } from '@/lib/eventuras-sdk';
 
 import { OrderActionsMenu } from './OrderActionsMenu';
 type OrderProps = {
