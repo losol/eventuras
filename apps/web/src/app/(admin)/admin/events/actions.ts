@@ -113,8 +113,8 @@ export async function createEvent(
 
     logger.info({ eventId, organizationId, title }, 'Event created successfully');
 
-    // Redirect to edit page
-    redirect(`/admin/events/${eventId}/edit`);
+    // Redirect to event page with newlyCreated flag to show edit tab
+    redirect(`/admin/events/${eventId}?newlyCreated=true`);
   } catch (error) {
     // Handle redirect errors (Next.js redirects throw NEXT_REDIRECT)
     if (

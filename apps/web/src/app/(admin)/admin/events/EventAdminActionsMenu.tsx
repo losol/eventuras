@@ -26,9 +26,6 @@ const EventAdminActionsMenu: React.FC<EventAdminActionsMenuProps> = ({
   return (
     <>
       <ButtonGroup>
-        <Link href={`/admin/events/${eventinfo.id}/edit`} variant="button-outline">
-          {t('common.labels.edit')}
-        </Link>
         <Link href={`/admin/events/${eventinfo.id}/products`} variant="button-outline">
           {t('common.labels.products')}
         </Link>
