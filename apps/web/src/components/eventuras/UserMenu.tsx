@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Menu } from '@eventuras/ratio-ui/core/Menu';
 
-import { useAuthActions, useAuthSelector } from '@/auth/authMachine';
+import { useAuthActions, useAuthStore } from '@/auth/authStore';
 
 /**
  * Translation strings for the user menu
@@ -114,16 +114,16 @@ function UserDropdownMenu({
 
 /**
  * User menu component that displays login button or user menu based on auth status
- * Now powered by XState authentication machine for robust state management
+ * Now powered by XState Store for simplified state management
  */
 export default function UserMenu({ translations }: UserMenuProps) {
-  const authState = useAuthSelector();
-  const { isAuthenticated, isAdmin, user, status } = authState;
+  const auth = useAuthStore();
+  const { isAuthenticated, isAdmin, user, isInitializing } = auth;
   const { logout } = useAuthActions();
 
   // Show minimal placeholder during initialization to avoid flash
   // This creates a smooth transition to either login button or user menu
-  if (status.isInitializing) {
+  if (isInitializing) {
     return <div className="w-20 h-10" aria-label="Loading..." />;
   }
 
@@ -132,8 +132,8 @@ export default function UserMenu({ translations }: UserMenuProps) {
     return <LoginButton label={translations.loginLabel} />;
   }
 
-  // Show warning indicator if token is being refreshed
-  const hasWarning = status.isRefreshingToken;
+  // No warning indicator in Store (simpler state management)
+  const hasWarning = false;
 
   return (
     <UserDropdownMenu

@@ -3,8 +3,8 @@ export * from './request';
 export * from './session';
 export * from './cookies';
 
-// Authentication State Machine (XState)
-export * from './state-machine';
+// Authentication Store (XState Store)
+export * from './store';
 
 // Re-export all framework-agnostic utilities from @eventuras/fides-auth
 export * from '@eventuras/fides-auth/oauth';

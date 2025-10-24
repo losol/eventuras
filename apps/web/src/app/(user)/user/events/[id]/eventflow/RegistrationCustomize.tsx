@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl';
 
 import { Button } from '@eventuras/ratio-ui/core/Button';
 
-import { useAuthSelector } from '@/auth/authMachine';
+import { useAuthStore } from '@/auth/authStore';
 import ProductSelection from '@/components/eventuras/ProductSelection';
 import { ProductDto } from '@/lib/eventuras-sdk';
 import { ProductSelected } from '@/types';
@@ -30,7 +30,7 @@ const RegistrationCustomize = ({
   onBack,
   selectedProducts,
 }: RegistrationCustomizeProps) => {
-  const { isAdmin } = useAuthSelector();
+  const { isAdmin } = useAuthStore();
   const t = useTranslations();
   const { register, handleSubmit } = useForm();
   return (

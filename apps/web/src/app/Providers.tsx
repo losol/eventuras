@@ -1,12 +1,14 @@
 'use client';
 import { useEffect } from 'react';
 
+import { initializeAuth, startSessionMonitor } from '@eventuras/fides-auth-next/store';
 import { Logger } from '@eventuras/logger';
 import { ToastRenderer, ToastsContext } from '@eventuras/toast';
 
-import { authService } from '@/auth/authMachine';
+import { authStore } from '@/auth/authStore';
 import { LoginSuccessHandler } from '@/components/auth/LoginSuccessHandler';
 import { SessionWarningOverlay } from '@/components/SessionWarningOverlay';
+import { getAuthStatus } from '@/utils/auth/getAuthStatus';
 
 const logger = Logger.create({
   namespace: 'web:app',
@@ -18,33 +20,40 @@ type ProvidersProps = {
 };
 
 export default function Providers({ children }: ProvidersProps) {
-  // Start the auth machine when component mounts
+  // Initialize auth store and start session monitoring
   useEffect(() => {
-    logger.info('Starting auth machine');
-    authService.start();
+    logger.info('Initializing auth store');
+
+    // Initialize auth on mount
+    initializeAuth(authStore, getAuthStatus);
+
+    // Start session monitoring with cleanup
+    const cleanup = startSessionMonitor(authStore, getAuthStatus, {
+      interval: 30_000, // Check every 30 seconds
+      onSessionExpired: () => {
+        logger.warn('Session expired');
+      },
+    });
 
     // Subscribe to state changes for debugging in development
     if (process.env.NODE_ENV === 'development') {
-      const subscription = authService.subscribe(state => {
+      const subscription = authStore.subscribe(snapshot => {
         logger.debug(
           {
-            state: state.value,
-            context: state.context,
+            context: snapshot.context,
           },
           'Auth state changed'
         );
       });
 
       return () => {
-        logger.info('Stopping auth machine');
+        logger.info('Cleaning up auth store');
+        cleanup();
         subscription.unsubscribe();
-        authService.stop();
       };
     }
 
-    return () => {
-      authService.stop();
-    };
+    return cleanup;
   }, []);
 
   return (

@@ -1,8 +1,8 @@
-import {createEncryptedJWT} from '@eventuras/fides-auth/utils';
-import {validateSessionJwt} from '@eventuras/fides-auth/session-validation';
-import {refreshSession as refreshSessionCore} from '@eventuras/fides-auth/session-refresh';
-import type {Session, CreateSessionOptions} from '@eventuras/fides-auth/types';
-import type {OAuthConfig} from '@eventuras/fides-auth/oauth';
+import { createEncryptedJWT } from '@eventuras/fides-auth/utils';
+import { validateSessionJwt } from '@eventuras/fides-auth/session-validation';
+import { refreshSession as refreshSessionCore } from '@eventuras/fides-auth/session-refresh';
+import type { Session, CreateSessionOptions } from '@eventuras/fides-auth/types';
+import type { OAuthConfig } from '@eventuras/fides-auth/oauth';
 import { Logger } from '@eventuras/logger';
 import { cache } from 'react';
 import { getSessionCookie, setSessionCookie, deleteSessionCookie } from './cookies';
@@ -40,7 +40,7 @@ export async function createSession(
 
   try {
     // Build the JWT payload and encrypt
-    const jwt = await createEncryptedJWT({...session});
+    const jwt = await createEncryptedJWT({ ...session });
 
     logger.info({ sessionDurationDays }, 'Session created successfully');
     return jwt;
@@ -169,7 +169,18 @@ export async function refreshCurrentSession(
     logger.info('Session refreshed and cookie updated successfully');
     return updatedSession;
   } catch (error) {
-    logger.error({ error }, 'Failed to refresh current session');
+    // Check if this is an expected invalid_grant error
+    const err = error as { code?: string; error?: string; };
+    const isInvalidGrant = err?.code === 'OAUTH_RESPONSE_BODY_ERROR' && err?.error === 'invalid_grant';
+
+    if (isInvalidGrant) {
+      // Expected during logout/session expiry - log at info level
+      logger.info('Session refresh failed - refresh token expired or invalid');
+    } else {
+      // Unexpected error - log at error level
+      logger.error({ error }, 'Failed to refresh current session');
+    }
+
     return null;
   }
 }
