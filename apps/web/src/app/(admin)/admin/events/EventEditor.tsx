@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
 import { Logger } from '@eventuras/logger';
-import { MarkdownInput } from '@eventuras/markdowninput';
+import { MarkdownInput } from '@eventuras/scribo';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Tabs } from '@eventuras/ratio-ui/core/Tabs';
 import { Fieldset } from '@eventuras/ratio-ui/forms';

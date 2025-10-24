@@ -441,9 +441,6 @@ importers:
       '@eventuras/markdown':
         specifier: workspace:*
         version: link:../../libs/markdown
-      '@eventuras/markdowninput':
-        specifier: workspace:^
-        version: link:../../libs/markdowninput
       '@eventuras/ratio-ui':
         specifier: workspace:*
         version: link:../../libs/ratio-ui
@@ -900,31 +897,6 @@ importers:
       vitest:
         specifier: 4.0.2
         version: 4.0.2(@types/debug@4.1.12)(@types/node@24.9.1)(jiti@2.6.1)(jsdom@27.0.1(postcss@8.5.6))(lightningcss@1.30.2)(sass@1.77.4)(tsx@4.20.6)(yaml@2.8.1)
-
-  libs/markdowninput:
-    dependencies:
-      '@eventuras/scribo':
-        specifier: workspace:*
-        version: link:../scribo
-      react:
-        specifier: ^19.1.0
-        version: 19.2.0
-      react-dom:
-        specifier: ^19.1.0
-        version: 19.2.0(react@19.2.0)
-    devDependencies:
-      '@eventuras/eslint-config':
-        specifier: workspace:*
-        version: link:../eslint-config
-      '@eventuras/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
-      '@eventuras/vite-config':
-        specifier: workspace:*
-        version: link:../vite-config
-      vite:
-        specifier: ^7.1.12
-        version: 7.1.12(@types/node@24.9.1)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.77.4)(tsx@4.20.6)(yaml@2.8.1)
 
   libs/ratio-ui:
     dependencies:
