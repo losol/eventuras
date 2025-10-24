@@ -13,19 +13,29 @@ import {
   getV3Registrations,
 } from '@/lib/eventuras-sdk';
 
-import ParticipantsSection from './ParticipantsSection';
+import EventPageTabs from './EventPageTabs';
 import EventAdminActionsMenu from '../EventAdminActionsMenu';
+
 const logger = Logger.create({
   namespace: 'web:admin:events',
   context: { page: 'EventAdminPage' },
 });
+
 type EventInfoProps = {
   params: Promise<{
     id: number;
   }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
-export default async function EventAdminPage({ params }: Readonly<EventInfoProps>) {
+
+export default async function EventAdminPage({ params, searchParams }: Readonly<EventInfoProps>) {
   const { id } = await params;
+  const search = await searchParams;
+
+  // Determine default tab based on query params
+  const isNewlyCreated = search.newlyCreated === 'true';
+  const defaultTab = isNewlyCreated ? 'edit' : 'participants';
+
   const [eventinfoRes, registrationsRes, eventProductsRes, statisticsRes] = await Promise.all([
     getV3EventsById({ path: { id } }),
     getV3Registrations({
@@ -107,12 +117,17 @@ export default async function EventAdminPage({ params }: Readonly<EventInfoProps
           )}
         </Container>
       </Section>
-      <ParticipantsSection
-        eventInfo={eventinfo}
-        participants={registrationsRes.data?.data ?? []}
-        statistics={statisticsRes.data ?? {}}
-        eventProducts={eventProductsRes.data ?? []}
-      />
+      <Section>
+        <Container>
+          <EventPageTabs
+            eventinfo={eventinfo}
+            participants={registrationsRes.data?.data ?? []}
+            statistics={statisticsRes.data ?? {}}
+            eventProducts={eventProductsRes.data ?? []}
+            defaultTab={defaultTab as 'participants' | 'edit' | 'products'}
+          />
+        </Container>
+      </Section>
     </>
   );
 }
