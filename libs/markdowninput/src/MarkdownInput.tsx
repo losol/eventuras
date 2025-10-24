@@ -1,5 +1,5 @@
 'use client';
-import MarkdownEditor from './MarkdownEditor';
+import MarkdownEditor from '@eventuras/scribo';
 import { useRef, useState } from 'react';
 
 export type MarkdownInputProps = {
@@ -9,31 +9,30 @@ export type MarkdownInputProps = {
   label?: string;
   placeholder?: string;
   defaultValue?: string;
-  className?: string;
-  labelClassName?: string;
-  editorClassName?: string;
-  errorClassName?: string;
-  onChange?: (value: string) => void;
+};
+
+const styles = {
+  wrapper: 'mb-3 bg-white text-black',
+  editor: 'w-full',
 };
 
 /**
- * MarkdownInput component that works standalone or with parent form handling
- * Uses onChange callback to notify parent of value changes
- * Framework-agnostic with flexible className props for custom styling
+ * MarkdownInput component that works with both react-hook-form and native forms
+ * Uses an uncontrolled hidden input with ref for better compatibility
  */
 const MarkdownInput = (props: MarkdownInputProps) => {
   const [error, setError] = useState<string | null>(null);
-  const [value, setValue] = useState(props.defaultValue ?? '');
   const plainTextRef = useRef('');
+  const hiddenInputRef = useRef<HTMLInputElement>(null);
   const id = props.id ?? props.name;
 
   const handleChange = (markdown: string, { plainText }: { plainText: string }) => {
     plainTextRef.current = plainText;
-    setValue(markdown);
 
-    // Notify parent component of the change
-    if (props.onChange) {
-      props.onChange(markdown);
+    // Update the hidden input's value directly via ref
+    // This ensures FormData picks up the latest value
+    if (hiddenInputRef.current) {
+      hiddenInputRef.current.value = markdown;
     }
 
     // Validate maxLength if provided
@@ -45,26 +44,23 @@ const MarkdownInput = (props: MarkdownInputProps) => {
   };
 
   return (
-    <div className={props.className}>
-      {props.label && (
-        <label htmlFor={id} className={props.labelClassName}>
-          {props.label}
-        </label>
-      )}
-      {/* Hidden input to store value - controlled by React state */}
+    <div className={styles.wrapper}>
+      {props.label && <label htmlFor={id}>{props.label}</label>}
+      {/* Hidden input with ref - value updated directly via DOM */}
       <input
         type="hidden"
         name={props.name}
-        value={value}
+        ref={hiddenInputRef}
+        defaultValue={props.defaultValue ?? ''}
       />
       <MarkdownEditor
         onChange={handleChange}
-        className={props.editorClassName}
+        className={styles.editor}
         initialMarkdown={props.defaultValue}
         placeholder={props.placeholder}
       />
       {error && (
-        <span role="alert" className={props.errorClassName}>
+        <span role="alert" className="text-red-500 bg-black">
           {error}
         </span>
       )}
