@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 
 import { type ServerActionResult } from '@eventuras/core-nextjs/actions';
 import { Logger } from '@eventuras/logger';
-import { MarkdownInput } from '@eventuras/markdowninput';
+import { MarkdownInput } from '@eventuras/scribo';
 import { Button, ButtonGroup } from '@eventuras/ratio-ui/core/Button';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Checkbox, CheckBoxLabel, Form, Input } from '@eventuras/ratio-ui/forms';

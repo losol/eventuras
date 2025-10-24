@@ -1,5 +1,5 @@
 'use client';
-import MarkdownEditor from '@eventuras/scribo';
+import MarkdownEditor from './MarkdownEditor';
 import { useRef, useState } from 'react';
 
 export type MarkdownInputProps = {
@@ -9,16 +9,15 @@ export type MarkdownInputProps = {
   label?: string;
   placeholder?: string;
   defaultValue?: string;
-};
-
-const styles = {
-  wrapper: 'mb-3 bg-white text-black',
-  editor: 'w-full',
+  className?: string;
+  labelClassName?: string;
+  editorClassName?: string;
+  errorClassName?: string;
 };
 
 /**
  * MarkdownInput component that works with native forms (FormData API)
- * No longer requires react-hook-form
+ * Framework-agnostic with flexible className props for custom styling
  */
 const MarkdownInput = (props: MarkdownInputProps) => {
   const [value, setValue] = useState(props.defaultValue ?? '');
@@ -39,18 +38,22 @@ const MarkdownInput = (props: MarkdownInputProps) => {
   };
 
   return (
-    <div className={styles.wrapper}>
-      {props.label && <label htmlFor={id}>{props.label}</label>}
+    <div className={props.className}>
+      {props.label && (
+        <label htmlFor={id} className={props.labelClassName}>
+          {props.label}
+        </label>
+      )}
       {/* Hidden input to submit markdown value with the form */}
       <input type="hidden" name={props.name} value={value} />
       <MarkdownEditor
         onChange={handleChange}
-        className={styles.editor}
+        className={props.editorClassName}
         initialMarkdown={props.defaultValue}
         placeholder={props.placeholder}
       />
       {error && (
-        <span role="alert" className="text-red-500 bg-black">
+        <span role="alert" className={props.errorClassName}>
           {error}
         </span>
       )}

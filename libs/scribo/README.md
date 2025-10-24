@@ -18,14 +18,51 @@ pnpm add @eventuras/scribo
 
 **Important**: You must import the CSS file for Scribo to display correctly:
 
+### MarkdownEditor (WYSIWYG Editor)
+
 ```tsx
-import '@eventuras/scribo/style.css';
-import MarkdownEditor from '@eventuras/scribo';
+import "@eventuras/scribo/style.css";
+import { MarkdownEditor } from "@eventuras/scribo";
 
 function MyComponent() {
   return <MarkdownEditor defaultValue="# Hello World" />;
 }
 ```
+
+### MarkdownInput (Form-ready Input)
+
+For use with native HTML forms (FormData API):
+
+```tsx
+import "@eventuras/scribo/style.css";
+import { MarkdownInput } from "@eventuras/scribo";
+
+function MyForm() {
+  return (
+    <form>
+      <MarkdownInput
+        name="description"
+        label="Description"
+        placeholder="Enter markdown..."
+        defaultValue="# Hello"
+        maxLength={500}
+        className="mb-4"
+        labelClassName="font-bold"
+        editorClassName="border rounded"
+        errorClassName="text-red-500"
+      />
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+```
+
+The `MarkdownInput` component is framework-agnostic and provides:
+
+- Hidden input for FormData submission
+- Optional label and validation
+- Flexible styling via className props
+- Character limit validation
 
 ### Peer Dependencies
 
@@ -41,10 +78,10 @@ Scribo uses Prism.js for code syntax highlighting but does not bundle it. You ne
 Example:
 
 ```tsx
-import 'prismjs';
-import 'prismjs/components/prism-javascript';
-import 'prismjs/components/prism-typescript';
-import 'prismjs/components/prism-css';
+import "prismjs";
+import "prismjs/components/prism-javascript";
+import "prismjs/components/prism-typescript";
+import "prismjs/components/prism-css";
 // Import other languages as needed
 ```
 
@@ -73,4 +110,3 @@ Scribo is built on the [Lexical framework](https://lexical.dev/), and most of th
 ## Learn More
 
 - [Lexical](https://lexical.dev/)
-

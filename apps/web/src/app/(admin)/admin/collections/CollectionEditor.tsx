@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { Logger } from '@eventuras/logger';
-import { MarkdownInput } from '@eventuras/markdowninput';
+import { MarkdownInput } from '@eventuras/scribo';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Loading } from '@eventuras/ratio-ui/core/Loading';
 import { Trash2 } from '@eventuras/ratio-ui/icons';
