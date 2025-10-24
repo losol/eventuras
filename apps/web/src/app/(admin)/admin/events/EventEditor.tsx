@@ -1,14 +1,14 @@
 'use client';
-import { useEffect, useState } from 'react';
-import { SubmitHandler } from 'react-hook-form';
+import { useState } from 'react';
+import { Controller, SubmitHandler, useFormContext } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
 import { Logger } from '@eventuras/logger';
-import { MarkdownInput } from '@eventuras/scribo';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Tabs } from '@eventuras/ratio-ui/core/Tabs';
 import { Fieldset } from '@eventuras/ratio-ui/forms';
+import { MarkdownInput } from '@eventuras/scribo';
 import {
   CheckboxInput,
   CheckboxLabel,
@@ -27,6 +27,25 @@ import slugify from '@/utils/slugify';
 import { updateEvent } from './actions';
 
 import '@eventuras/scribo/style.css';
+
+// Wrapper component to use react-hook-form Controller with MarkdownInput
+const ControlledMarkdownInput = ({ name, ...props }: any) => {
+  const { control } = useFormContext();
+  return (
+    <Controller
+      name={name}
+      control={control}
+      render={({ field }) => (
+        <MarkdownInput
+          {...props}
+          name={name}
+          defaultValue={field.value}
+          onChange={field.onChange}
+        />
+      )}
+    />
+  );
+};
 export type EventEditorProps = {
   eventinfo: EventDto;
 };
@@ -34,8 +53,7 @@ type ApiState = {
   error: string | null;
   loading: boolean;
 };
-const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
-  console.log('EventEditor rendering with eventinfo:', eventinfo);
+const EventEditor = ({ eventinfo }: EventEditorProps) => {
   const t = useTranslations();
   const [apiState, setApiState] = useState<ApiState>({ error: null, loading: false });
   const toast = useToast();
@@ -44,40 +62,10 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
     namespace: 'web:admin:events',
     context: { component: 'EventEditor', eventId: eventinfo.id },
   });
-  // Log the event data when component mounts
-  useEffect(() => {
-    logger.debug(
-      {
-        eventId: eventinfo.id,
-        eventTitle: eventinfo.title,
-        eventSlug: eventinfo.slug,
-        eventStatus: eventinfo.status,
-        eventType: eventinfo.type,
-        eventCity: eventinfo.city,
-        hasDateStart: !!eventinfo.dateStart,
-        hasDateEnd: !!eventinfo.dateEnd,
-        featured: eventinfo.featured,
-        published: eventinfo.published,
-      },
-      'EventEditor loaded with event data'
-    );
-  }, [eventinfo, logger]);
   // Form submit handler
   const onSubmitForm: SubmitHandler<EventFormDto> = async (data: EventFormDto) => {
     setApiState({ error: null, loading: true });
     logger.info('Updating event...');
-    logger.debug(
-      {
-        eventId: eventinfo.id,
-        formTitle: data.title,
-        formSlug: data.slug,
-        formOrgId: data.organizationId,
-        formStatus: data.status,
-        formType: data.type,
-        formCity: data.city,
-      },
-      'Event form data before processing'
-    );
     // Use the organization ID from config
     // Events belong to this organization and we're just maintaining that relationship
     const orgId = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
@@ -215,33 +203,33 @@ const EventEditor = ({ eventinfo: eventinfo }: EventEditorProps) => {
         </Tabs.Item>
         <Tabs.Item title="Descriptions">
           <Fieldset label="Additional information">
-            <MarkdownInput
+            <ControlledMarkdownInput
               name="description"
               label="Description (max 300 characters)"
               placeholder="An Event Description here (markdown supported)"
               maxLength={300}
             />
-            <MarkdownInput
+            <ControlledMarkdownInput
               name="program"
               label="Program"
               placeholder="An Event Program here (markdown supported)"
             />
-            <MarkdownInput
+            <ControlledMarkdownInput
               name="practicalInformation"
               label="Practical Information"
               placeholder="Practical Information here (markdown supported)"
             />
-            <MarkdownInput
+            <ControlledMarkdownInput
               name="moreInformation"
               label="More Information"
               placeholder="More Information here (markdown supported)"
             />
-            <MarkdownInput
+            <ControlledMarkdownInput
               name="welcomeLetter"
               label="Welcome Letter"
               placeholder="Welcome letter here (markdown supported)"
             />
-            <MarkdownInput
+            <ControlledMarkdownInput
               name="informationRequest"
               label="Information Request"
               placeholder="Information Request (markdown supported)"
