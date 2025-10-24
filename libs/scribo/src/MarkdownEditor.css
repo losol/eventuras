@@ -43,13 +43,11 @@
   z-index: 0;
   overflow: auto;
   resize: vertical;
-  height: 80vh;
 }
 
 .editor {
   flex: auto;
   position: relative;
-  resize: vertical;
   z-index: -1;
 }
 
