@@ -1,6 +1,5 @@
 import { defineConfig, type UserConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import reactSwc from '@vitejs/plugin-react-swc';
 import tailwindcss from '@tailwindcss/vite';
 import dts from 'vite-plugin-dts';
 import { resolve } from 'path';
@@ -147,6 +146,8 @@ export function defineReactLibConfig(config: ReactLibConfig): UserConfig {
 
   // Add React plugin (SWC or standard)
   if (useSWC) {
+    // Dynamically import SWC plugin only when needed
+    const reactSwc = require('@vitejs/plugin-react-swc').default;
     plugins.push(reactSwc());
   } else {
     plugins.push(react());
