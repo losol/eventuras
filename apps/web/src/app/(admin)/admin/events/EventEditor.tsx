@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Controller, SubmitHandler, useFormContext } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -8,6 +8,7 @@ import { Logger } from '@eventuras/logger';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Tabs } from '@eventuras/ratio-ui/core/Tabs';
 import { Fieldset } from '@eventuras/ratio-ui/forms';
+import { Check, LoaderCircle, X } from '@eventuras/ratio-ui/icons';
 import { MarkdownInput } from '@eventuras/scribo';
 import {
   CheckboxInput,
@@ -53,15 +54,116 @@ type ApiState = {
   error: string | null;
   loading: boolean;
 };
+
+type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
+
+// Auto-save wrapper component that watches form changes
+const AutoSaveHandler = ({
+  autoSaveEnabled,
+  onAutoSave,
+}: {
+  autoSaveEnabled: boolean;
+  onAutoSave: (data: EventFormDto) => void;
+}) => {
+  const { watch, getValues } = useFormContext<EventFormDto>();
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const previousValuesRef = useRef<EventFormDto | null>(null);
+
+  useEffect(() => {
+    console.log('AutoSaveHandler effect running, autoSaveEnabled:', autoSaveEnabled);
+    if (!autoSaveEnabled) return;
+
+    const subscription = watch((value, { name, type }) => {
+      console.log('Form field changed:', { name, type, autoSaveEnabled });
+
+      // Clear existing timeout
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+
+      // Set new timeout for debounced save
+      saveTimeoutRef.current = setTimeout(() => {
+        const currentValues = getValues();
+        console.log('Checking if should save:', {
+          currentValues,
+          previousValues: previousValuesRef.current,
+          changed: JSON.stringify(currentValues) !== JSON.stringify(previousValuesRef.current),
+        });
+
+        // Only save if values have actually changed
+        if (JSON.stringify(currentValues) !== JSON.stringify(previousValuesRef.current)) {
+          console.log('Triggering auto-save...');
+          previousValuesRef.current = currentValues;
+          onAutoSave(currentValues);
+        }
+      }, 1000); // 1 second debounce
+    });
+
+    return () => {
+      subscription.unsubscribe();
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    };
+  }, [autoSaveEnabled, watch, getValues, onAutoSave]);
+
+  return null;
+};
+
 const EventEditor = ({ eventinfo }: EventEditorProps) => {
   const t = useTranslations();
   const [apiState, setApiState] = useState<ApiState>({ error: null, loading: false });
+  const [autoSaveEnabled, setAutoSaveEnabled] = useState(true); // Default to true
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
   const toast = useToast();
   const router = useRouter();
   const logger = Logger.create({
     namespace: 'web:admin:events',
     context: { component: 'EventEditor', eventId: eventinfo.id },
   });
+
+  // Auto-save handler
+  const handleAutoSave = useCallback(
+    async (data: EventFormDto) => {
+      setSaveStatus('saving');
+      logger.info({ autoSave: true }, 'Auto-saving event...');
+
+      const orgId = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
+      if (!orgId || Number.isNaN(orgId)) {
+        logger.error({ orgId }, 'Organization ID is not configured for auto-save');
+        setSaveStatus('error');
+        return;
+      }
+
+      data.organizationId = orgId;
+
+      // Set slug
+      const year = data.dateStart ? new Date(data.dateStart).getFullYear() : undefined;
+      const newSlug = slugify([data.title, data.city, year, data.id].filter(Boolean).join('-'));
+      data.slug = newSlug;
+
+      const result = await updateEvent(eventinfo.id!, data);
+
+      if (result.success) {
+        logger.info({ autoSave: true }, 'Auto-save successful');
+        setSaveStatus('saved');
+        // Reset to idle after 2 seconds
+        setTimeout(() => setSaveStatus('idle'), 2000);
+      } else {
+        logger.error(
+          {
+            autoSave: true,
+            error: result.error,
+          },
+          'Auto-save failed'
+        );
+        setSaveStatus('error');
+        toast.error(`Auto-save failed: ${result.error.message}`);
+      }
+    },
+    [eventinfo.id, logger, toast]
+  );
+
   // Form submit handler
   const onSubmitForm: SubmitHandler<EventFormDto> = async (data: EventFormDto) => {
     setApiState({ error: null, loading: true });
@@ -69,7 +171,7 @@ const EventEditor = ({ eventinfo }: EventEditorProps) => {
     // Use the organization ID from config
     // Events belong to this organization and we're just maintaining that relationship
     const orgId = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
-    if (!orgId || isNaN(orgId)) {
+    if (!orgId || Number.isNaN(orgId)) {
       logger.error(
         { orgId, typeOfOrgId: typeof orgId },
         'Organization ID is not configured or invalid'
@@ -117,6 +219,50 @@ const EventEditor = ({ eventinfo }: EventEditorProps) => {
       testId="event-edit-form"
       shouldUnregister={false}
     >
+      <AutoSaveHandler autoSaveEnabled={autoSaveEnabled} onAutoSave={handleAutoSave} />
+
+      {/* Auto-save toggle and status */}
+      <div className="mb-6 flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800">
+        <div className="flex items-center gap-3">
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={autoSaveEnabled}
+              onChange={e => setAutoSaveEnabled(e.target.checked)}
+              className="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
+            />
+            <span className="font-medium text-gray-900 dark:text-gray-100">Enable auto-save</span>
+          </label>
+          <span className="text-sm text-gray-600 dark:text-gray-400">
+            Changes will be saved automatically as you type
+          </span>
+        </div>
+
+        {/* Save status indicator */}
+        {saveStatus !== 'idle' && (
+          <div className="flex items-center gap-2">
+            {saveStatus === 'saving' && (
+              <>
+                <LoaderCircle className="h-4 w-4 animate-spin text-blue-600" />
+                <span className="text-sm text-blue-600">Saving...</span>
+              </>
+            )}
+            {saveStatus === 'saved' && (
+              <>
+                <Check className="h-4 w-4 text-green-600" />
+                <span className="text-sm text-green-600">Saved</span>
+              </>
+            )}
+            {saveStatus === 'error' && (
+              <>
+                <X className="h-4 w-4 text-red-600" />
+                <span className="text-sm text-red-600">Save failed</span>
+              </>
+            )}
+          </div>
+        )}
+      </div>
+
       <HiddenInput
         name="organizationId"
         value={publicEnv.NEXT_PUBLIC_ORGANIZATION_ID?.toString() ?? ''}
