@@ -34,6 +34,7 @@
     "dev:web": "turbo dev --filter=@eventuras/web... --concurrency 20",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
+    "lint:staged": "pnpm dlx lint-staged",
     "next:clean": "npx rimraf \"**/{.next,.turbo,.vercel}\"",
     "openapi:update": "cd apps/api && pnpm openapi:update && cd ../.. && cd libs/event-sdk && pnpm build",
     "openapi:update:prod": "cd apps/api && pnpm openapi:update:prod && cd ../.. && cd libs/event-sdk && pnpm build",
@@ -41,8 +42,12 @@
     "test": "turbo run test"
   },
   "simple-git-hooks": {
-    "pre-commit": "pnpm deps:sort && pnpm lint:fix",
+    "pre-commit": "pnpm lint:staged",
     "commit-msg": "npx --no -- commitlint --edit $1"
+  },
+  "lint-staged": {
+    "**/package.json": "pnpm dlx sort-package-json",
+    "**/*.{js,jsx,ts,tsx,cjs,mjs}": "eslint --fix"
   },
   "dependencies": {
     "turbo": "^2.5.8"
@@ -57,6 +62,7 @@
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
     "eslint": "^9.38.0",
+    "lint-staged": "^15.2.11",
     "prettier": "^3.6.2",
     "simple-git-hooks": "^2.13.1",
     "tsx": "^4.20.6",
