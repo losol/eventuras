@@ -69,7 +69,22 @@ export async function refreshAccesstoken(
 
     return tokens;
   } catch (error) {
-    logger.error({ error, issuer: oAuthConfig.issuer }, 'Token refresh failed');
+    // Check if this is an expected invalid_grant error (expired/invalid refresh token)
+    const err = error as { code?: string; error?: string; error_description?: string; };
+    const isInvalidGrant = err?.code === 'OAUTH_RESPONSE_BODY_ERROR' && err?.error === 'invalid_grant';
+
+    if (isInvalidGrant) {
+      // Most often the refresh token has expired - log at info level
+      logger.info({
+        error: err.error,
+        error_description: err.error_description,
+        issuer: oAuthConfig.issuer
+      }, 'Token refresh failed - refresh token expired or invalid');
+    } else {
+      // Unexpected error - log at error level
+      logger.error({ error, issuer: oAuthConfig.issuer }, 'Token refresh failed');
+    }
+
     throw error;
   }
 }

@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl';
 import { Logger } from '@eventuras/logger';
 import { SessionWarning } from '@eventuras/ratio-ui/blocks/SessionWarning';
 
-import { useAuthSelector } from '@/auth/authMachine';
+import { useAuthStore } from '@/auth/authStore';
 
 const logger = Logger.create({
   namespace: 'web:components',
@@ -24,14 +24,17 @@ export function SessionWarningOverlay() {
   const t = useTranslations();
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
-  const { status } = useAuthSelector();
+  const auth = useAuthStore();
+
+  // Check if session has expired (error contains "Session expired" or "expired" in message)
+  const isSessionExpired = auth.error?.toLowerCase().includes('expired') ?? false;
 
   // Handle session expiration - redirect to login
   useEffect(() => {
-    if (status.isSessionExpired) {
+    if (isSessionExpired) {
       logger.info('Session expired, user needs to log in again');
     }
-  }, [status.isSessionExpired]);
+  }, [isSessionExpired]);
 
   const handleLoginNow = useCallback(() => {
     logger.info('User clicked login, redirecting to login endpoint');
@@ -47,15 +50,15 @@ export function SessionWarningOverlay() {
 
   const handleDismiss = useCallback(() => {
     logger.info('User dismissed session expiration warning');
-    // No action needed - the auth machine continues monitoring
+    // No action needed - the store continues monitoring
   }, []);
 
   // Only show dialog when session is actually expired
-  if (!status.isSessionExpired) return null;
+  if (!isSessionExpired) return null;
 
   return (
     <SessionWarning
-      isOpen={status.isSessionExpired}
+      isOpen={isSessionExpired}
       onLoginNow={handleLoginNow}
       onDismiss={handleDismiss}
       isLoading={isLoggingIn}

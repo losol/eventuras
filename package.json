@@ -47,7 +47,7 @@
   },
   "lint-staged": {
     "**/package.json": "pnpm dlx sort-package-json",
-    "**/*.{js,jsx,ts,tsx,cjs,mjs}": "eslint --fix"
+    "**/*.{jsx,ts,tsx,cjs,mjs}": "eslint --fix"
   },
   "dependencies": {
     "turbo": "^2.5.8"

@@ -2,9 +2,11 @@
 
 import { useEffect, useRef } from 'react';
 
+import { checkAuth } from '@eventuras/fides-auth-next/store';
 import { Logger } from '@eventuras/logger';
 
-import { useAuthActions } from '@/auth/authMachine';
+import { authStore } from '@/auth/authStore';
+import { getAuthStatus } from '@/utils/auth/getAuthStatus';
 
 const logger = Logger.create({
   namespace: 'web:auth',
@@ -22,7 +24,6 @@ const logger = Logger.create({
  * Place this component in the root layout so it runs on every page load.
  */
 export function LoginSuccessHandler() {
-  const { checkAuth } = useAuthActions();
   const hasChecked = useRef(false);
 
   useEffect(() => {
@@ -37,8 +38,8 @@ export function LoginSuccessHandler() {
     if (loginSuccess) {
       logger.info('Login success detected via query param, triggering immediate auth check');
 
-      // Trigger immediate check to update state machine
-      checkAuth();
+      // Trigger immediate check to update store
+      checkAuth(authStore, getAuthStatus);
 
       // Clean up the URL (remove query param) without triggering navigation
       const url = new URL(window.location.href);
@@ -47,7 +48,7 @@ export function LoginSuccessHandler() {
     } else {
       logger.debug('No login success parameter found, skipping immediate check');
     }
-  }, [checkAuth]);
+  }, []);
 
   return null; // This component renders nothing
 }

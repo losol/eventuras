@@ -810,6 +810,9 @@ importers:
       '@xstate/react':
         specifier: ^5.0.0 || ^6.0.0
         version: 6.0.0(@types/react@19.2.2)(react@19.2.0)(xstate@5.23.0)
+      '@xstate/store':
+        specifier: ^3.11.1
+        version: 3.11.1(react@19.2.0)
       next:
         specifier: 15.5.6
         version: 15.5.6(@playwright/test@1.56.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(sass@1.77.4)
@@ -5602,6 +5605,17 @@ packages:
       xstate: ^5.20.0
     peerDependenciesMeta:
       xstate:
+        optional: true
+
+  '@xstate/store@3.11.1':
+    resolution: {integrity: sha512-IneCkipaR1FCl6eW+mLeAtjZw99l/nnKQyF9u9Pmy/Jm/wo1gWrBQcZqkmZ+ea6iQ/+GFzsO3LVGYh16fBZKtA==}
+    peerDependencies:
+      react: ^18.2.0 || ^19.0.0
+      solid-js: ^1.7.6
+    peerDependenciesMeta:
+      react:
+        optional: true
+      solid-js:
         optional: true
 
   '@zod/core@0.9.0':
@@ -17734,6 +17748,10 @@ snapshots:
       xstate: 5.23.0
     transitivePeerDependencies:
       - '@types/react'
+
+  '@xstate/store@3.11.1(react@19.2.0)':
+    optionalDependencies:
+      react: 19.2.0
 
   '@zod/core@0.9.0': {}
 
