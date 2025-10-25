@@ -14,7 +14,6 @@ import {
 } from '@/lib/eventuras-sdk';
 
 import EventPageTabs from './EventPageTabs';
-import EventAdminActionsMenu from '../EventAdminActionsMenu';
 
 const logger = Logger.create({
   namespace: 'web:admin:events',
@@ -34,7 +33,7 @@ export default async function EventAdminPage({ params, searchParams }: Readonly<
 
   // Determine default tab based on query params
   const isNewlyCreated = search.newlyCreated === 'true';
-  const defaultTab = isNewlyCreated ? 'edit' : 'participants';
+  const defaultTab = isNewlyCreated ? 'overview' : 'participants';
 
   const [eventinfoRes, registrationsRes, eventProductsRes, statisticsRes] = await Promise.all([
     getV3EventsById({ path: { id } }),
@@ -94,7 +93,6 @@ export default async function EventAdminPage({ params, searchParams }: Readonly<
       <Section className="bg-white dark:bg-black pb-8">
         <Container>
           <Heading as="h1">{eventinfo.title}</Heading>
-          <EventAdminActionsMenu eventinfo={eventinfo} />
           {hasPartialErrors && (
             <div className="mt-4">
               <Error type="generic" tone="warning">
@@ -117,14 +115,24 @@ export default async function EventAdminPage({ params, searchParams }: Readonly<
           )}
         </Container>
       </Section>
-      <Section>
+      <Section className="bg-gray-50 dark:bg-gray-900">
         <Container>
           <EventPageTabs
             eventinfo={eventinfo}
             participants={registrationsRes.data?.data ?? []}
             statistics={statisticsRes.data ?? {}}
             eventProducts={eventProductsRes.data ?? []}
-            defaultTab={defaultTab as 'participants' | 'edit' | 'products'}
+            defaultTab={
+              defaultTab as
+                | 'participants'
+                | 'overview'
+                | 'dates'
+                | 'descriptions'
+                | 'certificate'
+                | 'advanced'
+                | 'communication'
+                | 'products'
+            }
           />
         </Container>
       </Section>

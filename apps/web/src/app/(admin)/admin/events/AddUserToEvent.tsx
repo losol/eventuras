@@ -224,13 +224,16 @@ export type AddUserToEventProps = {
   eventinfo: EventDto;
   eventProducts: ProductDto[];
   isOpen?: boolean;
+  variant?: 'primary' | 'secondary' | 'outline' | 'text' | 'light';
 };
 const AddUserToEvent: React.FC<AddUserToEventProps> = props => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   return (
     <>
-      <Button onClick={() => setIsOpen(true)}>Add user</Button>
+      <Button onClick={() => setIsOpen(true)} variant={props.variant || 'primary'}>
+        Add user
+      </Button>
       <AddUserToEventDrawer
         eventinfo={props.eventinfo}
         eventProducts={props.eventProducts}

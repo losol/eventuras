@@ -1,15 +1,11 @@
 'use client';
 import { useMemo, useState } from 'react';
-import { useRouter } from 'next/navigation';
-
-import { Container } from '@eventuras/ratio-ui/layout/Container';
-import { Section } from '@eventuras/ratio-ui/layout/Section';
 
 import { EventDto, EventStatisticsDto, ProductDto, RegistrationDto } from '@/lib/eventuras-sdk';
 import { ParticipationTypes, ParticipationTypesKey } from '@/types';
 
 import EventParticipantList from '../EventParticipantList';
-import EventStatistics from '../EventStatistics';
+
 export type ParticipantsSectionProps = {
   statistics: EventStatisticsDto;
   participants: RegistrationDto[];
@@ -23,47 +19,39 @@ const initialSelectedStatistics = {
 };
 export type StatisticsSelection = typeof initialSelectedStatistics;
 const ParticipantsSection: React.FC<ParticipantsSectionProps> = props => {
-  const router = useRouter();
   const [selectedStatistic, setSelectedStatistic] =
     useState<StatisticsSelection>(initialSelectedStatistics);
   const highlightedSelection = useMemo(
     () =>
-      Object.keys(initialSelectedStatistics).filter(k => {
+      Object.keys(initialSelectedStatistics).find(k => {
         const tK = k as ParticipationTypesKey;
         return selectedStatistic[tK] === true;
-      })[0],
+      }),
     [selectedStatistic]
   );
   return (
-    <>
-      <Section className="py-2">
-        <Container>
-          <EventStatistics
-            highlightedSelection={highlightedSelection}
+    <div className="space-y-8 py-8">
+      {/* Participants List with integrated filters and Add User button */}
+      <div>
+        {props.participants && (
+          <EventParticipantList
+            participants={props.participants ?? []}
+            event={props.eventInfo}
+            eventProducts={props.eventProducts ?? []}
             statistics={props.statistics}
-            onSelectionChanged={(selection: string) => {
+            filteredStatus={highlightedSelection}
+            onStatusFilterChange={(selection: string) => {
               const s = selection as ParticipationTypesKey;
               setSelectedStatistic({
                 ...initialSelectedStatistics,
                 [selection]: !selectedStatistic[s],
               });
             }}
+            showAddUser={true}
           />
-        </Container>
-      </Section>
-      <Section className="pb-12">
-        <Container>
-          {props.participants && (
-            <EventParticipantList
-              participants={props.participants ?? []}
-              event={props.eventInfo}
-              eventProducts={props.eventProducts ?? []}
-              filteredStatus={highlightedSelection}
-            />
-          )}
-        </Container>
-      </Section>
-    </>
+        )}
+      </div>
+    </div>
   );
 };
 export default ParticipantsSection;

@@ -73,7 +73,12 @@
     },
     "tabs": {
       "participants": "Participants",
-      "edit": "Edit",
+      "overview": "Overview",
+      "dates": "Dates & Location",
+      "descriptions": "Descriptions",
+      "certificate": "Certificate",
+      "advanced": "Advanced",
+      "communication": "Communication",
       "products": "Products"
     }
   },

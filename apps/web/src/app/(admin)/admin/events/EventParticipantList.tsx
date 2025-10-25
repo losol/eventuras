@@ -3,13 +3,20 @@
 import React, { useMemo, useState, useTransition } from 'react';
 import { useTranslations } from 'next-intl';
 
-import { ColumnFilter, DataTable } from '@eventuras/datatable';
+import { type ColumnFilter, DataTable } from '@eventuras/datatable';
 import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
 
 import EditRegistrationProductsDialog from '@/components/eventuras/EditRegistrationProductsDialog';
 import { EventNotificator, NotificationType } from '@/components/notificator';
-import type { EventDto, ProductDto, RegistrationDto } from '@/lib/eventuras-sdk';
+import type {
+  EventDto,
+  EventStatisticsDto,
+  ProductDto,
+  RegistrationDto,
+} from '@/lib/eventuras-sdk';
 
+import AddUserToEvent from './AddUserToEvent';
+import EventStatistics from './EventStatistics';
 import { getRegistrationDetails } from './participantActions';
 import { createParticipantColumns } from './ParticipantTableColumns';
 
@@ -17,15 +24,20 @@ interface AdminEventListProps {
   participants: RegistrationDto[];
   event: EventDto;
   eventProducts?: ProductDto[];
+  statistics: EventStatisticsDto;
   filteredStatus?: string;
-  onUpdated?: () => void;
+  onStatusFilterChange?: (status: string) => void;
+  showAddUser?: boolean;
 }
 
 const EventParticipantList: React.FC<AdminEventListProps> = ({
   participants: initialParticipants = [],
   event,
   eventProducts = [],
+  statistics,
   filteredStatus,
+  onStatusFilterChange,
+  showAddUser = false,
 }) => {
   const t = useTranslations();
   const [isPending, startTransition] = useTransition();
@@ -97,7 +109,8 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
   }, [filteredStatus]);
 
   return (
-    <>
+    <div>
+      {/* DataTable with custom toolbar combining filters and search */}
       <DataTable
         data={participants}
         columns={columns}
@@ -105,6 +118,26 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
         pageSize={250}
         enableGlobalSearch={true}
         columnFilters={columnFilter}
+        renderToolbar={(searchInput: React.ReactNode) => (
+          <div className="mb-4 flex items-center justify-between gap-4 flex-wrap">
+            {/* Status filter buttons using EventStatistics component */}
+            <EventStatistics
+              statistics={statistics}
+              highlightedSelection={filteredStatus}
+              onSelectionChanged={onStatusFilterChange}
+            />
+
+            <div className="flex items-center gap-3">
+              {/* Search input */}
+              {searchInput}
+
+              {/* Add User button */}
+              {showAddUser && (
+                <AddUserToEvent eventinfo={event} eventProducts={eventProducts} variant="outline" />
+              )}
+            </div>
+          </div>
+        )}
       />
 
       {/* Email notification drawer */}
@@ -146,7 +179,7 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
           }}
         />
       )}
-    </>
+    </div>
   );
 };
 

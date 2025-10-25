@@ -1,15 +1,18 @@
 'use client';
+
 import { useTranslations } from 'next-intl';
 
-import { NumberCard } from '@eventuras/ratio-ui/visuals/NumberCard';
+import { ToggleButtonGroup, ToggleButtonOption } from '@eventuras/ratio-ui/core/ToggleButtonGroup';
 
 import { EventStatisticsDto } from '@/lib/eventuras-sdk';
 import { ParticipationTypes, ParticipationTypesKey } from '@/types';
+
 type EventStatisticsProps = {
   statistics: EventStatisticsDto;
   highlightedSelection?: string | null;
   onSelectionChanged?: (selection: string) => void;
 };
+
 const EventStatistics: React.FC<EventStatisticsProps> = ({
   statistics,
   onSelectionChanged,
@@ -17,6 +20,7 @@ const EventStatistics: React.FC<EventStatisticsProps> = ({
 }) => {
   const t = useTranslations();
   const byStatus = statistics ? statistics.byStatus : null;
+
   const counts = {
     [ParticipationTypes.active]:
       (byStatus?.draft ?? 0) +
@@ -27,26 +31,31 @@ const EventStatistics: React.FC<EventStatisticsProps> = ({
     [ParticipationTypes.waitingList]: byStatus?.waitingList ?? 0,
     [ParticipationTypes.cancelled]: byStatus?.cancelled ?? 0,
   };
-  const toggleSelection = (currentSelection: ParticipationTypes) => {
-    onSelectionChanged && onSelectionChanged(currentSelection);
+
+  const options: ToggleButtonOption[] = Object.keys(ParticipationTypes).map((key: string) => {
+    const k = key as ParticipationTypesKey;
+    return {
+      value: key,
+      label: t(`common.labels.${key}`),
+      count: counts[k],
+    };
+  });
+
+  const handleChange = (value: string | string[] | null) => {
+    if (onSelectionChanged) {
+      // Convert null or empty string to empty string for deselection
+      onSelectionChanged((value as string) || '');
+    }
   };
+
   return (
-    <div className="grid gap-1 grid-cols-3  md:grid-cols-4 break-words">
-      {Object.keys(ParticipationTypes).map((key: string) => {
-        const k = key as ParticipationTypesKey;
-        const className = highlightedSelection === key ? 'font-bold border' : '';
-        return (
-          <button
-            title={t(`common.labels.${key}`)}
-            key={key}
-            onClick={() => toggleSelection(ParticipationTypes[k])}
-            className={className}
-          >
-            <NumberCard number={counts[k]} label={t(`common.labels.${key}`)} />
-          </button>
-        );
-      })}
-    </div>
+    <ToggleButtonGroup
+      options={options}
+      value={highlightedSelection || null}
+      onChange={handleChange}
+      aria-label={t('common.labels.participationStatus')}
+    />
   );
 };
+
 export default EventStatistics;
