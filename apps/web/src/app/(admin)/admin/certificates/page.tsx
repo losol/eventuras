@@ -4,8 +4,6 @@ import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 
-import withAuthorization from '@/utils/auth/withAuthorization';
-
 const CertificatesPage = async () => {
   const t = await getTranslations();
   return (
@@ -21,4 +19,5 @@ const CertificatesPage = async () => {
     </>
   );
 };
-export default withAuthorization(CertificatesPage, 'Admin');
+
+export default CertificatesPage;
