@@ -12,7 +12,8 @@ export default defineNextLibConfig({
     'xstate',
     '@xstate/react',
     '@xstate/store',
-    /^ @xstate\//,
+    '@xstate/store/react',
+    /^@xstate\//,
 
     // React
     'react',

@@ -14,13 +14,6 @@ import getSiteSettings from '@/utils/site/getSiteSettings';
 
 const logger = Logger.create({ namespace: 'web:frontpage' });
 
-const ORGANIZATION_ID = Number(appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID as string);
-
-// Validate organization ID at build time
-if (!ORGANIZATION_ID || Number.isNaN(ORGANIZATION_ID)) {
-  throw new Error('NEXT_PUBLIC_ORGANIZATION_ID is not set or invalid');
-}
-
 // Incremental Static Regeneration - revalidate every 5 minutes
 export const revalidate = 300;
 
@@ -35,6 +28,20 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Homepage() {
   const site = await getSiteSettings();
   const t = await getTranslations();
+
+  // Get and validate organization ID at runtime
+  const ORGANIZATION_ID = Number(appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID as string);
+  if (!ORGANIZATION_ID || Number.isNaN(ORGANIZATION_ID)) {
+    logger.error('NEXT_PUBLIC_ORGANIZATION_ID is not set or invalid');
+    return (
+      <Section backgroundColorClass="bg-red-50 dark:bg-red-950" padding="py-8" container>
+        <Heading as="h2" padding="pb-6">
+          Configuration Error
+        </Heading>
+        <Text>Organization ID is not configured. Please contact the administrator.</Text>
+      </Section>
+    );
+  }
 
   let response;
   try {
