@@ -18,7 +18,7 @@ import type {
 import AddUserToEvent from './AddUserToEvent';
 import EventStatistics from './EventStatistics';
 import { getRegistrationDetails } from './participantActions';
-import { createParticipantColumns } from './ParticipantTableColumns';
+import { createParticipantColumns, renderExpandedRow } from './ParticipantTableColumns';
 
 interface AdminEventListProps {
   participants: RegistrationDto[];
@@ -118,6 +118,16 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
         pageSize={250}
         enableGlobalSearch={true}
         columnFilters={columnFilter}
+        getRowCanExpand={() => true}
+        renderSubComponent={({ row }) =>
+          renderExpandedRow({
+            registration: row.original,
+            eventProducts,
+            onProductsClick: handleProductsClick,
+            isLoadingRegistration,
+            t: (key: string) => t(key).toString(),
+          })
+        }
         renderToolbar={(searchInput: React.ReactNode) => (
           <div className="mb-4 flex items-center justify-between gap-4 flex-wrap">
             {/* Status filter buttons using EventStatistics component */}
