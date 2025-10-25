@@ -1,20 +1,22 @@
 'use client';
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
+
 import { Logger } from '@eventuras/logger';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Definition, DescriptionList, Term } from '@eventuras/ratio-ui/core/DescriptionList';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
 
-import { InvoiceRequestDto, OrderDto, PaymentProvider, postV3Invoices } from '@/lib/eventuras-sdk';
+import { OrderDto, PaymentProvider } from '@/lib/eventuras-sdk';
+
+import { invoiceOrderAction, verifyOrderAction } from './actions';
+
 const logger = Logger.create({
   namespace: 'web:admin:orders',
   context: { component: 'OrderActionsMenu' },
 });
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
-
-import { publicEnv } from '@/config.client';
 export type OrderActionsMenuProps = {
   order: OrderDto;
 };
@@ -31,56 +33,40 @@ export const OrderActionsMenu = ({ order }: OrderActionsMenuProps) => {
   const hasInvoicablePaymentMethod =
     order.paymentMethod != null && invoicablePaymentMethods.includes(order.paymentMethod);
   const shouldShowInvoiceButton = isOrderVerified && hasInvoicablePaymentMethod;
-  const verifyOrder =
-    ({ order }: { order: OrderDto }) =>
-    async () => {
-      if (!order.orderId) {
-        throw new Error('Order ID is required');
-      }
-      const orgId = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
-      if (!orgId || isNaN(orgId)) {
-        throw new Error('Organization ID is required');
-      }
-      await fetch(`${publicEnv.NEXT_PUBLIC_API_BASE_URL as string}/v3/orders/${order.orderId}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json-patch+json',
-          'Eventuras-Org-Id': orgId.toString(),
-        },
-        body: JSON.stringify([
-          {
-            op: 'replace',
-            path: '/status',
-            value: 'Verified',
-          },
-        ]),
-      });
-      router.refresh();
-    };
-  const invoiceOrder = async (order: OrderDto) => {
+  const handleVerifyOrder = async () => {
     if (!order.orderId) {
-      throw new Error('Order ID is required');
+      logger.error('Order ID is required');
+      return;
     }
-    const orgId = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
-    if (!orgId || isNaN(orgId)) {
-      throw new Error('Organization ID is required');
+
+    try {
+      await verifyOrderAction(order.orderId);
+      logger.info({ orderId: order.orderId }, 'Order verified successfully');
+      router.refresh();
+    } catch (error) {
+      logger.error({ error, orderId: order.orderId }, 'Failed to verify order');
     }
-    const invoiceRequest: InvoiceRequestDto = {
-      orderIds: [order.orderId],
-    };
-    const response = await postV3Invoices({
-      headers: { 'Eventuras-Org-Id': orgId },
-      body: invoiceRequest,
-    });
-    if (response.data) {
-      logger.info('Invoice sent to accounting system');
+  };
+
+  const handleInvoiceOrder = async () => {
+    if (!order.orderId) {
+      logger.error('Order ID is required');
+      return;
     }
-    router.refresh();
+
+    try {
+      await invoiceOrderAction(order.orderId);
+      logger.info({ orderId: order.orderId }, 'Invoice created successfully');
+      setInvoiceDrawerOpen(false);
+      router.refresh();
+    } catch (error) {
+      logger.error({ error, orderId: order.orderId }, 'Failed to create invoice');
+    }
   };
   return (
     <>
       {order.status === 'Draft' && (
-        <Button variant="primary" onClick={verifyOrder({ order })}>
+        <Button variant="primary" onClick={handleVerifyOrder}>
           Verify
         </Button>
       )}
@@ -106,7 +92,7 @@ export const OrderActionsMenu = ({ order }: OrderActionsMenuProps) => {
           </DescriptionList>
         </div>
         {shouldShowInvoiceButton && (
-          <Button onClick={() => invoiceOrder(order)}>
+          <Button onClick={handleInvoiceOrder}>
             Send to accounting system (
             {order.paymentMethod === 'PowerOfficeEmailInvoice' ? 'email' : 'ehf'})
           </Button>

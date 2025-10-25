@@ -1,8 +1,23 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
+
+import { Logger } from '@eventuras/logger';
+
 import { appConfig } from '@/config.server';
 import { client } from '@/lib/eventuras-client';
-import { getV3Orders, OrderDto } from '@/lib/eventuras-sdk';
+import {
+  getV3Orders,
+  InvoiceRequestDto,
+  OrderDto,
+  patchV3OrdersById,
+  postV3Invoices,
+} from '@/lib/eventuras-sdk';
+
+const logger = Logger.create({
+  namespace: 'web:admin:orders',
+  context: { module: 'actions' },
+});
 
 export interface GetOrdersResult {
   data: OrderDto[];
@@ -20,13 +35,13 @@ export async function getOrders(page: number = 1, pageSize: number = 50) {
         'Eventuras-Org-Id':
           typeof organizationId === 'number'
             ? organizationId
-            : parseInt(organizationId as string, 10),
+            : Number.parseInt(organizationId as string, 10),
       },
       query: {
         OrganizationId:
           typeof organizationId === 'number'
             ? organizationId
-            : parseInt(organizationId as string, 10),
+            : Number.parseInt(organizationId as string, 10),
         IncludeUser: true,
         IncludeRegistration: true,
         Page: page,
@@ -59,5 +74,86 @@ export async function getOrders(page: number = 1, pageSize: number = 50) {
       error: error instanceof Error ? error.message : 'Unknown error',
       data: null,
     };
+  }
+}
+
+export async function verifyOrderAction(orderId: number) {
+  logger.info({ orderId }, 'Verifying order...');
+
+  const organizationId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
+  const orgId =
+    typeof organizationId === 'number'
+      ? organizationId
+      : Number.parseInt(organizationId as string, 10);
+
+  if (!orgId || Number.isNaN(orgId)) {
+    logger.error('Organization ID is required');
+    throw new Error('Organization ID is required');
+  }
+
+  try {
+    const response = await patchV3OrdersById({
+      client,
+      headers: {
+        'Eventuras-Org-Id': orgId,
+      },
+      path: {
+        id: orderId,
+      },
+      body: {
+        status: 'Verified',
+      },
+    });
+
+    if (response.error) {
+      logger.error({ orderId, error: response.error }, 'Failed to verify order');
+      throw new Error('Failed to verify order');
+    }
+
+    logger.info({ orderId }, 'Order verified successfully');
+    revalidatePath('/admin/orders');
+    return { success: true };
+  } catch (error) {
+    logger.error({ error, orderId }, 'Error verifying order');
+    throw error;
+  }
+}
+
+export async function invoiceOrderAction(orderId: number) {
+  logger.info({ orderId }, 'Creating invoice for order...');
+
+  const organizationId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
+  const orgId =
+    typeof organizationId === 'number'
+      ? organizationId
+      : Number.parseInt(organizationId as string, 10);
+
+  if (!orgId || Number.isNaN(orgId)) {
+    logger.error('Organization ID is required');
+    throw new Error('Organization ID is required');
+  }
+
+  try {
+    const invoiceRequest: InvoiceRequestDto = {
+      orderIds: [orderId],
+    };
+
+    const response = await postV3Invoices({
+      client,
+      headers: { 'Eventuras-Org-Id': orgId },
+      body: invoiceRequest,
+    });
+
+    if (response.data) {
+      logger.info({ orderId }, 'Invoice sent to accounting system successfully');
+      revalidatePath('/admin/orders');
+      return { success: true };
+    } else {
+      logger.error({ orderId, error: response.error }, 'Failed to create invoice');
+      throw new Error('Failed to create invoice');
+    }
+  } catch (error) {
+    logger.error({ error, orderId }, 'Error creating invoice');
+    throw error;
   }
 }

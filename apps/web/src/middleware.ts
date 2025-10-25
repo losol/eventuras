@@ -206,10 +206,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    '/admin/:path*',
-    '/admin', // Match /admin exactly
-    '/user/:path*',
-    '/user', // Match /user exactly
-  ],
+  matcher: ['/admin/:path*', '/admin', '/user/:path*', '/user'],
 };
