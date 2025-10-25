@@ -30,6 +30,7 @@ type DataTableProps = {
   renderToolbar?: (searchInput: React.ReactNode) => React.ReactNode;
   renderSubComponent?: (props: { row: Row<any> }) => React.ReactElement;
   getRowCanExpand?: (row: Row<any>) => boolean;
+  getRowId?: (originalRow: any, index: number) => string;
 };
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -65,15 +66,66 @@ const DataTable = (props: DataTableProps) => {
     }
   }, [props.columnFilters]);
 
+  // Auto-expand all rows when searching
+  useEffect(() => {
+    if (globalFilter) {
+      // Expand all rows when there's a search filter
+      setExpanded(true);
+    } else {
+      // Collapse all when search is cleared
+      setExpanded({});
+    }
+  }, [globalFilter]);
+
+  // Custom handler to only allow one row expanded at a time (when not searching)
+  const handleExpandedChange = React.useCallback(
+    (updater: ExpandedState | ((old: ExpandedState) => ExpandedState)) => {
+      // If searching, allow all rows to be expanded
+      if (globalFilter) {
+        setExpanded(updater);
+        return;
+      }
+
+      // Otherwise, ensure only one row is expanded at a time
+      setExpanded(old => {
+        const newExpanded = typeof updater === 'function' ? updater(old) : updater;
+
+        // If it's a boolean (expand all/collapse all), just use it
+        if (typeof newExpanded === 'boolean') {
+          return newExpanded;
+        }
+
+        // Find which row was toggled by comparing old and new state
+        const oldIds = Object.keys(old).filter(key => (old as Record<string, boolean>)[key]);
+        const newIds = Object.keys(newExpanded).filter(key => (newExpanded as Record<string, boolean>)[key]);
+
+        // If a row was just expanded (newIds has more items than oldIds)
+        if (newIds.length > oldIds.length) {
+          // Find the newly expanded row
+          const newlyExpandedId = newIds.find(id => !oldIds.includes(id));
+          if (newlyExpandedId) {
+            // Only keep the newly expanded row
+            return { [newlyExpandedId]: true };
+          }
+        }
+
+        // If a row was collapsed, just return the new state
+        return newExpanded;
+      });
+    },
+    [globalFilter]
+  );
+
   const table = useReactTable({
     columns,
     data: data,
+    getRowId: props.getRowId,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
     onGlobalFilterChange: setGlobalFilter,
     onColumnFiltersChange: setColumnFilters,
-    onExpandedChange: setExpanded,
+    onExpandedChange: handleExpandedChange,
     getFilteredRowModel: getFilteredRowModel(),
     getRowCanExpand: props.getRowCanExpand,
     filterFns: {
@@ -130,7 +182,7 @@ const DataTable = (props: DataTableProps) => {
           {table.getRowModel().rows.map(row => (
             <React.Fragment key={row.id ?? row.index}>
               <tr
-                className="even:bg-gray-50 odd:bg-white dark:even:bg-slate-950 dark:odd:bg-slate-900 text-black dark:text-white"
+                className="group even:bg-gray-50 odd:bg-white dark:even:bg-slate-950 dark:odd:bg-slate-900 text-black dark:text-white"
               >
                 {row.getVisibleCells().map(cell => (
                   <td key={cell.id} className="p-2">
