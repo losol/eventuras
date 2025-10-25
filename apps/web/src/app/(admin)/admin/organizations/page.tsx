@@ -7,7 +7,6 @@ import { Section } from '@eventuras/ratio-ui/layout/Section';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
 import { getV3Organizations } from '@/lib/eventuras-sdk';
-import withAuthorization from '@/utils/auth/withAuthorization';
 
 const AdminOrganizationsPage = async () => {
   const t = await getTranslations();
@@ -35,4 +34,5 @@ const AdminOrganizationsPage = async () => {
     </>
   );
 };
-export default withAuthorization(AdminOrganizationsPage, 'Admin');
+
+export default AdminOrganizationsPage;

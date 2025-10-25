@@ -6,7 +6,6 @@ import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { appConfig } from '@/config.server';
 import { UserDto } from '@/lib/eventuras-sdk';
 import { getV3Users } from '@/lib/eventuras-sdk';
-import withAuthorization from '@/utils/auth/withAuthorization';
 
 import UserList from './UserList';
 import UsersActionMenu from './UsersActionMenu';
@@ -30,4 +29,5 @@ const AdminUserPage = async () => {
     </Container>
   );
 };
-export default withAuthorization(AdminUserPage, 'Admin');
+
+export default AdminUserPage;
