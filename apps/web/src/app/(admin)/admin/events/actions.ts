@@ -113,6 +113,10 @@ export async function createEvent(
 
     logger.info({ eventId, organizationId, title }, 'Event created successfully');
 
+    // Revalidate ISR caches to show new event immediately
+    revalidatePath('/'); // Frontpage event grid
+    revalidatePath('/events'); // Events list page (if exists)
+
     // Redirect to event page with newlyCreated flag to show edit tab
     redirect(`/admin/events/${eventId}?newlyCreated=true`);
   } catch (error) {
@@ -235,6 +239,11 @@ export async function updateEvent(
     }
 
     updateLogger.info({ eventId }, 'Event updated successfully');
+
+    // Revalidate ISR caches to show updated event immediately
+    revalidatePath('/'); // Frontpage event grid
+    revalidatePath(`/events/${eventId}`); // Event detail page redirects
+    revalidatePath('/events'); // Events list page (if exists)
 
     return actionSuccess({ eventId }, 'Event updated successfully');
   } catch (error) {

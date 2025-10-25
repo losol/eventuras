@@ -1,26 +1,25 @@
-import { Logger } from '@eventuras/logger';
-import { Heading } from '@eventuras/ratio-ui/core/Heading';
-import { Text } from '@eventuras/ratio-ui/core/Text';
-import { Container } from '@eventuras/ratio-ui/layout/Container';
-import { Section } from '@eventuras/ratio-ui/layout/Section';
-
-import { EventInfoStatus, getV3Events, getV3EventsById } from '@/lib/eventuras-public-sdk';
-
-const logger = Logger.create({ namespace: 'web:app:events', context: { page: 'EventPage' } });
-
 import { Suspense } from 'react';
+import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 
 import { formatDateSpan } from '@eventuras/core/datetime';
+import { Logger } from '@eventuras/logger';
 import { Card } from '@eventuras/ratio-ui/core/Card';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Text } from '@eventuras/ratio-ui/core/Text';
 import { Calendar, MapPin } from '@eventuras/ratio-ui/icons';
+import { Container } from '@eventuras/ratio-ui/layout/Container';
+import { Section } from '@eventuras/ratio-ui/layout/Section';
 
 import EventDetails from '@/app/(public)/events/EventDetails';
 import EventRegistrationButton from '@/app/(public)/events/EventRegistrationButton';
 import { appConfig } from '@/config.server';
 import { getPublicClient } from '@/lib/eventuras-public-client';
+import { EventInfoStatus, getV3Events, getV3EventsById } from '@/lib/eventuras-public-sdk';
 
 import EventNotFound from '../../EventNotFound';
+
+const logger = Logger.create({ namespace: 'web:app:events', context: { page: 'EventPage' } });
 
 type EventDetailsPageProps = {
   params: Promise<{
@@ -29,23 +28,55 @@ type EventDetailsPageProps = {
   }>;
 };
 
-/**
- * Incremental Static Regeneration (ISR) Configuration:
- *
- * - revalidate: Pages are regenerated in the background every 5 minutes
- *   This keeps content fresh without requiring a full rebuild
- *
- * - dynamicParams: true allows new event pages to be generated on-demand
- *   When a user visits an event not in generateStaticParams, it will be
- *   generated on the first request and cached for subsequent requests
- */
 export const revalidate = 300;
 export const dynamicParams = true;
+
+export async function generateMetadata({ params }: EventDetailsPageProps): Promise<Metadata> {
+  const { id } = await params;
+
+  if (Number.isNaN(id)) {
+    return {
+      title: 'Event Not Found',
+    };
+  }
+
+  try {
+    const publicClient = getPublicClient();
+    const response = await getV3EventsById({
+      client: publicClient,
+      path: { id },
+    });
+
+    if (!response.data || response.data.status === EventInfoStatus.DRAFT) {
+      return {
+        title: 'Event Not Found',
+      };
+    }
+
+    const event = response.data;
+    return {
+      title: event.title ?? 'Event',
+      description: event.headline ?? event.description ?? 'Event details',
+      openGraph: event.featuredImageUrl
+        ? {
+            images: [event.featuredImageUrl],
+          }
+        : undefined,
+    };
+  } catch (error) {
+    logger.error({ error, eventId: id }, 'Failed to generate metadata');
+    return {
+      title: 'Event',
+    };
+  }
+}
 
 export async function generateStaticParams() {
   const organizationId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
   const orgId =
-    typeof organizationId === 'number' ? organizationId : parseInt(organizationId as string, 10);
+    typeof organizationId === 'number'
+      ? organizationId
+      : Number.parseInt(organizationId as string, 10);
 
   logger.info(
     { apiBaseUrl: appConfig.env.NEXT_PUBLIC_BACKEND_URL as string, orgId },
@@ -53,7 +84,6 @@ export async function generateStaticParams() {
   );
 
   try {
-    // Use public client for anonymous API access during static generation
     const publicClient = getPublicClient();
     const response = await getV3Events({
       client: publicClient,
@@ -82,76 +112,97 @@ export async function generateStaticParams() {
 export default async function EventDetailsPage({ params }: Readonly<EventDetailsPageProps>) {
   const { id, slug } = await params;
 
-  if (isNaN(id)) {
+  if (Number.isNaN(id)) {
+    logger.warn({ id }, 'Invalid event ID');
     return <EventNotFound />;
   }
 
-  // Use public client for anonymous API access
-  const publicClient = getPublicClient();
-  const response = await getV3EventsById({
-    client: publicClient,
-    path: { id },
-  });
+  try {
+    // Use public client for anonymous API access
+    const publicClient = getPublicClient();
+    const response = await getV3EventsById({
+      client: publicClient,
+      path: { id },
+    });
 
-  // Handle not found or draft events
-  if (!response.data || response.data.status === EventInfoStatus.DRAFT) {
-    return <EventNotFound />;
-  }
+    logger.info(
+      {
+        eventId: id,
+        hasData: !!response.data,
+        hasError: !!response.error,
+        status: response.data?.status,
+      },
+      'Event details fetched'
+    );
 
-  const eventinfo = response.data;
+    // Handle not found or draft events
+    if (!response.data || response.data.status === EventInfoStatus.DRAFT) {
+      logger.warn({ eventId: id, status: response.data?.status }, 'Event not found or is draft');
+      return <EventNotFound />;
+    }
 
-  // Redirect if slug doesn't match
-  if (slug !== eventinfo.slug && eventinfo.slug) {
-    redirect(`/events/${eventinfo.id}/${encodeURI(eventinfo.slug)}`);
-  }
+    const eventinfo = response.data;
 
-  return (
-    <>
-      <Section className="pb-8">
-        <Container>
-          {eventinfo.featuredImageUrl && (
-            <Card variant="wide" backgroundImageUrl={eventinfo.featuredImageUrl} />
-          )}
+    // Redirect if slug doesn't match
+    if (slug !== eventinfo.slug && eventinfo.slug) {
+      logger.info(
+        { eventId: id, providedSlug: slug, correctSlug: eventinfo.slug },
+        'Redirecting to correct slug'
+      );
+      redirect(`/events/${eventinfo.id}/${encodeURI(eventinfo.slug)}`);
+    }
 
-          <Heading as="h1" padding="pt-3 pb-3">
-            {eventinfo.title ?? 'Mysterious Event'}
-          </Heading>
+    return (
+      <>
+        <Section className="pb-8">
+          <Container>
+            {eventinfo.featuredImageUrl && (
+              <Card variant="wide" backgroundImageUrl={eventinfo.featuredImageUrl} />
+            )}
 
-          {eventinfo.headline && (
-            <Heading as="h2" className="text-xl font-semibold text-gray-700" padding="py-3">
-              &mdash; {eventinfo.headline}
+            <Heading as="h1" padding="pt-3 pb-3">
+              {eventinfo.title ?? 'Mysterious Event'}
             </Heading>
-          )}
 
-          <Text text={eventinfo.description ?? ''} className="py-3" />
+            {eventinfo.headline && (
+              <Heading as="h2" className="text-xl font-semibold text-gray-700" padding="py-3">
+                &mdash; {eventinfo.headline}
+              </Heading>
+            )}
 
-          {eventinfo.dateStart && (
-            <div className="flex items-center gap-2 py-0">
-              <Calendar className="h-5 w-5 mb-5 text-gray-600" />
-              <span>
-                {formatDateSpan(eventinfo.dateStart as string, eventinfo.dateEnd as string, {
-                  locale: appConfig.env.NEXT_PUBLIC_DEFAULT_LOCALE as string,
-                })}
-              </span>
-            </div>
-          )}
+            <Text text={eventinfo.description ?? ''} className="py-3" />
 
-          {eventinfo.city && (
-            <div className="flex items-center gap-2 py-0 mb-4">
-              <MapPin className="h-5 w-5 text-gray-600" />
-              <span>{eventinfo.city}</span>
-            </div>
-          )}
+            {eventinfo.dateStart && (
+              <div className="flex items-center gap-2 py-0">
+                <Calendar className="h-5 w-5 mb-5 text-gray-600" />
+                <span>
+                  {formatDateSpan(eventinfo.dateStart as string, eventinfo.dateEnd as string, {
+                    locale: appConfig.env.NEXT_PUBLIC_DEFAULT_LOCALE as string,
+                  })}
+                </span>
+              </div>
+            )}
 
-          <Suspense fallback={<div>Loading registration options...</div>}>
-            <EventRegistrationButton event={eventinfo} />
-          </Suspense>
-        </Container>
-      </Section>
+            {eventinfo.city && (
+              <div className="flex items-center gap-2 py-0 mb-4">
+                <MapPin className="h-5 w-5 text-gray-600" />
+                <span>{eventinfo.city}</span>
+              </div>
+            )}
 
-      <Suspense fallback={<div>Loading event details...</div>}>
-        <EventDetails eventinfo={eventinfo} />
-      </Suspense>
-    </>
-  );
+            <Suspense fallback={<div>Loading registration options...</div>}>
+              <EventRegistrationButton event={eventinfo} />
+            </Suspense>
+          </Container>
+        </Section>
+
+        <Suspense fallback={<div>Loading event details...</div>}>
+          <EventDetails eventinfo={eventinfo} />
+        </Suspense>
+      </>
+    );
+  } catch (error) {
+    logger.error({ error, eventId: id }, 'Failed to load event details');
+    return <EventNotFound />;
+  }
 }

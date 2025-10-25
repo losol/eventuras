@@ -92,10 +92,12 @@
     "title": "Errrrrror."
   },
   "errors": {
+    "failedToLoadEvents": "No events...",
     "fatalError": {
       "description": "We tried to perform the action, but something went wrong, please try again later.",
       "title": "Something went very wrong"
-    }
+    },
+    "tryRefresh": "Feel free to refresh the page"
   },
   "event-not-found": "Event not found",
   "events": {
@@ -124,6 +126,7 @@
       }
     },
     "moreinformation": "Information",
+    "noEventsAvailable": "No events",
     "practicalinformation": "Practical information",
     "program": "Program",
     "sectiontitle": "Happenings"

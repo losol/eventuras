@@ -95,7 +95,8 @@
     "fatalError": {
       "description": "Vi prøvde å utføre handlingen, men noe gikk galt. Vennligst prøv igjen senere.",
       "title": "Noe gikk veldig galt"
-    }
+    },
+    "tryRefresh": "Prøv gjerne å oppfrisk siden!"
   },
   "event-not-found": "Arrangement ikke funnet",
   "events": {
@@ -124,6 +125,7 @@
       }
     },
     "moreinformation": "Informasjon",
+    "noEventsAvailable": "Ingen arrangementer",
     "practicalinformation": "Praktisk",
     "program": "Program",
     "sectiontitle": "Hva som skjer!"
