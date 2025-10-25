@@ -1,8 +1,13 @@
+import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
 
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  transpilePackages: ['@eventuras/scribo', '@eventuras/smartform'],
+const nextConfig: NextConfig = {
+  transpilePackages: [
+    '@eventuras/scribo',
+    '@eventuras/smartform',
+    '@eventuras/fides-auth-next',
+    '@xstate/store',
+  ],
 
   reactStrictMode: true,
 

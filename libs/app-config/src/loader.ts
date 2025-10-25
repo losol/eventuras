@@ -45,7 +45,7 @@ export class ConfigLoader {
         if (!(prop in target)) {
           throw new Error(
             `Environment variable "${prop}" is not defined in app.config.json.\n` +
-              `Available variables: ${Object.keys(target).join(', ')}`
+            `Available variables: ${Object.keys(target).join(', ')}`
           );
         }
         return target[prop];
@@ -101,7 +101,7 @@ export class ConfigLoader {
     if (!(varName in this.envValues)) {
       throw new Error(
         `Environment variable "${varName}" is not defined in app.config.json.\n` +
-          `Available variables: ${Object.keys(this.envValues).join(', ')}`
+        `Available variables: ${Object.keys(this.envValues).join(', ')}`
       );
     }
     return this.envValues[varName] as T;
