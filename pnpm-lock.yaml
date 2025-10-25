@@ -548,6 +548,9 @@ importers:
       '@eventuras/event-sdk':
         specifier: workspace:*
         version: link:../../libs/event-sdk
+      '@eventuras/google-api':
+        specifier: workspace:*
+        version: link:../../libs/google-api
       '@eventuras/logger':
         specifier: workspace:*
         version: link:../../libs/logger
@@ -557,6 +560,9 @@ importers:
       dotenv:
         specifier: 17.2.3
         version: 17.2.3
+      tsx:
+        specifier: ^4.19.2
+        version: 4.20.6
 
   docs: {}
 

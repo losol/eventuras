@@ -13,14 +13,17 @@
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix && prettier . --write",
+    "oauth:setup": "tsx scripts/oauth-server.ts",
     "test:playwright": "playwright test --workers=1",
     "test:playwright:ui": "playwright test --ui"
   },
   "dependencies": {
     "@eventuras/event-sdk": "workspace:*",
+    "@eventuras/google-api": "workspace:*",
     "@eventuras/logger": "workspace:*",
     "@playwright/test": "1.56.1",
-    "dotenv": "17.2.3"
+    "dotenv": "17.2.3",
+    "tsx": "^4.19.2"
   },
   "readme": "README.md"
 }

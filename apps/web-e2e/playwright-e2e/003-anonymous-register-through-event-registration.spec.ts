@@ -9,16 +9,26 @@ import {
   validateRegistration,
   visitAndClickEventRegistrationButton,
 } from './functions';
-import { fetchLoginCode, getTagAndNamespaceFromEmail } from './utils';
+import { fetchLoginCode } from './utils';
 
 dotenv.config();
 
 test.describe.configure({ mode: 'serial' });
-const adminTestMail = process.env.TEST_E2E_EMAIL_ADMIN;
-const tagAndNs = getTagAndNamespaceFromEmail(adminTestMail!);
-const userName = `${tagAndNs.nameSpace}.newuser-${Math.floor(
-  Date.now() / 1000 / 10
-)}@inbox.testmail.app`;
+
+// Generate a unique test email using Gmail's plus addressing feature
+// This allows using a single Gmail account for multiple test identities
+const baseEmail = process.env.TEST_E2E_EMAIL_ADMIN || process.env.TEST_E2E_EMAIL_USER;
+if (!baseEmail) {
+  throw new Error('TEST_E2E_EMAIL_ADMIN or TEST_E2E_EMAIL_USER must be set');
+}
+
+// Extract the local part and domain from the base email
+const [localPart, domain] = baseEmail.split('@');
+// Create a unique identifier for this test run
+const timestamp = Math.floor(Date.now() / 1000 / 10);
+// Use Gmail's plus addressing: localpart+tag@domain.com
+const userName = `${localPart}+newuser-${timestamp}@${domain}`;
+
 test.describe('should be able to register as an anonymous user when hitting the event registration page', () => {
   const createdEvent = readCreatedEvent();
   test('registration button should be visible for anonymous users', async ({ page }) => {

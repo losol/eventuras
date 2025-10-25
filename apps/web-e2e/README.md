@@ -126,27 +126,53 @@ pnpm test:playwright:skiplogin
 
 ## OTP Fetching
 
-[Testmail.app](https://testmail.app) is used to fetch one-time verification codes via their API for:
+The Gmail API (via `@eventuras/google-api`) is used to fetch one-time verification codes for:
 
 - Admin login
 - User login
 - Anonymous user registration
 
-**Note:** Free API keys have a limit of 100 emails per month.
+### Setup Requirements
+
+**📖 See [GMAIL_SETUP.md](./GMAIL_SETUP.md) for detailed step-by-step setup instructions.**
+
+Quick overview:
+
+1. **Configure Google OAuth credentials** - Set up OAuth client in Google Cloud Console (see [GMAIL_SETUP.md](./GMAIL_SETUP.md))
+2. **Obtain a refresh token** - Run `pnpm oauth:setup` or use OAuth 2.0 Playground (see [GMAIL_SETUP.md](./GMAIL_SETUP.md#step-3-obtain-refresh-token))
+3. **Set environment variables** in `.env`:
+   - `GOOGLE_CLIENT_ID` - OAuth client ID from Google Cloud Console
+   - `GOOGLE_CLIENT_SECRET` - OAuth client secret
+   - `GOOGLE_REDIRECT_URI` - Use `http://localhost:3123/oauth/callback` (or `https://developers.google.com/oauthplayground` for manual setup)
+   - `GOOGLE_REFRESH_TOKEN` - Refresh token obtained from OAuth flow (store securely in CI/CD secrets)
+
+### Gmail Plus Addressing
+
+Tests use Gmail's [plus addressing feature](https://gmail.googleblog.com/2008/03/2-hidden-ways-to-get-more-from-your.html) to create unique email identities from a single Gmail account:
+
+- Base email: `youremail@gmail.com`
+- Admin user: `youremail+admin@gmail.com` (set in `TEST_E2E_EMAIL_ADMIN`)
+- Test user: `youremail+user@gmail.com` (set in `TEST_E2E_EMAIL_USER`)
+- Anonymous users: `youremail+newuser-{timestamp}@gmail.com` (generated automatically)
+
+All emails are delivered to the same inbox, making it easy to manage test accounts.
 
 ## Test Account Setup
 
-Anonymous tests register themselves automatically. For Admin and User tests, follow these steps:
+Anonymous tests register themselves automatically using Gmail plus addressing. For Admin and User tests, follow these steps:
 
 ### Step 1: Create and Register the User
 
-1. Login to [testmail.app](https://testmail.app)
-2. Create a tagged email address:
+1. Use your Gmail account with plus addressing to create test identities:
+
+   ```text
+   youremail+admin@gmail.com   (for admin user)
+   youremail+user@gmail.com    (for regular user)
    ```
-   {testmailaccount}.admin@inbox.testmail.app
-   ```
-3. Register on Eventuras using this email
-4. View verification code in the [JSON email viewer](https://testmail.app/console)
+
+2. Register on Eventuras using these email addresses
+3. Check your Gmail inbox for verification codes (all emails arrive in the same inbox)
+4. Complete the registration process
 
 ### Step 2: Add User to Organization
 
