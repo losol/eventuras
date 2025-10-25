@@ -1,11 +1,14 @@
 /* eslint no-process-env: 0 */
-import dotenv from 'dotenv';
 
 import { authenticate } from './functions';
 
-dotenv.config();
+const baseEmail = process.env.EVENTURAS_TEST_BASE_EMAIL;
+if (!baseEmail) {
+  throw new Error('EVENTURAS_TEST_BASE_EMAIL must be set');
+}
 
-const userName = process.env.TEST_E2E_EMAIL_ADMIN!;
+const [localPart, domain] = baseEmail.split('@');
+const userName = `${localPart}+admin@${domain}`;
 const authFile = 'playwright-auth/admin.json';
 
 authenticate(userName, authFile);

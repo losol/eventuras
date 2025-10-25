@@ -57,8 +57,8 @@ This project includes an OAuth setup script that handles the OAuth flow automati
 1. **Ensure your `.env` has the client credentials:**
 
    ```bash
-   GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
-   GOOGLE_CLIENT_SECRET=your-client-secret
+   EVENTURAS_TEST_GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
+   EVENTURAS_TEST_GOOGLE_CLIENT_SECRET=your-client-secret
    ```
 
 2. **Run the OAuth setup script:**
@@ -81,35 +81,60 @@ This project includes an OAuth setup script that handles the OAuth flow automati
 4. **Add the refresh token to your `.env` file:**
 
    ```bash
-   GOOGLE_REFRESH_TOKEN=1//0gxxxxx...
+   EVENTURAS_TEST_GOOGLE_REFRESH_TOKEN=1//0gxxxxx...
    ```
 
 The script is located at `scripts/oauth-server.ts` if you need to review or modify it.
 
 ## Step 3: Store the Refresh Token
 
+You have two options for storing the refresh token:
+
+### Option A: Environment Variable (Recommended for Local Development)
+
 Add to your `.env` file:
 
 ```bash
-GOOGLE_CLIENT_ID=your_client_id_here
-GOOGLE_CLIENT_SECRET=your_client_secret_here
-GOOGLE_REDIRECT_URI=http://localhost:3123/oauth/callback
-GOOGLE_REFRESH_TOKEN=your_refresh_token_here
+EVENTURAS_TEST_GOOGLE_CLIENT_ID=your_client_id_here
+EVENTURAS_TEST_GOOGLE_CLIENT_SECRET=your_client_secret_here
+EVENTURAS_TEST_GOOGLE_REDIRECT_URI=http://localhost:3123/oauth/callback
+EVENTURAS_TEST_GOOGLE_REFRESH_TOKEN=your_refresh_token_here
 ```
 
-**Note:** When using Option B (programmatic flow), set `GOOGLE_REDIRECT_URI=http://localhost:3123/oauth/callback`. When using Option A (OAuth Playground), use `GOOGLE_REDIRECT_URI=https://developers.google.com/oauthplayground`.
+### Option B: File-based (Recommended for CI/CD)
 
-**For CI/CD:** Store the refresh token as an encrypted secret (e.g., GitHub Secrets, Azure Key Vault) and inject it into the test environment.
+Create a file `test-results/.google-refresh-token` with just the refresh token:
 
-## Step 4: Configure Test Email Addresses
+```bash
+# Create the file
+echo "1//04YOAIXqnJPoVCgYIARAAGAQSNgF-L9Ircr5Z..." > test-results/.google-refresh-token
+```
 
-Use Gmail's [plus addressing](https://gmail.googleblog.com/2008/03/2-hidden-ways-to-get-more-from-your.html) to create multiple test identities:
+This approach is better for CI/CD because:
+- The `test-results/` directory is already gitignored
+- You can upload the token file as a CI artifact or secret file
+- No need to modify environment variable configuration in CI
+
+**Note:** When using file-based storage, you still need the other OAuth credentials in environment variables or `.env`.
+
+**Redirect URI:** When using Option B (programmatic flow), set `EVENTURAS_TEST_GOOGLE_REDIRECT_URI=http://localhost:3123/oauth/callback`. When using Option A (OAuth Playground), use `EVENTURAS_TEST_GOOGLE_REDIRECT_URI=https://developers.google.com/oauthplayground`.
+
+**For CI/CD:** Upload `test-results/.google-refresh-token` as a secure file in your CI/CD system (e.g., GitHub Actions secrets, Azure DevOps secure files).
+
+## Step 4: Configure Test Email Address
+
+Set your base Gmail account in `.env`. The tests will automatically create plus-addressed identities:
 
 ```bash
 # In .env
-TEST_E2E_EMAIL_ADMIN=youremail+admin@gmail.com
-TEST_E2E_EMAIL_USER=youremail+user@gmail.com
+EVENTURAS_TEST_BASE_EMAIL=youremail@gmail.com
 ```
+
+This will create the following test identities using Gmail's [plus addressing](https://gmail.googleblog.com/2008/03/2-hidden-ways-to-get-more-from-your.html):
+
+- **Admin user**: `youremail+admin@gmail.com`
+- **Standard user**: `youremail+user@gmail.com`
+- **Anonymous users**: `youremail+newuser-{timestamp}@gmail.com` (auto-generated)
 
 All verification emails will arrive in `youremail@gmail.com`, but each plus-addressed email is treated as a unique identity by the application.
 

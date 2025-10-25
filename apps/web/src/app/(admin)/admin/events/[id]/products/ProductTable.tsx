@@ -1,24 +1,24 @@
 import { useTranslations } from 'next-intl';
 
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
-import { Badge } from '@eventuras/ratio-ui/core/Badge';
 import { Eye, Pencil } from '@eventuras/ratio-ui/icons';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
 import type { ProductDto } from '@/lib/eventuras-sdk';
 const columnHelper = createColumnHelper<ProductDto>();
 interface ProductTableProps {
+  eventId: number;
   products: ProductDto[];
   onEdit: (product: ProductDto) => void;
 }
-export const ProductTable: React.FC<ProductTableProps> = ({ products, onEdit }) => {
+export const ProductTable: React.FC<ProductTableProps> = ({ eventId, products, onEdit }) => {
   const t = useTranslations();
   const columns = [
     columnHelper.accessor('name', {
       header: t('common.products.labels.name').toString(),
       cell: info => (
-        <Link href={`./products/${info.row.original.productId}`}>
-          {info.getValue()} <Badge>{`${info.row.original.productId}`}</Badge>
+        <Link href={`/admin/events/${eventId}/products/${info.row.original.productId}`}>
+          {info.getValue()}
         </Link>
       ),
     }),

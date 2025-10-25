@@ -83,54 +83,49 @@ const ProductModal: React.FC<ProductModalProps> = ({
   return (
     <>
       <Dialog isOpen={isOpen} onClose={onClose} title={titleText}>
-        <div className="fixed inset-0 z-40 bg-blue/30" aria-hidden="true" />
-        <div className="fixed inset-0 z-50 flex items-center justify-center min-h-screen">
-          <div className="w-full max-w-md p-6 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-            <Form onSubmit={submitProduct} className="mt-2 space-y-6" defaultValues={product}>
-              <Input
-                name="name"
-                label={t('common.products.labels.name')}
-                placeholder={t('common.products.labels.name')}
-                testId="product-name-input"
-                required
-              />
-              <Input
-                name="description"
-                label={t('common.products.labels.description')}
-                placeholder={t('common.products.labels.description')}
-                testId="product-description-input"
-                multiline
-              />
-              <NumberInput
-                name="price"
-                label={t('common.products.labels.price')}
-                placeholder="1234"
-                testId="product-price-input"
-                required
-              />
-              <NumberInput
-                name="vatPercent"
-                label={t('common.products.labels.vatPercent')}
-                placeholder="0"
-                testId="product-vat-input"
-                defaultValue={0}
-                required
-              />
-              <NumberInput
-                name="minimumQuantity"
-                label={t('common.products.labels.minimumQuantity')}
-                placeholder="0"
-                testId="product-minimum-quantity-input"
-              />
-              <Button type="submit" disabled={loading}>
-                {buttonText}
-              </Button>
-              <Button type="reset" variant="secondary" onClick={onClose}>
-                {t('common.buttons.cancel')}
-              </Button>
-            </Form>
-          </div>
-        </div>
+        <Form onSubmit={submitProduct} className="space-y-6" defaultValues={product}>
+          <Input
+            name="name"
+            label={t('common.products.labels.name')}
+            placeholder={t('common.products.labels.name')}
+            testId="product-name-input"
+            required
+          />
+          <Input
+            name="description"
+            label={t('common.products.labels.description')}
+            placeholder={t('common.products.labels.description')}
+            testId="product-description-input"
+            multiline
+          />
+          <NumberInput
+            name="price"
+            label={t('common.products.labels.price')}
+            placeholder="1234"
+            testId="product-price-input"
+            required
+          />
+          <NumberInput
+            name="vatPercent"
+            label={t('common.products.labels.vatPercent')}
+            placeholder="0"
+            testId="product-vat-input"
+            defaultValue={0}
+            required
+          />
+          <NumberInput
+            name="minimumQuantity"
+            label={t('common.products.labels.minimumQuantity')}
+            placeholder="0"
+            testId="product-minimum-quantity-input"
+          />
+          <Button type="submit" disabled={loading}>
+            {buttonText}
+          </Button>
+          <Button type="reset" variant="secondary" onClick={onClose}>
+            {t('common.buttons.cancel')}
+          </Button>
+        </Form>
       </Dialog>
       <ConfirmDiscardModal
         isOpen={confirmDiscardChanges}
