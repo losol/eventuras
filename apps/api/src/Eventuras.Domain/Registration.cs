@@ -140,35 +140,9 @@ public class Registration
             .ToList();
     }
 
-    [Obsolete("Use SetStatus instead")]
-    public void Verify()
-    {
-        Status = RegistrationStatus.Verified;
-        Verified = true;
-        AddLog();
-    }
 
-    [Obsolete("Use SetStatus instead")]
-    public void MarkAsAttended()
-    {
-        Status = RegistrationStatus.Attended;
-        AddLog();
-    }
 
-    [Obsolete("Use SetStatus instead")]
 
-    public void MarkAsNotAttended()
-    {
-        Status = RegistrationStatus.NotAttended;
-        AddLog();
-    }
-
-    [Obsolete("Use SetStatus instead")]
-    public void MarkAsCancelled()
-    {
-        Status = RegistrationStatus.Cancelled;
-        AddLog();
-    }
 
 
     public bool HasOrder => Orders != null && Orders.Count > 0;

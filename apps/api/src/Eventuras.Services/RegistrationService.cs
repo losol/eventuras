@@ -155,21 +155,22 @@ public class RegistrationService : IRegistrationService
     public async Task<int> SetRegistrationAsVerified(int id)
     {
         var registration = await GetAsync(id);
-        registration.Verify();
+        registration.Status = RegistrationStatus.Verified;
+        registration.Verified = true;
         return await _db.SaveChangesAsync();
     }
 
     public async Task<int> SetRegistrationAsAttended(int id)
     {
         var registration = await GetAsync(id);
-        registration.MarkAsAttended();
+        registration.Status = RegistrationStatus.Attended;
         return await _db.SaveChangesAsync();
     }
 
     public async Task<int> SetRegistrationAsNotAttended(int id)
     {
         var registration = await GetAsync(id);
-        registration.MarkAsNotAttended();
+        registration.Status = RegistrationStatus.NotAttended;
         return await _db.SaveChangesAsync();
     }
 
