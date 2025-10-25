@@ -29,17 +29,13 @@ export default async function Homepage() {
   const site = await getSiteSettings();
   const t = await getTranslations();
 
-  // Get and validate organization ID at runtime
-  const ORGANIZATION_ID = Number(appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID as string);
-  if (!ORGANIZATION_ID || Number.isNaN(ORGANIZATION_ID)) {
-    logger.error('NEXT_PUBLIC_ORGANIZATION_ID is not set or invalid');
-    return (
-      <Section backgroundColorClass="bg-red-50 dark:bg-red-950" padding="py-8" container>
-        <Heading as="h2" padding="pb-6">
-          Configuration Error
-        </Heading>
-        <Text>Organization ID is not configured. Please contact the administrator.</Text>
-      </Section>
+  // Get organization ID - default to 1 for development/build if not set
+  const ORGANIZATION_ID = Number(appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID as string) || 1;
+
+  if (Number.isNaN(ORGANIZATION_ID)) {
+    logger.error(
+      { value: appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID },
+      'Invalid NEXT_PUBLIC_ORGANIZATION_ID'
     );
   }
 
