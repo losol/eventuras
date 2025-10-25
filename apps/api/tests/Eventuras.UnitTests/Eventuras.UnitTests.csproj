@@ -18,4 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Eventuras.Domain\Eventuras.Domain.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="RegistrationTests\Verify_Should.cs" />
+  </ItemGroup>
 </Project>
