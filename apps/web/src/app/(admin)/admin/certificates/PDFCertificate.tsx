@@ -13,14 +13,14 @@ export const PDFCertificate = (props: { certificateId: number | string }) => {
       onClick={async () => {
         setIsLoading(true);
         const result = await fetch(
-          `${publicEnv.NEXT_PUBLIC_API_BASE_URL as string}/v3/certificates/${props.certificateId}?format=Pdf`,
+          `${publicEnv.NEXT_PUBLIC_BACKEND_URL}/v3/certificates/${props.certificateId}?format=Pdf`,
           {
             headers: {
               Accept: 'application/pdf',
             },
           }
         );
-        const blob = await result?.blob()!;
+        const blob = await result.blob();
         setIsLoading(false);
         const fileURL = URL.createObjectURL(blob);
         window.open(fileURL);
