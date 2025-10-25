@@ -73,7 +73,12 @@
     },
     "tabs": {
       "participants": "Deltakere",
-      "edit": "Rediger",
+      "overview": "Oversikt",
+      "dates": "Datoer & Sted",
+      "descriptions": "Beskrivelser",
+      "certificate": "Kursbevis",
+      "advanced": "Avansert",
+      "communication": "Kommunikasjon",
       "products": "Produkter"
     }
   },
