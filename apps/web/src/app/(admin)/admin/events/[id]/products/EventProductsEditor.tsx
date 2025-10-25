@@ -53,7 +53,7 @@ const EventProductsEditor: React.FC<EventProductsEditorProps> = ({
         product={currentProduct}
         eventId={eventInfo.id!}
       />
-      <ProductTable products={products} onEdit={openProductModal} />
+      <ProductTable eventId={eventInfo.id!} products={products} onEdit={openProductModal} />
     </div>
   );
 };

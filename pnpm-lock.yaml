@@ -557,12 +557,13 @@ importers:
       '@playwright/test':
         specifier: 1.56.1
         version: 1.56.1
-      dotenv:
-        specifier: 17.2.3
-        version: 17.2.3
       tsx:
         specifier: ^4.19.2
         version: 4.20.6
+    devDependencies:
+      cross-env:
+        specifier: ^10.1.0
+        version: 10.1.0
 
   docs: {}
 
@@ -1372,6 +1373,7 @@ packages:
   '@aws-sdk/middleware-expect-continue@3.916.0':
     resolution: {integrity: sha512-p7TMLZZ/j5NbC7/cz7xNgxLz/OHYuh91MeCZdCedJiyh3rx6gunFtl9eiDtrh+Y8hjs0EwR0zYIuhd6pL1O8zg==}
     engines: {node: '>=18.0.0'}
+    deprecated: '@aws-sdk/middleware-expect-continue v3.916.0 contains an accidental console.log statement (https://github.com/aws/aws-sdk-js-v3/pull/7454), please upgrade to v3.917.0+'
 
   '@aws-sdk/middleware-flexible-checksums@3.916.0':
     resolution: {integrity: sha512-CBRRg6slHHBYAm26AWY/pECHK0vVO/peDoNhZiAzUNt4jV6VftotjszEJ904pKGOr7/86CfZxtCnP3CCs3lQjA==}

@@ -1,7 +1,6 @@
 /* eslint no-process-env: 0 */
 
 import { expect, test } from '@playwright/test';
-import dotenv from 'dotenv';
 
 import {
   readCreatedEvent,
@@ -9,17 +8,15 @@ import {
   validateRegistration,
   visitAndClickEventRegistrationButton,
 } from './functions';
-import { fetchLoginCode } from './utils';
-
-dotenv.config();
+import { cleanupOtpEmails, fetchLoginCode } from './utils';
 
 test.describe.configure({ mode: 'serial' });
 
 // Generate a unique test email using Gmail's plus addressing feature
 // This allows using a single Gmail account for multiple test identities
-const baseEmail = process.env.TEST_E2E_EMAIL_ADMIN || process.env.TEST_E2E_EMAIL_USER;
+const baseEmail = process.env.EVENTURAS_TEST_BASE_EMAIL;
 if (!baseEmail) {
-  throw new Error('TEST_E2E_EMAIL_ADMIN or TEST_E2E_EMAIL_USER must be set');
+  throw new Error('EVENTURAS_TEST_BASE_EMAIL must be set');
 }
 
 // Extract the local part and domain from the base email
@@ -41,6 +38,9 @@ test.describe('should be able to register as an anonymous user when hitting the 
   });
 
   test('should be able to register user through the even registration page', async ({ page }) => {
+    // Clean up any old OTP emails before starting
+    await cleanupOtpEmails(userName);
+    
     await visitAndClickEventRegistrationButton(page, createdEvent.eventId);
     await page.locator('[type="submit"]').click();
     await page.waitForLoadState();

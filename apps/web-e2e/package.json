@@ -15,15 +15,19 @@
     "lint:fix": "eslint . --fix && prettier . --write",
     "oauth:setup": "tsx scripts/oauth-server.ts",
     "test:playwright": "playwright test --workers=1",
-    "test:playwright:ui": "playwright test --ui"
+    "test:playwright:debug": "cross-env DEBUG=e2e:* playwright test --workers=1",
+    "test:playwright:ui": "playwright test --ui",
+    "test:playwright:ui:debug": "cross-env DEBUG=e2e:* playwright test --ui"
   },
   "dependencies": {
     "@eventuras/event-sdk": "workspace:*",
     "@eventuras/google-api": "workspace:*",
     "@eventuras/logger": "workspace:*",
     "@playwright/test": "1.56.1",
-    "dotenv": "17.2.3",
     "tsx": "^4.19.2"
+  },
+  "devDependencies": {
+    "cross-env": "^10.1.0"
   },
   "readme": "README.md"
 }

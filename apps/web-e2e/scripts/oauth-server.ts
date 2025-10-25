@@ -12,29 +12,48 @@
  * Prerequisites:
  *   1. Set up Google Cloud Console OAuth credentials
  *   2. Add http://localhost:3123/oauth/callback to Authorized redirect URIs
- *   3. Set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in .env
+ *   3. Set EVENTURAS_TEST_GOOGLE_CLIENT_ID and EVENTURAS_TEST_GOOGLE_CLIENT_SECRET in .env
  */
 
 import { createServer } from 'node:http';
-import { parse } from 'node:url';
-import { config } from 'dotenv';
+import { readFileSync, existsSync } from 'node:fs';
+import { fileURLToPath, parse } from 'node:url';
+import { dirname, join } from 'node:path';
 import { createOAuthClient, generateOAuthConsentUrl, exchangeCodeForTokens } from '@eventuras/google-api';
 
-// Load environment variables
-config();
+// Get __dirname equivalent in ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Load .env file manually
+const envPath = join(__dirname, '..', '.env');
+if (existsSync(envPath)) {
+  const envFile = readFileSync(envPath, 'utf-8');
+  envFile.split('\n').forEach(line => {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith('#')) return;
+    const equalsIndex = trimmed.indexOf('=');
+    if (equalsIndex === -1) return;
+    const key = trimmed.substring(0, equalsIndex).trim();
+    const value = trimmed.substring(equalsIndex + 1).trim();
+    if (key && !process.env[key]) {
+      process.env[key] = value;
+    }
+  });
+}
 
 const PORT = 3123;
 const REDIRECT_URI = `http://localhost:${PORT}/oauth/callback`;
 
 // Validate required environment variables
-if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
-  console.error('❌ Error: GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET must be set in .env');
+if (!process.env.EVENTURAS_TEST_GOOGLE_CLIENT_ID || !process.env.EVENTURAS_TEST_GOOGLE_CLIENT_SECRET) {
+  console.error('❌ Error: EVENTURAS_TEST_GOOGLE_CLIENT_ID and EVENTURAS_TEST_GOOGLE_CLIENT_SECRET must be set in .env');
   process.exit(1);
 }
 
 const oauth2Client = createOAuthClient({
-  clientId: process.env.GOOGLE_CLIENT_ID,
-  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  clientId: process.env.EVENTURAS_TEST_GOOGLE_CLIENT_ID,
+  clientSecret: process.env.EVENTURAS_TEST_GOOGLE_CLIENT_SECRET,
   redirectUri: REDIRECT_URI,
 });
 
@@ -43,8 +62,9 @@ const server = createServer(async (req, res) => {
 
   if (parsedUrl.pathname === '/auth') {
     // Redirect to Google OAuth consent screen
+    // Note: gmail.modify scope is required to trash messages
     const authUrl = generateOAuthConsentUrl(oauth2Client, {
-      scope: ['https://www.googleapis.com/auth/gmail.readonly'],
+      scope: ['https://www.googleapis.com/auth/gmail.modify'],
     });
     res.writeHead(302, { Location: authUrl });
     res.end();
@@ -71,7 +91,7 @@ const server = createServer(async (req, res) => {
             <h1>✅ Successfully obtained refresh token!</h1>
             <h2>Add this to your .env file:</h2>
             <pre style="background: #f4f4f4; padding: 15px; border-radius: 5px;">
-GOOGLE_REFRESH_TOKEN=${tokens.refresh_token}
+EVENTURAS_TEST_GOOGLE_REFRESH_TOKEN=${tokens.refresh_token}
             </pre>
             <p><strong>⚠️ Important:</strong> This token will only be shown once. Copy it now!</p>
             <p>You can close this window.</p>
@@ -81,7 +101,7 @@ GOOGLE_REFRESH_TOKEN=${tokens.refresh_token}
 
       console.log('\n✅ Success! Refresh token obtained.');
       console.log('\n📝 Add this line to your .env file:');
-      console.log(`GOOGLE_REFRESH_TOKEN=${tokens.refresh_token}\n`);
+      console.log(`EVENTURAS_TEST_GOOGLE_REFRESH_TOKEN=${tokens.refresh_token}\n`);
 
       // Close server after successful token exchange
       setTimeout(() => {

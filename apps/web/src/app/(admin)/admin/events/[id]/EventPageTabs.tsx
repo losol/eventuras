@@ -1,11 +1,12 @@
 'use client';
 
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
 import { Logger } from '@eventuras/logger';
+import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Tabs } from '@eventuras/ratio-ui/core/Tabs';
 import { Form } from '@eventuras/smartform';
 import { useToast } from '@eventuras/toast';
@@ -66,6 +67,31 @@ const AutoSaveHandler = ({ onAutoSave }: { onAutoSave: (data: EventFormDto) => v
   }, [watch, getValues, onAutoSave]);
 
   return null;
+};
+
+// Save button component that has access to form context
+const SaveButton = ({ onSave }: { onSave: (data: EventFormDto) => Promise<void> }) => {
+  const { getValues } = useFormContext<EventFormDto>();
+  const [isSaving, setIsSaving] = useState(false);
+  const t = useTranslations();
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      const data = getValues();
+      await onSave(data);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  return (
+    <div className="mt-6 flex justify-end">
+      <Button onClick={handleSave} loading={isSaving} testId="event-save-button" variant="primary">
+        {t('common.buttons.save')}
+      </Button>
+    </div>
+  );
 };
 
 type EventPageTabsProps = {
@@ -180,21 +206,37 @@ export default function EventPageTabs({
 
         <Tabs.Item id="overview" title={t('admin.events.tabs.overview')} testId="tab-overview">
           <OverviewSection />
+          <SaveButton onSave={handleAutoSave} />
         </Tabs.Item>
 
         <Tabs.Item id="dates" title={t('admin.events.tabs.dates')} testId="tab-dates">
           <DatesLocationSection />
+          <SaveButton onSave={handleAutoSave} />
         </Tabs.Item>
 
-        <Tabs.Item id="descriptions" title={t('admin.events.tabs.descriptions')} testId="tab-descriptions">
+        <Tabs.Item
+          id="descriptions"
+          title={t('admin.events.tabs.descriptions')}
+          testId="tab-descriptions"
+        >
           <DescriptionsSection />
+          <SaveButton onSave={handleAutoSave} />
         </Tabs.Item>
 
-        <Tabs.Item id="certificate" title={t('admin.events.tabs.certificate')} testId="tab-certificate">
+        <Tabs.Item
+          id="certificate"
+          title={t('admin.events.tabs.certificate')}
+          testId="tab-certificate"
+        >
           <CertificateSection eventinfo={eventinfo} />
+          <SaveButton onSave={handleAutoSave} />
         </Tabs.Item>
 
-        <Tabs.Item id="communication" title={t('admin.events.tabs.communication')} testId="tab-communication">
+        <Tabs.Item
+          id="communication"
+          title={t('admin.events.tabs.communication')}
+          testId="tab-communication"
+        >
           <CommunicationSection eventinfo={eventinfo} />
         </Tabs.Item>
 
@@ -204,9 +246,9 @@ export default function EventPageTabs({
 
         <Tabs.Item id="advanced" title={t('admin.events.tabs.advanced')} testId="tab-advanced">
           <AdvancedSection eventId={eventinfo.id} />
+          <SaveButton onSave={handleAutoSave} />
         </Tabs.Item>
       </Tabs>
     </Form>
   );
 }
-

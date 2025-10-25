@@ -33,7 +33,12 @@ interface ColumnConfig {
   isLoadingRegistration: (registration: RegistrationDto) => boolean;
 }
 
-export function createParticipantColumns({ t, eventProducts, onProductsClick, isLoadingRegistration }: ColumnConfig) {
+export function createParticipantColumns({
+  t,
+  eventProducts,
+  onProductsClick,
+  isLoadingRegistration,
+}: ColumnConfig) {
   return [
     columnHelper.display({
       id: 'expander',
@@ -68,7 +73,11 @@ export function createParticipantColumns({ t, eventProducts, onProductsClick, is
                 {registration.user?.email}
               </span>
             </div>
-            <Link variant="button-text" href={`/admin/users/${registration.userId}`} className="p-1 h-auto">
+            <Link
+              variant="button-text"
+              href={`/admin/users/${registration.userId}`}
+              className="p-1 h-auto"
+            >
               <User className="w-4 h-4" />
             </Link>
           </div>
@@ -102,11 +111,7 @@ export function createParticipantColumns({ t, eventProducts, onProductsClick, is
                 onClick={() => onProductsClick(registration)}
                 className="p-1 h-auto"
               >
-                {isLoadingRegistration(registration) ? (
-                  <Loading />
-                ) : (
-                  <Pencil className="w-4 h-4" />
-                )}
+                {isLoadingRegistration(registration) ? <Loading /> : <Pencil className="w-4 h-4" />}
               </Button>
             )}
           </div>
@@ -132,10 +137,7 @@ export function renderExpandedRow({
         <span className="text-sm text-gray-600 dark:text-gray-400">
           {t('admin.participantColumns.status')}:
         </span>
-        <RegistrationStatusSelect
-          registration={registration}
-          onStatusUpdate={onStatusUpdate}
-        />
+        <RegistrationStatusSelect registration={registration} onStatusUpdate={onStatusUpdate} />
       </div>
 
       {/* Metadata and Actions */}
@@ -143,7 +145,9 @@ export function renderExpandedRow({
         {/* Left side: Metadata */}
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600 dark:text-gray-400">{t('common.labels.id')}:</span>
+            <span className="text-sm text-gray-600 dark:text-gray-400">
+              {t('common.labels.id')}:
+            </span>
             <Badge>{registration.registrationId}</Badge>
           </div>
           <div className="flex items-center gap-2">
@@ -156,7 +160,10 @@ export function renderExpandedRow({
 
         {/* Right side: Actions */}
         <div className="flex items-center gap-2">
-          <Link variant="button-outline" href={`/admin/registrations/${registration.registrationId}`}>
+          <Link
+            variant="button-outline"
+            href={`/admin/registrations/${registration.registrationId}`}
+          >
             <FileText className="w-4 h-4" />
           </Link>
         </div>

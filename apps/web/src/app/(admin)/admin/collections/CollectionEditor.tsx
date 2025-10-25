@@ -3,11 +3,11 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { Logger } from '@eventuras/logger';
-import { MarkdownInput } from '@eventuras/scribo';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Loading } from '@eventuras/ratio-ui/core/Loading';
 import { Trash2 } from '@eventuras/ratio-ui/icons';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
+import { MarkdownInput } from '@eventuras/scribo';
 import { CheckboxInput, CheckboxLabel, Form, Input } from '@eventuras/smartform';
 import { useToast } from '@eventuras/toast';
 

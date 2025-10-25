@@ -44,9 +44,9 @@ const logger = Logger.create({
 });
 
 export async function createEvent(
-  prevState: ServerActionResult<{ eventId: number; }> | null,
+  prevState: ServerActionResult<{ eventId: number }> | null,
   formData: FormData
-): Promise<ServerActionResult<{ eventId: number; }>> {
+): Promise<ServerActionResult<{ eventId: number }>> {
   logger.info('Starting event creation');
 
   try {
@@ -135,10 +135,10 @@ export async function createEvent(
         error:
           error instanceof Error
             ? {
-              name: error.name,
-              message: error.message,
-              stack: error.stack,
-            }
+                name: error.name,
+                message: error.message,
+                stack: error.stack,
+              }
             : error,
       },
       'Failed to create event'
@@ -160,7 +160,7 @@ const updateLogger = Logger.create({
 export async function updateEvent(
   eventId: number,
   eventData: EventFormDto
-): Promise<ServerActionResult<{ eventId: number; }>> {
+): Promise<ServerActionResult<{ eventId: number }>> {
   updateLogger.info({ eventId }, 'Starting event update');
 
   try {
@@ -207,8 +207,8 @@ export async function updateEvent(
       // Try to extract error details from the response
       const errorDetails: Record<string, unknown> = {
         hasResponse: !!response.response,
-        responseStatus: (response.response as unknown as { status?: number; })?.status,
-        responseStatusText: (response.response as unknown as { statusText?: string; })?.statusText,
+        responseStatus: (response.response as unknown as { status?: number })?.status,
+        responseStatusText: (response.response as unknown as { statusText?: string })?.statusText,
       };
 
       if (response.error) {
@@ -222,7 +222,7 @@ export async function updateEvent(
 
       // Try to get message from various possible error structures
       const err = response.error as unknown as {
-        body?: { message?: string; };
+        body?: { message?: string };
         message?: string;
         statusText?: string;
       };
@@ -245,10 +245,10 @@ export async function updateEvent(
         error:
           error instanceof Error
             ? {
-              name: error.name,
-              message: error.message,
-              stack: error.stack,
-            }
+                name: error.name,
+                message: error.message,
+                stack: error.stack,
+              }
             : error,
       },
       'Failed to update event'
@@ -331,10 +331,10 @@ export async function issueCertificates(eventId: number): Promise<ServerActionRe
         error:
           error instanceof Error
             ? {
-              name: error.name,
-              message: error.message,
-              stack: error.stack,
-            }
+                name: error.name,
+                message: error.message,
+                stack: error.stack,
+              }
             : error,
       },
       'Failed to issue certificates'

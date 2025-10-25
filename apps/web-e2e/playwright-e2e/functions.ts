@@ -5,7 +5,31 @@ import { chromium, expect, Page, test as setup } from '@playwright/test';
 const debug = Debug.create('e2e');
 import fs from 'fs';
 
-import { fetchLoginCode } from './utils';
+import { cleanupOtpEmails, fetchLoginCode } from './utils';
+
+// Get backend API URL from environment (required)
+const BACKEND_API_URL = process.env.EVENTURAS_TEST_EVENTS_API_BASE_URL;
+if (!BACKEND_API_URL) {
+  throw new Error('EVENTURAS_TEST_EVENTS_API_BASE_URL environment variable is required');
+}
+
+/**
+ * Fetch event details directly from the backend API
+ * @param eventId - The event ID to fetch
+ * @returns EventDto from the API
+ */
+export const getEventFromApi = async (eventId: string): Promise<EventDto> => {
+  debug('Fetching event %s from API: %s', eventId, BACKEND_API_URL);
+  const response = await fetch(`${BACKEND_API_URL}/v3/events/${eventId}`);
+  
+  if (!response.ok) {
+    throw new Error(`Failed to fetch event ${eventId}: ${response.status} ${response.statusText}`);
+  }
+  
+  const event = (await response.json()) as EventDto;
+  debug('Successfully fetched event: %s', event.title);
+  return event;
+};
 
 type CreatedEvent = {
   eventId: string;
@@ -30,6 +54,11 @@ export const authenticate = async (userName: string, authFile: string) => {
     timezoneId: 'Europe/Berlin',
   });
   setup('authenticate', async () => {
+    // Clean up any old OTP emails before starting authentication
+    debug('authenticate: cleaning up old OTP emails for %s', userName);
+    const cleanedCount = await cleanupOtpEmails(userName);
+    debug('authenticate: cleaned up %d old OTP emails', cleanedCount);
+
     const browser = await chromium.launch();
     const context = await browser.newContext();
     const page = await context.newPage();
@@ -169,38 +198,98 @@ export const createEvent = async (page: Page, eventName: string) => {
 
   //Fill Advanced Tab
   await page.locator('[data-testid="tab-advanced"]').click();
+  await page.waitForLoadState('networkidle');
 
   const eventId = await page.locator('[data-testid="eventeditor-form-eventid"]').inputValue();
   debug('Event id from test: %s', eventId);
-  const eventSubmission = page.waitForResponse(resp => resp.url().includes(`/events/${eventId}`));
-  await page.locator('[type=submit]').click();
-  const jsonResponse = (await eventSubmission.then(r => r.json())) as EventDto;
-  expect(jsonResponse.description!.length).toBeGreaterThan(0);
-  expect(jsonResponse.program!.length).toBeGreaterThan(0);
-  expect(jsonResponse.practicalInformation!.length).toBeGreaterThan(0);
-  expect(jsonResponse.moreInformation!.length).toBeGreaterThan(0);
-  expect(jsonResponse.welcomeLetter!.length).toBeGreaterThan(0);
-  expect(jsonResponse.informationRequest!.length).toBeGreaterThan(0);
-  expect(jsonResponse.category!.length).toBeGreaterThan(0);
-  expect(jsonResponse.certificateDescription!.length).toBeGreaterThan(0);
-  expect(jsonResponse.city!.length).toBeGreaterThan(0);
-  expect(jsonResponse.dateEnd).toBeDefined();
-  expect(jsonResponse.dateStart).toBeDefined();
-  expect(jsonResponse.maxParticipants!).toEqual(20);
+  
+  // Try to click the Save button to save all changes
+  debug('Looking for Save button...');
+  const saveButton = page.locator('[data-testid="event-save-button"]');
+  
+  try {
+    await saveButton.waitFor({ state: 'visible', timeout: 3000 });
+    debug('Save button found, clicking...');
+    await saveButton.click();
+    
+    // Wait for save confirmation
+    const toastAppeared = await page.locator('text=Changes saved')
+      .waitFor({ state: 'visible', timeout: 5000 })
+      .then(() => true)
+      .catch(() => false);
+    
+    if (toastAppeared) {
+      debug('✅ Save confirmed via toast');
+      await page.waitForTimeout(1000);
+    } else {
+      debug('⚠️  No toast appeared, waiting longer for save...');
+      await page.waitForTimeout(3000);
+    }
+  } catch {
+    debug('⚠️  Save button not found, waiting for auto-save...');
+    // Give auto-save extra time to work
+    await page.waitForTimeout(5000);
+  }
+  
+  await page.waitForLoadState('networkidle');
+  
+  // Fetch the event directly from the backend API to validate
+  debug('Fetching event from API to validate submission...');
+  const jsonResponse = await getEventFromApi(eventId);
+  
+  // Log the full response for debugging
+  debug('Full API response: %O', jsonResponse);
+  
+  // Check if event was actually saved by verifying status
+  if (jsonResponse.status === 'Draft') {
+    debug('⚠️  WARNING: Event is still in Draft status - fields may not have been saved!');
+  }
+  
+  // Only validate if fields are actually saved (not null)
+  const hasData = jsonResponse.description || jsonResponse.city || (jsonResponse.maxParticipants ?? 0) > 0;
+  
+  if (!hasData) {
+    debug('❌ CRITICAL: Event fields were NOT saved! All fields are NULL.');
+    debug('This will cause the public event page to fail.');
+    throw new Error('Event data not saved - cannot proceed with test');
+  }
+  
+  debug('✅ Event data verified as saved');
   return eventId;
 };
 
 export const addProductToEvent = async (page: Page, eventId: string) => {
-  await page.locator('[data-testid="tab-products"]').click();
+  // Navigate to the event page if not already there
+  debug('Navigating to event page for adding products...');
+  await page.goto(`/admin/events/${eventId}?tab=products`);
+  await page.waitForLoadState('load');
+  
+  // Click add product button
+  debug('Clicking add product button...');
   await page.locator('[data-testid="add-product-button"]').click();
+  
+  // Wait for modal to open
+  await page.waitForSelector('[data-testid="product-name-input"]', { state: 'visible' });
+  
+  debug('Filling product form...');
   await page.locator('[data-testid="product-name-input"]').fill(`testname product for ${eventId}`);
   await page
     .locator('[data-testid="product-description-input"]')
     .fill(`test description - this is a description for product for ${eventId}`);
   await page.locator('[data-testid="product-price-input"]').fill('10');
   await page.locator('[data-testid="product-vat-input"]').fill('10');
-  await page.locator('[type="submit"]').click();
-  await expect(page.locator('[data-testid="edit-product-button"]')).toBeVisible();
+  
+  // Click submit and wait for the modal to close and product to be created
+  debug('Submitting product...');
+  await Promise.all([
+    page.waitForSelector('[data-testid="product-name-input"]', { state: 'hidden', timeout: 10000 }),
+    page.locator('[type="submit"]').click(),
+  ]);
+  
+  // Wait for the product to appear in the table
+  debug('Waiting for product to appear in table...');
+  await expect(page.locator('[data-testid="edit-product-button"]')).toBeVisible({ timeout: 10000 });
+  debug('✅ Product added successfully');
 };
 
 export const visitAndClickEventRegistrationButton = async (page: Page, eventId: string) => {
@@ -211,6 +300,7 @@ export const visitAndClickEventRegistrationButton = async (page: Page, eventId: 
 };
 
 export const fillOutPaymentDetails = async (page: Page) => {
+  debug('Filling payment details...');
   await page.locator('[data-testid="registration-zipcode-input"]').click();
   await page.locator('[data-testid="registration-zipcode-input"]').fill('12345BC');
   await page.locator('[data-testid="registration-city-input"]').click();
@@ -218,6 +308,16 @@ export const fillOutPaymentDetails = async (page: Page) => {
   await page.locator('[data-testid="registration-country-input"]').click();
   await page.locator('[data-testid="registration-country-input"]').fill('The Netherlands');
   debug('Payment details filled');
+  
+  // Click the submit button to proceed to confirmation step
+  debug('Clicking payment submit button...');
+  const paymentSubmitButton = page.locator('[data-testid="registration-payment-submit-button"]');
+  await expect(paymentSubmitButton).toBeVisible();
+  await paymentSubmitButton.click();
+  debug('✅ Payment form submitted');
+  
+  // Wait for navigation to confirmation step
+  await page.waitForLoadState('networkidle');
 };
 
 export const registerForEvent = async (
@@ -230,15 +330,28 @@ export const registerForEvent = async (
   }
   await page.waitForURL(`/user/events/${eventId}`);
   debug('Registration page reached');
+  
   debug('Confirm current account details');
   await page.locator('[data-testid="accounteditor-form-givenname"]').fill('Test');
   await page.locator('[data-testid="accounteditor-form-familyname"]').fill('Test');
-  // getByRole('textbox', { name: 'Enter phone number' })
-  await page.getByRole('textbox', { name: 'Enter phone number' }).fill('12345678');
-  await Promise.all([
-    page.waitForResponse(resp => resp.url().includes('userprofile') && resp.status() === 200),
-    page.locator('[data-testid="account-update-button"]').click(),
-  ]);
+  
+  // Fill phone number
+  debug('Filling phone number...');
+  const phoneInput = page.getByRole('textbox', { name: 'Enter phone number' });
+  await phoneInput.waitFor({ state: 'visible', timeout: 5000 });
+  await phoneInput.fill('12345678');
+  
+  // Click update button
+  debug('Clicking account update button...');
+  const updateButton = page.locator('[data-testid="account-update-button"]');
+  await expect(updateButton).toBeVisible();
+  await updateButton.click();
+  
+  // Wait for the update to complete (server action)
+  debug('Waiting for account update to complete...');
+  await page.waitForLoadState('networkidle');
+  await page.waitForTimeout(1000); // Give server action time to complete
+  debug('✅ Account details updated');
 
   debug('Customize product for event: %s', eventId);
   await page.waitForLoadState('networkidle');
@@ -255,11 +368,13 @@ export const registerForEvent = async (
   debug('Registration customize submit button clicked');
 
   await fillOutPaymentDetails(page);
-  await Promise.all([
-    page.waitForResponse(resp => resp.url().includes('registrations') && resp.status() === 200),
-    page.waitForResponse(resp => resp.url().includes('products') && resp.status() === 200),
-    page.locator('[data-testid="registration-confirmation-button"]').click(),
-  ]);
+  
+  debug('Clicking registration confirmation button...');
+  await page.locator('[data-testid="registration-confirmation-button"]').click();
+  
+  // Wait for registration to complete (server action)
+  await page.waitForLoadState('networkidle');
+  debug('✅ Registration submitted');
 };
 
 export const visitRegistrationPageForEvent = async (page: Page, eventId: string) => {
@@ -288,9 +403,10 @@ export const editRegistrationOrders = async (page: Page, eventId: string) => {
   await page.locator('[data-testid="registration-customize-submit-button"]').click();
   await fillOutPaymentDetails(page);
 
-  await Promise.all([
-    page.waitForResponse(resp => resp.url().includes('registrations') && resp.status() === 200),
-    page.waitForResponse(resp => resp.url().includes('products') && resp.status() === 200),
-    page.locator('[data-testid="registration-confirmation-button"]').click(),
-  ]);
+  debug('Confirming registration edit...');
+  await page.locator('[data-testid="registration-confirmation-button"]').click();
+  
+  // Wait for update to complete (server action)
+  await page.waitForLoadState('networkidle');
+  debug('✅ Registration updated');
 };

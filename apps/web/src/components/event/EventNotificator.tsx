@@ -3,9 +3,9 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
 
 import { Logger } from '@eventuras/logger';
-import { MarkdownInput } from '@eventuras/scribo';
 import { Button, ButtonGroup } from '@eventuras/ratio-ui/core/Button';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { MarkdownInput } from '@eventuras/scribo';
 import { CheckboxInput, CheckboxLabel, Form, Input } from '@eventuras/smartform';
 import { useToast } from '@eventuras/toast';
 

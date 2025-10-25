@@ -1,13 +1,43 @@
 /* eslint no-process-env: 0 */
 
 import { defineConfig, devices } from '@playwright/test';
-import dotenv from 'dotenv';
-dotenv.config();
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// require('dotenv').config();
+import { readFileSync, existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
+
+// Get __dirname equivalent in ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Load .env file manually without dotenv dependency
+const envPath = join(__dirname, '.env');
+
+if (existsSync(envPath)) {
+  const envFile = readFileSync(envPath, 'utf-8');
+  let loadedCount = 0;
+  const loadedVars: string[] = [];
+  envFile.split('\n').forEach(line => {
+    const trimmed = line.trim();
+    // Skip empty lines and comments
+    if (!trimmed || trimmed.startsWith('#')) return;
+    
+    const equalsIndex = trimmed.indexOf('=');
+    if (equalsIndex === -1) return; // No equals sign
+    
+    const key = trimmed.substring(0, equalsIndex).trim();
+    const value = trimmed.substring(equalsIndex + 1).trim();
+    
+    if (key) {
+      process.env[key] = value;
+      loadedVars.push(key);
+      loadedCount++;
+    }
+  });
+  console.log(`✓ Loaded ${loadedCount} environment variables from .env`);
+  console.log('Variables:', loadedVars.join(', '));
+} else {
+  console.log('⚠ .env file not found - using existing environment variables');
+}
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -43,6 +73,14 @@ export default defineConfig({
 
     // Emulates the user timezone.
     timezoneId: 'Europe/Paris',
+  },
+
+  /* Configure web server to start automatically */
+  webServer: {
+    command: 'cd ../web && pnpm dev',
+    url: 'http://localhost:3000',
+    reuseExistingServer: !process.env.CI,
+    timeout: 120 * 1000, // 2 minutes to start
   },
 
   /* Configure projects for major browsers */
