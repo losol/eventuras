@@ -1,0 +1,5 @@
+{
+  "extends": "@eventuras/typescript-config/node.json",
+  "include": ["src"],
+  "exclude": ["dist", "node_modules"]
+}
