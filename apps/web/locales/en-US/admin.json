@@ -105,13 +105,17 @@
   },
   "participantColumns": {
     "actions": "Actions",
+    "editProducts": "Edit Products",
     "email": "E mail",
     "live": "Live",
     "name": "Name",
     "products": "Products",
     "status": "Status",
     "telephone": "Telephone",
-    "type": "Type"
+    "type": "Type",
+    "user": "User",
+    "viewRegistration": "View Registration",
+    "viewUser": "View User"
   },
   "products": {
     "buttons": {

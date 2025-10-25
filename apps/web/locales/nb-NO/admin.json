@@ -105,13 +105,17 @@
   },
   "participantColumns": {
     "actions": "Actions",
+    "editProducts": "Endre produkter",
     "email": "E-post",
     "live": "Innsjekk",
     "name": "Navn",
     "products": "Produkter",
     "status": "Status",
     "telephone": "Mobil",
-    "type": "Type"
+    "type": "Type",
+    "user": "Bruker",
+    "viewRegistration": "Vis påmelding",
+    "viewUser": "Vis bruker"
   },
   "products": {
     "buttons": {
