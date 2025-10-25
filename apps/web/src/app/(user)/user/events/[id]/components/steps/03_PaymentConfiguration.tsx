@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
-import { Input } from '@eventuras/ratio-ui/forms';
+import { Fieldset, Form, Input } from '@eventuras/ratio-ui/forms';
 
 import { UserDto } from '@/lib/eventuras-sdk';
 import { PaymentFormValues } from '@/types';
@@ -65,19 +65,14 @@ const Step03PaymentConfiguration = ({
     logUserAction('Back from payment configuration');
     onBack?.();
   };
-  const formClassName = 'space-y-6';
-  const fieldsetClassName = 'space-y-4';
-  const fieldsetLegendClassName = 'text-lg font-semibold border-b-2 pb-2 mb-4';
+
   return (
-    <div className="max-w-2xl mx-auto">
+    <>
       <Heading as="h2" className="mb-6">
         {t('user.registration.steps.payment.title')}
       </Heading>
-      <form onSubmit={handleSubmit(onSubmitForm)} className={formClassName}>
-        <fieldset className={fieldsetClassName}>
-          <legend className={fieldsetLegendClassName}>
-            {t('user.registration.customertype.legend')}
-          </legend>
+      <Form onSubmit={handleSubmit(onSubmitForm)} className="space-y-6">
+        <Fieldset label={t('user.registration.customertype.legend')}>
           <ul className="flex flex-col gap-3">
             <li className="flex items-center gap-2">
               <input
@@ -107,11 +102,8 @@ const Step03PaymentConfiguration = ({
               </label>
             </li>
           </ul>
-        </fieldset>
-        <fieldset className={fieldsetClassName}>
-          <legend className={fieldsetLegendClassName} hidden>
-            {t('user.registration.user.legend')}
-          </legend>
+        </Fieldset>
+        <Fieldset className="hidden">
           <Input
             {...register('username', { value: userProfile.name! })}
             label={t('user.registration.user.name')}
@@ -136,11 +128,8 @@ const Step03PaymentConfiguration = ({
             errors={errors}
             hidden
           />
-        </fieldset>
-        <fieldset className={fieldsetClassName}>
-          <legend className={fieldsetLegendClassName}>
-            {t('user.registration.address.legend')}
-          </legend>
+        </Fieldset>
+        <Fieldset label={t('user.registration.address.legend')}>
           <Input
             {...register('zip', {
               required: 'Zip code is Required',
@@ -169,12 +158,9 @@ const Step03PaymentConfiguration = ({
             placeholder="Country"
             errors={errors}
           />
-        </fieldset>
+        </Fieldset>
         {showBusinessFieldset && (
-          <fieldset className={fieldsetClassName}>
-            <legend className={fieldsetLegendClassName}>
-              {t('user.registration.businessinfo.legend')}
-            </legend>
+          <Fieldset label={t('user.registration.businessinfo.legend')}>
             <Input
               {...register('vatNumber', {
                 required: 'Vat Number is required for business customers',
@@ -190,7 +176,7 @@ const Step03PaymentConfiguration = ({
               placeholder="Invoice Reference"
               errors={errors}
             />
-          </fieldset>
+          </Fieldset>
         )}
         <div className="flex gap-4 pt-4">
           {onBack && (
@@ -202,8 +188,8 @@ const Step03PaymentConfiguration = ({
             {t('common.buttons.continue')}
           </Button>
         </div>
-      </form>
-    </div>
+      </Form>
+    </>
   );
 };
 export default Step03PaymentConfiguration;

@@ -42,7 +42,11 @@ export async function getAuthStatus(): Promise<AuthStatus> {
 
     return {
       authenticated: true,
-      user: session.user,
+      user: {
+        name: session.user.name,
+        email: session.user.email,
+        roles: session.user.roles,
+      },
     };
   } catch (error) {
     logger.error({ error }, 'Failed to get auth status');

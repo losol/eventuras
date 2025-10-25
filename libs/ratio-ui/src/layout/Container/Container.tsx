@@ -1,24 +1,25 @@
 import React from 'react';
+import { Box, BoxProps } from '../Box/Box';
 
-interface ContainerProps {
-  children: React.ReactNode;
-  as?: 'div' | 'section';
-  className?: string;
-}
-
-export const CONTAINER_CLASSES = 'p-3 container mx-auto';
+export type ContainerProps = Omit<BoxProps, 'as'>;
 
 const Container: React.FC<ContainerProps> = ({
-  children,
-  as: Component = 'div',
   className = '',
+  margin = 'mx-auto',
+  padding = 'px-3 py-3 pb-18',
   ...rest
 }) => {
   return (
-    <Component className={`${CONTAINER_CLASSES} ${className}`} {...rest}>
-      {children}
-    </Component>
+    <Box
+      as="div"
+      className={`container ${className}`}
+      margin={margin}
+      padding={padding}
+      {...rest}
+    />
   );
 };
+
+Container.displayName = 'Container';
 
 export default Container;

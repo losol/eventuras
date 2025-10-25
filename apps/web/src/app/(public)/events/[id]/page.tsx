@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 
-import { getV3EventsById } from '@/lib/eventuras-public-sdk';
+import { getV3EventsById, publicClient } from '@/lib/eventuras-public-sdk';
 
 type EventInfoProps = {
   params: Promise<{
@@ -11,6 +11,7 @@ type EventInfoProps = {
 export default async function EventPage({ params }: Readonly<EventInfoProps>) {
   const { id } = await params;
   const response = await getV3EventsById({
+    client: publicClient,
     path: { id },
   });
 

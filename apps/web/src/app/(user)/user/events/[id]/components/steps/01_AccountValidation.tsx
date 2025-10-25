@@ -31,14 +31,12 @@ const Step01AccountValidation = ({ user, onUserUpdated }: Step01AccountValidatio
   };
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <UserEditor
-        user={user}
-        onUserUpdated={handleUserUpdated}
-        submitButtonLabel={t('common.labels.next')}
-        testId="registration-account-step"
-      />
-    </div>
+    <UserEditor
+      user={user}
+      onUserUpdated={handleUserUpdated}
+      submitButtonLabel={t('common.labels.next')}
+      testId="registration-account-step"
+    />
   );
 };
 

@@ -24,7 +24,7 @@ const createFormHandler =
     const submissionMap = mapSelectedProductsToQuantity(products, data, isAdmin);
     onSubmit(submissionMap);
   };
-const RegistrationCustomize = ({
+const RegistrationProductsCustomize = ({
   products,
   onSubmit,
   onBack,
@@ -34,23 +34,18 @@ const RegistrationCustomize = ({
   const t = useTranslations();
   const { register, handleSubmit } = useForm();
   return (
-    <>
-      <form
-        onSubmit={handleSubmit(createFormHandler(products, onSubmit, isAdmin))}
-        className="py-10"
-      >
-        <ProductSelection
-          isAdmin={isAdmin}
-          products={products}
-          register={register}
-          selectedProducts={selectedProducts ?? []}
-        />
-        {onBack && <Button onClick={onBack}>{t('common.buttons.back')}</Button>}
-        <Button type="submit" testId="registration-customize-submit-button">
-          {t('common.buttons.continue')}
-        </Button>
-      </form>
-    </>
+    <form onSubmit={handleSubmit(createFormHandler(products, onSubmit, isAdmin))} className="py-10">
+      <ProductSelection
+        isAdmin={isAdmin}
+        products={products}
+        register={register}
+        selectedProducts={selectedProducts ?? []}
+      />
+      {onBack && <Button onClick={onBack}>{t('common.buttons.back')}</Button>}
+      <Button type="submit" testId="registration-customize-submit-button">
+        {t('common.buttons.continue')}
+      </Button>
+    </form>
   );
 };
-export default RegistrationCustomize;
+export default RegistrationProductsCustomize;
