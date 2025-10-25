@@ -7,6 +7,8 @@
   "datatable": "@eventuras/datatable",
   "docsite": "@eventuras/docsite",
   "event-sdk": "@eventuras/event-sdk",
+  "google": "@eventuras/google-api",
+  "google-api": "@eventuras/google-api",
   "fides-auth": "@eventuras/fides-auth",
   "historia": "@eventuras/historia",
   "historia-cms": "@eventuras/historia",
