@@ -88,7 +88,7 @@
   },
   "errorpage": {
     "contactUs": "Vi beklager feilen, og håper du kan sende oss en e-post, så skal vi ordne opp!",
-    "description": "Vet ikke mer...",
+    "description": "Vet ikke mer... Men prøv veldig gjerne en gang til. Eller kontakt oss!",
     "title": "Feilr."
   },
   "errors": {
@@ -152,6 +152,7 @@
     "givenName": "Fornavn",
     "guid": "Guid",
     "id": "Id",
+    "loading": "Laster...",
     "login": "Logg inn",
     "logout": "Logg av",
     "menu": "Meny",
@@ -161,8 +162,8 @@
     "name": "Navn",
     "next": "Neste",
     "noevents": "Ingen arrangementer",
-    "participationStatus": "Deltakerstatus",
     "participants": "Deltagere",
+    "participationStatus": "Deltakerstatus",
     "phoneNumber": "Mobiltelefon",
     "practicalInfo": "Praktisk info",
     "products": "Produkter",

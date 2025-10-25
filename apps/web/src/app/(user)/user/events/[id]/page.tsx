@@ -5,6 +5,7 @@ import { getTranslations } from 'next-intl/server';
 import { getCurrentSession, refreshCurrentSession } from '@eventuras/fides-auth-next';
 import { Logger } from '@eventuras/logger';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Container } from '@eventuras/ratio-ui/layout/Container';
 
 import {
   getV3EventsByEventIdProducts,
@@ -130,23 +131,15 @@ export default async function UserEventPage({ params }: Readonly<UserEventPagePr
   );
 
   return (
-    <section className="mt-16">
-      {eventInfoResponse.data.title && (
-        <>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            {t('user.events.registration.titleLabel')}
-          </p>
-          <Heading as="h1" padding="pt-0 my-5">
-            {eventInfoResponse.data.title}
-          </Heading>
-        </>
-      )}
+    <Container>
+      {eventInfoResponse.data.title && <Heading as="h1">{eventInfoResponse.data.title}</Heading>}
+
       <EventFlowContainer
         user={userResponse.data}
         eventInfo={eventInfoResponse.data}
         availableProducts={availableProductsResponse.data ?? []}
         siteInfo={siteInfo!}
       />
-    </section>
+    </Container>
   );
 }

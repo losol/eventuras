@@ -48,7 +48,7 @@ const Step02ProductCustomization = ({
     onBack?.();
   };
   return (
-    <div className="max-w-4xl mx-auto">
+    <>
       <Heading as="h2" className="mb-6">
         {t('user.registration.steps.products.title')}
       </Heading>
@@ -73,7 +73,7 @@ const Step02ProductCustomization = ({
           </Button>
         </div>
       </form>
-    </div>
+    </>
   );
 };
 export default Step02ProductCustomization;

@@ -28,7 +28,6 @@ const UserEditor: FC<UserEditorProps> = props => {
   const t = useTranslations();
   const [isUpdating, setIsUpdating] = useState(false);
   const toast = useToast();
-  // Never log PII (email, name, etc.) - only log user ID if available
   if (user?.id) {
     logger.info({ userId: user.id }, 'UserEditor rendering');
   } else {
@@ -37,7 +36,6 @@ const UserEditor: FC<UserEditorProps> = props => {
   const handleCreateUser = async (form: UserDto) => {
     const result = await createUser(form as UserFormDto);
     if (!result.success) {
-      // Never log PII - don't include form data in logs
       logger.error({ error: result.error }, 'Failed to create new user');
       toast.error(result.error.message);
       return { success: false, error: result.error };
@@ -61,7 +59,6 @@ const UserEditor: FC<UserEditorProps> = props => {
       return { success: false, error: result.error };
     }
     logger.info({ userId: result.data.id }, 'Updated user successfully');
-    toast.success(t('user.labels.updateUserSuccess') + ': ' + result.data.name);
     return { success: true, data: result.data };
   };
   const editMode = !!user;

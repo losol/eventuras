@@ -13,7 +13,7 @@ import { useRouter } from 'next/navigation';
 import { Dialog } from '@eventuras/ratio-ui/layout/Dialog';
 import { useToast } from '@eventuras/toast';
 
-import RegistrationCustomize from '@/app/(user)/user/events/[id]/eventflow/RegistrationCustomize';
+import RegistrationProductsCustomize from '@/app/(admin)/admin/events/RegistrationProductsCustomize';
 import { addProductsToExistingRegistration } from '@/app/(user)/user/events/actions';
 export type EditRegistrationProductsDialogProps = {
   eventProducts: ProductDto[];
@@ -84,7 +84,7 @@ const EditRegistrationProductsDialog = (props: EditRegistrationProductsDialogPro
           </p>
         </div>
         <div>
-          <RegistrationCustomize
+          <RegistrationProductsCustomize
             products={props.eventProducts}
             selectedProducts={props.currentRegistration.products!}
             onSubmit={onSubmit}

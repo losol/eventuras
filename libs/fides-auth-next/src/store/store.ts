@@ -108,7 +108,7 @@ export function createAuthStore(options: AuthStoreConfig) {
          * Authentication check succeeded
          */
         authSuccess: (_context: AuthStoreContext, event: { user: SessionUser; }) => {
-          logger.info({ user: event.user.email }, 'User authenticated');
+          logger.info({ user: event.user.roles }, 'User authenticated');
           return {
             user: event.user,
             isAdmin: event.user.roles?.includes(config.adminRole) ?? false,
