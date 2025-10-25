@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl';
 import { Logger } from '@eventuras/logger';
 import { SessionWarning } from '@eventuras/ratio-ui/blocks/SessionWarning';
 
-import { useAuthStore } from '@/auth/authStore';
+import { useAuthActions, useAuthStore } from '@/auth/authStore';
 
 const logger = Logger.create({
   namespace: 'web:components',
@@ -25,6 +25,7 @@ export function SessionWarningOverlay() {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const auth = useAuthStore();
+  const { clearError } = useAuthActions();
 
   // Check if session has expired (error contains "Session expired" or "expired" in message)
   const isSessionExpired = auth.error?.toLowerCase().includes('expired') ?? false;
@@ -41,17 +42,18 @@ export function SessionWarningOverlay() {
     setIsLoggingIn(true);
 
     // Capture current URL to return after login
-    const returnTo = window.location.pathname + window.location.search;
+    const returnTo = globalThis.location.pathname + globalThis.location.search;
     const loginUrl = `/api/login/auth0?returnTo=${encodeURIComponent(returnTo)}`;
 
     logger.info({ returnTo }, 'Redirecting to login with returnTo');
-    window.location.href = loginUrl;
+    globalThis.location.href = loginUrl;
   }, []);
 
   const handleDismiss = useCallback(() => {
     logger.info('User dismissed session expiration warning');
-    // No action needed - the store continues monitoring
-  }, []);
+    // Clear the error to dismiss the overlay
+    clearError();
+  }, [clearError]);
 
   // Only show dialog when session is actually expired
   if (!isSessionExpired) return null;
