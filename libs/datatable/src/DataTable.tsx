@@ -4,11 +4,14 @@ import { Pagination } from '@eventuras/ratio-ui/core/Pagination';
 import {
   ColumnFilter,
   ColumnFiltersState,
+  ExpandedState,
   FilterFn,
   flexRender,
   getCoreRowModel,
+  getExpandedRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
+  Row,
   TableState,
   useReactTable,
 } from '@tanstack/react-table';
@@ -25,6 +28,8 @@ type DataTableProps = {
   enableGlobalSearch?: boolean;
   columnFilters?: ColumnFilter[];
   renderToolbar?: (searchInput: React.ReactNode) => React.ReactNode;
+  renderSubComponent?: (props: { row: Row<any> }) => React.ReactElement;
+  getRowCanExpand?: (row: Row<any>) => boolean;
 };
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -48,22 +53,29 @@ const DataTable = (props: DataTableProps) => {
   const { columns, data, clientsidePagination, pageSize = 25, state } = props;
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = React.useState('');
+  const [expanded, setExpanded] = React.useState<ExpandedState>({});
+
   const handleClientPageChange = (newPage: number) => {
     table.setPageIndex(newPage);
   };
+
   useEffect(() => {
     if (props.columnFilters) {
       setColumnFilters(props.columnFilters);
     }
   }, [props.columnFilters]);
+
   const table = useReactTable({
     columns,
     data: data,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    getExpandedRowModel: getExpandedRowModel(),
     onGlobalFilterChange: setGlobalFilter,
     onColumnFiltersChange: setColumnFilters,
+    onExpandedChange: setExpanded,
     getFilteredRowModel: getFilteredRowModel(),
+    getRowCanExpand: props.getRowCanExpand,
     filterFns: {
       fuzzy: fuzzyFilter,
     },
@@ -77,6 +89,7 @@ const DataTable = (props: DataTableProps) => {
       ...state,
       globalFilter,
       columnFilters,
+      expanded,
     },
   });
   useEffect(() => {
@@ -115,16 +128,24 @@ const DataTable = (props: DataTableProps) => {
         </thead>
         <tbody>
           {table.getRowModel().rows.map(row => (
-            <tr
-              key={row.id ?? row.index}
-              className="even:bg-gray-50 odd:bg-white dark:even:bg-slate-950 dark:odd:bg-slate-900 text-black dark:text-white"
-            >
-              {row.getVisibleCells().map(cell => (
-                <td key={cell.id} className="p-2">
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
+            <React.Fragment key={row.id ?? row.index}>
+              <tr
+                className="even:bg-gray-50 odd:bg-white dark:even:bg-slate-950 dark:odd:bg-slate-900 text-black dark:text-white"
+              >
+                {row.getVisibleCells().map(cell => (
+                  <td key={cell.id} className="p-2">
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
+              {row.getIsExpanded() && props.renderSubComponent && (
+                <tr className="bg-gray-100 dark:bg-slate-800">
+                  <td colSpan={row.getVisibleCells().length} className="p-4">
+                    {props.renderSubComponent({ row })}
+                  </td>
+                </tr>
+              )}
+            </React.Fragment>
           ))}
         </tbody>
       </table>
