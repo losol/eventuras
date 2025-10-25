@@ -24,6 +24,7 @@ type DataTableProps = {
   state?: Partial<TableState>;
   enableGlobalSearch?: boolean;
   columnFilters?: ColumnFilter[];
+  renderToolbar?: (searchInput: React.ReactNode) => React.ReactNode;
 };
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -81,14 +82,22 @@ const DataTable = (props: DataTableProps) => {
   useEffect(() => {
     if (clientsidePagination) table.setPageSize(pageSize);
   }, []);
+
+  const searchInput = props.enableGlobalSearch ? (
+    <DebouncedInput
+      value={globalFilter ?? ''}
+      onChange={value => setGlobalFilter(String(value))}
+      placeholder="Search all columns..."
+      className="px-3 py-1.5 rounded border border-gray-300 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm w-80"
+    />
+  ) : null;
+
   return (
     <>
-      {props.enableGlobalSearch && (
-        <DebouncedInput
-          value={globalFilter ?? ''}
-          onChange={value => setGlobalFilter(String(value))}
-          placeholder="Search all columns..."
-        />
+      {props.renderToolbar ? (
+        props.renderToolbar(searchInput)
+      ) : (
+        searchInput
       )}
       <table className="table-auto w-full">
         <thead>
