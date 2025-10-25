@@ -29,29 +29,15 @@ export class ConfigLoader {
     this.config = result.data;
 
     // Skip validation during Next.js build/compilation phases
-    // During these phases, Next.js hasn't loaded .env files into process.env yet
+    // During these phases, we still want to read the env vars, but not fail the build if they're missing
     // NEXT_PHASE is set by Next.js during build
-    // We also check if we're in a bundler context (webpack/turbopack) where env vars aren't available
     const isNextBuild =
       this.processEnv.NEXT_PHASE === 'phase-production-build' ||
       this.processEnv.NEXT_PHASE === 'phase-development-server';
 
-    // Check if env vars are actually missing (likely bundler context)
-    const envVarsMissing = Object.keys(this.config.env).every(
-      varName => this.processEnv[varName] === undefined && !this.config.env[varName]?.default
-    );
-
-    const skipValidation = isNextBuild || envVarsMissing;
-
-    if (!skipValidation) {
-      // Validate and parse all environment variables
-      this.validateEnvironment();
-    } else {
-      // During build/bundling, populate with empty/default values
-      for (const [varName, definition] of Object.entries(this.config.env)) {
-        this.envValues[varName] = definition.default ?? '';
-      }
-    }
+    // Always try to validate/read environment variables
+    // During build, we'll be lenient about missing required vars
+    this.validateEnvironment(!isNextBuild);
 
     // Create readonly proxy for env access
     this.env = new Proxy(this.envValues, {
@@ -72,8 +58,9 @@ export class ConfigLoader {
 
   /**
    * Validate all environment variables according to config
+   * @param strictRequired - Whether to throw errors for missing required vars (false during build)
    */
-  private validateEnvironment(): void {
+  private validateEnvironment(strictRequired = true): void {
     const errors: EnvValidationError[] = [];
 
     for (const [varName, definition] of Object.entries(this.config.env)) {
@@ -87,6 +74,12 @@ export class ConfigLoader {
         }
       } catch (error) {
         if (error instanceof EnvValidationError) {
+          // During build (strictRequired=false), skip required validation errors but still collect type errors
+          if (!strictRequired && error.message.includes('Required environment variable')) {
+            // Use default value or empty string if required var is missing during build
+            this.envValues[varName] = definition.default ?? '';
+            continue;
+          }
           errors.push(error);
         } else {
           throw error;

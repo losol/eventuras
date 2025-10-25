@@ -26,7 +26,7 @@ import appConfig from '../app.config.json';
  * perform static analysis and replace the values at build time.
  *
  * @example
- * const apiUrl = publicEnv.NEXT_PUBLIC_API_BASE_URL;
+ * const apiUrl = publicEnv.NEXT_PUBLIC_BACKEND_URL;
  * const authDomain = publicEnv.NEXT_PUBLIC_AUTH0_DOMAIN;
  * const orgId = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID; // typed as number
  */
@@ -34,7 +34,6 @@ const _publicEnv = createPublicEnv(appConfig as AppConfig);
 
 // Define explicit getters for each NEXT_PUBLIC_* variable
 // This allows Next.js to statically analyze and replace at build time
-defineGetter(_publicEnv, 'NEXT_PUBLIC_API_BASE_URL', () => process.env.NEXT_PUBLIC_API_BASE_URL);
 defineGetter(_publicEnv, 'NEXT_PUBLIC_API_VERSION', () => process.env.NEXT_PUBLIC_API_VERSION);
 defineGetter(
   _publicEnv,

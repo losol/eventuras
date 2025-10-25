@@ -6,7 +6,6 @@
  */
 
 export interface WebPublicEnv {
-  NEXT_PUBLIC_API_BASE_URL: string;
   NEXT_PUBLIC_API_VERSION: string;
   NEXT_PUBLIC_APPLICATION_URL: string;
   NEXT_PUBLIC_LOGOUT_URL_REDIRECT: string;

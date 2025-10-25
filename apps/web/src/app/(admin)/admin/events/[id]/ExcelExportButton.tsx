@@ -15,7 +15,7 @@ export const ExcelExportButton = (props: { EventinfoId: number }) => {
     setIsLoading(true);
     try {
       const response = await fetch(
-        `${publicEnv.NEXT_PUBLIC_API_BASE_URL as string}/v3/registrations?EventId=${props.EventinfoId}`,
+        `${publicEnv.NEXT_PUBLIC_BACKEND_URL}/v3/registrations?EventId=${props.EventinfoId}`,
         {
           headers: {
             Accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
