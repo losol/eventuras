@@ -11,7 +11,13 @@ export default defineNextLibConfig({
     // State management
     'xstate',
     '@xstate/react',
-    /^@xstate\//,
+    '@xstate/store',
+    /^ @xstate\//,
+
+    // React
+    'react',
+    'react-dom',
+    /^react\//,
 
     // React internals
     'use-sync-external-store',

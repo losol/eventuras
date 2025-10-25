@@ -62,6 +62,13 @@ export const checkIfLoggedIn = async (page: Page) => {
   await expect(page.locator('[data-testid="logged-in-menu-button"]')).toBeVisible();
 };
 
+export const logout = async (page: Page) => {
+  debug('Logging out user');
+  await page.goto('/api/logout');
+  await page.waitForLoadState('networkidle');
+  debug('User logged out, redirected to homepage');
+};
+
 export const checkIfUnAuthorized = async (page: Page, url: string) => {
   await page.goto(url);
   const location = `/api/auth/signin?callbackUrl=${encodeURIComponent(url)}`;
@@ -85,9 +92,10 @@ export const createEvent = async (page: Page, eventName: string) => {
   await page.locator('[data-testid="event-title-input"]').click();
   await page.locator('[data-testid="event-title-input"]').fill(eventName);
   await page.locator('[data-testid="create-event-submit-button"]').click();
-  await page.waitForURL('**/edit');
+  await page.waitForURL('**/admin/events/**');
 
   // Fill in overview details
+  await page.locator('[data-testid="tab-overview"]').click();
   await page.locator('[data-testid="event-status-select-button"]').click();
   await page.getByRole('option', { name: 'RegistrationsOpen' }).click();
   await page.locator('[name="headline"]').fill(`${eventName} headline`);
@@ -97,7 +105,7 @@ export const createEvent = async (page: Page, eventName: string) => {
   await page.locator('[name="featuredImageCaption"]').fill(`This is a picsum image`);
 
   // Fill in dates and location
-  await page.getByRole('tab', { name: 'Dates And location' }).click();
+  await page.locator('[data-testid="tab-dates"]').click();
   const oneWeek = 1000 * 60 * 60 * 24 * 7;
   const lastRegistrationDate = new Date(Date.now() + oneWeek * 2);
   const lastCancellationDate = new Date(Date.now() + oneWeek * 3);
@@ -122,7 +130,7 @@ export const createEvent = async (page: Page, eventName: string) => {
   await page.locator('[name="location"]').fill(`${eventName} location`);
 
   //Fill in Descriptions
-  await page.getByRole('tab', { name: 'Descriptions' }).click();
+  await page.locator('[data-testid="tab-descriptions"]').click();
   await page
     .locator('[class="editor-shell"]')
     .filter({ hasText: 'Description' })
@@ -155,12 +163,12 @@ export const createEvent = async (page: Page, eventName: string) => {
     .fill(`${eventName} information request`);
 
   //Fill Certificate Details
-  await page.getByRole('tab', { name: 'Certificate' }).click();
+  await page.locator('[data-testid="tab-certificate"]').click();
   await page.locator('[name="certificateTitle"]').fill(`${eventName} certificateTitle`);
   await page.locator('[name="certificateDescription"]').fill(`${eventName} certificateDescription`);
 
   //Fill Advanced Tab
-  await page.getByRole('tab', { name: 'Advanced' }).click();
+  await page.locator('[data-testid="tab-advanced"]').click();
 
   const eventId = await page.locator('[data-testid="eventeditor-form-eventid"]').inputValue();
   debug('Event id from test: %s', eventId);
@@ -183,7 +191,7 @@ export const createEvent = async (page: Page, eventName: string) => {
 };
 
 export const addProductToEvent = async (page: Page, eventId: string) => {
-  await page.goto(`admin/events/${eventId}/products`);
+  await page.locator('[data-testid="tab-products"]').click();
   await page.locator('[data-testid="add-product-button"]').click();
   await page.locator('[data-testid="product-name-input"]').fill(`testname product for ${eventId}`);
   await page
@@ -210,7 +218,6 @@ export const fillOutPaymentDetails = async (page: Page) => {
   await page.locator('[data-testid="registration-country-input"]').click();
   await page.locator('[data-testid="registration-country-input"]').fill('The Netherlands');
   debug('Payment details filled');
-  return page.locator('[data-testid="registration-payment-submit-button"]').click();
 };
 
 export const registerForEvent = async (
