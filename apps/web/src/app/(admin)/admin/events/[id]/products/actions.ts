@@ -82,8 +82,10 @@ export async function createProduct(
 
     const product = response.data as ProductDto;
 
-    // Revalidate the products page to show the new product
-    revalidatePath(`/admin/events/${eventId}/products`);
+    // Revalidate caches to show the new product
+    revalidatePath(`/admin/events/${eventId}/products`); // Admin products page
+    revalidatePath(`/events/${eventId}`); // Public event detail page (shows products)
+    revalidatePath('/'); // Frontpage (might show product info in event cards)
 
     logger.info(
       { eventId, productId: product.productId, productName: product.name },
@@ -127,8 +129,10 @@ export async function updateProduct(
 
     const product = response.data as ProductDto;
 
-    // Revalidate the products page to show the updated product
-    revalidatePath(`/admin/events/${eventId}/products`);
+    // Revalidate caches to show the updated product
+    revalidatePath(`/admin/events/${eventId}/products`); // Admin products page
+    revalidatePath(`/events/${eventId}`); // Public event detail page (shows products)
+    revalidatePath('/'); // Frontpage (might show product info in event cards)
 
     logger.info({ eventId, productId }, 'Product updated successfully');
     return actionSuccess(product, 'Product was updated!');

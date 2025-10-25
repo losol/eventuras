@@ -25,13 +25,13 @@ const styles = {
   tabList:
     'flex space-x-1 list-none overflow-x-auto border-b border-gray-200 dark:border-gray-700',
   tab: {
-    base: 'font-medium py-3 px-4 cursor-pointer focus:outline-none transition-colors rounded-t-lg whitespace-nowrap',
+    base: 'font-medium py-2 px-5 cursor-pointer focus:outline-none transition-colors rounded-t-lg whitespace-nowrap',
     selected:
-      'text-primary-600 dark:text-primary-400 bg-gray-50 dark:bg-gray-800 border-b-2 border-primary-600 dark:border-primary-400',
+      'text-primary-600 dark:text-primary-400 bg-gray-50 dark:bg-gray-800 border-b-2 border-primary-600 dark:border-primary-400 font-semibold',
     notSelected:
-      'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800',
+      'text-gray-600 dark:text-gray-400 hover:text-gray-900 bg-gray-100 bg-opacity-80 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800',
   },
-  panel: 'py-6',
+  panel: 'p-3 bg-white dark:bg-black',
 };
 
 export const Tabs: TabsComponent = ({

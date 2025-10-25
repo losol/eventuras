@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Container } from '@eventuras/ratio-ui/layout/Container';
 
 import UserEventRegistrations from '@/components/user/UserEventRegistrations';
 import UserProfileCard from '@/components/user/UserProfileCard';
@@ -18,13 +19,13 @@ const UserPage = async () => {
     },
   });
   return (
-    <>
+    <Container>
       <Heading>{t('user.page.heading')}</Heading>
       <UserProfileCard profile={profileResponse.data} />
       {registrationsResponse.data && registrationsResponse.data.count! > 0 && (
         <UserEventRegistrations registrations={registrationsResponse.data.data!} />
       )}
-    </>
+    </Container>
   );
 };
 export default UserPage;

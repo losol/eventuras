@@ -19,23 +19,41 @@ const logger = Logger.create({
  *
  * When the refresh token is invalid or expired, the user must go through
  * the OAuth login flow again.
+ *
+ * NOTE: Only shows for users who were previously authenticated.
+ * Does not show on public pages for users who were never logged in.
  */
 export function SessionWarningOverlay() {
   const t = useTranslations();
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [wasAuthenticated, setWasAuthenticated] = useState(false);
 
   const auth = useAuthStore();
   const { clearError } = useAuthActions();
 
+  // Track if user was previously authenticated (store in state after initial check)
+  // This runs only when auth state actually changes
+  const isCurrentlyAuthenticated = auth.isAuthenticated && !!auth.user;
+
+  // Update wasAuthenticated when user becomes authenticated
+  // Using useMemo or direct comparison to avoid unnecessary re-renders
+  if (isCurrentlyAuthenticated && !wasAuthenticated) {
+    // Use setTimeout to avoid state update during render
+    Promise.resolve().then(() => setWasAuthenticated(true));
+  }
+
   // Check if session has expired (error contains "Session expired" or "expired" in message)
   const isSessionExpired = auth.error?.toLowerCase().includes('expired') ?? false;
 
+  // Only show warning if user was previously authenticated and session is now expired
+  const shouldShowWarning = isSessionExpired && wasAuthenticated;
+
   // Handle session expiration - redirect to login
   useEffect(() => {
-    if (isSessionExpired) {
+    if (shouldShowWarning) {
       logger.info('Session expired, user needs to log in again');
     }
-  }, [isSessionExpired]);
+  }, [shouldShowWarning]);
 
   const handleLoginNow = useCallback(() => {
     logger.info('User clicked login, redirecting to login endpoint');
@@ -55,12 +73,12 @@ export function SessionWarningOverlay() {
     clearError();
   }, [clearError]);
 
-  // Only show dialog when session is actually expired
-  if (!isSessionExpired) return null;
+  // Only show dialog when session is actually expired AND user was previously authenticated
+  if (!shouldShowWarning) return null;
 
   return (
     <SessionWarning
-      isOpen={isSessionExpired}
+      isOpen={shouldShowWarning}
       onLoginNow={handleLoginNow}
       onDismiss={handleDismiss}
       isLoading={isLoggingIn}
