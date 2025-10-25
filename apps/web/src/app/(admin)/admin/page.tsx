@@ -11,9 +11,9 @@ import AdminEventList from './events/AdminEventList';
 interface AdminPageProps {
   searchParams?: Promise<{ page?: string }>;
 }
-const AdminPage = async ({ searchParams }: AdminPageProps = {}) => {
+const AdminPage = async (props: AdminPageProps) => {
   const t = await getTranslations();
-  const params = searchParams ? await searchParams : {};
+  const params = props.searchParams ? await props.searchParams : {};
   const page = params.page ? parseInt(params.page, 10) : 1;
   return (
     <Container>
