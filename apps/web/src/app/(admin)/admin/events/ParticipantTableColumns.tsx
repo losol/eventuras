@@ -2,12 +2,12 @@ import { createColumnHelper } from '@eventuras/datatable';
 import { Badge } from '@eventuras/ratio-ui/core/Badge';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Loading } from '@eventuras/ratio-ui/core/Loading';
-import { ChevronDown, ChevronRight, FileText, ShoppingCart, User } from '@eventuras/ratio-ui/icons';
+import { ChevronDown, ChevronRight, FileText, Pencil, User } from '@eventuras/ratio-ui/icons';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
 import { ProductDto, RegistrationDto } from '@/lib/eventuras-sdk';
 
-import LiveActionsMenu from './LiveActionsMenu';
+import RegistrationStatusSelect from './RegistrationStatusSelect';
 
 const columnHelper = createColumnHelper<RegistrationDto>();
 
@@ -33,7 +33,7 @@ interface ColumnConfig {
   isLoadingRegistration: (registration: RegistrationDto) => boolean;
 }
 
-export function createParticipantColumns({ t, onStatusUpdate }: ColumnConfig) {
+export function createParticipantColumns({ t, eventProducts, onProductsClick, isLoadingRegistration }: ColumnConfig) {
   return [
     columnHelper.display({
       id: 'expander',
@@ -58,14 +58,19 @@ export function createParticipantColumns({ t, onStatusUpdate }: ColumnConfig) {
       cell: info => {
         const registration = info.row.original;
         return (
-          <div className="flex flex-col">
-            <span className="font-medium">{registration.user?.name}</span>
-            <span className="text-sm text-gray-600 dark:text-gray-400">
-              {registration.user?.phoneNumber}
-            </span>
-            <span className="text-sm text-gray-600 dark:text-gray-400">
-              {registration.user?.email}
-            </span>
+          <div className="flex items-start gap-2">
+            <div className="flex flex-col">
+              <span className="font-medium">{registration.user?.name}</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400">
+                {registration.user?.phoneNumber}
+              </span>
+              <span className="text-sm text-gray-600 dark:text-gray-400">
+                {registration.user?.email}
+              </span>
+            </div>
+            <Link variant="button-text" href={`/admin/users/${registration.userId}`} className="p-1 h-auto">
+              <User className="w-4 h-4" />
+            </Link>
           </div>
         );
       },
@@ -86,67 +91,75 @@ export function createParticipantColumns({ t, onStatusUpdate }: ColumnConfig) {
     }),
     columnHelper.accessor('products', {
       header: t('admin.participantColumns.products'),
-      cell: info => renderProducts(info.row.original),
-    }),
-    columnHelper.display({
-      id: 'live',
-      header: t('admin.participantColumns.live'),
-      cell: info => (
-        <LiveActionsMenu registration={info.row.original} onStatusUpdate={onStatusUpdate} />
-      ),
+      cell: info => {
+        const registration = info.row.original;
+        return (
+          <div className="flex items-center gap-2">
+            <span>{renderProducts(registration)}</span>
+            {eventProducts?.length !== 0 && (
+              <Button
+                variant="text"
+                onClick={() => onProductsClick(registration)}
+                className="p-1 h-auto"
+              >
+                {isLoadingRegistration(registration) ? (
+                  <Loading />
+                ) : (
+                  <Pencil className="w-4 h-4" />
+                )}
+              </Button>
+            )}
+          </div>
+        );
+      },
     }),
   ];
 }
 
 export function renderExpandedRow({
   registration,
-  eventProducts,
-  onProductsClick,
-  isLoadingRegistration,
+  onStatusUpdate,
   t,
 }: {
   registration: RegistrationDto;
-  eventProducts: ProductDto[];
-  onProductsClick: (registration: RegistrationDto) => void;
-  isLoadingRegistration: (registration: RegistrationDto) => boolean;
+  onStatusUpdate: (registration: RegistrationDto) => void;
   t: (key: string) => string;
 }) {
   return (
-    <div className="flex items-center justify-between gap-6 py-2">
-      {/* Left side: Metadata */}
-      <div className="flex items-center gap-6">
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-600 dark:text-gray-400">{t('common.labels.id')}:</span>
-          <Badge>{registration.registrationId}</Badge>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-600 dark:text-gray-400">
-            {t('admin.participantColumns.status')}:
-          </span>
-          <div className="flex gap-1">
-            <Badge>{registration.type}</Badge>
-            <Badge>{registration.status}</Badge>
-          </div>
-        </div>
+    <div className="flex flex-col gap-4 py-2">
+      {/* Status */}
+      <div className="flex items-center gap-2">
+        <span className="text-sm text-gray-600 dark:text-gray-400">
+          {t('admin.participantColumns.status')}:
+        </span>
+        <RegistrationStatusSelect
+          registration={registration}
+          onStatusUpdate={onStatusUpdate}
+        />
       </div>
 
-      {/* Right side: Actions */}
-      <div className="flex items-center gap-2">
-        <Link variant="button-outline" href={`/admin/users/${registration.userId}`}>
-          <User className="w-4 h-4" />
-        </Link>
-        <Link variant="button-outline" href={`/admin/registrations/${registration.registrationId}`}>
-          <FileText className="w-4 h-4" />
-        </Link>
-        {eventProducts?.length !== 0 && (
-          <Button variant="outline" onClick={() => onProductsClick(registration)}>
-            {isLoadingRegistration(registration) ? (
-              <Loading />
-            ) : (
-              <ShoppingCart className="w-4 h-4" />
-            )}
-          </Button>
-        )}
+      {/* Metadata and Actions */}
+      <div className="flex items-center justify-between gap-6">
+        {/* Left side: Metadata */}
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-gray-600 dark:text-gray-400">{t('common.labels.id')}:</span>
+            <Badge>{registration.registrationId}</Badge>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-gray-600 dark:text-gray-400">
+              {t('admin.participantColumns.type')}:
+            </span>
+            <Badge>{registration.type}</Badge>
+          </div>
+        </div>
+
+        {/* Right side: Actions */}
+        <div className="flex items-center gap-2">
+          <Link variant="button-outline" href={`/admin/registrations/${registration.registrationId}`}>
+            <FileText className="w-4 h-4" />
+          </Link>
+        </div>
       </div>
     </div>
   );

@@ -118,13 +118,12 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
         pageSize={250}
         enableGlobalSearch={true}
         columnFilters={columnFilter}
+        getRowId={row => row.registrationId?.toString() ?? ''}
         getRowCanExpand={() => true}
         renderSubComponent={({ row }) =>
           renderExpandedRow({
             registration: row.original,
-            eventProducts,
-            onProductsClick: handleProductsClick,
-            isLoadingRegistration,
+            onStatusUpdate: handleStatusUpdate,
             t: (key: string) => t(key).toString(),
           })
         }

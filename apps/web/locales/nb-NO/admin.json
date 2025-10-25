@@ -22,11 +22,11 @@
       "description": "Her kan du lage ditt arrangement, husk å skrive inn både tittel og slug",
       "title": "Nytt arrangement"
     },
+    "error": "Kunne ikke opprette arrangement. Prøv igjen.",
     "form": {
       "titlePlaceholder": "Arrangementstittel"
     },
-    "success": "Arrangement opprettet!",
-    "error": "Kunne ikke opprette arrangement. Prøv igjen."
+    "success": "Arrangement opprettet!"
   },
   "editEvent": {
     "content": {
@@ -72,13 +72,13 @@
       "create": "Nytt arrangement"
     },
     "tabs": {
-      "participants": "Deltakere",
-      "overview": "Oversikt",
-      "dates": "Datoer & Sted",
-      "descriptions": "Beskrivelser",
-      "certificate": "Kursbevis",
       "advanced": "Avansert",
+      "certificate": "Kursbevis",
       "communication": "Kommunikasjon",
+      "dates": "Dato/sted",
+      "descriptions": "Beskrivelse",
+      "overview": "Oversikt",
+      "participants": "Deltakere",
       "products": "Produkter"
     }
   },

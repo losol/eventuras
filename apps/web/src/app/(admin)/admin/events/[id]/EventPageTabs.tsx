@@ -194,16 +194,16 @@ export default function EventPageTabs({
           <CertificateSection eventinfo={eventinfo} />
         </Tabs.Item>
 
-        <Tabs.Item id="advanced" title={t('admin.events.tabs.advanced')} testId="tab-advanced">
-          <AdvancedSection eventId={eventinfo.id} />
-        </Tabs.Item>
-
         <Tabs.Item id="communication" title={t('admin.events.tabs.communication')} testId="tab-communication">
           <CommunicationSection eventinfo={eventinfo} />
         </Tabs.Item>
 
         <Tabs.Item id="products" title={t('admin.events.tabs.products')} testId="tab-products">
           <EventProductsEditor eventInfo={eventinfo} products={eventProducts} />
+        </Tabs.Item>
+
+        <Tabs.Item id="advanced" title={t('admin.events.tabs.advanced')} testId="tab-advanced">
+          <AdvancedSection eventId={eventinfo.id} />
         </Tabs.Item>
       </Tabs>
     </Form>

@@ -6,3 +6,5 @@ export { formStyles } from './styles/formStyles';
 export { InputLabel } from './common/InputLabel';
 export type { InputProps } from './Input/InputProps';
 export { Input } from './Input/Input';
+export { Select } from './Select';
+export type { SelectProps, SelectOption } from './Select';
