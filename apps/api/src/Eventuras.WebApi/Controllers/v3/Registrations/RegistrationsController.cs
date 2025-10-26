@@ -116,7 +116,7 @@ public class RegistrationsController : ControllerBase
             paging,
             async r =>
             {
-                var products = query.IncludeProducts 
+                var products = query.IncludeProducts
                     ? await _registrationRetrievalService.GetRegistrationProductsAsync(r, cancellationToken)
                     : null;
                 return new RegistrationDto(r, products);

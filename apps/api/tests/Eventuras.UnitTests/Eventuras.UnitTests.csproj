@@ -25,7 +25,4 @@
     <Compile Remove="RegistrationTests\Has_Order_Should.cs" />
     <Compile Remove="Helpers.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="RegistrationTests\" />
-  </ItemGroup>
 </Project>

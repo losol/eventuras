@@ -29,7 +29,7 @@ public class RegistrationRetrievalService : IRegistrationRetrievalService
 
     public async Task<Registration> GetRegistrationByIdAsync(int id,
         RegistrationRetrievalOptions options,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         options ??= RegistrationRetrievalOptions.Default;
 
@@ -55,7 +55,7 @@ public class RegistrationRetrievalService : IRegistrationRetrievalService
     public async Task<Registration> FindRegistrationAsync(
         RegistrationFilter filter,
         RegistrationRetrievalOptions options,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         options ??= RegistrationRetrievalOptions.Default;
 
@@ -75,7 +75,7 @@ public class RegistrationRetrievalService : IRegistrationRetrievalService
     public async Task<Paging<Registration>> ListRegistrationsAsync(
         RegistrationListRequest request,
         RegistrationRetrievalOptions options,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         options ??= RegistrationRetrievalOptions.Default;
 
@@ -93,7 +93,7 @@ public class RegistrationRetrievalService : IRegistrationRetrievalService
         return await Paging.CreateAsync(query, request, cancellationToken);
     }
 
-    public async Task<RegistrationStatistics> GetRegistrationStatisticsAsync(int eventId, CancellationToken cancellationToken)
+    public async Task<RegistrationStatistics> GetRegistrationStatisticsAsync(int eventId, CancellationToken cancellationToken = default)
     {
         // Initialize counters for each registration status and type
         var statusCounts = new Dictionary<Registration.RegistrationStatus, int>();
