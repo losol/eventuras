@@ -864,7 +864,6 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
             organizationId = 1,
             category = "Test event category",
             description = "Test event description",
-            manageRegistrations = true,
             onDemand = true,
             featured = true,
             program = "Test event program",
@@ -882,7 +881,6 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
         Assert.Equal("Test Event", evt.Title);
         Assert.Equal("Test event category", evt.Category);
         Assert.Equal("Test event description", evt.Description);
-        Assert.True(evt.ManageRegistrations);
         Assert.True(evt.OnDemand);
         Assert.True(evt.Featured);
         Assert.Equal("Test event program", evt.Program);
@@ -1003,7 +1001,6 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
             organizationId = 1,
             category = "Test event category",
             description = "Test event description",
-            manageRegistrations = true,
             onDemand = true,
             featured = true,
             program = "Test event program",
@@ -1021,7 +1018,6 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
         Assert.Equal("Test Event", updated.Title);
         Assert.Equal("Test event category", updated.Category);
         Assert.Equal("Test event description", updated.Description);
-        Assert.True(updated.ManageRegistrations);
         Assert.True(updated.OnDemand);
         Assert.True(updated.Featured);
         Assert.Equal("Test event program", updated.Program);

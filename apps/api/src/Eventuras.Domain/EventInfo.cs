@@ -128,7 +128,7 @@ public class EventInfo
 
     public EventInfoOptions Options { get; set; } = new();
 
-    // Consider to remove this
+
     public bool Archived { get; set; }
     public string OrganizerUserId { get; set; }
     public bool HasFeaturedImage => !string.IsNullOrWhiteSpace(FeaturedImageUrl);

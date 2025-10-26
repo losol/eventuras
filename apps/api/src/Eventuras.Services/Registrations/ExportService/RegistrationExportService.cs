@@ -73,7 +73,8 @@ public class RegistrationExportService : IRegistrationExportService
                 var registrations = await reader.ReadNextAsync();
                 foreach (var registration in registrations)
                 {
-                    WriteDataRow(sheetData, registration);
+                    var products = await _registrationRetrievalService.GetRegistrationProductsAsync(registration);
+                    WriteDataRow(sheetData, registration, products);
                     dataRowCount++;
                 }
             }
@@ -148,7 +149,7 @@ public class RegistrationExportService : IRegistrationExportService
         AppendRowToSheet(sheetData, headerValues);
     }
 
-    private static void WriteDataRow(SheetData sheetData, Registration registration)
+    private static void WriteDataRow(SheetData sheetData, Registration registration, List<RegistrationProductDto> products)
     {
         ValidateSheetData(sheetData);
 
@@ -159,7 +160,15 @@ public class RegistrationExportService : IRegistrationExportService
             throw new InvalidOperationException("Column configuration cannot be null or empty.");
         }
 
-        var dataValues = config.Select(column => column.DataExtractor(registration)).ToList();
+        var dataValues = config.Select(column =>
+        {
+            // Special handling for Products column
+            if (column.Header == "Products")
+            {
+                return ColumnConfig.FormatProducts(products);
+            }
+            return column.DataExtractor(registration);
+        }).ToList();
 
         AppendRowToSheet(sheetData, dataValues);
     }

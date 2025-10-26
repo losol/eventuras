@@ -33,7 +33,10 @@ public class RegistrationDto
         UserId = null!;
     }
 
-    public RegistrationDto(Registration registration, bool includeOrders = true)
+    public RegistrationDto(
+        Registration registration,
+        IEnumerable<Eventuras.Services.Registrations.RegistrationProductDto>? products = null,
+        bool includeOrders = true)
     {
         RegistrationId = registration.RegistrationId;
         EventId = registration.EventInfoId;
@@ -45,7 +48,16 @@ public class RegistrationDto
 
         if (includeOrders && registration.Orders != null)
         {
-            Products = registration.Products.Select(ProductOrderDto.FromRegistrationOrderDto);
+            if (products != null)
+            {
+                Products = products.Select(p => new ProductOrderDto(
+                    p.ProductId,
+                    p.ProductVariantId,
+                    p.Product != null ? new ProductDto(p.Product) : null!,
+                    p.ProductVariant != null ? new ProductVariantDto(p.ProductVariant) : null,
+                    p.Quantity
+                ));
+            }
             Orders = registration.Orders.Select(o => new OrderDto(o));
         }
 

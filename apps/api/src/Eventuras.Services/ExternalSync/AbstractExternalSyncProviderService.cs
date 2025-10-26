@@ -99,7 +99,7 @@ public abstract class AbstractExternalSyncProviderService : IExternalSyncProvide
             throw new ArgumentNullException(nameof(registration));
         }
 
-        if (!registration.Verified)
+        if (registration.Status == Registration.RegistrationStatus.Draft)
         {
             throw new InvalidOperationException($"Registration {registration.RegistrationId} is not verified");
         }

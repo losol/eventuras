@@ -20,6 +20,14 @@ public interface IRegistrationRetrievalService
         RegistrationRetrievalOptions options = default,
         CancellationToken cancellationToken = default);
 
+    /// <summary>
+    /// Gets aggregated product information for a registration.
+    /// Groups all order lines by product and variant, summing quantities.
+    /// </summary>
+    Task<List<RegistrationProductDto>> GetRegistrationProductsAsync(
+        Registration registration,
+        CancellationToken cancellationToken = default);
+
     Task<Paging<Registration>> ListRegistrationsAsync(
         RegistrationListRequest request,
         RegistrationRetrievalOptions options = default,

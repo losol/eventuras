@@ -29,4 +29,12 @@
     <Folder Include="Views\Shared\Templates\Certificates\">
     </Folder>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="IRegistrationService.cs" />
+    <Compile Remove="RegistrationService.cs" />
+    <Compile Remove="Orders\IOrderVmConversionService.cs" />
+    <Compile Remove="Orders\OrderVmConversionService.cs" />
+    <Compile Remove="Orders\IOrderService.cs" />
+    <Compile Remove="Orders\OrderService.cs" />
+  </ItemGroup>
 </Project>

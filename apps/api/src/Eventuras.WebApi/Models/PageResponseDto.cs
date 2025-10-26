@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Eventuras.Services;
 
 namespace Eventuras.WebApi.Models;
@@ -32,6 +35,25 @@ public class PageResponseDto<T>
         {
             Total = paging.TotalRecords,
             Data = paging.Data.Select(f).ToArray()
+        };
+    }
+
+    public static async Task<PageResponseDto<TR>> FromPagingAsync<TD, TR>(
+        PageQueryDto query,
+        Paging<TD> paging,
+        Func<TD, Task<TR>> f,
+        CancellationToken cancellationToken = default)
+    {
+        var data = new List<TR>();
+        foreach (var item in paging.Data)
+        {
+            data.Add(await f(item));
+        }
+
+        return new PageResponseDto<TR>(query)
+        {
+            Total = paging.TotalRecords,
+            Data = data.ToArray()
         };
     }
 }

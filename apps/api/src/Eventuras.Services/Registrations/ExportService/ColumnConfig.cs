@@ -105,28 +105,36 @@ public class ColumnConfig
             new ColumnConfig
             {
                 Header = "Products",
-                DataExtractor = reg => string.Join(", ", reg.Products.Select(p =>
-                {
-                    var sb = new StringBuilder();
-                    if (p.Quantity > 1)
-                    {
-                        sb.Append($"{p.Quantity} × {p.Product.Name}");
-                    }
-                    else
-                    {
-                        sb.Append(p.Product.Name);
-                    }
-
-                    if (p.Variant != null)
-                    {
-                        sb.Append($" ({p.Variant.Name})");
-                    }
-
-                    return sb.ToString();
-                }))
+                DataExtractor = reg => "" // Will be populated separately with product data
             },
             new ColumnConfig { Header = "RegistrationStatus", DataExtractor = reg => reg.Status.ToString() },
             new ColumnConfig { Header = "RegistrationType", DataExtractor = reg => reg.Type.ToString() },
             new ColumnConfig { Header = "RegistrationNotes", DataExtractor = reg => reg.Notes?.ToString() }
         };
+
+    public static string FormatProducts(List<RegistrationProductDto> products)
+    {
+        if (products == null || !products.Any())
+            return "";
+
+        return string.Join(", ", products.Select(p =>
+        {
+            var sb = new StringBuilder();
+            if (p.Quantity > 1)
+            {
+                sb.Append($"{p.Quantity} × {p.Product.Name}");
+            }
+            else
+            {
+                sb.Append(p.Product.Name);
+            }
+
+            if (p.ProductVariant != null)
+            {
+                sb.Append($" ({p.ProductVariant.Name})");
+            }
+
+            return sb.ToString();
+        }));
+    }
 }

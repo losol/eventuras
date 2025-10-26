@@ -111,10 +111,17 @@ public class RegistrationsController : ControllerBase
                 cancellationToken
             );
 
-        var response = PageResponseDto<RegistrationDto>.FromPaging(
+        var response = await PageResponseDto<RegistrationDto>.FromPagingAsync(
             query,
             paging,
-            r => new RegistrationDto(r)
+            async r =>
+            {
+                var products = query.IncludeProducts 
+                    ? await _registrationRetrievalService.GetRegistrationProductsAsync(r, cancellationToken)
+                    : null;
+                return new RegistrationDto(r, products);
+            },
+            cancellationToken
         );
 
         return Ok(response);
@@ -133,7 +140,11 @@ public class RegistrationsController : ControllerBase
             return NotFound("Registration not found.");
         }
 
-        return new RegistrationDto(registration);
+        var products = query.IncludeProducts
+            ? await _registrationRetrievalService.GetRegistrationProductsAsync(registration, cancellationToken)
+            : null;
+
+        return new RegistrationDto(registration, products);
 
     }
 
