@@ -20,5 +20,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="RegistrationTests\Verify_Should.cs" />
+    <Compile Remove="RegistrationTests\Create_Or_Update_Order_Should.cs" />
+    <Compile Remove="RegistrationTests\Create_Order_Should.cs" />
+    <Compile Remove="RegistrationTests\Has_Order_Should.cs" />
+    <Compile Remove="Helpers.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="RegistrationTests\" />
   </ItemGroup>
 </Project>

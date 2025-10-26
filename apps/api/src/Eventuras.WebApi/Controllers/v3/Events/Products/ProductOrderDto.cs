@@ -12,18 +12,6 @@ public record ProductOrderDto(
     ProductVariantDto? ProductVariant,
     int Quantity)
 {
-    public static ProductOrderDto FromRegistrationOrderDto(OrderDTO order)
-    {
-        ArgumentNullException.ThrowIfNull(order);
-        ArgumentNullException.ThrowIfNull(order.Product);
-
-        return new ProductOrderDto(order.Product.ProductId,
-            order.Variant?.ProductVariantId,
-            new ProductDto(order.Product),
-            order.Variant == null ? null : new ProductVariantDto(order.Variant),
-            order.Quantity);
-    }
-
     public virtual bool Equals(ProductOrderDto? other)
     {
         if (ReferenceEquals(null, other))

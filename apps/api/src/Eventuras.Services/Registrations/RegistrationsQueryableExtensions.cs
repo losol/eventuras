@@ -15,11 +15,6 @@ internal static class RegistrationsQueryableExtensions
             return query;
         }
 
-        if (filter.VerifiedOnly)
-        {
-            query = query.Where(r => r.Verified);
-        }
-
         if (filter.ActiveUsersOnly)
         {
             query = query.Where(r => !r.User.Archived);

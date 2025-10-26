@@ -103,7 +103,7 @@ public class NotificationRecipient
         var recipient = Create(registration.User, notificationType);
         if (recipient != null)
         {
-            recipient.RecipientName = registration.ParticipantName ?? registration.User.Name;
+            recipient.RecipientName = registration.User.Name;
         }
 
         return recipient;

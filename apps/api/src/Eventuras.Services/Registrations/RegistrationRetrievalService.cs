@@ -150,4 +150,36 @@ public class RegistrationRetrievalService : IRegistrationRetrievalService
             ByType = byType
         };
     }
+
+    public Task<List<RegistrationProductDto>> GetRegistrationProductsAsync(
+        Registration registration,
+        CancellationToken cancellationToken = default)
+    {
+        if (registration == null)
+            throw new ArgumentNullException(nameof(registration));
+
+        if (registration.Orders == null)
+            return Task.FromResult(new List<RegistrationProductDto>());
+
+        var products = registration.Orders
+            .Where(o => o.Status != Order.OrderStatus.Cancelled)
+            .SelectMany(o => o.OrderLines)
+            .GroupBy(ol => new { ol.ProductId, ol.ProductVariantId })
+            .Select(group =>
+            {
+                var first = group.First();
+                return new RegistrationProductDto
+                {
+                    ProductId = first.ProductId ?? 0,
+                    ProductVariantId = first.ProductVariantId,
+                    Product = first.Product,
+                    ProductVariant = first.ProductVariant,
+                    Quantity = group.Sum(ol => ol.Quantity)
+                };
+            })
+            .Where(p => p.Quantity != 0)
+            .ToList();
+
+        return Task.FromResult(products);
+    }
 }
