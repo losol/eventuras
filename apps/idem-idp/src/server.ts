@@ -1,25 +1,23 @@
 // Express app (no HTML inline)
-import express, {Express} from "express";
-import { renderHomepage } from "./views/homepage";
+import express, { type Application, type Request, type Response } from 'express';
+import { renderHomepage } from './views/homepage';
 
 /**
  * Creates the Express app.
- * @returns Express.Application
+ * @returns Application
  */
-export function createServer() {
+export function createServer(): Application {
   const app = express();
 
   // Health probe
-  // @ts-ignore
-  app.get("/health", (_req, res) => res.json({ status: "ok" }));
+  app.get('/healthz', (_req: Request, res: Response) => res.json({ status: 'ok' }));
 
   // Root page (HTML from view)
-  // @ts-ignore
-  app.get("/", (_req, res) => {
-    const name = "idem-idp";
-    const version = process.env.npm_package_version ?? "dev";
+  app.get('/', (_req: Request, res: Response) => {
+    const name = 'idem-idp';
+    const version = process.env.npm_package_version ?? 'dev';
     // Send HTML
-    res.type("html").send(renderHomepage({ name, version }));
+    res.type('html').send(renderHomepage({ name, version }));
   });
 
   return app;
