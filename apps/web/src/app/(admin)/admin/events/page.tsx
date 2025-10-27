@@ -8,8 +8,15 @@ import { publicEnv } from '@/config.client';
 
 import AdminEventList from './AdminEventList';
 
-const AdminPage = async () => {
+interface AdminPageProps {
+  searchParams: Promise<{ page?: string }>;
+}
+
+const AdminPage = async ({ searchParams }: AdminPageProps) => {
   const t = await getTranslations();
+  const params = await searchParams;
+  const page = params.page ? Number.parseInt(params.page, 10) : 1;
+
   return (
     <Container>
       <Heading as="h1">{t('admin.title')}</Heading>
@@ -19,7 +26,11 @@ const AdminPage = async () => {
         </Link>
       </section>
       <Heading as="h2">{t('common.events.sectiontitle')}</Heading>
-      <AdminEventList organizationId={publicEnv.NEXT_PUBLIC_ORGANIZATION_ID} includePastEvents />
+      <AdminEventList
+        organizationId={publicEnv.NEXT_PUBLIC_ORGANIZATION_ID}
+        includePastEvents
+        page={page}
+      />
     </Container>
   );
 };
