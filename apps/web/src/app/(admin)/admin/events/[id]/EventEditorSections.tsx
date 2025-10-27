@@ -22,7 +22,15 @@ import { AdminCertificatesActionsMenu } from '../AdminCertificatesActionsMenu';
 import '@eventuras/scribo/style.css';
 
 // Wrapper component to use react-hook-form Controller with MarkdownInput
-const ControlledMarkdownInput = ({ name, ...props }: any) => {
+const ControlledMarkdownInput = ({
+  name,
+  'data-testid': testId,
+  ...props
+}: {
+  name: string;
+  'data-testid'?: string;
+  [key: string]: unknown;
+}) => {
   const { control } = useFormContext();
   return (
     <Controller
@@ -34,6 +42,7 @@ const ControlledMarkdownInput = ({ name, ...props }: any) => {
           name={name}
           defaultValue={field.value}
           onChange={field.onChange}
+          data-testid={testId}
         />
       )}
     />
@@ -83,7 +92,7 @@ export const OverviewSection = ({ loading = false }: { loading?: boolean }) => (
           { value: 'Archived', label: 'Archived' },
           { value: 'Cancelled', label: 'Cancelled' },
         ]}
-        testId="event-status-select-button"
+        testId="eventeditor-status-select-button"
       />
       <NumberInput name="maxParticipants" label="Max Participants" placeholder="Max Participants" />
     </Fieldset>
@@ -127,31 +136,43 @@ export const DescriptionsSection = () => (
       label="Description (max 300 characters)"
       placeholder="An Event Description here (markdown supported)"
       maxLength={300}
+      data-testid="eventeditor-markdownfield-description"
+      id="eventeditor-description"
     />
     <ControlledMarkdownInput
       name="program"
       label="Program"
       placeholder="An Event Program here (markdown supported)"
+      data-testid="eventeditor-markdownfield-program"
+      id="eventeditor-program"
     />
     <ControlledMarkdownInput
       name="practicalInformation"
       label="Practical Information"
       placeholder="Practical Information here (markdown supported)"
+      data-testid="eventeditor-markdownfield-practical-information"
+      id="eventeditor-practical-information"
     />
     <ControlledMarkdownInput
       name="moreInformation"
       label="More Information"
       placeholder="More Information here (markdown supported)"
+      data-testid="eventeditor-markdownfield-more-information"
+      id="eventeditor-more-information"
     />
     <ControlledMarkdownInput
       name="welcomeLetter"
       label="Welcome Letter"
       placeholder="Welcome letter here (markdown supported)"
+      data-testid="eventeditor-markdownfield-welcome-letter"
+      id="eventeditor-welcome-letter"
     />
     <ControlledMarkdownInput
       name="informationRequest"
       label="Information Request"
       placeholder="Information Request (markdown supported)"
+      data-testid="eventeditor-markdownfield-information-request"
+      id="eventeditor-information-request"
     />
   </Fieldset>
 );

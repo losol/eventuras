@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import type { Session } from '@eventuras/fides-auth-next';
 import {
   accessTokenExpires,
   createSession,
   refreshCurrentSession,
+  type Session,
   setSessionCookie,
   validateSessionJwt,
 } from '@eventuras/fides-auth-next';
