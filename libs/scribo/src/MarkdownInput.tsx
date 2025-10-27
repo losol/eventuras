@@ -14,6 +14,7 @@ export type MarkdownInputProps = {
   editorClassName?: string;
   errorClassName?: string;
   onChange?: (value: string) => void;
+  'data-testid'?: string;
 };
 
 /**
@@ -27,7 +28,7 @@ const MarkdownInput = (props: MarkdownInputProps) => {
   const plainTextRef = useRef('');
   const id = props.id ?? props.name;
 
-  const handleChange = (markdown: string, { plainText }: { plainText: string }) => {
+  const handleChange = (markdown: string, { plainText }: { plainText: string; }) => {
     plainTextRef.current = plainText;
     setValue(markdown);
 
@@ -62,6 +63,8 @@ const MarkdownInput = (props: MarkdownInputProps) => {
         className={props.editorClassName}
         initialMarkdown={props.defaultValue}
         placeholder={props.placeholder}
+        data-testid={props['data-testid']}
+        id={id}
       />
       {error && (
         <span role="alert" className={props.errorClassName}>

@@ -18,25 +18,27 @@ import ToolbarPlugin from "./plugins/ToolbarPlugin";
 import EditorTheme from "./themes/EditorTheme";
 import ContentEditable from "./ui/ContentEditable";
 import Placeholder from "./ui/Placeholder";
-import {HistoryPlugin} from '@lexical/react/LexicalHistoryPlugin';
+import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import LinkPlugin from "./plugins/LinkPlugin";
 import FloatingLinkEditorPlugin from "./plugins/FloatingLinkEditorPlugin";
 import AutoLinkPlugin from "./plugins/AutoLinkPlugin";
-import {useSharedHistoryContext} from './context/SharedHistoryContext';
+import { useSharedHistoryContext } from './context/SharedHistoryContext';
 
 export type onChangeMisc = {
-  plainText: string
-}
+  plainText: string;
+};
 export interface MarkdownEditorProps {
   initialMarkdown?: string;
   className?: string;
   onChange?: (markdown: string, misc: onChangeMisc) => void;
   onBlur?: () => void;
   placeholder?: string;
+  'data-testid'?: string;
+  id?: string;
 }
 
 const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
-  const {historyState} = useSharedHistoryContext();
+  const { historyState } = useSharedHistoryContext();
   const [isLinkEditMode, setIsLinkEditMode] = useState<boolean>(false);
 
   const [floatingAnchorElem, setFloatingAnchorElem] =
@@ -51,7 +53,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
   const internalOnChange = (editorState: EditorState) => {
     editorState.read(() => {
       const markdown = $convertToMarkdownString(TRANSFORMERS);
-      const plainText = $getRoot().getTextContent()
+      const plainText = $getRoot().getTextContent();
       props.onChange && props.onChange(markdown, { plainText });
     });
   };
@@ -71,21 +73,21 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
   return (
     <div className={props.className}>
       <LexicalComposer initialConfig={initialConfig}>
-        <div className="editor-shell" onBlur={props.onBlur}>
+        <div className="editor-shell" onBlur={props.onBlur} data-testid={props['data-testid']} id={props.id}>
           <ToolbarPlugin setIsLinkEditMode={setIsLinkEditMode} />
           <div className="editor-container rich-text">
             <HistoryPlugin externalHistoryState={historyState} />
             <AutoLinkPlugin />
             <LinkPlugin />
             <FloatingLinkEditorPlugin
-                  anchorElem={floatingAnchorElem}
-                  isLinkEditMode={isLinkEditMode}
-                  setIsLinkEditMode={setIsLinkEditMode}
-                />
+              anchorElem={floatingAnchorElem}
+              isLinkEditMode={isLinkEditMode}
+              setIsLinkEditMode={setIsLinkEditMode}
+            />
             <RichTextPlugin
               contentEditable={
                 <div className="editor-scroller">
-                  <div className="editor" ref={onRef}>
+                  <div className="editor" ref={onRef} id={props.id ? `${props.id}-editable` : undefined}>
                     <ContentEditable />
                   </div>
                 </div>
