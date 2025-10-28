@@ -67,30 +67,21 @@ For EHF invoicing to work:
 - Customer must have a valid Norwegian organization number
 - Customer's organization must be registered for EHF reception
 
-If EHF registration is missing, the service will throw an `EhfValidationException` with a user-friendly error message.
+If EHF requirements are not met, PowerOffice will return a validation error that is forwarded to the user.
 
 ## Error Handling
 
-### EhfValidationException
-
-Thrown when an organization number is not registered for EHF invoicing.
-
-**Example error message:**
-
-```text
-Organization number 12345678 is not registered for EHF invoicing.
-Please contact the organization to enable EHF, or select email as the invoicing method.
-```
-
-**HTTP Response**: `400 Bad Request`
-
 ### InvoicingException
 
-Generic exception for other invoicing errors (missing customer name, PowerOffice client not found, etc.).
+All PowerOffice validation and operational errors are wrapped in `InvoicingException` with the original error message from the PowerOffice SDK.
 
-**HTTP Response**: `400 Bad Request`
+**Example error messages:**
 
-## Development
+- _"Invoice validation failed: Organization no. 12345678 is not registered for EHF"_
+- _"Invoice validation failed: Invalid VAT number format"_
+- _"PowerOffice credentials not configured for this organization. Please configure POWER_OFFICE_APP_KEY and POWER_OFFICE_CLIENT_KEY in organization settings."_
+
+**HTTP Response**: `400 Bad Request`## Development
 
 ### Running Tests
 

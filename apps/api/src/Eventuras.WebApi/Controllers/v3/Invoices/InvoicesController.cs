@@ -52,14 +52,9 @@ public class InvoicesController : ControllerBase
 
             return new InvoiceDto(invoice);
         }
-        catch (EhfValidationException ex)
-        {
-            _logger.LogWarning(ex, "EHF validation failed for organization {OrgNumber}", ex.OrganizationNumber);
-            return BadRequest(new { message = ex.Message });
-        }
         catch (InvoicingException ex)
         {
-            _logger.LogError(ex, "Invoice creation failed");
+            _logger.LogWarning(ex, "Invoice creation failed: {Message}", ex.Message);
             return BadRequest(new { message = ex.Message });
         }
     }

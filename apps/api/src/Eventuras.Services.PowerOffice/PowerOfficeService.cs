@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Eventuras.Services.Invoicing;
 using Eventuras.Services.Organizations.Settings;
@@ -134,30 +133,19 @@ public class PowerOfficeService : IInvoicingProvider
         }
         catch (ApiFieldValidationException ex)
         {
-            // Check if the error is related to EHF registration
-            if (ex.Message.Contains("not registered for EHF", StringComparison.OrdinalIgnoreCase))
-            {
-                // Extract organization number from the error message
-                var match = Regex.Match(ex.Message, @"organization no\.\s*(\d+)");
-                var orgNumber = match.Success ? match.Groups[1].Value : info.CustomerVatNumber ?? "unknown";
-
-                _logger.LogWarning(ex, "Organization {OrgNumber} not registered for EHF", orgNumber);
-                throw new EhfValidationException(orgNumber, ex);
-            }
-
-            // Re-throw other validation errors as generic invoicing exceptions
-            throw new InvoicingException($"PowerOffice validation error: {ex.Message}", ex);
+            _logger.LogWarning(ex, "PowerOffice validation error");
+            throw new InvoicingException($"Invoice validation failed: {ex.Message}", ex);
         }
     }
-
     private async Task<Customer> CreateCustomerIfNotExistsAsync(InvoiceInfo info, InvoiceResult result)
     {
         var api = await GetApiAsync();
 
         // Search for customer by VAT number
-        var rgx = new Regex("[^0-9]");
-        var vatNumber = info.CustomerVatNumber != null ? rgx.Replace(info.CustomerVatNumber, "") : null;
-        _logger.LogInformation("* VAt number: {VatNumber}", vatNumber);
+        var vatNumber = info.CustomerVatNumber != null
+            ? new string(info.CustomerVatNumber.Where(char.IsDigit).ToArray())
+            : null;
+        _logger.LogInformation("* VAT number: {VatNumber}", vatNumber);
 
         var existingCustomer = !string.IsNullOrWhiteSpace(vatNumber)
             ? api.Customer.Get()
