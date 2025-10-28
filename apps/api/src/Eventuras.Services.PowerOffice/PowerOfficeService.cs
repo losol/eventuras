@@ -139,7 +139,7 @@ public class PowerOfficeService : IInvoicingProvider
             {
                 // Extract organization number from the error message
                 var match = Regex.Match(ex.Message, @"organization no\.\s*(\d+)");
-                var orgNumber = match.Success ? match.Groups[1].Value : info.CustomerVatNumber ?? "ukjent";
+                var orgNumber = match.Success ? match.Groups[1].Value : info.CustomerVatNumber ?? "unknown";
 
                 _logger.LogWarning(ex, "Organization {OrgNumber} not registered for EHF", orgNumber);
                 throw new EhfValidationException(orgNumber, ex);
