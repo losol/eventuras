@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asp.Versioning;
@@ -113,7 +114,14 @@ public class OrdersController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        patchDto.ApplyTo(order);
+        try
+        {
+            patchDto.ApplyTo(order);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
 
         await _orderManagementService.UpdateOrderAsync(order, cancellationToken);
 

@@ -1299,4 +1299,150 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
             }
         };
     }
+
+    #region PATCH Tests
+
+    [Fact]
+    public async Task Patch_Should_Require_Auth()
+    {
+        var client = _factory.CreateClient();
+        var response = await client.PatchAsync("/v3/orders/1", new { status = "verified" });
+        response.CheckUnauthorized();
+    }
+
+    [Fact]
+    public async Task Patch_Should_Return_NotFound_If_Order_Not_Exists()
+    {
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
+        var response = await client.PatchAsync("/v3/orders/10001", new { status = "verified" });
+        response.CheckNotFound();
+    }
+
+    [Fact]
+    public async Task Patch_Should_Allow_Status_Update_From_Draft_To_Verified()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var user = await scope.CreateUserAsync();
+        using var evt = await scope.CreateEventAsync();
+        using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
+        using var order = await scope.CreateOrderAsync(reg.Entity, status: Order.OrderStatus.Draft);
+
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
+        var response = await client.PatchAsync($"/v3/orders/{order.Entity.OrderId}", new { status = "verified" });
+        response.CheckOk();
+
+        var updatedOrder = await scope.Db.Orders
+            .AsNoTracking()
+            .SingleAsync(o => o.OrderId == order.Entity.OrderId);
+
+        Assert.Equal(Order.OrderStatus.Verified, updatedOrder.Status);
+    }
+
+    [Fact]
+    public async Task Patch_Should_Allow_Idempotent_Status_Update()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var user = await scope.CreateUserAsync();
+        using var evt = await scope.CreateEventAsync();
+        using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
+        using var order = await scope.CreateOrderAsync(reg.Entity, status: Order.OrderStatus.Verified);
+
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
+
+        // Setting the same status should succeed (idempotent operation)
+        var response = await client.PatchAsync($"/v3/orders/{order.Entity.OrderId}", new { status = "verified" });
+        response.CheckOk();
+
+        var updatedOrder = await scope.Db.Orders
+            .AsNoTracking()
+            .SingleAsync(o => o.OrderId == order.Entity.OrderId);
+
+        Assert.Equal(Order.OrderStatus.Verified, updatedOrder.Status);
+    }
+
+    [Fact]
+    public async Task Patch_Should_Reject_Invalid_Status_Transition()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var user = await scope.CreateUserAsync();
+        using var evt = await scope.CreateEventAsync();
+        using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
+        using var order = await scope.CreateOrderAsync(reg.Entity, status: Order.OrderStatus.Verified);
+
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
+
+        // Cannot go from Verified to Draft
+        var response = await client.PatchAsync($"/v3/orders/{order.Entity.OrderId}", new { status = "draft" });
+        await response.CheckBadRequestAsync("Orders cannot be set as draft");
+    }
+
+    [Fact]
+    public async Task Patch_Should_Allow_Comments_Update()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var user = await scope.CreateUserAsync();
+        using var evt = await scope.CreateEventAsync();
+        using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
+        using var order = await scope.CreateOrderAsync(reg.Entity);
+
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
+        var response = await client.PatchAsync($"/v3/orders/{order.Entity.OrderId}",
+            new { comments = "Updated comment" });
+        response.CheckOk();
+
+        var updatedOrder = await scope.Db.Orders
+            .AsNoTracking()
+            .SingleAsync(o => o.OrderId == order.Entity.OrderId);
+
+        Assert.Equal("Updated comment", updatedOrder.Comments);
+    }
+
+    [Fact]
+    public async Task Patch_Should_Allow_PaymentMethod_Update()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var user = await scope.CreateUserAsync();
+        using var evt = await scope.CreateEventAsync();
+        using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
+        using var order = await scope.CreateOrderAsync(reg.Entity);
+
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
+        var response = await client.PatchAsync($"/v3/orders/{order.Entity.OrderId}",
+            new { paymentMethod = "EmailInvoice" });
+        response.CheckOk();
+
+        var updatedOrder = await scope.Db.Orders
+            .AsNoTracking()
+            .SingleAsync(o => o.OrderId == order.Entity.OrderId);
+
+        Assert.Equal(PaymentMethod.PaymentProvider.EmailInvoice, updatedOrder.PaymentMethod);
+    }
+
+    [Fact]
+    public async Task Patch_Should_Not_Update_Unchanged_Fields()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var user = await scope.CreateUserAsync();
+        using var evt = await scope.CreateEventAsync();
+        using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
+        using var order = await scope.CreateOrderAsync(reg.Entity, status: Order.OrderStatus.Verified);
+
+        var originalLog = order.Entity.Log;
+
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
+
+        // Patch with same status - should not add a log entry
+        var response = await client.PatchAsync($"/v3/orders/{order.Entity.OrderId}",
+            new { status = "verified" });
+        response.CheckOk();
+
+        var updatedOrder = await scope.Db.Orders
+            .AsNoTracking()
+            .SingleAsync(o => o.OrderId == order.Entity.OrderId);
+
+        // Log should not have been updated since status didn't actually change
+        Assert.Equal(originalLog, updatedOrder.Log);
+    }
+
+    #endregion
 }

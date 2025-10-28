@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 
+import { actionError, actionSuccess, ServerActionResult } from '@eventuras/core-nextjs/actions';
 import { Logger } from '@eventuras/logger';
 
 import { appConfig } from '@/config.server';
@@ -119,7 +120,7 @@ export async function verifyOrderAction(orderId: number) {
   }
 }
 
-export async function invoiceOrderAction(orderId: number) {
+export async function invoiceOrderAction(orderId: number): Promise<ServerActionResult<void>> {
   logger.info({ orderId }, 'Creating invoice for order...');
 
   const organizationId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
@@ -130,7 +131,7 @@ export async function invoiceOrderAction(orderId: number) {
 
   if (!orgId || Number.isNaN(orgId)) {
     logger.error('Organization ID is required');
-    throw new Error('Organization ID is required');
+    return actionError('Organization ID is required');
   }
 
   try {
@@ -147,13 +148,23 @@ export async function invoiceOrderAction(orderId: number) {
     if (response.data) {
       logger.info({ orderId }, 'Invoice sent to accounting system successfully');
       revalidatePath('/admin/orders');
-      return { success: true };
+      return actionSuccess(undefined, 'Invoice sent to accounting system');
     } else {
       logger.error({ orderId, error: response.error }, 'Failed to create invoice');
-      throw new Error('Failed to create invoice');
+
+      // Extract error message from API response
+      const errorMessage =
+        typeof response.error === 'object' &&
+        response.error &&
+        'message' in response.error &&
+        typeof response.error.message === 'string'
+          ? response.error.message
+          : 'Failed to create invoice';
+
+      return actionError(errorMessage);
     }
   } catch (error) {
     logger.error({ error, orderId }, 'Error creating invoice');
-    throw error;
+    return actionError(error instanceof Error ? error.message : 'An unexpected error occurred');
   }
 }

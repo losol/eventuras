@@ -1,12 +1,14 @@
 # Backend Agent
 
 ## Scope
+
 - `apps/api`
 - All C# .NET backend services
 
 ## Responsibilities
 
 ### Primary Responsibilities
+
 - Develop and maintain the Eventuras WebAPI.
 - Implement business logic in the Services layer.
 - Handle data models and database migrations.
@@ -24,12 +26,14 @@
 ## Coding Standards
 
 ### Naming Conventions
+
 - Classes: PascalCase (e.g., `EventRegistrationService`)
 - Methods: PascalCase (e.g., `CreateRegistrationAsync`)
 - Private fields: `_camelCase` (e.g., `_dbContext`)
 - Interfaces: `I` + PascalCase (e.g., `IEventService`)
 
 ### Best Practices
+
 - Use async/await for all I/O operations.
 - Implement proper exception handling and validation.
 - Follow SOLID principles and clean architecture boundaries.
@@ -39,13 +43,21 @@
 - Prefer configuration via options patterns and environment variables.
 
 ### Testing
+
 - Write unit tests for business logic.
 - Write integration tests for API endpoints.
 - Use test data builders and clear naming for test cases.
 
+### Before Committing
+
+- Run `dotnet format` to ensure consistent code formatting.
+- Verify all tests pass.
+- Review changes for any unintended modifications.
+
 ## Documentation Responsibilities
 
 You must document:
+
 - XML comments on public classes and methods.
 - README.md in `apps/api/` when needed (setup, run, deploy).
 - API endpoints via Swagger/OpenAPI annotations.
