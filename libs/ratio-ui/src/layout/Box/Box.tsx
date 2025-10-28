@@ -6,6 +6,7 @@ export interface BoxSpacingProps {
   border?: string;       // e.g. 'border border-gray-200'
   width?: string;        // e.g. 'w-full'
   height?: string;       // e.g. 'h-64'
+  gap?: '0' | '1' | '2' | '3' | '4' | '5' | '6' | '8'; // Tailwind spacing scale for flex/grid gap
 }
 
 export interface BoxContentProps {
@@ -33,13 +34,17 @@ export function buildSpacingClasses({
   border,
   width,
   height,
+  gap,
 }: BoxSpacingProps) {
+  const gapClass = gap ? `gap-${gap}` : undefined;
+  
   return [
     padding,
     margin,
     border,
     width,
     height,
+    gapClass,
   ]
     .filter(Boolean)
     .join(' ');
@@ -70,12 +75,12 @@ export function getBackgroundStyle(
 
 export const Box: React.FC<BoxProps> = ({
   as: Component = 'div',
-  padding, margin, border, width, height,
+  padding, margin, border, width, height, gap,
   backgroundColorClass, backgroundImageUrl,
   id, className = '', style, children,
   ...rest
 }) => {
-  const spacingClasses = buildSpacingClasses({ padding, margin, border, width, height });
+  const spacingClasses = buildSpacingClasses({ padding, margin, border, width, height, gap });
 
   const bgStyle = backgroundImageUrl
     ? {
