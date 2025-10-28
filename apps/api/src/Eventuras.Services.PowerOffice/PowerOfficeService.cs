@@ -47,16 +47,19 @@ public class PowerOfficeService : IInvoicingProvider
 
     private async Task<Go> GetApiAsync()
     {
-        // read per-org power office settings,
-        // fallback to system-wide settings if not set.
-
+        // Read per-organization PowerOffice settings from database
         var appKey = await _organizationSettingsAccessorService
-                         .GetOrganizationSettingByNameAsync(PowerOfficeConstants.ApplicationKey)
-                     ?? _options.Value.ApplicationKey;
+                         .GetOrganizationSettingByNameAsync(PowerOfficeConstants.ApplicationKey);
 
         var clientKey = await _organizationSettingsAccessorService
-                            .GetOrganizationSettingByNameAsync(PowerOfficeConstants.ClientKey)
-                        ?? _options.Value.ClientKey;
+                            .GetOrganizationSettingByNameAsync(PowerOfficeConstants.ClientKey);
+
+        if (string.IsNullOrWhiteSpace(appKey) || string.IsNullOrWhiteSpace(clientKey))
+        {
+            throw new InvoicingException(
+                "PowerOffice credentials not configured for this organization. " +
+                "Please configure POWER_OFFICE_APP_KEY and POWER_OFFICE_CLIENT_KEY in organization settings.");
+        }
 
         _logger.LogInformation("Using PowerOffice Client with applicationKey: {AppKey}", appKey);
 
@@ -71,61 +74,80 @@ public class PowerOfficeService : IInvoicingProvider
 
     public async Task<InvoiceResult> CreateInvoiceAsync(InvoiceInfo info)
     {
-        var api = await GetApiAsync();
-        if (api.Client == null)
+        try
         {
-            throw new InvoicingException("Did not find PowerOffice Client");
-        }
-
-        var result = new InvoiceResult();
-        var customer = await CreateCustomerIfNotExistsAsync(info, result);
-        _logger.LogInformation("* Bruker kunde med epost: {CustomerEmailAddress}, id {CustomerId}",
-            customer.EmailAddress, customer.Id);
-
-        await CreateProductsIfNotExistsAsync(info);
-
-        var invoice = new OutgoingInvoice
-        {
-            Status = OutgoingInvoiceStatus.Draft,
-            OrderDate = info.OrderDate?.ToDateTimeUnspecified(),
-            ContractNo = info.OrderId,
-            CustomerReference = info.CustomerInvoiceReference,
-            CustomerCode = customer.Code
-        };
-
-        if (!string.IsNullOrWhiteSpace(info.ProjectCode))
-        {
-            invoice.ProjectCode = info.ProjectCode;
-        }
-
-        foreach (var line in info.Lines)
-        {
-            if (line.Type == InvoiceLineType.Text)
+            var api = await GetApiAsync();
+            if (api.Client == null)
             {
-                invoice.OutgoingInvoiceLines.Add(
-                    new OutgoingInvoiceLine
-                    {
-                        LineType = VoucherLineType.Text,
-                        Description = line.Description
-                    });
+                throw new InvoicingException("Did not find PowerOffice Client");
             }
-            else
+
+            var result = new InvoiceResult();
+            var customer = await CreateCustomerIfNotExistsAsync(info, result);
+            _logger.LogInformation("* Bruker kunde med epost: {CustomerEmailAddress}, id {CustomerId}",
+                customer.EmailAddress, customer.Id);
+
+            await CreateProductsIfNotExistsAsync(info);
+
+            var invoice = new OutgoingInvoice
             {
-                var invoiceLine = new OutgoingInvoiceLine
+                Status = OutgoingInvoiceStatus.Draft,
+                OrderDate = info.OrderDate?.ToDateTimeUnspecified(),
+                ContractNo = info.OrderId,
+                CustomerReference = info.CustomerInvoiceReference,
+                CustomerCode = customer.Code
+            };
+
+            if (!string.IsNullOrWhiteSpace(info.ProjectCode))
+            {
+                invoice.ProjectCode = info.ProjectCode;
+            }
+
+            foreach (var line in info.Lines)
+            {
+                if (line.Type == InvoiceLineType.Text)
                 {
-                    LineType = VoucherLineType.Normal,
-                    ProductCode = line.ProductCode,
-                    Quantity = line.Quantity,
-                    Description = line.Description,
-                    UnitPrice = line.Price
-                };
-                invoice.OutgoingInvoiceLines.Add(invoiceLine);
+                    invoice.OutgoingInvoiceLines.Add(
+                        new OutgoingInvoiceLine
+                        {
+                            LineType = VoucherLineType.Text,
+                            Description = line.Description
+                        });
+                }
+                else
+                {
+                    var invoiceLine = new OutgoingInvoiceLine
+                    {
+                        LineType = VoucherLineType.Normal,
+                        ProductCode = line.ProductCode,
+                        Quantity = line.Quantity,
+                        Description = line.Description,
+                        UnitPrice = line.Price
+                    };
+                    invoice.OutgoingInvoiceLines.Add(invoiceLine);
+                }
             }
-        }
 
-        var outgoingInvoice = await api.OutgoingInvoice.SaveAsync(invoice);
-        result.InvoiceId = outgoingInvoice.Id.ToString();
-        return result;
+            var outgoingInvoice = await api.OutgoingInvoice.SaveAsync(invoice);
+            result.InvoiceId = outgoingInvoice.Id.ToString();
+            return result;
+        }
+        catch (ApiFieldValidationException ex)
+        {
+            // Check if the error is related to EHF registration
+            if (ex.Message.Contains("not registered for EHF", StringComparison.OrdinalIgnoreCase))
+            {
+                // Extract organization number from the error message
+                var match = Regex.Match(ex.Message, @"organization no\.\s*(\d+)");
+                var orgNumber = match.Success ? match.Groups[1].Value : info.CustomerVatNumber ?? "ukjent";
+
+                _logger.LogWarning(ex, "Organization {OrgNumber} not registered for EHF", orgNumber);
+                throw new EhfValidationException(orgNumber, ex);
+            }
+
+            // Re-throw other validation errors as generic invoicing exceptions
+            throw new InvoicingException($"PowerOffice validation error: {ex.Message}", ex);
+        }
     }
 
     private async Task<Customer> CreateCustomerIfNotExistsAsync(InvoiceInfo info, InvoiceResult result)

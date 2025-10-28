@@ -8,6 +8,7 @@ import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Definition, DescriptionList, Term } from '@eventuras/ratio-ui/core/DescriptionList';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
+import { useToast } from '@eventuras/toast';
 
 import { OrderDto, PaymentProvider } from '@/lib/eventuras-sdk';
 
@@ -22,6 +23,7 @@ export type OrderActionsMenuProps = {
 };
 export const OrderActionsMenu = ({ order }: OrderActionsMenuProps) => {
   const t = useTranslations();
+  const toast = useToast();
   const [invoiceDrawerOpen, setInvoiceDrawerOpen] = useState(false);
   const router = useRouter();
   logger.info({ order: order, registration: order.registration }, 'Order details');
@@ -51,16 +53,26 @@ export const OrderActionsMenu = ({ order }: OrderActionsMenuProps) => {
   const handleInvoiceOrder = async () => {
     if (!order.orderId) {
       logger.error('Order ID is required');
+      toast.error('Order ID is required');
       return;
     }
 
     try {
-      await invoiceOrderAction(order.orderId);
+      const result = await invoiceOrderAction(order.orderId);
+
+      if (!result.success) {
+        logger.error({ error: result.error, orderId: order.orderId }, 'Failed to create invoice');
+        toast.error(result.error.message);
+        return;
+      }
+
       logger.info({ orderId: order.orderId }, 'Invoice created successfully');
+      toast.success('Invoice sent to accounting system');
       setInvoiceDrawerOpen(false);
       router.refresh();
     } catch (error) {
       logger.error({ error, orderId: order.orderId }, 'Failed to create invoice');
+      toast.error('An unexpected error occurred');
     }
   };
   return (

@@ -40,14 +40,27 @@ public class InvoicesController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<InvoiceDto>> CreateInvoice([FromBody] InvoiceRequestDto request, CancellationToken cancellationToken)
     {
-        var orders = await _orderRetrievalService.GetOrdersPopulatedByRegistrationAsync(request.OrderIds, cancellationToken);
+        try
+        {
+            var orders = await _orderRetrievalService.GetOrdersPopulatedByRegistrationAsync(request.OrderIds, cancellationToken);
 
-        _logger.LogInformation($"Creating invoice for orders {orders}");
-        var invoiceInfo = InvoiceInfo.CreateFromOrderList(orders);
-        _logger.LogInformation($"Invoice info {invoiceInfo}");
+            _logger.LogInformation($"Creating invoice for orders {orders}");
+            var invoiceInfo = InvoiceInfo.CreateFromOrderList(orders);
+            _logger.LogInformation($"Invoice info {invoiceInfo}");
 
-        var invoice = await _invoicingService.CreateInvoiceAsync(orders.ToArray(), invoiceInfo);
+            var invoice = await _invoicingService.CreateInvoiceAsync(orders.ToArray(), invoiceInfo);
 
-        return new InvoiceDto(invoice);
+            return new InvoiceDto(invoice);
+        }
+        catch (EhfValidationException ex)
+        {
+            _logger.LogWarning(ex, "EHF validation failed for organization {OrgNumber}", ex.OrganizationNumber);
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (InvoicingException ex)
+        {
+            _logger.LogError(ex, "Invoice creation failed");
+            return BadRequest(new { message = ex.Message });
+        }
     }
 }
