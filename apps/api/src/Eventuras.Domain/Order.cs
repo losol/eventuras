@@ -47,6 +47,12 @@ public class Order
         get => _status;
         set
         {
+            // Allow idempotent operations - setting the same status is a no-op
+            if (_status == value)
+            {
+                return;
+            }
+
             switch (value)
             {
                 case OrderStatus.Draft:

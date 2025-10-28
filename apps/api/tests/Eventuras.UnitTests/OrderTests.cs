@@ -25,6 +25,20 @@ public class OrderTests
         }
 
         [Theory]
+        [InlineData(OrderStatus.Draft)]
+        [InlineData(OrderStatus.Verified)]
+        [InlineData(OrderStatus.Invoiced)]
+        [InlineData(OrderStatus.Cancelled)]
+        [InlineData(OrderStatus.Refunded)]
+        public void AllowIdempotentOperations(OrderStatus status)
+        {
+            // Setting the same status should not throw an exception
+            var order = getOrderWithStatus(status);
+            order.Status = status; // Should be a no-op, not throw
+            Assert.Equal(status, order.Status);
+        }
+
+        [Theory]
         [InlineData(OrderStatus.Verified, OrderStatus.Draft)]
         [InlineData(OrderStatus.Draft, OrderStatus.Invoiced)]
         [InlineData(OrderStatus.Cancelled, OrderStatus.Invoiced)]

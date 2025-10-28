@@ -33,7 +33,7 @@ public class OrderPatchDto
     /// <param name="order">The order to update</param>
     public void ApplyTo(Order order)
     {
-        if (Status.HasValue)
+        if (Status.HasValue && Status.Value != order.Status)
         {
             order.Status = Status.Value;
             order.AddLog($"Status updated to {Status.Value}");
@@ -44,7 +44,7 @@ public class OrderPatchDto
             order.Comments = Comments;
         }
 
-        if (PaymentMethod.HasValue)
+        if (PaymentMethod.HasValue && PaymentMethod.Value != order.PaymentMethod)
         {
             order.PaymentMethod = PaymentMethod.Value;
             order.AddLog($"Payment method updated to {PaymentMethod.Value}");

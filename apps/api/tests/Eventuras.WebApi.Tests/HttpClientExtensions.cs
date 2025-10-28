@@ -183,6 +183,16 @@ internal static class HttpClientExtensions
         return await httpClient.PutAsync(requestUri, new { });
     }
 
+    public static async Task<HttpResponseMessage> PatchAsync(
+        this HttpClient httpClient,
+        string requestUri,
+        object data)
+    {
+        return await httpClient.PatchAsync(requestUri,
+            new StringContent(JsonConvert.SerializeObject(data),
+                Encoding.UTF8, "application/json"));
+    }
+
     public static async Task<HttpResponseMessage> DeleteAsync(
         this HttpClient httpClient,
         string requestUri,
