@@ -60,6 +60,22 @@ This project uses specialized agents for different contexts:
 - **Tech**: TypeScript, Node.js, Fastify/Express, Playwright
 - **Focus**: PDF generation, microservice architecture, API design
 
+## Path-Specific Instructions
+
+For detailed coding guidelines that automatically apply when working on specific file types, see:
+
+- **Playwright tests**: `.github/instructions/playwright-tests.instructions.md`
+  - Applies to: `**/playwright-e2e/**/*.spec.ts`
+  - Covers: Test structure, locators, assertions, authentication, and best practices
+
+- **UI components**: `.github/instructions/ui-components.instructions.md`
+  - Applies to: `libs/ratio-ui/**/*.{ts,tsx}`
+  - Covers: Component patterns, styling, accessibility, TypeScript, and Storybook
+
+- **Backend services**: `.github/instructions/backend-services.instructions.md`
+  - Applies to: `apps/api/src/**/*.cs`
+  - Covers: Architecture, async/await, DI, controllers, services, testing, and documentation
+
 ## Logging Preferences
 
 ### Use `@eventuras/logger` Instead of `console.log`

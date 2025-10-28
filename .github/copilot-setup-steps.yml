@@ -1,0 +1,106 @@
+name: Copilot Setup Steps
+
+# Automatically run when setup steps are changed for validation
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+  pull_request:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+
+jobs:
+  # The job MUST be called `copilot-setup-steps` or it will not be picked up by Copilot
+  copilot-setup-steps:
+    runs-on: ubuntu-latest
+
+    # Set permissions to minimum needed
+    permissions:
+      contents: read
+
+    # PostgreSQL service for backend tests
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: eventuras_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      # Checkout repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Setup Node.js for frontend
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # Install pnpm
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: '10.19.0'
+
+      # Cache pnpm dependencies
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
+
+      # Install all dependencies
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Build shared libraries (required for web app)
+      - name: Build shared libraries
+        run: |
+          pnpm --filter "@eventuras/core" build
+          pnpm --filter "@eventuras/core-nextjs" build
+          pnpm --filter "@eventuras/event-sdk" build
+          pnpm --filter "@eventuras/logger" build
+          pnpm --filter "@eventuras/toast" build
+          pnpm --filter "@eventuras/ratio-ui" build
+          pnpm --filter "@eventuras/ratio-ui-next" build
+
+      # Setup .NET SDK for backend
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      # Cache .NET packages
+      - name: Cache .NET packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      # Restore .NET dependencies
+      - name: Restore .NET packages
+        working-directory: apps/api
+        run: dotnet restore
+
+      # Verify environment is ready
+      - name: Verify setup
+        run: |
+          echo "✓ Node.js: $(node --version)"
+          echo "✓ pnpm: $(pnpm --version)"
+          echo "✓ .NET: $(dotnet --version)"
+          echo "✓ PostgreSQL: Running on localhost:5432"
+          echo "✓ Development environment ready"
