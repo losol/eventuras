@@ -4,7 +4,10 @@
 @source '**/*.tsx';
 @source '../../forms/src';
 @source '../../datatable/src';
-@source inline("md:grid-cols-2 lg:grid-cols-3 gap-2 bg-gray-500 dark:bg-gray-700 sm:hidden sm:block md:hidden md:block lg:hidden lg:block");
+@source inline("md:grid-cols-2 lg:grid-cols-3 gap-2 bg-gray-500 dark:bg-gray-700 sm:hidden sm:block md:hidden md:block lg:hidden lg:block my-2 my-3 my-4 p-2 rounded-lg");
+@source inline("my-1 my-2 my-3 my-4 my-5 my-6 my-7 my-8 my-9 my-10");
+@source inline("py-1 py-2 py-3 py-4 py-5 py-6 py-7 py-8 py-9 py-10");
+
 
 @custom-variant dark (&:where(html[data-theme="dark"] &, body[data-theme="dark"] &, [data-theme="dark"] *));
 
