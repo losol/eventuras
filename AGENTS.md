@@ -40,18 +40,21 @@ This file provides context and instructions for AI coding agents working on the 
 This project uses specialized agents for different contexts:
 
 ### Backend Agent
+
 - **Scope**: `apps/api/`
 - **File**: `.ai/agents/backend-agent.md`
 - **Tech**: C# .NET, ASP.NET Core, Entity Framework Core, PostgreSQL
 - **Focus**: API development, business logic, database migrations, external integrations
 
 ### Frontend Agent
+
 - **Scope**: `apps/web/`, `apps/historia/`, `libs/`, `apps/web-e2e/`
 - **File**: `.ai/agents/frontend-agent.md`
 - **Tech**: TypeScript, React, Next.js, Tailwind CSS, Playwright
 - **Focus**: UI development, shared libraries, E2E testing, refactoring to libs
 
 ### Converto Agent
+
 - **Scope**: `apps/convertoapi/`
 - **File**: `.ai/agents/converto-agent.md`
 - **Tech**: TypeScript, Node.js, Fastify/Express, Playwright
@@ -64,12 +67,12 @@ This project uses specialized agents for different contexts:
 Always use the structured logger from `@eventuras/logger` instead of `console.log` for better observability and debugging.
 
 ```typescript
-import { Logger } from '@eventuras/logger';
+import { Logger } from "@eventuras/logger";
 
 // Create a logger instance with namespace and context
-const logger = Logger.create({ 
-  namespace: 'web:admin:collections', 
-  context: { module: 'CollectionEditor' } 
+const logger = Logger.create({
+  namespace: "web:admin:collections",
+  context: { module: "CollectionEditor" },
 });
 ```
 
@@ -82,7 +85,7 @@ const logger = Logger.create({
 - Example:
 
   ```typescript
-  logger.info({ collectionId: data.id }, 'Collection updated successfully');
+  logger.info({ collectionId: data.id }, "Collection updated successfully");
   ```
 
 **For Error Cases:**
@@ -92,11 +95,14 @@ const logger = Logger.create({
 - Example:
 
   ```typescript
-  logger.error({ 
-    error, 
-    collectionId: data.id,
-    input: data 
-  }, 'Failed to update collection');
+  logger.error(
+    {
+      error,
+      collectionId: data.id,
+      input: data,
+    },
+    "Failed to update collection",
+  );
   ```
 
 **Logging Levels:**
@@ -110,7 +116,7 @@ const logger = Logger.create({
 
 ```typescript
 export async function updateCollection(data: EventCollectionDto) {
-  logger.info({ collectionId: data.id }, 'Updating collection...');
+  logger.info({ collectionId: data.id }, "Updating collection...");
 
   try {
     const response = await putV3EventcollectionsById({
@@ -119,19 +125,25 @@ export async function updateCollection(data: EventCollectionDto) {
     });
 
     if (!response.data) {
-      logger.error({ 
-        error: response.error,
-        collectionId: data.id,
-        requestBody: data 
-      }, 'Failed to update collection');
-      return actionError('Failed to update collection');
+      logger.error(
+        {
+          error: response.error,
+          collectionId: data.id,
+          requestBody: data,
+        },
+        "Failed to update collection",
+      );
+      return actionError("Failed to update collection");
     }
 
-    logger.info({ collectionId: data.id }, 'Collection updated successfully');
-    return actionSuccess(undefined, 'Collection successfully updated!');
+    logger.info({ collectionId: data.id }, "Collection updated successfully");
+    return actionSuccess(undefined, "Collection successfully updated!");
   } catch (error) {
-    logger.error({ error, collectionId: data.id }, 'Unexpected error updating collection');
-    return actionError('An unexpected error occurred');
+    logger.error(
+      { error, collectionId: data.id },
+      "Unexpected error updating collection",
+    );
+    return actionError("An unexpected error occurred");
   }
 }
 ```
@@ -143,16 +155,16 @@ export async function updateCollection(data: EventCollectionDto) {
 Always provide user feedback for actions using the toast notification system from `@eventuras/toast`.
 
 ```typescript
-import { useToast } from '@eventuras/toast';
+import { useToast } from "@eventuras/toast";
 
 const Component = () => {
   const toast = useToast();
 
   // Use toast for user feedback
-  toast.success('Operation completed successfully!');
-  toast.error('Something went wrong');
-  toast.info('Here is some information');
-  toast.warn('Warning: Check this out');
+  toast.success("Operation completed successfully!");
+  toast.error("Something went wrong");
+  toast.info("Here is some information");
+  toast.warn("Warning: Check this out");
 };
 ```
 
@@ -206,6 +218,128 @@ export function ProductForm() {
   return <form onSubmit={handleSubmit}>...</form>;
 }
 ```
+
+## Server Actions Pattern
+
+### Use `ServerActionResult` for Consistent Server Actions
+
+Always use the standardized `ServerActionResult` type from `@eventuras/core-nextjs/actions` for server actions that perform mutations or data fetching that can fail.
+
+**Import the utilities:**
+
+```typescript
+"use server";
+
+import {
+  actionError,
+  actionSuccess,
+  ServerActionResult,
+} from "@eventuras/core-nextjs/actions";
+```
+
+**Server Action Pattern:**
+
+```typescript
+"use server";
+
+import { Logger } from "@eventuras/logger";
+import {
+  actionError,
+  actionSuccess,
+  ServerActionResult,
+} from "@eventuras/core-nextjs/actions";
+
+const logger = Logger.create({
+  namespace: "web:admin:events",
+  context: { module: "excelExportActions" },
+});
+
+/**
+ * Server action to download registrations as Excel file
+ * @param eventId - The event ID to download registrations for
+ * @returns Excel file as base64-encoded string or error
+ */
+export async function downloadRegistrationsExcel(
+  eventId: number,
+): Promise<ServerActionResult<string>> {
+  try {
+    logger.info({ eventId }, "Downloading registrations Excel file");
+
+    // Perform authentication check
+    const token = await getAccessToken();
+    if (!token) {
+      logger.error({ eventId }, "No access token available");
+      return actionError("Authentication required");
+    }
+
+    // Make API call
+    const response = await fetch(`${apiUrl}/registrations?EventId=${eventId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (!response.ok) {
+      logger.error(
+        { eventId, status: response.status },
+        "Failed to download file",
+      );
+      return actionError(`Failed to download: ${response.status}`);
+    }
+
+    const data = await response.text();
+    logger.info({ eventId }, "File downloaded successfully");
+
+    return actionSuccess(data);
+  } catch (error) {
+    logger.error({ error, eventId }, "Error downloading file");
+    return actionError(
+      error instanceof Error ? error.message : "Unknown error occurred",
+    );
+  }
+}
+```
+
+**Client Component Pattern:**
+
+```typescript
+'use client';
+
+import { useToast } from '@eventuras/toast';
+import { downloadRegistrationsExcel } from './excelExportActions';
+
+export function ExcelExportButton({ eventId }: { eventId: number }) {
+  const toast = useToast();
+
+  const handleDownload = async () => {
+    const result = await downloadRegistrationsExcel(eventId);
+
+    if (!result.success) {
+      // result.error is typed as { message: string; code?: string; details?: unknown }
+      toast.error(result.error.message);
+      return;
+    }
+
+    // result.data is typed correctly based on ServerActionResult<string>
+    const data = result.data;
+    toast.success('Downloaded successfully!');
+  };
+
+  return <button onClick={handleDownload}>Download Excel</button>;
+}
+```
+
+**Benefits:**
+
+- **Type Safety**: Discriminated union provides proper TypeScript narrowing
+- **Consistency**: All server actions follow the same pattern
+- **Error Handling**: Structured error format with message, code, and details
+- **Optional Messages**: Success actions can include user-friendly messages
+
+**Return Type Guidelines:**
+
+- Use `ServerActionResult<T>` where `T` is the success data type
+- Use `ServerActionResult<void>` for actions that don't return data
+- Use `actionSuccess(data, message?)` for success cases
+- Use `actionError(message, code?, details?)` for error cases
 
 ## UI Component Development Workflow
 
@@ -264,9 +398,9 @@ When existing variants don't meet design requirements, create new variants in th
 ```typescript
 // In ratio-ui-next/Link component
 const variants = {
-  'button-primary': '...',
-  'button-secondary': '...',
-  'button-danger': '...', // New variant
+  "button-primary": "...",
+  "button-secondary": "...",
+  "button-danger": "...", // New variant
 };
 ```
 

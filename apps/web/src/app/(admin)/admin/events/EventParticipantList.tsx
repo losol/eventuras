@@ -15,6 +15,7 @@ import type {
   RegistrationDto,
 } from '@/lib/eventuras-sdk';
 
+import { ExcelExportButton } from './[id]/ExcelExportButton';
 import AddUserToEvent from './AddUserToEvent';
 import EventStatistics from './EventStatistics';
 import { getRegistrationDetails } from './participantActions';
@@ -139,6 +140,9 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
             <div className="flex items-center gap-3">
               {/* Search input */}
               {searchInput}
+
+              {/* Excel export button */}
+              {event.id && <ExcelExportButton EventinfoId={event.id} />}
 
               {/* Add User button */}
               {showAddUser && (
