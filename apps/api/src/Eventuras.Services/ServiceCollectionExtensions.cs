@@ -21,7 +21,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUserAccessControlService, UserAccessControlService>();
         services.AddScoped<IPaymentMethodService, PaymentMethodService>();
         services.AddScoped<IProductsService, ProductsService>();
-        services.AddScoped<IMessageLogService, MessageLogService>();
         services.AddRegistrationServices();
         services.AddNotificationServices();
         services.AddOrganizationServices();
