@@ -177,25 +177,4 @@ internal static class EventQueryableExtensions
 
         return query.Where(e => e.OrganizationId == organization.OrganizationId);
     }
-
-    public static IQueryable<EventInfo> HavingNoOrganization(this IQueryable<EventInfo> query)
-    {
-        return HavingNoOrganizationOr(query, null);
-    }
-
-    public static IQueryable<EventInfo> HavingNoOrganizationOr(this IQueryable<EventInfo> query,
-        Organization organization = null)
-    {
-        if (organization != null)
-        {
-            query = query.Where(e => e.OrganizationId == null ||
-                                     e.OrganizationId == organization.OrganizationId);
-        }
-        else
-        {
-            query = query.Where(e => e.OrganizationId == null);
-        }
-
-        return query;
-    }
 }
