@@ -37,17 +37,6 @@ internal class ConfigurableEmailSender : IEmailSender
         return new HealthCheckStatus(HealthStatus.Unhealthy);
     }
 
-    [Obsolete("Use SendEmailAsync(EmailModel emailModel, int? organizationId = null)")]
-    public async Task SendEmailAsync(string address, string subject, string message, Attachment attachment = null,
-        EmailMessageType messageType = EmailMessageType.Html)
-    {
-        var sender = await GetEmailSenderAsync();
-        if (sender != null)
-        {
-            await sender.SendEmailAsync(address, subject, message, attachment, messageType);
-        }
-    }
-
     public async Task SendEmailAsync(EmailModel emailModel, EmailOptions options = null)
     {
         var sender = await GetEmailSenderAsync(options?.OrganizationId);
