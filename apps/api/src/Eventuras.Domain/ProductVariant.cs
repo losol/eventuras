@@ -10,9 +10,7 @@ public class ProductVariant
     public int ProductVariantId { get; set; }
     public string Name { get; set; }
 
-    [StringLength(300, ErrorMessage = "Beskrivelsen kan bare være 300 tegn.")]
-    [Display(Name = "Kort beskrivelse av varianten")]
-    [DataType(DataType.MultilineText)]
+    [StringLength(300)]
     public string Description { get; set; }
 
     public decimal Price { get; set; } = 0;

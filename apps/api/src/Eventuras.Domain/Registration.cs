@@ -78,6 +78,7 @@ public class Registration
 
     public string Notes { get; set; }
 
+    [Obsolete("Use BusinessEventLog entity for tracking registration events. This property will be removed in a future version.")]
     public string Log { get; set; }
 
     public Instant? RegistrationTime { get; set; } = SystemClock.Instance.Now();
@@ -145,8 +146,10 @@ public class Registration
         return Certificate;
     }
 
+    [Obsolete("Use BusinessEventLog entity for tracking registration events. This method will be removed in a future version.")]
     public void AddLog(string text = null)
     {
+#pragma warning disable CS0618 // Type or member is obsolete
         var logText = $"{DateTime.UtcNow.ToString("u")}: ";
         if (!string.IsNullOrWhiteSpace(text))
         {
@@ -158,5 +161,6 @@ public class Registration
         }
 
         Log += logText + "\n";
+#pragma warning restore CS0618 // Type or member is obsolete
     }
 }

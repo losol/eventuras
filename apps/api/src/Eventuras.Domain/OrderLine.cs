@@ -42,7 +42,6 @@ public class OrderLine
         !string.IsNullOrWhiteSpace(ProductVariantName) ? $"{ProductName} ({ProductVariantName})" : $"{ProductName}";
 
 
-    [DataType(DataType.Currency)]
     public decimal Price { get; set; }
 
     public decimal VatPercent { get; set; } = 0;

@@ -50,8 +50,10 @@ public class ApplicationUser : IdentityUser
     public bool Archived { get; set; }
 
     // Log property and method
+    [Obsolete("Use BusinessEventLog entity for tracking user events. This property will be removed in a future version.")]
     [Column(TypeName = "jsonb")] public string Log { get; set; } = "[]";
 
+    [Obsolete("Use BusinessEventLog entity for tracking user events. This method will be removed in a future version.")]
     public void AddLog(string message, string? userId = null, LogLevel level = LogLevel.Information)
     {
         var logEntry = new

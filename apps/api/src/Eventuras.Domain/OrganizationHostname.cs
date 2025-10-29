@@ -9,11 +9,9 @@ public class OrganizationHostname
     public int OrganizationId { get; set; }
 
     [Required]
-    [StringLength(300, ErrorMessage = "Vertsnavn kan bare være 300 tegn.")]
-    [Display(Name = "Vertsnavn")]
+    [StringLength(300)]
     public string Hostname { get; set; }
 
-    [DisplayName("Aktiv")]
     public bool Active { get; set; } = true;
 
     [ForeignKey(nameof(OrganizationId))]
