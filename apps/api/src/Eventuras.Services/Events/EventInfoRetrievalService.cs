@@ -74,7 +74,7 @@ internal class EventInfoRetrievalService : IEventInfoRetrievalService
 
             return organization?.IsRoot == true
                 ? query
-                : query.HavingNoOrganizationOr(organization);
+                : query.HavingOrganization(organization);
         }
 
         if (!principal.IsPowerAdmin())
@@ -82,9 +82,7 @@ internal class EventInfoRetrievalService : IEventInfoRetrievalService
             var organization = await _currentOrganizationAccessorService
                 .GetCurrentOrganizationAsync(null, cancellationToken);
 
-            return principal.IsInRole(Roles.Admin)
-                ? query.HavingOrganization(organization) // admins can't manage no-org events
-                : query.HavingNoOrganizationOr(organization);
+            return query.HavingOrganization(organization);
         }
 
         return query;

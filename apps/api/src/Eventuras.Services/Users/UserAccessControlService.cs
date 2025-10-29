@@ -28,7 +28,7 @@ internal class UserAccessControlService : IUserAccessControlService
     }
 
 
-    public async Task CheckOwnerOrAdminAccessAsync(ApplicationUser user, CancellationToken cancellationToken)
+    public Task CheckOwnerOrAdminAccessAsync(ApplicationUser user, CancellationToken cancellationToken)
     {
         var requestingUser = _httpContextAccessor.HttpContext.User;
 
@@ -44,7 +44,7 @@ internal class UserAccessControlService : IUserAccessControlService
         if (user.Id == requestingUser.GetUserId())
         {
             _logger.LogInformation("Owner access granted.");
-            return;
+            return Task.CompletedTask;
         }
 
         // Check if the requesting user is an admin
@@ -53,7 +53,7 @@ internal class UserAccessControlService : IUserAccessControlService
         if (isAdmin)
         {
             _logger.LogInformation("Admin access granted.");
-            return;
+            return Task.CompletedTask;
         }
 
         // If neither, throw access denied exception
