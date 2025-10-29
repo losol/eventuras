@@ -148,7 +148,7 @@ public class OrderManagementService : IOrderManagementService
         {
             User = registration.User,
             Registration = registration,
-            CustomerName = registration.CustomerName ?? registration.User.Name,
+            CustomerName = registration.CustomerName ?? registration.User?.Name ?? string.Empty,
             CustomerEmail = registration.CustomerEmail ?? registration.CustomerEmail,
             CustomerVatNumber = registration.CustomerVatNumber,
             CustomerInvoiceReference = registration.CustomerInvoiceReference,

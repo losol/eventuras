@@ -50,10 +50,11 @@ public class RegistrationDto
         {
             if (products != null)
             {
+                // Product is guaranteed non-null by RegistrationProductDto and service layer
                 Products = products.Select(p => new ProductOrderDto(
                     p.ProductId,
                     p.ProductVariantId,
-                    p.Product != null ? new ProductDto(p.Product) : null!,
+                    new ProductDto(p.Product),
                     p.ProductVariant != null ? new ProductVariantDto(p.ProductVariant) : null,
                     p.Quantity
                 ));

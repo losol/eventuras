@@ -58,7 +58,7 @@ public static class ModelValidations
             {
                 Assert.True(product.ProductId > 0, "ProductId should be positive");
                 Assert.NotNull(product.Product);
-                Assert.True(product.Quantity != 0, "Quantity should not be zero");
+                Assert.True(product.Quantity != 0, "Quantity should be non-zero");
             }
         }
     }

@@ -180,11 +180,9 @@ public class RegistrationDomainTests
     {
         // Arrange
         var registration = new Registration { Log = null };
-        var beforeCall = DateTime.UtcNow;
 
         // Act
         registration.AddLog("Test");
-        var afterCall = DateTime.UtcNow;
 
         // Assert
         Assert.NotNull(registration.Log);
