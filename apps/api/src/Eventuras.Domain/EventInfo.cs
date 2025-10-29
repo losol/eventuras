@@ -44,21 +44,16 @@ public class EventInfo
     public string Category { get; set; }
 
     [StringLength(300)]
-    [DataType(DataType.MultilineText)]
     public string Description { get; set; }
 
     public bool Featured { get; set; } = false;
 
-    [DataType(DataType.MultilineText)]
     public string MoreInformation { get; set; }
 
-    [DataType(DataType.MultilineText)]
     public string Program { get; set; }
 
-    [DataType(DataType.MultilineText)]
     public string PracticalInformation { get; set; }
 
-    [DataType(DataType.MultilineText)]
     public string WelcomeLetter { get; set; }
 
     public bool Published { get; set; } = false;
@@ -72,30 +67,24 @@ public class EventInfo
     [Obsolete]
     public string ExternalRegistrationsUrl { get; set; }
 
-    [DataType(DataType.MultilineText)]
     public string InformationRequest { get; set; }
 
     public string Location { get; set; }
 
     public string City { get; set; }
 
-    [DataType(DataType.Date)]
     public LocalDate? DateStart { get; set; }
 
-    [DataType(DataType.Date)]
     public LocalDate? DateEnd { get; set; }
 
-    [DataType(DataType.Date)]
     public LocalDate? LastRegistrationDate { get; set; }
 
-    [DataType(DataType.Date)]
     public LocalDate? LastCancellationDate { get; set; }
 
     public int MaxParticipants { get; set; } = 0;
 
     public string CertificateTitle { get; set; }
 
-    [DataType(DataType.MultilineText)]
     public string CertificateDescription { get; set; } //Text for the certificate if issued.
 
     [NotMapped]
@@ -134,7 +123,6 @@ public class EventInfo
     public bool HasFeaturedImage => !string.IsNullOrWhiteSpace(FeaturedImageUrl);
     public bool HasExternalInfoPage => !string.IsNullOrWhiteSpace(ExternalInfoPageUrl);
     public bool HasExternalRegistrationPage => !string.IsNullOrWhiteSpace(ExternalRegistrationsUrl);
-    [Display(Name = "Nettkurs?")]
     public bool OnDemand { get; set; } = false;
     // Consider removing end
 

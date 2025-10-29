@@ -88,12 +88,13 @@ public class Order
         }
     }
 
-    // From registration, should be Participant details, if Customer details
-    // does not exist.
-    // TODO: REMOVE, USE FROM REGISTRATION...
+    [Obsolete("Use Registration Participant details")]
     public string CustomerName { get; set; }
+    [Obsolete("Use Registration Participant details")]
     public string CustomerEmail { get; set; }
+    [Obsolete("Use Registration Participant details")]
     public string CustomerVatNumber { get; set; }
+    [Obsolete("Use Registration Participant details")]
     public string CustomerInvoiceReference { get; set; }
     public PaymentProvider PaymentMethod { get; set; }
 
@@ -103,6 +104,7 @@ public class Order
     public string Comments { get; set; }
 
     // Log is information from the system. Ie registration time and user.
+    [Obsolete("Use BusinessEventLog entity for tracking order events. This property will be removed in a future version.")]
     public string Log { get; set; }
 
     // Navigational properties
@@ -112,8 +114,10 @@ public class Order
 
     [ForeignKey(nameof(InvoiceId))] public Invoice Invoice { get; set; }
 
+    [Obsolete("Use BusinessEventLog entity for tracking order events. This method will be removed in a future version.")]
     public void AddLog(string text = null)
     {
+#pragma warning disable CS0618 // Type or member is obsolete
         var logText = $"{DateTime.UtcNow.ToString("u")}: ";
         if (!string.IsNullOrWhiteSpace(text))
         {
@@ -125,12 +129,15 @@ public class Order
         }
 
         Log += logText + "\n";
+#pragma warning restore CS0618 // Type or member is obsolete
     }
 
     public void SetStatus(OrderStatus newStatus)
     {
         Status = newStatus;
+#pragma warning disable CS0618 // Type or member is obsolete
         this.AddLog();
+#pragma warning restore CS0618 // Type or member is obsolete
     }
 
     public bool CanEdit =>
@@ -140,6 +147,7 @@ public class Order
         OrderLines.Sum(l => l.LineTotal);
 
 
+    [Obsolete("Use service layer.")]
     public Order CreateRefundOrder()
     {
         if (Status != OrderStatus.Invoiced)
