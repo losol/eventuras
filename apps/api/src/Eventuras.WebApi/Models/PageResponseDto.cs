@@ -44,16 +44,13 @@ public class PageResponseDto<T>
         Func<TD, Task<TR>> f,
         CancellationToken cancellationToken = default)
     {
-        var data = new List<TR>();
-        foreach (var item in paging.Data)
-        {
-            data.Add(await f(item));
-        }
+        var tasks = paging.Data.Select(f).ToArray();
+        var data = await Task.WhenAll(tasks);
 
         return new PageResponseDto<TR>(query)
         {
             Total = paging.TotalRecords,
-            Data = data.ToArray()
+            Data = data
         };
     }
 }
