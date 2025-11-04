@@ -13,7 +13,7 @@ export type ParticipantsSectionProps = {
   eventProducts: ProductDto[];
 };
 const initialSelectedStatistics = {
-  [ParticipationTypes.active]: false,
+  [ParticipationTypes.active]: true,
   [ParticipationTypes.waitingList]: false,
   [ParticipationTypes.cancelled]: false,
 };
@@ -43,7 +43,9 @@ const ParticipantsSection: React.FC<ParticipantsSectionProps> = props => {
             onStatusFilterChange={(selection: string) => {
               const s = selection as ParticipationTypesKey;
               setSelectedStatistic({
-                ...initialSelectedStatistics,
+                [ParticipationTypes.active]: false,
+                [ParticipationTypes.waitingList]: false,
+                [ParticipationTypes.cancelled]: false,
                 [selection]: !selectedStatistic[s],
               });
             }}

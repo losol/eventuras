@@ -3,7 +3,7 @@
 import React, { useMemo, useState, useTransition } from 'react';
 import { useTranslations } from 'next-intl';
 
-import { type ColumnFilter, DataTable } from '@eventuras/datatable';
+import { DataTable } from '@eventuras/datatable';
 import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
 
 import EditRegistrationProductsDialog from '@/components/eventuras/EditRegistrationProductsDialog';
@@ -14,6 +14,7 @@ import type {
   ProductDto,
   RegistrationDto,
 } from '@/lib/eventuras-sdk';
+import { participationMap } from '@/utils/api/mappers';
 
 import { ExcelExportButton } from './[id]/ExcelExportButton';
 import AddUserToEvent from './AddUserToEvent';
@@ -59,7 +60,12 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
     setParticipants(prevParticipants =>
       prevParticipants.map(participant =>
         participant.registrationId === updatedRegistration.registrationId
-          ? updatedRegistration
+          ? {
+              ...updatedRegistration,
+              // Preserve user info from the original registration since API might not return it
+              user: updatedRegistration.user || participant.user,
+              userId: updatedRegistration.userId || participant.userId,
+            }
           : participant
       )
     );
@@ -103,25 +109,29 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
     [t, eventProducts, isLoadingRegistration]
   );
 
-  // Column filters based on status
-  const columnFilter: ColumnFilter[] = useMemo(() => {
-    if (!filteredStatus) return [];
-    return [{ id: 'status', value: filteredStatus }];
-  }, [filteredStatus]);
+  // Filter participants by status
+  const filteredParticipants = useMemo(() => {
+    if (!filteredStatus) return participants;
+
+    // Get the registration statuses for the selected participation type
+    const statusesToInclude = participationMap[filteredStatus as keyof typeof participationMap];
+    if (!statusesToInclude) return participants;
+
+    return participants.filter(p => p.status && statusesToInclude.includes(p.status));
+  }, [participants, filteredStatus]);
 
   return (
     <div>
       {/* DataTable with custom toolbar combining filters and search */}
       <DataTable
-        data={participants}
+        data={filteredParticipants}
         columns={columns}
         clientsidePagination={true}
         pageSize={250}
         enableGlobalSearch={true}
-        columnFilters={columnFilter}
-        getRowId={row => row.registrationId?.toString() ?? ''}
+        getRowId={(row: RegistrationDto) => row.registrationId?.toString() ?? ''}
         getRowCanExpand={() => true}
-        renderSubComponent={({ row }) =>
+        renderSubComponent={({ row }: { row: { original: RegistrationDto } }) =>
           renderExpandedRow({
             registration: row.original,
             onStatusUpdate: handleStatusUpdate,
