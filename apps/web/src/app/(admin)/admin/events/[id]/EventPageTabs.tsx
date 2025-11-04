@@ -22,6 +22,7 @@ import {
 import slugify from '@/utils/slugify';
 
 import CommunicationSection from './CommunicationSection';
+import EconomySection from './EconomySection';
 import {
   AdvancedSection,
   CertificateSection,
@@ -107,7 +108,8 @@ type EventPageTabsProps = {
     | 'certificate'
     | 'advanced'
     | 'communication'
-    | 'products';
+    | 'products'
+    | 'economy';
 };
 
 export default function EventPageTabs({
@@ -247,6 +249,10 @@ export default function EventPageTabs({
         <Tabs.Item id="advanced" title={t('admin.events.tabs.advanced')} testId="tab-advanced">
           <AdvancedSection eventId={eventinfo.id} />
           <SaveButton onSave={handleAutoSave} />
+        </Tabs.Item>
+
+        <Tabs.Item id="economy" title={t('admin.events.tabs.economy')} testId="tab-economy">
+          <EconomySection participants={participants} />
         </Tabs.Item>
       </Tabs>
     </Form>

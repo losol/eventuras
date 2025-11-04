@@ -79,7 +79,23 @@
       "descriptions": "Beskrivelse",
       "overview": "Oversikt",
       "participants": "Deltakere",
-      "products": "Produkter"
+      "products": "Produkter",
+      "economy": "Økonomi"
+    }
+  },
+  "economy": {
+    "statistics": {
+      "totalOrders": "Totale ordre",
+      "totalRevenue": "Total inntekt",
+      "draftOrders": "Utkast",
+      "verifiedOrders": "Verifisert",
+      "invoicedOrders": "Fakturert",
+      "cancelledOrders": "Kansellert"
+    },
+    "labels": {
+      "noOrders": "Ingen ordre for dette arrangementet",
+      "orderDetails": "Ordredetaljer",
+      "participant": "Deltaker"
     }
   },
   "labels": {
