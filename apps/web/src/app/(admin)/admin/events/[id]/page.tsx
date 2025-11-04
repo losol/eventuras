@@ -42,6 +42,7 @@ export default async function EventAdminPage({ params, searchParams }: Readonly<
         EventId: id,
         IncludeUserInfo: true,
         IncludeProducts: true,
+        IncludeOrders: true,
       },
     }),
     getV3EventsByEventIdProducts({ path: { eventId: id } }),
@@ -132,6 +133,7 @@ export default async function EventAdminPage({ params, searchParams }: Readonly<
                 | 'advanced'
                 | 'communication'
                 | 'products'
+                | 'economy'
             }
           />
         </Container>

@@ -79,7 +79,23 @@
       "certificate": "Certificate",
       "advanced": "Advanced",
       "communication": "Communication",
-      "products": "Products"
+      "products": "Products",
+      "economy": "Economy"
+    }
+  },
+  "economy": {
+    "statistics": {
+      "totalOrders": "Total Orders",
+      "totalRevenue": "Total Revenue",
+      "draftOrders": "Draft",
+      "verifiedOrders": "Verified",
+      "invoicedOrders": "Invoiced",
+      "cancelledOrders": "Cancelled"
+    },
+    "labels": {
+      "noOrders": "No orders for this event",
+      "orderDetails": "Order Details",
+      "participant": "Participant"
     }
   },
   "labels": {
