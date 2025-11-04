@@ -13,6 +13,8 @@ public class RegistrationFormDto
 
     public PaymentMethod.PaymentProvider? PaymentMethod { get; set; }
 
+    public bool? FreeRegistration { get; set; }
+
     public void CopyTo(Registration registration)
     {
         if (Type.HasValue)
@@ -40,10 +42,16 @@ public class RegistrationFormDto
         {
             registration.PaymentMethod = PaymentMethod.Value;
         }
+
+        if (FreeRegistration.HasValue)
+        {
+            registration.FreeRegistration = FreeRegistration.Value;
+        }
     }
 
     public bool Empty => !Type.HasValue &&
                          Notes == null &&
                          Customer == null &&
-                         !PaymentMethod.HasValue;
+                         !PaymentMethod.HasValue &&
+                         !FreeRegistration.HasValue;
 }

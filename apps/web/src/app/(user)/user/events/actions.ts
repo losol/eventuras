@@ -106,6 +106,7 @@ export async function createEventRegistration(
     // If no products, return the registration
     if (!products.length) {
       revalidatePath(`/user/events/${newRegistration.eventId}`);
+      revalidatePath(`/admin/events/${newRegistration.eventId}`);
       return actionSuccess(registrationResponse.data, 'Registration created successfully!');
     }
 
@@ -119,6 +120,7 @@ export async function createEventRegistration(
     }
 
     revalidatePath(`/user/events/${newRegistration.eventId}`);
+    revalidatePath(`/admin/events/${newRegistration.eventId}`);
     return actionSuccess(registrationWithProducts, 'Registration created successfully!');
   } catch (error) {
     logger.error(
@@ -221,8 +223,14 @@ export async function addProductsToExistingRegistration(
       return actionError('Failed to add products to registration');
     }
 
+    // Revalidate both user and admin event pages
+    if (registrationWithProducts.eventId) {
+      revalidatePath(`/user/events/${registrationWithProducts.eventId}`);
+      revalidatePath(`/admin/events/${registrationWithProducts.eventId}`);
+    }
     revalidatePath(`/admin/registrations`);
     revalidatePath(`/user/events`);
+
     return actionSuccess(registrationWithProducts, 'Products added successfully!');
   } catch (error) {
     logger.error({ error, registrationId }, 'Unexpected error adding products');

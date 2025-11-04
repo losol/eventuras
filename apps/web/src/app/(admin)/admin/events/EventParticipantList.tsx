@@ -4,6 +4,7 @@ import React, { useMemo, useState, useTransition } from 'react';
 import { useTranslations } from 'next-intl';
 
 import { DataTable } from '@eventuras/datatable';
+import { Logger } from '@eventuras/logger';
 import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
 
 import EditRegistrationProductsDialog from '@/components/eventuras/EditRegistrationProductsDialog';
@@ -19,8 +20,13 @@ import { participationMap } from '@/utils/api/mappers';
 import { ExcelExportButton } from './[id]/ExcelExportButton';
 import AddUserToEvent from './AddUserToEvent';
 import EventStatistics from './EventStatistics';
-import { getRegistrationDetails } from './participantActions';
+import { getEventRegistrations, getRegistrationDetails } from './participantActions';
 import { createParticipantColumns, renderExpandedRow } from './ParticipantTableColumns';
+
+const logger = Logger.create({
+  namespace: 'web:admin:events',
+  context: { component: 'EventParticipantList' },
+});
 
 interface AdminEventListProps {
   participants: RegistrationDto[];
@@ -46,6 +52,35 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
 
   // Participant list state
   const [participants, setParticipants] = useState<RegistrationDto[]>(initialParticipants);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  // Function to manually refresh participants from API
+  const refreshParticipants = async () => {
+    if (isRefreshing) return;
+
+    setIsRefreshing(true);
+    logger.info({ eventId: event.id }, 'Manually refreshing participants list');
+
+    try {
+      const freshParticipants = await getEventRegistrations(event.id!);
+
+      logger.info({ count: freshParticipants.length }, 'Participants refreshed successfully');
+      setParticipants(freshParticipants);
+    } catch (error) {
+      logger.error({ error }, 'Error refreshing participants');
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
+  // Update participants from initial props when they change
+  React.useEffect(() => {
+    logger.info(
+      { count: initialParticipants.length },
+      'Participants prop updated, refreshing local state'
+    );
+    setParticipants([...initialParticipants]);
+  }, [initialParticipants]);
 
   // Email drawer state
   const [registrationOpen, setRegistrationOpen] = useState<RegistrationDto | null>(null);
@@ -156,7 +191,12 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
 
               {/* Add User button */}
               {showAddUser && (
-                <AddUserToEvent eventinfo={event} eventProducts={eventProducts} variant="outline" />
+                <AddUserToEvent
+                  eventinfo={event}
+                  eventProducts={eventProducts}
+                  variant="outline"
+                  onUserAdded={refreshParticipants}
+                />
               )}
             </div>
           </div>
@@ -192,13 +232,15 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
           withButton={false}
           title={fullRegistration.user?.name ?? undefined}
           description={`Edit products for user ${fullRegistration.user?.email}`}
-          onClose={(registrationUpdated: boolean) => {
-            if (registrationUpdated) {
-              // Reset state to force reload
-              setSelectedRegistration(null);
-              setFullRegistration(null);
-            }
+          onClose={async (registrationUpdated: boolean) => {
             setIsProductEditorOpen(false);
+            setSelectedRegistration(null);
+            setFullRegistration(null);
+
+            if (registrationUpdated) {
+              logger.info('Registration products updated, refreshing participants list');
+              await refreshParticipants();
+            }
           }}
         />
       )}

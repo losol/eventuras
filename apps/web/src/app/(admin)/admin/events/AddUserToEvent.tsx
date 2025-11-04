@@ -11,12 +11,12 @@ import {
   SelectValue,
 } from 'react-aria-components';
 import { Controller, useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
 import { Logger } from '@eventuras/logger';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Checkbox } from '@eventuras/ratio-ui/forms';
 import { Check } from '@eventuras/ratio-ui/icons';
 import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
 import { useToast } from '@eventuras/toast';
@@ -31,17 +31,17 @@ import {
   RegistrationType,
   UserDto,
 } from '@/lib/eventuras-sdk';
-import { RegistrationProduct } from '@/types';
-import { mapEventProductsToView, mapSelectedProductsToQuantity } from '@/utils/api/mappers';
+import { mapSelectedProductsToQuantity } from '@/utils/api/mappers';
 type AddUserToEventFormValues = {
   registrationType: string;
-  products: any;
+  freeRegistration: boolean;
+  products: Record<string, boolean | number>;
 };
 type AddUserCardProps = {
   user: UserDto;
   eventinfo: EventDto;
   onUseradded: (user: UserDto) => void;
-  products: RegistrationProduct[];
+  products: ProductDto[];
   onRemove: (u: UserDto) => void;
 };
 export const AddUserButton: React.FC = () => {
@@ -68,8 +68,8 @@ const RegistrationListBoxItem = (props: ListBoxItemProps & { children: React.Rea
     )}
   </ListBoxItem>
 );
-const renderRegistrationTypeItem = (value: any) => (
-  <RegistrationListBoxItem textValue={value} value={value} id={value} key={value}>
+const renderRegistrationTypeItem = (value: RegistrationType) => (
+  <RegistrationListBoxItem textValue={value} id={value} key={value}>
     {value}
   </RegistrationListBoxItem>
 );
@@ -91,11 +91,9 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
     setValue('registrationType', 'Participant'); //default to participant
   }, [setValue]);
   const onSubmitForm = async (values: AddUserToEventFormValues) => {
-    const productMap =
-      products && products?.length
-        ? mapSelectedProductsToQuantity(products, values.products)
-        : new Map();
-    const newRegistration: NewRegistrationDto = {
+    const productMap = mapSelectedProductsToQuantity(products, values.products);
+
+    const newRegistration: NewRegistrationDto & { freeRegistration?: boolean } = {
       userId: user.id!,
       eventId: eventinfo.id!,
       type: values.registrationType as RegistrationType,
@@ -105,6 +103,12 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
         email: user.email,
       },
     };
+
+    // Add freeRegistration if checked
+    if (values.freeRegistration) {
+      newRegistration.freeRegistration = true;
+    }
+
     try {
       const result = await createEventRegistration(newRegistration, productMap);
       if (result.success) {
@@ -121,9 +125,19 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
     }
   };
   return (
-    <form className="" onSubmit={handleSubmit(onSubmitForm)}>
-      <p>Name: {user.name}</p>
-      <p>Email: {user.email}</p>
+    <form
+      className="space-y-4 p-4 bg-white dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-slate-700"
+      onSubmit={handleSubmit(onSubmitForm)}
+    >
+      <div className="space-y-2">
+        <p className="text-sm">
+          <span className="font-semibold">Name:</span> {user.name}
+        </p>
+        <p className="text-sm">
+          <span className="font-semibold">Email:</span> {user.email}
+        </p>
+      </div>
+
       <Controller
         control={control}
         name="registrationType"
@@ -137,17 +151,19 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
           ];
           return (
             <Select
-              className="flex flex-col gap-1 w-[200px]"
+              className="flex flex-col gap-1 w-full"
               defaultSelectedKey="Participant"
               onBlur={onBlur}
               onSelectionChange={onChange}
             >
-              <Label className="text-white cursor-default">Registration Type</Label>
-              <AriaButton className="flex items-center cursor-default border-0 bg-white bg-opacity-90 pressed:bg-opacity-100 transition pl-5 text-base text-left leading-normal shadow-md text-gray-700 focus:outline-hidden focus-visible:ring-2 ring-white ring-offset-2 ring-offset-rose-700">
+              <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                Registration Type
+              </Label>
+              <AriaButton className="flex items-center cursor-default border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 pressed:bg-gray-50 dark:pressed:bg-slate-700 transition pl-3 pr-2 py-2 text-sm text-left leading-normal shadow-sm text-gray-700 dark:text-gray-300 focus:outline-hidden focus-visible:ring-2 ring-blue-500 rounded-md">
                 <SelectValue className="flex-1 truncate placeholder-shown:italic" />
-                <div className="text-white p-2 bg-primary-600">▼</div>
+                <div className="text-gray-500 dark:text-gray-400 px-2">▼</div>
               </AriaButton>
-              <Popover className="max-h-60 w-(--trigger-width) overflow-auto rounded-md bg-white text-base shadow-lg ring-1 ring-black/5 entering:animate-in entering:fade-in exiting:animate-out exiting:fade-out">
+              <Popover className="max-h-60 w-(--trigger-width) overflow-auto rounded-md bg-white dark:bg-slate-800 text-sm shadow-lg ring-1 ring-black/5 dark:ring-white/10 entering:animate-in entering:fade-in exiting:animate-out exiting:fade-out">
                 <ListBox className="outline-hidden p-1">
                   {registrationTypeOptions.map(value => renderRegistrationTypeItem(value))}
                 </ListBox>
@@ -156,24 +172,40 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
           );
         }}
       />
+
+      <div className="flex items-center gap-2">
+        <Checkbox id="freeRegistration" {...register('freeRegistration')}>
+          <label
+            htmlFor="freeRegistration"
+            className="text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer"
+          >
+            Free Registration (no payment required)
+          </label>
+        </Checkbox>
+      </div>
+
       {products.length > 0 && (
-        <>
-          <Heading as="h4">Choose Products</Heading>
-          <ProductSelection products={products} register={register} selectedProducts={[]} />
-        </>
+        <div className="space-y-2">
+          <Heading as="h4" className="text-base font-semibold">
+            Products
+          </Heading>
+          <ProductSelection
+            products={products}
+            register={register}
+            selectedProducts={[]}
+            isAdmin={true}
+          />
+        </div>
       )}
-      <Button variant="light" type="submit">
-        Add
-      </Button>
-      <Button
-        type="reset"
-        variant="light"
-        onClick={() => {
-          onRemove(user);
-        }}
-      >
-        Clear
-      </Button>
+
+      <div className="flex gap-2 pt-2">
+        <Button variant="primary" type="submit" className="flex-1">
+          Add User
+        </Button>
+        <Button type="button" variant="outline" onClick={() => onRemove(user)} className="flex-1">
+          Cancel
+        </Button>
+      </div>
     </form>
   );
 };
@@ -192,32 +224,37 @@ const AddUserToEventDrawer: React.FC<AddUserToEventDrawerProps> = ({
   onCancel,
 }) => {
   const [usersToAdd, setUsersToAdd] = useState<UserDto[]>([]);
+
   return (
-    <>
-      <Drawer isOpen={isOpen!} onCancel={onCancel}>
-        <Heading as="h2">Add users to event</Heading>
-        <UserLookup
-          onUserSelected={(u: UserDto) => {
-            setUsersToAdd([...usersToAdd, u]);
-          }}
-        />
-        {usersToAdd.map(user => (
-          <AddUserCard
-            user={user}
-            onUseradded={u => {
-              setUsersToAdd([...usersToAdd].filter(us => u.id !== us.id));
-              onUseradded(u);
+    <Drawer isOpen={isOpen!} onCancel={onCancel}>
+      <Drawer.Header as="h2">Add users to event</Drawer.Header>
+
+      <Drawer.Body>
+        <div className="space-y-4">
+          <UserLookup
+            onUserSelected={(u: UserDto) => {
+              setUsersToAdd([...usersToAdd, u]);
             }}
-            onRemove={u => {
-              setUsersToAdd([...usersToAdd].filter(us => u.id !== us.id));
-            }}
-            eventinfo={eventinfo}
-            products={mapEventProductsToView(eventProducts)}
-            key={user.id}
           />
-        ))}
-      </Drawer>
-    </>
+
+          {usersToAdd.map(user => (
+            <AddUserCard
+              user={user}
+              onUseradded={u => {
+                setUsersToAdd([...usersToAdd].filter(us => u.id !== us.id));
+                onUseradded(u);
+              }}
+              onRemove={u => {
+                setUsersToAdd([...usersToAdd].filter(us => u.id !== us.id));
+              }}
+              eventinfo={eventinfo}
+              products={eventProducts}
+              key={user.id}
+            />
+          ))}
+        </div>
+      </Drawer.Body>
+    </Drawer>
   );
 };
 export type AddUserToEventProps = {
@@ -225,19 +262,37 @@ export type AddUserToEventProps = {
   eventProducts: ProductDto[];
   isOpen?: boolean;
   variant?: 'primary' | 'secondary' | 'outline' | 'text' | 'light';
+  onUserAdded?: () => void | Promise<void>;
 };
 const AddUserToEvent: React.FC<AddUserToEventProps> = props => {
   const [isOpen, setIsOpen] = useState(false);
-  const router = useRouter();
+  const logger = Logger.create({
+    namespace: 'web:admin:events',
+    context: { component: 'AddUserToEvent' },
+  });
+
+  const handleUserAdded = async () => {
+    logger.info('User added, refreshing participants list and closing drawer');
+    setIsOpen(false); // Close the drawer first
+
+    if (props.onUserAdded) {
+      await props.onUserAdded(); // Call parent callback to refresh participants
+    }
+  };
+
   return (
     <>
-      <Button onClick={() => setIsOpen(true)} variant={props.variant || 'primary'}>
+      <Button
+        onClick={() => setIsOpen(true)}
+        variant={props.variant || 'primary'}
+        id="add-user-to-event-button"
+      >
         Add user
       </Button>
       <AddUserToEventDrawer
         eventinfo={props.eventinfo}
         eventProducts={props.eventProducts}
-        onUseradded={() => router.refresh()}
+        onUseradded={handleUserAdded}
         onCancel={() => {
           setIsOpen(false);
         }}
