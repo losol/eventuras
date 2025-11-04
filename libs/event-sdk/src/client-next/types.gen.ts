@@ -331,6 +331,7 @@ export type NewRegistrationDto = {
     notes?: string | null;
     type?: RegistrationType;
     paymentMethod?: PaymentProvider;
+    freeRegistration?: boolean | null;
     readonly empty?: boolean;
     userId: string;
     eventId: number;
@@ -816,6 +817,7 @@ export type NewRegistrationDtoWritable = {
     notes?: string | null;
     type?: RegistrationType;
     paymentMethod?: PaymentProvider;
+    freeRegistration?: boolean | null;
     userId: string;
     eventId: number;
     createOrder?: boolean;
