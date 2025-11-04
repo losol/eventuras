@@ -39,6 +39,11 @@ public class Registration
 
     public bool Diploma { get; set; } = true;
 
+    /// <summary>
+    /// Indicates whether this is a free registration (no payment required).
+    /// </summary>
+    public bool FreeRegistration { get; set; } = false;
+
     // The participant - Consider removing, at least the name
     public string ParticipantName { get; set; }
     [Obsolete]
