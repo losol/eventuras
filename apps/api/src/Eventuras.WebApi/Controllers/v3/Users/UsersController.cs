@@ -116,18 +116,33 @@ public class UsersController : Controller
    [FromQuery] UsersQueryDto request,
    CancellationToken cancellationToken)
     {
+        var principal = HttpContext.User;
+        var userId = principal.GetUserId();
+
+        _logger.LogInformation(
+            "User search initiated by {UserId}. QueryLength: {QueryLength}, Limit: {Limit}, Offset: {Offset}",
+            userId,
+            request.Query?.Length ?? 0,
+            request.Limit,
+            request.Offset);
+
         if (!ModelState.IsValid)
         {
-            _logger.LogInformation("ListUsers called with invalid query parameters: {query}", request);
+            _logger.LogWarning(
+                "ListUsers called with invalid query parameters by {UserId}",
+                userId);
             throw new BadHttpRequestException("Invalid query parameters.");
         }
 
-        var principal = HttpContext.User;
         if (!principal.IsAdmin())
         {
-            _logger.LogWarning("User {userId} tried to access users list.", principal.GetUserId());
+            _logger.LogWarning(
+                "Unauthorized user {UserId} tried to access users list.",
+                userId);
             throw new UnauthorizedAccessException("You are not authorized to access this resource.");
         }
+
+        var startTime = DateTime.UtcNow;
 
         var paging = await _userRetrievalService
         .ListUsers(
@@ -141,6 +156,15 @@ public class UsersController : Controller
             },
             new UserRetrievalOptions() { IncludeOrgMembership = request.IncludeOrgMembership },
             cancellationToken);
+
+        var duration = DateTime.UtcNow - startTime;
+
+        _logger.LogInformation(
+            "User search completed for {UserId}. Results: {Count}/{Total}, Duration: {Duration}ms",
+            userId,
+            paging.Data.Length,
+            paging.TotalRecords,
+            duration.TotalMilliseconds);
 
         return PageResponseDto<UserDto>.FromPaging(
             request, paging, u => new UserDto(u));

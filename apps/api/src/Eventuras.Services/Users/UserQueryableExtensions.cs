@@ -2,25 +2,38 @@ using System;
 using System.Linq;
 using Eventuras.Domain;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Eventuras.Services.Users;
 
 internal static class UserQueryableExtensions
 {
-    public static IQueryable<ApplicationUser> AddFilter(this IQueryable<ApplicationUser> query, UserFilter filter)
+    public static IQueryable<ApplicationUser> AddFilter(
+        this IQueryable<ApplicationUser> query,
+        UserFilter filter,
+        ILogger logger = null)
     {
         if (!filter.IncludeArchived)
         {
             query = query.Where(u => !u.Archived);
+            logger?.LogDebug("Filtering out archived users");
         }
 
         if (!string.IsNullOrWhiteSpace(filter.Query))
         {
             var q = filter.Query.Trim().ToLower();
+            logger?.LogDebug(
+                "Applying search filter with length: {QueryLength}. Searching in: GivenName, FamilyName, Email, PhoneNumber",
+                q.Length);
+
             query = query.Where(u => u.GivenName.ToLower().Contains(q) ||
                 u.FamilyName.ToLower().Contains(q) ||
                 u.Email.ToLower().Contains(q) ||
                 u.PhoneNumber.ToLower().Contains(q));
+        }
+        else
+        {
+            logger?.LogDebug("No search query provided, returning all users (subject to other filters)");
         }
 
         return query;
