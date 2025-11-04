@@ -93,21 +93,17 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
   const onSubmitForm = async (values: AddUserToEventFormValues) => {
     const productMap = mapSelectedProductsToQuantity(products, values.products);
 
-    const newRegistration: NewRegistrationDto & { freeRegistration?: boolean } = {
+    const newRegistration: NewRegistrationDto = {
       userId: user.id!,
       eventId: eventinfo.id!,
       type: values.registrationType as RegistrationType,
       createOrder: true,
+      freeRegistration: values.freeRegistration || null,
       customer: {
         name: user.name,
         email: user.email,
       },
     };
-
-    // Add freeRegistration if checked
-    if (values.freeRegistration) {
-      newRegistration.freeRegistration = true;
-    }
 
     try {
       const result = await createEventRegistration(newRegistration, productMap);

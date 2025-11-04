@@ -5450,6 +5450,10 @@
           "paymentMethod": {
             "$ref": "#/components/schemas/PaymentProvider"
           },
+          "freeRegistration": {
+            "type": "boolean",
+            "nullable": true
+          },
           "empty": {
             "type": "boolean",
             "readOnly": true
