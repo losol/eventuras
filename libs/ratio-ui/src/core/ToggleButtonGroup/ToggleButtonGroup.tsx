@@ -26,7 +26,7 @@ export function ToggleButtonGroup({
         <ToggleButton
           key={option.value}
           isSelected={value === option.value}
-          onChange={() => onChange?.(value === option.value ? null : option.value)}
+          onChange={(isSelected) => onChange?.(isSelected ? option.value : null)}
           className="px-3 py-1.5 border border-gray-300 bg-white hover:bg-gray-50 selected:border-blue-500 selected:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 first:rounded-l last:rounded-r -ml-px first:ml-0"
         >
           <div className="flex items-center gap-1.5">

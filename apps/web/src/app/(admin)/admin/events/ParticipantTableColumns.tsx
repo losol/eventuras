@@ -63,7 +63,7 @@ export function createParticipantColumns({
       cell: info => {
         const registration = info.row.original;
         return (
-          <div className="flex items-start gap-2">
+          <div className="flex items-start gap-2 -ml-1">
             <div className="flex flex-col">
               <span className="font-medium">{registration.user?.name}</span>
               <span className="text-sm text-gray-600 dark:text-gray-400">
