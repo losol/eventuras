@@ -1,14 +1,17 @@
 'use client';
 
+/* eslint-disable react/prop-types */
+
 import { useMemo } from 'react';
 import { useTranslations } from 'next-intl';
 
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { NumberCard } from '@eventuras/ratio-ui/visuals/NumberCard';
 
-import { OrderDto, RegistrationDto } from '@/lib/eventuras-sdk';
+import { RegistrationDto } from '@/lib/eventuras-sdk';
 
-import Order from '../../orders/Order';
+import Registration from '../../registrations/Registration';
 
 type EconomySectionProps = {
   participants: RegistrationDto[];
@@ -23,48 +26,10 @@ type OrderStatistics = {
   cancelledOrders: number;
 };
 
-type UserOrderGroup = {
-  userId: string;
-  userName: string;
-  userEmail: string;
-  registrations: Array<{
-    registration: RegistrationDto;
-    orders: OrderDto[];
-  }>;
-};
-
 const EconomySection: React.FC<EconomySectionProps> = ({ participants }) => {
   const t = useTranslations();
 
-  // Group participants by user
-  const userGroups = useMemo(() => {
-    const groups = new Map<string, UserOrderGroup>();
-
-    for (const participant of participants) {
-      const userId = participant.userId || 'unknown';
-      const userName = participant.user?.name || 'Unknown User';
-      const userEmail = participant.user?.email || '';
-
-      if (!groups.has(userId)) {
-        groups.set(userId, {
-          userId,
-          userName,
-          userEmail,
-          registrations: [],
-        });
-      }
-
-      const group = groups.get(userId)!;
-      group.registrations.push({
-        registration: participant,
-        orders: participant.orders || [],
-      });
-    }
-
-    return Array.from(groups.values());
-  }, [participants]);
-
-  // Calculate statistics
+  // Calculate statistics from all registrations
   const statistics = useMemo((): OrderStatistics => {
     const stats: OrderStatistics = {
       totalOrders: 0,
@@ -75,42 +40,46 @@ const EconomySection: React.FC<EconomySectionProps> = ({ participants }) => {
       cancelledOrders: 0,
     };
 
-    for (const group of userGroups) {
-      for (const { orders } of group.registrations) {
-        for (const order of orders) {
-          stats.totalOrders++;
+    for (const registration of participants) {
+      const orders = registration.orders || [];
+      const isRegistrationCancelled = registration.status === 'Cancelled';
 
-          // Calculate order total
+      for (const order of orders) {
+        stats.totalOrders++;
+
+        // Only count revenue from non-cancelled registrations
+        if (!isRegistrationCancelled) {
           const orderTotal =
             order.items?.reduce(
-              (sum, item) => sum + (item.quantity ?? 0) * (item.product?.price ?? 0),
+              (sum: number, item: { quantity?: number; product?: { price?: number; }; }) =>
+                sum + (item.quantity ?? 0) * (item.product?.price ?? 0),
               0
             ) ?? 0;
           stats.totalRevenue += orderTotal;
+        }
 
-          // Count by status
-          switch (order.status) {
-            case 'Draft':
-              stats.draftOrders++;
-              break;
-            case 'Verified':
-              stats.verifiedOrders++;
-              break;
-            case 'Invoiced':
-              stats.invoicedOrders++;
-              break;
-            case 'Cancelled':
-              stats.cancelledOrders++;
-              break;
-          }
+        // Count by status
+        switch (order.status) {
+          case 'Draft':
+            stats.draftOrders++;
+            break;
+          case 'Verified':
+            stats.verifiedOrders++;
+            break;
+          case 'Invoiced':
+            stats.invoicedOrders++;
+            break;
+          case 'Cancelled':
+            stats.cancelledOrders++;
+            break;
         }
       }
     }
 
     return stats;
-  }, [userGroups]);
+  }, [participants]);
 
-  if (userGroups.length === 0) {
+  if (participants.length === 0) {
     return (
       <div className="py-8">
         <p className="text-gray-500">{t('admin.economy.labels.noOrders')}</p>
@@ -122,60 +91,49 @@ const EconomySection: React.FC<EconomySectionProps> = ({ participants }) => {
     <div className="space-y-8 py-8">
       {/* Statistics */}
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
-        <Card className="p-4">
-          <div className="text-sm text-gray-600">{t('admin.economy.statistics.totalOrders')}</div>
-          <div className="text-2xl font-bold">{statistics.totalOrders}</div>
-        </Card>
-        <Card className="p-4">
-          <div className="text-sm text-gray-600">{t('admin.economy.statistics.totalRevenue')}</div>
-          <div className="text-2xl font-bold">{statistics.totalRevenue.toFixed(2)} kr</div>
-        </Card>
-        <Card className="p-4">
-          <div className="text-sm text-gray-600">{t('admin.economy.statistics.draftOrders')}</div>
-          <div className="text-2xl font-bold">{statistics.draftOrders}</div>
-        </Card>
-        <Card className="p-4">
-          <div className="text-sm text-gray-600">
-            {t('admin.economy.statistics.verifiedOrders')}
-          </div>
-          <div className="text-2xl font-bold">{statistics.verifiedOrders}</div>
-        </Card>
-        <Card className="p-4">
-          <div className="text-sm text-gray-600">
-            {t('admin.economy.statistics.invoicedOrders')}
-          </div>
-          <div className="text-2xl font-bold">{statistics.invoicedOrders}</div>
-        </Card>
-        <Card className="p-4">
-          <div className="text-sm text-gray-600">
-            {t('admin.economy.statistics.cancelledOrders')}
-          </div>
-          <div className="text-2xl font-bold">{statistics.cancelledOrders}</div>
-        </Card>
+        <NumberCard
+          number={statistics.totalOrders}
+          label={t('admin.economy.statistics.totalOrders')}
+        />
+        <NumberCard
+          number={Number.parseFloat(statistics.totalRevenue.toFixed(2))}
+          label={`${t('admin.economy.statistics.totalRevenue')} (kr)`}
+          backgroundColorClass="bg-green-50 dark:bg-green-900/20"
+        />
+        <NumberCard
+          number={statistics.draftOrders}
+          label={t('admin.economy.statistics.draftOrders')}
+        />
+        <NumberCard
+          number={statistics.verifiedOrders}
+          label={t('admin.economy.statistics.verifiedOrders')}
+          backgroundColorClass="bg-green-50 dark:bg-green-900/20"
+        />
+        <NumberCard
+          number={statistics.invoicedOrders}
+          label={t('admin.economy.statistics.invoicedOrders')}
+          backgroundColorClass="bg-blue-50 dark:bg-blue-900/20"
+        />
+        <NumberCard
+          number={statistics.cancelledOrders}
+          label={t('admin.economy.statistics.cancelledOrders')}
+          backgroundColorClass="bg-red-50 dark:bg-red-900/20"
+        />
       </div>
 
-      {/* User Groups */}
+      {/* Registrations List */}
       <div className="space-y-6">
-        {userGroups.map(group => (
-          <Card key={group.userId} className="p-6">
-            <div className="mb-4">
-              <Heading as="h3" className="text-lg">
-                {group.userName}
-              </Heading>
-              <p className="text-sm text-gray-600">{group.userEmail}</p>
-            </div>
-
-            {group.registrations.map(({ registration, orders }) => (
-              <div key={registration.registrationId} className="mt-4 space-y-4">
-                {orders.map(order => (
-                  <Order key={order.orderId} order={order} admin={true} />
-                ))}
-
-                {orders.length === 0 && (
-                  <p className="text-sm text-gray-500">{t('admin.products.labels.noOrders')}</p>
-                )}
-              </div>
-            ))}
+        <Heading as="h2">{t('common.labels.registrations')}</Heading>
+        {participants.map(registration => (
+          <Card key={registration.registrationId} className="p-6">
+            <Registration
+              registration={registration}
+              adminMode={true}
+              showProducts={false}
+              showNotes={false}
+              editMode={false}
+              userNameHeading={true}
+            />
           </Card>
         ))}
       </div>

@@ -5,6 +5,8 @@ type BadgeProps = {
   className?: string;
   variant?: 'neutral' | 'info' | 'positive' | 'negative';
   block?: boolean;
+  definition?: boolean;
+  label?: string;
 };
 
 const Badge: React.FC<BadgeProps> = ({
@@ -12,6 +14,8 @@ const Badge: React.FC<BadgeProps> = ({
   className = '',
   variant = 'neutral',
   block = false,
+  definition = false,
+  label,
 }) => {
   let variantClass = '';
 
@@ -27,6 +31,28 @@ const Badge: React.FC<BadgeProps> = ({
 
   const blockClass = block ? 'block' : '';
 
+  if (definition && label) {
+    // Definition mode: semantic definition list structure
+    const allClasses = `
+      ${blockClass}
+      ${variantClass}
+      flex overflow-hidden rounded text-xs leading-none text-white
+      ${className}
+    `.trim();
+
+    return (
+      <span className={allClasses}>
+        <dt className="bg-black/20 px-2 py-2 font-medium uppercase tracking-wide">
+          {label}
+        </dt>
+        <dd className="px-2 py-2 m-0">
+          {children}
+        </dd>
+      </span>
+    );
+  }
+
+  // Regular badge mode
   const allClasses = `
     ${blockClass}
     ${variantClass}

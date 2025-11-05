@@ -1,14 +1,33 @@
-interface NumberCardProps {
+import React from 'react';
+import { Card, CardProps } from '../../core/Card/Card';
+
+interface NumberCardProps extends Omit<CardProps, 'children'> {
   number: number | undefined;
   label: string;
 }
 
-const NumberCard: React.FC<NumberCardProps> = ({ number, label }) => {
+const NumberCard: React.FC<NumberCardProps> = ({
+  number,
+  label,
+  className = '',
+  ...cardProps
+}) => {
+  const combinedClassName = `text-center ${className}`.trim();
+
   return (
-    <div className="flex flex-col items-center justify-center p-2 bg-white rounded-md shadow-md dark:bg-black">
-      <span className="text-3xl font-bold text-gray-800 dark:text-white">{number ?? '?'}</span>
-      <span className="text-sm font-semibold text-gray-400 dark:text-gray-300">{label}</span>
-    </div>
+    <Card
+      className={combinedClassName}
+      {...cardProps}
+    >
+      <div className="flex flex-col items-center justify-center">
+        <div className="text-2xl font-bold leading-none text-gray-800 dark:text-white">
+          {number ?? '—'}
+        </div>
+        <div className="text-sm font-medium mt-1 text-gray-600 dark:text-gray-300">
+          {label}
+        </div>
+      </div>
+    </Card>
   );
 };
 
