@@ -95,7 +95,8 @@
     "labels": {
       "noOrders": "No orders for this event",
       "orderDetails": "Order Details",
-      "participant": "Participant"
+      "participant": "Participant",
+      "cancelledRegistrationWarning": "Registration cancelled - do not invoice"
     }
   },
   "labels": {

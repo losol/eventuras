@@ -29,7 +29,7 @@ const UserEventRegistrationCard = ({
 }: UserEventRegistrationCardProps): ReactElement => {
   const t = useTranslations();
   return (
-    <Card>
+    <Card hoverEffect>
       <Heading as="h3" padding="pt-2">
         {eventTitle}
       </Heading>

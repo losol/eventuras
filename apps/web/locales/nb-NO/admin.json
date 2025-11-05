@@ -95,7 +95,8 @@
     "labels": {
       "noOrders": "Ingen ordre for dette arrangementet",
       "orderDetails": "Ordredetaljer",
-      "participant": "Deltaker"
+      "participant": "Deltaker",
+      "cancelledRegistrationWarning": "Registrering avbestilt - ikke fakturer"
     }
   },
   "labels": {

@@ -20,6 +20,10 @@ import Order from '../orders/Order';
 interface RegistrationProps {
   registration?: RegistrationDto;
   adminMode?: boolean;
+  showProducts?: boolean;
+  showNotes?: boolean;
+  editMode?: boolean;
+  userNameHeading?: boolean;
 }
 // Replace with the real type from the SDK when it's available
 export type RegistrationUpdateDto = {
@@ -65,7 +69,35 @@ export const getTypeLabels = (t: TranslationFunction) => [
   { value: 'Staff' as RegistrationType, label: t('common.registrations.labels.staff') },
   { value: 'Artist' as RegistrationType, label: t('common.registrations.labels.artist') },
 ];
-const Registration = ({ registration, adminMode = false }: RegistrationProps) => {
+
+/**
+ * Gets the appropriate badge variant for registration status
+ */
+export const getStatusBadgeVariant = (status: string) => {
+  switch (status) {
+    case 'Cancelled':
+      return 'negative';
+    case 'Verified':
+    case 'Attended':
+    case 'Finished':
+      return 'positive';
+    case 'Draft':
+      return 'neutral';
+    case 'WaitingList':
+      return 'info';
+    default:
+      return 'neutral';
+  }
+};
+
+const Registration = ({
+  registration,
+  adminMode = false,
+  showProducts = true,
+  showNotes = true,
+  editMode = true,
+  userNameHeading = false,
+}: RegistrationProps) => {
   const t = useTranslations();
   // TODO: Implement proper registration update functionality
   // This component needs a complete refactor to handle registration updates correctly
@@ -77,8 +109,50 @@ const Registration = ({ registration, adminMode = false }: RegistrationProps) =>
   }
   const statusLabel = getStatusLabels(t).find(label => label.value === registration.status)?.label;
   const typeLabel = getTypeLabels(t).find(label => label.value === registration.type)?.label;
+
+  // Use badge layout when not in edit mode
+  if (!editMode) {
+    return (
+      <>
+        {userNameHeading && registration.user?.name && (
+          <Heading as="h3" className="mb-4">
+            {registration.user.name}
+          </Heading>
+        )}
+        <dl className="flex flex-wrap gap-2 mb-4">
+          <Badge definition label={t('common.registrations.labels.id')} variant="neutral">
+            {registration.registrationId}
+          </Badge>
+          <Badge definition label={t('common.registrations.labels.status')}>
+            {statusLabel}
+          </Badge>
+          <Badge definition label={t('common.registrations.labels.type')} variant="neutral">
+            {typeLabel}
+          </Badge>
+        </dl>
+        {registration.orders && registration.orders.length > 0 && (
+          <Section>
+            <Heading as="h4" className="mb-2">
+              {t('common.registrations.labels.orders')}
+            </Heading>
+            <ul className="space-y-2">
+              {registration.orders.map(order => (
+                <Order order={order} key={order.orderId} admin={adminMode} />
+              ))}
+            </ul>
+          </Section>
+        )}
+      </>
+    );
+  }
+
   return (
     <>
+      {userNameHeading && registration.user?.name && (
+        <Heading as="h3" className="mb-4">
+          {registration.user.name}
+        </Heading>
+      )}
       <DescriptionList>
         <Item>
           <Term>{t('common.registrations.labels.id')}</Term>
@@ -90,27 +164,27 @@ const Registration = ({ registration, adminMode = false }: RegistrationProps) =>
           <Term>{t('common.registrations.labels.userName')}</Term>
           <Definition>{registration.user?.name}</Definition>
         </Item>
-        <Item>
-          <Term>{t('common.registrations.labels.eventTitle')}</Term>
-          <Definition>{registration.event?.title}</Definition>
-        </Item>
-        {!adminMode && (
+        {/* Show status and type as badges when not in edit mode, or when not in admin mode */}
+        {(!editMode || !adminMode) && (
           <>
             <Item>
               <Term>{t('common.registrations.labels.status')}</Term>
               <Definition>
-                <Badge>{statusLabel}</Badge>
+                <Badge variant={getStatusBadgeVariant(registration.status || '')}>
+                  {statusLabel}
+                </Badge>
               </Definition>
             </Item>
             <Item>
               <Term>{t('common.registrations.labels.type')}</Term>
               <Definition>
-                <Badge>{typeLabel}</Badge>
+                <Badge variant="neutral">{typeLabel}</Badge>
               </Definition>
             </Item>
           </>
         )}
-        {adminMode && (
+        {/* Show editable forms when in edit mode and admin mode */}
+        {editMode && adminMode && (
           <Form
             defaultValues={{
               type: registration.type,
@@ -125,7 +199,7 @@ const Registration = ({ registration, adminMode = false }: RegistrationProps) =>
           </Form>
         )}
       </DescriptionList>
-      {registration.products && (
+      {showProducts && registration.products && (
         <Section>
           <Heading as="h2">{t('common.registrations.labels.products')}</Heading>
           <ul>
@@ -135,13 +209,15 @@ const Registration = ({ registration, adminMode = false }: RegistrationProps) =>
           </ul>
         </Section>
       )}
-      <Section>
-        <Heading as="h2">{t('common.registrations.labels.notes')}</Heading>
-        <p>{registration.notes ?? t('common.registrations.labels.notesEmpty')}</p>
-      </Section>
+      {showNotes && (
+        <Section>
+          <Heading as="h2">{t('common.registrations.labels.notes')}</Heading>
+          <p>{registration.notes ?? t('common.registrations.labels.notesEmpty')}</p>
+        </Section>
+      )}
       {registration.orders && (
         <Section>
-          <Heading as="h2">{t('common.registrations.labels.orders')}</Heading>
+          <Heading as="h4">{t('common.registrations.labels.orders')}</Heading>
           <ul>
             {registration.orders.map(order => (
               <Order order={order} key={order.orderId} admin={adminMode} />

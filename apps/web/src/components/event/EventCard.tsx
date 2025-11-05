@@ -15,7 +15,7 @@ interface EventCardProps {
 
 const EventCard: React.FC<EventCardProps> = ({ eventinfo }) => {
   return (
-    <Card>
+    <Card hoverEffect>
       {eventinfo.title && (
         <Heading as="h4" padding="pt-3">
           <Link href={`/events/${eventinfo.id}/${eventinfo.slug}`} linkOverlay>
