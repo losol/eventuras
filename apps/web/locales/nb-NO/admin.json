@@ -107,6 +107,9 @@
     "sendCertificates": "Send kursbevis",
     "users": "Brukere"
   },
+  "notifications": {
+    "noNotifications": "Ingen varslinger ennå..."
+  },
   "orders": {
     "labels": {
       "notFound": "Fant ingen ordre."

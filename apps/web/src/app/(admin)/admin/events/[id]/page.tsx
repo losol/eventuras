@@ -6,11 +6,14 @@ import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 
+import { appConfig } from '@/config.server';
 import {
   getV3EventsByEventIdProducts,
   getV3EventsByEventIdStatistics,
   getV3EventsById,
+  getV3Notifications,
   getV3Registrations,
+  NotificationDto,
 } from '@/lib/eventuras-sdk';
 
 import EventPageTabs from './EventPageTabs';
@@ -27,6 +30,11 @@ type EventInfoProps = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
+type NotificationListResponse = {
+  total: number;
+  data: NotificationDto[];
+};
+
 export default async function EventAdminPage({ params, searchParams }: Readonly<EventInfoProps>) {
   const { id } = await params;
   const search = await searchParams;
@@ -35,7 +43,18 @@ export default async function EventAdminPage({ params, searchParams }: Readonly<
   const isNewlyCreated = search.newlyCreated === 'true';
   const defaultTab = isNewlyCreated ? 'overview' : 'participants';
 
-  const [eventinfoRes, registrationsRes, eventProductsRes, statisticsRes] = await Promise.all([
+  const organizationId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
+  if (!organizationId || typeof organizationId !== 'number') {
+    logger.error('NEXT_PUBLIC_ORGANIZATION_ID is not configured properly');
+  }
+
+  const [
+    eventinfoRes,
+    registrationsRes,
+    eventProductsRes,
+    statisticsRes,
+    notificationsRes,
+  ] = await Promise.all([
     getV3EventsById({ path: { id } }),
     getV3Registrations({
       query: {
@@ -47,6 +66,16 @@ export default async function EventAdminPage({ params, searchParams }: Readonly<
     }),
     getV3EventsByEventIdProducts({ path: { eventId: id } }),
     getV3EventsByEventIdStatistics({ path: { eventId: id } }),
+    organizationId && typeof organizationId === 'number'
+      ? getV3Notifications({
+          headers: {
+            'Eventuras-Org-Id': organizationId,
+          },
+          query: {
+            EventId: id,
+          },
+        })
+      : Promise.resolve({ data: undefined, error: 'Organization ID not configured' }),
   ]);
   const eventinfo = eventinfoRes?.data;
   if (!eventinfo) {
@@ -80,11 +109,26 @@ export default async function EventAdminPage({ params, searchParams }: Readonly<
       'Failed to load statistics'
     );
   }
+  if (notificationsRes?.error) {
+    logger.warn(
+      {
+        eventId: id,
+        error: notificationsRes.error,
+      },
+      'Failed to load notifications'
+    );
+  }
+
+  // Extract notifications data
+  const notificationData = notificationsRes?.data as NotificationListResponse | undefined;
+  const notifications = notificationData?.data || [];
+
   // Check if we have any errors OR if responses are null (simulated error state)
   const hasPartialErrors = !!(
     registrationsRes?.error ||
     eventProductsRes?.error ||
     statisticsRes?.error ||
+    notificationsRes?.error ||
     !registrationsRes ||
     !eventProductsRes ||
     !statisticsRes
@@ -109,6 +153,7 @@ export default async function EventAdminPage({ params, searchParams }: Readonly<
                     )}
                     {(!eventProductsRes || !!eventProductsRes?.error) && <li>Event products</li>}
                     {(!statisticsRes || !!statisticsRes?.error) && <li>Event statistics</li>}
+                    {!!notificationsRes?.error && <li>Notifications</li>}
                   </ul>
                 </Error.Details>
               </Error>
@@ -123,6 +168,7 @@ export default async function EventAdminPage({ params, searchParams }: Readonly<
             participants={registrationsRes.data?.data ?? []}
             statistics={statisticsRes.data ?? {}}
             eventProducts={eventProductsRes.data ?? []}
+            notifications={notifications}
             defaultTab={
               defaultTab as
                 | 'participants'

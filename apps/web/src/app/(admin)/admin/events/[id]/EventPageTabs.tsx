@@ -16,6 +16,7 @@ import {
   EventDto,
   EventFormDto,
   EventStatisticsDto,
+  NotificationDto,
   ProductDto,
   RegistrationDto,
 } from '@/lib/eventuras-sdk';
@@ -100,6 +101,7 @@ type EventPageTabsProps = {
   participants: RegistrationDto[];
   statistics: EventStatisticsDto;
   eventProducts: ProductDto[];
+  notifications: NotificationDto[];
   defaultTab?:
     | 'participants'
     | 'overview'
@@ -117,6 +119,7 @@ export default function EventPageTabs({
   participants,
   statistics,
   eventProducts,
+  notifications,
   defaultTab = 'participants',
 }: EventPageTabsProps) {
   const searchParams = useSearchParams();
@@ -239,7 +242,7 @@ export default function EventPageTabs({
           title={t('admin.events.tabs.communication')}
           testId="tab-communication"
         >
-          <CommunicationSection eventinfo={eventinfo} />
+          <CommunicationSection eventinfo={eventinfo} notifications={notifications} />
         </Tabs.Item>
 
         <Tabs.Item id="products" title={t('admin.events.tabs.products')} testId="tab-products">
