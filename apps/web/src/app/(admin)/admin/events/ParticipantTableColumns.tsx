@@ -5,8 +5,9 @@ import { Loading } from '@eventuras/ratio-ui/core/Loading';
 import { ChevronDown, ChevronRight, FileText, Pencil, User } from '@eventuras/ratio-ui/icons';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
-import { ProductDto, RegistrationDto } from '@/lib/eventuras-sdk';
+import type { ProductDto, RegistrationDto } from '@/lib/eventuras-types';
 
+import FinishRegistrationButton from './FinishRegistrationButton';
 import RegistrationStatusSelect from './RegistrationStatusSelect';
 
 const columnHelper = createColumnHelper<RegistrationDto>();
@@ -37,6 +38,7 @@ export function createParticipantColumns({
   t,
   eventProducts,
   onProductsClick,
+  onStatusUpdate,
   isLoadingRegistration,
 }: ColumnConfig) {
   return [
@@ -117,6 +119,15 @@ export function createParticipantColumns({
           </div>
         );
       },
+    }),
+    columnHelper.display({
+      id: 'actions',
+      header: 'Actions',
+      cell: ({ row }) => (
+        <div className="flex items-center gap-2">
+          <FinishRegistrationButton registration={row.original} onStatusUpdate={onStatusUpdate} />
+        </div>
+      ),
     }),
   ];
 }
