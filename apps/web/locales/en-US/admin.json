@@ -107,6 +107,9 @@
     "sendCertificates": "Send certificates",
     "users": "Users"
   },
+  "notifications": {
+    "noNotifications": "No notifications yet..."
+  },
   "orders": {
     "labels": {
       "notFound": "Order not found"

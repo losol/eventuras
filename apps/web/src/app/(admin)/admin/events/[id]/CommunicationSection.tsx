@@ -5,23 +5,28 @@ import { useTranslations } from 'next-intl';
 
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
-import { Link } from '@eventuras/ratio-ui-next/Link';
 
 import { EventNotificator, NotificationType } from '@/components/notificator';
-import { EventDto } from '@/lib/eventuras-sdk';
+import { EventDto, NotificationDto } from '@/lib/eventuras-sdk';
+
+import NotificationsTable from './NotificationsTable';
 
 type CommunicationSectionProps = {
   eventinfo: EventDto;
+  notifications: NotificationDto[];
 };
 
-export default function CommunicationSection({ eventinfo }: CommunicationSectionProps) {
+export default function CommunicationSection({
+  eventinfo,
+  notifications,
+}: CommunicationSectionProps) {
   const [emailDrawerOpen, setEmailDrawerOpen] = useState<boolean>(false);
   const [SMSDrawerOpen, setSMSDrawerOpen] = useState<boolean>(false);
   const t = useTranslations();
 
   return (
     <>
-      <div className="space-y-4">
+      <div className="space-y-6">
         <div>
           <h3 className="mb-4 text-lg font-semibold">Send Notifications</h3>
           <div className="flex flex-wrap gap-3">
@@ -41,10 +46,12 @@ export default function CommunicationSection({ eventinfo }: CommunicationSection
             >
               SMS
             </Button>
-            <Link href={`/admin/notifications?eventId=${eventinfo.id}`} variant="button-outline">
-              {t('common.labels.messagelog')}
-            </Link>
           </div>
+        </div>
+
+        <div>
+          <h3 className="mb-4 text-lg font-semibold">Notification History</h3>
+          <NotificationsTable notifications={notifications} />
         </div>
       </div>
 
