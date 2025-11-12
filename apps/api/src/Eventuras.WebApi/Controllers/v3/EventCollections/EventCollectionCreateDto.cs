@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using Eventuras.Domain;
-using Newtonsoft.Json;
 
 namespace Eventuras.WebApi.Controllers.v3.EventCollections;
 

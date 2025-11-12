@@ -4,11 +4,12 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Authentication;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 
 namespace Eventuras.Services.Converto;
 
@@ -30,13 +31,13 @@ internal class ConvertoClient : IConvertoClient
 
     private class TokenResponse
     {
-        [JsonProperty("access_token")]
+        [JsonPropertyName("access_token")]
         public string AccessToken { get; set; }
 
-        [JsonProperty("token_type")]
+        [JsonPropertyName("token_type")]
         public string TokenType { get; set; } = "Bearer";
 
-        [JsonProperty("expires_in")]
+        [JsonPropertyName("expires_in")]
         public int ExpiresIn { get; set; }
     }
 
@@ -71,7 +72,7 @@ internal class ConvertoClient : IConvertoClient
 
         var response = await client.PostAsync(
             _options.Value.TokenEndpointUrl,
-            new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json")
+            new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json")
         );
 
         var responseContent = await response.Content.ReadAsStringAsync();
@@ -84,7 +85,7 @@ internal class ConvertoClient : IConvertoClient
             throw new AuthenticationException($"Failed to retrieve API token. Status: {response.StatusCode}");
         }
 
-        var tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(responseContent);
+        var tokenResponse = JsonSerializer.Deserialize<TokenResponse>(responseContent);
         if (tokenResponse == null || string.IsNullOrEmpty(tokenResponse.AccessToken))
         {
             throw new AuthenticationException("Invalid token response from server.");
@@ -116,7 +117,7 @@ internal class ConvertoClient : IConvertoClient
 
             var response = await client.PostAsync(
                 endpointUrl,
-                new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json")
+                new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json")
             );
 
             if (!response.IsSuccessStatusCode)

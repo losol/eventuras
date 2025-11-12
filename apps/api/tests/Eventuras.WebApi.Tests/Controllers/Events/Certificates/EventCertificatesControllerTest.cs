@@ -375,7 +375,7 @@ public class EventCertificatesControllerTest : IClassFixture<CustomWebApiApplica
             .PostAsync($"/v3/event/{evt.Entity.EventInfoId}/certificates/issue");
 
         var json = await response.CheckOk().AsTokenAsync();
-        Assert.Equal(0, json.Value<int>("issued"));
+        Assert.Equal(0, json.GetValue<int>("issued"));
         Assert.Equal(0, await scope.Db.Certificates.CountAsync());
     }
 
@@ -406,7 +406,7 @@ public class EventCertificatesControllerTest : IClassFixture<CustomWebApiApplica
                 null, org.Entity.OrganizationId);
 
         var json = await response.CheckOk().AsTokenAsync();
-        Assert.Equal(1, json.Value<int>("issued"));
+        Assert.Equal(1, json.GetValue<int>("issued"));
 
         var cert = await scope.Db.Certificates.AsNoTracking().SingleAsync();
         Assert.Equal(cert.RecipientUserId, u2.Entity.Id);
@@ -440,7 +440,7 @@ public class EventCertificatesControllerTest : IClassFixture<CustomWebApiApplica
             .PostAsync($"/v3/event/{evt.Entity.EventInfoId}/certificates/issue");
 
         var json = await response.CheckOk().AsTokenAsync();
-        Assert.Equal(0, json.Value<int>("issued"));
+        Assert.Equal(0, json.GetValue<int>("issued"));
     }
 
     [Fact]
@@ -458,7 +458,7 @@ public class EventCertificatesControllerTest : IClassFixture<CustomWebApiApplica
             .PostAsync($"/v3/event/{evt.Entity.EventInfoId}/certificates/issue?send=false");
 
         var json = await response.CheckOk().AsTokenAsync();
-        Assert.Equal(1, json.Value<int>("issued"));
+        Assert.Equal(1, json.GetValue<int>("issued"));
 
         _factory.EmailSenderMock.Verify(s => s
             .SendEmailAsync(It.IsAny<EmailModel>(), It.IsAny<EmailOptions>()), Times.Never);
@@ -559,7 +559,7 @@ public class EventCertificatesControllerTest : IClassFixture<CustomWebApiApplica
             .PostAsync($"/v3/event/{evt.Entity.EventInfoId}/certificates/update");
 
         var json = await response.CheckOk().AsTokenAsync();
-        Assert.Equal(0, json.Value<int>("updated"));
+        Assert.Equal(0, json.GetValue<int>("updated"));
         Assert.Equal(0, await scope.Db.Certificates.CountAsync());
     }
 
@@ -578,7 +578,7 @@ public class EventCertificatesControllerTest : IClassFixture<CustomWebApiApplica
             .PostAsync($"/v3/event/{evt.Entity.EventInfoId}/certificates/update");
 
         var json = await response.CheckOk().AsTokenAsync();
-        Assert.Equal(0, json.Value<int>("updated"));
+        Assert.Equal(0, json.GetValue<int>("updated"));
         Assert.Equal(0, await scope.Db.Certificates.CountAsync());
     }
 
@@ -601,7 +601,7 @@ public class EventCertificatesControllerTest : IClassFixture<CustomWebApiApplica
             .PostAsync($"/v3/event/{evt.Entity.EventInfoId}/certificates/update");
 
         var json = await response.CheckOk().AsTokenAsync();
-        Assert.Equal(1, json.Value<int>("updated"));
+        Assert.Equal(1, json.GetValue<int>("updated"));
 
         var updatedCert = await scope.Db.Certificates.AsNoTracking().SingleAsync();
         Assert.Equal(updatedCert.CertificateId, cert.Entity.CertificateId);

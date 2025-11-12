@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Json;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
@@ -9,7 +10,6 @@ using Eventuras.Services;
 using Eventuras.TestAbstractions;
 using Eventuras.WebApi.Controllers.v3.Notifications;
 using Eventuras.WebApi.Models;
-using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Notifications;
@@ -212,16 +212,16 @@ public class NotificationsControllerTest : IClassFixture<CustomWebApiApplication
 
         // Assert
         var token = await response.CheckOk().AsTokenAsync();
-        var data = token["data"] as JArray;
-        Assert.NotNull(data);
+        var data = token.GetValue<JsonElement>("data");
+        Assert.Equal(JsonValueKind.Array, data.ValueKind);
 
         var notificationsToFind = new Notification[] { n4.Entity, n3.Entity, n2.Entity, n1.Entity };
         var foundNotifications = 0;
 
-        foreach (var notification in data)
+        foreach (var notification in data.EnumerateArray())
         {
             var notificationToFind = notificationsToFind[foundNotifications];
-            if (notification.Value<int>("notificationId") != notificationToFind.NotificationId)
+            if (notification.GetValue<int>("notificationId") != notificationToFind.NotificationId)
                 continue;
 
             notification.CheckNotification(notificationToFind);

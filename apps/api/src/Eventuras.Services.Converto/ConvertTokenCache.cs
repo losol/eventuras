@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 
 namespace Eventuras.Services.Converto;
+
 public class ConvertoTokenCache
 {
     private static ConcurrentDictionary<string, CachedToken> _cache = new ConcurrentDictionary<string, CachedToken>();

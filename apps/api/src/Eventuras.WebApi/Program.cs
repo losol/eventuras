@@ -44,7 +44,6 @@ if (features.UseSentry) { builder.WebHost.UseSentry(); }
 // Configure dependency injection container
 builder.Services.AddControllers(options =>
     {
-        options.InputFormatters.Insert(0, InputFormatter.GetJsonPatchInputFormatter());
         options.Filters.Add<ValidationFilter>();
         options.Filters.Add<HttpResponseExceptionFilter>();
     })
@@ -210,23 +209,4 @@ static async Task PreStartupRoutine(IHost host)
 
 public partial class Program
 {
-}
-
-public static class InputFormatter
-{
-    public static NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter()
-    {
-        var builder = new ServiceCollection()
-            .AddLogging()
-            .AddMvc()
-            .AddNewtonsoftJson()
-            .Services.BuildServiceProvider();
-
-        return builder
-            .GetRequiredService<IOptions<MvcOptions>>()
-            .Value
-            .InputFormatters
-            .OfType<NewtonsoftJsonPatchInputFormatter>()
-            .First();
-    }
 }

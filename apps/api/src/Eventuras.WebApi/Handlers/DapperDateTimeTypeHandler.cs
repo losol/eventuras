@@ -3,6 +3,7 @@ using System.Data;
 using Dapper;
 
 namespace Eventuras.WebApi.Handlers;
+
 public class DapperDateTimeTypeHandler : SqlMapper.TypeHandler<DateTime>
 {
     public override DateTime Parse(object value)

@@ -1,12 +1,12 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using Eventuras.Domain;
-using Newtonsoft.Json;
 
 namespace Eventuras.WebApi.Controllers.v3.Events.Collections;
 
 public class EventCollectionDto
 {
-    [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? Id { get; set; }
 
     [Required]
