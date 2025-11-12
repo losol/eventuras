@@ -2,10 +2,10 @@
 
 using System;
 using System.Linq;
+using System.Text.Json.Serialization;
 using Eventuras.Domain;
 using Eventuras.WebApi.Controllers.v3.Registrations;
 using Eventuras.WebApi.Controllers.v3.Users;
-using Newtonsoft.Json;
 using static Eventuras.Domain.PaymentMethod;
 
 namespace Eventuras.WebApi.Controllers.v3.Orders;
@@ -27,10 +27,10 @@ public class OrderDto
 
     public OrderLineDto[]? Items { get; set; }
 
-    [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public RegistrationDto? Registration { get; set; }
 
-    [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public UserDto? User { get; set; }
 
 

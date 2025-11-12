@@ -5,6 +5,7 @@ using Eventuras.Domain;
 using Eventuras.Services.Registrations;
 
 namespace Eventuras.Services.Registrations;
+
 public static class RegistrationPageReaderFactory
 {
     public static PageReader<Registration> CreateRegistrationPageReader(

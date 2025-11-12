@@ -1,5 +1,5 @@
+using System.Text.Json.Serialization;
 using Eventuras.Domain;
-using Newtonsoft.Json;
 using NodaTime;
 
 namespace Eventuras.WebApi.Controllers.v3.Notifications;
@@ -8,16 +8,16 @@ public class NotificationDto
 {
     public int NotificationId { get; }
 
-    [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? OrganizationId { get; }
 
-    [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? EventId { get; }
 
-    [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? ProductId { get; }
 
-    [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? RegistrationId { get; }
 
     public string Message { get; }
@@ -30,7 +30,7 @@ public class NotificationDto
 
     public NotificationStatus Status { get; }
 
-    [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public NotificationStatisticsDto Statistics { get; }
 
     public NotificationDto(Notification notification)

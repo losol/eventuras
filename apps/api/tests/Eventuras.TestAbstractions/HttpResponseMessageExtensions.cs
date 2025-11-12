@@ -5,7 +5,6 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace Eventuras.TestAbstractions;
@@ -29,18 +28,20 @@ public static class HttpResponseMessageExtensions
         }
     }
 
-    public static async Task<JToken> AsTokenAsync(this HttpResponseMessage response)
+    public static async Task<JsonElement> AsTokenAsync(this HttpResponseMessage response)
     {
         response.CheckOk();
         var content = await response.Content.ReadAsStringAsync();
-        return JToken.Parse(content);
+        using var document = JsonDocument.Parse(content);
+        return document.RootElement.Clone();
     }
 
-    public static async Task<JArray> AsArrayAsync(this HttpResponseMessage response)
+    public static async Task<JsonElement> AsArrayAsync(this HttpResponseMessage response)
     {
         response.CheckOk();
         var content = await response.Content.ReadAsStringAsync();
-        return JArray.Parse(content);
+        using var document = JsonDocument.Parse(content);
+        return document.RootElement.Clone();
     }
 
     public static HttpResponseMessage CheckOk(this HttpResponseMessage response)

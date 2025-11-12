@@ -1,4 +1,5 @@
 namespace Eventuras.Domain;
+
 public enum PaperSize
 {
     Letter,

@@ -7,12 +7,12 @@ using System.Net.Http.Headers;
 using System.Reflection;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services;
 using Eventuras.Services.Constants;
 using Eventuras.TestAbstractions;
-using Newtonsoft.Json;
 
 namespace Eventuras.WebApi.Tests;
 
@@ -139,7 +139,10 @@ internal static class HttpClientExtensions
         int? organizationId = null,
         Dictionary<string, string> headers = null)
     {
-        var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+        var content = new StringContent(
+            JsonSerializer.Serialize(data),
+            Encoding.UTF8,
+            new MediaTypeHeaderValue("application/json"));
 
         // Eventuras org id header
         if (organizationId.HasValue)
@@ -172,8 +175,10 @@ internal static class HttpClientExtensions
         object data)
     {
         return await httpClient.PutAsync(requestUri,
-            new StringContent(JsonConvert.SerializeObject(data),
-                Encoding.UTF8, "application/json"));
+            new StringContent(
+                JsonSerializer.Serialize(data),
+                Encoding.UTF8,
+                new MediaTypeHeaderValue("application/json")));
     }
 
     public static async Task<HttpResponseMessage> PutAsync(
@@ -189,8 +194,10 @@ internal static class HttpClientExtensions
         object data)
     {
         return await httpClient.PatchAsync(requestUri,
-            new StringContent(JsonConvert.SerializeObject(data),
-                Encoding.UTF8, "application/json"));
+            new StringContent(
+                JsonSerializer.Serialize(data),
+                Encoding.UTF8,
+                new MediaTypeHeaderValue("application/json")));
     }
 
     public static async Task<HttpResponseMessage> DeleteAsync(
@@ -201,8 +208,10 @@ internal static class HttpClientExtensions
         return await httpClient.SendAsync(
             new HttpRequestMessage(HttpMethod.Delete, requestUri)
             {
-                Content = new StringContent(JsonConvert.SerializeObject(data),
-                    Encoding.UTF8, "application/json")
+                Content = new StringContent(
+                    JsonSerializer.Serialize(data),
+                    Encoding.UTF8,
+                    new MediaTypeHeaderValue("application/json"))
             });
     }
 

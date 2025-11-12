@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services;
 using Eventuras.TestAbstractions;
 using Eventuras.WebApi.Controllers.v3.Registrations;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
 using NodaTime;
 using Xunit;
 
@@ -172,8 +172,8 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
         paging.CheckPaging((token, r) =>
             {
                 token.CheckRegistration(r);
-                Assert.Empty(token.Value<JToken>("user"));
-                Assert.Empty(token.Value<JToken>("event"));
+                Assert.Equal(JsonValueKind.Null, token.GetValue<JsonElement>("user").ValueKind);
+                Assert.Equal(JsonValueKind.Null, token.GetValue<JsonElement>("event").ValueKind);
             },
             reg.Entity);
     }
@@ -195,8 +195,8 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
         paging.CheckPaging((token, r) =>
             {
                 token.CheckRegistration(r, true);
-                Assert.NotEmpty(token.Value<JToken>("user"));
-                Assert.Empty(token.Value<JToken>("event"));
+                Assert.NotEqual(JsonValueKind.Null, token.GetValue<JsonElement>("user").ValueKind);
+                Assert.Equal(JsonValueKind.Null, token.GetValue<JsonElement>("event").ValueKind);
             },
             reg.Entity);
     }
@@ -218,8 +218,8 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
         paging.CheckPaging((token, r) =>
             {
                 token.CheckRegistration(r, false, true);
-                Assert.NotEmpty(token.Value<JToken>("event"));
-                Assert.Empty(token.Value<JToken>("user"));
+                Assert.NotEqual(JsonValueKind.Null, token.GetValue<JsonElement>("event").ValueKind);
+                Assert.Equal(JsonValueKind.Null, token.GetValue<JsonElement>("user").ValueKind);
             },
             reg.Entity);
     }

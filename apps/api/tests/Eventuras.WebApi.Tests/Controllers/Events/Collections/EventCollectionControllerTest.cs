@@ -3,13 +3,12 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services;
 using Eventuras.TestAbstractions;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Events.Collections;
@@ -65,7 +64,7 @@ public class EventCollectionControllerTest : IClassFixture<CustomWebApiApplicati
         using var scope = _factory.Services.NewTestScope();
         using var org = await scope.CreateOrganizationAsync(hostname: "some"); // not localhost
 
-        await client.PostAsync("/v3/eventcollections", new StringContent(JsonConvert.SerializeObject(new
+        await client.PostAsync("/v3/eventcollections", new StringContent(JsonSerializer.Serialize(new
         {
             name = "Test",
             organizationId = org.Entity.OrganizationId
@@ -87,7 +86,7 @@ public class EventCollectionControllerTest : IClassFixture<CustomWebApiApplicati
         var client = _factory.CreateClient()
             .AuthenticatedAs(admin.Entity, Roles.Admin);
 
-        var json = JsonConvert.SerializeObject(new
+        var json = JsonSerializer.Serialize(new
         {
             name = "Test",
             organizationId = org.Entity.OrganizationId
@@ -143,7 +142,7 @@ public class EventCollectionControllerTest : IClassFixture<CustomWebApiApplicati
 
         using var org = await scope.CreateOrganizationAsync();
         var response = await client.PostAsync("/v3/eventcollections", new StringContent(
-            JsonConvert.SerializeObject(new
+            JsonSerializer.Serialize(new
             {
                 name = "Test",
                 organizationId = org.Entity.OrganizationId
@@ -172,7 +171,7 @@ public class EventCollectionControllerTest : IClassFixture<CustomWebApiApplicati
 
         using var org = await scope.CreateOrganizationAsync();
         var response = await client.PostAsync("/v3/eventcollections", new StringContent(
-            JsonConvert.SerializeObject(new
+            JsonSerializer.Serialize(new
             {
                 name = "Test",
                 organizationId = org.Entity.OrganizationId,
@@ -208,7 +207,7 @@ public class EventCollectionControllerTest : IClassFixture<CustomWebApiApplicati
 
         using var org = await scope.CreateOrganizationAsync(hostname: "localhost");
         var response = await client.PostAsync("/v3/eventcollections", new StringContent(
-            JsonConvert.SerializeObject(new
+            JsonSerializer.Serialize(new
             {
                 organizationId = org.Entity.OrganizationId
             }), Encoding.UTF8, "application/json"));
@@ -228,7 +227,7 @@ public class EventCollectionControllerTest : IClassFixture<CustomWebApiApplicati
         Assert.False(await scope.Db.EventCollections.AnyAsync());
 
         var response = await client.PostAsync("/v3/eventcollections", new StringContent(
-            JsonConvert.SerializeObject(new
+            JsonSerializer.Serialize(new
             {
                 name = "Test"
             }), Encoding.UTF8, "application/json"));
@@ -244,7 +243,7 @@ public class EventCollectionControllerTest : IClassFixture<CustomWebApiApplicati
             .AuthenticatedAsSystemAdmin();
 
         var response = await client.PutAsync("/v3/eventcollections/202", new StringContent(
-            JsonConvert.SerializeObject(new
+            JsonSerializer.Serialize(new
             {
                 name = "Updated",
                 organizationId = 1
@@ -264,7 +263,7 @@ public class EventCollectionControllerTest : IClassFixture<CustomWebApiApplicati
 
         using var collection = await scope.CreateEventCollectionAsync();
         await client.PutAsync($"/v3/eventcollections/{collection.Entity.CollectionId}", new StringContent(
-            JsonConvert.SerializeObject(new
+            JsonSerializer.Serialize(new
             {
                 name = "Updated",
                 organizationId = collection.Entity.OrganizationId
@@ -285,7 +284,7 @@ public class EventCollectionControllerTest : IClassFixture<CustomWebApiApplicati
         using var member = await scope.CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
         using var collection = await scope.CreateEventCollectionAsync();
 
-        var json = JsonConvert.SerializeObject(new
+        var json = JsonSerializer.Serialize(new
         {
             name = "Updated",
             organizationId = collection.Entity.OrganizationId
@@ -315,7 +314,7 @@ public class EventCollectionControllerTest : IClassFixture<CustomWebApiApplicati
         using var collection = await scope.CreateEventCollectionAsync(organization: org.Entity);
 
         var response = await client.PutAsync($"/v3/eventcollections/{collection.Entity.CollectionId}",
-            new StringContent(JsonConvert.SerializeObject(new
+            new StringContent(JsonSerializer.Serialize(new
             {
                 name = "Updated",
                 organizationId = org.Entity.OrganizationId
@@ -339,7 +338,7 @@ public class EventCollectionControllerTest : IClassFixture<CustomWebApiApplicati
         using var collection = await scope.CreateEventCollectionAsync();
 
         var response = await client.PutAsync($"/v3/eventcollections/{collection.Entity.CollectionId}",
-            new StringContent(JsonConvert.SerializeObject(new
+            new StringContent(JsonSerializer.Serialize(new
             {
                 name = "Updated",
                 organizationId = collection.Entity.OrganizationId
@@ -362,7 +361,7 @@ public class EventCollectionControllerTest : IClassFixture<CustomWebApiApplicati
         using var newOrg = await scope.CreateOrganizationAsync();
 
         var response = await client.PutAsync($"/v3/eventcollections/{collection.Entity.CollectionId}",
-            new StringContent(JsonConvert.SerializeObject(new
+            new StringContent(JsonSerializer.Serialize(new
             {
                 name = "Test",
                 organizationId = newOrg.Entity.OrganizationId,
@@ -398,7 +397,7 @@ public class EventCollectionControllerTest : IClassFixture<CustomWebApiApplicati
         using var collection = await scope.CreateEventCollectionAsync();
 
         var response = await client.PutAsync($"/v3/eventcollections/{collection.Entity.CollectionId}",
-            new StringContent(JsonConvert.SerializeObject(new
+            new StringContent(JsonSerializer.Serialize(new
             {
                 organizationId = collection.Entity.OrganizationId
             }), Encoding.UTF8, "application/json"));
@@ -418,7 +417,7 @@ public class EventCollectionControllerTest : IClassFixture<CustomWebApiApplicati
         using var collection = await scope.CreateEventCollectionAsync();
 
         var response = await client.PutAsync($"/v3/eventcollections/{collection.Entity.CollectionId}",
-            new StringContent(JsonConvert.SerializeObject(new
+            new StringContent(JsonSerializer.Serialize(new
             {
                 name = "Test"
             }), Encoding.UTF8, "application/json"));

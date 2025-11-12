@@ -1,5 +1,6 @@
 
 namespace Eventuras.Services.Users;
+
 public class UserSummaryDto
 {
     public string UserId { get; set; }
