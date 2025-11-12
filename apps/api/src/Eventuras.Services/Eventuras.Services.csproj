@@ -10,8 +10,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Eventuras.Domain\Eventuras.Domain.csproj" />
     <ProjectReference Include="..\Eventuras.Infrastructure\Eventuras.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\libs\Losol.Communication.Email\Losol.Communication.Email.csproj" />
-    <ProjectReference Include="..\..\libs\Losol.Communication.Sms\Losol.Communication.Sms.csproj" />
+    <ProjectReference Include="..\..\src\Losol.Communication.Email\Losol.Communication.Email.csproj" />
+    <ProjectReference Include="..\..\src\Losol.Communication.Sms\Losol.Communication.Sms.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="DocumentFormat.OpenXml" Version="3.3.0" />

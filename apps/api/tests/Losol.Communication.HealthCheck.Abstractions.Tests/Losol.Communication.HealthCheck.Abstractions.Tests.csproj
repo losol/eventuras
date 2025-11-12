@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Losol.Communication.HealthCheck\Losol.Communication.HealthCheck.csproj" />
+    <ProjectReference Include="..\Losol.Communication.HealthCheck\Losol.Communication.HealthCheck.csproj" />
   </ItemGroup>
 
 </Project>

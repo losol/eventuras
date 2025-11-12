@@ -14,6 +14,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Eventuras.Infrastructure\Eventuras.Infrastructure.csproj" />
     <ProjectReference Include="..\..\src\Eventuras.Services\Eventuras.Services.csproj" />
-    <ProjectReference Include="..\..\libs\Losol.Communication.Email\Losol.Communication.Email.csproj" />
+    <ProjectReference Include="..\..\src\Losol.Communication.Email\Losol.Communication.Email.csproj" />
   </ItemGroup>
 </Project>

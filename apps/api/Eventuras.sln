@@ -39,11 +39,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eventuras.Services.Smtp", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eventuras.Services.Twilio", "src\Eventuras.Services.Twilio\Eventuras.Services.Twilio.csproj", "{8DEB813B-1AF5-479E-9227-0932F53F7047}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Losol.Communication.Sms", "libs\Losol.Communication.Sms\Losol.Communication.Sms.csproj", "{C5F812C9-14D6-4574-A7B9-21A042682513}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Losol.Communication.Sms", "src\Losol.Communication.Sms\Losol.Communication.Sms.csproj", "{C5F812C9-14D6-4574-A7B9-21A042682513}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Losol.Communication.Email", "libs\Losol.Communication.Email\Losol.Communication.Email.csproj", "{981DD910-C014-464B-9876-F60AE3602661}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Losol.Communication.Email", "src\Losol.Communication.Email\Losol.Communication.Email.csproj", "{981DD910-C014-464B-9876-F60AE3602661}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Losol.Communication.HealthCheck", "libs\Losol.Communication.HealthCheck\Losol.Communication.HealthCheck.csproj", "{725F6F43-F74C-4736-82D1-0B08EDC345A6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Losol.Communication.HealthCheck", "src\Losol.Communication.HealthCheck\Losol.Communication.HealthCheck.csproj", "{725F6F43-F74C-4736-82D1-0B08EDC345A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -291,6 +291,9 @@ Global
 		{4C9A2C86-6649-48D8-8335-F7BC3E12C9A3} = {B280334D-A924-4F2E-9AF3-BA7566335FB0}
 		{C5EF41F1-0631-470F-8B88-71D87D68B853} = {B280334D-A924-4F2E-9AF3-BA7566335FB0}
 		{8DEB813B-1AF5-479E-9227-0932F53F7047} = {B280334D-A924-4F2E-9AF3-BA7566335FB0}
+		{981DD910-C014-464B-9876-F60AE3602661} = {B280334D-A924-4F2E-9AF3-BA7566335FB0}
+		{725F6F43-F74C-4736-82D1-0B08EDC345A6} = {B280334D-A924-4F2E-9AF3-BA7566335FB0}
+		{C5F812C9-14D6-4574-A7B9-21A042682513} = {B280334D-A924-4F2E-9AF3-BA7566335FB0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {73E41161-D239-4EB6-8C90-A0FEA88D4E7C}

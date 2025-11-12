@@ -16,9 +16,9 @@ COPY ./src/Eventuras.Services.Stripe/*.csproj ./src/Eventuras.Services.Stripe/
 COPY ./src/Eventuras.Services.Twilio/*.csproj ./src/Eventuras.Services.Twilio/
 COPY ./src/Eventuras.Infrastructure/*.csproj ./src/Eventuras.Infrastructure/
 COPY ./src/Eventuras.Domain/*.csproj ./src/Eventuras.Domain/
-COPY ./libs/Losol.Communication.Email/*.csproj ./libs/Losol.Communication.Email/
-COPY ./libs/Losol.Communication.HealthCheck/*.csproj ./libs/Losol.Communication.HealthCheck/
-COPY ./libs/Losol.Communication.Sms/*.csproj ./libs/Losol.Communication.Sms/
+COPY ./src/Losol.Communication.Email/*.csproj ./src/Losol.Communication.Email/
+COPY ./src/Losol.Communication.HealthCheck/*.csproj ./src/Losol.Communication.HealthCheck/
+COPY ./src/Losol.Communication.Sms/*.csproj ./src/Losol.Communication.Sms/
 COPY ./tests/Eventuras.UnitTests/*.csproj ./tests/Eventuras.UnitTests/
 COPY ./tests/Eventuras.WebApi.Tests/*.csproj ./tests/Eventuras.WebApi.Tests/
 COPY ./tests/Eventuras.Services.Tests/*.csproj ./tests/Eventuras.Services.Tests/
