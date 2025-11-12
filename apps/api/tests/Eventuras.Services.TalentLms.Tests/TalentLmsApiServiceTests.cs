@@ -4,7 +4,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Xunit;
-using Xunit.Abstractions;
+using Xunit.Sdk;
 
 namespace Eventuras.Services.TalentLms.Tests
 {

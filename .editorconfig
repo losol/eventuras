@@ -174,3 +174,12 @@ csharp_space_between_square_brackets = false
 # Namespace preferences - OVERRIDE: Use file-scoped namespaces
 csharp_style_namespace_declarations = file_scoped:warning
 dotnet_diagnostic.IDE0161.severity = warning
+
+# xUnit analyzer preferences
+# xUnit1051: Suppress suggestion to use TestContext.Current.CancellationToken
+# This is a stylistic preference and doesn't affect test functionality
+dotnet_diagnostic.xUnit1051.severity = none
+
+# xUnit3003: Suppress suggestion to add source information constructor to custom FactAttribute
+# This is optional metadata and doesn't affect test execution
+dotnet_diagnostic.xUnit3003.severity = none
