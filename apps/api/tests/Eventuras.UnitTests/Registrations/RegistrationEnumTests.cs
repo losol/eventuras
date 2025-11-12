@@ -13,11 +13,9 @@ public class RegistrationEnumTests
     [InlineData(Registration.RegistrationStatus.Attended, 4)]
     [InlineData(Registration.RegistrationStatus.Finished, 5)]
     [InlineData(Registration.RegistrationStatus.WaitingList, 6)]
-    public void RegistrationStatus_ShouldHaveCorrectValue(Registration.RegistrationStatus status, int expectedValue)
-    {
+    public void RegistrationStatus_ShouldHaveCorrectValue(Registration.RegistrationStatus status, int expectedValue) =>
         // Assert
         Assert.Equal(expectedValue, (int)status);
-    }
 
     [Theory]
     [InlineData(Registration.RegistrationType.Participant, 0)]
@@ -25,11 +23,9 @@ public class RegistrationEnumTests
     [InlineData(Registration.RegistrationType.Staff, 2)]
     [InlineData(Registration.RegistrationType.Lecturer, 3)]
     [InlineData(Registration.RegistrationType.Artist, 4)]
-    public void RegistrationType_ShouldHaveCorrectValue(Registration.RegistrationType type, int expectedValue)
-    {
+    public void RegistrationType_ShouldHaveCorrectValue(Registration.RegistrationType type, int expectedValue) =>
         // Assert
         Assert.Equal(expectedValue, (int)type);
-    }
 
     [Fact]
     public void RegistrationStatus_ToString_ShouldReturnName()

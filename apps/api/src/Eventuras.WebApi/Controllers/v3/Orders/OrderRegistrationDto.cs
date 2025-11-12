@@ -7,14 +7,6 @@ namespace Eventuras.WebApi.Controllers.v3.Orders;
 
 public class OrderRegistrationDto
 {
-    public int RegistrationId { get; set; }
-    public int EventId { get; set; }
-    public string? UserId { get; set; }
-    public Registration.RegistrationStatus Status { get; set; }
-    public Registration.RegistrationType Type { get; set; }
-    public int? CertificateId { get; set; }
-    public string? Notes { get; set; }
-
     [Obsolete("For JSON deserialization only, do not use manually", true)]
     public OrderRegistrationDto() { }
 
@@ -28,4 +20,12 @@ public class OrderRegistrationDto
         Type = registration.Type;
         Notes = registration.Notes;
     }
+
+    public int RegistrationId { get; set; }
+    public int EventId { get; set; }
+    public string? UserId { get; set; }
+    public Registration.RegistrationStatus Status { get; set; }
+    public Registration.RegistrationType Type { get; set; }
+    public int? CertificateId { get; set; }
+    public string? Notes { get; set; }
 }

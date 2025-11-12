@@ -18,30 +18,22 @@ namespace Eventuras.WebApi.Tests;
 
 internal static class HttpClientExtensions
 {
-    public static HttpClient AuthenticatedAsAdmin(this HttpClient httpClient)
-    {
-        return httpClient.Authenticated(role: Roles.Admin);
-    }
+    public static HttpClient AuthenticatedAsAdmin(this HttpClient httpClient) =>
+        httpClient.Authenticated(role: Roles.Admin);
 
-    public static HttpClient AuthenticatedAsSystemAdmin(this HttpClient httpClient)
-    {
-        return httpClient.Authenticated(role: Roles.SystemAdmin);
-    }
+    public static HttpClient AuthenticatedAsSystemAdmin(this HttpClient httpClient) =>
+        httpClient.Authenticated(role: Roles.SystemAdmin);
 
-    public static HttpClient AuthenticatedAsSuperAdmin(this HttpClient httpClient)
-    {
-        return httpClient.Authenticated(role: Roles.SuperAdmin);
-    }
+    public static HttpClient AuthenticatedAsSuperAdmin(this HttpClient httpClient) =>
+        httpClient.Authenticated(role: Roles.SuperAdmin);
 
     public static HttpClient AuthenticatedAs(this HttpClient httpClient, ApplicationUser user,
-        params string[] roles)
-    {
-        return httpClient.Authenticated(
-            firstName: user.Name,
+        params string[] roles) =>
+        httpClient.Authenticated(
+            user.Name,
             email: user.Email,
             roles: roles,
             phoneNumber: user.PhoneNumber);
-    }
 
     public static HttpClient WithAcceptHeader(this HttpClient httpClient, string headerValue)
     {
@@ -147,7 +139,7 @@ internal static class HttpClientExtensions
         // Eventuras org id header
         if (organizationId.HasValue)
         {
-            content.Headers.Add(Eventuras.Services.Constants.Api.OrganizationHeader, organizationId.ToString());
+            content.Headers.Add(Api.OrganizationHeader, organizationId.ToString());
         }
 
         // Additional headers provided
@@ -164,10 +156,8 @@ internal static class HttpClientExtensions
 
     public static async Task<HttpResponseMessage> PostAsync(
         this HttpClient httpClient,
-        string requestUri)
-    {
-        return await httpClient.PostAsync(requestUri, new { });
-    }
+        string requestUri) =>
+        await httpClient.PostAsync(requestUri, new { });
 
     public static async Task<HttpResponseMessage> PutAsync(
         this HttpClient httpClient,
@@ -183,10 +173,8 @@ internal static class HttpClientExtensions
 
     public static async Task<HttpResponseMessage> PutAsync(
         this HttpClient httpClient,
-        string requestUri)
-    {
-        return await httpClient.PutAsync(requestUri, new { });
-    }
+        string requestUri) =>
+        await httpClient.PutAsync(requestUri, new { });
 
     public static async Task<HttpResponseMessage> PatchAsync(
         this HttpClient httpClient,
@@ -210,10 +198,7 @@ internal static class HttpClientExtensions
             Encoding.UTF8,
             "application/json");
         return await httpClient.SendAsync(
-            new HttpRequestMessage(HttpMethod.Delete, requestUri)
-            {
-                Content = content
-            });
+            new HttpRequestMessage(HttpMethod.Delete, requestUri) { Content = content });
     }
 
     public static async Task<HttpResponseMessage> GetAsync(
@@ -223,7 +208,7 @@ internal static class HttpClientExtensions
     {
         var props = new List<PropertyInfo>(data.GetType().GetProperties());
         var pairs = new List<string>(props.Count);
-        foreach (PropertyInfo prop in props)
+        foreach (var prop in props)
         {
             var propValue = prop.GetValue(data, null);
             var encoded = propValue != null ? WebUtility.UrlEncode(propValue.ToString()) : null;

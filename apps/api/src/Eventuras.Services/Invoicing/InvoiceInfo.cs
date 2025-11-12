@@ -6,7 +6,7 @@ using NodaTime;
 namespace Eventuras.Services.Invoicing;
 
 /// <summary>
-/// POCO for new invoice.
+///     POCO for new invoice.
 /// </summary>
 public class InvoiceInfo
 {
@@ -25,9 +25,8 @@ public class InvoiceInfo
     public PaymentMethod.PaymentProvider PaymentMethod { get; set; }
     public List<InvoiceLine> Lines { get; set; } = new();
 
-    public static InvoiceInfo CreateFromOrderList(IReadOnlyCollection<Order> orders)
-    {
-        return new InvoiceInfo
+    public static InvoiceInfo CreateFromOrderList(IReadOnlyCollection<Order> orders) =>
+        new()
         {
             OrderId = string.Join('-', orders.Select(o => o.OrderId)),
             OrderDate = orders.Min(o => o.OrderTime.ToLocalDate()),
@@ -43,27 +42,21 @@ public class InvoiceInfo
             CustomerInvoiceReference = orders.FirstFilled(o => o.Registration.CustomerInvoiceReference),
             ProjectCode = orders.FirstFilled(o => o.Registration.EventInfo.ProjectCode),
             PaymentMethod = orders.First().PaymentMethod,
-            Lines = orders.SelectMany(o => new[]
-            {
-                new InvoiceLine
-                {
-                    Type = InvoiceLineType.Text,
-                    Description = FormatDescription(o)
-                }
-            }.Concat(o.OrderLines.Select(l => new InvoiceLine
-            {
-                Type = InvoiceLineType.Product,
-                Description = l.ProductVariantId.HasValue
-                    ? $"{l.ProductName} ({l.ProductVariantName})"
-                    : l.ProductName,
-                ProductCode = l.ItemCode,
-                ProductDescription = l.ProductVariantDescription ?? l.ProductDescription,
-                Quantity = l.Quantity,
-                Price = l.Price,
-                Total = l.LineTotal
-            }))).ToList()
+            Lines = orders.SelectMany(o =>
+                new[] { new InvoiceLine { Type = InvoiceLineType.Text, Description = FormatDescription(o) } }.Concat(
+                    o.OrderLines.Select(l => new InvoiceLine
+                    {
+                        Type = InvoiceLineType.Product,
+                        Description = l.ProductVariantId.HasValue
+                            ? $"{l.ProductName} ({l.ProductVariantName})"
+                            : l.ProductName,
+                        ProductCode = l.ItemCode,
+                        ProductDescription = l.ProductVariantDescription ?? l.ProductDescription,
+                        Quantity = l.Quantity,
+                        Price = l.Price,
+                        Total = l.LineTotal
+                    }))).ToList()
         };
-    }
 
     private static string FormatDescription(Order order)
     {

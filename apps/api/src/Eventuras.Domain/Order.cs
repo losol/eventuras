@@ -19,6 +19,16 @@ public class Order
         Refunded
     }
 
+    /**
+            Allowed transitions:
+            Draft
+            Draft -> Cancelled
+            Draft -> Verified -> Cancelled
+            Draft -> Verified -> Invoiced
+            Draft -> Verified -> Invoiced -> Cancelled
+         */
+    private OrderStatus _status = OrderStatus.Draft;
+
 
     [Required] public int OrderId { get; set; }
     public string UserId { get; set; }
@@ -27,20 +37,9 @@ public class Order
     [Obsolete("Use Invoice.ExternalInvoiceId")]
     public string ExternalInvoiceId { get; set; }
 
-    [Obsolete("Use Invoice.Paid")]
-    public bool Paid { get; set; }
+    [Obsolete("Use Invoice.Paid")] public bool Paid { get; set; }
 
     public int? InvoiceId { get; set; }
-
-    /**
-			Allowed transitions:
-			Draft
-			Draft -> Cancelled
-			Draft -> Verified -> Cancelled
-			Draft -> Verified -> Invoiced
-			Draft -> Verified -> Invoiced -> Cancelled
-		 */
-    private OrderStatus _status = OrderStatus.Draft;
 
     public OrderStatus Status
     {
@@ -90,12 +89,16 @@ public class Order
 
     [Obsolete("Use Registration Participant details")]
     public string CustomerName { get; set; }
+
     [Obsolete("Use Registration Participant details")]
     public string CustomerEmail { get; set; }
+
     [Obsolete("Use Registration Participant details")]
     public string CustomerVatNumber { get; set; }
+
     [Obsolete("Use Registration Participant details")]
     public string CustomerInvoiceReference { get; set; }
+
     public PaymentProvider PaymentMethod { get; set; }
 
     public Instant OrderTime { get; set; } = SystemClock.Instance.Now();
@@ -104,7 +107,8 @@ public class Order
     public string Comments { get; set; }
 
     // Log is information from the system. Ie registration time and user.
-    [Obsolete("Use BusinessEventLog entity for tracking order events. This property will be removed in a future version.")]
+    [Obsolete(
+        "Use BusinessEventLog entity for tracking order events. This property will be removed in a future version.")]
     public string Log { get; set; }
 
     // Navigational properties
@@ -114,7 +118,14 @@ public class Order
 
     [ForeignKey(nameof(InvoiceId))] public Invoice Invoice { get; set; }
 
-    [Obsolete("Use BusinessEventLog entity for tracking order events. This method will be removed in a future version.")]
+    public bool CanEdit =>
+        Status == OrderStatus.Draft || Status == OrderStatus.Verified;
+
+    public decimal TotalAmount =>
+        OrderLines.Sum(l => l.LineTotal);
+
+    [Obsolete(
+        "Use BusinessEventLog entity for tracking order events. This method will be removed in a future version.")]
     public void AddLog(string text = null)
     {
 #pragma warning disable CS0618 // Type or member is obsolete
@@ -136,15 +147,9 @@ public class Order
     {
         Status = newStatus;
 #pragma warning disable CS0618 // Type or member is obsolete
-        this.AddLog();
+        AddLog();
 #pragma warning restore CS0618 // Type or member is obsolete
     }
-
-    public bool CanEdit =>
-        Status == OrderStatus.Draft || Status == OrderStatus.Verified;
-
-    public decimal TotalAmount =>
-        OrderLines.Sum(l => l.LineTotal);
 
 
     [Obsolete("Use service layer.")]

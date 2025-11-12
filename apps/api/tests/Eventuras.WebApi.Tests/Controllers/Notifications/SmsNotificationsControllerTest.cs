@@ -1,10 +1,7 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Eventuras.Domain;
-using Eventuras.Services;
 using Eventuras.TestAbstractions;
-using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
 
@@ -21,10 +18,7 @@ public class SmsNotificationsControllerTest : IClassFixture<CustomWebApiApplicat
         Cleanup();
     }
 
-    public void Dispose()
-    {
-        Cleanup();
-    }
+    public void Dispose() => Cleanup();
 
     private void Cleanup()
     {
@@ -38,11 +32,8 @@ public class SmsNotificationsControllerTest : IClassFixture<CustomWebApiApplicat
     public async Task Should_Require_Auth_To_Send_Sms_Notification()
     {
         var client = _factory.CreateClient();
-        var response = await client.PostAsync("/v3/notifications/sms", new
-        {
-            message = "Test message",
-            recipients = new[] { "+11111111111" }
-        });
+        var response = await client.PostAsync("/v3/notifications/sms",
+            new { message = "Test message", recipients = new[] { "+11111111111" } });
         response.CheckUnauthorized();
     }
 
@@ -50,11 +41,8 @@ public class SmsNotificationsControllerTest : IClassFixture<CustomWebApiApplicat
     public async Task Should_Require_Admin_Role_To_Send_Sms_Notification()
     {
         var client = _factory.CreateClient().Authenticated();
-        var response = await client.PostAsync("/v3/notifications/sms", new
-        {
-            message = "Test message",
-            recipients = new[] { "+11111111111" }
-        });
+        var response = await client.PostAsync("/v3/notifications/sms",
+            new { message = "Test message", recipients = new[] { "+11111111111" } });
         response.CheckForbidden();
     }
 
@@ -66,7 +54,6 @@ public class SmsNotificationsControllerTest : IClassFixture<CustomWebApiApplicat
         var response = await client.PostAsync("/v3/notifications/sms", body);
         response.CheckBadRequest();
     }
-
 
 
     private void CheckSmsSentTo(string message, int orgId, params ApplicationUser[] users)
@@ -99,9 +86,8 @@ public class SmsNotificationsControllerTest : IClassFixture<CustomWebApiApplicat
         }
     }
 
-    public static object[][] GetInvalidBodyParams()
-    {
-        return new[]
+    public static object[][] GetInvalidBodyParams() =>
+        new[]
         {
             new object[] { new { message = "", recipients = new[] { "+11111111111" } } },
             new object[] { new { message = "Test", recipients = new[] { "" } } },
@@ -109,7 +95,6 @@ public class SmsNotificationsControllerTest : IClassFixture<CustomWebApiApplicat
             new object[] { new { message = "Test" } },
             new object[] { new { message = "Test", eventParticipants = new { } } },
             new object[] { new { message = "Test", eventParticipants = new { eventId = 0 } } },
-            new object[] { new { message = "Test", eventParticipants = new { eventId = -1 } } },
+            new object[] { new { message = "Test", eventParticipants = new { eventId = -1 } } }
         };
-    }
 }

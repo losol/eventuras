@@ -12,8 +12,9 @@ public class EmailModel
     public const int MaxCc = 500;
     public const int MaxBcc = 500;
 
-    [CheckChildren]
-    public Address From { get; set; }
+    private List<Attachment> _attachments;
+
+    [CheckChildren] public Address From { get; set; }
 
     [Required]
     [MinLength(1)]
@@ -21,13 +22,9 @@ public class EmailModel
     [CheckChildren]
     public Address[] Recipients { get; set; }
 
-    [MaxLength(MaxCc)]
-    [CheckChildren]
-    public Address[] Cc { get; set; }
+    [MaxLength(MaxCc)] [CheckChildren] public Address[] Cc { get; set; }
 
-    [MaxLength(MaxBcc)]
-    [CheckChildren]
-    public Address[] Bcc { get; set; }
+    [MaxLength(MaxBcc)] [CheckChildren] public Address[] Bcc { get; set; }
 
     [Required]
     [MaxLength(MaxSubjectLength)]
@@ -37,26 +34,22 @@ public class EmailModel
 
     public string HtmlBody { get; set; }
 
-    private List<Attachment> _attachments;
-
     [CheckChildren]
     public List<Attachment> Attachments
     {
-        get { return _attachments ??= new List<Attachment>(); }
+        get => _attachments ??= new List<Attachment>();
         set => _attachments = value;
     }
 
-    public override string ToString()
-    {
-        return $"{nameof(From)}: {From}, " +
-               $"{nameof(Recipients)}: {string.Join(", ", Recipients?.Select(a => a.ToString()) ?? Array.Empty<string>())}, " +
-               $"{nameof(Cc)}: {string.Join(", ", Cc?.Select(a => a.ToString()) ?? Array.Empty<string>())}, " +
-               $"{nameof(Bcc)}: {string.Join(", ", Bcc?.Select(a => a.ToString()) ?? Array.Empty<string>())}, " +
-               $"{nameof(Subject)}: {Subject}, " +
-               $"{nameof(TextBody)}: {TextBody}, " +
-               $"{nameof(HtmlBody)}: {HtmlBody}, " +
-               $"{nameof(Attachments)}: {string.Join(", ", Attachments?.Select(a => a.ToString()) ?? Array.Empty<string>())}";
-    }
+    public override string ToString() =>
+        $"{nameof(From)}: {From}, " +
+        $"{nameof(Recipients)}: {string.Join(", ", Recipients?.Select(a => a.ToString()) ?? Array.Empty<string>())}, " +
+        $"{nameof(Cc)}: {string.Join(", ", Cc?.Select(a => a.ToString()) ?? Array.Empty<string>())}, " +
+        $"{nameof(Bcc)}: {string.Join(", ", Bcc?.Select(a => a.ToString()) ?? Array.Empty<string>())}, " +
+        $"{nameof(Subject)}: {Subject}, " +
+        $"{nameof(TextBody)}: {TextBody}, " +
+        $"{nameof(HtmlBody)}: {HtmlBody}, " +
+        $"{nameof(Attachments)}: {string.Join(", ", Attachments?.Select(a => a.ToString()) ?? Array.Empty<string>())}";
 
     private static string FormatEmailAddress(string name, string email)
     {
@@ -64,10 +57,12 @@ public class EmailModel
         {
             return null;
         }
+
         if (string.IsNullOrEmpty(name))
         {
             return email;
         }
+
         return $"{name} <{email}>";
     }
 }

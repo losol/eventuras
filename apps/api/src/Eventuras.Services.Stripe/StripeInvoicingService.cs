@@ -21,10 +21,8 @@ public class StripeInvoicingService : IInvoicingProvider
         StripeConfiguration.SetApiKey(options.Value.SecretKey);
     }
 
-    public bool AcceptPaymentProvider(PaymentMethod.PaymentProvider provider)
-    {
-        return provider is PaymentMethod.PaymentProvider.StripeInvoice;
-    }
+    public bool AcceptPaymentProvider(PaymentMethod.PaymentProvider provider) =>
+        provider is PaymentMethod.PaymentProvider.StripeInvoice;
 
     public async Task<InvoiceResult> CreateInvoiceAsync(InvoiceInfo info)
     {
@@ -38,7 +36,7 @@ public class StripeInvoicingService : IInvoicingProvider
                 Amount = (int)(line.Total ?? 0 * 100m), // inclusive of quantity & tax
                 Currency = line.Currency,
                 CustomerId = customer.Id,
-                Description = line.Description,
+                Description = line.Description
             });
         }
 
@@ -60,19 +58,17 @@ public class StripeInvoicingService : IInvoicingProvider
     private static async Task<StripeCustomer> GetOrCreateCustomer(InvoiceInfo info)
     {
         var service = new StripeCustomerService();
-        var listOptions = new StripeCustomerListOptions
-        {
-            Limit = 1
-        };
+        var listOptions = new StripeCustomerListOptions { Limit = 1 };
         listOptions.AddExtraParam("email", info.CustomerEmail);
         var customer = (await service.ListAsync(listOptions)).Data.FirstOrDefault();
         if (customer != null)
+        {
             return customer;
+        }
 
         var customerCreateOptions = new StripeCustomerCreateOptions
         {
-            Email = info.CustomerEmail,
-            BusinessVatId = info.CustomerVatNumber
+            Email = info.CustomerEmail, BusinessVatId = info.CustomerVatNumber
         };
         return await service.CreateAsync(customerCreateOptions);
     }

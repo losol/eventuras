@@ -10,10 +10,7 @@ public class CertificatesControllerTest : IClassFixture<CustomWebApiApplicationF
 {
     private readonly CustomWebApiApplicationFactory<Program> _factory;
 
-    public CertificatesControllerTest(CustomWebApiApplicationFactory<Program> factory)
-    {
-        _factory = factory;
-    }
+    public CertificatesControllerTest(CustomWebApiApplicationFactory<Program> factory) => _factory = factory;
 
     [Fact]
     public async Task Should_Require_Auth_For_Getting_Cert_Json()

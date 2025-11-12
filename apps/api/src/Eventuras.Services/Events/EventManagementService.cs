@@ -12,8 +12,8 @@ namespace Eventuras.Services.Events;
 internal class EventManagementService : IEventManagementService
 {
     private readonly ApplicationDbContext _context;
-    private readonly IProductsService _productsService;
     private readonly ILogger<EventManagementService> _logger;
+    private readonly IProductsService _productsService;
 
     public EventManagementService(
         ApplicationDbContext context,
@@ -27,7 +27,7 @@ internal class EventManagementService : IEventManagementService
             new ArgumentNullException(nameof(productsService));
 
         _logger = logger ?? throw
-        new ArgumentNullException(nameof(logger));
+            new ArgumentNullException(nameof(logger));
     }
 
     public async Task CreateNewEventAsync(EventInfo info)
@@ -39,7 +39,7 @@ internal class EventManagementService : IEventManagementService
         }
 
         if (await _context.EventInfos
-            .AnyAsync(e => e.Slug == info.Slug))
+                .AnyAsync(e => e.Slug == info.Slug))
         {
             _logger.LogError("Duplicate slug, cannot create event");
             throw new DuplicateException($"Event with code {info.Slug} already exists");
@@ -94,9 +94,9 @@ internal class EventManagementService : IEventManagementService
         }
 
         if (await _context.EventInfos
-            .AnyAsync(e => e.Slug == info.Slug &&
-                           e.EventInfoId != info.EventInfoId &&
-                           !e.Archived))
+                .AnyAsync(e => e.Slug == info.Slug &&
+                               e.EventInfoId != info.EventInfoId &&
+                               !e.Archived))
         {
             throw new DuplicateException($"Event with code {info.Slug} already exists");
         }

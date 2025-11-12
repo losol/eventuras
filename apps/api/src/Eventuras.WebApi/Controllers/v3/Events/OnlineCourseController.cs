@@ -16,10 +16,7 @@ public class OnlineCourseController : ControllerBase
 {
     private readonly IEventInfoRetrievalService _eventInfoService;
 
-    public OnlineCourseController(IEventInfoRetrievalService eventInfoService)
-    {
-        _eventInfoService = eventInfoService;
-    }
+    public OnlineCourseController(IEventInfoRetrievalService eventInfoService) => _eventInfoService = eventInfoService;
 
     // GET: v1/onlinecourses
     [AllowAnonymous]
@@ -27,14 +24,14 @@ public class OnlineCourseController : ControllerBase
     public async Task<ActionResult<IQueryable<OnlineCourseDto>>> Get()
     {
         var events = from e in await _eventInfoService.GetOnDemandEventsAsync()
-                     select new OnlineCourseDto()
-                     {
-                         Id = e.EventInfoId,
-                         Name = e.Title,
-                         Slug = e.Slug,
-                         Description = e.Description,
-                         Featured = e.Featured
-                     };
+            select new OnlineCourseDto
+            {
+                Id = e.EventInfoId,
+                Name = e.Title,
+                Slug = e.Slug,
+                Description = e.Description,
+                Featured = e.Featured
+            };
         return Ok(events);
     }
 
@@ -49,7 +46,7 @@ public class OnlineCourseController : ControllerBase
             return NotFound();
         }
 
-        var dto = new OnlineCourseDto()
+        var dto = new OnlineCourseDto
         {
             Id = eventInfo.EventInfoId,
             Name = eventInfo.Title,

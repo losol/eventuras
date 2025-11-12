@@ -8,23 +8,15 @@ namespace Eventuras.Services.Twilio;
 [DisplayName("Twilio")]
 internal class OrganizationTwilioSettings : IConfigurableSettings
 {
-    [DisplayName("Twilio enabled")] public bool Enabled { get; set; }
-
     [Required]
     [DisplayName("From number")]
     public string From { get; set; }
 
-    [Required][DisplayName("Twilio SID")] public string Sid { get; set; }
+    [Required] [DisplayName("Twilio SID")] public string Sid { get; set; }
 
-    [Required][DisplayName("Auth token")] public string AuthToken { get; set; }
+    [Required] [DisplayName("Auth token")] public string AuthToken { get; set; }
+    [DisplayName("Twilio enabled")] public bool Enabled { get; set; }
 
-    public TwilioOptions ToTwilioOptions()
-    {
-        return new TwilioOptions
-        {
-            From = From,
-            Sid = Sid,
-            AuthToken = AuthToken
-        };
-    }
+    public TwilioOptions ToTwilioOptions() =>
+        new() { From = From, Sid = Sid, AuthToken = AuthToken };
 }

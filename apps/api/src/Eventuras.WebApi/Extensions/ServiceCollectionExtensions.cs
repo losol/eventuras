@@ -80,7 +80,7 @@ public static class ServiceCollectionExtensions
                 .Select(s => s.Value)
                 .ToArray();
 
-            var adminRoles = new string[] { Roles.Admin, Roles.SuperAdmin, Roles.SystemAdmin };
+            var adminRoles = new[] { Roles.Admin, Roles.SuperAdmin, Roles.SystemAdmin };
             options.AddPolicy(Constants.Auth.AdministratorRole, policy => policy.RequireRole(adminRoles));
 
             Array.ForEach(apiScopes, apiScope =>
@@ -165,7 +165,8 @@ public static class ServiceCollectionExtensions
         var healthEndpoint = new Uri(baseUri, Constants.HealthChecks.HealthCheckUri);
 
         services
-            .AddHealthChecksUI(settings => settings.AddHealthCheckEndpoint(Constants.HealthChecks.HealthCheckName, healthEndpoint.ToString()))
+            .AddHealthChecksUI(settings =>
+                settings.AddHealthCheckEndpoint(Constants.HealthChecks.HealthCheckName, healthEndpoint.ToString()))
             .AddInMemoryStorage();
     }
 }

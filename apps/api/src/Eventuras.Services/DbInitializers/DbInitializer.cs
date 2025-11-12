@@ -14,10 +14,10 @@ namespace Eventuras.Services.DbInitializers;
 
 public class DbInitializer : IDbInitializer
 {
+    private readonly DbInitializerOptions _config;
     private readonly ApplicationDbContext _db;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly DbInitializerOptions _config;
 
     public DbInitializer(
         ApplicationDbContext db,
@@ -34,7 +34,9 @@ public class DbInitializer : IDbInitializer
     public virtual async Task SeedAsync(bool createSuperUser, bool runMigrations)
     {
         if (runMigrations && _db.Database.IsRelational())
-        { await _db.Database.MigrateAsync(); }
+        {
+            await _db.Database.MigrateAsync();
+        }
 
         IdentityResult identityResult;
 
@@ -44,28 +46,34 @@ public class DbInitializer : IDbInitializer
         {
             var roleExist = await _roleManager.RoleExistsAsync(roleName);
             if (roleExist)
+            {
                 continue;
+            }
 
             identityResult = await _roleManager.CreateAsync(new IdentityRole(roleName));
             ThrowIfInvalid(identityResult);
         }
 
         // Add super-admin if none exists
-        if (createSuperUser && _config.SuperAdmin != null && !(await _userManager.GetUsersInRoleAsync(Roles.SuperAdmin)).Any())
+        if (createSuperUser && _config.SuperAdmin != null &&
+            !(await _userManager.GetUsersInRoleAsync(Roles.SuperAdmin)).Any())
         {
             if (string.IsNullOrEmpty(_config.SuperAdmin.Email))
+            {
                 throw new ArgumentException("SuperAdmin email not set. Please check install documentation");
+            }
+
             if (string.IsNullOrEmpty(_config.SuperAdmin.Password))
+            {
                 throw new ArgumentException("SuperAdmin password not set. Please check install documentation");
+            }
 
             var superAdmin = await _userManager.FindByEmailAsync(_config.SuperAdmin.Email);
             if (superAdmin == null)
             {
                 superAdmin = new ApplicationUser
                 {
-                    UserName = _config.SuperAdmin.Email,
-                    Email = _config.SuperAdmin.Email,
-                    EmailConfirmed = true
+                    UserName = _config.SuperAdmin.Email, Email = _config.SuperAdmin.Email, EmailConfirmed = true
                 };
 
                 var password = _config.SuperAdmin.Password;
@@ -90,7 +98,7 @@ public class DbInitializer : IDbInitializer
                     Provider = PaymentProvider.EmailInvoice,
                     Name = "Email invoice",
                     Type = PaymentProviderType.Invoice,
-                    Active = false,
+                    Active = false
                 },
                 new PaymentMethod
                 {
@@ -106,7 +114,7 @@ public class DbInitializer : IDbInitializer
                     Name = "EHF-faktura",
                     Type = PaymentProviderType.Invoice,
                     Active = true
-                },
+                }
             };
 
             _db.PaymentMethods.AddRange(methods);
@@ -117,7 +125,9 @@ public class DbInitializer : IDbInitializer
     private static void ThrowIfInvalid(IdentityResult identityResult)
     {
         if (identityResult.Succeeded)
+        {
             return;
+        }
 
         throw new Exception(identityResult.ToString());
     }

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
@@ -17,14 +16,14 @@ namespace Eventuras.Services.Notifications;
 
 internal class NotificationManagementService : INotificationManagementService
 {
-    private readonly IEventInfoRetrievalService _eventInfoRetrievalService;
-    private readonly IEventInfoAccessControlService _eventInfoAccessControlService;
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ApplicationDbContext _context;
     private readonly ICurrentOrganizationAccessorService _currentOrganizationAccessorService;
+    private readonly IEventInfoAccessControlService _eventInfoAccessControlService;
+    private readonly IEventInfoRetrievalService _eventInfoRetrievalService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ILogger<NotificationManagementService> _logger;
     private readonly IOrganizationRetrievalService _organizationRetrievalService;
     private readonly IRegistrationRetrievalService _registrationRetrievalService;
-    private readonly ApplicationDbContext _context;
-    private readonly ILogger<NotificationManagementService> _logger;
 
     public NotificationManagementService(
         IEventInfoRetrievalService eventInfoRetrievalService,
@@ -66,9 +65,10 @@ internal class NotificationManagementService : INotificationManagementService
         string body,
         int orgId,
         string[] recipients
-        )
+    )
     {
-        _logger.LogInformation($"Starting to create an email notification. Subject: {subject}, Number of recipients: {recipients?.Length ?? 0}");
+        _logger.LogInformation(
+            $"Starting to create an email notification. Subject: {subject}, Number of recipients: {recipients?.Length ?? 0}");
 
         CheckSubjectAndBody(subject, body);
 
@@ -76,7 +76,8 @@ internal class NotificationManagementService : INotificationManagementService
 
         var currentUser = _httpContextAccessor.HttpContext.User;
 
-        _logger.LogInformation($"Current organization: {org.OrganizationId}. Current user id: {currentUser.GetUserId()}");
+        _logger.LogInformation(
+            $"Current organization: {org.OrganizationId}. Current user id: {currentUser.GetUserId()}");
 
         return await _context
             .CreateAsync(new EmailNotification(subject, body)
@@ -86,23 +87,27 @@ internal class NotificationManagementService : INotificationManagementService
                 Recipients = recipients
                     .Select(NotificationRecipient.Email)
                     .ToList()
-            }, leaveAttached: true);
+            }, true);
     }
 
     public async Task<EmailNotification> CreateEmailNotificationForRegistrationAsync(
-string subject,
-string body,
-Registration registration)
+        string subject,
+        string body,
+        Registration registration)
     {
-        _logger.LogInformation($"Starting to create an email notification based on registration. Registration: {registration.RegistrationId} Subject: {subject}");
+        _logger.LogInformation(
+            $"Starting to create an email notification based on registration. Registration: {registration.RegistrationId} Subject: {subject}");
 
         CheckSubjectAndBody(subject, body);
 
         var eventinfo = await _eventInfoRetrievalService.GetEventInfoByIdAsync(registration.EventInfoId);
-        var organization = await _organizationRetrievalService.GetOrganizationByIdAsync(eventinfo.OrganizationId, accessControlDone: true);
+        var organization =
+            await _organizationRetrievalService.GetOrganizationByIdAsync(eventinfo.OrganizationId,
+                accessControlDone: true);
         var currentUser = _httpContextAccessor.HttpContext.User;
 
-        _logger.LogInformation($"Current organization: {organization?.OrganizationId}. Current user id: {currentUser.GetUserId()}");
+        _logger.LogInformation(
+            $"Current organization: {organization?.OrganizationId}. Current user id: {currentUser.GetUserId()}");
 
         var recipient = NotificationRecipient.Create(registration, NotificationType.Email);
 
@@ -113,19 +118,18 @@ Registration registration)
             _context.Attach(organization);
             _context.Attach(registration);
 
-            return await _context.CreateAsync(new EmailNotification(subject, body)
-            {
-                CreatedByUserId = currentUser.GetUserId(),
-                EventInfoId = registration.EventInfoId,
-                OrganizationId = organization?.OrganizationId,
-                Recipients = new List<NotificationRecipient> { recipient }
-            }, leaveAttached: true, cancellationToken: default);
+            return await _context.CreateAsync(
+                new EmailNotification(subject, body)
+                {
+                    CreatedByUserId = currentUser.GetUserId(),
+                    EventInfoId = registration.EventInfoId,
+                    OrganizationId = organization?.OrganizationId,
+                    Recipients = new List<NotificationRecipient> { recipient }
+                }, true);
         }
-        else
-        {
-            _logger.LogError("Could not create NotificationRecipient. Skipping email creation.");
-            throw new NotFoundException("Could not find recipient. Skipping email creation.");
-        }
+
+        _logger.LogError("Could not create NotificationRecipient. Skipping email creation.");
+        throw new NotFoundException("Could not find recipient. Skipping email creation.");
     }
 
 
@@ -152,16 +156,18 @@ Registration registration)
 
         var currentUser = _httpContextAccessor.HttpContext.User;
 
-        _logger.LogInformation($"Current organization: {currentOrg?.OrganizationId}. Current user id: {currentUser.GetUserId()}");
+        _logger.LogInformation(
+            $"Current organization: {currentOrg?.OrganizationId}. Current user id: {currentUser.GetUserId()}");
 
         return await _context
-            .CreateAsync(new EmailNotification(subject, body)
-            {
-                CreatedByUserId = currentUser.GetUserId(),
-                OrganizationId = currentOrg?.OrganizationId,
-                EventInfoId = eventId,
-                Recipients = recipients
-            }, leaveAttached: true);
+            .CreateAsync(
+                new EmailNotification(subject, body)
+                {
+                    CreatedByUserId = currentUser.GetUserId(),
+                    OrganizationId = currentOrg?.OrganizationId,
+                    EventInfoId = eventId,
+                    Recipients = recipients
+                }, true);
     }
 
     public async Task<SmsNotification> CreateSmsNotificationAsync(
@@ -181,7 +187,7 @@ Registration registration)
                 Recipients = recipients
                     .Select(NotificationRecipient.Sms)
                     .ToList()
-            }, leaveAttached: true);
+            }, true);
     }
 
     public async Task<SmsNotification> CreateSmsNotificationForEventAsync(
@@ -205,13 +211,34 @@ Registration registration)
         var currentUser = _httpContextAccessor.HttpContext.User;
 
         return await _context
-            .CreateAsync(new SmsNotification(message)
-            {
-                CreatedByUserId = currentUser.GetUserId(),
-                OrganizationId = currentOrg?.OrganizationId,
-                EventInfoId = eventId,
-                Recipients = recipients
-            }, leaveAttached: true);
+            .CreateAsync(
+                new SmsNotification(message)
+                {
+                    CreatedByUserId = currentUser.GetUserId(),
+                    OrganizationId = currentOrg?.OrganizationId,
+                    EventInfoId = eventId,
+                    Recipients = recipients
+                }, true);
+    }
+
+    public async Task UpdateNotificationAsync(Notification notification)
+    {
+        if (notification == null)
+        {
+            throw new ArgumentNullException(nameof(notification));
+        }
+
+        await _context.UpdateAsync(notification);
+    }
+
+    public async Task UpdateNotificationRecipientAsync(NotificationRecipient recipient)
+    {
+        if (recipient == null)
+        {
+            throw new ArgumentNullException(nameof(recipient));
+        }
+
+        await _context.UpdateAsync(recipient);
     }
 
     private async Task CheckEventAccessAsync(int eventId)
@@ -247,17 +274,12 @@ Registration registration)
         // Default status if not provided: Verified, attended, not attended and finished
         registrationStatuses ??= new[]
         {
-            Registration.RegistrationStatus.Verified,
-            Registration.RegistrationStatus.Attended,
-            Registration.RegistrationStatus.NotAttended,
-            Registration.RegistrationStatus.Finished
+            Registration.RegistrationStatus.Verified, Registration.RegistrationStatus.Attended,
+            Registration.RegistrationStatus.NotAttended, Registration.RegistrationStatus.Finished
         };
 
         // Default registration type is participants
-        registrationTypes ??= new[]
-        {
-            Registration.RegistrationType.Participant
-        };
+        registrationTypes ??= new[] { Registration.RegistrationType.Participant };
 
         var reader = new PageReader<Registration>(async (offset, limit, token) =>
             await _registrationRetrievalService.ListRegistrationsAsync(
@@ -273,40 +295,16 @@ Registration registration)
                         HavingTypes = registrationTypes
                     }
                 },
-                new RegistrationRetrievalOptions
-                {
-                    LoadUser = true,
-                    ForUpdate = true
-                }, token));
+                new RegistrationRetrievalOptions { LoadUser = true, ForUpdate = true }, token));
 
         while (await reader.HasMoreAsync())
         {
             recipients.AddRange((from registration in await reader
                         .ReadNextAsync()
-                                 select NotificationRecipient.Create(registration, notificationType))
+                    select NotificationRecipient.Create(registration, notificationType))
                 .Where(r => r != null)); // user may have no phone, or email
         }
 
         return recipients;
-    }
-
-    public async Task UpdateNotificationAsync(Notification notification)
-    {
-        if (notification == null)
-        {
-            throw new ArgumentNullException(nameof(notification));
-        }
-
-        await _context.UpdateAsync(notification);
-    }
-
-    public async Task UpdateNotificationRecipientAsync(NotificationRecipient recipient)
-    {
-        if (recipient == null)
-        {
-            throw new ArgumentNullException(nameof(recipient));
-        }
-
-        await _context.UpdateAsync(recipient);
     }
 }

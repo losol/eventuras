@@ -15,8 +15,8 @@ namespace Eventuras.WebApi.Controllers.v3.Registrations;
 [Route("v{version:apiVersion}/registrations/{id}/certificate")]
 public class RegistrationCertificateController : ControllerBase
 {
-    private readonly IRegistrationRetrievalService _registrationRetrievalService;
     private readonly ICertificateDeliveryService _certificateDeliveryService;
+    private readonly IRegistrationRetrievalService _registrationRetrievalService;
 
     public RegistrationCertificateController(
         IRegistrationRetrievalService registrationRetrievalService,

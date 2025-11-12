@@ -22,7 +22,8 @@ internal class ApplicationClaimsIdentityFactory : UserClaimsPrincipalFactory<App
         RoleManager<IdentityRole> roleManager,
         IOptions<IdentityOptions> optionsAccessor,
         ApplicationDbContext context,
-        ICurrentOrganizationAccessorService currentOrganizationAccessorService) : base(userManager, roleManager, optionsAccessor)
+        ICurrentOrganizationAccessorService currentOrganizationAccessorService) : base(userManager, roleManager,
+        optionsAccessor)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _currentOrganizationAccessorService = currentOrganizationAccessorService ?? throw

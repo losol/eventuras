@@ -1,13 +1,9 @@
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Domain;
-using Losol.Communication.Email;
-using Losol.Communication.Sms;
-using Markdig;
+using Hangfire;
 using Microsoft.Extensions.Logging;
-using NodaTime;
 
 namespace Eventuras.Services.Notifications;
 
@@ -59,7 +55,7 @@ internal class NotificationDeliveryService : INotificationDeliveryService
                 return;
             }
 
-            Hangfire.BackgroundJob.Enqueue<NotificationBackgroundService>("notifications_queue",
+            BackgroundJob.Enqueue<NotificationBackgroundService>("notifications_queue",
                 x => x.SendNotificationToRecipientAsync(recipient.RecipientId, true));
         }
     }

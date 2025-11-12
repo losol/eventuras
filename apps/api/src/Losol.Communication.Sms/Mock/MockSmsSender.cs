@@ -9,10 +9,7 @@ public class MockSmsSender : ISmsSender
 {
     private readonly ILogger<MockSmsSender> _logger;
 
-    public MockSmsSender(ILogger<MockSmsSender> logger)
-    {
-        _logger = logger;
-    }
+    public MockSmsSender(ILogger<MockSmsSender> logger) => _logger = logger;
 
     public Task SendSmsAsync(string to, string body, int orgId)
     {
@@ -20,8 +17,6 @@ public class MockSmsSender : ISmsSender
         return Task.CompletedTask;
     }
 
-    public Task<HealthCheckStatus> CheckHealthAsync(CancellationToken cancellationToken = default)
-    {
-        return Task.FromResult(new HealthCheckStatus(HealthStatus.Healthy));
-    }
+    public Task<HealthCheckStatus> CheckHealthAsync(CancellationToken cancellationToken = default) =>
+        Task.FromResult(new HealthCheckStatus(HealthStatus.Healthy));
 }

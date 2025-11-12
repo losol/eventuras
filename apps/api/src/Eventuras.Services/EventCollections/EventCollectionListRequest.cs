@@ -4,7 +4,7 @@ public class EventCollectionListRequest : PagingRequest
 {
     public EventCollectionListRequest(int offset, int limit) : base(offset, limit) { }
 
-    public EventCollectionFilter Filter { get; set; } = new EventCollectionFilter();
+    public EventCollectionFilter Filter { get; set; } = new();
 
     public EventCollectionOrder Order { get; set; } = EventCollectionOrder.Name;
 

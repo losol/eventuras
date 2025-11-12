@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
@@ -13,9 +14,9 @@ namespace Eventuras.Services.Invoicing;
 internal class InvoicingService : IInvoicingService
 {
     private readonly IInvoicingProvider[] _components;
-    private readonly IOrderAccessControlService _orderAccessControlService;
-    private readonly ILogger<InvoicingService> _logger;
     private readonly ApplicationDbContext _db;
+    private readonly ILogger<InvoicingService> _logger;
+    private readonly IOrderAccessControlService _orderAccessControlService;
 
     public InvoicingService(
         IEnumerable<IInvoicingProvider> components,
@@ -24,7 +25,8 @@ internal class InvoicingService : IInvoicingService
         ApplicationDbContext db)
     {
         _components = components?.ToArray() ?? throw new ArgumentNullException(nameof(components));
-        _orderAccessControlService = orderAccessControlService ?? throw new ArgumentNullException(nameof(orderAccessControlService));
+        _orderAccessControlService = orderAccessControlService ??
+                                     throw new ArgumentNullException(nameof(orderAccessControlService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _db = db ?? throw new ArgumentNullException(nameof(db));
     }
@@ -44,10 +46,7 @@ internal class InvoicingService : IInvoicingService
             info.OrderId,
             info.PaymentMethod);
 
-        var invoice = new Invoice
-        {
-            Orders = orders.ToList()
-        };
+        var invoice = new Invoice { Orders = orders.ToList() };
 
         var provider = _components.FirstOrDefault(c => c
             .AcceptPaymentProvider(info.PaymentMethod));
@@ -88,7 +87,7 @@ internal class InvoicingService : IInvoicingService
         return invoice;
     }
 
-    public async Task<Invoice> GetInvoiceByIdAsync(int invoiceId, System.Threading.CancellationToken cancellationToken = default)
+    public async Task<Invoice> GetInvoiceByIdAsync(int invoiceId, CancellationToken cancellationToken = default)
     {
         var invoice = await _db.Invoices
             .Include(i => i.Orders)

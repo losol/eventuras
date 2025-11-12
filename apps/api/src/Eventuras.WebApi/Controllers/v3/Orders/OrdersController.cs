@@ -16,8 +16,8 @@ namespace Eventuras.WebApi.Controllers.v3.Orders;
 [ApiController]
 public class OrdersController : ControllerBase
 {
-    private readonly IOrderRetrievalService _orderRetrievalService;
     private readonly IOrderManagementService _orderManagementService;
+    private readonly IOrderRetrievalService _orderRetrievalService;
 
     public OrdersController(
         IOrderRetrievalService orderRetrievalService,
@@ -28,7 +28,8 @@ public class OrdersController : ControllerBase
     }
 
     [HttpGet("{id:int}")]
-    public async Task<OrderDto> GetOrderById(int id, [FromQuery] OrderRequestDto request, CancellationToken cancellationToken = default)
+    public async Task<OrderDto> GetOrderById(int id, [FromQuery] OrderRequestDto request,
+        CancellationToken cancellationToken = default)
     {
         var order = await _orderRetrievalService.GetOrderByIdAsync(id,
             new OrderRetrievalOptions
@@ -43,22 +44,24 @@ public class OrdersController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> ListAccessibleOrders([FromQuery] OrdersQueryDto query, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> ListAccessibleOrders([FromQuery] OrdersQueryDto query,
+        CancellationToken cancellationToken = default)
     {
-        var paging = await _orderRetrievalService.ListOrdersAsync(new OrderListRequest
-        {
-            Limit = query.Limit,
-            Offset = query.Offset,
-            Filter = new OrderListFilter
+        var paging = await _orderRetrievalService.ListOrdersAsync(
+            new OrderListRequest
             {
-                EventId = query.EventId,
-                UserId = query.UserId,
-                RegistrationId = query.RegistrationId,
-                Status = query.Status,
-                AccessibleOnly = true,
-                OrganizationId = query.OrganizationId
-            }
-        },
+                Limit = query.Limit,
+                Offset = query.Offset,
+                Filter = new OrderListFilter
+                {
+                    EventId = query.EventId,
+                    UserId = query.UserId,
+                    RegistrationId = query.RegistrationId,
+                    Status = query.Status,
+                    AccessibleOnly = true,
+                    OrganizationId = query.OrganizationId
+                }
+            },
             new OrderRetrievalOptions
             {
                 IncludeUser = query.IncludeUser,
@@ -74,7 +77,8 @@ public class OrdersController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateOrUpdateOrder([FromBody] NewOrderRequestDto request, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> CreateOrUpdateOrder([FromBody] NewOrderRequestDto request,
+        CancellationToken cancellationToken = default)
     {
         var order = await _orderManagementService.CreateOrderForRegistrationAsync(
             request.RegistrationId,
@@ -97,12 +101,9 @@ public class OrdersController : ControllerBase
         [FromBody] OrderPatchDto patchDto,
         CancellationToken cancellationToken = default)
     {
-        var order = await _orderRetrievalService.GetOrderByIdAsync(id, new OrderRetrievalOptions
-        {
-            IncludeRegistration = true,
-            IncludeUser = true,
-            IncludeOrderLines = true
-        }, cancellationToken);
+        var order = await _orderRetrievalService.GetOrderByIdAsync(id,
+            new OrderRetrievalOptions { IncludeRegistration = true, IncludeUser = true, IncludeOrderLines = true },
+            cancellationToken);
 
         if (order == null)
         {
@@ -130,16 +131,12 @@ public class OrdersController : ControllerBase
 
 
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> UpdateOrder(int id, [FromBody] OrderUpdateRequestDto request, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> UpdateOrder(int id, [FromBody] OrderUpdateRequestDto request,
+        CancellationToken cancellationToken = default)
     {
         var order = await _orderRetrievalService
             .GetOrderByIdAsync(id,
-                new OrderRetrievalOptions
-                {
-                    IncludeRegistration = true,
-                    IncludeUser = true,
-                    IncludeOrderLines = true
-                },
+                new OrderRetrievalOptions { IncludeRegistration = true, IncludeUser = true, IncludeOrderLines = true },
                 cancellationToken);
 
         await _orderManagementService.UpdateOrderLinesAsync(order, request.Lines, cancellationToken);

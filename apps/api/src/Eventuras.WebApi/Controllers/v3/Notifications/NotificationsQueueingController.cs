@@ -11,7 +11,6 @@ using Eventuras.Services.Events.Products;
 using Eventuras.Services.Exceptions;
 using Eventuras.Services.Notifications;
 using Eventuras.Services.Registrations;
-using Eventuras.Services.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -24,11 +23,11 @@ namespace Eventuras.WebApi.Controllers.v3.Notifications;
 [Route("v{version:apiVersion}/notifications")]
 public class NotificationsQueueingController : ControllerBase
 {
-    private readonly INotificationManagementService _notificationManagementService;
+    private readonly ILogger<NotificationsQueueingController> _logger;
     private readonly INotificationDeliveryService _notificationDeliveryService;
+    private readonly INotificationManagementService _notificationManagementService;
     private readonly IProductRetrievalService _productRetrievalService;
     private readonly IRegistrationRetrievalService _registrationsRetrivalService;
-    private readonly ILogger<NotificationsQueueingController> _logger;
 
     public NotificationsQueueingController(
         INotificationManagementService notificationManagementService,
@@ -37,25 +36,30 @@ public class NotificationsQueueingController : ControllerBase
         IRegistrationRetrievalService registrationsRetrivalService,
         ILogger<NotificationsQueueingController> logger)
     {
-        _notificationDeliveryService = notificationDeliveryService ?? throw new ArgumentNullException(nameof(notificationDeliveryService));
-        _notificationManagementService = notificationManagementService ?? throw new ArgumentNullException(nameof(notificationManagementService));
-        _productRetrievalService = productRetrievalService ?? throw new ArgumentNullException(nameof(productRetrievalService));
-        _registrationsRetrivalService = registrationsRetrivalService ?? throw new ArgumentNullException(nameof(registrationsRetrivalService));
+        _notificationDeliveryService = notificationDeliveryService ??
+                                       throw new ArgumentNullException(nameof(notificationDeliveryService));
+        _notificationManagementService = notificationManagementService ??
+                                         throw new ArgumentNullException(nameof(notificationManagementService));
+        _productRetrievalService =
+            productRetrievalService ?? throw new ArgumentNullException(nameof(productRetrievalService));
+        _registrationsRetrivalService = registrationsRetrivalService ??
+                                        throw new ArgumentNullException(nameof(registrationsRetrivalService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     [HttpPost("email")]
     public async Task<ActionResult<NotificationDto>> SendEmail(
-  EmailNotificationDto dto,
-  CancellationToken cancellationToken)
+        EmailNotificationDto dto,
+        CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Starting to process email notification. Subject: {dto.Subject}, Number of Recipients: {dto.Recipients?.Length ?? 0}");
+        _logger.LogInformation(
+            $"Starting to process email notification. Subject: {dto.Subject}, Number of Recipients: {dto.Recipients?.Length ?? 0}");
         _logger.LogInformation(JsonSerializer.Serialize(dto));
 
-        int? orgId = Request.Headers.TryGetValue(Api.OrganizationHeader, out var headerOrgId)
-                     && int.TryParse(headerOrgId, out var parsedOrgId)
-                     ? parsedOrgId
-                     : (int?)null;
+        var orgId = Request.Headers.TryGetValue(Api.OrganizationHeader, out var headerOrgId)
+                    && int.TryParse(headerOrgId, out var parsedOrgId)
+            ? parsedOrgId
+            : (int?)null;
 
         if (orgId == null)
         {
@@ -75,7 +79,7 @@ public class NotificationsQueueingController : ControllerBase
                     eventFilter.RegistrationStatuses,
                     eventFilter.RegistrationTypes);
             await _notificationDeliveryService
-                 .SendNotificationAsync(emailNotification, cancellationToken: cancellationToken);
+                .SendNotificationAsync(emailNotification, cancellationToken: cancellationToken);
             return Ok(new NotificationDto(emailNotification));
         }
 
@@ -87,9 +91,9 @@ public class NotificationsQueueingController : ControllerBase
                     dto.BodyMarkdown,
                     orgId.Value,
                     dto.Recipients
-                    );
+                );
             await _notificationDeliveryService
-               .SendNotificationAsync(emailNotification, cancellationToken: cancellationToken);
+                .SendNotificationAsync(emailNotification, cancellationToken: cancellationToken);
 
             return Ok(new NotificationDto(emailNotification));
         }
@@ -97,10 +101,11 @@ public class NotificationsQueueingController : ControllerBase
         if (dto.RegistrationId != null)
         {
             var registration = await _registrationsRetrivalService
-                .GetRegistrationByIdAsync(dto.RegistrationId.Value, RegistrationRetrievalOptions.UserAndEvent, cancellationToken: cancellationToken);
+                .GetRegistrationByIdAsync(dto.RegistrationId.Value, RegistrationRetrievalOptions.UserAndEvent,
+                    cancellationToken);
 
             emailNotification = await _notificationManagementService
-            .CreateEmailNotificationForRegistrationAsync(
+                .CreateEmailNotificationForRegistrationAsync(
                     dto.Subject,
                     dto.BodyMarkdown,
                     registration);
@@ -129,10 +134,11 @@ public class NotificationsQueueingController : ControllerBase
 
     [HttpPost("sms")]
     public async Task<ActionResult<NotificationDto>> SendSms(
-         SmsNotificationDto dto,
-         CancellationToken cancellationToken)
+        SmsNotificationDto dto,
+        CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Starting to process SMS notification. Message: {dto.Message}, Number of Recipients: {dto.Recipients?.Length ?? 0}");
+        _logger.LogInformation(
+            $"Starting to process SMS notification. Message: {dto.Message}, Number of Recipients: {dto.Recipients?.Length ?? 0}");
 
         SmsNotification smsNotification;
         var eventFilter = await GetEventParticipantFilterAsync(dto, cancellationToken);
@@ -221,23 +227,21 @@ public interface INotificationDto
 
 public class EmailNotificationDto : INotificationDto
 {
+    [Required] [MinLength(3)] public string Subject { get; set; }
+
+    [Required] [MinLength(10)] public string BodyMarkdown { get; set; }
     [EmailRecipientList] public string[] Recipients { get; set; }
 
     public EventParticipantsFilterDto EventParticipants { get; set; }
-
-    [Required][MinLength(3)] public string Subject { get; set; }
     public int? RegistrationId { get; set; }
-
-    [Required][MinLength(10)] public string BodyMarkdown { get; set; }
 }
 
 public class SmsNotificationDto : INotificationDto
 {
+    [Required] [MinLength(10)] public string Message { get; set; }
     [SmsRecipientList] public string[] Recipients { get; set; }
 
     public EventParticipantsFilterDto EventParticipants { get; set; }
 
     public int? RegistrationId { get; set; }
-
-    [Required][MinLength(10)] public string Message { get; set; }
 }

@@ -20,9 +20,9 @@ namespace Eventuras.WebApi.Controllers.v3.Organizations;
 [ApiController]
 public class OrganizationMemberRolesController : ControllerBase
 {
-    private readonly IUserRetrievalService _userRetrievalService;
-    private readonly IOrganizationMemberRolesManagementService _rolesManagementService;
     private readonly IOrganizationRetrievalService _organizationRetrievalService;
+    private readonly IOrganizationMemberRolesManagementService _rolesManagementService;
+    private readonly IUserRetrievalService _userRetrievalService;
 
     public OrganizationMemberRolesController(
         IOrganizationMemberRolesManagementService rolesManagementService,
@@ -42,12 +42,10 @@ public class OrganizationMemberRolesController : ControllerBase
     public async Task<string[]> List(int organizationId, string userId, CancellationToken token)
     {
         var user = await _userRetrievalService.GetUserByIdAsync(userId,
-            new UserRetrievalOptions
-            {
-                IncludeOrgMembership = true
-            }, token);
+            new UserRetrievalOptions { IncludeOrgMembership = true }, token);
 
-        await _organizationRetrievalService.GetOrganizationByIdAsync(organizationId, cancellationToken: token); // just to check its existence
+        await _organizationRetrievalService.GetOrganizationByIdAsync(organizationId,
+            cancellationToken: token); // just to check its existence
 
         return user.OrganizationMembership
                    .FirstOrDefault(m => m.OrganizationId == organizationId)
@@ -59,9 +57,8 @@ public class OrganizationMemberRolesController : ControllerBase
 
     [HttpPost]
     [Authorize(Roles = Roles.SystemAdmin)]
-    public async Task<string[]> Add(int organizationId, string userId, [FromBody] RoleRequestDto dto)
-    {
-        return await ManipulateRolesAsync(organizationId, userId, dto.Role, (roles, r) =>
+    public async Task<string[]> Add(int organizationId, string userId, [FromBody] RoleRequestDto dto) =>
+        await ManipulateRolesAsync(organizationId, userId, dto.Role, (roles, r) =>
         {
             if (roles.Contains(r))
             {
@@ -71,13 +68,11 @@ public class OrganizationMemberRolesController : ControllerBase
             roles.Add(r);
             return true;
         });
-    }
 
     [HttpDelete]
     [Authorize(Roles = Roles.SystemAdmin)]
-    public async Task<string[]> Remove(int organizationId, string userId, [FromBody] RoleRequestDto dto)
-    {
-        return await ManipulateRolesAsync(organizationId, userId, dto.Role, (roles, r) =>
+    public async Task<string[]> Remove(int organizationId, string userId, [FromBody] RoleRequestDto dto) =>
+        await ManipulateRolesAsync(organizationId, userId, dto.Role, (roles, r) =>
         {
             if (!roles.Contains(r))
             {
@@ -87,7 +82,6 @@ public class OrganizationMemberRolesController : ControllerBase
             roles.Remove(r);
             return true;
         });
-    }
 
     private async Task<string[]> ManipulateRolesAsync(
         int organizationId,
@@ -98,10 +92,7 @@ public class OrganizationMemberRolesController : ControllerBase
         await _organizationRetrievalService.GetOrganizationByIdAsync(organizationId); // just to check its existence
 
         var user = await _userRetrievalService.GetUserByIdAsync(userId,
-            new UserRetrievalOptions
-            {
-                IncludeOrgMembership = true
-            });
+            new UserRetrievalOptions { IncludeOrgMembership = true });
 
         var m = user.OrganizationMembership
             .FirstOrDefault(m => m.OrganizationId == organizationId);
@@ -127,5 +118,5 @@ public class OrganizationMemberRolesController : ControllerBase
 
 public class RoleRequestDto
 {
-    [Required][Role] public string Role { get; set; }
+    [Required] [Role] public string Role { get; set; }
 }

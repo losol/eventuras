@@ -15,13 +15,7 @@ public static class DbUpdateExceptionExtensions
         return postgresException?.SqlState;
     }
 
-    public static bool IsForeignKeyViolation(this DbUpdateException e)
-    {
-        return e.GetSqlStateCode() == ForeignKeyViolation;
-    }
+    public static bool IsForeignKeyViolation(this DbUpdateException e) => e.GetSqlStateCode() == ForeignKeyViolation;
 
-    public static bool IsUniqueKeyViolation(this DbUpdateException e)
-    {
-        return e.GetSqlStateCode() == UniqueViolation;
-    }
+    public static bool IsUniqueKeyViolation(this DbUpdateException e) => e.GetSqlStateCode() == UniqueViolation;
 }

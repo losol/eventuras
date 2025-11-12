@@ -42,8 +42,6 @@ public static class ApplicationDbContextExtensions
         context.DisableChangeTracking(entity);
     }
 
-    public static void DisableChangeTracking<T>(this DbContext context, T entity)
-    {
+    public static void DisableChangeTracking<T>(this DbContext context, T entity) =>
         context.Entry(entity).State = EntityState.Detached;
-    }
 }

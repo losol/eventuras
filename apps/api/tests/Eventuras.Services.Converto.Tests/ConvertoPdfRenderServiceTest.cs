@@ -13,7 +13,7 @@ namespace Eventuras.Services.Converto.Tests;
 
 public class ConvertoPdfRenderServiceTest : IDisposable
 {
-    private readonly HttpClient _httpClient = new HttpClient();
+    private readonly HttpClient _httpClient = new();
     private readonly IHttpClientFactory _httpClientFactory;
 
     public ConvertoPdfRenderServiceTest()
@@ -24,10 +24,7 @@ public class ConvertoPdfRenderServiceTest : IDisposable
         _httpClientFactory = httpClientFactoryMock.Object;
     }
 
-    public void Dispose()
-    {
-        _httpClient.Dispose();
-    }
+    public void Dispose() => _httpClient.Dispose();
 
     private ConvertoPdfRenderService NewService(
         string pdfEndpointPath = "/v1/pdf",
@@ -52,7 +49,7 @@ public class ConvertoPdfRenderServiceTest : IDisposable
             DefaultScale = defaultScale,
             DefaultPaperSize = Enum.Parse<PaperSize>(defaultPapersize),
             ClientId = clientId,
-            ClientSecret = clientSecret,
+            ClientSecret = clientSecret
         });
 
         var loggerFactory = new LoggerFactory();
@@ -78,7 +75,7 @@ public class ConvertoPdfRenderServiceTest : IDisposable
     [ConvertoEnvSpecificFact]
     public async Task ShouldReturnEmptyPdfStreamForInvalidEndpointUrl()
     {
-        await using var stream = await NewService(pdfEndpointPath: "/convert/html/to/pdf2")
+        await using var stream = await NewService("/convert/html/to/pdf2")
             .GeneratePdfFromHtml("<html></html>",
                 new PdfRenderOptions());
         await CheckEmptyAsync(stream);

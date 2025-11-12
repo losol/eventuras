@@ -11,8 +11,8 @@ namespace Eventuras.Services.Organizations.Settings;
 public class OrganizationSettingsManagementService : IOrganizationSettingsManagementService
 {
     private readonly ApplicationDbContext _context;
-    private readonly IOrganizationSettingsCache _organizationSettingsCache;
     private readonly IOrganizationAccessControlService _organizationAccessControlService;
+    private readonly IOrganizationSettingsCache _organizationSettingsCache;
 
     public OrganizationSettingsManagementService(
         ApplicationDbContext context,
@@ -41,8 +41,8 @@ public class OrganizationSettingsManagementService : IOrganizationSettingsManage
         await _organizationAccessControlService.CheckOrganizationUpdateAccessAsync(setting.OrganizationId);
 
         if (await _context.OrganizationSettings
-            .AnyAsync(s => s.OrganizationId == setting.OrganizationId &&
-                           s.Name == setting.Name, cancellationToken))
+                .AnyAsync(s => s.OrganizationId == setting.OrganizationId &&
+                               s.Name == setting.Name, cancellationToken))
         {
             throw new DuplicateException(
                 $"Setting {setting.Name} already exists for organization {setting.OrganizationId}");

@@ -14,10 +14,8 @@ public class EventCollectionMappingControllerTests : IClassFixture<CustomWebApiA
 {
     private readonly CustomWebApiApplicationFactory<Program> _factory;
 
-    public EventCollectionMappingControllerTests(CustomWebApiApplicationFactory<Program> factory)
-    {
+    public EventCollectionMappingControllerTests(CustomWebApiApplicationFactory<Program> factory) =>
         _factory = factory ?? throw new ArgumentNullException(nameof(factory));
-    }
 
     [Fact]
     public async Task Create_Should_Return_Not_Found_For_Unknown_Event()
@@ -204,10 +202,13 @@ public class EventCollectionMappingControllerTests : IClassFixture<CustomWebApiA
         using var collection = await scope.CreateEventCollectionAsync();
         var evt = await scope.CreateEventAsync(collection: collection.Entity);
 
-        var response = await client.DeleteAsync($"/v3/events/{evt.Entity.EventInfoId}/collections/{collection.Entity.CollectionId}");
+        var response =
+            await client.DeleteAsync(
+                $"/v3/events/{evt.Entity.EventInfoId}/collections/{collection.Entity.CollectionId}");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.False(await scope.Db.EventCollectionMappings.AnyAsync(m => m.CollectionId == collection.Entity.CollectionId));
+        Assert.False(
+            await scope.Db.EventCollectionMappings.AnyAsync(m => m.CollectionId == collection.Entity.CollectionId));
         Assert.True(await scope.Db.EventInfos.AnyAsync(e => e.EventInfoId == evt.Entity.EventInfoId));
         Assert.True(await scope.Db.EventCollections.AnyAsync(e => e.CollectionId == collection.Entity.CollectionId));
     }

@@ -7,7 +7,8 @@ namespace Eventuras.Domain;
 public class EventCollection
 {
     [Required]
-    [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int CollectionId { get; set; }
 
     public int OrganizationId { get; set; }
@@ -29,13 +30,13 @@ public class EventCollection
     public bool Archived { get; set; }
 
     /// <summary>
-    /// The final result of mapping multiple collections to multiple events,
-    /// managed as a flat collection. 
+    ///     The final result of mapping multiple collections to multiple events,
+    ///     managed as a flat collection.
     /// </summary>
     public virtual ICollection<EventInfo> Events { get; set; }
 
     /// <summary>
-    /// Intermediate entities used to map multiple collections to multiple events.
+    ///     Intermediate entities used to map multiple collections to multiple events.
     /// </summary>
     public virtual List<EventCollectionMapping> EventMappings { get; set; }
 }

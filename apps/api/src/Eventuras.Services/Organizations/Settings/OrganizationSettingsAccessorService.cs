@@ -8,23 +8,23 @@ namespace Eventuras.Services.Organizations.Settings;
 
 public class OrganizationSettingsAccessorService : IOrganizationSettingsAccessorService
 {
-    private readonly IOrganizationSettingsCache _organizationSettingsCache;
     private readonly ICurrentOrganizationAccessorService _currentOrganizationAccessorService;
     private readonly IOrganizationRetrievalService _organizationRetrievalService;
+    private readonly IOrganizationSettingsCache _organizationSettingsCache;
 
     public OrganizationSettingsAccessorService(
         ICurrentOrganizationAccessorService currentOrganizationAccessorService,
         IOrganizationSettingsCache organizationSettingsCache,
-    IOrganizationRetrievalService organizationRetrievalService)
+        IOrganizationRetrievalService organizationRetrievalService)
     {
         _currentOrganizationAccessorService = currentOrganizationAccessorService ?? throw
             new ArgumentNullException(nameof(currentOrganizationAccessorService));
 
         _organizationSettingsCache = organizationSettingsCache ?? throw
-                new ArgumentNullException(nameof(organizationSettingsCache));
+            new ArgumentNullException(nameof(organizationSettingsCache));
 
         _organizationRetrievalService = organizationRetrievalService ?? throw
-                new ArgumentNullException(nameof(organizationRetrievalService));
+            new ArgumentNullException(nameof(organizationRetrievalService));
     }
 
     public async Task<string> GetOrganizationSettingByNameAsync(string name)
@@ -42,8 +42,9 @@ public class OrganizationSettingsAccessorService : IOrganizationSettingsAccessor
     public async Task<T> ReadOrganizationSettingsAsync<T>(int? organizationId = null)
     {
         var org = organizationId.HasValue
-           ? await _organizationRetrievalService.GetOrganizationByIdAsync(organizationId.Value, accessControlDone: true)
-           : await _currentOrganizationAccessorService.RequireCurrentOrganizationAsync();
+            ? await _organizationRetrievalService.GetOrganizationByIdAsync(organizationId.Value,
+                accessControlDone: true)
+            : await _currentOrganizationAccessorService.RequireCurrentOrganizationAsync();
 
         var settings = await _organizationSettingsCache
             .GetAllSettingsForOrganizationAsync(org.OrganizationId);
@@ -72,7 +73,7 @@ public class OrganizationSettingsAccessorService : IOrganizationSettingsAccessor
         if (poco is not IConfigurableSettings { Enabled: false })
         {
             Validator.ValidateObject(poco,
-                new ValidationContext(poco, serviceProvider: null, items: null),
+                new ValidationContext(poco, null, null),
                 true);
         }
 

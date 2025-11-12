@@ -8,6 +8,43 @@ namespace Eventuras.WebApi.Controllers.v3.Users;
 
 public class UserDto
 {
+    public UserDto() { }
+
+    public UserDto(ApplicationUser user)
+    {
+        Id = user.Id;
+        Name = user.Name;
+        Email = user.Email;
+        PhoneNumber = user.PhoneNumber;
+
+        // Mapping the additional fields
+        GivenName = user.GivenName;
+        MiddleName = user.MiddleName;
+        FamilyName = user.FamilyName;
+        NameVerified = user.NameVerified;
+        PictureUrl = user.PictureUrl;
+        AddressLine1 = user.AddressLine1;
+        AddressLine2 = user.AddressLine2;
+        ZipCode = user.ZipCode;
+        City = user.City;
+        Country = user.Country;
+        BirthDate = user.BirthDate;
+        BirthDateVerified = user.BirthDateVerified;
+        Profession = user.Profession;
+        JobRole = user.JobRole;
+        Employer = user.Employer;
+        EmployerIdentificationNumber = user.EmployerIdentificationNumber;
+        ProfessionalIdentityNumber = user.ProfessionalIdentityNumber;
+        ProfessionalIdentityNumberVerified = user.ProfessionalIdentityNumberVerified;
+        SupplementaryInformation = user.SupplementaryInformation;
+        Archived = user.Archived;
+
+        if (user.OrganizationMembership != null)
+        {
+            OrganizationMembership = user.OrganizationMembership.Select(om => new OrganizationMemberDto(om)).ToList();
+        }
+    }
+
     public string Id { get; set; }
     public string Name { get; set; }
     public string Email { get; set; }
@@ -45,42 +82,4 @@ public class UserDto
     public string SupplementaryInformation { get; set; }
     public List<OrganizationMemberDto> OrganizationMembership { get; set; }
     public bool Archived { get; set; }
-
-    public UserDto() { }
-
-    public UserDto(ApplicationUser user)
-    {
-        Id = user.Id;
-        Name = user.Name;
-        Email = user.Email;
-        PhoneNumber = user.PhoneNumber;
-
-        // Mapping the additional fields
-        GivenName = user.GivenName;
-        MiddleName = user.MiddleName;
-        FamilyName = user.FamilyName;
-        NameVerified = user.NameVerified;
-        PictureUrl = user.PictureUrl;
-        AddressLine1 = user.AddressLine1;
-        AddressLine2 = user.AddressLine2;
-        ZipCode = user.ZipCode;
-        City = user.City;
-        Country = user.Country;
-        BirthDate = user.BirthDate;
-        BirthDateVerified = user.BirthDateVerified;
-        Profession = user.Profession;
-        JobRole = user.JobRole;
-        Employer = user.Employer;
-        EmployerIdentificationNumber = user.EmployerIdentificationNumber;
-        ProfessionalIdentityNumber = user.ProfessionalIdentityNumber;
-        ProfessionalIdentityNumberVerified = user.ProfessionalIdentityNumberVerified;
-        SupplementaryInformation = user.SupplementaryInformation;
-        Archived = user.Archived;
-
-        if (user.OrganizationMembership != null)
-        {
-            OrganizationMembership = user.OrganizationMembership.Select(om => new OrganizationMemberDto(om)).ToList();
-        }
-
-    }
 }

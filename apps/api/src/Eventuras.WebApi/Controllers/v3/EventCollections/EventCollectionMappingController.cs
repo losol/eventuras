@@ -15,11 +15,9 @@ public class EventCollectionMappingController : ControllerBase
 {
     private readonly IEventCollectionMappingService _collectionMappingService;
 
-    public EventCollectionMappingController(IEventCollectionMappingService collectionMappingService)
-    {
+    public EventCollectionMappingController(IEventCollectionMappingService collectionMappingService) =>
         _collectionMappingService = collectionMappingService ?? throw
             new ArgumentNullException(nameof(collectionMappingService));
-    }
 
     [HttpPut]
     public async Task<IActionResult> Create(int eventId, int collectionId)

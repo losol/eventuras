@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using Eventuras.Domain;
 using NodaTime;
@@ -7,12 +6,9 @@ namespace Eventuras.WebApi.Controllers.v3.Users;
 
 public class UserFormDto
 {
-    [Required]
-    [EmailAddress]
-    public string Email { get; set; }
+    [Required] [EmailAddress] public string Email { get; set; }
 
-    [Phone]
-    public string PhoneNumber { get; set; }
+    [Phone] public string PhoneNumber { get; set; }
 
     // Personal information fields
     public string GivenName { get; set; }

@@ -21,7 +21,8 @@ public static class EmailModelExtensions
         var isValid = Validator.TryValidateObject(model, context, results, true);
         if (!isValid)
         {
-            throw new ValidationException("Model is not valid because " + string.Join(", ", results.Select(s => s.ErrorMessage).ToArray()));
+            throw new ValidationException("Model is not valid because " +
+                                          string.Join(", ", results.Select(s => s.ErrorMessage).ToArray()));
         }
 
         if (string.IsNullOrEmpty(model.TextBody) &&

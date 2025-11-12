@@ -11,10 +11,8 @@ public class OrganizationMembersControllerTest : IClassFixture<CustomWebApiAppli
 {
     private readonly CustomWebApiApplicationFactory<Program> _factory;
 
-    public OrganizationMembersControllerTest(CustomWebApiApplicationFactory<Program> factory)
-    {
+    public OrganizationMembersControllerTest(CustomWebApiApplicationFactory<Program> factory) =>
         _factory = factory ?? throw new ArgumentNullException(nameof(factory));
-    }
 
     [Fact]
     public async Task Should_Require_Auth_To_Add_New_Member_To_The_Org()

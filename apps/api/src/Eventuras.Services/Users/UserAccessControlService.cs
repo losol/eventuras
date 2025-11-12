@@ -1,12 +1,10 @@
 using System;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services.Auth;
 using Eventuras.Services.Exceptions;
-using Eventuras.Services.Organizations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
@@ -14,14 +12,13 @@ namespace Eventuras.Services.Users;
 
 internal class UserAccessControlService : IUserAccessControlService
 {
-
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILogger<UserAccessControlService> _logger;
 
     public UserAccessControlService(
         IHttpContextAccessor httpContextAccessor,
         ILogger<UserAccessControlService> logger
-        )
+    )
     {
         _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -33,7 +30,8 @@ internal class UserAccessControlService : IUserAccessControlService
         var requestingUser = _httpContextAccessor.HttpContext.User;
 
         // Log information about the access check
-        _logger.LogInformation($"Checking owner or admin access for user {requestingUser.GetUserId} for editing user {user.Id}");
+        _logger.LogInformation(
+            $"Checking owner or admin access for user {requestingUser.GetUserId} for editing user {user.Id}");
 
         if (requestingUser.IsAnonymous())
         {
@@ -63,9 +61,14 @@ internal class UserAccessControlService : IUserAccessControlService
     private bool CheckAdminAccessAsync(ClaimsPrincipal user)
     {
         if (user.IsAdmin())
-        { return true; }
+        {
+            return true;
+        }
+
         if (user.IsPowerAdmin())
-        { return true; }
+        {
+            return true;
+        }
 
         return false;
     }

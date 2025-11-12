@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Eventuras.Domain;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 
@@ -20,12 +19,14 @@ internal class ConvertoHealthCheck : IHealthCheck
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = new CancellationToken())
+    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context,
+        CancellationToken cancellationToken = new())
     {
         try
         {
             _logger.LogInformation("Performing converto service health check");
-            await _convertoClient.GeneratePdfFromHtmlAsync("<html><body><h1>Converto service health check</h1></body></html>", 1, PaperSize.A4);
+            await _convertoClient.GeneratePdfFromHtmlAsync(
+                "<html><body><h1>Converto service health check</h1></body></html>", 1);
             _logger.LogInformation("Converto service health check was successful");
             return HealthCheckResult.Healthy();
         }

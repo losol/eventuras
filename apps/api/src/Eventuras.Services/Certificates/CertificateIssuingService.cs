@@ -14,10 +14,10 @@ namespace Eventuras.Services.Certificates;
 
 public class CertificateIssuingService : ICertificateIssuingService
 {
-    private readonly IEventInfoAccessControlService _eventInfoAccessControlService;
-    private readonly IRegistrationRetrievalService _registrationRetrievalService;
     private readonly ApplicationDbContext _context;
+    private readonly IEventInfoAccessControlService _eventInfoAccessControlService;
     private readonly ILogger<CertificateIssuingService> _logger;
+    private readonly IRegistrationRetrievalService _registrationRetrievalService;
 
     public CertificateIssuingService(
         IEventInfoAccessControlService eventInfoAccessControlService,
@@ -53,7 +53,7 @@ public class CertificateIssuingService : ICertificateIssuingService
              await reader.HasMoreAsync(cancellationToken);)
         {
             certificates.AddRange(from registration in await reader.ReadNextAsync(cancellationToken)
-                                  select registration.CreateCertificate());
+                select registration.CreateCertificate());
 
             await _context.SaveChangesAsync(cancellationToken);
         }
@@ -75,7 +75,7 @@ public class CertificateIssuingService : ICertificateIssuingService
              await reader.HasMoreAsync(cancellationToken);)
         {
             certificates.AddRange(from registration in await reader.ReadNextAsync(cancellationToken)
-                                  select registration.UpdateCertificate());
+                select registration.UpdateCertificate());
 
             await _context.SaveChangesAsync(cancellationToken);
         }

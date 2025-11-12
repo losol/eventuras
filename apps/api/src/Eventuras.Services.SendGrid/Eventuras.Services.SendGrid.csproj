@@ -3,11 +3,11 @@
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Eventuras.Services\Eventuras.Services.csproj" />
-    <ProjectReference Include="..\..\src\Losol.Communication.Email\Losol.Communication.Email.csproj" />
+    <ProjectReference Include="..\Eventuras.Services\Eventuras.Services.csproj"/>
+    <ProjectReference Include="..\..\src\Losol.Communication.Email\Losol.Communication.Email.csproj"/>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="8.0.0"/>
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0"/>
   </ItemGroup>
 </Project>

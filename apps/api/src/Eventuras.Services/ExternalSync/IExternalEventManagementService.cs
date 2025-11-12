@@ -10,7 +10,10 @@ public interface IExternalEventManagementService
 
     Task<List<ExternalEvent>> ListExternalEventsAsync(int eventInfoId);
 
-    /// <exception cref="DuplicateExternalEventException">External event with the given <code>serviceProviderName</code> and <code>externalEventId</code> is already registered.</exception>
+    /// <exception cref="DuplicateExternalEventException">
+    ///     External event with the given <code>serviceProviderName</code> and
+    ///     <code>externalEventId</code> is already registered.
+    /// </exception>
     Task<ExternalEvent> CreateNewExternalEventAsync(
         int eventInfoId,
         string externalServiceName,

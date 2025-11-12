@@ -13,9 +13,9 @@ namespace Eventuras.Services.Twilio;
 
 internal class TwilioSmsSenderComponent : IConfigurableSmsSenderComponent
 {
-    private readonly IOrganizationSettingsAccessorService _organizationSettingsAccessorService;
     private readonly IHealthCheckStorage _healthCheckStorage;
     private readonly ILoggerFactory _loggerFactory;
+    private readonly IOrganizationSettingsAccessorService _organizationSettingsAccessorService;
 
     public TwilioSmsSenderComponent(
         IOrganizationSettingsAccessorService organizationSettingsAccessorService,

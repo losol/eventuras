@@ -29,12 +29,9 @@ public static class ExcelSheetHelper
         // Increment to get a unique SheetId
         var newSheet = new Sheet
         {
-            Id = workbookPart.GetIdOfPart(worksheetPart),
-            SheetId = maxSheetId + 1,
-            Name = sheetName
+            Id = workbookPart.GetIdOfPart(worksheetPart), SheetId = maxSheetId + 1, Name = sheetName
         };
 
         sheets.Append(newSheet);
     }
 }
-

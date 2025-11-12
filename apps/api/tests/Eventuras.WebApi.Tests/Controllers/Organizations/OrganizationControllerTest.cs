@@ -10,10 +10,8 @@ public class OrganizationControllerTest : IClassFixture<CustomWebApiApplicationF
 {
     private readonly CustomWebApiApplicationFactory<Program> _factory;
 
-    public OrganizationControllerTest(CustomWebApiApplicationFactory<Program> factory)
-    {
+    public OrganizationControllerTest(CustomWebApiApplicationFactory<Program> factory) =>
         _factory = factory ?? throw new ArgumentNullException(nameof(factory));
-    }
 
     public void Dispose()
     {
@@ -156,16 +154,17 @@ public class OrganizationControllerTest : IClassFixture<CustomWebApiApplicationF
     public async Task Create_Should_Save_Max_Org_Data()
     {
         var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
-        var response = await client.PostAsync("/v3/organizations", new
-        {
-            name = "test org",
-            description = "some description",
-            url = "http://some.url",
-            phone = "+11111111111",
-            email = "test@email.com",
-            logoUrl = "http://test.org/logo.png",
-            logoBase64 = "bG9nbwo="
-        });
+        var response = await client.PostAsync("/v3/organizations",
+            new
+            {
+                name = "test org",
+                description = "some description",
+                url = "http://some.url",
+                phone = "+11111111111",
+                email = "test@email.com",
+                logoUrl = "http://test.org/logo.png",
+                logoBase64 = "bG9nbwo="
+            });
         var token = await response.CheckOk().AsTokenAsync();
 
         using var scope = _factory.Services.NewTestScope();

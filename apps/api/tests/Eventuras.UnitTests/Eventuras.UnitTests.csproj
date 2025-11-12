@@ -7,22 +7,22 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
-    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0"/>
+    <PackageReference Include="xunit" Version="2.9.3"/>
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
+    <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1"/>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Eventuras.Domain\Eventuras.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Eventuras.Domain\Eventuras.Domain.csproj"/>
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="RegistrationTests\Verify_Should.cs" />
-    <Compile Remove="RegistrationTests\Create_Or_Update_Order_Should.cs" />
-    <Compile Remove="RegistrationTests\Create_Order_Should.cs" />
-    <Compile Remove="RegistrationTests\Has_Order_Should.cs" />
-    <Compile Remove="Helpers.cs" />
+    <Compile Remove="RegistrationTests\Verify_Should.cs"/>
+    <Compile Remove="RegistrationTests\Create_Or_Update_Order_Should.cs"/>
+    <Compile Remove="RegistrationTests\Create_Order_Should.cs"/>
+    <Compile Remove="RegistrationTests\Has_Order_Should.cs"/>
+    <Compile Remove="Helpers.cs"/>
   </ItemGroup>
 </Project>

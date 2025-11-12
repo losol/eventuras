@@ -3,15 +3,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Eventuras.Domain;
 
-
-
 public class ProductVariant
 {
     public int ProductVariantId { get; set; }
     public string Name { get; set; }
 
-    [StringLength(300)]
-    public string Description { get; set; }
+    [StringLength(300)] public string Description { get; set; }
 
     public decimal Price { get; set; } = 0;
     public int VatPercent { get; set; } = 0;

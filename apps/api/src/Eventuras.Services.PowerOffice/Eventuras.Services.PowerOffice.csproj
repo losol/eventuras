@@ -3,11 +3,11 @@
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Eventuras.Services\Eventuras.Services.csproj" />
+    <ProjectReference Include="..\Eventuras.Services\Eventuras.Services.csproj"/>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="PowerOfficeGoSdk" Version="2.58.0" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="8.0.0" />
+    <PackageReference Include="PowerOfficeGoSdk" Version="2.58.0"/>
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0"/>
+    <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="8.0.0"/>
   </ItemGroup>
 </Project>

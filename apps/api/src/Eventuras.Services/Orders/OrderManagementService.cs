@@ -17,12 +17,12 @@ namespace Eventuras.Services.Orders;
 
 public class OrderManagementService : IOrderManagementService
 {
-    private readonly IOrderAccessControlService _orderAccessControlService;
-    private readonly IRegistrationRetrievalService _registrationRetrievalService;
-    private readonly IRegistrationAccessControlService _registrationAccessControlService;
-    private readonly IProductRetrievalService _productRetrievalService;
     private readonly ApplicationDbContext _context;
     private readonly ILogger<OrderManagementService> _logger;
+    private readonly IOrderAccessControlService _orderAccessControlService;
+    private readonly IProductRetrievalService _productRetrievalService;
+    private readonly IRegistrationAccessControlService _registrationAccessControlService;
+    private readonly IRegistrationRetrievalService _registrationRetrievalService;
 
     public OrderManagementService(
         IOrderAccessControlService orderAccessControlService,
@@ -48,8 +48,10 @@ public class OrderManagementService : IOrderManagementService
 
         if (!order.CanEdit)
         {
-            _logger.LogError("Order {OrderId} cannot be updated being in {OrderStatus} status", order.OrderId, order.Status);
-            throw new InvalidOperationServiceException($"Order {order.OrderId} cannot be updated being in {order.Status} status");
+            _logger.LogError("Order {OrderId} cannot be updated being in {OrderStatus} status", order.OrderId,
+                order.Status);
+            throw new InvalidOperationServiceException(
+                $"Order {order.OrderId} cannot be updated being in {order.Status} status");
         }
 
         await _orderAccessControlService.CheckOrderUpdateAccessAsync(order, cancellationToken);
@@ -80,33 +82,35 @@ public class OrderManagementService : IOrderManagementService
         ArgumentNullException.ThrowIfNull(updatedOrderLines);
 
         if (!order.CanEdit)
-            throw new InvalidOperationServiceException($"Order {order.OrderId} cannot be updated being in {order.Status} status");
+        {
+            throw new InvalidOperationServiceException(
+                $"Order {order.OrderId} cannot be updated being in {order.Status} status");
+        }
+
         await _orderAccessControlService.CheckOrderUpdateAccessAsync(order, cancellationToken);
 
         var registration = await _registrationRetrievalService.GetRegistrationByIdAsync(order.RegistrationId,
-            new RegistrationRetrievalOptions()
-            {
-                LoadEventInfo = true,
-                ForUpdate = true,
-            },
+            new RegistrationRetrievalOptions { LoadEventInfo = true, ForUpdate = true },
             cancellationToken);
 
         // find order lines in order that were not existing in updatedOrderLines and then remove them
-        order.OrderLines.RemoveAll(existing => updatedOrderLines.All(
-            updated => updated.ProductId != existing.ProductId || updated.ProductVariantId != existing.ProductVariantId));
+        order.OrderLines.RemoveAll(existing => updatedOrderLines.All(updated =>
+            updated.ProductId != existing.ProductId || updated.ProductVariantId != existing.ProductVariantId));
 
         foreach (var line in updatedOrderLines)
         {
             var existingOrderLine = order.OrderLines
                 .FirstOrDefault(ol => ol.ProductId == line.ProductId
-                                   && ol.ProductVariantId == line.ProductVariantId);
+                                      && ol.ProductVariantId == line.ProductVariantId);
 
             if (existingOrderLine != null)
-            { // if order line existed in the order - update it's quantity
+            {
+                // if order line existed in the order - update it's quantity
                 existingOrderLine.Quantity = line.Quantity;
             }
             else
-            { // if order line does not exist in the order - find product with variant and create order line for it
+            {
+                // if order line does not exist in the order - find product with variant and create order line for it
                 var orderLine = await CreateOrderLine(registration.EventInfo, line, cancellationToken);
                 order.OrderLines.Add(orderLine);
             }
@@ -119,15 +123,17 @@ public class OrderManagementService : IOrderManagementService
 
         // validate minimum quantity for products if it is not an admin user
         if (!isAdmin)
+        {
             await ValidateMinimumQuantityForProducts(registration, cancellationToken);
+        }
 
         await _context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task<Order> CreateOrderForRegistrationAsync(
- int registrationId,
- ICollection<OrderLineModel>? orderLines = null,
- CancellationToken cancellationToken = default)
+        int registrationId,
+        ICollection<OrderLineModel>? orderLines = null,
+        CancellationToken cancellationToken = default)
     {
         _logger.LogInformation($"Starting order creation for RegistrationId {registrationId}");
 
@@ -142,6 +148,7 @@ public class OrderManagementService : IOrderManagementService
             var orderLine = await CreateOrderLine(registration.EventInfo, line, cancellationToken);
             orderLinesMapped.Add(orderLine);
         }
+
         _logger.LogInformation($"Mapped {orderLinesMapped.Count} order lines for RegistrationId {registrationId}");
 
         var order = new Order
@@ -153,7 +160,7 @@ public class OrderManagementService : IOrderManagementService
             CustomerVatNumber = registration.CustomerVatNumber,
             CustomerInvoiceReference = registration.CustomerInvoiceReference,
             PaymentMethod = registration.PaymentMethod,
-            OrderLines = orderLinesMapped,
+            OrderLines = orderLinesMapped
         };
         order.AddLog();
         _logger.LogInformation($"Created new order object for RegistrationId {registrationId}");
@@ -172,9 +179,9 @@ public class OrderManagementService : IOrderManagementService
 
 
     public async Task<Order?> AutoCreateOrUpdateOrder(
-   int registrationId,
-   IEnumerable<OrderLineModel> expectedOrderLines,
-   CancellationToken cancellationToken = default)
+        int registrationId,
+        IEnumerable<OrderLineModel> expectedOrderLines,
+        CancellationToken cancellationToken = default)
     {
         _logger.LogInformation($"OrderManagementService.AutoCreateOrUpdateOrder: RegistrationId {registrationId}");
 
@@ -183,7 +190,8 @@ public class OrderManagementService : IOrderManagementService
 
         // Get order lines in registration
         var registration = await GetRegistrationForUpdate(registrationId, cancellationToken);
-        _logger.LogInformation($"AutoCreateOrUpdateOrder: Retrieved registration for update: RegistrationId {registrationId}");
+        _logger.LogInformation(
+            $"AutoCreateOrUpdateOrder: Retrieved registration for update: RegistrationId {registrationId}");
 
         var registrationOrderLines = registration.Orders
             .SelectMany(o => o.OrderLines)
@@ -198,6 +206,7 @@ public class OrderManagementService : IOrderManagementService
             _logger.LogInformation("AutoCreateOrUpdateOrder: No difference in order lines found. Exiting early.");
             return null;
         }
+
         _logger.LogDebug($"AutoCreateOrUpdateOrder: Found differences in order lines: {diff.Count} differences");
 
         // Find newest order viable to be updated
@@ -209,7 +218,8 @@ public class OrderManagementService : IOrderManagementService
             var existingOrderLines = order.OrderLines.Select(OrderLineModel.FromOrderLineDomainModel);
             var combinedDiffAndOrder = SanitizeOrderLines(diff.Concat(existingOrderLines));
 
-            _logger.LogInformation($"AutoCreateOrUpdateOrder: Sanitized combined diff and order lines. {combinedDiffAndOrder.ToArray()}");
+            _logger.LogInformation(
+                $"AutoCreateOrUpdateOrder: Sanitized combined diff and order lines. {combinedDiffAndOrder.ToArray()}");
             await UpdateOrderLinesAsync(order, combinedDiffAndOrder.ToArray(), cancellationToken);
 
             _logger.LogInformation("Updated existing order lines.");
@@ -226,10 +236,12 @@ public class OrderManagementService : IOrderManagementService
             ICollection<OrderLineModel> actual)
         {
             var toAdd = expected
-                .ExceptBy(actual.Select(ol => new { ol.ProductId, ol.ProductVariantId }), ol => new { ol.ProductId, ol.ProductVariantId });
+                .ExceptBy(actual.Select(ol => new { ol.ProductId, ol.ProductVariantId }),
+                    ol => new { ol.ProductId, ol.ProductVariantId });
 
             var toRemove = actual
-                .ExceptBy(expected.Select(ol => new { ol.ProductId, ol.ProductVariantId }), ol => new { ol.ProductId, ol.ProductVariantId })
+                .ExceptBy(expected.Select(ol => new { ol.ProductId, ol.ProductVariantId }),
+                    ol => new { ol.ProductId, ol.ProductVariantId })
                 .Select(ol => ol.CopyWithInvertedQuantity());
 
             var toUpdate = GetUpdates(expected, actual);
@@ -245,13 +257,17 @@ public class OrderManagementService : IOrderManagementService
                 IEnumerable<OrderLineModel> actual)
             {
                 var intersect = actual.IntersectBy(
-                    expected.Select(ol => new { ol.ProductId, ol.ProductVariantId }), ol => new { ol.ProductId, ol.ProductVariantId });
+                    expected.Select(ol => new { ol.ProductId, ol.ProductVariantId }),
+                    ol => new { ol.ProductId, ol.ProductVariantId });
 
                 foreach (var act in intersect)
                 {
-                    var exp = expected.FirstOrDefault(ol => ol.ProductId == act.ProductId && ol.ProductVariantId == act.ProductVariantId);
+                    var exp = expected.FirstOrDefault(ol =>
+                        ol.ProductId == act.ProductId && ol.ProductVariantId == act.ProductVariantId);
                     if (exp == null)
+                    {
                         continue;
+                    }
 
                     yield return act with { Quantity = exp.Quantity - act.Quantity };
                 }
@@ -265,7 +281,8 @@ public class OrderManagementService : IOrderManagementService
 
             // combine duplications of same products in order lines into single order line
             .GroupBy(ol => new { ol.ProductId, ol.ProductVariantId })
-            .Select(group => new OrderLineModel(group.Key.ProductId, group.Key.ProductVariantId, group.Sum(ol => ol.Quantity)))
+            .Select(group =>
+                new OrderLineModel(group.Key.ProductId, group.Key.ProductVariantId, group.Sum(ol => ol.Quantity)))
 
             // remove order lines with zero quantity
             .Where(ol => ol.Quantity != 0);
@@ -281,17 +298,16 @@ public class OrderManagementService : IOrderManagementService
             registration = await _registrationRetrievalService.GetRegistrationByIdAsync(registrationId,
                                new RegistrationRetrievalOptions
                                {
-                                   LoadUser = true,
-                                   LoadEventInfo = true,
-                                   ForUpdate = true,
-                                   LoadOrders = true
+                                   LoadUser = true, LoadEventInfo = true, ForUpdate = true, LoadOrders = true
                                },
                                cancellationToken)
-                        ?? throw new ArgumentServiceException($"Registration by id {registrationId} was not found", nameof(registrationId));
+                           ?? throw new ArgumentServiceException($"Registration by id {registrationId} was not found",
+                               nameof(registrationId));
         }
         catch (NotFoundException e)
         {
-            throw new ArgumentServiceException($"Registration with id {registrationId} was not found", nameof(registrationId), e);
+            throw new ArgumentServiceException($"Registration with id {registrationId} was not found",
+                nameof(registrationId), e);
         }
 
         await _registrationAccessControlService.CheckRegistrationUpdateAccessAsync(registration, cancellationToken);
@@ -304,18 +320,15 @@ public class OrderManagementService : IOrderManagementService
         CancellationToken cancellationToken)
     {
         if (line.Quantity == 0)
-            throw new ArgumentServiceException($"Quantity should be a non-zero number");
+        {
+            throw new ArgumentServiceException("Quantity should be a non-zero number");
+        }
 
         Product product;
         try
         {
             product = await _productRetrievalService.GetProductByIdAsync(line.ProductId,
-                new ProductRetrievalOptions
-                {
-                    LoadVariants = true,
-                    LoadEvent = true,
-                    ForUpdate = true,
-                },
+                new ProductRetrievalOptions { LoadVariants = true, LoadEvent = true, ForUpdate = true },
                 cancellationToken);
         }
         catch (NotFoundException e)
@@ -330,27 +343,32 @@ public class OrderManagementService : IOrderManagementService
         {
             productVariant = product.ProductVariants.FirstOrDefault(pv => pv.ProductVariantId == line.ProductVariantId);
             if (productVariant == null)
+            {
                 throw new ArgumentServiceException($"Product variant was not found by product id {line.ProductId} "
-                                                 + $"and variant id {line.ProductVariantId}");
+                                                   + $"and variant id {line.ProductVariantId}");
+            }
         }
         else if (product.ProductVariants.Any())
         {
             throw new ArgumentServiceException($"Product with id {line.ProductId} has variants, "
-                                             + $"thus variant id should be specified for this product ");
+                                               + $"thus variant id should be specified for this product ");
         }
 
         var orderLine = new OrderLine(product, line.Quantity, productVariant);
         return orderLine;
     }
 
-    private async Task ValidateMinimumQuantityForProducts(Registration registration, CancellationToken cancellationToken = default)
+    private async Task ValidateMinimumQuantityForProducts(Registration registration,
+        CancellationToken cancellationToken = default)
     {
         var eventInfo = registration.EventInfo;
 
         await LoadProductsInEventInfoWithMinimumAmount(eventInfo);
         await LoadOrdersInRegistration();
         foreach (var order in registration.Orders)
+        {
             await LoadLinesInOrder(order);
+        }
 
         var mandatoryProducts = eventInfo.Products.Where(p => p.MinimumQuantity > 0);
 
@@ -366,16 +384,20 @@ public class OrderManagementService : IOrderManagementService
             orderedProductsWithAllVariants.TryGetValue(mandatoryProduct.ProductId, out var orderedSum);
             if (orderedSum < mandatoryProduct.MinimumQuantity)
             {
-                _logger.LogWarning($"Product with id {mandatoryProduct.ProductId} has minimum quantity {mandatoryProduct.MinimumQuantity}, but current registration has ordered only {orderedSum}");
+                _logger.LogWarning(
+                    $"Product with id {mandatoryProduct.ProductId} has minimum quantity {mandatoryProduct.MinimumQuantity}, but current registration has ordered only {orderedSum}");
                 throw new ArgumentServiceException($"Product with id {mandatoryProduct.ProductId} has minimum quantity "
-                                                 + $"{mandatoryProduct.MinimumQuantity}, but current registration has ordered only {orderedSum}");
+                                                   + $"{mandatoryProduct.MinimumQuantity}, but current registration has ordered only {orderedSum}");
             }
         }
 
         var orderedProductWithNegativeAmount = registrationOrderLines.FirstOrDefault(ol => ol.Quantity < 0);
         if (orderedProductWithNegativeAmount != null)
-            throw new ArgumentServiceException($"Product with id {orderedProductWithNegativeAmount.ProductId} was ordered a negative amount "
-                                             + $"({orderedProductWithNegativeAmount.Quantity}) in total for current registration.");
+        {
+            throw new ArgumentServiceException(
+                $"Product with id {orderedProductWithNegativeAmount.ProductId} was ordered a negative amount "
+                + $"({orderedProductWithNegativeAmount.Quantity}) in total for current registration.");
+        }
 
         return;
 
@@ -383,7 +405,9 @@ public class OrderManagementService : IOrderManagementService
         {
             var collectionNavigation = _context.Entry(registration).Collection(entity => entity.Orders);
             if (!collectionNavigation.IsLoaded)
+            {
                 await collectionNavigation.LoadAsync(cancellationToken);
+            }
         }
 
         async Task LoadProductsInEventInfoWithMinimumAmount(EventInfo ei)
@@ -401,11 +425,14 @@ public class OrderManagementService : IOrderManagementService
         {
             var collectionNavigation = _context.Entry(order).Collection(entity => entity.OrderLines);
             if (!collectionNavigation.IsLoaded)
+            {
                 await collectionNavigation.LoadAsync(cancellationToken);
+            }
         }
     }
 
-    private async Task ValidateProductVisibility(Product product, EventInfo orderEventInfo, CancellationToken cancellationToken = default)
+    private async Task ValidateProductVisibility(Product product, EventInfo orderEventInfo,
+        CancellationToken cancellationToken = default)
     {
         if (product.Visibility == ProductVisibility.Collection)
         {
@@ -417,12 +444,16 @@ public class OrderManagementService : IOrderManagementService
                 .IntersectBy(product.EventInfo.Collections.Select(c => c.CollectionId), ec => ec.CollectionId);
 
             if (!commonCollections.Any())
+            {
                 throw new ArgumentServiceException(
                     $"Product with id {product.ProductId} is not visible for event with id {orderEventInfo.EventInfoId}");
+            }
         }
         else if (product.EventInfoId != orderEventInfo.EventInfoId)
+        {
             throw new ArgumentServiceException(
                 $"Product with id {product.ProductId} is not visible for event with id {orderEventInfo.EventInfoId}");
+        }
 
         return;
 
@@ -430,7 +461,9 @@ public class OrderManagementService : IOrderManagementService
         {
             var collectionsNavigation = _context.Entry(ei).Collection(entity => entity.Collections);
             if (!collectionsNavigation.IsLoaded)
+            {
                 await collectionsNavigation.LoadAsync(cancellationToken);
+            }
         }
     }
 }

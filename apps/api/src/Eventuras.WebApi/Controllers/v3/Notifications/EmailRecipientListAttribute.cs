@@ -16,6 +16,7 @@ public class EmailRecipientListAttribute : ValidationAttribute
         {
             return ValidationResult.Success;
         }
+
         var addresses = (string[])value;
         foreach (var address in addresses)
         {
@@ -24,6 +25,7 @@ public class EmailRecipientListAttribute : ValidationAttribute
                 return new ValidationResult(GetErrorMessage(address));
             }
         }
+
         return ValidationResult.Success;
     }
 

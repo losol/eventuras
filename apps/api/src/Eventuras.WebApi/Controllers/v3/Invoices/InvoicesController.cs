@@ -16,8 +16,8 @@ namespace Eventuras.WebApi.Controllers.v3.Invoices;
 public class InvoicesController : ControllerBase
 {
     private readonly IInvoicingService _invoicingService;
-    private readonly IOrderRetrievalService _orderRetrievalService;
     private readonly ILogger<InvoicesController> _logger;
+    private readonly IOrderRetrievalService _orderRetrievalService;
 
     public InvoicesController(
         IInvoicingService invoicingService,
@@ -38,11 +38,13 @@ public class InvoicesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<InvoiceDto>> CreateInvoice([FromBody] InvoiceRequestDto request, CancellationToken cancellationToken)
+    public async Task<ActionResult<InvoiceDto>> CreateInvoice([FromBody] InvoiceRequestDto request,
+        CancellationToken cancellationToken)
     {
         try
         {
-            var orders = await _orderRetrievalService.GetOrdersPopulatedByRegistrationAsync(request.OrderIds, cancellationToken);
+            var orders =
+                await _orderRetrievalService.GetOrdersPopulatedByRegistrationAsync(request.OrderIds, cancellationToken);
 
             _logger.LogInformation($"Creating invoice for orders {orders}");
             var invoiceInfo = InvoiceInfo.CreateFromOrderList(orders);

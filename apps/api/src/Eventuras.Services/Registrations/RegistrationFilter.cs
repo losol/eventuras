@@ -27,7 +27,8 @@ public class RegistrationFilter
 
     public bool HavingNoCertificateOnly { get; set; }
 
-    public Registration.RegistrationStatus[] HavingStatuses { get; set; } = Array.Empty<Registration.RegistrationStatus>();
+    public Registration.RegistrationStatus[] HavingStatuses { get; set; } =
+        Array.Empty<Registration.RegistrationStatus>();
 
     public Registration.RegistrationType[] HavingTypes { get; set; } = Array.Empty<Registration.RegistrationType>();
 }

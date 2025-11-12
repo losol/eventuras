@@ -1,12 +1,10 @@
 using System;
 using System.Linq;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services;
 using Eventuras.TestAbstractions;
-using Eventuras.WebApi.Controllers;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
@@ -22,16 +20,13 @@ public class UsersControllerTests : IClassFixture<CustomWebApiApplicationFactory
         Cleanup();
     }
 
+    public void Dispose() => Cleanup();
+
     private void Cleanup()
     {
         using var scope = _factory.Services.NewTestScope();
         scope.Db.Users.Clean();
         scope.Db.SaveChanges();
-    }
-
-    public void Dispose()
-    {
-        Cleanup();
     }
 
     [Fact]
@@ -65,11 +60,7 @@ public class UsersControllerTests : IClassFixture<CustomWebApiApplicationFactory
     {
         using var scope = _factory.Services.NewTestScope();
 
-        var user = new ApplicationUser
-        {
-            Email = "test@email.com",
-            PhoneNumber = "+120123456789",
-        };
+        var user = new ApplicationUser { Email = "test@email.com", PhoneNumber = "+120123456789" };
 
         var client = _factory.CreateClient().AuthenticatedAs(user);
 
@@ -208,20 +199,13 @@ public class UsersControllerTests : IClassFixture<CustomWebApiApplicationFactory
         response.CheckBadRequest();
     }
 
-    public static object[][] GetInvalidListQueryParams()
-    {
-        return new object[][]
+    public static object[][] GetInvalidListQueryParams() =>
+        new[]
         {
-            new object[] { "page=-1" },
-            new object[] { "page=0" },
-            new object[] { "page=asd" },
-            new object[] { "count=-1" },
-            new object[] { "count=asd" },
-            new object[] { "order=1001" },
-            new object[] { "order=invalid" },
-            new object[] { "descending=invalid" }
+            new object[] { "page=-1" }, new object[] { "page=0" }, new object[] { "page=asd" },
+            new object[] { "count=-1" }, new object[] { "count=asd" }, new object[] { "order=1001" },
+            new object[] { "order=invalid" }, new object[] { "descending=invalid" }
         };
-    }
 
     [Theory]
     [InlineData(Roles.Admin)]
@@ -253,11 +237,16 @@ public class UsersControllerTests : IClassFixture<CustomWebApiApplicationFactory
         var client = _factory.CreateClient()
             .Authenticated(role: Roles.Admin);
 
-        using var user5 = await scope.CreateUserAsync(givenName: "Test Person 5", email: "other@email.com", phone: null); // no phone
-        using var user4 = await scope.CreateUserAsync(givenName: "Test Person 4", email: "testperson4@email.com", phone: "+1234567890");
-        using var user3 = await scope.CreateUserAsync(givenName: "Test Person 3", email: "testperson3@email.com", phone: "+11122223333444");
-        using var user2 = await scope.CreateUserAsync(givenName: "Test Person 2", email: "testperson2@email.com", phone: "+2222222221");
-        using var user1 = await scope.CreateUserAsync(givenName: "Test Person 1", email: "testperson1@email.com", phone: "+11111111111");
+        using var user5 =
+            await scope.CreateUserAsync("Test Person 5", email: "other@email.com", phone: null); // no phone
+        using var user4 =
+            await scope.CreateUserAsync("Test Person 4", email: "testperson4@email.com", phone: "+1234567890");
+        using var user3 =
+            await scope.CreateUserAsync("Test Person 3", email: "testperson3@email.com", phone: "+11122223333444");
+        using var user2 =
+            await scope.CreateUserAsync("Test Person 2", email: "testperson2@email.com", phone: "+2222222221");
+        using var user1 =
+            await scope.CreateUserAsync("Test Person 1", email: "testperson1@email.com", phone: "+11111111111");
 
         // 1. search by name (case-insensitive)
         await CheckListAsync(client, new { query = "Test Person" }, user1, user2, user3, user4, user5);
@@ -282,7 +271,7 @@ public class UsersControllerTests : IClassFixture<CustomWebApiApplicationFactory
         object queryParams,
         params IDisposableEntity<ApplicationUser>[] users)
     {
-        var response = await client.GetAsync($"/v3/users", queryParams);
+        var response = await client.GetAsync("/v3/users", queryParams);
         response.CheckOk();
 
         var json = await response.AsTokenAsync();
@@ -297,11 +286,11 @@ public class UsersControllerTests : IClassFixture<CustomWebApiApplicationFactory
         var client = _factory.CreateClient()
             .Authenticated(role: Roles.Admin);
 
-        using var user5 = await scope.CreateUserAsync(givenName: "e", email: "other@email.com", phone: null); // no phone
-        using var user4 = await scope.CreateUserAsync(givenName: "d", email: "testperson1@email.com", phone: "+1234567890");
-        using var user3 = await scope.CreateUserAsync(givenName: "c", email: "testperson2@email.com", phone: "+11122223333444");
-        using var user2 = await scope.CreateUserAsync(givenName: "b", email: "testperson3@email.com", phone: "+2222222221");
-        using var user1 = await scope.CreateUserAsync(givenName: "a", email: "testperson4@email.com", phone: "+11111111111");
+        using var user5 = await scope.CreateUserAsync("e", email: "other@email.com", phone: null); // no phone
+        using var user4 = await scope.CreateUserAsync("d", email: "testperson1@email.com", phone: "+1234567890");
+        using var user3 = await scope.CreateUserAsync("c", email: "testperson2@email.com", phone: "+11122223333444");
+        using var user2 = await scope.CreateUserAsync("b", email: "testperson3@email.com", phone: "+2222222221");
+        using var user1 = await scope.CreateUserAsync("a", email: "testperson4@email.com", phone: "+11111111111");
 
         // 1. default
         await CheckListAsync(client, new { }, user1, user2, user3, user4, user5);
@@ -350,10 +339,7 @@ public class UsersControllerTests : IClassFixture<CustomWebApiApplicationFactory
         var client = _factory.CreateClient()
             .AuthenticatedAsSuperAdmin();
 
-        var response = await client.PostAsync("/v3/users", new
-        {
-            email = "test@email.com"
-        });
+        var response = await client.PostAsync("/v3/users", new { email = "test@email.com" });
 
         response.CheckConflict();
     }
@@ -367,10 +353,7 @@ public class UsersControllerTests : IClassFixture<CustomWebApiApplicationFactory
         var client = _factory.CreateClient()
             .AuthenticatedAsSuperAdmin();
 
-        var response = await client.PostAsync("/v3/users", new
-        {
-            email = "test@email.com"
-        });
+        var response = await client.PostAsync("/v3/users", new { email = "test@email.com" });
 
         response.CheckConflict();
     }
@@ -381,11 +364,7 @@ public class UsersControllerTests : IClassFixture<CustomWebApiApplicationFactory
         var client = _factory.CreateClient()
             .AuthenticatedAsSuperAdmin();
 
-        var response = await client.PostAsync("/v3/users", new
-        {
-            name = "John Doe",
-            email = "test@email.com"
-        });
+        var response = await client.PostAsync("/v3/users", new { name = "John Doe", email = "test@email.com" });
 
         response.CheckOk();
 
@@ -402,13 +381,8 @@ public class UsersControllerTests : IClassFixture<CustomWebApiApplicationFactory
         var client = _factory.CreateClient()
             .AuthenticatedAsSuperAdmin();
 
-        var response = await client.PostAsync("/v3/users", new
-        {
-            givenName = "John",
-            familyName = "Doe",
-            email = "test@email.com",
-            phoneNumber = "+11111111111"
-        });
+        var response = await client.PostAsync("/v3/users",
+            new { givenName = "John", familyName = "Doe", email = "test@email.com", phoneNumber = "+11111111111" });
 
         response.CheckOk();
 
@@ -432,11 +406,7 @@ public class UsersControllerTests : IClassFixture<CustomWebApiApplicationFactory
         var client = _factory.CreateClient()
             .Authenticated(role: role);
 
-        var response = await client.PostAsync("/v3/users", new
-        {
-            name = "John Doe",
-            email = "test@email.com"
-        });
+        var response = await client.PostAsync("/v3/users", new { name = "John Doe", email = "test@email.com" });
 
         response.CheckOk();
 
@@ -479,11 +449,8 @@ public class UsersControllerTests : IClassFixture<CustomWebApiApplicationFactory
         var client = _factory.CreateClient()
             .AuthenticatedAsSuperAdmin();
 
-        var response = await client.PutAsync($"/v3/users/{user.Entity.Id}", new
-        {
-            name = user.Entity.Name,
-            email = otherUser.Entity.Email
-        });
+        var response = await client.PutAsync($"/v3/users/{user.Entity.Id}",
+            new { name = user.Entity.Name, email = otherUser.Entity.Email });
 
         response.CheckConflict();
     }
@@ -498,11 +465,8 @@ public class UsersControllerTests : IClassFixture<CustomWebApiApplicationFactory
         var client = _factory.CreateClient()
             .AuthenticatedAsSuperAdmin();
 
-        var response = await client.PutAsync($"/v3/users/{user.Entity.Id}", new
-        {
-            givenName = user.Entity.Name,
-            email = otherUser.Entity.Email
-        });
+        var response = await client.PutAsync($"/v3/users/{user.Entity.Id}",
+            new { givenName = user.Entity.Name, email = otherUser.Entity.Email });
 
         response.CheckOk();
 
@@ -527,13 +491,8 @@ public class UsersControllerTests : IClassFixture<CustomWebApiApplicationFactory
         var client = _factory.CreateClient()
             .AuthenticatedAsSuperAdmin();
 
-        var response = await client.PutAsync($"/v3/users/{user.Entity.Id}", new
-        {
-            givenName = "John",
-            familyName = "Doe",
-            email = "another@email.com",
-            phoneNumber = "+1234567890"
-        });
+        var response = await client.PutAsync($"/v3/users/{user.Entity.Id}",
+            new { givenName = "John", familyName = "Doe", email = "another@email.com", phoneNumber = "+1234567890" });
 
         response.CheckOk();
 
@@ -563,12 +522,8 @@ public class UsersControllerTests : IClassFixture<CustomWebApiApplicationFactory
         var client = _factory.CreateClient()
             .Authenticated(role: role);
 
-        var response = await client.PutAsync($"/v3/users/{user.Entity.Id}", new
-        {
-            givenName = "John",
-            familyName = "Doe",
-            email = "another@email.com"
-        });
+        var response = await client.PutAsync($"/v3/users/{user.Entity.Id}",
+            new { givenName = "John", familyName = "Doe", email = "another@email.com" });
 
         response.CheckOk();
 
@@ -584,16 +539,13 @@ public class UsersControllerTests : IClassFixture<CustomWebApiApplicationFactory
         json.CheckUser(updatedUser);
     }
 
-    public static object[][] GetInvalidUserInput()
-    {
-        return new object[][]
+    public static object[][] GetInvalidUserInput() =>
+        new object[][]
         {
-            new [] { new {name = "Test Person", email = (string)null} },
-            new [] { new {name = "Test Person", email = ""} },
-            new [] { new {name = "Test Person", email = " "} },
-            new [] { new {name = "Test Person", email = "test"} },
-            new [] { new {name = "Test Person", email = "test.com"} },
-            new [] { new {name = "Test Person", email = "test@email.com"} }
+            new[] { new { name = "Test Person", email = (string)null } },
+            new[] { new { name = "Test Person", email = "" } }, new[] { new { name = "Test Person", email = " " } },
+            new[] { new { name = "Test Person", email = "test" } },
+            new[] { new { name = "Test Person", email = "test.com" } },
+            new[] { new { name = "Test Person", email = "test@email.com" } }
         };
-    }
 }

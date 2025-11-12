@@ -11,12 +11,8 @@ public interface IWriter
 
 public class BaseTest : IWriter
 {
+    public BaseTest(ITestOutputHelper output) => Output = output;
     public ITestOutputHelper Output { get; }
-
-    public BaseTest(ITestOutputHelper output)
-    {
-        Output = output;
-    }
 
     public void WriteLine(string str)
     {
@@ -33,27 +29,19 @@ public class BaseTest : IWriter
 
 public class XUnitLoggerProvider : ILoggerProvider
 {
+    public XUnitLoggerProvider(ITestOutputHelper output) => Writer = new BaseTest(output);
     public IWriter Writer { get; }
     public LogLevel MinLevel { get; set; } = LogLevel.Information;
-
-    public XUnitLoggerProvider(ITestOutputHelper output)
-    {
-        Writer = new BaseTest(output);
-    }
 
     public void Dispose()
     {
     }
 
-    public ILogger CreateLogger(string categoryName)
-    {
-        return new XUnitLogger(Writer, MinLevel);
-    }
+    public ILogger CreateLogger(string categoryName) => new XUnitLogger(Writer, MinLevel);
 
     public class XUnitLogger : ILogger
     {
-        public IWriter Writer { get; }
-        private LogLevel _minLevel;
+        private readonly LogLevel _minLevel;
 
         public XUnitLogger(IWriter writer, LogLevel minLevel)
         {
@@ -62,38 +50,42 @@ public class XUnitLoggerProvider : ILoggerProvider
             Name = nameof(XUnitLogger);
         }
 
+        public IWriter Writer { get; }
+
         public string Name { get; set; }
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception,
             Func<TState, Exception, string> formatter)
         {
-            if (!this.IsEnabled(logLevel))
+            if (!IsEnabled(logLevel))
+            {
                 return;
+            }
 
             if (formatter == null)
+            {
                 throw new ArgumentNullException(nameof(formatter));
+            }
 
-            string message = formatter(state, exception);
+            var message = formatter(state, exception);
             if (string.IsNullOrEmpty(message) && exception == null)
+            {
                 return;
+            }
 
-            string line = $"{logLevel}: {this.Name}: {message}";
+            var line = $"{logLevel}: {Name}: {message}";
 
             Writer.WriteLine(line);
 
             if (exception != null)
+            {
                 Writer.WriteLine(exception.ToString());
+            }
         }
 
-        public bool IsEnabled(LogLevel logLevel)
-        {
-            return logLevel >= _minLevel;
-        }
+        public bool IsEnabled(LogLevel logLevel) => logLevel >= _minLevel;
 
-        public IDisposable BeginScope<TState>(TState state)
-        {
-            return new XUnitScope();
-        }
+        public IDisposable BeginScope<TState>(TState state) => new XUnitScope();
     }
 
     public class XUnitScope : IDisposable

@@ -13,14 +13,12 @@ public class NewProductDto
 
     [Range(0, double.MaxValue)] public decimal Price { get; set; }
 
-    [Range(0, 99)]
-    public int VatPercent { get; set; }
+    [Range(0, 99)] public int VatPercent { get; set; }
 
     public ProductVisibility Visibility { get; set; } = ProductVisibility.Event;
 
-    public Product ToProduct()
-    {
-        return new Product
+    public Product ToProduct() =>
+        new()
         {
             Name = Name,
             Description = Description,
@@ -29,5 +27,4 @@ public class NewProductDto
             VatPercent = VatPercent,
             Visibility = Visibility
         };
-    }
 }

@@ -19,11 +19,11 @@ namespace Eventuras.WebApi.Controllers.v3.Events.Products;
 [ApiController]
 public class EventProductsController : ControllerBase
 {
-    private readonly IProductRetrievalService _productRetrievalService;
+    private readonly IEventInfoAccessControlService _eventInfoAccessControlService;
     private readonly IEventInfoRetrievalService _eventInfoRetrievalService;
     private readonly IEventProductsManagementService _eventProductsManagementService;
-    private readonly IEventInfoAccessControlService _eventInfoAccessControlService;
     private readonly ILogger<EventProductsController> _logger;
+    private readonly IProductRetrievalService _productRetrievalService;
 
     public EventProductsController(
         IProductRetrievalService productRetrievalService,
@@ -57,13 +57,8 @@ public class EventProductsController : ControllerBase
         await _eventInfoAccessControlService.CheckEventReadAccessAsync(eventInfo, token);
 
         var products = await _productRetrievalService
-            .ListProductsAsync(new ProductListRequest(eventId)
-            {
-                Filter = query.ToProductFilter()
-            }, new ProductRetrievalOptions
-            {
-                LoadVariants = true
-            }, token);
+            .ListProductsAsync(new ProductListRequest(eventId) { Filter = query.ToProductFilter() },
+                new ProductRetrievalOptions { LoadVariants = true }, token);
 
         return products
             .Select(p => new ProductDto(p))
@@ -123,10 +118,9 @@ public class EventProductsController : ControllerBase
 
     private async Task<Product> GetProductAsync(int eventId, int productId)
     {
-        var product = await _productRetrievalService.GetProductByIdAsync(productId, new ProductRetrievalOptions
-        {
-            LoadVariants = true
-        });
+        var product =
+            await _productRetrievalService.GetProductByIdAsync(productId,
+                new ProductRetrievalOptions { LoadVariants = true });
 
         if (product.EventInfoId != eventId)
         {

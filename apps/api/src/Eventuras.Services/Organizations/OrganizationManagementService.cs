@@ -12,6 +12,7 @@ namespace Eventuras.Services.Organizations;
 
 internal class OrganizationManagementService : IOrganizationManagementService
 {
+    private static readonly Regex HostPattern = new("^http(s?):\\/\\/(.*?)\\/");
     private readonly ApplicationDbContext _context;
     private readonly ILogger<OrganizationManagementService> _logger;
     private readonly IOrganizationAccessControlService _organizationAccessControlService;
@@ -100,9 +101,9 @@ internal class OrganizationManagementService : IOrganizationManagementService
         foreach (var hostname in normalizedHostnames)
         {
             if (await _context.OrganizationHostnames
-                .AnyAsync(h => h.OrganizationId != id &&
-                               h.Active &&
-                               h.Hostname == hostname))
+                    .AnyAsync(h => h.OrganizationId != id &&
+                                   h.Active &&
+                                   h.Hostname == hostname))
             {
                 throw new DuplicateException($"Duplicate org hostname: {hostname}");
             }
@@ -122,9 +123,7 @@ internal class OrganizationManagementService : IOrganizationManagementService
             {
                 await _context.CreateAsync(new OrganizationHostname
                 {
-                    OrganizationId = id,
-                    Hostname = hostname,
-                    Active = true
+                    OrganizationId = id, Hostname = hostname, Active = true
                 });
             }
         }
@@ -170,6 +169,4 @@ internal class OrganizationManagementService : IOrganizationManagementService
         var m = HostPattern.Match(h);
         return m.Success ? m.Groups[2].Value : h;
     }
-
-    private static readonly Regex HostPattern = new Regex("^http(s?):\\/\\/(.*?)\\/");
 }

@@ -40,20 +40,20 @@ public class Registration
     public bool Diploma { get; set; } = true;
 
     /// <summary>
-    /// Indicates whether this is a free registration (no payment required).
+    ///     Indicates whether this is a free registration (no payment required).
     /// </summary>
     public bool FreeRegistration { get; set; } = false;
 
     // The participant - Consider removing, at least the name
     public string ParticipantName { get; set; }
-    [Obsolete]
-    public string ParticipantJobTitle { get; set; }
-    [Obsolete]
-    public string ParticipantEmployer { get; set; }
-    [Obsolete]
-    public string ParticipantCity { get; set; }
-    [Obsolete]
-    [NotMapped] private IEnumerable<string> NameParts => ParticipantName?.Split(" ")?.Select(p => p.Trim());
+
+    [Obsolete] public string ParticipantJobTitle { get; set; }
+
+    [Obsolete] public string ParticipantEmployer { get; set; }
+
+    [Obsolete] public string ParticipantCity { get; set; }
+
+    [Obsolete] [NotMapped] private IEnumerable<string> NameParts => ParticipantName?.Split(" ")?.Select(p => p.Trim());
 
     [Obsolete]
     [NotMapped]
@@ -68,8 +68,7 @@ public class Registration
         }
     }
 
-    [Obsolete]
-    [NotMapped] public string ParticipantLastName => NameParts?.LastOrDefault();
+    [Obsolete] [NotMapped] public string ParticipantLastName => NameParts?.LastOrDefault();
 
     // Who pays for it?
     public string CustomerName { get; set; }
@@ -83,7 +82,8 @@ public class Registration
 
     public string Notes { get; set; }
 
-    [Obsolete("Use BusinessEventLog entity for tracking registration events. This property will be removed in a future version.")]
+    [Obsolete(
+        "Use BusinessEventLog entity for tracking registration events. This property will be removed in a future version.")]
     public string Log { get; set; }
 
     public Instant? RegistrationTime { get; set; } = SystemClock.Instance.Now();
@@ -100,8 +100,9 @@ public class Registration
 
     // Navigation properties
     public EventInfo EventInfo { get; set; }
-    [JsonIgnore]
-    public Certificate Certificate { get; set; }
+
+    [JsonIgnore] public Certificate Certificate { get; set; }
+
     public ApplicationUser User { get; set; }
 
     public List<ExternalAccount> ExternalAccounts { get; set; }
@@ -151,7 +152,8 @@ public class Registration
         return Certificate;
     }
 
-    [Obsolete("Use BusinessEventLog entity for tracking registration events. This method will be removed in a future version.")]
+    [Obsolete(
+        "Use BusinessEventLog entity for tracking registration events. This method will be removed in a future version.")]
     public void AddLog(string text = null)
     {
 #pragma warning disable CS0618 // Type or member is obsolete

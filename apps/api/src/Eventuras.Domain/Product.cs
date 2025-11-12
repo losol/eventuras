@@ -9,8 +9,7 @@ public class Product
 
     [Required] public string Name { get; set; }
 
-    [StringLength(300)]
-    public string Description { get; set; }
+    [StringLength(300)] public string Description { get; set; }
 
     public string MoreInformation { get; set; }
 
@@ -27,7 +26,7 @@ public class Product
     public bool Archived { get; set; }
 
     /// <summary>
-    /// By default, product is only visible in the context of single event.
+    ///     By default, product is only visible in the context of single event.
     /// </summary>
     public ProductVisibility Visibility { get; set; } = ProductVisibility.Event;
 
@@ -51,12 +50,12 @@ public class Product
 public enum ProductVisibility
 {
     /// <summary>
-    /// Product accessible for a single event only.
+    ///     Product accessible for a single event only.
     /// </summary>
     Event = 1,
 
     /// <summary>
-    /// Product accessible for other events in collection, too.
+    ///     Product accessible for other events in collection, too.
     /// </summary>
     Collection = 10
 }

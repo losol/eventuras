@@ -5,18 +5,18 @@
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
-  <Import Project="../common.props" />
+  <Import Project="../common.props"/>
 
   <ItemGroup>
-    <ProjectReference Include="..\Losol.Communication.HealthCheck\Losol.Communication.HealthCheck.csproj" />
+    <ProjectReference Include="..\Losol.Communication.HealthCheck\Losol.Communication.HealthCheck.csproj"/>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Twilio" Version="7.13.6" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="8.0.0" />
+    <PackageReference Include="Twilio" Version="7.13.6"/>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1"/>
+    <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2"/>
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0"/>
+    <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="8.0.0"/>
   </ItemGroup>
 
 </Project>

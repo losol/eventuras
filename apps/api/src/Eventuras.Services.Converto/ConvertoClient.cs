@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Authentication;
@@ -16,8 +17,8 @@ namespace Eventuras.Services.Converto;
 internal class ConvertoClient : IConvertoClient
 {
     private readonly IHttpClientFactory _httpClientFactory;
-    private readonly IOptions<ConvertoConfig> _options;
     private readonly ILogger<ConvertoClient> _logger;
+    private readonly IOptions<ConvertoConfig> _options;
 
     public ConvertoClient(
         IHttpClientFactory httpClientFactory,
@@ -29,16 +30,61 @@ internal class ConvertoClient : IConvertoClient
         _httpClientFactory = httpClientFactory;
     }
 
-    private class TokenResponse
+    public async Task<Stream> GeneratePdfFromHtmlAsync(string html, float scale, PaperSize paperSize = PaperSize.A4)
     {
-        [JsonPropertyName("access_token")]
-        public string AccessToken { get; set; }
+        var client = _httpClientFactory.CreateClient();
+        var endpointUrl = _options.Value.PdfEndpointUrl;
+        var convertoAccessToken = await GetApiTokenAsync();
 
-        [JsonPropertyName("token_type")]
-        public string TokenType { get; set; } = "Bearer";
+        _logger.LogInformation("Sending request to generate PDF at {EndpointUrl}", endpointUrl);
 
-        [JsonPropertyName("expires_in")]
-        public int ExpiresIn { get; set; }
+        try
+        {
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", convertoAccessToken);
+
+            var requestBody = new { html, scale, paperSize };
+
+            var options = new JsonSerializerOptions { Converters = { new JsonStringEnumConverter() } };
+
+            using var content = new StringContent(JsonSerializer.Serialize(requestBody, options), Encoding.UTF8,
+                "application/json");
+            var response = await client.PostAsync(
+                endpointUrl,
+                content
+            );
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                _logger.LogError("PDF generation failed: {StatusCode}, Response: {ErrorContent}",
+                    response.StatusCode, errorContent);
+
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    throw new AuthenticationException("Unauthorized request to Converto API.");
+                }
+
+                throw new ConvertoClientException($"Failed to generate PDF. Status: {response.StatusCode}");
+            }
+
+            return await response.Content.ReadAsStreamAsync();
+        }
+        catch (HttpRequestException e)
+        {
+            _logger.LogError(e, "HTTP request error while calling Converto API: {ExceptionMessage}", e.Message);
+
+            if (e.Message.Contains("401"))
+            {
+                throw new AuthenticationException("Unauthorized request to Converto API.", e);
+            }
+
+            throw new HttpRequestException("Error occurred while communicating with Converto API.", e);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Unexpected error: {ExceptionMessage}", e.Message);
+            throw new ConvertoClientException($"Unexpected error occurred: {e.Message}");
+        }
     }
 
     private async Task<string> GetApiTokenAsync()
@@ -65,10 +111,7 @@ internal class ConvertoClient : IConvertoClient
 
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", base64Credentials);
 
-        var requestBody = new
-        {
-            grant_type = "client_credentials"
-        };
+        var requestBody = new { grant_type = "client_credentials" };
 
         using var content = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
         var response = await client.PostAsync(
@@ -97,67 +140,12 @@ internal class ConvertoClient : IConvertoClient
         return tokenResponse.AccessToken;
     }
 
-    public async Task<Stream> GeneratePdfFromHtmlAsync(string html, float scale, PaperSize paperSize = PaperSize.A4)
+    private class TokenResponse
     {
-        var client = _httpClientFactory.CreateClient();
-        var endpointUrl = _options.Value.PdfEndpointUrl;
-        var convertoAccessToken = await GetApiTokenAsync();
+        [JsonPropertyName("access_token")] public string AccessToken { get; set; }
 
-        _logger.LogInformation("Sending request to generate PDF at {EndpointUrl}", endpointUrl);
+        [JsonPropertyName("token_type")] public string TokenType { get; set; } = "Bearer";
 
-        try
-        {
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", convertoAccessToken);
-
-            var requestBody = new
-            {
-                html,
-                scale,
-                paperSize
-            };
-
-            var options = new JsonSerializerOptions
-            {
-                Converters = { new JsonStringEnumConverter() }
-            };
-
-            using var content = new StringContent(JsonSerializer.Serialize(requestBody, options), Encoding.UTF8, "application/json");
-            var response = await client.PostAsync(
-                endpointUrl,
-                content
-            );
-
-            if (!response.IsSuccessStatusCode)
-            {
-                var errorContent = await response.Content.ReadAsStringAsync();
-                _logger.LogError("PDF generation failed: {StatusCode}, Response: {ErrorContent}",
-                    response.StatusCode, errorContent);
-
-                if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-                {
-                    throw new AuthenticationException("Unauthorized request to Converto API.");
-                }
-
-                throw new ConvertoClientException($"Failed to generate PDF. Status: {response.StatusCode}");
-            }
-
-            return await response.Content.ReadAsStreamAsync();
-        }
-        catch (HttpRequestException e)
-        {
-            _logger.LogError(e, "HTTP request error while calling Converto API: {ExceptionMessage}", e.Message);
-
-            if (e.Message.Contains("401"))
-            {
-                throw new AuthenticationException("Unauthorized request to Converto API.", e);
-            }
-
-            throw new HttpRequestException("Error occurred while communicating with Converto API.", e);
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "Unexpected error: {ExceptionMessage}", e.Message);
-            throw new ConvertoClientException($"Unexpected error occurred: {e.Message}");
-        }
+        [JsonPropertyName("expires_in")] public int ExpiresIn { get; set; }
     }
 }

@@ -9,7 +9,8 @@ public class RegistrationFormAttribute : ValidationAttribute
 {
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
-        var httpContext = ((IHttpContextAccessor)validationContext.GetService(typeof(IHttpContextAccessor)))?.HttpContext;
+        var httpContext = ((IHttpContextAccessor)validationContext.GetService(typeof(IHttpContextAccessor)))
+            ?.HttpContext;
         if (httpContext == null)
         {
             throw new NullReferenceException("IHttpContextAccessor not configured");

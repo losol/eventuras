@@ -10,14 +10,15 @@ using Microsoft.Extensions.Options;
 namespace Losol.Communication.Email.File;
 
 /// <summary>
-/// Writes an email to a file instead of actually sending it.
-/// This implementation is not designed to be used in production.
+///     Writes an email to a file instead of actually sending it.
+///     This implementation is not designed to be used in production.
 /// </summary>
 public class FileEmailWriter : AbstractEmailSender
 {
     private readonly IOptions<FileEmailConfig> _options;
 
-    public FileEmailWriter(IOptions<FileEmailConfig> options, IHealthCheckStorage healthCheckStorage) : base(healthCheckStorage)
+    public FileEmailWriter(IOptions<FileEmailConfig> options, IHealthCheckStorage healthCheckStorage) : base(
+        healthCheckStorage)
     {
         _options = options;
         if (!Directory.Exists(options.Value.FilePath))
@@ -29,7 +30,8 @@ public class FileEmailWriter : AbstractEmailSender
     protected override async Task SendEmailInternalAsync(EmailModel emailModel)
     {
         // filename: {datetime}-{email}-{subject}.html
-        var filename = $"{DateTime.Now:yyyyMMdd-HHmmss}-{emailModel.Recipients.First().Email.GenerateSlug()}-{emailModel.Subject.GenerateSlug()}.html";
+        var filename =
+            $"{DateTime.Now:yyyyMMdd-HHmmss}-{emailModel.Recipients.First().Email.GenerateSlug()}-{emailModel.Subject.GenerateSlug()}.html";
         var filePath = Path.Combine(_options.Value.FilePath, filename);
 
         // Write the message to the file
@@ -40,9 +42,9 @@ public class FileEmailWriter : AbstractEmailSender
 internal static class StringExtensions
 {
     /// <summary>
-    /// Creates a URL And SEO friendly slug
-    /// Copyright (c) Johan Boström. All rights reserved.
-    /// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
+    ///     Creates a URL And SEO friendly slug
+    ///     Copyright (c) Johan Boström. All rights reserved.
+    ///     Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
     /// </summary>
     /// <param name="text">Text to slugify</param>
     /// <param name="maxLength">Max length of slug</param>
@@ -51,7 +53,9 @@ internal static class StringExtensions
     {
         // Return empty value if text is null
         if (text == null)
+        {
             return "";
+        }
 
         var normalizedString = text
             .ToLowerInvariant()
@@ -64,7 +68,7 @@ internal static class StringExtensions
 
         char c;
 
-        for (int i = 0; i < stringLength; i++)
+        for (var i = 0; i < stringLength; i++)
         {
             c = normalizedString[i];
 
@@ -76,9 +80,13 @@ internal static class StringExtensions
                 case UnicodeCategory.UppercaseLetter:
                 case UnicodeCategory.DecimalDigitNumber:
                     if (c < 128)
+                    {
                         stringBuilder.Append(c);
+                    }
                     else
+                    {
                         stringBuilder.Append(RemapInternationalCharToAscii(c));
+                    }
 
                     prevdash = false;
                     trueLength = stringBuilder.Length;
@@ -96,12 +104,15 @@ internal static class StringExtensions
                         prevdash = true;
                         trueLength = stringBuilder.Length;
                     }
+
                     break;
             }
 
             // If we are at max length, stop parsing
             if (maxLength > 0 && trueLength >= maxLength)
+            {
                 break;
+            }
         }
 
         // Trim excess hyphens
@@ -112,90 +123,105 @@ internal static class StringExtensions
     }
 
     /// <summary>
-    /// Remaps international characters to ascii compatible ones
-    /// Copyright (c) Johan Boström. All rights reserved.
-    /// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
+    ///     Remaps international characters to ascii compatible ones
+    ///     Copyright (c) Johan Boström. All rights reserved.
+    ///     Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
     /// </summary>
     /// <param name="c">Character to remap</param>
     /// <returns>Remapped character</returns>
     internal static string RemapInternationalCharToAscii(char c)
     {
-        string s = c.ToString().ToLowerInvariant();
+        var s = c.ToString().ToLowerInvariant();
         if ("àåáâäãåą".Contains(s))
         {
             return "a";
         }
-        else if ("èéêëę".Contains(s))
+
+        if ("èéêëę".Contains(s))
         {
             return "e";
         }
-        else if ("ìíîïı".Contains(s))
+
+        if ("ìíîïı".Contains(s))
         {
             return "i";
         }
-        else if ("òóôõöøőð".Contains(s))
+
+        if ("òóôõöøőð".Contains(s))
         {
             return "o";
         }
-        else if ("ùúûüŭů".Contains(s))
+
+        if ("ùúûüŭů".Contains(s))
         {
             return "u";
         }
-        else if ("çćčĉ".Contains(s))
+
+        if ("çćčĉ".Contains(s))
         {
             return "c";
         }
-        else if ("żźž".Contains(s))
+
+        if ("żźž".Contains(s))
         {
             return "z";
         }
-        else if ("śşšŝ".Contains(s))
+
+        if ("śşšŝ".Contains(s))
         {
             return "s";
         }
-        else if ("ñń".Contains(s))
+
+        if ("ñń".Contains(s))
         {
             return "n";
         }
-        else if ("ýÿ".Contains(s))
+
+        if ("ýÿ".Contains(s))
         {
             return "y";
         }
-        else if ("ğĝ".Contains(s))
+
+        if ("ğĝ".Contains(s))
         {
             return "g";
         }
-        else if (c == 'ř')
+
+        if (c == 'ř')
         {
             return "r";
         }
-        else if (c == 'ł')
+
+        if (c == 'ł')
         {
             return "l";
         }
-        else if (c == 'đ')
+
+        if (c == 'đ')
         {
             return "d";
         }
-        else if (c == 'ß')
+
+        if (c == 'ß')
         {
             return "ss";
         }
-        else if (c == 'þ')
+
+        if (c == 'þ')
         {
             return "th";
         }
-        else if (c == 'ĥ')
+
+        if (c == 'ĥ')
         {
             return "h";
         }
-        else if (c == 'ĵ')
+
+        if (c == 'ĵ')
         {
             return "j";
         }
-        else
-        {
-            return "";
-        }
+
+        return "";
     }
 }

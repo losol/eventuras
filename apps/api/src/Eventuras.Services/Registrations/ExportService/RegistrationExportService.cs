@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
@@ -14,8 +13,8 @@ namespace Eventuras.Services.Registrations.ExportService;
 
 public class RegistrationExportService : IRegistrationExportService
 {
-    private readonly IRegistrationRetrievalService _registrationRetrievalService;
     private readonly ILogger<RegistrationExportService> _logger;
+    private readonly IRegistrationRetrievalService _registrationRetrievalService;
 
     public RegistrationExportService(IRegistrationRetrievalService registrationRetrievalService,
         ILogger<RegistrationExportService> logger)
@@ -149,7 +148,8 @@ public class RegistrationExportService : IRegistrationExportService
         AppendRowToSheet(sheetData, headerValues);
     }
 
-    private static void WriteDataRow(SheetData sheetData, Registration registration, List<RegistrationProductDto> products)
+    private static void WriteDataRow(SheetData sheetData, Registration registration,
+        List<RegistrationProductDto> products)
     {
         ValidateSheetData(sheetData);
 
@@ -167,6 +167,7 @@ public class RegistrationExportService : IRegistrationExportService
             {
                 return ColumnConfig.FormatProducts(products);
             }
+
             return column.DataExtractor(registration);
         }).ToList();
 

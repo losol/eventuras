@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using Eventuras.Domain;
-using Swashbuckle.AspNetCore.Annotations;
-
 namespace Eventuras.WebApi.Controllers.v3.Events.Statistics;
 
 public class ByStatus

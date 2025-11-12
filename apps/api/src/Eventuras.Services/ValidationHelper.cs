@@ -14,24 +14,22 @@ public static class ValidationHelper
         {
             throw new ArgumentNullException(nameof(instance));
         }
+
         var results = new List<ValidationResult>();
         var context = new ValidationContext(instance, null, null);
         if (Validator.TryValidateObject(instance, context, results, true))
         {
             return;
         }
+
         var summary = string.Join(";\r\n ", results
             .Select(v => v.ErrorMessage));
         throw new ValidationException($"Validation failed: {summary}");
     }
 
-    public static string GetValueIfEmpty(string field, string newValue)
-    {
-        return string.IsNullOrWhiteSpace(field) ? newValue : field;
-    }
+    public static string GetValueIfEmpty(string field, string newValue) =>
+        string.IsNullOrWhiteSpace(field) ? newValue : field;
 
-    public static T GetValueIfDefault<T>(T field, T newValue) where T : struct
-    {
-        return EqualityComparer<T>.Default.Equals(field, default(T)) ? newValue : field;
-    }
+    public static T GetValueIfDefault<T>(T field, T newValue) where T : struct =>
+        EqualityComparer<T>.Default.Equals(field, default) ? newValue : field;
 }

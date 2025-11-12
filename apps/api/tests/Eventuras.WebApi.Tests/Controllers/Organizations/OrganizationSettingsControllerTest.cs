@@ -16,10 +16,8 @@ public class OrganizationSettingsControllerTest : IClassFixture<CustomWebApiAppl
 {
     private readonly CustomWebApiApplicationFactory<Program> _factory;
 
-    public OrganizationSettingsControllerTest(CustomWebApiApplicationFactory<Program> factory)
-    {
+    public OrganizationSettingsControllerTest(CustomWebApiApplicationFactory<Program> factory) =>
         _factory = factory ?? throw new ArgumentNullException(nameof(factory));
-    }
 
     [Fact]
     public async Task List_Should_Require_Auth()
@@ -73,7 +71,8 @@ public class OrganizationSettingsControllerTest : IClassFixture<CustomWebApiAppl
         var arr = await response.CheckOk().AsArrayAsync();
         Assert.Equal(JsonValueKind.Array, arr.ValueKind);
         Assert.True(arr.GetArrayLength() > 0);
-        Assert.Contains(arr.EnumerateArray().ToArray(), t => t.GetValue<string>("name") == OrgSettingsTestRegistryComponent.StringKey);
+        Assert.Contains(arr.EnumerateArray().ToArray(),
+            t => t.GetValue<string>("name") == OrgSettingsTestRegistryComponent.StringKey);
     }
 
     [Theory]
@@ -91,7 +90,8 @@ public class OrganizationSettingsControllerTest : IClassFixture<CustomWebApiAppl
         var arr = await response.CheckOk().AsArrayAsync();
         Assert.Equal(JsonValueKind.Array, arr.ValueKind);
         Assert.True(arr.GetArrayLength() > 0);
-        Assert.Contains(arr.EnumerateArray().ToArray(), t => t.GetValue<string>("name") == OrgSettingsTestRegistryComponent.StringKey);
+        Assert.Contains(arr.EnumerateArray().ToArray(),
+            t => t.GetValue<string>("name") == OrgSettingsTestRegistryComponent.StringKey);
     }
 
     [Fact]
@@ -116,8 +116,9 @@ public class OrganizationSettingsControllerTest : IClassFixture<CustomWebApiAppl
         var arr = await response.AsArrayAsync();
         Assert.Equal(JsonValueKind.Array, arr.ValueKind);
         Assert.True(arr.GetArrayLength() > 0);
-        Assert.Contains(arr.EnumerateArray().ToArray(), t => t.GetValue<string>("name") == OrgSettingsTestRegistryComponent.StringKey &&
-                                  t.GetValue<string>("value") == "12345");
+        Assert.Contains(arr.EnumerateArray().ToArray(), t =>
+            t.GetValue<string>("name") == OrgSettingsTestRegistryComponent.StringKey &&
+            t.GetValue<string>("value") == "12345");
 
         s.Entity.Value = "67890";
         await s.SaveAsync();
@@ -126,10 +127,12 @@ public class OrganizationSettingsControllerTest : IClassFixture<CustomWebApiAppl
             .GetAsync($"/v3/organizations/{org.Entity.OrganizationId}/settings");
 
         arr = await response.CheckOk().AsArrayAsync();
-        Assert.Contains(arr.EnumerateArray().ToArray(), t => t.GetValue<string>("name") == OrgSettingsTestRegistryComponent.StringKey &&
-                                  t.GetValue<string>("value") == "12345");
-        Assert.DoesNotContain(arr.EnumerateArray().ToArray(), t => t.GetValue<string>("name") == OrgSettingsTestRegistryComponent.StringKey &&
-                                        t.GetValue<string>("value") == "67890");
+        Assert.Contains(arr.EnumerateArray().ToArray(), t =>
+            t.GetValue<string>("name") == OrgSettingsTestRegistryComponent.StringKey &&
+            t.GetValue<string>("value") == "12345");
+        Assert.DoesNotContain(arr.EnumerateArray().ToArray(), t =>
+            t.GetValue<string>("name") == OrgSettingsTestRegistryComponent.StringKey &&
+            t.GetValue<string>("value") == "67890");
 
         var cache = scope.GetService<IMemoryCache>();
         cache.Remove($"org-settings-{org.Entity.OrganizationId}");
@@ -138,8 +141,9 @@ public class OrganizationSettingsControllerTest : IClassFixture<CustomWebApiAppl
             .GetAsync($"/v3/organizations/{org.Entity.OrganizationId}/settings");
 
         arr = await response.CheckOk().AsArrayAsync();
-        Assert.Contains(arr.EnumerateArray().ToArray(), t => t.GetValue<string>("name") == OrgSettingsTestRegistryComponent.StringKey &&
-                                  t.GetValue<string>("value") == "67890");
+        Assert.Contains(arr.EnumerateArray().ToArray(), t =>
+            t.GetValue<string>("name") == OrgSettingsTestRegistryComponent.StringKey &&
+            t.GetValue<string>("value") == "67890");
     }
 
     [Fact]
@@ -205,9 +209,8 @@ public class OrganizationSettingsControllerTest : IClassFixture<CustomWebApiAppl
         response.CheckNotFound();
     }
 
-    public static object[][] GetInvalidValuesForUpdate()
-    {
-        return new[]
+    public static object[][] GetInvalidValuesForUpdate() =>
+        new[]
         {
             new object[] { OrgSettingsTestRegistryComponent.NumberKey, "abc" },
             new object[] { OrgSettingsTestRegistryComponent.NumberKey, "#$%" },
@@ -220,7 +223,6 @@ public class OrganizationSettingsControllerTest : IClassFixture<CustomWebApiAppl
             new object[] { OrgSettingsTestRegistryComponent.BooleanKey, "yes" },
             new object[] { OrgSettingsTestRegistryComponent.BooleanKey, "no" }
         };
-    }
 
     [Theory]
     [MemberData(nameof(GetInvalidValuesForUpdate))]
@@ -235,9 +237,8 @@ public class OrganizationSettingsControllerTest : IClassFixture<CustomWebApiAppl
         response.CheckBadRequest();
     }
 
-    public static object[][] GetValidValuesForUpdate()
-    {
-        return new[]
+    public static object[][] GetValidValuesForUpdate() =>
+        new[]
         {
             new object[] { OrgSettingsTestRegistryComponent.StringKey, "anything" },
             new object[] { OrgSettingsTestRegistryComponent.StringKey, "0" },
@@ -255,7 +256,6 @@ public class OrganizationSettingsControllerTest : IClassFixture<CustomWebApiAppl
             new object[] { OrgSettingsTestRegistryComponent.BooleanKey, "true" },
             new object[] { OrgSettingsTestRegistryComponent.BooleanKey, "false" }
         };
-    }
 
     [Theory]
     [MemberData(nameof(GetValidValuesForUpdate))]
@@ -402,9 +402,7 @@ public class OrganizationSettingsControllerTest : IClassFixture<CustomWebApiAppl
         scope.Db.OrganizationSettings.Clean();
         scope.Db.OrganizationSettings.Add(new OrganizationSetting
         {
-            Organization = org.Entity,
-            Name = OrgSettingsTestRegistryComponent.StringKey,
-            Value = "initial"
+            Organization = org.Entity, Name = OrgSettingsTestRegistryComponent.StringKey, Value = "initial"
         });
         await scope.Db.SaveChangesAsync();
 
@@ -693,6 +691,6 @@ public static class OrgSettingsTestHttpClientExtensions
 
         var arr = await response.CheckOk().AsArrayAsync();
         Assert.Contains(arr.EnumerateArray().ToArray(), t => t.GetValue<string>("name") == name &&
-                                  t.GetValue<string>("value") == value);
+                                                             t.GetValue<string>("value") == value);
     }
 }

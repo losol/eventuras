@@ -11,10 +11,8 @@ public class EventProductVariantsControllerTests : IClassFixture<CustomWebApiApp
 {
     private readonly CustomWebApiApplicationFactory<Program> _factory;
 
-    public EventProductVariantsControllerTests(CustomWebApiApplicationFactory<Program> factory)
-    {
+    public EventProductVariantsControllerTests(CustomWebApiApplicationFactory<Program> factory) =>
         _factory = factory ?? throw new ArgumentNullException(nameof(factory));
-    }
 
     #region List
 
@@ -135,14 +133,12 @@ public class EventProductVariantsControllerTests : IClassFixture<CustomWebApiApp
         response.CheckBadRequest();
     }
 
-    public static object[][] GetInvalidAddFormInput()
-    {
-        return new[]
+    public static object[][] GetInvalidAddFormInput() =>
+        new[]
         {
             new object[] { new { price = -1 } }, // price=0 is OK
             new object[] { new { vatPercent = -1 } } // vatPercent=0 is OK
         };
-    }
 
     [Fact]
     public async Task Add_Should_Return_NotFound_For_Non_Existing_Event()
@@ -216,10 +212,7 @@ public class EventProductVariantsControllerTests : IClassFixture<CustomWebApiApp
 
         var response = await client.PostAsync(
             $"/v3/events/{evt.Entity.EventInfoId}/products/{product.Entity.ProductId}/variants?orgId={org.Entity.OrganizationId}",
-            new
-            {
-                name = "test"
-            });
+            new { name = "test" });
         response.CheckOk();
 
         var variant = await scope.Db.ProductVariants
@@ -244,10 +237,7 @@ public class EventProductVariantsControllerTests : IClassFixture<CustomWebApiApp
         var client = _factory.CreateClient().Authenticated(role: role);
 
         var response = await client.PostAsync(
-            $"/v3/events/{evt.Entity.EventInfoId}/products/{product.Entity.ProductId}/variants", new
-            {
-                name = "test"
-            });
+            $"/v3/events/{evt.Entity.EventInfoId}/products/{product.Entity.ProductId}/variants", new { name = "test" });
         response.CheckOk();
 
         var variant = await scope.Db.ProductVariants
@@ -270,13 +260,8 @@ public class EventProductVariantsControllerTests : IClassFixture<CustomWebApiApp
         var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
 
         var response = await client.PostAsync(
-            $"/v3/events/{evt.Entity.EventInfoId}/products/{product.Entity.ProductId}/variants", new
-            {
-                name = "test",
-                description = "desc",
-                price = 999.99,
-                vatPercent = 8
-            });
+            $"/v3/events/{evt.Entity.EventInfoId}/products/{product.Entity.ProductId}/variants",
+            new { name = "test", description = "desc", price = 999.99, vatPercent = 8 });
         response.CheckOk();
 
         var variant = await scope.Db.ProductVariants

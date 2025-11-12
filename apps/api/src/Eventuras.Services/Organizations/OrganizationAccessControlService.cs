@@ -21,15 +21,10 @@ public class OrganizationAccessControlService : IOrganizationAccessControlServic
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task CheckOrganizationReadAccessAsync(int organizationId)
-    {
-        await CheckAdminRoleAsync(organizationId);
-    }
+    public async Task CheckOrganizationReadAccessAsync(int organizationId) => await CheckAdminRoleAsync(organizationId);
 
-    public async Task CheckOrganizationUpdateAccessAsync(int organizationId)
-    {
+    public async Task CheckOrganizationUpdateAccessAsync(int organizationId) =>
         await CheckAdminRoleAsync(organizationId);
-    }
 
     private async Task CheckAdminRoleAsync(int organizationId)
     {

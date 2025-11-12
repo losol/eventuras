@@ -11,7 +11,7 @@ public class OrderLineTests
         [Fact]
         public void ReturnAnOrderLine() // Give this a better name!
         {
-            OrderLine line = new OrderLine
+            var line = new OrderLine
             {
                 ProductId = 1,
                 ProductVariantId = 1,

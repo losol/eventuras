@@ -14,8 +14,8 @@ namespace Losol.Communication.Email.Smtp;
 
 public class SmtpEmailSender : AbstractEmailSender
 {
-    private readonly SmtpConfig _smtpConfig;
     private readonly ILogger<SmtpEmailSender> _logger;
+    private readonly SmtpConfig _smtpConfig;
 
     public SmtpEmailSender(
         IOptions<SmtpConfig> smtpConfig,
@@ -28,10 +28,7 @@ public class SmtpEmailSender : AbstractEmailSender
 
     protected override async Task SendEmailInternalAsync(EmailModel emailModel)
     {
-        var mimeMessage = new MimeMessage
-        {
-            Subject = emailModel.Subject
-        };
+        var mimeMessage = new MimeMessage { Subject = emailModel.Subject };
 
         mimeMessage.From.Add(emailModel.From != null
             ? new MailboxAddress(Encoding.UTF8, emailModel.From.Name, emailModel.From.Email)
@@ -49,11 +46,7 @@ public class SmtpEmailSender : AbstractEmailSender
             mimeMessage.Bcc.AddRange(emailModel.Bcc.Select(a => new MailboxAddress(Encoding.UTF8, a.Name, a.Email)));
         }
 
-        var bodyBuilder = new BodyBuilder
-        {
-            TextBody = emailModel.TextBody,
-            HtmlBody = emailModel.HtmlBody
-        };
+        var bodyBuilder = new BodyBuilder { TextBody = emailModel.TextBody, HtmlBody = emailModel.HtmlBody };
 
         if (emailModel.Attachments != null)
         {
@@ -82,7 +75,8 @@ public class SmtpEmailSender : AbstractEmailSender
 
         try
         {
-            _logger.LogInformation($"*** START SEND EMAIL BY SMTP - Smtp host: {_smtpConfig.Host} - Port: {_smtpConfig.Port}***");
+            _logger.LogInformation(
+                $"*** START SEND EMAIL BY SMTP - Smtp host: {_smtpConfig.Host} - Port: {_smtpConfig.Port}***");
 
             await emailClient.ConnectAsync(_smtpConfig.Host, _smtpConfig.Port, SecureSocketOptions.StartTls);
             if (!string.IsNullOrEmpty(_smtpConfig.Username) &&
@@ -90,6 +84,7 @@ public class SmtpEmailSender : AbstractEmailSender
             {
                 await emailClient.AuthenticateAsync(_smtpConfig.Username, _smtpConfig.Password);
             }
+
             await emailClient.SendAsync(mimeMessage);
             await emailClient.DisconnectAsync(true);
 
@@ -111,7 +106,8 @@ public class SmtpEmailSender : AbstractEmailSender
             using var emailClient = new SmtpClient();
 
             _logger.LogDebug("Connecting to {host}:{port}", _smtpConfig.Host, _smtpConfig.Port);
-            await emailClient.ConnectAsync(_smtpConfig.Host, _smtpConfig.Port, SecureSocketOptions.StartTls, cancellationToken);
+            await emailClient.ConnectAsync(_smtpConfig.Host, _smtpConfig.Port, SecureSocketOptions.StartTls,
+                cancellationToken);
             _logger.LogDebug("Connection successful");
 
             if (!string.IsNullOrEmpty(_smtpConfig.Username) &&

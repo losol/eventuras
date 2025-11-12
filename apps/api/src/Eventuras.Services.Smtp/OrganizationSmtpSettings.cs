@@ -8,7 +8,6 @@ namespace Eventuras.Services.Smtp;
 [DisplayName("SMTP")]
 internal class OrganizationSmtpSettings : IConfigurableSettings
 {
-    [DisplayName("SMTP enabled")] public bool Enabled { get; set; }
     [DisplayName("SMTP host")] public string Host { get; set; }
 
     [Range(1, int.MaxValue)]
@@ -23,10 +22,10 @@ internal class OrganizationSmtpSettings : IConfigurableSettings
     public string FromAddress { get; set; }
 
     [DisplayName("From: name")] public string FromName { get; set; }
+    [DisplayName("SMTP enabled")] public bool Enabled { get; set; }
 
-    public SmtpConfig ToSmtpConfig()
-    {
-        return new SmtpConfig
+    public SmtpConfig ToSmtpConfig() =>
+        new()
         {
             Host = Host,
             Port = Port,
@@ -35,5 +34,4 @@ internal class OrganizationSmtpSettings : IConfigurableSettings
             FromEmail = FromAddress,
             FromName = FromName
         };
-    }
 }

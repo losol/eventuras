@@ -10,8 +10,8 @@ namespace Eventuras.Services.Certificates;
 
 internal class CertificateRetrievalService : ICertificateRetrievalService
 {
-    private readonly ApplicationDbContext _context;
     private readonly ICertificateAccessControlService _certificateAccessControlService;
+    private readonly ApplicationDbContext _context;
 
     public CertificateRetrievalService(
         ApplicationDbContext context,

@@ -19,13 +19,15 @@ namespace Eventuras.Services.Orders;
 public class OrderRetrievalService : IOrderRetrievalService
 {
     private readonly ApplicationDbContext _context;
+
+    private readonly ICurrentOrganizationAccessorService _currentOrganizationAccessorService;
+
+    // logger
+    private readonly ILogger<OrderRetrievalService> _logger;
     private readonly IOrderAccessControlService _orderAccessControlService;
     private readonly IOrganizationAccessControlService _organizationAccessControlService;
     private readonly IProductRetrievalService _productRetrievalService;
     private readonly IRegistrationRetrievalService _registrationRetrievalService;
-    private readonly ICurrentOrganizationAccessorService _currentOrganizationAccessorService;
-    // logger
-    private readonly ILogger<OrderRetrievalService> _logger;
 
     public OrderRetrievalService(
         ApplicationDbContext context,
@@ -128,9 +130,9 @@ public class OrderRetrievalService : IOrderRetrievalService
         var groupedRegistrations = orderLines
             .GroupBy(ol => new
             {
-                RegistrationId = ol.Order.Registration.RegistrationId,
+                ol.Order.Registration.RegistrationId,
                 RegistrationStatus = ol.Order.Registration.Status,
-                User = ol.Order.Registration.User
+                ol.Order.Registration.User
             })
             .Select(group => new ProductOrdersSummaryDto
             {
@@ -178,19 +180,18 @@ public class OrderRetrievalService : IOrderRetrievalService
         };
     }
 
-    public async Task<List<Order>> GetOrdersPopulatedByRegistrationAsync(IEnumerable<int> orderIds, CancellationToken cancellationToken)
+    public async Task<List<Order>> GetOrdersPopulatedByRegistrationAsync(IEnumerable<int> orderIds,
+        CancellationToken cancellationToken)
     {
         var orders = new List<Order>();
 
         foreach (var orderId in orderIds)
         {
-            var order = await GetOrderByIdAsync(orderId, new OrderRetrievalOptions()
-            {
-                IncludeRegistration = true,
-                IncludeUser = true,
-                IncludeOrderLines = true,
-                IncludeEvent = true
-            }, cancellationToken);
+            var order = await GetOrderByIdAsync(orderId,
+                new OrderRetrievalOptions
+                {
+                    IncludeRegistration = true, IncludeUser = true, IncludeOrderLines = true, IncludeEvent = true
+                }, cancellationToken);
 
             _logger.LogDebug("GetOrdersPopulatedByRegistrationAsync - Order: {@Registration}", order);
 
@@ -206,21 +207,25 @@ public class OrderRetrievalService : IOrderRetrievalService
 
     private async Task PopulateOrderFieldsAsync(Order order, CancellationToken cancellationToken)
     {
-        var registration = await _registrationRetrievalService.GetRegistrationByIdAsync(order.RegistrationId, null, cancellationToken);
+        var registration =
+            await _registrationRetrievalService.GetRegistrationByIdAsync(order.RegistrationId, null, cancellationToken);
         if (registration != null)
         {
             _logger.LogDebug("PopulateOrderFieldsAsync - Registration: {@Registration}", registration);
 
             order.CustomerName = ValidationHelper.GetValueIfEmpty(order.CustomerName, registration.User?.Name);
             order.CustomerEmail = ValidationHelper.GetValueIfEmpty(order.CustomerEmail, registration.User?.Email);
-            order.CustomerVatNumber = ValidationHelper.GetValueIfEmpty(order.CustomerVatNumber, registration.CustomerVatNumber);
-            order.CustomerInvoiceReference = ValidationHelper.GetValueIfEmpty(order.CustomerInvoiceReference, registration.CustomerInvoiceReference);
+            order.CustomerVatNumber =
+                ValidationHelper.GetValueIfEmpty(order.CustomerVatNumber, registration.CustomerVatNumber);
+            order.CustomerInvoiceReference = ValidationHelper.GetValueIfEmpty(order.CustomerInvoiceReference,
+                registration.CustomerInvoiceReference);
             order.PaymentMethod = ValidationHelper.GetValueIfDefault(order.PaymentMethod, registration.PaymentMethod);
             order.Log = ValidationHelper.GetValueIfEmpty(order.Log, registration.Log);
         }
         else
         {
-            _logger.LogWarning("PopulateOrderFieldsAsync - Registration not found for OrderId: {OrderId}", order.OrderId);
+            _logger.LogWarning("PopulateOrderFieldsAsync - Registration not found for OrderId: {OrderId}",
+                order.OrderId);
         }
     }
 }

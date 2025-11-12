@@ -22,7 +22,7 @@ public class NotificationsQueryDto : PageQueryDto
     public bool Desc { get; set; } = true;
 
     /// <summary>
-    /// Whether to include delivery statistics into response.
+    ///     Whether to include delivery statistics into response.
     /// </summary>
     public bool IncludeStatistics { get; set; }
 }

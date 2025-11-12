@@ -7,11 +7,6 @@ public class EventProductsQueryDto
 {
     public ProductVisibility Visibility { get; set; } = ProductVisibility.Event;
 
-    public ProductFilter ToProductFilter()
-    {
-        return new ProductFilter
-        {
-            Visibility = Visibility
-        };
-    }
+    public ProductFilter ToProductFilter() =>
+        new() { Visibility = Visibility };
 }

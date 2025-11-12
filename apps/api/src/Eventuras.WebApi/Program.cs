@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Asp.Versioning;
@@ -15,19 +14,15 @@ using Eventuras.WebApi.Config;
 using Eventuras.WebApi.Extensions;
 using Eventuras.WebApi.Filters;
 using Hangfire;
-using Hangfire.Dashboard;
 using Hangfire.InMemory;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
@@ -166,7 +161,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseHangfireDashboard("/jobs", new DashboardOptions { IsReadOnlyFunc = (DashboardContext context) => true });
+app.UseHangfireDashboard("/jobs", new DashboardOptions { IsReadOnlyFunc = context => true });
 
 // Seed database, run OnStartup builder.Services, etc.
 await PreStartupRoutine(app);

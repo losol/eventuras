@@ -19,15 +19,15 @@ internal class NotificationAccessControlService(
     ApplicationDbContext context)
     : INotificationAccessControlService
 {
-    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor ?? throw
-        new ArgumentNullException(nameof(httpContextAccessor));
+    private readonly ApplicationDbContext _context = context ?? throw
+        new ArgumentNullException(nameof(context));
 
     private readonly ICurrentOrganizationAccessorService _currentOrganizationAccessorService =
         currentOrganizationAccessorService ?? throw
             new ArgumentNullException(nameof(currentOrganizationAccessorService));
 
-    private readonly ApplicationDbContext _context = context ?? throw
-        new ArgumentNullException(nameof(context));
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor ?? throw
+        new ArgumentNullException(nameof(httpContextAccessor));
 
     public async Task CheckNotificationReadAccessAsync(Notification notification,
         CancellationToken cancellationToken = default)
@@ -50,19 +50,6 @@ internal class NotificationAccessControlService(
         }
 
         await PerformAccessCheckAsync(notification, cancellationToken);
-    }
-
-    private async Task PerformAccessCheckAsync(Notification notification, CancellationToken cancellationToken)
-    {
-        var query = await AddAccessFilterAsync(_context
-                .Notifications
-                .AsNoTracking(),
-            cancellationToken);
-
-        if (!await query.AnyAsync(cancellationToken))
-        {
-            throw new NotAccessibleException($"Notification {notification.NotificationId} is not accessible");
-        }
     }
 
     public async Task<IQueryable<Notification>> AddAccessFilterAsync(IQueryable<Notification> query,
@@ -90,6 +77,19 @@ internal class NotificationAccessControlService(
                                  r.Organization.Members.Any(m => m.UserId == userId)) ||
                                 (r.EventInfo.OrganizationId == org.OrganizationId &&
                                  r.EventInfo.Organization.Members.Any(m => m.UserId == userId)));
+    }
+
+    private async Task PerformAccessCheckAsync(Notification notification, CancellationToken cancellationToken)
+    {
+        var query = await AddAccessFilterAsync(_context
+                .Notifications
+                .AsNoTracking(),
+            cancellationToken);
+
+        if (!await query.AnyAsync(cancellationToken))
+        {
+            throw new NotAccessibleException($"Notification {notification.NotificationId} is not accessible");
+        }
     }
 
 

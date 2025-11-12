@@ -10,7 +10,7 @@ public static class HttpContextAccessorUtils
     public static ClaimsPrincipal GetUser(string userId, params string[] roles)
     {
         var identity = new ClaimsIdentity("Identity.Application");
-        identity.AddClaim(new(ClaimTypes.NameIdentifier, userId));
+        identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, userId));
         identity.AddClaims(roles.Select(r => new Claim(ClaimTypes.Role, r)));
 
         var principal = new ClaimsPrincipal();

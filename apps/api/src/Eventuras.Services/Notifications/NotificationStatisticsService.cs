@@ -10,11 +10,9 @@ internal class NotificationStatisticsService : INotificationStatisticsService
 {
     private readonly ApplicationDbContext _context;
 
-    public NotificationStatisticsService(ApplicationDbContext context)
-    {
+    public NotificationStatisticsService(ApplicationDbContext context) =>
         _context = context ?? throw
             new ArgumentNullException(nameof(context));
-    }
 
     public async Task UpdateNotificationStatisticsAsync(Notification notification)
     {

@@ -7,8 +7,8 @@
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.11" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.22" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.11"/>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.22"/>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.22">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -19,9 +19,9 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Eventuras.Domain\Eventuras.Domain.csproj" />
+    <ProjectReference Include="..\Eventuras.Domain\Eventuras.Domain.csproj"/>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Migrations\" />
+    <Folder Include="Migrations\"/>
   </ItemGroup>
 </Project>

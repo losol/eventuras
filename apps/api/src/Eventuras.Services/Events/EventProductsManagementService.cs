@@ -10,9 +10,9 @@ namespace Eventuras.Services.Events;
 
 internal class EventProductsManagementService : IEventProductsManagementService
 {
+    private readonly IEventInfoAccessControlService _accessControlService;
     private readonly ApplicationDbContext _context;
     private readonly IEventInfoRetrievalService _eventInfoRetrievalService;
-    private readonly IEventInfoAccessControlService _accessControlService;
 
     public EventProductsManagementService(
         ApplicationDbContext context,
@@ -33,7 +33,7 @@ internal class EventProductsManagementService : IEventProductsManagementService
     {
         if (products is null)
         {
-            throw new ArgumentNullException(paramName: nameof(products));
+            throw new ArgumentNullException(nameof(products));
         }
 
         await CheckEventAccessAsync(eventId);
@@ -81,7 +81,7 @@ internal class EventProductsManagementService : IEventProductsManagementService
         var info = await _context.EventInfos
             .Where(e => e.EventInfoId == eventId)
             .Include(ei => ei.Products)
-            .ThenInclude<EventInfo, Product, List<ProductVariant>>(p => p.ProductVariants)
+            .ThenInclude(p => p.ProductVariants)
             .AsNoTracking()
             .SingleAsync();
 

@@ -15,8 +15,8 @@ namespace Eventuras.Services.EventCollections;
 internal class EventCollectionMappingService : IEventCollectionMappingService
 {
     private readonly ApplicationDbContext _context;
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ICurrentOrganizationAccessorService _currentOrganizationAccessorService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILogger<EventCollectionMappingService> _logger;
 
     public EventCollectionMappingService(
@@ -28,7 +28,9 @@ internal class EventCollectionMappingService : IEventCollectionMappingService
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
-        _currentOrganizationAccessorService = currentOrganizationAccessorService ?? throw new ArgumentNullException(nameof(currentOrganizationAccessorService));
+        _currentOrganizationAccessorService = currentOrganizationAccessorService ??
+                                              throw new ArgumentNullException(
+                                                  nameof(currentOrganizationAccessorService));
     }
 
     public async Task AddEventToCollectionAsync(int eventId, int collectionId, CancellationToken cancellationToken)
@@ -39,11 +41,7 @@ internal class EventCollectionMappingService : IEventCollectionMappingService
             return;
         }
 
-        mapping = new EventCollectionMapping
-        {
-            EventId = eventId,
-            CollectionId = collectionId
-        };
+        mapping = new EventCollectionMapping { EventId = eventId, CollectionId = collectionId };
 
         try
         {
@@ -74,7 +72,8 @@ internal class EventCollectionMappingService : IEventCollectionMappingService
         }
     }
 
-    private async Task<EventCollectionMapping> CheckAndFindMappingAsync(int eventId, int collectionId, CancellationToken cancellationToken)
+    private async Task<EventCollectionMapping> CheckAndFindMappingAsync(int eventId, int collectionId,
+        CancellationToken cancellationToken)
     {
         var @event = await _context.EventInfos
             .FirstOrDefaultAsync(e => e.EventInfoId == eventId,
@@ -117,10 +116,12 @@ internal class EventCollectionMappingService : IEventCollectionMappingService
         {
             return false;
         }
+
         if (principal.IsPowerAdmin())
         {
             return true;
         }
+
         var organization = await _currentOrganizationAccessorService
             .RequireCurrentOrganizationAsync(cancellationToken: cancellationToken);
         return organizationId == organization.OrganizationId;

@@ -1,5 +1,3 @@
-using Eventuras.Servcies.Registrations;
-
 namespace Eventuras.Services.Orders;
 
 public class ByRegistrationStatus

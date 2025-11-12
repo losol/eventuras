@@ -1,14 +1,11 @@
-using System.Collections.Generic;
-using Eventuras.Domain;
-
 namespace Eventuras.Servcies.Registrations;
-
 
 public class RegistrationStatistics
 {
     public ByStatus ByStatus { get; set; }
     public ByType ByType { get; set; }
 }
+
 public class ByStatus
 {
     public int Draft { get; set; }

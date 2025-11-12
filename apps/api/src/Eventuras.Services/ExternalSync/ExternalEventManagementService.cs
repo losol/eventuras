@@ -22,21 +22,18 @@ public class ExternalEventManagementService : IExternalEventManagementService
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task<ExternalEvent> FindExternalEventByLocalIdAsync(int localId)
-    {
-        return await _context.ExternalEvents
+    public async Task<ExternalEvent> FindExternalEventByLocalIdAsync(int localId) =>
+        await _context.ExternalEvents
             .FirstOrDefaultAsync(c => c.LocalId == localId);
-    }
 
-    public async Task<List<ExternalEvent>> ListExternalEventsAsync(int eventInfoId)
-    {
-        return await _context.ExternalEvents
+    public async Task<List<ExternalEvent>> ListExternalEventsAsync(int eventInfoId) =>
+        await _context.ExternalEvents
             .Where(c => c.EventInfoId == eventInfoId)
             .OrderBy(c => c.ExternalServiceName)
             .ToListAsync();
-    }
 
-    public async Task<ExternalEvent> CreateNewExternalEventAsync(int eventInfoId, string externalServiceName, string externalEventId)
+    public async Task<ExternalEvent> CreateNewExternalEventAsync(int eventInfoId, string externalServiceName,
+        string externalEventId)
     {
         if (string.IsNullOrEmpty(externalServiceName))
         {
@@ -49,17 +46,15 @@ public class ExternalEventManagementService : IExternalEventManagementService
         }
 
         if (await _context.ExternalEvents
-            .AnyAsync(c => c.ExternalServiceName == externalServiceName &&
-                           c.ExternalEventId == externalEventId))
+                .AnyAsync(c => c.ExternalServiceName == externalServiceName &&
+                               c.ExternalEventId == externalEventId))
         {
             FireDuplicateExternalEventException(externalServiceName, externalEventId);
         }
 
         var newExternalEvent = new ExternalEvent
         {
-            EventInfoId = eventInfoId,
-            ExternalServiceName = externalServiceName,
-            ExternalEventId = externalEventId
+            EventInfoId = eventInfoId, ExternalServiceName = externalServiceName, ExternalEventId = externalEventId
         };
 
         try
@@ -87,9 +82,7 @@ public class ExternalEventManagementService : IExternalEventManagementService
         }
     }
 
-    private static void FireDuplicateExternalEventException(string externalServiceName, string externalEventId)
-    {
+    private static void FireDuplicateExternalEventException(string externalServiceName, string externalEventId) =>
         throw new DuplicateExternalEventException(
             $"Eksternt {externalServiceName} -kurs med id {externalEventId} eksisterer allerede.");
-    }
 }

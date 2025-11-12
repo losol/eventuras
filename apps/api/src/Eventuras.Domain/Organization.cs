@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -11,23 +10,17 @@ public class Organization
 {
     public int OrganizationId { get; set; }
 
-    [Required]
-    public string Name { get; set; }
+    [Required] public string Name { get; set; }
 
-    [StringLength(300)]
-    public string Description { get; set; }
+    [StringLength(300)] public string Description { get; set; }
 
-    [StringLength(300)]
-    public string Url { get; set; }
+    [StringLength(300)] public string Url { get; set; }
 
-    [StringLength(100)]
-    public string Phone { get; set; }
+    [StringLength(100)] public string Phone { get; set; }
 
-    [StringLength(300)]
-    public string Email { get; set; }
+    [StringLength(300)] public string Email { get; set; }
 
-    [StringLength(300)]
-    public string LogoUrl { get; set; }
+    [StringLength(300)] public string LogoUrl { get; set; }
 
     public string LogoBase64 { get; set; }
 

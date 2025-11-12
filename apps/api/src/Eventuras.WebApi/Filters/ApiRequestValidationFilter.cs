@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -11,8 +10,8 @@ namespace Eventuras.WebApi.Filters;
 
 public class ValidationFilter : IAsyncActionFilter
 {
-    private readonly ProblemDetailsFactory _problemDetailsFactory;
     private readonly ILogger<ValidationFilter> _logger;
+    private readonly ProblemDetailsFactory _problemDetailsFactory;
 
     public ValidationFilter(ProblemDetailsFactory problemDetailsFactory, ILogger<ValidationFilter> logger)
     {
@@ -32,8 +31,8 @@ public class ValidationFilter : IAsyncActionFilter
             var problemDetails = _problemDetailsFactory.CreateValidationProblemDetails(
                 context.HttpContext,
                 context.ModelState,
-                statusCode: StatusCodes.Status400BadRequest,
-                title: "Validation Error",
+                StatusCodes.Status400BadRequest,
+                "Validation Error",
                 detail: "One or more validation errors occurred."
             );
 
@@ -48,4 +47,3 @@ public class ValidationFilter : IAsyncActionFilter
         await next();
     }
 }
-

@@ -27,9 +27,9 @@ internal static class UserQueryableExtensions
                 q.Length);
 
             query = query.Where(u => u.GivenName.ToLower().Contains(q) ||
-                u.FamilyName.ToLower().Contains(q) ||
-                u.Email.ToLower().Contains(q) ||
-                u.PhoneNumber.ToLower().Contains(q));
+                                     u.FamilyName.ToLower().Contains(q) ||
+                                     u.Email.ToLower().Contains(q) ||
+                                     u.PhoneNumber.ToLower().Contains(q));
         }
         else
         {
@@ -39,10 +39,13 @@ internal static class UserQueryableExtensions
         return query;
     }
 
-    public static IQueryable<ApplicationUser> UseOptions(this IQueryable<ApplicationUser> query, UserRetrievalOptions options)
+    public static IQueryable<ApplicationUser> UseOptions(this IQueryable<ApplicationUser> query,
+        UserRetrievalOptions options)
     {
         if (options == null)
+        {
             throw new ArgumentNullException(nameof(options));
+        }
 
         if (options.IncludeOrgMembership)
         {
@@ -53,15 +56,16 @@ internal static class UserQueryableExtensions
         return query;
     }
 
-    public static IQueryable<ApplicationUser> HavingNoOrganizationOnly(this IQueryable<ApplicationUser> query)
-    {
-        return query.Where(u => !u.OrganizationMembership.Any());
-    }
+    public static IQueryable<ApplicationUser> HavingNoOrganizationOnly(this IQueryable<ApplicationUser> query) =>
+        query.Where(u => !u.OrganizationMembership.Any());
 
-    public static IQueryable<ApplicationUser> HavingOrganization(this IQueryable<ApplicationUser> query, Organization organization)
+    public static IQueryable<ApplicationUser> HavingOrganization(this IQueryable<ApplicationUser> query,
+        Organization organization)
     {
         if (organization == null)
+        {
             throw new ArgumentNullException(nameof(organization));
+        }
 
         return query.Where(u => u.OrganizationMembership
             .Any(m => m.OrganizationId == organization.OrganizationId));

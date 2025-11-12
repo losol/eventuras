@@ -14,10 +14,7 @@ public class HttpResponseExceptionFilter : IExceptionFilter
 {
     private readonly ILogger<HttpResponseExceptionFilter> _logger;
 
-    public HttpResponseExceptionFilter(ILogger<HttpResponseExceptionFilter> logger)
-    {
-        _logger = logger;
-    }
+    public HttpResponseExceptionFilter(ILogger<HttpResponseExceptionFilter> logger) => _logger = logger;
 
     public void OnException(ExceptionContext context)
     {
@@ -33,21 +30,24 @@ public class HttpResponseExceptionFilter : IExceptionFilter
             NotAccessibleException => new ForbidResult(),
             OrgNotSpecifiedException => new BadRequestObjectResult(ex.Message),
             DuplicateException => new ConflictObjectResult(ex.Message),
-            ArgumentServiceException argEx => new BadRequestObjectResult(CreateBadRequestModel(argEx.Message, argEx.ParamName)),
+            ArgumentServiceException argEx => new BadRequestObjectResult(CreateBadRequestModel(argEx.Message,
+                argEx.ParamName)),
             InvalidOperationServiceException invEx => new BadRequestObjectResult(CreateBadRequestModel(invEx.Message)),
-            _ => null,
+            _ => null
         });
 
         if (result is null)
         {
             context.ExceptionHandled = false;
-            _logger.LogError(ex, "Exception of type {ExceptionType} was not handled: {ExceptionMessage}", ex.GetType(), ex.Message);
+            _logger.LogError(ex, "Exception of type {ExceptionType} was not handled: {ExceptionMessage}", ex.GetType(),
+                ex.Message);
         }
         else
         {
             context.ExceptionHandled = true;
             context.Result = result;
-            _logger.LogWarning("Exception of type {ExceptionType} was handled, resulted in: {@Result}", ex.GetType(), result);
+            _logger.LogWarning("Exception of type {ExceptionType} was handled, resulted in: {@Result}", ex.GetType(),
+                result);
         }
     }
 

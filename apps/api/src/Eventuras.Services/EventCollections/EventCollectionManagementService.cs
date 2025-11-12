@@ -31,11 +31,12 @@ internal class EventCollectionManagementService : IEventCollectionManagementServ
 
     public async Task CreateCollectionAsync(EventCollection collection, CancellationToken cancellationToken)
     {
-        if (await _context.EventCollections.AnyAsync(e => e.Slug == collection.Slug, cancellationToken: cancellationToken))
+        if (await _context.EventCollections.AnyAsync(e => e.Slug == collection.Slug, cancellationToken))
         {
             _logger.LogError("Duplicate slug, cannot create event");
             throw new DuplicateException($"EventCollection with slug {collection.Slug} already exists");
         }
+
         await _eventCollectionAccessControlService
             .CheckEventCollectionUpdateAccessAsync(collection,
                 cancellationToken);

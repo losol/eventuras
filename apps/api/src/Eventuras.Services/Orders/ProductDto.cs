@@ -1,8 +1,5 @@
-
 using System.Collections.Generic;
 using Eventuras.Domain;
-using Eventuras.Services.Orders;
-using Eventuras.Services.Users;
 
 namespace Eventuras.Services.Orders;
 
@@ -20,9 +17,8 @@ public class ProductSummaryDto
     public bool? IsMandatory { get; set; }
     public bool EnableQuantity { get; set; }
 
-    public static ProductSummaryDto FromProduct(Product product)
-    {
-        return new ProductSummaryDto
+    public static ProductSummaryDto FromProduct(Product product) =>
+        new()
         {
             ProductId = product.ProductId,
             EventId = product.EventInfoId,
@@ -36,9 +32,7 @@ public class ProductSummaryDto
             IsMandatory = product.IsMandatory,
             EnableQuantity = product.EnableQuantity
         };
-    }
 }
-
 
 public class ProductDeliverySummaryDto
 {

@@ -6,14 +6,14 @@ namespace Eventuras.Services.Organizations;
 public interface IOrganizationManagementService
 {
     /// <summary>
-    /// Create new org is available to <see cref="Roles.SuperAdmin"/> role only.
+    ///     Create new org is available to <see cref="Roles.SuperAdmin" /> role only.
     /// </summary>
     /// <param name="organization">Not <c>null</c></param>
     /// <exception cref="Exceptions.NotAccessibleException">Can't create this organization.</exception>
     Task CreateNewOrganizationAsync(Organization organization);
 
     /// <summary>
-    /// Update org is available to <see cref="Roles.SuperAdmin"/> role only.
+    ///     Update org is available to <see cref="Roles.SuperAdmin" /> role only.
     /// </summary>
     /// <param name="organization">Not <c>null</c></param>
     /// <exception cref="Exceptions.NotAccessibleException">Can't update this organization.</exception>

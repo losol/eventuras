@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 namespace Eventuras.Services.Sms;
 
 /// <summary>
-/// Same as <see cref="Eventuras.Services.Email.ConfigurableEmailSender"/> but for SMS.
+///     Same as <see cref="Eventuras.Services.Email.ConfigurableEmailSender" /> but for SMS.
 /// </summary>
 internal class ConfigurableSmsSender : ISmsSender
 {

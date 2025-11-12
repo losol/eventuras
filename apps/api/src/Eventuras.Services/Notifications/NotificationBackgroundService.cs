@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services.Exceptions;
@@ -12,15 +11,14 @@ using NodaTime;
 
 namespace Eventuras.Services.Notifications;
 
-
 public class NotificationBackgroundService : INotificationBackgroundService
 {
     private readonly IEmailSender _emailSender;
-    private readonly ISmsSender _smsSender;
-    private readonly INotificationManagementService _notificationManagementService;
-    private readonly INotificationRetrievalService _notificationRetrievalService;
-    private readonly INotificationRecipientRetrievalService _notificationRecipientRetrievalService;
     private readonly ILogger<NotificationBackgroundService> _logger;
+    private readonly INotificationManagementService _notificationManagementService;
+    private readonly INotificationRecipientRetrievalService _notificationRecipientRetrievalService;
+    private readonly INotificationRetrievalService _notificationRetrievalService;
+    private readonly ISmsSender _smsSender;
 
     public NotificationBackgroundService(
         IEmailSender emailSender,
@@ -42,14 +40,21 @@ public class NotificationBackgroundService : INotificationBackgroundService
     [AutomaticRetry(Attempts = 0)]
     public async Task SendNotificationToRecipientAsync(int recipientId, bool accessControlDone = false)
     {
-        var recipient = await _notificationRecipientRetrievalService.GetNotificationRecipientByIdAsync(recipientId, accessControlDone: true);
-        var notification = await _notificationRetrievalService.GetNotificationByIdAsync(recipient.NotificationId, accessControlDone: accessControlDone);
+        var recipient =
+            await _notificationRecipientRetrievalService.GetNotificationRecipientByIdAsync(recipientId, true);
+        var notification =
+            await _notificationRetrievalService.GetNotificationByIdAsync(recipient.NotificationId,
+                accessControlDone: accessControlDone);
 
         if (notification.OrganizationId == null)
+        {
             throw new NotFoundException(nameof(notification.OrganizationId));
+        }
 
         if (recipient == null)
+        {
             return;
+        }
 
         var message = notification.Type == NotificationType.Email
             ? Markdown.ToHtml(notification.Message)
@@ -60,31 +65,28 @@ public class NotificationBackgroundService : INotificationBackgroundService
             if (notification is EmailNotification email)
             {
                 await _emailSender.SendEmailAsync(new EmailModel
-                {
-                    Recipients = new[]
                     {
-                        new Address(
-                            recipient.RecipientName,
-                            recipient.RecipientIdentifier)
-                    },
-                    Subject = email.Subject,
-                    HtmlBody = message
-                }
-                , new EmailOptions
-                {
-                    OrganizationId = email.OrganizationId
-                });
+                        Recipients = new[]
+                        {
+                            new Address(
+                                recipient.RecipientName,
+                                recipient.RecipientIdentifier)
+                        },
+                        Subject = email.Subject,
+                        HtmlBody = message
+                    }
+                    , new EmailOptions { OrganizationId = email.OrganizationId });
 
                 recipient.Sent = SystemClock.Instance.GetCurrentInstant();
                 await _notificationManagementService.UpdateNotificationRecipientAsync(recipient);
             }
             else if (notification.Type == NotificationType.Sms)
             {
-                await _smsSender.SendSmsAsync(recipient.RecipientIdentifier, message, notification.OrganizationId.Value);
+                await _smsSender.SendSmsAsync(recipient.RecipientIdentifier, message,
+                    notification.OrganizationId.Value);
                 recipient.Sent = SystemClock.Instance.GetCurrentInstant();
                 await _notificationManagementService.UpdateNotificationRecipientAsync(recipient);
             }
-
         }
         catch (Exception e)
         {

@@ -8,8 +8,8 @@ public interface IExternalSyncProviderService
     string Name { get; }
 
     /// <summary>
-    /// Runs before synchronization. Can perform various checks and throw exceptions
-    /// say if sync can't be done (for example, if no external event is created).
+    ///     Runs before synchronization. Can perform various checks and throw exceptions
+    ///     say if sync can't be done (for example, if no external event is created).
     /// </summary>
     /// <exception cref="ExternalSyncException">Sync cannot be performed.</exception>
     Task SynchronizationCheckAsync(EventInfo eventInfo);
@@ -25,5 +25,5 @@ public enum ExternalEventSyncResult
 {
     NotSynced = 0, // Error
     Synced = 1, // OK
-    AlreadySynced = 2, // was synced already. no action is performed
+    AlreadySynced = 2 // was synced already. no action is performed
 }

@@ -1,6 +1,6 @@
 using System.IO;
 using System.Linq;
-using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -10,10 +10,7 @@ public class OpenApiSpecTests : IClassFixture<CustomWebApiApplicationFactory<Pro
 {
     private readonly CustomWebApiApplicationFactory<Program> _factory;
 
-    public OpenApiSpecTests(CustomWebApiApplicationFactory<Program> factory)
-    {
-        _factory = factory;
-    }
+    public OpenApiSpecTests(CustomWebApiApplicationFactory<Program> factory) => _factory = factory;
 
     private static string GetOpenApiSpecPath()
     {
@@ -65,7 +62,7 @@ public class OpenApiSpecTests : IClassFixture<CustomWebApiApplicationFactory<Pro
 
         // Assert - try to parse as JSON
         var exception = Record.Exception(() =>
-            System.Text.Json.JsonDocument.Parse(jsonContent)
+            JsonDocument.Parse(jsonContent)
         );
 
         Assert.Null(exception);
@@ -85,7 +82,7 @@ public class OpenApiSpecTests : IClassFixture<CustomWebApiApplicationFactory<Pro
 
         // Act
         var jsonContent = File.ReadAllText(openApiSpecPath);
-        using var document = System.Text.Json.JsonDocument.Parse(jsonContent);
+        using var document = JsonDocument.Parse(jsonContent);
         var root = document.RootElement;
 
         // Assert - check for required OpenAPI 3.0 fields
@@ -136,16 +133,16 @@ public class OpenApiSpecTests : IClassFixture<CustomWebApiApplicationFactory<Pro
         var committedSpec = await File.ReadAllTextAsync(openApiSpecPath);
 
         // Normalize JSON for comparison (remove whitespace differences)
-        using var generatedDoc = System.Text.Json.JsonDocument.Parse(generatedSpec);
-        using var committedDoc = System.Text.Json.JsonDocument.Parse(committedSpec);
+        using var generatedDoc = JsonDocument.Parse(generatedSpec);
+        using var committedDoc = JsonDocument.Parse(committedSpec);
 
-        var generatedNormalized = System.Text.Json.JsonSerializer.Serialize(
+        var generatedNormalized = JsonSerializer.Serialize(
             generatedDoc.RootElement,
-            new System.Text.Json.JsonSerializerOptions { WriteIndented = false }
+            new JsonSerializerOptions { WriteIndented = false }
         );
-        var committedNormalized = System.Text.Json.JsonSerializer.Serialize(
+        var committedNormalized = JsonSerializer.Serialize(
             committedDoc.RootElement,
-            new System.Text.Json.JsonSerializerOptions { WriteIndented = false }
+            new JsonSerializerOptions { WriteIndented = false }
         );
 
         // Assert

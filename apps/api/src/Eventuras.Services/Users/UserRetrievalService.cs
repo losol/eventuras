@@ -27,7 +27,9 @@ internal class UserRetrievalService : IUserRetrievalService
         ILogger<UserRetrievalService> logger)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
-        _currentOrganizationAccessorService = currentOrganizationAccessorService ?? throw new ArgumentNullException(nameof(currentOrganizationAccessorService));
+        _currentOrganizationAccessorService = currentOrganizationAccessorService ??
+                                              throw new ArgumentNullException(
+                                                  nameof(currentOrganizationAccessorService));
         _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
@@ -45,7 +47,7 @@ internal class UserRetrievalService : IUserRetrievalService
         var user = await _context.ApplicationUsers
             .AsNoTracking()
             .UseOptions(options ?? UserRetrievalOptions.Default)
-            .SingleOrDefaultAsync(u => u.Id == userId, cancellationToken: cancellationToken);
+            .SingleOrDefaultAsync(u => u.Id == userId, cancellationToken);
 
         if (user == null)
         {
@@ -68,7 +70,7 @@ internal class UserRetrievalService : IUserRetrievalService
         var user = await _context.ApplicationUsers
             .AsNoTracking()
             .UseOptions(options ?? UserRetrievalOptions.Default)
-            .SingleOrDefaultAsync(u => u.NormalizedEmail == email.ToUpper(), cancellationToken: cancellationToken);
+            .SingleOrDefaultAsync(u => u.NormalizedEmail == email.ToUpper(), cancellationToken);
 
         if (user == null)
         {
@@ -102,7 +104,8 @@ internal class UserRetrievalService : IUserRetrievalService
             _logger.LogDebug(
                 "Filtering users by OrganizationId: {OrganizationId}",
                 request.Filter.OrganizationId.Value);
-            query = query.Where(u => u.OrganizationMembership.Any(om => om.OrganizationId == request.Filter.OrganizationId.Value));
+            query = query.Where(u =>
+                u.OrganizationMembership.Any(om => om.OrganizationId == request.Filter.OrganizationId.Value));
         }
 
         if (request.Filter.AccessibleOnly)
@@ -116,7 +119,9 @@ internal class UserRetrievalService : IUserRetrievalService
 
             if (!user.IsSuperAdmin())
             {
-                var organization = await _currentOrganizationAccessorService.RequireCurrentOrganizationAsync(cancellationToken: cancellationToken);
+                var organization =
+                    await _currentOrganizationAccessorService.RequireCurrentOrganizationAsync(
+                        cancellationToken: cancellationToken);
                 if (!organization.IsRoot)
                 {
                     _logger.LogDebug(

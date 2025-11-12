@@ -16,9 +16,9 @@ namespace Eventuras.Services.Registrations;
 
 internal class RegistrationAccessControlService : IRegistrationAccessControlService
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IEventInfoRetrievalService _eventInfoRetrievalService;
     private readonly ICurrentOrganizationAccessorService _currentOrganizationAccessorService;
+    private readonly IEventInfoRetrievalService _eventInfoRetrievalService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILogger<RegistrationAccessControlService> _logger;
 
     public RegistrationAccessControlService(
@@ -28,23 +28,32 @@ internal class RegistrationAccessControlService : IRegistrationAccessControlServ
         ILogger<RegistrationAccessControlService> logger)
     {
         _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
-        _eventInfoRetrievalService = eventInfoRetrievalService ?? throw new ArgumentNullException(nameof(eventInfoRetrievalService));
+        _eventInfoRetrievalService = eventInfoRetrievalService ??
+                                     throw new ArgumentNullException(nameof(eventInfoRetrievalService));
         _currentOrganizationAccessorService =
-            currentOrganizationAccessorService ?? throw new ArgumentNullException(nameof(currentOrganizationAccessorService));
+            currentOrganizationAccessorService ??
+            throw new ArgumentNullException(nameof(currentOrganizationAccessorService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task CheckRegistrationReadAccessAsync(Registration registration, CancellationToken cancellationToken = default)
+    public async Task CheckRegistrationReadAccessAsync(Registration registration,
+        CancellationToken cancellationToken = default)
     {
         var user = _httpContextAccessor.HttpContext!.User;
         if (!await CheckOwnerOrAdminAccessAsync(user, registration, cancellationToken))
-            throw new NotAccessibleException($"User {user.GetUserId()} cannot read registration {registration.RegistrationId}");
+        {
+            throw new NotAccessibleException(
+                $"User {user.GetUserId()} cannot read registration {registration.RegistrationId}");
+        }
     }
 
-    public async Task CheckRegistrationCreateAccessAsync(Registration registration, CancellationToken cancellationToken = default)
+    public async Task CheckRegistrationCreateAccessAsync(Registration registration,
+        CancellationToken cancellationToken = default)
     {
         if (_httpContextAccessor.HttpContext == null)
+        {
             throw new InvalidOperationException("HttpContext is not available.");
+        }
 
         var contextUser = _httpContextAccessor.HttpContext.User;
         var requestingUserId = contextUser.GetUserId();
@@ -55,23 +64,28 @@ internal class RegistrationAccessControlService : IRegistrationAccessControlServ
             registration.UserId,
             registration.EventInfoId);
 
-        var eventInfo = await _eventInfoRetrievalService.GetEventInfoByIdAsync(registration.EventInfoId, cancellationToken);
+        var eventInfo =
+            await _eventInfoRetrievalService.GetEventInfoByIdAsync(registration.EventInfoId, cancellationToken);
 
         if (contextUser.IsAnonymous())
         {
             _logger.LogWarning(
                 $"Anonymous user cannot create registration for event {eventInfo.Title} with id {eventInfo.EventInfoId}. Access denied.");
-            throw new NotAccessibleException($"Anonymous user cannot create registration for events.");
+            throw new NotAccessibleException("Anonymous user cannot create registration for events.");
         }
 
         // Add possibility for organization admin to override registration policy
         if (!contextUser.IsAdmin())
-            if (eventInfo.Status != EventInfo.EventInfoStatus.RegistrationsOpen && eventInfo.Status != EventInfo.EventInfoStatus.WaitingList)
+        {
+            if (eventInfo.Status != EventInfo.EventInfoStatus.RegistrationsOpen &&
+                eventInfo.Status != EventInfo.EventInfoStatus.WaitingList)
             {
                 _logger.LogWarning(
                     $"Registrations are closed for event {eventInfo.Title} with id {eventInfo.EventInfoId}. Access denied for User {contextUser.GetUserId()}.");
-                throw new NotAccessibleException($"Registrations are closed for event {eventInfo.Title} with id {eventInfo.EventInfoId}.");
+                throw new NotAccessibleException(
+                    $"Registrations are closed for event {eventInfo.Title} with id {eventInfo.EventInfoId}.");
             }
+        }
 
         if (!await CheckOwnerOrAdminAccessAsync(contextUser, registration, cancellationToken))
         {
@@ -82,10 +96,12 @@ internal class RegistrationAccessControlService : IRegistrationAccessControlServ
                 $"User {contextUser.GetUserId()} cannot create registration for event {registration.EventInfoId} and user {registration.UserId}");
         }
 
-        _logger.LogInformation($"Create access granted for UserId {registration.UserId}, EventInfoId {registration.EventInfoId}");
+        _logger.LogInformation(
+            $"Create access granted for UserId {registration.UserId}, EventInfoId {registration.EventInfoId}");
     }
 
-    public async Task CheckRegistrationUpdateAccessAsync(Registration registration, CancellationToken cancellationToken = default)
+    public async Task CheckRegistrationUpdateAccessAsync(Registration registration,
+        CancellationToken cancellationToken = default)
     {
         _logger.LogInformation(
             $"Checking update access for registration: RegistrationId {registration.RegistrationId}, EventInfoId {registration.EventInfoId}");
@@ -105,13 +121,17 @@ internal class RegistrationAccessControlService : IRegistrationAccessControlServ
         if (!isOwner)
         {
             // Not admin, not owner, no access
-            _logger.LogWarning($"User {user.GetUserId()} cannot update registration {registration.RegistrationId}. Access denied.");
-            throw new NotAccessibleException($"User {user.GetUserId()} cannot update registration {registration.RegistrationId}");
+            _logger.LogWarning(
+                $"User {user.GetUserId()} cannot update registration {registration.RegistrationId}. Access denied.");
+            throw new NotAccessibleException(
+                $"User {user.GetUserId()} cannot update registration {registration.RegistrationId}");
         }
 
         // Get the registration policy for the event
-        var eventInfo = await _eventInfoRetrievalService.GetEventInfoByIdAsync(registration.EventInfoId, cancellationToken);
-        _logger.LogInformation($"Retrieved event info for EventInfoId {eventInfo.EventInfoId}. Checking registration policy.");
+        var eventInfo =
+            await _eventInfoRetrievalService.GetEventInfoByIdAsync(registration.EventInfoId, cancellationToken);
+        _logger.LogInformation(
+            $"Retrieved event info for EventInfoId {eventInfo.EventInfoId}. Checking registration policy.");
         var registrationPolicy = eventInfo.Options.RegistrationPolicy;
 
         // Allow updates until last registration date
@@ -121,12 +141,14 @@ internal class RegistrationAccessControlService : IRegistrationAccessControlServ
         if (eventInfo.LastRegistrationDate.HasValue)
         {
             // add 24 hours to the last registration date to allow updates until the end of the day
-            var lastRegistrationDateZonedDateTime = eventInfo.LastRegistrationDate.Value.AtMidnight().InZoneLeniently(timeZone).PlusHours(24);
+            var lastRegistrationDateZonedDateTime = eventInfo.LastRegistrationDate.Value.AtMidnight()
+                .InZoneLeniently(timeZone).PlusHours(24);
             var lastRegistrationDateInstant = lastRegistrationDateZonedDateTime.ToInstant();
 
             if (now < lastRegistrationDateInstant)
             {
-                _logger.LogInformation("LastRegistrationDate is set and the event is not closed for registration updates. Access granted.");
+                _logger.LogInformation(
+                    "LastRegistrationDate is set and the event is not closed for registration updates. Access granted.");
                 return;
             }
         }
@@ -134,8 +156,10 @@ internal class RegistrationAccessControlService : IRegistrationAccessControlServ
         // If AllowedRegistrationEditHours is set, grant access if the registration is not too old
         if (registrationPolicy.AllowedRegistrationEditHours != null)
         {
-            var maxDuration = Duration.FromTimeSpan(TimeSpan.FromHours(registrationPolicy.AllowedRegistrationEditHours.Value));
-            var sinceRegistrationTimeDuration = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow) - registration.RegistrationTime;
+            var maxDuration =
+                Duration.FromTimeSpan(TimeSpan.FromHours(registrationPolicy.AllowedRegistrationEditHours.Value));
+            var sinceRegistrationTimeDuration =
+                Instant.FromDateTimeOffset(DateTimeOffset.UtcNow) - registration.RegistrationTime;
 
             if (sinceRegistrationTimeDuration > maxDuration)
             {
@@ -148,7 +172,8 @@ internal class RegistrationAccessControlService : IRegistrationAccessControlServ
         }
 
         // If AllowModificationsAfterLastCancellationDate allow updates until 48 hours before the event
-        if (registrationPolicy.AllowModificationsAfterLastCancellationDate && eventInfo.DateStart.HasValue && eventInfo.LastCancellationDate.HasValue)
+        if (registrationPolicy.AllowModificationsAfterLastCancellationDate && eventInfo.DateStart.HasValue &&
+            eventInfo.LastCancellationDate.HasValue)
         {
             var eventStartZonedDateTime = eventInfo.DateStart.Value.AtMidnight().InZoneLeniently(timeZone);
             var eventClosedForRegistrationUpdatesZonedDateTime = eventStartZonedDateTime.Minus(Duration.FromHours(48));
@@ -167,43 +192,57 @@ internal class RegistrationAccessControlService : IRegistrationAccessControlServ
         throw new NotAccessibleException("Could not grant registration update access.");
     }
 
-    public async Task<IQueryable<Registration>> AddAccessFilterAsync(IQueryable<Registration> query, CancellationToken cancellationToken = default)
+    public async Task<IQueryable<Registration>> AddAccessFilterAsync(IQueryable<Registration> query,
+        CancellationToken cancellationToken = default)
     {
         var user = _httpContextAccessor.HttpContext!.User;
         if (user.IsAnonymous())
+        {
             throw new NotAccessibleException("Anonymous users are not permitted to list any registrations.");
+        }
 
         if (user.IsPowerAdmin())
+        {
             return query; // super admins can ready any reg
+        }
 
         if (!user.IsAdmin())
             // non-admins can only read their own registrations
+        {
             return query.Where(r => r.UserId == user.GetUserId());
+        }
 
         var org = await _currentOrganizationAccessorService.RequireCurrentOrganizationAsync(null, cancellationToken);
 
         return query.Where(r
-            => r.EventInfo.OrganizationId == org.OrganizationId && r.EventInfo.Organization.Members.Any(m => m.UserId == user.GetUserId()));
+            => r.EventInfo.OrganizationId == org.OrganizationId &&
+               r.EventInfo.Organization.Members.Any(m => m.UserId == user.GetUserId()));
     }
 
-    private async Task<bool> CheckAdminAccessAsync(ClaimsPrincipal user, Registration registration, CancellationToken cancellationToken = default)
+    private async Task<bool> CheckAdminAccessAsync(ClaimsPrincipal user, Registration registration,
+        CancellationToken cancellationToken = default)
     {
         if (user.IsPowerAdmin())
+        {
             return true;
+        }
 
         if (!user.IsAdmin())
-            return false;
-
-        var org = await _currentOrganizationAccessorService.RequireCurrentOrganizationAsync(new OrganizationRetrievalOptions
         {
-            LoadMembers = true,
-        },
+            return false;
+        }
+
+        var org = await _currentOrganizationAccessorService.RequireCurrentOrganizationAsync(
+            new OrganizationRetrievalOptions { LoadMembers = true },
             cancellationToken);
 
         if (org.Members.TrueForAll(m => m.UserId != user.GetUserId()))
+        {
             return false;
+        }
 
-        var @event = await _eventInfoRetrievalService.GetEventInfoByIdAsync(registration.EventInfoId, cancellationToken);
+        var @event =
+            await _eventInfoRetrievalService.GetEventInfoByIdAsync(registration.EventInfoId, cancellationToken);
         return @event.OrganizationId == org.OrganizationId;
     }
 
@@ -213,10 +252,14 @@ internal class RegistrationAccessControlService : IRegistrationAccessControlServ
         CancellationToken cancellationToken = default)
     {
         if (user.IsAnonymous())
+        {
             return false;
+        }
 
         if (registration.UserId == user.GetUserId())
+        {
             return true;
+        }
 
         return await CheckAdminAccessAsync(user, registration, cancellationToken);
     }

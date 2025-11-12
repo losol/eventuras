@@ -12,8 +12,8 @@ namespace Eventuras.Services.EventCollections;
 
 public class EventCollectionAccessControlService : IEventCollectionAccessControlService
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ICurrentOrganizationAccessorService _currentOrganizationAccessorService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     public EventCollectionAccessControlService(
         IHttpContextAccessor httpContextAccessor,
@@ -28,10 +28,8 @@ public class EventCollectionAccessControlService : IEventCollectionAccessControl
 
     public Task CheckEventCollectionReadAccessAsync(
         EventCollection collection,
-        CancellationToken cancellationToken = default)
-    {
-        return Task.CompletedTask; // anyone can read any collection for now 
-    }
+        CancellationToken cancellationToken = default) =>
+        Task.CompletedTask; // anyone can read any collection for now 
 
     public async Task CheckEventCollectionUpdateAccessAsync(
         EventCollection collection,

@@ -14,8 +14,8 @@ namespace Eventuras.Services.Organizations;
 internal class OrganizationMemberManagementService : IOrganizationMemberManagementService
 {
     private readonly ApplicationDbContext _context;
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ICurrentOrganizationAccessorService _currentOrganizationAccessorService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILogger<OrganizationMemberManagementService> _logger;
 
     public OrganizationMemberManagementService(
@@ -26,7 +26,9 @@ internal class OrganizationMemberManagementService : IOrganizationMemberManageme
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
-        _currentOrganizationAccessorService = currentOrganizationAccessorService ?? throw new ArgumentNullException(nameof(currentOrganizationAccessorService));
+        _currentOrganizationAccessorService = currentOrganizationAccessorService ??
+                                              throw new ArgumentNullException(
+                                                  nameof(currentOrganizationAccessorService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
@@ -92,20 +94,18 @@ internal class OrganizationMemberManagementService : IOrganizationMemberManageme
         {
             try
             {
-                member = new OrganizationMember
-                {
-                    OrganizationId = organization.OrganizationId,
-                    UserId = user.Id
-                };
+                member = new OrganizationMember { OrganizationId = organization.OrganizationId, UserId = user.Id };
                 await _context.CreateAsync(member);
             }
             catch (DbUpdateException e) when (e.IsUniqueKeyViolation())
             {
-                _logger.LogWarning(e, "Database update failed because of non-unique key: {ExceptionMessage}", e.Message);
+                _logger.LogWarning(e, "Database update failed because of non-unique key: {ExceptionMessage}",
+                    e.Message);
                 if (member != null)
                 {
                     _context.OrganizationMembers.Remove(member);
                 }
+
                 return await FindExistingMemberAsync(organization, user, options);
             }
         }
@@ -138,14 +138,12 @@ internal class OrganizationMemberManagementService : IOrganizationMemberManageme
     private async Task<OrganizationMember> FindExistingMemberAsync(
         Organization organization,
         ApplicationUser user,
-        OrganizationMemberRetrievalOptions options = null)
-    {
-        return await _context.OrganizationMembers
+        OrganizationMemberRetrievalOptions options = null) =>
+        await _context.OrganizationMembers
             .AsNoTracking()
             .UseOptions(options ?? new OrganizationMemberRetrievalOptions())
             .FirstOrDefaultAsync(m => m.OrganizationId == organization.OrganizationId &&
                                       m.UserId == user.Id);
-    }
 
     private async Task CheckOrganizationAdminAccessAsync(Organization organization)
     {

@@ -159,7 +159,8 @@ public static class JsonElementExtensions
         }
         else if (checkRegistrationNull)
         {
-            Assert.True(registrationToken.ValueKind == JsonValueKind.Null || registrationToken.ValueKind == JsonValueKind.Undefined);
+            Assert.True(registrationToken.ValueKind == JsonValueKind.Null ||
+                        registrationToken.ValueKind == JsonValueKind.Undefined);
         }
 
         if (checkItems)
@@ -293,10 +294,8 @@ public static class JsonElementExtensions
         Assert.Equal(recipient.Errors, token.GetValue<string>("errors"));
     }
 
-    public static void CheckStringArray(this JsonElement array, params string[] roles)
-    {
+    public static void CheckStringArray(this JsonElement array, params string[] roles) =>
         array.CheckArray((t, r) => Assert.Equal(r, t.GetString()), roles);
-    }
 
     public static JsonElement CheckArray<T>(this JsonElement token, Action<JsonElement, T> f, params T[] values)
     {
@@ -330,18 +329,15 @@ public static class JsonElementExtensions
     }
 
     public static JsonElement CheckPaging<T>(this JsonElement token, Action<JsonElement, T> f,
-        params T[] data)
-    {
-        return CheckPaging(token, 1, null, null, f, data);
-    }
+        params T[] data) =>
+        CheckPaging(token, 1, null, null, f, data);
 
     public static JsonElement CheckPaging<T>(this JsonElement token, int page, int? total, Action<JsonElement, T> f,
-        params T[] data)
-    {
-        return CheckPaging(token, page, null, total, f, data);
-    }
+        params T[] data) =>
+        CheckPaging(token, page, null, total, f, data);
 
-    public static JsonElement CheckPaging<T>(this JsonElement token, int page, int? count, int? total, Action<JsonElement, T> f,
+    public static JsonElement CheckPaging<T>(this JsonElement token, int page, int? count, int? total,
+        Action<JsonElement, T> f,
         params T[] data)
     {
         Assert.Equal(page, token.GetValue<int>("page"));

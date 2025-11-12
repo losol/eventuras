@@ -5,8 +5,6 @@ namespace Eventuras.Domain;
 
 public class EmailNotification : Notification
 {
-    [Required] public string Subject { get; private set; }
-
     private EmailNotification()
     {
     }
@@ -25,4 +23,6 @@ public class EmailNotification : Notification
 
         Subject = subject;
     }
+
+    [Required] public string Subject { get; private set; }
 }

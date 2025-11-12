@@ -24,7 +24,9 @@ public static class ModelValidations
         bool checkProducts = false)
     {
         if (expected is not null)
+        {
             Assert.NotNull(actual);
+        }
         else
         {
             Assert.Null(actual);
@@ -39,13 +41,24 @@ public static class ModelValidations
         Assert.Equal(expected.Notes, actual.Notes);
 
         if (checkUserInfo)
+        {
             CheckUserInfo(expected.User, actual.User);
+        }
+
         if (checkEventInfo)
+        {
             CheckEventInfo(expected.EventInfo, actual.Event);
+        }
+
         if (checkAutoCreatedOrder)
+        {
             CheckOrders(expected.Orders, actual.Orders?.ToArray());
+        }
+
         if (checkProducts)
+        {
             CheckProducts(actual.Products);
+        }
     }
 
     private static void CheckProducts(IEnumerable<ProductOrderDto>? actual)
@@ -66,7 +79,9 @@ public static class ModelValidations
     public static void CheckOrders(ICollection<Order>? expected, ICollection<OrderDto>? actual)
     {
         if (expected is not null)
+        {
             Assert.NotNull(actual);
+        }
         else
         {
             Assert.Null(actual);
@@ -86,10 +101,13 @@ public static class ModelValidations
             });
     }
 
-    public static void CheckOrder(Order? expected, OrderDto? actual, bool checkUserInfo = false, bool checkRegistration = false, bool checkItems = false)
+    public static void CheckOrder(Order? expected, OrderDto? actual, bool checkUserInfo = false,
+        bool checkRegistration = false, bool checkItems = false)
     {
         if (expected is not null)
+        {
             Assert.NotNull(actual);
+        }
         else
         {
             Assert.Null(actual);
@@ -103,20 +121,29 @@ public static class ModelValidations
         Assert.Equal(expected.RegistrationId, actual.RegistrationId);
 
         if (checkUserInfo)
+        {
             CheckUserInfo(expected.User, actual.User);
+        }
+
         if (checkItems)
+        {
             CheckOrderItems(expected.OrderLines, actual.Items);
+        }
 
         // we need mapper with enabled reference handling (automapper / mapperly / mapster) + remove duplicated dtos:
         // if (checkRegistration) CheckRegistration(expected.Registration, actual.Registration);
         if (checkRegistration)
+        {
             throw new NotImplementedException();
+        }
     }
 
     private static void CheckOrderItems(ICollection<OrderLine>? expected, IEnumerable<OrderLineDto>? actual)
     {
         if (expected is not null)
+        {
             Assert.NotNull(actual);
+        }
         else
         {
             Assert.Null(actual);
@@ -127,9 +154,10 @@ public static class ModelValidations
         Assert.Equal(expected.Count, actualList.Count);
 
         var expectedOrdered = expected.OrderBy(ol => new { ol.ProductId, ol.ProductVariantId }).ToList();
-        var actualOrdered = actualList.OrderBy(ol => new { ol.Product.ProductId, ol.ProductVariant?.ProductVariantId }).ToList();
+        var actualOrdered = actualList.OrderBy(ol => new { ol.Product.ProductId, ol.ProductVariant?.ProductVariantId })
+            .ToList();
 
-        for (int i = 0; i < expectedOrdered.Count; i++)
+        for (var i = 0; i < expectedOrdered.Count; i++)
         {
             var exp = expectedOrdered[i];
             var act = actualOrdered[i];
@@ -143,7 +171,9 @@ public static class ModelValidations
     public static void CheckEventInfo(EventInfo? expected, EventDto? actual)
     {
         if (expected is not null)
+        {
             Assert.NotNull(actual);
+        }
         else
         {
             Assert.Null(actual);
@@ -170,7 +200,9 @@ public static class ModelValidations
     public static void CheckUserInfo(ApplicationUser? expected, UserDto? actual)
     {
         if (expected is not null)
+        {
             Assert.NotNull(actual);
+        }
         else
         {
             Assert.Null(actual);

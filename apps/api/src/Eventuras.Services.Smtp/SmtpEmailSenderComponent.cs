@@ -13,9 +13,9 @@ namespace Eventuras.Services.Smtp;
 
 internal class SmtpEmailSenderComponent : IConfigurableEmailSenderComponent
 {
-    private readonly IOrganizationSettingsAccessorService _organizationSettingsAccessorService;
     private readonly IHealthCheckStorage _healthCheckStorage;
     private readonly ILoggerFactory _loggerFactory;
+    private readonly IOrganizationSettingsAccessorService _organizationSettingsAccessorService;
 
     public SmtpEmailSenderComponent(
         IOrganizationSettingsAccessorService organizationSettingsAccessorService,
@@ -32,7 +32,8 @@ internal class SmtpEmailSenderComponent : IConfigurableEmailSenderComponent
             new ArgumentNullException(nameof(loggerFactory));
     }
 
-    public async Task<IEmailSender> CreateEmailSenderAsync(int? organizationId = null, CancellationToken cancellationToken = default)
+    public async Task<IEmailSender> CreateEmailSenderAsync(int? organizationId = null,
+        CancellationToken cancellationToken = default)
     {
         var settings = await _organizationSettingsAccessorService
             .ReadOrganizationSettingsAsync<OrganizationSmtpSettings>(organizationId);

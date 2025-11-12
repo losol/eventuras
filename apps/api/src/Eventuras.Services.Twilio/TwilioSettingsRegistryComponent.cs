@@ -4,8 +4,6 @@ namespace Eventuras.Services.Twilio;
 
 internal class TwilioSettingsRegistryComponent : IOrganizationSettingsRegistryComponent
 {
-    public void RegisterSettings(IOrganizationSettingsRegistry registry)
-    {
+    public void RegisterSettings(IOrganizationSettingsRegistry registry) =>
         registry.RegisterSettings<OrganizationTwilioSettings>();
-    }
 }

@@ -16,10 +16,11 @@ namespace Eventuras.WebApi.Controllers.v3.Notifications;
 [ApiController]
 public class NotificationsController : ControllerBase
 {
-    private readonly INotificationRetrievalService _notificationRetrievalService;
     private readonly ILogger<NotificationsController> _logger;
+    private readonly INotificationRetrievalService _notificationRetrievalService;
 
-    public NotificationsController(INotificationRetrievalService notificationRetrievalService, ILogger<NotificationsController> logger)
+    public NotificationsController(INotificationRetrievalService notificationRetrievalService,
+        ILogger<NotificationsController> logger)
     {
         _notificationRetrievalService = notificationRetrievalService ?? throw
             new ArgumentNullException(nameof(notificationRetrievalService));
@@ -35,10 +36,8 @@ public class NotificationsController : ControllerBase
         try
         {
             var notification = await _notificationRetrievalService
-                .GetNotificationByIdAsync(id, new NotificationRetrievalOptions
-                {
-                    LoadStatistics = includeStatistics
-                }, cancellationToken: cancellationToken);
+                .GetNotificationByIdAsync(id, new NotificationRetrievalOptions { LoadStatistics = includeStatistics },
+                    cancellationToken: cancellationToken);
 
             return Ok(new NotificationDto(notification));
         }
@@ -84,10 +83,7 @@ public class NotificationsController : ControllerBase
                         OrderBy = query.Order,
                         Descending = query.Desc
                     },
-                    new NotificationRetrievalOptions
-                    {
-                        LoadStatistics = query.IncludeStatistics
-                    },
+                    new NotificationRetrievalOptions { LoadStatistics = query.IncludeStatistics },
                     cancellationToken);
 
             return Ok(PageResponseDto<NotificationDto>.FromPaging(

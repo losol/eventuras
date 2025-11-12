@@ -8,46 +8,6 @@ namespace Eventuras.Domain;
 
 public class NotificationRecipient
 {
-    [Required]
-    [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int RecipientId { get; set; }
-
-    public int NotificationId { get; set; }
-
-    /// <summary>
-    /// Optional reference to the recipient application user.
-    /// </summary>
-    public string RecipientUserId { get; set; }
-
-    /// <summary>
-    /// Optional event registration reference.
-    /// </summary>
-    public int? RegistrationId { get; set; }
-
-    public string RecipientName { get; private set; }
-
-    /// <summary>
-    /// The phone number or email address which the notification is sent to.
-    /// </summary>
-    [Required]
-    public string RecipientIdentifier { get; private set; }
-
-    public Instant Created { get; private set; }
-
-    public Instant? Sent { get; set; }
-
-    public string Errors { get; set; }
-
-    [NotMapped] public bool IsSent => Sent.HasValue;
-
-    [NotMapped] public bool HasErrors => !string.IsNullOrEmpty(Errors);
-
-    [ForeignKey(nameof(NotificationId))] public Notification Notification { get; set; }
-
-    [ForeignKey(nameof(RecipientUserId))] public ApplicationUser RecipientUser { get; set; }
-
-    [ForeignKey(nameof(RegistrationId))] public Registration Registration { get; set; }
-
     private NotificationRecipient()
     {
     }
@@ -77,6 +37,47 @@ public class NotificationRecipient
         }
     }
 
+    [Required]
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int RecipientId { get; set; }
+
+    public int NotificationId { get; set; }
+
+    /// <summary>
+    ///     Optional reference to the recipient application user.
+    /// </summary>
+    public string RecipientUserId { get; set; }
+
+    /// <summary>
+    ///     Optional event registration reference.
+    /// </summary>
+    public int? RegistrationId { get; set; }
+
+    public string RecipientName { get; private set; }
+
+    /// <summary>
+    ///     The phone number or email address which the notification is sent to.
+    /// </summary>
+    [Required]
+    public string RecipientIdentifier { get; private set; }
+
+    public Instant Created { get; private set; }
+
+    public Instant? Sent { get; set; }
+
+    public string Errors { get; set; }
+
+    [NotMapped] public bool IsSent => Sent.HasValue;
+
+    [NotMapped] public bool HasErrors => !string.IsNullOrEmpty(Errors);
+
+    [ForeignKey(nameof(NotificationId))] public Notification Notification { get; set; }
+
+    [ForeignKey(nameof(RecipientUserId))] public ApplicationUser RecipientUser { get; set; }
+
+    [ForeignKey(nameof(RegistrationId))] public Registration Registration { get; set; }
+
     public static NotificationRecipient Create(ApplicationUser recipientUser, NotificationType notificationType)
     {
         var identifier = notificationType switch
@@ -93,8 +94,7 @@ public class NotificationRecipient
 
         return new NotificationRecipient(identifier, notificationType)
         {
-            RecipientUser = recipientUser,
-            RecipientName = recipientUser.Name
+            RecipientUser = recipientUser, RecipientName = recipientUser.Name
         };
     }
 
@@ -119,15 +119,10 @@ public class NotificationRecipient
         return new NotificationRecipient(address, NotificationType.Email);
     }
 
-    public static NotificationRecipient Email(ApplicationUser user)
-    {
-        return Create(user, NotificationType.Email);
-    }
+    public static NotificationRecipient Email(ApplicationUser user) => Create(user, NotificationType.Email);
 
-    public static NotificationRecipient Email(Registration registration)
-    {
-        return Create(registration, NotificationType.Email);
-    }
+    public static NotificationRecipient Email(Registration registration) =>
+        Create(registration, NotificationType.Email);
 
     public static NotificationRecipient Sms(string phoneNumber)
     {
@@ -139,13 +134,8 @@ public class NotificationRecipient
         return new NotificationRecipient(phoneNumber, NotificationType.Sms);
     }
 
-    public static NotificationRecipient Sms(ApplicationUser recipientUser)
-    {
-        return Create(recipientUser, NotificationType.Sms);
-    }
+    public static NotificationRecipient Sms(ApplicationUser recipientUser) =>
+        Create(recipientUser, NotificationType.Sms);
 
-    public static NotificationRecipient Sms(Registration registration)
-    {
-        return Create(registration, NotificationType.Sms);
-    }
+    public static NotificationRecipient Sms(Registration registration) => Create(registration, NotificationType.Sms);
 }

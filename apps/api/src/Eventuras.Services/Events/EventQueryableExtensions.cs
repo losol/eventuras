@@ -55,9 +55,9 @@ internal static class EventQueryableExtensions
         if (filter.TodaysEventsOnly)
         {
             query = query.Where(i =>
-                i.DateStart.HasValue && i.DateStart.Value == today ||
-                i.DateStart.HasValue && i.DateEnd.HasValue && i.DateStart.Value <= today &&
-                i.DateEnd.Value >= today);
+                (i.DateStart.HasValue && i.DateStart.Value == today) ||
+                (i.DateStart.HasValue && i.DateEnd.HasValue && i.DateStart.Value <= today &&
+                 i.DateEnd.Value >= today));
         }
 
         if (filter.StartDate.HasValue)
@@ -164,16 +164,16 @@ internal static class EventQueryableExtensions
         return query;
     }
 
-    public static IQueryable<EventInfo> UseOrder(this IQueryable<EventInfo> query, string[] columnsAndDirections)
-    {
-        return query.OrderByColumns(ei => ei.DateStart, false, columnsAndDirections);
-    }
+    public static IQueryable<EventInfo> UseOrder(this IQueryable<EventInfo> query, string[] columnsAndDirections) =>
+        query.OrderByColumns(ei => ei.DateStart, false, columnsAndDirections);
 
     public static IQueryable<EventInfo> HavingOrganization(this IQueryable<EventInfo> query,
         Organization organization)
     {
         if (organization == null)
+        {
             throw new ArgumentNullException(nameof(organization));
+        }
 
         return query.Where(e => e.OrganizationId == organization.OrganizationId);
     }

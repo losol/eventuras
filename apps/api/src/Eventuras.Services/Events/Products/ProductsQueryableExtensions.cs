@@ -37,10 +37,10 @@ internal static class ProductsQueryableExtensions
 
             case ProductVisibility.Collection:
                 query = query.Where(p => p.EventInfoId == eventId ||
-                                         p.Visibility == ProductVisibility.Collection &&
-                                         p.EventInfo.Collections
-                                             .Any(c => c.Events
-                                                 .Any(e => e.EventInfoId == eventId)));
+                                         (p.Visibility == ProductVisibility.Collection &&
+                                          p.EventInfo.Collections
+                                              .Any(c => c.Events
+                                                  .Any(e => e.EventInfoId == eventId))));
                 break;
         }
 

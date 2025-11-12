@@ -8,8 +8,8 @@ namespace Eventuras.Services.Organizations;
 public interface IOrganizationRetrievalService
 {
     /// <summary>
-    /// List all organizations accessible by the signed in user.
-    /// Note: super admin can see all orgs.
+    ///     List all organizations accessible by the signed in user.
+    ///     Note: super admin can see all orgs.
     /// </summary>
     /// <returns>Empty list, if not signed in.</returns>
     Task<List<Organization>> ListOrganizationsAsync(

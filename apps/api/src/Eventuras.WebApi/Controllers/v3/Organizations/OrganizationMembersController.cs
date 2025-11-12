@@ -15,9 +15,9 @@ namespace Eventuras.WebApi.Controllers.v3.Organizations;
 [ApiController]
 public class OrganizationMembersController : ControllerBase
 {
-    private readonly IUserRetrievalService _userRetrievalService;
-    private readonly IOrganizationRetrievalService _orgRetrievalService;
     private readonly IOrganizationMemberManagementService _orgMemberService;
+    private readonly IOrganizationRetrievalService _orgRetrievalService;
+    private readonly IUserRetrievalService _userRetrievalService;
 
     public OrganizationMembersController(
         IOrganizationMemberManagementService orgMemberService,

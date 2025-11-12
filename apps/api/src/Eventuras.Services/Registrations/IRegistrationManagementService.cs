@@ -7,8 +7,8 @@ using Eventuras.Domain;
 namespace Eventuras.Services.Registrations;
 
 /// <summary>
-/// The scope of this service is create/update/delete registrations only.
-/// For retrieving registrations see <see cref="IRegistrationRetrievalService"/>.
+///     The scope of this service is create/update/delete registrations only.
+///     For retrieving registrations see <see cref="IRegistrationRetrievalService" />.
 /// </summary>
 public interface IRegistrationManagementService
 {

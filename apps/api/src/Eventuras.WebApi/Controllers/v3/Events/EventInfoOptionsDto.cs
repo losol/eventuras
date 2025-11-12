@@ -18,13 +18,11 @@ public record EventInfoOptionsDto(EventInfoOptionsDto.EventInfoRegistrationPolic
         return new EventInfoOptions { RegistrationPolicy = registrationPolicy };
     }
 
-    public static EventInfoOptionsDto MapFromEntity(EventInfoOptions entity)
-    {
-        return new EventInfoOptionsDto(new EventInfoRegistrationPolicyDto(entity.RegistrationPolicy.AllowedRegistrationEditHours,
+    public static EventInfoOptionsDto MapFromEntity(EventInfoOptions entity) =>
+        new(new EventInfoRegistrationPolicyDto(entity.RegistrationPolicy.AllowedRegistrationEditHours,
             entity.RegistrationPolicy.AllowModificationsAfterLastCancellationDate));
-    }
 
     public record EventInfoRegistrationPolicyDto(
         [Range(0, 365 * 24)] int? AllowedRegistrationEditHours = 24,
         bool AllowModificationsAfterCancellationDue = false);
-};
+}

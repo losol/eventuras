@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asp.Versioning;
@@ -32,20 +31,22 @@ public class EventCollectionController : ControllerBase
             new ArgumentNullException(nameof(eventCollectionManagementService));
 
         _eventCollectionRetrievalService = eventCollectionRetrievalService ?? throw
-                new ArgumentNullException(nameof(eventCollectionRetrievalService));
+            new ArgumentNullException(nameof(eventCollectionRetrievalService));
 
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     [HttpGet]
     [AllowAnonymous]
-    public async Task<ActionResult<PageResponseDto<EventCollectionDto>>> List([FromQuery] EventCollectionsQueryDto query, CancellationToken cancellationToken)
+    public async Task<ActionResult<PageResponseDto<EventCollectionDto>>> List(
+        [FromQuery] EventCollectionsQueryDto query, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
         {
             _logger.LogWarning("Invalid query parameters.");
             return BadRequest("Invalid query parameters.");
         }
+
         var collections = await _eventCollectionRetrievalService
             .ListCollectionsAsync(cancellationToken: cancellationToken);
 
@@ -80,10 +81,7 @@ public class EventCollectionController : ControllerBase
     public async Task<ActionResult<EventCollectionDto>> Update(int id, [FromBody] EventCollectionDto dto)
     {
         var collection = await _eventCollectionRetrievalService
-            .GetCollectionByIdAsync(id, new EventCollectionRetrievalOptions
-            {
-                ForUpdate = true
-            });
+            .GetCollectionByIdAsync(id, new EventCollectionRetrievalOptions { ForUpdate = true });
 
         dto.CopyTo(collection);
 
@@ -96,10 +94,7 @@ public class EventCollectionController : ControllerBase
     public async Task<IActionResult> Archive(int id)
     {
         var collection = await _eventCollectionRetrievalService
-            .GetCollectionByIdAsync(id, new EventCollectionRetrievalOptions
-            {
-                ForUpdate = true
-            });
+            .GetCollectionByIdAsync(id, new EventCollectionRetrievalOptions { ForUpdate = true });
 
         await _eventCollectionManagementService.ArchiveCollectionAsync(collection);
         return Ok();

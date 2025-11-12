@@ -19,8 +19,8 @@ namespace Eventuras.WebApi.Controllers.v3.Registrations;
 [ApiController]
 public class RegistrationOrdersController : ControllerBase
 {
-    private readonly IRegistrationRetrievalService _registrationRetrievalService;
     private readonly IOrderManagementService _orderManagementService;
+    private readonly IRegistrationRetrievalService _registrationRetrievalService;
 
     public RegistrationOrdersController(
         IRegistrationRetrievalService registrationRetrievalService,
@@ -32,14 +32,11 @@ public class RegistrationOrdersController : ControllerBase
 
     // GET: v3/registrations/667/orders
     [HttpGet("orders")]
-    public async Task<IEnumerable<OrderDto>> GetOrdersForRegistration(int id, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<OrderDto>> GetOrdersForRegistration(int id,
+        CancellationToken cancellationToken = default)
     {
         var r = await _registrationRetrievalService.GetRegistrationByIdAsync(id,
-            new RegistrationRetrievalOptions
-            {
-                LoadOrders = true,
-                LoadProducts = true
-            },
+            new RegistrationRetrievalOptions { LoadOrders = true, LoadProducts = true },
             cancellationToken);
 
         return r.Orders.Select(o => new OrderDto(o)).ToArray();
@@ -58,7 +55,8 @@ public class RegistrationOrdersController : ControllerBase
 
         var order = await _orderManagementService.CreateOrderForRegistrationAsync(id, dto.Items, cancellationToken);
 
-        return CreatedAtAction(nameof(OrdersController.GetOrderById), "Orders", new { id = order.OrderId }, new OrderDto(order));
+        return CreatedAtAction(nameof(OrdersController.GetOrderById), "Orders", new { id = order.OrderId },
+            new OrderDto(order));
     }
 
     // POST: v3/registrations/667/products

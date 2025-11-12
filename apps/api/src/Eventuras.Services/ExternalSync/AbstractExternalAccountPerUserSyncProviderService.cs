@@ -8,17 +8,15 @@ using Microsoft.Extensions.Logging;
 namespace Eventuras.Services.ExternalSync;
 
 /// <summary>
-/// Manages one external account per user, in contrast
-/// with having one external account per registration.
+///     Manages one external account per user, in contrast
+///     with having one external account per registration.
 /// </summary>
 public abstract class AbstractExternalAccountPerUserSyncProviderService : AbstractExternalSyncProviderService
 {
     private readonly ApplicationDbContext _context;
 
-    protected AbstractExternalAccountPerUserSyncProviderService(ApplicationDbContext context, ILogger logger) : base(context, logger)
-    {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
-    }
+    protected AbstractExternalAccountPerUserSyncProviderService(ApplicationDbContext context, ILogger logger) :
+        base(context, logger) => _context = context ?? throw new ArgumentNullException(nameof(context));
 
     public override async Task<ExternalAccount> FindExistingAccountAsync(Registration registration)
     {

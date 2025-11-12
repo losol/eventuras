@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using Losol.Communication.HealthCheck.Abstractions;
 using Microsoft.Extensions.Options;
@@ -13,18 +12,16 @@ public class SendGridEmailSender : AbstractEmailSender
 {
     private readonly SendGridConfig _config;
 
-    public SendGridEmailSender(IOptions<SendGridConfig> options, IHealthCheckStorage healthCheckStorage) : base(healthCheckStorage)
-    {
-        _config = options.Value;
-    }
+    public SendGridEmailSender(IOptions<SendGridConfig> options, IHealthCheckStorage healthCheckStorage) :
+        base(healthCheckStorage) => _config = options.Value;
 
     protected override async Task SendEmailInternalAsync(EmailModel emailModel)
     {
         var msg = new SendGridMessage
         {
             From = emailModel.From != null
-            ? new EmailAddress(emailModel.From.Email, emailModel.From.Name)
-            : new EmailAddress(_config.EmailAddress, _config.Name),
+                ? new EmailAddress(emailModel.From.Email, emailModel.From.Name)
+                : new EmailAddress(_config.EmailAddress, _config.Name),
             Subject = emailModel.Subject,
             HtmlContent = emailModel.HtmlBody,
             PlainTextContent = emailModel.TextBody // TODO: convert html to plain text?
@@ -57,7 +54,9 @@ public class SendGridEmailSender : AbstractEmailSender
         var client = new SendGridClient(_config.Key);
         var response = await client.SendEmailAsync(msg);
         if (response.IsSuccessStatusCode)
+        {
             return;
+        }
 
         var responseBody = await response.Body.ReadAsStringAsync();
         throw new EmailSenderException($"SendGrid returned {response.StatusCode} status code ({responseBody})");

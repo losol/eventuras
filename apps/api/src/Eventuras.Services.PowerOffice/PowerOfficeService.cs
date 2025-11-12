@@ -18,9 +18,9 @@ namespace Eventuras.Services.PowerOffice;
 
 public class PowerOfficeService : IInvoicingProvider
 {
+    private readonly ILogger _logger;
     private readonly IOptions<PowerOfficeOptions> _options;
     private readonly IOrganizationSettingsAccessorService _organizationSettingsAccessorService;
-    private readonly ILogger _logger;
     private Go _api;
 
     public PowerOfficeService(
@@ -38,38 +38,9 @@ public class PowerOfficeService : IInvoicingProvider
             new ArgumentNullException(nameof(options));
     }
 
-    public bool AcceptPaymentProvider(PaymentProvider provider)
-    {
-        return provider is PaymentProvider.PowerOfficeEmailInvoice
+    public bool AcceptPaymentProvider(PaymentProvider provider) =>
+        provider is PaymentProvider.PowerOfficeEmailInvoice
             or PaymentProvider.PowerOfficeEHFInvoice;
-    }
-
-    private async Task<Go> GetApiAsync()
-    {
-        // Read per-organization PowerOffice settings from database
-        var appKey = await _organizationSettingsAccessorService
-                         .GetOrganizationSettingByNameAsync(PowerOfficeConstants.ApplicationKey);
-
-        var clientKey = await _organizationSettingsAccessorService
-                            .GetOrganizationSettingByNameAsync(PowerOfficeConstants.ClientKey);
-
-        if (string.IsNullOrWhiteSpace(appKey) || string.IsNullOrWhiteSpace(clientKey))
-        {
-            throw new InvoicingException(
-                "PowerOffice credentials not configured for this organization. " +
-                "Please configure POWER_OFFICE_APP_KEY and POWER_OFFICE_CLIENT_KEY in organization settings.");
-        }
-
-        _logger.LogInformation("Using PowerOffice Client with applicationKey: {AppKey}", appKey);
-
-        return _api ??= await Go.CreateAsync(new AuthorizationSettings
-        {
-            ApplicationKey = appKey,
-            ClientKey = clientKey,
-            TokenStore = new BasicInMemoryTokenStore(),
-            EndPointHost = new Settings.Host(_options.Value.Mode)
-        });
-    }
 
     public async Task<InvoiceResult> CreateInvoiceAsync(InvoiceInfo info)
     {
@@ -107,11 +78,7 @@ public class PowerOfficeService : IInvoicingProvider
                 if (line.Type == InvoiceLineType.Text)
                 {
                     invoice.OutgoingInvoiceLines.Add(
-                        new OutgoingInvoiceLine
-                        {
-                            LineType = VoucherLineType.Text,
-                            Description = line.Description
-                        });
+                        new OutgoingInvoiceLine { LineType = VoucherLineType.Text, Description = line.Description });
                 }
                 else
                 {
@@ -137,6 +104,34 @@ public class PowerOfficeService : IInvoicingProvider
             throw new InvoicingException($"Invoice validation failed: {ex.Message}", ex);
         }
     }
+
+    private async Task<Go> GetApiAsync()
+    {
+        // Read per-organization PowerOffice settings from database
+        var appKey = await _organizationSettingsAccessorService
+            .GetOrganizationSettingByNameAsync(PowerOfficeConstants.ApplicationKey);
+
+        var clientKey = await _organizationSettingsAccessorService
+            .GetOrganizationSettingByNameAsync(PowerOfficeConstants.ClientKey);
+
+        if (string.IsNullOrWhiteSpace(appKey) || string.IsNullOrWhiteSpace(clientKey))
+        {
+            throw new InvoicingException(
+                "PowerOffice credentials not configured for this organization. " +
+                "Please configure POWER_OFFICE_APP_KEY and POWER_OFFICE_CLIENT_KEY in organization settings.");
+        }
+
+        _logger.LogInformation("Using PowerOffice Client with applicationKey: {AppKey}", appKey);
+
+        return _api ??= await Go.CreateAsync(new AuthorizationSettings
+        {
+            ApplicationKey = appKey,
+            ClientKey = clientKey,
+            TokenStore = new BasicInMemoryTokenStore(),
+            EndPointHost = new Settings.Host(_options.Value.Mode)
+        });
+    }
+
     private async Task<Customer> CreateCustomerIfNotExistsAsync(InvoiceInfo info, InvoiceResult result)
     {
         var api = await GetApiAsync();
@@ -190,7 +185,6 @@ public class PowerOfficeService : IInvoicingProvider
             EmailAddress = customerEmail,
             VatNumber = vatNumber,
             InvoiceEmailAddress = customerEmail,
-
             MailAddress = new Address
             {
                 Address1 = info.CustomerAddress,
@@ -223,7 +217,7 @@ public class PowerOfficeService : IInvoicingProvider
         var exists = api.Product.Get().FirstOrDefault(p => p.Code == line.ProductCode) != null;
         if (!exists)
         {
-            Product product = new Product
+            var product = new Product
             {
                 Code = line.ProductCode,
                 Name = line.Description,

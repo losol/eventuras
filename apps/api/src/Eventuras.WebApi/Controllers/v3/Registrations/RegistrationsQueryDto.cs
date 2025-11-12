@@ -7,8 +7,7 @@ namespace Eventuras.WebApi.Controllers.v3.Registrations;
 
 public class RegistrationsQueryDto : PageQueryDto
 {
-    [Range(1, int.MaxValue)]
-    public int? EventId { get; set; }
+    [Range(1, int.MaxValue)] public int? EventId { get; set; }
 
     public string? UserId { get; set; }
 
