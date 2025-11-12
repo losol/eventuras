@@ -7,32 +7,35 @@ namespace Eventuras.Services.Stripe;
 
 public class StripeInvoiceProvider
 {
-    public async Task ChargeCustomer(Order order, StripeToken token)
+    public async Task ChargeCustomer(Order order, Token token)
     {
-        var options = new StripeChargeCreateOptions
+        var options = new ChargeCreateOptions
         {
             Amount = (int)(order.TotalAmount * 100m),
             Currency = "nok",
             Description = order.Registration.EventInfo.Title,
-            SourceTokenOrExistingSourceId = token.Id,
+            Source = token.Id,
             ReceiptEmail = order.CustomerEmail
         };
-        var service = new StripeChargeService();
+        var service = new ChargeService();
         var charge = await service.CreateAsync(options);
     }
 
-    private async Task<StripeCustomer> GetOrCreateCustomer(string email)
+    private async Task<Customer> GetOrCreateCustomer(string email)
     {
-        var service = new StripeCustomerService();
-        var listOptions = new StripeCustomerListOptions { Limit = 1 };
-        listOptions.AddExtraParam("email", email);
+        var service = new CustomerService();
+        var listOptions = new CustomerListOptions
+        {
+            Limit = 1,
+            Email = email
+        };
         var customer = (await service.ListAsync(listOptions)).Data.FirstOrDefault();
         if (customer != null)
         {
             return customer;
         }
 
-        var customerCreateOptions = new StripeCustomerCreateOptions { Email = email };
+        var customerCreateOptions = new CustomerCreateOptions { Email = email };
         return await service.CreateAsync(customerCreateOptions);
     }
 }
