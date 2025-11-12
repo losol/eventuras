@@ -10,7 +10,7 @@ public class Attachment
     [MaxLength(MaxFileNameLength)]
     public string Filename { get; set; }
 
-    [Required] [MinLength(1)] public byte[] Bytes { get; set; }
+    [Required][MinLength(1)] public byte[] Bytes { get; set; }
 
     [Required] public string ContentType { get; set; }
 

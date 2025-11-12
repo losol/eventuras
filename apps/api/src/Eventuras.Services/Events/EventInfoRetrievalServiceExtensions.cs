@@ -79,7 +79,8 @@ public static class EventInfoRetrievalServiceExtensions
             service.ListEventsAsync(
                 new EventListRequest(offset, limit)
                 {
-                    Filter = EventInfoFilter.OnDemandEvents(filter), Ordering = new[] { "title:asc" }
+                    Filter = EventInfoFilter.OnDemandEvents(filter),
+                    Ordering = new[] { "title:asc" }
                 }, options, token), cancellationToken))
         .ToList();
 

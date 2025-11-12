@@ -58,7 +58,8 @@ public class EventsController : ControllerBase
         var events = await _eventInfoService.ListEventsAsync(
             new EventListRequest(query.Offset, query.Limit)
             {
-                Filter = query.ToEventInfoFilter(), Ordering = query.Ordering
+                Filter = query.ToEventInfoFilter(),
+                Ordering = query.Ordering
             },
             cancellationToken: cancellationToken);
 

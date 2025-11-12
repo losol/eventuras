@@ -24,14 +24,14 @@ public class OnlineCourseController : ControllerBase
     public async Task<ActionResult<IQueryable<OnlineCourseDto>>> Get()
     {
         var events = from e in await _eventInfoService.GetOnDemandEventsAsync()
-            select new OnlineCourseDto
-            {
-                Id = e.EventInfoId,
-                Name = e.Title,
-                Slug = e.Slug,
-                Description = e.Description,
-                Featured = e.Featured
-            };
+                     select new OnlineCourseDto
+                     {
+                         Id = e.EventInfoId,
+                         Name = e.Title,
+                         Slug = e.Slug,
+                         Description = e.Description,
+                         Featured = e.Featured
+                     };
         return Ok(events);
     }
 

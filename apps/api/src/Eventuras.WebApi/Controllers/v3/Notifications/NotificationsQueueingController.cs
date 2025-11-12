@@ -227,9 +227,9 @@ public interface INotificationDto
 
 public class EmailNotificationDto : INotificationDto
 {
-    [Required] [MinLength(3)] public string Subject { get; set; }
+    [Required][MinLength(3)] public string Subject { get; set; }
 
-    [Required] [MinLength(10)] public string BodyMarkdown { get; set; }
+    [Required][MinLength(10)] public string BodyMarkdown { get; set; }
     [EmailRecipientList] public string[] Recipients { get; set; }
 
     public EventParticipantsFilterDto EventParticipants { get; set; }
@@ -238,7 +238,7 @@ public class EmailNotificationDto : INotificationDto
 
 public class SmsNotificationDto : INotificationDto
 {
-    [Required] [MinLength(10)] public string Message { get; set; }
+    [Required][MinLength(10)] public string Message { get; set; }
     [SmsRecipientList] public string[] Recipients { get; set; }
 
     public EventParticipantsFilterDto EventParticipants { get; set; }

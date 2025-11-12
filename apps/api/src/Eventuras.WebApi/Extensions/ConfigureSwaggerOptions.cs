@@ -26,7 +26,8 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
                 description.GroupName,
                 new OpenApiInfo
                 {
-                    Title = $"Eventuras API {description.ApiVersion}", Version = description.ApiVersion.ToString()
+                    Title = $"Eventuras API {description.ApiVersion}",
+                    Version = description.ApiVersion.ToString()
                 });
         }
 

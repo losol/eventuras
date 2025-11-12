@@ -118,5 +118,5 @@ public class OrganizationMemberRolesController : ControllerBase
 
 public class RoleRequestDto
 {
-    [Required] [Role] public string Role { get; set; }
+    [Required][Role] public string Role { get; set; }
 }

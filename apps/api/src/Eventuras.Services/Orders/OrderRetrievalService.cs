@@ -190,7 +190,10 @@ public class OrderRetrievalService : IOrderRetrievalService
             var order = await GetOrderByIdAsync(orderId,
                 new OrderRetrievalOptions
                 {
-                    IncludeRegistration = true, IncludeUser = true, IncludeOrderLines = true, IncludeEvent = true
+                    IncludeRegistration = true,
+                    IncludeUser = true,
+                    IncludeOrderLines = true,
+                    IncludeEvent = true
                 }, cancellationToken);
 
             _logger.LogDebug("GetOrdersPopulatedByRegistrationAsync - Order: {@Registration}", order);

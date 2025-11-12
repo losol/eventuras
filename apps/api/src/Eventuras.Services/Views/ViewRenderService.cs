@@ -42,7 +42,8 @@ public class ViewRenderService : IViewRenderService
             view,
             new ViewDataDictionary<object>(
                 new EmptyModelMetadataProvider(),
-                new ModelStateDictionary()) { Model = model },
+                new ModelStateDictionary())
+            { Model = model },
             new TempDataDictionary(
                 actionContext.HttpContext,
                 _tempDataProvider),

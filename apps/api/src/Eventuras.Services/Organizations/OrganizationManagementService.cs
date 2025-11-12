@@ -123,7 +123,9 @@ internal class OrganizationManagementService : IOrganizationManagementService
             {
                 await _context.CreateAsync(new OrganizationHostname
                 {
-                    OrganizationId = id, Hostname = hostname, Active = true
+                    OrganizationId = id,
+                    Hostname = hostname,
+                    Active = true
                 });
             }
         }

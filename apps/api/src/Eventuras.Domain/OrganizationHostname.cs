@@ -7,7 +7,7 @@ public class OrganizationHostname
 {
     public int OrganizationId { get; set; }
 
-    [Required] [StringLength(300)] public string Hostname { get; set; }
+    [Required][StringLength(300)] public string Hostname { get; set; }
 
     public bool Active { get; set; } = true;
 

@@ -65,16 +65,16 @@ public class NotificationBackgroundService : INotificationBackgroundService
             if (notification is EmailNotification email)
             {
                 await _emailSender.SendEmailAsync(new EmailModel
-                    {
-                        Recipients = new[]
+                {
+                    Recipients = new[]
                         {
                             new Address(
                                 recipient.RecipientName,
                                 recipient.RecipientIdentifier)
                         },
-                        Subject = email.Subject,
-                        HtmlBody = message
-                    }
+                    Subject = email.Subject,
+                    HtmlBody = message
+                }
                     , new EmailOptions { OrganizationId = email.OrganizationId });
 
                 recipient.Sent = SystemClock.Instance.GetCurrentInstant();

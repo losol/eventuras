@@ -22,9 +22,9 @@ public class EmailModel
     [CheckChildren]
     public Address[] Recipients { get; set; }
 
-    [MaxLength(MaxCc)] [CheckChildren] public Address[] Cc { get; set; }
+    [MaxLength(MaxCc)][CheckChildren] public Address[] Cc { get; set; }
 
-    [MaxLength(MaxBcc)] [CheckChildren] public Address[] Bcc { get; set; }
+    [MaxLength(MaxBcc)][CheckChildren] public Address[] Bcc { get; set; }
 
     [Required]
     [MaxLength(MaxSubjectLength)]

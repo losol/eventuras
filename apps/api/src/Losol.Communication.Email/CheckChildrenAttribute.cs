@@ -21,20 +21,22 @@ public class CheckChildrenAttribute : ValidationAttribute
             {
                 return new CollectionValidationResult
                 {
-                    ErrorMessage = $@"Error occured at {validationContext.DisplayName}", NestedResults = results
+                    ErrorMessage = $@"Error occured at {validationContext.DisplayName}",
+                    NestedResults = results
                 };
             }
         }
         else
         {
             var nestedResultList = (from object item in list
-                    let results = new List<ValidationResult>()
-                    let context = new ValidationContext(item, validationContext, null)
-                    where !Validator.TryValidateObject(item, context, results, true)
-                    select new CollectionValidationResult
-                    {
-                        ErrorMessage = $@"Error occured at {validationContext.DisplayName}", NestedResults = results
-                    })
+                                    let results = new List<ValidationResult>()
+                                    let context = new ValidationContext(item, validationContext, null)
+                                    where !Validator.TryValidateObject(item, context, results, true)
+                                    select new CollectionValidationResult
+                                    {
+                                        ErrorMessage = $@"Error occured at {validationContext.DisplayName}",
+                                        NestedResults = results
+                                    })
                 .Cast<ValidationResult>()
                 .ToList();
 

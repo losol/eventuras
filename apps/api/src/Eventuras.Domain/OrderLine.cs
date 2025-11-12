@@ -46,7 +46,7 @@ public class OrderLine
 
     [Required] public int OrderLineId { get; set; }
 
-    [Required] [ForeignKey("Order")] public int OrderId { get; set; }
+    [Required][ForeignKey("Order")] public int OrderId { get; set; }
 
     public int? ProductId { get; set; }
     public int? ProductVariantId { get; set; }

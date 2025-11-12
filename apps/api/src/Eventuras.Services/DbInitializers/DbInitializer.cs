@@ -73,7 +73,9 @@ public class DbInitializer : IDbInitializer
             {
                 superAdmin = new ApplicationUser
                 {
-                    UserName = _config.SuperAdmin.Email, Email = _config.SuperAdmin.Email, EmailConfirmed = true
+                    UserName = _config.SuperAdmin.Email,
+                    Email = _config.SuperAdmin.Email,
+                    EmailConfirmed = true
                 };
 
                 var password = _config.SuperAdmin.Password;

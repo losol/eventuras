@@ -150,7 +150,10 @@ public class RegistrationAccessControlServiceTests
         var registrationTime = Instant.FromDateTimeUtc(DateTime.UtcNow.AddDays(-2));
         var reg = new Registration
         {
-            UserId = userId, EventInfoId = ei.EventInfoId, EventInfo = ei, RegistrationTime = registrationTime
+            UserId = userId,
+            EventInfoId = ei.EventInfoId,
+            EventInfo = ei,
+            RegistrationTime = registrationTime
         };
 
         var eventInfoRetrievalService = ServiceMocks.MockEventInfoRetrievalService(out var eiMock, ei);
@@ -254,7 +257,8 @@ public class RegistrationAccessControlServiceTests
         var cancellationDue = LocalDate.FromDateTime(DateTime.UtcNow.AddDays(-2));
         var ei = new EventInfo
         {
-            Options = new EventInfoOptions { RegistrationPolicy = policy }, LastCancellationDate = cancellationDue
+            Options = new EventInfoOptions { RegistrationPolicy = policy },
+            LastCancellationDate = cancellationDue
         };
         var now = SystemClock.Instance.GetCurrentInstant();
         var reg = new Registration
@@ -288,12 +292,14 @@ public class RegistrationAccessControlServiceTests
 
         var policy = new EventInfoOptions.EventInfoRegistrationPolicy
         {
-            AllowModificationsAfterLastCancellationDate = false, AllowedRegistrationEditHours = 0
+            AllowModificationsAfterLastCancellationDate = false,
+            AllowedRegistrationEditHours = 0
         };
         var cancellationDue = LocalDate.FromDateTime(DateTime.UtcNow.AddDays(-2));
         var ei = new EventInfo
         {
-            Options = new EventInfoOptions { RegistrationPolicy = policy }, LastCancellationDate = cancellationDue
+            Options = new EventInfoOptions { RegistrationPolicy = policy },
+            LastCancellationDate = cancellationDue
         };
         var reg = new Registration { UserId = userId, EventInfoId = ei.EventInfoId, EventInfo = ei };
 
@@ -330,7 +336,8 @@ public class RegistrationAccessControlServiceTests
         var cancellationDue = LocalDate.FromDateTime(DateTime.UtcNow.AddDays(1));
         var ei = new EventInfo
         {
-            Options = new EventInfoOptions { RegistrationPolicy = policy }, LastCancellationDate = cancellationDue
+            Options = new EventInfoOptions { RegistrationPolicy = policy },
+            LastCancellationDate = cancellationDue
         };
         var reg = new Registration { UserId = userId, EventInfoId = ei.EventInfoId, EventInfo = ei };
 
@@ -366,7 +373,8 @@ public class RegistrationAccessControlServiceTests
         var cancellationDue = LocalDate.FromDateTime(DateTime.UtcNow.AddDays(-2));
         var ei = new EventInfo
         {
-            Options = new EventInfoOptions { RegistrationPolicy = policy }, LastCancellationDate = cancellationDue
+            Options = new EventInfoOptions { RegistrationPolicy = policy },
+            LastCancellationDate = cancellationDue
         };
         var reg = new Registration { UserId = userId, EventInfoId = ei.EventInfoId, EventInfo = ei };
 

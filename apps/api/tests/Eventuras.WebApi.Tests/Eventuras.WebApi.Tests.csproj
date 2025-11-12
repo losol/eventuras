@@ -5,8 +5,8 @@
     <PreserveCompilationContext>true</PreserveCompilationContext>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="itext" Version="9.1.0"/>
-    <PackageReference Include="itext.bouncy-castle-adapter" Version="9.1.0"/>
+    <PackageReference Include="itext" Version="9.3.0"/>
+    <PackageReference Include="itext.bouncy-castle-adapter" Version="9.3.0"/>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.22"/>
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="8.0.22"/>
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.22"/>

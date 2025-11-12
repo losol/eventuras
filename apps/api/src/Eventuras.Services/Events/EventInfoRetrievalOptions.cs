@@ -4,7 +4,8 @@ public class EventInfoRetrievalOptions
 {
     public static readonly EventInfoRetrievalOptions ForCertificateRendering = new()
     {
-        LoadOrganizerUser = true, LoadOrganization = true
+        LoadOrganizerUser = true,
+        LoadOrganization = true
     };
 
     public bool ForUpdate { get; set; }

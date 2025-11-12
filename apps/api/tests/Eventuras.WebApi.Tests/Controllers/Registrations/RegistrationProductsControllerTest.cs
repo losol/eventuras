@@ -22,7 +22,8 @@ public class RegistrationProductsControllerTest : IClassFixture<CustomWebApiAppl
     // JSON options matching the API's configuration (enums as strings)
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
-        PropertyNameCaseInsensitive = true, Converters = { new JsonStringEnumConverter() }
+        PropertyNameCaseInsensitive = true,
+        Converters = { new JsonStringEnumConverter() }
     };
 
     private readonly CustomWebApiApplicationFactory<Program> _factory;
@@ -45,11 +46,17 @@ public class RegistrationProductsControllerTest : IClassFixture<CustomWebApiAppl
         // Add order lines manually
         scope.Db.OrderLines.Add(new OrderLine
         {
-            OrderId = order.Entity.OrderId, ProductId = product1.Entity.ProductId, Quantity = 2, Price = 1000
+            OrderId = order.Entity.OrderId,
+            ProductId = product1.Entity.ProductId,
+            Quantity = 2,
+            Price = 1000
         });
         scope.Db.OrderLines.Add(new OrderLine
         {
-            OrderId = order.Entity.OrderId, ProductId = product2.Entity.ProductId, Quantity = 3, Price = 500
+            OrderId = order.Entity.OrderId,
+            ProductId = product2.Entity.ProductId,
+            Quantity = 3,
+            Price = 500
         });
         await scope.Db.SaveChangesAsync();
 
@@ -93,7 +100,10 @@ public class RegistrationProductsControllerTest : IClassFixture<CustomWebApiAppl
 
         scope.Db.OrderLines.Add(new OrderLine
         {
-            OrderId = order.Entity.OrderId, ProductId = product.Entity.ProductId, Quantity = 1, Price = 1000
+            OrderId = order.Entity.OrderId,
+            ProductId = product.Entity.ProductId,
+            Quantity = 1,
+            Price = 1000
         });
         await scope.Db.SaveChangesAsync();
 
@@ -124,14 +134,20 @@ public class RegistrationProductsControllerTest : IClassFixture<CustomWebApiAppl
         using var order1 = await scope.CreateOrderAsync(registration.Entity, user: user.Entity);
         scope.Db.OrderLines.Add(new OrderLine
         {
-            OrderId = order1.Entity.OrderId, ProductId = product.Entity.ProductId, Quantity = 2, Price = 200
+            OrderId = order1.Entity.OrderId,
+            ProductId = product.Entity.ProductId,
+            Quantity = 2,
+            Price = 200
         });
 
         // Second order: 3 items
         using var order2 = await scope.CreateOrderAsync(registration.Entity, user: user.Entity);
         scope.Db.OrderLines.Add(new OrderLine
         {
-            OrderId = order2.Entity.OrderId, ProductId = product.Entity.ProductId, Quantity = 3, Price = 200
+            OrderId = order2.Entity.OrderId,
+            ProductId = product.Entity.ProductId,
+            Quantity = 3,
+            Price = 200
         });
 
         await scope.Db.SaveChangesAsync();
@@ -227,14 +243,20 @@ public class RegistrationProductsControllerTest : IClassFixture<CustomWebApiAppl
         order1.Entity.Status = Order.OrderStatus.Verified;
         scope.Db.OrderLines.Add(new OrderLine
         {
-            OrderId = order1.Entity.OrderId, ProductId = product.Entity.ProductId, Quantity = 5, Price = 1000
+            OrderId = order1.Entity.OrderId,
+            ProductId = product.Entity.ProductId,
+            Quantity = 5,
+            Price = 1000
         });
 
         // Refund order: -2 tickets
         using var order2 = await scope.CreateOrderAsync(registration.Entity, user: user.Entity);
         scope.Db.OrderLines.Add(new OrderLine
         {
-            OrderId = order2.Entity.OrderId, ProductId = product.Entity.ProductId, Quantity = -2, Price = 1000
+            OrderId = order2.Entity.OrderId,
+            ProductId = product.Entity.ProductId,
+            Quantity = -2,
+            Price = 1000
         });
 
         await scope.Db.SaveChangesAsync();
@@ -272,7 +294,10 @@ public class RegistrationProductsControllerTest : IClassFixture<CustomWebApiAppl
         using var order1 = await scope.CreateOrderAsync(registration1.Entity, user: user1.Entity);
         scope.Db.OrderLines.Add(new OrderLine
         {
-            OrderId = order1.Entity.OrderId, ProductId = product1.Entity.ProductId, Quantity = 2, Price = 1000
+            OrderId = order1.Entity.OrderId,
+            ProductId = product1.Entity.ProductId,
+            Quantity = 2,
+            Price = 1000
         });
 
         // Registration 2
@@ -280,7 +305,10 @@ public class RegistrationProductsControllerTest : IClassFixture<CustomWebApiAppl
         using var order2 = await scope.CreateOrderAsync(registration2.Entity, user: user2.Entity);
         scope.Db.OrderLines.Add(new OrderLine
         {
-            OrderId = order2.Entity.OrderId, ProductId = product2.Entity.ProductId, Quantity = 3, Price = 500
+            OrderId = order2.Entity.OrderId,
+            ProductId = product2.Entity.ProductId,
+            Quantity = 3,
+            Price = 500
         });
 
         await scope.Db.SaveChangesAsync();
@@ -334,11 +362,17 @@ public class RegistrationProductsControllerTest : IClassFixture<CustomWebApiAppl
 
             scope.Db.OrderLines.Add(new OrderLine
             {
-                OrderId = order.Entity.OrderId, ProductId = product1.Entity.ProductId, Quantity = 1, Price = 1000
+                OrderId = order.Entity.OrderId,
+                ProductId = product1.Entity.ProductId,
+                Quantity = 1,
+                Price = 1000
             });
             scope.Db.OrderLines.Add(new OrderLine
             {
-                OrderId = order.Entity.OrderId, ProductId = product2.Entity.ProductId, Quantity = 2, Price = 500
+                OrderId = order.Entity.OrderId,
+                ProductId = product2.Entity.ProductId,
+                Quantity = 2,
+                Price = 500
             });
         }
 
@@ -385,7 +419,10 @@ public class RegistrationProductsControllerTest : IClassFixture<CustomWebApiAppl
         using var activeOrder = await scope.CreateOrderAsync(registration.Entity, user: user.Entity);
         scope.Db.OrderLines.Add(new OrderLine
         {
-            OrderId = activeOrder.Entity.OrderId, ProductId = product1.Entity.ProductId, Quantity = 2, Price = 1000
+            OrderId = activeOrder.Entity.OrderId,
+            ProductId = product1.Entity.ProductId,
+            Quantity = 2,
+            Price = 1000
         });
 
         // Cancelled order
