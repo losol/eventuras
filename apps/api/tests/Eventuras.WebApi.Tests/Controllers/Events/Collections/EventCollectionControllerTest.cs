@@ -64,11 +64,12 @@ public class EventCollectionControllerTest : IClassFixture<CustomWebApiApplicati
         using var scope = _factory.Services.NewTestScope();
         using var org = await scope.CreateOrganizationAsync(hostname: "some"); // not localhost
 
-        await client.PostAsync("/v3/eventcollections", new StringContent(JsonSerializer.Serialize(new
+        using var content = new StringContent(JsonSerializer.Serialize(new
         {
             name = "Test",
             organizationId = org.Entity.OrganizationId
-        }), Encoding.UTF8, "application/json"));
+        }), Encoding.UTF8, "application/json");
+        await client.PostAsync("/v3/eventcollections", content);
 
         // FIXME: Not checking status here, it's OK since the app redirects to login screen!
 
@@ -313,12 +314,12 @@ public class EventCollectionControllerTest : IClassFixture<CustomWebApiApplicati
 
         using var collection = await scope.CreateEventCollectionAsync(organization: org.Entity);
 
-        var response = await client.PutAsync($"/v3/eventcollections/{collection.Entity.CollectionId}",
-            new StringContent(JsonSerializer.Serialize(new
-            {
-                name = "Updated",
-                organizationId = org.Entity.OrganizationId
-            }), Encoding.UTF8, "application/json"));
+        using var content = new StringContent(JsonSerializer.Serialize(new
+        {
+            name = "Updated",
+            organizationId = org.Entity.OrganizationId
+        }), Encoding.UTF8, "application/json");
+        var response = await client.PutAsync($"/v3/eventcollections/{collection.Entity.CollectionId}", content);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         await CheckCollectionUpdatedAsync(collection.Entity, "Updated");
@@ -337,12 +338,12 @@ public class EventCollectionControllerTest : IClassFixture<CustomWebApiApplicati
 
         using var collection = await scope.CreateEventCollectionAsync();
 
-        var response = await client.PutAsync($"/v3/eventcollections/{collection.Entity.CollectionId}",
-            new StringContent(JsonSerializer.Serialize(new
-            {
-                name = "Updated",
-                organizationId = collection.Entity.OrganizationId
-            }), Encoding.UTF8, "application/json"));
+        using var content = new StringContent(JsonSerializer.Serialize(new
+        {
+            name = "Updated",
+            organizationId = collection.Entity.OrganizationId
+        }), Encoding.UTF8, "application/json");
+        var response = await client.PutAsync($"/v3/eventcollections/{collection.Entity.CollectionId}", content);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         await CheckCollectionUpdatedAsync(collection.Entity, "Updated");
@@ -360,17 +361,17 @@ public class EventCollectionControllerTest : IClassFixture<CustomWebApiApplicati
         using var collection = await scope.CreateEventCollectionAsync();
         using var newOrg = await scope.CreateOrganizationAsync();
 
-        var response = await client.PutAsync($"/v3/eventcollections/{collection.Entity.CollectionId}",
-            new StringContent(JsonSerializer.Serialize(new
-            {
-                name = "Test",
-                organizationId = newOrg.Entity.OrganizationId,
-                slug = "Test slug",
-                description = "Test Description",
-                featured = true,
-                featuredImageUrl = "test://",
-                featuredImageCaption = "Test Caption",
-            }), Encoding.UTF8, "application/json"));
+        using var content = new StringContent(JsonSerializer.Serialize(new
+        {
+            name = "Test",
+            organizationId = newOrg.Entity.OrganizationId,
+            slug = "Test slug",
+            description = "Test Description",
+            featured = true,
+            featuredImageUrl = "test://",
+            featuredImageCaption = "Test Caption",
+        }), Encoding.UTF8, "application/json");
+        var response = await client.PutAsync($"/v3/eventcollections/{collection.Entity.CollectionId}", content);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
@@ -396,11 +397,11 @@ public class EventCollectionControllerTest : IClassFixture<CustomWebApiApplicati
 
         using var collection = await scope.CreateEventCollectionAsync();
 
-        var response = await client.PutAsync($"/v3/eventcollections/{collection.Entity.CollectionId}",
-            new StringContent(JsonSerializer.Serialize(new
-            {
-                organizationId = collection.Entity.OrganizationId
-            }), Encoding.UTF8, "application/json"));
+        using var content = new StringContent(JsonSerializer.Serialize(new
+        {
+            organizationId = collection.Entity.OrganizationId
+        }), Encoding.UTF8, "application/json");
+        var response = await client.PutAsync($"/v3/eventcollections/{collection.Entity.CollectionId}", content);
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         await CheckCollectionNotUpdatedAsync(collection.Entity);
@@ -416,11 +417,11 @@ public class EventCollectionControllerTest : IClassFixture<CustomWebApiApplicati
 
         using var collection = await scope.CreateEventCollectionAsync();
 
-        var response = await client.PutAsync($"/v3/eventcollections/{collection.Entity.CollectionId}",
-            new StringContent(JsonSerializer.Serialize(new
-            {
-                name = "Test"
-            }), Encoding.UTF8, "application/json"));
+        using var content = new StringContent(JsonSerializer.Serialize(new
+        {
+            name = "Test"
+        }), Encoding.UTF8, "application/json");
+        var response = await client.PutAsync($"/v3/eventcollections/{collection.Entity.CollectionId}", content);
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         await CheckCollectionNotUpdatedAsync(collection.Entity);
