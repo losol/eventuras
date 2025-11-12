@@ -40,9 +40,9 @@
     <ProjectReference Include="..\Eventuras.Services\Eventuras.Services.csproj" />
     <ProjectReference Include="..\Eventuras.Infrastructure\Eventuras.Infrastructure.csproj" />
     <ProjectReference Include="..\Eventuras.Domain\Eventuras.Domain.csproj" />
-    <ProjectReference Include="..\..\libs\Losol.Communication.Email\Losol.Communication.Email.csproj" />
-    <ProjectReference Include="..\..\libs\Losol.Communication.HealthCheck\Losol.Communication.HealthCheck.csproj" />
-    <ProjectReference Include="..\..\libs\Losol.Communication.Sms\Losol.Communication.Sms.csproj" />
+    <ProjectReference Include="..\Losol.Communication.Email\Losol.Communication.Email.csproj" />
+    <ProjectReference Include="..\Losol.Communication.HealthCheck\Losol.Communication.HealthCheck.csproj" />
+    <ProjectReference Include="..\Losol.Communication.Sms\Losol.Communication.Sms.csproj" />
   </ItemGroup>
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>

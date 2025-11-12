@@ -6,6 +6,6 @@
     <ProjectReference Include="..\Eventuras.Services\Eventuras.Services.csproj"/>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\libs\Losol.Communication.Sms\Losol.Communication.Sms.csproj"/>
+    <ProjectReference Include="..\Losol.Communication.Sms\Losol.Communication.Sms.csproj"/>
   </ItemGroup>
 </Project>
