@@ -2,14 +2,6 @@ namespace Eventuras.Services.Organizations.Settings;
 
 public class OrganizationSettingEntry
 {
-    public string Name { get; }
-
-    public string Section { get; }
-
-    public string Description { get; }
-
-    public OrganizationSettingType Type { get; }
-
     public OrganizationSettingEntry(
         string name,
         string section,
@@ -21,4 +13,12 @@ public class OrganizationSettingEntry
         Description = description;
         Type = type;
     }
+
+    public string Name { get; }
+
+    public string Section { get; }
+
+    public string Description { get; }
+
+    public OrganizationSettingType Type { get; }
 }

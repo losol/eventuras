@@ -9,8 +9,8 @@ namespace Eventuras.Services.Certificates;
 
 internal class CertificateAccessControlService : ICertificateAccessControlService
 {
-    private readonly IRegistrationRetrievalService _registrationRetrievalService;
     private readonly IRegistrationAccessControlService _registrationAccessControlService;
+    private readonly IRegistrationRetrievalService _registrationRetrievalService;
 
     public CertificateAccessControlService(
         IRegistrationRetrievalService registrationRetrievalService,
@@ -55,15 +55,11 @@ internal class CertificateAccessControlService : ICertificateAccessControlServic
 
     private async Task<Registration> GetRegistrationForCertificateAsync(
         Certificate certificate,
-        CancellationToken cancellationToken)
-    {
-        return await _registrationRetrievalService
-                   .FindRegistrationAsync(new RegistrationFilter
-                   {
-                       HavingCertificateOnly = true,
-                       CertificateId = certificate.CertificateId,
-                   }, cancellationToken: cancellationToken)
-               ?? throw new NotFoundException(
-                   $"Registration not found for certificate {certificate.CertificateId}");
-    }
+        CancellationToken cancellationToken) =>
+        await _registrationRetrievalService
+            .FindRegistrationAsync(
+                new RegistrationFilter { HavingCertificateOnly = true, CertificateId = certificate.CertificateId },
+                cancellationToken: cancellationToken)
+        ?? throw new NotFoundException(
+            $"Registration not found for certificate {certificate.CertificateId}");
 }

@@ -24,7 +24,7 @@ public static class DbContextLoggingHelper
                 {
                     var original = entry.OriginalValues[prop];
                     var current = entry.CurrentValues[prop];
-                    if (!object.Equals(original, current))
+                    if (!Equals(original, current))
                     {
                         Debug.WriteLine($"Property {prop.Name} changed from {original} to {current}");
                     }

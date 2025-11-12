@@ -16,4 +16,3 @@ public class ProductItem
     public ProductVariant Variant { get; set; }
     public int Quantity { get; set; }
 }
-

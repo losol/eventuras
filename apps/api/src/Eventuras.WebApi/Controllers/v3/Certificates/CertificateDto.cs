@@ -6,26 +6,6 @@ namespace Eventuras.WebApi.Controllers.v3.Certificates;
 
 public class CertificateDto
 {
-    public int CertificateId { get; }
-    public Guid CertificateGuid { get; }
-
-    public string Title { get; }
-    public string Description { get; }
-    public string Comment { get; }
-
-    public string RecipientName { get; }
-
-    public string EvidenceDescription { get; }
-
-    public string IssuedInCity { get; }
-    public LocalDate IssuingDate { get; }
-
-    public string IssuerOrganizationName { get; }
-    public string IssuerOrganizationLogoBase64 { get; }
-
-    public string IssuerPersonName { get; }
-    public string IssuerPersonSignatureImageBase64 { get; }
-
     public CertificateDto(Certificate certificate)
     {
         if (certificate == null)
@@ -47,4 +27,24 @@ public class CertificateDto
         IssuerPersonName = certificate.IssuedByName ?? certificate.IssuingUser?.Name;
         IssuerPersonSignatureImageBase64 = certificate.IssuingUser?.SignatureImageBase64;
     }
+
+    public int CertificateId { get; }
+    public Guid CertificateGuid { get; }
+
+    public string Title { get; }
+    public string Description { get; }
+    public string Comment { get; }
+
+    public string RecipientName { get; }
+
+    public string EvidenceDescription { get; }
+
+    public string IssuedInCity { get; }
+    public LocalDate IssuingDate { get; }
+
+    public string IssuerOrganizationName { get; }
+    public string IssuerOrganizationLogoBase64 { get; }
+
+    public string IssuerPersonName { get; }
+    public string IssuerPersonSignatureImageBase64 { get; }
 }

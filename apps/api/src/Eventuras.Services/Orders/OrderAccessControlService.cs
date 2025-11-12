@@ -13,8 +13,8 @@ namespace Eventuras.Services.Orders;
 
 public class OrderAccessControlService : IOrderAccessControlService
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ICurrentOrganizationAccessorService _currentOrganizationAccessorService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IRegistrationAccessControlService _registrationAccessControlService;
     private readonly IRegistrationRetrievalService _registrationRetrievalService;
 
@@ -82,20 +82,21 @@ public class OrderAccessControlService : IOrderAccessControlService
         {
             return true;
         }
+
         if (!user.IsAdmin())
         {
             return false;
         }
+
         var org = await _currentOrganizationAccessorService
-            .RequireCurrentOrganizationAsync(new OrganizationRetrievalOptions
-            {
-                LoadMembers = true
-            }, cancellationToken);
+            .RequireCurrentOrganizationAsync(new OrganizationRetrievalOptions { LoadMembers = true },
+                cancellationToken);
 
         if (org.Members.Exists(m => m.UserId == user.GetUserId() && m.HasRole(Roles.Admin)))
         {
             return true;
         }
+
         return false;
     }
 
@@ -123,10 +124,8 @@ public class OrderAccessControlService : IOrderAccessControlService
         }
 
         var org = await _currentOrganizationAccessorService
-            .RequireCurrentOrganizationAsync(new OrganizationRetrievalOptions
-            {
-                LoadMembers = true
-            }, cancellationToken);
+            .RequireCurrentOrganizationAsync(new OrganizationRetrievalOptions { LoadMembers = true },
+                cancellationToken);
 
         if (!org.Members.Any(m => m.UserId == userId && m.HasRole(Roles.Admin)))
         {
@@ -138,11 +137,9 @@ public class OrderAccessControlService : IOrderAccessControlService
         return query.Where(o => o.Registration.EventInfo.OrganizationId == org.OrganizationId);
     }
 
-    private async Task<Registration> GetOrderRegistrationAsync(Order order, CancellationToken cancellationToken)
-    {
-        return order.Registration ??
-               await _registrationRetrievalService
-                   .GetRegistrationByIdAsync(order.RegistrationId,
-                       cancellationToken: cancellationToken);
-    }
+    private async Task<Registration> GetOrderRegistrationAsync(Order order, CancellationToken cancellationToken) =>
+        order.Registration ??
+        await _registrationRetrievalService
+            .GetRegistrationByIdAsync(order.RegistrationId,
+                cancellationToken: cancellationToken);
 }

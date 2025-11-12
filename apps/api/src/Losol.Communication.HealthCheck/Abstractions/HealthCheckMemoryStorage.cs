@@ -6,8 +6,7 @@ namespace Losol.Communication.HealthCheck.Abstractions;
 
 public class HealthCheckMemoryStorage : IHealthCheckStorage
 {
-    private readonly ConcurrentDictionary<string, HealthCheckStatus> _checks =
-        new ConcurrentDictionary<string, HealthCheckStatus>();
+    private readonly ConcurrentDictionary<string, HealthCheckStatus> _checks = new();
 
     public Task<HealthCheckStatus> GetCurrentStatusAsync(string serviceName)
     {
@@ -15,6 +14,7 @@ public class HealthCheckMemoryStorage : IHealthCheckStorage
         {
             return Task.FromResult(status);
         }
+
         return Task.FromResult((HealthCheckStatus)null);
     }
 

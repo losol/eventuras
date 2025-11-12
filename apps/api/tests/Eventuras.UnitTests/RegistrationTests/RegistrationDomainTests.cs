@@ -13,10 +13,7 @@ public class RegistrationDomainTests
     public void HasOrder_WhenOrdersIsNull_ShouldReturnFalse()
     {
         // Arrange
-        var registration = new Registration
-        {
-            Orders = null
-        };
+        var registration = new Registration { Orders = null };
 
         // Act
         var result = registration.HasOrder;
@@ -29,10 +26,7 @@ public class RegistrationDomainTests
     public void HasOrder_WhenOrdersIsEmpty_ShouldReturnFalse()
     {
         // Arrange
-        var registration = new Registration
-        {
-            Orders = new List<Order>()
-        };
+        var registration = new Registration { Orders = new List<Order>() };
 
         // Act
         var result = registration.HasOrder;
@@ -45,10 +39,7 @@ public class RegistrationDomainTests
     public void HasOrder_WhenOrdersHasOneOrder_ShouldReturnTrue()
     {
         // Arrange
-        var registration = new Registration
-        {
-            Orders = new List<Order> { new Order() }
-        };
+        var registration = new Registration { Orders = new List<Order> { new() } };
 
         // Act
         var result = registration.HasOrder;
@@ -61,15 +52,7 @@ public class RegistrationDomainTests
     public void HasOrder_WhenOrdersHasMultipleOrders_ShouldReturnTrue()
     {
         // Arrange
-        var registration = new Registration
-        {
-            Orders = new List<Order>
-            {
-                new Order(),
-                new Order(),
-                new Order()
-            }
-        };
+        var registration = new Registration { Orders = new List<Order> { new(), new(), new() } };
 
         // Act
         var result = registration.HasOrder;
@@ -86,10 +69,7 @@ public class RegistrationDomainTests
     public void HasCertificate_WhenCertificateIdIsNull_ShouldReturnFalse()
     {
         // Arrange
-        var registration = new Registration
-        {
-            CertificateId = null
-        };
+        var registration = new Registration { CertificateId = null };
 
         // Act
         var result = registration.HasCertificate;
@@ -102,10 +82,7 @@ public class RegistrationDomainTests
     public void HasCertificate_WhenCertificateIdIsSet_ShouldReturnTrue()
     {
         // Arrange
-        var registration = new Registration
-        {
-            CertificateId = 123
-        };
+        var registration = new Registration { CertificateId = 123 };
 
         // Act
         var result = registration.HasCertificate;
@@ -122,11 +99,7 @@ public class RegistrationDomainTests
     public void AddLog_WithNoText_ShouldAddStatusToLog()
     {
         // Arrange
-        var registration = new Registration
-        {
-            Status = Registration.RegistrationStatus.Verified,
-            Log = null
-        };
+        var registration = new Registration { Status = Registration.RegistrationStatus.Verified, Log = null };
 
         // Act
         registration.AddLog();
@@ -140,10 +113,7 @@ public class RegistrationDomainTests
     public void AddLog_WithCustomText_ShouldAddTextToLog()
     {
         // Arrange
-        var registration = new Registration
-        {
-            Log = null
-        };
+        var registration = new Registration { Log = null };
         var customText = "User registered successfully";
 
         // Act
@@ -158,11 +128,7 @@ public class RegistrationDomainTests
     public void AddLog_MultipleCalls_ShouldAppendToLog()
     {
         // Arrange
-        var registration = new Registration
-        {
-            Status = Registration.RegistrationStatus.Draft,
-            Log = null
-        };
+        var registration = new Registration { Status = Registration.RegistrationStatus.Draft, Log = null };
 
         // Act
         registration.AddLog("First entry");
@@ -202,17 +168,10 @@ public class RegistrationDomainTests
         {
             RegistrationId = 1,
             Certificate = null,
-            EventInfo = new EventInfo
-            {
-                EventInfoId = 1,
-                Title = "Test Event"
-            },
+            EventInfo = new EventInfo { EventInfoId = 1, Title = "Test Event" },
             User = new ApplicationUser
             {
-                Id = "user1",
-                GivenName = "Test",
-                FamilyName = "User",
-                Email = "test@example.com"
+                Id = "user1", GivenName = "Test", FamilyName = "User", Email = "test@example.com"
             },
             CertificateComment = "Great participation"
         };
@@ -253,17 +212,10 @@ public class RegistrationDomainTests
         {
             RegistrationId = 1,
             Certificate = null,
-            EventInfo = new EventInfo
-            {
-                EventInfoId = 1,
-                Title = "Test Event"
-            },
+            EventInfo = new EventInfo { EventInfoId = 1, Title = "Test Event" },
             User = new ApplicationUser
             {
-                Id = "user123",
-                GivenName = "John",
-                FamilyName = "Doe",
-                Email = "john@example.com"
+                Id = "user123", GivenName = "John", FamilyName = "Doe", Email = "john@example.com"
             },
             CertificateComment = "Excellent work"
         };
@@ -286,10 +238,7 @@ public class RegistrationDomainTests
     public void UpdateCertificate_WhenCertificateIsNull_ShouldThrowInvalidOperationException()
     {
         // Arrange
-        var registration = new Registration
-        {
-            Certificate = null
-        };
+        var registration = new Registration { Certificate = null };
 
         // Act & Assert
         var exception = Assert.Throws<InvalidOperationException>(() =>
@@ -305,9 +254,7 @@ public class RegistrationDomainTests
         // Arrange
         var registration = new Registration
         {
-            Certificate = new Certificate(),
-            EventInfo = null,
-            User = new ApplicationUser()
+            Certificate = new Certificate(), EventInfo = null, User = new ApplicationUser()
         };
 
         // Act & Assert
@@ -323,9 +270,7 @@ public class RegistrationDomainTests
         // Arrange
         var registration = new Registration
         {
-            Certificate = new Certificate(),
-            EventInfo = new EventInfo(),
-            User = null
+            Certificate = new Certificate(), EventInfo = new EventInfo(), User = null
         };
 
         // Act & Assert
@@ -342,22 +287,11 @@ public class RegistrationDomainTests
         var registration = new Registration
         {
             RegistrationId = 1,
-            Certificate = new Certificate
-            {
-                RecipientName = "Old Name",
-                RecipientEmail = "old@example.com"
-            },
-            EventInfo = new EventInfo
-            {
-                EventInfoId = 1,
-                Title = "Updated Event"
-            },
+            Certificate = new Certificate { RecipientName = "Old Name", RecipientEmail = "old@example.com" },
+            EventInfo = new EventInfo { EventInfoId = 1, Title = "Updated Event" },
             User = new ApplicationUser
             {
-                Id = "user456",
-                GivenName = "Jane",
-                FamilyName = "Smith",
-                Email = "jane@example.com"
+                Id = "user456", GivenName = "Jane", FamilyName = "Smith", Email = "jane@example.com"
             },
             CertificateComment = "Updated comment"
         };
@@ -408,5 +342,4 @@ public class RegistrationDomainTests
     }
 
     #endregion
-
 }

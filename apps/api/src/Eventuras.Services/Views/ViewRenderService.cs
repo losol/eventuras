@@ -16,9 +16,9 @@ namespace Eventuras.Services.Views;
 
 public class ViewRenderService : IViewRenderService
 {
-    private readonly IRazorViewEngine _viewEngine;
-    private readonly ITempDataProvider _tempDataProvider;
     private readonly IServiceProvider _serviceProvider;
+    private readonly ITempDataProvider _tempDataProvider;
+    private readonly IRazorViewEngine _viewEngine;
 
     public ViewRenderService(
         IRazorViewEngine viewEngine,
@@ -41,11 +41,8 @@ public class ViewRenderService : IViewRenderService
             actionContext,
             view,
             new ViewDataDictionary<object>(
-                metadataProvider: new EmptyModelMetadataProvider(),
-                modelState: new ModelStateDictionary())
-            {
-                Model = model
-            },
+                new EmptyModelMetadataProvider(),
+                new ModelStateDictionary()) { Model = model },
             new TempDataDictionary(
                 actionContext.HttpContext,
                 _tempDataProvider),
@@ -59,13 +56,13 @@ public class ViewRenderService : IViewRenderService
 
     private IView FindView(ActionContext actionContext, string viewName)
     {
-        var getViewResult = _viewEngine.GetView(executingFilePath: null, viewPath: viewName, isMainPage: true);
+        var getViewResult = _viewEngine.GetView(null, viewName, true);
         if (getViewResult.Success)
         {
             return getViewResult.View;
         }
 
-        var findViewResult = _viewEngine.FindView(actionContext, viewName, isMainPage: true);
+        var findViewResult = _viewEngine.FindView(actionContext, viewName, true);
         if (findViewResult.Success)
         {
             return findViewResult.View;
@@ -80,11 +77,6 @@ public class ViewRenderService : IViewRenderService
         throw new InvalidOperationException(errorMessage);
     }
 
-    private ActionContext GetActionContext()
-    {
-        return new ActionContext(new DefaultHttpContext
-        {
-            RequestServices = _serviceProvider
-        }, new RouteData(), new ActionDescriptor());
-    }
+    private ActionContext GetActionContext() =>
+        new(new DefaultHttpContext { RequestServices = _serviceProvider }, new RouteData(), new ActionDescriptor());
 }

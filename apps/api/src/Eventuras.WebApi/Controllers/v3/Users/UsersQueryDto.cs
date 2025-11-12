@@ -6,8 +6,8 @@ namespace Eventuras.WebApi.Controllers.v3.Users;
 
 public class UsersQueryDto : PageQueryDto
 {
-    [FromQuery]
-    public string Query { get; set; }
+    [FromQuery] public string Query { get; set; }
+
     public int? OrganizationId { get; set; }
     public bool IncludeOrgMembership { get; set; } = false;
 
@@ -15,12 +15,6 @@ public class UsersQueryDto : PageQueryDto
 
     public bool Descending { get; set; }
 
-    public UserFilter ToUserFilter()
-    {
-        return new UserFilter
-        {
-            Query = Query,
-            OrganizationId = OrganizationId,
-        };
-    }
+    public UserFilter ToUserFilter() =>
+        new() { Query = Query, OrganizationId = OrganizationId };
 }

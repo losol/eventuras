@@ -5,13 +5,9 @@ namespace Eventuras.WebApi.Controllers.v3.EventCollections;
 
 public class EventCollectionCreateDto
 {
+    [Required] [Range(1, int.MaxValue)] public int OrganizationId { get; set; }
 
-    [Required]
-    [Range(1, int.MaxValue)]
-    public int OrganizationId { get; set; }
-
-    [Required]
-    public string Name { get; set; }
+    [Required] public string Name { get; set; }
 
     public string Slug { get; set; }
 

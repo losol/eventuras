@@ -13,8 +13,8 @@ namespace Eventuras.Services.Events;
 
 public class EventInfoAccessControlService : IEventInfoAccessControlService
 {
-    private readonly IEventInfoRetrievalService _eventInfoRetrievalService;
     private readonly ICurrentOrganizationAccessorService _currentOrganizationAccessorService;
+    private readonly IEventInfoRetrievalService _eventInfoRetrievalService;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILogger<EventInfoAccessControlService> _logger;
 

@@ -4,6 +4,5 @@ namespace Losol.Communication.Email.File;
 
 public class FileEmailConfig
 {
-    [Required]
-    public string FilePath { get; set; }
+    [Required] public string FilePath { get; set; }
 }

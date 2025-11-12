@@ -6,24 +6,6 @@ namespace Eventuras.WebApi.Controllers.v3.Notifications;
 
 public class NotificationRecipientDto
 {
-    public int RecipientId { get; }
-
-    public int NotificationId { get; }
-
-    public string RecipientUserId { get; }
-
-    public int? RegistrationId { get; }
-
-    public string RecipientName { get; }
-
-    public string RecipientIdentifier { get; }
-
-    public Instant Created { get; }
-
-    public Instant? Sent { get; }
-
-    public string Errors { get; }
-
     public NotificationRecipientDto(NotificationRecipient recipient)
     {
         if (recipient == null)
@@ -41,4 +23,22 @@ public class NotificationRecipientDto
         Sent = recipient.Sent;
         Errors = recipient.Errors;
     }
+
+    public int RecipientId { get; }
+
+    public int NotificationId { get; }
+
+    public string RecipientUserId { get; }
+
+    public int? RegistrationId { get; }
+
+    public string RecipientName { get; }
+
+    public string RecipientIdentifier { get; }
+
+    public Instant Created { get; }
+
+    public Instant? Sent { get; }
+
+    public string Errors { get; }
 }

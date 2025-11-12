@@ -20,8 +20,8 @@ namespace Eventuras.WebApi.Controllers.v3.Certificates;
 [Route("v{version:apiVersion}/certificates")]
 public class CertificatesController : ControllerBase
 {
-    private readonly ICertificateRetrievalService _certificateRetrievalService;
     private readonly ICertificateRenderer _certificateRenderer;
+    private readonly ICertificateRetrievalService _certificateRetrievalService;
     private readonly ILogger<CertificatesController> _logger;
 
     public CertificatesController(
@@ -29,7 +29,8 @@ public class CertificatesController : ControllerBase
         ICertificateRenderer certificateRenderer,
         ILogger<CertificatesController> logger)
     {
-        _certificateRetrievalService = certificateRetrievalService ?? throw new ArgumentNullException(nameof(certificateRetrievalService));
+        _certificateRetrievalService = certificateRetrievalService ??
+                                       throw new ArgumentNullException(nameof(certificateRetrievalService));
         _certificateRenderer = certificateRenderer ?? throw new ArgumentNullException(nameof(certificateRenderer));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
@@ -42,7 +43,7 @@ public class CertificatesController : ControllerBase
             .GetCertificateByIdAsync(id, CertificateRetrievalOptions.ForRendering);
 
         format ??= GetCertificateFormatFromMediaType(Request.Headers[HeaderNames.Accept])
-                       ?? CertificateFormat.Json;
+                   ?? CertificateFormat.Json;
 
         switch (format)
         {
@@ -67,10 +68,13 @@ public class CertificatesController : ControllerBase
                     if (ex.InnerException is AuthenticationException)
                     {
                         _logger.LogError(ex, "Error generating PDF for certificate.");
-                        return StatusCode(StatusCodes.Status503ServiceUnavailable, "Pdf generator service authentication failed.");
+                        return StatusCode(StatusCodes.Status503ServiceUnavailable,
+                            "Pdf generator service authentication failed.");
                     }
+
                     _logger.LogError(ex, "Error generating PDF for certificate.");
-                    return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while generating the PDF.");
+                    return StatusCode(StatusCodes.Status500InternalServerError,
+                        "An error occurred while generating the PDF.");
                 }
 
             default:

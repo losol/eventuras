@@ -5,7 +5,7 @@ namespace Eventuras.Services.Converto;
 
 public class ConvertoTokenCache
 {
-    private static ConcurrentDictionary<string, CachedToken> _cache = new ConcurrentDictionary<string, CachedToken>();
+    private static readonly ConcurrentDictionary<string, CachedToken> _cache = new();
 
     public static void SetToken(string token, int expiresIn)
     {
@@ -17,16 +17,14 @@ public class ConvertoTokenCache
 
     public static string GetToken()
     {
-        if (_cache.TryGetValue("ConvertoApiToken", out CachedToken cachedToken))
+        if (_cache.TryGetValue("ConvertoApiToken", out var cachedToken))
         {
             if (DateTime.UtcNow < cachedToken.Expiry)
             {
                 return cachedToken.Token;
             }
-            else
-            {
-                _cache.TryRemove("ConvertoApiToken", out cachedToken);
-            }
+
+            _cache.TryRemove("ConvertoApiToken", out cachedToken);
         }
 
         return null;

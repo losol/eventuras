@@ -1,8 +1,8 @@
 namespace Eventuras.Services.Exceptions;
 
 /// <summary>
-/// Organization is not configured for the current hostname,
-/// and not specified in the request parameters.
+///     Organization is not configured for the current hostname,
+///     and not specified in the request parameters.
 /// </summary>
 public class OrgNotSpecifiedException : ServiceException
 {

@@ -13,10 +13,8 @@ public class NotificationRecipientsControllerTest : IClassFixture<CustomWebApiAp
 {
     private readonly CustomWebApiApplicationFactory<Program> _factory;
 
-    public NotificationRecipientsControllerTest(CustomWebApiApplicationFactory<Program> factory)
-    {
+    public NotificationRecipientsControllerTest(CustomWebApiApplicationFactory<Program> factory) =>
         _factory = factory ?? throw new ArgumentNullException(nameof(factory));
-    }
 
     [Fact]
     public async Task Should_Require_Auth_For_Getting_Recipients()
@@ -49,21 +47,15 @@ public class NotificationRecipientsControllerTest : IClassFixture<CustomWebApiAp
         response.CheckBadRequest();
     }
 
-    public static object[][] GetInvalidListQueryParams()
-    {
-        return new[]
+    public static object[][] GetInvalidListQueryParams() =>
+        new[]
         {
-            new object[] { new { page = "invalid" } },
-            new object[] { new { page = -1 } },
-            new object[] { new { page = 0 } },
-            new object[] { new { count = "invalid" } },
-            new object[] { new { count = -1 } },
-            new object[] { new { order = "invalid" } },
-            new object[] { new { desc = "invalid" } },
-            new object[] { new { sentOnly = "invalid" } },
+            new object[] { new { page = "invalid" } }, new object[] { new { page = -1 } },
+            new object[] { new { page = 0 } }, new object[] { new { count = "invalid" } },
+            new object[] { new { count = -1 } }, new object[] { new { order = "invalid" } },
+            new object[] { new { desc = "invalid" } }, new object[] { new { sentOnly = "invalid" } },
             new object[] { new { errorsOnly = "invalid" } }
         };
-    }
 
     [Fact]
     public async Task Should_Limit_Recipients_For_Regular_User()
@@ -101,10 +93,8 @@ public class NotificationRecipientsControllerTest : IClassFixture<CustomWebApiAp
             .AuthenticatedAs(admin.Entity, Roles.Admin);
 
         var response = await client.GetAsync(
-            $"/v3/notifications/{notification.Entity.NotificationId}/recipients", new
-            {
-                orgId = org.Entity.OrganizationId
-            });
+            $"/v3/notifications/{notification.Entity.NotificationId}/recipients",
+            new { orgId = org.Entity.OrganizationId });
 
         response.CheckForbidden();
     }
@@ -126,10 +116,8 @@ public class NotificationRecipientsControllerTest : IClassFixture<CustomWebApiAp
             .AuthenticatedAs(admin.Entity, Roles.Admin);
 
         var response = await client.GetAsync(
-            $"/v3/notifications/{notification.Entity.NotificationId}/recipients", new
-            {
-                orgId = org.Entity.OrganizationId
-            });
+            $"/v3/notifications/{notification.Entity.NotificationId}/recipients",
+            new { orgId = org.Entity.OrganizationId });
 
         var json = await response.CheckOk().AsTokenAsync();
         json.CheckPaging((t, r) =>
@@ -276,37 +264,25 @@ public class NotificationRecipientsControllerTest : IClassFixture<CustomWebApiAp
 
         var client = _factory.CreateClient().AuthenticatedAsSuperAdmin();
         var response = await client.GetAsync(
-            $"/v3/notifications/{notification.Entity.NotificationId}/recipients", new
-            {
-                query = "first"
-            });
+            $"/v3/notifications/{notification.Entity.NotificationId}/recipients", new { query = "first" });
 
         var json = await response.CheckOk().AsTokenAsync();
         json.CheckPaging((t, r) => t.CheckNotificationRecipient(r), recipients[0]);
 
         response = await client.GetAsync(
-            $"/v3/notifications/{notification.Entity.NotificationId}/recipients", new
-            {
-                query = "SECOND"
-            });
+            $"/v3/notifications/{notification.Entity.NotificationId}/recipients", new { query = "SECOND" });
 
         json = await response.CheckOk().AsTokenAsync();
         json.CheckPaging((t, r) => t.CheckNotificationRecipient(r), recipients[1]);
 
         response = await client.GetAsync(
-            $"/v3/notifications/{notification.Entity.NotificationId}/recipients", new
-            {
-                query = "3rd"
-            });
+            $"/v3/notifications/{notification.Entity.NotificationId}/recipients", new { query = "3rd" });
 
         json = await response.CheckOk().AsTokenAsync();
         json.CheckPaging((t, r) => t.CheckNotificationRecipient(r), recipients[2]);
 
         response = await client.GetAsync(
-            $"/v3/notifications/{notification.Entity.NotificationId}/recipients", new
-            {
-                query = "email.com"
-            });
+            $"/v3/notifications/{notification.Entity.NotificationId}/recipients", new { query = "email.com" });
 
         json = await response.CheckOk().AsTokenAsync();
         json.CheckPaging((t, r) => t.CheckNotificationRecipient(r),

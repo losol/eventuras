@@ -6,8 +6,8 @@ namespace Eventuras.Services.Organizations.Settings;
 
 public class OrganizationSettingsRegistryInitializer : IStartupService
 {
-    private readonly IOrganizationSettingsRegistry _registry;
     private readonly IOrganizationSettingsRegistryComponent[] _components;
+    private readonly IOrganizationSettingsRegistry _registry;
 
     public OrganizationSettingsRegistryInitializer(
         IOrganizationSettingsRegistry registry,

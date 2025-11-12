@@ -19,9 +19,9 @@ public interface INotificationManagementService
         Registration.RegistrationType[] registrationTypes = null);
 
     Task<EmailNotification> CreateEmailNotificationForRegistrationAsync(
-    string subject,
-    string body,
-    Registration registration);
+        string subject,
+        string body,
+        Registration registration);
 
     Task<SmsNotification> CreateSmsNotificationAsync(
         string message,

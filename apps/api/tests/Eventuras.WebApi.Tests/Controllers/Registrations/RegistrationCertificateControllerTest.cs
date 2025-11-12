@@ -1,12 +1,7 @@
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services;
 using Eventuras.TestAbstractions;
-using Hangfire;
-using Losol.Communication.Email;
-using Moq;
 using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Registrations;

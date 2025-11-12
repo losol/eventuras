@@ -6,8 +6,6 @@ namespace Eventuras.Services.Auth;
 
 internal static class AuthServiceCollectionExtensions
 {
-    public static void AddAuthServices(this IServiceCollection services)
-    {
-        services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, ApplicationClaimsIdentityFactory>();
-    }
+    public static void AddAuthServices(this IServiceCollection services) => services
+        .AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, ApplicationClaimsIdentityFactory>();
 }

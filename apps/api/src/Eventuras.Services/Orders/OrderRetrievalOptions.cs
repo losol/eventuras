@@ -10,14 +10,6 @@ public class OrderRetrievalOptions
 
     public bool IncludeEvent { get; set; }
 
-    public static OrderRetrievalOptions ForInvoicing()
-    {
-        return new()
-        {
-            IncludeRegistration = true,
-            IncludeUser = true,
-            IncludeEvent = true,
-            IncludeOrderLines = true
-        };
-    }
+    public static OrderRetrievalOptions ForInvoicing() =>
+        new() { IncludeRegistration = true, IncludeUser = true, IncludeEvent = true, IncludeOrderLines = true };
 }

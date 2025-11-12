@@ -4,12 +4,12 @@ using System.Text;
 namespace Eventuras.Services.Registrations.ExportService;
 
 /// <summary>
-/// Utility to get Excel column names based on column indices.
+///     Utility to get Excel column names based on column indices.
 /// </summary>
 public static class ExcelColumnName
 {
     /// <summary>
-    /// Gets the Excel column name based on the given column index.
+    ///     Gets the Excel column name based on the given column index.
     /// </summary>
     /// <param name="columnIndex">The index of the column (must be greater than zero).</param>
     /// <returns>The Excel column name as a string.</returns>

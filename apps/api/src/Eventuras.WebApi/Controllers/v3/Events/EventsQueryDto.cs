@@ -17,11 +17,9 @@ public class EventsQueryDto : PageQueryDto
     public bool IncludePastEvents { get; set; }
     public bool IncludeDraftEvents { get; set; }
 
-    [Range(1, int.MaxValue)]
-    public int? OrganizationId { get; set; }
+    [Range(1, int.MaxValue)] public int? OrganizationId { get; set; }
 
-    [Range(1, int.MaxValue)]
-    public int? CollectionId { get; set; }
+    [Range(1, int.MaxValue)] public int? CollectionId { get; set; }
 
     public EventInfoFilter ToEventInfoFilter()
     {
@@ -54,10 +52,12 @@ public class EventsQueryDto : PageQueryDto
                     filter.StartDateAfter = LocalDate.MinIsoValue; // to ensure event start date is set
                     filter.EndDateIsNullOrAfter = Start;
                 }
+
                 if (End.HasValue)
                 {
                     filter.StartDateBefore = End;
                 }
+
                 break;
 
             case PeriodMatchingKind.Contain:
@@ -66,11 +66,13 @@ public class EventsQueryDto : PageQueryDto
                     filter.StartDateAfter = Start;
                     filter.EndDateIsNullOrAfter = Start;
                 }
+
                 if (End.HasValue)
                 {
                     filter.StartDateBefore = End;
                     filter.EndDateIsNullOrBefore = End;
                 }
+
                 break;
         }
 

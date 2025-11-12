@@ -81,6 +81,8 @@ public class OrganizationSettingsRegistry : IOrganizationSettingsRegistry
         }
     }
 
+    public IEnumerable<OrganizationSettingEntry> GetEntries() => _entries.Values.ToArray();
+
     private static OrganizationSettingType GetSettingType(PropertyInfo propertyInfo)
     {
         switch (Type.GetTypeCode(propertyInfo.PropertyType))
@@ -114,13 +116,6 @@ public class OrganizationSettingsRegistry : IOrganizationSettingsRegistry
         }
     }
 
-    public IEnumerable<OrganizationSettingEntry> GetEntries()
-    {
-        return _entries.Values.ToArray();
-    }
-
-    private static string NormalizeKey(string section, string name)
-    {
-        return section.Trim().ToLower() + "." + name.Trim().ToLower();
-    }
+    private static string NormalizeKey(string section, string name) =>
+        section.Trim().ToLower() + "." + name.Trim().ToLower();
 }

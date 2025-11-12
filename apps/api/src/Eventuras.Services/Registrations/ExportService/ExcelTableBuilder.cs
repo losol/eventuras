@@ -73,7 +73,9 @@ public static class ExcelTableBuilder
             var i = start;
             string candidate;
             do
-            { candidate = $"{baseName}{i++}"; } while (existing.Contains(candidate));
+            {
+                candidate = $"{baseName}{i++}";
+            } while (existing.Contains(candidate));
 
             return candidate;
         }

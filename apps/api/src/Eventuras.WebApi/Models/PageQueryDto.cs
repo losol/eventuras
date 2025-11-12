@@ -7,11 +7,9 @@ namespace Eventuras.WebApi.Models;
 
 public class PageQueryDto
 {
-    [Range(1, int.MaxValue)]
-    public int Page { get; init; } = 1;
+    [Range(1, int.MaxValue)] public int Page { get; init; } = 1;
 
-    [Range(0, 250)]
-    public int Count { get; init; } = 100;
+    [Range(0, 250)] public int Count { get; init; } = 100;
 
     public int Limit => Count;
 

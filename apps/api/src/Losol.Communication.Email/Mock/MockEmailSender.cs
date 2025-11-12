@@ -9,10 +9,8 @@ public class MockEmailSender : AbstractEmailSender
 {
     private readonly ILogger<MockEmailSender> _logger;
 
-    public MockEmailSender(ILogger<MockEmailSender> logger, IHealthCheckStorage healthCheckStorage) : base(healthCheckStorage)
-    {
-        _logger = logger;
-    }
+    public MockEmailSender(ILogger<MockEmailSender> logger, IHealthCheckStorage healthCheckStorage) :
+        base(healthCheckStorage) => _logger = logger;
 
     protected override Task SendEmailInternalAsync(EmailModel emailModel)
     {

@@ -10,16 +10,16 @@ namespace Eventuras.TestAbstractions;
 public class EmailExpectation
 {
     private const string Placeholder = "Placeholder";
+    private readonly List<string> _htmlContained = new();
 
     private readonly Mock<IEmailSender> _mock;
+    private readonly List<string> _subjectContains = new();
 
     private string _email = "test@test.com";
-    private string _subject = Placeholder;
     private string _message = Placeholder;
-    private readonly List<string> _subjectContains = new();
-    private readonly List<string> _htmlContained = new();
-    private bool _shouldNotHaveAttachment;
     private bool _shouldHaveAttachment;
+    private bool _shouldNotHaveAttachment;
+    private string _subject = Placeholder;
 
     public EmailExpectation(Mock<IEmailSender> mock) => _mock = mock;
 
@@ -109,13 +109,13 @@ public class EmailExpectation
 
             if (_shouldHaveAttachment && !m.Attachments.Any())
             {
-                Debug.WriteLine($"Expected attachment, but none found");
+                Debug.WriteLine("Expected attachment, but none found");
                 return false;
             }
 
             if (_shouldNotHaveAttachment && m.Attachments.Any())
             {
-                Debug.WriteLine($"Expected no attachment, but found one");
+                Debug.WriteLine("Expected no attachment, but found one");
                 return false;
             }
 

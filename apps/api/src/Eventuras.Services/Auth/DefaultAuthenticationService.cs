@@ -11,16 +11,12 @@ public class DefaultAuthenticationService : IEventurasAuthenticationService
 {
     private readonly SignInManager<ApplicationUser> _signInManager;
 
-    public DefaultAuthenticationService(SignInManager<ApplicationUser> signInManager)
-    {
+    public DefaultAuthenticationService(SignInManager<ApplicationUser> signInManager) =>
         _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
-    }
 
-    public async Task HandleLogInAsync(HttpContext context, string redirectUrl)
-    {
+    public async Task HandleLogInAsync(HttpContext context, string redirectUrl) =>
         // Clear the existing external cookie to ensure a clean login process
         await context.SignOutAsync();
-    }
 
     public async Task HandleLogOutAsync(HttpContext context, string redirectUrl)
     {

@@ -4,8 +4,6 @@ namespace Eventuras.Services.Invoicing;
 
 internal static class InvoicingServiceCollectionExtensions
 {
-    public static void AddInvoicingServices(this IServiceCollection services)
-    {
+    public static void AddInvoicingServices(this IServiceCollection services) =>
         services.AddTransient<IInvoicingService, InvoicingService>();
-    }
 }

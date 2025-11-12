@@ -8,21 +8,21 @@ namespace Eventuras.Services;
 
 public class Paging<T>
 {
-    /// <summary>
-    /// Data for this page.
-    /// </summary>
-    public T[] Data { get; }
-
-    /// <summary>
-    /// Total of records for this query.
-    /// </summary>
-    public int TotalRecords { get; }
-
     public Paging(T[] data, int totalRecords)
     {
         Data = data;
         TotalRecords = totalRecords;
     }
+
+    /// <summary>
+    ///     Data for this page.
+    /// </summary>
+    public T[] Data { get; }
+
+    /// <summary>
+    ///     Total of records for this query.
+    /// </summary>
+    public int TotalRecords { get; }
 }
 
 public static class Paging
@@ -33,7 +33,9 @@ public static class Paging
         CancellationToken cancellationToken = default)
     {
         var count = await query.CountAsync(cancellationToken);
-        var data = count == 0 ? Array.Empty<T>() : await query.Skip(request.Offset).Take(request.Limit).ToArrayAsync(cancellationToken);
+        var data = count == 0
+            ? Array.Empty<T>()
+            : await query.Skip(request.Offset).Take(request.Limit).ToArrayAsync(cancellationToken);
 
         return new Paging<T>(data, count);
     }
@@ -46,8 +48,5 @@ public static class Paging
         return new Paging<T>(data, count);
     }
 
-    public static Paging<T> Empty<T>()
-    {
-        return new Paging<T>(Array.Empty<T>(), 0);
-    }
+    public static Paging<T> Empty<T>() => new(Array.Empty<T>(), 0);
 }

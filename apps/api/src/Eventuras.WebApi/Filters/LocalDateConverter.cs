@@ -23,10 +23,8 @@ public class LocalDateConverter : JsonConverter<LocalDate?>
             {
                 return parseResult.Value;
             }
-            else
-            {
-                throw new JsonException("Invalid date format.");
-            }
+
+            throw new JsonException("Invalid date format.");
         }
 
         return null;

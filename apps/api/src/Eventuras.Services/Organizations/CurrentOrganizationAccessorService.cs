@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-
 namespace Eventuras.Services.Organizations;
 
 internal class CurrentOrganizationAccessorService : ICurrentOrganizationAccessorService
@@ -67,6 +66,12 @@ internal class CurrentOrganizationAccessorService : ICurrentOrganizationAccessor
             .FirstOrDefaultAsync(cancellationToken);
     }
 
+    public async Task<Organization> RequireCurrentOrganizationAsync(
+        OrganizationRetrievalOptions options,
+        CancellationToken cancellationToken) =>
+        await GetCurrentOrganizationAsync(options, cancellationToken) ??
+        throw new OrgNotSpecifiedException(_httpContextAccessor.HttpContext.Request.Host.Value);
+
     private async Task<Organization> GetOrganizationById(
         int organizationId,
         OrganizationRetrievalOptions options,
@@ -76,10 +81,4 @@ internal class CurrentOrganizationAccessorService : ICurrentOrganizationAccessor
             .WithOptions(options ?? new OrganizationRetrievalOptions())
             .Where(o => o.OrganizationId == organizationId)
             .FirstOrDefaultAsync(cancellationToken);
-
-    public async Task<Organization> RequireCurrentOrganizationAsync(
-        OrganizationRetrievalOptions options,
-        CancellationToken cancellationToken) =>
-        await GetCurrentOrganizationAsync(options, cancellationToken) ??
-        throw new OrgNotSpecifiedException(_httpContextAccessor.HttpContext.Request.Host.Value);
 }

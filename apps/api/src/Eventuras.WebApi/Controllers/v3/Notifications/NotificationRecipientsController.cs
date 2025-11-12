@@ -15,8 +15,8 @@ namespace Eventuras.WebApi.Controllers.v3.Notifications;
 [Route("v{version:apiVersion}/notifications/{id}/recipients")]
 public class NotificationRecipientsController : ControllerBase
 {
-    private readonly INotificationRetrievalService _notificationRetrievalService;
     private readonly INotificationRecipientRetrievalService _notificationRecipientRetrievalService;
+    private readonly INotificationRetrievalService _notificationRetrievalService;
 
     public NotificationRecipientsController(
         INotificationRetrievalService notificationRetrievalService,
@@ -59,11 +59,7 @@ public class NotificationRecipientsController : ControllerBase
                     OrderBy = request.Order,
                     Descending = request.Desc
                 },
-                new NotificationRecipientRetrievalOptions
-                {
-                    LoadRegistration = true,
-                    LoadUser = true
-                },
+                new NotificationRecipientRetrievalOptions { LoadRegistration = true, LoadUser = true },
                 cancellationToken);
 
         return Ok(PageResponseDto<NotificationRecipientDto>.FromPaging(

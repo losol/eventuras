@@ -10,9 +10,9 @@ using Microsoft.EntityFrameworkCore;
 namespace Eventuras.TestAbstractions;
 
 /// <summary>
-/// Each newly created entity should be removed from the testing database right after usage,
-/// so it would not clash with other DB entities created in other tests. This includes users,
-/// events, registrations, and other.
+///     Each newly created entity should be removed from the testing database right after usage,
+///     so it would not clash with other DB entities created in other tests. This includes users,
+///     events, registrations, and other.
 /// </summary>
 /// <typeparam name="T">Entity type</typeparam>
 public interface IDisposableEntity<out T> : IDisposable, IAsyncDisposable where T : class
@@ -26,7 +26,6 @@ public interface IDisposableEntity<out T> : IDisposable, IAsyncDisposable where 
 
 public class DisposableEntity<T> : IDisposableEntity<T> where T : class
 {
-    public T Entity { get; }
     private readonly DbContext _context;
     private readonly IDisposable[] _disposables;
     private bool _disposed;
@@ -38,15 +37,11 @@ public class DisposableEntity<T> : IDisposableEntity<T> where T : class
         _disposables = disposables;
     }
 
-    public virtual async Task SaveAsync()
-    {
-        await _context.SaveChangesAsync();
-    }
+    public T Entity { get; }
 
-    public virtual void Save()
-    {
-        _context.SaveChanges();
-    }
+    public virtual async Task SaveAsync() => await _context.SaveChangesAsync();
+
+    public virtual void Save() => _context.SaveChanges();
 
     public virtual void Delete()
     {
@@ -81,7 +76,9 @@ public class DisposableEntity<T> : IDisposableEntity<T> where T : class
     public void Dispose()
     {
         if (_disposed)
+        {
             return;
+        }
 
         // dispose disposables
         foreach (var disposable in _disposables)
@@ -98,7 +95,9 @@ public class DisposableEntity<T> : IDisposableEntity<T> where T : class
     public async ValueTask DisposeAsync()
     {
         if (_disposed)
+        {
             return;
+        }
 
         // dispose disposables in parallel
         var disposeTasks = _disposables.Select(disposable => disposable is IAsyncDisposable asyncDisposable
@@ -112,37 +111,23 @@ public class DisposableEntity<T> : IDisposableEntity<T> where T : class
         GC.SuppressFinalize(this);
     }
 
-    protected virtual void OnDispose()
-    {
-        Delete();
-    }
+    protected virtual void OnDispose() => Delete();
 
-    protected virtual ValueTask OnDisposeAsync()
-    {
-        return new ValueTask(DeleteAsync());
-    }
+    protected virtual ValueTask OnDisposeAsync() => new(DeleteAsync());
 }
 
 public class DisposableUser : DisposableEntity<ApplicationUser>
 {
     private readonly UserManager<ApplicationUser> _userManager;
 
-    public DisposableUser(ApplicationUser entity, UserManager<ApplicationUser> userManager) : base(entity, null!)
-    {
+    public DisposableUser(ApplicationUser entity, UserManager<ApplicationUser> userManager) : base(entity, null!) =>
         _userManager = userManager;
-    }
 
     public override Task SaveAsync() => Task.CompletedTask;
 
     public override void Save() { }
 
-    public override Task DeleteAsync()
-    {
-        return _userManager.DeleteAsync(Entity);
-    }
+    public override Task DeleteAsync() => _userManager.DeleteAsync(Entity);
 
-    public override void Delete()
-    {
-        _userManager.DeleteAsync(Entity).Wait();
-    }
+    public override void Delete() => _userManager.DeleteAsync(Entity).Wait();
 }

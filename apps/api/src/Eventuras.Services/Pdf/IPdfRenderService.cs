@@ -12,8 +12,7 @@ public interface IPdfRenderService
 
 public class PdfRenderOptions
 {
-    [Range(minimum: 0.1, maximum: 2)]
-    public float? Scale { get; set; }
+    [Range(0.1, 2)] public float? Scale { get; set; }
 
     public PaperSize? PaperSize { get; set; }
 }

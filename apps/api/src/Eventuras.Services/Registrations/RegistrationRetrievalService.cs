@@ -93,7 +93,8 @@ public class RegistrationRetrievalService : IRegistrationRetrievalService
         return await Paging.CreateAsync(query, request, cancellationToken);
     }
 
-    public async Task<RegistrationStatistics> GetRegistrationStatisticsAsync(int eventId, CancellationToken cancellationToken = default)
+    public async Task<RegistrationStatistics> GetRegistrationStatisticsAsync(int eventId,
+        CancellationToken cancellationToken = default)
     {
         // Initialize counters for each registration status and type
         var statusCounts = new Dictionary<Registration.RegistrationStatus, int>();
@@ -101,20 +102,22 @@ public class RegistrationRetrievalService : IRegistrationRetrievalService
 
         // Enumerate through all possible values of RegistrationStatus and RegistrationType
         // and initialize their counts to 0
-        foreach (var status in Enum.GetValues(typeof(Registration.RegistrationStatus)).Cast<Registration.RegistrationStatus>())
+        foreach (var status in Enum.GetValues(typeof(Registration.RegistrationStatus))
+                     .Cast<Registration.RegistrationStatus>())
         {
             statusCounts[status] = 0;
         }
 
-        foreach (var type in Enum.GetValues(typeof(Registration.RegistrationType)).Cast<Registration.RegistrationType>())
+        foreach (var type in Enum.GetValues(typeof(Registration.RegistrationType))
+                     .Cast<Registration.RegistrationType>())
         {
             typeCounts[type] = 0;
         }
 
         // Query registrations for the specified event
         var registrations = await _context.Registrations
-                                          .Where(r => r.EventInfoId == eventId)
-                                          .ToListAsync(cancellationToken);
+            .Where(r => r.EventInfoId == eventId)
+            .ToListAsync(cancellationToken);
 
         // Count the registrations for each status and type
         foreach (var registration in registrations)
@@ -144,11 +147,7 @@ public class RegistrationRetrievalService : IRegistrationRetrievalService
             Artist = typeCounts[Registration.RegistrationType.Artist]
         };
 
-        return new RegistrationStatistics
-        {
-            ByStatus = byStatus,
-            ByType = byType
-        };
+        return new RegistrationStatistics { ByStatus = byStatus, ByType = byType };
     }
 
     public Task<List<RegistrationProductDto>> GetRegistrationProductsAsync(
@@ -156,10 +155,14 @@ public class RegistrationRetrievalService : IRegistrationRetrievalService
         CancellationToken cancellationToken = default)
     {
         if (registration == null)
+        {
             throw new ArgumentNullException(nameof(registration));
+        }
 
         if (registration.Orders == null)
+        {
             return Task.FromResult(new List<RegistrationProductDto>());
+        }
 
         var products = registration.Orders
             .Where(o => o.Status != Order.OrderStatus.Cancelled)

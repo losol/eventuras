@@ -20,11 +20,11 @@ namespace Eventuras.WebApi.Controllers.v3.Organizations;
 [ApiController]
 public class OrganizationSettingsController : ControllerBase
 {
-    private readonly IOrganizationSettingsRegistry _organizationSettingsRegistry;
+    private readonly IOrganizationAccessControlService _organizationAccessControlService;
+    private readonly IOrganizationRetrievalService _organizationRetrievalService;
     private readonly IOrganizationSettingsCache _organizationSettingsCache;
     private readonly IOrganizationSettingsManagementService _organizationSettingsManagementService;
-    private readonly IOrganizationRetrievalService _organizationRetrievalService;
-    private readonly IOrganizationAccessControlService _organizationAccessControlService;
+    private readonly IOrganizationSettingsRegistry _organizationSettingsRegistry;
 
     public OrganizationSettingsController(
         IOrganizationSettingsCache organizationSettingsCache,
@@ -66,10 +66,8 @@ public class OrganizationSettingsController : ControllerBase
         return _organizationSettingsRegistry.GetEntries()
             .OrderBy(e => e.Section)
             .ThenBy(e => e.Name)
-            .Select(e => new OrganizationSettingDto(e)
-            {
-                Value = values.ContainsKey(e.Name) ? values[e.Name] : null
-            }).ToArray();
+            .Select(e => new OrganizationSettingDto(e) { Value = values.ContainsKey(e.Name) ? values[e.Name] : null })
+            .ToArray();
     }
 
     [HttpPut]
@@ -105,10 +103,7 @@ public class OrganizationSettingsController : ControllerBase
                 await _organizationSettingsManagementService.RemoveOrganizationSettingAsync(settings[dto.Name]);
             }
 
-            return Ok(new OrganizationSettingDto(entry)
-            {
-                Value = null
-            });
+            return Ok(new OrganizationSettingDto(entry) { Value = null });
         }
 
         if (settings.ContainsKey(dto.Name))
@@ -122,21 +117,16 @@ public class OrganizationSettingsController : ControllerBase
             await _organizationSettingsManagementService
                 .CreateOrganizationSettingAsync(new OrganizationSetting
                 {
-                    OrganizationId = organizationId,
-                    Name = dto.Name,
-                    Value = dto.Value
+                    OrganizationId = organizationId, Name = dto.Name, Value = dto.Value
                 });
         }
 
-        return Ok(new OrganizationSettingDto(entry)
-        {
-            Value = dto.Value
-        });
+        return Ok(new OrganizationSettingDto(entry) { Value = dto.Value });
     }
 
     [HttpPost]
     public async Task<IActionResult> BatchUpdate(int organizationId,
-        [Required][MinLength(1)] OrganizationSettingValueDto[] dtos)
+        [Required] [MinLength(1)] OrganizationSettingValueDto[] dtos)
     {
         if (!ModelState.IsValid)
         {
@@ -191,16 +181,11 @@ public class OrganizationSettingsController : ControllerBase
                 await _organizationSettingsManagementService
                     .CreateOrganizationSettingAsync(new OrganizationSetting
                     {
-                        OrganizationId = organizationId,
-                        Name = dto.Name,
-                        Value = dto.Value
+                        OrganizationId = organizationId, Name = dto.Name, Value = dto.Value
                     });
             }
 
-            result.Add(new OrganizationSettingDto(entries[dto.Name])
-            {
-                Value = dto.Value
-            });
+            result.Add(new OrganizationSettingDto(entries[dto.Name]) { Value = dto.Value });
         }
 
         return Ok(result);
@@ -209,6 +194,14 @@ public class OrganizationSettingsController : ControllerBase
 
 public class OrganizationSettingDto
 {
+    public OrganizationSettingDto(OrganizationSettingEntry entry)
+    {
+        Name = entry.Name;
+        Section = entry.Section;
+        Description = entry.Description;
+        Type = entry.Type;
+    }
+
     public string Name { get; }
 
     public string Section { get; }
@@ -218,12 +211,4 @@ public class OrganizationSettingDto
     public OrganizationSettingType Type { get; }
 
     public string Value { get; set; }
-
-    public OrganizationSettingDto(OrganizationSettingEntry entry)
-    {
-        Name = entry.Name;
-        Section = entry.Section;
-        Description = entry.Description;
-        Type = entry.Type;
-    }
 }

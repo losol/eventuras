@@ -4,26 +4,24 @@ using NodaTime;
 
 namespace Eventuras.Domain;
 
-
 public class Certificate
 {
-
     public enum CertificateStatus
     {
         Draft = 0,
         Issued = 1,
-        Revoked = 2,
+        Revoked = 2
     }
 
-    [Key]
-    public int CertificateId { get; set; }
+    [Key] public int CertificateId { get; set; }
+
     public Guid CertificateGuid { get; set; } = Guid.NewGuid();
     public Guid Auth { get; set; } = Guid.NewGuid();
     public CertificateStatus Status { get; set; } = CertificateStatus.Issued;
     public string StatusComment { get; set; }
 
-    [Required]
-    public string Title { get; set; }
+    [Required] public string Title { get; set; }
+
     public string Description { get; set; }
     public string Comment { get; set; }
 
@@ -47,5 +45,4 @@ public class Certificate
 
     public string IssuedInCity { get; set; }
     public LocalDate IssuedDate { get; set; } = SystemClock.Instance.Today();
-
 }

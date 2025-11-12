@@ -17,5 +17,4 @@ public interface IOrderAccessControlService
         CancellationToken cancellationToken = default);
 
     Task<bool> HasAdminAccessAsync(Order order, CancellationToken cancellationToken = default);
-
 }

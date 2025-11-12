@@ -23,10 +23,7 @@ public class InvoicesControllerTest : IClassFixture<CustomWebApiApplicationFacto
         Cleanup();
     }
 
-    public void Dispose()
-    {
-        Cleanup();
-    }
+    public void Dispose() => Cleanup();
 
     private void Cleanup()
     {
@@ -50,10 +47,7 @@ public class InvoicesControllerTest : IClassFixture<CustomWebApiApplicationFacto
     {
         // Arrange
         var client = _factory.CreateClient();
-        var request = new InvoiceRequestDto
-        {
-            OrderIds = new[] { 1 }
-        };
+        var request = new InvoiceRequestDto { OrderIds = new[] { 1 } };
 
         // Act
         var response = await client.PostAsync("/v3/invoices", JsonContent.Create(request));
@@ -96,10 +90,7 @@ public class InvoicesControllerTest : IClassFixture<CustomWebApiApplicationFacto
 
         var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
 
-        var request = new InvoiceRequestDto
-        {
-            OrderIds = new[] { order.OrderId }
-        };
+        var request = new InvoiceRequestDto { OrderIds = new[] { order.OrderId } };
 
         // Act: Attempt to create invoice (will likely fail without PowerOffice configuration)
         var response = await client.PostAsync("/v3/invoices", JsonContent.Create(request));
@@ -119,5 +110,3 @@ public class InvoicesControllerTest : IClassFixture<CustomWebApiApplicationFacto
         }
     }
 }
-
-

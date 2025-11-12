@@ -5,8 +5,8 @@ namespace Eventuras.Services.Registrations;
 #nullable enable
 
 /// <summary>
-/// DTO for aggregated product information in a registration.
-/// Represents the sum of all order lines grouped by product and variant.
+///     DTO for aggregated product information in a registration.
+///     Represents the sum of all order lines grouped by product and variant.
 /// </summary>
 public class RegistrationProductDto
 {

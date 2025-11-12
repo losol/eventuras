@@ -12,10 +12,10 @@ namespace Eventuras.Services.ExternalSync;
 
 internal class EventSynchronizationService : IEventSynchronizationService
 {
-    private readonly IEnumerable<IExternalSyncProviderService> _syncProviderServices;
+    private readonly IEventInfoRetrievalService _eventInfoRetrievalService;
     private readonly ILogger<EventSynchronizationService> _logger;
     private readonly IRegistrationRetrievalService _registrationRetrievalService;
-    private readonly IEventInfoRetrievalService _eventInfoRetrievalService;
+    private readonly IEnumerable<IExternalSyncProviderService> _syncProviderServices;
 
     public EventSynchronizationService(
         IEnumerable<IExternalSyncProviderService> syncProviderServices,
@@ -25,8 +25,10 @@ internal class EventSynchronizationService : IEventSynchronizationService
     {
         _syncProviderServices = syncProviderServices ?? throw new ArgumentNullException(nameof(syncProviderServices));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _registrationRetrievalService = registrationRetrievalService ?? throw new ArgumentNullException(nameof(registrationRetrievalService));
-        _eventInfoRetrievalService = eventInfoRetrievalService ?? throw new ArgumentNullException(nameof(eventInfoRetrievalService));
+        _registrationRetrievalService = registrationRetrievalService ??
+                                        throw new ArgumentNullException(nameof(registrationRetrievalService));
+        _eventInfoRetrievalService = eventInfoRetrievalService ??
+                                     throw new ArgumentNullException(nameof(eventInfoRetrievalService));
     }
 
     public string[] SyncProviderNames => _syncProviderServices.Select(s => s.Name).ToArray();
@@ -49,7 +51,8 @@ internal class EventSynchronizationService : IEventSynchronizationService
         return results.ToArray();
     }
 
-    private async Task<EventSynchronizationResult> SyncAllRegistrationsAsync(IExternalSyncProviderService syncProviderService, EventInfo eventInfo,
+    private async Task<EventSynchronizationResult> SyncAllRegistrationsAsync(
+        IExternalSyncProviderService syncProviderService, EventInfo eventInfo,
         CancellationToken cancellationToken)
     {
         var result = new EventSynchronizationResult(syncProviderService.Name);
@@ -61,11 +64,7 @@ internal class EventSynchronizationService : IEventSynchronizationService
                     Offset = offset,
                     Limit = limit,
                     OrderBy = RegistrationListOrder.RegistrationTime,
-                    Filter = new RegistrationFilter
-                    {
-                        EventInfoId = eventInfo?.EventInfoId,
-                        VerifiedOnly = true,
-                    }
+                    Filter = new RegistrationFilter { EventInfoId = eventInfo?.EventInfoId, VerifiedOnly = true }
                 }, RegistrationRetrievalOptions.UserAndEvent, token));
 
         while (await reader.HasMoreAsync(cancellationToken))
@@ -110,7 +109,8 @@ internal class EventSynchronizationService : IEventSynchronizationService
         return filteredServices;
     }
 
-    private async Task<ExternalAccount> CreateExternalAccountIfNotExists(IExternalSyncProviderService service, Registration registration, EventSynchronizationResult result)
+    private async Task<ExternalAccount> CreateExternalAccountIfNotExists(IExternalSyncProviderService service,
+        Registration registration, EventSynchronizationResult result)
     {
         try
         {
@@ -123,7 +123,8 @@ internal class EventSynchronizationService : IEventSynchronizationService
             var existingAccount = await service.FindExistingAccountAsync(registration);
             if (existingAccount != null)
             {
-                _logger.LogInformation("{serviceName} account exists for registration [{registrationId}], user [{userId}]: [{externalAccountId}] ({localAccountId})",
+                _logger.LogInformation(
+                    "{serviceName} account exists for registration [{registrationId}], user [{userId}]: [{externalAccountId}] ({localAccountId})",
                     service.Name,
                     registration.RegistrationId,
                     registration.UserId,
@@ -133,24 +134,24 @@ internal class EventSynchronizationService : IEventSynchronizationService
                 result.ExistingUserIds.Add(registration.UserId);
                 return existingAccount;
             }
-            else
-            {
-                var newAccount = await service.CreateAccountForUserAsync(registration);
 
-                _logger.LogInformation("New {serviceName} account created for registration [{registrationId}], user [{userId}]: [{externalAccountId}] ({localAccountId})",
-                    service.Name,
-                    registration.RegistrationId,
-                    registration.UserId,
-                    newAccount.ExternalAccountId,
-                    newAccount.LocalId);
+            var newAccount = await service.CreateAccountForUserAsync(registration);
 
-                result.CreatedUserIds.Add(registration.UserId);
-                return newAccount;
-            }
+            _logger.LogInformation(
+                "New {serviceName} account created for registration [{registrationId}], user [{userId}]: [{externalAccountId}] ({localAccountId})",
+                service.Name,
+                registration.RegistrationId,
+                registration.UserId,
+                newAccount.ExternalAccountId,
+                newAccount.LocalId);
+
+            result.CreatedUserIds.Add(registration.UserId);
+            return newAccount;
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Failed to create new {serviceName} account for user registration [{registrationId}], user [{userId}]",
+            _logger.LogError(e,
+                "Failed to create new {serviceName} account for user registration [{registrationId}], user [{userId}]",
                 service.Name,
                 registration.RegistrationId,
                 registration.UserId);
@@ -160,7 +161,8 @@ internal class EventSynchronizationService : IEventSynchronizationService
         }
     }
 
-    private async Task SyncRegistrationAsync(IExternalSyncProviderService service, Registration registration, ExternalAccount externalAccount, EventSynchronizationResult result)
+    private async Task SyncRegistrationAsync(IExternalSyncProviderService service, Registration registration,
+        ExternalAccount externalAccount, EventSynchronizationResult result)
     {
         try
         {

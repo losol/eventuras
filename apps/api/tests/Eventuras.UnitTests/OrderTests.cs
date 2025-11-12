@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Eventuras.Domain;
 using Xunit;
 using static Eventuras.Domain.Order;
@@ -8,6 +9,19 @@ namespace Eventuras.UnitTests;
 
 public class OrderTests
 {
+    protected static Order getOrderWithStatus(OrderStatus status)
+    {
+        // Create a new order
+        var order = new Order();
+
+        // Set its status using reflection
+        var propinfo = order.GetType().GetField("_status", BindingFlags.NonPublic
+                                                           | BindingFlags.Instance);
+        propinfo.SetValue(order, status);
+
+        return order;
+    }
+
     public class SetStatus_Should
     {
         [Theory]
@@ -78,35 +92,20 @@ public class OrderTests
         [Fact]
         public void ThrowExceptionIfNotInvoiced()
         {
-            Order order = new Order();
+            var order = new Order();
             Assert.Throws<InvalidOperationException>(() => order.CreateRefundOrder());
         }
 
         [Fact]
         public void Succeed()
         {
-            Order order = getOrderWithStatus(OrderStatus.Invoiced);
+            var order = getOrderWithStatus(OrderStatus.Invoiced);
             order.OrderLines = new List<OrderLine>
             {
-                new OrderLine { ProductId = 1, Quantity = 1, Price = 10 },
-                new OrderLine { ProductId = 2, Quantity = 1, Price = 10 }
+                new() { ProductId = 1, Quantity = 1, Price = 10 }, new() { ProductId = 2, Quantity = 1, Price = 10 }
             };
             var refund = order.CreateRefundOrder();
             Assert.Equal(-order.TotalAmount, refund.TotalAmount);
         }
     }
-
-    protected static Order getOrderWithStatus(OrderStatus status)
-    {
-        // Create a new order
-        Order order = new Order();
-
-        // Set its status using reflection
-        var propinfo = order.GetType().GetField("_status", System.Reflection.BindingFlags.NonPublic
-| System.Reflection.BindingFlags.Instance);
-        propinfo.SetValue(order, status);
-
-        return order;
-    }
-
 }

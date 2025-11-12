@@ -1,7 +1,6 @@
 using System;
 using System.Diagnostics;
 using System.Net.Mime;
-using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services;
@@ -389,7 +388,7 @@ public class EventCertificatesControllerTest : IClassFixture<CustomWebApiApplica
         await using var u1 = await scope.CreateUserAsync(email: "user1@test.com");
         await using var u2 = await scope.CreateUserAsync(email: "user2@test.com");
         await using var r1 =
-            await scope.CreateRegistrationAsync(evt.Entity, u1.Entity, Registration.RegistrationStatus.Verified);
+            await scope.CreateRegistrationAsync(evt.Entity, u1.Entity);
         await using var r2 =
             await scope.CreateRegistrationAsync(evt.Entity, u2.Entity, Registration.RegistrationStatus.Finished);
 

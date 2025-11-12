@@ -6,9 +6,9 @@ using Eventuras.Services.Exceptions;
 namespace Eventuras.Services.Organizations;
 
 /// <summary>
-/// Provides access to the currently active organization.
-/// The active org may be defined by the request hostname which should be equal
-/// to organization's <see cref="OrganizationHostname"/>.
+///     Provides access to the currently active organization.
+///     The active org may be defined by the request hostname which should be equal
+///     to organization's <see cref="OrganizationHostname" />.
 /// </summary>
 public interface ICurrentOrganizationAccessorService
 {

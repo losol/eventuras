@@ -15,21 +15,21 @@ internal static class CertificatesQueryableExtensions
         if (filter.EventId.HasValue)
         {
             query = from cert in query
-                    join reg in context.Registrations
-                        on cert equals reg.Certificate
-                    join evt in context.EventInfos
-                        on reg.EventInfo equals evt
-                    where evt.EventInfoId == filter.EventId
-                    select cert;
+                join reg in context.Registrations
+                    on cert equals reg.Certificate
+                join evt in context.EventInfos
+                    on reg.EventInfo equals evt
+                where evt.EventInfoId == filter.EventId
+                select cert;
         }
 
         if (filter.RegistrationId.HasValue)
         {
             query = from cert in query
-                    join reg in context.Registrations
-                        on cert equals reg.Certificate
-                    where reg.RegistrationId == filter.RegistrationId
-                    select cert;
+                join reg in context.Registrations
+                    on cert equals reg.Certificate
+                where reg.RegistrationId == filter.RegistrationId
+                select cert;
         }
 
         if (filter.Statuses?.Any() == true)

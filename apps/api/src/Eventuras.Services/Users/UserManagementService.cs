@@ -14,9 +14,9 @@ namespace Eventuras.Services.Users;
 public class UserManagementService : IUserManagementService
 {
     private readonly ApplicationDbContext _context;
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly IUserAccessControlService _userAccessControlService;
     private readonly ILogger<UserManagementService> _logger;
+    private readonly IUserAccessControlService _userAccessControlService;
+    private readonly UserManager<ApplicationUser> _userManager;
 
     public UserManagementService(
         ApplicationDbContext context,
@@ -55,15 +55,13 @@ public class UserManagementService : IUserManagementService
                 throw new DuplicateException(
                     $"An archived user with email {email} already exists. Contact admin to unarchive the user.");
             }
-            else
-            {
-                _logger.LogWarning("Found archived user with email {email}.", email);
-                throw new DuplicateException($"An user with email {email} already exists.");
-            }
+
+            _logger.LogWarning("Found archived user with email {email}.", email);
+            throw new DuplicateException($"An user with email {email} already exists.");
         }
 
 
-        var user = new ApplicationUser() { UserName = email, Email = email, PhoneNumber = phoneNumber };
+        var user = new ApplicationUser { UserName = email, Email = email, PhoneNumber = phoneNumber };
 
 
         var create = await _userManager.CreateAsync(user);
@@ -77,7 +75,8 @@ public class UserManagementService : IUserManagementService
             }
 
             var errorMessage = errorMessageBuilder.ToString();
-            _logger.LogError("Trouble with creating user with email {email}. Error: {errorMessage}", email, errorMessage);
+            _logger.LogError("Trouble with creating user with email {email}. Error: {errorMessage}", email,
+                errorMessage);
             throw new Exception($"Trouble with creating user with email {email}. Error: {errorMessage}");
         }
 
@@ -104,6 +103,6 @@ public class UserManagementService : IUserManagementService
             throw new DuplicateException($"User with email {user.Email} already exists.");
         }
 
-        await _context.UpdateAsync(user, cancellationToken: cancellationToken);
+        await _context.UpdateAsync(user, cancellationToken);
     }
 }

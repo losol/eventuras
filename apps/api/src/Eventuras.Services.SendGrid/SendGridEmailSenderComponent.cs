@@ -12,8 +12,8 @@ namespace Eventuras.Services.SendGrid;
 
 internal class SendGridEmailSenderComponent : IConfigurableEmailSenderComponent
 {
-    private readonly IOrganizationSettingsAccessorService _organizationSettingsAccessorService;
     private readonly IHealthCheckStorage _healthCheckStorage;
+    private readonly IOrganizationSettingsAccessorService _organizationSettingsAccessorService;
 
     public SendGridEmailSenderComponent(
         IOrganizationSettingsAccessorService organizationSettingsAccessorService,
@@ -26,7 +26,8 @@ internal class SendGridEmailSenderComponent : IConfigurableEmailSenderComponent
             new ArgumentNullException(nameof(healthCheckStorage));
     }
 
-    public async Task<IEmailSender> CreateEmailSenderAsync(int? organizationId = null, CancellationToken cancellationToken = default)
+    public async Task<IEmailSender> CreateEmailSenderAsync(int? organizationId = null,
+        CancellationToken cancellationToken = default)
     {
         var settings = await _organizationSettingsAccessorService
             .ReadOrganizationSettingsAsync<OrganizationSendGridSettings>(organizationId);

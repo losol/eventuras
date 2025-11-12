@@ -15,10 +15,7 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
 {
     private readonly CustomWebApiApplicationFactory<Program> _factory;
 
-    public EventsControllerTests(CustomWebApiApplicationFactory<Program> factory)
-    {
-        _factory = factory;
-    }
+    public EventsControllerTests(CustomWebApiApplicationFactory<Program> factory) => _factory = factory;
 
     public void Dispose()
     {
@@ -50,30 +47,17 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
         response.CheckBadRequest();
     }
 
-    public static object[][] GetInvalidFilterParams()
-    {
-        return new[]
+    public static object[][] GetInvalidFilterParams() =>
+        new[]
         {
-            new object[] { "page=asd" },
-            new object[] { "count=asd" },
-            new object[] { "page=-1" },
-            new object[] { "page=0" },
-            new object[] { "count=-1" },
-            new object[] { "type=invalid" },
-            new object[] { "type=-1" },
-            new object[] { "type=100" },
-            new object[] { "start=asd" },
-            new object[] { "start=1" },
-            new object[] { "end=asd" },
-            new object[] { "end=1" },
-            new object[] { "period=asd" },
-            new object[] { "period=-1" },
-            new object[] { "period=100" },
-            new object[] { "organizationId=-1" },
-            new object[] { "organizationId=0" },
-            new object[] { "organizationId=abc" },
+            new object[] { "page=asd" }, new object[] { "count=asd" }, new object[] { "page=-1" },
+            new object[] { "page=0" }, new object[] { "count=-1" }, new object[] { "type=invalid" },
+            new object[] { "type=-1" }, new object[] { "type=100" }, new object[] { "start=asd" },
+            new object[] { "start=1" }, new object[] { "end=asd" }, new object[] { "end=1" },
+            new object[] { "period=asd" }, new object[] { "period=-1" }, new object[] { "period=100" },
+            new object[] { "organizationId=-1" }, new object[] { "organizationId=0" },
+            new object[] { "organizationId=abc" }
         };
-    }
 
     [Fact]
     public async Task Should_Use_Paging_For_Event_List()
@@ -102,9 +86,12 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
     public async Task Should_Use_Sorting()
     {
         using var scope = _factory.Services.NewTestScope();
-        using var e1 = await scope.CreateEventAsync("Name 1", "Description 1", dateStart: SystemClock.Instance.Today().PlusDays(1));
-        using var e2 = await scope.CreateEventAsync("Name 1", "Description 2", dateStart: SystemClock.Instance.Today().PlusDays(2));
-        using var e3 = await scope.CreateEventAsync("Name 2", "Description 1", dateStart: SystemClock.Instance.Today().PlusDays(3));
+        using var e1 = await scope.CreateEventAsync("Name 1", "Description 1",
+            dateStart: SystemClock.Instance.Today().PlusDays(1));
+        using var e2 = await scope.CreateEventAsync("Name 1", "Description 2",
+            dateStart: SystemClock.Instance.Today().PlusDays(2));
+        using var e3 = await scope.CreateEventAsync("Name 2", "Description 1",
+            dateStart: SystemClock.Instance.Today().PlusDays(3));
 
         var client = _factory.CreateClient();
 
@@ -154,7 +141,8 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
     public async Task Should_Not_List_Draft_Events()
     {
         using var scope = _factory.Services.NewTestScope();
-        using var e1 = await scope.CreateEventAsync(dateStart: SystemClock.Instance.Today().PlusDays(1), status: EventInfo.EventInfoStatus.Draft);
+        using var e1 = await scope.CreateEventAsync(dateStart: SystemClock.Instance.Today().PlusDays(1),
+            status: EventInfo.EventInfoStatus.Draft);
         using var e2 = await scope.CreateEventAsync(dateStart: SystemClock.Instance.Today().PlusDays(2));
         using var e3 = await scope.CreateEventAsync(dateStart: SystemClock.Instance.Today().PlusDays(3));
 
@@ -171,7 +159,8 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
     public async Task Should_List_Draft_Events_With_Query_Parameter()
     {
         using var scope = _factory.Services.NewTestScope();
-        using var e1 = await scope.CreateEventAsync(dateStart: SystemClock.Instance.Today().PlusDays(1), status: EventInfo.EventInfoStatus.Draft);
+        using var e1 = await scope.CreateEventAsync(dateStart: SystemClock.Instance.Today().PlusDays(1),
+            status: EventInfo.EventInfoStatus.Draft);
         using var e2 = await scope.CreateEventAsync(dateStart: SystemClock.Instance.Today().PlusDays(2));
         using var e3 = await scope.CreateEventAsync(dateStart: SystemClock.Instance.Today().PlusDays(3));
 
@@ -279,8 +268,7 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
             /*
              * Event:     [-------------------
              * Filter:    [-------------------
-             */
-            new object[] { DateFilter.Intersect("I1.1", yesterday, null, yesterday) },
+             */ new object[] { DateFilter.Intersect("I1.1", yesterday, null, yesterday) },
             new object[] { DateFilter.Intersect("I1.2", today, null, today) },
             new object[] { DateFilter.Intersect("I1.3", tomorrow, null, tomorrow) },
             new object[]
@@ -291,40 +279,34 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
             {
                 DateFilter.Intersect("I1.5", tomorrow, null, tomorrow)
             }, // start date itself should be included
-            new object[]
-                { DateFilter.Intersect("I1.6", today, null, today) }, // start date itself should be included
+            new object[] { DateFilter.Intersect("I1.6", today, null, today) }, // start date itself should be included
 
             /*
              * Event:     [-------------------
              * Filter:   [--------------------
-             */
-            new object[] { DateFilter.Intersect("I1.7", tomorrow, null, yesterday) },
+             */ new object[] { DateFilter.Intersect("I1.7", tomorrow, null, yesterday) },
             new object[] { DateFilter.Intersect("I1.8", tomorrow, null, today) },
 
             /*
              * Event:     [-------------------
              * Filter:      [-----------------
-             */
-            new object[] { DateFilter.Intersect("I1.9", yesterday, null, today) },
+             */ new object[] { DateFilter.Intersect("I1.9", yesterday, null, today) },
             new object[] { DateFilter.Intersect("I1.10", yesterday, null, tomorrow) },
 
             /*
              * Event:     [--------------]
              * Filter:    [-----------------
-             */
-            new object[] { DateFilter.Intersect("I1.11", today, tomorrow, today) },
+             */ new object[] { DateFilter.Intersect("I1.11", today, tomorrow, today) },
 
             /*
              * Event:     [--------------]
              * Filter:                 [---------------
-             */
-            new object[] { DateFilter.Intersect("I1.12", yesterday, tomorrow, today) },
+             */ new object[] { DateFilter.Intersect("I1.12", yesterday, tomorrow, today) },
 
             /*
              * Event:     [--------------]
              * Filter:                   [---------------
-             */
-            new object[] { DateFilter.Intersect("I1.13", yesterday, today, today) }, // end date should be included
+             */ new object[] { DateFilter.Intersect("I1.13", yesterday, today, today) }, // end date should be included
 
             // I2. end date only filter
 
@@ -347,16 +329,14 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
             /*
              * Event:     [----------]
              * Filter:    --------]
-             */
-            new object[] { DateFilter.Intersect("I2.6", yesterday, tomorrow, null, today) },
+             */ new object[] { DateFilter.Intersect("I2.6", yesterday, tomorrow, null, today) },
 
             // I3. start & end date filter
 
             /*
              * Event:                   [-------------------]
              * Filter: [----------------]
-             */
-            new object[]
+             */ new object[]
             {
                 DateFilter.Intersect("I3.1", today.PlusDays(-5), today.PlusDays(5), today.PlusDays(-10),
                     today.PlusDays(-5))
@@ -367,13 +347,14 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
              * Filter: [-------------]
              */
             new object[]
-                { DateFilter.Intersect("I3.2", today.PlusDays(-5), today.PlusDays(5), today.PlusDays(-10), today) },
+            {
+                DateFilter.Intersect("I3.2", today.PlusDays(-5), today.PlusDays(5), today.PlusDays(-10), today)
+            },
 
             /*
              * Event:     [-------------------]
              * Filter:         [--------]
-             */
-            new object[]
+             */ new object[]
             {
                 DateFilter.Intersect("I3.3", today.PlusDays(-10), today.PlusDays(10), today.PlusDays(-5),
                     today.PlusDays(5))
@@ -384,20 +365,23 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
              * Filter:               [--------]
              */
             new object[]
-                { DateFilter.Intersect("I3.4", today.PlusDays(-5), today.PlusDays(5), today, today.PlusDays(5)) },
+            {
+                DateFilter.Intersect("I3.4", today.PlusDays(-5), today.PlusDays(5), today, today.PlusDays(5))
+            },
 
             /*
              * Event:     [-------------------]
              * Filter:               [-----------------]
              */
             new object[]
-                { DateFilter.Intersect("I3.5", today.PlusDays(-5), today.PlusDays(5), today, today.PlusDays(10)) },
+            {
+                DateFilter.Intersect("I3.5", today.PlusDays(-5), today.PlusDays(5), today, today.PlusDays(10))
+            },
 
             /*
              * Event:     [-------------------]
              * Filter:                        [-----------------]
-             */
-            new object[]
+             */ new object[]
             {
                 DateFilter.Intersect("I3.6", today.PlusDays(-5), today.PlusDays(5), today.PlusDays(5),
                     today.PlusDays(10))
@@ -406,8 +390,7 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
             /*
              * Event:     [-------------------]
              * Filter:  [------------------------]
-             */
-            new object[]
+             */ new object[]
             {
                 DateFilter.Intersect("I3.7", today.PlusDays(-5), today.PlusDays(5), today.PlusDays(-10),
                     today.PlusDays(10))
@@ -419,8 +402,7 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
             /*
              * Event:     [-------------------
              * Filter:    [-------------------
-             */
-            new object[] { DateFilter.Contain("C1.1", yesterday, null, yesterday) },
+             */ new object[] { DateFilter.Contain("C1.1", yesterday, null, yesterday) },
             new object[] { DateFilter.Contain("C1.2", today, null, today) },
             new object[] { DateFilter.Contain("C1.3", tomorrow, null, tomorrow) },
             new object[]
@@ -431,21 +413,18 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
             {
                 DateFilter.Contain("C1.5", tomorrow, null, tomorrow)
             }, // start date itself should be included
-            new object[]
-                { DateFilter.Contain("C1.6", today, null, today) }, // start date itself should be included
+            new object[] { DateFilter.Contain("C1.6", today, null, today) }, // start date itself should be included
 
             /*
              * Event:     [-------------------
              * Filter:   [--------------------
-             */
-            new object[] { DateFilter.Contain("C1.7", tomorrow, null, yesterday) },
+             */ new object[] { DateFilter.Contain("C1.7", tomorrow, null, yesterday) },
             new object[] { DateFilter.Contain("C1.8", tomorrow, null, today) },
 
             /*
              * Event:     [--------------]
              * Filter:    [-----------------
-             */
-            new object[] { DateFilter.Contain("C1.9", today, tomorrow, today) },
+             */ new object[] { DateFilter.Contain("C1.9", today, tomorrow, today) },
 
             // C2. end date only filter
 
@@ -468,12 +447,11 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
             /*
              * Event:     [-------------------]
              * Filter:  [------------------------]
-             */
-            new object[]
+             */ new object[]
             {
                 DateFilter.Contain("C3.1", today.PlusDays(-5), today.PlusDays(5), today.PlusDays(-10),
                     today.PlusDays(10))
-            },
+            }
         };
     }
 
@@ -520,24 +498,21 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
             /*
              * Event:     [--------------]
              * Filter:                    [---------------
-             */
-            new object[] { DateFilter.Intersect("~I1.1", yesterday, today, tomorrow) },
+             */ new object[] { DateFilter.Intersect("~I1.1", yesterday, today, tomorrow) },
 
             // I2. end date only filter
 
             /*
              * Event:              [----------]
              * Filter:    --------]
-             */
-            new object[] { DateFilter.Intersect("~I2.1", today, tomorrow, null, yesterday) },
+             */ new object[] { DateFilter.Intersect("~I2.1", today, tomorrow, null, yesterday) },
 
             // I3. start & end date filter
 
             /*
              * Event:                    [-------------------]
              * Filter: [----------------]
-             */
-            new object[]
+             */ new object[]
             {
                 DateFilter.Intersect("~I3.1", today.PlusDays(-5), today.PlusDays(5), today.PlusDays(-10),
                     today.PlusDays(-6))
@@ -546,8 +521,7 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
             /*
              * Event:     [-------------------]
              * Filter:                         [-----------------]
-             */
-            new object[]
+             */ new object[]
             {
                 DateFilter.Intersect("~I3.2", today.PlusDays(-5), today.PlusDays(5), today.PlusDays(6),
                     today.PlusDays(10))
@@ -560,36 +534,31 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
             /*
              * Event:     [-------------------
              * Filter:      [--------------------
-             */
-            new object[] { DateFilter.Contain("~C1.1", yesterday, null, today) },
+             */ new object[] { DateFilter.Contain("~C1.1", yesterday, null, today) },
             new object[] { DateFilter.Contain("~C1.2", today.PlusDays(-1), null, today) },
 
             /*
              * Event:     ----------------]
              * Filter:      [--------------------
-             */
-            new object[] { DateFilter.Contain("~C1.3", null, tomorrow, today) },
+             */ new object[] { DateFilter.Contain("~C1.3", null, tomorrow, today) },
 
             /*
              * Event:     [----------]
              * Filter:      [--------------------
-             */
-            new object[] { DateFilter.Contain("~C1.4", yesterday, tomorrow, today) },
+             */ new object[] { DateFilter.Contain("~C1.4", yesterday, tomorrow, today) },
 
             // C2. end date only filter
 
             /*
              * Event:     -----------]
              * Filter:    ----------]
-             */
-            new object[] { DateFilter.Contain("~C2.1", null, tomorrow, null, today) },
+             */ new object[] { DateFilter.Contain("~C2.1", null, tomorrow, null, today) },
             new object[] { DateFilter.Contain("~C2.2", null, today.PlusDays(-1), null, today) },
 
             /*
              * Event:     [----------]
              * Filter:    ----------]
-             */
-            new object[] { DateFilter.Contain("~C2.3", yesterday, tomorrow, null, today) },
+             */ new object[] { DateFilter.Contain("~C2.3", yesterday, tomorrow, null, today) },
             new object[] { DateFilter.Contain("~C2.4", yesterday, today.PlusDays(1), null, today) },
 
             // C3. start & end date filter
@@ -597,8 +566,7 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
             /*
              * Event:                   [-------------------]
              * Filter: [----------------]
-             */
-            new object[]
+             */ new object[]
             {
                 DateFilter.Contain("~C3.1", today.PlusDays(-5), today.PlusDays(5), today.PlusDays(-10),
                     today.PlusDays(-5))
@@ -609,13 +577,14 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
              * Filter: [-------------]
              */
             new object[]
-                { DateFilter.Contain("~C3.2", today.PlusDays(-5), today.PlusDays(5), today.PlusDays(-10), today) },
+            {
+                DateFilter.Contain("~C3.2", today.PlusDays(-5), today.PlusDays(5), today.PlusDays(-10), today)
+            },
 
             /*
              * Event:     [-------------------]
              * Filter:         [--------]
-             */
-            new object[]
+             */ new object[]
             {
                 DateFilter.Contain("~C3.3", today.PlusDays(-10), today.PlusDays(10), today.PlusDays(-5),
                     today.PlusDays(5))
@@ -626,20 +595,23 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
              * Filter:               [--------]
              */
             new object[]
-                { DateFilter.Contain("~C3.4", today.PlusDays(-5), today.PlusDays(5), today, today.PlusDays(5)) },
+            {
+                DateFilter.Contain("~C3.4", today.PlusDays(-5), today.PlusDays(5), today, today.PlusDays(5))
+            },
 
             /*
              * Event:     [-------------------]
              * Filter:               [-----------------]
              */
             new object[]
-                { DateFilter.Contain("~C3.5", today.PlusDays(-5), today.PlusDays(5), today, today.PlusDays(10)) },
+            {
+                DateFilter.Contain("~C3.5", today.PlusDays(-5), today.PlusDays(5), today, today.PlusDays(10))
+            },
 
             /*
              * Event:     [-------------------]
              * Filter:                        [-----------------]
-             */
-            new object[]
+             */ new object[]
             {
                 DateFilter.Contain("~C3.6", today.PlusDays(-5), today.PlusDays(5), today.PlusDays(5),
                     today.PlusDays(10))
@@ -740,9 +712,8 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
         response.CheckBadRequest();
     }
 
-    public static object[][] GetInvalidEventFormParams()
-    {
-        return new[]
+    public static object[][] GetInvalidEventFormParams() =>
+        new[]
         {
             new object[]
             {
@@ -756,8 +727,7 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
                 new
                 {
                     // invalid type
-                    slug = "test",
-                    type = "some"
+                    slug = "test", type = "some"
                 }
             },
             new object[]
@@ -765,9 +735,7 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
                 new
                 {
                     // end date before start date
-                    slug = "test",
-                    dateStart = "2030-02-01",
-                    dateEnd = "2030-01-01"
+                    slug = "test", dateStart = "2030-02-01", dateEnd = "2030-01-01"
                 }
             },
             new object[]
@@ -775,8 +743,7 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
                 new
                 {
                     // invalid start date
-                    slug = "test",
-                    dateStart = "asd"
+                    slug = "test", dateStart = "asd"
                 }
             },
             new object[]
@@ -784,12 +751,10 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
                 new
                 {
                     // invalid end date
-                    slug = "test",
-                    dateEnd = "asd"
+                    slug = "test", dateEnd = "asd"
                 }
-            },
+            }
         };
-    }
 
     [Fact]
     public async Task Should_Check_For_Duplicate_Slug_When_Creating_Event()
@@ -798,12 +763,8 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
         using var evt = await scope.CreateEventAsync(slug: "test");
 
         var client = _factory.CreateClient().AuthenticatedAsAdmin();
-        var response = await client.PostAsync("/v3/events", new
-        {
-            title = "asdf",
-            organizationId = 1,
-            slug = evt.Entity.Slug
-        });
+        var response = await client.PostAsync("/v3/events",
+            new { title = "asdf", organizationId = 1, slug = evt.Entity.Slug });
         response.CheckConflict();
     }
 
@@ -812,15 +773,11 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
     {
         using var scope = _factory.Services.NewTestScope();
         using var evt =
-            await scope.CreateEventAsync(title: "asdf", organizationId: 1, slug: "test", archived: true);
+            await scope.CreateEventAsync("asdf", organizationId: 1, slug: "test", archived: true);
 
         var client = _factory.CreateClient().AuthenticatedAsAdmin();
-        var response = await client.PostAsync("/v3/events", new
-        {
-            title = "asdf",
-            organizationId = 1,
-            slug = evt.Entity.Slug
-        });
+        var response = await client.PostAsync("/v3/events",
+            new { title = "asdf", organizationId = 1, slug = evt.Entity.Slug });
         response.CheckConflict();
     }
 
@@ -832,12 +789,8 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
         using var scope = _factory.Services.NewTestScope();
 
         var client = _factory.CreateClient().Authenticated(role: role);
-        var response = await client.PostAsync("/v3/events", new
-        {
-            title = "test title",
-            organizationId = 1,
-            slug = "test"
-        });
+        var response =
+            await client.PostAsync("/v3/events", new { title = "test title", organizationId = 1, slug = "test" });
         response.CheckOk();
 
         var e = await scope.Db.EventInfos.AsNoTracking().SingleAsync(e => e.Slug == "test");
@@ -856,21 +809,22 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
         using var scope = _factory.Services.NewTestScope();
 
         var client = _factory.CreateClient().Authenticated(role: role);
-        var response = await client.PostAsync("/v3/events", new
-        {
-            type = (int)EventInfo.EventInfoType.Conference,
-            title = "Test Event",
-            slug = "test",
-            organizationId = 1,
-            category = "Test event category",
-            description = "Test event description",
-            onDemand = true,
-            featured = true,
-            program = "Test event program",
-            practicalInformation = "Test information",
-            dateStart = "2030-01-01",
-            dateEnd = "2030-01-02"
-        });
+        var response = await client.PostAsync("/v3/events",
+            new
+            {
+                type = (int)EventInfo.EventInfoType.Conference,
+                title = "Test Event",
+                slug = "test",
+                organizationId = 1,
+                category = "Test event category",
+                description = "Test event description",
+                onDemand = true,
+                featured = true,
+                program = "Test event program",
+                practicalInformation = "Test information",
+                dateStart = "2030-01-01",
+                dateEnd = "2030-01-02"
+            });
         response.CheckOk();
 
         var evt = await scope.Db.EventInfos
@@ -900,7 +854,7 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
     public async Task Should_Require_Auth_To_Update_Event()
     {
         var client = _factory.CreateClient();
-        var response = await client.PutAsync($"/v3/events/10001", new { });
+        var response = await client.PutAsync("/v3/events/10001", new { });
         response.CheckUnauthorized();
     }
 
@@ -953,12 +907,8 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
         using var e2 = await scope.CreateEventAsync();
 
         var client = _factory.CreateClient().AuthenticatedAsAdmin();
-        var response = await client.PutAsync($"/v3/events/{e1.Entity.EventInfoId}", new
-        {
-            organizationId = 1,
-            title = "test title",
-            slug = e2.Entity.Slug
-        });
+        var response = await client.PutAsync($"/v3/events/{e1.Entity.EventInfoId}",
+            new { organizationId = 1, title = "test title", slug = e2.Entity.Slug });
         response.CheckConflict();
     }
 
@@ -969,12 +919,8 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
         using var evt = await scope.CreateEventAsync(slug: "test");
 
         var client = _factory.CreateClient().AuthenticatedAsAdmin();
-        var response = await client.PutAsync($"/v3/events/{evt.Entity.EventInfoId}", new
-        {
-            title = "asdf",
-            organizationId = 1,
-            slug = evt.Entity.Slug
-        });
+        var response = await client.PutAsync($"/v3/events/{evt.Entity.EventInfoId}",
+            new { title = "asdf", organizationId = 1, slug = evt.Entity.Slug });
         response.CheckOk();
 
         var updatedEvent = await scope.Db.EventInfos
@@ -993,21 +939,22 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
         using var evt = await scope.CreateEventAsync();
 
         var client = _factory.CreateClient().Authenticated(role: role);
-        var response = await client.PutAsync($"/v3/events/{evt.Entity.EventInfoId}", new
-        {
-            type = EventInfo.EventInfoType.Other,
-            title = "Test Event",
-            slug = "test",
-            organizationId = 1,
-            category = "Test event category",
-            description = "Test event description",
-            onDemand = true,
-            featured = true,
-            program = "Test event program",
-            practicalInformation = "Test information",
-            dateStart = "2030-01-01",
-            dateEnd = "2030-01-02"
-        });
+        var response = await client.PutAsync($"/v3/events/{evt.Entity.EventInfoId}",
+            new
+            {
+                type = EventInfo.EventInfoType.Other,
+                title = "Test Event",
+                slug = "test",
+                organizationId = 1,
+                category = "Test event category",
+                description = "Test event description",
+                onDemand = true,
+                featured = true,
+                program = "Test event program",
+                practicalInformation = "Test information",
+                dateStart = "2030-01-01",
+                dateEnd = "2030-01-02"
+            });
         response.CheckOk();
 
         var updated = await scope.Db.EventInfos
@@ -1094,18 +1041,6 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
 
 public class DateFilter
 {
-    public string Name { get; }
-
-    public LocalDate? EventStart { get; }
-
-    public LocalDate? EventEnd { get; }
-
-    public LocalDate? FilterStart { get; }
-
-    public LocalDate? FilterEnd { get; }
-
-    public PeriodMatchingKind? Matching { get; }
-
     private DateFilter(
         string name,
         LocalDate? eventStart,
@@ -1121,6 +1056,18 @@ public class DateFilter
         FilterEnd = filterEnd;
         Matching = matching;
     }
+
+    public string Name { get; }
+
+    public LocalDate? EventStart { get; }
+
+    public LocalDate? EventEnd { get; }
+
+    public LocalDate? FilterStart { get; }
+
+    public LocalDate? FilterEnd { get; }
+
+    public PeriodMatchingKind? Matching { get; }
 
     public string ToQueryString()
     {
@@ -1143,48 +1090,25 @@ public class DateFilter
         return string.Join("&", parts);
     }
 
-    public override string ToString()
-    {
-        return Name;
-    }
+    public override string ToString() => Name;
 
-    public static DateFilter Default(
-        string name,
-        LocalDate? eventStart,
-        LocalDate? eventEnd = null,
-        LocalDate? filterStart = null,
-        LocalDate? filterEnd = null)
-    {
-        return new DateFilter(name, eventStart, eventEnd, filterStart, filterEnd, null);
-    }
+    public static DateFilter Default(string name, LocalDate? eventStart, LocalDate? eventEnd = null,
+        LocalDate? filterStart = null, LocalDate? filterEnd = null) =>
+        new(name, eventStart, eventEnd, filterStart, filterEnd, null);
 
-    public static DateFilter Match(
-        string name,
-        LocalDate? eventStart,
-        LocalDate? eventEnd = null,
-        LocalDate? filterStart = null,
-        LocalDate? filterEnd = null)
-    {
-        return new DateFilter(name, eventStart, eventEnd, filterStart, filterEnd, PeriodMatchingKind.Match);
-    }
+    public static DateFilter Match(string name, LocalDate? eventStart, LocalDate? eventEnd = null,
+        LocalDate? filterStart = null, LocalDate? filterEnd = null) =>
+        new(name, eventStart, eventEnd, filterStart, filterEnd, PeriodMatchingKind.Match);
 
     public static DateFilter Intersect(
         string name,
         LocalDate? eventStart,
         LocalDate? eventEnd = null,
         LocalDate? filterStart = null,
-        LocalDate? filterEnd = null)
-    {
-        return new DateFilter(name, eventStart, eventEnd, filterStart, filterEnd, PeriodMatchingKind.Intersect);
-    }
+        LocalDate? filterEnd = null) =>
+        new(name, eventStart, eventEnd, filterStart, filterEnd, PeriodMatchingKind.Intersect);
 
-    public static DateFilter Contain(
-        string name,
-        LocalDate? eventStart,
-        LocalDate? eventEnd = null,
-        LocalDate? filterStart = null,
-        LocalDate? filterEnd = null)
-    {
-        return new DateFilter(name, eventStart, eventEnd, filterStart, filterEnd, PeriodMatchingKind.Contain);
-    }
+    public static DateFilter Contain(string name, LocalDate? eventStart, LocalDate? eventEnd = null,
+        LocalDate? filterStart = null, LocalDate? filterEnd = null) =>
+        new(name, eventStart, eventEnd, filterStart, filterEnd, PeriodMatchingKind.Contain);
 }

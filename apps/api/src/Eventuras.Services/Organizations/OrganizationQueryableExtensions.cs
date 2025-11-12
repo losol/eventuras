@@ -12,7 +12,9 @@ internal static class OrganizationQueryableExtensions
     public static IQueryable<Organization> AddFilter(this IQueryable<Organization> query, OrganizationFilter filter)
     {
         if (filter == null)
+        {
             throw new ArgumentNullException(nameof(filter));
+        }
 
         if (filter.InactiveOnly)
         {
@@ -30,7 +32,9 @@ internal static class OrganizationQueryableExtensions
         OrganizationRetrievalOptions options)
     {
         if (options == null)
+        {
             throw new ArgumentNullException(nameof(options));
+        }
 
         if (options.LoadMembers)
         {
@@ -69,8 +73,6 @@ internal static class OrganizationQueryableExtensions
     }
 
     public static IQueryable<Organization> HasOrganizationMember(this IQueryable<Organization> query,
-        ClaimsPrincipal user)
-    {
-        return query.Where(o => o.Members.Any(m => m.UserId == user.GetUserId()));
-    }
+        ClaimsPrincipal user) =>
+        query.Where(o => o.Members.Any(m => m.UserId == user.GetUserId()));
 }

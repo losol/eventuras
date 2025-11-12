@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
@@ -19,9 +18,57 @@ public class RegistrationOrdersControllerTest : IClassFixture<CustomWebApiApplic
 {
     private readonly CustomWebApiApplicationFactory<Program> _factory;
 
-    public RegistrationOrdersControllerTest(CustomWebApiApplicationFactory<Program> factory)
+    public RegistrationOrdersControllerTest(CustomWebApiApplicationFactory<Program> factory) => _factory = factory;
+
+    private async Task<Order> CheckOrderCreatedAsync(TestServiceScope scope, Registration reg,
+        params Product[] products)
     {
-        _factory = factory;
+        var order = await scope.Db.Orders
+            .AsNoTracking()
+            .Include(o => o.OrderLines)
+            .SingleAsync(o => o.RegistrationId == reg.RegistrationId);
+
+        Assert.Equal(products.Length, order.OrderLines.Count);
+        Assert.All(order.OrderLines, line => Assert.Contains(products, p => p.ProductId == line.ProductId));
+
+        return order;
+    }
+
+    private static void CheckRegistrationOrderedProducts(IServiceScope scope, int registrationId,
+        params OrderLineModel[] expectedLines)
+    {
+        var dbCtx = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+        var reg = dbCtx.Registrations
+            .Include(registration => registration.Orders)
+            .ThenInclude(order => order.OrderLines)
+            .Single(r => r.RegistrationId == registrationId);
+
+        var expectedLinesSanitized = SanitizeOrderLines(expectedLines).OrderBy(ol => ol.ProductId)
+            .ThenBy(ol => ol.ProductVariantId);
+
+        var regOrderLines = reg.Orders.SelectMany(o => o.OrderLines).Select(OrderLineModel.FromOrderLineDomainModel);
+        var regOrderLinesSanitized = SanitizeOrderLines(regOrderLines).OrderBy(ol => ol.ProductId)
+            .ThenBy(ol => ol.ProductVariantId);
+
+        Assert.Equal(expectedLinesSanitized, regOrderLinesSanitized);
+
+        return;
+
+        static IEnumerable<OrderLineModel> SanitizeOrderLines(IEnumerable<OrderLineModel> orderLineModels)
+        {
+            var sanitized = orderLineModels
+
+                // combine duplications of same products in order lines into single order line
+                .GroupBy(ol => new { ol.ProductId, ol.ProductVariantId })
+                .Select(group =>
+                    new OrderLineModel(group.Key.ProductId, group.Key.ProductVariantId, group.Sum(ol => ol.Quantity)))
+
+                // remove order lines with zero quantity
+                .Where(ol => ol.Quantity != 0);
+
+            return sanitized.ToArray();
+        }
     }
 
     #region Create
@@ -30,35 +77,21 @@ public class RegistrationOrdersControllerTest : IClassFixture<CustomWebApiApplic
     public async Task Should_Require_Auth_To_Create_Order()
     {
         var client = _factory.CreateClient();
-        var response = await client.PostAsync("/v3/registrations/1/orders", new
-        {
-            items = new[]
-            {
-                new
-                {
-                    productId = 1,
-                    productVariantId = 2,
-                    quantity = 3
-                }
-            }
-        });
+        var response = await client.PostAsync("/v3/registrations/1/orders",
+            new { items = new[] { new { productId = 1, productVariantId = 2, quantity = 3 } } });
         response.CheckUnauthorized();
     }
 
-    public static object[][] GetInvalidOrders()
-    {
-        return new[]
+    public static object[][] GetInvalidOrders() =>
+        new[]
         {
-            new object[] { new { } },
-            new object[] { new { productId = "test" } },
-            new object[] { new { productId = -1 } },
-            new object[] { new { productId = 0 } },
+            new object[] { new { } }, new object[] { new { productId = "test" } },
+            new object[] { new { productId = -1 } }, new object[] { new { productId = 0 } },
             new object[] { new { productId = 1, quantity = -1 } },
             new object[] { new { productId = 1, quantity = 0 } },
             new object[] { new { productId = 1, productVariantId = 0, quantity = 0 } },
             new object[] { new { productId = 1, productVariantId = -1, quantity = 0 } }
         };
-    }
 
     [Theory]
     [MemberData(nameof(GetInvalidOrders))]
@@ -71,10 +104,8 @@ public class RegistrationOrdersControllerTest : IClassFixture<CustomWebApiApplic
 
         var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
 
-        var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/orders", new
-        {
-            items = new[] { item }
-        });
+        var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/orders",
+            new { items = new[] { item } });
         response.CheckBadRequest();
     }
 
@@ -84,18 +115,8 @@ public class RegistrationOrdersControllerTest : IClassFixture<CustomWebApiApplic
         var randomId = Random.Shared.Next(1000000, int.MaxValue);
 
         var client = _factory.CreateClient().Authenticated();
-        var response = await client.PostAsync($"/v3/registrations/{randomId}/orders", new
-        {
-            items = new[]
-            {
-                new
-                {
-                    productId = 1,
-                    productVariantId = 2,
-                    quantity = 3
-                }
-            }
-        });
+        var response = await client.PostAsync($"/v3/registrations/{randomId}/orders",
+            new { items = new[] { new { productId = 1, productVariantId = 2, quantity = 3 } } });
         response.CheckNotFound();
     }
 
@@ -110,18 +131,8 @@ public class RegistrationOrdersControllerTest : IClassFixture<CustomWebApiApplic
 
         var client = _factory.CreateClient().AuthenticatedAs(user.Entity);
 
-        var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/orders", new
-        {
-            items = new[]
-            {
-                new
-                {
-                    productId = 1,
-                    productVariantId = 2,
-                    quantity = 3
-                }
-            }
-        });
+        var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/orders",
+            new { items = new[] { new { productId = 1, productVariantId = 2, quantity = 3 } } });
         response.CheckForbidden();
     }
 
@@ -136,17 +147,8 @@ public class RegistrationOrdersControllerTest : IClassFixture<CustomWebApiApplic
 
         var client = _factory.CreateClient().AuthenticatedAs(user.Entity);
 
-        var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/orders", new
-        {
-            items = new[]
-            {
-                new
-                {
-                    productId = product.Entity.ProductId,
-                    quantity = 1
-                }
-            }
-        });
+        var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/orders",
+            new { items = new[] { new { productId = product.Entity.ProductId, quantity = 1 } } });
         response.CheckSuccess();
 
         await CheckOrderCreatedAsync(scope, reg.Entity, product.Entity);
@@ -164,18 +166,8 @@ public class RegistrationOrdersControllerTest : IClassFixture<CustomWebApiApplic
 
         var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
         var response = await client.PostAsync(
-            $"/v3/registrations/{reg.Entity.RegistrationId}/orders?orgId={org.Entity.OrganizationId}", new
-            {
-                items = new[]
-                {
-                    new
-                    {
-                        productId = 1,
-                        productVariantId = 2,
-                        quantity = 3
-                    }
-                }
-            });
+            $"/v3/registrations/{reg.Entity.RegistrationId}/orders?orgId={org.Entity.OrganizationId}",
+            new { items = new[] { new { productId = 1, productVariantId = 2, quantity = 3 } } });
         response.CheckForbidden();
     }
 
@@ -194,17 +186,8 @@ public class RegistrationOrdersControllerTest : IClassFixture<CustomWebApiApplic
 
         var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
         var response = await client.PostAsync(
-            $"/v3/registrations/{reg.Entity.RegistrationId}/orders?orgId={org.Entity.OrganizationId}", new
-            {
-                items = new[]
-                {
-                    new
-                    {
-                        productId = product.Entity.ProductId,
-                        quantity = 1
-                    }
-                }
-            });
+            $"/v3/registrations/{reg.Entity.RegistrationId}/orders?orgId={org.Entity.OrganizationId}",
+            new { items = new[] { new { productId = product.Entity.ProductId, quantity = 1 } } });
         response.CheckSuccess();
 
         await CheckOrderCreatedAsync(scope, reg.Entity, product.Entity);
@@ -222,17 +205,8 @@ public class RegistrationOrdersControllerTest : IClassFixture<CustomWebApiApplic
         using var reg = await scope.CreateRegistrationAsync(e.Entity, user.Entity);
 
         var client = _factory.CreateClient().Authenticated(role: role);
-        var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/orders", new
-        {
-            items = new[]
-            {
-                new
-                {
-                    productId = product.Entity.ProductId,
-                    quantity = 1
-                }
-            }
-        });
+        var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/orders",
+            new { items = new[] { new { productId = product.Entity.ProductId, quantity = 1 } } });
         response.CheckSuccess();
 
         await CheckOrderCreatedAsync(scope, reg.Entity, product.Entity);
@@ -251,17 +225,8 @@ public class RegistrationOrdersControllerTest : IClassFixture<CustomWebApiApplic
         using var reg = await scope.CreateRegistrationAsync(e1.Entity, user.Entity);
 
         var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
-        var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/orders", new
-        {
-            items = new[]
-            {
-                new
-                {
-                    productId = p2.Entity.ProductId,
-                    quantity = 1
-                }
-            }
-        });
+        var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/orders",
+            new { items = new[] { new { productId = p2.Entity.ProductId, quantity = 1 } } });
         response.CheckBadRequest();
     }
 
@@ -279,17 +244,8 @@ public class RegistrationOrdersControllerTest : IClassFixture<CustomWebApiApplic
         using var reg = await scope.CreateRegistrationAsync(e1.Entity, user.Entity);
 
         var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
-        var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/orders", new
-        {
-            items = new[]
-            {
-                new
-                {
-                    productId = p2.Entity.ProductId,
-                    quantity = 1
-                }
-            }
-        });
+        var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/orders",
+            new { items = new[] { new { productId = p2.Entity.ProductId, quantity = 1 } } });
         response.CheckBadRequest();
     }
 
@@ -305,17 +261,8 @@ public class RegistrationOrdersControllerTest : IClassFixture<CustomWebApiApplic
         using var p2 = await scope.CreateProductAsync(e2.Entity, visibility: ProductVisibility.Collection);
 
         var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
-        var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/orders", new
-        {
-            items = new[]
-            {
-                new
-                {
-                    productId = p2.Entity.ProductId,
-                    quantity = 1
-                }
-            }
-        });
+        var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/orders",
+            new { items = new[] { new { productId = p2.Entity.ProductId, quantity = 1 } } });
         response.CheckSuccess();
 
         await CheckOrderCreatedAsync(scope, reg.Entity, p2.Entity);
@@ -442,10 +389,7 @@ public class RegistrationOrdersControllerTest : IClassFixture<CustomWebApiApplic
         var client = _factory.CreateClient().AuthenticatedAs(user.Entity);
         var wrongId = reg.Entity.RegistrationId + Random.Shared.Next(1, 100);
         var response = await client.PostAsync($"/v3/registrations/{wrongId}/products",
-            new OrderUpdateRequestDto
-            {
-                Lines = new[] { new OrderLineModel(prod.Entity.ProductId, null, 1) }
-            });
+            new OrderUpdateRequestDto { Lines = new[] { new OrderLineModel(prod.Entity.ProductId, null, 1) } });
 
         response.CheckNotFound();
 
@@ -463,10 +407,7 @@ public class RegistrationOrdersControllerTest : IClassFixture<CustomWebApiApplic
 
         var client = _factory.CreateClient().AuthenticatedAs(user.Entity);
         var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/products",
-            new OrderUpdateRequestDto
-            {
-                Lines = new[] { new OrderLineModel(prod.Entity.ProductId, null, 1) }
-            });
+            new OrderUpdateRequestDto { Lines = new[] { new OrderLineModel(prod.Entity.ProductId, null, 1) } });
 
         response.CheckOk();
 
@@ -485,10 +426,7 @@ public class RegistrationOrdersControllerTest : IClassFixture<CustomWebApiApplic
 
         var client = _factory.CreateClient().AuthenticatedAs(user.Entity);
         var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/products",
-            new OrderUpdateRequestDto
-            {
-                Lines = new[] { new OrderLineModel(prod.Entity.ProductId, null, 1) }
-            });
+            new OrderUpdateRequestDto { Lines = new[] { new OrderLineModel(prod.Entity.ProductId, null, 1) } });
 
         response.CheckOk();
 
@@ -507,10 +445,7 @@ public class RegistrationOrdersControllerTest : IClassFixture<CustomWebApiApplic
 
         var client = _factory.CreateClient().AuthenticatedAs(user.Entity);
         var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/products",
-            new OrderUpdateRequestDto
-            {
-                Lines = new[] { new OrderLineModel(prod.Entity.ProductId, null, 1) }
-            });
+            new OrderUpdateRequestDto { Lines = new[] { new OrderLineModel(prod.Entity.ProductId, null, 1) } });
 
         response.CheckOk();
 
@@ -529,10 +464,7 @@ public class RegistrationOrdersControllerTest : IClassFixture<CustomWebApiApplic
 
         var client = _factory.CreateClient().AuthenticatedAs(user.Entity);
         var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/products",
-            new OrderUpdateRequestDto
-            {
-                Lines = new[] { new OrderLineModel(prod.Entity.ProductId, null, -1) }
-            });
+            new OrderUpdateRequestDto { Lines = new[] { new OrderLineModel(prod.Entity.ProductId, null, -1) } });
 
         response.CheckBadRequest();
         Assert.Empty(scope.Db.Orders.Where(o => o.RegistrationId == reg.Entity.RegistrationId));
@@ -563,10 +495,7 @@ public class RegistrationOrdersControllerTest : IClassFixture<CustomWebApiApplic
         };
 
         var response = await client.PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/products",
-            new OrderUpdateRequestDto
-            {
-                Lines = lines
-            });
+            new OrderUpdateRequestDto { Lines = lines });
 
         response.CheckOk();
         Assert.Single(scope.Db.Orders.Where(o => o.RegistrationId == reg.Entity.RegistrationId));
@@ -576,51 +505,4 @@ public class RegistrationOrdersControllerTest : IClassFixture<CustomWebApiApplic
     }
 
     #endregion
-
-    private async Task<Order> CheckOrderCreatedAsync(TestServiceScope scope, Registration reg,
-        params Product[] products)
-    {
-        var order = await scope.Db.Orders
-            .AsNoTracking()
-            .Include(o => o.OrderLines)
-            .SingleAsync(o => o.RegistrationId == reg.RegistrationId);
-
-        Assert.Equal(products.Length, order.OrderLines.Count);
-        Assert.All(order.OrderLines, line => Assert.Contains(products, p => p.ProductId == line.ProductId));
-
-        return order;
-    }
-
-    private static void CheckRegistrationOrderedProducts(IServiceScope scope, int registrationId, params OrderLineModel[] expectedLines)
-    {
-        var dbCtx = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-        var reg = dbCtx.Registrations
-            .Include(registration => registration.Orders)
-            .ThenInclude(order => order.OrderLines)
-            .Single(r => r.RegistrationId == registrationId);
-
-        var expectedLinesSanitized = SanitizeOrderLines(expectedLines).OrderBy(ol => ol.ProductId).ThenBy(ol => ol.ProductVariantId);
-
-        var regOrderLines = reg.Orders.SelectMany(o => o.OrderLines).Select(OrderLineModel.FromOrderLineDomainModel);
-        var regOrderLinesSanitized = SanitizeOrderLines(regOrderLines).OrderBy(ol => ol.ProductId).ThenBy(ol => ol.ProductVariantId);
-
-        Assert.Equal(expectedLinesSanitized, regOrderLinesSanitized);
-
-        return;
-
-        static IEnumerable<OrderLineModel> SanitizeOrderLines(IEnumerable<OrderLineModel> orderLineModels)
-        {
-            var sanitized = orderLineModels
-
-                // combine duplications of same products in order lines into single order line
-                .GroupBy(ol => new { ol.ProductId, ol.ProductVariantId })
-                .Select(group => new OrderLineModel(group.Key.ProductId, group.Key.ProductVariantId, group.Sum(ol => ol.Quantity)))
-
-                // remove order lines with zero quantity
-                .Where(ol => ol.Quantity != 0);
-
-            return sanitized.ToArray();
-        }
-    }
 }

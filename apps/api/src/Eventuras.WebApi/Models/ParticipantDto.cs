@@ -12,12 +12,12 @@ public class ParticipantDto
         var familyName = parts.LastOrDefault();
         var givenName = string.Join(" ", parts.Take(parts.Length - 1));
 
-        this.UserId = user.Id;
-        this.FirstName = givenName;
-        this.LastName = familyName;
+        UserId = user.Id;
+        FirstName = givenName;
+        LastName = familyName;
 
-        this.PhoneNumber = user.PhoneNumber;
-        this.Email = user.Email;
+        PhoneNumber = user.PhoneNumber;
+        Email = user.Email;
     }
 
     public string UserId { get; set; }
@@ -26,4 +26,3 @@ public class ParticipantDto
     public string PhoneNumber { get; set; }
     public string Email { get; set; }
 }
-

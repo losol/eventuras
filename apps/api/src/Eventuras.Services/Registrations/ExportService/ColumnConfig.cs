@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Spreadsheet;
 using Eventuras.Domain;
 
 namespace Eventuras.Services.Registrations.ExportService;
@@ -104,8 +102,7 @@ public class ColumnConfig
             new ColumnConfig { Header = "EventName", DataExtractor = reg => reg.EventInfo.Title },
             new ColumnConfig
             {
-                Header = "Products",
-                DataExtractor = reg => "" // Will be populated separately with product data
+                Header = "Products", DataExtractor = reg => "" // Will be populated separately with product data
             },
             new ColumnConfig { Header = "RegistrationStatus", DataExtractor = reg => reg.Status.ToString() },
             new ColumnConfig { Header = "RegistrationType", DataExtractor = reg => reg.Type.ToString() },
@@ -115,7 +112,9 @@ public class ColumnConfig
     public static string FormatProducts(List<RegistrationProductDto> products)
     {
         if (products == null || !products.Any())
+        {
             return "";
+        }
 
         return string.Join(", ", products.Select(p =>
         {

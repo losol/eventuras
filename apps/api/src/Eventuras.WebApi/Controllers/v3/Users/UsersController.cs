@@ -23,11 +23,11 @@ namespace Eventuras.WebApi.Controllers.v3.Users;
 [Authorize]
 public class UsersController : Controller
 {
-    private readonly IUserRetrievalService _userRetrievalService;
-    private readonly IUserManagementService _userManagementService;
+    private readonly AuthSettings _authSettings;
     private readonly IMemoryCache _cache;
     private readonly ILogger<UsersController> _logger;
-    private readonly AuthSettings _authSettings;
+    private readonly IUserManagementService _userManagementService;
+    private readonly IUserRetrievalService _userRetrievalService;
 
     public UsersController(
         IUserRetrievalService userRetrievalService,
@@ -37,7 +37,8 @@ public class UsersController : Controller
         IOptions<AuthSettings> authSettingsOptions)
     {
         _userRetrievalService = userRetrievalService ?? throw new ArgumentNullException(nameof(userRetrievalService));
-        _userManagementService = userManagementService ?? throw new ArgumentNullException(nameof(userManagementService));
+        _userManagementService =
+            userManagementService ?? throw new ArgumentNullException(nameof(userManagementService));
         _cache = cache ?? throw new ArgumentNullException(nameof(cache));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _authSettings = authSettingsOptions.Value;
@@ -45,7 +46,7 @@ public class UsersController : Controller
 
     // GET: /v3/users/me
     /// <summary>
-    /// Gets information about the current user. Creates a new user if no user with the email exists.
+    ///     Gets information about the current user. Creates a new user if no user with the email exists.
     /// </summary>
     [Obsolete("use /v3/userprofile instead")]
     [HttpGet("me")]
@@ -57,7 +58,8 @@ public class UsersController : Controller
 
         if (_authSettings.EnablePiiLogging)
         {
-            _logger.LogInformation($"Getting user info for email: {emailClaim}, name: {nameClaim}, phone: {phoneClaim} .");
+            _logger.LogInformation(
+                $"Getting user info for email: {emailClaim}, name: {nameClaim}, phone: {phoneClaim} .");
         }
 
         if (string.IsNullOrEmpty(emailClaim))
@@ -69,8 +71,10 @@ public class UsersController : Controller
         ApplicationUser user;
 
         try
-        { user = await _userRetrievalService.GetUserByEmailAsync(emailClaim, null, cancellationToken); }
-        catch (Services.Exceptions.NotFoundException)
+        {
+            user = await _userRetrievalService.GetUserByEmailAsync(emailClaim, null, cancellationToken);
+        }
+        catch (NotFoundException)
         {
             if (_authSettings.EnablePiiLogging)
             {
@@ -78,7 +82,7 @@ public class UsersController : Controller
             }
             else
             {
-                _logger.LogInformation($"No user found with email. Creating new user.");
+                _logger.LogInformation("No user found with email. Creating new user.");
             }
 
             user = await _userManagementService.CreateNewUserAsync(
@@ -88,11 +92,9 @@ public class UsersController : Controller
 
             // Invalidate user cache for this email to ensure new identity is added
             _cache.Remove(DbUserClaimTransformation.GetMemoryCacheKey(emailClaim));
-
         }
 
         return new UserDto(user);
-
     }
 
     // GET: /v3/users/{id}
@@ -107,14 +109,14 @@ public class UsersController : Controller
 
         var user = await _userRetrievalService.GetUserByIdAsync(id, null, cancellationToken);
         return new UserDto(user);
-
     }
+
     // GET: /v3/users
     [HttpGet]
     [Authorize(Policy = Constants.Auth.AdministratorRole)]
     public async Task<PageResponseDto<UserDto>> List(
-   [FromQuery] UsersQueryDto request,
-   CancellationToken cancellationToken)
+        [FromQuery] UsersQueryDto request,
+        CancellationToken cancellationToken)
     {
         var principal = HttpContext.User;
         var userId = principal.GetUserId();
@@ -145,17 +147,17 @@ public class UsersController : Controller
         var startTime = DateTime.UtcNow;
 
         var paging = await _userRetrievalService
-        .ListUsers(
-            new UserListRequest
-            {
-                Filter = request.ToUserFilter(),
-                Limit = request.Limit,
-                Offset = request.Offset,
-                OrderBy = request.Order,
-                Descending = request.Descending
-            },
-            new UserRetrievalOptions() { IncludeOrgMembership = request.IncludeOrgMembership },
-            cancellationToken);
+            .ListUsers(
+                new UserListRequest
+                {
+                    Filter = request.ToUserFilter(),
+                    Limit = request.Limit,
+                    Offset = request.Offset,
+                    OrderBy = request.Order,
+                    Descending = request.Descending
+                },
+                new UserRetrievalOptions { IncludeOrgMembership = request.IncludeOrgMembership },
+                cancellationToken);
 
         var duration = DateTime.UtcNow - startTime;
 
@@ -176,7 +178,6 @@ public class UsersController : Controller
     [Authorize(Policy = Constants.Auth.AdministratorRole)]
     public async Task<UserDto> CreateNewUser([FromBody] UserFormDto dto, CancellationToken cancellationToken)
     {
-
         if (!ModelState.IsValid)
         {
             throw new BadHttpRequestException($"Invalid request body. {ModelState.FormatErrors()}");
@@ -184,14 +185,13 @@ public class UsersController : Controller
 
         _logger.LogInformation("Creating new user with email {email}.", dto.Email);
         var user = await _userManagementService
-        .CreateNewUserAsync(dto.Email, dto.PhoneNumber, cancellationToken);
+            .CreateNewUserAsync(dto.Email, dto.PhoneNumber, cancellationToken);
 
         _logger.LogInformation("Update user with additional information.");
         dto.CopyTo(user);
         await _userManagementService.UpdateUserAsync(user, cancellationToken);
 
         return new UserDto(user);
-
     }
 
     // PUT /v3/users/{id}

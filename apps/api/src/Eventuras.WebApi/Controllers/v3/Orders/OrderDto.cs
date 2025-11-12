@@ -12,33 +12,8 @@ namespace Eventuras.WebApi.Controllers.v3.Orders;
 
 public class OrderDto
 {
-    public int OrderId { get; set; }
-
-    public Order.OrderStatus Status { get; set; }
-
-    public DateTimeOffset Time { get; set; }
-
-    public string UserId { get; set; }
-
-    public int RegistrationId { get; set; }
-    public PaymentProvider? PaymentMethod { get; set; }
-    public string Comments { get; set; } = string.Empty;
-    public string Log { get; set; } = string.Empty;
-
-    public OrderLineDto[]? Items { get; set; }
-
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public RegistrationDto? Registration { get; set; }
-
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public UserDto? User { get; set; }
-
-
     [Obsolete("For JSON deserialization only, do not use manually", true)]
-    public OrderDto()
-    {
-        UserId = null!;
-    }
+    public OrderDto() => UserId = null!;
 
     public OrderDto(Order order)
     {
@@ -66,18 +41,41 @@ public class OrderDto
             .ToArray();
     }
 
+    public int OrderId { get; set; }
+
+    public Order.OrderStatus Status { get; set; }
+
+    public DateTimeOffset Time { get; set; }
+
+    public string UserId { get; set; }
+
+    public int RegistrationId { get; set; }
+    public PaymentProvider? PaymentMethod { get; set; }
+    public string Comments { get; set; } = string.Empty;
+    public string Log { get; set; } = string.Empty;
+
+    public OrderLineDto[]? Items { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public RegistrationDto? Registration { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public UserDto? User { get; set; }
+
     public void CopyTo(Order order)
     {
         if (order == null)
+        {
             throw new ArgumentNullException(nameof(order));
+        }
 
         // Update properties of the Order entity from the DTO
-        order.Status = this.Status;
-        order.Comments = this.Comments;
+        order.Status = Status;
+        order.Comments = Comments;
 
-        if (this.PaymentMethod.HasValue)
+        if (PaymentMethod.HasValue)
         {
-            order.PaymentMethod = this.PaymentMethod.Value;
+            order.PaymentMethod = PaymentMethod.Value;
         }
     }
 }

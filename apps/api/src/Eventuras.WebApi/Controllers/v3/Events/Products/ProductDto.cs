@@ -2,36 +2,12 @@
 
 using System;
 using System.Linq;
-using DocumentFormat.OpenXml.Wordprocessing;
 using Eventuras.Domain;
 
 namespace Eventuras.WebApi.Controllers.v3.Events.Products;
 
 public class ProductDto
 {
-    public int ProductId { get; set; }
-
-    public string Name { get; set; }
-
-    public string? Description { get; set; }
-
-    public decimal Price { get; set; }
-
-    public int VatPercent { get; set; }
-
-    public ProductVisibility Visibility { get; set; }
-
-    public int? Inventory { get; set; }
-    public bool? Published { get; set; }
-
-    public ProductVariantDto[] Variants { get; set; }
-
-    public int MinimumQuantity { get; set; }
-
-    public bool IsMandatory => MinimumQuantity > 0;
-
-    public bool EnableQuantity { get; set; }
-
     [Obsolete("For JSON deserialization only, do not use manually", true)]
     public ProductDto()
     {
@@ -57,10 +33,35 @@ public class ProductDto
         EnableQuantity = product.EnableQuantity;
     }
 
+    public int ProductId { get; set; }
+
+    public string Name { get; set; }
+
+    public string? Description { get; set; }
+
+    public decimal Price { get; set; }
+
+    public int VatPercent { get; set; }
+
+    public ProductVisibility Visibility { get; set; }
+
+    public int? Inventory { get; set; }
+    public bool? Published { get; set; }
+
+    public ProductVariantDto[] Variants { get; set; }
+
+    public int MinimumQuantity { get; set; }
+
+    public bool IsMandatory => MinimumQuantity > 0;
+
+    public bool EnableQuantity { get; set; }
+
     public void CopyTo(Product product)
     {
         if (product == null)
+        {
             throw new ArgumentNullException(nameof(product));
+        }
 
         product.Name = Name;
         product.Description = Description;
@@ -69,9 +70,13 @@ public class ProductDto
         product.Visibility = Visibility;
 
         if (Published.HasValue)
+        {
             product.Published = Published.Value;
+        }
 
         if (Inventory.HasValue)
+        {
             product.Inventory = Inventory.Value;
+        }
     }
 }

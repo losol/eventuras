@@ -6,27 +6,30 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 namespace Losol.Communication.HealthCheck.Abstractions;
 
 /// <summary>
-/// Performs health check periodically. If check was recently made by the
-/// health check service itself (like, when email is successfully sent
-/// or failed), then the next planned check is postponed.
+///     Performs health check periodically. If check was recently made by the
+///     health check service itself (like, when email is successfully sent
+///     or failed), then the next planned check is postponed.
 /// </summary>
 public abstract class AbstractPeriodicHealthCheck : IHealthCheck
 {
-    protected abstract string ServiceName { get; }
-
-    protected abstract TimeSpan CheckPeriod { get; }
+    private readonly IHealthCheckService _healthCheckService;
 
 
     private readonly IHealthCheckStorage _healthCheckStorage;
-    private readonly IHealthCheckService _healthCheckService;
 
-    protected AbstractPeriodicHealthCheck(IHealthCheckStorage healthCheckStorage, IHealthCheckService healthCheckService)
+    protected AbstractPeriodicHealthCheck(IHealthCheckStorage healthCheckStorage,
+        IHealthCheckService healthCheckService)
     {
         _healthCheckStorage = healthCheckStorage ?? throw new ArgumentNullException(nameof(healthCheckStorage));
         _healthCheckService = healthCheckService ?? throw new ArgumentNullException(nameof(healthCheckService));
     }
 
-    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = new CancellationToken())
+    protected abstract string ServiceName { get; }
+
+    protected abstract TimeSpan CheckPeriod { get; }
+
+    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context,
+        CancellationToken cancellationToken = new())
     {
         var healthStatus = await _healthCheckStorage.GetCurrentStatusAsync(ServiceName);
         if (healthStatus == null || healthStatus.DateTime + CheckPeriod < DateTime.UtcNow)
@@ -34,6 +37,7 @@ public abstract class AbstractPeriodicHealthCheck : IHealthCheck
             healthStatus = await _healthCheckService.CheckHealthAsync(cancellationToken);
             await _healthCheckStorage.CheckedAsync(ServiceName, healthStatus);
         }
+
         return healthStatus.Status switch
         {
             HealthStatus.Healthy => HealthCheckResult.Healthy(),

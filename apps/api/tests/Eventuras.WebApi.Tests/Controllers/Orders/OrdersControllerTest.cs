@@ -23,10 +23,7 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
         Cleanup();
     }
 
-    public void Dispose()
-    {
-        Cleanup();
-    }
+    public void Dispose() => Cleanup();
 
     private void Cleanup()
     {
@@ -282,7 +279,7 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
 
         response = await client.GetAsync("/v3/orders?includeUser=true");
         json = await response.CheckOk().AsTokenAsync();
-        json.CheckPaging((t, o) => t.CheckOrder(o, checkUser: true), order.Entity);
+        json.CheckPaging((t, o) => t.CheckOrder(o, true), order.Entity);
     }
 
     [Fact]
@@ -326,7 +323,7 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
         var response = await client.GetAsync("/v3/orders?includeUser=true&includeRegistration=true");
         var json = await response.CheckOk().AsTokenAsync();
         json.CheckPaging((t, o) => t.CheckOrder(o,
-            checkUser: true, checkRegistration: true, checkItems: true), order.Entity);
+            true, checkRegistration: true, checkItems: true), order.Entity);
     }
 
     [Fact]
@@ -568,7 +565,7 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
 
         response = await client.GetAsync($"/v3/orders/{order.Entity.OrderId}?includeUser=true");
         json = await response.CheckOk().AsTokenAsync();
-        json.CheckOrder(order.Entity, checkUser: true);
+        json.CheckOrder(order.Entity, true);
     }
 
     [Fact]
@@ -603,13 +600,13 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
         using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
         using var p = await scope.CreateProductAsync(evt.Entity);
         using var v = await scope.CreateProductVariantAsync(p.Entity);
-        using var order = await scope.CreateOrderAsync(reg.Entity, product: p.Entity, variant: v.Entity);
+        using var order = await scope.CreateOrderAsync(reg.Entity, p.Entity, v.Entity);
 
         var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
         var response =
             await client.GetAsync($"/v3/orders/{order.Entity.OrderId}?includeUser=true&includeRegistration=true");
         var json = await response.CheckOk().AsTokenAsync();
-        json.CheckOrder(order.Entity, checkUser: true, checkRegistration: true);
+        json.CheckOrder(order.Entity, true, checkRegistration: true);
     }
 
     [Fact]
@@ -642,10 +639,7 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
 
         var response = await _factory.CreateClient()
             .AuthenticatedAsSystemAdmin()
-            .PostAsync("/v3/orders", new
-            {
-                registrationId = registration.Entity.RegistrationId
-            });
+            .PostAsync("/v3/orders", new { registrationId = registration.Entity.RegistrationId });
 
         response.CheckBadRequest();
     }
@@ -660,18 +654,8 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
 
         var response = await _factory.CreateClient()
             .AuthenticatedAsSystemAdmin()
-            .PostAsync("/v3/orders", new
-            {
-                registrationId = 1111,
-                lines = new[]
-                {
-                    new
-                    {
-                        productId = p.Entity.ProductId,
-                        quantity = 1
-                    }
-                }
-            });
+            .PostAsync("/v3/orders",
+                new { registrationId = 1111, lines = new[] { new { productId = p.Entity.ProductId, quantity = 1 } } });
 
         response.CheckBadRequest();
     }
@@ -686,24 +670,19 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
 
         var response = await _factory.CreateClient()
             .AuthenticatedAsSystemAdmin()
-            .PostAsync("/v3/orders", new
-            {
-                registrationId = reg.Entity.RegistrationId,
-                lines = new[]
+            .PostAsync("/v3/orders",
+                new
                 {
-                    new
-                    {
-                        productId = 1111,
-                        quantity = 1
-                    }
-                }
-            });
+                    registrationId = reg.Entity.RegistrationId,
+                    lines = new[] { new { productId = 1111, quantity = 1 } }
+                });
 
         response.CheckBadRequest();
     }
 
     [Fact]
-    public async Task Should_Return_Bad_Request_When_Creating_Order_With_Not_Specified_Variant_For_Product_With_Variants()
+    public async Task
+        Should_Return_Bad_Request_When_Creating_Order_With_Not_Specified_Variant_For_Product_With_Variants()
     {
         using var scope = _factory.Services.NewTestScope();
         using var e = await scope.CreateEventAsync();
@@ -714,24 +693,19 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
 
         var response = await _factory.CreateClient()
             .AuthenticatedAsSystemAdmin()
-            .PostAsync("/v3/orders", new
-            {
-                registrationId = reg.Entity.RegistrationId,
-                lines = new[]
+            .PostAsync("/v3/orders",
+                new
                 {
-                    new
-                    {
-                        productId = product.Entity.ProductId,
-                        quantity = 1
-                    }
-                }
-            });
+                    registrationId = reg.Entity.RegistrationId,
+                    lines = new[] { new { productId = product.Entity.ProductId, quantity = 1 } }
+                });
 
         await response.CheckBadRequestAsync("variant id should be specified");
     }
 
     [Fact]
-    public async Task Should_Return_Bad_Request_When_Updating_Order_With_Not_Specified_Variant_For_Product_With_Variants()
+    public async Task
+        Should_Return_Bad_Request_When_Updating_Order_With_Not_Specified_Variant_For_Product_With_Variants()
     {
         using var scope = _factory.Services.NewTestScope();
         using var e = await scope.CreateEventAsync();
@@ -744,17 +718,8 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
 
         var response = await _factory.CreateClient()
             .AuthenticatedAsSystemAdmin()
-            .PutAsync($"/v3/orders/{order.Entity.OrderId}", new
-            {
-                lines = new[]
-                {
-                    new
-                    {
-                        productId = product2.Entity.ProductId,
-                        quantity = 1
-                    }
-                }
-            });
+            .PutAsync($"/v3/orders/{order.Entity.OrderId}",
+                new { lines = new[] { new { productId = product2.Entity.ProductId, quantity = 1 } } });
 
         await response.CheckBadRequestAsync("variant id should be specified");
     }
@@ -770,19 +735,12 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
 
         var response = await _factory.CreateClient()
             .AuthenticatedAsSystemAdmin()
-            .PostAsync("/v3/orders", new
-            {
-                registrationId = reg.Entity.RegistrationId,
-                lines = new[]
+            .PostAsync("/v3/orders",
+                new
                 {
-                    new
-                    {
-                        productId = p.Entity.ProductId,
-                        productVariantId = 11334,
-                        quantity = 1
-                    }
-                }
-            });
+                    registrationId = reg.Entity.RegistrationId,
+                    lines = new[] { new { productId = p.Entity.ProductId, productVariantId = 11334, quantity = 1 } }
+                });
 
         response.CheckBadRequest();
     }
@@ -799,18 +757,12 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
         var response = await _factory
             .CreateClient()
             .AuthenticatedAsSystemAdmin()
-            .PostAsync("/v3/orders", new
-            {
-                registrationId = reg.Entity.RegistrationId,
-                lines = new[]
+            .PostAsync("/v3/orders",
+                new
                 {
-                    new
-                    {
-                        productId = p.Entity.ProductId,
-                        quantity = 1
-                    }
-                }
-            });
+                    registrationId = reg.Entity.RegistrationId,
+                    lines = new[] { new { productId = p.Entity.ProductId, quantity = 1 } }
+                });
 
         await response.CheckBadRequestAsync("has minimum quantity 2, but current registration has ordered only 1");
 
@@ -913,7 +865,7 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
         using var p = await scope.CreateProductAsync(evt.Entity);
         using var p2 = await scope.CreateProductAsync(evt.Entity);
         using var v = await scope.CreateProductVariantAsync(p.Entity);
-        using var order = await scope.CreateOrderAsync(reg.Entity, product: p.Entity, variant: v.Entity);
+        using var order = await scope.CreateOrderAsync(reg.Entity, p.Entity, v.Entity);
 
         var response = await _factory
             .CreateClient()
@@ -963,17 +915,7 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
     {
         var response = await _factory.CreateClient()
             .AuthenticatedAsSystemAdmin()
-            .PutAsync($"/v3/orders/10001", new
-            {
-                lines = new[]
-                {
-                    new
-                    {
-                        productId = 1,
-                        quantity = 1
-                    }
-                }
-            });
+            .PutAsync("/v3/orders/10001", new { lines = new[] { new { productId = 1, quantity = 1 } } });
 
         response.CheckNotFound();
     }
@@ -987,23 +929,24 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
         using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
         using var p = await scope.CreateProductAsync(evt.Entity, minimumQuantity: 2, name: "Test");
         using var v = await scope.CreateProductVariantAsync(p.Entity);
-        using var order = await scope.CreateOrderAsync(reg.Entity, product: p.Entity, variant: v.Entity);
+        using var order = await scope.CreateOrderAsync(reg.Entity, p.Entity, v.Entity);
 
         var response = await _factory
             .CreateClient()
             .AuthenticatedAsSystemAdmin()
-            .PutAsync($"/v3/orders/{order.Entity.OrderId}", new
-            {
-                lines = new[]
+            .PutAsync($"/v3/orders/{order.Entity.OrderId}",
+                new
                 {
-                    new
+                    lines = new[]
                     {
-                        productId = p.Entity.ProductId,
-                        productVariantId = v.Entity.ProductVariantId,
-                        quantity = 1
+                        new
+                        {
+                            productId = p.Entity.ProductId,
+                            productVariantId = v.Entity.ProductVariantId,
+                            quantity = 1
+                        }
                     }
-                }
-            });
+                });
 
         response.CheckOk();
     }
@@ -1018,7 +961,7 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
         using var p = await scope.CreateProductAsync(evt.Entity);
         using var p2 = await scope.CreateProductAsync(evt.Entity);
         using var v = await scope.CreateProductVariantAsync(p.Entity);
-        using var order = await scope.CreateOrderAsync(reg.Entity, product: p.Entity, variant: v.Entity);
+        using var order = await scope.CreateOrderAsync(reg.Entity, p.Entity, v.Entity);
 
         var response = await _factory
             .CreateClient()
@@ -1048,18 +991,19 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
         var response = await _factory
             .CreateClient()
             .AuthenticatedAs(user.Entity)
-            .PutAsync($"/v3/orders/{order.Entity.OrderId}", new
-            {
-                lines = new[]
+            .PutAsync($"/v3/orders/{order.Entity.OrderId}",
+                new
                 {
-                    new
+                    lines = new[]
                     {
-                        productId = p.Entity.ProductId,
-                        productVariantId = v.Entity.ProductVariantId,
-                        quantity = 1
+                        new
+                        {
+                            productId = p.Entity.ProductId,
+                            productVariantId = v.Entity.ProductVariantId,
+                            quantity = 1
+                        }
                     }
-                }
-            });
+                });
 
         response.CheckForbidden();
     }
@@ -1078,7 +1022,7 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
         using var p = await scope.CreateProductAsync(evt.Entity);
         using var p2 = await scope.CreateProductAsync(evt.Entity);
         using var v = await scope.CreateProductVariantAsync(p.Entity);
-        using var order = await scope.CreateOrderAsync(reg.Entity, product: p.Entity, variant: v.Entity);
+        using var order = await scope.CreateOrderAsync(reg.Entity, p.Entity, v.Entity);
 
         var response = await _factory
             .CreateClient()
@@ -1108,7 +1052,7 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
         using var p = await scope.CreateProductAsync(evt.Entity);
         using var p2 = await scope.CreateProductAsync(evt.Entity);
         using var v = await scope.CreateProductVariantAsync(p.Entity);
-        using var order = await scope.CreateOrderAsync(reg.Entity, product: p.Entity, variant: v.Entity);
+        using var order = await scope.CreateOrderAsync(reg.Entity, p.Entity, v.Entity);
 
         var response = await _factory
             .CreateClient()
@@ -1131,7 +1075,7 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
         using var p = await scope.CreateProductAsync(evt.Entity);
         using var p2 = await scope.CreateProductAsync(evt.Entity);
         using var v = await scope.CreateProductVariantAsync(p.Entity);
-        using var order = await scope.CreateOrderAsync(reg.Entity, product: p.Entity, variant: v.Entity);
+        using var order = await scope.CreateOrderAsync(reg.Entity, p.Entity, v.Entity);
 
         var response = await _factory
             .CreateClient()
@@ -1159,7 +1103,7 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
         using var p2 = await scope.CreateProductAsync(evt.Entity);
         using var v = await scope.CreateProductVariantAsync(p.Entity);
         using var order =
-            await scope.CreateOrderAsync(reg.Entity, product: p.Entity, variant: v.Entity, status: status);
+            await scope.CreateOrderAsync(reg.Entity, p.Entity, v.Entity, status: status);
 
         var response = await _factory
             .CreateClient()
@@ -1188,7 +1132,7 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
         using var p2 = await scope.CreateProductAsync(evt.Entity);
         using var v = await scope.CreateProductVariantAsync(p.Entity);
         using var order =
-            await scope.CreateOrderAsync(reg.Entity, product: p.Entity, variant: v.Entity, status: status);
+            await scope.CreateOrderAsync(reg.Entity, p.Entity, v.Entity, status: status);
 
         var response = await _factory
             .CreateClient()
@@ -1258,32 +1202,20 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
         IDisposableEntity<Registration> reg,
         IDisposableEntity<Product> p,
         IDisposableEntity<ProductVariant> v,
-        IDisposableEntity<Product> p2)
-    {
-        return new
-        {
-            registrationId = reg.Entity.RegistrationId,
-            lines = GetOrderLinesData(p, v, p2)
-        };
-    }
+        IDisposableEntity<Product> p2) =>
+        new { registrationId = reg.Entity.RegistrationId, lines = GetOrderLinesData(p, v, p2) };
 
     private static object GetOrderUpdateData(
         IDisposableEntity<Product> p,
         IDisposableEntity<ProductVariant> v,
-        IDisposableEntity<Product> p2)
-    {
-        return new
-        {
-            lines = GetOrderLinesData(p, v, p2)
-        };
-    }
+        IDisposableEntity<Product> p2) =>
+        new { lines = GetOrderLinesData(p, v, p2) };
 
     private static object GetOrderLinesData(
         IDisposableEntity<Product> p,
         IDisposableEntity<ProductVariant> v,
-        IDisposableEntity<Product> p2)
-    {
-        return new[]
+        IDisposableEntity<Product> p2) =>
+        new[]
         {
             new
             {
@@ -1291,14 +1223,8 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
                 productVariantId = v.Entity.ProductVariantId as int?,
                 quantity = 2
             },
-            new
-            {
-                productId = p2.Entity.ProductId,
-                productVariantId = (int?)null,
-                quantity = 1
-            }
+            new { productId = p2.Entity.ProductId, productVariantId = (int?)null, quantity = 1 }
         };
-    }
 
     #region PATCH Tests
 

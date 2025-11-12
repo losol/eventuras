@@ -15,8 +15,8 @@ namespace Eventuras.Services.Events;
 internal class EventInfoRetrievalService : IEventInfoRetrievalService
 {
     private readonly ApplicationDbContext _context;
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ICurrentOrganizationAccessorService _currentOrganizationAccessorService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     public EventInfoRetrievalService(
         ApplicationDbContext context,
@@ -35,13 +35,11 @@ internal class EventInfoRetrievalService : IEventInfoRetrievalService
 
     public async Task<EventInfo> GetEventInfoByIdAsync(int id,
         EventInfoRetrievalOptions options,
-        CancellationToken cancellationToken)
-    {
-        return await _context.EventInfos
-                   .UseOptions(options ?? new EventInfoRetrievalOptions())
-                   .FirstOrDefaultAsync(e => e.EventInfoId == id, cancellationToken)
-               ?? throw new NotFoundException($"Event {id} not found");
-    }
+        CancellationToken cancellationToken) =>
+        await _context.EventInfos
+            .UseOptions(options ?? new EventInfoRetrievalOptions())
+            .FirstOrDefaultAsync(e => e.EventInfoId == id, cancellationToken)
+        ?? throw new NotFoundException($"Event {id} not found");
 
     public async Task<Paging<EventInfo>> ListEventsAsync(
         EventListRequest request,

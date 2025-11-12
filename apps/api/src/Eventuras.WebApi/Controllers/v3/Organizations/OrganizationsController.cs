@@ -17,8 +17,8 @@ namespace Eventuras.WebApi.Controllers.v3.Organizations;
 [ApiController]
 public class OrganizationsController : ControllerBase
 {
-    private readonly IOrganizationRetrievalService _organizationRetrievalService;
     private readonly IOrganizationManagementService _organizationManagementService;
+    private readonly IOrganizationRetrievalService _organizationRetrievalService;
 
     public OrganizationsController(
         IOrganizationRetrievalService organizationRetrievalService,
@@ -83,23 +83,12 @@ public class OrganizationsController : ControllerBase
     }
 
     [HttpDelete("{organizationId}")]
-    public async Task Delete(int organizationId)
-    {
+    public async Task Delete(int organizationId) =>
         await _organizationManagementService.DeleteOrganizationAsync(organizationId);
-    }
 }
 
 public class OrganizationDto
 {
-    public int OrganizationId { get; }
-    public string Name { get; }
-    public string Description { get; }
-    public string Url { get; }
-    public string Phone { get; }
-    public string Email { get; }
-    public string LogoUrl { get; }
-    public string LogoBase64 { get; }
-
     public OrganizationDto(Organization org)
     {
         OrganizationId = org.OrganizationId;
@@ -111,6 +100,15 @@ public class OrganizationDto
         LogoUrl = org.LogoUrl;
         LogoBase64 = org.LogoBase64;
     }
+
+    public int OrganizationId { get; }
+    public string Name { get; }
+    public string Description { get; }
+    public string Url { get; }
+    public string Phone { get; }
+    public string Email { get; }
+    public string LogoUrl { get; }
+    public string LogoBase64 { get; }
 }
 
 public class OrganizationFormDto

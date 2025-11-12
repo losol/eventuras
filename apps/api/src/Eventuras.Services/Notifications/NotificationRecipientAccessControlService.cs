@@ -12,8 +12,8 @@ namespace Eventuras.Services.Notifications;
 
 internal class NotificationRecipientAccessControlService : INotificationRecipientAccessControlService
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ICurrentOrganizationAccessorService _currentOrganizationAccessorService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     public NotificationRecipientAccessControlService(
         IHttpContextAccessor httpContextAccessor,

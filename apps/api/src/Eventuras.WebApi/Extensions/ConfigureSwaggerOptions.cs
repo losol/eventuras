@@ -6,14 +6,15 @@ using Asp.Versioning.ApiExplorer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using NodaTime;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
 {
-    readonly IApiVersionDescriptionProvider provider;
+    private readonly IApiVersionDescriptionProvider provider;
 
     public ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider) =>
-      this.provider = provider;
+        this.provider = provider;
 
     public void Configure(SwaggerGenOptions options)
     {
@@ -22,48 +23,37 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
         foreach (var description in provider.ApiVersionDescriptions)
         {
             options.SwaggerDoc(
-              description.GroupName,
-              new OpenApiInfo()
-              {
-                  Title = $"Eventuras API {description.ApiVersion}",
-                  Version = description.ApiVersion.ToString(),
-              });
+                description.GroupName,
+                new OpenApiInfo
+                {
+                    Title = $"Eventuras API {description.ApiVersion}", Version = description.ApiVersion.ToString()
+                });
         }
 
         // Set host name
-        options.AddServer(new OpenApiServer
-        {
-            Url = "https://localhost:5001",
-            Description = "Dev server (HTTPS)"
-        });
+        options.AddServer(new OpenApiServer { Url = "https://localhost:5001", Description = "Dev server (HTTPS)" });
 
-        options.AddServer(new OpenApiServer
-        {
-            Url = "http://localhost:5000",
-            Description = "Dev server (HTTP)"
-        });
+        options.AddServer(new OpenApiServer { Url = "http://localhost:5000", Description = "Dev server (HTTP)" });
 
 
         // Add JWT Authentication
-        options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-        {
-            Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
-            Name = "Authorization",
-            In = ParameterLocation.Header,
-            Type = SecuritySchemeType.Http,
-            Scheme = "bearer"
-        });
+        options.AddSecurityDefinition("Bearer",
+            new OpenApiSecurityScheme
+            {
+                Description =
+                    "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                Name = "Authorization",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer"
+            });
 
         options.AddSecurityRequirement(new OpenApiSecurityRequirement
         {
             {
                 new OpenApiSecurityScheme
                 {
-                    Reference = new OpenApiReference
-                    {
-                        Type = ReferenceType.SecurityScheme,
-                        Id = "Bearer"
-                    }
+                    Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
                 },
                 Array.Empty<string>()
             }
@@ -78,11 +68,7 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
         options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
 
         // Ensure LocalDate is treated as a string with "date" format
-        options.MapType<NodaTime.LocalDate>(() => new OpenApiSchema
-        {
-            Type = "string",
-            Format = "date"
-        });
+        options.MapType<LocalDate>(() => new OpenApiSchema { Type = "string", Format = "date" });
 
         var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
         options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));

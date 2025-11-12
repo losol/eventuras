@@ -14,9 +14,9 @@ namespace Losol.Communication.Sms.Twilio;
 
 public class TwilioSmsSender : ISmsSender
 {
-    private readonly IOptions<TwilioOptions> _options;
     private readonly IHealthCheckStorage _healthCheckStorage;
     private readonly ILogger<TwilioSmsSender> _logger;
+    private readonly IOptions<TwilioOptions> _options;
 
     public TwilioSmsSender(
         IOptions<TwilioOptions> options,
@@ -74,10 +74,7 @@ public class TwilioSmsSender : ISmsSender
         try
         {
             _logger.LogDebug("Getting 1 message from twilio");
-            var resource = await MessageResource.ReadAsync(new ReadMessageOptions
-            {
-                Limit = 1
-            });
+            var resource = await MessageResource.ReadAsync(new ReadMessageOptions { Limit = 1 });
             _logger.LogDebug("Successfully read {num} messages", resource.Count());
 
             _logger.LogInformation("Health check passed");

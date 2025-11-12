@@ -9,14 +9,14 @@ using Losol.Communication.HealthCheck.Abstractions;
 namespace Eventuras.Services.Email;
 
 /// <summary>
-/// Selects the underlying email sender from the list,
-/// based on the current configuration. (Takes the first
-/// enabled sender from the list). The list itself can be
-/// configured so it contains multiple senders like SMTP
-/// sender, SendGrid and so on. Each of then can be disabled
-/// in settings, like, in org settings. This sender performs
-/// lookup on each send, so it can be used for per-org
-/// configuration check.
+///     Selects the underlying email sender from the list,
+///     based on the current configuration. (Takes the first
+///     enabled sender from the list). The list itself can be
+///     configured so it contains multiple senders like SMTP
+///     sender, SendGrid and so on. Each of then can be disabled
+///     in settings, like, in org settings. This sender performs
+///     lookup on each send, so it can be used for per-org
+///     configuration check.
 /// </summary>
 internal class ConfigurableEmailSender : IEmailSender
 {

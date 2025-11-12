@@ -4,10 +4,8 @@ using System.Linq.Expressions;
 using System.Net.Mail;
 using System.Threading.Tasks;
 using Eventuras.Domain;
-using Eventuras.Services;
 using Eventuras.TestAbstractions;
 using Losol.Communication.Email;
-using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
 
@@ -24,10 +22,7 @@ public class EmailNotificationsControllerTest : IClassFixture<CustomWebApiApplic
         Cleanup();
     }
 
-    public void Dispose()
-    {
-        Cleanup();
-    }
+    public void Dispose() => Cleanup();
 
     private void Cleanup()
     {
@@ -41,12 +36,8 @@ public class EmailNotificationsControllerTest : IClassFixture<CustomWebApiApplic
     public async Task Should_Require_Auth_To_Send_Email_Notification()
     {
         var client = _factory.CreateClient();
-        var response = await client.PostAsync("/v3/notifications/email", new
-        {
-            subject = "Test",
-            bodyMarkdown = "Test email",
-            recipients = new[] { "test@email.com" }
-        });
+        var response = await client.PostAsync("/v3/notifications/email",
+            new { subject = "Test", bodyMarkdown = "Test email", recipients = new[] { "test@email.com" } });
         response.CheckUnauthorized();
     }
 
@@ -54,12 +45,8 @@ public class EmailNotificationsControllerTest : IClassFixture<CustomWebApiApplic
     public async Task Should_Require_Admin_Role_To_Send_Email_Notification()
     {
         var client = _factory.CreateClient().Authenticated();
-        var response = await client.PostAsync("/v3/notifications/email", new
-        {
-            subject = "Test",
-            bodyMarkdown = "Test email",
-            recipients = new[] { "test@email.com" }
-        });
+        var response = await client.PostAsync("/v3/notifications/email",
+            new { subject = "Test", bodyMarkdown = "Test email", recipients = new[] { "test@email.com" } });
         response.CheckForbidden();
     }
 
@@ -89,7 +76,8 @@ public class EmailNotificationsControllerTest : IClassFixture<CustomWebApiApplic
         {
             Assert.True(MailAddress.TryCreate(r, out var address));
             _factory.EmailSenderMock.Verify(s => s
-                    .SendEmailAsync(It.Is(MatchUser(address.DisplayName, address.Address, subject, body)), It.IsAny<EmailOptions>()),
+                    .SendEmailAsync(It.Is(MatchUser(address.DisplayName, address.Address, subject, body)),
+                        It.IsAny<EmailOptions>()),
                 Times.Once, $"Should've sent message {subject} to {address}");
         }
     }
@@ -104,29 +92,22 @@ public class EmailNotificationsControllerTest : IClassFixture<CustomWebApiApplic
         }
     }
 
-    private static Expression<Func<EmailModel, bool>> MatchUser(ApplicationUser user)
-    {
-        return model => model.Recipients.Any(r => r.Name == user.Name && r.Email == user.Email);
-    }
+    private static Expression<Func<EmailModel, bool>> MatchUser(ApplicationUser user) => model =>
+        model.Recipients.Any(r => r.Name == user.Name && r.Email == user.Email);
 
-    private static Expression<Func<EmailModel, bool>> MatchUser(ApplicationUser user, string subject, string body)
-    {
-        return MatchUser(user.Name, user.Email, subject, body);
-    }
+    private static Expression<Func<EmailModel, bool>> MatchUser(ApplicationUser user, string subject, string body) =>
+        MatchUser(user.Name, user.Email, subject, body);
 
     private static Expression<Func<EmailModel, bool>> MatchUser(string name, string email, string subject,
-        string body)
-    {
-        return model => model.Subject == subject &&
-                        model.HtmlBody.Contains(body) &&
-                        model.Recipients.Any(r =>
-                            r.Name == name &&
-                            r.Email == email);
-    }
+        string body) =>
+        model => model.Subject == subject &&
+                 model.HtmlBody.Contains(body) &&
+                 model.Recipients.Any(r =>
+                     r.Name == name &&
+                     r.Email == email);
 
-    public static object[][] GetInvalidBodyParams()
-    {
-        return new[]
+    public static object[][] GetInvalidBodyParams() =>
+        new[]
         {
             new object[] { new { bodyMarkdown = "Test", recipients = new[] { "test@email.com" } } },
             new object[] { new { subject = "Test", bodyMarkdown = "", recipients = new[] { "test@email.com" } } },
@@ -135,9 +116,12 @@ public class EmailNotificationsControllerTest : IClassFixture<CustomWebApiApplic
             new object[] { new { subject = "Test", bodyMarkdown = "Test" } },
             new object[] { new { subject = "Test", bodyMarkdown = "Test", eventParticipants = new { } } },
             new object[]
-                { new { subject = "Test", bodyMarkdown = "Test", eventParticipants = new { eventId = 0 } } },
+            {
+                new { subject = "Test", bodyMarkdown = "Test", eventParticipants = new { eventId = 0 } }
+            },
             new object[]
-                { new { subject = "Test", bodyMarkdown = "Test", eventParticipants = new { eventId = -1 } } },
+            {
+                new { subject = "Test", bodyMarkdown = "Test", eventParticipants = new { eventId = -1 } }
+            }
         };
-    }
 }

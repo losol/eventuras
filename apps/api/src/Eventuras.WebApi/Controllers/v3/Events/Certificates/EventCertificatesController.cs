@@ -21,12 +21,12 @@ namespace Eventuras.WebApi.Controllers.v3.Events.Certificates;
 [Authorize(Policy = Constants.Auth.AdministratorRole)]
 public class EventCertificatesController : ControllerBase
 {
+    private readonly ICertificateDeliveryService _certificateDeliveryService;
+    private readonly ICertificateIssuingService _certificateIssuingService;
+    private readonly ICertificateRenderer _certificateRenderer;
+    private readonly ICertificateRetrievalService _certificateRetrievalService;
     private readonly IEventInfoAccessControlService _eventInfoAccessControlService;
     private readonly IEventInfoRetrievalService _eventInfoRetrievalService;
-    private readonly ICertificateRenderer _certificateRenderer;
-    private readonly ICertificateIssuingService _certificateIssuingService;
-    private readonly ICertificateDeliveryService _certificateDeliveryService;
-    private readonly ICertificateRetrievalService _certificateRetrievalService;
     private readonly ILogger<EventCertificatesController> _logger;
 
     public EventCertificatesController(
@@ -76,15 +76,11 @@ public class EventCertificatesController : ControllerBase
             .ListCertificatesAsync(
                 new CertificateListRequest
                 {
-                    Limit = query.Limit,
-                    Offset = query.Offset,
-                    Filter = new CertificateFilter { EventId = id }
+                    Limit = query.Limit, Offset = query.Offset, Filter = new CertificateFilter { EventId = id }
                 },
                 new CertificateRetrievalOptions
                 {
-                    LoadIssuingOrganization = true,
-                    LoadIssuingUser = true,
-                    LoadRecipientUser = true
+                    LoadIssuingOrganization = true, LoadIssuingUser = true, LoadRecipientUser = true
                 }, cancellationToken);
 
         return Ok(PageResponseDto<EventDto>.FromPaging(

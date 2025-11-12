@@ -14,13 +14,13 @@ namespace Eventuras.WebApi.Controllers.v3.Products;
 [ApiController]
 public class ProductsController : ControllerBase
 {
-    private readonly IProductRetrievalService _productRetrievalService;
     private readonly IOrderRetrievalService _orderRetrievalService;
+    private readonly IProductRetrievalService _productRetrievalService;
 
     public ProductsController(
         IProductRetrievalService productRetrievalService,
         IOrderRetrievalService orderRetrievalService
-        )
+    )
     {
         _productRetrievalService = productRetrievalService;
         _orderRetrievalService = orderRetrievalService;
@@ -29,7 +29,8 @@ public class ProductsController : ControllerBase
 
     [HttpGet("{productId:int}/summary")]
     [ProducesResponseType(typeof(ProductDeliverySummaryDto), 200)]
-    public async Task<ActionResult<ProductDeliverySummaryDto>> GetProductDeliverySummary(int productId, CancellationToken cancellationToken = default)
+    public async Task<ActionResult<ProductDeliverySummaryDto>> GetProductDeliverySummary(int productId,
+        CancellationToken cancellationToken = default)
     {
         // check that the product exists
         var product = await _productRetrievalService.GetProductByIdAsync(productId);
@@ -41,6 +42,4 @@ public class ProductsController : ControllerBase
         var deliverySummary = await _orderRetrievalService.GetProductDeliverySummaryAsync(productId, cancellationToken);
         return Ok(deliverySummary);
     }
-
-
 }

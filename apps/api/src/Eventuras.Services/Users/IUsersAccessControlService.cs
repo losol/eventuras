@@ -8,7 +8,7 @@ namespace Eventuras.Services.Users;
 public interface IUserAccessControlService
 {
     /// <summary>
-    /// Checks if the given user has owner or admin access.
+    ///     Checks if the given user has owner or admin access.
     /// </summary>
     /// <param name="user">The user to check access for.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>

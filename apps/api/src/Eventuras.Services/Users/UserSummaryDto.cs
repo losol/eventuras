@@ -1,4 +1,3 @@
-
 namespace Eventuras.Services.Users;
 
 public class UserSummaryDto

@@ -15,6 +15,12 @@ public class RegistrationFormDto
 
     public bool? FreeRegistration { get; set; }
 
+    public bool Empty => !Type.HasValue &&
+                         Notes == null &&
+                         Customer == null &&
+                         !PaymentMethod.HasValue &&
+                         !FreeRegistration.HasValue;
+
     public void CopyTo(Registration registration)
     {
         if (Type.HasValue)
@@ -48,10 +54,4 @@ public class RegistrationFormDto
             registration.FreeRegistration = FreeRegistration.Value;
         }
     }
-
-    public bool Empty => !Type.HasValue &&
-                         Notes == null &&
-                         Customer == null &&
-                         !PaymentMethod.HasValue &&
-                         !FreeRegistration.HasValue;
 }

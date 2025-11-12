@@ -1,6 +1,7 @@
 using System;
 using System.Data;
 using Dapper;
+using NodaTime;
 
 namespace Eventuras.WebApi.Handlers;
 
@@ -12,15 +13,20 @@ public class DapperDateTimeTypeHandler : SqlMapper.TypeHandler<DateTime>
         {
             return dateTime;
         }
-        else if (value is NodaTime.Instant i)
+
+        if (value is Instant i)
         {
             return i.ToDateTimeUtc();
         }
-        else if (value is NodaTime.LocalDateTime lt)
+
+        if (value is LocalDateTime lt)
         {
             return lt.ToDateTimeUnspecified();
         }
-        throw new ArgumentException($"Invalid value of type '{value?.GetType().FullName}' given. DateTime or NodaTime.Instant values are supported.", nameof(value));
+
+        throw new ArgumentException(
+            $"Invalid value of type '{value?.GetType().FullName}' given. DateTime or NodaTime.Instant values are supported.",
+            nameof(value));
     }
 
     public void SetValue(IDbDataParameter parameter, object value)

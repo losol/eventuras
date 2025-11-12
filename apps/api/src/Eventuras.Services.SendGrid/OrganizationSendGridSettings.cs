@@ -8,8 +8,6 @@ namespace Eventuras.Services.SendGrid;
 [DisplayName("SendGrid")]
 internal class OrganizationSendGridSettings : IConfigurableSettings
 {
-    [DisplayName("SendGrid enabled")] public bool Enabled { get; set; }
-
     [Required]
     [DisplayName("SendGrid key")]
     public string Key { get; set; }
@@ -20,14 +18,8 @@ internal class OrganizationSendGridSettings : IConfigurableSettings
     public string FromAddress { get; set; }
 
     [DisplayName("From: name")] public string FromName { get; set; }
+    [DisplayName("SendGrid enabled")] public bool Enabled { get; set; }
 
-    public SendGridConfig ToSendGridConfig()
-    {
-        return new SendGridConfig
-        {
-            Key = Key,
-            EmailAddress = FromAddress,
-            Name = FromName
-        };
-    }
+    public SendGridConfig ToSendGridConfig() =>
+        new() { Key = Key, EmailAddress = FromAddress, Name = FromName };
 }

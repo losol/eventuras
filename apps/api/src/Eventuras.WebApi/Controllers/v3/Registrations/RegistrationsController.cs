@@ -22,13 +22,12 @@ namespace Eventuras.WebApi.Controllers.v3.Registrations;
 [ApiController]
 public class RegistrationsController : ControllerBase
 {
-    private readonly IRegistrationRetrievalService _registrationRetrievalService;
-    private readonly IRegistrationManagementService _registrationManagementService;
-    private readonly IRegistrationExportService _registrationExportService;
-
     private const string MimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
     private readonly ILogger<RegistrationsController> _logger;
+    private readonly IRegistrationExportService _registrationExportService;
+    private readonly IRegistrationManagementService _registrationManagementService;
+    private readonly IRegistrationRetrievalService _registrationRetrievalService;
 
     public RegistrationsController(
         IRegistrationRetrievalService registrationRetrievalService,
@@ -51,15 +50,15 @@ public class RegistrationsController : ControllerBase
 
     [HttpGet]
     [SwaggerOperation(
-       Summary = "Get registrations with optional Excel export",
-       Description = "Retrieves registrations with optional export to Excel based on the Accept header."
-   )]
+        Summary = "Get registrations with optional Excel export",
+        Description = "Retrieves registrations with optional export to Excel based on the Accept header."
+    )]
     [ProducesResponseType(typeof(PageResponseDto<RegistrationDto>), 200)]
     [ProducesResponseType(400)]
     public async Task<IActionResult> GetRegistrations(
-       [FromQuery] RegistrationsQueryDto query,
-       CancellationToken cancellationToken = default
-   )
+        [FromQuery] RegistrationsQueryDto query,
+        CancellationToken cancellationToken = default
+    )
     {
         if (!ModelState.IsValid)
         {
@@ -73,9 +72,7 @@ public class RegistrationsController : ControllerBase
             Offset = query.Offset,
             Filter = new RegistrationFilter
             {
-                AccessibleOnly = true,
-                EventInfoId = query.EventId,
-                UserId = query.UserId
+                AccessibleOnly = true, EventInfoId = query.EventId, UserId = query.UserId
             },
             OrderBy = RegistrationListOrder.RegistrationTime,
             Descending = true
@@ -97,10 +94,7 @@ public class RegistrationsController : ControllerBase
                 stream,
                 registrationListRequest
             );
-            return new FileContentResult(stream.ToArray(), MimeType)
-            {
-                FileDownloadName = "Registrations.xlsx"
-            };
+            return new FileContentResult(stream.ToArray(), MimeType) { FileDownloadName = "Registrations.xlsx" };
         }
 
         // Default to a paginated response
@@ -134,7 +128,9 @@ public class RegistrationsController : ControllerBase
     {
         _logger.LogInformation("GetRegistrationById called with ID: {id}, and query: {query}", id, query);
 
-        var registration = await _registrationRetrievalService.GetRegistrationByIdAsync(id, RetrievalOptions(query), cancellationToken);
+        var registration =
+            await _registrationRetrievalService.GetRegistrationByIdAsync(id, RetrievalOptions(query),
+                cancellationToken);
         if (registration == null)
         {
             return NotFound("Registration not found.");
@@ -145,26 +141,24 @@ public class RegistrationsController : ControllerBase
             : null;
 
         return new RegistrationDto(registration, products);
-
     }
-
 
 
     [HttpPost]
     public async Task<ActionResult<RegistrationDto>> CreateNewRegistration(
-      [FromBody] NewRegistrationDto dto,
-      CancellationToken cancellationToken)
+        [FromBody] NewRegistrationDto dto,
+        CancellationToken cancellationToken)
     {
         var requestingUserId = User.GetUserId();
-        _logger.LogInformation($"CreateNewRegistration called by user Id {requestingUserId} with EventId: {dto.EventId}, UserId: {dto.UserId}, CreateOrder: {dto.CreateOrder}, SendWelcomeLetter: {dto.SendWelcomeLetter}, Empty: {dto.Empty}");
+        _logger.LogInformation(
+            $"CreateNewRegistration called by user Id {requestingUserId} with EventId: {dto.EventId}, UserId: {dto.UserId}, CreateOrder: {dto.CreateOrder}, SendWelcomeLetter: {dto.SendWelcomeLetter}, Empty: {dto.Empty}");
 
 
-        var registration = await _registrationManagementService.CreateRegistrationAsync(dto.EventId, dto.UserId, new RegistrationOptions
-        {
-            CreateOrder = dto.CreateOrder,
-            Verified = true,
-            SendWelcomeLetter = dto.SendWelcomeLetter
-        }, cancellationToken);
+        var registration = await _registrationManagementService.CreateRegistrationAsync(dto.EventId, dto.UserId,
+            new RegistrationOptions
+            {
+                CreateOrder = dto.CreateOrder, Verified = true, SendWelcomeLetter = dto.SendWelcomeLetter
+            }, cancellationToken);
 
         if (!dto.Empty)
         {
@@ -177,13 +171,14 @@ public class RegistrationsController : ControllerBase
 
 
     /// <summary>
-    /// Alias for POST /v3/registrations
+    ///     Alias for POST /v3/registrations
     /// </summary>
     [HttpPost("me/{eventId}")]
     public async Task<ActionResult<RegistrationDto>> RegisterSelf(
         int eventId, [FromQuery(Name = "createOrder")] bool createOrder)
     {
-        _logger.LogInformation("RegisterSelf called with EventId: {eventId}, CreateOrder: {createOrder}", eventId, createOrder);
+        _logger.LogInformation("RegisterSelf called with EventId: {eventId}, CreateOrder: {createOrder}", eventId,
+            createOrder);
 
         if (!ModelState.IsValid)
         {
@@ -192,13 +187,10 @@ public class RegistrationsController : ControllerBase
         }
 
 
-        var registration = await _registrationManagementService.CreateRegistrationAsync(eventId, User.GetUserId(), new RegistrationOptions
-        {
-            CreateOrder = createOrder
-        });
+        var registration = await _registrationManagementService.CreateRegistrationAsync(eventId, User.GetUserId(),
+            new RegistrationOptions { CreateOrder = createOrder });
 
         return new RegistrationDto(registration);
-
     }
 
     [HttpPut("{id}")]
@@ -264,8 +256,6 @@ public class RegistrationsController : ControllerBase
     }
 
 
-
-
     [HttpDelete("{id}")]
     public async Task<IActionResult> CancelRegistration(int id, CancellationToken cancellationToken)
     {
@@ -294,14 +284,14 @@ public class RegistrationsController : ControllerBase
     }
 
 
-
     private static RegistrationRetrievalOptions RetrievalOptions(RegistrationsQueryDto query)
     {
         if (query == null)
         {
             return new RegistrationRetrievalOptions();
         }
-        return new()
+
+        return new RegistrationRetrievalOptions
         {
             LoadUser = query.IncludeUserInfo,
             LoadEventInfo = query.IncludeEventInfo,

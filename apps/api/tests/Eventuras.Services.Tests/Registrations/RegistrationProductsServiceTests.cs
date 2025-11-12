@@ -20,7 +20,7 @@ public class RegistrationProductsServiceTests : IDisposable
     public RegistrationProductsServiceTests()
     {
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
             .Options;
 
         _context = new ApplicationDbContext(options);
@@ -36,12 +36,10 @@ public class RegistrationProductsServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task GetRegistrationProductsAsync_WithNullRegistration_ShouldThrowArgumentNullException()
-    {
+    public async Task GetRegistrationProductsAsync_WithNullRegistration_ShouldThrowArgumentNullException() =>
         // Act & Assert
         await Assert.ThrowsAsync<ArgumentNullException>(() =>
             _service.GetRegistrationProductsAsync(null!));
-    }
 
     [Fact]
     public async Task GetRegistrationProductsAsync_WithNoOrders_ShouldReturnEmptyList()
@@ -76,11 +74,8 @@ public class RegistrationProductsServiceTests : IDisposable
 
         // Reload with navigation properties using service
         var registrationId = registration.RegistrationId;
-        registration = await _service.GetRegistrationByIdAsync(registrationId, new RegistrationRetrievalOptions
-        {
-            LoadOrders = true,
-            LoadProducts = true
-        });
+        registration = await _service.GetRegistrationByIdAsync(registrationId,
+            new RegistrationRetrievalOptions { LoadOrders = true, LoadProducts = true });
 
         // Act
         var result = await _service.GetRegistrationProductsAsync(registration);
@@ -111,11 +106,8 @@ public class RegistrationProductsServiceTests : IDisposable
 
         // Reload using service
         var registrationId = registration.RegistrationId;
-        registration = await _service.GetRegistrationByIdAsync(registrationId, new RegistrationRetrievalOptions
-        {
-            LoadOrders = true,
-            LoadProducts = true
-        });
+        registration = await _service.GetRegistrationByIdAsync(registrationId,
+            new RegistrationRetrievalOptions { LoadOrders = true, LoadProducts = true });
 
         // Act
         var result = await _service.GetRegistrationProductsAsync(registration);
@@ -148,11 +140,8 @@ public class RegistrationProductsServiceTests : IDisposable
 
         // Reload using service
         var registrationId = registration.RegistrationId;
-        registration = await _service.GetRegistrationByIdAsync(registrationId, new RegistrationRetrievalOptions
-        {
-            LoadOrders = true,
-            LoadProducts = true
-        });
+        registration = await _service.GetRegistrationByIdAsync(registrationId,
+            new RegistrationRetrievalOptions { LoadOrders = true, LoadProducts = true });
 
         // Act
         var result = await _service.GetRegistrationProductsAsync(registration);
@@ -190,11 +179,8 @@ public class RegistrationProductsServiceTests : IDisposable
 
         // Reload using service
         var registrationId = registration.RegistrationId;
-        registration = await _service.GetRegistrationByIdAsync(registrationId, new RegistrationRetrievalOptions
-        {
-            LoadOrders = true,
-            LoadProducts = true
-        });
+        registration = await _service.GetRegistrationByIdAsync(registrationId,
+            new RegistrationRetrievalOptions { LoadOrders = true, LoadProducts = true });
 
         // Act
         var result = await _service.GetRegistrationProductsAsync(registration);
@@ -227,11 +213,8 @@ public class RegistrationProductsServiceTests : IDisposable
 
         // Reload using service
         var registrationId = registration.RegistrationId;
-        registration = await _service.GetRegistrationByIdAsync(registrationId, new RegistrationRetrievalOptions
-        {
-            LoadOrders = true,
-            LoadProducts = true
-        });
+        registration = await _service.GetRegistrationByIdAsync(registrationId,
+            new RegistrationRetrievalOptions { LoadOrders = true, LoadProducts = true });
 
         // Act
         var result = await _service.GetRegistrationProductsAsync(registration);
@@ -265,11 +248,8 @@ public class RegistrationProductsServiceTests : IDisposable
 
         // Reload using service
         var registrationId = registration.RegistrationId;
-        registration = await _service.GetRegistrationByIdAsync(registrationId, new RegistrationRetrievalOptions
-        {
-            LoadOrders = true,
-            LoadProducts = true
-        });
+        registration = await _service.GetRegistrationByIdAsync(registrationId,
+            new RegistrationRetrievalOptions { LoadOrders = true, LoadProducts = true });
 
         // Act
         var result = await _service.GetRegistrationProductsAsync(registration);
@@ -302,11 +282,8 @@ public class RegistrationProductsServiceTests : IDisposable
 
         // Reload using service
         var registrationId = registration.RegistrationId;
-        registration = await _service.GetRegistrationByIdAsync(registrationId, new RegistrationRetrievalOptions
-        {
-            LoadOrders = true,
-            LoadProducts = true
-        });
+        registration = await _service.GetRegistrationByIdAsync(registrationId,
+            new RegistrationRetrievalOptions { LoadOrders = true, LoadProducts = true });
 
         // Act
         var result = await _service.GetRegistrationProductsAsync(registration);
@@ -342,11 +319,8 @@ public class RegistrationProductsServiceTests : IDisposable
 
         // Reload using service
         var registrationId = registration.RegistrationId;
-        registration = await _service.GetRegistrationByIdAsync(registrationId, new RegistrationRetrievalOptions
-        {
-            LoadOrders = true,
-            LoadProducts = true
-        });
+        registration = await _service.GetRegistrationByIdAsync(registrationId,
+            new RegistrationRetrievalOptions { LoadOrders = true, LoadProducts = true });
 
         // Act
         var result = await _service.GetRegistrationProductsAsync(registration);
@@ -393,11 +367,8 @@ public class RegistrationProductsServiceTests : IDisposable
 
         // Reload using service
         var registrationId = registration.RegistrationId;
-        registration = await _service.GetRegistrationByIdAsync(registrationId, new RegistrationRetrievalOptions
-        {
-            LoadOrders = true,
-            LoadProducts = true
-        });
+        registration = await _service.GetRegistrationByIdAsync(registrationId,
+            new RegistrationRetrievalOptions { LoadOrders = true, LoadProducts = true });
 
         // Act
         var result = await _service.GetRegistrationProductsAsync(registration);
@@ -485,11 +456,8 @@ public class RegistrationProductsServiceTests : IDisposable
 
         // Reload using service
         var registrationId = registration.RegistrationId;
-        registration = await _service.GetRegistrationByIdAsync(registrationId, new RegistrationRetrievalOptions
-        {
-            LoadOrders = true,
-            LoadProducts = true
-        });
+        registration = await _service.GetRegistrationByIdAsync(registrationId,
+            new RegistrationRetrievalOptions { LoadOrders = true, LoadProducts = true });
 
         // Act
         var result = await _service.GetRegistrationProductsAsync(registration);
@@ -742,59 +710,24 @@ public class RegistrationProductsServiceTests : IDisposable
     #endregion
 
     // Helper methods
-    private async Task<Registration> LoadRegistrationWithProducts(int registrationId)
-    {
-        return await _service.GetRegistrationByIdAsync(registrationId, new RegistrationRetrievalOptions
-        {
-            LoadOrders = true,
-            LoadProducts = true
-        }, CancellationToken.None);
-    }
+    private async Task<Registration> LoadRegistrationWithProducts(int registrationId) =>
+        await _service.GetRegistrationByIdAsync(registrationId,
+            new RegistrationRetrievalOptions { LoadOrders = true, LoadProducts = true }, CancellationToken.None);
 
-    private Registration CreateRegistration()
-    {
-        return new Registration
-        {
-            EventInfoId = 1,
-            UserId = "user1",
-            Status = Registration.RegistrationStatus.Draft
-        };
-    }
+    private Registration CreateRegistration() =>
+        new() { EventInfoId = 1, UserId = "user1", Status = Registration.RegistrationStatus.Draft };
 
-    private Order CreateOrder(Registration registration)
-    {
-        return new Order
-        {
-            Registration = registration,
-            UserId = registration.UserId,
-            OrderLines = new List<OrderLine>()
-        };
-    }
+    private Order CreateOrder(Registration registration) =>
+        new() { Registration = registration, UserId = registration.UserId, OrderLines = new List<OrderLine>() };
 
-    private Product CreateProduct(string name, decimal price)
-    {
-        return new Product
-        {
-            Name = name,
-            Price = price,
-            EventInfoId = 1
-        };
-    }
+    private Product CreateProduct(string name, decimal price) =>
+        new() { Name = name, Price = price, EventInfoId = 1 };
 
-    private ProductVariant CreateProductVariant(Product product, string name, decimal price)
-    {
-        return new ProductVariant
-        {
-            Product = product,
-            ProductId = product.ProductId,
-            Name = name,
-            Price = price
-        };
-    }
+    private ProductVariant CreateProductVariant(Product product, string name, decimal price) =>
+        new() { Product = product, ProductId = product.ProductId, Name = name, Price = price };
 
-    private OrderLine CreateOrderLine(Product product, int quantity, ProductVariant variant = null)
-    {
-        return new OrderLine
+    private OrderLine CreateOrderLine(Product product, int quantity, ProductVariant variant = null) =>
+        new()
         {
             Product = product,
             ProductId = product.ProductId,
@@ -803,5 +736,4 @@ public class RegistrationProductsServiceTests : IDisposable
             Quantity = quantity,
             Price = variant?.Price ?? product.Price
         };
-    }
 }

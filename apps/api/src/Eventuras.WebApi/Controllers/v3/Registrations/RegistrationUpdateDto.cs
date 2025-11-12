@@ -5,7 +5,6 @@ namespace Eventuras.WebApi.Controllers.v3.Registrations;
 
 public class RegistrationUpdateDto
 {
-
     public RegistrationStatus? Status { get; set; }
     public RegistrationType? Type { get; set; }
     public string Notes { get; set; }

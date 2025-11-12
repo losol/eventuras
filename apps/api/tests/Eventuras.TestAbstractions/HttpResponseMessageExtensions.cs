@@ -11,10 +11,8 @@ namespace Eventuras.TestAbstractions;
 
 public static class HttpResponseMessageExtensions
 {
-    public static void CheckBadRequest(this HttpResponseMessage response)
-    {
+    public static void CheckBadRequest(this HttpResponseMessage response) =>
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-    }
 
     public static async Task CheckBadRequestAsync(this HttpResponseMessage response, string expectedErrorText)
     {
@@ -58,13 +56,13 @@ public static class HttpResponseMessageExtensions
 
         var options = new JsonSerializerOptions
         {
-            Converters = { new JsonStringEnumConverter() },
-            PropertyNameCaseInsensitive = true,
+            Converters = { new JsonStringEnumConverter() }, PropertyNameCaseInsensitive = true
         };
         return await response.Content.ReadFromJsonAsync<TContent>(options, cancellationToken);
     }
 
-    public static HttpResponseMessage CheckStatusCode(this HttpResponseMessage response, params HttpStatusCode[] allowedStatuses)
+    public static HttpResponseMessage CheckStatusCode(this HttpResponseMessage response,
+        params HttpStatusCode[] allowedStatuses)
     {
         Assert.Contains(response.StatusCode, allowedStatuses);
         return response;

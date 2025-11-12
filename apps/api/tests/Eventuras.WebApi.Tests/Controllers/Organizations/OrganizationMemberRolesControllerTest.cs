@@ -12,10 +12,8 @@ public class OrganizationMemberRolesControllerTest : IClassFixture<CustomWebApiA
 {
     private readonly CustomWebApiApplicationFactory<Program> _factory;
 
-    public OrganizationMemberRolesControllerTest(CustomWebApiApplicationFactory<Program> factory)
-    {
+    public OrganizationMemberRolesControllerTest(CustomWebApiApplicationFactory<Program> factory) =>
         _factory = factory ?? throw new ArgumentNullException(nameof(factory));
-    }
 
     [Fact]
     public async Task Should_Require_Auth_To_List_Roles()
@@ -159,10 +157,7 @@ public class OrganizationMemberRolesControllerTest : IClassFixture<CustomWebApiA
         using var org = await scope.CreateOrganizationAsync();
         using var user = await scope.CreateUserAsync();
         var response = await client.PostAsync(
-            $"/v3/organizations/{org.Entity.OrganizationId}/members/{user.Entity.Id}/roles", new
-            {
-                role = value
-            });
+            $"/v3/organizations/{org.Entity.OrganizationId}/members/{user.Entity.Id}/roles", new { role = value });
         response.CheckBadRequest();
     }
 
@@ -173,10 +168,8 @@ public class OrganizationMemberRolesControllerTest : IClassFixture<CustomWebApiA
             .AuthenticatedAsSystemAdmin();
         using var scope = _factory.Services.NewTestScope();
         using var user = await scope.CreateUserAsync();
-        var response = await client.PostAsync($"/v3/organizations/1/members/{user.Entity.Id}/roles", new
-        {
-            role = Roles.Admin
-        });
+        var response = await client.PostAsync($"/v3/organizations/1/members/{user.Entity.Id}/roles",
+            new { role = Roles.Admin });
         response.CheckNotFound();
     }
 
@@ -188,10 +181,7 @@ public class OrganizationMemberRolesControllerTest : IClassFixture<CustomWebApiA
         using var scope = _factory.Services.NewTestScope();
         using var org = await scope.CreateOrganizationAsync();
         var response = await client.PostAsync($"/v3/organizations/{org.Entity.OrganizationId}/members/any/roles",
-            new
-            {
-                role = Roles.Admin
-            });
+            new { role = Roles.Admin });
         response.CheckNotFound();
     }
 
@@ -204,10 +194,8 @@ public class OrganizationMemberRolesControllerTest : IClassFixture<CustomWebApiA
         using var org = await scope.CreateOrganizationAsync();
         using var user = await scope.CreateUserAsync();
         var response = await client.PostAsync(
-            $"/v3/organizations/{org.Entity.OrganizationId}/members/{user.Entity.Id}/roles", new
-            {
-                role = Roles.Admin
-            });
+            $"/v3/organizations/{org.Entity.OrganizationId}/members/{user.Entity.Id}/roles",
+            new { role = Roles.Admin });
         response.CheckNotFound();
     }
 
@@ -225,10 +213,8 @@ public class OrganizationMemberRolesControllerTest : IClassFixture<CustomWebApiA
         Assert.Null(member.Entity.Roles);
 
         var response = await client.PostAsync(
-            $"/v3/organizations/{org.Entity.OrganizationId}/members/{user.Entity.Id}/roles", new
-            {
-                role = Roles.Admin
-            });
+            $"/v3/organizations/{org.Entity.OrganizationId}/members/{user.Entity.Id}/roles",
+            new { role = Roles.Admin });
         response.CheckOk();
 
         var token = await response.AsArrayAsync();
@@ -261,10 +247,8 @@ public class OrganizationMemberRolesControllerTest : IClassFixture<CustomWebApiA
         Assert.Equal(Roles.Admin, member.Entity.Roles.First().Role);
 
         var response = await client.PostAsync(
-            $"/v3/organizations/{org.Entity.OrganizationId}/members/{user.Entity.Id}/roles", new
-            {
-                role = Roles.Admin
-            });
+            $"/v3/organizations/{org.Entity.OrganizationId}/members/{user.Entity.Id}/roles",
+            new { role = Roles.Admin });
         response.CheckOk();
 
         var token = await response.AsArrayAsync();
@@ -307,10 +291,8 @@ public class OrganizationMemberRolesControllerTest : IClassFixture<CustomWebApiA
             .AuthenticatedAsSystemAdmin();
         using var scope = _factory.Services.NewTestScope();
         using var user = await scope.CreateUserAsync();
-        var response = await client.DeleteAsync($"/v3/organizations/1001/members/{user.Entity.Id}/roles", new
-        {
-            role = Roles.Admin
-        });
+        var response = await client.DeleteAsync($"/v3/organizations/1001/members/{user.Entity.Id}/roles",
+            new { role = Roles.Admin });
         response.CheckNotFound();
     }
 
@@ -322,10 +304,7 @@ public class OrganizationMemberRolesControllerTest : IClassFixture<CustomWebApiA
         using var scope = _factory.Services.NewTestScope();
         using var org = await scope.CreateOrganizationAsync();
         var response = await client.DeleteAsync($"/v3/organizations/{org.Entity.OrganizationId}/members/any/roles",
-            new
-            {
-                role = Roles.Admin
-            });
+            new { role = Roles.Admin });
         response.CheckNotFound();
     }
 
@@ -341,10 +320,7 @@ public class OrganizationMemberRolesControllerTest : IClassFixture<CustomWebApiA
         using var org = await scope.CreateOrganizationAsync();
         using var user = await scope.CreateUserAsync();
         var response = await client.DeleteAsync(
-            $"/v3/organizations/{org.Entity.OrganizationId}/members/{user.Entity.Id}/roles", new
-            {
-                role = value
-            });
+            $"/v3/organizations/{org.Entity.OrganizationId}/members/{user.Entity.Id}/roles", new { role = value });
         response.CheckBadRequest();
     }
 
@@ -364,10 +340,8 @@ public class OrganizationMemberRolesControllerTest : IClassFixture<CustomWebApiA
         Assert.Equal(Roles.Admin, member.Entity.Roles.First().Role);
 
         var response = await client.DeleteAsync(
-            $"/v3/organizations/{org.Entity.OrganizationId}/members/{user.Entity.Id}/roles", new
-            {
-                role = Roles.Admin
-            });
+            $"/v3/organizations/{org.Entity.OrganizationId}/members/{user.Entity.Id}/roles",
+            new { role = Roles.Admin });
         response.CheckOk();
 
         var token = await response.AsArrayAsync();
@@ -398,10 +372,8 @@ public class OrganizationMemberRolesControllerTest : IClassFixture<CustomWebApiA
         Assert.Null(member.Entity.Roles);
 
         var response = await client.DeleteAsync(
-            $"/v3/organizations/{org.Entity.OrganizationId}/members/{user.Entity.Id}/roles", new
-            {
-                role = Roles.Admin
-            });
+            $"/v3/organizations/{org.Entity.OrganizationId}/members/{user.Entity.Id}/roles",
+            new { role = Roles.Admin });
         response.CheckOk();
 
         var token = await response.AsArrayAsync();

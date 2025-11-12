@@ -6,6 +6,22 @@ namespace Eventuras.WebApi.Controllers.v3.Notifications;
 
 public class NotificationDto
 {
+    public NotificationDto(Notification notification)
+    {
+        NotificationId = notification.NotificationId;
+        OrganizationId = notification.OrganizationId;
+        EventId = notification.EventInfoId;
+        ProductId = notification.ProductId;
+        Message = notification.Message;
+        Created = notification.Created;
+        StatusUpdated = notification.StatusUpdated;
+        Type = notification.Type;
+        Status = notification.Status;
+        Statistics = notification.Statistics != null
+            ? new NotificationStatisticsDto(notification.Statistics)
+            : null;
+    }
+
     public int NotificationId { get; }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
@@ -32,36 +48,20 @@ public class NotificationDto
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public NotificationStatisticsDto Statistics { get; }
-
-    public NotificationDto(Notification notification)
-    {
-        NotificationId = notification.NotificationId;
-        OrganizationId = notification.OrganizationId;
-        EventId = notification.EventInfoId;
-        ProductId = notification.ProductId;
-        Message = notification.Message;
-        Created = notification.Created;
-        StatusUpdated = notification.StatusUpdated;
-        Type = notification.Type;
-        Status = notification.Status;
-        Statistics = notification.Statistics != null
-            ? new NotificationStatisticsDto(notification.Statistics)
-            : null;
-    }
 }
 
 public class NotificationStatisticsDto
 {
-    public int Sent { get; }
-
-    public int Errors { get; }
-
-    public int Recipients { get; }
-
     public NotificationStatisticsDto(NotificationStatistics stats)
     {
         Sent = stats.SentTotal;
         Errors = stats.ErrorsTotal;
         Recipients = stats.RecipientsTotal;
     }
+
+    public int Sent { get; }
+
+    public int Errors { get; }
+
+    public int Recipients { get; }
 }

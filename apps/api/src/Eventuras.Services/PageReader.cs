@@ -7,14 +7,15 @@ namespace Eventuras.Services;
 
 public class PageReader<T>
 {
-    private readonly Func<int, int, CancellationToken, Task<Paging<T>>> _func;
     private readonly int _count;
+    private readonly Func<int, int, CancellationToken, Task<Paging<T>>> _func;
     private Paging<T> _lastPage;
     private bool _lastPageRead;
     private int _page;
     private int _recordsRead;
 
-    public PageReader(Func</*offset*/int, /*limit*/int, CancellationToken, Task<Paging<T>>> func, int count = PagingRequest.MaxRecordsPerPage)
+    public PageReader(Func< /*offset*/int, /*limit*/int, CancellationToken, Task<Paging<T>>> func,
+        int count = PagingRequest.MaxRecordsPerPage)
     {
         if (count > PagingRequest.MaxRecordsPerPage)
         {
@@ -22,6 +23,7 @@ public class PageReader<T>
                 $"{nameof(count)} must be not more than " +
                 $"{nameof(PagingRequest)}.{nameof(PagingRequest.MaxRecordsPerPage)}");
         }
+
         _count = count;
         _func = func;
     }
@@ -39,6 +41,7 @@ public class PageReader<T>
         {
             throw new InvalidOperationException("Iteration is done");
         }
+
         _lastPageRead = true;
         return _lastPage?.Data ?? new T[0];
     }
@@ -61,7 +64,7 @@ public class PageReader<T>
     }
 
     public static async Task<TP[]> ReadAllAsync<TP>(
-        Func</*offset*/int, /*limit*/int, CancellationToken, Task<Paging<TP>>> func,
+        Func< /*offset*/int, /*limit*/int, CancellationToken, Task<Paging<TP>>> func,
         CancellationToken cancellationToken = default)
     {
         var reader = new PageReader<TP>(func);
@@ -71,6 +74,7 @@ public class PageReader<T>
         {
             result.AddRange(await reader.ReadNextAsync(cancellationToken));
         }
+
         return result.ToArray();
     }
 }

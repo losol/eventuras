@@ -14,7 +14,8 @@ using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Registrations;
 
-public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program> factory) : IClassFixture<CustomWebApiApplicationFactory<Program>>
+public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program> factory)
+    : IClassFixture<CustomWebApiApplicationFactory<Program>>
 {
     [Fact]
     public async Task Should_Return_Unauthorized_For_Not_Logged_In_User()
@@ -48,10 +49,14 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
 
         var q = new List<object>();
         if (page != null)
+        {
             q.Add($"page={WebUtility.UrlEncode(page.ToString())}");
+        }
 
         if (count != null)
+        {
             q.Add($"count={WebUtility.UrlEncode(count.ToString())}");
+        }
 
         var response = await client.GetAsync("/v3/registrations?" + string.Join("&", q));
         response.CheckBadRequest();
@@ -65,9 +70,12 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
         using var scope = factory.Services.NewTestScope();
         using var e = await scope.CreateEventAsync();
         using var user = await scope.CreateUserAsync();
-        using var r1 = await scope.CreateRegistrationAsync(e.Entity, user.Entity, time: SystemClock.Instance.Now().Plus(Duration.FromDays(3)));
-        using var r2 = await scope.CreateRegistrationAsync(e.Entity, user.Entity, time: SystemClock.Instance.Now().Plus(Duration.FromDays(2)));
-        using var r3 = await scope.CreateRegistrationAsync(e.Entity, user.Entity, time: SystemClock.Instance.Now().Plus(Duration.FromDays(1)));
+        using var r1 = await scope.CreateRegistrationAsync(e.Entity, user.Entity,
+            time: SystemClock.Instance.Now().Plus(Duration.FromDays(3)));
+        using var r2 = await scope.CreateRegistrationAsync(e.Entity, user.Entity,
+            time: SystemClock.Instance.Now().Plus(Duration.FromDays(2)));
+        using var r3 = await scope.CreateRegistrationAsync(e.Entity, user.Entity,
+            time: SystemClock.Instance.Now().Plus(Duration.FromDays(1)));
 
         var response = await client.GetAsync($"/v3/registrations?page=1&count=2&eventId={e.Entity.EventInfoId}");
         var paging = await response.AsTokenAsync();
@@ -86,9 +94,12 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
         using var otherUser = await scope.CreateUserAsync();
 
         using var e = await scope.CreateEventAsync();
-        using var r1 = await scope.CreateRegistrationAsync(e.Entity, user.Entity, time: SystemClock.Instance.Now().Plus(Duration.FromDays(3)));
-        using var r2 = await scope.CreateRegistrationAsync(e.Entity, user.Entity, time: SystemClock.Instance.Now().Plus(Duration.FromDays(2)));
-        using var r3 = await scope.CreateRegistrationAsync(e.Entity, otherUser.Entity, time: SystemClock.Instance.Now().Plus(Duration.FromDays(1)));
+        using var r1 = await scope.CreateRegistrationAsync(e.Entity, user.Entity,
+            time: SystemClock.Instance.Now().Plus(Duration.FromDays(3)));
+        using var r2 = await scope.CreateRegistrationAsync(e.Entity, user.Entity,
+            time: SystemClock.Instance.Now().Plus(Duration.FromDays(2)));
+        using var r3 = await scope.CreateRegistrationAsync(e.Entity, otherUser.Entity,
+            time: SystemClock.Instance.Now().Plus(Duration.FromDays(1)));
 
         var client = factory.CreateClient().AuthenticatedAs(user.Entity);
 
@@ -117,11 +128,16 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
         await scope.CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
         await scope.CreateOrganizationMemberAsync(otherAdmin.Entity, otherOrg.Entity, role: Roles.Admin);
 
-        using var e1 = await scope.CreateEventAsync(organization: org.Entity, organizationId: org.Entity.OrganizationId);
-        using var e2 = await scope.CreateEventAsync(organization: otherOrg.Entity, organizationId: otherOrg.Entity.OrganizationId);
-        using var r1 = await scope.CreateRegistrationAsync(e1.Entity, user.Entity, time: SystemClock.Instance.Now().Plus(Duration.FromDays(3)));
-        using var r2 = await scope.CreateRegistrationAsync(e1.Entity, otherUser.Entity, time: SystemClock.Instance.Now().Plus(Duration.FromDays(2)));
-        using var r3 = await scope.CreateRegistrationAsync(e2.Entity, otherUser.Entity, time: SystemClock.Instance.Now().Plus(Duration.FromDays(1)));
+        using var e1 =
+            await scope.CreateEventAsync(organization: org.Entity, organizationId: org.Entity.OrganizationId);
+        using var e2 = await scope.CreateEventAsync(organization: otherOrg.Entity,
+            organizationId: otherOrg.Entity.OrganizationId);
+        using var r1 = await scope.CreateRegistrationAsync(e1.Entity, user.Entity,
+            time: SystemClock.Instance.Now().Plus(Duration.FromDays(3)));
+        using var r2 = await scope.CreateRegistrationAsync(e1.Entity, otherUser.Entity,
+            time: SystemClock.Instance.Now().Plus(Duration.FromDays(2)));
+        using var r3 = await scope.CreateRegistrationAsync(e2.Entity, otherUser.Entity,
+            time: SystemClock.Instance.Now().Plus(Duration.FromDays(1)));
 
         var client = factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
 
@@ -144,9 +160,12 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
         using var otherUser = await scope.CreateUserAsync();
 
         using var e = await scope.CreateEventAsync();
-        using var r1 = await scope.CreateRegistrationAsync(e.Entity, user.Entity, time: SystemClock.Instance.Now().Plus(Duration.FromDays(3)));
-        using var r2 = await scope.CreateRegistrationAsync(e.Entity, user.Entity, time: SystemClock.Instance.Now().Plus(Duration.FromDays(2)));
-        using var r3 = await scope.CreateRegistrationAsync(e.Entity, otherUser.Entity, time: SystemClock.Instance.Now().Plus(Duration.FromDays(1)));
+        using var r1 = await scope.CreateRegistrationAsync(e.Entity, user.Entity,
+            time: SystemClock.Instance.Now().Plus(Duration.FromDays(3)));
+        using var r2 = await scope.CreateRegistrationAsync(e.Entity, user.Entity,
+            time: SystemClock.Instance.Now().Plus(Duration.FromDays(2)));
+        using var r3 = await scope.CreateRegistrationAsync(e.Entity, otherUser.Entity,
+            time: SystemClock.Instance.Now().Plus(Duration.FromDays(1)));
 
         var client = factory.CreateClient().AuthenticatedAsSystemAdmin();
 
@@ -163,7 +182,8 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
         using var otherUser = await scope.CreateUserAsync();
 
         using var evt = await scope.CreateEventAsync();
-        using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity, time: SystemClock.Instance.Now().Plus(Duration.FromDays(3)));
+        using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity,
+            time: SystemClock.Instance.Now().Plus(Duration.FromDays(3)));
 
         var client = factory.CreateClient().AuthenticatedAsSystemAdmin();
 
@@ -186,11 +206,13 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
         using var otherUser = await scope.CreateUserAsync();
 
         using var evt = await scope.CreateEventAsync();
-        using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity, time: SystemClock.Instance.Now().Plus(Duration.FromDays(3)));
+        using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity,
+            time: SystemClock.Instance.Now().Plus(Duration.FromDays(3)));
 
         var client = factory.CreateClient().AuthenticatedAsSystemAdmin();
 
-        var response = await client.GetAsync($"/v3/registrations?includeUserInfo=true&eventId={evt.Entity.EventInfoId}");
+        var response =
+            await client.GetAsync($"/v3/registrations?includeUserInfo=true&eventId={evt.Entity.EventInfoId}");
         var paging = await response.AsTokenAsync();
         paging.CheckPaging((token, r) =>
             {
@@ -209,11 +231,13 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
         using var otherUser = await scope.CreateUserAsync();
 
         using var evt = await scope.CreateEventAsync();
-        using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity, time: SystemClock.Instance.Now().Plus(Duration.FromDays(3)));
+        using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity,
+            time: SystemClock.Instance.Now().Plus(Duration.FromDays(3)));
 
         var client = factory.CreateClient().AuthenticatedAsSystemAdmin();
 
-        var response = await client.GetAsync($"/v3/registrations?eventId={evt.Entity.EventInfoId}&includeEventInfo=true");
+        var response =
+            await client.GetAsync($"/v3/registrations?eventId={evt.Entity.EventInfoId}&includeEventInfo=true");
         var paging = await response.AsTokenAsync();
         paging.CheckPaging((token, r) =>
             {
@@ -228,7 +252,8 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
     public async Task Should_Require_Auth_For_Creating_New_Reg()
     {
         var client = factory.CreateClient();
-        var response = await client.PostAsync("/v3/registrations", new { userId = Guid.NewGuid(), eventId = Guid.NewGuid() });
+        var response = await client.PostAsync("/v3/registrations",
+            new { userId = Guid.NewGuid(), eventId = Guid.NewGuid() });
         response.CheckUnauthorized();
     }
 
@@ -238,7 +263,8 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
         var client = factory.CreateClient().Authenticated();
         using var scope = factory.Services.NewTestScope();
         using var e = await scope.CreateEventAsync();
-        var response = await client.PostAsync("/v3/registrations", new { userId = Guid.NewGuid(), eventId = e.Entity.EventInfoId });
+        var response = await client.PostAsync("/v3/registrations",
+            new { userId = Guid.NewGuid(), eventId = e.Entity.EventInfoId });
         response.CheckNotFound();
     }
 
@@ -294,10 +320,12 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
         using var e = await scope.CreateEventAsync(status: EventInfo.EventInfoStatus.RegistrationsOpen);
 
         var client = factory.CreateClient().AuthenticatedAs(user.Entity);
-        var response = await client.PostAsync("/v3/registrations", new { userId = user.Entity.Id, eventId = e.Entity.EventInfoId });
+        var response = await client.PostAsync("/v3/registrations",
+            new { userId = user.Entity.Id, eventId = e.Entity.EventInfoId });
         response.CheckOk();
 
-        var reg = await scope.Db.Registrations.SingleAsync(r => r.EventInfoId == e.Entity.EventInfoId && r.UserId == user.Entity.Id);
+        var reg = await scope.Db.Registrations.SingleAsync(r =>
+            r.EventInfoId == e.Entity.EventInfoId && r.UserId == user.Entity.Id);
 
         var token = await response.AsTokenAsync();
         token.CheckRegistration(reg);
@@ -314,7 +342,8 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
         var response = await client.PostAsync($"/v3/registrations/me/{e.Entity.EventInfoId}");
         response.CheckOk();
 
-        var reg = await scope.Db.Registrations.SingleAsync(r => r.EventInfoId == e.Entity.EventInfoId && r.UserId == user.Entity.Id);
+        var reg = await scope.Db.Registrations.SingleAsync(r =>
+            r.EventInfoId == e.Entity.EventInfoId && r.UserId == user.Entity.Id);
 
         var token = await response.AsTokenAsync();
         token.CheckRegistration(reg);
@@ -377,7 +406,8 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
         using var e = await scope.CreateEventAsync(status: EventInfo.EventInfoStatus.Planned);
 
         var client = factory.CreateClient().AuthenticatedAs(user.Entity);
-        var response = await client.PostAsync("/v3/registrations", new { userId = user.Entity.Id, eventId = e.Entity.EventInfoId });
+        var response = await client.PostAsync("/v3/registrations",
+            new { userId = user.Entity.Id, eventId = e.Entity.EventInfoId });
         response.CheckForbidden();
     }
 
@@ -390,7 +420,8 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
         using var mandatoryProduct = await scope.CreateProductAsync(e.Entity, minimumQuantity: 1);
 
         var client = factory.CreateClient().AuthenticatedAs(user.Entity);
-        var response = await client.PostAsync("/v3/registrations", new { userId = user.Entity.Id, eventId = e.Entity.EventInfoId });
+        var response = await client.PostAsync("/v3/registrations",
+            new { userId = user.Entity.Id, eventId = e.Entity.EventInfoId });
         response.CheckOk();
 
         var reg = await scope.Db.Registrations.Include(r => r.Orders)
@@ -406,7 +437,8 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
     {
         using var scope = factory.Services.NewTestScope();
         using var user = await scope.CreateUserAsync();
-        using var evt = await scope.CreateEventAsync(status: EventInfo.EventInfoStatus.RegistrationsOpen, maxParticipants: 1);
+        using var evt =
+            await scope.CreateEventAsync(status: EventInfo.EventInfoStatus.RegistrationsOpen, maxParticipants: 1);
         using var mandatoryProduct = await scope.CreateProductAsync(evt.Entity, minimumQuantity: 1);
 
         var client = factory.CreateClient().AuthenticatedAs(user.Entity);
@@ -422,7 +454,8 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
         Assert.NotEmpty(reg.Orders);
         Assert.Equal(Registration.RegistrationStatus.Verified, reg.Status);
 
-        var updatedEvent = await scope.Db.EventInfos.AsNoTracking().SingleAsync(e => e.EventInfoId == evt.Entity.EventInfoId);
+        var updatedEvent = await scope.Db.EventInfos.AsNoTracking()
+            .SingleAsync(e => e.EventInfoId == evt.Entity.EventInfoId);
         Assert.Equal(EventInfo.EventInfoStatus.WaitingList, updatedEvent.Status);
     }
 
@@ -495,7 +528,8 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
             new { userId = user.Entity.Id, eventId = e.Entity.EventInfoId });
         response.CheckOk();
 
-        var reg = await scope.Db.Registrations.SingleAsync(r => r.EventInfoId == e.Entity.EventInfoId && r.UserId == user.Entity.Id);
+        var reg = await scope.Db.Registrations.SingleAsync(r =>
+            r.EventInfoId == e.Entity.EventInfoId && r.UserId == user.Entity.Id);
 
         var token = await response.AsTokenAsync();
         token.CheckRegistration(reg);
@@ -503,7 +537,8 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
 
     [Theory]
     [MemberData(nameof(GetRegInfoWithAdditionalInfoFilled))]
-    public async Task Should_Allow_Admin_To_Provide_Extra_Info_When_Creating_New_Reg(Func<string, int, object> f, Action<Registration> check)
+    public async Task Should_Allow_Admin_To_Provide_Extra_Info_When_Creating_New_Reg(Func<string, int, object> f,
+        Action<Registration> check)
     {
         using var scope = factory.Services.NewTestScope();
         using var user = await scope.CreateUserAsync();
@@ -513,10 +548,12 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
         using var e = await scope.CreateEventAsync(organization: org.Entity, organizationId: org.Entity.OrganizationId);
 
         var client = factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
-        var response = await client.PostAsync($"/v3/registrations?orgId={org.Entity.OrganizationId}", f(user.Entity.Id, e.Entity.EventInfoId));
+        var response = await client.PostAsync($"/v3/registrations?orgId={org.Entity.OrganizationId}",
+            f(user.Entity.Id, e.Entity.EventInfoId));
         response.CheckOk();
 
-        var reg = await scope.Db.Registrations.SingleAsync(r => r.EventInfoId == e.Entity.EventInfoId && r.UserId == user.Entity.Id);
+        var reg = await scope.Db.Registrations.SingleAsync(r =>
+            r.EventInfoId == e.Entity.EventInfoId && r.UserId == user.Entity.Id);
 
         var token = await response.AsTokenAsync();
         token.CheckRegistration(reg);
@@ -531,10 +568,12 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
         using var e = await scope.CreateEventAsync();
 
         var client = factory.CreateClient().AuthenticatedAsSystemAdmin();
-        var response = await client.PostAsync("/v3/registrations", new { userId = user.Entity.Id, eventId = e.Entity.EventInfoId });
+        var response = await client.PostAsync("/v3/registrations",
+            new { userId = user.Entity.Id, eventId = e.Entity.EventInfoId });
         response.CheckOk();
 
-        var reg = await scope.Db.Registrations.SingleAsync(r => r.EventInfoId == e.Entity.EventInfoId && r.UserId == user.Entity.Id);
+        var reg = await scope.Db.Registrations.SingleAsync(r =>
+            r.EventInfoId == e.Entity.EventInfoId && r.UserId == user.Entity.Id);
 
         var token = await response.AsTokenAsync();
         token.CheckRegistration(reg);
@@ -542,7 +581,8 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
 
     [Theory]
     [MemberData(nameof(GetRegInfoWithAdditionalInfoFilled))]
-    public async Task Should_Allow_System_Admin_To_Provide_Extra_Info(Func<string, int, object> f, Action<Registration> check)
+    public async Task Should_Allow_System_Admin_To_Provide_Extra_Info(Func<string, int, object> f,
+        Action<Registration> check)
     {
         using var scope = factory.Services.NewTestScope();
         using var user = await scope.CreateUserAsync();
@@ -552,7 +592,8 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
         var response = await client.PostAsync("/v3/registrations", f(user.Entity.Id, e.Entity.EventInfoId));
         response.CheckOk();
 
-        var reg = await scope.Db.Registrations.SingleAsync(r => r.EventInfoId == e.Entity.EventInfoId && r.UserId == user.Entity.Id);
+        var reg = await scope.Db.Registrations.SingleAsync(r =>
+            r.EventInfoId == e.Entity.EventInfoId && r.UserId == user.Entity.Id);
 
         var token = await response.AsTokenAsync();
         token.CheckRegistration(reg);
@@ -600,7 +641,8 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
         using var registration = await scope.CreateRegistrationAsync(e.Entity, user.Entity);
 
         var client = factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
-        var response = await client.PutAsync($"/v3/registrations/{registration.Entity.RegistrationId}?orgId={org.Entity.OrganizationId}",
+        var response = await client.PutAsync(
+            $"/v3/registrations/{registration.Entity.RegistrationId}?orgId={org.Entity.OrganizationId}",
             new { type = 2 });
         response.CheckForbidden();
     }
@@ -618,11 +660,13 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
         Assert.Equal(Registration.RegistrationType.Participant, registration.Entity.Type);
 
         var client = factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.SystemAdmin);
-        var response = await client.PutAsync($"/v3/registrations/{registration.Entity.RegistrationId}?orgId={org.Entity.OrganizationId}",
+        var response = await client.PutAsync(
+            $"/v3/registrations/{registration.Entity.RegistrationId}?orgId={org.Entity.OrganizationId}",
             new { type = 2 });
         response.CheckOk();
 
-        var updated = await LoadAndCheckAsync(scope, registration.Entity, updated => Assert.Equal(Registration.RegistrationType.Staff, updated.Type));
+        var updated = await LoadAndCheckAsync(scope, registration.Entity,
+            updated => Assert.Equal(Registration.RegistrationType.Staff, updated.Type));
 
         var token = await response.AsTokenAsync();
         token.CheckRegistration(updated);
@@ -641,11 +685,13 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
         Assert.Equal(Registration.RegistrationType.Participant, registration.Entity.Type);
 
         var client = factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
-        var response = await client.PutAsync($"/v3/registrations/{registration.Entity.RegistrationId}?orgId={org.Entity.OrganizationId}",
+        var response = await client.PutAsync(
+            $"/v3/registrations/{registration.Entity.RegistrationId}?orgId={org.Entity.OrganizationId}",
             new { type = 2 });
         response.CheckOk();
 
-        var updated = await LoadAndCheckAsync(scope, registration.Entity, updated => Assert.Equal(Registration.RegistrationType.Staff, updated.Type));
+        var updated = await LoadAndCheckAsync(scope, registration.Entity,
+            updated => Assert.Equal(Registration.RegistrationType.Staff, updated.Type));
 
         var token = await response.AsTokenAsync();
         token.CheckRegistration(updated);
@@ -660,10 +706,12 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
         using var registration = await scope.CreateRegistrationAsync(e.Entity, user.Entity);
 
         var client = factory.CreateClient().AuthenticatedAsSystemAdmin();
-        var response = await client.PutAsync($"/v3/registrations/{registration.Entity.RegistrationId}", new { type = 2 });
+        var response =
+            await client.PutAsync($"/v3/registrations/{registration.Entity.RegistrationId}", new { type = 2 });
         response.CheckOk();
 
-        var updated = await LoadAndCheckAsync(scope, registration.Entity, updated => Assert.Equal(Registration.RegistrationType.Staff, updated.Type));
+        var updated = await LoadAndCheckAsync(scope, registration.Entity,
+            updated => Assert.Equal(Registration.RegistrationType.Staff, updated.Type));
 
         var token = await response.AsTokenAsync();
         token.CheckRegistration(updated);
@@ -710,7 +758,9 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
         using var registration = await scope.CreateRegistrationAsync(e.Entity, user.Entity);
 
         var client = factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
-        var response = await client.DeleteAsync($"/v3/registrations/{registration.Entity.RegistrationId}?orgId={org.Entity.OrganizationId}");
+        var response =
+            await client.DeleteAsync(
+                $"/v3/registrations/{registration.Entity.RegistrationId}?orgId={org.Entity.OrganizationId}");
         response.CheckForbidden();
     }
 
@@ -727,10 +777,13 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
         Assert.Equal(Registration.RegistrationType.Participant, registration.Entity.Type);
 
         var client = factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
-        var response = await client.DeleteAsync($"/v3/registrations/{registration.Entity.RegistrationId}?orgId={org.Entity.OrganizationId}");
+        var response =
+            await client.DeleteAsync(
+                $"/v3/registrations/{registration.Entity.RegistrationId}?orgId={org.Entity.OrganizationId}");
         response.CheckOk();
 
-        await LoadAndCheckAsync(scope, registration.Entity, updated => Assert.Equal(Registration.RegistrationStatus.Cancelled, updated.Status));
+        await LoadAndCheckAsync(scope, registration.Entity,
+            updated => Assert.Equal(Registration.RegistrationStatus.Cancelled, updated.Status));
     }
 
     [Fact]
@@ -745,7 +798,8 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
         var response = await client.DeleteAsync($"/v3/registrations/{registration.Entity.RegistrationId}");
         response.CheckOk();
 
-        await LoadAndCheckAsync(scope, registration.Entity, updated => Assert.Equal(Registration.RegistrationStatus.Cancelled, updated.Status));
+        await LoadAndCheckAsync(scope, registration.Entity,
+            updated => Assert.Equal(Registration.RegistrationStatus.Cancelled, updated.Status));
     }
 
     [Fact]
@@ -756,14 +810,17 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
 
         using var scope = factory.Services.NewTestScope();
         using var user = await scope.CreateUserAsync();
-        using var e = await scope.CreateEventAsync(lastRegistrationDate: today.PlusDays(3), lastCancellationDate: today.PlusDays(2));
+        using var e = await scope.CreateEventAsync(lastRegistrationDate: today.PlusDays(3),
+            lastCancellationDate: today.PlusDays(2));
         using var registration = await scope.CreateRegistrationAsync(e.Entity, user.Entity);
 
         var client = factory.CreateClient().AuthenticatedAs(user.Entity);
-        var response = await client.PutAsync($"/v3/registrations/{registration.Entity.RegistrationId}", new { type = 2 });
+        var response =
+            await client.PutAsync($"/v3/registrations/{registration.Entity.RegistrationId}", new { type = 2 });
         response.CheckOk();
 
-        await LoadAndCheckAsync(scope, registration.Entity, updated => Assert.Equal(Registration.RegistrationType.Staff, updated.Type));
+        await LoadAndCheckAsync(scope, registration.Entity,
+            updated => Assert.Equal(Registration.RegistrationType.Staff, updated.Type));
     }
 
     [Fact]
@@ -772,18 +829,22 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
         using var scope = factory.Services.NewTestScope();
         using var user = await scope.CreateUserAsync();
         using var e = await scope.CreateEventAsync();
-        using var registration = await scope.CreateRegistrationAsync(e.Entity, user.Entity, Registration.RegistrationStatus.Cancelled);
+        using var registration =
+            await scope.CreateRegistrationAsync(e.Entity, user.Entity, Registration.RegistrationStatus.Cancelled);
 
         var client = factory.CreateClient().AuthenticatedAsSuperAdmin();
         var response = await client.DeleteAsync($"/v3/registrations/{registration.Entity.RegistrationId}");
         response.CheckOk();
 
-        await LoadAndCheckAsync(scope, registration.Entity, updated => Assert.Equal(Registration.RegistrationStatus.Cancelled, updated.Status));
+        await LoadAndCheckAsync(scope, registration.Entity,
+            updated => Assert.Equal(Registration.RegistrationStatus.Cancelled, updated.Status));
     }
 
-    private async Task<Registration> LoadAndCheckAsync(TestServiceScope scope, Registration registration, Action<Registration> check)
+    private async Task<Registration> LoadAndCheckAsync(TestServiceScope scope, Registration registration,
+        Action<Registration> check)
     {
-        var updated = await scope.Db.Registrations.AsNoTracking().SingleAsync(r => r.RegistrationId == registration.RegistrationId);
+        var updated = await scope.Db.Registrations.AsNoTracking()
+            .SingleAsync(r => r.RegistrationId == registration.RegistrationId);
 
         check(updated);
         return updated;
@@ -795,17 +856,18 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
             new object[]
             {
                 new Func<string, int, object>((userId, eventId) => new { userId, eventId, notes = "test" }),
-                new Action<Registration>(reg => Assert.Equal("test", reg.Notes)),
+                new Action<Registration>(reg => Assert.Equal("test", reg.Notes))
             },
             new object[]
             {
                 new Func<string, int, object>((userId, eventId) => new { userId, eventId, type = 1 }),
-                new Action<Registration>(reg => Assert.Equal(Registration.RegistrationType.Student, reg.Type)),
+                new Action<Registration>(reg => Assert.Equal(Registration.RegistrationType.Student, reg.Type))
             },
             new object[]
             {
-                new Func<string, int, object>((userId, eventId) => new { userId, eventId, customer = new { name = "test" } }),
-                new Action<Registration>(reg => Assert.Equal("test", reg.CustomerName)),
-            },
+                new Func<string, int, object>((userId, eventId) =>
+                    new { userId, eventId, customer = new { name = "test" } }),
+                new Action<Registration>(reg => Assert.Equal("test", reg.CustomerName))
+            }
         };
 }

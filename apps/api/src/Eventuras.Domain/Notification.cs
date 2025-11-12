@@ -8,8 +8,26 @@ namespace Eventuras.Domain;
 
 public abstract class Notification
 {
+    private NotificationStatus _status = NotificationStatus.New;
+
+    protected Notification()
+    {
+    }
+
+    protected Notification(string message)
+    {
+        if (string.IsNullOrWhiteSpace(message))
+        {
+            throw new ArgumentException($"{nameof(message)} must not be empty");
+        }
+
+        Message = message;
+        Created = SystemClock.Instance.Now();
+    }
+
     [Required]
-    [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int NotificationId { get; set; }
 
     public int? OrganizationId { get; set; }
@@ -21,7 +39,7 @@ public abstract class Notification
     [Required] public string CreatedByUserId { get; set; }
 
     /// <summary>
-    /// Full message body.
+    ///     Full message body.
     /// </summary>
     [Required]
     public string Message { get; private set; }
@@ -31,8 +49,6 @@ public abstract class Notification
     public Instant StatusUpdated { get; private set; }
 
     public NotificationType Type { get; private set; }
-
-    private NotificationStatus _status = NotificationStatus.New;
 
     public NotificationStatus Status
     {
@@ -55,21 +71,6 @@ public abstract class Notification
     public IReadOnlyList<NotificationRecipient> Recipients { get; set; }
 
     public NotificationStatistics Statistics { get; set; }
-
-    protected Notification()
-    {
-    }
-
-    protected Notification(string message)
-    {
-        if (string.IsNullOrWhiteSpace(message))
-        {
-            throw new ArgumentException($"{nameof(message)} must not be empty");
-        }
-
-        Message = message;
-        Created = SystemClock.Instance.Now();
-    }
 }
 
 public enum NotificationStatus

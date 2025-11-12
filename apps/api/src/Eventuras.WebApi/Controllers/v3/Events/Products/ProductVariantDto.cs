@@ -5,15 +5,6 @@ namespace Eventuras.WebApi.Controllers.v3.Events.Products;
 
 public class ProductVariantDto
 {
-    public int ProductVariantId { get; set; }
-    public string Name { get; set; }
-
-    public string Description { get; set; }
-
-    public decimal Price { get; set; }
-
-    public int VatPercent { get; set; }
-
     public ProductVariantDto()
     {
     }
@@ -31,4 +22,13 @@ public class ProductVariantDto
         Price = variant.Price;
         VatPercent = variant.VatPercent;
     }
+
+    public int ProductVariantId { get; set; }
+    public string Name { get; set; }
+
+    public string Description { get; set; }
+
+    public decimal Price { get; set; }
+
+    public int VatPercent { get; set; }
 }

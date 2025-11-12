@@ -14,17 +14,15 @@ namespace Eventuras.Services.Tests.Organizations.Settings;
 public class OrganizationSettingsAccessorServiceTests
 {
     private readonly Mock<ICurrentOrganizationAccessorService> _currentOrganizationAccessorServiceMock = new();
-    private readonly Mock<IOrganizationRetrievalService> _organizationRetrievalServiceMock = new Mock<IOrganizationRetrievalService>();
+
+    private readonly Organization _org = new() { OrganizationId = 1001 };
+
+    private readonly Mock<IOrganizationRetrievalService> _organizationRetrievalServiceMock = new();
 
     private readonly Mock<IOrganizationSettingsCache> _organizationSettingsCacheMock = new();
-    private readonly List<OrganizationSetting> _settings = new();
-
-    private readonly Organization _org = new()
-    {
-        OrganizationId = 1001
-    };
 
     private readonly IOrganizationSettingsAccessorService _service;
+    private readonly List<OrganizationSetting> _settings = new();
 
     public OrganizationSettingsAccessorServiceTests()
     {
@@ -46,11 +44,7 @@ public class OrganizationSettingsAccessorServiceTests
     [Fact]
     public async Task Should_Convert_Poco_Value_Types()
     {
-        _settings.Add(new OrganizationSetting
-        {
-            Name = TestSettingsConstants.SettingsKey,
-            Value = "123"
-        });
+        _settings.Add(new OrganizationSetting { Name = TestSettingsConstants.SettingsKey, Value = "123" });
 
         var poco = await _service.ReadOrganizationSettingsAsync<SettingsPocoWithIntegerMappedField>();
         Assert.NotNull(poco);
@@ -60,11 +54,7 @@ public class OrganizationSettingsAccessorServiceTests
     [Fact]
     public async Task Should_Not_Convert_Invalid_Poco_Value_Types()
     {
-        _settings.Add(new OrganizationSetting
-        {
-            Name = TestSettingsConstants.SettingsKey,
-            Value = "abc"
-        });
+        _settings.Add(new OrganizationSetting { Name = TestSettingsConstants.SettingsKey, Value = "abc" });
 
         await Assert.ThrowsAsync<FormatException>(() => _service
             .ReadOrganizationSettingsAsync<SettingsPocoWithIntegerMappedField>());
@@ -91,20 +81,14 @@ public class OrganizationSettingsAccessorServiceTests
     }
 
     [Fact]
-    public async Task Should_Throw_Validation_Exception_On_Invalid_Poco()
-    {
+    public async Task Should_Throw_Validation_Exception_On_Invalid_Poco() =>
         await Assert.ThrowsAsync<ValidationException>(() => _service
             .ReadOrganizationSettingsAsync<SettingsPocoWithSingleRequiredMappedField>());
-    }
 
     [Fact]
     public async Task Should_Return_Poco_From_Settings()
     {
-        _settings.Add(new OrganizationSetting
-        {
-            Name = TestSettingsConstants.SettingsKey,
-            Value = "abc"
-        });
+        _settings.Add(new OrganizationSetting { Name = TestSettingsConstants.SettingsKey, Value = "abc" });
 
         var poco = await _service
             .ReadOrganizationSettingsAsync<SettingsPocoWithSingleRequiredMappedField>();

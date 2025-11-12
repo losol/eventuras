@@ -5,17 +5,6 @@ namespace Eventuras.Domain;
 
 public class PaymentMethod
 {
-
-    [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
-    public PaymentProvider Provider { get; set; }
-    public PaymentProviderType Type { get; set; }
-
-    public string Name { get; set; }
-    public bool Active { get; set; } = false;
-    public bool AdminOnly { get; set; } = false;
-    public bool IsDefault { get; set; } = false;
-
-
     public enum PaymentProvider
     {
         EmailInvoice = 1,
@@ -32,4 +21,15 @@ public class PaymentMethod
         Direct,
         Invoice
     }
+
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.None)]
+    public PaymentProvider Provider { get; set; }
+
+    public PaymentProviderType Type { get; set; }
+
+    public string Name { get; set; }
+    public bool Active { get; set; } = false;
+    public bool AdminOnly { get; set; } = false;
+    public bool IsDefault { get; set; } = false;
 }

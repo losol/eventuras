@@ -23,25 +23,28 @@ public class EventsController : ControllerBase
     private readonly IEventInfoRetrievalService _eventInfoService;
     private readonly IEventManagementService _eventManagementService;
 
-    private ILogger<EventsController> _logger;
+    private readonly ILogger<EventsController> _logger;
 
-    public EventsController(IEventInfoRetrievalService eventInfoService, IEventManagementService eventManagementService, ILogger<EventsController> logger)
+    public EventsController(IEventInfoRetrievalService eventInfoService, IEventManagementService eventManagementService,
+        ILogger<EventsController> logger)
     {
         _eventInfoService = eventInfoService ?? throw new ArgumentNullException(nameof(eventInfoService));
-        _eventManagementService = eventManagementService ?? throw new ArgumentNullException(nameof(eventManagementService));
+        _eventManagementService =
+            eventManagementService ?? throw new ArgumentNullException(nameof(eventManagementService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     // GET: v3/events
     /// <summary>
-    /// Retrieves a list of events based on the given query.
+    ///     Retrieves a list of events based on the given query.
     /// </summary>
     /// <param name="query">Filter and pagination options.</param>
     /// <param name="cancellationToken">Cancellation token for the async operation.</param>
     /// <returns>A paginated list of events.</returns>
     [AllowAnonymous]
     [HttpGet]
-    public async Task<ActionResult<PageResponseDto<EventDto>>> List([FromQuery] EventsQueryDto query, CancellationToken cancellationToken)
+    public async Task<ActionResult<PageResponseDto<EventDto>>> List([FromQuery] EventsQueryDto query,
+        CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
         {
@@ -52,12 +55,12 @@ public class EventsController : ControllerBase
         // Log the starting point of the request.
         _logger.LogInformation("Starting to retrieve events list. Query: {query}", JsonSerializer.Serialize(query));
 
-        var events = await _eventInfoService.ListEventsAsync(new EventListRequest(query.Offset, query.Limit)
-        {
-            Filter = query.ToEventInfoFilter(),
-            Ordering = query.Ordering,
-        },
-        cancellationToken: cancellationToken);
+        var events = await _eventInfoService.ListEventsAsync(
+            new EventListRequest(query.Offset, query.Limit)
+            {
+                Filter = query.ToEventInfoFilter(), Ordering = query.Ordering
+            },
+            cancellationToken: cancellationToken);
 
         // Log the successful end point of the request.
         _logger.LogInformation("Successfully retrieved the events list.");
@@ -67,7 +70,7 @@ public class EventsController : ControllerBase
 
     // GET: v3/events/5
     /// <summary>
-    /// Retrieves event details by ID.
+    ///     Retrieves event details by ID.
     /// </summary>
     /// <param name="id">The ID of the event.</param>
     /// <param name="cancellationToken">Cancellation token for the async operation.</param>
@@ -76,7 +79,6 @@ public class EventsController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<EventDto>> Get(int id, CancellationToken cancellationToken)
     {
-
         var eventInfo = await _eventInfoService.GetEventInfoByIdAsync(id, cancellationToken: cancellationToken);
 
         // Log a warning if the event is not found or archived.
@@ -87,12 +89,11 @@ public class EventsController : ControllerBase
         }
 
         return Ok(new EventDto(eventInfo));
-
     }
 
     // POST: v3/events
     /// <summary>
-    /// Creates a new event.
+    ///     Creates a new event.
     /// </summary>
     /// <param name="dto">Event information.</param>
     /// <returns>The created event.</returns>
@@ -107,12 +108,11 @@ public class EventsController : ControllerBase
 
         _logger.LogInformation($"Successfully created a new event with ID {eventInfo.EventInfoId}.");
         return new EventDto(eventInfo);
-
     }
 
     // PUT: v3/events/5
     /// <summary>
-    /// Updates an existing event by ID.
+    ///     Updates an existing event by ID.
     /// </summary>
     /// <param name="id">The ID of the event.</param>
     /// <param name="dto">Updated event information.</param>
@@ -140,12 +140,11 @@ public class EventsController : ControllerBase
 
         _logger.LogInformation($"Successfully updated the event with ID {id}.");
         return Ok(new EventDto(eventInfo));
-
     }
 
     // PATCH: v3/events/{id}
     /// <summary>
-    /// Partially updates a specific event by its ID.
+    ///     Partially updates a specific event by its ID.
     /// </summary>
     /// <param name="id">The ID of the event to update.</param>
     /// <param name="patchDto">The patch DTO with field updates.</param>
@@ -154,7 +153,8 @@ public class EventsController : ControllerBase
     [HttpPatch("{id:int}")]
     [SwaggerOperation(
         Summary = "Partially update an event",
-        Description = "Updates specific fields of an event. For comprehensive updates with all fields, use PUT endpoint with EventFormDto instead."
+        Description =
+            "Updates specific fields of an event. For comprehensive updates with all fields, use PUT endpoint with EventFormDto instead."
     )]
     [ProducesResponseType(typeof(EventDto), 200)]
     [ProducesResponseType(400)]
@@ -192,7 +192,7 @@ public class EventsController : ControllerBase
 
     // DELETE: v3/events/5
     /// <summary>
-    /// Deletes an event by ID.
+    ///     Deletes an event by ID.
     /// </summary>
     /// <param name="id">The ID of the event to delete.</param>
     [HttpDelete("{id:int}")]
@@ -205,5 +205,4 @@ public class EventsController : ControllerBase
 
         _logger.LogInformation($"Successfully deleted the event with ID {id}.");
     }
-
 }

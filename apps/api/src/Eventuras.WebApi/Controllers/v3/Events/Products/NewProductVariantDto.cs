@@ -10,14 +10,6 @@ public class NewProductVariantDto
     [Range(0, double.MaxValue)] public decimal Price { get; set; }
     [Range(0, 99)] public int VatPercent { get; set; }
 
-    public ProductVariant ToVariant()
-    {
-        return new ProductVariant
-        {
-            Name = Name,
-            Description = Description,
-            Price = Price,
-            VatPercent = VatPercent
-        };
-    }
+    public ProductVariant ToVariant() =>
+        new() { Name = Name, Description = Description, Price = Price, VatPercent = VatPercent };
 }

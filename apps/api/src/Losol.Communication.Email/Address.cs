@@ -9,14 +9,6 @@ public class Address
     public const int MaxNameLength = 255;
     public const int MaxEmailLength = 255;
 
-    [MaxLength(MaxNameLength)]
-    public string Name { get; set; }
-
-    [Required]
-    [EmailAddress]
-    [MaxLength(MaxEmailLength)]
-    public string Email { get; set; }
-
     public Address()
     {
     }
@@ -34,16 +26,25 @@ public class Address
         Email = a.Address;
     }
 
+    [MaxLength(MaxNameLength)] public string Name { get; set; }
+
+    [Required]
+    [EmailAddress]
+    [MaxLength(MaxEmailLength)]
+    public string Email { get; set; }
+
     public override string ToString()
     {
         if (string.IsNullOrEmpty(Name) && string.IsNullOrEmpty(Email))
         {
             return null;
         }
+
         if (string.IsNullOrEmpty(Name))
         {
             return Email;
         }
+
         return $"{Name} <{Email}>";
     }
 }

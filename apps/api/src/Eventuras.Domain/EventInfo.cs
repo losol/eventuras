@@ -6,7 +6,6 @@ using NodaTime;
 
 namespace Eventuras.Domain;
 
-
 public class EventInfo
 {
     public enum EventInfoStatus
@@ -18,8 +17,7 @@ public class EventInfo
         RegistrationsClosed = 4,
         Finished = 5,
         Archived = 8,
-        Cancelled = 9,
-
+        Cancelled = 9
     }
 
     public enum EventInfoType
@@ -38,13 +36,11 @@ public class EventInfo
     public string Title { get; set; }
     public string Headline { get; set; }
 
-    [Required]
-    public string Slug { get; set; }
+    [Required] public string Slug { get; set; }
 
     public string Category { get; set; }
 
-    [StringLength(300)]
-    public string Description { get; set; }
+    [StringLength(300)] public string Description { get; set; }
 
     public bool Featured { get; set; } = false;
 
@@ -58,14 +54,12 @@ public class EventInfo
 
     public bool Published { get; set; } = false;
 
-    [Obsolete]
-    public bool ManageRegistrations { get; set; } = false;
+    [Obsolete] public bool ManageRegistrations { get; set; } = false;
 
 
     public string ExternalInfoPageUrl { get; set; }
 
-    [Obsolete]
-    public string ExternalRegistrationsUrl { get; set; }
+    [Obsolete] public string ExternalRegistrationsUrl { get; set; }
 
     public string InformationRequest { get; set; }
 
@@ -123,6 +117,7 @@ public class EventInfo
     public bool HasFeaturedImage => !string.IsNullOrWhiteSpace(FeaturedImageUrl);
     public bool HasExternalInfoPage => !string.IsNullOrWhiteSpace(ExternalInfoPageUrl);
     public bool HasExternalRegistrationPage => !string.IsNullOrWhiteSpace(ExternalRegistrationsUrl);
+
     public bool OnDemand { get; set; } = false;
     // Consider removing end
 
@@ -144,10 +139,11 @@ public class EventInfo
     }
 
     #region Navigational properties
-    [ForeignKey("OrganizerUserId")]
-    public ApplicationUser OrganizerUser { get; set; }
-    [ForeignKey("OrganizationId")]
-    public Organization Organization { get; set; }
+
+    [ForeignKey("OrganizerUserId")] public ApplicationUser OrganizerUser { get; set; }
+
+    [ForeignKey("OrganizationId")] public Organization Organization { get; set; }
+
     public List<Registration> Registrations { get; set; }
     public List<Product> Products { get; set; }
     public List<ExternalEvent> ExternalEvents { get; set; }

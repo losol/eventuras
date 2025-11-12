@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml;
 using Asp.Versioning;
 using Eventuras.Domain;
 using Eventuras.Services.Auth;
@@ -9,7 +8,6 @@ using Eventuras.Services.Exceptions;
 using Eventuras.Services.Users;
 using Eventuras.WebApi.Config;
 using Eventuras.WebApi.Controllers.v3.Users;
-using Eventuras.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -25,11 +23,11 @@ namespace Eventuras.WebApi.Controllers.v3.Userprofile;
 [Authorize]
 public class UserProfileController : Controller
 {
-    private readonly IUserRetrievalService _userRetrievalService;
-    private readonly IUserManagementService _userManagementService;
+    private readonly AuthSettings _authSettings;
     private readonly IMemoryCache _cache;
     private readonly ILogger<UserProfileController> _logger;
-    private readonly AuthSettings _authSettings;
+    private readonly IUserManagementService _userManagementService;
+    private readonly IUserRetrievalService _userRetrievalService;
 
     public UserProfileController(
         IUserRetrievalService userRetrievalService,
@@ -39,7 +37,8 @@ public class UserProfileController : Controller
         IOptions<AuthSettings> authSettingsOptions)
     {
         _userRetrievalService = userRetrievalService ?? throw new ArgumentNullException(nameof(userRetrievalService));
-        _userManagementService = userManagementService ?? throw new ArgumentNullException(nameof(userManagementService));
+        _userManagementService =
+            userManagementService ?? throw new ArgumentNullException(nameof(userManagementService));
         _cache = cache ?? throw new ArgumentNullException(nameof(cache));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _authSettings = authSettingsOptions.Value;
@@ -47,9 +46,9 @@ public class UserProfileController : Controller
 
     // GET: /v3/userprofile
     /// <summary>
-    /// Gets information about the current user. Creates a new user if no user with the email exists.
+    ///     Gets information about the current user. Creates a new user if no user with the email exists.
     /// </summary>
-    [HttpGet()]
+    [HttpGet]
     public async Task<UserDto> Me(CancellationToken cancellationToken)
     {
         var emailClaim = HttpContext.User.GetEmail();
@@ -69,8 +68,10 @@ public class UserProfileController : Controller
         ApplicationUser user;
 
         try
-        { user = await _userRetrievalService.GetUserByEmailAsync(emailClaim, null, cancellationToken); }
-        catch (Services.Exceptions.NotFoundException)
+        {
+            user = await _userRetrievalService.GetUserByEmailAsync(emailClaim, null, cancellationToken);
+        }
+        catch (NotFoundException)
         {
             if (_authSettings.EnablePiiLogging)
             {
@@ -78,7 +79,7 @@ public class UserProfileController : Controller
             }
             else
             {
-                _logger.LogInformation($"No user found with email. Creating new user.");
+                _logger.LogInformation("No user found with email. Creating new user.");
             }
 
             user = await _userManagementService.CreateNewUserAsync(
@@ -88,15 +89,13 @@ public class UserProfileController : Controller
 
             // Invalidate user cache for this email to ensure new identity is added
             _cache.Remove(DbUserClaimTransformation.GetMemoryCacheKey(emailClaim));
-
         }
 
         return new UserDto(user);
-
     }
 
     // PUT /v3/userprofile
-    [HttpPut()]
+    [HttpPut]
     public async Task<UserDto> UpdateUser([FromBody] UserFormDto dto,
         CancellationToken cancellationToken)
     {

@@ -15,13 +15,12 @@ public class DummyHttpMessageHandler : HttpMessageHandler
 
     public HttpStatusCode StatusToReturn { get; set; } = HttpStatusCode.OK;
 
-    public List<HttpRequestMessage> Requests { get; } = new List<HttpRequestMessage>();
+    public List<HttpRequestMessage> Requests { get; } = new();
 
-    protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-    {
-        return Task.FromResult(new HttpResponseMessage(StatusToReturn)
+    protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
+        CancellationToken cancellationToken) =>
+        Task.FromResult(new HttpResponseMessage(StatusToReturn)
         {
             Content = new StringContent(TextToReturn, Encoding.UTF8, ReturnContentType)
         });
-    }
 }

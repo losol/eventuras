@@ -9,11 +9,14 @@ namespace Eventuras.Services.Tests;
 
 public static class ServiceMocks
 {
-    public static IEventInfoRetrievalService MockEventInfoRetrievalService(out Mock<IEventInfoRetrievalService> mock, params EventInfo[] eventInfos)
+    public static IEventInfoRetrievalService MockEventInfoRetrievalService(out Mock<IEventInfoRetrievalService> mock,
+        params EventInfo[] eventInfos)
     {
         mock = new Mock<IEventInfoRetrievalService>();
 
-        mock.Setup(s => s.GetEventInfoByIdAsync(It.IsAny<int>(), It.IsAny<EventInfoRetrievalOptions>(), It.IsAny<CancellationToken>()))
+        mock.Setup(s =>
+                s.GetEventInfoByIdAsync(It.IsAny<int>(), It.IsAny<EventInfoRetrievalOptions>(),
+                    It.IsAny<CancellationToken>()))
             .ReturnsAsync((int id, EventInfoRetrievalOptions _, CancellationToken _) =>
             {
                 var found = eventInfos.FirstOrDefault(ei => ei.EventInfoId == id) ?? throw new NotFoundException();
@@ -21,7 +24,8 @@ public static class ServiceMocks
             })
             .Verifiable();
 
-        mock.Setup(s => s.ListEventsAsync(It.IsAny<EventListRequest>(), It.IsAny<EventInfoRetrievalOptions>(), It.IsAny<CancellationToken>()))
+        mock.Setup(s => s.ListEventsAsync(It.IsAny<EventListRequest>(), It.IsAny<EventInfoRetrievalOptions>(),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync((EventListRequest request, EventInfoRetrievalOptions _, CancellationToken _) =>
             {
                 var query = eventInfos.AsQueryable();

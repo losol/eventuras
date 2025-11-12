@@ -1,11 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net.Mime;
 using System.Threading;
 using System.Threading.Tasks;
-using Eventuras.Domain;
-using Eventuras.Services.Email;
 using Hangfire;
 using Losol.Communication.Email;
 using Microsoft.Extensions.Logging;
@@ -14,8 +11,8 @@ namespace Eventuras.Services.Certificates;
 
 internal class CertificateDeliveryService : ICertificateDeliveryService
 {
-    private readonly ICertificateRetrievalService _certificateRetrievalService;
     private readonly ICertificateRenderer _certificateRenderer;
+    private readonly ICertificateRetrievalService _certificateRetrievalService;
     private readonly IEmailSender _emailSender;
     private readonly ILogger<CertificateDeliveryService> _logger;
 

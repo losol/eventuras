@@ -5,15 +5,9 @@ namespace Eventuras.TestAbstractions;
 
 public class SingletonHttpClientFactory : IHttpClientFactory, IDisposable
 {
-    private readonly HttpClient _client = new HttpClient();
+    private readonly HttpClient _client = new();
 
-    public void Dispose()
-    {
-        _client.Dispose();
-    }
+    public void Dispose() => _client.Dispose();
 
-    public HttpClient CreateClient(string name)
-    {
-        return _client;
-    }
+    public HttpClient CreateClient(string name) => _client;
 }

@@ -84,11 +84,7 @@ public class EventProductVariantsController : ControllerBase
         CancellationToken token = default)
     {
         var eventInfo = await _eventInfoRetrievalService.GetEventInfoByIdAsync(eventId,
-            new EventInfoRetrievalOptions
-            {
-                ForUpdate = forUpdate,
-                LoadProducts = true
-            }, token);
+            new EventInfoRetrievalOptions { ForUpdate = forUpdate, LoadProducts = true }, token);
 
         return eventInfo.Products
                    .FirstOrDefault(p => p.ProductId == productId)

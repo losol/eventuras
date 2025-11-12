@@ -10,7 +10,9 @@ public static class OrdersQueryableExtensions
     public static IQueryable<Order> HavingOrganization(this IQueryable<Order> query, Organization organization)
     {
         if (organization == null)
+        {
             throw new ArgumentNullException(nameof(organization));
+        }
 
         return query.Where(o => o.Registration.EventInfo.OrganizationId == organization.OrganizationId);
     }

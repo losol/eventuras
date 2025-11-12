@@ -35,18 +35,14 @@ internal static class OrderCollectionExtensions
         }
     }
 
-    public static string FirstFilled(this IEnumerable<Order> orders, Func<Order, string> selector)
-    {
-        return orders.Select(selector)
+    public static string FirstFilled(this IEnumerable<Order> orders, Func<Order, string> selector) =>
+        orders.Select(selector)
             .FirstOrDefault(s => !string.IsNullOrWhiteSpace(s));
-    }
 
-    public static LocalDate? CalculateDueDate(this IEnumerable<Order> orders)
-    {
-        return orders
+    public static LocalDate? CalculateDueDate(this IEnumerable<Order> orders) =>
+        orders
             .Select(o => o.Registration.EventInfo)
             .Select(e => e.LastCancellationDate ?? e.LastRegistrationDate ?? e.DateStart)
             .Where(date => date != null)
             .Min();
-    }
 }

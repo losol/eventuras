@@ -5,8 +5,8 @@ using Eventuras.Domain;
 namespace Eventuras.Services.Users;
 
 /// <summary>
-/// The scope of this service is create/update/delete users only.
-/// For retrieving users see <see cref="IUserRetrievalService"/>.
+///     The scope of this service is create/update/delete users only.
+///     For retrieving users see <see cref="IUserRetrievalService" />.
 /// </summary>
 public interface IUserManagementService
 {

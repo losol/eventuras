@@ -27,27 +27,27 @@ public interface IUserRetrievalService
 public class UserFilter
 {
     /// <summary>
-    /// Whether to load only users accessible to the currently signed
-    /// in user via org membership.
+    ///     Whether to load only users accessible to the currently signed
+    ///     in user via org membership.
     /// </summary>
     public bool AccessibleOnly { get; set; }
 
     /// <summary>
-    /// Whether to select archived users, too.
+    ///     Whether to select archived users, too.
     /// </summary>
     public bool IncludeArchived { get; set; }
 
     /// <summary>
-    /// Match users by name, phone or email containing the specified string.
+    ///     Match users by name, phone or email containing the specified string.
     /// </summary>
     public string Query { get; set; }
 
     /// <summary>
-    /// Organization to filter users by.
+    ///     Organization to filter users by.
     /// </summary>
     public int? OrganizationId { get; set; }
 
-    public OrganizationMembershipFilter OrganizationMembership { get; set; } = new OrganizationMembershipFilter();
+    public OrganizationMembershipFilter OrganizationMembership { get; set; } = new();
 
     public class OrganizationMembershipFilter
     {

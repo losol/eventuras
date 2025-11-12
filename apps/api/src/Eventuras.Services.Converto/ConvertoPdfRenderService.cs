@@ -1,22 +1,21 @@
 using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Eventuras.Domain;
 using Eventuras.Services.Exceptions;
 using Eventuras.Services.Pdf;
-using Microsoft.AspNetCore.JsonPatch.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Eventuras.Services.Converto.Tests")]
-namespace Eventuras.Services.Converto;
+[assembly: InternalsVisibleTo("Eventuras.Services.Converto.Tests")]
 
+namespace Eventuras.Services.Converto;
 
 internal class ConvertoPdfRenderService : IPdfRenderService
 {
     private readonly IConvertoClient _client;
-    private readonly IOptions<ConvertoConfig> _options;
     private readonly ILogger<ConvertoPdfRenderService> _logger;
+    private readonly IOptions<ConvertoConfig> _options;
 
     public ConvertoPdfRenderService(
         IConvertoClient client,

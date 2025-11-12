@@ -9,9 +9,9 @@ namespace Eventuras.Services.Email;
 internal class ApplicationEmailSender : IApplicationEmailSender
 {
     private const string StandardEmailViewName = "Templates/Email/StandardEmail";
+    private readonly IEmailSender _emailSender;
 
     private readonly IViewRenderService _viewRenderService;
-    private readonly IEmailSender _emailSender;
 
     public ApplicationEmailSender(
         IViewRenderService viewRenderService,
@@ -79,11 +79,8 @@ internal class ApplicationEmailSender : IApplicationEmailSender
             throw new ArgumentException($"{nameof(message)} must not be empty");
         }
 
-        await SendEmailWithTemplateAsync(StandardEmailViewName, address, subject, new ApplicationEmailModel
-        {
-            Subject = subject,
-            Message = message
-        }, attachments);
+        await SendEmailWithTemplateAsync(StandardEmailViewName, address, subject,
+            new ApplicationEmailModel { Subject = subject, Message = message }, attachments);
     }
 }
 

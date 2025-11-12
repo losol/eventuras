@@ -7,8 +7,7 @@ public class OrganizationMemberRole
 {
     public int OrganizationMemberId { get; set; }
 
-    [Required]
-    public string Role { get; set; }
+    [Required] public string Role { get; set; }
 
     [ForeignKey(nameof(OrganizationMemberId))]
     public OrganizationMember OrganizationMember { get; set; }

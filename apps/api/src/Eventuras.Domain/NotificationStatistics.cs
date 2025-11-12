@@ -6,8 +6,16 @@ namespace Eventuras.Domain;
 
 public class NotificationStatistics
 {
+    public NotificationStatistics()
+    {
+    }
+
+    public NotificationStatistics(Notification notification) =>
+        Notification = notification ?? throw new ArgumentNullException(nameof(notification));
+
     [Required]
-    [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int NotificationStatisticsId { get; private set; }
 
     public int NotificationId { get; private set; }
@@ -19,13 +27,4 @@ public class NotificationStatistics
     public int SentTotal { get; set; }
 
     public int ErrorsTotal { get; set; }
-
-    public NotificationStatistics()
-    {
-    }
-
-    public NotificationStatistics(Notification notification)
-    {
-        Notification = notification ?? throw new ArgumentNullException(nameof(notification));
-    }
 }

@@ -12,10 +12,8 @@ public class EventProductsControllerTests : IClassFixture<CustomWebApiApplicatio
 {
     private readonly CustomWebApiApplicationFactory<Program> _factory;
 
-    public EventProductsControllerTests(CustomWebApiApplicationFactory<Program> factory)
-    {
+    public EventProductsControllerTests(CustomWebApiApplicationFactory<Program> factory) =>
         _factory = factory ?? throw new ArgumentNullException(nameof(factory));
-    }
 
     #region List
 
@@ -240,17 +238,13 @@ public class EventProductsControllerTests : IClassFixture<CustomWebApiApplicatio
         response.CheckUnauthorized();
     }
 
-    public static object[][] GetInvalidAddFormInput()
-    {
-        return new[]
+    public static object[][] GetInvalidAddFormInput() =>
+        new[]
         {
-            new object[] { new { name = (string)null } },
-            new object[] { new { name = "" } },
-            new object[] { new { name = "   " } },
-            new object[] { new { name = "test", price = -1 } }, // price=0 is OK
+            new object[] { new { name = (string)null } }, new object[] { new { name = "" } },
+            new object[] { new { name = "   " } }, new object[] { new { name = "test", price = -1 } }, // price=0 is OK
             new object[] { new { name = "test", vatPercent = -1 } } // vatPercent=0 is OK
         };
-    }
 
     [Theory]
     [MemberData(nameof(GetInvalidAddFormInput))]
@@ -356,7 +350,8 @@ public class EventProductsControllerTests : IClassFixture<CustomWebApiApplicatio
         var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
 
         var response = await client.PostAsync(
-            $"/v3/events/{evt.Entity.EventInfoId}/products?orgId={org.Entity.OrganizationId}", new
+            $"/v3/events/{evt.Entity.EventInfoId}/products?orgId={org.Entity.OrganizationId}",
+            new
             {
                 name = "test",
                 description = "desc",
@@ -373,7 +368,7 @@ public class EventProductsControllerTests : IClassFixture<CustomWebApiApplicatio
         Assert.Equal("test", product.Name);
         Assert.Equal("desc", product.Description);
         Assert.False(product.Archived);
-        Assert.Equal((decimal)999, product.Price);
+        Assert.Equal(999, product.Price);
         Assert.Equal(10, product.VatPercent);
         Assert.Equal(ProductVisibility.Collection, product.Visibility);
 
@@ -404,13 +399,8 @@ public class EventProductsControllerTests : IClassFixture<CustomWebApiApplicatio
         response.CheckForbidden();
     }
 
-    public static object[][] GetInvalidUpdateFormInput()
-    {
-        return new[]
-        {
-            new object[] { new { visibility = "invalid" } }
-        };
-    }
+    public static object[][] GetInvalidUpdateFormInput() =>
+        new[] { new object[] { new { visibility = "invalid" } } };
 
     [Theory]
     [MemberData(nameof(GetInvalidUpdateFormInput))]
@@ -429,15 +419,16 @@ public class EventProductsControllerTests : IClassFixture<CustomWebApiApplicatio
         using var evt = await scope.CreateEventAsync();
 
         var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
-        var response = await client.PutAsync($"/v3/events/{evt.Entity.EventInfoId}/products/1001", new
-        {
-            productId = 1001,
-            name = "test",
-            price = 100,
-            vatPercent = 0,
-            published = true,
-            visibility = "event"
-        });
+        var response = await client.PutAsync($"/v3/events/{evt.Entity.EventInfoId}/products/1001",
+            new
+            {
+                productId = 1001,
+                name = "test",
+                price = 100,
+                vatPercent = 0,
+                published = true,
+                visibility = "event"
+            });
         response.CheckNotFound();
     }
 
@@ -458,7 +449,14 @@ public class EventProductsControllerTests : IClassFixture<CustomWebApiApplicatio
         var response =
             await client.PutAsync(
                 $"/v3/events/{evt.Entity.EventInfoId}/products/{p.Entity.ProductId}?orgId={org.Entity.OrganizationId}",
-                new { productId = p.Entity.ProductId, price = 100, vatPercent = 0, visibility = "collection", published = true });
+                new
+                {
+                    productId = p.Entity.ProductId,
+                    price = 100,
+                    vatPercent = 0,
+                    visibility = "collection",
+                    published = true
+                });
 
         var token = await response.CheckOk().AsTokenAsync();
 
