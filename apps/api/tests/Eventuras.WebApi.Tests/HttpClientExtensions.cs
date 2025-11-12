@@ -139,7 +139,7 @@ internal static class HttpClientExtensions
         int? organizationId = null,
         Dictionary<string, string> headers = null)
     {
-        var content = new StringContent(
+        using var content = new StringContent(
             JsonSerializer.Serialize(data),
             Encoding.UTF8,
             new MediaTypeHeaderValue("application/json"));
@@ -174,11 +174,11 @@ internal static class HttpClientExtensions
         string requestUri,
         object data)
     {
-        return await httpClient.PutAsync(requestUri,
-            new StringContent(
-                JsonSerializer.Serialize(data),
-                Encoding.UTF8,
-                new MediaTypeHeaderValue("application/json")));
+        using var content = new StringContent(
+            JsonSerializer.Serialize(data),
+            Encoding.UTF8,
+            new MediaTypeHeaderValue("application/json"));
+        return await httpClient.PutAsync(requestUri, content);
     }
 
     public static async Task<HttpResponseMessage> PutAsync(
@@ -193,11 +193,11 @@ internal static class HttpClientExtensions
         string requestUri,
         object data)
     {
-        return await httpClient.PatchAsync(requestUri,
-            new StringContent(
-                JsonSerializer.Serialize(data),
-                Encoding.UTF8,
-                new MediaTypeHeaderValue("application/json")));
+        using var content = new StringContent(
+            JsonSerializer.Serialize(data),
+            Encoding.UTF8,
+            new MediaTypeHeaderValue("application/json"));
+        return await httpClient.PatchAsync(requestUri, content);
     }
 
     public static async Task<HttpResponseMessage> DeleteAsync(
@@ -205,13 +205,14 @@ internal static class HttpClientExtensions
         string requestUri,
         object data)
     {
+        using var content = new StringContent(
+            JsonSerializer.Serialize(data),
+            Encoding.UTF8,
+            new MediaTypeHeaderValue("application/json"));
         return await httpClient.SendAsync(
             new HttpRequestMessage(HttpMethod.Delete, requestUri)
             {
-                Content = new StringContent(
-                    JsonSerializer.Serialize(data),
-                    Encoding.UTF8,
-                    new MediaTypeHeaderValue("application/json"))
+                Content = content
             });
     }
 

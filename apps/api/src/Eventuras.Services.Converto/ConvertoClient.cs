@@ -70,9 +70,10 @@ internal class ConvertoClient : IConvertoClient
             grant_type = "client_credentials"
         };
 
+        using var content = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
         var response = await client.PostAsync(
             _options.Value.TokenEndpointUrl,
-            new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json")
+            content
         );
 
         var responseContent = await response.Content.ReadAsStringAsync();
@@ -115,9 +116,15 @@ internal class ConvertoClient : IConvertoClient
                 paperSize
             };
 
+            var options = new JsonSerializerOptions
+            {
+                Converters = { new JsonStringEnumConverter() }
+            };
+
+            using var content = new StringContent(JsonSerializer.Serialize(requestBody, options), Encoding.UTF8, "application/json");
             var response = await client.PostAsync(
                 endpointUrl,
-                new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json")
+                content
             );
 
             if (!response.IsSuccessStatusCode)
