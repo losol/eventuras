@@ -57,11 +57,11 @@ export const CertificateFormat = {
 export type CertificateFormat = typeof CertificateFormat[keyof typeof CertificateFormat];
 
 export type EmailNotificationDto = {
+    subject: string;
+    bodyMarkdown: string;
     recipients?: Array<string> | null;
     eventParticipants?: EventParticipantsFilterDto;
-    subject: string;
     registrationId?: number | null;
-    bodyMarkdown: string;
 };
 
 export type EventCollectionCreateDto = {
@@ -708,10 +708,10 @@ export type RoleRequestDto = {
 };
 
 export type SmsNotificationDto = {
+    message: string;
     recipients?: Array<string> | null;
     eventParticipants?: EventParticipantsFilterDto;
     registrationId?: number | null;
-    message: string;
 };
 
 export type UserDto = {
