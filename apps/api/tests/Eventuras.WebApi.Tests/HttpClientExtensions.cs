@@ -142,7 +142,7 @@ internal static class HttpClientExtensions
         using var content = new StringContent(
             JsonSerializer.Serialize(data),
             Encoding.UTF8,
-            new MediaTypeHeaderValue("application/json"));
+            "application/json");
 
         // Eventuras org id header
         if (organizationId.HasValue)
@@ -177,7 +177,7 @@ internal static class HttpClientExtensions
         using var content = new StringContent(
             JsonSerializer.Serialize(data),
             Encoding.UTF8,
-            new MediaTypeHeaderValue("application/json"));
+            "application/json");
         return await httpClient.PutAsync(requestUri, content);
     }
 
@@ -196,7 +196,7 @@ internal static class HttpClientExtensions
         using var content = new StringContent(
             JsonSerializer.Serialize(data),
             Encoding.UTF8,
-            new MediaTypeHeaderValue("application/json"));
+            "application/json");
         return await httpClient.PatchAsync(requestUri, content);
     }
 
@@ -208,7 +208,7 @@ internal static class HttpClientExtensions
         using var content = new StringContent(
             JsonSerializer.Serialize(data),
             Encoding.UTF8,
-            new MediaTypeHeaderValue("application/json"));
+            "application/json");
         return await httpClient.SendAsync(
             new HttpRequestMessage(HttpMethod.Delete, requestUri)
             {
