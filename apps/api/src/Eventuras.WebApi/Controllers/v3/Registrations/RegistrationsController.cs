@@ -72,7 +72,9 @@ public class RegistrationsController : ControllerBase
             Offset = query.Offset,
             Filter = new RegistrationFilter
             {
-                AccessibleOnly = true, EventInfoId = query.EventId, UserId = query.UserId
+                AccessibleOnly = true,
+                EventInfoId = query.EventId,
+                UserId = query.UserId
             },
             OrderBy = RegistrationListOrder.RegistrationTime,
             Descending = true
@@ -157,7 +159,9 @@ public class RegistrationsController : ControllerBase
         var registration = await _registrationManagementService.CreateRegistrationAsync(dto.EventId, dto.UserId,
             new RegistrationOptions
             {
-                CreateOrder = dto.CreateOrder, Verified = true, SendWelcomeLetter = dto.SendWelcomeLetter
+                CreateOrder = dto.CreateOrder,
+                Verified = true,
+                SendWelcomeLetter = dto.SendWelcomeLetter
             }, cancellationToken);
 
         if (!dto.Empty)

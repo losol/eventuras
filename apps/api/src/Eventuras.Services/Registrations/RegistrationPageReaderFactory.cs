@@ -21,7 +21,10 @@ public static class RegistrationPageReaderFactory
 
             var retrievalOptions = new RegistrationRetrievalOptions
             {
-                LoadUser = true, LoadEventInfo = true, LoadOrders = true, LoadProducts = true
+                LoadUser = true,
+                LoadEventInfo = true,
+                LoadOrders = true,
+                LoadProducts = true
             };
 
             return await registrationRetrievalService.ListRegistrationsAsync(

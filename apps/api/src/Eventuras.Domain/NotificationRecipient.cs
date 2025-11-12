@@ -94,7 +94,8 @@ public class NotificationRecipient
 
         return new NotificationRecipient(identifier, notificationType)
         {
-            RecipientUser = recipientUser, RecipientName = recipientUser.Name
+            RecipientUser = recipientUser,
+            RecipientName = recipientUser.Name
         };
     }
 

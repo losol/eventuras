@@ -54,7 +54,9 @@ public class ExternalEventManagementService : IExternalEventManagementService
 
         var newExternalEvent = new ExternalEvent
         {
-            EventInfoId = eventInfoId, ExternalServiceName = externalServiceName, ExternalEventId = externalEventId
+            EventInfoId = eventInfoId,
+            ExternalServiceName = externalServiceName,
+            ExternalEventId = externalEventId
         };
 
         try

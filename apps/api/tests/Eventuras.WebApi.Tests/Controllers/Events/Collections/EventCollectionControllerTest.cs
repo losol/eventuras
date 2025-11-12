@@ -261,7 +261,8 @@ public class EventCollectionControllerTest : IClassFixture<CustomWebApiApplicati
 
         var json = JsonSerializer.Serialize(new
         {
-            name = "Updated", organizationId = collection.Entity.OrganizationId
+            name = "Updated",
+            organizationId = collection.Entity.OrganizationId
         });
 
         var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);

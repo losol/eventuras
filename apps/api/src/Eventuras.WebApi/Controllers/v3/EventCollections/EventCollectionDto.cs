@@ -25,7 +25,7 @@ public class EventCollectionDto
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? Id { get; set; }
 
-    [Required] [Range(1, int.MaxValue)] public int OrganizationId { get; set; }
+    [Required][Range(1, int.MaxValue)] public int OrganizationId { get; set; }
 
     [Required] public string Name { get; set; }
 

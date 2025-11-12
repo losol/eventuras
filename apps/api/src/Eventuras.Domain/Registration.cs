@@ -53,7 +53,7 @@ public class Registration
 
     [Obsolete] public string ParticipantCity { get; set; }
 
-    [Obsolete] [NotMapped] private IEnumerable<string> NameParts => ParticipantName?.Split(" ")?.Select(p => p.Trim());
+    [Obsolete][NotMapped] private IEnumerable<string> NameParts => ParticipantName?.Split(" ")?.Select(p => p.Trim());
 
     [Obsolete]
     [NotMapped]
@@ -68,7 +68,7 @@ public class Registration
         }
     }
 
-    [Obsolete] [NotMapped] public string ParticipantLastName => NameParts?.LastOrDefault();
+    [Obsolete][NotMapped] public string ParticipantLastName => NameParts?.LastOrDefault();
 
     // Who pays for it?
     public string CustomerName { get; set; }

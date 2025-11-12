@@ -298,7 +298,10 @@ public class OrderManagementService : IOrderManagementService
             registration = await _registrationRetrievalService.GetRegistrationByIdAsync(registrationId,
                                new RegistrationRetrievalOptions
                                {
-                                   LoadUser = true, LoadEventInfo = true, ForUpdate = true, LoadOrders = true
+                                   LoadUser = true,
+                                   LoadEventInfo = true,
+                                   ForUpdate = true,
+                                   LoadOrders = true
                                },
                                cancellationToken)
                            ?? throw new ArgumentServiceException($"Registration by id {registrationId} was not found",

@@ -207,7 +207,7 @@ internal class RegistrationAccessControlService : IRegistrationAccessControlServ
         }
 
         if (!user.IsAdmin())
-            // non-admins can only read their own registrations
+        // non-admins can only read their own registrations
         {
             return query.Where(r => r.UserId == user.GetUserId());
         }

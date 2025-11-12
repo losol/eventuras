@@ -301,7 +301,7 @@ internal class NotificationManagementService : INotificationManagementService
         {
             recipients.AddRange((from registration in await reader
                         .ReadNextAsync()
-                    select NotificationRecipient.Create(registration, notificationType))
+                                 select NotificationRecipient.Create(registration, notificationType))
                 .Where(r => r != null)); // user may have no phone, or email
         }
 

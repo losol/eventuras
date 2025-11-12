@@ -171,7 +171,10 @@ public class RegistrationDomainTests
             EventInfo = new EventInfo { EventInfoId = 1, Title = "Test Event" },
             User = new ApplicationUser
             {
-                Id = "user1", GivenName = "Test", FamilyName = "User", Email = "test@example.com"
+                Id = "user1",
+                GivenName = "Test",
+                FamilyName = "User",
+                Email = "test@example.com"
             },
             CertificateComment = "Great participation"
         };
@@ -215,7 +218,10 @@ public class RegistrationDomainTests
             EventInfo = new EventInfo { EventInfoId = 1, Title = "Test Event" },
             User = new ApplicationUser
             {
-                Id = "user123", GivenName = "John", FamilyName = "Doe", Email = "john@example.com"
+                Id = "user123",
+                GivenName = "John",
+                FamilyName = "Doe",
+                Email = "john@example.com"
             },
             CertificateComment = "Excellent work"
         };
@@ -254,7 +260,9 @@ public class RegistrationDomainTests
         // Arrange
         var registration = new Registration
         {
-            Certificate = new Certificate(), EventInfo = null, User = new ApplicationUser()
+            Certificate = new Certificate(),
+            EventInfo = null,
+            User = new ApplicationUser()
         };
 
         // Act & Assert
@@ -270,7 +278,9 @@ public class RegistrationDomainTests
         // Arrange
         var registration = new Registration
         {
-            Certificate = new Certificate(), EventInfo = new EventInfo(), User = null
+            Certificate = new Certificate(),
+            EventInfo = new EventInfo(),
+            User = null
         };
 
         // Act & Assert
@@ -291,7 +301,10 @@ public class RegistrationDomainTests
             EventInfo = new EventInfo { EventInfoId = 1, Title = "Updated Event" },
             User = new ApplicationUser
             {
-                Id = "user456", GivenName = "Jane", FamilyName = "Smith", Email = "jane@example.com"
+                Id = "user456",
+                GivenName = "Jane",
+                FamilyName = "Smith",
+                Email = "jane@example.com"
             },
             CertificateComment = "Updated comment"
         };

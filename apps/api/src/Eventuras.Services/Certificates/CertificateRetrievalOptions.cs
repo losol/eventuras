@@ -4,7 +4,8 @@ public class CertificateRetrievalOptions
 {
     public static readonly CertificateRetrievalOptions ForRendering = new()
     {
-        LoadIssuingUser = true, LoadIssuingOrganization = true
+        LoadIssuingUser = true,
+        LoadIssuingOrganization = true
     };
 
     public bool ForUpdate { get; set; }

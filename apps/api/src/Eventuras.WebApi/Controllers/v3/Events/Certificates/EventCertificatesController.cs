@@ -76,11 +76,15 @@ public class EventCertificatesController : ControllerBase
             .ListCertificatesAsync(
                 new CertificateListRequest
                 {
-                    Limit = query.Limit, Offset = query.Offset, Filter = new CertificateFilter { EventId = id }
+                    Limit = query.Limit,
+                    Offset = query.Offset,
+                    Filter = new CertificateFilter { EventId = id }
                 },
                 new CertificateRetrievalOptions
                 {
-                    LoadIssuingOrganization = true, LoadIssuingUser = true, LoadRecipientUser = true
+                    LoadIssuingOrganization = true,
+                    LoadIssuingUser = true,
+                    LoadRecipientUser = true
                 }, cancellationToken);
 
         return Ok(PageResponseDto<EventDto>.FromPaging(

@@ -11,7 +11,8 @@ public class ExternalRegistration
     public int LocalId { get; set; }
 
     public string
-        ExternalRegistrationId { get; set; } // optional, some external services may not return registration id
+        ExternalRegistrationId
+    { get; set; } // optional, some external services may not return registration id
 
     public int ExternalEventId { get; set; }
 

@@ -56,7 +56,8 @@ public static class HttpResponseMessageExtensions
 
         var options = new JsonSerializerOptions
         {
-            Converters = { new JsonStringEnumConverter() }, PropertyNameCaseInsensitive = true
+            Converters = { new JsonStringEnumConverter() },
+            PropertyNameCaseInsensitive = true
         };
         return await response.Content.ReadFromJsonAsync<TContent>(options, cancellationToken);
     }

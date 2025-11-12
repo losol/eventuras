@@ -72,7 +72,9 @@ public abstract class AbstractExternalSyncProviderService : IExternalSyncProvide
 
         var externalRegistration = new ExternalRegistration
         {
-            ExternalEvent = externalEvent, ExternalAccount = account, Registration = registration
+            ExternalEvent = externalEvent,
+            ExternalAccount = account,
+            Registration = registration
         };
 
         try

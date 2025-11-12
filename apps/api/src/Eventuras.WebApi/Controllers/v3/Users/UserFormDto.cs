@@ -6,7 +6,7 @@ namespace Eventuras.WebApi.Controllers.v3.Users;
 
 public class UserFormDto
 {
-    [Required] [EmailAddress] public string Email { get; set; }
+    [Required][EmailAddress] public string Email { get; set; }
 
     [Phone] public string PhoneNumber { get; set; }
 

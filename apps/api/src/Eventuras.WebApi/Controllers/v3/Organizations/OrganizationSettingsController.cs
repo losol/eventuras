@@ -117,7 +117,9 @@ public class OrganizationSettingsController : ControllerBase
             await _organizationSettingsManagementService
                 .CreateOrganizationSettingAsync(new OrganizationSetting
                 {
-                    OrganizationId = organizationId, Name = dto.Name, Value = dto.Value
+                    OrganizationId = organizationId,
+                    Name = dto.Name,
+                    Value = dto.Value
                 });
         }
 
@@ -126,7 +128,7 @@ public class OrganizationSettingsController : ControllerBase
 
     [HttpPost]
     public async Task<IActionResult> BatchUpdate(int organizationId,
-        [Required] [MinLength(1)] OrganizationSettingValueDto[] dtos)
+        [Required][MinLength(1)] OrganizationSettingValueDto[] dtos)
     {
         if (!ModelState.IsValid)
         {
@@ -181,7 +183,9 @@ public class OrganizationSettingsController : ControllerBase
                 await _organizationSettingsManagementService
                     .CreateOrganizationSettingAsync(new OrganizationSetting
                     {
-                        OrganizationId = organizationId, Name = dto.Name, Value = dto.Value
+                        OrganizationId = organizationId,
+                        Name = dto.Name,
+                        Value = dto.Value
                     });
             }
 

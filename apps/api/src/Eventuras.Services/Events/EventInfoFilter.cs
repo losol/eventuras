@@ -92,7 +92,8 @@ public class EventInfoFilter
     public static EventInfoFilter UpcomingEvents(EventInfoFilter filter = null) =>
         new(filter ?? new EventInfoFilter())
         {
-            StatusNoneOf = new[] { EventInfo.EventInfoStatus.Draft }, StartDateAfter = SystemClock.Instance.Today()
+            StatusNoneOf = new[] { EventInfo.EventInfoStatus.Draft },
+            StartDateAfter = SystemClock.Instance.Today()
         };
 
     public static EventInfoFilter FeaturedEvents(EventInfoFilter filter = null) =>

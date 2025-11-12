@@ -402,7 +402,9 @@ public class OrganizationSettingsControllerTest : IClassFixture<CustomWebApiAppl
         scope.Db.OrganizationSettings.Clean();
         scope.Db.OrganizationSettings.Add(new OrganizationSetting
         {
-            Organization = org.Entity, Name = OrgSettingsTestRegistryComponent.StringKey, Value = "initial"
+            Organization = org.Entity,
+            Name = OrgSettingsTestRegistryComponent.StringKey,
+            Value = "initial"
         });
         await scope.Db.SaveChangesAsync();
 

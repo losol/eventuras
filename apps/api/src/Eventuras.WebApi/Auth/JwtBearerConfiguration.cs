@@ -56,7 +56,8 @@ public static class JwtBearerConfiguration
 
                     return context.Response.WriteAsync(JsonSerializer.Serialize(new
                     {
-                        error = context.Error, error_description = context.ErrorDescription
+                        error = context.Error,
+                        error_description = context.ErrorDescription
                     }));
                 }
             };
