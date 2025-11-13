@@ -1,47 +1,47 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <LosolCommunicationLibraryVersion>0.5.2</LosolCommunicationLibraryVersion>
     <UserSecretsId>23ad1f65-ced2-4c24-87cb-6735ecf42528</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="AspNetCore.HealthChecks.UI" Version="8.0.2"/>
-    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="8.0.1"/>
-    <PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="8.0.1"/>
-    <PackageReference Include="Hangfire.AspNetCore" Version="1.8.22"/>
-    <PackageReference Include="Hangfire.Core" Version="1.8.22"/>
-    <PackageReference Include="Hangfire.InMemory" Version="1.0.0"/>
-    <PackageReference Include="Hangfire.PostgreSql" Version="1.20.12"/>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.4"/>
-    <PackageReference Include="Asp.Versioning.Mvc" Version="8.1.0"/>
-    <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0"/>
-    <PackageReference Include="Microsoft.FeatureManagement" Version="4.3.0"/>
-    <PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="4.3.0"/>
-    <PackageReference Include="NodaTime.Serialization.SystemTextJson" Version="1.3.0"/>
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime" Version="8.0.11"/>
-    <PackageReference Include="Sentry.AspNetCore" Version="5.16.2"/>
-    <PackageReference Include="Sentry.Extensions.Logging" Version="5.16.2"/>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.4"/>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.22"/>
-    <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.14.0"/>
-    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="8.1.4"/>
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0"/>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.22"/>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1"/>
+    <PackageReference Include="AspNetCore.HealthChecks.UI" Version="9.0.0" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="9.0.0" />
+    <PackageReference Include="Hangfire.AspNetCore" Version="1.8.22" />
+    <PackageReference Include="Hangfire.Core" Version="1.8.22" />
+    <PackageReference Include="Hangfire.InMemory" Version="1.0.0" />
+    <PackageReference Include="Hangfire.PostgreSql" Version="1.20.12" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="Asp.Versioning.Mvc" Version="8.1.0" />
+    <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
+    <PackageReference Include="Microsoft.FeatureManagement" Version="4.3.0" />
+    <PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="4.3.0" />
+    <PackageReference Include="NodaTime.Serialization.SystemTextJson" Version="1.3.0" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime" Version="9.0.4" />
+    <PackageReference Include="Sentry.AspNetCore" Version="5.16.2" />
+    <PackageReference Include="Sentry.Extensions.Logging" Version="5.16.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.22" />
+    <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.14.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="9.0.6" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.22" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Eventuras.Services.Converto\Eventuras.Services.Converto.csproj"/>
-    <ProjectReference Include="..\Eventuras.Services.PowerOffice\Eventuras.Services.PowerOffice.csproj"/>
-    <ProjectReference Include="..\Eventuras.Services.SendGrid\Eventuras.Services.SendGrid.csproj"/>
-    <ProjectReference Include="..\Eventuras.Services.Smtp\Eventuras.Services.Smtp.csproj"/>
-    <ProjectReference Include="..\Eventuras.Services.Stripe\Eventuras.Services.Stripe.csproj"/>
-    <ProjectReference Include="..\Eventuras.Services.Twilio\Eventuras.Services.Twilio.csproj"/>
-    <ProjectReference Include="..\Eventuras.Services\Eventuras.Services.csproj"/>
-    <ProjectReference Include="..\Eventuras.Infrastructure\Eventuras.Infrastructure.csproj"/>
-    <ProjectReference Include="..\Eventuras.Domain\Eventuras.Domain.csproj"/>
-    <ProjectReference Include="..\Losol.Communication.Email\Losol.Communication.Email.csproj"/>
-    <ProjectReference Include="..\Losol.Communication.HealthCheck\Losol.Communication.HealthCheck.csproj"/>
-    <ProjectReference Include="..\Losol.Communication.Sms\Losol.Communication.Sms.csproj"/>
+    <ProjectReference Include="..\Eventuras.Services.Converto\Eventuras.Services.Converto.csproj" />
+    <ProjectReference Include="..\Eventuras.Services.PowerOffice\Eventuras.Services.PowerOffice.csproj" />
+    <ProjectReference Include="..\Eventuras.Services.SendGrid\Eventuras.Services.SendGrid.csproj" />
+    <ProjectReference Include="..\Eventuras.Services.Smtp\Eventuras.Services.Smtp.csproj" />
+    <ProjectReference Include="..\Eventuras.Services.Stripe\Eventuras.Services.Stripe.csproj" />
+    <ProjectReference Include="..\Eventuras.Services.Twilio\Eventuras.Services.Twilio.csproj" />
+    <ProjectReference Include="..\Eventuras.Services\Eventuras.Services.csproj" />
+    <ProjectReference Include="..\Eventuras.Infrastructure\Eventuras.Infrastructure.csproj" />
+    <ProjectReference Include="..\Eventuras.Domain\Eventuras.Domain.csproj" />
+    <ProjectReference Include="..\Losol.Communication.Email\Losol.Communication.Email.csproj" />
+    <ProjectReference Include="..\Losol.Communication.HealthCheck\Losol.Communication.HealthCheck.csproj" />
+    <ProjectReference Include="..\Losol.Communication.Sms\Losol.Communication.Sms.csproj" />
   </ItemGroup>
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>

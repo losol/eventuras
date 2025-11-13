@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <RootNamespace>Eventuras.Services</RootNamespace>
     <AssemblyName>Eventuras.Services</AssemblyName>
@@ -8,28 +8,28 @@
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Eventuras.Domain\Eventuras.Domain.csproj"/>
-    <ProjectReference Include="..\Eventuras.Infrastructure\Eventuras.Infrastructure.csproj"/>
-    <ProjectReference Include="..\..\src\Losol.Communication.Email\Losol.Communication.Email.csproj"/>
-    <ProjectReference Include="..\..\src\Losol.Communication.Sms\Losol.Communication.Sms.csproj"/>
+    <ProjectReference Include="..\Eventuras.Domain\Eventuras.Domain.csproj" />
+    <ProjectReference Include="..\Eventuras.Infrastructure\Eventuras.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Losol.Communication.Email\Losol.Communication.Email.csproj" />
+    <ProjectReference Include="..\..\src\Losol.Communication.Sms\Losol.Communication.Sms.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="DocumentFormat.OpenXml" Version="3.3.0"/>
-    <PackageReference Include="Hangfire.Core" Version="1.8.22"/>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.4"/>
-    <PackageReference Include="Markdig" Version="0.42.0"/>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.22"/>
+    <PackageReference Include="DocumentFormat.OpenXml" Version="3.3.0" />
+    <PackageReference Include="Hangfire.Core" Version="1.8.22" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="Markdig" Version="0.43.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="10.0.0" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Shared\Templates\Certificates\">
     </Folder>
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="IRegistrationService.cs"/>
-    <Compile Remove="RegistrationService.cs"/>
-    <Compile Remove="Orders\IOrderVmConversionService.cs"/>
-    <Compile Remove="Orders\OrderVmConversionService.cs"/>
-    <Compile Remove="Orders\IOrderService.cs"/>
-    <Compile Remove="Orders\OrderService.cs"/>
+    <Compile Remove="IRegistrationService.cs" />
+    <Compile Remove="RegistrationService.cs" />
+    <Compile Remove="Orders\IOrderVmConversionService.cs" />
+    <Compile Remove="Orders\OrderVmConversionService.cs" />
+    <Compile Remove="Orders\IOrderService.cs" />
+    <Compile Remove="Orders\OrderService.cs" />
   </ItemGroup>
 </Project>

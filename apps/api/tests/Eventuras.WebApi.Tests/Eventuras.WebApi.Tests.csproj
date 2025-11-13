@@ -1,19 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <OutputType>Exe</OutputType>
     <IsPackable>false</IsPackable>
     <PreserveCompilationContext>true</PreserveCompilationContext>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="itext" Version="9.3.0"/>
-    <PackageReference Include="itext.bouncy-castle-adapter" Version="9.3.0"/>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.22"/>
-    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="8.0.22"/>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.22"/>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1"/>
-    <PackageReference Include="Moq" Version="4.20.72"/>
-    <PackageReference Include="xunit.v3" Version="3.2.0"/>
+    <PackageReference Include="itext" Version="9.4.0" />
+    <PackageReference Include="itext.bouncy-castle-adapter" Version="9.4.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="10.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.11" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
+    <PackageReference Include="Moq" Version="4.20.72" />
+    <PackageReference Include="xunit.v3" Version="3.2.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -24,9 +24,9 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Eventuras.Infrastructure\Eventuras.Infrastructure.csproj"/>
-    <ProjectReference Include="..\..\src\Eventuras.Services\Eventuras.Services.csproj"/>
-    <ProjectReference Include="..\..\src\Eventuras.WebApi\Eventuras.WebApi.csproj"/>
-    <ProjectReference Include="..\Eventuras.TestAbstractions\Eventuras.TestAbstractions.csproj"/>
+    <ProjectReference Include="..\..\src\Eventuras.Infrastructure\Eventuras.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Eventuras.Services\Eventuras.Services.csproj" />
+    <ProjectReference Include="..\..\src\Eventuras.WebApi\Eventuras.WebApi.csproj" />
+    <ProjectReference Include="..\Eventuras.TestAbstractions\Eventuras.TestAbstractions.csproj" />
   </ItemGroup>
 </Project>

@@ -1,7 +1,7 @@
 #
 # Stage 0
 # Build the project
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /app/src
 
 # copy csproj and restore dependencies
@@ -39,7 +39,7 @@ RUN dotnet publish -c Release -o /app/out
 #
 # Stage 1
 # Copy the built files over
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS publish
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS publish
 
 # Copy files over from the build stage
 WORKDIR /app
