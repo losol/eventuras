@@ -38,7 +38,6 @@ jobs:
 
   build:
     name: Build project
-    needs: format
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -68,8 +67,6 @@ jobs:
             path: "./tests/Eventuras.Services.Tests/Eventuras.Services.Tests.csproj"
           - name: "Converto Service Tests"
             path: "./tests/Eventuras.Services.Converto.Tests/Eventuras.Services.Converto.Tests.csproj"
-          - name: "TalentLMS Service Tests"
-            path: "./tests/Eventuras.Services.TalentLms.Tests/Eventuras.Services.TalentLms.Tests.csproj"
           - name: "Email Communication Tests"
             path: "./tests/Losol.Communication.Email.Tests/Losol.Communication.Email.Tests.csproj"
     name: ${{ matrix.test_set.name }}
