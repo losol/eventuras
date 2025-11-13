@@ -24,7 +24,6 @@ COPY ./tests/Eventuras.WebApi.Tests/*.csproj ./tests/Eventuras.WebApi.Tests/
 COPY ./tests/Eventuras.Services.Tests/*.csproj ./tests/Eventuras.Services.Tests/
 COPY ./tests/Eventuras.Services.Converto.Tests/*.csproj ./tests/Eventuras.Services.Converto.Tests/
 COPY ./tests/Eventuras.TestAbstractions/*.csproj ./tests/Eventuras.TestAbstractions/
-COPY ./tests/Eventuras.Services.TalentLms.Tests/*.csproj ./tests/Eventuras.Services.TalentLms.Tests/
 COPY ./tests/Losol.Communication.Email.Tests/*.csproj ./tests/Losol.Communication.Email.Tests/
 
 RUN dotnet restore -v d
