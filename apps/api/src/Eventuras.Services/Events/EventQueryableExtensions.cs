@@ -23,22 +23,26 @@ internal static class EventQueryableExtensions
 
         if (filter.StatusOneOf?.Any() == true)
         {
-            query = query.Where(e => filter.StatusOneOf.Contains(e.Status));
+            var statusOneOf = filter.StatusOneOf.ToList();
+            query = query.Where(e => statusOneOf.Contains(e.Status));
         }
 
         if (filter.StatusNoneOf?.Any() == true)
         {
-            query = query.Where(e => !filter.StatusNoneOf.Contains(e.Status));
+            var statusNoneOf = filter.StatusNoneOf.ToList();
+            query = query.Where(e => !statusNoneOf.Contains(e.Status));
         }
 
         if (filter.TypeOneOf?.Any() == true)
         {
-            query = query.Where(e => filter.TypeOneOf.Contains(e.Type));
+            var typeOneOf = filter.TypeOneOf.ToList();
+            query = query.Where(e => typeOneOf.Contains(e.Type));
         }
 
         if (filter.TypeNoneOf?.Any() == true)
         {
-            query = query.Where(e => !filter.TypeNoneOf.Contains(e.Type));
+            var typeNoneOf = filter.TypeNoneOf.ToList();
+            query = query.Where(e => !typeNoneOf.Contains(e.Type));
         }
 
         if (filter.FeaturedOnly)
@@ -102,9 +106,9 @@ internal static class EventQueryableExtensions
 
         if (filter.CollectionIds?.Any() == true)
         {
+            var collectionIds = filter.CollectionIds.ToList();
             query = query.Where(e => e.CollectionMappings
-                .Any(m => filter.CollectionIds
-                    .Contains(m.CollectionId)));
+                .Any(m => collectionIds.Contains(m.CollectionId)));
         }
 
         if (filter.OrganizationId.HasValue)

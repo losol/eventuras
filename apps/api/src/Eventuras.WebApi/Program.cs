@@ -59,7 +59,13 @@ if (!string.IsNullOrEmpty(appSettings.DataProtectionKeysFolder))
 
 
 builder.Services.AddRazorPages();
-builder.Services.ConfigureEf();
+
+// Skip EF configuration for IntegrationTests - tests will configure their own DbContext
+if (!builder.Environment.IsEnvironment("IntegrationTests"))
+{
+    builder.Services.ConfigureEf();
+}
+
 builder.Services.ConfigureDbInitializationStrategy(builder.Configuration);
 builder.Services.ConfigureAuthorizationPolicies(builder.Configuration);
 builder.Services.AddEmailServices();
