@@ -16,7 +16,7 @@ on:
     inputs:
       dotnet-version:
         required: false
-        default: "10.0.x"
+        default: "10.x"
         type: string
 
 env:
@@ -32,10 +32,7 @@ jobs:
         working-directory: ./apps/api/
     steps:
       - uses: actions/checkout@v4
-      - name: Setup dotnet
-        uses: actions/setup-dotnet@v5
-        with:
-          dotnet-version: ${{ inputs.dotnet-version }}
+      - uses: ./.github/actions/util-dotnet-install
       - name: dotnet format
         run: dotnet format --verify-no-changes
 
@@ -48,10 +45,7 @@ jobs:
         working-directory: ./apps/api/
     steps:
       - uses: actions/checkout@v4
-      - name: Setup dotnet
-        uses: actions/setup-dotnet@v5
-        with:
-          dotnet-version: ${{ inputs.dotnet-version }}
+      - uses: ./.github/actions/util-dotnet-install
       - name: Restore dependencies
         run: dotnet restore
       - name: Build with dotnet
@@ -81,13 +75,10 @@ jobs:
     name: ${{ matrix.test_set.name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
-      - name: Setup dotnet
-        uses: actions/setup-dotnet@v5
-        with:
-          dotnet-version: ${{ inputs.dotnet-version }}
+        uses: actions/checkout@v4
+      - uses: ./.github/actions/util-dotnet-install
       - name: Run tests
-        run: dotnet test ${{ matrix.test_set.path }}
+        run: dotnet test --project ${{ matrix.test_set.path }}
 
   docker:
     name: Docker build

@@ -1,0 +1,16 @@
+name: 'Util - Install .NET SDK'
+description: 'Install .NET SDK using official dotnet-install script'
+inputs:
+  dotnet-version:
+    description: '.NET version to install'
+    required: false
+    default: '10.0'
+runs:
+  using: 'composite'
+  steps:
+    - name: Install .NET SDK
+      shell: bash
+      run: |
+        curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel ${{ inputs.dotnet-version }} --install-dir ~/.dotnet
+        echo "$HOME/.dotnet" >> $GITHUB_PATH
+        echo "DOTNET_ROOT=$HOME/.dotnet" >> $GITHUB_ENV
