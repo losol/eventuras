@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Eventuras.Services\Eventuras.Services.csproj"/>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Losol.Communication.Email\Losol.Communication.Email.csproj"/>
+    <ProjectReference Include="..\Losol.Communication.Email\Losol.Communication.Email.csproj"/>
   </ItemGroup>
 </Project>

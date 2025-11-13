@@ -16,7 +16,7 @@ on:
     inputs:
       dotnet-version:
         required: false
-        default: "8"
+        default: "10"
         type: string
 
 env:
