@@ -24,6 +24,7 @@ COPY ./src/Losol.Communication.Email/*.csproj ./src/Losol.Communication.Email/
 COPY ./src/Losol.Communication.Sms/*.csproj ./src/Losol.Communication.Sms/
 
 # Copy test csproj files
+COPY ./tests/Eventuras.Libs.Pdf.Tests/*.csproj ./tests/Eventuras.Libs.Pdf.Tests/
 COPY ./tests/Eventuras.Services.Converto.Tests/*.csproj ./tests/Eventuras.Services.Converto.Tests/
 COPY ./tests/Eventuras.Services.Tests/*.csproj ./tests/Eventuras.Services.Tests/
 COPY ./tests/Eventuras.TestAbstractions/*.csproj ./tests/Eventuras.TestAbstractions/
