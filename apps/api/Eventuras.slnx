@@ -21,6 +21,7 @@
     <Project Path="src/Losol.Communication.Sms/Losol.Communication.Sms.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/Eventuras.Libs.Pdf.Tests/Eventuras.Libs.Pdf.Tests.csproj" />
     <Project Path="tests/Eventuras.Services.Converto.Tests/Eventuras.Services.Converto.Tests.csproj" />
     <Project Path="tests/Eventuras.Services.Tests/Eventuras.Services.Tests.csproj" />
     <Project Path="tests/Eventuras.TestAbstractions/Eventuras.TestAbstractions.csproj" />

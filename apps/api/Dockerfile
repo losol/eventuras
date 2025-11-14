@@ -11,6 +11,7 @@ COPY ./src/common.props ./src/common.props
 # Copy all src csproj files
 COPY ./src/Eventuras.Domain/*.csproj ./src/Eventuras.Domain/
 COPY ./src/Eventuras.Infrastructure/*.csproj ./src/Eventuras.Infrastructure/
+COPY ./src/Eventuras.Libs.Pdf/*.csproj ./src/Eventuras.Libs.Pdf/
 COPY ./src/Eventuras.Services/*.csproj ./src/Eventuras.Services/
 COPY ./src/Eventuras.Services.Converto/*.csproj ./src/Eventuras.Services.Converto/
 COPY ./src/Eventuras.Services.PowerOffice/*.csproj ./src/Eventuras.Services.PowerOffice/
