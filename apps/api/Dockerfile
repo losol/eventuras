@@ -2,11 +2,15 @@
 # Stage 0
 # Build the project
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
-WORKDIR /app/src
+WORKDIR /app
 
-# copy csproj and restore dependencies
-COPY ./Eventuras.sln .
-COPY ./src/Eventuras.WebApi/*.csproj ./src/Eventuras.WebApi/
+# Copy solution file and common props
+COPY ./Eventuras.slnx .
+COPY ./src/common.props ./src/common.props
+
+# Copy all src csproj files
+COPY ./src/Eventuras.Domain/*.csproj ./src/Eventuras.Domain/
+COPY ./src/Eventuras.Infrastructure/*.csproj ./src/Eventuras.Infrastructure/
 COPY ./src/Eventuras.Services/*.csproj ./src/Eventuras.Services/
 COPY ./src/Eventuras.Services.Converto/*.csproj ./src/Eventuras.Services.Converto/
 COPY ./src/Eventuras.Services.PowerOffice/*.csproj ./src/Eventuras.Services.PowerOffice/
@@ -14,26 +18,28 @@ COPY ./src/Eventuras.Services.SendGrid/*.csproj ./src/Eventuras.Services.SendGri
 COPY ./src/Eventuras.Services.Smtp/*.csproj ./src/Eventuras.Services.Smtp/
 COPY ./src/Eventuras.Services.Stripe/*.csproj ./src/Eventuras.Services.Stripe/
 COPY ./src/Eventuras.Services.Twilio/*.csproj ./src/Eventuras.Services.Twilio/
-COPY ./src/Eventuras.Infrastructure/*.csproj ./src/Eventuras.Infrastructure/
-COPY ./src/Eventuras.Domain/*.csproj ./src/Eventuras.Domain/
+COPY ./src/Eventuras.WebApi/*.csproj ./src/Eventuras.WebApi/
 COPY ./src/Losol.Communication.Email/*.csproj ./src/Losol.Communication.Email/
-COPY ./src/Losol.Communication.HealthCheck/*.csproj ./src/Losol.Communication.HealthCheck/
 COPY ./src/Losol.Communication.Sms/*.csproj ./src/Losol.Communication.Sms/
+
+# Copy test csproj files
+COPY ./tests/Eventuras.Services.Converto.Tests/*.csproj ./tests/Eventuras.Services.Converto.Tests/
+COPY ./tests/Eventuras.Services.Tests/*.csproj ./tests/Eventuras.Services.Tests/
+COPY ./tests/Eventuras.TestAbstractions/*.csproj ./tests/Eventuras.TestAbstractions/
 COPY ./tests/Eventuras.UnitTests/*.csproj ./tests/Eventuras.UnitTests/
 COPY ./tests/Eventuras.WebApi.Tests/*.csproj ./tests/Eventuras.WebApi.Tests/
-COPY ./tests/Eventuras.Services.Tests/*.csproj ./tests/Eventuras.Services.Tests/
-COPY ./tests/Eventuras.Services.Converto.Tests/*.csproj ./tests/Eventuras.Services.Converto.Tests/
-COPY ./tests/Eventuras.TestAbstractions/*.csproj ./tests/Eventuras.TestAbstractions/
 COPY ./tests/Losol.Communication.Email.Tests/*.csproj ./tests/Losol.Communication.Email.Tests/
 
-RUN dotnet restore -v d
+# Restore dependencies using the solution file
+RUN dotnet restore Eventuras.slnx
 
-# copy everything else
-COPY . ./
+# Copy source files
+COPY ./src/ ./src/
+COPY ./global.json ./global.json
 
 # Publish
-WORKDIR /app/src/src/Eventuras.WebApi
-RUN dotnet publish -c Release -o /app/out
+WORKDIR /app/src/Eventuras.WebApi
+RUN dotnet publish -c Release -o /app/out --no-restore
 
 #
 # Stage 1
