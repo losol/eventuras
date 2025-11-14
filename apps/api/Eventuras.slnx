@@ -8,6 +8,7 @@
     <File Path=".editorconfig" />
     <Project Path="src/Eventuras.Domain/Eventuras.Domain.csproj" />
     <Project Path="src/Eventuras.Infrastructure/Eventuras.Infrastructure.csproj" />
+    <Project Path="src/Eventuras.Libs.Pdf/Eventuras.Libs.Pdf.csproj" />
     <Project Path="src/Eventuras.Services.Converto/Eventuras.Services.Converto.csproj" />
     <Project Path="src/Eventuras.Services.PowerOffice/Eventuras.Services.PowerOffice.csproj" />
     <Project Path="src/Eventuras.Services.SendGrid/Eventuras.Services.SendGrid.csproj" />

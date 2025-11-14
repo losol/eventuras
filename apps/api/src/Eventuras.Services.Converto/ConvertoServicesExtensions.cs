@@ -1,4 +1,4 @@
-using Eventuras.Services.Pdf;
+using Eventuras.Libs.Pdf;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;

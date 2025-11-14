@@ -294,6 +294,26 @@ public static class JsonElementExtensions
         Assert.Equal(recipient.Errors, token.GetValue<string>("errors"));
     }
 
+    /// <summary>
+    /// Checks that a notification recipient matches expected values, ignoring auto-generated IDs and user IDs.
+    /// This is useful for testing ordering where the specific ID values are non-deterministic across test runs.
+    /// </summary>
+    public static void CheckNotificationRecipientIgnoringIds(this JsonElement token, NotificationRecipient recipient)
+    {
+        Assert.NotEqual(JsonValueKind.Null, token.ValueKind);
+        // Skip RecipientId check - it's auto-generated and non-deterministic
+        Assert.Equal(recipient.NotificationId, token.GetValue<int>("notificationId"));
+        // Skip recipientUserId check - it depends on user creation order across tests
+        Assert.Equal(recipient.RegistrationId, token.GetValue<int?>("registrationId"));
+        Assert.Equal(recipient.RecipientName, token.GetValue<string>("recipientName"));
+        Assert.Equal(recipient.RecipientIdentifier, token.GetValue<string>("recipientIdentifier"));
+        Assert.Equal(recipient.Created.ToString("yyyy-MM-ddTHH:mm:ss"),
+            token.GetValue<DateTime>("created").ToString("yyyy-MM-ddTHH:mm:ss"));
+        Assert.Equal(recipient.Sent?.ToString("yyyy-MM-ddTHH:mm:ss"),
+            token.GetValue<DateTime?>("sent")?.ToString("yyyy-MM-ddTHH:mm:ss"));
+        Assert.Equal(recipient.Errors, token.GetValue<string>("errors"));
+    }
+
     public static void CheckStringArray(this JsonElement array, params string[] roles) =>
         array.CheckArray((t, r) => Assert.Equal(r, t.GetString()), roles);
 

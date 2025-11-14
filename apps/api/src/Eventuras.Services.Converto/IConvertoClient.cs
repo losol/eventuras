@@ -1,6 +1,6 @@
 using System.IO;
 using System.Threading.Tasks;
-using Eventuras.Domain;
+using Eventuras.Libs.Pdf;
 
 namespace Eventuras.Services.Converto;
 

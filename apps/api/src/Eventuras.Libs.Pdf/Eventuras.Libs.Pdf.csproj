@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../common.props" />
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Eventuras.Libs.Pdf</RootNamespace>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+</Project>

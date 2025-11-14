@@ -1,18 +1,17 @@
-using System.ComponentModel.DataAnnotations;
-using System.IO;
-using System.Threading.Tasks;
-using Eventuras.Domain;
+using Eventuras.Libs.Pdf;
 
 namespace Eventuras.Services.Pdf;
 
-public interface IPdfRenderService
+/// <summary>
+/// Re-export from Eventuras.Libs.Pdf for backwards compatibility
+/// </summary>
+public interface IPdfRenderService : Libs.Pdf.IPdfRenderService
 {
-    Task<Stream> GeneratePdfFromHtml(string html, PdfRenderOptions pdfRenderOptions);
 }
 
-public class PdfRenderOptions
+/// <summary>
+/// Re-export from Eventuras.Libs.Pdf for backwards compatibility
+/// </summary>
+public class PdfRenderOptions : Libs.Pdf.PdfRenderOptions
 {
-    [Range(0.1, 2)] public float? Scale { get; set; }
-
-    public PaperSize? PaperSize { get; set; }
 }
