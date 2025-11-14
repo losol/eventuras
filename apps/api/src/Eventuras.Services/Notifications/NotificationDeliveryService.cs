@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Domain;
-using Hangfire;
+using Eventuras.Services.BackgroundJobs;
 using Microsoft.Extensions.Logging;
 
 namespace Eventuras.Services.Notifications;
@@ -12,11 +12,13 @@ internal class NotificationDeliveryService : INotificationDeliveryService
     private readonly ILogger<NotificationDeliveryService> _logger;
     private readonly INotificationAccessControlService _notificationAccessControlService;
     private readonly INotificationManagementService _notificationManagementService;
+    private readonly IBackgroundJobQueue _jobQueue;
 
     public NotificationDeliveryService(
         ILogger<NotificationDeliveryService> logger,
         INotificationAccessControlService notificationAccessControlService,
-        INotificationManagementService notificationManagementService)
+        INotificationManagementService notificationManagementService,
+        IBackgroundJobQueue jobQueue)
     {
         _logger = logger ?? throw
             new ArgumentNullException(nameof(logger));
@@ -26,6 +28,9 @@ internal class NotificationDeliveryService : INotificationDeliveryService
 
         _notificationManagementService = notificationManagementService ?? throw
             new ArgumentNullException(nameof(notificationManagementService));
+
+        _jobQueue = jobQueue ?? throw
+            new ArgumentNullException(nameof(jobQueue));
     }
 
     public async Task SendNotificationAsync(
@@ -55,8 +60,10 @@ internal class NotificationDeliveryService : INotificationDeliveryService
                 return;
             }
 
-            BackgroundJob.Enqueue<NotificationBackgroundService>("notifications_queue",
-                x => x.SendNotificationToRecipientAsync(recipient.RecipientId, true));
+            await _jobQueue.QueueNotificationJobAsync(
+                recipient.RecipientId,
+                accessControlDone: true,
+                cancellationToken);
         }
     }
 }

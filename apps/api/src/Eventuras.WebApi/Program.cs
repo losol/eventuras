@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
 using Eventuras.Services;
+using Eventuras.Services.BackgroundJobs;
 using Eventuras.Services.Constants;
 using Eventuras.Services.DbInitializers;
 using Eventuras.Services.Notifications;
@@ -13,8 +14,6 @@ using Eventuras.WebApi.Auth;
 using Eventuras.WebApi.Config;
 using Eventuras.WebApi.Extensions;
 using Eventuras.WebApi.Filters;
-using Hangfire;
-using Hangfire.InMemory;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -104,21 +103,10 @@ apiVersioningBuilder.AddApiExplorer(o =>
 
 builder.Services.ConfigureIdentity();
 
-builder.Services.AddHangfire(configuration => configuration
-    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
-    .UseSimpleAssemblyNameTypeSerializer()
-    .UseRecommendedSerializerSettings()
-    .UseInMemoryStorage(new InMemoryStorageOptions { MaxExpirationTime = TimeSpan.FromHours(24) })
-);
-
-
-builder.Services.AddHangfireServer(options =>
-{
-    options.WorkerCount = 2;
-    options.Queues = new[] { "notifications_queue", "certificates_queue" };
-});
-
-builder.Services.AddScoped<NotificationBackgroundService>();
+// Register background job queue and workers
+builder.Services.AddSingleton<IBackgroundJobQueue, BackgroundJobQueue>();
+builder.Services.AddHostedService<NotificationBackgroundWorker>();
+builder.Services.AddHostedService<CertificateBackgroundWorker>();
 
 builder.Services.AddAuthentication(options =>
     {
@@ -166,8 +154,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-app.UseHangfireDashboard("/jobs", new DashboardOptions { IsReadOnlyFunc = context => true });
 
 // Seed database, run OnStartup builder.Services, etc.
 await PreStartupRoutine(app);
