@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Services;
 using Eventuras.TestAbstractions;
-using Hangfire;
 using Losol.Communication.Email;
 using Microsoft.EntityFrameworkCore;
 using Moq;
@@ -410,16 +409,9 @@ public class EventCertificatesControllerTest : IClassFixture<CustomWebApiApplica
         var cert = await scope.Db.Certificates.AsNoTracking().SingleAsync();
         Assert.Equal(cert.RecipientUserId, u2.Entity.Id);
 
-        var jobStats = JobStorage.Current.GetMonitoringApi().GetStatistics();
+        // Wait a bit for background processing to complete
+        await Task.Delay(1000);
 
-        var retries = 5;
-        while (jobStats.Processing > 0 && retries > 0)
-        {
-            retries--;
-            await Task.Delay(250);
-        }
-
-        Debug.WriteLine(jobStats.ToString());
         emailExpectation.VerifyEmailSent();
     }
 

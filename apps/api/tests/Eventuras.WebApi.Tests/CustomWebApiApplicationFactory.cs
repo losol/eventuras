@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Eventuras.Infrastructure;
 using Eventuras.Services;
+using Eventuras.Services.Certificates;
 using Eventuras.Services.DbInitializers;
 using Eventuras.Services.Organizations.Settings;
 using Eventuras.Services.Pdf;
 using Eventuras.WebApi.Tests.Controllers.Organizations;
+using Eventuras.WebApi.Tests.TestHelpers;
 using Losol.Communication.Email;
 using Losol.Communication.Sms;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -27,6 +30,20 @@ public class CustomWebApiApplicationFactory<TStartup> : WebApplicationFactory<TS
 {
     public readonly Mock<IEmailSender> EmailSenderMock = new();
     public readonly Mock<ISmsSender> SmsSenderMock = new();
+    public readonly Mock<ICertificateRenderer> CertificateRendererMock = new();
+
+    public CustomWebApiApplicationFactory()
+    {
+        // Setup default behavior for certificate renderer mock
+        CertificateRendererMock
+            .Setup(x => x.RenderToPdfAsStreamAsync(It.IsAny<CertificateViewModel>()))
+            .ReturnsAsync((CertificateViewModel vm) => MinimalPdfGenerator.Generate(vm.Title, vm.RecipientName));
+
+        CertificateRendererMock
+            .Setup(x => x.RenderToHtmlAsStringAsync(It.IsAny<CertificateViewModel>()))
+            .ReturnsAsync((CertificateViewModel vm) =>
+                $"<html><body><h1>{vm.Title}</h1><p>Certificate for {vm.RecipientName}</p></body></html>");
+    }
 
     private class TestDbInitializer : IDbInitializer
     {
@@ -62,6 +79,7 @@ public class CustomWebApiApplicationFactory<TStartup> : WebApplicationFactory<TS
                 // Override already added email sender with the true mock
                 services.AddSingleton(EmailSenderMock.Object);
                 services.AddSingleton(SmsSenderMock.Object);
+                services.AddTransient<ICertificateRenderer>(_ => CertificateRendererMock.Object);
                 services.AddTransient<IPdfRenderService, DummyPdfRenderService>();
                 services.AddSingleton<IOrganizationSettingsRegistryComponent, OrgSettingsTestRegistryComponent>();
 

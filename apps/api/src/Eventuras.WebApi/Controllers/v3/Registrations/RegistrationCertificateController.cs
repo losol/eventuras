@@ -42,7 +42,7 @@ public class RegistrationCertificateController : ControllerBase
         }
 
         await _certificateDeliveryService
-            .SendCertificateAsync(reg.CertificateId.Value, true, cancellationToken);
+            .QueueCertificateForDeliveryAsync(reg.CertificateId.Value, cancellationToken);
 
         return Ok();
     }
