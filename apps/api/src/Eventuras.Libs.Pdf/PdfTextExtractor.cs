@@ -36,8 +36,8 @@ public static class PdfTextExtractor
                 var streamContent = match.Groups[1].Value;
 
                 // Extract text from PDF text operators
-                // Pattern: (text) Tj or [(text)] TJ
-                var textPattern = @"\(([^)]*)\)\s*Tj";
+                // Pattern: (text) Tj - need to handle escaped parentheses
+                var textPattern = @"\(((?:[^\\()]|\\[\\()])*)\)\s*Tj";
                 var textMatches = Regex.Matches(streamContent, textPattern);
 
                 foreach (Match textMatch in textMatches)
