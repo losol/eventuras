@@ -1,8 +1,7 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Eventuras.Domain;
-using Eventuras.Services.Pdf;
+using Eventuras.Libs.Pdf;
 using Eventuras.Services.Views;
 
 namespace Eventuras.Services.Certificates;

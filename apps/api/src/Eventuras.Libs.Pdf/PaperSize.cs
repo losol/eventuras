@@ -1,4 +1,4 @@
-namespace Eventuras.Domain;
+namespace Eventuras.Libs.Pdf;
 
 public enum PaperSize
 {

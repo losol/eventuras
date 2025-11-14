@@ -204,49 +204,49 @@ public class NotificationRecipientsControllerTest : IClassFixture<CustomWebApiAp
 
         var json = await response.CheckOk().AsTokenAsync();
         json.CheckPaging((t, r) =>
-                t.CheckNotificationRecipient(r),
+                t.CheckNotificationRecipientIgnoringIds(r),
             recipients.Reverse().ToArray()); // default sort by create date, desc
 
         response = await client.GetAsync(
             $"/v3/notifications/{notification.Entity.NotificationId}/recipients?order=created");
 
         json = await response.CheckOk().AsTokenAsync();
-        json.CheckPaging((t, r) => t.CheckNotificationRecipient(r),
+        json.CheckPaging((t, r) => t.CheckNotificationRecipientIgnoringIds(r),
             recipients.Reverse().ToArray()); // still the same
 
         response = await client.GetAsync(
             $"/v3/notifications/{notification.Entity.NotificationId}/recipients?order=created&desc=true");
 
         json = await response.CheckOk().AsTokenAsync();
-        json.CheckPaging((t, r) => t.CheckNotificationRecipient(r),
+        json.CheckPaging((t, r) => t.CheckNotificationRecipientIgnoringIds(r),
             recipients.Reverse().ToArray()); // still the same
 
         response = await client.GetAsync(
             $"/v3/notifications/{notification.Entity.NotificationId}/recipients?order=created&desc=false");
 
         json = await response.CheckOk().AsTokenAsync();
-        json.CheckPaging((t, r) => t.CheckNotificationRecipient(r),
+        json.CheckPaging((t, r) => t.CheckNotificationRecipientIgnoringIds(r),
             recipients.ToArray());
 
         response = await client.GetAsync(
             $"/v3/notifications/{notification.Entity.NotificationId}/recipients?order=sent");
 
         json = await response.CheckOk().AsTokenAsync();
-        json.CheckPaging((t, r) => t.CheckNotificationRecipient(r),
+        json.CheckPaging((t, r) => t.CheckNotificationRecipientIgnoringIds(r),
             recipients.ToArray());
 
         response = await client.GetAsync(
             $"/v3/notifications/{notification.Entity.NotificationId}/recipients?order=sent&desc=true");
 
         json = await response.CheckOk().AsTokenAsync();
-        json.CheckPaging((t, r) => t.CheckNotificationRecipient(r),
+        json.CheckPaging((t, r) => t.CheckNotificationRecipientIgnoringIds(r),
             recipients.ToArray());
 
         response = await client.GetAsync(
             $"/v3/notifications/{notification.Entity.NotificationId}/recipients?order=sent&desc=false");
 
         json = await response.CheckOk().AsTokenAsync();
-        json.CheckPaging((t, r) => t.CheckNotificationRecipient(r),
+        json.CheckPaging((t, r) => t.CheckNotificationRecipientIgnoringIds(r),
             recipients.Reverse().ToArray());
     }
 

@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Eventuras.Infrastructure;
+using Eventuras.Libs.Pdf;
 using Eventuras.Services;
 using Eventuras.Services.Certificates;
 using Eventuras.Services.DbInitializers;
 using Eventuras.Services.Organizations.Settings;
-using Eventuras.Services.Pdf;
 using Eventuras.WebApi.Tests.Controllers.Organizations;
-using Eventuras.WebApi.Tests.TestHelpers;
 using Losol.Communication.Email;
 using Losol.Communication.Sms;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -37,7 +36,7 @@ public class CustomWebApiApplicationFactory<TStartup> : WebApplicationFactory<TS
         // Setup default behavior for certificate renderer mock
         CertificateRendererMock
             .Setup(x => x.RenderToPdfAsStreamAsync(It.IsAny<CertificateViewModel>()))
-            .ReturnsAsync((CertificateViewModel vm) => MinimalPdfGenerator.Generate(vm.Title, vm.RecipientName));
+            .ReturnsAsync((CertificateViewModel vm) => SimplePdfGenerator.GenerateFromText($"{vm.Title}\n{vm.RecipientName}"));
 
         CertificateRendererMock
             .Setup(x => x.RenderToHtmlAsStringAsync(It.IsAny<CertificateViewModel>()))
@@ -80,7 +79,7 @@ public class CustomWebApiApplicationFactory<TStartup> : WebApplicationFactory<TS
                 services.AddSingleton(EmailSenderMock.Object);
                 services.AddSingleton(SmsSenderMock.Object);
                 services.AddTransient<ICertificateRenderer>(_ => CertificateRendererMock.Object);
-                services.AddTransient<IPdfRenderService, DummyPdfRenderService>();
+                services.AddTransient<IPdfRenderService, Libs.Pdf.SimplePdfRenderService>();
                 services.AddSingleton<IOrganizationSettingsRegistryComponent, OrgSettingsTestRegistryComponent>();
 
                 // Replace  ApplicationDbContext using a unique in-memory database for each test.

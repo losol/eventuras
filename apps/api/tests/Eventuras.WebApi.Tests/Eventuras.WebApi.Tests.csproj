@@ -23,6 +23,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Eventuras.Infrastructure\Eventuras.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Eventuras.Libs.Pdf\Eventuras.Libs.Pdf.csproj" />
     <ProjectReference Include="..\..\src\Eventuras.Services\Eventuras.Services.csproj" />
     <ProjectReference Include="..\..\src\Eventuras.WebApi\Eventuras.WebApi.csproj" />
     <ProjectReference Include="..\Eventuras.TestAbstractions\Eventuras.TestAbstractions.csproj" />

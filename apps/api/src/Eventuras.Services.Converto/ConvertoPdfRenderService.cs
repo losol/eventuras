@@ -2,8 +2,8 @@ using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Eventuras.Libs.Pdf;
 using Eventuras.Services.Exceptions;
-using Eventuras.Services.Pdf;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -31,9 +31,11 @@ internal class ConvertoPdfRenderService : IPdfRenderService
     {
         try
         {
+            var paperSize = pdfRenderOptions.PaperSize ?? _options.Value.DefaultPaperSize;
+
             return await _client.GeneratePdfFromHtmlAsync(html,
                 pdfRenderOptions.Scale ?? _options.Value.DefaultScale ?? 1,
-                pdfRenderOptions.PaperSize ?? _options.Value.DefaultPaperSize);
+                paperSize);
         }
         catch (Exception e)
         {

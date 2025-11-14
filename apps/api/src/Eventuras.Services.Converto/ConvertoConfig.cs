@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using Eventuras.Domain;
+using Eventuras.Libs.Pdf;
 
 namespace Eventuras.Services.Converto;
 

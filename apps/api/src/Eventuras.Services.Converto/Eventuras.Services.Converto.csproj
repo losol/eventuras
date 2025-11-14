@@ -10,6 +10,7 @@
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.0" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Eventuras.Libs.Pdf\Eventuras.Libs.Pdf.csproj" />
     <ProjectReference Include="..\Eventuras.Services\Eventuras.Services.csproj" />
   </ItemGroup>
 </Project>
