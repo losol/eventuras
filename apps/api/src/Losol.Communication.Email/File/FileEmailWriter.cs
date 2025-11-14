@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Losol.Communication.HealthCheck.Abstractions;
 using Microsoft.Extensions.Options;
 
 namespace Losol.Communication.Email.File;
@@ -17,8 +16,7 @@ public class FileEmailWriter : AbstractEmailSender
 {
     private readonly IOptions<FileEmailConfig> _options;
 
-    public FileEmailWriter(IOptions<FileEmailConfig> options, IHealthCheckStorage healthCheckStorage) : base(
-        healthCheckStorage)
+    public FileEmailWriter(IOptions<FileEmailConfig> options)
     {
         _options = options;
         if (!Directory.Exists(options.Value.FilePath))

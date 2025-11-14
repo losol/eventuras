@@ -1,6 +1,4 @@
-using System.Threading;
 using System.Threading.Tasks;
-using Losol.Communication.HealthCheck.Abstractions;
 using Microsoft.Extensions.Logging;
 
 namespace Losol.Communication.Sms.Mock;
@@ -16,7 +14,4 @@ public class MockSmsSender : ISmsSender
         _logger.LogInformation("Sending SMS with text \"{body}\" to {to}", body, to);
         return Task.CompletedTask;
     }
-
-    public Task<HealthCheckStatus> CheckHealthAsync(CancellationToken cancellationToken = default) =>
-        Task.FromResult(new HealthCheckStatus(HealthStatus.Healthy));
 }

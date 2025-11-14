@@ -17,7 +17,6 @@
     <Project Path="src/Eventuras.Services/Eventuras.Services.csproj" />
     <Project Path="src/Eventuras.WebApi/Eventuras.WebApi.csproj" />
     <Project Path="src/Losol.Communication.Email/Losol.Communication.Email.csproj" />
-    <Project Path="src/Losol.Communication.HealthCheck/Losol.Communication.HealthCheck.csproj" />
     <Project Path="src/Losol.Communication.Sms/Losol.Communication.Sms.csproj" />
   </Folder>
   <Folder Name="/tests/">
@@ -27,6 +26,5 @@
     <Project Path="tests/Eventuras.UnitTests/Eventuras.UnitTests.csproj" />
     <Project Path="tests/Eventuras.WebApi.Tests/Eventuras.WebApi.Tests.csproj" />
     <Project Path="tests/Losol.Communication.Email.Tests/Losol.Communication.Email.Tests.csproj" />
-    <Project Path="tests/Losol.Communication.HealthCheck.Abstractions.Tests/Losol.Communication.HealthCheck.Abstractions.Tests.csproj" />
   </Folder>
 </Solution>

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Losol.Communication.HealthCheck.Abstractions;
 using Losol.Communication.Sms;
 using Microsoft.Extensions.Logging;
 
@@ -26,17 +25,6 @@ internal class ConfigurableSmsSender : ISmsSender
 
         _logger = logger ?? throw
             new ArgumentNullException(nameof(logger));
-    }
-
-    public async Task<HealthCheckStatus> CheckHealthAsync(CancellationToken cancellationToken)
-    {
-        var sender = await GetSmsSenderAsync(1, cancellationToken);
-        if (sender != null)
-        {
-            return await sender.CheckHealthAsync(cancellationToken);
-        }
-
-        return new HealthCheckStatus(HealthStatus.Unhealthy);
     }
 
     public async Task SendSmsAsync(string to, string body, int orgId)
@@ -62,3 +50,4 @@ internal class ConfigurableSmsSender : ISmsSender
         throw new InvalidOperationException("No SMS sender is enabled in organization settings");
     }
 }
+

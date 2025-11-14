@@ -5,9 +5,6 @@
     <UserSecretsId>23ad1f65-ced2-4c24-87cb-6735ecf42528</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="AspNetCore.HealthChecks.UI" Version="9.0.0" />
-    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
-    <PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="9.0.0" />
     <PackageReference Include="Hangfire.AspNetCore" Version="1.8.22" />
     <PackageReference Include="Hangfire.Core" Version="1.8.22" />
     <PackageReference Include="Hangfire.InMemory" Version="1.0.0" />
@@ -22,7 +19,7 @@
     <PackageReference Include="Sentry.AspNetCore" Version="5.16.2" />
     <PackageReference Include="Sentry.Extensions.Logging" Version="5.16.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.6" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.22" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.0" />
     <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.14.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="9.0.6" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0" />
@@ -40,7 +37,6 @@
     <ProjectReference Include="..\Eventuras.Infrastructure\Eventuras.Infrastructure.csproj" />
     <ProjectReference Include="..\Eventuras.Domain\Eventuras.Domain.csproj" />
     <ProjectReference Include="..\Losol.Communication.Email\Losol.Communication.Email.csproj" />
-    <ProjectReference Include="..\Losol.Communication.HealthCheck\Losol.Communication.HealthCheck.csproj" />
     <ProjectReference Include="..\Losol.Communication.Sms\Losol.Communication.Sms.csproj" />
   </ItemGroup>
   <PropertyGroup>

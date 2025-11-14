@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Losol.Communication.Email;
-using Losol.Communication.HealthCheck.Abstractions;
 
 namespace Eventuras.Services.Email;
 
@@ -26,16 +25,6 @@ internal class ConfigurableEmailSender : IEmailSender
         _components = components?.ToArray() ?? throw
             new ArgumentNullException(nameof(components));
 
-    public async Task<HealthCheckStatus> CheckHealthAsync(CancellationToken cancellationToken)
-    {
-        var sender = await GetEmailSenderAsync(cancellationToken: cancellationToken);
-        if (sender != null)
-        {
-            return await sender.CheckHealthAsync(cancellationToken);
-        }
-
-        return new HealthCheckStatus(HealthStatus.Unhealthy);
-    }
 
     public async Task SendEmailAsync(EmailModel emailModel, EmailOptions options = null)
     {

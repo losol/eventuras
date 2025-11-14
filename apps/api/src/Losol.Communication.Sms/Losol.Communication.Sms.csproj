@@ -8,14 +8,12 @@
   <Import Project="../common.props" />
 
   <ItemGroup>
-    <ProjectReference Include="..\Losol.Communication.HealthCheck\Losol.Communication.HealthCheck.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Twilio" Version="7.13.6" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="10.0.0" />
   </ItemGroup>
 
 </Project>
+

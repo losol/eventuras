@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Losol.Communication.HealthCheck.Abstractions;
 using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
@@ -12,8 +11,7 @@ public class SendGridEmailSender : AbstractEmailSender
 {
     private readonly SendGridConfig _config;
 
-    public SendGridEmailSender(IOptions<SendGridConfig> options, IHealthCheckStorage healthCheckStorage) :
-        base(healthCheckStorage) => _config = options.Value;
+    public SendGridEmailSender(IOptions<SendGridConfig> options) => _config = options.Value;
 
     protected override async Task SendEmailInternalAsync(EmailModel emailModel)
     {
