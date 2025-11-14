@@ -1,9 +1,7 @@
 using System;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using Losol.Communication.HealthCheck.Abstractions;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Logging;
@@ -19,8 +17,7 @@ public class SmtpEmailSender : AbstractEmailSender
 
     public SmtpEmailSender(
         IOptions<SmtpConfig> smtpConfig,
-        IHealthCheckStorage healthCheckStorage,
-        ILogger<SmtpEmailSender> logger) : base(healthCheckStorage)
+        ILogger<SmtpEmailSender> logger)
     {
         _smtpConfig = smtpConfig.Value ?? throw new ArgumentNullException(nameof(smtpConfig));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -94,41 +91,6 @@ public class SmtpEmailSender : AbstractEmailSender
         {
             _logger.LogError(ex, "An error occured while sending email: {ExceptionMessage}", ex.Message);
             throw new EmailSenderException(ex.Message, ex);
-        }
-    }
-
-    public override async Task<HealthCheckStatus> CheckHealthAsync(CancellationToken cancellationToken = default)
-    {
-        _logger.LogInformation("Performing health check");
-
-        try
-        {
-            using var emailClient = new SmtpClient();
-
-            _logger.LogDebug("Connecting to {host}:{port}", _smtpConfig.Host, _smtpConfig.Port);
-            await emailClient.ConnectAsync(_smtpConfig.Host, _smtpConfig.Port, SecureSocketOptions.StartTls,
-                cancellationToken);
-            _logger.LogDebug("Connection successful");
-
-            if (!string.IsNullOrEmpty(_smtpConfig.Username) &&
-                !string.IsNullOrEmpty(_smtpConfig.Password))
-            {
-                _logger.LogDebug("Performing authentication");
-                await emailClient.AuthenticateAsync(_smtpConfig.Username, _smtpConfig.Password, cancellationToken);
-                _logger.LogDebug("Auth successful");
-            }
-
-            _logger.LogDebug("Disconnecting from server");
-            await emailClient.DisconnectAsync(true, cancellationToken);
-            _logger.LogDebug("Disconnected from server");
-
-            _logger.LogInformation("Health check passed");
-            return new HealthCheckStatus(HealthStatus.Healthy);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Health status check failed: {ExceptionMessage}", ex.Message);
-            return new HealthCheckStatus(HealthStatus.Unhealthy, ex.Message);
         }
     }
 }

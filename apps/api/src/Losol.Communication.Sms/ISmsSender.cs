@@ -1,9 +1,8 @@
 using System.Threading.Tasks;
-using Losol.Communication.HealthCheck.Abstractions;
 
 namespace Losol.Communication.Sms;
 
-public interface ISmsSender : IHealthCheckService
+public interface ISmsSender
 {
     const string ServiceName = "sms";
 

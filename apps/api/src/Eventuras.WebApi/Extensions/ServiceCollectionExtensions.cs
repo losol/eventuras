@@ -14,11 +14,6 @@ using Eventuras.Services.Stripe;
 using Eventuras.Services.Twilio;
 using Eventuras.WebApi.Auth;
 using Eventuras.WebApi.Config;
-using Losol.Communication.Email.HealthCheck;
-using Losol.Communication.HealthCheck.Abstractions;
-using Losol.Communication.HealthCheck.Email;
-using Losol.Communication.HealthCheck.Sms;
-using Losol.Communication.Sms.HealthCheck;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -134,39 +129,10 @@ public static class ServiceCollectionExtensions
         // Register our application services
         services.AddCoreServices();
 
-        // Add Health Checks
-        services.AddApplicationHealthChecks(
-            configuration.GetSection(Constants.HealthChecks.HealthCheckConfigurationKey));
-
         // for cert PDF rendering
         services.AddHttpContextAccessor();
         services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
         services.AddHttpClient();
         services.AddConvertoServices(configuration.GetSection("Converto"));
-    }
-
-    public static void AddApplicationHealthChecks(this IServiceCollection services, IConfigurationSection configuration)
-    {
-        services.AddSingleton<IHealthCheckStorage, HealthCheckMemoryStorage>(); // store health information in memory.
-
-        if (!configuration.HealthChecksEnabled())
-        {
-            return;
-        }
-
-        services.Configure<EmailHealthCheckSettings>(configuration.GetSection("Email"));
-        services.Configure<SmsHealthCheckSettings>(configuration.GetSection("Sms"));
-
-        services.AddHealthChecks()
-            .AddCheck<EmailHealthCheck>("email")
-            .AddCheck<SmsHealthCheck>("sms");
-
-        var baseUri = configuration.GetValue<Uri>("BaseUri");
-        var healthEndpoint = new Uri(baseUri, Constants.HealthChecks.HealthCheckUri);
-
-        services
-            .AddHealthChecksUI(settings =>
-                settings.AddHealthCheckEndpoint(Constants.HealthChecks.HealthCheckName, healthEndpoint.ToString()))
-            .AddInMemoryStorage();
     }
 }

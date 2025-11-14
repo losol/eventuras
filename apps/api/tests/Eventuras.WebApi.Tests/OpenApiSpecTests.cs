@@ -14,10 +14,10 @@ public class OpenApiSpecTests : IClassFixture<CustomWebApiApplicationFactory<Pro
 
     private static string GetOpenApiSpecPath()
     {
-        // Find the API project root by looking for the .csproj file
+        // Find the API project root by looking for the .slnx file
         var directory = new DirectoryInfo(Directory.GetCurrentDirectory());
 
-        while (directory != null && !File.Exists(Path.Combine(directory.FullName, "Eventuras.sln")))
+        while (directory != null && !File.Exists(Path.Combine(directory.FullName, "Eventuras.slnx")))
         {
             directory = directory.Parent;
         }
@@ -25,7 +25,7 @@ public class OpenApiSpecTests : IClassFixture<CustomWebApiApplicationFactory<Pro
         if (directory == null)
         {
             throw new DirectoryNotFoundException(
-                "Could not find API project root. Expected to find Eventuras.sln in parent directories.");
+                "Could not find API project root. Expected to find Eventuras.slnx in parent directories.");
         }
 
         return Path.Combine(directory.FullName, "docs", "eventuras-v3.json");

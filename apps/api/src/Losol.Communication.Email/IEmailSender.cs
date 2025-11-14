@@ -1,10 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using Losol.Communication.HealthCheck.Abstractions;
 
 namespace Losol.Communication.Email;
 
-public interface IEmailSender : IHealthCheckService
+public interface IEmailSender
 {
     const string ServiceName = "email";
 
