@@ -10,7 +10,6 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.0" />
     <PackageReference Include="Microsoft.FeatureManagement" Version="4.3.0" />
     <PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="4.3.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
     <PackageReference Include="NodaTime" Version="3.2.2" />
     <PackageReference Include="NodaTime.Serialization.SystemTextJson" Version="1.3.0" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime" Version="9.0.4" />
