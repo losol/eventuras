@@ -1,0 +1,32 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/src/">
+    <File Path=".editorconfig" />
+    <Project Path="src/Eventuras.Domain/Eventuras.Domain.csproj" />
+    <Project Path="src/Eventuras.Infrastructure/Eventuras.Infrastructure.csproj" />
+    <Project Path="src/Eventuras.Services.Converto/Eventuras.Services.Converto.csproj" />
+    <Project Path="src/Eventuras.Services.PowerOffice/Eventuras.Services.PowerOffice.csproj" />
+    <Project Path="src/Eventuras.Services.SendGrid/Eventuras.Services.SendGrid.csproj" />
+    <Project Path="src/Eventuras.Services.Smtp/Eventuras.Services.Smtp.csproj" />
+    <Project Path="src/Eventuras.Services.Stripe/Eventuras.Services.Stripe.csproj" />
+    <Project Path="src/Eventuras.Services.Twilio/Eventuras.Services.Twilio.csproj" />
+    <Project Path="src/Eventuras.Services/Eventuras.Services.csproj" />
+    <Project Path="src/Eventuras.WebApi/Eventuras.WebApi.csproj" />
+    <Project Path="src/Losol.Communication.Email/Losol.Communication.Email.csproj" />
+    <Project Path="src/Losol.Communication.HealthCheck/Losol.Communication.HealthCheck.csproj" />
+    <Project Path="src/Losol.Communication.Sms/Losol.Communication.Sms.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Eventuras.Services.Converto.Tests/Eventuras.Services.Converto.Tests.csproj" />
+    <Project Path="tests/Eventuras.Services.Tests/Eventuras.Services.Tests.csproj" />
+    <Project Path="tests/Eventuras.TestAbstractions/Eventuras.TestAbstractions.csproj" />
+    <Project Path="tests/Eventuras.UnitTests/Eventuras.UnitTests.csproj" />
+    <Project Path="tests/Eventuras.WebApi.Tests/Eventuras.WebApi.Tests.csproj" />
+    <Project Path="tests/Losol.Communication.Email.Tests/Losol.Communication.Email.Tests.csproj" />
+    <Project Path="tests/Losol.Communication.HealthCheck.Abstractions.Tests/Losol.Communication.HealthCheck.Abstractions.Tests.csproj" />
+  </Folder>
+</Solution>
