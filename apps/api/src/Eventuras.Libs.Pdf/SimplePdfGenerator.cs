@@ -37,8 +37,13 @@ public class SimplePdfGenerator
                 // Calculate font size based on scale
                 var fontSize = 12 * scale;
 
+                // Replace newlines with spaces for single-line output
+                var processedText = text.Replace("\r\n", " ")
+                                       .Replace("\n", " ")
+                                       .Replace("\r", " ");
+
                 // Add text with proper formatting
-                var paragraph = new Paragraph(text)
+                var paragraph = new Paragraph(processedText)
                     .SetFontSize(fontSize)
                     .SetTextAlignment(TextAlignment.LEFT);
 
