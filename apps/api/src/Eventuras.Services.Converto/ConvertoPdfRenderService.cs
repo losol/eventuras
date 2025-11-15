@@ -27,14 +27,14 @@ internal class ConvertoPdfRenderService : IPdfRenderService
         _logger = logger;
     }
 
-    public async Task<Stream> GeneratePdfFromHtml(string html, PdfOptions PdfOptions)
+    public async Task<Stream> GeneratePdfFromHtml(string html, PdfOptions pdfOptions)
     {
         try
         {
-            var paperSize = PdfOptions.PaperSize ?? _options.Value.DefaultPaperSize;
+            var paperSize = pdfOptions.PaperSize ?? _options.Value.DefaultPaperSize;
 
             return await _client.GeneratePdfFromHtmlAsync(html,
-                PdfOptions.Scale ?? _options.Value.DefaultScale ?? 1,
+                pdfOptions.Scale ?? _options.Value.DefaultScale ?? 1,
                 paperSize);
         }
         catch (Exception e)
