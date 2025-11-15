@@ -1,55 +1,52 @@
 using System.IO;
-using iText.Kernel.Geom;
-using iText.Kernel.Pdf;
-using iText.Layout;
-using iText.Layout.Element;
-using iText.Layout.Properties;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
 
 namespace Eventuras.Libs.Pdf;
 
 /// <summary>
-/// Simple PDF generator for testing and basic use cases using iText7
+/// Simple PDF generator for testing and basic use cases using QuestPDF
 /// </summary>
 public class SimplePdfGenerator
 {
+    static SimplePdfGenerator()
+    {
+        // Set QuestPDF license for community use
+        QuestPDF.Settings.License = LicenseType.Community;
+    }
+
     /// <summary>
     /// Generates a simple PDF with the given text content
     /// </summary>
     /// <param name="text">Text content to include in the PDF</param>
-    /// <param name="paperSize">Paper size for the PDF (defaults to A4)</param>
-    /// <param name="scale">Scale factor for the document (applies to font size)</param>
+    /// <param name="options">Optional PDF rendering options (defaults to A4, scale 1.0)</param>
     /// <returns>A stream containing the generated PDF</returns>
-    public static Stream GenerateFromText(string text, PaperSize paperSize = PaperSize.A4, float scale = 1.0f)
+    public static Stream GenerateFromText(string text, PdfOptions? options = null)
     {
+        options ??= new PdfOptions();
+
         var stream = new MemoryStream();
+        var paperSize = options.PaperSize ?? PaperSize.A4;
+        var scale = options.Scale ?? 1.0f;
         var pageSize = MapPaperSize(paperSize);
 
-        using (var writer = new PdfWriter(stream))
+        // Calculate font size based on scale
+        var fontSize = 12 * scale;
+
+        Document.Create(container =>
         {
-            writer.SetCloseStream(false);
-
-            using (var pdf = new PdfDocument(writer))
-            using (var document = new Document(pdf, pageSize))
+            container.Page(page =>
             {
-                // Set margins
-                document.SetMargins(50, 50, 50, 50);
+                page.Size(pageSize);
+                page.Margin(50);
+                page.DefaultTextStyle(x => x.FontSize(fontSize));
 
-                // Calculate font size based on scale
-                var fontSize = 12 * scale;
-
-                // Replace newlines with spaces for single-line output
-                var processedText = text.Replace("\r\n", " ")
-                                       .Replace("\n", " ")
-                                       .Replace("\r", " ");
-
-                // Add text with proper formatting
-                var paragraph = new Paragraph(processedText)
-                    .SetFontSize(fontSize)
-                    .SetTextAlignment(TextAlignment.LEFT);
-
-                document.Add(paragraph);
-            }
-        }
+                page.Content()
+                    .Text(text)
+                    .FontSize(fontSize);
+            });
+        }).GeneratePdf(stream);
 
         stream.Seek(0, SeekOrigin.Begin);
         return stream;
@@ -59,18 +56,17 @@ public class SimplePdfGenerator
     {
         return paperSize switch
         {
-            PaperSize.Letter => iText.Kernel.Geom.PageSize.LETTER,
-            PaperSize.Legal => iText.Kernel.Geom.PageSize.LEGAL,
-            PaperSize.Tabloid => iText.Kernel.Geom.PageSize.TABLOID,
-            PaperSize.Ledger => iText.Kernel.Geom.PageSize.LEDGER,
-            PaperSize.A0 => iText.Kernel.Geom.PageSize.A0,
-            PaperSize.A1 => iText.Kernel.Geom.PageSize.A1,
-            PaperSize.A2 => iText.Kernel.Geom.PageSize.A2,
-            PaperSize.A3 => iText.Kernel.Geom.PageSize.A3,
-            PaperSize.A4 => iText.Kernel.Geom.PageSize.A4,
-            PaperSize.A5 => iText.Kernel.Geom.PageSize.A5,
-            PaperSize.A6 => iText.Kernel.Geom.PageSize.A6,
-            _ => iText.Kernel.Geom.PageSize.A4 // Default to A4
+            PaperSize.Letter => QuestPDF.Helpers.PageSizes.Letter,
+            PaperSize.Legal => QuestPDF.Helpers.PageSizes.Legal,
+            PaperSize.Tabloid => QuestPDF.Helpers.PageSizes.Tabloid,
+            PaperSize.Ledger => QuestPDF.Helpers.PageSizes.Ledger,
+            PaperSize.A0 => QuestPDF.Helpers.PageSizes.A0,
+            PaperSize.A1 => QuestPDF.Helpers.PageSizes.A1,
+            PaperSize.A2 => QuestPDF.Helpers.PageSizes.A2,
+            PaperSize.A3 => QuestPDF.Helpers.PageSizes.A3,
+            PaperSize.A4 => QuestPDF.Helpers.PageSizes.A4,
+            PaperSize.A5 => QuestPDF.Helpers.PageSizes.A5,
+            _ => QuestPDF.Helpers.PageSizes.A4 // Default to A4
         };
     }
 }

@@ -6,12 +6,12 @@ namespace Eventuras.Libs.Pdf;
 
 public interface IPdfRenderService
 {
-    Task<Stream> GeneratePdfFromHtml(string html, PdfRenderOptions pdfRenderOptions);
+    Task<Stream> GeneratePdfFromHtml(string html, PdfOptions PdfOptions);
 }
 
-public class PdfRenderOptions
+public class PdfOptions
 {
-    [Range(0.1, 2)] public float? Scale { get; set; }
+    [Range(0.1, 2)] public float? Scale { get; set; } = 1.0f;
 
-    public PaperSize? PaperSize { get; set; }
+    public PaperSize? PaperSize { get; set; } = Pdf.PaperSize.A4;
 }

@@ -9,12 +9,9 @@ namespace Eventuras.Libs.Pdf;
 /// </summary>
 public class SimplePdfRenderService : IPdfRenderService
 {
-    public Task<Stream> GeneratePdfFromHtml(string html, PdfRenderOptions pdfRenderOptions)
+    public Task<Stream> GeneratePdfFromHtml(string html, PdfOptions pdfOptions)
     {
-        var paperSize = pdfRenderOptions.PaperSize ?? PaperSize.A4;
-        var scale = pdfRenderOptions.Scale ?? 1.0f;
-
-        var stream = SimplePdfGenerator.GenerateFromText(html, paperSize, scale);
+        var stream = SimplePdfGenerator.GenerateFromText(html, pdfOptions);
         return Task.FromResult(stream);
     }
 }

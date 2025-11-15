@@ -1,15 +1,13 @@
 using System;
 using System.IO;
 using System.Text;
-using iText.Kernel.Pdf;
-using iText.Kernel.Pdf.Canvas.Parser;
-using iText.Kernel.Pdf.Canvas.Parser.Listener;
-using ITextPdfTextExtractor = iText.Kernel.Pdf.Canvas.Parser.PdfTextExtractor;
+using UglyToad.PdfPig;
+using UglyToad.PdfPig.Content;
 
 namespace Eventuras.Libs.Pdf;
 
 /// <summary>
-/// Extracts text content from PDF streams
+/// Extracts text content from PDF streams using PdfPig
 /// </summary>
 public static class PdfTextExtractor
 {
@@ -31,23 +29,19 @@ public static class PdfTextExtractor
 
         try
         {
-            using var pdfReader = new PdfReader(pdfStream);
-            using var pdfDocument = new PdfDocument(pdfReader);
-
+            using var pdfDocument = PdfDocument.Open(pdfStream);
             var result = new StringBuilder();
 
             // Extract text from all pages
-            for (int i = 1; i <= pdfDocument.GetNumberOfPages(); i++)
+            foreach (Page page in pdfDocument.GetPages())
             {
-                var page = pdfDocument.GetPage(i);
-                var strategy = new SimpleTextExtractionStrategy();
-                var text = ITextPdfTextExtractor.GetTextFromPage(page, strategy);
+                var text = page.Text;
                 result.Append(text);
             }
 
             return result.ToString();
         }
-        catch (iText.IO.Exceptions.IOException)
+        catch (Exception)
         {
             // Handle empty or invalid PDF streams
             return string.Empty;
