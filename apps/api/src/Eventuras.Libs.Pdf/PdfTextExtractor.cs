@@ -1,7 +1,9 @@
 using System;
 using System.IO;
 using System.Text;
-using System.Text.RegularExpressions;
+using iText.Kernel.Pdf;
+using iText.Kernel.Pdf.Canvas.Parser;
+using iText.Kernel.Pdf.Canvas.Parser.Listener;
 
 namespace Eventuras.Libs.Pdf;
 
@@ -20,45 +22,26 @@ public static class PdfTextExtractor
         if (pdfStream == null)
             throw new ArgumentNullException(nameof(pdfStream));
 
-        using var reader = new StreamReader(pdfStream, Encoding.ASCII, leaveOpen: true);
-        var pdfContent = reader.ReadToEnd();
+        // Reset stream position if it's seekable
+        if (pdfStream.CanSeek)
+        {
+            pdfStream.Position = 0;
+        }
 
-        // Extract text from PDF content streams using regex
-        // Pattern looks for content between "stream" and "endstream" keywords
-        var contentPattern = @"stream\s+(.*?)\s+endstream";
-        var matches = Regex.Matches(pdfContent, contentPattern, RegexOptions.Singleline);
+        using var pdfReader = new PdfReader(pdfStream);
+        using var pdfDocument = new PdfDocument(pdfReader);
 
         var result = new StringBuilder();
-        foreach (Match match in matches)
+
+        // Extract text from all pages
+        for (int i = 1; i <= pdfDocument.GetNumberOfPages(); i++)
         {
-            if (match.Groups.Count > 1)
-            {
-                var streamContent = match.Groups[1].Value;
-
-                // Extract text from PDF text operators
-                // Pattern: (text) Tj - need to handle escaped parentheses
-                var textPattern = @"\(((?:[^\\()]|\\[\\()])*)\)\s*Tj";
-                var textMatches = Regex.Matches(streamContent, textPattern);
-
-                foreach (Match textMatch in textMatches)
-                {
-                    if (textMatch.Groups.Count > 1)
-                    {
-                        var text = UnescapePdfString(textMatch.Groups[1].Value);
-                        result.Append(text);
-                    }
-                }
-            }
+            var page = pdfDocument.GetPage(i);
+            var strategy = new SimpleTextExtractionStrategy();
+            var text = PdfTextExtractor.GetTextFromPage(page, strategy);
+            result.Append(text);
         }
 
         return result.ToString();
-    }
-
-    private static string UnescapePdfString(string pdfString)
-    {
-        return pdfString
-            .Replace("\\\\", "\\")
-            .Replace("\\(", "(")
-            .Replace("\\)", ")");
     }
 }
