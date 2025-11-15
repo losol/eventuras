@@ -12,6 +12,6 @@ public interface IPdfRenderService : Libs.Pdf.IPdfRenderService
 /// <summary>
 /// Re-export from Eventuras.Libs.Pdf for backwards compatibility
 /// </summary>
-public class PdfRenderOptions : Libs.Pdf.PdfRenderOptions
+public class PdfOptions : Libs.Pdf.PdfOptions
 {
 }

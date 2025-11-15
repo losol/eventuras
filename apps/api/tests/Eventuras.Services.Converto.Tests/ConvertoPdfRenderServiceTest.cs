@@ -67,7 +67,7 @@ public class ConvertoPdfRenderServiceTest : IDisposable
     public async Task ShouldReturnEmptyPdfStreamForInvalidLoginUrl()
     {
         await using var stream = await NewService()
-            .GeneratePdfFromHtml("<html></html>", new PdfRenderOptions());
+            .GeneratePdfFromHtml("<html></html>", new PdfOptions());
         await CheckEmptyAsync(stream);
     }
 
@@ -76,7 +76,7 @@ public class ConvertoPdfRenderServiceTest : IDisposable
     {
         await using var stream = await NewService("/convert/html/to/pdf2")
             .GeneratePdfFromHtml("<html></html>",
-                new PdfRenderOptions());
+                new PdfOptions());
         await CheckEmptyAsync(stream);
     }
 
@@ -85,14 +85,14 @@ public class ConvertoPdfRenderServiceTest : IDisposable
     {
         await using var stream = await NewService(clientId: "invalid", clientSecret: "invalid")
             .GeneratePdfFromHtml("<html></html>",
-                new PdfRenderOptions());
+                new PdfOptions());
         await CheckEmptyAsync(stream);
     }
 
     [ConvertoEnvSpecificFact]
     public async Task ShouldCreateEmptyPdf()
     {
-        await using var stream = await NewService().GeneratePdfFromHtml("<html></html>", new PdfRenderOptions());
+        await using var stream = await NewService().GeneratePdfFromHtml("<html></html>", new PdfOptions());
         await CheckNotEmptyAsync(stream);
     }
 
@@ -101,7 +101,7 @@ public class ConvertoPdfRenderServiceTest : IDisposable
     {
         // Initially caused "Invalid URI: The Uri string is too long."
         var html = $"<html>{new string('A', 200000)}</html>";
-        await using var stream = await NewService().GeneratePdfFromHtml(html, new PdfRenderOptions());
+        await using var stream = await NewService().GeneratePdfFromHtml(html, new PdfOptions());
         await CheckNotEmptyAsync(stream);
     }
 

@@ -6,8 +6,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="itext" Version="9.4.0" />
-    <PackageReference Include="itext.bouncy-castle-adapter" Version="9.4.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="QuestPDF" Version="2025.7.4" />
+    <PackageReference Include="PdfPig" Version="0.1.12" />
   </ItemGroup>
 </Project>

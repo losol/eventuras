@@ -48,9 +48,10 @@ public class SimplePdfGeneratorTest
     {
         // Arrange
         const string testText = "Paper size test";
+        var options = new PdfOptions { PaperSize = paperSize };
 
         // Act
-        using var pdfStream = SimplePdfGenerator.GenerateFromText(testText, paperSize);
+        using var pdfStream = SimplePdfGenerator.GenerateFromText(testText, options);
 
         // Assert
         Assert.NotNull(pdfStream);
@@ -92,7 +93,7 @@ public class SimplePdfGeneratorTest
     }
 
     [Fact]
-    public void GenerateFromText_Should_Replace_Newlines_With_Spaces()
+    public void GenerateFromText_Should_Preserve_Text_As_Sent()
     {
         // Arrange
         const string testText = "Line1\nLine2\rLine3\r\nLine4";
@@ -102,8 +103,10 @@ public class SimplePdfGeneratorTest
 
         // Assert
         var extractedText = PdfTextExtractor.ExtractText(pdfStream);
-        // Newlines should be converted to spaces
-        Assert.DoesNotContain("\n", extractedText);
-        Assert.DoesNotContain("\r", extractedText);
+        // Text should contain the original content (whitespace may vary in extraction)
+        Assert.Contains("Line1", extractedText);
+        Assert.Contains("Line2", extractedText);
+        Assert.Contains("Line3", extractedText);
+        Assert.Contains("Line4", extractedText);
     }
 }

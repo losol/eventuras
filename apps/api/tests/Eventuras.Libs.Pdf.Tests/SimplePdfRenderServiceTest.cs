@@ -11,7 +11,7 @@ public class SimplePdfRenderServiceTest
         // Arrange
         var service = new SimplePdfRenderService();
         const string html = "<h1>Test HTML</h1>";
-        var options = new PdfRenderOptions();
+        var options = new PdfOptions();
 
         // Act
         using var pdfStream = await service.GeneratePdfFromHtml(html, options);
@@ -27,7 +27,7 @@ public class SimplePdfRenderServiceTest
         // Arrange
         var service = new SimplePdfRenderService();
         const string html = "<p>HTML Content</p>";
-        var options = new PdfRenderOptions();
+        var options = new PdfOptions();
 
         // Act
         using var pdfStream = await service.GeneratePdfFromHtml(html, options);
@@ -43,7 +43,7 @@ public class SimplePdfRenderServiceTest
         // Arrange
         var service = new SimplePdfRenderService();
         const string html = "Paper Size Test";
-        var options = new PdfRenderOptions
+        var options = new PdfOptions
         {
             PaperSize = PaperSize.Letter
         };
@@ -62,7 +62,7 @@ public class SimplePdfRenderServiceTest
         // Arrange
         var service = new SimplePdfRenderService();
         const string html = "Default Paper Size";
-        var options = new PdfRenderOptions(); // No PaperSize specified
+        var options = new PdfOptions(); // No PaperSize specified
 
         // Act
         using var pdfStream = await service.GeneratePdfFromHtml(html, options);
@@ -78,7 +78,7 @@ public class SimplePdfRenderServiceTest
         // Arrange
         var service = new SimplePdfRenderService();
         const string html = "Scaled Content";
-        var options = new PdfRenderOptions
+        var options = new PdfOptions
         {
             Scale = 1.5f
         };
@@ -100,7 +100,7 @@ public class SimplePdfRenderServiceTest
         // Arrange
         var service = new SimplePdfRenderService();
         const string html = "";
-        var options = new PdfRenderOptions();
+        var options = new PdfOptions();
 
         // Act
         using var pdfStream = await service.GeneratePdfFromHtml(html, options);
