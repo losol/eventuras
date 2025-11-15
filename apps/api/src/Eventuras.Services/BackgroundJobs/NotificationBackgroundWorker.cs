@@ -21,6 +21,7 @@ public sealed class NotificationBackgroundWorker : BackgroundService
     private readonly IBackgroundJobQueue _jobQueue;
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly ILogger<NotificationBackgroundWorker> _logger;
+    private readonly TimeSpan _delayBetweenEmails = TimeSpan.FromMilliseconds(500); // 2 emails per second
 
     public NotificationBackgroundWorker(
         IBackgroundJobQueue jobQueue,
@@ -83,17 +84,18 @@ public sealed class NotificationBackgroundWorker : BackgroundService
         var recipient = await notificationRecipientRetrievalService
             .GetNotificationRecipientByIdAsync(recipientId, true);
 
+        if (recipient == null)
+        {
+            _logger.LogWarning("Recipient {RecipientId} not found", recipientId);
+            return;
+        }
+
         var notification = await notificationRetrievalService
             .GetNotificationByIdAsync(recipient.NotificationId, accessControlDone: accessControlDone);
 
         if (notification.OrganizationId == null)
         {
             throw new NotFoundException(nameof(notification.OrganizationId));
-        }
-
-        if (recipient == null)
-        {
-            return;
         }
 
         var message = notification.Type == NotificationType.Email
@@ -116,9 +118,13 @@ public sealed class NotificationBackgroundWorker : BackgroundService
 
                 recipient.Sent = SystemClock.Instance.GetCurrentInstant();
                 await notificationManagementService.UpdateNotificationRecipientAsync(recipient);
+
+                // Rate limit email sending to avoid hitting provider limits (e.g., Gmail)
+                await Task.Delay(_delayBetweenEmails, cancellationToken);
             }
             else if (notification.Type == NotificationType.Sms)
             {
+                // SMS doesn't need rate limiting - provider handles this
                 await smsSender.SendSmsAsync(
                     recipient.RecipientIdentifier,
                     message,
@@ -129,6 +135,12 @@ public sealed class NotificationBackgroundWorker : BackgroundService
             }
 
             _logger.LogInformation("Successfully sent notification to recipient {RecipientId}", recipientId);
+        }
+        catch (OperationCanceledException)
+        {
+            // Cancellation during shutdown - don't mark as failed
+            _logger.LogInformation("Notification sending cancelled for recipient {RecipientId}", recipientId);
+            throw;
         }
         catch (Exception e)
         {

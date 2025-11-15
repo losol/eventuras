@@ -14,16 +14,17 @@ public sealed class BackgroundJobQueue : IBackgroundJobQueue
 
     public BackgroundJobQueue()
     {
-        // Create unbounded channels for both job types
-        // Unbounded means they can grow as needed without blocking writers
-        var options = new UnboundedChannelOptions
+        // Create bounded channels to prevent unbounded memory growth
+        // If queue is full, WriteAsync will wait for space to become available
+        var options = new BoundedChannelOptions(1000)
         {
             SingleWriter = false, // Multiple services can enqueue
-            SingleReader = false  // Could have multiple workers in future
+            SingleReader = false, // Could have multiple workers in future
+            FullMode = BoundedChannelFullMode.Wait // Wait for space when queue is full
         };
 
-        _notificationQueue = Channel.CreateUnbounded<(int, bool)>(options);
-        _certificateQueue = Channel.CreateUnbounded<(int, bool)>(options);
+        _notificationQueue = Channel.CreateBounded<(int, bool)>(options);
+        _certificateQueue = Channel.CreateBounded<(int, bool)>(options);
     }
 
     public async ValueTask QueueNotificationJobAsync(
