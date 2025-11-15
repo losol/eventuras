@@ -87,7 +87,7 @@ public sealed class CertificateBackgroundWorker : BackgroundService
             return;
         }
 
-        var pdfStream = await certificateRenderer
+        await using var pdfStream = await certificateRenderer
             .RenderToPdfAsStreamAsync(new CertificateViewModel(certificate));
 
         if (pdfStream == null)
@@ -96,7 +96,7 @@ public sealed class CertificateBackgroundWorker : BackgroundService
             return;
         }
 
-        var memoryStream = new MemoryStream();
+        using var memoryStream = new MemoryStream();
         await pdfStream.CopyToAsync(memoryStream, cancellationToken);
 
         if (memoryStream.Length == 0)
