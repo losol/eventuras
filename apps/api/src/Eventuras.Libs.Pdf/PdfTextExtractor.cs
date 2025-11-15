@@ -4,6 +4,7 @@ using System.Text;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas.Parser;
 using iText.Kernel.Pdf.Canvas.Parser.Listener;
+using ITextPdfTextExtractor = iText.Kernel.Pdf.Canvas.Parser.PdfTextExtractor;
 
 namespace Eventuras.Libs.Pdf;
 
@@ -28,20 +29,28 @@ public static class PdfTextExtractor
             pdfStream.Position = 0;
         }
 
-        using var pdfReader = new PdfReader(pdfStream);
-        using var pdfDocument = new PdfDocument(pdfReader);
-
-        var result = new StringBuilder();
-
-        // Extract text from all pages
-        for (int i = 1; i <= pdfDocument.GetNumberOfPages(); i++)
+        try
         {
-            var page = pdfDocument.GetPage(i);
-            var strategy = new SimpleTextExtractionStrategy();
-            var text = PdfTextExtractor.GetTextFromPage(page, strategy);
-            result.Append(text);
-        }
+            using var pdfReader = new PdfReader(pdfStream);
+            using var pdfDocument = new PdfDocument(pdfReader);
 
-        return result.ToString();
+            var result = new StringBuilder();
+
+            // Extract text from all pages
+            for (int i = 1; i <= pdfDocument.GetNumberOfPages(); i++)
+            {
+                var page = pdfDocument.GetPage(i);
+                var strategy = new SimpleTextExtractionStrategy();
+                var text = ITextPdfTextExtractor.GetTextFromPage(page, strategy);
+                result.Append(text);
+            }
+
+            return result.ToString();
+        }
+        catch (iText.IO.Exceptions.IOException)
+        {
+            // Handle empty or invalid PDF streams
+            return string.Empty;
+        }
     }
 }
