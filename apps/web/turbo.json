@@ -4,7 +4,6 @@
     "build": {
       "env": [
         "NEXT_PUBLIC_API_BASE_URL",
-        "NEXT_PUBLIC_API_VERSION",
         "NEXT_PUBLIC_APPLICATION_URL",
         "NEXT_PUBLIC_LOGOUT_URL_REDIRECT",
         "NEXT_PUBLIC_DEFAULT_LOCALE",
