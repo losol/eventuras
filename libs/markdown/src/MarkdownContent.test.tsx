@@ -49,9 +49,16 @@ describe('MarkdownContent', () => {
     expect(screen.getByText('X')).toBeInTheDocument()
   })
 
-  // renders safe http link via SafeLink
-  it('renders safe http link', () => {
-    render(<MarkdownContent markdown={'[go](https://example.com)'} />)
+  // blocks external links by default
+  it('blocks external links by default', () => {
+    const { container } = render(<MarkdownContent markdown={'[go](https://example.com)'} />)
+    expect(screen.queryByRole('link')).toBeNull()
+    expect(container).toHaveTextContent('go')
+  })
+
+  // renders external link when allowExternalLinks = true
+  it('renders external link when allowExternalLinks = true', () => {
+    render(<MarkdownContent markdown={'[go](https://example.com)'} allowExternalLinks={true} />)
     const a = screen.getByRole('link', { name: 'go' }) as HTMLAnchorElement
     expect(a).toBeInTheDocument()
     expect(a.href).toMatch(/^https:\/\/example\.com\/?/)
@@ -81,9 +88,15 @@ describe('MarkdownContent', () => {
     expect(a.getAttribute('href')).toBe('/') // stays relative
   })
 
-  // renders safe https image via SafeImg
-  it('renders safe https image', () => {
+  // blocks external images by default
+  it('blocks external images by default', () => {
     render(<MarkdownContent markdown={'![alt](https://example.com/a.png)'} />)
+    expect(screen.queryByRole('img')).not.toBeInTheDocument()
+  })
+
+  // renders external image when allowExternalLinks = true
+  it('renders external image when allowExternalLinks = true', () => {
+    render(<MarkdownContent markdown={'![alt](https://example.com/a.png)'} allowExternalLinks={true} />)
     const img = screen.getByRole('img', { name: 'alt' }) as HTMLImageElement
 
     // check attributes (jsdom)
