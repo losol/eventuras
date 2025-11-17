@@ -45,7 +45,7 @@ const EventDetails: React.FC<EventProps> = ({ eventinfo }) => {
       {sections.map(section => (
         <Section key={section.id} id={section.id} container>
           <Heading as="h2">{section.title}</Heading>
-          <MarkdownContent markdown={section.content!} />
+          <MarkdownContent markdown={section.content!} allowExternalLinks={true} />
         </Section>
       ))}
     </Section>

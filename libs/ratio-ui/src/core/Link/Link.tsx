@@ -35,10 +35,19 @@ export const Link = React.forwardRef<HTMLElement, LinkProps>(
     ref
   ) => {
     const spacingClasses = buildSpacingClasses({ padding, margin, border, width, height });
+
+    // Default link styling (when no variant is set)
+    const defaultLinkClasses = !variant
+      ? 'text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 underline decoration-blue-600/30 hover:decoration-blue-800 underline-offset-2 transition-colors'
+      : '';
+
     const textColor =
       onDark || variant === 'button-primary'
         ? 'text-gray-200'
-        : 'text-gray-800 dark:text-gray-200';
+        : variant
+        ? 'text-gray-800 dark:text-gray-200'
+        : ''; // No text color for default links (uses defaultLinkClasses)
+
     const blockClass = block ? 'block' : '';
     let variantClasses = '';
     if (variant?.startsWith('button-')) {
@@ -48,6 +57,7 @@ export const Link = React.forwardRef<HTMLElement, LinkProps>(
 
     const classes = [
       spacingClasses,
+      defaultLinkClasses,
       variantClasses,
       textColor,
       blockClass,
