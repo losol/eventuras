@@ -34,7 +34,6 @@ const _publicEnv = createPublicEnv(appConfig as AppConfig);
 
 // Define explicit getters for each NEXT_PUBLIC_* variable
 // This allows Next.js to statically analyze and replace at build time
-defineGetter(_publicEnv, 'NEXT_PUBLIC_API_VERSION', () => process.env.NEXT_PUBLIC_API_VERSION);
 defineGetter(
   _publicEnv,
   'NEXT_PUBLIC_APPLICATION_URL',

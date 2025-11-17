@@ -4,12 +4,6 @@
   "type": "app",
   "description": "Main web frontend for Eventuras - participant and organizer interface",
   "env": {
-    "NEXT_PUBLIC_API_VERSION": {
-      "required": true,
-      "client": true,
-      "type": "string",
-      "description": "API version to use (e.g., v3)"
-    },
     "NEXT_PUBLIC_APPLICATION_URL": {
       "required": true,
       "client": true,
