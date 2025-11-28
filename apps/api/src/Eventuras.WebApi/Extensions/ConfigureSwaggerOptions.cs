@@ -1,11 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using Asp.Versioning.ApiExplorer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using NodaTime;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -49,14 +50,11 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
                 Scheme = "bearer"
             });
 
-        options.AddSecurityRequirement(new OpenApiSecurityRequirement
+        options.AddSecurityRequirement(doc => new OpenApiSecurityRequirement
         {
             {
-                new OpenApiSecurityScheme
-                {
-                    Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
-                },
-                Array.Empty<string>()
+                new OpenApiSecuritySchemeReference("Bearer"),
+                new List<string>()
             }
         });
 
@@ -69,7 +67,7 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
         options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
 
         // Ensure LocalDate is treated as a string with "date" format
-        options.MapType<LocalDate>(() => new OpenApiSchema { Type = "string", Format = "date" });
+        options.MapType<LocalDate>(() => new OpenApiSchema { Type = JsonSchemaType.String, Format = "date" });
 
         var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
         options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));

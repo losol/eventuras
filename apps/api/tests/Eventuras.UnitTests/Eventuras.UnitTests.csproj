@@ -10,18 +10,18 @@
     <EnableMSTestRunner>true</EnableMSTestRunner>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1"/>
-    <PackageReference Include="xunit.v3.mtp-v2" Version="3.2.0"/>
-    <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1"/>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
+    <PackageReference Include="xunit.v3.mtp-v2" Version="3.2.1" />
+    <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Eventuras.Domain\Eventuras.Domain.csproj"/>
+    <ProjectReference Include="..\..\src\Eventuras.Domain\Eventuras.Domain.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="RegistrationTests\Verify_Should.cs"/>
-    <Compile Remove="RegistrationTests\Create_Or_Update_Order_Should.cs"/>
-    <Compile Remove="RegistrationTests\Create_Order_Should.cs"/>
-    <Compile Remove="RegistrationTests\Has_Order_Should.cs"/>
-    <Compile Remove="Helpers.cs"/>
+    <Compile Remove="RegistrationTests\Verify_Should.cs" />
+    <Compile Remove="RegistrationTests\Create_Or_Update_Order_Should.cs" />
+    <Compile Remove="RegistrationTests\Create_Order_Should.cs" />
+    <Compile Remove="RegistrationTests\Has_Order_Should.cs" />
+    <Compile Remove="Helpers.cs" />
   </ItemGroup>
 </Project>

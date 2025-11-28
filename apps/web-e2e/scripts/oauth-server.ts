@@ -76,7 +76,7 @@ const server = createServer(async (req, res) => {
 
     if (!code) {
       res.writeHead(400, { 'Content-Type': 'text/html' });
-      res.end('<h1>❌ Error: No authorization code received</h1>');
+      res.end('<h1>Error: No authorization code received</h1>');
       return;
     }
 
@@ -88,19 +88,19 @@ const server = createServer(async (req, res) => {
         <html>
           <head><title>OAuth Success</title></head>
           <body>
-            <h1>✅ Successfully obtained refresh token!</h1>
+            <h1>Successfully obtained refresh token!</h1>
             <h2>Add this to your .env file:</h2>
             <pre style="background: #f4f4f4; padding: 15px; border-radius: 5px;">
 EVENTURAS_TEST_GOOGLE_REFRESH_TOKEN=${tokens.refresh_token}
             </pre>
-            <p><strong>⚠️ Important:</strong> This token will only be shown once. Copy it now!</p>
+            <p><strong>Important:</strong> This token will only be shown once. Copy it now!</p>
             <p>You can close this window.</p>
           </body>
         </html>
       `);
 
-      console.log('\n✅ Success! Refresh token obtained.');
-      console.log('\n📝 Add this line to your .env file:');
+      console.log('\nSuccess! Refresh token obtained.');
+      console.log('\nAdd this line to your .env file:');
       console.log(`EVENTURAS_TEST_GOOGLE_REFRESH_TOKEN=${tokens.refresh_token}\n`);
 
       // Close server after successful token exchange
@@ -110,9 +110,9 @@ EVENTURAS_TEST_GOOGLE_REFRESH_TOKEN=${tokens.refresh_token}
         process.exit(0);
       }, 1000);
     } catch (error) {
-      console.error('❌ Error exchanging code for tokens:', error);
+      console.error('Error exchanging code for tokens:', error);
       res.writeHead(500, { 'Content-Type': 'text/html' });
-      res.end('<h1>❌ Error obtaining tokens</h1><p>Check the console for details.</p>');
+      res.end('<h1>Error obtaining tokens</h1><p>Check the console for details.</p>');
     }
     return;
   }
