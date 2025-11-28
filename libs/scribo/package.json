@@ -12,7 +12,7 @@
   "main": "src/main.tsx",
   "scripts": {
     "build": "vite build",
-    "build:site": "BUILD_SITE=true vite build",
+    "build:site": "vite build --config vite.config.site.ts",
     "dev": "vite"
   },
   "overrides": {
