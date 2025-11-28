@@ -52,8 +52,17 @@ export const createTestEvent = async (
   await page.locator('[data-testid="create-event-submit-button"]').click();
   await page.waitForURL('**/admin/events/**');
 
+  // Wait for the page to be fully loaded and interactive
+  debug('Waiting for page to load after navigation...');
+  await page.waitForLoadState('domcontentloaded');
+  await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {
+    debug('⚠️  Network not idle, continuing anyway...');
+  });
+
   // Fill in overview details
   debug('Filling overview tab...');
+  // Wait for the overview tab to be visible before clicking
+  await page.locator('[data-testid="tab-overview"]').waitFor({ state: 'visible', timeout: 15000 });
   await page.locator('[data-testid="tab-overview"]').click();
   await page.locator('[data-testid="eventeditor-status-select-button"]').click();
   await page.getByRole('option', { name: 'RegistrationsOpen' }).click();

@@ -19,7 +19,7 @@ test.describe('create event and add products to it', () => {
     await checkIfAccessToAdmin(page);
   });
   test('create event with rich content', async ({ page }) => {
-    eventId = await createTestEvent(page, eventName, { useRichContent: true });
+    eventId = await createTestEvent(page, eventName);
     writeCreatedEvent(eventId);
   });
 
