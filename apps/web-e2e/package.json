@@ -23,8 +23,8 @@
     "@eventuras/event-sdk": "workspace:*",
     "@eventuras/google-api": "workspace:*",
     "@eventuras/logger": "workspace:*",
-    "@playwright/test": "1.56.1",
-    "tsx": "^4.19.2"
+    "@playwright/test": "1.57.0",
+    "tsx": "^4.20.6"
   },
   "devDependencies": {
     "cross-env": "^10.1.0"

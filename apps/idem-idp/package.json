@@ -21,15 +21,15 @@
   "devDependencies": {
     "@eventuras/eslint-config": "workspace:*",
     "@eventuras/typescript-config": "workspace:*",
-    "@types/express": "5.0.3",
-    "tsup": "8.5.0",
+    "@types/express": "5.0.5",
+    "tsup": "8.5.1",
     "tsx": "^4",
     "typescript": "^5.9.3"
   },
   "optionalDependencies": {
-    "@rollup/rollup-linux-arm64-gnu": "4.52.5",
-    "@rollup/rollup-linux-arm64-musl": "4.52.5",
-    "@rollup/rollup-linux-x64-gnu": "4.52.5"
+    "@rollup/rollup-linux-arm64-gnu": "4.53.3",
+    "@rollup/rollup-linux-arm64-musl": "4.53.3",
+    "@rollup/rollup-linux-x64-gnu": "4.53.3"
   },
   "engines": {
     "node": ">=20.11"

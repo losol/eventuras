@@ -34,12 +34,12 @@
     "@eventuras/fides-auth": "workspace:*",
     "@eventuras/logger": "workspace:*",
     "@eventuras/typescript-config": "workspace:*",
-    "@xstate/store": "^3.11.1"
+    "@xstate/store": "^3.12.0"
   },
   "devDependencies": {
     "@eventuras/vite-config": "workspace:*",
-    "vite": "^7.1.12",
-    "xstate": "^5.23.0"
+    "vite": "^7.2.4",
+    "xstate": "^5.24.0"
   },
   "peerDependencies": {
     "@xstate/react": "^5.0.0 || ^6.0.0",

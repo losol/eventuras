@@ -25,12 +25,12 @@
     "@eventuras/eslint-config": "workspace:*",
     "@eventuras/typescript-config": "workspace:*",
     "@eventuras/vite-config": "workspace:*",
-    "vite": "^7.1.12"
+    "vite": "^7.2.4"
   },
   "peerDependencies": {
     "react": "^19.1.0",
     "react-aria-components": "^1.13.0",
     "react-dom": "^19.1.0",
-    "react-hook-form": "^7.65.0"
+    "react-hook-form": "^7.67.0"
   }
 }

@@ -4,44 +4,44 @@
   "type": "module",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     },
     "./icons": {
-      "import": "./dist/icons/index.js",
-      "types": "./dist/icons/index.d.ts"
+      "types": "./dist/icons/index.d.ts",
+      "import": "./dist/icons/index.js"
     },
     "./core/*": {
-      "import": "./dist/core/*/index.js",
-      "types": "./dist/core/*/index.d.ts"
+      "types": "./dist/core/*/index.d.ts",
+      "import": "./dist/core/*/index.js"
     },
     "./layout/*": {
-      "import": "./dist/layout/*/index.js",
-      "types": "./dist/layout/*/index.d.ts"
+      "types": "./dist/layout/*/index.d.ts",
+      "import": "./dist/layout/*/index.js"
     },
     "./components/*": {
-      "import": "./dist/components/*/index.js",
-      "types": "./dist/components/*/index.d.ts"
+      "types": "./dist/components/*/index.d.ts",
+      "import": "./dist/components/*/index.js"
     },
     "./forms": {
-      "import": "./dist/forms/index.js",
-      "types": "./dist/forms/index.d.ts"
+      "types": "./dist/forms/index.d.ts",
+      "import": "./dist/forms/index.js"
     },
     "./forms/*": {
-      "import": "./dist/forms/*/index.js",
-      "types": "./dist/forms/*/index.d.ts"
+      "types": "./dist/forms/*/index.d.ts",
+      "import": "./dist/forms/*/index.js"
     },
     "./visuals/*": {
-      "import": "./dist/visuals/*/index.js",
-      "types": "./dist/visuals/*/index.d.ts"
+      "types": "./dist/visuals/*/index.d.ts",
+      "import": "./dist/visuals/*/index.js"
     },
     "./pages/*": {
-      "import": "./dist/pages/*/index.js",
-      "types": "./dist/pages/*/index.d.ts"
+      "types": "./dist/pages/*/index.d.ts",
+      "import": "./dist/pages/*/index.js"
     },
     "./blocks/*": {
-      "import": "./dist/blocks/*/index.js",
-      "types": "./dist/blocks/*/index.d.ts"
+      "types": "./dist/blocks/*/index.d.ts",
+      "import": "./dist/blocks/*/index.js"
     },
     "./ratio-ui.css": "./dist/ratio-ui.css"
   },
@@ -70,13 +70,13 @@
     "@internationalized/number": "^3.6.5",
     "@react-aria/overlays": "^3.30.0",
     "@react-stately/data": "^3.14.1",
-    "@storybook/react": "^9.1.13",
+    "@storybook/react": "^10.1.2",
     "@swc/helpers": "^0.5.17",
-    "@tailwindcss/postcss": "^4.1.16",
-    "@tailwindcss/vite": "^4.1.16",
+    "@tailwindcss/postcss": "^4.1.17",
+    "@tailwindcss/vite": "^4.1.17",
     "ajv": "^8.17.1",
     "clsx": "^2.1.1",
-    "lucide-react": "^0.546.0",
+    "lucide-react": "^0.555.0",
     "react-aria-components": "^1.13.0",
     "react-stately": "^3.42.0",
     "tailwindcss-react-aria-components": "^2.0.1"
@@ -85,22 +85,22 @@
     "@eventuras/eslint-config": "workspace:*",
     "@eventuras/typescript-config": "workspace:*",
     "@eventuras/vite-config": "workspace:*",
-    "@storybook/addon-a11y": "^9.1.13",
-    "@storybook/addon-docs": "^9.1.13",
-    "@storybook/addon-onboarding": "^9.1.13",
-    "@storybook/addon-themes": "^9.1.13",
-    "@storybook/react-vite": "^9.1.13",
-    "@types/react": "^19.2.2",
-    "@types/react-dom": "^19.2.2",
-    "autoprefixer": "10.4.21",
+    "@storybook/addon-a11y": "^10.1.2",
+    "@storybook/addon-docs": "^10.1.2",
+    "@storybook/addon-onboarding": "^10.1.2",
+    "@storybook/addon-themes": "^10.1.2",
+    "@storybook/react-vite": "^10.1.2",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "autoprefixer": "10.4.22",
     "clsx": "^2.1.1",
-    "eslint-plugin-storybook": "^9.1.13",
+    "eslint-plugin-storybook": "^10.1.2",
     "postcss": "^8.5.6",
     "react-dom": "^19.2.0",
-    "storybook": "^9.1.13",
-    "tailwindcss": "^4.1.16",
+    "storybook": "^10.1.2",
+    "tailwindcss": "^4.1.17",
     "typescript": "5.9.3",
-    "vite": "7.1.12"
+    "vite": "7.2.4"
   },
   "peerDependencies": {
     "react": "^19.1.0",
