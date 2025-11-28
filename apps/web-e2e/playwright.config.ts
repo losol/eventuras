@@ -20,13 +20,13 @@ if (existsSync(envPath)) {
     const trimmed = line.trim();
     // Skip empty lines and comments
     if (!trimmed || trimmed.startsWith('#')) return;
-    
+
     const equalsIndex = trimmed.indexOf('=');
     if (equalsIndex === -1) return; // No equals sign
-    
+
     const key = trimmed.substring(0, equalsIndex).trim();
     const value = trimmed.substring(equalsIndex + 1).trim();
-    
+
     if (key) {
       process.env[key] = value;
       loadedVars.push(key);
@@ -90,7 +90,7 @@ export default defineConfig({
     { name: SETUP_USER, testMatch: 'user.auth.setup.ts' },
     {
       name: 'e2e admin tests',
-      testMatch: /admin-.{0,100}\.spec\.ts/,
+      testMatch: /admin-.{0,1000}\.spec\.ts/,
       use: {
         ...devicesToTest,
       },
@@ -98,11 +98,19 @@ export default defineConfig({
     },
     {
       name: 'e2e user tests chromium',
-      testMatch: /user-.{0,100}\.spec\.ts/,
+      testMatch: /user-.{0,1000}\.spec\.ts/,
       use: {
         ...devicesToTest,
       },
       dependencies: [SETUP_USER],
+    },
+    {
+      name: 'api tests',
+      testMatch: /\d{3}-api-.{0,1000}\.spec\.ts/,
+      use: {
+        ...devicesToTest,
+      },
+      dependencies: [SETUP_ADMIN, SETUP_USER],
     },
   ],
 });

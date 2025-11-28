@@ -59,6 +59,8 @@ importers:
 
   apps/api/src/Eventuras.WebApi: {}
 
+  apps/api/src/Eventuras.WebApi/bin/Debug/net10.0: {}
+
   apps/convertoapi:
     dependencies:
       '@fastify/jwt':
@@ -544,6 +546,9 @@ importers:
       '@eventuras/event-sdk':
         specifier: workspace:*
         version: link:../../libs/event-sdk
+      '@eventuras/fides-auth':
+        specifier: workspace:*
+        version: link:../../libs/fides-auth
       '@eventuras/google-api':
         specifier: workspace:*
         version: link:../../libs/google-api
@@ -553,6 +558,9 @@ importers:
       '@playwright/test':
         specifier: 1.57.0
         version: 1.57.0
+      jose:
+        specifier: 6.1.2
+        version: 6.1.2
       tsx:
         specifier: ^4.20.6
         version: 4.20.6

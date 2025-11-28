@@ -21,9 +21,11 @@
   },
   "dependencies": {
     "@eventuras/event-sdk": "workspace:*",
+    "@eventuras/fides-auth": "workspace:*",
     "@eventuras/google-api": "workspace:*",
     "@eventuras/logger": "workspace:*",
     "@playwright/test": "1.57.0",
+    "jose": "6.1.2",
     "tsx": "^4.20.6"
   },
   "devDependencies": {
