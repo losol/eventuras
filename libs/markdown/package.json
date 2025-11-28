@@ -43,14 +43,14 @@
     "@eventuras/vite-config": "workspace:*",
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/react": "^16.3.0",
-    "@types/react": "^19.2.2",
-    "@types/react-dom": "^19.2.2",
-    "jsdom": "27.0.1",
-    "markdown-to-jsx": "7.7.16",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "jsdom": "27.2.0",
+    "markdown-to-jsx": "9.2.0",
     "tslib": "2.8.1",
     "typescript": "5.9.3",
-    "vite": "7.1.12",
-    "vitest": "4.0.2"
+    "vite": "7.2.4",
+    "vitest": "4.0.14"
   },
   "peerDependencies": {
     "@eventuras/ratio-ui": "workspace:*",

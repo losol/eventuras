@@ -45,13 +45,13 @@
   "dependencies": {
     "@eventuras/logger": "workspace:*",
     "@eventuras/typescript-config": "workspace:*",
-    "jose": "6.1.0",
+    "jose": "6.1.2",
     "openid-client": "^6.8.1"
   },
   "devDependencies": {
     "@eventuras/vite-config": "workspace:*",
-    "@types/react": "^19.2.2",
-    "@types/react-dom": "^19.2.2",
-    "vite": "^7.1.12"
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "vite": "^7.2.4"
   }
 }

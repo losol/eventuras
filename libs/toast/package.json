@@ -26,8 +26,8 @@
     "@eventuras/vite-config": "workspace:*",
     "@xstate/react": "6.0.0",
     "uuid": "^13.0.0",
-    "vite": "^7.1.12",
-    "xstate": "5.23.0"
+    "vite": "^7.2.4",
+    "xstate": "5.24.0"
   },
   "peerDependencies": {
     "@xstate/react": "^6.0.0",

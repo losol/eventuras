@@ -10,19 +10,19 @@
     "./rules": "./rules/index.js"
   },
   "devDependencies": {
-    "@eslint/js": "^9.38.0",
-    "@next/eslint-plugin-next": "^16.0.0",
-    "eslint": "^9.38.0",
+    "@eslint/js": "^9.39.1",
+    "@next/eslint-plugin-next": "^16.0.5",
+    "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-json-files": "^5.1.2",
     "eslint-plugin-only-warn": "^1.1.0",
     "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^7.0.0",
+    "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-simple-import-sort": "^12.1.1",
-    "eslint-plugin-turbo": "^2.5.8",
-    "globals": "^16.4.0",
+    "eslint-plugin-turbo": "^2.6.1",
+    "globals": "^16.5.0",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.46.2"
+    "typescript-eslint": "^8.48.0"
   }
 }
