@@ -14,7 +14,7 @@ COPY libs/eslint-config/package.json /app/libs/eslint-config/package.json
 COPY libs/typescript-config /app/libs/typescript-config
 
 # Enable pnpm and install production dependencies, ignore scripts
-RUN corepack enable && corepack prepare pnpm@10.19.0 --activate && pnpm install --prod --ignore-scripts
+RUN corepack enable && corepack prepare pnpm@10.24.0 --activate && pnpm install --prod --ignore-scripts
 
 # Build the app
 COPY /apps/convertoapi /app/apps/convertoapi

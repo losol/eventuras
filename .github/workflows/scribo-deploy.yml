@@ -24,9 +24,9 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Setup PNPM
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v3
         with:
-          version: 10.19.0
+          version: 10.24.0
           run_install: false
 
       # ✅ Setup Node.js from .nvmrc
