@@ -34,7 +34,7 @@ export const createTestEvent = async (
 ): Promise<string> => {
   const { customData = {}, waitForSave = true } = options;
 
-  debug('Creating test event: %s (rich content: ALWAYS)', eventName);
+  debug('Creating test event: %s', eventName);
 
   // Generate event data with rich content
   const baseData = generateTestEventData(eventName);
@@ -56,7 +56,7 @@ export const createTestEvent = async (
   debug('Waiting for page to load after navigation...');
   await page.waitForLoadState('domcontentloaded');
   await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {
-    debug('⚠️  Network not idle, continuing anyway...');
+    debug('Network not idle, continuing anyway...');
   });
 
   // Fill in overview details
@@ -66,11 +66,11 @@ export const createTestEvent = async (
   await page.locator('[data-testid="tab-overview"]').click();
   await page.locator('[data-testid="eventeditor-status-select-button"]').click();
   await page.getByRole('option', { name: 'RegistrationsOpen' }).click();
-  await page.locator('[name="headline"]').fill(eventData.headline);
-  await page.locator('[name="category"]').fill(eventData.category);
-  await page.locator('[name="maxParticipants"]').fill(eventData.maxParticipants.toString());
-  await page.locator('[name="featuredImageUrl"]').fill(eventData.featuredImageUrl);
-  await page.locator('[name="featuredImageCaption"]').fill(eventData.featuredImageCaption);
+  await page.locator('[name="headline"]').fill(eventData.headline ?? '');
+  await page.locator('[name="category"]').fill(eventData.category ?? '');
+  await page.locator('[name="maxParticipants"]').fill(eventData.maxParticipants?.toString() ?? '');
+  await page.locator('[name="featuredImageUrl"]').fill(eventData.featuredImageUrl ?? '');
+  await page.locator('[name="featuredImageCaption"]').fill(eventData.featuredImageCaption ?? '');
 
   // Fill in dates and location
   debug('Filling dates and location tab...');
@@ -94,8 +94,8 @@ export const createTestEvent = async (
   await page.locator('[name="dateEnd"]').fill(formatDate(endDate));
   await page.locator('[name="lastRegistrationDate"]').fill(formatDate(lastRegistrationDate));
   await page.locator('[name="lastCancellationDate"]').fill(formatDate(lastCancellationDate));
-  await page.locator('[name="city"]').fill(eventData.city);
-  await page.locator('[name="location"]').fill(eventData.location);
+  await page.locator('[name="city"]').fill(eventData.city ?? '');
+  await page.locator('[name="location"]').fill(eventData.location ?? '');
 
   // Fill in descriptions with rich markdown content
   debug('Filling descriptions tab with rich markdown content...');
@@ -107,18 +107,18 @@ export const createTestEvent = async (
   // that should be properly rendered on the public pages by MarkdownContent component.
 
   // Use id selectors to find the editor wrapper, then get the textbox inside
-  await page.locator('#eventeditor-description-editable').getByRole('textbox').fill(eventData.description);
-  await page.locator('#eventeditor-program-editable').getByRole('textbox').fill(eventData.program);
-  await page.locator('#eventeditor-practical-information-editable').getByRole('textbox').fill(eventData.practicalInformation);
-  await page.locator('#eventeditor-more-information-editable').getByRole('textbox').fill(eventData.moreInformation);
-  await page.locator('#eventeditor-welcome-letter-editable').getByRole('textbox').fill(eventData.welcomeLetter);
-  await page.locator('#eventeditor-information-request-editable').getByRole('textbox').fill(eventData.informationRequest);
+  await page.locator('#eventeditor-description-editable').getByRole('textbox').fill(eventData.description ?? '');
+  await page.locator('#eventeditor-program-editable').getByRole('textbox').fill(eventData.program ?? '');
+  await page.locator('#eventeditor-practical-information-editable').getByRole('textbox').fill(eventData.practicalInformation ?? '');
+  await page.locator('#eventeditor-more-information-editable').getByRole('textbox').fill(eventData.moreInformation ?? '');
+  await page.locator('#eventeditor-welcome-letter-editable').getByRole('textbox').fill(eventData.welcomeLetter ?? '');
+  await page.locator('#eventeditor-information-request-editable').getByRole('textbox').fill(eventData.informationRequest ?? '');
 
   // Fill certificate details
   debug('Filling certificate tab...');
   await page.locator('[data-testid="tab-certificate"]').click();
-  await page.locator('[name="certificateTitle"]').fill(eventData.certificateTitle);
-  await page.locator('[name="certificateDescription"]').fill(eventData.certificateDescription);
+  await page.locator('[name="certificateTitle"]').fill(eventData.certificateTitle ?? '');
+  await page.locator('[name="certificateDescription"]').fill(eventData.certificateDescription ?? '');
 
   // Navigate to advanced tab to get event ID
   debug('Navigating to advanced tab to get event ID...');
