@@ -102,18 +102,18 @@ test('Admin can manage event products', async () => {
 The session cookie stored by Playwright contains a JWE (JSON Web Encryption) token. The `api-helpers` module:
 
 1. Reads the session cookie from Playwright's auth storage file
-2. Uses `@eventuras/fides-auth/utils` to get the session encryption key
+2. Uses a local `hexToUint8Array()` function (copied from `@eventuras/fides-auth/utils` for ESM/CommonJS compatibility) to get the session encryption key
 3. Uses the `jose` library to decrypt the JWE token (same method as the application)
 4. Extracts the `accessToken` from the decrypted session payload
 5. Uses the access token for authenticated API requests
 
-This approach reuses the same encryption utilities as the main application, avoiding code duplication.
+This approach uses a local copy of the encryption utility to avoid ESM/CommonJS compatibility issues, but the logic matches the main application.
 
 ### Code Structure
 
 ```typescript
-// Get session secret (from @eventuras/fides-auth)
-getSessionSecretUint8Array()
+// Get session secret (using local hexToUint8Array, copied from @eventuras/fides-auth/utils)
+hexToUint8Array(SESSION_SECRET)
   → Uint8Array (encryption key)
 
 // Decrypt JWE session token (using jose library)
@@ -161,7 +161,7 @@ pnpm test:playwright --project="admin.auth.setup"
 
 ## Example Test File
 
-See `api-test-example.spec.ts` for complete examples of:
+See `200-api-test-example.spec.ts` for complete examples of:
 - Simple API calls
 - Combined UI + API tests
 - Error handling
