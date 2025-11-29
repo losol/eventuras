@@ -5389,6 +5389,7 @@
             "nullable": true
           },
           "price": {
+            "maximum": 1.7976931348623157E+308,
             "minimum": 0,
             "type": "number",
             "format": "double"
@@ -5417,6 +5418,7 @@
             "nullable": true
           },
           "price": {
+            "maximum": 1.7976931348623157E+308,
             "minimum": 0,
             "type": "number",
             "format": "double"
@@ -6745,8 +6747,80 @@
     }
   },
   "security": [
+    { }
+  ],
+  "tags": [
     {
-      "Bearer": [ ]
+      "name": "Certificates"
+    },
+    {
+      "name": "EventCertificates"
+    },
+    {
+      "name": "EventCollection"
+    },
+    {
+      "name": "EventCollectionMapping"
+    },
+    {
+      "name": "EventProducts"
+    },
+    {
+      "name": "EventProductVariants"
+    },
+    {
+      "name": "Events"
+    },
+    {
+      "name": "EventStatistics"
+    },
+    {
+      "name": "Invoices"
+    },
+    {
+      "name": "NotificationRecipients"
+    },
+    {
+      "name": "Notifications"
+    },
+    {
+      "name": "NotificationsQueueing"
+    },
+    {
+      "name": "OnlineCourse"
+    },
+    {
+      "name": "Orders"
+    },
+    {
+      "name": "OrganizationMemberRoles"
+    },
+    {
+      "name": "OrganizationMembers"
+    },
+    {
+      "name": "Organizations"
+    },
+    {
+      "name": "OrganizationSettings"
+    },
+    {
+      "name": "Products"
+    },
+    {
+      "name": "RegistrationCertificate"
+    },
+    {
+      "name": "RegistrationOrders"
+    },
+    {
+      "name": "Registrations"
+    },
+    {
+      "name": "UserProfile"
+    },
+    {
+      "name": "Users"
     }
   ]
 }
