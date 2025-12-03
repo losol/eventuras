@@ -16,12 +16,12 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "express": "5.1.0"
+    "express": "5.2.1"
   },
   "devDependencies": {
     "@eventuras/eslint-config": "workspace:*",
     "@eventuras/typescript-config": "workspace:*",
-    "@types/express": "5.0.5",
+    "@types/express": "5.0.6",
     "tsup": "8.5.1",
     "tsx": "^4",
     "typescript": "^5.9.3"

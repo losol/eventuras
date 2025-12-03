@@ -18,1114 +18,395 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
     meta?: Record<string, unknown>;
 };
 
-export const getV3CertificatesById = <ThrowOnError extends boolean = false>(options: Options<GetV3CertificatesByIdData, ThrowOnError>) => {
-    return (options.client ?? client).get<GetV3CertificatesByIdResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/certificates/{id}',
-        ...options
-    });
-};
+export const getV3CertificatesById = <ThrowOnError extends boolean = false>(options: Options<GetV3CertificatesByIdData, ThrowOnError>) => (options.client ?? client).get<GetV3CertificatesByIdResponses, unknown, ThrowOnError>({ url: '/v3/certificates/{id}', ...options });
 
-export const getV3EventByIdCertificates = <ThrowOnError extends boolean = false>(options: Options<GetV3EventByIdCertificatesData, ThrowOnError>) => {
-    return (options.client ?? client).get<GetV3EventByIdCertificatesResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/event/{id}/certificates',
-        ...options
-    });
-};
+export const getV3EventByIdCertificates = <ThrowOnError extends boolean = false>(options: Options<GetV3EventByIdCertificatesData, ThrowOnError>) => (options.client ?? client).get<GetV3EventByIdCertificatesResponses, unknown, ThrowOnError>({ url: '/v3/event/{id}/certificates', ...options });
 
-export const getV3EventByIdCertificatesPreview = <ThrowOnError extends boolean = false>(options: Options<GetV3EventByIdCertificatesPreviewData, ThrowOnError>) => {
-    return (options.client ?? client).get<GetV3EventByIdCertificatesPreviewResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/event/{id}/certificates/preview',
-        ...options
-    });
-};
+export const getV3EventByIdCertificatesPreview = <ThrowOnError extends boolean = false>(options: Options<GetV3EventByIdCertificatesPreviewData, ThrowOnError>) => (options.client ?? client).get<GetV3EventByIdCertificatesPreviewResponses, unknown, ThrowOnError>({ url: '/v3/event/{id}/certificates/preview', ...options });
 
-export const postV3EventByIdCertificatesIssue = <ThrowOnError extends boolean = false>(options: Options<PostV3EventByIdCertificatesIssueData, ThrowOnError>) => {
-    return (options.client ?? client).post<PostV3EventByIdCertificatesIssueResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/event/{id}/certificates/issue',
-        ...options
-    });
-};
+export const postV3EventByIdCertificatesIssue = <ThrowOnError extends boolean = false>(options: Options<PostV3EventByIdCertificatesIssueData, ThrowOnError>) => (options.client ?? client).post<PostV3EventByIdCertificatesIssueResponses, unknown, ThrowOnError>({ url: '/v3/event/{id}/certificates/issue', ...options });
 
-export const postV3EventByIdCertificatesUpdate = <ThrowOnError extends boolean = false>(options: Options<PostV3EventByIdCertificatesUpdateData, ThrowOnError>) => {
-    return (options.client ?? client).post<PostV3EventByIdCertificatesUpdateResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/event/{id}/certificates/update',
-        ...options
-    });
-};
+export const postV3EventByIdCertificatesUpdate = <ThrowOnError extends boolean = false>(options: Options<PostV3EventByIdCertificatesUpdateData, ThrowOnError>) => (options.client ?? client).post<PostV3EventByIdCertificatesUpdateResponses, unknown, ThrowOnError>({ url: '/v3/event/{id}/certificates/update', ...options });
 
-export const getV3Eventcollections = <ThrowOnError extends boolean = false>(options?: Options<GetV3EventcollectionsData, ThrowOnError>) => {
-    return (options?.client ?? client).get<GetV3EventcollectionsResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/eventcollections',
-        ...options
-    });
-};
+export const getV3Eventcollections = <ThrowOnError extends boolean = false>(options?: Options<GetV3EventcollectionsData, ThrowOnError>) => (options?.client ?? client).get<GetV3EventcollectionsResponses, unknown, ThrowOnError>({ url: '/v3/eventcollections', ...options });
 
-export const postV3Eventcollections = <ThrowOnError extends boolean = false>(options?: Options<PostV3EventcollectionsData, ThrowOnError>) => {
-    return (options?.client ?? client).post<PostV3EventcollectionsResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/eventcollections',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options?.headers
-        }
-    });
-};
+export const postV3Eventcollections = <ThrowOnError extends boolean = false>(options?: Options<PostV3EventcollectionsData, ThrowOnError>) => (options?.client ?? client).post<PostV3EventcollectionsResponses, unknown, ThrowOnError>({
+    url: '/v3/eventcollections',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
 
-export const deleteV3EventcollectionsById = <ThrowOnError extends boolean = false>(options: Options<DeleteV3EventcollectionsByIdData, ThrowOnError>) => {
-    return (options.client ?? client).delete<DeleteV3EventcollectionsByIdResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/eventcollections/{id}',
-        ...options
-    });
-};
+export const deleteV3EventcollectionsById = <ThrowOnError extends boolean = false>(options: Options<DeleteV3EventcollectionsByIdData, ThrowOnError>) => (options.client ?? client).delete<DeleteV3EventcollectionsByIdResponses, unknown, ThrowOnError>({ url: '/v3/eventcollections/{id}', ...options });
 
-export const getV3EventcollectionsById = <ThrowOnError extends boolean = false>(options: Options<GetV3EventcollectionsByIdData, ThrowOnError>) => {
-    return (options.client ?? client).get<GetV3EventcollectionsByIdResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/eventcollections/{id}',
-        ...options
-    });
-};
+export const getV3EventcollectionsById = <ThrowOnError extends boolean = false>(options: Options<GetV3EventcollectionsByIdData, ThrowOnError>) => (options.client ?? client).get<GetV3EventcollectionsByIdResponses, unknown, ThrowOnError>({ url: '/v3/eventcollections/{id}', ...options });
 
-export const putV3EventcollectionsById = <ThrowOnError extends boolean = false>(options: Options<PutV3EventcollectionsByIdData, ThrowOnError>) => {
-    return (options.client ?? client).put<PutV3EventcollectionsByIdResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/eventcollections/{id}',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers
-        }
-    });
-};
+export const putV3EventcollectionsById = <ThrowOnError extends boolean = false>(options: Options<PutV3EventcollectionsByIdData, ThrowOnError>) => (options.client ?? client).put<PutV3EventcollectionsByIdResponses, unknown, ThrowOnError>({
+    url: '/v3/eventcollections/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
-export const deleteV3EventsByEventIdCollectionsByCollectionId = <ThrowOnError extends boolean = false>(options: Options<DeleteV3EventsByEventIdCollectionsByCollectionIdData, ThrowOnError>) => {
-    return (options.client ?? client).delete<DeleteV3EventsByEventIdCollectionsByCollectionIdResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/events/{eventId}/collections/{collectionId}',
-        ...options
-    });
-};
+export const deleteV3EventsByEventIdCollectionsByCollectionId = <ThrowOnError extends boolean = false>(options: Options<DeleteV3EventsByEventIdCollectionsByCollectionIdData, ThrowOnError>) => (options.client ?? client).delete<DeleteV3EventsByEventIdCollectionsByCollectionIdResponses, unknown, ThrowOnError>({ url: '/v3/events/{eventId}/collections/{collectionId}', ...options });
 
-export const putV3EventsByEventIdCollectionsByCollectionId = <ThrowOnError extends boolean = false>(options: Options<PutV3EventsByEventIdCollectionsByCollectionIdData, ThrowOnError>) => {
-    return (options.client ?? client).put<PutV3EventsByEventIdCollectionsByCollectionIdResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/events/{eventId}/collections/{collectionId}',
-        ...options
-    });
-};
+export const putV3EventsByEventIdCollectionsByCollectionId = <ThrowOnError extends boolean = false>(options: Options<PutV3EventsByEventIdCollectionsByCollectionIdData, ThrowOnError>) => (options.client ?? client).put<PutV3EventsByEventIdCollectionsByCollectionIdResponses, unknown, ThrowOnError>({ url: '/v3/events/{eventId}/collections/{collectionId}', ...options });
 
-export const getV3EventsByEventIdProducts = <ThrowOnError extends boolean = false>(options: Options<GetV3EventsByEventIdProductsData, ThrowOnError>) => {
-    return (options.client ?? client).get<GetV3EventsByEventIdProductsResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/events/{eventId}/products',
-        ...options
-    });
-};
+export const getV3EventsByEventIdProducts = <ThrowOnError extends boolean = false>(options: Options<GetV3EventsByEventIdProductsData, ThrowOnError>) => (options.client ?? client).get<GetV3EventsByEventIdProductsResponses, unknown, ThrowOnError>({ url: '/v3/events/{eventId}/products', ...options });
 
-export const postV3EventsByEventIdProducts = <ThrowOnError extends boolean = false>(options: Options<PostV3EventsByEventIdProductsData, ThrowOnError>) => {
-    return (options.client ?? client).post<PostV3EventsByEventIdProductsResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/events/{eventId}/products',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers
-        }
-    });
-};
+export const postV3EventsByEventIdProducts = <ThrowOnError extends boolean = false>(options: Options<PostV3EventsByEventIdProductsData, ThrowOnError>) => (options.client ?? client).post<PostV3EventsByEventIdProductsResponses, unknown, ThrowOnError>({
+    url: '/v3/events/{eventId}/products',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
-export const deleteV3EventsByEventIdProductsByProductId = <ThrowOnError extends boolean = false>(options: Options<DeleteV3EventsByEventIdProductsByProductIdData, ThrowOnError>) => {
-    return (options.client ?? client).delete<DeleteV3EventsByEventIdProductsByProductIdResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/events/{eventId}/products/{productId}',
-        ...options
-    });
-};
+export const deleteV3EventsByEventIdProductsByProductId = <ThrowOnError extends boolean = false>(options: Options<DeleteV3EventsByEventIdProductsByProductIdData, ThrowOnError>) => (options.client ?? client).delete<DeleteV3EventsByEventIdProductsByProductIdResponses, unknown, ThrowOnError>({ url: '/v3/events/{eventId}/products/{productId}', ...options });
 
-export const putV3EventsByEventIdProductsByProductId = <ThrowOnError extends boolean = false>(options: Options<PutV3EventsByEventIdProductsByProductIdData, ThrowOnError>) => {
-    return (options.client ?? client).put<PutV3EventsByEventIdProductsByProductIdResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/events/{eventId}/products/{productId}',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers
-        }
-    });
-};
+export const putV3EventsByEventIdProductsByProductId = <ThrowOnError extends boolean = false>(options: Options<PutV3EventsByEventIdProductsByProductIdData, ThrowOnError>) => (options.client ?? client).put<PutV3EventsByEventIdProductsByProductIdResponses, unknown, ThrowOnError>({
+    url: '/v3/events/{eventId}/products/{productId}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
-export const getV3EventsByEventIdProductsByProductIdVariants = <ThrowOnError extends boolean = false>(options: Options<GetV3EventsByEventIdProductsByProductIdVariantsData, ThrowOnError>) => {
-    return (options.client ?? client).get<GetV3EventsByEventIdProductsByProductIdVariantsResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/events/{eventId}/products/{productId}/variants',
-        ...options
-    });
-};
+export const getV3EventsByEventIdProductsByProductIdVariants = <ThrowOnError extends boolean = false>(options: Options<GetV3EventsByEventIdProductsByProductIdVariantsData, ThrowOnError>) => (options.client ?? client).get<GetV3EventsByEventIdProductsByProductIdVariantsResponses, unknown, ThrowOnError>({ url: '/v3/events/{eventId}/products/{productId}/variants', ...options });
 
-export const postV3EventsByEventIdProductsByProductIdVariants = <ThrowOnError extends boolean = false>(options: Options<PostV3EventsByEventIdProductsByProductIdVariantsData, ThrowOnError>) => {
-    return (options.client ?? client).post<PostV3EventsByEventIdProductsByProductIdVariantsResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/events/{eventId}/products/{productId}/variants',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers
-        }
-    });
-};
+export const postV3EventsByEventIdProductsByProductIdVariants = <ThrowOnError extends boolean = false>(options: Options<PostV3EventsByEventIdProductsByProductIdVariantsData, ThrowOnError>) => (options.client ?? client).post<PostV3EventsByEventIdProductsByProductIdVariantsResponses, unknown, ThrowOnError>({
+    url: '/v3/events/{eventId}/products/{productId}/variants',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
-export const deleteV3EventsByEventIdProductsByProductIdVariantsById = <ThrowOnError extends boolean = false>(options: Options<DeleteV3EventsByEventIdProductsByProductIdVariantsByIdData, ThrowOnError>) => {
-    return (options.client ?? client).delete<DeleteV3EventsByEventIdProductsByProductIdVariantsByIdResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/events/{eventId}/products/{productId}/variants/{id}',
-        ...options
-    });
-};
+export const deleteV3EventsByEventIdProductsByProductIdVariantsById = <ThrowOnError extends boolean = false>(options: Options<DeleteV3EventsByEventIdProductsByProductIdVariantsByIdData, ThrowOnError>) => (options.client ?? client).delete<DeleteV3EventsByEventIdProductsByProductIdVariantsByIdResponses, unknown, ThrowOnError>({ url: '/v3/events/{eventId}/products/{productId}/variants/{id}', ...options });
 
 /**
  * Retrieves a list of events based on the given query.
  */
-export const getV3Events = <ThrowOnError extends boolean = false>(options?: Options<GetV3EventsData, ThrowOnError>) => {
-    return (options?.client ?? client).get<GetV3EventsResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/events',
-        ...options
-    });
-};
+export const getV3Events = <ThrowOnError extends boolean = false>(options?: Options<GetV3EventsData, ThrowOnError>) => (options?.client ?? client).get<GetV3EventsResponses, unknown, ThrowOnError>({ url: '/v3/events', ...options });
 
 /**
  * Creates a new event.
  */
-export const postV3Events = <ThrowOnError extends boolean = false>(options?: Options<PostV3EventsData, ThrowOnError>) => {
-    return (options?.client ?? client).post<PostV3EventsResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/events',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options?.headers
-        }
-    });
-};
+export const postV3Events = <ThrowOnError extends boolean = false>(options?: Options<PostV3EventsData, ThrowOnError>) => (options?.client ?? client).post<PostV3EventsResponses, unknown, ThrowOnError>({
+    url: '/v3/events',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
 
 /**
  * Deletes an event by ID.
  */
-export const deleteV3EventsById = <ThrowOnError extends boolean = false>(options: Options<DeleteV3EventsByIdData, ThrowOnError>) => {
-    return (options.client ?? client).delete<DeleteV3EventsByIdResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/events/{id}',
-        ...options
-    });
-};
+export const deleteV3EventsById = <ThrowOnError extends boolean = false>(options: Options<DeleteV3EventsByIdData, ThrowOnError>) => (options.client ?? client).delete<DeleteV3EventsByIdResponses, unknown, ThrowOnError>({ url: '/v3/events/{id}', ...options });
 
 /**
  * Retrieves event details by ID.
  */
-export const getV3EventsById = <ThrowOnError extends boolean = false>(options: Options<GetV3EventsByIdData, ThrowOnError>) => {
-    return (options.client ?? client).get<GetV3EventsByIdResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/events/{id}',
-        ...options
-    });
-};
+export const getV3EventsById = <ThrowOnError extends boolean = false>(options: Options<GetV3EventsByIdData, ThrowOnError>) => (options.client ?? client).get<GetV3EventsByIdResponses, unknown, ThrowOnError>({ url: '/v3/events/{id}', ...options });
 
 /**
  * Partially updates a specific event by its ID.
  *
  * Updates specific fields of an event. For comprehensive updates with all fields, use PUT endpoint with EventFormDto instead.
  */
-export const patchV3EventsById = <ThrowOnError extends boolean = false>(options: Options<PatchV3EventsByIdData, ThrowOnError>) => {
-    return (options.client ?? client).patch<PatchV3EventsByIdResponses, PatchV3EventsByIdErrors, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/events/{id}',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers
-        }
-    });
-};
+export const patchV3EventsById = <ThrowOnError extends boolean = false>(options: Options<PatchV3EventsByIdData, ThrowOnError>) => (options.client ?? client).patch<PatchV3EventsByIdResponses, PatchV3EventsByIdErrors, ThrowOnError>({
+    url: '/v3/events/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Updates an existing event by ID.
  */
-export const putV3EventsById = <ThrowOnError extends boolean = false>(options: Options<PutV3EventsByIdData, ThrowOnError>) => {
-    return (options.client ?? client).put<PutV3EventsByIdResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/events/{id}',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers
-        }
-    });
-};
+export const putV3EventsById = <ThrowOnError extends boolean = false>(options: Options<PutV3EventsByIdData, ThrowOnError>) => (options.client ?? client).put<PutV3EventsByIdResponses, unknown, ThrowOnError>({
+    url: '/v3/events/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Event statistics
  *
  * Returns a summary of the registrations for the event.
  */
-export const getV3EventsByEventIdStatistics = <ThrowOnError extends boolean = false>(options: Options<GetV3EventsByEventIdStatisticsData, ThrowOnError>) => {
-    return (options.client ?? client).get<GetV3EventsByEventIdStatisticsResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/events/{eventId}/statistics',
-        ...options
-    });
-};
+export const getV3EventsByEventIdStatistics = <ThrowOnError extends boolean = false>(options: Options<GetV3EventsByEventIdStatisticsData, ThrowOnError>) => (options.client ?? client).get<GetV3EventsByEventIdStatisticsResponses, unknown, ThrowOnError>({ url: '/v3/events/{eventId}/statistics', ...options });
 
-export const getV3InvoicesById = <ThrowOnError extends boolean = false>(options: Options<GetV3InvoicesByIdData, ThrowOnError>) => {
-    return (options.client ?? client).get<GetV3InvoicesByIdResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/invoices/{id}',
-        ...options
-    });
-};
+export const getV3InvoicesById = <ThrowOnError extends boolean = false>(options: Options<GetV3InvoicesByIdData, ThrowOnError>) => (options.client ?? client).get<GetV3InvoicesByIdResponses, unknown, ThrowOnError>({ url: '/v3/invoices/{id}', ...options });
 
-export const postV3Invoices = <ThrowOnError extends boolean = false>(options?: Options<PostV3InvoicesData, ThrowOnError>) => {
-    return (options?.client ?? client).post<PostV3InvoicesResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/invoices',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options?.headers
-        }
-    });
-};
+export const postV3Invoices = <ThrowOnError extends boolean = false>(options?: Options<PostV3InvoicesData, ThrowOnError>) => (options?.client ?? client).post<PostV3InvoicesResponses, unknown, ThrowOnError>({
+    url: '/v3/invoices',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
 
-export const getV3NotificationsByIdRecipients = <ThrowOnError extends boolean = false>(options: Options<GetV3NotificationsByIdRecipientsData, ThrowOnError>) => {
-    return (options.client ?? client).get<GetV3NotificationsByIdRecipientsResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/notifications/{id}/recipients',
-        ...options
-    });
-};
+export const getV3NotificationsByIdRecipients = <ThrowOnError extends boolean = false>(options: Options<GetV3NotificationsByIdRecipientsData, ThrowOnError>) => (options.client ?? client).get<GetV3NotificationsByIdRecipientsResponses, unknown, ThrowOnError>({ url: '/v3/notifications/{id}/recipients', ...options });
 
-export const getV3NotificationsById = <ThrowOnError extends boolean = false>(options: Options<GetV3NotificationsByIdData, ThrowOnError>) => {
-    return (options.client ?? client).get<GetV3NotificationsByIdResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/notifications/{id}',
-        ...options
-    });
-};
+export const getV3NotificationsById = <ThrowOnError extends boolean = false>(options: Options<GetV3NotificationsByIdData, ThrowOnError>) => (options.client ?? client).get<GetV3NotificationsByIdResponses, unknown, ThrowOnError>({ url: '/v3/notifications/{id}', ...options });
 
-export const getV3Notifications = <ThrowOnError extends boolean = false>(options?: Options<GetV3NotificationsData, ThrowOnError>) => {
-    return (options?.client ?? client).get<GetV3NotificationsResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/notifications',
-        ...options
-    });
-};
+export const getV3Notifications = <ThrowOnError extends boolean = false>(options?: Options<GetV3NotificationsData, ThrowOnError>) => (options?.client ?? client).get<GetV3NotificationsResponses, unknown, ThrowOnError>({ url: '/v3/notifications', ...options });
 
-export const postV3NotificationsEmail = <ThrowOnError extends boolean = false>(options?: Options<PostV3NotificationsEmailData, ThrowOnError>) => {
-    return (options?.client ?? client).post<PostV3NotificationsEmailResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/notifications/email',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options?.headers
-        }
-    });
-};
+export const postV3NotificationsEmail = <ThrowOnError extends boolean = false>(options?: Options<PostV3NotificationsEmailData, ThrowOnError>) => (options?.client ?? client).post<PostV3NotificationsEmailResponses, unknown, ThrowOnError>({
+    url: '/v3/notifications/email',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
 
-export const postV3NotificationsSms = <ThrowOnError extends boolean = false>(options?: Options<PostV3NotificationsSmsData, ThrowOnError>) => {
-    return (options?.client ?? client).post<PostV3NotificationsSmsResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/notifications/sms',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options?.headers
-        }
-    });
-};
+export const postV3NotificationsSms = <ThrowOnError extends boolean = false>(options?: Options<PostV3NotificationsSmsData, ThrowOnError>) => (options?.client ?? client).post<PostV3NotificationsSmsResponses, unknown, ThrowOnError>({
+    url: '/v3/notifications/sms',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
 
-export const getV3Onlinecourses = <ThrowOnError extends boolean = false>(options?: Options<GetV3OnlinecoursesData, ThrowOnError>) => {
-    return (options?.client ?? client).get<GetV3OnlinecoursesResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/onlinecourses',
-        ...options
-    });
-};
+export const getV3Onlinecourses = <ThrowOnError extends boolean = false>(options?: Options<GetV3OnlinecoursesData, ThrowOnError>) => (options?.client ?? client).get<GetV3OnlinecoursesResponses, unknown, ThrowOnError>({ url: '/v3/onlinecourses', ...options });
 
-export const getV3OnlinecoursesById = <ThrowOnError extends boolean = false>(options: Options<GetV3OnlinecoursesByIdData, ThrowOnError>) => {
-    return (options.client ?? client).get<GetV3OnlinecoursesByIdResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/onlinecourses/{id}',
-        ...options
-    });
-};
+export const getV3OnlinecoursesById = <ThrowOnError extends boolean = false>(options: Options<GetV3OnlinecoursesByIdData, ThrowOnError>) => (options.client ?? client).get<GetV3OnlinecoursesByIdResponses, unknown, ThrowOnError>({ url: '/v3/onlinecourses/{id}', ...options });
 
-export const deleteV3OrdersById = <ThrowOnError extends boolean = false>(options: Options<DeleteV3OrdersByIdData, ThrowOnError>) => {
-    return (options.client ?? client).delete<DeleteV3OrdersByIdResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/orders/{id}',
-        ...options
-    });
-};
+export const deleteV3OrdersById = <ThrowOnError extends boolean = false>(options: Options<DeleteV3OrdersByIdData, ThrowOnError>) => (options.client ?? client).delete<DeleteV3OrdersByIdResponses, unknown, ThrowOnError>({ url: '/v3/orders/{id}', ...options });
 
-export const getV3OrdersById = <ThrowOnError extends boolean = false>(options: Options<GetV3OrdersByIdData, ThrowOnError>) => {
-    return (options.client ?? client).get<GetV3OrdersByIdResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/orders/{id}',
-        ...options
-    });
-};
+export const getV3OrdersById = <ThrowOnError extends boolean = false>(options: Options<GetV3OrdersByIdData, ThrowOnError>) => (options.client ?? client).get<GetV3OrdersByIdResponses, unknown, ThrowOnError>({ url: '/v3/orders/{id}', ...options });
 
 /**
  * Partially update an order
  *
  * Updates specific fields of an order. Only Status, Comments, and PaymentMethod can be modified.
  */
-export const patchV3OrdersById = <ThrowOnError extends boolean = false>(options: Options<PatchV3OrdersByIdData, ThrowOnError>) => {
-    return (options.client ?? client).patch<PatchV3OrdersByIdResponses, PatchV3OrdersByIdErrors, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/orders/{id}',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers
-        }
-    });
-};
+export const patchV3OrdersById = <ThrowOnError extends boolean = false>(options: Options<PatchV3OrdersByIdData, ThrowOnError>) => (options.client ?? client).patch<PatchV3OrdersByIdResponses, PatchV3OrdersByIdErrors, ThrowOnError>({
+    url: '/v3/orders/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
-export const putV3OrdersById = <ThrowOnError extends boolean = false>(options: Options<PutV3OrdersByIdData, ThrowOnError>) => {
-    return (options.client ?? client).put<PutV3OrdersByIdResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/orders/{id}',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers
-        }
-    });
-};
+export const putV3OrdersById = <ThrowOnError extends boolean = false>(options: Options<PutV3OrdersByIdData, ThrowOnError>) => (options.client ?? client).put<PutV3OrdersByIdResponses, unknown, ThrowOnError>({
+    url: '/v3/orders/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
-export const getV3Orders = <ThrowOnError extends boolean = false>(options?: Options<GetV3OrdersData, ThrowOnError>) => {
-    return (options?.client ?? client).get<GetV3OrdersResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/orders',
-        ...options
-    });
-};
+export const getV3Orders = <ThrowOnError extends boolean = false>(options?: Options<GetV3OrdersData, ThrowOnError>) => (options?.client ?? client).get<GetV3OrdersResponses, unknown, ThrowOnError>({ url: '/v3/orders', ...options });
 
-export const postV3Orders = <ThrowOnError extends boolean = false>(options?: Options<PostV3OrdersData, ThrowOnError>) => {
-    return (options?.client ?? client).post<PostV3OrdersResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/orders',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options?.headers
-        }
-    });
-};
+export const postV3Orders = <ThrowOnError extends boolean = false>(options?: Options<PostV3OrdersData, ThrowOnError>) => (options?.client ?? client).post<PostV3OrdersResponses, unknown, ThrowOnError>({
+    url: '/v3/orders',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
 
-export const deleteV3OrganizationsByOrganizationIdMembersByUserIdRoles = <ThrowOnError extends boolean = false>(options: Options<DeleteV3OrganizationsByOrganizationIdMembersByUserIdRolesData, ThrowOnError>) => {
-    return (options.client ?? client).delete<DeleteV3OrganizationsByOrganizationIdMembersByUserIdRolesResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/organizations/{organizationId}/members/{userId}/roles',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers
-        }
-    });
-};
+export const deleteV3OrganizationsByOrganizationIdMembersByUserIdRoles = <ThrowOnError extends boolean = false>(options: Options<DeleteV3OrganizationsByOrganizationIdMembersByUserIdRolesData, ThrowOnError>) => (options.client ?? client).delete<DeleteV3OrganizationsByOrganizationIdMembersByUserIdRolesResponses, unknown, ThrowOnError>({
+    url: '/v3/organizations/{organizationId}/members/{userId}/roles',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
-export const getV3OrganizationsByOrganizationIdMembersByUserIdRoles = <ThrowOnError extends boolean = false>(options: Options<GetV3OrganizationsByOrganizationIdMembersByUserIdRolesData, ThrowOnError>) => {
-    return (options.client ?? client).get<GetV3OrganizationsByOrganizationIdMembersByUserIdRolesResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/organizations/{organizationId}/members/{userId}/roles',
-        ...options
-    });
-};
+export const getV3OrganizationsByOrganizationIdMembersByUserIdRoles = <ThrowOnError extends boolean = false>(options: Options<GetV3OrganizationsByOrganizationIdMembersByUserIdRolesData, ThrowOnError>) => (options.client ?? client).get<GetV3OrganizationsByOrganizationIdMembersByUserIdRolesResponses, unknown, ThrowOnError>({ url: '/v3/organizations/{organizationId}/members/{userId}/roles', ...options });
 
-export const postV3OrganizationsByOrganizationIdMembersByUserIdRoles = <ThrowOnError extends boolean = false>(options: Options<PostV3OrganizationsByOrganizationIdMembersByUserIdRolesData, ThrowOnError>) => {
-    return (options.client ?? client).post<PostV3OrganizationsByOrganizationIdMembersByUserIdRolesResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/organizations/{organizationId}/members/{userId}/roles',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers
-        }
-    });
-};
+export const postV3OrganizationsByOrganizationIdMembersByUserIdRoles = <ThrowOnError extends boolean = false>(options: Options<PostV3OrganizationsByOrganizationIdMembersByUserIdRolesData, ThrowOnError>) => (options.client ?? client).post<PostV3OrganizationsByOrganizationIdMembersByUserIdRolesResponses, unknown, ThrowOnError>({
+    url: '/v3/organizations/{organizationId}/members/{userId}/roles',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
-export const deleteV3OrganizationsByOrganizationIdMembersByUserId = <ThrowOnError extends boolean = false>(options: Options<DeleteV3OrganizationsByOrganizationIdMembersByUserIdData, ThrowOnError>) => {
-    return (options.client ?? client).delete<DeleteV3OrganizationsByOrganizationIdMembersByUserIdResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/organizations/{organizationId}/members/{userId}',
-        ...options
-    });
-};
+export const deleteV3OrganizationsByOrganizationIdMembersByUserId = <ThrowOnError extends boolean = false>(options: Options<DeleteV3OrganizationsByOrganizationIdMembersByUserIdData, ThrowOnError>) => (options.client ?? client).delete<DeleteV3OrganizationsByOrganizationIdMembersByUserIdResponses, unknown, ThrowOnError>({ url: '/v3/organizations/{organizationId}/members/{userId}', ...options });
 
-export const putV3OrganizationsByOrganizationIdMembersByUserId = <ThrowOnError extends boolean = false>(options: Options<PutV3OrganizationsByOrganizationIdMembersByUserIdData, ThrowOnError>) => {
-    return (options.client ?? client).put<PutV3OrganizationsByOrganizationIdMembersByUserIdResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/organizations/{organizationId}/members/{userId}',
-        ...options
-    });
-};
+export const putV3OrganizationsByOrganizationIdMembersByUserId = <ThrowOnError extends boolean = false>(options: Options<PutV3OrganizationsByOrganizationIdMembersByUserIdData, ThrowOnError>) => (options.client ?? client).put<PutV3OrganizationsByOrganizationIdMembersByUserIdResponses, unknown, ThrowOnError>({ url: '/v3/organizations/{organizationId}/members/{userId}', ...options });
 
-export const getV3Organizations = <ThrowOnError extends boolean = false>(options?: Options<GetV3OrganizationsData, ThrowOnError>) => {
-    return (options?.client ?? client).get<GetV3OrganizationsResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/organizations',
-        ...options
-    });
-};
+export const getV3Organizations = <ThrowOnError extends boolean = false>(options?: Options<GetV3OrganizationsData, ThrowOnError>) => (options?.client ?? client).get<GetV3OrganizationsResponses, unknown, ThrowOnError>({ url: '/v3/organizations', ...options });
 
-export const postV3Organizations = <ThrowOnError extends boolean = false>(options?: Options<PostV3OrganizationsData, ThrowOnError>) => {
-    return (options?.client ?? client).post<PostV3OrganizationsResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/organizations',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options?.headers
-        }
-    });
-};
+export const postV3Organizations = <ThrowOnError extends boolean = false>(options?: Options<PostV3OrganizationsData, ThrowOnError>) => (options?.client ?? client).post<PostV3OrganizationsResponses, unknown, ThrowOnError>({
+    url: '/v3/organizations',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
 
-export const deleteV3OrganizationsByOrganizationId = <ThrowOnError extends boolean = false>(options: Options<DeleteV3OrganizationsByOrganizationIdData, ThrowOnError>) => {
-    return (options.client ?? client).delete<DeleteV3OrganizationsByOrganizationIdResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/organizations/{organizationId}',
-        ...options
-    });
-};
+export const deleteV3OrganizationsByOrganizationId = <ThrowOnError extends boolean = false>(options: Options<DeleteV3OrganizationsByOrganizationIdData, ThrowOnError>) => (options.client ?? client).delete<DeleteV3OrganizationsByOrganizationIdResponses, unknown, ThrowOnError>({ url: '/v3/organizations/{organizationId}', ...options });
 
-export const getV3OrganizationsByOrganizationId = <ThrowOnError extends boolean = false>(options: Options<GetV3OrganizationsByOrganizationIdData, ThrowOnError>) => {
-    return (options.client ?? client).get<GetV3OrganizationsByOrganizationIdResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/organizations/{organizationId}',
-        ...options
-    });
-};
+export const getV3OrganizationsByOrganizationId = <ThrowOnError extends boolean = false>(options: Options<GetV3OrganizationsByOrganizationIdData, ThrowOnError>) => (options.client ?? client).get<GetV3OrganizationsByOrganizationIdResponses, unknown, ThrowOnError>({ url: '/v3/organizations/{organizationId}', ...options });
 
-export const putV3OrganizationsByOrganizationId = <ThrowOnError extends boolean = false>(options: Options<PutV3OrganizationsByOrganizationIdData, ThrowOnError>) => {
-    return (options.client ?? client).put<PutV3OrganizationsByOrganizationIdResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/organizations/{organizationId}',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers
-        }
-    });
-};
+export const putV3OrganizationsByOrganizationId = <ThrowOnError extends boolean = false>(options: Options<PutV3OrganizationsByOrganizationIdData, ThrowOnError>) => (options.client ?? client).put<PutV3OrganizationsByOrganizationIdResponses, unknown, ThrowOnError>({
+    url: '/v3/organizations/{organizationId}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
-export const getV3OrganizationsByOrganizationIdSettings = <ThrowOnError extends boolean = false>(options: Options<GetV3OrganizationsByOrganizationIdSettingsData, ThrowOnError>) => {
-    return (options.client ?? client).get<GetV3OrganizationsByOrganizationIdSettingsResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/organizations/{organizationId}/settings',
-        ...options
-    });
-};
+export const getV3OrganizationsByOrganizationIdSettings = <ThrowOnError extends boolean = false>(options: Options<GetV3OrganizationsByOrganizationIdSettingsData, ThrowOnError>) => (options.client ?? client).get<GetV3OrganizationsByOrganizationIdSettingsResponses, unknown, ThrowOnError>({ url: '/v3/organizations/{organizationId}/settings', ...options });
 
-export const postV3OrganizationsByOrganizationIdSettings = <ThrowOnError extends boolean = false>(options: Options<PostV3OrganizationsByOrganizationIdSettingsData, ThrowOnError>) => {
-    return (options.client ?? client).post<PostV3OrganizationsByOrganizationIdSettingsResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/organizations/{organizationId}/settings',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers
-        }
-    });
-};
+export const postV3OrganizationsByOrganizationIdSettings = <ThrowOnError extends boolean = false>(options: Options<PostV3OrganizationsByOrganizationIdSettingsData, ThrowOnError>) => (options.client ?? client).post<PostV3OrganizationsByOrganizationIdSettingsResponses, unknown, ThrowOnError>({
+    url: '/v3/organizations/{organizationId}/settings',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
-export const putV3OrganizationsByOrganizationIdSettings = <ThrowOnError extends boolean = false>(options: Options<PutV3OrganizationsByOrganizationIdSettingsData, ThrowOnError>) => {
-    return (options.client ?? client).put<PutV3OrganizationsByOrganizationIdSettingsResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/organizations/{organizationId}/settings',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers
-        }
-    });
-};
+export const putV3OrganizationsByOrganizationIdSettings = <ThrowOnError extends boolean = false>(options: Options<PutV3OrganizationsByOrganizationIdSettingsData, ThrowOnError>) => (options.client ?? client).put<PutV3OrganizationsByOrganizationIdSettingsResponses, unknown, ThrowOnError>({
+    url: '/v3/organizations/{organizationId}/settings',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
-export const getV3ProductsByProductIdSummary = <ThrowOnError extends boolean = false>(options: Options<GetV3ProductsByProductIdSummaryData, ThrowOnError>) => {
-    return (options.client ?? client).get<GetV3ProductsByProductIdSummaryResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/products/{productId}/summary',
-        ...options
-    });
-};
+export const getV3ProductsByProductIdSummary = <ThrowOnError extends boolean = false>(options: Options<GetV3ProductsByProductIdSummaryData, ThrowOnError>) => (options.client ?? client).get<GetV3ProductsByProductIdSummaryResponses, unknown, ThrowOnError>({ url: '/v3/products/{productId}/summary', ...options });
 
-export const postV3RegistrationsByIdCertificateSend = <ThrowOnError extends boolean = false>(options: Options<PostV3RegistrationsByIdCertificateSendData, ThrowOnError>) => {
-    return (options.client ?? client).post<PostV3RegistrationsByIdCertificateSendResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/registrations/{id}/certificate/send',
-        ...options
-    });
-};
+export const postV3RegistrationsByIdCertificateSend = <ThrowOnError extends boolean = false>(options: Options<PostV3RegistrationsByIdCertificateSendData, ThrowOnError>) => (options.client ?? client).post<PostV3RegistrationsByIdCertificateSendResponses, unknown, ThrowOnError>({ url: '/v3/registrations/{id}/certificate/send', ...options });
 
-export const getV3RegistrationsByIdOrders = <ThrowOnError extends boolean = false>(options: Options<GetV3RegistrationsByIdOrdersData, ThrowOnError>) => {
-    return (options.client ?? client).get<GetV3RegistrationsByIdOrdersResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/registrations/{id}/orders',
-        ...options
-    });
-};
+export const getV3RegistrationsByIdOrders = <ThrowOnError extends boolean = false>(options: Options<GetV3RegistrationsByIdOrdersData, ThrowOnError>) => (options.client ?? client).get<GetV3RegistrationsByIdOrdersResponses, unknown, ThrowOnError>({ url: '/v3/registrations/{id}/orders', ...options });
 
-export const postV3RegistrationsByIdOrders = <ThrowOnError extends boolean = false>(options: Options<PostV3RegistrationsByIdOrdersData, ThrowOnError>) => {
-    return (options.client ?? client).post<PostV3RegistrationsByIdOrdersResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/registrations/{id}/orders',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers
-        }
-    });
-};
+export const postV3RegistrationsByIdOrders = <ThrowOnError extends boolean = false>(options: Options<PostV3RegistrationsByIdOrdersData, ThrowOnError>) => (options.client ?? client).post<PostV3RegistrationsByIdOrdersResponses, unknown, ThrowOnError>({
+    url: '/v3/registrations/{id}/orders',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
-export const postV3RegistrationsByIdProducts = <ThrowOnError extends boolean = false>(options: Options<PostV3RegistrationsByIdProductsData, ThrowOnError>) => {
-    return (options.client ?? client).post<PostV3RegistrationsByIdProductsResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/registrations/{id}/products',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers
-        }
-    });
-};
+export const postV3RegistrationsByIdProducts = <ThrowOnError extends boolean = false>(options: Options<PostV3RegistrationsByIdProductsData, ThrowOnError>) => (options.client ?? client).post<PostV3RegistrationsByIdProductsResponses, unknown, ThrowOnError>({
+    url: '/v3/registrations/{id}/products',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Get registrations with optional Excel export
  *
  * Retrieves registrations with optional export to Excel based on the Accept header.
  */
-export const getV3Registrations = <ThrowOnError extends boolean = false>(options?: Options<GetV3RegistrationsData, ThrowOnError>) => {
-    return (options?.client ?? client).get<GetV3RegistrationsResponses, GetV3RegistrationsErrors, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/registrations',
-        ...options
-    });
-};
+export const getV3Registrations = <ThrowOnError extends boolean = false>(options?: Options<GetV3RegistrationsData, ThrowOnError>) => (options?.client ?? client).get<GetV3RegistrationsResponses, GetV3RegistrationsErrors, ThrowOnError>({ url: '/v3/registrations', ...options });
 
-export const postV3Registrations = <ThrowOnError extends boolean = false>(options?: Options<PostV3RegistrationsData, ThrowOnError>) => {
-    return (options?.client ?? client).post<PostV3RegistrationsResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/registrations',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options?.headers
-        }
-    });
-};
+export const postV3Registrations = <ThrowOnError extends boolean = false>(options?: Options<PostV3RegistrationsData, ThrowOnError>) => (options?.client ?? client).post<PostV3RegistrationsResponses, unknown, ThrowOnError>({
+    url: '/v3/registrations',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
 
-export const deleteV3RegistrationsById = <ThrowOnError extends boolean = false>(options: Options<DeleteV3RegistrationsByIdData, ThrowOnError>) => {
-    return (options.client ?? client).delete<DeleteV3RegistrationsByIdResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/registrations/{id}',
-        ...options
-    });
-};
+export const deleteV3RegistrationsById = <ThrowOnError extends boolean = false>(options: Options<DeleteV3RegistrationsByIdData, ThrowOnError>) => (options.client ?? client).delete<DeleteV3RegistrationsByIdResponses, unknown, ThrowOnError>({ url: '/v3/registrations/{id}', ...options });
 
-export const getV3RegistrationsById = <ThrowOnError extends boolean = false>(options: Options<GetV3RegistrationsByIdData, ThrowOnError>) => {
-    return (options.client ?? client).get<GetV3RegistrationsByIdResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/registrations/{id}',
-        ...options
-    });
-};
+export const getV3RegistrationsById = <ThrowOnError extends boolean = false>(options: Options<GetV3RegistrationsByIdData, ThrowOnError>) => (options.client ?? client).get<GetV3RegistrationsByIdResponses, unknown, ThrowOnError>({ url: '/v3/registrations/{id}', ...options });
 
 /**
  * Partially update a registration
  *
  * Updates specific fields of a registration. Only Status, Type, and Notes can be modified.
  */
-export const patchV3RegistrationsById = <ThrowOnError extends boolean = false>(options: Options<PatchV3RegistrationsByIdData, ThrowOnError>) => {
-    return (options.client ?? client).patch<PatchV3RegistrationsByIdResponses, PatchV3RegistrationsByIdErrors, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/registrations/{id}',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers
-        }
-    });
-};
+export const patchV3RegistrationsById = <ThrowOnError extends boolean = false>(options: Options<PatchV3RegistrationsByIdData, ThrowOnError>) => (options.client ?? client).patch<PatchV3RegistrationsByIdResponses, PatchV3RegistrationsByIdErrors, ThrowOnError>({
+    url: '/v3/registrations/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
-export const putV3RegistrationsById = <ThrowOnError extends boolean = false>(options: Options<PutV3RegistrationsByIdData, ThrowOnError>) => {
-    return (options.client ?? client).put<PutV3RegistrationsByIdResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/registrations/{id}',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers
-        }
-    });
-};
+export const putV3RegistrationsById = <ThrowOnError extends boolean = false>(options: Options<PutV3RegistrationsByIdData, ThrowOnError>) => (options.client ?? client).put<PutV3RegistrationsByIdResponses, unknown, ThrowOnError>({
+    url: '/v3/registrations/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Alias for POST /v3/registrations
  */
-export const postV3RegistrationsMeByEventId = <ThrowOnError extends boolean = false>(options: Options<PostV3RegistrationsMeByEventIdData, ThrowOnError>) => {
-    return (options.client ?? client).post<PostV3RegistrationsMeByEventIdResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/registrations/me/{eventId}',
-        ...options
-    });
-};
+export const postV3RegistrationsMeByEventId = <ThrowOnError extends boolean = false>(options: Options<PostV3RegistrationsMeByEventIdData, ThrowOnError>) => (options.client ?? client).post<PostV3RegistrationsMeByEventIdResponses, unknown, ThrowOnError>({ url: '/v3/registrations/me/{eventId}', ...options });
 
 /**
  * Gets information about the current user. Creates a new user if no user with the email exists.
  */
-export const getV3Userprofile = <ThrowOnError extends boolean = false>(options?: Options<GetV3UserprofileData, ThrowOnError>) => {
-    return (options?.client ?? client).get<GetV3UserprofileResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/userprofile',
-        ...options
-    });
-};
+export const getV3Userprofile = <ThrowOnError extends boolean = false>(options?: Options<GetV3UserprofileData, ThrowOnError>) => (options?.client ?? client).get<GetV3UserprofileResponses, unknown, ThrowOnError>({ url: '/v3/userprofile', ...options });
 
-export const putV3Userprofile = <ThrowOnError extends boolean = false>(options?: Options<PutV3UserprofileData, ThrowOnError>) => {
-    return (options?.client ?? client).put<PutV3UserprofileResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/userprofile',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options?.headers
-        }
-    });
-};
+export const putV3Userprofile = <ThrowOnError extends boolean = false>(options?: Options<PutV3UserprofileData, ThrowOnError>) => (options?.client ?? client).put<PutV3UserprofileResponses, unknown, ThrowOnError>({
+    url: '/v3/userprofile',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
 
 /**
  * Gets information about the current user. Creates a new user if no user with the email exists.
  *
  * @deprecated
  */
-export const getV3UsersMe = <ThrowOnError extends boolean = false>(options?: Options<GetV3UsersMeData, ThrowOnError>) => {
-    return (options?.client ?? client).get<GetV3UsersMeResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/users/me',
-        ...options
-    });
-};
+export const getV3UsersMe = <ThrowOnError extends boolean = false>(options?: Options<GetV3UsersMeData, ThrowOnError>) => (options?.client ?? client).get<GetV3UsersMeResponses, unknown, ThrowOnError>({ url: '/v3/users/me', ...options });
 
-export const getV3UsersById = <ThrowOnError extends boolean = false>(options: Options<GetV3UsersByIdData, ThrowOnError>) => {
-    return (options.client ?? client).get<GetV3UsersByIdResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/users/{id}',
-        ...options
-    });
-};
+export const getV3UsersById = <ThrowOnError extends boolean = false>(options: Options<GetV3UsersByIdData, ThrowOnError>) => (options.client ?? client).get<GetV3UsersByIdResponses, unknown, ThrowOnError>({ url: '/v3/users/{id}', ...options });
 
-export const putV3UsersById = <ThrowOnError extends boolean = false>(options: Options<PutV3UsersByIdData, ThrowOnError>) => {
-    return (options.client ?? client).put<PutV3UsersByIdResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/users/{id}',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers
-        }
-    });
-};
+export const putV3UsersById = <ThrowOnError extends boolean = false>(options: Options<PutV3UsersByIdData, ThrowOnError>) => (options.client ?? client).put<PutV3UsersByIdResponses, unknown, ThrowOnError>({
+    url: '/v3/users/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
-export const getV3Users = <ThrowOnError extends boolean = false>(options?: Options<GetV3UsersData, ThrowOnError>) => {
-    return (options?.client ?? client).get<GetV3UsersResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/users',
-        ...options
-    });
-};
+export const getV3Users = <ThrowOnError extends boolean = false>(options?: Options<GetV3UsersData, ThrowOnError>) => (options?.client ?? client).get<GetV3UsersResponses, unknown, ThrowOnError>({ url: '/v3/users', ...options });
 
-export const postV3Users = <ThrowOnError extends boolean = false>(options?: Options<PostV3UsersData, ThrowOnError>) => {
-    return (options?.client ?? client).post<PostV3UsersResponses, unknown, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/v3/users',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options?.headers
-        }
-    });
-};
+export const postV3Users = <ThrowOnError extends boolean = false>(options?: Options<PostV3UsersData, ThrowOnError>) => (options?.client ?? client).post<PostV3UsersResponses, unknown, ThrowOnError>({
+    url: '/v3/users',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});

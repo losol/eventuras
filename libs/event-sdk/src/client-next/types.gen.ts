@@ -357,10 +357,7 @@ export type NotificationDto = {
     statistics?: NotificationStatisticsDto;
 };
 
-export const NotificationListOrder = {
-    CREATED: 'Created',
-    STATUS_UPDATED: 'StatusUpdated'
-} as const;
+export const NotificationListOrder = { CREATED: 'Created', STATUS_UPDATED: 'StatusUpdated' } as const;
 
 export type NotificationListOrder = typeof NotificationListOrder[keyof typeof NotificationListOrder];
 
@@ -390,10 +387,7 @@ export const NotificationStatus = {
 
 export type NotificationStatus = typeof NotificationStatus[keyof typeof NotificationStatus];
 
-export const NotificationType = {
-    EMAIL: 'Email',
-    SMS: 'Sms'
-} as const;
+export const NotificationType = { EMAIL: 'Email', SMS: 'Sms' } as const;
 
 export type NotificationType = typeof NotificationType[keyof typeof NotificationType];
 
@@ -620,10 +614,7 @@ export type ProductVariantDto = {
     vatPercent?: number;
 };
 
-export const ProductVisibility = {
-    EVENT: 'Event',
-    COLLECTION: 'Collection'
-} as const;
+export const ProductVisibility = { EVENT: 'Event', COLLECTION: 'Collection' } as const;
 
 export type ProductVisibility = typeof ProductVisibility[keyof typeof ProductVisibility];
 
@@ -791,6 +782,14 @@ export type UserSummaryDto = {
     email?: string | null;
 };
 
+export type EmailNotificationDtoWritable = {
+    subject: string;
+    bodyMarkdown: string;
+    recipients?: Array<string> | null;
+    eventParticipants?: EventParticipantsFilterDtoWritable;
+    registrationId?: number | null;
+};
+
 export type EventCollectionDtoPageResponseDtoWritable = {
     page?: number;
     count?: number;
@@ -831,6 +830,27 @@ export type NotificationDtoWritable = {
     status?: NotificationStatus;
 };
 
+export type OrderDtoWritable = {
+    orderId?: number;
+    status?: OrderStatus;
+    time?: string;
+    userId?: string | null;
+    registrationId?: number;
+    paymentMethod?: PaymentProvider;
+    comments?: string | null;
+    log?: string | null;
+    items?: Array<OrderLineDtoWritable> | null;
+    registration?: RegistrationDtoWritable;
+    user?: UserDto;
+};
+
+export type OrderLineDtoWritable = {
+    orderLineId?: number;
+    product?: ProductDtoWritable;
+    productVariant?: ProductVariantDto;
+    quantity?: number;
+};
+
 export type OrganizationSettingDtoWritable = {
     type?: OrganizationSettingType;
     value?: string | null;
@@ -850,11 +870,41 @@ export type ProductDtoWritable = {
     enableQuantity?: boolean;
 };
 
+export type ProductOrderDtoWritable = {
+    productId?: number;
+    productVariantId?: number | null;
+    product?: ProductDtoWritable;
+    productVariant?: ProductVariantDto;
+    quantity?: number;
+};
+
+export type RegistrationDtoWritable = {
+    registrationId?: number;
+    eventId?: number;
+    userId?: string | null;
+    status?: RegistrationStatus;
+    type?: RegistrationType;
+    certificateId?: number | null;
+    notes?: string | null;
+    log?: string | null;
+    user?: UserDto;
+    event?: EventDto;
+    products?: Array<ProductOrderDtoWritable> | null;
+    orders?: Array<OrderDtoWritable> | null;
+};
+
 export type RegistrationDtoPageResponseDtoWritable = {
     page?: number;
     count?: number;
     total?: number;
-    data?: Array<RegistrationDto> | null;
+    data?: Array<RegistrationDtoWritable> | null;
+};
+
+export type SmsNotificationDtoWritable = {
+    message: string;
+    recipients?: Array<string> | null;
+    eventParticipants?: EventParticipantsFilterDtoWritable;
+    registrationId?: number | null;
 };
 
 export type UserDtoPageResponseDtoWritable = {
@@ -1669,7 +1719,7 @@ export type GetV3NotificationsResponses = {
 };
 
 export type PostV3NotificationsEmailData = {
-    body?: EmailNotificationDto;
+    body?: EmailNotificationDtoWritable;
     headers?: {
         /**
          * Optional organization Id. Will be required in API version 4.
@@ -1691,7 +1741,7 @@ export type PostV3NotificationsEmailResponses = {
 export type PostV3NotificationsEmailResponse = PostV3NotificationsEmailResponses[keyof PostV3NotificationsEmailResponses];
 
 export type PostV3NotificationsSmsData = {
-    body?: SmsNotificationDto;
+    body?: SmsNotificationDtoWritable;
     headers?: {
         /**
          * Optional organization Id. Will be required in API version 4.

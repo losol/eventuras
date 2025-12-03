@@ -43,6 +43,6 @@
     "@eventuras/vite-config": "workspace:*",
     "@types/node": "^22.10.2",
     "typescript": "^5.9.3",
-    "vite": "^7.2.4"
+    "vite": "^7.2.6"
   }
 }
