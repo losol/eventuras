@@ -70,5 +70,8 @@
     "@esbuild/linux-x64": "0.27.0",
     "@libsql/linux-x64-gnu": "0.5.22",
     "sharp": "^0.34.5"
+  },
+  "engines": {
+    "node": ">=20.9.0"
   }
 }
