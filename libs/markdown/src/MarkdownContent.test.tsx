@@ -1,18 +1,21 @@
 /* @vitest-environment jsdom */
 
-import React from 'react'
-import { describe, it, expect, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
-import Markdown from 'markdown-to-jsx'
-import { Heading } from '@eventuras/ratio-ui/core/Heading'
-import { Text } from '@eventuras/ratio-ui/core/Text'
+import React from 'react';
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Text } from '@eventuras/ratio-ui/core/Text';
 
 // mock ratio-ui primitives to avoid style deps
-vi.mock('@eventuras/ratio-ui/core/Heading', () => ({ Heading: (p:any)=> <h2 {...p}/> }))
-vi.mock('@eventuras/ratio-ui/core/Text', () => ({ Text: (p:any)=> <p {...p}/> }))
+vi.mock('@eventuras/ratio-ui/core/Heading', () => ({
+  Heading: (p: any) => <h2 {...p} />,
+}));
+vi.mock('@eventuras/ratio-ui/core/Text', () => ({
+  Text: (p: any) => <p {...p} />,
+}));
 
 // import the component under test
-import { MarkdownContent } from './MarkdownContent'
+import { MarkdownContent } from './MarkdownContent';
 
 describe('MarkdownContent', () => {
   // renders heading when provided
