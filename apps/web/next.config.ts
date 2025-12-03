@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
     '@eventuras/scribo',
     '@eventuras/smartform',
     '@eventuras/fides-auth-next',
+    '@eventuras/markdown',
     '@xstate/store',
   ],
 

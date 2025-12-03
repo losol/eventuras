@@ -18,18 +18,18 @@
   "dependencies": {
     "@eventuras/docs": "workspace:*",
     "@eventuras/typescript-config": "workspace:*",
-    "next": "15.5.6",
+    "next": "15.5.7",
     "nextra": "^4.6.0",
     "nextra-theme-blog": "^4.6.0",
     "nextra-theme-docs": "^4.6.0",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1"
   },
   "devDependencies": {
     "@eventuras/eslint-config": "workspace:*",
     "@types/node": "^24.0.3",
     "pagefind": "^1.4.0",
-    "tsx": "^4.20.6",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }
 }

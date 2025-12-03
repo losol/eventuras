@@ -42,6 +42,6 @@
     "@eventuras/typescript-config": "workspace:*",
     "@types/node": "^24.0.3",
     "fastify-tsconfig": "^3.0.0",
-    "tsx": "^4.20.6"
+    "tsx": "^4.21.0"
   }
 }
