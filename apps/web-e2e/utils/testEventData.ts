@@ -59,6 +59,30 @@ const generateEventTitle = (): string => {
 };
 
 /**
+ * Generate a random city and venue combination.
+ */
+const generateLocation = (): { city: string; venue: string } => {
+  const cities = [
+    'Oslo', 'Bergen', 'Trondheim', 'Stavanger', 'Tromsø', 'Kristiansand',
+    'Stockholm', 'Copenhagen', 'Helsinki', 'Reykjavik', 'Amsterdam',
+    'Berlin', 'Munich', 'Vienna', 'Zurich', 'London', 'Dublin', 'Paris',
+    'Barcelona', 'Lisbon', 'Prague', 'Warsaw', 'Tallinn', 'Riga'
+  ];
+
+  const venues = [
+    'Convention Center', 'Conference Hall', 'Business Hub', 'Innovation Campus',
+    'Tech Park', 'Grand Hotel', 'University Auditorium', 'Cultural Center',
+    'Exhibition Center', 'Digital Arena', 'Science Museum', 'City Hall',
+    'Waterfront Center', 'Sky Tower', 'Harbor House', 'Central Plaza'
+  ];
+
+  const city = cities[Math.floor(Math.random() * cities.length)]!;
+  const venue = venues[Math.floor(Math.random() * venues.length)]!;
+
+  return { city, venue: `${city} ${venue}` };
+};
+
+/**
  * Generate rich test event data with comprehensive markdown content.
  *
  * This creates realistic event data suitable for testing markdown rendering,
@@ -66,6 +90,7 @@ const generateEventTitle = (): string => {
  */
 export const generateTestEventData = (baseName: string): TestEventData => {
   const eventTitle = `${generateEventTitle()} - ${baseName}`;
+  const location = generateLocation();
 
   return {
     title: eventTitle,
@@ -251,8 +276,8 @@ To help us provide the best experience, please provide the following details:
     maxParticipants: 50,
     featuredImageUrl: 'https://picsum.photos/1200/600',
     featuredImageCaption: 'Join us for an unforgettable learning experience',
-    city: `${eventTitle} City`,
-    location: `${eventTitle} Conference Center`,
+    city: location.city,
+    location: location.venue,
     slug: '', // Will be auto-generated
   };
 };

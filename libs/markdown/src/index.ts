@@ -1,5 +1,3 @@
 export {MarkdownContent} from './MarkdownContent'
-export {sanitizeMarkdown} from './sanitizeMarkdown'
-export {SafeLink, SafeImg, isSafeUrl} from './SafePrimitives'
+export {normalizeMarkdown} from './normalizeMarkdown'
 export type {MarkdownContentProps} from './MarkdownContent'
-export type {SafeLinkProps, SafeImgProps} from './SafePrimitives'

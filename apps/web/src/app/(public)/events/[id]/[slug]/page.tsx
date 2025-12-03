@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 
 import { formatDateSpan } from '@eventuras/core/datetime';
 import { Logger } from '@eventuras/logger';
+import { MarkdownContent } from '@eventuras/markdown';
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Text } from '@eventuras/ratio-ui/core/Text';
@@ -170,7 +171,9 @@ export default async function EventDetailsPage({ params }: Readonly<EventDetails
               </Heading>
             )}
 
-            <Text text={eventinfo.description ?? ''} className="py-3" />
+            <div className="py-3">
+              <MarkdownContent markdown={eventinfo.description} />
+            </div>
 
             {eventinfo.dateStart && (
               <div className="flex items-center gap-2 py-0">
