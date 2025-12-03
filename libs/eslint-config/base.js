@@ -48,6 +48,7 @@ export const config = [
       'test-results/**',
       '**/migrations/**',
       '**/.next/**',
+      '**/next-env.d.ts',
     ],
   },
 ];
