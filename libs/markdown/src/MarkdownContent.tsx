@@ -6,8 +6,9 @@ import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
 import type { Components } from 'react-markdown';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Text } from '@eventuras/ratio-ui/core/Text';
-import { sanitizeMarkdown } from './sanitizeMarkdown';
-import { SafeLink, SafeImg } from './SafePrimitives';
+import { Link } from '@eventuras/ratio-ui/core/Link';
+import { List } from '@eventuras/ratio-ui/core/List';
+import { normalizeMarkdown } from './normalizeMarkdown';
 
 export type MarkdownContentProps = {
   markdown?: string | null;
@@ -18,6 +19,8 @@ export type MarkdownContentProps = {
   enableRawHtml?: boolean;
   /** Allow external/absolute URLs in links and images. Default: false (only relative URLs allowed) */
   allowExternalLinks?: boolean;
+  /** Strip HTML tags from input before processing. Useful for legacy content with HTML-wrapped markdown. Default: false */
+  stripHtmlTags?: boolean;
 };
 
 export const MarkdownContent = ({
@@ -26,39 +29,79 @@ export const MarkdownContent = ({
   keepInvisibleCharacters = false,
   enableRawHtml = false,
   allowExternalLinks = false,
+  stripHtmlTags = false,
 }: MarkdownContentProps) => {
   if (!markdown) return null;
 
-  const source = keepInvisibleCharacters ? markdown : sanitizeMarkdown(markdown);
+  // Strip HTML tags if requested (useful for legacy content with HTML-wrapped markdown)
+  let processedMarkdown = markdown;
+  if (stripHtmlTags) {
+    processedMarkdown = markdown.replace(/<[^>]*>/g, '');
+  }
 
-  // Configure rehype-sanitize schema
-  const sanitizeSchema = {
-    ...defaultSchema,
-    protocols: {
-      ...defaultSchema.protocols,
-      // Only allow http/https and relative URLs, block javascript:, data:, etc.
-      href: allowExternalLinks ? ['http', 'https'] : [],
-      src: allowExternalLinks ? ['http', 'https'] : [],
-    },
+  const source = keepInvisibleCharacters ? processedMarkdown : normalizeMarkdown(processedMarkdown);
+
+  // rehype-sanitize with defaultSchema (GitHub-style sanitization) handles:
+  // - Blocking javascript:, data:, and other dangerous URL protocols
+  // - Stripping script tags and dangerous attributes (onclick, onerror, etc.)
+  // - Allowing standard HTML tags including strong, em, etc.
+  //
+  // We only need to add external link filtering in component overrides when allowExternalLinks=false
+
+  // Helper to check if a URL points to an external origin
+  const isExternalUrl = (url: string | undefined): boolean => {
+    if (!url) return false;
+    try {
+      const parsed = new URL(url, 'https://dummy.local');
+      return parsed.host !== 'dummy.local';
+    } catch {
+      return false;
+    }
   };
 
   // Create rehype plugins list
   const rehypePlugins: any[] = [
     ...(enableRawHtml ? [rehypeRaw] : []),
-    [rehypeSanitize, sanitizeSchema],
+    [rehypeSanitize, defaultSchema],
   ];
 
   // Component overrides for custom rendering
   const components: Components = {
-    a: ({ node, ...props }) => (
-      <SafeLink allowExternalLinks={allowExternalLinks} {...props} />
-    ),
-    img: ({ node, ...props }) => (
-      <SafeImg allowExternalLinks={allowExternalLinks} {...props} />
-    ),
-    p: ({ node, ...props }) => (
-      <Text as="p" className="pb-3" {...props} />
-    ),
+    a: ({ node, href, children, ...props }) => {
+      // Block external links if not allowed (rehype-sanitize already handles dangerous protocols)
+      if (!allowExternalLinks && isExternalUrl(href)) {
+        return <span>{children}</span>;
+      }
+      return (
+        <Link
+          href={href || ''}
+          componentProps={{
+            rel: 'noopener noreferrer',
+            target: '_blank',
+          }}
+          {...props}
+        >
+          {children}
+        </Link>
+      );
+    },
+    img: ({ node, src, alt, ...props }) => {
+      // Block external images if not allowed (rehype-sanitize already handles dangerous protocols)
+      if (!allowExternalLinks && isExternalUrl(src)) {
+        return null;
+      }
+      return (
+        <img
+          src={src}
+          alt={alt}
+          {...props}
+          loading="lazy"
+          decoding="async"
+          referrerPolicy="no-referrer"
+        />
+      );
+    },
+    p: ({ node, ...props }) => <Text as="p" className="pb-3" {...props} />,
     h1: ({ node, children, ...props }) => (
       <Heading as="h1" {...props}>
         {children}
@@ -90,12 +133,12 @@ export const MarkdownContent = ({
       </Heading>
     ),
     ul: ({ node, ...props }) => (
-      <ul className="list-disc list-inside pb-3 space-y-1" {...props} />
+      <List as="ul" variant="markdown" {...props} />
     ),
     ol: ({ node, ...props }) => (
-      <ol className="list-decimal list-inside pb-3 space-y-1" {...props} />
+      <List as="ol" variant="markdown" {...props} />
     ),
-    li: ({ node, ...props }) => <li className="ml-4" {...props} />,
+    li: ({ node, ...props }) => <List.Item {...props} />,
     blockquote: ({ node, ...props }) => (
       <blockquote
         className="border-l-4 border-gray-300 pl-4 italic my-4 text-gray-700"

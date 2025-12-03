@@ -14,6 +14,7 @@ interface EventCardProps {
 }
 
 const EventCard: React.FC<EventCardProps> = ({ eventinfo }) => {
+  console.log('Rendering md', eventinfo.description);
   return (
     <Card hoverEffect>
       {eventinfo.title && (
@@ -23,11 +24,7 @@ const EventCard: React.FC<EventCardProps> = ({ eventinfo }) => {
           </Link>
         </Heading>
       )}
-      {eventinfo.description && (
-        <Text padding="py-3">
-          <MarkdownContent markdown={eventinfo.description} />
-        </Text>
-      )}
+      {eventinfo.description && <MarkdownContent markdown={eventinfo.description} />}
       {eventinfo.location && (
         <Text icon={<MapPin size={16} />} padding="pt-1">
           {eventinfo.location}
