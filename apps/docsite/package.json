@@ -18,7 +18,7 @@
   "dependencies": {
     "@eventuras/docs": "workspace:*",
     "@eventuras/typescript-config": "workspace:*",
-    "next": "15.5.7",
+    "next": "16.0.7",
     "nextra": "^4.6.0",
     "nextra-theme-blog": "^4.6.0",
     "nextra-theme-docs": "^4.6.0",
