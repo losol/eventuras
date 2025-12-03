@@ -12,7 +12,7 @@ import { Logger } from '@eventuras/logger';
 
 import { oauthConfig } from './utils/oauthConfig';
 
-const logger = Logger.create({ namespace: 'web:middleware' });
+const logger = Logger.create({ namespace: 'web:proxy' });
 
 /**
  * Validates CORS for non-GET requests.
@@ -126,13 +126,13 @@ function redirectToLogin(pathname: string, search: string, originUrl: string): N
   return response;
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const url = new URL(request.url);
   const pathname = url.pathname;
   const search = url.search;
   const originUrl = url.origin;
 
-  logger.debug({ method: request.method, pathname }, 'Middleware processing request');
+  logger.debug({ method: request.method, pathname }, 'Proxy processing request');
 
   // ─── 1) CORS validation for non-GET requests ─────────────────────────────
   if (request.method !== 'GET') {
