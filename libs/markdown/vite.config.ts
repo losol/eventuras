@@ -4,7 +4,10 @@ export default defineReactLibConfig({
   entry: 'src/index.ts',
   tailwind: true,
   external: [
-    'markdown-to-jsx',
+    'react-markdown',
+    'remark-gfm',
+    'rehype-raw',
+    'rehype-sanitize',
     '@eventuras/ratio-ui',
     // for deep imports..:
     /^@eventuras\/ratio-ui\//
