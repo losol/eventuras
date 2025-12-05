@@ -92,6 +92,7 @@ export const plugins: Plugin[] = [
       projects: {},
       products: {},
       topics: {},
+      transactions: {},
     },
     tenantField: {
       access: {

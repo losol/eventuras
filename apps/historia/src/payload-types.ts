@@ -91,6 +91,7 @@ export interface Config {
     products: Product;
     projects: Project;
     topics: Topic;
+    transactions: Transaction;
     users: User;
     websites: Website;
     redirects: Redirect;
@@ -117,6 +118,7 @@ export interface Config {
     products: ProductsSelect<false> | ProductsSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
     topics: TopicsSelect<false> | TopicsSelect<true>;
+    transactions: TransactionsSelect<false> | TransactionsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     websites: WebsitesSelect<false> | WebsitesSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
@@ -815,6 +817,13 @@ export interface Order {
     lineTotal?: number | null;
     id?: string | null;
   }[];
+  shippingAddress?: {
+    addressLine1?: string | null;
+    addressLine2?: string | null;
+    postalCode?: string | null;
+    city?: string | null;
+    country?: string | null;
+  };
   user: string | User;
   userEmail: string;
   status: 'pending' | 'processing' | 'on-hold' | 'completed' | 'canceled' | 'archived';
@@ -929,6 +938,17 @@ export interface User {
   email_verified?: boolean | null;
   phone_number?: string | null;
   phone_number_verified?: boolean | null;
+  addresses?:
+    | {
+        isDefault?: boolean | null;
+        addressLine1?: string | null;
+        addressLine2?: string | null;
+        postalCode?: string | null;
+        city?: string | null;
+        country?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   roles?: ('admin' | 'system-admin' | 'user')[] | null;
   /**
    * Optional: Assign user to specific websites/tenants. Leave empty for global access.
@@ -957,6 +977,21 @@ export interface User {
       }[]
     | null;
   password?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "transactions".
+ */
+export interface Transaction {
+  id: string;
+  tenant?: (string | null) | Website;
+  order: string | Order;
+  customer: string | User;
+  amount: number;
+  status: 'pending' | 'completed' | 'failed';
+  paymentMethod: 'stripe' | 'vipps';
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1295,6 +1330,10 @@ export interface PayloadLockedDocument {
         value: string | Topic;
       } | null)
     | ({
+        relationTo: 'transactions';
+        value: string | Transaction;
+      } | null)
+    | ({
         relationTo: 'users';
         value: string | User;
       } | null)
@@ -1566,6 +1605,15 @@ export interface OrdersSelect<T extends boolean = true> {
         lineTotal?: T;
         id?: T;
       };
+  shippingAddress?:
+    | T
+    | {
+        addressLine1?: T;
+        addressLine2?: T;
+        postalCode?: T;
+        city?: T;
+        country?: T;
+      };
   user?: T;
   userEmail?: T;
   status?: T;
@@ -1784,6 +1832,20 @@ export interface TopicsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "transactions_select".
+ */
+export interface TransactionsSelect<T extends boolean = true> {
+  tenant?: T;
+  order?: T;
+  customer?: T;
+  amount?: T;
+  status?: T;
+  paymentMethod?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
@@ -1793,6 +1855,17 @@ export interface UsersSelect<T extends boolean = true> {
   email_verified?: T;
   phone_number?: T;
   phone_number_verified?: T;
+  addresses?:
+    | T
+    | {
+        isDefault?: T;
+        addressLine1?: T;
+        addressLine2?: T;
+        postalCode?: T;
+        city?: T;
+        country?: T;
+        id?: T;
+      };
   roles?: T;
   tenants?:
     | T
