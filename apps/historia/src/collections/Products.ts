@@ -22,6 +22,7 @@ export const Products: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'inventory', '_status'],
+    group: 'Commerce',
     livePreview: {
       url: ({ data, req }) => {
         const path = generatePreviewPath({

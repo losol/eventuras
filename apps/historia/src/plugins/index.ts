@@ -84,6 +84,7 @@ export const plugins: Plugin[] = [
       happenings: {},
       media: {},
       notes: {},
+      orders: {},
       organizations: {},
       pages: {},
       persons: {},
@@ -106,6 +107,7 @@ export const plugins: Plugin[] = [
     tenantsArrayField: {
       includeDefaultField: false,
     },
+    useUsersTenantFilter: false,
     userHasAccessToAllTenants: (user) => isSystemAdmin(user),
   }),
   nestedDocsPlugin({

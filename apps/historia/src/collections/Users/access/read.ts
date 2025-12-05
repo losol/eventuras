@@ -18,6 +18,12 @@ export const readAccess: Access<User> = ({ req, id }) => {
   }
 
   const systemAdmin = isSystemAdmin(req.user);
+
+  // System admins can see all users - return empty object to bypass all filters
+  if (systemAdmin) {
+    return true;
+  }
+
   const selectedTenant = getTenantFromCookie(
     req.headers,
     getCollectionIDType({ payload: req.payload, collectionSlug: 'websites' }),
@@ -25,19 +31,15 @@ export const readAccess: Access<User> = ({ req, id }) => {
   const adminTenantAccessIDs = getUserTenantIDs(req.user, 'site-admin');
 
   if (selectedTenant) {
-    // If it's a super admin, or they have access to the tenant ID set in cookie
+    // If they have access to the tenant ID set in cookie
     const hasTenantAccess = adminTenantAccessIDs.some((id) => id === selectedTenant);
-    if (systemAdmin || hasTenantAccess) {
+    if (hasTenantAccess) {
       return {
         'tenants.tenant': {
           equals: selectedTenant,
         },
       };
     }
-  }
-
-  if (systemAdmin) {
-    return true;
   }
 
   return {
