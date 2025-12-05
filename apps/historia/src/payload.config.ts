@@ -14,6 +14,7 @@ import { Happenings } from './collections/Happenings';
 import { Licenses } from './collections/Licenses';
 import { Media } from './collections/Media';
 import { Notes } from './collections/Notes';
+import { Orders } from './collections/Orders';
 import { Organizations } from './collections/Organizations';
 import { Pages } from './collections/Pages';
 import { Persons } from './collections/Persons';
@@ -80,7 +81,7 @@ export default buildConfig({
         url: cmsDatabaseUrl
       }
     }),
-  collections: [Articles, Happenings, Licenses, Media, Notes, Organizations, Pages, Persons, Places, Products, Projects, Topics, Users, Websites],
+  collections: [Articles, Happenings, Licenses, Media, Notes, Orders, Organizations, Pages, Persons, Places, Products, Projects, Topics, Users, Websites],
   cors: allowedOrigins,
   csrf: allowedOrigins,
   editor: defaultLexical,

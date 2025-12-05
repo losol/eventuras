@@ -7,6 +7,7 @@ import { updateAndDeleteAccess } from './access/updateAndDelete';
 import { ensureFirstUserIsAdmin } from './hooks/ensureFirstUserIsAdmin';
 import { setCookieBasedOnDomain } from './hooks/setCookieBasedOnDomain';
 import { admins, adminsFieldLevel } from '../../access/admins';
+import { isSystemAdmin } from '../../access/isSystemAdmin';
 
 const defaultTenantArrayField = tenantsArrayField({
   tenantsArrayFieldName: 'tenants',
@@ -74,7 +75,6 @@ export const Users: CollectionConfig = {
         update: adminsFieldLevel
       }
     },
-    // phone number
     {
       name: 'phone_number',
       type: 'text',
@@ -113,18 +113,31 @@ export const Users: CollectionConfig = {
     },
     {
       ...defaultTenantArrayField,
+      required: false,
       admin: {
         ...(defaultTenantArrayField?.admin ?? {}),
         position: 'sidebar',
+        description: 'Optional: Assign user to specific websites/tenants. Leave empty for global access.',
       },
     },
   ],
   timestamps: true,
-  // The following hook sets a cookie based on the domain a user logs in from.
-  // It checks the domain and matches it to a tenant in the system, then sets
-  // a 'historia-tenant' cookie for that tenant.
-
   hooks: {
     afterLogin: [setCookieBasedOnDomain],
+    beforeOperation: [
+      ({ args, operation }) => {
+        // Bypass tenant filtering for system admins on read operations
+        if (
+          (operation === 'read' || operation === 'find') &&
+          args.req?.user &&
+          isSystemAdmin(args.req.user)
+        ) {
+          // Set flag to bypass tenant scope
+          args.req.context = args.req.context || {};
+          args.req.context.disableMultiTenant = true;
+        }
+        return args;
+      },
+    ],
   },
 };

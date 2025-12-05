@@ -83,6 +83,7 @@ export interface Config {
     licenses: License;
     media: Media;
     notes: Note;
+    orders: Order;
     organizations: Organization;
     pages: Page;
     persons: Person;
@@ -108,6 +109,7 @@ export interface Config {
     licenses: LicensesSelect<false> | LicensesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     notes: NotesSelect<false> | NotesSelect<true>;
+    orders: OrdersSelect<false> | OrdersSelect<true>;
     organizations: OrganizationsSelect<false> | OrganizationsSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
     persons: PersonsSelect<false> | PersonsSelect<true>;
@@ -794,6 +796,51 @@ export interface SessionBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "orders".
+ */
+export interface Order {
+  id: string;
+  tenant?: (string | null) | Website;
+  items: {
+    product: string | Product;
+    quantity: number;
+    price: {
+      amount: number;
+      currency: string;
+      /**
+       * VAT/Tax rate in percentage
+       */
+      vatRate: number;
+    };
+    lineTotal?: number | null;
+    id?: string | null;
+  }[];
+  user: string | User;
+  userEmail: string;
+  status: 'pending' | 'processing' | 'on-hold' | 'completed' | 'canceled' | 'archived';
+  totalAmount?: number | null;
+  currency: string;
+  shippingStatus?:
+    | (
+        | 'not-shippable'
+        | 'not-shipped'
+        | 'ready-to-ship'
+        | 'shipped'
+        | 'in-transit'
+        | 'out-for-delivery'
+        | 'delivered'
+        | 'attempted-delivery'
+        | 'available-for-pickup'
+        | 'returned-to-sender'
+        | 'lost-in-transit'
+        | 'canceled'
+      )
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "products".
  */
 export interface Product {
@@ -883,6 +930,9 @@ export interface User {
   phone_number?: string | null;
   phone_number_verified?: boolean | null;
   roles?: ('admin' | 'system-admin' | 'user')[] | null;
+  /**
+   * Optional: Assign user to specific websites/tenants. Leave empty for global access.
+   */
   tenants?:
     | {
         tenant: string | Website;
@@ -1213,6 +1263,10 @@ export interface PayloadLockedDocument {
         value: string | Note;
       } | null)
     | ({
+        relationTo: 'orders';
+        value: string | Order;
+      } | null)
+    | ({
         relationTo: 'organizations';
         value: string | Organization;
       } | null)
@@ -1488,6 +1542,36 @@ export interface NotesSelect<T extends boolean = true> {
   slug?: T;
   slugLock?: T;
   resourceId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "orders_select".
+ */
+export interface OrdersSelect<T extends boolean = true> {
+  tenant?: T;
+  items?:
+    | T
+    | {
+        product?: T;
+        quantity?: T;
+        price?:
+          | T
+          | {
+              amount?: T;
+              currency?: T;
+              vatRate?: T;
+            };
+        lineTotal?: T;
+        id?: T;
+      };
+  user?: T;
+  userEmail?: T;
+  status?: T;
+  totalAmount?: T;
+  currency?: T;
+  shippingStatus?: T;
   updatedAt?: T;
   createdAt?: T;
 }
