@@ -2,18 +2,24 @@ import type { CollectionAfterLoginHook } from 'payload';
 import { generateCookie, getCookieExpiration, mergeHeaders } from 'payload';
 
 export const setCookieBasedOnDomain: CollectionAfterLoginHook = async ({ req, user }) => {
+  const host = req.headers.get('host');
+
+  if (!host) {
+    return user;
+  }
+
   const relatedOrg = await req.payload.find({
     collection: 'websites',
     depth: 0,
     limit: 1,
     where: {
-      domain: {
-        equals: req.headers.get('host'),
+      domains: {
+        contains: host,
       },
     },
   });
 
-  // If a matching tenant is found, set the 'payload-tenant' cookie
+  // If a matching tenant is found, set the 'historia-tenant' cookie
   if (relatedOrg && relatedOrg.docs.length > 0) {
     const tenantCookie = generateCookie({
       name: 'historia-tenant',

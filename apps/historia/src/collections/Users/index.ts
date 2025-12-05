@@ -122,7 +122,7 @@ export const Users: CollectionConfig = {
   timestamps: true,
   // The following hook sets a cookie based on the domain a user logs in from.
   // It checks the domain and matches it to a tenant in the system, then sets
-  // a 'payload-tenant' cookie for that tenant.
+  // a 'historia-tenant' cookie for that tenant.
 
   hooks: {
     afterLogin: [setCookieBasedOnDomain],

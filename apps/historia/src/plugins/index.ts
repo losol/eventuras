@@ -81,11 +81,14 @@ export const plugins: Plugin[] = [
     cleanupAfterTenantDelete: false,
     collections: {
       articles: {},
-      pages: {},
-      projects: {},
       happenings: {},
+      media: {},
       notes: {},
+      organizations: {},
+      pages: {},
+      persons: {},
       places: {},
+      projects: {},
       topics: {},
     },
     tenantField: {

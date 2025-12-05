@@ -3,6 +3,7 @@ import * as migration_20250117_230439_channels from './20250117_230439_channels'
 import * as migration_20250118_225211_archiveblock from './20250118_225211_archiveblock';
 import * as migration_20250119_142659_frontpage from './20250119_142659_frontpage';
 import * as migration_20250511_212133_multitenant from './20250511_212133_multitenant';
+import * as migration_20251205_181320 from './20251205_181320';
 
 export const migrations = [
   {
@@ -28,6 +29,11 @@ export const migrations = [
   {
     up: migration_20250511_212133_multitenant.up,
     down: migration_20250511_212133_multitenant.down,
-    name: '20250511_212133_multitenant'
+    name: '20250511_212133_multitenant',
+  },
+  {
+    up: migration_20251205_181320.up,
+    down: migration_20251205_181320.down,
+    name: '20251205_181320'
   },
 ];

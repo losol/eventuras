@@ -10,7 +10,7 @@
     "dev:prod": "rm -rf .next && pnpm run build && pnpm run start",
     "generate:types": "payload generate:types",
     "lint": "eslint .",
-    "lint:fix": "eslint --fix",
+    "lint:fix": "eslint --fix .",
     "payload": "payload",
     "start": "next start"
   },
