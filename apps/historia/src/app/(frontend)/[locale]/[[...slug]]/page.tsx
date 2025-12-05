@@ -174,19 +174,17 @@ const getHomePageId = cache(async (): Promise<string | null> => {
   return null;
 });
 
-// Query a page dynamically based on ID, slug, or channel
+// Query a page dynamically based on ID or slug
 const queryPage = cache(async ({
   id,
   slug,
   locale,
   draft,
-  channel,
 }: {
   id?: string;
   slug?: string;
   locale: string;
   draft: boolean;
-  channel?: string;
 }) => {
   const payload = await getPayload({ config: configPromise });
 
@@ -194,7 +192,6 @@ const queryPage = cache(async ({
 
   if (id) where.id = { equals: id };
   if (slug) where.slug = { equals: slug };
-  if (channel) where.channels = { in: [channel] };
 
   if (Object.keys(where).length === 0) {
     console.warn('No valid filter provided for queryPage.');

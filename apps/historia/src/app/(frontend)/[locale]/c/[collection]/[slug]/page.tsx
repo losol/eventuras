@@ -2,7 +2,7 @@ import React, { cache } from 'react';
 import configPromise from '@payload-config';
 import type { Metadata } from 'next';
 import { draftMode } from 'next/headers';
-import { redirect } from 'next/navigation';
+import { permanentRedirect, redirect } from 'next/navigation';
 import { CollectionSlug, getPayload } from 'payload';
 
 import { RenderBlocks } from '@/blocks/RenderBlocks';
@@ -13,7 +13,28 @@ import { Hero } from '@/heros/Hero';
 import { generateMeta } from '@/utilities/generateMeta';
 
 import PageClient from './page.client';
-import { getLocalizedCollectionName, getOriginalCollectionName, pageCollections,PageCollectionsType } from '../../pageCollections';
+import { getLocalizedCollectionName, getOriginalCollectionName, pageCollections,PageCollectionsType } from '../pageCollections';
+
+/**
+ * Parse slug in format: {human-readable-slug}--{resourceId}
+ */
+function parseSlugWithResourceId(combinedSlug: string): { slug: string; resourceId: string } | null {
+  const lastDashDashIndex = combinedSlug.lastIndexOf('--');
+
+  if (lastDashDashIndex === -1 || lastDashDashIndex === combinedSlug.length - 2) {
+    // No '--' separator found, or it's at the end
+    return null;
+  }
+
+  const slug = combinedSlug.substring(0, lastDashDashIndex);
+  const resourceId = combinedSlug.substring(lastDashDashIndex + 2);
+
+  if (!slug || !resourceId) {
+    return null;
+  }
+
+  return { slug, resourceId };
+}
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise });
@@ -23,7 +44,6 @@ export async function generateStaticParams() {
   const params: Array<{
     locale: string;
     collection: string;
-    resourceId: string;
     slug: string;
   }> = [];
 
@@ -47,18 +67,18 @@ export async function generateStaticParams() {
 
         const localizedCollectionName = getLocalizedCollectionName(collection, locale);
 
-        // @ts-expect-error
+        // @ts-expect-error - Payload types don't include select fields
         documents.forEach(({ slug, resourceId }) => {
           if (slug && resourceId) {
+            const combinedSlug = `${slug}--${resourceId}`;
             console.log(
-              `Generating static params for ${locale}/${localizedCollectionName}/${resourceId}/${slug}`
+              `Generating static params for ${locale}/${localizedCollectionName}/${combinedSlug}`
             );
 
             params.push({
               locale,
               collection: localizedCollectionName,
-              resourceId,
-              slug,
+              slug: combinedSlug,
             });
           }
         });
@@ -75,7 +95,6 @@ type Args = {
   params: Promise<{
     locale: string;
     collection: string;
-    resourceId: string;
     slug: string;
   }>;
 };
@@ -83,14 +102,24 @@ type Args = {
 export default async function Page({ params: paramsPromise }: Args) {
   const { isEnabled: draft } = await draftMode();
   const props = await paramsPromise;
-  const { locale, collection, resourceId, slug } = props;
+  const { locale, collection, slug: combinedSlug } = props;
+
+  // Parse the combined slug to extract resourceId
+  const parsed = parseSlugWithResourceId(combinedSlug);
+
+  if (!parsed) {
+    // Invalid slug format, redirect to 404
+    return <PayloadRedirects url={`/${locale}/${collection}/${combinedSlug}`} />;
+  }
+
+  const { slug, resourceId } = parsed;
 
   const originalCollectionName = getOriginalCollectionName(collection, locale);
   const localizedCollectionName = getLocalizedCollectionName(originalCollectionName, locale);
 
   // Redirect if the provided collection name is not localized
   if (collection !== localizedCollectionName) {
-    redirect(`/${locale}/${localizedCollectionName}/${resourceId}/${slug}`);
+    redirect(`/${locale}/${localizedCollectionName}/${combinedSlug}`);
   }
 
   const document = await queryDocumentByResourceId({
@@ -99,12 +128,13 @@ export default async function Page({ params: paramsPromise }: Args) {
   });
 
   if (!document) {
-    return <PayloadRedirects url={`/${locale}/${localizedCollectionName}/${resourceId}/${slug}`} />;
+    return <PayloadRedirects url={`/${locale}/${localizedCollectionName}/${combinedSlug}`} />;
   }
 
-  // Check for slug mismatch and redirect to the correct URL
+  // Check for slug mismatch and redirect permanently to the correct URL (308 Permanent Redirect)
   if (document.slug !== slug) {
-    redirect(`/${locale}/${localizedCollectionName}/${resourceId}/${document.slug}`);
+    const correctCombinedSlug = `${document.slug}--${resourceId}`;
+    permanentRedirect(`/${locale}/${localizedCollectionName}/${correctCombinedSlug}`);
   }
 
   const titleToUse = 'title' in document ? document.title : document.name;
@@ -115,7 +145,7 @@ export default async function Page({ params: paramsPromise }: Args) {
 
       <PayloadRedirects
         disableNotFound
-        url={`/${locale}/${localizedCollectionName}/${resourceId}/${slug}`}
+        url={`/${locale}/${localizedCollectionName}/${combinedSlug}`}
       />
 
       {draft && <LivePreviewListener />}
@@ -132,10 +162,16 @@ export default async function Page({ params: paramsPromise }: Args) {
 
 
 export async function generateMetadata({ params }: Args): Promise<Metadata> {
-  const { collection, locale,resourceId } = await params;
+  const { collection, locale, slug: combinedSlug } = await params;
 
+  const parsed = parseSlugWithResourceId(combinedSlug);
+
+  if (!parsed) {
+    return {};
+  }
+
+  const { resourceId } = parsed;
   const originalCollectionName = getOriginalCollectionName(collection, locale);
-
 
   const document = await queryDocumentByResourceId({
     collection: originalCollectionName as PageCollectionsType,

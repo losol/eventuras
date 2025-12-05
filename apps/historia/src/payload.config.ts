@@ -7,6 +7,7 @@ import { buildConfig } from 'payload';
 import sharp from 'sharp';
 
 import { defaultLexical } from '@/fields/defaultLexical';
+import { seedDefaultWebsite } from '@/seed/defaultWebsite';
 
 import { Articles } from './collections/Articles';
 import { Happenings } from './collections/Happenings';
@@ -89,6 +90,9 @@ export default buildConfig({
   },
   i18n: {
     fallbackLanguage: 'en',
+  },
+  async onInit(payload) {
+    await seedDefaultWebsite(payload);
   },
   plugins: [
     ...plugins, // Additional plugins

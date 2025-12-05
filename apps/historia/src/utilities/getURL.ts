@@ -27,6 +27,8 @@ export interface ResourceDoc {
 }
 /**
  * Generates the full URL to the page displaying a resource.
+ * Format: /{locale}/{collection}/{slug}--{resourceId}
+ * Example: /no/artikler/helseministerens-plan-for-helsevesenet-i-2025--6abvh9
  *
  * @param {object} doc - The document containing `locale`, `collection`, `resourceId`, and `slug`.
  * @param {boolean} absolute - Whether to generate an absolute or relative URL. Defaults to `false` (relative).
@@ -46,7 +48,9 @@ export const getResourceUrl = (doc: ResourceDoc, absolute = false) => {
   const originalCollectionName = getOriginalCollectionName(collection, locale);
   const localizedCollectionName = getLocalizedCollectionName(originalCollectionName, locale);
 
-  const basePath = `/${locale}/${localizedCollectionName}/${resourceId}/${slug}`;
+  // Construct the URL with new format: slug--resourceId
+  const combinedSlug = `${slug}--${resourceId}`;
+  const basePath = `/${locale}/${localizedCollectionName}/${combinedSlug}`;
 
   if (absolute) {
     const baseUrl = canUseDOM ? getClientSideURL() : getServerSideURL();

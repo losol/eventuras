@@ -24,7 +24,7 @@ export const collectionTranslations: Record<string, Record<string, string>> = {
   no: {
     articles: 'artikler',
     happenings: 'arrangement',
-    notes: 'notiser',
+    notes: 'notert',
     organizations: 'organisasjoner',
     persons: 'folk',
     projects: 'prosjekter',
@@ -45,6 +45,8 @@ export const getOriginalCollectionName = (localizedCollection: string, locale: s
 
 /**
  * Generates a localized URL for a given collection, resourceId, and slug.
+ * Format: /{locale}/{collection}/{slug}--{resourceId}
+ * Example: /no/artikler/god-artikkel--6abvh9
  * @param locale - The locale (e.g., 'en', 'no').
  * @param collection - The original collection name (e.g., 'articles').
  * @param resourceId - The unique resource ID of the document.
@@ -65,6 +67,7 @@ export const getDocUrl = ({
   // Get the localized collection name based on the locale
   const localizedCollectionName = getLocalizedCollectionName(collection, locale);
 
-  // Construct the URL
-  return `/${locale}/${localizedCollectionName}/${resourceId}/${slug}`;
+  // Construct the URL with new format: slug--resourceId
+  const combinedSlug = `${slug}--${resourceId}`;
+  return `/${locale}/${localizedCollectionName}/${combinedSlug}`;
 };
