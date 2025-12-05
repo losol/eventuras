@@ -22,6 +22,7 @@ import { Places } from './collections/Places';
 import { Products } from './collections/Products';
 import { Projects } from './collections/Projects';
 import { Topics } from './collections/Topics';
+import { Transactions } from './collections/Transactions';
 import { Users } from './collections/Users';
 import { Websites } from './collections/Websites';
 import { plugins } from './plugins';
@@ -81,7 +82,7 @@ export default buildConfig({
         url: cmsDatabaseUrl
       }
     }),
-  collections: [Articles, Happenings, Licenses, Media, Notes, Orders, Organizations, Pages, Persons, Places, Products, Projects, Topics, Users, Websites],
+  collections: [Articles, Happenings, Licenses, Media, Notes, Orders, Organizations, Pages, Persons, Places, Products, Projects, Topics, Transactions, Users, Websites],
   cors: allowedOrigins,
   csrf: allowedOrigins,
   editor: defaultLexical,

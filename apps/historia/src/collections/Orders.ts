@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload';
 
 import { admins } from '@/access/admins';
+import { addressGroup } from '@/fields/address';
 import { orderItemsField } from '@/fields/orderItemsField';
 
 import { populateOrderPrices } from './Orders/hooks/populateOrderPrices';
@@ -36,6 +37,10 @@ export const Orders: CollectionConfig = {
         {
           label: 'Order Details',
           fields: [orderItemsField()],
+        },
+        {
+          label: 'Shipping Address',
+          fields: [addressGroup('shippingAddress')],
         },
       ],
     },

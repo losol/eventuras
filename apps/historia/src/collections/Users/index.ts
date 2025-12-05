@@ -6,8 +6,9 @@ import { readAccess } from './access/read';
 import { updateAndDeleteAccess } from './access/updateAndDelete';
 import { ensureFirstUserIsAdmin } from './hooks/ensureFirstUserIsAdmin';
 import { setCookieBasedOnDomain } from './hooks/setCookieBasedOnDomain';
-import { admins, adminsFieldLevel } from '../../access/admins';
+import { adminsFieldLevel } from '../../access/admins';
 import { isSystemAdmin } from '../../access/isSystemAdmin';
+import { addressFields } from '../../fields/address';
 
 const defaultTenantArrayField = tenantsArrayField({
   tenantsArrayFieldName: 'tenants',
@@ -87,6 +88,20 @@ export const Users: CollectionConfig = {
         read: adminsFieldLevel,
         update: adminsFieldLevel,
       },
+    },
+    {
+      name: 'addresses',
+      type: 'array',
+      label: 'Addresses',
+      fields: [
+        {
+          name: 'isDefault',
+          type: 'checkbox',
+          label: 'Default Address',
+          defaultValue: false,
+        },
+        ...addressFields(),
+      ],
     },
     {
       name: 'roles',
