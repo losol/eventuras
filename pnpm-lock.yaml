@@ -187,9 +187,6 @@ importers:
       '@payloadcms/payload-cloud':
         specifier: 3.65.0
         version: 3.65.0(aws-crt@1.27.5)(payload@3.65.0(graphql@16.12.0)(typescript@5.9.3))
-      '@payloadcms/plugin-ecommerce':
-        specifier: 3.65.0
-        version: 3.65.0(@types/react@19.2.7)(monaco-editor@0.54.0)(next@16.0.7(@playwright/test@1.57.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4))(payload@3.65.0(graphql@16.12.0)(typescript@5.9.3))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(typescript@5.9.3)
       '@payloadcms/plugin-form-builder':
         specifier: 3.65.0
         version: 3.65.0(@types/react@19.2.7)(monaco-editor@0.54.0)(next@16.0.7(@playwright/test@1.57.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4))(payload@3.65.0(graphql@16.12.0)(typescript@5.9.3))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(typescript@5.9.3)
@@ -3520,13 +3517,6 @@ packages:
 
   '@payloadcms/plugin-cloud-storage@3.65.0':
     resolution: {integrity: sha512-fHOlBQY1gyFxcejmoFqYM3ztIDKs8toVqJTfQDQrPgd4zq0+GLFGqkn0VcVEDq+Q+XWaYV+fJmpy2g73/ZnoVg==}
-    peerDependencies:
-      payload: 3.65.0
-      react: ^19.0.0 || ^19.0.0-rc-65a56d0e-20241020
-      react-dom: ^19.0.0 || ^19.0.0-rc-65a56d0e-20241020
-
-  '@payloadcms/plugin-ecommerce@3.65.0':
-    resolution: {integrity: sha512-vNaBd663HYhSKvGvDFwoMLJLbQlvlQIL0jZUBfMvl1d1krmNtSD+wjUunSsbUMYRipT8v9ZTLGdj3iGi/IZU2Q==}
     peerDependencies:
       payload: 3.65.0
       react: ^19.0.0 || ^19.0.0-rc-65a56d0e-20241020
@@ -15639,21 +15629,6 @@ snapshots:
       find-node-modules: 2.1.3
       payload: 3.65.0(graphql@16.12.0)(typescript@5.9.3)
       range-parser: 1.2.1
-      react: 19.2.1
-      react-dom: 19.2.1(react@19.2.1)
-    transitivePeerDependencies:
-      - '@types/react'
-      - monaco-editor
-      - next
-      - supports-color
-      - typescript
-
-  '@payloadcms/plugin-ecommerce@3.65.0(@types/react@19.2.7)(monaco-editor@0.54.0)(next@16.0.7(@playwright/test@1.57.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4))(payload@3.65.0(graphql@16.12.0)(typescript@5.9.3))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(typescript@5.9.3)':
-    dependencies:
-      '@payloadcms/translations': 3.65.0
-      '@payloadcms/ui': 3.65.0(@types/react@19.2.7)(monaco-editor@0.54.0)(next@16.0.7(@playwright/test@1.57.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4))(payload@3.65.0(graphql@16.12.0)(typescript@5.9.3))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(typescript@5.9.3)
-      payload: 3.65.0(graphql@16.12.0)(typescript@5.9.3)
-      qs-esm: 7.0.2
       react: 19.2.1
       react-dom: 19.2.1(react@19.2.1)
     transitivePeerDependencies:

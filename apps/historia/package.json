@@ -22,7 +22,6 @@
     "@payloadcms/live-preview-react": "3.65.0",
     "@payloadcms/next": "3.65.0",
     "@payloadcms/payload-cloud": "3.65.0",
-    "@payloadcms/plugin-ecommerce": "3.65.0",
     "@payloadcms/plugin-form-builder": "3.65.0",
     "@payloadcms/plugin-multi-tenant": "^3.65.0",
     "@payloadcms/plugin-nested-docs": "3.65.0",

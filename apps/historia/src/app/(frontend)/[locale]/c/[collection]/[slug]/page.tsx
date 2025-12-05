@@ -72,7 +72,7 @@ export async function generateStaticParams() {
           if (slug && resourceId) {
             const combinedSlug = `${slug}--${resourceId}`;
             console.log(
-              `Generating static params for ${locale}/${localizedCollectionName}/${combinedSlug}`
+              `Generating static params for ${locale}/c/${localizedCollectionName}/${combinedSlug}`
             );
 
             params.push({

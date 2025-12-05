@@ -87,6 +87,7 @@ export interface Config {
     pages: Page;
     persons: Person;
     places: Place;
+    products: Product;
     projects: Project;
     topics: Topic;
     users: User;
@@ -111,6 +112,7 @@ export interface Config {
     pages: PagesSelect<false> | PagesSelect<true>;
     persons: PersonsSelect<false> | PersonsSelect<true>;
     places: PlacesSelect<false> | PlacesSelect<true>;
+    products: ProductsSelect<false> | ProductsSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
     topics: TopicsSelect<false> | TopicsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
@@ -792,6 +794,84 @@ export interface SessionBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products".
+ */
+export interface Product {
+  id: string;
+  tenant?: (string | null) | Website;
+  /**
+   * The title of the entry.
+   */
+  title: string;
+  lead?: string | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  image?: Image;
+  gallery?:
+    | {
+        media?: (string | null) | Media;
+        caption?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        id?: string | null;
+      }[]
+    | null;
+  story?: ContentBlock[] | null;
+  price?: {
+    amount?: number | null;
+    /**
+     * Currency code (e.g., NOK, USD, EUR)
+     */
+    currency?: string | null;
+    /**
+     * VAT/Tax rate in percentage (default: 25%)
+     */
+    vatRate?: number | null;
+    vatAmount?: number | null;
+    totalPrice?: number | null;
+  };
+  /**
+   * Stock Keeping Unit (SKU)
+   */
+  sku?: string | null;
+  /**
+   * Available inventory. Leave empty for unlimited.
+   */
+  inventory?: number | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  resourceId: string;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
@@ -1147,6 +1227,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'places';
         value: string | Place;
+      } | null)
+    | ({
+        relationTo: 'products';
+        value: string | Product;
       } | null)
     | ({
         relationTo: 'projects';
@@ -1527,6 +1611,46 @@ export interface PlacesSelect<T extends boolean = true> {
   resourceId?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products_select".
+ */
+export interface ProductsSelect<T extends boolean = true> {
+  tenant?: T;
+  title?: T;
+  lead?: T;
+  description?: T;
+  image?: T | ImageSelect<T>;
+  gallery?:
+    | T
+    | {
+        media?: T;
+        caption?: T;
+        id?: T;
+      };
+  story?:
+    | T
+    | {
+        content?: T | ContentBlockSelect<T>;
+      };
+  price?:
+    | T
+    | {
+        amount?: T;
+        currency?: T;
+        vatRate?: T;
+        vatAmount?: T;
+        totalPrice?: T;
+      };
+  sku?: T;
+  inventory?: T;
+  slug?: T;
+  slugLock?: T;
+  resourceId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

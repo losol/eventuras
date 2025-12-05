@@ -89,6 +89,7 @@ export const plugins: Plugin[] = [
       persons: {},
       places: {},
       projects: {},
+      products: {},
       topics: {},
     },
     tenantField: {
