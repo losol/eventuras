@@ -1,6 +1,6 @@
 import { Config } from '@/payload-types';
 
-export const pageCollections = ['articles', 'happenings', 'notes', 'organizations', 'persons', 'projects'] as const;
+export const pageCollections = ['articles', 'happenings', 'notes', 'organizations', 'persons', 'products', 'projects'] as const;
 export type ValidCollection = typeof pageCollections[number];
 type Collections = Config['collections'];
 export type PageCollectionsType = Extract<keyof Collections, ValidCollection>;
@@ -19,6 +19,7 @@ export const collectionTranslations: Record<string, Record<string, string>> = {
     notes: 'notes',
     organizations: 'organizations',
     persons: 'people',
+    products: 'products',
     projects: 'projects',
   },
   no: {
@@ -27,6 +28,7 @@ export const collectionTranslations: Record<string, Record<string, string>> = {
     notes: 'notert',
     organizations: 'organisasjoner',
     persons: 'folk',
+    products: 'produkter',
     projects: 'prosjekter',
   },
 };

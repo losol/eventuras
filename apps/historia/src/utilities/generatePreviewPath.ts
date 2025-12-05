@@ -1,23 +1,41 @@
 import { CollectionSlug, PayloadRequest } from 'payload'
 
+import { getLocalizedCollectionName } from '@/app/(frontend)/[locale]/c/[collection]/pageCollections'
+
 const collectionPrefixMap: Partial<Record<CollectionSlug, string>> = {
   articles: '/articles',
   pages: '',
+  products: 'c',
 }
 
 type Props = {
   collection: keyof typeof collectionPrefixMap
   slug: string
+  resourceId?: string
   req: PayloadRequest
 }
 
-export const generatePreviewPath = ({ collection, slug, req }: Props) => {
-  const path = `${collectionPrefixMap[collection]}/${slug}`
+export const generatePreviewPath = ({ collection, slug, resourceId, req }: Props) => {
+  const locale = req.locale || process.env.CMS_DEFAULT_LOCALE || 'no';
+  const prefix = collectionPrefixMap[collection];
+
+  // Build full slug with resourceId if available
+  const fullSlug = resourceId ? `${slug}--${resourceId}` : slug;
+
+  let path: string;
+  if (prefix === 'c') {
+    // Use localized collection name for /c/ routes
+    const localizedCollection = getLocalizedCollectionName(collection, locale);
+    path = `/${locale}/c/${localizedCollection}/${fullSlug}`;
+  } else {
+    path = prefix ? `/${locale}/${prefix}/${fullSlug}` : `/${locale}/${fullSlug}`;
+  }
 
   const params = {
     slug,
     collection,
     path,
+    previewSecret: process.env.PREVIEW_SECRET || '',
   }
 
   const encodedParams = new URLSearchParams()
