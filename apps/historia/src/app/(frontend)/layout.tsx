@@ -1,8 +1,5 @@
 import React from 'react'
-import { GeistMono } from 'geist/font/mono'
-import { GeistSans } from 'geist/font/sans'
 import { draftMode } from 'next/headers'
-import { cn } from 'src/utilities/cn'
 
 import { AdminBar } from '@/components/AdminBar'
 import { Header } from '@/Header/Component'
@@ -16,7 +13,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const { isEnabled } = await draftMode()
 
   return (
-    <html className={cn(GeistSans.variable, GeistMono.variable)} lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
         <InitTheme />
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
