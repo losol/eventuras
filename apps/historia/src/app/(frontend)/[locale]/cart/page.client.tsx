@@ -70,9 +70,10 @@ export function CartPageClient({ locale }: CartPageClientProps) {
     product: products.find((p) => p.id === item.productId),
   }));
 
+  // Calculate total - price.amount is in NOK (kroner), convert to øre for Vipps
   const totalInCents = cartWithProducts.reduce((sum, item) => {
     const price = item.product?.price?.amount || 0;
-    return sum + price * item.quantity;
+    return sum + price * item.quantity * 100; // Convert NOK to øre
   }, 0);
 
   return (
@@ -158,7 +159,7 @@ export function CartPageClient({ locale }: CartPageClientProps) {
       <div className="mt-8 rounded-lg border border-gray-200 bg-white p-6">
         <div className="mb-4 flex items-center justify-between text-xl font-bold">
           <span>Total</span>
-          <span>{formatPrice(totalInCents, 'NOK', locale)}</span>
+          <span>{formatPrice(totalInCents / 100, 'NOK', locale)}</span>
         </div>
 
         <div className="space-y-2">

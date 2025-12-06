@@ -30,8 +30,8 @@ We are currently using the following test users for development
 
 | SSN       | Phone Number | NIN    |
 |-----------|--------------|--------|
-|22123242541| 4748755492   | 1236   |
-|24028293743| 4792487769   | 1236   |
+|22123242541| +47 48755492   | 1236   |
+|24028293743| +47 92487769   | 1236   |
 
 **Important:**
 
