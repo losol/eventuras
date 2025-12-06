@@ -9,6 +9,7 @@ import { Header } from '@/Header/Component'
 import { Providers } from '@/providers'
 import { InitTheme } from '@/providers/Theme/InitTheme'
 
+import '@eventuras/ratio-ui/ratio-ui.css'
 import './globals.css'
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

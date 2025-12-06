@@ -48,6 +48,10 @@
   --color-secondary-800: #9f1239;
   --color-secondary-900: #881337;
   --color-secondary-950: #4c0519;
+
+  /* Vipps brand colors */
+  --color-vipps-orange: #FF5B24;
+  --color-vipps-hover: #E64E1A;
 }
 
 
