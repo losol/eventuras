@@ -19,6 +19,17 @@ export const Products: CollectionConfig = {
     update: admins,
     delete: admins,
   },
+  hooks: {
+    afterRead: [
+      ({ doc }) => {
+        // Convert price from cents to currency unit (kr) for API responses
+        if (doc?.price?.amount) {
+          doc.price.amount = doc.price.amount / 100;
+        }
+        return doc;
+      },
+    ],
+  },
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'inventory', '_status'],
