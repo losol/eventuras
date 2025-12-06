@@ -4,6 +4,8 @@ import { useState } from 'react';
 
 import { VippsButton } from '@eventuras/ratio-ui/core/Button';
 
+import { createVippsExpressPayment } from '@/app/(frontend)/[locale]/cart/vippsActions';
+
 interface VippsExpressButtonProps {
   amount: number;
   currency: string;
@@ -25,22 +27,32 @@ export function VippsExpressButton({
   const handleVippsExpress = async () => {
     setLoading(true);
     try {
-      // TODO: Implement Vipps Express payment flow
-      // 1. Create payment with shipping options
-      // 2. Redirect to Vipps/MobilePay app
-      // 3. Handle callback with user details and selected shipping
-      console.log('Initiating Vipps Express checkout', {
+      const result = await createVippsExpressPayment({
         amount,
         currency,
         items,
+        userLanguage: locale,
       });
 
-      // Placeholder - will be implemented with actual Vipps API
-      alert('Vipps Express checkout coming soon!');
+      if (!result.success) {
+        console.error('Vipps payment failed:', result.error.message);
+        alert(`Payment failed: ${result.error.message}`);
+        setLoading(false);
+        return;
+      }
+
+      // Redirect to Vipps
+      if (result.data.redirectUrl) {
+        console.log('Redirecting to Vipps:', result.data.redirectUrl);
+        window.location.href = result.data.redirectUrl;
+      } else {
+        console.error('No redirect URL received from Vipps');
+        alert('No redirect URL received from Vipps');
+        setLoading(false);
+      }
     } catch (error) {
       console.error('Vipps Express error:', error);
-      alert('Failed to initiate Vipps Express checkout');
-    } finally {
+      alert('An unexpected error occurred');
       setLoading(false);
     }
   };
