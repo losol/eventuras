@@ -97,7 +97,7 @@ async function seedShippingProducts() {
 
     console.log('\n✨ Migration completed successfully!');
     console.log('\nNext steps:');
-    console.log('1. Update payment-callback/actions.ts with the correct product IDs:');
+    console.log('1. Update vipps-callback/actions.ts with the correct product IDs:');
     console.log(`   - Standard: "${standardShipping.id}"`);
     console.log(`   - Express: "${expressShipping.id}"`);
     console.log(`   - Pickup Popup: "${pickupPopup.id}"`);

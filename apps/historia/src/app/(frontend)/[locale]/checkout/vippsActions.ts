@@ -7,6 +7,7 @@ import {
 } from '@eventuras/core-nextjs/actions';
 import { Logger } from '@eventuras/logger';
 
+import { appConfig, publicEnv } from '@/config';
 import type { Product } from '@/payload-types';
 import { getMeUser } from '@/utilities/getMeUser';
 
@@ -14,13 +15,6 @@ const logger = Logger.create({
   namespace: 'historia:cart',
   context: { module: 'vippsActions' },
 });
-
-// Vipps API configuration
-const VIPPS_API_URL = process.env.VIPPS_API_URL || 'https://apitest.vipps.no';
-const VIPPS_MERCHANT_SERIAL_NUMBER = process.env.VIPPS_MERCHANT_SERIAL_NUMBER;
-const VIPPS_CLIENT_ID = process.env.VIPPS_CLIENT_ID;
-const VIPPS_CLIENT_SECRET = process.env.VIPPS_CLIENT_SECRET;
-const VIPPS_SUBSCRIPTION_KEY = process.env.VIPPS_SUBSCRIPTION_KEY;
 
 interface VippsAccessTokenResponse {
   access_token: string;
@@ -51,30 +45,27 @@ interface CreateVippsPaymentParams {
  */
 async function getVippsAccessToken(): Promise<ServerActionResult<string>> {
   try {
-    if (!VIPPS_CLIENT_ID || !VIPPS_CLIENT_SECRET || !VIPPS_SUBSCRIPTION_KEY) {
+    if (!appConfig.env.VIPPS_CLIENT_ID || !appConfig.env.VIPPS_CLIENT_SECRET || !appConfig.env.VIPPS_SUBSCRIPTION_KEY) {
       logger.error('Missing Vipps API credentials');
       return actionError('Vipps configuration error');
     }
 
     logger.info('Fetching Vipps access token');
 
-    const response = await fetch(`${VIPPS_API_URL}/accesstoken/get`, {
+    const response = await fetch(`${appConfig.env.VIPPS_API_URL}/accesstoken/get`, {
       method: 'POST',
       headers: {
-        'Ocp-Apim-Subscription-Key': VIPPS_SUBSCRIPTION_KEY,
-        'Merchant-Serial-Number': VIPPS_MERCHANT_SERIAL_NUMBER || '',
-        'Content-Type': 'application/json',
+        'client_id': appConfig.env.VIPPS_CLIENT_ID,
+        'client_secret': appConfig.env.VIPPS_CLIENT_SECRET,
+        'Ocp-Apim-Subscription-Key': appConfig.env.VIPPS_SUBSCRIPTION_KEY,
+        'Merchant-Serial-Number': appConfig.env.VIPPS_MERCHANT_SERIAL_NUMBER,
       },
-      body: JSON.stringify({
-        client_id: VIPPS_CLIENT_ID,
-        client_secret: VIPPS_CLIENT_SECRET,
-      }),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
       logger.error(
-        { status: response.status, error: errorText, url: `${VIPPS_API_URL}/accesstoken/get` },
+        { status: response.status, error: errorText, url: `${appConfig.env.VIPPS_API_URL}/accesstoken/get` },
         'Failed to get Vipps access token',
       );
       // User-friendly error message
@@ -135,18 +126,24 @@ export async function createVippsCheckout({
             const unitPrice = Math.round(product.price.amount * 100); // Convert NOK to øre
             const totalAmount = unitPrice * item.quantity;
 
+            // Calculate VAT (25% Norwegian standard rate)
+            const taxRate = 2500; // 25.00% in basis points
+            const totalAmountExcludingTax = Math.round(totalAmount / 1.25);
+            const totalTaxAmount = totalAmount - totalAmountExcludingTax;
+
             return {
               id: product.id,
               name: product.title,
               totalAmount,
+              totalAmountExcludingTax,
+              totalTaxAmount,
+              taxRate,
+              taxPercentage: 25,
               unitInfo: {
                 unitPrice,
                 quantity: item.quantity.toString(),
                 quantityUnit: 'PCS',
               },
-              productUrl: product.resourceId
-                ? `${process.env.NEXT_PUBLIC_CMS_URL}/${userLanguage}/products/${product.resourceId}`
-                : undefined,
             };
           })
           .filter(Boolean)
@@ -163,7 +160,17 @@ export async function createVippsCheckout({
         },
         reference,
         paymentDescription: `Ordre ${reference}`,
-        ...(orderLines.length > 0 && { orderLines }),
+        ...(orderLines.length > 0 && {
+          orderSummary: {
+            orderLines,
+            orderBottomLine: {
+              currency,
+              totalAmount: amount,
+              totalAmountExcludingTax: Math.round(amount / 1.25), // Assuming 25% VAT
+              totalTax: amount - Math.round(amount / 1.25),
+            },
+          },
+        }),
       },
       logistics: {
         fixedOptions: [], // Empty for digital products - no shipping
@@ -177,21 +184,28 @@ export async function createVippsCheckout({
           }
         : undefined,
       merchantInfo: {
-        callbackUrl: `${process.env.NEXT_PUBLIC_CMS_URL}/api/vipps/checkout-callback`,
-        returnUrl: `${process.env.NEXT_PUBLIC_CMS_URL}/${userLanguage}/checkout/confirmation?reference=${reference}`,
-        callbackAuthorizationToken: process.env.VIPPS_CALLBACK_TOKEN || 'your-secret-token',
+        callbackUrl: `${publicEnv.NEXT_PUBLIC_CMS_URL}/api/vipps/checkout-callback`,
+        returnUrl: `${publicEnv.NEXT_PUBLIC_CMS_URL}/${userLanguage}/checkout/confirmation?reference=${reference}`,
+        callbackAuthorizationToken: appConfig.env.VIPPS_CALLBACK_TOKEN,
       },
+      ...(orderLines.length > 0 && {
+        configuration: {
+          showOrderSummary: true,
+        },
+      }),
     };
 
     logger.info({ reference, checkoutRequest }, 'Sending checkout request to Vipps');
 
-    const response = await fetch(`${VIPPS_API_URL}/checkout/v3/session`, {
+    const response = await fetch(`${appConfig.env.VIPPS_API_URL}/checkout/v3/session`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${accessToken}`,
         'Content-Type': 'application/json',
-        'Ocp-Apim-Subscription-Key': VIPPS_SUBSCRIPTION_KEY || '',
-        'Merchant-Serial-Number': VIPPS_MERCHANT_SERIAL_NUMBER || '',
+        'client_id': appConfig.env.VIPPS_CLIENT_ID,
+        'client_secret': appConfig.env.VIPPS_CLIENT_SECRET,
+        'Ocp-Apim-Subscription-Key': appConfig.env.VIPPS_SUBSCRIPTION_KEY,
+        'Merchant-Serial-Number': appConfig.env.VIPPS_MERCHANT_SERIAL_NUMBER,
         'Vipps-System-Name': 'Historia',
         'Vipps-System-Version': '1.0.0',
         'Vipps-System-Plugin-Name': 'historia-webshop',
