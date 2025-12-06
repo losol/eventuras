@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useCart } from '@/lib/cart';
 
@@ -12,7 +12,13 @@ interface CartButtonProps {
 
 export function CartButton({ locale }: CartButtonProps) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const { itemCount } = useCart();
+
+  // Prevent hydration mismatch by only showing count after mount
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   return (
     <>
@@ -37,8 +43,8 @@ export function CartButton({ locale }: CartButtonProps) {
           />
         </svg>
 
-        {/* Item count badge */}
-        {itemCount > 0 && (
+        {/* Item count badge - only show after mount to prevent hydration mismatch */}
+        {isMounted && itemCount > 0 && (
           <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-xs font-medium text-white">
             {itemCount > 9 ? '9+' : itemCount}
           </span>

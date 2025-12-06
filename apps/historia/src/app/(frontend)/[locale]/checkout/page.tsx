@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation';
 
-import { CheckoutPageClient } from './page.client';
-import { getCartProducts } from '../actions';
+import { CheckoutPageClient } from './page-embedded.client';
 
 interface CheckoutPageProps {
   params: Promise<{
