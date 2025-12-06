@@ -1,6 +1,13 @@
 'use client';
 
-import Link from 'next/link';
+import Image from 'next/image';
+
+import { Button } from '@eventuras/ratio-ui/core/Button';
+import { Card } from '@eventuras/ratio-ui/core/Card';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Text } from '@eventuras/ratio-ui/core/Text';
+import { Container } from '@eventuras/ratio-ui/layout/Container';
+import { Link } from '@eventuras/ratio-ui-next';
 
 import { useCart } from '@/lib/cart';
 import { formatPrice } from '@/lib/format-price';
@@ -21,73 +28,72 @@ export function ProductDetailClient({ product, locale }: ProductDetailClientProp
   const cartItem = items.find((item) => item.productId === product.id);
   const quantityInCart = cartItem?.quantity || 0;
 
+  const hasImage =
+    product.image &&
+    typeof product.image === 'object' &&
+    'url' in product.image &&
+    product.image.url &&
+    typeof product.image.url === 'string';
+
   return (
-    <div className="container mx-auto max-w-4xl px-4 py-8">
+    <Container>
       <div className="mb-6">
-        <Link href={`/${locale}/products`} className="text-blue-600 hover:text-blue-700">
-          ← Back to Products
-        </Link>
+        <Link href={`/${locale}/products`}>← Back to Products</Link>
       </div>
 
-      <div className="grid gap-8 md:grid-cols-2">
-        <div>
-          {product.image && typeof product.image === 'object' && 'url' in product.image && product.image.url && typeof product.image.url === 'string' && (
-            <img
-              src={product.image.url}
+      <div className={hasImage ? 'grid gap-8 md:grid-cols-2' : 'max-w-2xl'}>
+        {/* Product Image - only show if exists */}
+        {hasImage && product.image && typeof product.image === 'object' && 'url' in product.image ? (
+          <div className="relative aspect-square">
+            <Image
+              src={product.image.url as string}
               alt={product.title || ''}
-              className="w-full rounded-lg border border-gray-200"
+              fill
+              className="rounded-lg border border-gray-200 dark:border-gray-700 object-cover"
             />
-          )}
-        </div>
+          </div>
+        ) : null}
 
-        <div>
-          <h1 className="mb-4 text-3xl font-bold">{product.title}</h1>
+        {/* Product Details */}
+        <div className="space-y-6">
+          <Heading as="h1">{product.title}</Heading>
 
           {product.lead && (
-            <p className="mb-6 text-lg text-gray-700">{product.lead}</p>
+            <Text className="text-lg text-gray-700 dark:text-gray-300">{product.lead}</Text>
           )}
 
           {product.price?.amount && (
-            <div className="mb-6">
-              <span className="text-3xl font-bold">
+            <div>
+              <span className="text-3xl font-bold text-gray-900 dark:text-white">
                 {formatPrice(product.price.amount, product.price.currency || 'NOK', locale)}
               </span>
             </div>
           )}
 
-          {product.inventory != null && (
-            <p className="mb-6 text-sm text-gray-500">
-              {product.inventory > 0
-                ? `${product.inventory} in stock`
-                : 'Out of stock'}
-            </p>
-          )}
-
           <div className="space-y-4">
-            <button
-              onClick={handleAddToCart}
-              disabled={product.inventory === 0}
-              className="w-full rounded-md bg-blue-600 px-6 py-3 text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-500"
-            >
-              {product.inventory === 0 ? 'Out of Stock' : 'Add to Cart'}
-            </button>
+            <Button onClick={handleAddToCart} variant="primary" block padding="px-6 py-3">
+              Add to Cart
+            </Button>
 
             {quantityInCart > 0 && (
-              <div className="rounded-md bg-green-50 p-4 text-center">
-                <p className="text-sm text-green-800">
+              <Card
+                padding="p-4"
+                className="text-center bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800"
+              >
+                <Text className="text-sm text-green-800 dark:text-green-300">
                   {quantityInCart} {quantityInCart === 1 ? 'item' : 'items'} in cart
-                </p>
+                </Text>
                 <Link
                   href={`/${locale}/cart`}
-                  className="mt-2 inline-block text-sm text-green-700 underline hover:text-green-800"
+                  className="mt-2 inline-block text-sm text-green-700 dark:text-green-400 underline"
                 >
                   View Cart
                 </Link>
-              </div>
+              </Card>
             )}
           </div>
         </div>
       </div>
-    </div>
+    </Container>
   );
 }

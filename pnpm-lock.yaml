@@ -175,6 +175,9 @@ importers:
       '@eventuras/ratio-ui':
         specifier: workspace:*
         version: link:../../libs/ratio-ui
+      '@eventuras/ratio-ui-next':
+        specifier: workspace:*
+        version: link:../../libs/ratio-ui-next
       '@payloadcms/admin-bar':
         specifier: 3.65.0
         version: 3.65.0(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
