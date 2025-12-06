@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
+import { VippsExpressButton } from '@/components/payment/VippsExpressButton';
 import { useCart } from '@/lib/cart';
 import { formatPrice } from '@/lib/format-price';
 import type { Product } from '@/payload-types';
@@ -161,9 +162,32 @@ export function CartPageClient({ locale }: CartPageClientProps) {
         </div>
 
         <div className="space-y-2">
+          {/* Vipps Express Checkout */}
+          <VippsExpressButton
+            amount={totalInCents}
+            currency="NOK"
+            items={items.map((item) => ({
+              productId: item.productId,
+              quantity: item.quantity,
+            }))}
+            locale={locale}
+          />
+
+          {/* Divider */}
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-200"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="bg-white px-2 text-gray-500">or</span>
+            </div>
+          </div>
+
+          {/* Standard checkout */}
           <button className="w-full rounded-md bg-blue-600 px-6 py-3 text-white hover:bg-blue-700">
             Proceed to Checkout
           </button>
+
           <button
             onClick={clearCart}
             className="w-full rounded-md border border-gray-300 px-6 py-3 hover:bg-gray-50"

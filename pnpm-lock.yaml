@@ -172,6 +172,9 @@ importers:
       '@eventuras/logger':
         specifier: workspace:*
         version: link:../../libs/logger
+      '@eventuras/ratio-ui':
+        specifier: workspace:*
+        version: link:../../libs/ratio-ui
       '@payloadcms/admin-bar':
         specifier: 3.65.0
         version: 3.65.0(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
