@@ -166,6 +166,9 @@ importers:
 
   apps/historia:
     dependencies:
+      '@eventuras/app-config':
+        specifier: workspace:*
+        version: link:../../libs/app-config
       '@eventuras/core-nextjs':
         specifier: workspace:*
         version: link:../../libs/core-nextjs

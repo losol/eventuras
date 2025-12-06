@@ -1,0 +1,95 @@
+{
+  "$schema": "https://eventuras.dev/schema/app-config.schema.json",
+  "name": "@eventuras/historia",
+  "type": "app",
+  "description": "Historia CMS and Commerce platform",
+  "env": {
+    "CMS_DATABASE_URL": {
+      "required": true,
+      "client": false,
+      "type": "string",
+      "description": "PostgreSQL database connection URL"
+    },
+    "CMS_SECRET": {
+      "required": true,
+      "client": false,
+      "type": "string",
+      "description": "Secret for CMS encryption and signing"
+    },
+    "PAYLOAD_SECRET": {
+      "required": true,
+      "client": false,
+      "type": "string",
+      "description": "Secret for Payload CMS"
+    },
+    "NEXT_PUBLIC_CMS_URL": {
+      "required": true,
+      "client": true,
+      "type": "url",
+      "description": "Public URL for the CMS (used for CORS, links, callbacks - must be HTTPS for Vipps)"
+    },
+    "CMS_LOCALES": {
+      "required": false,
+      "client": false,
+      "type": "string",
+      "description": "Comma-separated list of supported locales",
+      "default": "no,en"
+    },
+    "CMS_DEFAULT_LOCALE": {
+      "required": false,
+      "client": false,
+      "type": "string",
+      "description": "Default locale for the CMS",
+      "default": "no"
+    },
+    "PREVIEW_SECRET": {
+      "required": false,
+      "client": false,
+      "type": "string",
+      "description": "Secret for live preview functionality"
+    },
+    "VIPPS_API_URL": {
+      "required": false,
+      "client": false,
+      "type": "url",
+      "description": "Vipps API base URL",
+      "default": "https://apitest.vipps.no"
+    },
+    "VIPPS_MERCHANT_SERIAL_NUMBER": {
+      "required": true,
+      "client": false,
+      "type": "string",
+      "description": "Vipps merchant serial number"
+    },
+    "VIPPS_CLIENT_ID": {
+      "required": true,
+      "client": false,
+      "type": "string",
+      "description": "Vipps client ID for authentication"
+    },
+    "VIPPS_CLIENT_SECRET": {
+      "required": true,
+      "client": false,
+      "type": "string",
+      "description": "Vipps client secret for authentication"
+    },
+    "VIPPS_SUBSCRIPTION_KEY": {
+      "required": true,
+      "client": false,
+      "type": "string",
+      "description": "Vipps API subscription key (primary)"
+    },
+    "VIPPS_SUBSCRIPTION_KEY_SECONDARY": {
+      "required": false,
+      "client": false,
+      "type": "string",
+      "description": "Vipps API subscription key (secondary/backup)"
+    },
+    "VIPPS_CALLBACK_TOKEN": {
+      "required": true,
+      "client": false,
+      "type": "string",
+      "description": "Secret token for validating Vipps callbacks"
+    }
+  }
+}

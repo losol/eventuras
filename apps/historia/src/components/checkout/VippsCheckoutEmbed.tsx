@@ -124,7 +124,7 @@ export function VippsCheckoutEmbed({
       <div
         id="vipps-checkout-frame"
         ref={containerRef}
-        className="min-h-[600px] w-full"
+        className="min-h-[700px] w-full rounded-lg overflow-hidden"
       />
       {!scriptLoaded && (
         <div className="flex min-h-[600px] items-center justify-center">

@@ -15,6 +15,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@eventuras/app-config": "workspace:*",
     "@eventuras/core-nextjs": "workspace:*",
     "@eventuras/logger": "workspace:*",
     "@eventuras/ratio-ui": "workspace:*",
