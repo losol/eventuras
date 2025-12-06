@@ -41,14 +41,27 @@ export const Transactions: CollectionConfig = {
       min: 0,
     },
     {
+      name: 'paymentReference',
+      type: 'text',
+      required: true,
+      unique: true,
+      admin: {
+        description: 'Unique payment reference from payment provider (Vipps reference, Stripe payment intent ID, etc.)',
+      },
+    },
+    {
       name: 'status',
       type: 'select',
       required: true,
       defaultValue: 'pending',
       options: [
         { label: 'Pending', value: 'pending' },
+        { label: 'Authorized', value: 'authorized' },
+        { label: 'Captured', value: 'captured' },
         { label: 'Completed', value: 'completed' },
         { label: 'Failed', value: 'failed' },
+        { label: 'Refunded', value: 'refunded' },
+        { label: 'Partially Refunded', value: 'partially-refunded' },
       ],
     },
     {
@@ -56,8 +69,20 @@ export const Transactions: CollectionConfig = {
       type: 'select',
       required: true,
       options: [
-        { label: 'Stripe', value: 'stripe' },
         { label: 'Vipps', value: 'vipps' },
+        { label: 'Stripe', value: 'stripe' },
+        { label: 'Manual', value: 'manual' },
+      ],
+    },
+    {
+      name: 'transactionType',
+      type: 'select',
+      required: true,
+      defaultValue: 'payment',
+      options: [
+        { label: 'Payment', value: 'payment' },
+        { label: 'Refund', value: 'refund' },
+        { label: 'Partial Refund', value: 'partial-refund' },
       ],
     },
   ],

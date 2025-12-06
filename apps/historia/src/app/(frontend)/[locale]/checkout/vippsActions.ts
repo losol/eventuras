@@ -7,6 +7,9 @@ import {
 } from '@eventuras/core-nextjs/actions';
 import { Logger } from '@eventuras/logger';
 
+import type { Product } from '@/payload-types';
+import { getMeUser } from '@/utilities/getMeUser';
+
 const logger = Logger.create({
   namespace: 'historia:cart',
   context: { module: 'vippsActions' },
@@ -38,6 +41,7 @@ interface CreateVippsPaymentParams {
     productId: string;
     quantity: number;
   }>;
+  products?: Product[]; // Optional: product details for order summary
   userLanguage?: string;
 }
 
@@ -92,6 +96,7 @@ export async function createVippsExpressPayment({
   amount,
   currency,
   items,
+  products,
   userLanguage = 'no',
 }: CreateVippsPaymentParams): Promise<ServerActionResult<VippsPaymentResponse>> {
   try {
@@ -105,8 +110,49 @@ export async function createVippsExpressPayment({
 
     const accessToken = tokenResult.data;
 
+    // Try to get current user for pre-fill (optional)
+    let currentUser;
+    try {
+      const userResult = await getMeUser();
+      currentUser = userResult?.user;
+      logger.info({ userId: currentUser?.id }, 'Got user for pre-fill');
+    } catch (error) {
+      // User not logged in - that's okay, just skip pre-fill
+      logger.debug({ error }, 'No user session found, skipping pre-fill');
+    }
+
     // Generate unique reference (in production, use proper order ID)
     const reference = `ORDER-${Date.now()}`;
+
+    // Build order summary if products are provided
+    const orderSummary = products
+      ? {
+          orderLines: items
+            .map((item) => {
+              const product = products.find((p) => p.id === item.productId);
+              if (!product || !product.price?.amount) return null;
+
+              const unitPrice = product.price.amount * 100; // Convert NOK to øre
+              const totalAmount = unitPrice * item.quantity;
+
+              return {
+                id: product.id,
+                name: product.title,
+                quantity: item.quantity,
+                unitPrice,
+                totalAmount,
+                productUrl: product.resourceId
+                  ? `${process.env.NEXT_PUBLIC_CMS_URL}/${userLanguage}/products/${product.resourceId}`
+                  : undefined,
+              };
+            })
+            .filter(Boolean),
+          orderBottomLine: {
+            totalAmount: amount,
+            currency,
+          },
+        }
+      : undefined;
 
     // Create payment request
     const paymentRequest = {
@@ -117,20 +163,33 @@ export async function createVippsExpressPayment({
       paymentMethod: {
         type: 'WALLET',
       },
-      customer: {
-        phoneNumber: undefined, // Optional: pre-fill if known
-      },
+      customer: currentUser
+        ? {
+            // Pre-fill customer data if user is logged in
+            phoneNumber: currentUser.phone_number || undefined,
+            email: currentUser.email,
+            firstName: currentUser.given_name || undefined,
+            lastName: currentUser.family_name || undefined,
+          }
+        : undefined,
       reference,
       returnUrl: `${process.env.NEXT_PUBLIC_CMS_URL}/${userLanguage}/cart/payment-callback?reference=${reference}`,
       userFlow: 'WEB_REDIRECT',
       paymentDescription: `Order ${reference}`,
+      ...(orderSummary && { orderSummary }), // Add order summary if available
       profile: {
         scope: 'name address email phoneNumber',
       },
-      shipping: {
+      logistics: {
+        // Dynamic shipping callback - Vipps calls this when user enters address
+        dynamicOptionsCallback: {
+          url: `${process.env.NEXT_PUBLIC_CMS_URL}/api/vipps/shipping-callback`,
+          method: 'POST',
+        },
+        // Fallback options if callback fails or times out (8 sec)
         fixedOptions: [
           {
-            brand: 'POSTNORD',
+            brand: 'BRING', // Posten Norge
             type: 'HOME_DELIVERY',
             options: [
               {
@@ -140,7 +199,7 @@ export async function createVippsExpressPayment({
                   value: 9900, // 99.00 NOK shipping
                 },
                 name: 'Standard levering',
-                estimatedDelivery: '3-5 virkedager',
+                description: '3-5 virkedager',
               },
               {
                 id: 'express',
@@ -149,7 +208,7 @@ export async function createVippsExpressPayment({
                   value: 19900, // 199.00 NOK shipping
                 },
                 name: 'Ekspress levering',
-                estimatedDelivery: '1-2 virkedager',
+                description: '1-2 virkedager',
               },
             ],
           },

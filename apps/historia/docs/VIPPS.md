@@ -193,6 +193,113 @@ Response includes:
 - [Express documentation](https://developer.vippsmobilepay.com/docs/APIs/epayment-api/api-guide/features/express/)
 - [Brand guidelines](https://brand.vippsmobilepay.com/document/61#/branding/online/buttons)
 
+## Checkout API Features (for future consideration)
+
+The Checkout API offers additional features that could enhance the user experience:
+
+### Pre-fill Customer Data
+
+When users are logged in, we can pre-fill their information to streamline checkout:
+
+```typescript
+customer: {
+  phoneNumber: user.phone_number,
+  email: user.email,
+  firstName: user.given_name,
+  lastName: user.family_name,
+}
+```
+
+**Benefits:**
+
+- Faster checkout process
+- Phone number is automatically forwarded to the Vipps app
+- Works even with `PaymentOnly` mode (digital products)
+
+**Status:** ✅ Implemented in Historia
+
+### Order Summary
+
+Display what the customer is paying for directly in the Vipps app:
+
+```typescript
+orderSummary: {
+  orderLines: products.map(item => ({
+    id: item.id,
+    name: item.title,
+    quantity: item.quantity,
+    unitPrice: item.price * 100, // Convert to øre
+    totalAmount: item.price * item.quantity * 100,
+    productUrl: `${baseUrl}/products/${item.slug}`,
+  })),
+  orderBottomLine: {
+    totalAmount: total,
+    currency: 'NOK',
+  }
+}
+```
+
+**Benefits:**
+
+- Better transparency for customers
+- Reduces purchase hesitation
+- Shows itemized breakdown in Vipps app
+
+**Status:** ✅ Implemented in Historia
+
+### Checkout Elements
+
+Simplify the checkout form based on your needs:
+
+- `PaymentOnly` - Just payment (for digital products, logged-in users)
+- `PaymentAndContactInfo` - Payment + address (what we use)
+
+### Frontend SDK Events
+
+Listen to real-time checkout changes:
+
+```typescript
+VippsCheckout({
+  on: {
+    shipping_option_selected: (data) => {
+      // Update UI when user selects shipping
+    },
+    total_amount_changed: (data) => {
+      // Update total display
+    },
+    customer_information_changed: (data) => {
+      // React to user info changes
+    }
+  }
+});
+```
+
+**Benefits:**
+
+- Better UX with real-time updates
+- Can show selected shipping before user goes to Vipps
+- Update totals dynamically
+
+**Status:** ⏳ Future consideration
+
+### Session Update (Lock/Unlock)
+
+Update checkout after it's started (for discount codes, gift cards, loyalty points):
+
+```typescript
+await checkout.lock();
+await updateVippsSession(reference, { amount: newAmount });
+await checkout.unlock();
+```
+
+**Benefits:**
+
+- Support discount codes
+- Apply gift cards mid-checkout
+- Loyalty program integration
+
+**Status:** ⏳ Future consideration
+
 ## Postman collections
 
 <https://developer.vippsmobilepay.com/docs/knowledge-base/postman/>
