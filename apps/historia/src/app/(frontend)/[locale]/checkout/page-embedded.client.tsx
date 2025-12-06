@@ -11,7 +11,7 @@ import { Section } from '@eventuras/ratio-ui/layout/Section';
 import { useToast } from '@eventuras/toast';
 
 import { VippsCheckoutEmbed } from '@/components/checkout/VippsCheckoutEmbed';
-import { useCart } from '@/lib/cart';
+import { useSessionCart } from '@/lib/cart/use-session-cart';
 import type { Product } from '@/payload-types';
 
 import { getCartProducts } from './actions';
@@ -29,7 +29,7 @@ interface CheckoutPageClientProps {
 export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
   const router = useRouter();
   const toast = useToast();
-  const { items, clearCart } = useCart();
+  const { items, clearCart } = useSessionCart();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [productsLoaded, setProductsLoaded] = useState(false);
@@ -120,7 +120,7 @@ export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
     logger.info('Checkout completed successfully');
     clearCart();
     toast.success('Betaling fullført!');
-    router.push(`/${locale}/checkout/confirmation?reference=${checkoutSession?.reference}`);
+    router.push(`/${locale}/checkout/vipps-callback?reference=${checkoutSession?.reference}`);
   };
 
   const handleCheckoutError = (error: Error) => {

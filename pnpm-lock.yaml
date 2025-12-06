@@ -172,6 +172,12 @@ importers:
       '@eventuras/core-nextjs':
         specifier: workspace:*
         version: link:../../libs/core-nextjs
+      '@eventuras/fides-auth':
+        specifier: workspace:*
+        version: link:../../libs/fides-auth
+      '@eventuras/fides-auth-next':
+        specifier: workspace:*
+        version: link:../../libs/fides-auth-next
       '@eventuras/logger':
         specifier: workspace:*
         version: link:../../libs/logger

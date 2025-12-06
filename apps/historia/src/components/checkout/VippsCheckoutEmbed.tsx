@@ -4,6 +4,9 @@ import { useEffect, useRef, useState } from 'react';
 
 import { Logger } from '@eventuras/logger';
 
+import { updateCartCustomerInfo } from '@/app/actions/cart';
+import type { CustomerInfo } from '@/lib/cart/types';
+
 const logger = Logger.create({
   namespace: 'historia:checkout',
   context: { module: 'VippsCheckoutEmbed' },
@@ -44,6 +47,9 @@ export function VippsCheckoutEmbed({
   const containerRef = useRef<HTMLDivElement>(null);
   const [scriptLoaded, setScriptLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const lastCustomerInfoRef = useRef<string | null>(null);
+  const savingCustomerInfoRef = useRef(false);
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     // Load Vipps Checkout SDK
@@ -91,6 +97,67 @@ export function VippsCheckoutEmbed({
           },
           customer_information_changed: (data) => {
             logger.info({ data }, 'Customer information changed');
+
+            // Clear any existing debounce timer
+            if (debounceTimerRef.current) {
+              clearTimeout(debounceTimerRef.current);
+            }
+
+            // Debounce the save operation
+            debounceTimerRef.current = setTimeout(async () => {
+              // Prevent duplicate calls while we're saving
+              if (savingCustomerInfoRef.current) {
+                logger.info('Already saving customer info, skipping');
+                return;
+              }
+
+              // Store customer information in cart session
+              if (data && typeof data === 'object') {
+                const customerData = data as {
+                  email?: string;
+                  firstName?: string;
+                  lastName?: string;
+                  phone?: string;
+                  address?: string;
+                  city?: string;
+                  zip?: string;
+                  country?: string;
+                };
+
+                const customerInfo: CustomerInfo = {
+                  email: customerData.email,
+                  firstName: customerData.firstName,
+                  lastName: customerData.lastName,
+                  phone: customerData.phone,
+                  address: customerData.address,
+                  city: customerData.city,
+                  zip: customerData.zip,
+                  country: customerData.country,
+                };
+
+                // Check if data has actually changed
+                const customerInfoStr = JSON.stringify(customerInfo);
+                if (lastCustomerInfoRef.current === customerInfoStr) {
+                  logger.info('Customer info unchanged, skipping save');
+                  return;
+                }
+
+                // Mark as saving to prevent concurrent calls
+                savingCustomerInfoRef.current = true;
+                lastCustomerInfoRef.current = customerInfoStr;
+
+                const result = await updateCartCustomerInfo(customerInfo);
+
+                // Reset saving flag
+                savingCustomerInfoRef.current = false;
+
+                if (result.success) {
+                  logger.info({ hasEmail: !!customerInfo.email }, 'Customer info saved to cart');
+                } else {
+                  logger.error({ error: result.error }, 'Failed to save customer info');
+                }
+              }
+            }, 500); // Wait 500ms after last event before saving
           },
           session_status_changed: (data) => {
             logger.info({ data }, 'Session status changed');

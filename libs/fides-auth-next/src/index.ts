@@ -14,5 +14,4 @@ export * from '@eventuras/fides-auth/session-validation';
 export * from '@eventuras/fides-auth/silent-login';
 export * from '@eventuras/fides-auth/utils';
 export * from '@eventuras/fides-auth/types';
-export type { Session, Tokens, CreateSessionOptions } from '@eventuras/fides-auth/types';
 export { TokenBucket } from '@eventuras/fides-auth/rate-limit';

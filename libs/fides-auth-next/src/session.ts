@@ -30,8 +30,8 @@ const logger = Logger.create({ namespace: 'fides-auth-next:session' });
  * });
  * ```
  */
-export async function createSession(
-  session: Session,
+export async function createSession<TData = Record<string, unknown>>(
+  session: Session<TData>,
   options: CreateSessionOptions = {}
 ): Promise<string> {
   logger.debug('Creating new session');
@@ -73,7 +73,7 @@ export async function createSession(
  * }
  * ```
  */
-export const getCurrentSession = cache(async (config?: OAuthConfig): Promise<Session | null> => {
+export const getCurrentSession = cache(async (config?: OAuthConfig): Promise<Session<any> | null> => {
   logger.debug('Retrieving current session');
 
   try {
