@@ -28,10 +28,11 @@ interface VippsAccessTokenResponse {
   expires_in: number;
 }
 
-interface VippsPaymentResponse {
+interface VippsCheckoutResponse {
   reference: string;
-  redirectUrl: string;
-  token?: string;
+  checkoutFrontendUrl: string;
+  token: string;
+  pollingUrl: string;
 }
 
 interface CreateVippsPaymentParams {
@@ -60,21 +61,24 @@ async function getVippsAccessToken(): Promise<ServerActionResult<string>> {
     const response = await fetch(`${VIPPS_API_URL}/accesstoken/get`, {
       method: 'POST',
       headers: {
-        'client_id': VIPPS_CLIENT_ID,
-        'client_secret': VIPPS_CLIENT_SECRET,
         'Ocp-Apim-Subscription-Key': VIPPS_SUBSCRIPTION_KEY,
         'Merchant-Serial-Number': VIPPS_MERCHANT_SERIAL_NUMBER || '',
         'Content-Type': 'application/json',
       },
+      body: JSON.stringify({
+        client_id: VIPPS_CLIENT_ID,
+        client_secret: VIPPS_CLIENT_SECRET,
+      }),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
       logger.error(
-        { status: response.status, error: errorText },
+        { status: response.status, error: errorText, url: `${VIPPS_API_URL}/accesstoken/get` },
         'Failed to get Vipps access token',
       );
-      return actionError(`Vipps authentication failed: ${response.status}`);
+      // User-friendly error message
+      return actionError('Betaling er midlertidig utilgjengelig. Prøv igjen senere.');
     }
 
     const data = (await response.json()) as VippsAccessTokenResponse;
@@ -83,24 +87,22 @@ async function getVippsAccessToken(): Promise<ServerActionResult<string>> {
     return actionSuccess(data.access_token);
   } catch (error) {
     logger.error({ error }, 'Error getting Vipps access token');
-    return actionError(
-      error instanceof Error ? error.message : 'Unknown error',
-    );
+    return actionError('Betaling er midlertidig utilgjengelig. Prøv igjen senere.');
   }
 }
 
 /**
- * Create Vipps Express Checkout payment
+ * Create Vipps Checkout session (embedded checkout on merchant site)
  */
-export async function createVippsExpressPayment({
+export async function createVippsCheckout({
   amount,
   currency,
   items,
   products,
   userLanguage = 'no',
-}: CreateVippsPaymentParams): Promise<ServerActionResult<VippsPaymentResponse>> {
+}: CreateVippsPaymentParams): Promise<ServerActionResult<VippsCheckoutResponse>> {
   try {
-    logger.info({ amount, currency, items }, 'Creating Vipps Express payment');
+    logger.info({ amount, currency, items }, 'Creating Vipps Checkout session');
 
     // Get access token
     const tokenResult = await getVippsAccessToken();
@@ -117,140 +119,115 @@ export async function createVippsExpressPayment({
       currentUser = userResult?.user;
       logger.info({ userId: currentUser?.id }, 'Got user for pre-fill');
     } catch (error) {
-      // User not logged in - that's okay, just skip pre-fill
       logger.debug({ error }, 'No user session found, skipping pre-fill');
     }
 
-    // Generate unique reference (in production, use proper order ID)
+    // Generate unique reference
     const reference = `ORDER-${Date.now()}`;
 
-    // Build order summary if products are provided
-    const orderSummary = products
-      ? {
-          orderLines: items
-            .map((item) => {
-              const product = products.find((p) => p.id === item.productId);
-              if (!product || !product.price?.amount) return null;
+    // Build order lines from products
+    const orderLines = products
+      ? items
+          .map((item) => {
+            const product = products.find((p) => p.id === item.productId);
+            if (!product || !product.price?.amount) return null;
 
-              const unitPrice = product.price.amount * 100; // Convert NOK to øre
-              const totalAmount = unitPrice * item.quantity;
+            const unitPrice = Math.round(product.price.amount * 100); // Convert NOK to øre
+            const totalAmount = unitPrice * item.quantity;
 
-              return {
-                id: product.id,
-                name: product.title,
-                quantity: item.quantity,
+            return {
+              id: product.id,
+              name: product.title,
+              totalAmount,
+              unitInfo: {
                 unitPrice,
-                totalAmount,
-                productUrl: product.resourceId
-                  ? `${process.env.NEXT_PUBLIC_CMS_URL}/${userLanguage}/products/${product.resourceId}`
-                  : undefined,
-              };
-            })
-            .filter(Boolean),
-          orderBottomLine: {
-            totalAmount: amount,
-            currency,
-          },
-        }
-      : undefined;
+                quantity: item.quantity.toString(),
+                quantityUnit: 'PCS',
+              },
+              productUrl: product.resourceId
+                ? `${process.env.NEXT_PUBLIC_CMS_URL}/${userLanguage}/products/${product.resourceId}`
+                : undefined,
+            };
+          })
+          .filter(Boolean)
+      : [];
 
-    // Create payment request
-    const paymentRequest = {
-      amount: {
-        currency,
-        value: amount,
+    // Build checkout request
+    const checkoutRequest = {
+      type: 'PAYMENT',
+      reference,
+      transaction: {
+        amount: {
+          currency,
+          value: amount,
+        },
+        reference,
+        paymentDescription: `Ordre ${reference}`,
+        ...(orderLines.length > 0 && { orderLines }),
       },
-      paymentMethod: {
-        type: 'WALLET',
+      logistics: {
+        fixedOptions: [], // Empty for digital products - no shipping
       },
-      customer: currentUser
+      prefillCustomer: currentUser
         ? {
-            // Pre-fill customer data if user is logged in
             phoneNumber: currentUser.phone_number || undefined,
             email: currentUser.email,
             firstName: currentUser.given_name || undefined,
             lastName: currentUser.family_name || undefined,
           }
         : undefined,
-      reference,
-      returnUrl: `${process.env.NEXT_PUBLIC_CMS_URL}/${userLanguage}/cart/payment-callback?reference=${reference}`,
-      userFlow: 'WEB_REDIRECT',
-      paymentDescription: `Order ${reference}`,
-      ...(orderSummary && { orderSummary }), // Add order summary if available
-      profile: {
-        scope: 'name address email phoneNumber',
-      },
-      logistics: {
-        // Dynamic shipping callback - Vipps calls this when user enters address
-        dynamicOptionsCallback: {
-          url: `${process.env.NEXT_PUBLIC_CMS_URL}/api/vipps/shipping-callback`,
-          method: 'POST',
-        },
-        // Fallback options if callback fails or times out (8 sec)
-        fixedOptions: [
-          {
-            brand: 'BRING', // Posten Norge
-            type: 'HOME_DELIVERY',
-            options: [
-              {
-                id: 'standard',
-                amount: {
-                  currency: 'NOK',
-                  value: 9900, // 99.00 NOK shipping
-                },
-                name: 'Standard levering',
-                description: '3-5 virkedager',
-              },
-              {
-                id: 'express',
-                amount: {
-                  currency: 'NOK',
-                  value: 19900, // 199.00 NOK shipping
-                },
-                name: 'Ekspress levering',
-                description: '1-2 virkedager',
-              },
-            ],
-          },
-        ],
+      merchantInfo: {
+        callbackUrl: `${process.env.NEXT_PUBLIC_CMS_URL}/api/vipps/checkout-callback`,
+        returnUrl: `${process.env.NEXT_PUBLIC_CMS_URL}/${userLanguage}/checkout/confirmation?reference=${reference}`,
+        callbackAuthorizationToken: process.env.VIPPS_CALLBACK_TOKEN || 'your-secret-token',
       },
     };
 
-    logger.info({ reference, paymentRequest }, 'Sending payment request to Vipps');
+    logger.info({ reference, checkoutRequest }, 'Sending checkout request to Vipps');
 
-    const response = await fetch(`${VIPPS_API_URL}/epayment/v1/payments`, {
+    const response = await fetch(`${VIPPS_API_URL}/checkout/v3/session`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${accessToken}`,
         'Content-Type': 'application/json',
         'Ocp-Apim-Subscription-Key': VIPPS_SUBSCRIPTION_KEY || '',
         'Merchant-Serial-Number': VIPPS_MERCHANT_SERIAL_NUMBER || '',
-        'Idempotency-Key': reference, // Ensure idempotency
+        'Vipps-System-Name': 'Historia',
+        'Vipps-System-Version': '1.0.0',
+        'Vipps-System-Plugin-Name': 'historia-webshop',
+        'Vipps-System-Plugin-Version': '1.0.0',
+        'Idempotency-Key': reference,
       },
-      body: JSON.stringify(paymentRequest),
+      body: JSON.stringify(checkoutRequest),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
+      let errorDetails = errorText;
+      try {
+        const errorJson = JSON.parse(errorText);
+        errorDetails = JSON.stringify(errorJson, null, 2);
+      } catch {
+        // errorText is not JSON, use as-is
+      }
       logger.error(
-        { status: response.status, error: errorText, reference },
-        'Failed to create Vipps payment',
+        { status: response.status, error: errorDetails, reference, request: checkoutRequest },
+        'Failed to create Vipps checkout session',
       );
-      return actionError(`Payment creation failed: ${response.status}`);
+      // User-friendly error message
+      return actionError('Kunne ikke starte betaling. Prøv igjen om litt.');
     }
 
-    const data = (await response.json()) as VippsPaymentResponse;
+    const data = (await response.json()) as VippsCheckoutResponse;
 
     logger.info(
-      { reference, redirectUrl: data.redirectUrl },
-      'Vipps payment created successfully',
+      { reference, checkoutFrontendUrl: data.checkoutFrontendUrl },
+      'Vipps checkout session created successfully',
     );
 
     return actionSuccess(data);
   } catch (error) {
-    logger.error({ error, amount, currency }, 'Error creating Vipps payment');
-    return actionError(
-      error instanceof Error ? error.message : 'Unknown error',
-    );
+    logger.error({ error, amount, currency }, 'Error creating Vipps checkout');
+    return actionError('Kunne ikke starte betaling. Prøv igjen om litt.');
   }
 }

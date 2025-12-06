@@ -178,6 +178,9 @@ importers:
       '@eventuras/ratio-ui-next':
         specifier: workspace:*
         version: link:../../libs/ratio-ui-next
+      '@eventuras/toast':
+        specifier: workspace:*
+        version: link:../../libs/toast
       '@payloadcms/admin-bar':
         specifier: 3.65.0
         version: 3.65.0(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
