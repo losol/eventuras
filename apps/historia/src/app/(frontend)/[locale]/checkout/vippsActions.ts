@@ -5,9 +5,12 @@ import {
   actionSuccess,
   ServerActionResult,
 } from '@eventuras/core-nextjs/actions';
+import { getCurrentSession } from '@eventuras/fides-auth-next';
 import { Logger } from '@eventuras/logger';
 
+import { setCartPaymentReference } from '@/app/actions/cart';
 import { appConfig, publicEnv } from '@/config';
+import type { SessionData } from '@/lib/cart/types';
 import type { Product } from '@/payload-types';
 import { getMeUser } from '@/utilities/getMeUser';
 
@@ -113,8 +116,18 @@ export async function createVippsCheckout({
       logger.debug({ error }, 'No user session found, skipping pre-fill');
     }
 
-    // Generate unique reference
-    const reference = `ORDER-${Date.now()}`;
+    // Check if cart already has a payment reference (prevent duplicate checkouts)
+    const session = await getCurrentSession();
+    const existingReference = session?.data?.cart?.paymentReference;
+
+    // Reuse existing reference if present, otherwise generate new one
+    const reference = existingReference || `ORDER-${Date.now()}`;
+
+    if (existingReference) {
+      logger.info({ reference }, 'Reusing existing payment reference from cart');
+    } else {
+      logger.info({ reference }, 'Generated new payment reference');
+    }
 
     // Build order lines from products
     const orderLines = products
@@ -185,7 +198,7 @@ export async function createVippsCheckout({
         : undefined,
       merchantInfo: {
         callbackUrl: `${publicEnv.NEXT_PUBLIC_CMS_URL}/api/vipps/checkout-callback`,
-        returnUrl: `${publicEnv.NEXT_PUBLIC_CMS_URL}/${userLanguage}/checkout/confirmation?reference=${reference}`,
+        returnUrl: `${publicEnv.NEXT_PUBLIC_CMS_URL}/${userLanguage}/checkout/vipps-callback?reference=${reference}`,
         callbackAuthorizationToken: appConfig.env.VIPPS_CALLBACK_TOKEN,
       },
       ...(orderLines.length > 0 && {
@@ -233,6 +246,17 @@ export async function createVippsCheckout({
     }
 
     const data = (await response.json()) as VippsCheckoutResponse;
+
+    // Store payment reference in cart session
+    const cartUpdateResult = await setCartPaymentReference(reference);
+    if (!cartUpdateResult.success) {
+      logger.error(
+        { error: cartUpdateResult.error, reference },
+        'Failed to store payment reference in cart session',
+      );
+      // Don't fail the checkout, but log the error
+      // The payment can still complete, but order creation might fail
+    }
 
     logger.info(
       { reference, checkoutFrontendUrl: data.checkoutFrontendUrl },

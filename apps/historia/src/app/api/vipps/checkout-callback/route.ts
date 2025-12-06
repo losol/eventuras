@@ -43,7 +43,17 @@ interface VippsCheckoutCallback {
 }
 
 export async function POST(request: NextRequest) {
+  const startTime = Date.now();
+
   try {
+    logger.info(
+      {
+        headers: Object.fromEntries(request.headers.entries()),
+        url: request.url,
+      },
+      'Received Vipps callback request'
+    );
+
     // Verify authorization token
     const authHeader = request.headers.get('Authorization');
     const expectedToken = process.env.VIPPS_CALLBACK_TOKEN;
@@ -56,8 +66,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!authHeader || authHeader !== expectedToken) {
-      logger.warn({ authHeader }, 'Invalid authorization token');
+    if (!authHeader) {
+      logger.error('No Authorization header provided');
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
+    if (authHeader !== expectedToken) {
+      logger.error(
+        {
+          receivedToken: authHeader.substring(0, 10) + '...',
+          expectedTokenPrefix: expectedToken.substring(0, 10) + '...',
+        },
+        'Authorization token mismatch'
+      );
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -82,10 +106,16 @@ export async function POST(request: NextRequest) {
       case 'PaymentSuccessful':
         logger.info(
           {
+            sessionId: payload.sessionId,
             reference: payload.reference,
+            paymentMethod: payload.paymentMethod,
+            paymentType: payload.paymentDetails?.type,
+            paymentState: payload.paymentDetails?.state,
             amount: payload.paymentDetails?.amount,
+            shippingDetails: payload.shippingDetails,
+            billingDetails: payload.billingDetails,
           },
-          'Payment successful'
+          'Payment successful - full details'
         );
 
         // TODO: Store order in database
@@ -96,7 +126,12 @@ export async function POST(request: NextRequest) {
 
       case 'PaymentTerminated':
         logger.warn(
-          { reference: payload.reference },
+          {
+            sessionId: payload.sessionId,
+            reference: payload.reference,
+            paymentMethod: payload.paymentMethod,
+            paymentDetails: payload.paymentDetails,
+          },
           'Payment terminated by user'
         );
         // TODO: Update order status to cancelled
@@ -104,7 +139,12 @@ export async function POST(request: NextRequest) {
 
       case 'PaymentInitiationFailed':
         logger.error(
-          { reference: payload.reference },
+          {
+            sessionId: payload.sessionId,
+            reference: payload.reference,
+            paymentMethod: payload.paymentMethod,
+            paymentDetails: payload.paymentDetails,
+          },
           'Payment initiation failed'
         );
         // TODO: Update order status to failed
@@ -112,7 +152,11 @@ export async function POST(request: NextRequest) {
 
       case 'SessionExpired':
         logger.warn(
-          { reference: payload.reference },
+          {
+            sessionId: payload.sessionId,
+            reference: payload.reference,
+            paymentMethod: payload.paymentMethod,
+          },
           'Session expired'
         );
         // TODO: Update order status to expired
@@ -120,16 +164,42 @@ export async function POST(request: NextRequest) {
 
       default:
         logger.warn(
-          { sessionState: payload.sessionState },
+          {
+            sessionId: payload.sessionId,
+            sessionState: payload.sessionState,
+            reference: payload.reference,
+            fullPayload: payload,
+          },
           'Unknown session state'
         );
     }
+
+    const processingTime = Date.now() - startTime;
+    logger.info(
+      {
+        sessionId: payload.sessionId,
+        reference: payload.reference,
+        sessionState: payload.sessionState,
+        processingTimeMs: processingTime,
+      },
+      'Vipps callback processed successfully'
+    );
 
     // MUST return 2XX response
     return NextResponse.json({ success: true }, { status: 200 });
 
   } catch (error) {
-    logger.error({ error }, 'Error processing Vipps callback');
+    const processingTime = Date.now() - startTime;
+    logger.error(
+      {
+        error,
+        processingTimeMs: processingTime,
+        errorName: error instanceof Error ? error.name : 'Unknown',
+        errorMessage: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+      },
+      'Error processing Vipps callback'
+    );
 
     // Still return 200 to avoid retries if it's a processing error
     // Only return error if it's an auth issue

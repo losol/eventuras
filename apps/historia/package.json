@@ -17,6 +17,8 @@
   "dependencies": {
     "@eventuras/app-config": "workspace:*",
     "@eventuras/core-nextjs": "workspace:*",
+    "@eventuras/fides-auth": "workspace:*",
+    "@eventuras/fides-auth-next": "workspace:*",
     "@eventuras/logger": "workspace:*",
     "@eventuras/ratio-ui": "workspace:*",
     "@eventuras/ratio-ui-next": "workspace:*",

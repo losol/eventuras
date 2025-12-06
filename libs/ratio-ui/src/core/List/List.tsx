@@ -1,14 +1,28 @@
 import React from 'react';
+import { Check } from '../../icons';
+
+export type ListItemVariant = 'default' | 'check';
 
 export interface ListItemProps {
   className?: string;
   children?: React.ReactNode;
+  variant?: ListItemVariant;
 }
 
 export const ListItem: React.FC<ListItemProps> = ({
   className,
   children,
+  variant = 'default',
 }) => {
+  if (variant === 'check') {
+    return (
+      <li className={`flex items-start gap-3 ${className || ''}`}>
+        <Check className="mt-0.5 h-5 w-5 shrink-0 text-green-600 dark:text-green-400" />
+        <span>{children}</span>
+      </li>
+    );
+  }
+
   return <li className={className}>{children}</li>;
 };
 

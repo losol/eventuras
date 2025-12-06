@@ -5,13 +5,14 @@ export interface Tokens {
   refreshTokenExpiresAt?: Date;
 }
 
-export interface Session {
+export interface Session<TData = Record<string, unknown>> {
   tokens?: Tokens;
   user?: {
     name: string;
     email: string;
     roles?: string[];
   };
+  data?: TData;
 }
 
 export interface CreateSessionOptions {
