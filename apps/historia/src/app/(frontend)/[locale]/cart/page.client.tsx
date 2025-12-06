@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
-import { VippsExpressButton } from '@/components/payment/VippsExpressButton';
 import { useCart } from '@/lib/cart';
 import { formatPrice } from '@/lib/format-price';
 import type { Product } from '@/payload-types';
@@ -188,16 +187,13 @@ export function CartPageClient({ locale }: CartPageClientProps) {
         </div>
 
         <div className="space-y-3">
-          {/* Vipps Express Checkout */}
-          <VippsExpressButton
-            amount={totalInCents}
-            currency="NOK"
-            items={items.map((item) => ({
-              productId: item.productId,
-              quantity: item.quantity,
-            }))}
-            locale={locale}
-          />
+          {/* Proceed to Checkout */}
+          <Link
+            href={`/${locale}/checkout`}
+            className="block w-full rounded-md bg-blue-600 px-6 py-3 text-center text-white font-medium hover:bg-blue-700 transition-colors"
+          >
+            Gå til kassen
+          </Link>
 
           {/* Divider */}
           <div className="relative">
@@ -205,16 +201,15 @@ export function CartPageClient({ locale }: CartPageClientProps) {
               <div className="w-full border-t border-gray-200 dark:border-gray-700"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="bg-white dark:bg-gray-800 px-3 text-gray-500 dark:text-gray-400">or</span>
+              <span className="bg-white dark:bg-gray-800 px-3 text-gray-500 dark:text-gray-400">eller</span>
             </div>
           </div>
 
-
           <button
             onClick={clearCart}
-            className="rounded-md border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            className="w-full rounded-md border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
           >
-            Clear Cart
+            Tøm handlekurv
           </button>
         </div>
       </div>

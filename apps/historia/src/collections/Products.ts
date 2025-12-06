@@ -87,6 +87,21 @@ export const Products: CollectionConfig = {
           label: 'Product Details',
           fields: [
             {
+              name: 'productType',
+              type: 'select',
+              required: true,
+              defaultValue: 'physical',
+              admin: {
+                description: 'Type of product - determines handling and fulfillment',
+              },
+              options: [
+                { label: 'Physical Product', value: 'physical' },
+                { label: 'Digital Product', value: 'digital' },
+                { label: 'Shipping', value: 'shipping' },
+                { label: 'Service', value: 'service' },
+              ],
+            },
+            {
               name: 'price',
               type: 'group',
               fields: [

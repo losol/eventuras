@@ -36,8 +36,14 @@ const CART_STORAGE_KEY = 'historia-cart';
 
 /**
  * Load cart items from localStorage
+ * Returns empty array if localStorage is not available (SSR)
  */
 function loadCartFromStorage(): CartItem[] {
+  // Check if we're in browser environment
+  if (typeof window === 'undefined') {
+    return [];
+  }
+
   try {
     const stored = localStorage.getItem(CART_STORAGE_KEY);
     if (stored) {
@@ -57,6 +63,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   // Save cart to localStorage when it changes
   useEffect(() => {
+    // Only save to localStorage in browser environment
+    if (typeof window === 'undefined') {
+      return;
+    }
+
     try {
       localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
     } catch (error) {

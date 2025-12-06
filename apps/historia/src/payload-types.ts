@@ -898,6 +898,10 @@ export interface Product {
       }[]
     | null;
   story?: ContentBlock[] | null;
+  /**
+   * Type of product - determines handling and fulfillment
+   */
+  productType: 'physical' | 'digital' | 'shipping' | 'service';
   price?: {
     amount?: number | null;
     /**
@@ -988,8 +992,13 @@ export interface Transaction {
   order: string | Order;
   customer: string | User;
   amount: number;
-  status: 'pending' | 'completed' | 'failed';
-  paymentMethod: 'stripe' | 'vipps';
+  /**
+   * Unique payment reference from payment provider (Vipps reference, Stripe payment intent ID, etc.)
+   */
+  paymentReference: string;
+  status: 'pending' | 'authorized' | 'captured' | 'completed' | 'failed' | 'refunded' | 'partially-refunded';
+  paymentMethod: 'vipps' | 'stripe' | 'manual';
+  transactionType: 'payment' | 'refund' | 'partial-refund';
   updatedAt: string;
   createdAt: string;
 }
@@ -1766,6 +1775,7 @@ export interface ProductsSelect<T extends boolean = true> {
     | {
         content?: T | ContentBlockSelect<T>;
       };
+  productType?: T;
   price?:
     | T
     | {
@@ -1839,8 +1849,10 @@ export interface TransactionsSelect<T extends boolean = true> {
   order?: T;
   customer?: T;
   amount?: T;
+  paymentReference?: T;
   status?: T;
   paymentMethod?: T;
+  transactionType?: T;
   updatedAt?: T;
   createdAt?: T;
 }
