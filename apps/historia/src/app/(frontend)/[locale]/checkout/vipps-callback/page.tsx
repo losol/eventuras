@@ -12,13 +12,12 @@ import { List } from '@eventuras/ratio-ui/core/List';
 import { Loading } from '@eventuras/ratio-ui/core/Loading';
 import { Text } from '@eventuras/ratio-ui/core/Text';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
+import { getPaymentDetails } from '@eventuras/vipps/epayment-v1';
 
 import { useSessionCart } from '@/lib/cart/use-session-cart';
+import { getVippsConfig } from '@/lib/vipps/config';
 
-import {
-  createOrderFromPayment,
-  getVippsPaymentDetails,
-} from './epayment-actions';
+import { createOrderFromPayment } from './actions';
 
 const logger = Logger.create({
   namespace: 'historia:payment',
@@ -72,19 +71,13 @@ export default function PaymentCallbackPage() {
         logger.info({ reference }, 'Payment callback received');
 
         // Step 1: Get payment details from Vipps ePayment API
-        const paymentResult = await getVippsPaymentDetails(reference);
+        const vippsConfig = getVippsConfig();
+        const paymentDetails = await getPaymentDetails(vippsConfig, reference);
 
-        if (!paymentResult.success) {
-          logger.error(
-            { reference, error: paymentResult.error },
-            'Payment lookup failed',
-          );
-          setStatus('error');
-          setMessage(paymentResult.error.message);
-          return;
-        }
-
-        const paymentDetails = paymentResult.data;
+        logger.info(
+          { reference, state: paymentDetails.state },
+          'Payment details retrieved',
+        );
 
         // Check if payment is successful
         if (paymentDetails.state !== 'AUTHORIZED') {

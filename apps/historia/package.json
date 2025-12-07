@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@eventuras/app-config": "workspace:*",
+    "@eventuras/core": "workspace:*",
     "@eventuras/core-nextjs": "workspace:*",
     "@eventuras/fides-auth": "workspace:*",
     "@eventuras/fides-auth-next": "workspace:*",
@@ -23,6 +24,7 @@
     "@eventuras/ratio-ui": "workspace:*",
     "@eventuras/ratio-ui-next": "workspace:*",
     "@eventuras/toast": "workspace:*",
+    "@eventuras/vipps": "workspace:*",
     "@payloadcms/admin-bar": "3.65.0",
     "@payloadcms/db-postgres": "3.65.0",
     "@payloadcms/db-sqlite": "^3.65.0",

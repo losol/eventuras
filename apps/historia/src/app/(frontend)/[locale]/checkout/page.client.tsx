@@ -3,12 +3,12 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+import { formatPrice } from '@eventuras/core/currency';
 import { VippsButton } from '@eventuras/ratio-ui/core/Button';
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 
 import { useCart } from '@/lib/cart';
-import { formatPrice } from '@/lib/format-price';
 import type { Product } from '@/payload-types';
 
 import { getCartProducts } from './actions';
