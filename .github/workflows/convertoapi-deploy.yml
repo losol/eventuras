@@ -6,7 +6,7 @@ on:
 env:
   DOCKER_ORG: losolio
   DOCKER_IMAGE: converto-api
-  DOCKER_FILE: Dockerfile.ConvertoApi
+  DOCKER_FILE: apps/convertoapi/Dockerfile
 
 jobs:
   docker:
