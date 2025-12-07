@@ -2,8 +2,18 @@
 #
 # IMPORTANT: Build context must be the monorepo root (.)
 #
-# Build from monorepo root:
-#   docker build -f apps/historia/Dockerfile -t historia:latest .
+# Build from monorepo root using BuildKit secrets:
+#   docker build -f apps/historia/Dockerfile -t historia:latest \
+#     --secret id=cms_secret,env=CMS_SECRET .
+#
+# Or with a file:
+#   echo "your-secret" > /tmp/cms_secret
+#   docker build -f apps/historia/Dockerfile -t historia:latest \
+#     --secret id=cms_secret,src=/tmp/cms_secret .
+#
+# Run with environment variables:
+#   docker run -e CMS_SECRET=your-secret -e DATABASE_URL=postgresql://... \
+#     -p 3000:3000 historia:latest
 #
 # Base image
 FROM node:24-bookworm-slim AS base
@@ -70,8 +80,11 @@ RUN pnpm --filter=@eventuras/historia^... build
 
 WORKDIR /app/apps/historia
 
-# Build the application (without database migration)
-RUN pnpm run build
+# Build the application with secret mount
+# Secret is only available during build, not stored in image
+RUN --mount=type=secret,id=cms_secret \
+    CMS_SECRET=$(cat /run/secrets/cms_secret 2>/dev/null || echo "build-time-secret") \
+    pnpm run build
 
 ##########################
 # Runtime                #
