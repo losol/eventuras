@@ -700,7 +700,7 @@ export interface Organization {
    * VAT or business registration number
    */
   organizationNumber?: string | null;
-  website?: string | null;
+  url?: string | null;
   email?: string | null;
   phone?: string | null;
   address?: {
@@ -873,7 +873,7 @@ export interface NavBlock {
           }
         | {
             text: string;
-            href: string;
+            url?: string | null;
             openInNewTab?: boolean | null;
             id?: string | null;
             blockName?: string | null;
@@ -1741,7 +1741,7 @@ export interface OrganizationsSelect<T extends boolean = true> {
   name?: T;
   description?: T;
   organizationNumber?: T;
-  website?: T;
+  url?: T;
   email?: T;
   phone?: T;
   address?:
@@ -2073,7 +2073,7 @@ export interface NavBlockSelect<T extends boolean = true> {
           | T
           | {
               text?: T;
-              href?: T;
+              url?: T;
               openInNewTab?: T;
               id?: T;
               blockName?: T;
