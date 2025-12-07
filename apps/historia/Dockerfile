@@ -1,5 +1,12 @@
+# Dockerfile for Historia (Eventuras CMS)
+#
+# IMPORTANT: Build context must be the monorepo root (.)
+#
+# Build from monorepo root:
+#   docker build -f apps/historia/Dockerfile -t historia:latest .
+#
 # Base image
-FROM node:22-bookworm-slim AS base
+FROM node:24-bookworm-slim AS base
 
 ##########################
 # Turbo Prune + Install  #
@@ -19,7 +26,8 @@ COPY apps/historia ./apps/historia
 COPY libs ./libs
 
 # Enable pnpm and prune with turbo using pnpm dlx
-RUN corepack enable && corepack prepare pnpm@10.24.0 --activate
+RUN corepack enable && \
+    COREPACK_ENABLE_STRICT=0 corepack prepare pnpm@10.24.0 --activate
 RUN pnpm dlx turbo prune --scope=@eventuras/historia --docker
 
 ##########################
@@ -30,7 +38,8 @@ FROM base AS install
 WORKDIR /app
 
 # Enable pnpm
-RUN corepack enable && corepack prepare pnpm@10.24.0 --activate
+RUN corepack enable && \
+    COREPACK_ENABLE_STRICT=0 corepack prepare pnpm@10.24.0 --activate
 
 # Copy pruned files from previous stage
 COPY --from=deps /app/out/json/ ./
@@ -46,9 +55,6 @@ FROM base AS builder
 
 WORKDIR /app
 
-ARG CMS_SECRET=secret
-ENV CMS_SECRET=${CMS_SECRET}
-
 ARG CMS_DEFAULT_LOCALE=no
 ENV CMS_DEFAULT_LOCALE=${CMS_DEFAULT_LOCALE}
 ENV NEXT_TELEMETRY_DISABLED=1
@@ -56,10 +62,16 @@ ENV NEXT_TELEMETRY_DISABLED=1
 COPY --from=install /app ./
 
 # Ensure pnpm is available
-RUN corepack enable && corepack prepare pnpm@10.24.0 --activate
+RUN corepack enable && \
+    COREPACK_ENABLE_STRICT=0 corepack prepare pnpm@10.24.0 --activate
+
+# Build dependencies first (all workspace packages that historia depends on)
+RUN pnpm --filter=@eventuras/historia^... build
 
 WORKDIR /app/apps/historia
-RUN pnpm dlx payload migrate && pnpm run build
+
+# Build the application (without database migration)
+RUN pnpm run build
 
 ##########################
 # Runtime                #
@@ -75,11 +87,15 @@ RUN addgroup --system --gid 1001 nodejs \
   && adduser --system --uid 1001 --gid 1001 nextjs
 
 # Copy runtime output only
-COPY --from=builder /app/apps/historia/public ./public
-COPY --from=builder /app/apps/historia/.next/standalone ./
-COPY --from=builder /app/apps/historia/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/apps/historia/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/apps/historia/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/apps/historia/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
 
 USER nextjs
 
 EXPOSE 3000
-CMD ["node", "server.js"]
+
+# Run migrations on startup, then start the server
+# CMS_SECRET and DATABASE_URL must be provided at runtime
+CMD ["/bin/sh", "-c", "pnpm dlx payload migrate && node server.js"]
