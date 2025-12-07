@@ -8,6 +8,7 @@ import { image } from '@/fields/image';
 import { name } from '@/fields/name';
 import resourceId from '@/fields/resourceId';
 import { slugField } from '@/fields/slug';
+import { url } from '@/fields/url';
 
 export const Organizations: CollectionConfig = {
   slug: 'organizations',
@@ -32,14 +33,7 @@ export const Organizations: CollectionConfig = {
         description: 'VAT or business registration number',
       },
     },
-    {
-      name: 'website',
-      type: 'text',
-      label: 'Website',
-      admin: {
-        placeholder: 'https://example.com',
-      },
-    },
+    url,
     {
       name: 'email',
       type: 'email',

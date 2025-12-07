@@ -1,5 +1,7 @@
 import type { Block } from 'payload';
 
+import { url } from '@/fields/url';
+
 export const Nav: Block = {
   slug: 'nav',
   interfaceName: 'NavBlock',
@@ -54,15 +56,7 @@ export const Nav: Block = {
               type: 'text',
               required: true,
             },
-            {
-              name: 'href',
-              label: 'URL',
-              type: 'text',
-              required: true,
-              admin: {
-                placeholder: 'https://example.com/page',
-              },
-            },
+            url,
             {
               name: 'openInNewTab',
               label: 'Open in New Tab',
