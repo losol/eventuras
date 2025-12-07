@@ -32,7 +32,7 @@ export const Transactions: CollectionConfig = {
       name: 'customer',
       type: 'relationship',
       relationTo: 'users',
-      required: true,
+      required: false,
     },
     {
       name: 'amount',
