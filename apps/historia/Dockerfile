@@ -1,19 +1,10 @@
 # Dockerfile for Historia (Eventuras CMS)
-#
-# IMPORTANT: Build context must be the monorepo root (.)
+
 #
 # Build from monorepo root using BuildKit secrets:
 #   docker build -f apps/historia/Dockerfile -t historia:latest \
 #     --secret id=cms_secret,env=CMS_SECRET .
-#
-# Or with a file:
-#   echo "your-secret" > /tmp/cms_secret
-#   docker build -f apps/historia/Dockerfile -t historia:latest \
-#     --secret id=cms_secret,src=/tmp/cms_secret .
-#
-# Run with environment variables:
-#   docker run -e CMS_SECRET=your-secret -e DATABASE_URL=postgresql://... \
-#     -p 3000:3000 historia:latest
+
 #
 # Base image
 FROM node:24-bookworm-slim AS base
@@ -80,19 +71,8 @@ RUN pnpm --filter=@eventuras/historia^... build
 
 WORKDIR /app/apps/historia
 
-# Run database migrations to create schema (uses SQLite for build)
-# This creates the database structure needed for the build
-RUN --mount=type=secret,id=cms_secret \
-    CMS_SECRET=$(cat /run/secrets/cms_secret 2>/dev/null || echo "build-time-secret") \
-    CMS_DATABASE_URL=file:./build-db.sqlite \
-    pnpm dlx payload migrate
 
-# Build the application with secret mount
-# Secret is only available during build, not stored in image
-RUN --mount=type=secret,id=cms_secret \
-    CMS_SECRET=$(cat /run/secrets/cms_secret 2>/dev/null || echo "build-time-secret") \
-    CMS_DATABASE_URL=file:./build-db.sqlite \
-    pnpm run build
+RUN pnpm next build --webpack --experimental-build-mode compile
 
 ##########################
 # Runtime                #
@@ -117,6 +97,4 @@ USER nextjs
 
 EXPOSE 3000
 
-# Run migrations on startup, then start the server
-# CMS_SECRET and DATABASE_URL must be provided at runtime
 CMD ["/bin/sh", "-c", "pnpm dlx payload migrate && node server.js"]
