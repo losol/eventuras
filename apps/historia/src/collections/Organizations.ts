@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload';
 
 import { admins } from '@/access/admins';
 import { anyone } from '@/access/anyone';
+import { addressGroup } from '@/fields/address';
 import { description } from '@/fields/description';
 import { image } from '@/fields/image';
 import { name } from '@/fields/name';
@@ -22,6 +23,40 @@ export const Organizations: CollectionConfig = {
   fields: [
     name,
     description,
+    {
+      name: 'organizationNumber',
+      type: 'text',
+      label: 'Organization Number',
+      admin: {
+        placeholder: 'e.g., NO24352345MVA',
+        description: 'VAT or business registration number',
+      },
+    },
+    {
+      name: 'website',
+      type: 'text',
+      label: 'Website',
+      admin: {
+        placeholder: 'https://example.com',
+      },
+    },
+    {
+      name: 'email',
+      type: 'email',
+      label: 'Email',
+      admin: {
+        placeholder: 'contact@example.com',
+      },
+    },
+    {
+      name: 'phone',
+      type: 'text',
+      label: 'Phone',
+      admin: {
+        placeholder: '+47 123 45 678',
+      },
+    },
+    addressGroup('address'),
     image,
     ...slugField("name"),
     resourceId
