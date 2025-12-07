@@ -824,7 +824,7 @@ export interface Order {
     city?: string | null;
     country?: string | null;
   };
-  user: string | User;
+  customer?: (string | null) | User;
   userEmail: string;
   status: 'pending' | 'processing' | 'on-hold' | 'completed' | 'canceled' | 'archived';
   totalAmount?: number | null;
@@ -990,7 +990,7 @@ export interface Transaction {
   id: string;
   tenant?: (string | null) | Website;
   order: string | Order;
-  customer: string | User;
+  customer?: (string | null) | User;
   amount: number;
   /**
    * Unique payment reference from payment provider (Vipps reference, Stripe payment intent ID, etc.)
@@ -1623,7 +1623,7 @@ export interface OrdersSelect<T extends boolean = true> {
         city?: T;
         country?: T;
       };
-  user?: T;
+  customer?: T;
   userEmail?: T;
   status?: T;
   totalAmount?: T;

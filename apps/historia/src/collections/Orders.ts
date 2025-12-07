@@ -45,10 +45,10 @@ export const Orders: CollectionConfig = {
       ],
     },
     {
-      name: 'user',
+      name: 'customer',
       type: 'relationship',
       relationTo: 'users',
-      required: true,
+      required: false,
       admin: {
         position: 'sidebar',
       },
