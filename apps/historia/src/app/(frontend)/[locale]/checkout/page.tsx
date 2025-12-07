@@ -1,6 +1,4 @@
-import { redirect } from 'next/navigation';
-
-import { CheckoutPageClient } from './page-embedded.client';
+import { CheckoutPageClient } from './page.client';
 
 interface CheckoutPageProps {
   params: Promise<{
