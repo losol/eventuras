@@ -41,7 +41,7 @@
     "@types/debug": "^4.1.12",
     "@xstate/react": "^6.0.0",
     "jose": "6.1.3",
-    "lucide-react": "^0.555.0",
+    "lucide-react": "^0.556.0",
     "next": "16.0.7",
     "next-intl": "^4.5.8",
     "openid-client": "^6.8.1",
@@ -49,7 +49,7 @@
     "react": "^19.2.1",
     "react-aria-components": "^1.13.0",
     "react-dom": "^19.2.1",
-    "react-hook-form": "^7.67.0",
+    "react-hook-form": "^7.68.0",
     "tailwindcss-react-aria-components": "^2.0.1",
     "xstate": "^5.24.0"
   },

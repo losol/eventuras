@@ -28,7 +28,7 @@
   "devDependencies": {
     "@eventuras/typescript-config": "workspace:*",
     "@eventuras/vite-config": "workspace:*",
-    "typescript": "^5.7.3",
+    "typescript": "^5.9.3",
     "vite": "^7.2.6"
   }
 }
