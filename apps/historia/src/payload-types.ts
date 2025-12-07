@@ -236,6 +236,18 @@ export interface Website {
   summary?: string | null;
   domains?: string[] | null;
   homePage?: (string | null) | Page;
+  /**
+   * The organization that publishes this website
+   */
+  publisher?: (string | null) | Organization;
+  siteSettings?: {
+    footer?: {
+      /**
+       * Navigation for the footer
+       */
+      navigation?: NavBlock[] | null;
+    };
+  };
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -684,6 +696,20 @@ export interface Organization {
     };
     [k: string]: unknown;
   } | null;
+  /**
+   * VAT or business registration number
+   */
+  organizationNumber?: string | null;
+  website?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  address?: {
+    addressLine1?: string | null;
+    addressLine2?: string | null;
+    postalCode?: string | null;
+    city?: string | null;
+    country?: string | null;
+  };
   image?: Image;
   slug?: string | null;
   slugLock?: boolean | null;
@@ -823,6 +849,47 @@ export interface Product {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "NavBlock".
+ */
+export interface NavBlock {
+  /**
+   * Optional heading for this navigation section
+   */
+  title?: string | null;
+  /**
+   * Add links and separators for navigation
+   */
+  items?:
+    | (
+        | {
+            text: string;
+            page: string | Page;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'internalLink';
+          }
+        | {
+            text: string;
+            href: string;
+            openInNewTab?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'externalLink';
+          }
+        | {
+            style?: ('line' | 'space' | 'dots') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'separator';
+          }
+      )[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'nav';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1673,6 +1740,19 @@ export interface OrganizationsSelect<T extends boolean = true> {
   tenant?: T;
   name?: T;
   description?: T;
+  organizationNumber?: T;
+  website?: T;
+  email?: T;
+  phone?: T;
+  address?:
+    | T
+    | {
+        addressLine1?: T;
+        addressLine2?: T;
+        postalCode?: T;
+        city?: T;
+        country?: T;
+      };
   image?: T | ImageSelect<T>;
   slug?: T;
   slugLock?: T;
@@ -1948,6 +2028,20 @@ export interface WebsitesSelect<T extends boolean = true> {
   summary?: T;
   domains?: T;
   homePage?: T;
+  publisher?: T;
+  siteSettings?:
+    | T
+    | {
+        footer?:
+          | T
+          | {
+              navigation?:
+                | T
+                | {
+                    nav?: T | NavBlockSelect<T>;
+                  };
+            };
+      };
   meta?:
     | T
     | {
@@ -1957,6 +2051,43 @@ export interface WebsitesSelect<T extends boolean = true> {
       };
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "NavBlock_select".
+ */
+export interface NavBlockSelect<T extends boolean = true> {
+  title?: T;
+  items?:
+    | T
+    | {
+        internalLink?:
+          | T
+          | {
+              text?: T;
+              page?: T;
+              id?: T;
+              blockName?: T;
+            };
+        externalLink?:
+          | T
+          | {
+              text?: T;
+              href?: T;
+              openInNewTab?: T;
+              id?: T;
+              blockName?: T;
+            };
+        separator?:
+          | T
+          | {
+              style?: T;
+              id?: T;
+              blockName?: T;
+            };
+      };
+  id?: T;
+  blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

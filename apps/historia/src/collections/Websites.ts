@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload';
 
+import { Nav } from '@/blocks/Nav/config';
 import { meta } from '@/fields/meta';
 import { name } from '@/fields/name';
 import { summary } from '@/fields/summary';
@@ -35,6 +36,39 @@ export const Websites: CollectionConfig = {
       type: 'relationship',
       relationTo: 'pages',
       required: false,
+    },
+    {
+      name: 'publisher',
+      label: 'Publisher',
+      type: 'relationship',
+      relationTo: 'organizations',
+      required: false,
+      admin: {
+        description: 'The organization that publishes this website',
+      },
+    },
+    {
+      name: 'siteSettings',
+      label: 'Site Settings',
+      type: 'group',
+      fields: [
+        {
+          name: 'footer',
+          label: 'Footer',
+          type: 'group',
+          fields: [
+            {
+              name: 'navigation',
+              label: 'Footer Navigation',
+              type: 'blocks',
+              blocks: [Nav],
+              admin: {
+                description: 'Navigation for the footer',
+              },
+            },
+          ],
+        },
+      ],
     },
     meta,
   ],
