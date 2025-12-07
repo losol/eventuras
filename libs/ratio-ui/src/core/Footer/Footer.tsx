@@ -3,6 +3,7 @@ export interface Publisher {
   address: string;
   phone: string;
   email: string;
+  organizationNumber?: string;
 }
 
 interface FooterProps {
@@ -27,6 +28,9 @@ export const Footer = (props: FooterProps) => {
                       <p>{props.publisher.address}</p>
                       <p>{props.publisher.phone}</p>
                       <p>{props.publisher.email}</p>
+                      {props.publisher.organizationNumber && (
+                        <p>Org.nr. {props.publisher.organizationNumber}</p>
+                      )}
                     </div>
                 )}
               </div>

@@ -112,7 +112,7 @@ export default async function Page({ params: paramsPromise }: Args) {
     <>
       <PageClient />
       <LivePreviewListener />
-      <article className="pt-16 pb-24 container">
+      <article className="pt-16 pb-24 px-4 max-w-6xl mx-auto">
         {breadcrumbs && Array.isArray(breadcrumbs) && breadcrumbs.length > 1 && (
           <nav aria-label="breadcrumb" className="mb-4">
             <ol className="breadcrumb flex">
