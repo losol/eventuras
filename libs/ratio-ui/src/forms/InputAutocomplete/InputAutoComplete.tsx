@@ -3,7 +3,7 @@ import { useAsyncList } from 'react-stately';
 
 import { FocusEventHandler, ReactElement, useRef, useState } from "react";
 import { Button, ComboBox, Input, Label, ListBox, ListBoxItem, Popover } from 'react-aria-components';
-import Loading from '../../core/Loading/Loading'
+import { Loading } from '../../core/Loading'
 
 export type AutoCompleteItem = {
   id: any;
@@ -35,7 +35,7 @@ export const InputAutoComplete = (props: InputAutoCompleteProps) => {
   const localCache = useRef<Map<string, AutoCompleteItem[]>>(new Map());
   const [loading, setLoading] = useState<boolean>(false);
 
-  let list = useAsyncList<AutoCompleteItem>({
+  const list = useAsyncList<AutoCompleteItem>({
     async load({filterText}: { filterText?: string }) {
       if ((filterText ?? '').length < props.minimumAmountOfCharacters) {
         return createSet([

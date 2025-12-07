@@ -10,7 +10,7 @@ const sampleItems: NavListItem[] = [
 ];
 
 const meta: Meta<NavListProps> = {
-  title: 'NavList',
+  title: 'Core/NavList',
   component: NavList,
   argTypes: {
     sticky: { control: 'boolean' },

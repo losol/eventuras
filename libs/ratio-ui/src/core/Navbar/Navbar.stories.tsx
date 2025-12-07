@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Navbar, NavbarProps } from './Navbar';
 
 const meta: Meta<typeof Navbar> = {
-  title: 'Navbar',
+  title: 'Core/Navbar',
   component: Navbar,
   tags: ['autodocs'],
 };

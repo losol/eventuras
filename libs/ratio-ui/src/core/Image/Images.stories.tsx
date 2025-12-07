@@ -5,7 +5,7 @@ import { Image, type ImageProps, type ImageRendererProps } from './Image';
 
 // ✅ Basic meta
 const meta: Meta<ImageProps> = {
-  title: 'Media/Image',
+  title: 'Core/Image',
   component: Image,
   args: {
     // Default demo image
