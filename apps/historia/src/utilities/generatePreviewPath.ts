@@ -16,7 +16,7 @@ type Props = {
 }
 
 export const generatePreviewPath = ({ collection, slug, resourceId, req }: Props) => {
-  const locale = req.locale || process.env.CMS_DEFAULT_LOCALE || 'no';
+  const locale = req.locale || process.env.NEXT_PUBLIC_CMS_DEFAULT_LOCALE || 'no';
   const prefix = collectionPrefixMap[collection];
 
   // Build full slug with resourceId if available

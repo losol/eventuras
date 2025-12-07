@@ -84,10 +84,10 @@ export function ProductDetailClient({ product, locale }: ProductDetailClientProp
                   {quantityInCart} {quantityInCart === 1 ? 'item' : 'items'} in cart
                 </Text>
                 <Link
-                  href={`/${locale}/cart`}
+                  href={`/${locale}/checkout`}
                   className="mt-2 inline-block text-sm text-green-700 dark:text-green-400 underline"
                 >
-                  View Cart
+                  Go to Checkout
                 </Link>
               </Card>
             )}

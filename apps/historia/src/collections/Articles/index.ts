@@ -2,6 +2,8 @@ import type { CollectionConfig } from 'payload';
 
 import { admins } from '@/access/admins';
 import { publishedOnly } from '@/access/publishedOnly';
+import { Content } from '@/blocks/Content/config';
+import { Product } from '@/blocks/Product/config';
 import { contributors } from '@/fields/contributors';
 import { image } from '@/fields/image';
 import { lead } from '@/fields/lead';
@@ -62,7 +64,7 @@ export const Articles: CollectionConfig = {
             title,
             image,
             lead,
-            storyField(),
+            storyField([Content, Product]),
           ]
         },
         {
