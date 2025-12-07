@@ -1,3 +1,4 @@
+import { randomBytes } from 'crypto';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -80,7 +81,8 @@ export default buildConfig({
       idType: 'uuid',
       client: {
         url: cmsDatabaseUrl
-      }
+      },
+      push: true,
     }),
   collections: [Articles, Happenings, Licenses, Media, Notes, Orders, Organizations, Pages, Persons, Places, Products, Projects, Topics, Transactions, Users, Websites],
   cors: allowedOrigins,
@@ -94,13 +96,11 @@ export default buildConfig({
   i18n: {
     fallbackLanguage: 'en',
   },
-  async onInit(payload) {
-    await seedDefaultWebsite(payload);
-  },
   plugins: [
     ...plugins, // Additional plugins
   ],
-  secret: process.env.CMS_SECRET,
+  // Generate a random secret if CMS_SECRET is not provided (useful for build time)
+  secret: process.env.CMS_SECRET || randomBytes(32).toString('hex'),
   serverURL: process.env.NEXT_PUBLIC_CMS_URL,
   sharp,
   telemetry: false,
