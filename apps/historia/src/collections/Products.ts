@@ -19,17 +19,6 @@ export const Products: CollectionConfig = {
     update: admins,
     delete: admins,
   },
-  hooks: {
-    afterRead: [
-      ({ doc }) => {
-        // Convert price from cents to currency unit (kr) for API responses
-        if (doc?.price?.amount) {
-          doc.price.amount = doc.price.amount / 100;
-        }
-        return doc;
-      },
-    ],
-  },
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'inventory', '_status'],
@@ -104,6 +93,9 @@ export const Products: CollectionConfig = {
             {
               name: 'price',
               type: 'group',
+              admin: {
+                description: 'Prices are stored in minor units (øre/cents). Use the custom field to edit in major units (kr).',
+              },
               fields: [
                 {
                   name: 'amount',
@@ -111,6 +103,7 @@ export const Products: CollectionConfig = {
                   type: 'number',
                   required: false,
                   admin: {
+                    description: 'Stored in minor units (øre). Use the field above to edit in kr.',
                     components: {
                       Field: '@/collections/Products/PriceField#PriceField',
                     },
@@ -123,6 +116,15 @@ export const Products: CollectionConfig = {
                   required: false,
                   admin: {
                     description: 'Currency code (e.g., NOK, USD, EUR)',
+                  },
+                },
+                {
+                  name: 'decimals',
+                  type: 'number',
+                  defaultValue: 2,
+                  required: false,
+                  admin: {
+                    description: 'Number of decimal places for the currency (default: 2 for NOK)',
                   },
                 },
                 {

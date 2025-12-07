@@ -4,6 +4,7 @@ import { admins } from '@/access/admins';
 import { anyone } from '@/access/anyone';
 import { Archive } from "@/blocks/ArchiveBlock/config";
 import { Content } from "@/blocks/Content/config";
+import { Product } from '@/blocks/Product/config';
 import { contributors } from '@/fields/contributors';
 import { image } from '@/fields/image';
 import { lead } from '@/fields/lead';
@@ -61,7 +62,7 @@ export const Pages: CollectionConfig<'pages'> = {
             title,
             lead,
             image,
-            storyField([Archive, Content])
+            storyField([Archive, Content, Product])
           ],
         },
         {
