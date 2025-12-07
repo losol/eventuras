@@ -60,6 +60,8 @@ jobs:
           file: ./apps/historia/Dockerfile
           push: true
           tags: ${{ env.docker_tag }}
+          secrets: |
+            cms_secret=${{ secrets.CMS_SECRET }}
 
       - name: Output Docker tag
         run: echo "Docker tag is ${{ env.docker_tag }}"
