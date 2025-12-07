@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 
 import { formatPrice } from '@eventuras/core/currency';
+import { Logger } from '@eventuras/logger';
 import { VippsButton } from '@eventuras/ratio-ui/core/Button';
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
@@ -14,16 +14,40 @@ import type { Product } from '@/payload-types';
 import { getCartProducts } from './actions';
 import { createVippsPayment } from './vippsActions';
 
+const logger = Logger.create({
+  namespace: 'historia:checkout',
+  context: { module: 'CheckoutPageClient' },
+});
+
 interface CheckoutPageClientProps {
   locale: string;
 }
 
 export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
-  const router = useRouter();
-  const { items, updateCartItem, removeFromCart, loading: cartLoading } = useCart();
+  const { items, updateCartItem, removeFromCart, loading: cartLoading, refreshCart } = useCart();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+
+  // Log cart state for debugging
+  useEffect(() => {
+    logger.info(
+      {
+        itemCount: items.length,
+        items: items.map((item) => ({ productId: item.productId, quantity: item.quantity })),
+        cartLoading,
+        loading,
+      },
+      'Cart state on checkout page'
+    );
+  }, [items, cartLoading, loading]);
+
+  // Refresh cart on mount to ensure we have the latest data
+  useEffect(() => {
+    logger.info('Refreshing cart on checkout page mount');
+    refreshCart();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Load products
   useEffect(() => {
@@ -44,13 +68,6 @@ export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
 
     loadProducts();
   }, [items]);
-
-  // Redirect if cart is empty (but wait for both cart and products to load)
-  useEffect(() => {
-    if (!cartLoading && !loading && items.length === 0) {
-      router.push(`/${locale}/cart`);
-    }
-  }, [cartLoading, loading, items.length, locale, router]);
 
   const cartWithProducts = items.map((item) => ({
     ...item,
@@ -119,18 +136,33 @@ export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
           Kasse
         </Heading>
 
-        <div className="space-y-6">
-          {/* Order Summary */}
+        {items.length === 0 ? (
           <Card>
-            <Heading as="h2" padding="pb-4">
-              Ordresammendrag
-            </Heading>
+            <div className="py-12 text-center">
+              <p className="text-gray-600 dark:text-gray-400 mb-4">
+                Handlekurven din er tom
+              </p>
+              <a
+                href={`/${locale}`}
+                className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline"
+              >
+                Fortsett å handle
+              </a>
+            </div>
+          </Card>
+        ) : (
+          <div className="space-y-6">
+            {/* Order Summary */}
+            <Card>
+              <Heading as="h2" padding="pb-4">
+                Ordresammendrag
+              </Heading>
 
-            {/* Products */}
-            <div className="space-y-4 mb-6 pb-6 border-b border-gray-200 dark:border-gray-700">
-              {cartWithProducts.map((item) => {
-                const product = item.product;
-                if (!product) return null;
+              {/* Products */}
+              <div className="space-y-4 mb-6 pb-6 border-b border-gray-200 dark:border-gray-700">
+                {cartWithProducts.map((item) => {
+                  const product = item.product;
+                  if (!product) return null;
 
                 const price = product.price?.amount || 0;
                 const total = price * item.quantity;
@@ -228,10 +260,8 @@ export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
             block
             testId="vipps-checkout-button"
           />
-
-
-
         </div>
+        )}
       </div>
     </div>
   );

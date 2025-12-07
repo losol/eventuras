@@ -13,7 +13,7 @@ const getCollectionsSitemap = unstable_cache(
       process.env.VERCEL_PROJECT_PRODUCTION_URL ||
       'https://example.com';
 
-    const locales = process.env.CMS_LOCALES?.split(',') || ['en'];
+    const locales = process.env.NEXT_PUBLIC_CMS_LOCALES?.split(',') || ['en'];
 
     const allSitemapEntries = [];
 

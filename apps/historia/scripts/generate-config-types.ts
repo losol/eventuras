@@ -1,6 +1,6 @@
 #!/usr/bin/env tsx
 /**
- * Generate TypeScript types from app.config.json for the web app
+ * Generate TypeScript types from app.config.json for Historia
  */
 
 import path from 'path';
@@ -17,7 +17,7 @@ const OUTPUT_PATH = path.join(__dirname, '..', 'src', 'config.client.generated.d
 generateTypes({
   configPath: CONFIG_PATH,
   outputPath: OUTPUT_PATH,
-  interfaceName: 'WebPublicEnv',
+  interfaceName: 'HistoriaPublicEnv',
 }).catch((error: unknown) => {
   console.error('❌ Failed to generate types:', error);
   process.exit(1);

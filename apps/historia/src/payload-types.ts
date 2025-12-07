@@ -176,7 +176,7 @@ export interface Article {
   title: string;
   image?: Image;
   lead?: string | null;
-  story?: ContentBlock[] | null;
+  story?: (ContentBlock | ProductsBlock)[] | null;
   publishedAt?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
@@ -258,7 +258,7 @@ export interface Page {
   title: string;
   lead?: string | null;
   image?: Image;
-  story?: (ArchiveBlock | ContentBlock)[] | null;
+  story?: (ArchiveBlock | ContentBlock | ProductsBlock)[] | null;
   slug?: string | null;
   slugLock?: boolean | null;
   resourceId: string;
@@ -721,6 +721,111 @@ export interface ArchiveBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProductsBlock".
+ */
+export interface ProductsBlock {
+  /**
+   * Select one or more products to display
+   */
+  products: (string | Product)[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'products';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products".
+ */
+export interface Product {
+  id: string;
+  tenant?: (string | null) | Website;
+  /**
+   * The title of the entry.
+   */
+  title: string;
+  lead?: string | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  image?: Image;
+  gallery?:
+    | {
+        media?: (string | null) | Media;
+        caption?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        id?: string | null;
+      }[]
+    | null;
+  story?: ContentBlock[] | null;
+  /**
+   * Type of product - determines handling and fulfillment
+   */
+  productType: 'physical' | 'digital' | 'shipping' | 'service';
+  /**
+   * Prices are stored in minor units (øre/cents). Use the custom field to edit in major units (kr).
+   */
+  price?: {
+    /**
+     * Stored in minor units (øre). Use the field above to edit in kr.
+     */
+    amount?: number | null;
+    /**
+     * Currency code (e.g., NOK, USD, EUR)
+     */
+    currency?: string | null;
+    /**
+     * Number of decimal places for the currency (default: 2 for NOK)
+     */
+    decimals?: number | null;
+    /**
+     * VAT/Tax rate in percentage (default: 25%)
+     */
+    vatRate?: number | null;
+    vatAmount?: number | null;
+    totalPrice?: number | null;
+  };
+  /**
+   * Stock Keeping Unit (SKU)
+   */
+  sku?: string | null;
+  /**
+   * Available inventory. Leave empty for unlimited.
+   */
+  inventory?: number | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  resourceId: string;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "happenings".
  */
 export interface Happening {
@@ -847,88 +952,6 @@ export interface Order {
     | null;
   updatedAt: string;
   createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "products".
- */
-export interface Product {
-  id: string;
-  tenant?: (string | null) | Website;
-  /**
-   * The title of the entry.
-   */
-  title: string;
-  lead?: string | null;
-  description?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  image?: Image;
-  gallery?:
-    | {
-        media?: (string | null) | Media;
-        caption?: {
-          root: {
-            type: string;
-            children: {
-              type: any;
-              version: number;
-              [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            version: number;
-          };
-          [k: string]: unknown;
-        } | null;
-        id?: string | null;
-      }[]
-    | null;
-  story?: ContentBlock[] | null;
-  /**
-   * Type of product - determines handling and fulfillment
-   */
-  productType: 'physical' | 'digital' | 'shipping' | 'service';
-  price?: {
-    amount?: number | null;
-    /**
-     * Currency code (e.g., NOK, USD, EUR)
-     */
-    currency?: string | null;
-    /**
-     * VAT/Tax rate in percentage (default: 25%)
-     */
-    vatRate?: number | null;
-    vatAmount?: number | null;
-    totalPrice?: number | null;
-  };
-  /**
-   * Stock Keeping Unit (SKU)
-   */
-  sku?: string | null;
-  /**
-   * Available inventory. Leave empty for unlimited.
-   */
-  inventory?: number | null;
-  slug?: string | null;
-  slugLock?: boolean | null;
-  resourceId: string;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1421,6 +1444,7 @@ export interface ArticlesSelect<T extends boolean = true> {
     | T
     | {
         content?: T | ContentBlockSelect<T>;
+        products?: T | ProductsBlockSelect<T>;
       };
   publishedAt?: T;
   slug?: T;
@@ -1448,6 +1472,15 @@ export interface ImageSelect<T extends boolean = true> {
  */
 export interface ContentBlockSelect<T extends boolean = true> {
   richText?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProductsBlock_select".
+ */
+export interface ProductsBlockSelect<T extends boolean = true> {
+  products?: T;
   id?: T;
   blockName?: T;
 }
@@ -1662,6 +1695,7 @@ export interface PagesSelect<T extends boolean = true> {
     | {
         archive?: T | ArchiveBlockSelect<T>;
         content?: T | ContentBlockSelect<T>;
+        products?: T | ProductsBlockSelect<T>;
       };
   slug?: T;
   slugLock?: T;
@@ -1781,6 +1815,7 @@ export interface ProductsSelect<T extends boolean = true> {
     | {
         amount?: T;
         currency?: T;
+        decimals?: T;
         vatRate?: T;
         vatAmount?: T;
         totalPrice?: T;

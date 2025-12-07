@@ -28,8 +28,8 @@ import { Users } from './collections/Users';
 import { Websites } from './collections/Websites';
 import { plugins } from './plugins';
 
-const locales = process.env.CMS_LOCALES ? process.env.CMS_LOCALES.split(',') : ['en'];
-const defaultLocale = process.env.CMS_DEFAULT_LOCALE ?? 'en';
+const locales = process.env.NEXT_PUBLIC_CMS_LOCALES ? process.env.NEXT_PUBLIC_CMS_LOCALES.split(',') : ['en'];
+const defaultLocale = process.env.NEXT_PUBLIC_CMS_DEFAULT_LOCALE ?? 'en';
 const allowedOrigins = process.env.CMS_ALLOWED_ORIGINS ? process.env.CMS_ALLOWED_ORIGINS.split(',') : [];
 
 const filename = fileURLToPath(import.meta.url);

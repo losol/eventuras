@@ -6,7 +6,7 @@
 
 import type { VippsConfig } from '@eventuras/vipps/vipps-core';
 
-import { appConfig } from '@/config';
+import { appConfig } from '@/config.server';
 
 /**
  * Get Vipps configuration from environment variables

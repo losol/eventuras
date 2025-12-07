@@ -20,6 +20,95 @@ pnpm typecheck
 pnpm lint
 ```
 
+## TypeScript Type Generation
+
+The library includes a tool to generate TypeScript type definitions from your `app.config.json` file. This ensures your client-side environment variables are properly typed.
+
+### Using the generator programmatically
+
+Create a script in your app's `scripts/` directory:
+
+```typescript
+#!/usr/bin/env tsx
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { generateTypes } from '@eventuras/app-config/generator';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+generateTypes({
+  configPath: path.join(__dirname, '..', 'app.config.json'),
+  outputPath: path.join(__dirname, '..', 'src', 'config.client.generated.d.ts'),
+  interfaceName: 'WebPublicEnv', // Optional, defaults to 'PublicEnv'
+}).catch((error: unknown) => {
+  console.error('❌ Failed to generate types:', error);
+  process.exit(1);
+});
+```
+
+Add a script to your `package.json`:
+
+```json
+{
+  "scripts": {
+    "generate:config-types": "tsx scripts/generate-config-types.ts"
+  }
+}
+```
+
+### Generated output
+
+For example, given this config:
+
+```json
+{
+  "env": {
+    "NEXT_PUBLIC_API_BASE_URL": {
+      "required": true,
+      "client": true,
+      "type": "url",
+      "description": "API base URL"
+    },
+    "NEXT_PUBLIC_ORGANIZATION_ID": {
+      "required": false,
+      "client": true,
+      "type": "int",
+      "description": "Organization ID"
+    }
+  }
+}
+```
+
+The generated `config.client.generated.d.ts` will be:
+
+```typescript
+/**
+ * AUTO-GENERATED FILE - DO NOT EDIT
+ * Generated from app.config.json
+ *
+ * To regenerate, run: pnpm generate:config-types
+ */
+
+export interface WebPublicEnv {
+  NEXT_PUBLIC_API_BASE_URL: string;
+  NEXT_PUBLIC_ORGANIZATION_ID?: number;
+}
+```
+
+You can then use this interface to type your client-side environment:
+
+```typescript
+import type { WebPublicEnv } from './config.client.generated';
+
+declare global {
+  namespace NodeJS {
+    interface ProcessEnv extends WebPublicEnv {}
+  }
+}
+```
+
+
 ## Installation
 
 ```bash

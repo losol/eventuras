@@ -13,7 +13,7 @@ import {
 } from '@eventuras/vipps/epayment-v1';
 
 import { setCartPaymentReference } from '@/app/actions/cart';
-import { publicEnv } from '@/config';
+import { appConfig } from '@/config.server';
 import { getVippsConfig } from '@/lib/vipps/config';
 import type { Product } from '@/payload-types';
 import { getMeUser } from '@/utilities/getMeUser';
@@ -113,7 +113,7 @@ export async function createVippsPayment({
         scope: 'name phoneNumber address email',
       },
       reference,
-      returnUrl: `${publicEnv.NEXT_PUBLIC_CMS_URL}/${userLanguage}/checkout/vipps-callback?reference=${reference}`,
+      returnUrl: `${appConfig.env.NEXT_PUBLIC_CMS_URL}/${userLanguage}/checkout/vipps-callback?reference=${reference}`,
       userFlow: 'WEB_REDIRECT', // Standard redirect flow
       paymentDescription,
       receipt: orderLines && orderLines.length > 0 ? {
