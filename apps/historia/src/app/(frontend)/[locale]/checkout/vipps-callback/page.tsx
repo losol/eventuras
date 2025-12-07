@@ -17,8 +17,8 @@ import { useSessionCart } from '@/lib/cart/use-session-cart';
 
 import {
   createOrderFromPayment,
-  getVippsSessionDetails,
-} from './actions';
+  getVippsPaymentDetails,
+} from './epayment-actions';
 
 const logger = Logger.create({
   namespace: 'historia:payment',
@@ -71,38 +71,37 @@ export default function PaymentCallbackPage() {
       try {
         logger.info({ reference }, 'Payment callback received');
 
-        // Step 1: Get complete session details from Vipps (includes userInfo.email)
-        const sessionResult = await getVippsSessionDetails(reference);
+        // Step 1: Get payment details from Vipps ePayment API
+        const paymentResult = await getVippsPaymentDetails(reference);
 
-        if (!sessionResult.success) {
+        if (!paymentResult.success) {
           logger.error(
-            { reference, error: sessionResult.error },
-            'Session lookup failed',
+            { reference, error: paymentResult.error },
+            'Payment lookup failed',
           );
           setStatus('error');
-          setMessage(sessionResult.error.message);
+          setMessage(paymentResult.error.message);
           return;
         }
 
-        const sessionDetails = sessionResult.data;
+        const paymentDetails = paymentResult.data;
 
         // Check if payment is successful
-        if (sessionDetails.paymentDetails?.state !== 'AUTHORIZED') {
+        if (paymentDetails.state !== 'AUTHORIZED') {
           logger.warn(
-            { reference, state: sessionDetails.paymentDetails?.state },
+            { reference, state: paymentDetails.state },
             'Payment not authorized',
           );
           setStatus('error');
-          setMessage(`Payment ${sessionDetails.sessionState.toLowerCase()}. Please try again.`);
+          setMessage(`Payment ${paymentDetails.state.toLowerCase()}. Please try again.`);
           return;
         }
 
         // Step 2: Create order and transaction
-        // Cart items and user details come from encrypted session
-        // Email comes from sessionDetails.userInfo.email
+        // Cart items come from encrypted session
         const orderResult = await createOrderFromPayment({
           paymentReference: reference,
-          sessionDetails: sessionDetails,
+          paymentDetails: paymentDetails,
         });
 
         if (!orderResult.success) {
@@ -126,12 +125,12 @@ export default function PaymentCallbackPage() {
         // Step 4: Show success
         setOrderDetails({
           orderId: orderResult.data.orderId,
-          userEmail: sessionDetails.userInfo?.email || sessionDetails.shippingDetails?.email || '',
-          shippingAddress: sessionDetails.shippingDetails ? {
-            addressLine1: sessionDetails.shippingDetails.streetAddress,
-            postalCode: sessionDetails.shippingDetails.postalCode,
-            city: sessionDetails.shippingDetails.city,
-            country: sessionDetails.shippingDetails.country,
+          userEmail: paymentDetails.profile?.email || paymentDetails.userDetails?.email || '',
+          shippingAddress: paymentDetails.userDetails ? {
+            addressLine1: paymentDetails.userDetails.streetAddress,
+            postalCode: paymentDetails.userDetails.zipCode,
+            city: paymentDetails.userDetails.city,
+            country: paymentDetails.userDetails.country,
           } : undefined,
         });
         setStatus('success');

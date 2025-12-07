@@ -46,7 +46,7 @@ const VippsButton = forwardRef<HTMLButtonElement, VippsButtonProps>(function Vip
     ariaLabel,
     testId,
     // spacing props:
-    padding = defaultButtonPadding,
+    padding = 'p-3',
     margin = 'm-1',
     border,
     width,
