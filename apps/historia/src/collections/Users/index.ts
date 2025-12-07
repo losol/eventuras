@@ -142,11 +142,7 @@ export const Users: CollectionConfig = {
     beforeOperation: [
       ({ args, operation }) => {
         // Bypass tenant filtering for system admins on read operations
-        if (
-          (operation === 'read' || operation === 'find') &&
-          args.req?.user &&
-          isSystemAdmin(args.req.user)
-        ) {
+        if (operation === 'read' && args.req?.user && isSystemAdmin(args.req.user)) {
           // Set flag to bypass tenant scope
           args.req.context = args.req.context || {};
           args.req.context.disableMultiTenant = true;

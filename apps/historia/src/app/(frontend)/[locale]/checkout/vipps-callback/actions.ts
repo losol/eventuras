@@ -342,7 +342,7 @@ export async function createOrderFromPayment({
       collection: 'orders',
       draft: false,
       data: {
-        user: effectiveUserId!,
+        customer: effectiveUserId!,
         userEmail: user.email,
         status: 'processing',
         currency: paymentDetails.aggregate.authorizedAmount.currency,
