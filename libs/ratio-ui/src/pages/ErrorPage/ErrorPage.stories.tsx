@@ -4,11 +4,8 @@ import { ErrorPage, type ErrorPageProps } from './ErrorPage';
 
 /** See: {@link ErrorPageProps} */
 const meta: Meta<typeof ErrorPage> = {
-  // ➜ Sidebar group
-  title: 'Blocks/ErrorPage',
-  // ➜ Component
+  title: 'Pages/ErrorPage',
   component: ErrorPage,
-  // ➜ Controls
   argTypes: {
     tone: { control: 'inline-radio', options: ['fatal', 'warning', 'info', 'success'] },
     fullScreen: { control: 'boolean' },
@@ -39,7 +36,6 @@ export const Playground: Story = {
   ),
 };
 
-/** ➜ Fatal tone */
 export const Fatal: Story = {
   render: () => (
     <ErrorPage tone="fatal">

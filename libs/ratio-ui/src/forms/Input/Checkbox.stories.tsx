@@ -4,7 +4,7 @@ import React from 'react';
 import Checkbox, { CheckboxProps } from './Checkbox';
 
 const meta: Meta<typeof Checkbox> = {
-  title: 'Inputs/Checkbox',
+  title: 'Forms/Checkbox',
   component: Checkbox,
   tags: ['autodocs'],
 };
