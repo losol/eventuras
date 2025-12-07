@@ -12,6 +12,10 @@
     "./datetime": {
       "types": "./dist/datetime/index.d.ts",
       "import": "./dist/datetime/index.js"
+    },
+    "./currency": {
+      "types": "./dist/currency/index.d.ts",
+      "import": "./dist/currency/index.js"
     }
   },
   "files": [

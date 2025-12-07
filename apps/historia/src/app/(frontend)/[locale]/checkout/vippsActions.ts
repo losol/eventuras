@@ -6,14 +6,15 @@ import {
   ServerActionResult,
 } from '@eventuras/core-nextjs/actions';
 import { Logger } from '@eventuras/logger';
-
-import { setCartPaymentReference } from '@/app/actions/cart';
-import { publicEnv } from '@/config';
 import {
   createPayment,
   type CreatePaymentRequest,
   type CreatePaymentResponse,
-} from '@/lib/vipps/epayment-client';
+} from '@eventuras/vipps/epayment-v1';
+
+import { setCartPaymentReference } from '@/app/actions/cart';
+import { publicEnv } from '@/config';
+import { getVippsConfig } from '@/lib/vipps/config';
 import type { Product } from '@/payload-types';
 import { getMeUser } from '@/utilities/getMeUser';
 
@@ -142,8 +143,11 @@ export async function createVippsPayment({
       'Creating ePayment via API'
     );
 
+    // Get Vipps configuration
+    const vippsConfig = getVippsConfig();
+
     // Create payment using ePayment API client
-    const paymentResponse = await createPayment(paymentRequest);
+    const paymentResponse = await createPayment(vippsConfig, paymentRequest);
 
     // Store payment reference in cart session
     const cartUpdateResult = await setCartPaymentReference(reference);

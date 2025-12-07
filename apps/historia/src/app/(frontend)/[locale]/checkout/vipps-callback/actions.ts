@@ -1,5 +1,7 @@
 'use server';
 
+import crypto from 'crypto';
+
 import configPromise from '@payload-config';
 import { getPayload } from 'payload';
 
@@ -10,8 +12,9 @@ import {
 } from '@eventuras/core-nextjs/actions';
 import { getCurrentSession } from '@eventuras/fides-auth-next';
 import { Logger } from '@eventuras/logger';
+import { type PaymentDetails } from '@eventuras/vipps/epayment-v1';
 
-import type { SessionData } from '@/lib/cart/types';
+import type { Cart } from '@/lib/cart/types';
 import { getCurrentWebsiteId } from '@/lib/website';
 import type { Product } from '@/payload-types';
 
@@ -20,375 +23,19 @@ const logger = Logger.create({
   context: { module: 'paymentCallbackActions' },
 });
 
-// Vipps API configuration
-const VIPPS_API_URL = process.env.VIPPS_API_URL || 'https://apitest.vipps.no';
-const VIPPS_MERCHANT_SERIAL_NUMBER = process.env.VIPPS_MERCHANT_SERIAL_NUMBER;
-const VIPPS_CLIENT_ID = process.env.VIPPS_CLIENT_ID;
-const VIPPS_CLIENT_SECRET = process.env.VIPPS_CLIENT_SECRET;
-const VIPPS_SUBSCRIPTION_KEY = process.env.VIPPS_SUBSCRIPTION_KEY;
-
-interface VippsAccessTokenResponse {
-  access_token: string;
-  token_type: string;
-  expires_in: number;
-}
-
-interface VippsPaymentDetails {
-  aggregate: {
-    authorizedAmount: {
-      currency: string;
-      value: number;
-    };
-    capturedAmount: {
-      currency: string;
-      value: number;
-    };
-    refundedAmount: {
-      currency: string;
-      value: number;
-    };
-  };
-  state: 'CREATED' | 'AUTHORIZED' | 'TERMINATED' | 'ABORTED' | 'EXPIRED';
-  paymentMethod?: {
-    type: string;
-  };
-  profile?: {
-    email?: string;
-    name?: string;
-    phoneNumber?: string;
-  };
-  shippingDetails?: {
-    shippingMethodId?: string;
-    address?: {
-      addressLine1?: string;
-      addressLine2?: string;
-      postalCode?: string;
-      city?: string;
-      country?: string;
-    };
-  };
-}
-
-interface VippsSessionDetails {
-  sessionId: string;
-  merchantSerialNumber: string;
-  reference: string;
-  sessionState: string;
-  paymentMethod?: string;
-  paymentDetails?: VippsPaymentDetails;
-  userInfo?: {
-    sub: string;
-    email: string;
-  };
-  shippingDetails?: {
-    firstName?: string;
-    lastName?: string;
-    email?: string;
-    phoneNumber?: string;
-    streetAddress?: string;
-    postalCode?: string;
-    city?: string;
-    country?: string;
-    shippingMethodId?: string;
-  };
-  billingDetails?: {
-    firstName?: string;
-    lastName?: string;
-    email?: string;
-    phoneNumber?: string;
-    streetAddress?: string;
-    postalCode?: string;
-    city?: string;
-    country?: string;
-  };
-  customConsentProvided?: boolean;
-}
-
 /**
- * Get Vipps access token
+ * Generate a secure random password for guest checkout users
+ * Uses crypto.randomBytes for cryptographically strong random data
  */
-async function getVippsAccessToken(): Promise<ServerActionResult<string>> {
-  const startTime = Date.now();
-
-  try {
-    if (!VIPPS_CLIENT_ID || !VIPPS_CLIENT_SECRET || !VIPPS_SUBSCRIPTION_KEY) {
-      logger.error(
-        {
-          hasClientId: !!VIPPS_CLIENT_ID,
-          hasClientSecret: !!VIPPS_CLIENT_SECRET,
-          hasSubscriptionKey: !!VIPPS_SUBSCRIPTION_KEY,
-          hasMerchantSerialNumber: !!VIPPS_MERCHANT_SERIAL_NUMBER,
-        },
-        'Missing Vipps API credentials'
-      );
-      return actionError('Vipps configuration error');
-    }
-
-    logger.info(
-      {
-        apiUrl: VIPPS_API_URL,
-        merchantSerialNumber: VIPPS_MERCHANT_SERIAL_NUMBER,
-      },
-      'Fetching Vipps access token'
-    );
-
-    const response = await fetch(`${VIPPS_API_URL}/accesstoken/get`, {
-      method: 'POST',
-      headers: {
-        'client_id': VIPPS_CLIENT_ID,
-        'client_secret': VIPPS_CLIENT_SECRET,
-        'Ocp-Apim-Subscription-Key': VIPPS_SUBSCRIPTION_KEY,
-        'Merchant-Serial-Number': VIPPS_MERCHANT_SERIAL_NUMBER || '',
-        'Content-Type': 'application/json',
-      },
-    });
-
-    const responseTime = Date.now() - startTime;
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      logger.error(
-        {
-          status: response.status,
-          statusText: response.statusText,
-          error: errorText,
-          responseTimeMs: responseTime,
-          headers: Object.fromEntries(response.headers.entries()),
-        },
-        'Failed to get Vipps access token'
-      );
-      return actionError(`Vipps authentication failed: ${response.status}`);
-    }
-
-    const data = (await response.json()) as VippsAccessTokenResponse;
-    logger.info(
-      {
-        tokenType: data.token_type,
-        expiresIn: data.expires_in,
-        responseTimeMs: responseTime,
-      },
-      'Successfully obtained Vipps access token'
-    );
-
-    return actionSuccess(data.access_token);
-  } catch (error) {
-    const responseTime = Date.now() - startTime;
-    logger.error(
-      {
-        error,
-        errorName: error instanceof Error ? error.name : 'Unknown',
-        errorMessage: error instanceof Error ? error.message : String(error),
-        responseTimeMs: responseTime,
-      },
-      'Error getting Vipps access token'
-    );
-    return actionError(
-      error instanceof Error ? error.message : 'Unknown error',
-    );
-  }
-}
-
-/**
- * Get Vipps session details including user info
- * This provides more complete information than the payment endpoint
- */
-export async function getVippsSessionDetails(
-  reference: string,
-): Promise<ServerActionResult<VippsSessionDetails>> {
-  const startTime = Date.now();
-
-  try {
-    logger.info({ reference }, 'Getting Vipps session details');
-
-    // Get access token
-    const tokenResult = await getVippsAccessToken();
-    if (!tokenResult.success) {
-      logger.error(
-        { reference, error: tokenResult.error },
-        'Failed to get access token for session details'
-      );
-      return actionError(tokenResult.error.message);
-    }
-
-    const accessToken = tokenResult.data;
-
-    // Get session details
-    const apiStartTime = Date.now();
-    const response = await fetch(
-      `${VIPPS_API_URL}/checkout/v3/session/${reference}`,
-      {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-          'Ocp-Apim-Subscription-Key': VIPPS_SUBSCRIPTION_KEY || '',
-          'Merchant-Serial-Number': VIPPS_MERCHANT_SERIAL_NUMBER || '',
-          'client_id': VIPPS_CLIENT_ID || '',
-          'client_secret': VIPPS_CLIENT_SECRET || '',
-          'Vipps-System-Name': 'eventuras-historia',
-          'Vipps-System-Version': '1.0.0',
-          'Vipps-System-Plugin-Name': 'eventuras-historia-commerce',
-          'Vipps-System-Plugin-Version': '1.0.0',
-        },
-      },
-    );
-
-    const apiResponseTime = Date.now() - apiStartTime;
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      logger.error(
-        {
-          reference,
-          status: response.status,
-          statusText: response.statusText,
-          error: errorText,
-          apiResponseTimeMs: apiResponseTime,
-          headers: Object.fromEntries(response.headers.entries()),
-        },
-        'Failed to get Vipps session details'
-      );
-      return actionError(`Session lookup failed: ${response.status}`);
-    }
-
-    const data = (await response.json()) as VippsSessionDetails;
-
-    const totalTime = Date.now() - startTime;
-    logger.info(
-      {
-        reference,
-        sessionData: data,
-        sessionState: data.sessionState,
-        paymentMethod: data.paymentMethod,
-        hasUserInfo: !!data.userInfo,
-        userEmail: data.userInfo?.email,
-        hasShippingDetails: !!data.shippingDetails,
-        hasBillingDetails: !!data.billingDetails,
-        apiResponseTimeMs: apiResponseTime,
-        totalTimeMs: totalTime,
-      },
-      'Vipps session details retrieved successfully'
-    );
-
-    return actionSuccess(data);
-  } catch (error) {
-    const totalTime = Date.now() - startTime;
-    logger.error(
-      {
-        error,
-        reference,
-        errorName: error instanceof Error ? error.name : 'Unknown',
-        errorMessage: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined,
-        totalTimeMs: totalTime,
-      },
-      'Error getting Vipps session details'
-    );
-    return actionError(
-      error instanceof Error ? error.message : 'Unknown error',
-    );
-  }
-}
-
-/**
- * Verify Vipps payment status
- * @deprecated Use getVippsSessionDetails for more complete information
- */
-export async function verifyVippsPayment(
-  reference: string,
-): Promise<ServerActionResult<VippsPaymentDetails>> {
-  const startTime = Date.now();
-
-  try {
-    logger.info({ reference }, 'Verifying Vipps payment');
-
-    // Get access token
-    const tokenResult = await getVippsAccessToken();
-    if (!tokenResult.success) {
-      logger.error(
-        { reference, error: tokenResult.error },
-        'Failed to get access token for payment verification'
-      );
-      return actionError(tokenResult.error.message);
-    }
-
-    const accessToken = tokenResult.data;
-
-    // Get payment details
-    const apiStartTime = Date.now();
-    const response = await fetch(
-      `${VIPPS_API_URL}/epayment/v1/payments/${reference}`,
-      {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-          'Ocp-Apim-Subscription-Key': VIPPS_SUBSCRIPTION_KEY || '',
-          'Merchant-Serial-Number': VIPPS_MERCHANT_SERIAL_NUMBER || '',
-        },
-      },
-    );
-
-    const apiResponseTime = Date.now() - apiStartTime;
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      logger.error(
-        {
-          reference,
-          status: response.status,
-          statusText: response.statusText,
-          error: errorText,
-          apiResponseTimeMs: apiResponseTime,
-          headers: Object.fromEntries(response.headers.entries()),
-        },
-        'Failed to verify Vipps payment'
-      );
-      return actionError(`Payment verification failed: ${response.status}`);
-    }
-
-    const data = (await response.json()) as VippsPaymentDetails;
-
-    const totalTime = Date.now() - startTime;
-    logger.info(
-      {
-        reference,
-        vippsCallback: data,
-        state: data.state,
-        paymentMethod: data.paymentMethod?.type,
-        authorizedAmount: data.aggregate.authorizedAmount,
-        capturedAmount: data.aggregate.capturedAmount,
-        refundedAmount: data.aggregate.refundedAmount,
-        shippingMethodId: data.shippingDetails?.shippingMethodId,
-        hasShippingAddress: !!data.shippingDetails?.address,
-        userEmail: data.profile?.email,
-        apiResponseTimeMs: apiResponseTime,
-        totalTimeMs: totalTime,
-      },
-      'Vipps payment verified successfully'
-    );
-
-    return actionSuccess(data);
-  } catch (error) {
-    const totalTime = Date.now() - startTime;
-    logger.error(
-      {
-        error,
-        reference,
-        errorName: error instanceof Error ? error.name : 'Unknown',
-        errorMessage: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined,
-        totalTimeMs: totalTime,
-      },
-      'Error verifying Vipps payment'
-    );
-    return actionError(
-      error instanceof Error ? error.message : 'Unknown error',
-    );
-  }
+function generateSecurePassword(): string {
+  // Generate 32 random bytes and convert to base64
+  // This creates a strong password that users won't need (guest checkout)
+  return crypto.randomBytes(32).toString('base64');
 }
 
 interface CreateOrderParams {
   paymentReference: string;
-  sessionDetails: VippsSessionDetails;
+  paymentDetails: PaymentDetails;
   userId?: string;
 }
 
@@ -401,15 +48,15 @@ interface CreateOrderParams {
  */
 export async function createOrderFromPayment({
   paymentReference,
-  sessionDetails,
+  paymentDetails,
   userId,
 }: CreateOrderParams): Promise<ServerActionResult<{ orderId: string; transactionId: string }>> {
   const startTime = Date.now();
 
   try {
-    // Get cart from encrypted session (NOT from client!)
+    // Get cart from encrypted session
     const session = await getCurrentSession();
-    const cart = session?.data?.cart;
+    const cart = session?.data?.cart as Cart | undefined;
 
     if (!cart || !cart.items || cart.items.length === 0) {
       logger.error(
@@ -437,12 +84,8 @@ export async function createOrderFromPayment({
       {
         paymentReference,
         itemCount: cart.items.length,
-        items: cart.items.map((i: { productId: string; quantity: number }) => ({ productId: i.productId, quantity: i.quantity })),
-        userId,
-        userEmail: sessionDetails.userInfo?.email,
-        sessionState: sessionDetails.sessionState,
-        paymentState: sessionDetails.paymentDetails?.state,
-        authorizedAmount: sessionDetails.paymentDetails?.aggregate.authorizedAmount,
+        paymentState: paymentDetails.state,
+        authorizedAmount: paymentDetails.aggregate.authorizedAmount,
       },
       'Starting order creation from payment'
     );
@@ -480,55 +123,91 @@ export async function createOrderFromPayment({
       });
     }
 
-    // Get or create user from Vipps session details
-    // Extract email from multiple sources (priority order):
-    // SECURITY CONSIDERATION:
-    // - userInfo.sub and userInfo.email are VERIFIED (requires Vipps Login integration)
-    // - shippingDetails and billingDetails are USER-ENTERED, NOT VERIFIED
-    // - The payment itself is verified, but not the customer details
-    //
-    // SOLUTION: Require users to log into Historia before checkout.
-    // Use their Historia account as verified identity, Vipps only for payment.
+    // If no authenticated user, try to find or create from Vipps profile data
+    let effectiveUserId = userId;
 
-    if (!userId || userId === 'temp-user-id') {
-      logger.error(
+    if (!userId) {
+      // Try to get user info from Vipps profile sharing or user details
+      const vippsEmail = paymentDetails.profile?.email || paymentDetails.userDetails?.email;
+      const vippsPhone = paymentDetails.profile?.phoneNumber || paymentDetails.userDetails?.mobileNumber;
+      const vippsFirstName = paymentDetails.profile?.givenName || paymentDetails.userDetails?.firstName;
+      const vippsLastName = paymentDetails.profile?.familyName || paymentDetails.userDetails?.lastName;
+
+      if (!vippsEmail) {
+        logger.error(
+          {
+            paymentReference,
+          },
+          "Guest checkout attempted but email not available from Vipps",
+        );
+        return actionError(
+          "Email address is required for order confirmation. Please ensure Vipps has permission to share your email address.",
+        );
+      }
+
+      logger.info(
         {
           paymentReference,
-          sessionId: sessionDetails.sessionId,
-          userId,
-          note: "User must be logged into Historia before checkout",
+          hasEmail: !!vippsEmail,
+          hasPhone: !!vippsPhone,
+          hasName: !!(vippsFirstName && vippsLastName),
         },
-        "Anonymous checkout attempted - not allowed",
+        'Guest checkout - finding or creating user from Vipps data'
       );
-      return actionError(
-        "You must be logged in to complete your order. Please sign in and try again.",
+
+      // Try to find existing user by email
+      const usersByEmail = await payload.find({
+        collection: 'users',
+        where: {
+          email: { equals: vippsEmail },
+        },
+        limit: 1,
+      });
+
+      const existingUser = usersByEmail.docs[0];
+
+      if (existingUser) {
+        effectiveUserId = existingUser.id;
+        logger.info(
+          {
+            userId: effectiveUserId,
+            email: existingUser.email,
+          },
+          'Found existing user for checkout'
+        );
+      } else {
+        // Create new user from Vipps data
+        const newUser = await payload.create({
+          collection: 'users',
+          data: {
+            email: vippsEmail,
+            password: generateSecurePassword(),
+            phone_number: vippsPhone,
+            given_name: vippsFirstName,
+            family_name: vippsLastName,
+          },
+        });
+        effectiveUserId = newUser.id;
+        logger.info(
+          {
+            userId: effectiveUserId,
+            email: newUser.email,
+            hasPhone: !!vippsPhone,
+            hasName: !!(vippsFirstName && vippsLastName),
+          },
+          'Created new user from Vipps profile'
+        );
+      }
+    } else {
+      logger.info(
+        {
+          userId: effectiveUserId,
+          paymentReference,
+          pspReference: paymentDetails.pspReference,
+        },
+        'Processing order for authenticated Historia user'
       );
     }
-
-    // User is authenticated in Historia - use their account
-    const actualUserId = userId;
-
-    logger.info(
-      {
-        userId: actualUserId,
-        paymentReference,
-        sessionId: sessionDetails.sessionId,
-      },
-      'Processing order for authenticated Historia user'
-    );
-
-    // Optional: Extract shipping details from Vipps for convenience
-    // Note: This is user-entered data, NOT verified by Vipps
-    const vippsShipping = {
-      firstName: sessionDetails.shippingDetails?.firstName,
-      lastName: sessionDetails.shippingDetails?.lastName,
-      email: sessionDetails.shippingDetails?.email,
-      phone: sessionDetails.shippingDetails?.phoneNumber,
-      address: sessionDetails.shippingDetails?.streetAddress,
-      postalCode: sessionDetails.shippingDetails?.postalCode,
-      city: sessionDetails.shippingDetails?.city,
-      country: sessionDetails.shippingDetails?.country,
-    };
 
     // Get the current website/tenant ID
     const websiteId = await getCurrentWebsiteId();
@@ -580,34 +259,6 @@ export async function createOrderFromPayment({
       return actionError('Some products not found');
     }
 
-    // Extract shipping details from Vipps session response
-    const shippingAddress = sessionDetails.shippingDetails ? {
-      addressLine1: sessionDetails.shippingDetails.streetAddress,
-      postalCode: sessionDetails.shippingDetails.postalCode,
-      city: sessionDetails.shippingDetails.city,
-      country: sessionDetails.shippingDetails.country,
-    } : undefined;
-    const shippingMethodId = sessionDetails.shippingDetails?.shippingMethodId;
-
-    // Determine shipping product ID based on method
-    // These product IDs should match the shipping products created in the database
-    let shippingProductId: string | null = null;
-    let shippingType: 'delivery' | 'pickup' = 'delivery';
-
-    if (shippingMethodId === 'standard') {
-      shippingProductId = 'shipping-standard'; // TODO: Replace with actual product ID
-      shippingType = 'delivery';
-    } else if (shippingMethodId === 'express') {
-      shippingProductId = 'shipping-express'; // TODO: Replace with actual product ID
-      shippingType = 'delivery';
-    } else if (shippingMethodId === 'pickup-popup') {
-      shippingProductId = 'shipping-pickup-popup'; // TODO: Replace with actual product ID
-      shippingType = 'pickup';
-    } else if (shippingMethodId === 'pickup-valnesfjord') {
-      shippingProductId = 'shipping-pickup-valnesfjord'; // TODO: Replace with actual product ID
-      shippingType = 'pickup';
-    }
-
     // Map products to order items with prices
     const orderItems = cart.items.map((item) => {
       const product = products.find((p) => p.id === item.productId) as Product;
@@ -622,63 +273,6 @@ export async function createOrderFromPayment({
       };
     });
 
-    // Add shipping as an order item if selected
-    if (shippingProductId) {
-      logger.info(
-        {
-          shippingProductId,
-          shippingMethodId,
-          shippingType,
-        },
-        'Looking up shipping product'
-      );
-
-      // Fetch shipping product
-      const { docs: shippingProducts } = await payload.find({
-        collection: 'products',
-        where: {
-          id: {
-            equals: shippingProductId,
-          },
-        },
-        limit: 1,
-      });
-
-      if (shippingProducts.length > 0) {
-        const shippingProduct = shippingProducts[0] as Product;
-        logger.info(
-          {
-            shippingProductId: shippingProduct.id,
-            shippingPrice: shippingProduct.price,
-          },
-          'Shipping product found and added to order'
-        );
-
-        orderItems.push({
-          product: shippingProduct.id,
-          quantity: 1,
-          price: {
-            amount: shippingProduct.price?.amount || 0,
-            currency: shippingProduct.price?.currency || 'NOK',
-            vatRate: shippingProduct.price?.vatRate || 25,
-          },
-        });
-      } else {
-        logger.warn(
-          {
-            shippingProductId,
-            shippingMethodId,
-          },
-          'Shipping product not found, creating order without shipping item'
-        );
-      }
-    } else {
-      logger.info(
-        { shippingMethodId },
-        'No shipping product selected or shipping method not mapped'
-      );
-    }
-
     // Calculate order total and validate against authorized amount
     const calculatedTotal = orderItems.reduce((sum, item) => {
       const itemTotal = (item.price.amount || 0) * item.quantity;
@@ -686,8 +280,7 @@ export async function createOrderFromPayment({
     }, 0);
 
     // Convert Vipps amount from øre to NOK (divide by 100)
-    const authorizedAmount = sessionDetails.paymentDetails?.aggregate.authorizedAmount.value ?
-      sessionDetails.paymentDetails.aggregate.authorizedAmount.value / 100 : 0;
+    const authorizedAmount = paymentDetails.aggregate.authorizedAmount.value / 100;
 
     logger.info(
       {
@@ -720,18 +313,15 @@ export async function createOrderFromPayment({
       );
     }
 
-    // Create Order
-    const orderCreateStart = Date.now();
-
     // Get user details from Historia account
     const user = await payload.findByID({
       collection: 'users',
-      id: actualUserId,
+      id: effectiveUserId!,
     });
 
     if (!user || !user.email) {
       logger.error(
-        { paymentReference, userId: actualUserId },
+        { paymentReference, userId: effectiveUserId },
         'User or user email not found'
       );
       return actionError('User account information not found');
@@ -739,34 +329,26 @@ export async function createOrderFromPayment({
 
     logger.info(
       {
-        userId: actualUserId,
+        userId: effectiveUserId,
         userEmail: user.email,
         itemCount: orderItems.length,
-        hasShippingAddress: !!shippingAddress,
-        shippingType,
       },
       'Creating order in database'
     );
 
+    // Create Order
+    const orderCreateStart = Date.now();
     const order = await payload.create({
       collection: 'orders',
       draft: false,
       data: {
-        user: actualUserId,
+        user: effectiveUserId!,
         userEmail: user.email,
         status: 'processing',
-        currency: sessionDetails.paymentDetails?.aggregate.authorizedAmount.currency || 'NOK',
+        currency: paymentDetails.aggregate.authorizedAmount.currency,
         tenant: websiteId,
         items: orderItems,
-        shippingAddress: shippingAddress
-          ? {
-              addressLine1: shippingAddress.addressLine1 || '',
-              postalCode: shippingAddress.postalCode || '',
-              city: shippingAddress.city || '',
-              country: shippingAddress.country || 'NO',
-            }
-          : undefined,
-        shippingStatus: shippingType === 'pickup' ? 'available-for-pickup' : 'not-shipped',
+        shippingStatus: 'not-shipped',
       },
     });
 
@@ -777,7 +359,6 @@ export async function createOrderFromPayment({
         paymentReference,
         itemCount: orderItems.length,
         status: order.status,
-        shippingStatus: order.shippingStatus,
         createTimeMs: orderCreateTime,
       },
       'Order created successfully'
@@ -785,14 +366,13 @@ export async function createOrderFromPayment({
 
     // Create Transaction
     const transactionCreateStart = Date.now();
-    const transactionAmount = sessionDetails.paymentDetails?.aggregate.authorizedAmount.value ?
-      sessionDetails.paymentDetails.aggregate.authorizedAmount.value / 100 : 0;
-    const transactionStatus = sessionDetails.paymentDetails?.state === 'AUTHORIZED' ? 'authorized' : 'captured';
+    const transactionAmount = paymentDetails.aggregate.authorizedAmount.value / 100;
+    const transactionStatus = paymentDetails.state === 'AUTHORIZED' ? 'authorized' : 'captured';
 
     logger.info(
       {
         orderId: order.id,
-        customerId: actualUserId,
+        customerId: effectiveUserId,
         amount: transactionAmount,
         status: transactionStatus,
         paymentReference,
@@ -805,7 +385,7 @@ export async function createOrderFromPayment({
       draft: false,
       data: {
         order: order.id,
-        customer: actualUserId,
+        customer: effectiveUserId!,
         amount: transactionAmount,
         status: transactionStatus,
         paymentMethod: 'vipps',

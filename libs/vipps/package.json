@@ -1,0 +1,34 @@
+{
+  "name": "@eventuras/vipps",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Vipps MobilePay integration for Eventuras",
+  "type": "module",
+  "exports": {
+    "./epayment-v1": {
+      "types": "./dist/epayment-v1/index.d.ts",
+      "import": "./dist/epayment-v1/index.js"
+    },
+    "./vipps-core": {
+      "types": "./dist/vipps-core/index.d.ts",
+      "import": "./dist/vipps-core/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@eventuras/logger": "workspace:*"
+  },
+  "devDependencies": {
+    "@eventuras/typescript-config": "workspace:*",
+    "@eventuras/vite-config": "workspace:*",
+    "typescript": "^5.7.3",
+    "vite": "^7.2.6"
+  }
+}

@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 
+import { formatPrice } from '@eventuras/core/currency';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
@@ -10,7 +11,6 @@ import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Link } from '@eventuras/ratio-ui-next';
 
 import { useCart } from '@/lib/cart';
-import { formatPrice } from '@/lib/format-price';
 import type { Product } from '@/payload-types';
 
 interface ProductDetailClientProps {

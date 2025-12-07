@@ -3,12 +3,12 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
+import { formatPrice } from '@eventuras/core/currency';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
 
 import { getCartProducts } from '@/app/(frontend)/[locale]/checkout/actions';
 import { useCart } from '@/lib/cart';
-import { formatPrice } from '@/lib/format-price';
 import type { Product } from '@/payload-types';
 
 interface CartDrawerProps {

@@ -169,6 +169,9 @@ importers:
       '@eventuras/app-config':
         specifier: workspace:*
         version: link:../../libs/app-config
+      '@eventuras/core':
+        specifier: workspace:*
+        version: link:../../libs/core
       '@eventuras/core-nextjs':
         specifier: workspace:*
         version: link:../../libs/core-nextjs
@@ -190,6 +193,9 @@ importers:
       '@eventuras/toast':
         specifier: workspace:*
         version: link:../../libs/toast
+      '@eventuras/vipps':
+        specifier: workspace:*
+        version: link:../../libs/vipps
       '@payloadcms/admin-bar':
         specifier: 3.65.0
         version: 3.65.0(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
@@ -1272,6 +1278,25 @@ importers:
         version: 5.24.0
 
   libs/typescript-config: {}
+
+  libs/vipps:
+    dependencies:
+      '@eventuras/logger':
+        specifier: workspace:*
+        version: link:../logger
+    devDependencies:
+      '@eventuras/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      '@eventuras/vite-config':
+        specifier: workspace:*
+        version: link:../vite-config
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
+      vite:
+        specifier: ^7.2.6
+        version: 7.2.6(@types/node@24.9.1)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.77.4)(tsx@4.21.0)(yaml@2.8.1)
 
   libs/vite-config:
     dependencies:
