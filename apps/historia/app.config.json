@@ -28,16 +28,16 @@
       "type": "url",
       "description": "Public URL for the CMS (used for CORS, links, callbacks - must be HTTPS for Vipps)"
     },
-    "CMS_LOCALES": {
+    "NEXT_PUBLIC_CMS_LOCALES": {
       "required": false,
-      "client": false,
+      "client": true,
       "type": "string",
       "description": "Comma-separated list of supported locales",
       "default": "no,en"
     },
-    "CMS_DEFAULT_LOCALE": {
+    "NEXT_PUBLIC_CMS_DEFAULT_LOCALE": {
       "required": false,
-      "client": false,
+      "client": true,
       "type": "string",
       "description": "Default locale for the CMS",
       "default": "no"
@@ -56,25 +56,25 @@
       "default": "https://apitest.vipps.no"
     },
     "VIPPS_MERCHANT_SERIAL_NUMBER": {
-      "required": true,
+      "required": false,
       "client": false,
       "type": "string",
       "description": "Vipps merchant serial number"
     },
     "VIPPS_CLIENT_ID": {
-      "required": true,
+      "required": false,
       "client": false,
       "type": "string",
       "description": "Vipps client ID for authentication"
     },
     "VIPPS_CLIENT_SECRET": {
-      "required": true,
+      "required": false,
       "client": false,
       "type": "string",
       "description": "Vipps client secret for authentication"
     },
     "VIPPS_SUBSCRIPTION_KEY": {
-      "required": true,
+      "required": false,
       "client": false,
       "type": "string",
       "description": "Vipps API subscription key (primary)"
@@ -86,7 +86,7 @@
       "description": "Vipps API subscription key (secondary/backup)"
     },
     "VIPPS_CALLBACK_TOKEN": {
-      "required": true,
+      "required": false,
       "client": false,
       "type": "string",
       "description": "Secret token for validating Vipps callbacks"

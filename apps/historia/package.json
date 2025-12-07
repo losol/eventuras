@@ -8,6 +8,7 @@
     "build": "cross-env next build --webpack",
     "dev": "next dev --port 3100",
     "dev:prod": "rm -rf .next && pnpm run build && pnpm run start",
+    "generate:config-types": "tsx scripts/generate-config-types.ts",
     "generate:types": "payload generate:types",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",

@@ -13,8 +13,8 @@ import { PagesSelect } from '@/payload-types';
 import PageClient from './page.client';
 
 // Read locales and default locale from environment variables, fallback to 'en'
-const locales = process.env.CMS_LOCALES?.split(',') || ['en'];
-const defaultLocale = process.env.CMS_DEFAULT_LOCALE || 'en';
+const locales = process.env.NEXT_PUBLIC_CMS_LOCALES?.split(',') || ['en'];
+const defaultLocale = process.env.NEXT_PUBLIC_CMS_DEFAULT_LOCALE || 'en';
 
 // Read domain from environment variable
 const serverDomain = process.env.NEXT_PUBLIC_CMS_URL;
@@ -243,5 +243,8 @@ const contentSelection: PagesSelect = {
       limit: true,
     },
     content: true,
+    products: {
+      products: true,
+    },
   },
 };

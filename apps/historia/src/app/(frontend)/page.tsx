@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 
 export default function HomeRedirect() {
-  const defaultLocale = process.env.CMS_DEFAULT_LOCALE || 'en';
+  const defaultLocale = process.env.NEXT_PUBLIC_CMS_DEFAULT_LOCALE || 'en';
 
   // Redirect to the default locale
   redirect(`/${defaultLocale}`);

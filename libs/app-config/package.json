@@ -19,11 +19,18 @@
       "types": "./dist/clientside.d.ts",
       "import": "./dist/clientside.js"
     },
+    "./generator": {
+      "types": "./dist/generator.d.ts",
+      "import": "./dist/generator.js"
+    },
     "./schema": "./schema/app-config.schema.json"
   },
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "bin": {
+    "generate-config-types": "./dist/cli.js"
+  },
   "files": [
     "dist",
     "schema"

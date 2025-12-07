@@ -39,7 +39,7 @@ function parseSlugWithResourceId(combinedSlug: string): { slug: string; resource
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise });
 
-  const locales = process.env.CMS_LOCALES?.split(',') || ['en'];
+  const locales = process.env.NEXT_PUBLIC_CMS_LOCALES?.split(',') || ['en'];
 
   const params: Array<{
     locale: string;
