@@ -80,10 +80,18 @@ RUN pnpm --filter=@eventuras/historia^... build
 
 WORKDIR /app/apps/historia
 
+# Run database migrations to create schema (uses SQLite for build)
+# This creates the database structure needed for the build
+RUN --mount=type=secret,id=cms_secret \
+    CMS_SECRET=$(cat /run/secrets/cms_secret 2>/dev/null || echo "build-time-secret") \
+    CMS_DATABASE_URL=file:./build-db.sqlite \
+    pnpm dlx payload migrate
+
 # Build the application with secret mount
 # Secret is only available during build, not stored in image
 RUN --mount=type=secret,id=cms_secret \
     CMS_SECRET=$(cat /run/secrets/cms_secret 2>/dev/null || echo "build-time-secret") \
+    CMS_DATABASE_URL=file:./build-db.sqlite \
     pnpm run build
 
 ##########################
