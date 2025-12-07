@@ -1,4 +1,9 @@
-import type { Currency } from '@payloadcms/plugin-ecommerce/types';
+export interface Currency {
+  code: string;
+  decimals: number;
+  label: string;
+  symbol: string;
+}
 
 export const NOK: Currency = {
   code: 'NOK',

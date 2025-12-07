@@ -35,12 +35,12 @@ export function actionError(
   code?: string,
   details?: unknown,
 ): ServerActionResult<never> {
+  const error: { message: string; code?: string; details?: unknown } = { message };
+  if (code !== undefined) error.code = code;
+  if (details !== undefined) error.details = details;
+
   return {
     success: false,
-    error: {
-      message,
-      ...(code && { code }),
-      ...(details && { details }),
-    },
+    error,
   };
 }
