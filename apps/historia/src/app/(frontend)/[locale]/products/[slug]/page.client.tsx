@@ -62,10 +62,14 @@ export function ProductDetailClient({ product, locale }: ProductDetailClientProp
             <Text className="text-lg text-gray-700 dark:text-gray-300">{product.lead}</Text>
           )}
 
-          {product.price?.amount && (
+          {product.price?.amountIncVat && (
             <div>
               <span className="text-3xl font-bold text-gray-900 dark:text-white">
-                {formatPrice(product.price.amount, product.price.currency || 'NOK', locale)}
+                {formatPrice(
+                  fromMinorUnits(product.price.amount, product.price.currency || 'NOK'),
+                  product.price.currency || 'NOK',
+                  locale
+                )}
               </span>
             </div>
           )}

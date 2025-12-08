@@ -66,7 +66,7 @@ export const orderItemsField = (): ArrayField => {
           beforeChange: [
             ({ siblingData }) => {
               const quantity = siblingData.quantity || 1;
-              const amount = siblingData.price?.amount || 0;
+              const amount = siblingData.price?.amountExVat || 0;
               const vatRate = siblingData.price?.vatRate ?? 25;
               return Math.round(quantity * amount * (1 + vatRate / 100));
             },

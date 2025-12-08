@@ -14,6 +14,7 @@ import { useToast } from '@eventuras/toast';
 
 import RichText from '@/components/RichText';
 import { useSessionCart } from '@/lib/cart/use-session-cart';
+import { fromMinorUnits } from '@/lib/price';
 import type { Product as ProductType } from '@/payload-types';
 
 const logger = Logger.create({
@@ -147,11 +148,14 @@ export const ProductsBlock: React.FC<ProductBlockProps> = (props) => {
                     </div>
                   )}
 
-                  {product.price?.amount != null && (
+                  {product.price?.amountIncVat != null && (
                     <div className="mt-4">
                       <Text className="text-3xl font-bold">
                         {formatPrice(
-                          product.price.amount / Math.pow(10, product.price.decimals ?? 2),
+                          fromMinorUnits(
+                            product.price.amountIncVat,
+                            product.price.currency || 'NOK'
+                          ),
                           product.price.currency || 'NOK',
                           locale
                         )}

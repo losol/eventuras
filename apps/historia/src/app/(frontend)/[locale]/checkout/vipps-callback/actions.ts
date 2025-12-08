@@ -266,7 +266,7 @@ export async function createOrderFromPayment({
         product: product.id,
         quantity: item.quantity,
         price: {
-          amount: product.price?.amount || 0,
+          amount: product.price?.amountExVat || 0,
           currency: product.price?.currency || 'NOK',
           vatRate: product.price?.vatRate || 25,
         },

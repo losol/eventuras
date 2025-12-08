@@ -24,7 +24,7 @@ export const populateOrderPrices: CollectionBeforeChangeHook<Order> = async ({
   const itemsWithPrices = await Promise.all(
     data.items.map(async (item) => {
       // Skip if price is already set (manual override)
-      if (item.price?.amount) {
+      if (item.price?.amountExVat) {
         return item;
       }
 
