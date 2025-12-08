@@ -12,6 +12,10 @@
     "./vipps-core": {
       "types": "./dist/vipps-core/index.d.ts",
       "import": "./dist/vipps-core/index.js"
+    },
+    "./webhooks-v1": {
+      "types": "./dist/webhooks-v1/index.d.ts",
+      "import": "./dist/webhooks-v1/index.js"
     }
   },
   "files": [
@@ -20,7 +24,10 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite build --watch",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "webhook:delete": "tsx scripts/delete-webhook.ts",
+    "webhook:list": "tsx scripts/list-webhooks.ts",
+    "webhook:setup": "tsx scripts/setup-webhook.ts"
   },
   "dependencies": {
     "@eventuras/logger": "workspace:*"
