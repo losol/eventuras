@@ -148,6 +148,61 @@ export async function calculateCart(
 }
 
 /**
+ * Validate cart items and identify products that no longer exist
+ * Returns list of invalid product IDs that should be removed from cart
+ */
+export async function validateCartProducts(
+  cartItems: Array<{ productId: string; quantity: number }>,
+): Promise<ServerActionResult<{ invalidProductIds: string[]; validProductIds: string[] }>> {
+  try {
+    if (!cartItems.length) {
+      return actionSuccess({ invalidProductIds: [], validProductIds: [] });
+    }
+
+    logger.info({ itemCount: cartItems.length }, 'Validating cart products');
+
+    const payload = await getPayload({ config: configPromise });
+
+    // Fetch all products
+    const { docs: products } = await payload.find({
+      collection: 'products',
+      where: {
+        id: {
+          in: cartItems.map((item) => item.productId),
+        },
+      },
+      limit: cartItems.length,
+    });
+
+    const foundProductIds = new Set(products.map((p) => p.id));
+    const requestedProductIds = cartItems.map((item) => item.productId);
+
+    const invalidProductIds = requestedProductIds.filter((id) => !foundProductIds.has(id));
+    const validProductIds = requestedProductIds.filter((id) => foundProductIds.has(id));
+
+    if (invalidProductIds.length > 0) {
+      logger.warn(
+        {
+          invalidCount: invalidProductIds.length,
+          invalidProductIds,
+          totalRequested: requestedProductIds.length,
+        },
+        'Found invalid products in cart'
+      );
+    } else {
+      logger.info({ validCount: validProductIds.length }, 'All cart products are valid');
+    }
+
+    return actionSuccess({ invalidProductIds, validProductIds });
+  } catch (error) {
+    logger.error({ error, cartItems }, 'Failed to validate cart products');
+    return actionError(
+      error instanceof Error ? error.message : 'Failed to validate cart',
+    );
+  }
+}
+
+/**
  * Fetch product details for cart items
  * @param productIds - Array of product IDs to fetch
  * @returns Array of products or error

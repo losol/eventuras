@@ -141,7 +141,7 @@ export async function createVippsPayment({
         scope: 'name phoneNumber address email',
       },
       reference,
-      returnUrl: `${appConfig.env.NEXT_PUBLIC_CMS_URL}/${userLanguage}/checkout/vipps-callback?reference=${reference}`,
+      returnUrl: `${appConfig.env.NEXT_PUBLIC_CMS_URL}/${userLanguage}/checkout/vipps?reference=${reference}`,
       userFlow: 'WEB_REDIRECT', // Standard redirect flow
       paymentDescription,
       receipt: {
@@ -172,6 +172,20 @@ export async function createVippsPayment({
       },
     };
 
+    // Get Vipps configuration
+    const vippsConfig = getVippsConfig();
+
+    // Log complete request for debugging
+    logger.info(
+      {
+        reference,
+        request: JSON.parse(JSON.stringify(paymentRequest)), // Deep clone to ensure all data is captured
+        apiUrl: vippsConfig.apiUrl,
+        merchantSerialNumber: vippsConfig.merchantSerialNumber,
+      },
+      'Complete Vipps ePayment creation request',
+    );
+
     logger.info(
       {
         reference,
@@ -191,9 +205,6 @@ export async function createVippsPayment({
       },
       'Creating ePayment with Express Checkout',
     );
-
-    // Get Vipps configuration
-    const vippsConfig = getVippsConfig();
 
     // Create payment using ePayment API client
     const paymentResponse = await createPayment(vippsConfig, paymentRequest);

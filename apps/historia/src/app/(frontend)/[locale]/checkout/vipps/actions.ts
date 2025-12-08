@@ -14,7 +14,7 @@ import { getCurrentSession } from '@eventuras/fides-auth-next';
 import { Logger } from '@eventuras/logger';
 import { type PaymentDetails } from '@eventuras/vipps/epayment-v1';
 
-import type { Cart } from '@/lib/cart/types';
+import type { Cart, SessionData } from '@/lib/cart/types';
 import { getCurrentWebsiteId } from '@/lib/website';
 import type { Product } from '@/payload-types';
 
@@ -22,6 +22,40 @@ const logger = Logger.create({
   namespace: 'historia:payment',
   context: { module: 'paymentCallbackActions' },
 });
+
+/**
+ * Validate that the current user's session owns this payment reference
+ * SECURITY: Prevents unauthorized access to payment status and order details
+ * Checks against session's paymentReferences list (encrypted session)
+ */
+async function validatePaymentOwnership(
+  paymentReference: string
+): Promise<ServerActionResult<boolean>> {
+  try {
+    const session = await getCurrentSession();
+    const sessionData = session?.data as SessionData | undefined;
+
+    // Check if session has this payment reference in the list
+    const paymentReferences = sessionData?.paymentReferences || [];
+
+    if (!paymentReferences.includes(paymentReference)) {
+      logger.warn(
+        {
+          paymentReference,
+          hasSession: !!session,
+          paymentCount: paymentReferences.length,
+        },
+        'Payment reference not in session - unauthorized access attempt'
+      );
+      return actionError('Unauthorized access to payment');
+    }
+
+    return actionSuccess(true);
+  } catch (error) {
+    logger.error({ error, paymentReference }, 'Error validating payment ownership');
+    return actionError('Failed to validate payment ownership');
+  }
+}
 
 /**
  * Generate a secure random password for guest checkout users
@@ -274,19 +308,22 @@ export async function createOrderFromPayment({
     });
 
     // Calculate order total and validate against authorized amount
+    // Note: calculatedTotal is ex VAT, while Vipps includes VAT + shipping
     const calculatedTotal = orderItems.reduce((sum, item) => {
       const itemTotal = (item.price.amount || 0) * item.quantity;
       return sum + itemTotal;
     }, 0);
 
-    // Convert Vipps amount from øre to NOK (divide by 100)
-    const authorizedAmount = paymentDetails.aggregate.authorizedAmount.value / 100;
+    // Vipps amount is in øre (minor units), same as calculatedTotal
+    const authorizedAmount = paymentDetails.aggregate.authorizedAmount.value;
 
     logger.info(
       {
         calculatedTotal,
+        calculatedTotalNOK: calculatedTotal / 100,
         authorizedAmount,
-        difference: Math.abs(calculatedTotal - authorizedAmount),
+        authorizedAmountNOK: authorizedAmount / 100,
+        difference: authorizedAmount - calculatedTotal,
         orderItems: orderItems.map(i => ({
           productId: i.product,
           quantity: i.quantity,
@@ -297,21 +334,33 @@ export async function createOrderFromPayment({
       'Validating payment amount'
     );
 
-    // Allow small rounding differences (max 1 øre)
-    if (Math.abs(calculatedTotal - authorizedAmount) > 0.01) {
+    // Accept payment if authorized amount >= order total
+    // (Vipps includes VAT + shipping, our total is ex VAT)
+    if (authorizedAmount < calculatedTotal) {
       logger.error(
         {
           calculatedTotal,
+          calculatedTotalNOK: calculatedTotal / 100,
           authorizedAmount,
+          authorizedAmountNOK: authorizedAmount / 100,
           difference: calculatedTotal - authorizedAmount,
           paymentReference,
         },
-        'Payment amount mismatch - possible fraud attempt'
+        'Payment amount insufficient - authorized less than order total'
       );
       return actionError(
-        `Payment amount mismatch: authorized ${authorizedAmount} NOK but order total is ${calculatedTotal} NOK`
+        `Payment amount insufficient: authorized ${authorizedAmount / 100} NOK but order total is ${calculatedTotal / 100} NOK (ex VAT)`
       );
     }
+
+    logger.info(
+      {
+        authorizedAmount,
+        calculatedTotal,
+        overpayment: authorizedAmount - calculatedTotal,
+      },
+      'Payment amount validated - authorized amount covers order total'
+    );
 
     // Get user details from Historia account
     const user = await payload.findByID({
@@ -366,7 +415,8 @@ export async function createOrderFromPayment({
 
     // Create Transaction
     const transactionCreateStart = Date.now();
-    const transactionAmount = paymentDetails.aggregate.authorizedAmount.value / 100;
+    const transactionAmount = paymentDetails.aggregate.authorizedAmount.value; // Keep in minor units (øre)
+    const transactionCurrency = paymentDetails.aggregate.authorizedAmount.currency;
     const transactionStatus = paymentDetails.state === 'AUTHORIZED' ? 'authorized' : 'captured';
 
     logger.info(
@@ -374,6 +424,8 @@ export async function createOrderFromPayment({
         orderId: order.id,
         customerId: effectiveUserId,
         amount: transactionAmount,
+        amountMajor: transactionAmount / 100, // For logging readability
+        currency: transactionCurrency,
         status: transactionStatus,
         paymentReference,
       },
@@ -386,16 +438,37 @@ export async function createOrderFromPayment({
       data: {
         order: order.id,
         customer: effectiveUserId!,
-        amount: transactionAmount,
+        amount: transactionAmount, // Store in minor units
+        currency: transactionCurrency as 'NOK' | 'USD' | 'EUR' | 'SEK' | 'DKK',
         status: transactionStatus,
         paymentMethod: 'vipps',
         paymentReference,
-        transactionType: 'payment',
         tenant: websiteId,
       },
     });
 
     const transactionCreateTime = Date.now() - transactionCreateStart;
+
+    // Create BusinessEvent to log the payment
+    const businessEventStart = Date.now();
+    await payload.create({
+      collection: 'business-events',
+      data: {
+        eventType: 'payment',
+        externalReference: paymentReference,
+        data: {
+          name: transactionStatus === 'authorized' ? 'AUTHORIZED' : 'CAPTURED',
+          amount: paymentDetails.aggregate.authorizedAmount,
+          pspReference: paymentDetails.pspReference,
+          orderId: order.id,
+          transactionId: transaction.id,
+          timestamp: new Date().toISOString(),
+          source: 'order-creation',
+        },
+      },
+    });
+    const businessEventTime = Date.now() - businessEventStart;
+
     const totalTime = Date.now() - startTime;
 
     logger.info(
@@ -406,9 +479,10 @@ export async function createOrderFromPayment({
         amount: transactionAmount,
         transactionStatus,
         transactionCreateTimeMs: transactionCreateTime,
+        businessEventTimeMs: businessEventTime,
         totalTimeMs: totalTime,
       },
-      'Order and transaction created successfully'
+      'Order, transaction and business event created successfully'
     );
 
     return actionSuccess({
@@ -431,6 +505,182 @@ export async function createOrderFromPayment({
     );
     return actionError(
       error instanceof Error ? error.message : 'Failed to create order',
+    );
+  }
+}
+
+/**
+ * Check if an order already exists for a payment reference
+ * Used to skip SSE and show success immediately when revisiting the page
+ * SECURITY: Validates that the session owns this payment reference
+ */
+export async function checkExistingOrder(
+  paymentReference: string
+): Promise<
+  ServerActionResult<{
+    exists: boolean;
+    orderId?: string;
+    transactionId?: string;
+    userEmail?: string;
+    shippingAddress?: {
+      addressLine1?: string;
+      addressLine2?: string;
+      postalCode?: string;
+      city?: string;
+      country?: string;
+    };
+  }>
+> {
+  try {
+    // Validate payment ownership
+    const ownershipCheck = await validatePaymentOwnership(paymentReference);
+    if (!ownershipCheck.success) {
+      logger.warn(
+        { paymentReference },
+        'Unauthorized attempt to check existing order'
+      );
+      return actionError('Unauthorized access');
+    }
+
+    const payload = await getPayload({ config: configPromise });
+
+    // Check if transaction exists for this payment reference
+    const existingTransactions = await payload.find({
+      collection: 'transactions',
+      where: {
+        paymentReference: {
+          equals: paymentReference,
+        },
+      },
+      limit: 1,
+    });
+
+    if (existingTransactions.docs.length === 0) {
+      return actionSuccess({ exists: false });
+    }
+
+    const transaction = existingTransactions.docs[0];
+    const orderId =
+      typeof transaction.order === 'string' ? transaction.order : transaction.order.id;
+
+    // Fetch order details to get user email and shipping address
+    const order = await payload.findByID({
+      collection: 'orders',
+      id: orderId as string,
+    });
+
+    logger.info(
+      {
+        paymentReference,
+        orderId,
+        transactionId: transaction.id,
+        exists: true,
+      },
+      'Found existing order for payment reference'
+    );
+
+    return actionSuccess({
+      exists: true,
+      orderId: orderId as string,
+      transactionId: transaction.id as string,
+      userEmail: order.userEmail || undefined,
+      shippingAddress: order.shippingAddress
+        ? {
+            addressLine1: order.shippingAddress.addressLine1 || undefined,
+            addressLine2: order.shippingAddress.addressLine2 || undefined,
+            postalCode: order.shippingAddress.postalCode || undefined,
+            city: order.shippingAddress.city || undefined,
+            country: order.shippingAddress.country || undefined,
+          }
+        : undefined,
+    });
+  } catch (error) {
+    logger.error({ error, paymentReference }, 'Error checking existing order');
+    // Return exists: false on error to allow normal flow to proceed
+    return actionSuccess({ exists: false });
+  }
+}
+
+/**
+ * Process payment and create order (called from client when payment status changes)
+ *
+ * This server action:
+ * 1. Validates payment ownership
+ * 2. Fetches payment details from Vipps
+ * 3. Creates order with createOrderFromPayment
+ * 4. Returns order details with shipping info
+ *
+ * SECURITY: Validates that the session owns this payment reference
+ */
+export async function processPaymentAndCreateOrder(
+  paymentReference: string
+): Promise<
+  ServerActionResult<{
+    orderId: string;
+    transactionId: string;
+    userEmail: string;
+    shippingAddress?: {
+      addressLine1?: string;
+      addressLine2?: string;
+      postalCode?: string;
+      city?: string;
+      country?: string;
+    };
+  }>
+> {
+  try {
+    // Validate payment ownership
+    const ownershipCheck = await validatePaymentOwnership(paymentReference);
+    if (!ownershipCheck.success) {
+      logger.warn(
+        { paymentReference },
+        'Unauthorized attempt to process payment'
+      );
+      return actionError('Unauthorized access');
+    }
+
+    logger.info({ paymentReference }, 'Processing payment and creating order');
+
+    // Get Vipps config and fetch payment details (server-side only)
+    const { getPaymentDetails } = await import('@eventuras/vipps/epayment-v1');
+    const { getVippsConfig } = await import('@/lib/vipps/config');
+    const vippsConfig = getVippsConfig();
+
+    const paymentDetails = await getPaymentDetails(vippsConfig, paymentReference);
+
+    logger.info(
+      { paymentReference, state: paymentDetails.state },
+      'Payment details retrieved'
+    );
+
+    // Create order
+    const orderResult = await createOrderFromPayment({
+      paymentReference,
+      paymentDetails,
+    });
+
+    if (!orderResult.success) {
+      return actionError(orderResult.error.message);
+    }
+
+    // Return order details with shipping info
+    return actionSuccess({
+      orderId: orderResult.data.orderId,
+      transactionId: orderResult.data.transactionId,
+      userEmail: paymentDetails.profile?.email || paymentDetails.userDetails?.email || '',
+      shippingAddress: paymentDetails.userDetails
+        ? {
+            addressLine1: paymentDetails.userDetails.streetAddress,
+            postalCode: paymentDetails.userDetails.zipCode,
+            city: paymentDetails.userDetails.city,
+            country: paymentDetails.userDetails.country,
+          }
+        : undefined,
+    });
+  } catch (error) {
+    logger.error({ error, paymentReference }, 'Error processing payment');
+    return actionError(
+      error instanceof Error ? error.message : 'Failed to process payment'
     );
   }
 }

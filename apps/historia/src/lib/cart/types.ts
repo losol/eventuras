@@ -31,8 +31,10 @@ export interface Cart {
 }
 
 /**
- * Session data type that includes cart
+ * Session data type that includes cart and payment history
  */
 export interface SessionData {
   cart?: Cart;
+  /** List of payment references owned by this session for access control */
+  paymentReferences?: string[];
 }

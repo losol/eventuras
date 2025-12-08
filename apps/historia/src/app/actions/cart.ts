@@ -268,6 +268,7 @@ export async function clearCart(): Promise<ServerActionResult<void>> {
 /**
  * Set the payment reference in the cart session
  * Called when initiating Vipps payment to link cart with payment
+ * SECURITY: Adds reference to encrypted session for access control
  */
 export async function setCartPaymentReference(
   reference: string
@@ -282,6 +283,14 @@ export async function setCartPaymentReference(
       return actionError('Cart is empty');
     }
 
+    // Get existing payment references from session
+    const existingReferences = session?.data?.paymentReferences || [];
+
+    // Add new reference if not already present
+    const paymentReferences = existingReferences.includes(reference)
+      ? existingReferences
+      : [...existingReferences, reference];
+
     const updatedCart: Cart = {
       ...existingCart,
       paymentReference: reference,
@@ -292,13 +301,17 @@ export async function setCartPaymentReference(
       data: {
         ...session?.data,
         cart: updatedCart,
+        paymentReferences,
       },
     };
 
     const jwt = await createSession(updatedSession);
     await setSessionCookie(jwt);
 
-    logger.info({ reference }, 'Payment reference set successfully');
+    logger.info(
+      { reference, totalReferences: paymentReferences.length },
+      'Payment reference set and added to session'
+    );
     return actionSuccess(undefined);
   } catch (error) {
     logger.error({ error, reference }, 'Error setting payment reference');
