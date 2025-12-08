@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload';
 
 import { admins } from '@/access/admins';
+import { currency } from '@/fields/currency';
 
 export const Transactions: CollectionConfig = {
   slug: 'transactions',
@@ -17,7 +18,7 @@ export const Transactions: CollectionConfig = {
     delete: admins,
   },
   admin: {
-    defaultColumns: ['id', 'order', 'customer', 'amount', 'status', 'createdAt'],
+    defaultColumns: ['id', 'order', 'customer', 'amount', 'currency', 'status', 'createdAt'],
     useAsTitle: 'id',
     group: 'Commerce',
   },
@@ -36,10 +37,14 @@ export const Transactions: CollectionConfig = {
     },
     {
       name: 'amount',
+      label: 'Amount (minor units)',
       type: 'number',
       required: true,
-      min: 0,
+      admin: {
+        description: 'Amount in minor units (øre for NOK, cents for USD/EUR). Positive for payments, negative for refunds.',
+      },
     },
+    currency,
     {
       name: 'paymentReference',
       type: 'text',
@@ -51,39 +56,20 @@ export const Transactions: CollectionConfig = {
     },
     {
       name: 'status',
-      type: 'select',
+      type: 'text',
       required: true,
       defaultValue: 'pending',
-      options: [
-        { label: 'Pending', value: 'pending' },
-        { label: 'Authorized', value: 'authorized' },
-        { label: 'Captured', value: 'captured' },
-        { label: 'Completed', value: 'completed' },
-        { label: 'Failed', value: 'failed' },
-        { label: 'Refunded', value: 'refunded' },
-        { label: 'Partially Refunded', value: 'partially-refunded' },
-      ],
+      admin: {
+        description: 'Transaction status from payment provider (e.g., pending, authorized, captured, failed, refunded)',
+      },
     },
     {
       name: 'paymentMethod',
-      type: 'select',
+      type: 'text',
       required: true,
-      options: [
-        { label: 'Vipps', value: 'vipps' },
-        { label: 'Stripe', value: 'stripe' },
-        { label: 'Manual', value: 'manual' },
-      ],
-    },
-    {
-      name: 'transactionType',
-      type: 'select',
-      required: true,
-      defaultValue: 'payment',
-      options: [
-        { label: 'Payment', value: 'payment' },
-        { label: 'Refund', value: 'refund' },
-        { label: 'Partial Refund', value: 'partial-refund' },
-      ],
+      admin: {
+        description: 'Payment method (e.g., vipps, stripe, manual)',
+      },
     },
   ],
   timestamps: true,

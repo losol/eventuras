@@ -2,7 +2,7 @@ import type { CollectionConfig } from 'payload';
 
 import { admins } from '@/access/admins';
 import { anyone } from '@/access/anyone';
-import { getCurrencyOptions } from '@/currencies';
+import { currency } from '@/fields/currency';
 import { description } from '@/fields/description';
 import { image } from '@/fields/image';
 import { lead } from '@/fields/lead';
@@ -110,16 +110,7 @@ export const Products: CollectionConfig = {
                     },
                   },
                 },
-                {
-                  name: 'currency',
-                  type: 'select',
-                  defaultValue: 'NOK',
-                  required: true,
-                  options: getCurrencyOptions(),
-                  admin: {
-                    description: 'Currency code (e.g., NOK, USD, EUR)',
-                  },
-                },
+                currency,
                 {
                   name: 'vatRate',
                   type: 'number',
