@@ -103,16 +103,18 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
       data-testid={testId}
       {...rest}
     >
-      {loading && (
-        <LoaderCircle
-          className="h-4 w-4 animate-spin mr-2 flex-shrink-0"
-          aria-hidden="true"
-        />
-      )}
-      {!loading && icon && (
-        <span className="mr-2 flex-shrink-0">{icon}</span>
-      )}
-      {children}
+      <span className="flex items-center justify-center gap-2">
+        {loading && (
+          <LoaderCircle
+            className="h-4 w-4 animate-spin shrink-0"
+            aria-hidden="true"
+          />
+        )}
+        {!loading && icon && (
+          <span className="shrink-0">{icon}</span>
+        )}
+        {children && <span>{children}</span>}
+      </span>
     </button>
   );
 });

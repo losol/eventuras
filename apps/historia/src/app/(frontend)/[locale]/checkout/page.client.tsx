@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 import { formatPrice } from '@eventuras/core/currency';
 import { Logger } from '@eventuras/logger';
-import { VippsButton } from '@eventuras/ratio-ui/core/Button';
+import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 
@@ -70,8 +70,6 @@ export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
 
     loadCart();
   }, [items]);
-
-  // All calculations are done server-side in cart.items and cart totals
 
   const handleVippsCheckout = async () => {
     setSubmitting(true);
@@ -243,13 +241,13 @@ export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
             </div>
           </Card>
 
-          <VippsButton
+          <Button
             onClick={handleVippsCheckout}
             loading={submitting}
-            locale={locale}
             block
-            testId="vipps-checkout-button"
-          />
+          >
+            Betal med Vipps
+          </Button>
         </div>
         )}
       </div>
