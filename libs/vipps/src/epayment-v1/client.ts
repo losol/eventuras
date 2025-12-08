@@ -165,71 +165,6 @@ export async function getPaymentDetails(
 }
 
 /**
- * Get payment event log
- * GET /epayment/v1/payments/{reference}/events
- */
-export async function getPaymentEvents(
-  config: VippsConfig,
-  reference: string
-): Promise<PaymentEvent[]> {
-  const startTime = Date.now();
-
-  try {
-    logger.info({ reference }, 'Getting payment event log');
-
-    const accessToken = await getAccessToken(config);
-    const headers = buildHeaders(config, accessToken);
-
-    const response = await fetch(`${config.apiUrl}/epayment/v1/payments/${reference}/events`, {
-      method: 'GET',
-      headers,
-    });
-
-    const responseTime = Date.now() - startTime;
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      logger.error(
-        {
-          reference,
-          status: response.status,
-          statusText: response.statusText,
-          error: errorText,
-          responseTimeMs: responseTime,
-        },
-        'Failed to get payment events'
-      );
-      throw new Error(`Failed to get payment events: ${response.status} - ${errorText}`);
-    }
-
-    const data = (await response.json()) as PaymentEvent[];
-
-    logger.info(
-      {
-        reference,
-        eventCount: data.length,
-        responseTimeMs: responseTime,
-      },
-      'Successfully retrieved payment events'
-    );
-
-    return data;
-  } catch (error) {
-    const responseTime = Date.now() - startTime;
-    logger.error(
-      {
-        error,
-        reference,
-        errorMessage: error instanceof Error ? error.message : String(error),
-        responseTimeMs: responseTime,
-      },
-      'Error getting payment events'
-    );
-    throw error;
-  }
-}
-
-/**
  * Capture payment (full or partial)
  * POST /epayment/v1/payments/{reference}/capture
  */
@@ -429,3 +364,79 @@ export async function refundPayment(
     throw error;
   }
 }
+
+/**
+ * Get payment event log
+ * GET /epayment/v1/payments/{reference}/events
+ *
+ * Returns the authoritative history of all events for a payment.
+ * This includes all operations like CREATED, AUTHORIZED, CAPTURED, etc.
+ *
+ * @param config - Vipps configuration
+ * @param reference - Payment reference
+ * @returns Array of payment events in chronological order
+ *
+ * @see https://developer.vippsmobilepay.com/docs/APIs/epayment-api/api-guide/operations/get_event_log/
+ */
+export async function getPaymentEvents(
+  config: VippsConfig,
+  reference: string
+): Promise<PaymentEvent[]> {
+  const startTime = Date.now();
+
+  try {
+    logger.info({ reference }, 'Getting payment event log');
+
+    const accessToken = await getAccessToken(config);
+    const headers = buildHeaders(config, accessToken);
+
+    const response = await fetch(`${config.apiUrl}/epayment/v1/payments/${reference}/events`, {
+      method: 'GET',
+      headers,
+    });
+
+    const responseTime = Date.now() - startTime;
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      logger.error(
+        {
+          reference,
+          status: response.status,
+          statusText: response.statusText,
+          error: errorText,
+          responseTimeMs: responseTime,
+        },
+        'Failed to get payment events'
+      );
+      throw new Error(`Failed to get payment events: ${response.status} - ${errorText}`);
+    }
+
+    const data = (await response.json()) as PaymentEvent[];
+
+    logger.info(
+      {
+        reference,
+        eventCount: data.length,
+        events: data.map((e) => e.name),
+        responseTimeMs: responseTime,
+      },
+      'Successfully retrieved payment events'
+    );
+
+    return data;
+  } catch (error) {
+    const responseTime = Date.now() - startTime;
+    logger.error(
+      {
+        error,
+        reference,
+        errorMessage: error instanceof Error ? error.message : String(error),
+        responseTimeMs: responseTime,
+      },
+      'Error getting payment events'
+    );
+    throw error;
+  }
+}
+

@@ -337,13 +337,20 @@ export type PaymentEventName =
  * Payment event log entry
  */
 export interface PaymentEvent {
-  name: PaymentEventName;
-  amount?: PaymentAmount;
-  idempotencyKey?: string;
+  /** Payment reference */
+  reference: string;
+  /** PSP reference for the specific operation */
   pspReference: string;
-  success: boolean;
+  /** Event name */
+  name: PaymentEventName;
+  /** Amount involved in this event */
+  amount?: PaymentAmount;
   /** ISO 8601 timestamp */
   timestamp: string;
+  /** Idempotency key for the request */
+  idempotencyKey?: string | null;
+  /** Whether the event was successful */
+  success: boolean;
 }
 
 /**
