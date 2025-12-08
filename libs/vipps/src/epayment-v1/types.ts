@@ -28,10 +28,135 @@ export type PaymentMethodType = 'WALLET' | 'CARD';
 export type UserFlow = 'WEB_REDIRECT' | 'PUSH_MESSAGE' | 'QR' | 'NATIVE_REDIRECT';
 
 /**
+ * Shipping delivery type
+ */
+export type ShippingType =
+  | 'HOME_DELIVERY'
+  | 'PICKUP_POINT'
+  | 'MAILBOX'
+  | 'IN_STORE'
+  | 'OTHER';
+
+/**
+ * Shipping brand/provider
+ */
+export type ShippingBrand =
+  | 'BRING'
+  | 'DHL'
+  | 'FEDEX'
+  | 'GLS'
+  | 'HELTHJEM'
+  | 'INSTABOX'
+  | 'MATKAHUOLTO'
+  | 'PORTERBUDDY'
+  | 'POSTEN'
+  | 'POSTI'
+  | 'POSTNORD'
+  | 'OTHER';
+
+/**
  * Customer information for payment
  */
 export interface Customer {
   phoneNumber?: string;
+}
+
+/**
+ * Shipping option within a shipping group
+ */
+export interface ShippingOption {
+  /** Unique identifier for the shipping option */
+  id: string;
+  /** Cost of shipping */
+  amount: PaymentAmount;
+  /** Name of delivery point or store */
+  name: string;
+  /** Whether this is the default selection */
+  isDefault?: boolean;
+  /** Display order priority (lower numbers appear higher) */
+  priority?: number;
+  /** Additional information (e.g., address, opening hours) */
+  meta?: string;
+  /** Expected delivery time (e.g., 'Ready in 2 hours', '17:00–19:00', '1-2 Days') */
+  estimatedDelivery?: string;
+}
+
+/**
+ * Fixed shipping group
+ */
+export interface ShippingGroup {
+  /** Shipping delivery type */
+  type: ShippingType;
+  /** Shipping provider/brand */
+  brand: ShippingBrand;
+  /** Whether this method is the default option */
+  isDefault?: boolean;
+  /** Display order priority (lower numbers appear higher) */
+  priority?: number;
+  /** Array of delivery options for this shipping group */
+  options: ShippingOption[];
+}
+
+/**
+ * Fixed shipping options
+ */
+export interface FixedShippingOptions {
+  /** Array of shipping groups */
+  fixedOptions: ShippingGroup[];
+}
+
+/**
+ * Address information for dynamic shipping callback
+ */
+export interface ShippingAddress {
+  /** First address line */
+  addressLine1: string;
+  /** Second address line (optional) */
+  addressLine2?: string;
+  /** City name */
+  city: string;
+  /** Postcode in local country format */
+  postCode: string;
+  /** Country code in ISO 3166-1 alpha-2 format */
+  country: string;
+}
+
+/**
+ * Dynamic shipping callback request payload
+ */
+export interface DynamicShippingCallbackRequest {
+  /** Payment reference */
+  reference: string;
+  /** User's shipping address */
+  address: ShippingAddress;
+}
+
+/**
+ * Dynamic shipping callback response payload
+ */
+export interface DynamicShippingCallbackResponse {
+  /** Array of shipping groups based on the user's address */
+  groups: ShippingGroup[];
+}
+
+/**
+ * Dynamic shipping options configuration
+ */
+export interface DynamicShippingOptions {
+  /** URL to callback endpoint */
+  callbackUrl: string;
+  /** Authorization token for callback */
+  callbackAuthorizationToken: string;
+}
+
+/**
+ * Shipping configuration (either fixed or dynamic, not both)
+ */
+export interface Shipping {
+  /** Fixed shipping options (specify all options upfront) */
+  fixedOptions?: ShippingGroup[];
+  /** Dynamic shipping options (callback to generate options based on address) */
+  dynamicOptions?: DynamicShippingOptions;
 }
 
 /**
@@ -128,6 +253,8 @@ export interface CreatePaymentRequest {
   paymentDescription?: string;
   /** Receipt with order details for Vipps app */
   receipt?: Receipt;
+  /** Shipping options for Express Checkout */
+  shipping?: Shipping;
 }
 
 /**
@@ -180,6 +307,17 @@ export interface PaymentDetails {
   };
   pspReference: string;
   reference: string;
+  /** Shipping details for Express Checkout payments */
+  shippingDetails?: {
+    /** Shipping address */
+    address: ShippingAddress;
+    /** Shipping cost in minor units */
+    shippingCost: number;
+    /** ID of selected shipping option */
+    shippingOptionId: string;
+    /** Name of selected shipping option */
+    shippingOptionName: string;
+  };
 }
 
 /**
