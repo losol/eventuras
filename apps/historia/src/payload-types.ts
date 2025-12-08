@@ -79,6 +79,7 @@ export interface Config {
   blocks: {};
   collections: {
     articles: Article;
+    'business-events': BusinessEvent;
     happenings: Happening;
     licenses: License;
     media: Media;
@@ -106,6 +107,7 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     articles: ArticlesSelect<false> | ArticlesSelect<true>;
+    'business-events': BusinessEventsSelect<false> | BusinessEventsSelect<true>;
     happenings: HappeningsSelect<false> | HappeningsSelect<true>;
     licenses: LicensesSelect<false> | LicensesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
@@ -821,7 +823,7 @@ export interface Product {
      */
     amountExVat?: number | null;
     /**
-     * Currency code (e.g., NOK, USD, EUR)
+     * Currency code (ISO 4217)
      */
     currency: 'NOK' | 'USD' | 'EUR' | 'GBP' | 'SEK' | 'DKK';
     /**
@@ -891,27 +893,57 @@ export interface NavBlock {
   blockType: 'nav';
 }
 /**
+ * Audit log of all business events across the system
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "happenings".
+ * via the `definition` "business-events".
  */
-export interface Happening {
+export interface BusinessEvent {
   id: string;
-  tenant?: (string | null) | Website;
   /**
-   * The title of the entry.
+   * Specific event type (e.g., "payment.authorized", "order.created")
    */
-  title: string;
-  lead?: string | null;
-  image?: Image;
-  story?: ContentBlock[] | null;
-  startDate?: string | null;
-  endDate?: string | null;
-  program?: (ContentBlock | SessionBlock)[] | null;
-  contentLocations?: (string | Place)[] | null;
-  slug?: string | null;
-  slugLock?: boolean | null;
-  resourceId: string;
-  config?:
+  eventType: string;
+  /**
+   * Source that generated this event (e.g., "vipps", "stripe", "internal", "user", "system")
+   */
+  source?: string | null;
+  /**
+   * Entity this event relates to
+   */
+  entity?:
+    | ({
+        relationTo: 'orders';
+        value: string | Order;
+      } | null)
+    | ({
+        relationTo: 'transactions';
+        value: string | Transaction;
+      } | null)
+    | ({
+        relationTo: 'users';
+        value: string | User;
+      } | null)
+    | ({
+        relationTo: 'products';
+        value: string | Product;
+      } | null);
+  /**
+   * User who initiated/triggered this event (when available)
+   */
+  actor?: (string | null) | User;
+  /**
+   * Unique external ID for idempotency (webhook ID, event ID, etc.)
+   */
+  externalId?: string | null;
+  /**
+   * External reference (payment reference, order number, etc.)
+   */
+  externalReference?: string | null;
+  /**
+   * Complete event JSON data
+   */
+  data:
     | {
         [k: string]: unknown;
       }
@@ -920,52 +952,12 @@ export interface Happening {
     | number
     | boolean
     | null;
+  /**
+   * Error message if event processing failed
+   */
+  error?: string | null;
   updatedAt: string;
   createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "SessionBlock".
- */
-export interface SessionBlock {
-  /**
-   * The title of the entry.
-   */
-  title: string;
-  description?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  startTime?: string | null;
-  endTime?: string | null;
-  schedule?:
-    | {
-        title?: string | null;
-        duration?: number | null;
-        contributors?:
-          | {
-              person?: (string | null) | Person;
-              text?: string | null;
-              id?: string | null;
-            }[]
-          | null;
-        id?: string | null;
-      }[]
-    | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'session';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1080,16 +1072,103 @@ export interface Transaction {
   tenant?: (string | null) | Website;
   order: string | Order;
   customer?: (string | null) | User;
-  amount: number;
+  /**
+   * Amount in minor units (øre for NOK, cents for USD/EUR)
+   */
+  amount?: number | null;
+  /**
+   * Currency code (ISO 4217)
+   */
+  currency: 'NOK' | 'USD' | 'EUR' | 'GBP' | 'SEK' | 'DKK';
   /**
    * Unique payment reference from payment provider (Vipps reference, Stripe payment intent ID, etc.)
    */
   paymentReference: string;
-  status: 'pending' | 'authorized' | 'captured' | 'completed' | 'failed' | 'refunded' | 'partially-refunded';
+  /**
+   * Transaction status from payment provider (e.g., pending, authorized, captured, failed, refunded)
+   */
+  status: string;
   paymentMethod: 'vipps' | 'stripe' | 'manual';
   transactionType: 'payment' | 'refund' | 'partial-refund';
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "happenings".
+ */
+export interface Happening {
+  id: string;
+  tenant?: (string | null) | Website;
+  /**
+   * The title of the entry.
+   */
+  title: string;
+  lead?: string | null;
+  image?: Image;
+  story?: ContentBlock[] | null;
+  startDate?: string | null;
+  endDate?: string | null;
+  program?: (ContentBlock | SessionBlock)[] | null;
+  contentLocations?: (string | Place)[] | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  resourceId: string;
+  config?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SessionBlock".
+ */
+export interface SessionBlock {
+  /**
+   * The title of the entry.
+   */
+  title: string;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  startTime?: string | null;
+  endTime?: string | null;
+  schedule?:
+    | {
+        title?: string | null;
+        duration?: number | null;
+        contributors?:
+          | {
+              person?: (string | null) | Person;
+              text?: string | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'session';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1380,6 +1459,10 @@ export interface PayloadLockedDocument {
         value: string | Article;
       } | null)
     | ({
+        relationTo: 'business-events';
+        value: string | BusinessEvent;
+      } | null)
+    | ({
         relationTo: 'happenings';
         value: string | Happening;
       } | null)
@@ -1558,6 +1641,22 @@ export interface ContributorsSelect<T extends boolean = true> {
   person?: T;
   role?: T;
   id?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "business-events_select".
+ */
+export interface BusinessEventsSelect<T extends boolean = true> {
+  eventType?: T;
+  source?: T;
+  entity?: T;
+  actor?: T;
+  externalId?: T;
+  externalReference?: T;
+  data?: T;
+  error?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1962,6 +2061,7 @@ export interface TransactionsSelect<T extends boolean = true> {
   order?: T;
   customer?: T;
   amount?: T;
+  currency?: T;
   paymentReference?: T;
   status?: T;
   paymentMethod?: T;

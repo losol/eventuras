@@ -11,6 +11,7 @@ import { defaultLexical } from '@/fields/defaultLexical';
 import { seedDefaultWebsite } from '@/seed/defaultWebsite';
 
 import { Articles } from './collections/Articles';
+import { BusinessEvents } from './collections/BusinessEvents';
 import { Happenings } from './collections/Happenings';
 import { Licenses } from './collections/Licenses';
 import { Media } from './collections/Media';
@@ -84,7 +85,7 @@ export default buildConfig({
       },
       push: true,
     }),
-  collections: [Articles, Happenings, Licenses, Media, Notes, Orders, Organizations, Pages, Persons, Places, Products, Projects, Topics, Transactions, Users, Websites],
+  collections: [Articles, BusinessEvents, Happenings, Licenses, Media, Notes, Orders, Organizations, Pages, Persons, Places, Products, Projects, Topics, Transactions, Users, Websites],
   cors: allowedOrigins,
   csrf: allowedOrigins,
   editor: defaultLexical,
