@@ -6,7 +6,7 @@
  * Run this once per environment (test/production) to set up webhooks.
  *
  * Usage:
- *   pnpm tsx scripts/setup-webhook.ts
+ *   pnpm webhook:setup
  *
  * Environment variables required:
  *   VIPPS_CLIENT_ID
@@ -20,10 +20,11 @@
  *   - Events to subscribe to
  */
 
+import * as readline from 'readline';
+
 import { registerWebhook } from '../src/webhooks-v1/client';
 import type { WebhookEventType } from '../src/webhooks-v1/types';
 import type { VippsConfig } from '../src/vipps-core';
-import * as readline from 'readline';
 
 const rl = readline.createInterface({
   input: process.stdin,

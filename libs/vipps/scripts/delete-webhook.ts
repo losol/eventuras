@@ -5,7 +5,7 @@
  * Delete a registered webhook by ID.
  *
  * Usage:
- *   pnpm tsx scripts/delete-webhook.ts <webhook-id>
+ *   pnpm webhook:delete <webhook-id>
  *
  * Environment variables required:
  *   VIPPS_CLIENT_ID
