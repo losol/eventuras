@@ -5,7 +5,7 @@
  * List all registered webhooks for the configured MSN.
  *
  * Usage:
- *   pnpm tsx scripts/list-webhooks.ts
+ *   pnpm webhook:list
  *
  * Environment variables required:
  *   VIPPS_CLIENT_ID

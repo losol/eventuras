@@ -25,9 +25,9 @@
     "build": "vite build",
     "dev": "vite build --watch",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "webhook:delete": "tsx scripts/delete-webhook.ts",
-    "webhook:list": "tsx scripts/list-webhooks.ts",
-    "webhook:setup": "tsx scripts/setup-webhook.ts"
+    "webhook:delete": "tsx --env-file=.env scripts/delete-webhook.ts",
+    "webhook:list": "tsx --env-file=.env scripts/list-webhooks.ts",
+    "webhook:setup": "tsx --env-file=.env scripts/setup-webhook.ts"
   },
   "dependencies": {
     "@eventuras/logger": "workspace:*"
