@@ -212,6 +212,32 @@ export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
                 })}
             </div>
 
+            {/* Shipping options */}
+            {/* <div className="mb-6 pb-6 border-b border-gray-200 dark:border-gray-700">
+              <Heading as="h3" padding="pb-3">
+                Frakt
+              </Heading>
+              <RadioGroup
+                name="shipping"
+                value={selectedShipping}
+                onChange={setSelectedShipping}
+                options={SHIPPING_OPTIONS.map((option) => ({
+                  value: option.id,
+                  label: option.name,
+                  price:
+                    option.price === 0
+                      ? 'Gratis'
+                      : cart
+                        ? formatPrice(
+                            fromMinorUnits(option.price, cart.currency),
+                            cart.currency,
+                            locale,
+                          )
+                        : '',
+                }))}
+              />
+            </div> */}
+
             {/* Price breakdown */}
             <div className="space-y-3 mb-6 pb-6 border-b border-gray-200 dark:border-gray-700">
               <div className="flex justify-between text-sm">
@@ -228,7 +254,7 @@ export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600 dark:text-gray-400">Frakt</span>
-                <span className="text-gray-600 dark:text-gray-400">Beregnes senere</span>
+                <span className="text-gray-600 dark:text-gray-400">Velges i Vipps</span>
               </div>
             </div>
 
@@ -246,7 +272,7 @@ export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
             loading={submitting}
             block
           >
-            Betal med Vipps
+            Kjøp nå med Vipps
           </Button>
         </div>
         )}

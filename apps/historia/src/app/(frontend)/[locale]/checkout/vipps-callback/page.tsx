@@ -45,8 +45,15 @@ export default function PaymentCallbackPage() {
   const [orderDetails, setOrderDetails] = useState<OrderDetails | null>(null);
   const processingRef = useRef(false);
 
+  // Log component mount for debugging
+  useEffect(() => {
+    logger.info('Payment callback page mounted');
+  }, []);
+
   useEffect(() => {
     const reference = searchParams.get('reference');
+
+    logger.info({ reference, hasReference: !!reference }, 'Payment callback effect running');
 
     if (!reference) {
       logger.error('No payment reference in callback URL');
