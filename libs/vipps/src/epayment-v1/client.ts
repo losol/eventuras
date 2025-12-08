@@ -440,3 +440,89 @@ export async function getPaymentEvents(
   }
 }
 
+/**
+ * Force approve a payment (TEST ENVIRONMENT ONLY)
+ * POST /epayment/v1/test/payments/{reference}/approve
+ *
+ * This endpoint simplifies automated testing by confirming payments without the test app.
+ *
+ * **IMPORTANT REQUIREMENTS:**
+ * - Only available in test environment
+ * - Test user must have manually approved at least one payment in the app first
+ * - Express checkout is not supported
+ * - Will fail if used in production
+ *
+ * **NOTE:** You may get HTTP 500 for expired card - create a new test user if this happens.
+ *
+ * @param config - Vipps configuration (must use test API URL)
+ * @param reference - Payment reference
+ * @param customerPhoneNumber - Phone number of the test user
+ * @param idempotencyKey - Optional idempotency key
+ *
+ * @see https://developer.vippsmobilepay.com/docs/APIs/epayment-api/api-guide/operations/force-approve/
+ */
+export async function forceApprovePayment(
+  config: VippsConfig,
+  reference: string,
+  customerPhoneNumber: string,
+  idempotencyKey?: string
+): Promise<void> {
+  const startTime = Date.now();
+
+  try {
+    logger.info(
+      {
+        reference,
+        phoneNumber: customerPhoneNumber,
+      },
+      'Force approving payment (TEST ONLY)'
+    );
+
+    const accessToken = await getAccessToken(config);
+    const headers = buildHeaders(config, accessToken, idempotencyKey);
+
+    const response = await fetch(`${config.apiUrl}/epayment/v1/test/payments/${reference}/approve`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ customer: { phoneNumber: customerPhoneNumber } }),
+    });
+
+    const responseTime = Date.now() - startTime;
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      logger.error(
+        {
+          reference,
+          status: response.status,
+          statusText: response.statusText,
+          error: errorText,
+          responseTimeMs: responseTime,
+        },
+        'Failed to force approve payment'
+      );
+      throw new Error(`Failed to force approve payment: ${response.status} - ${errorText}`);
+    }
+
+    logger.info(
+      {
+        reference,
+        responseTimeMs: responseTime,
+      },
+      'Successfully force approved payment'
+    );
+  } catch (error) {
+    const responseTime = Date.now() - startTime;
+    logger.error(
+      {
+        error,
+        reference,
+        errorMessage: error instanceof Error ? error.message : String(error),
+        responseTimeMs: responseTime,
+      },
+      'Error force approving payment'
+    );
+    throw error;
+  }
+}
+

@@ -24,7 +24,9 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite build --watch",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest run",
+    "test:ui": "vitest --ui",
+    "test:watch": "vitest",
     "webhook:delete": "tsx --env-file=.env scripts/delete-webhook.ts",
     "webhook:list": "tsx --env-file=.env scripts/list-webhooks.ts",
     "webhook:setup": "tsx --env-file=.env scripts/setup-webhook.ts"
@@ -35,7 +37,10 @@
   "devDependencies": {
     "@eventuras/typescript-config": "workspace:*",
     "@eventuras/vite-config": "workspace:*",
+    "@vitest/ui": "^3.0.5",
+    "tsx": "^4.19.2",
     "typescript": "^5.9.3",
-    "vite": "^7.2.6"
+    "vite": "^7.2.6",
+    "vitest": "^3.0.5"
   }
 }
