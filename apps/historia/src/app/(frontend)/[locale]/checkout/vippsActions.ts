@@ -10,6 +10,8 @@ import {
   createPayment,
   type CreatePaymentRequest,
   type CreatePaymentResponse,
+  type ShippingBrand,
+  type ShippingType,
 } from '@eventuras/vipps/epayment-v1';
 
 import { calculateCart, type CartSummary } from '@/app/(frontend)/[locale]/checkout/actions';
@@ -36,12 +38,30 @@ interface CreateVippsPaymentParams {
  * Uses the new ePayment API instead of the old Checkout API
  * All price calculations are done server-side
  */
+// Define available shipping options
+const SHIPPING_OPTIONS = [
+  {
+    id: 'posten-home',
+    name: 'Sende med Posten',
+    price: 5900, // 59 kr in øre
+    brand: 'POSTEN' as ShippingBrand,
+    type: 'HOME_DELIVERY' as ShippingType,
+  },
+  {
+    id: 'pickup-valnesfjord',
+    name: 'Pickup point i Valnesfjord etter avtale',
+    price: 0, // gratis
+    brand: 'OTHER' as ShippingBrand,
+    type: 'PICKUP_POINT' as ShippingType,
+  },
+];
+
 export async function createVippsPayment({
   items,
   userLanguage = 'no',
 }: CreateVippsPaymentParams): Promise<ServerActionResult<CreatePaymentResponse>> {
   try {
-    logger.info({ itemCount: items.length }, 'Creating Vipps ePayment');
+    logger.info({ itemCount: items.length }, 'Creating Vipps ePayment with Express Checkout');
 
     // Calculate cart totals server-side
     const cartResult = await calculateCart(items);
@@ -56,9 +76,19 @@ export async function createVippsPayment({
     let phoneNumber: string | undefined;
     try {
       const userResult = await getMeUser();
-      phoneNumber = userResult?.user?.phone_number ?? undefined;
-      if (phoneNumber) {
-        logger.info({ userId: userResult?.user?.id }, 'Got user phone for payment');
+      const rawPhone = userResult?.user?.phone_number;
+      if (rawPhone) {
+        // Normalize phone number: remove +, spaces, and other non-digits
+        // Vipps requires 9-15 digits WITH country code (e.g., 4712345678)
+        phoneNumber = rawPhone.replace(/\D/g, '');
+
+        // Validate length (9-15 digits)
+        if (phoneNumber.length < 9 || phoneNumber.length > 15) {
+          logger.warn({ phoneNumber: rawPhone }, 'Phone number invalid length, skipping pre-fill');
+          phoneNumber = undefined;
+        } else {
+          logger.info({ userId: userResult?.user?.id, phoneNumber }, 'Got user phone for payment');
+        }
       }
     } catch (error) {
       logger.debug({ error }, 'No user session found, skipping phone pre-fill');
@@ -90,10 +120,13 @@ export async function createVippsPayment({
       },
     }));
 
+    // Total amount without shipping (Vipps will add shipping cost)
+    const totalAmount = cart.totalIncVat;
+
     // Build ePayment request
     const paymentRequest: CreatePaymentRequest = {
       amount: {
-        value: cart.totalIncVat,
+        value: totalAmount,
         currency: cart.currency,
       },
       paymentMethod: {
@@ -117,17 +150,38 @@ export async function createVippsPayment({
           currency: cart.currency,
         },
       },
+      shipping: {
+        fixedOptions: SHIPPING_OPTIONS.map((option, index) => ({
+          brand: option.brand,
+          type: option.type,
+          isDefault: index === 0, // First option is default
+          priority: index,
+          options: [
+            {
+              id: option.id,
+              amount: {
+                value: option.price,
+                currency: cart.currency,
+              },
+              name: option.name,
+              isDefault: index === 0,
+              priority: 0,
+            },
+          ],
+        })),
+      },
     };
 
     logger.info(
       {
         reference,
-        amount: cart.totalIncVat,
+        amount: totalAmount,
         currency: cart.currency,
         userFlow: paymentRequest.userFlow,
         hasCustomer: !!paymentRequest.customer,
         profileScope: paymentRequest.profile?.scope,
         orderLineCount: orderLines.length,
+        shippingOptionsCount: SHIPPING_OPTIONS.length,
         orderLines: orderLines.map((line) => ({
           name: line.name,
           id: line.id,
@@ -135,7 +189,7 @@ export async function createVippsPayment({
           quantity: line.unitInfo?.quantity,
         })),
       },
-      'Creating ePayment via API',
+      'Creating ePayment with Express Checkout',
     );
 
     // Get Vipps configuration
