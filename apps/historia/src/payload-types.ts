@@ -815,25 +815,24 @@ export interface Product {
   /**
    * Prices are stored in minor units (øre/cents). Use the custom field to edit in major units (kr).
    */
-  price?: {
+  price: {
     /**
      * Stored in minor units (øre). Use the field above to edit in kr.
      */
-    amount?: number | null;
+    amountExVat?: number | null;
     /**
      * Currency code (e.g., NOK, USD, EUR)
      */
-    currency?: string | null;
-    /**
-     * Number of decimal places for the currency (default: 2 for NOK)
-     */
-    decimals?: number | null;
+    currency: 'NOK' | 'USD' | 'EUR' | 'GBP' | 'SEK' | 'DKK';
     /**
      * VAT/Tax rate in percentage (default: 25%)
      */
     vatRate?: number | null;
+    /**
+     * VAT for one unit in minor units
+     */
     vatAmount?: number | null;
-    totalPrice?: number | null;
+    amountIncVat?: number | null;
   };
   /**
    * Stock Keeping Unit (SKU)
@@ -1893,12 +1892,11 @@ export interface ProductsSelect<T extends boolean = true> {
   price?:
     | T
     | {
-        amount?: T;
+        amountExVat?: T;
         currency?: T;
-        decimals?: T;
         vatRate?: T;
         vatAmount?: T;
-        totalPrice?: T;
+        amountIncVat?: T;
       };
   sku?: T;
   inventory?: T;

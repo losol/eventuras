@@ -9,9 +9,9 @@ import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 
 import { useCart } from '@/lib/cart';
-import type { Product } from '@/payload-types';
+import { fromMinorUnits } from '@/lib/price';
 
-import { getCartProducts } from './actions';
+import { calculateCart, type CartSummary } from './actions';
 import { createVippsPayment } from './vippsActions';
 
 const logger = Logger.create({
@@ -25,7 +25,7 @@ interface CheckoutPageClientProps {
 
 export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
   const { items, updateCartItem, removeFromCart, loading: cartLoading, refreshCart } = useCart();
-  const [products, setProducts] = useState<Product[]>([]);
+  const [cart, setCart] = useState<CartSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
@@ -49,49 +49,39 @@ export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Load products
+  // Load cart summary from server
   useEffect(() => {
-    async function loadProducts() {
+    async function loadCart() {
       if (items.length === 0) {
-        setProducts([]);
+        setCart(null);
         setLoading(false);
         return;
       }
 
-      const result = await getCartProducts(items.map((item) => item.productId));
+      const result = await calculateCart(items);
 
       if (result.success) {
-        setProducts(result.data);
+        setCart(result.data);
+      } else {
+        logger.error({ error: result.error }, 'Failed to load cart');
       }
       setLoading(false);
     }
 
-    loadProducts();
+    loadCart();
   }, [items]);
 
-  const cartWithProducts = items.map((item) => ({
-    ...item,
-    product: products.find((p) => p.id === item.productId),
-  }));
-
-  // Calculate total - price.amount is in NOK, convert to øre for Vipps
-  const totalInCents = cartWithProducts.reduce((sum, item) => {
-    const price = item.product?.price?.amount || 0;
-    return sum + price * item.quantity * 100;
-  }, 0);
+  // All calculations are done server-side in cart.items and cart totals
 
   const handleVippsCheckout = async () => {
     setSubmitting(true);
 
     try {
       const result = await createVippsPayment({
-        amount: totalInCents,
-        currency: 'NOK',
         items: items.map((item) => ({
           productId: item.productId,
           quantity: item.quantity,
         })),
-        products,
         userLanguage: locale,
       });
 
@@ -160,34 +150,29 @@ export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
 
               {/* Products */}
               <div className="space-y-4 mb-6 pb-6 border-b border-gray-200 dark:border-gray-700">
-                {cartWithProducts.map((item) => {
-                  const product = item.product;
-                  if (!product) return null;
+                {cart?.items.map((item) => {
 
-                const price = product.price?.amount || 0;
-                const total = price * item.quantity;
+                  return (
+                    <div key={item.productId} className="flex items-start gap-4">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                          {item.title}
+                        </p>
+                        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                          {item.quantity} x {formatPrice(fromMinorUnits(item.pricePerUnitIncVat, item.currency), item.currency, locale)} (inkl mva {formatPrice(fromMinorUnits(item.vatAmount, item.currency), item.currency, locale)})
+                        </p>
 
-                return (
-                  <div key={item.productId} className="flex items-start gap-4">
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                        {product.title}
-                      </p>
-                      <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                        {formatPrice(price, 'NOK', locale)} per stk
-                      </p>
-
-                      {/* Quantity controls */}
-                      <div className="mt-2 flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            if (item.quantity > 1) {
-                              updateCartItem(item.productId, item.quantity - 1);
-                            } else {
-                              removeFromCart(item.productId);
-                            }
-                          }}
+                        {/* Quantity controls */}
+                        <div className="mt-2 flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (item.quantity > 1) {
+                                updateCartItem(item.productId, item.quantity - 1);
+                              } else {
+                                removeFromCart(item.productId);
+                              }
+                            }}
                           className="flex h-8 w-8 items-center justify-center rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                           aria-label="Reduser antall"
                         >
@@ -215,13 +200,18 @@ export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
                           </svg>
                         </button>
                       </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-semibold text-gray-900 dark:text-white whitespace-nowrap">
+                          {formatPrice(fromMinorUnits(item.lineTotalIncVat, item.currency), item.currency, locale)}
+                        </p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          inkl. mva
+                        </p>
+                      </div>
                     </div>
-                    <p className="text-sm font-semibold text-gray-900 dark:text-white whitespace-nowrap">
-                      {formatPrice(total, 'NOK', locale)}
-                    </p>
-                  </div>
-                );
-              })}
+                  );
+                })}
             </div>
 
             {/* Price breakdown */}
@@ -229,13 +219,13 @@ export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600 dark:text-gray-400">Delsum (ekskl. mva)</span>
                 <span className="font-medium text-gray-900 dark:text-white">
-                  {formatPrice((totalInCents / 100) / 1.25, 'NOK', locale)}
+                  {cart && formatPrice(fromMinorUnits(cart.subtotalExVat, cart.currency), cart.currency, locale)}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600 dark:text-gray-400">MVA (25%)</span>
+                <span className="text-gray-600 dark:text-gray-400">MVA</span>
                 <span className="font-medium text-gray-900 dark:text-white">
-                  {formatPrice((totalInCents / 100) - (totalInCents / 100) / 1.25, 'NOK', locale)}
+                  {cart && formatPrice(fromMinorUnits(cart.totalVat, cart.currency), cart.currency, locale)}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
@@ -248,7 +238,7 @@ export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
             <div className="flex items-center justify-between mb-4">
               <span className="text-base font-semibold text-gray-900 dark:text-white">Total</span>
               <span className="text-2xl font-bold text-gray-900 dark:text-white">
-                {formatPrice(totalInCents / 100, 'NOK', locale)}
+                {cart && formatPrice(fromMinorUnits(cart.totalIncVat, cart.currency), cart.currency, locale)}
               </span>
             </div>
           </Card>

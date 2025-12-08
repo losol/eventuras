@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload';
 
 import { admins } from '@/access/admins';
 import { anyone } from '@/access/anyone';
+import { getCurrencyOptions } from '@/currencies';
 import { description } from '@/fields/description';
 import { image } from '@/fields/image';
 import { lead } from '@/fields/lead';
@@ -98,7 +99,7 @@ export const Products: CollectionConfig = {
               },
               fields: [
                 {
-                  name: 'amount',
+                  name: 'amountExVat',
                   label: 'Price (ex. VAT)',
                   type: 'number',
                   required: false,
@@ -111,20 +112,12 @@ export const Products: CollectionConfig = {
                 },
                 {
                   name: 'currency',
-                  type: 'text',
+                  type: 'select',
                   defaultValue: 'NOK',
-                  required: false,
+                  required: true,
+                  options: getCurrencyOptions(),
                   admin: {
                     description: 'Currency code (e.g., NOK, USD, EUR)',
-                  },
-                },
-                {
-                  name: 'decimals',
-                  type: 'number',
-                  defaultValue: 2,
-                  required: false,
-                  admin: {
-                    description: 'Number of decimal places for the currency (default: 2 for NOK)',
                   },
                 },
                 {
@@ -139,26 +132,27 @@ export const Products: CollectionConfig = {
                 },
                 {
                   name: 'vatAmount',
-                  label: 'VAT Amount',
+                  label: 'VAT Amount (per unit)',
                   type: 'number',
                   virtual: true,
                   admin: {
                     position: 'sidebar',
                     readOnly: true,
+                    description: 'VAT for one unit in minor units',
                   },
                   hooks: {
                     afterRead: [
                       ({ siblingData }) => {
-                        const amount = siblingData.amount || 0;
+                        const amount = siblingData.amountExVat ?? 0;
                         const vatRate = siblingData.vatRate ?? 25;
-                        return Math.round(amount * (vatRate / 100));
+                        return amount > 0 ? Math.round(amount * (vatRate / 100)) : 0;
                       },
                     ],
                   },
                 },
                 {
-                  name: 'totalPrice',
-                  label: 'Total Price (inc. VAT)',
+                  name: 'amountIncVat',
+                  label: 'Price (inc. VAT)',
                   type: 'number',
                   virtual: true,
                   admin: {
@@ -170,9 +164,10 @@ export const Products: CollectionConfig = {
                   hooks: {
                     afterRead: [
                       ({ siblingData }) => {
-                        const amount = siblingData.amount || 0;
+                        const amount = siblingData.amountExVat ?? 0;
                         const vatRate = siblingData.vatRate ?? 25;
-                        return Math.round(amount * (1 + vatRate / 100));
+                        const vatAmount = amount > 0 ? Math.round(amount * (vatRate / 100)) : 0;
+                        return amount + vatAmount;
                       },
                     ],
                   },

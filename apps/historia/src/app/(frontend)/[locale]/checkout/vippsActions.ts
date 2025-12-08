@@ -12,10 +12,10 @@ import {
   type CreatePaymentResponse,
 } from '@eventuras/vipps/epayment-v1';
 
+import { calculateCart, type CartSummary } from '@/app/(frontend)/[locale]/checkout/actions';
 import { setCartPaymentReference } from '@/app/actions/cart';
 import { appConfig } from '@/config.server';
 import { getVippsConfig } from '@/lib/vipps/config';
-import type { Product } from '@/payload-types';
 import { getMeUser } from '@/utilities/getMeUser';
 
 const logger = Logger.create({
@@ -24,29 +24,33 @@ const logger = Logger.create({
 });
 
 interface CreateVippsPaymentParams {
-  amount: number; // in minor units (øre)
-  currency: string;
   items: Array<{
     productId: string;
     quantity: number;
   }>;
-  products?: Product[]; // Optional: product details for order summary
   userLanguage?: string;
 }
 
 /**
  * Create Vipps ePayment (WEB_REDIRECT flow)
  * Uses the new ePayment API instead of the old Checkout API
+ * All price calculations are done server-side
  */
 export async function createVippsPayment({
-  amount,
-  currency,
   items,
-  products,
   userLanguage = 'no',
 }: CreateVippsPaymentParams): Promise<ServerActionResult<CreatePaymentResponse>> {
   try {
-    logger.info({ amount, currency, items }, 'Creating Vipps ePayment');
+    logger.info({ itemCount: items.length }, 'Creating Vipps ePayment');
+
+    // Calculate cart totals server-side
+    const cartResult = await calculateCart(items);
+    if (!cartResult.success) {
+      logger.error({ error: cartResult.error }, 'Failed to calculate cart');
+      return actionError('Kunne ikke beregne handlekurv');
+    }
+
+    const cart: CartSummary = cartResult.data;
 
     // Try to get current user for phone number (optional)
     let phoneNumber: string | undefined;
@@ -64,51 +68,42 @@ export async function createVippsPayment({
     const reference = `ORDER-${Date.now()}-${Math.random().toString(36).substring(7)}`;
     logger.info({ reference }, 'Generated new payment reference');
 
-    // Build payment description
-    const productNames = products?.map(p => p.title).join(', ') || 'Produkter';
-    const paymentDescription = products && products.length > 0
-      ? `Kjøp: ${productNames.substring(0, 100)}`
-      : `Ordre ${reference}`;
+    // Build payment description from cart items
+    const productNames = cart.items.map((item) => item.title).join(', ');
+    const paymentDescription =
+      cart.items.length > 0
+        ? `Kjøp: ${productNames.substring(0, 100)}`
+        : `Ordre ${reference}`;
 
-    // Build order lines if products are provided
-    const orderLines = products?.map((product) => {
-      const item = items.find(i => i.productId === product.id);
-      if (!item) return null;
-
-      const unitPrice = (product.price?.amount || 0) * 100; // Convert to øre
-      const quantity = item.quantity;
-      const totalAmount = unitPrice * quantity;
-      const taxRate = product.price?.vatRate || 25;
-      const totalAmountExcludingTax = Math.round(totalAmount / (1 + taxRate / 100));
-      const totalTaxAmount = totalAmount - totalAmountExcludingTax;
-
-      return {
-        name: product.title || 'Produkt',
-        id: product.id,
-        totalAmount,
-        totalAmountExcludingTax,
-        totalTaxAmount,
-        taxPercentage: taxRate,
-        unitInfo: {
-          unitPrice,
-          quantity: quantity.toString(),
-          quantityUnit: 'PCS',
-        },
-      };
-    }).filter((line): line is NonNullable<typeof line> => line !== null);
+    // Build order lines from calculated cart
+    const orderLines = cart.items.map((item) => ({
+      name: item.title,
+      id: item.productId,
+      totalAmount: item.lineTotalIncVat,
+      totalAmountExcludingTax: item.lineTotal,
+      totalTaxAmount: item.vatAmount,
+      taxPercentage: item.vatRate,
+      unitInfo: {
+        unitPrice: item.pricePerUnit + Math.round(item.pricePerUnit * (item.vatRate / 100)),
+        quantity: item.quantity.toString(),
+        quantityUnit: 'PCS',
+      },
+    }));
 
     // Build ePayment request
     const paymentRequest: CreatePaymentRequest = {
       amount: {
-        value: amount,
-        currency,
+        value: cart.totalIncVat,
+        currency: cart.currency,
       },
       paymentMethod: {
         type: 'WALLET', // Use Vipps/MobilePay wallet
       },
-      customer: phoneNumber ? {
-        phoneNumber,
-      } : undefined,
+      customer: phoneNumber
+        ? {
+            phoneNumber,
+          }
+        : undefined,
       profile: {
         scope: 'name phoneNumber address email',
       },
@@ -116,31 +111,31 @@ export async function createVippsPayment({
       returnUrl: `${appConfig.env.NEXT_PUBLIC_CMS_URL}/${userLanguage}/checkout/vipps-callback?reference=${reference}`,
       userFlow: 'WEB_REDIRECT', // Standard redirect flow
       paymentDescription,
-      receipt: orderLines && orderLines.length > 0 ? {
+      receipt: {
         orderLines,
         bottomLine: {
-          currency,
+          currency: cart.currency,
         },
-      } : undefined,
+      },
     };
 
     logger.info(
       {
         reference,
-        amount: paymentRequest.amount,
+        amount: cart.totalIncVat,
+        currency: cart.currency,
         userFlow: paymentRequest.userFlow,
         hasCustomer: !!paymentRequest.customer,
         profileScope: paymentRequest.profile?.scope,
-        orderLineCount: orderLines?.length || 0,
-        orderLines: orderLines?.map(line => ({
+        orderLineCount: orderLines.length,
+        orderLines: orderLines.map((line) => ({
           name: line.name,
           id: line.id,
           totalAmount: line.totalAmount,
           quantity: line.unitInfo?.quantity,
         })),
-        hasReceipt: !!paymentRequest.receipt,
       },
-      'Creating ePayment via API'
+      'Creating ePayment via API',
     );
 
     // Get Vipps configuration
@@ -173,11 +168,9 @@ export async function createVippsPayment({
     logger.error(
       {
         error,
-        amount,
-        currency,
         errorMessage: error instanceof Error ? error.message : String(error),
       },
-      'Error creating Vipps ePayment'
+      'Error creating Vipps ePayment',
     );
     return actionError('Kunne ikke starte betaling. Prøv igjen om litt.');
   }

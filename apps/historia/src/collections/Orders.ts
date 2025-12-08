@@ -111,7 +111,7 @@ export const Orders: CollectionConfig = {
 
             return data.items.reduce((total, item) => {
               const quantity = item.quantity || 1;
-              const amount = item.price?.amount || 0;
+              const amount = item.price?.amountExVat || 0;
               const vatRate = item.price?.vatRate ?? 25;
               const lineTotal = quantity * amount * (1 + vatRate / 100);
               return total + lineTotal;

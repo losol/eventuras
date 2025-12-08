@@ -9,6 +9,7 @@ import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
 
 import { getCartProducts } from '@/app/(frontend)/[locale]/checkout/actions';
 import { useCart } from '@/lib/cart';
+import { calculateCartTotals, fromMinorUnits } from '@/lib/price';
 import type { Product } from '@/payload-types';
 
 interface CartDrawerProps {
@@ -48,11 +49,14 @@ export function CartDrawer({ isOpen, onClose, locale }: CartDrawerProps) {
     product: products.find((p) => p.id === item.productId),
   }));
 
-  // Calculate total
-  const totalInCents = cartWithProducts.reduce((sum, item) => {
-    const price = item.product?.price?.amount || 0;
-    return sum + price * item.quantity * 100;
-  }, 0);
+  // Filter out items without products and calculate totals
+  const validCartItems = cartWithProducts.filter((item) => item.product) as Array<{
+    productId: string;
+    quantity: number;
+    product: Product;
+  }>;
+
+  const totals = calculateCartTotals(validCartItems);
 
   return (
     <Drawer isOpen={isOpen} onCancel={onClose}>
@@ -88,8 +92,10 @@ export function CartDrawer({ isOpen, onClose, locale }: CartDrawerProps) {
               const product = item.product;
               if (!product) return null;
 
-              const price = product.price?.amount || 0;
-              const total = price * item.quantity;
+              const priceIncVat = product.price?.amountIncVat || 0;
+              const vatAmount = product.price?.vatAmount || 0;
+              const currency = product.price?.currency || 'NOK';
+              const lineTotalIncVat = priceIncVat * item.quantity;
 
               return (
                 <div
@@ -99,7 +105,8 @@ export function CartDrawer({ isOpen, onClose, locale }: CartDrawerProps) {
                   <div className="flex-1">
                     <h3 className="font-medium text-gray-900 dark:text-white">{product.title}</h3>
                     <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                      {formatPrice(price, 'NOK', locale)}
+                      {formatPrice(fromMinorUnits(priceIncVat, currency), currency, locale)} (inkl mva{' '}
+                      {formatPrice(fromMinorUnits(vatAmount, currency), currency, locale)})
                     </p>
 
                     <div className="mt-2 flex items-center gap-2">
@@ -127,9 +134,14 @@ export function CartDrawer({ isOpen, onClose, locale }: CartDrawerProps) {
                     >
                       Fjern
                     </button>
-                    <p className="font-semibold text-gray-900 dark:text-white">
-                      {formatPrice(total, 'NOK', locale)}
-                    </p>
+                    <div className="text-right">
+                      <p className="font-semibold text-gray-900 dark:text-white">
+                        {formatPrice(fromMinorUnits(lineTotalIncVat, currency), currency, locale)}
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        inc. VAT
+                      </p>
+                    </div>
                   </div>
                 </div>
               );
@@ -144,7 +156,7 @@ export function CartDrawer({ isOpen, onClose, locale }: CartDrawerProps) {
             <div className="flex items-center justify-between border-t border-gray-200 dark:border-gray-700 pt-4">
               <span className="text-lg font-semibold text-gray-900 dark:text-white">Total</span>
               <span className="text-2xl font-bold text-gray-900 dark:text-white">
-                {formatPrice(totalInCents / 100, 'NOK', locale)}
+                {formatPrice(fromMinorUnits(totals.totalIncVat, totals.currency), totals.currency, locale)}
               </span>
             </div>
 

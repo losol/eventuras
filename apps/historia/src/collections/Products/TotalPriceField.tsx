@@ -3,6 +3,8 @@
 import React from 'react'
 import { useFormFields } from '@payloadcms/ui'
 
+import { getCurrency } from '@/currencies'
+
 export const TotalPriceField: React.FC = () => {
   const amount = useFormFields(
     ([fields]) => fields['price.amount']?.value as number | undefined,
@@ -10,6 +12,12 @@ export const TotalPriceField: React.FC = () => {
   const vatRate = useFormFields(
     ([fields]) => fields['price.vatRate']?.value as number | undefined,
   )
+  const currencyCode = useFormFields(
+    ([fields]) => fields['price.currency']?.value as string | undefined,
+  ) || 'NOK'
+
+  const currency = getCurrency(currencyCode)
+  const decimals = currency?.decimals ?? 2
 
   const totalPrice = React.useMemo(() => {
     const amountValue = amount || 0
@@ -18,7 +26,8 @@ export const TotalPriceField: React.FC = () => {
   }, [amount, vatRate])
 
   // Format for display (convert from minor units to major units)
-  const displayPrice = (totalPrice / 100).toFixed(2)
+  const divisor = Math.pow(10, decimals)
+  const displayPrice = `${(totalPrice / divisor).toFixed(decimals)} ${currency?.symbol || currencyCode}`
 
   return (
     <div className="field-type">
