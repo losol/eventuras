@@ -4,7 +4,7 @@
 
 ### Minor Changes
 
-- ### Features
+### Features
   - 🧱 feat(web,event-sdk): await sdk-config (945510c) [@eventuras/event-sdk]
 
   ### Maintenance
@@ -14,7 +14,7 @@
 
 ### Patch Changes
 
-- ### Maintenance
+### Maintenance
   - 🧹 chore(convertoapi,docsite,web,markdown,scribo,sdk): upgrade deps (b2de638) [@eventuras/event-sdk]
 
 ## 0.5.0

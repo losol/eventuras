@@ -4,7 +4,7 @@
 
 ### Patch Changes
 
-- ### Maintenance
+### Maintenance
   - 🧹 chore(convertoapi,docsite,web,markdown,scribo,sdk): upgrade deps (b2de638) [@eventuras/convertoapi]
 
 ## 0.4.1

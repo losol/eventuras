@@ -2,9 +2,7 @@
 
 ## 0.5.0
 
-### Minor Changes
-
-- ### Features
+### Features
   - 🧱 feat(logger): add separate Debug utilities (88e1494) [@eventuras/logger]
   - 🧱 feat(logger): enhanced logging capabilities (f3eb797) [@eventuras/logger]
   - 🧱 feat(logger): bundle it up (9ed77c3) [@eventuras/logger]

@@ -4,7 +4,7 @@
 
 ### Minor Changes
 
-- ### Features
+### Features
   - 🧱 feat(ratio-ui): add radiogroup (2e0013c) [@eventuras/ratio-ui]
   - 🧱 feat(ratio-ui): add togglebutton (13ec24a) [@eventuras/ratio-ui]
   - 🧱 feat(ratio-ui): eventuras icons from lucide (fa5e901) [@eventuras/ratio-ui]

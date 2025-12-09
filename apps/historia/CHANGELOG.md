@@ -4,7 +4,7 @@
 
 ### Minor Changes
 
-- ### Features
+### Features
   - 🧱 feat(historia): add BusinessEvents collection (f414a2e) [@eventuras/historia]
   - 🧱 feat(historia): refactor pricing structure to handle VAT calculations (7947a93) [@eventuras/historia]
   - 🧱 feat(historia): add footer component (e1a3b37) [@eventuras/historia]

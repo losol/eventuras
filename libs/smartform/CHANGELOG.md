@@ -4,7 +4,7 @@
 
 ### Minor Changes
 
-- ### Features
+### Features
   - 🧱 feat(smartform): bundle as library (7352d1b) [@eventuras/smartform]
 
   ### Maintenance

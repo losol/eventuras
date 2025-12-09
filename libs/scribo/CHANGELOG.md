@@ -4,7 +4,7 @@
 
 ### Minor Changes
 
-- ### Features
+### Features
   - 🧱 feat(scribo): auto heigh expanding (6ca2322) [@eventuras/scribo]
 
   ### Bug Fixes

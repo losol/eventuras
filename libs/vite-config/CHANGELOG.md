@@ -4,7 +4,7 @@
 
 ### Minor Changes
 
-- ### Features
+### Features
   - 🧱 feat(vite-config): centralize Vite configurations (6fe962c) [@eventuras/vite-config]
 
   ### Maintenance

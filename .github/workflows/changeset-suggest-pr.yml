@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     if: |
       github.event.pull_request.head.repo.full_name == github.repository ||
-      (github.event_name == 'issue_comment' && 
+      (github.event_name == 'issue_comment' &&
        github.event.issue.pull_request &&
        contains(github.event.comment.body, '/add-changesets'))
     permissions:
@@ -109,7 +109,7 @@ jobs:
               '',
               'You can also edit the generated changesets after they are added.'
             ].join('\n');
-            
+
             github.rest.issues.createComment({
               issue_number: ${{ steps.pr.outputs.number }},
               owner: context.repo.owner,
