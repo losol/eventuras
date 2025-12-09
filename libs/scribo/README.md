@@ -94,14 +94,28 @@ pnpm install
 vite dev
 ```
 
-## Publish
+## Release
 
-To publish a new version of the package:
+Quick release process:
 
-1. Update version number in package.json
-1. `npm run build`
-1. `npm login --scope @eventuras --auth-type web`
-1. `npm publish --access public`
+```bash
+# 1. Create changeset (choose one)
+pnpm changeset                 # Manual (recommended)
+pnpm changeset:suggest         # Auto-generate from commits
+
+# 2. Version package
+pnpm changeset:version
+
+# 3. Commit and push (create PR to main)
+git checkout -b release/scribo-v0.x.x
+git add .
+git commit -m "chore(scribo): release v0.x.x"
+git push origin release/scribo-v0.x.x
+
+# 4. Merge PR to main, then automated workflow will publish to npm and create GitHub release
+```
+
+For detailed release instructions, including setup and troubleshooting, see [RELEASE.md](./RELEASE.md).
 
 ## Credits
 
