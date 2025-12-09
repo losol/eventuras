@@ -1,5 +1,26 @@
 # @eventuras/scribo
 
+## 0.8.0
+
+### Minor Changes
+
+- ### Features
+  - 🧱 feat(scribo): auto heigh expanding (6ca2322) [@eventuras/scribo]
+
+  ### Bug Fixes
+  - 🐞 fix(scribo): import MarkdownEditor.css for styling (d1eec7a) [@eventuras/scribo]
+  - 🐞 fix(scribo): disable swc in scribo (ebce6db) [@eventuras/scribo]
+
+  ### Refactoring
+  - ♻️ refactor(scribo): merge markdowninput into scribo with flexible styling (373587e) [@eventuras/scribo]
+
+  ### Maintenance
+  - 🧹 chore(scribo): externalize Lexical packages in build configuration (7c7caaf) [@eventuras/scribo]
+  - 🧹 chore(convertoapi,docsite,web,markdown,scribo,sdk): upgrade deps (b2de638) [@eventuras/scribo]
+
+  ### CI/CD
+  - ⚙️ ci(scribo): implement automated release workflow for Scribo (36d6ba1) [@eventuras/scribo]
+
 ## 0.7.1
 
 ### Patch Changes

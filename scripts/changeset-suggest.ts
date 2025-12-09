@@ -198,8 +198,59 @@ function slug(s: string) {
 
 /** Build per-package changeset */
 function buildChangesetForPackage(pkg: string, bump: Bump, commits: Commit[]) {
+  // Sort commits by type priority: feat, docs, fix, others (refactor, test, chore, ci)
+  const typePriority: Record<string, number> = {
+    feat: 0,
+    docs: 1,
+    fix: 2,
+    refactor: 3,
+    test: 4,
+    chore: 5,
+    ci: 6,
+  }
+
+  const typeHeaders: Record<string, string> = {
+    feat: '### Features',
+    docs: '### Documentation',
+    fix: '### Bug Fixes',
+    refactor: '### Refactoring',
+    test: '### Testing',
+    chore: '### Maintenance',
+    ci: '### CI/CD',
+  }
+
+  const sortedCommits = [...commits].sort((a, b) => {
+    const getType = (subject: string) => {
+      const m = subject.match(/^(\w+)(\([^)]+\))?:/)
+      return m?.[1]?.toLowerCase() ?? 'other'
+    }
+
+    const typeA = getType(a.subject)
+    const typeB = getType(b.subject)
+    const priorityA = typePriority[typeA] ?? 99
+    const priorityB = typePriority[typeB] ?? 99
+
+    return priorityA - priorityB
+  })
+
   const lines = ['---', `"${pkg}": ${bump}`, '---', '']
-  for (const c of commits) lines.push(`- ${describeCommit(c)} [${pkg}]`)
+
+  // Group commits by type and add headers
+  let currentType: string | null = null
+  for (const c of sortedCommits) {
+    const m = c.subject.match(/^(\w+)(\([^)]+\))?:/)
+    const type = m?.[1]?.toLowerCase() ?? 'other'
+
+    if (type !== currentType) {
+      if (currentType !== null) lines.push('') // Add blank line between sections
+      const header = typeHeaders[type] ?? '### Other Changes'
+      lines.push(header, '')
+      currentType = type
+    }
+
+    lines.push(`- ${describeCommit(c)} [${pkg}]`)
+  }
+
   if (lines[lines.length - 1] === '') lines.push('- Suggested changes')
   return lines.join('\n')
 }
