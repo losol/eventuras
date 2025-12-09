@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - ci/scribo-release  # TODO: Remove before merging
     paths:
       - "libs/scribo/package.json"
       - ".github/workflows/scribo-release.yml"
