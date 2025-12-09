@@ -36,6 +36,9 @@ jobs:
           cache: "pnpm"
           registry-url: "https://registry.npmjs.org"
 
+      - name: Ensure npm 11.5.1+ for trusted publishing
+        run: npm install -g npm@latest
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
@@ -91,9 +94,7 @@ jobs:
         if: steps.check-version.outputs.is_new == 'true' && steps.check-tag.outputs.exists == 'false'
         run: |
           cd libs/scribo
-          npm publish --access public --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+          npm publish --access public
 
       - name: Create Git tag
         if: steps.check-version.outputs.is_new == 'true' && steps.check-tag.outputs.exists == 'false'

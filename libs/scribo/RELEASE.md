@@ -51,24 +51,26 @@ npm publish --access public
 
 ## Release Setup
 
-### NPM Token and Environment Setup
+### NPM Trusted Publishing Setup (Recommended)
 
-You need to create an npm access token and configure a GitHub environment for automated publishing.
+Scribo uses **npm trusted publishing with OIDC** for secure, token-free publishing.
 
-#### Create NPM Token
+#### Configure Trusted Publisher on npmjs.com
 
 1. Log in to [npmjs.com](https://www.npmjs.com)
-2. Click on your profile picture → **Access Tokens**
-3. Click **Generate New Token** → **Granular Access Token**
-4. Configure the token:
-   - **Token name**: `GitHub Actions - Scribo`
-   - **Expiration**: Choose appropriate duration (90 days or custom)
-   - **Packages and scopes**: Select `@eventuras/scribo` with **Read and write** permissions
-5. Click **Generate token** and copy it (starts with `npm_...`)
-
-> **Note**: Granular tokens are more secure than Classic tokens as they can be scoped to specific packages.
+2. Navigate to `@eventuras/scribo` package settings
+3. Find **Trusted Publisher** section
+4. Click **GitHub Actions**
+5. Configure:
+   - **Organization or user**: `losol`
+   - **Repository**: `eventuras`
+   - **Workflow filename**: `scribo-release.yml` (include `.yml` extension)
+   - **Environment name**: `scribo-npm`
+6. Click **Add trusted publisher**
 
 #### Set Up GitHub Environment
+
+The workflow uses a GitHub environment for deployment protection (optional but recommended):
 
 1. Go to your GitHub repository
 2. Navigate to **Settings** → **Environments**
@@ -77,12 +79,19 @@ You need to create an npm access token and configure a GitHub environment for au
 5. (Optional) Add protection rules:
    - Required reviewers if you want manual approval
    - Deployment branches: Select "Selected branches" and add `main`
-6. Click **Add environment secret**
-7. Name: `NODE_AUTH_TOKEN`
-8. Value: Paste your npm token
-9. Click **Add secret**
+6. Click **Create environment**
 
-> **Note**: The package already has GitHub Actions configured as a trusted publisher with provenance support on npmjs.com.
+> **Note**: With trusted publishing, you don't need to add any secrets to this environment. The workflow uses OIDC authentication automatically.
+
+### Legacy: Token-Based Publishing (Not Recommended)
+
+If you cannot use trusted publishing, you can fall back to traditional npm tokens:
+
+1. Create a granular access token on npmjs.com with write access to `@eventuras/scribo`
+2. Add it as `NODE_AUTH_TOKEN` secret in the `scribo-npm` environment
+3. Update the workflow to include `NODE_AUTH_TOKEN` environment variable in the publish step
+
+However, trusted publishing is strongly recommended for better security.
 
 
 ## Workflow Trigger
