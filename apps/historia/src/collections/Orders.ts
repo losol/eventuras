@@ -70,30 +70,11 @@ export const Orders: CollectionConfig = {
         position: 'sidebar',
       },
       options: [
-        {
-          label: 'Pending - Ordre opprettet, venter på behandling',
-          value: 'pending',
-        },
-        {
-          label: 'Processing - Ordre er under behandling',
-          value: 'processing',
-        },
-        {
-          label: 'On Hold - Ordre midlertidig satt på vent',
-          value: 'on-hold',
-        },
-        {
-          label: 'Completed - Ordre fullført og avsluttet',
-          value: 'completed',
-        },
-        {
-          label: 'Canceled - Ordre kansellert før fullføring',
-          value: 'canceled',
-        },
-        {
-          label: 'Archived - Ordre arkivert for dokumentasjon',
-          value: 'archived',
-        },
+        { label: 'Pending', value: 'pending' },
+        { label: 'Processing', value: 'processing' },
+        { label: 'On Hold', value: 'on-hold' },
+        { label: 'Completed', value: 'completed' },
+        { label: 'Canceled', value: 'canceled' },
       ],
     },
     {
@@ -128,63 +109,6 @@ export const Orders: CollectionConfig = {
       admin: {
         position: 'sidebar',
       },
-    },
-    {
-      name: 'shippingStatus',
-      type: 'select',
-      admin: {
-        position: 'sidebar',
-      },
-      options: [
-        {
-          label: 'Not Shippable - Ikke aktuelt for forsendelse',
-          value: 'not-shippable',
-        },
-        {
-          label: 'Not Shipped - Ikke sendt enda',
-          value: 'not-shipped',
-        },
-        {
-          label: 'Ready to Ship - Klar for henting/sending',
-          value: 'ready-to-ship',
-        },
-        {
-          label: 'Shipped - Sendt fra lager',
-          value: 'shipped',
-        },
-        {
-          label: 'In Transit - Underveis til kunde',
-          value: 'in-transit',
-        },
-        {
-          label: 'Out for Delivery - Ute hos sjåfør for levering',
-          value: 'out-for-delivery',
-        },
-        {
-          label: 'Delivered - Levert til kunde',
-          value: 'delivered',
-        },
-        {
-          label: 'Attempted Delivery - Leveringsforsøk mislyktes',
-          value: 'attempted-delivery',
-        },
-        {
-          label: 'Available for Pickup - Klar for henting (postkontor/utleveringssted)',
-          value: 'available-for-pickup',
-        },
-        {
-          label: 'Returned to Sender - Returnert til avsender',
-          value: 'returned-to-sender',
-        },
-        {
-          label: 'Lost in Transit - Meldt tapt underveis',
-          value: 'lost-in-transit',
-        },
-        {
-          label: 'Canceled - Forsendelse kansellert',
-          value: 'canceled',
-        },
-      ],
     },
   ],
   hooks: {
