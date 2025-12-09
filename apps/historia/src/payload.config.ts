@@ -23,6 +23,7 @@ import { Persons } from './collections/Persons';
 import { Places } from './collections/Places';
 import { Products } from './collections/Products';
 import { Projects } from './collections/Projects';
+import { Shipments } from './collections/Shipments';
 import { Topics } from './collections/Topics';
 import { Transactions } from './collections/Transactions';
 import { Users } from './collections/Users';
@@ -85,7 +86,7 @@ export default buildConfig({
       },
       push: true,
     }),
-  collections: [Articles, BusinessEvents, Happenings, Licenses, Media, Notes, Orders, Organizations, Pages, Persons, Places, Products, Projects, Topics, Transactions, Users, Websites],
+  collections: [Articles, BusinessEvents, Happenings, Licenses, Media, Notes, Orders, Organizations, Pages, Persons, Places, Products, Projects, Shipments, Topics, Transactions, Users, Websites],
   cors: allowedOrigins,
   csrf: allowedOrigins,
   editor: defaultLexical,

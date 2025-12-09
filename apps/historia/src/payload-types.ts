@@ -91,6 +91,7 @@ export interface Config {
     places: Place;
     products: Product;
     projects: Project;
+    shipments: Shipment;
     topics: Topic;
     transactions: Transaction;
     users: User;
@@ -119,6 +120,7 @@ export interface Config {
     places: PlacesSelect<false> | PlacesSelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
+    shipments: ShipmentsSelect<false> | ShipmentsSelect<true>;
     topics: TopicsSelect<false> | TopicsSelect<true>;
     transactions: TransactionsSelect<false> | TransactionsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
@@ -323,7 +325,6 @@ export interface Image {
  */
 export interface Media {
   id: string;
-  tenant?: (string | null) | Website;
   /**
    * The title of the entry.
    */
@@ -967,6 +968,7 @@ export interface Order {
   id: string;
   tenant?: (string | null) | Website;
   items: {
+    itemId: string;
     product: string | Product;
     quantity: number;
     price: {
@@ -989,25 +991,9 @@ export interface Order {
   };
   customer?: (string | null) | User;
   userEmail: string;
-  status: 'pending' | 'processing' | 'on-hold' | 'completed' | 'canceled' | 'archived';
+  status: 'pending' | 'processing' | 'on-hold' | 'completed' | 'canceled';
   totalAmount?: number | null;
   currency: string;
-  shippingStatus?:
-    | (
-        | 'not-shippable'
-        | 'not-shipped'
-        | 'ready-to-ship'
-        | 'shipped'
-        | 'in-transit'
-        | 'out-for-delivery'
-        | 'delivered'
-        | 'attempted-delivery'
-        | 'available-for-pickup'
-        | 'returned-to-sender'
-        | 'lost-in-transit'
-        | 'canceled'
-      )
-    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1073,9 +1059,9 @@ export interface Transaction {
   order: string | Order;
   customer?: (string | null) | User;
   /**
-   * Amount in minor units (øre for NOK, cents for USD/EUR)
+   * Amount in minor units (øre for NOK, cents for USD/EUR). Positive for payments, negative for refunds.
    */
-  amount?: number | null;
+  amount: number;
   /**
    * Currency code (ISO 4217)
    */
@@ -1088,8 +1074,10 @@ export interface Transaction {
    * Transaction status from payment provider (e.g., pending, authorized, captured, failed, refunded)
    */
   status: string;
-  paymentMethod: 'vipps' | 'stripe' | 'manual';
-  transactionType: 'payment' | 'refund' | 'partial-refund';
+  /**
+   * Payment method (e.g., vipps, stripe, manual)
+   */
+  paymentMethod: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -1169,6 +1157,90 @@ export interface SessionBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'session';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "shipments".
+ */
+export interface Shipment {
+  id: string;
+  tenant?: (string | null) | Website;
+  /**
+   * The order this shipment belongs to
+   */
+  order: string | Order;
+  /**
+   * Items included in this shipment. Reference order item IDs for partial shipments.
+   */
+  items: {
+    /**
+     * The itemId from the order items array
+     */
+    orderItemId: string;
+    /**
+     * Reference to the product being shipped
+     */
+    product: string | Product;
+    /**
+     * Number of units shipped in this shipment
+     */
+    quantity: number;
+    id?: string | null;
+  }[];
+  shippingAddress?: {
+    addressLine1?: string | null;
+    addressLine2?: string | null;
+    postalCode?: string | null;
+    city?: string | null;
+    country?: string | null;
+  };
+  /**
+   * Shipping carrier (e.g., Posten, PostNord, Bring, DHL)
+   */
+  carrier?: string | null;
+  /**
+   * Tracking number from carrier
+   */
+  trackingNumber?: string | null;
+  /**
+   * URL to track the shipment
+   */
+  trackingUrl?: string | null;
+  /**
+   * Date when the shipment was dispatched
+   */
+  shippedAt?: string | null;
+  /**
+   * Date when the shipment was delivered
+   */
+  deliveredAt?: string | null;
+  /**
+   * Internal notes about this shipment
+   */
+  notes?: string | null;
+  status:
+    | 'pending'
+    | 'processing'
+    | 'ready-to-ship'
+    | 'shipped'
+    | 'in-transit'
+    | 'out-for-delivery'
+    | 'delivered'
+    | 'attempted-delivery'
+    | 'available-for-pickup'
+    | 'returned-to-sender'
+    | 'lost-in-transit'
+    | 'canceled';
+  /**
+   * Whether this is a full or partial shipment of the order
+   */
+  shipmentType: 'full' | 'partial';
+  /**
+   * Weight in grams
+   */
+  weight?: number | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1507,6 +1579,10 @@ export interface PayloadLockedDocument {
         value: string | Project;
       } | null)
     | ({
+        relationTo: 'shipments';
+        value: string | Shipment;
+      } | null)
+    | ({
         relationTo: 'topics';
         value: string | Topic;
       } | null)
@@ -1731,7 +1807,6 @@ export interface LicensesSelect<T extends boolean = true> {
  * via the `definition` "media_select".
  */
 export interface MediaSelect<T extends boolean = true> {
-  tenant?: T;
   title?: T;
   description?: T;
   license?: T;
@@ -1800,6 +1875,7 @@ export interface OrdersSelect<T extends boolean = true> {
   items?:
     | T
     | {
+        itemId?: T;
         product?: T;
         quantity?: T;
         price?:
@@ -1826,7 +1902,6 @@ export interface OrdersSelect<T extends boolean = true> {
   status?: T;
   totalAmount?: T;
   currency?: T;
-  shippingStatus?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2039,6 +2114,42 @@ export interface ProjectsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "shipments_select".
+ */
+export interface ShipmentsSelect<T extends boolean = true> {
+  tenant?: T;
+  order?: T;
+  items?:
+    | T
+    | {
+        orderItemId?: T;
+        product?: T;
+        quantity?: T;
+        id?: T;
+      };
+  shippingAddress?:
+    | T
+    | {
+        addressLine1?: T;
+        addressLine2?: T;
+        postalCode?: T;
+        city?: T;
+        country?: T;
+      };
+  carrier?: T;
+  trackingNumber?: T;
+  trackingUrl?: T;
+  shippedAt?: T;
+  deliveredAt?: T;
+  notes?: T;
+  status?: T;
+  shipmentType?: T;
+  weight?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "topics_select".
  */
 export interface TopicsSelect<T extends boolean = true> {
@@ -2065,7 +2176,6 @@ export interface TransactionsSelect<T extends boolean = true> {
   paymentReference?: T;
   status?: T;
   paymentMethod?: T;
-  transactionType?: T;
   updatedAt?: T;
   createdAt?: T;
 }
