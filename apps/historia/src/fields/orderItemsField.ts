@@ -1,3 +1,5 @@
+import { randomUUID } from 'crypto';
+
 import type { ArrayField } from 'payload';
 
 export const orderItemsField = (): ArrayField => {
@@ -10,6 +12,22 @@ export const orderItemsField = (): ArrayField => {
       initCollapsed: true,
     },
     fields: [
+      {
+        name: 'itemId',
+        type: 'text',
+        required: true,
+        admin: {
+          readOnly: true,
+        },
+        hooks: {
+          beforeValidate: [
+            ({ value }) => {
+              // Generate UUID if not already set
+              return value || randomUUID();
+            },
+          ],
+        },
+      },
       {
         name: 'product',
         type: 'relationship',
