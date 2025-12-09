@@ -1,0 +1,22 @@
+name: Changeset Check
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  check:
+    name: Check for changesets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for changesets
+        uses: changesets/action@v1
+        with:
+          version: skip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
