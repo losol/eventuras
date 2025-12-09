@@ -1,5 +1,12 @@
 # @eventuras/docsite
 
+## 0.6.2
+
+### Patch Changes
+
+- ### Maintenance
+  - 🧹 chore(convertoapi,docsite,web,markdown,scribo,sdk): upgrade deps (b2de638) [@eventuras/docsite]
+
 ## 0.6.1
 
 ### Patch Changes

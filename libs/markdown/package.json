@@ -1,6 +1,6 @@
 {
   "name": "@eventuras/markdown",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "Markdown renderer for React using react-markdown (remark/rehype) and Eventuras Ratio UI components.",
   "keywords": [
     "markdown",

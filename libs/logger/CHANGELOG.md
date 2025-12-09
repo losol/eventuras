@@ -1,5 +1,17 @@
 # @eventuras/logger
 
+## 0.5.0
+
+### Minor Changes
+
+- ### Features
+  - 🧱 feat(logger): add separate Debug utilities (88e1494) [@eventuras/logger]
+  - 🧱 feat(logger): enhanced logging capabilities (f3eb797) [@eventuras/logger]
+  - 🧱 feat(logger): bundle it up (9ed77c3) [@eventuras/logger]
+
+  ### Maintenance
+  - 🧹 chore(logger): remove pino-pretty (28af76f) [@eventuras/logger]
+
 ## 0.4.0
 
 ### Major Changes
