@@ -8,17 +8,30 @@ import {
   actionSuccess,
   type ServerActionResult,
 } from '@eventuras/core-nextjs/actions';
+import { getCurrentSession } from '@eventuras/fides-auth-next';
 import { Logger } from '@eventuras/logger';
+import {
+  createPayment,
+  type CreatePaymentRequest,
+  type CreatePaymentResponse,
+  getPaymentDetails,
+  type PaymentDetails,
+} from '@eventuras/vipps/epayment-v1';
 
+import { setCartPaymentReference } from '@/app/actions/cart';
+import { appConfig } from '@/config.server';
+import { SHIPPING_OPTIONS } from '@/lib/shipping/options';
+import { getVippsConfig } from '@/lib/vipps/config';
 import type { Product } from '@/payload-types';
+import { getMeUser } from '@/utilities/getMeUser';
 
 const logger = Logger.create({
-  namespace: 'historia:cart',
-  context: { module: 'cartActions' },
+  namespace: 'historia:checkout',
+  context: { module: 'checkoutActions' },
 });
 
 /**
- * Cart line item with all calculations done server-side
+ * Cart line item details with price and VAT calculations
  */
 export interface CartLineItem {
   productId: string;
@@ -63,20 +76,7 @@ export async function calculateCart(
       });
     }
 
-    logger.info({ cartItems }, 'Calculating cart totals');
-
-    const payload = await getPayload({ config: configPromise });
-
-    // Fetch all products
-    const { docs: products } = await payload.find({
-      collection: 'products',
-      where: {
-        id: {
-          in: cartItems.map((item) => item.productId),
-        },
-      },
-      limit: cartItems.length,
-    });
+    const products = await fetchProductsByIds(cartItems.map((item) => item.productId));
 
     // Build line items with calculations
     const items: CartLineItem[] = [];
@@ -127,17 +127,6 @@ export async function calculateCart(
       currency,
     };
 
-    logger.info(
-      {
-        itemCount: items.length,
-        subtotalExVat,
-        totalVat,
-        totalIncVat: summary.totalIncVat,
-        currency,
-      },
-      'Cart totals calculated',
-    );
-
     return actionSuccess(summary);
   } catch (error) {
     logger.error({ error, cartItems }, 'Failed to calculate cart totals');
@@ -145,6 +134,25 @@ export async function calculateCart(
       error instanceof Error ? error.message : 'Failed to calculate cart',
     );
   }
+}
+
+/**
+ * Fetch products by IDs (internal helper)
+ */
+async function fetchProductsByIds(productIds: string[]): Promise<Product[]> {
+  const payload = await getPayload({ config: configPromise });
+
+  const { docs } = await payload.find({
+    collection: 'products',
+    where: {
+      id: {
+        in: productIds,
+      },
+    },
+    limit: productIds.length,
+  });
+
+  return docs;
 }
 
 /**
@@ -159,20 +167,7 @@ export async function validateCartProducts(
       return actionSuccess({ invalidProductIds: [], validProductIds: [] });
     }
 
-    logger.info({ itemCount: cartItems.length }, 'Validating cart products');
-
-    const payload = await getPayload({ config: configPromise });
-
-    // Fetch all products
-    const { docs: products } = await payload.find({
-      collection: 'products',
-      where: {
-        id: {
-          in: cartItems.map((item) => item.productId),
-        },
-      },
-      limit: cartItems.length,
-    });
+    const products = await fetchProductsByIds(cartItems.map((item) => item.productId));
 
     const foundProductIds = new Set(products.map((p) => p.id));
     const requestedProductIds = cartItems.map((item) => item.productId);
@@ -181,16 +176,7 @@ export async function validateCartProducts(
     const validProductIds = requestedProductIds.filter((id) => foundProductIds.has(id));
 
     if (invalidProductIds.length > 0) {
-      logger.warn(
-        {
-          invalidCount: invalidProductIds.length,
-          invalidProductIds,
-          totalRequested: requestedProductIds.length,
-        },
-        'Found invalid products in cart'
-      );
-    } else {
-      logger.info({ validCount: validProductIds.length }, 'All cart products are valid');
+      logger.warn({ invalidProductIds }, 'Invalid products in cart');
     }
 
     return actionSuccess({ invalidProductIds, validProductIds });
@@ -202,44 +188,188 @@ export async function validateCartProducts(
   }
 }
 
+// ============================================================================
+// Vipps Payment Actions
+// ============================================================================
+
+interface CreateVippsPaymentParams {
+  items: Array<{
+    productId: string;
+    quantity: number;
+  }>;
+  userLanguage?: string;
+}
+
 /**
- * Fetch product details for cart items
- * @param productIds - Array of product IDs to fetch
- * @returns Array of products or error
- * @deprecated Use calculateCart instead for cart display
+ * Create Vipps ePayment (WEB_REDIRECT flow)
+ * Uses the new ePayment API instead of the old Checkout API
+ * All price calculations are done server-side
  */
-export async function getCartProducts(
-  productIds: string[],
-): Promise<ServerActionResult<Product[]>> {
+export async function createVippsPayment({
+  items,
+  userLanguage = 'no',
+}: CreateVippsPaymentParams): Promise<ServerActionResult<CreatePaymentResponse>> {
   try {
-    if (!productIds.length) {
-      return actionSuccess([]);
+    // Calculate cart totals server-side
+    const cartResult = await calculateCart(items);
+    if (!cartResult.success) {
+      logger.error({ error: cartResult.error }, 'Failed to calculate cart');
+      return actionError('Kunne ikke beregne handlekurv');
     }
 
-    logger.info({ productIds }, 'Fetching cart products');
+    const cart: CartSummary = cartResult.data;
 
-    const payload = await getPayload({ config: configPromise });
+    // Try to get current user for phone number (optional)
+    let phoneNumber: string | undefined;
+    try {
+      const userResult = await getMeUser();
+      const rawPhone = userResult?.user?.phone_number;
+      if (rawPhone) {
+        // Normalize phone number: remove +, spaces, and other non-digits
+        // Vipps requires 9-15 digits WITH country code (e.g., 4712345678)
+        phoneNumber = rawPhone.replace(/\D/g, '');
 
-    const { docs } = await payload.find({
-      collection: 'products',
-      where: {
-        id: {
-          in: productIds,
+        // Validate length (9-15 digits)
+        if (phoneNumber.length < 9 || phoneNumber.length > 15) {
+          phoneNumber = undefined;
+        }
+      }
+    } catch {
+      // No user session, continue without phone pre-fill
+    }
+
+    // Generate unique payment reference using UUID
+    const reference = crypto.randomUUID();
+
+    // Build payment description from cart items
+    const productNames = cart.items.map((item) => item.title).join(', ');
+    const paymentDescription =
+      cart.items.length > 0
+        ? `Kjøp: ${productNames.substring(0, 100)}`
+        : `Ordre ${reference}`;
+
+    // Build order lines from calculated cart
+    const orderLines = cart.items.map((item) => ({
+      name: item.title,
+      id: item.productId,
+      totalAmount: item.lineTotalIncVat,
+      totalAmountExcludingTax: item.lineTotal,
+      totalTaxAmount: item.vatAmount,
+      taxRate: item.vatRate * 100, // Vipps expects taxRate in basis points (25% = 2500)
+    }));
+
+    // Total amount without shipping (Vipps will add shipping cost)
+    const totalAmount = cart.totalIncVat;
+
+    // Build ePayment request
+    const paymentRequest: CreatePaymentRequest = {
+      amount: {
+        value: totalAmount,
+        currency: cart.currency,
+      },
+      paymentMethod: {
+        type: 'WALLET',
+      },
+      customer: phoneNumber
+        ? {
+            phoneNumber,
+          }
+        : undefined,
+      profile: {
+        scope: 'name phoneNumber address email',
+      },
+      reference,
+      returnUrl: `${appConfig.env.NEXT_PUBLIC_CMS_URL}/${userLanguage}/checkout/vipps?reference=${reference}`,
+      userFlow: 'WEB_REDIRECT',
+      paymentDescription,
+      receipt: {
+        orderLines,
+        bottomLine: {
+          currency: cart.currency,
         },
       },
-      limit: productIds.length,
-    });
+      shipping: {
+        fixedOptions: SHIPPING_OPTIONS.map((option, index) => ({
+          brand: option.brand,
+          type: option.type,
+          isDefault: index === 0,
+          priority: index,
+          options: [
+            {
+              id: option.id,
+              amount: {
+                value: option.price,
+                currency: cart.currency,
+              },
+              name: option.name,
+              isDefault: index === 0,
+              priority: 0,
+            },
+          ],
+        })),
+      },
+    };
 
-    logger.info(
-      { count: docs.length, productIds },
-      'Successfully fetched cart products',
-    );
+    // Get Vipps configuration
+    const vippsConfig = getVippsConfig();
 
-    return actionSuccess(docs);
+    // Create payment using ePayment API client
+    const paymentResponse = await createPayment(vippsConfig, paymentRequest);
+
+    // Store payment reference in cart session
+    await setCartPaymentReference(reference);
+
+    logger.info({ reference }, 'Vipps payment created');
+
+    return actionSuccess(paymentResponse);
   } catch (error) {
-    logger.error({ error, productIds }, 'Failed to fetch cart products');
-    return actionError(
-      error instanceof Error ? error.message : 'Failed to fetch products',
+    logger.error(
+      {
+        error,
+        errorMessage: error instanceof Error ? error.message : String(error),
+      },
+      'Error creating Vipps ePayment',
     );
+    return actionError('Kunne ikke starte betaling. Prøv igjen om litt.');
+  }
+}
+
+/**
+ * Check if there's a pending payment for the current cart
+ *
+ * This is useful when user returns to checkout page after starting a payment
+ * but didn't complete it or got lost along the way.
+ *
+ * @returns Payment details if there's a pending/authorized payment, null otherwise
+ */
+export async function checkPendingPayment(): Promise<
+  ServerActionResult<PaymentDetails | null>
+> {
+  try {
+    const session = await getCurrentSession();
+    const cart = session?.data?.cart;
+
+    if (!cart?.paymentReference) {
+      return actionSuccess(null);
+    }
+
+    const reference = cart.paymentReference;
+
+    const vippsConfig = getVippsConfig();
+    const paymentDetails = await getPaymentDetails(vippsConfig, reference);
+
+    // Only return payment if it's in a state where user can continue
+    if (
+      paymentDetails.state === 'CREATED' ||
+      paymentDetails.state === 'AUTHORIZED'
+    ) {
+      return actionSuccess(paymentDetails);
+    }
+
+    // Payment is in terminal state (ABORTED, EXPIRED, TERMINATED), allow new payment
+    return actionSuccess(null);
+  } catch {
+    // Payment not found or error - allow new payment
+    return actionSuccess(null);
   }
 }

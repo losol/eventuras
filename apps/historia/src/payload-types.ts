@@ -450,7 +450,6 @@ export interface License {
  */
 export interface Person {
   id: string;
-  tenant?: (string | null) | Website;
   name: string;
   given_name: string;
   middle_name?: string | null;
@@ -592,7 +591,6 @@ export interface Topic {
  */
 export interface Place {
   id: string;
-  tenant?: (string | null) | Website;
   name: string;
   description?: {
     root: {
@@ -682,7 +680,6 @@ export interface Project {
  */
 export interface Organization {
   id: string;
-  tenant?: (string | null) | Website;
   name: string;
   description?: {
     root: {
@@ -972,7 +969,7 @@ export interface Order {
     product: string | Product;
     quantity: number;
     price: {
-      amount: number;
+      amountExVat: number;
       currency: string;
       /**
        * VAT/Tax rate in percentage
@@ -1881,7 +1878,7 @@ export interface OrdersSelect<T extends boolean = true> {
         price?:
           | T
           | {
-              amount?: T;
+              amountExVat?: T;
               currency?: T;
               vatRate?: T;
             };
@@ -1910,7 +1907,6 @@ export interface OrdersSelect<T extends boolean = true> {
  * via the `definition` "organizations_select".
  */
 export interface OrganizationsSelect<T extends boolean = true> {
-  tenant?: T;
   name?: T;
   description?: T;
   organizationNumber?: T;
@@ -1987,7 +1983,6 @@ export interface ArchiveBlockSelect<T extends boolean = true> {
  * via the `definition` "persons_select".
  */
 export interface PersonsSelect<T extends boolean = true> {
-  tenant?: T;
   name?: T;
   given_name?: T;
   middle_name?: T;
@@ -2010,7 +2005,6 @@ export interface PersonsSelect<T extends boolean = true> {
  * via the `definition` "places_select".
  */
 export interface PlacesSelect<T extends boolean = true> {
-  tenant?: T;
   name?: T;
   description?: T;
   image?: T | ImageSelect<T>;

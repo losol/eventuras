@@ -13,9 +13,13 @@ import type { PaymentDetails } from '@eventuras/vipps/epayment-v1';
 import { useCart } from '@/lib/cart';
 import { fromMinorUnits } from '@/lib/price';
 
-import { calculateCart, type CartSummary,validateCartProducts } from './actions';
-import { checkPendingPayment } from './checkPaymentActions';
-import { createVippsPayment } from './vippsActions';
+import {
+  calculateCart,
+  type CartSummary,
+  checkPendingPayment,
+  createVippsPayment,
+  validateCartProducts,
+} from './actions';
 
 const logger = Logger.create({
   namespace: 'historia:checkout',

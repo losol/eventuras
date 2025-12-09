@@ -4,7 +4,6 @@
  */
 
 import { getCurrency } from '@/currencies';
-import type { Product } from '@/payload-types';
 
 /**
  * Calculate price excluding VAT from total price including VAT
@@ -71,50 +70,4 @@ export function calculateLineTotal(
   quantity: number,
 ): number {
   return pricePerUnit * quantity;
-}
-
-/**
- * Calculate cart totals
- */
-export interface CartTotals {
-  /** Subtotal excluding VAT in minor units */
-  subtotalExVat: number;
-  /** Total VAT amount in minor units */
-  totalVat: number;
-  /** Total including VAT in minor units */
-  totalIncVat: number;
-  /** Currency code */
-  currency: string;
-}
-
-/**
- * Calculate cart totals from products
- */
-export function calculateCartTotals(
-  items: Array<{ product: Product; quantity: number }>,
-): CartTotals {
-  // Use first product's currency, or default to NOK
-  const currency = items[0]?.product?.price?.currency || 'NOK';
-
-  let subtotalExVat = 0;
-  let totalVat = 0;
-
-  for (const item of items) {
-    const product = item.product;
-    const priceExVat = product.price?.amountExVat || 0; // Already in minor units
-    const vatRate = product.price?.vatRate ?? 25;
-
-    const lineTotal = calculateLineTotal(priceExVat, item.quantity);
-    const lineVat = calculateVatAmount(lineTotal, vatRate);
-
-    subtotalExVat += lineTotal;
-    totalVat += lineVat;
-  }
-
-  return {
-    subtotalExVat,
-    totalVat,
-    totalIncVat: subtotalExVat + totalVat,
-    currency,
-  };
 }
