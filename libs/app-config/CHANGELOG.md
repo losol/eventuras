@@ -2,7 +2,7 @@
 
 ## 0.1.0 (2025-10-18)
 
-### Features
+### 🧱 Features
 
 - **Initial release**: Declarative environment configuration for Eventuras applications
 - **JSON Schema**: Provides JSON Schema (`app-config.schema.json`) for IDE autocomplete and validation
@@ -22,7 +22,7 @@
 - `ConfigLoader.getAllEnv()`: Get all environment variables as object
 - `ConfigLoader.getConfig()`: Get raw app configuration
 
-### Documentation
+### 📝 Documentation
 
 - README with usage examples
 - Next.js integration examples

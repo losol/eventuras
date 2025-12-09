@@ -4,42 +4,42 @@
 
 ### Minor Changes
 
-### Features
-  - 🧱 feat(historia): add BusinessEvents collection (f414a2e) [@eventuras/historia]
-  - 🧱 feat(historia): refactor pricing structure to handle VAT calculations (7947a93) [@eventuras/historia]
-  - 🧱 feat(historia): add footer component (e1a3b37) [@eventuras/historia]
-  - 🧱 feat(historia): add Nav block and enhance Organizations and Websites collections (d29b7c7) [@eventuras/historia]
-  - 🧱 feat(historia): add ProductsBlock (d7539ce) [@eventuras/historia]
-  - 🧱 feat(historia): add database migration step in Dockerfile build process (d572a21) [@eventuras/historia]
-  - 🧱 feat(historia): add support for BuildKit secrets in Dockerfile (0619aa9) [@eventuras/historia]
-  - 🧱 feat(historia): migrate to ePayment API (1775ed7) [@eventuras/historia]
-  - 🧱 feat(historia): enhance Vipps payment integration (0687d9f) [@eventuras/historia]
-  - 🧱 feat(historia): enhance product detail (ee04795) [@eventuras/historia]
-  - 🧱 feat(historia): implement cart functionality in navbar (40fb8d6) [@eventuras/historia]
-  - 🧱 feat(historia): implement Vipps Express payment flow and callback handling (a7ca655) [@eventuras/historia]
-  - 🧱 feat(historia): add Vipps Express Checkout button (7c836df) [@eventuras/historia]
-  - 🧱 feat(historia): implement cart functionality with localStorage (8324365) [@eventuras/historia]
-  - 🧱 feat(historia): add transactions collection (442a3df) [@eventuras/historia]
-  - 🧱 feat(historia): add orders collection with access control and hooks for price population (883d97e) [@eventuras/historia]
-  - 🧱 feat(historia): add product collection (131f10c) [@eventuras/historia]
-  - 🧱 feat(historia): update collection translations and URL formatting for slug and resourceId (6f891d8) [@eventuras/historia]
+### 🧱 Features
+  - feat(historia): add BusinessEvents collection (f414a2e) [@eventuras/historia]
+  - feat(historia): refactor pricing structure to handle VAT calculations (7947a93) [@eventuras/historia]
+  - feat(historia): add footer component (e1a3b37) [@eventuras/historia]
+  - feat(historia): add Nav block and enhance Organizations and Websites collections (d29b7c7) [@eventuras/historia]
+  - feat(historia): add ProductsBlock (d7539ce) [@eventuras/historia]
+  - feat(historia): add database migration step in Dockerfile build process (d572a21) [@eventuras/historia]
+  - feat(historia): add support for BuildKit secrets in Dockerfile (0619aa9) [@eventuras/historia]
+  - feat(historia): migrate to ePayment API (1775ed7) [@eventuras/historia]
+  - feat(historia): enhance Vipps payment integration (0687d9f) [@eventuras/historia]
+  - feat(historia): enhance product detail (ee04795) [@eventuras/historia]
+  - feat(historia): implement cart functionality in navbar (40fb8d6) [@eventuras/historia]
+  - feat(historia): implement Vipps Express payment flow and callback handling (a7ca655) [@eventuras/historia]
+  - feat(historia): add Vipps Express Checkout button (7c836df) [@eventuras/historia]
+  - feat(historia): implement cart functionality with localStorage (8324365) [@eventuras/historia]
+  - feat(historia): add transactions collection (442a3df) [@eventuras/historia]
+  - feat(historia): add orders collection with access control and hooks for price population (883d97e) [@eventuras/historia]
+  - feat(historia): add product collection (131f10c) [@eventuras/historia]
+  - feat(historia): update collection translations and URL formatting for slug and resourceId (6f891d8) [@eventuras/historia]
 
-  ### Refactoring
-  - ♻️ refactor(historia): use common url field (550daab) [@eventuras/historia]
-  - ♻️ refactor(historia): update user references (ce71d95) [@eventuras/historia]
-  - ♻️ refactor(historia,vipps): add Vipps integration library with ePayment API and core utilities (53dfff5) [@eventuras/historia]
-  - ♻️ refactor(historia): payment processing and integrate Vipps API (91d530d) [@eventuras/historia]
-  - ♻️ refactor(historia): refactor Vipps checkout integration and enhance error handling (aa7f285) [@eventuras/historia]
+### ♻️ Refactoring
+  - refactor(historia): use common url field (550daab) [@eventuras/historia]
+  - refactor(historia): update user references (ce71d95) [@eventuras/historia]
+  - refactor(historia,vipps): add Vipps integration library with ePayment API and core utilities (53dfff5) [@eventuras/historia]
+  - refactor(historia): payment processing and integrate Vipps API (91d530d) [@eventuras/historia]
+  - refactor(historia): refactor Vipps checkout integration and enhance error handling (aa7f285) [@eventuras/historia]
 
-  ### Maintenance
-  - 🧹 chore(historia): implement shipping options (60c2041) [@eventuras/historia]
-  - 🧹 chore(historia): use standard button for paying (3ef995e) [@eventuras/historia]
-  - 🧹 chore(historia,app-config): update app-config (2642b6b) [@eventuras/historia]
-  - 🧹 chore(historia): update Dockerfile and payload config (e4b091b) [@eventuras/historia]
-  - 🧹 chore(historia): do not require user relationship on orders (5b4e8a5) [@eventuras/historia]
-  - 🧹 chore(historia): clean up code structure and remove unused code snippets (fee8a1a) [@eventuras/historia]
-  - 🧹 chore(historia): add Node.js >=20.9.0 engine requirement (6a939c6) [@eventuras/historia]
-  - 🧹 chore(web,historia): upgrade next js to v16 (0d5a7a8) [@eventuras/historia]
+### 🧹 Maintenance
+  - chore(historia): implement shipping options (60c2041) [@eventuras/historia]
+  - chore(historia): use standard button for paying (3ef995e) [@eventuras/historia]
+  - chore(historia,app-config): update app-config (2642b6b) [@eventuras/historia]
+  - chore(historia): update Dockerfile and payload config (e4b091b) [@eventuras/historia]
+  - chore(historia): do not require user relationship on orders (5b4e8a5) [@eventuras/historia]
+  - chore(historia): clean up code structure and remove unused code snippets (fee8a1a) [@eventuras/historia]
+  - chore(historia): add Node.js >=20.9.0 engine requirement (6a939c6) [@eventuras/historia]
+  - chore(web,historia): upgrade next js to v16 (0d5a7a8) [@eventuras/historia]
 
 ### Patch Changes
 

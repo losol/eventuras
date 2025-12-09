@@ -4,11 +4,11 @@
 
 ### Minor Changes
 
-### Features
-  - 🧱 feat(vite-config): centralize Vite configurations (6fe962c) [@eventuras/vite-config]
+### 🧱 Features
+  - feat(vite-config): centralize Vite configurations (6fe962c) [@eventuras/vite-config]
 
-  ### Maintenance
-  - 🧹 chore(vite-config): update Vite configuration for Next.js compatibility (b2fa328) [@eventuras/vite-config]
+### 🧹 Maintenance
+  - chore(vite-config): update Vite configuration for Next.js compatibility (b2fa328) [@eventuras/vite-config]
 
 ## 0.1.0 (2025-10-18)
 
@@ -19,7 +19,7 @@
 - Added `defineReactLibConfig` for React component libraries
 - Added `defineNextLibConfig` for Next.js-compatible libraries
 
-### Features
+### 🧱 Features
 
 - TypeScript declaration generation with vite-plugin-dts
 - Optional Tailwind CSS support

@@ -155,24 +155,14 @@ function describeCommit(c: Commit): string {
   const subject = c.subject.trim()
   const bodyRaw = (c.body ?? '').replace(/\r\n/g, '\n')
 
-  // parse conventional parts once
-  const m = subject.match(/^(\w+)(\([^)]+\))?:\s*(.+)$/)
-  const type = (m?.[1] ?? 'chore').toLowerCase()
-  const emoji =
-    type === 'feat' ? '🧱' :
-      type === 'fix' ? '🐞' :
-        type === 'docs' ? '📝' :
-          type === 'test' ? '✅' :
-            type === 'refactor' ? '♻️' :
-              type === 'ci' ? '⚙️' :
-                type === 'chore' ? '🧹' : '🔧'
-
   // clean and split body lines
   const bodyLines = bodyRaw.split('\n').map(l => l.replace(/\s+$/, ''))
   // remove blank lines at start
   while (bodyLines.length && bodyLines[0]?.trim() === '') bodyLines.shift()
 
-  // known duplicate variants of the title to drop from the first body line
+  // parse conventional parts once
+  const m = subject.match(/^(\w+)(\([^)]+\))?:\s*(.+)$/)
+  const type = (m?.[1] ?? 'chore').toLowerCase()
   const message = (m?.[3] ?? subject).trim()
   const dupCandidates = new Set([
     subject,
@@ -190,8 +180,8 @@ function describeCommit(c: Commit): string {
   // indent full remaining body (all lines)
   const bodyBlock = bodyLines.length ? `\n  ${bodyLines.join('\n  ')}` : ''
 
-  // final: emoji + subject on first line, full body below, then short hash
-  return `${emoji} ${subject}${bodyBlock} (${c.hash.slice(0, 7)})`
+  // final: subject on first line, full body below, then short hash (no emoji)
+  return `${subject}${bodyBlock} (${c.hash.slice(0, 7)})`
 }
 
 /** Safe slug */
@@ -212,6 +202,16 @@ function buildChangesetForPackage(pkg: string, bump: Bump, commits: Commit[]) {
     ci: 6,
   }
 
+  const typeHeaders: Record<string, string> = {
+    feat: '### 🧱 Features',
+    docs: '### 📝 Documentation',
+    fix: '### 🐞 Bug Fixes',
+    refactor: '### ♻️ Refactoring',
+    test: '### ✅ Testing',
+    chore: '### 🧹 Maintenance',
+    ci: '### ⚙️ CI/CD',
+  }
+
   const sortedCommits = [...commits].sort((a, b) => {
     const getType = (subject: string) => {
       const m = subject.match(/^(\w+)(\([^)]+\))?:/)
@@ -228,8 +228,19 @@ function buildChangesetForPackage(pkg: string, bump: Bump, commits: Commit[]) {
 
   const lines = ['---', `"${pkg}": ${bump}`, '---', '']
 
-  // Add commits as flat list (sorted by type, but no section headers)
+  // Group commits by type and add headers with emojis
+  let currentType: string | null = null
   for (const c of sortedCommits) {
+    const m = c.subject.match(/^(\w+)(\([^)]+\))?:/)
+    const type = m?.[1]?.toLowerCase() ?? 'other'
+
+    if (type !== currentType) {
+      if (currentType !== null) lines.push('') // Add blank line between sections
+      const header = typeHeaders[type] ?? '### 🔧 Other Changes'
+      lines.push(header, '')
+      currentType = type
+    }
+
     lines.push(`- ${describeCommit(c)} [${pkg}]`)
   }
 

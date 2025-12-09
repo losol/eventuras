@@ -114,9 +114,14 @@ jobs:
 
             // Read and extract changelog
             const changelog = fs.readFileSync('libs/scribo/CHANGELOG.md', 'utf8');
-            const versionRegex = new RegExp(`## ${version.replace(/\./g, '\\.')}[\\s\\S]*?(?=\\n## |\\n###|$)`);
+
+            // Match the version section - from ## version until the next ## version or end of file
+            const versionRegex = new RegExp(`## ${version.replace(/\./g, '\\.')}[\\s\\S]*?(?=\\n## \\d+\\.\\d+|$)`);
             const versionMatch = changelog.match(versionRegex);
-            const changelogSection = versionMatch ? versionMatch[0] : '';
+            let changelogSection = versionMatch ? versionMatch[0] : '';
+
+            // Clean up: remove the version header itself, we'll use the tag name
+            changelogSection = changelogSection.replace(/^## \d+\.\d+\.\d+\n+/, '').trim();
 
             // Build release notes with npm link
             const separator = changelogSection ? '\n\n---\n\n' : '';
