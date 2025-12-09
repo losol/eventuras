@@ -4,7 +4,7 @@
 
 ### Minor Changes
 
-- ### Features
+### Features
   - 🧱 feat(web): enable external links in description (5c29023) [@eventuras/web]
   - 🧱 feat(web): add notifications feature with history and details view (70ff927) [@eventuras/web]
   - 🧱 feat(web): add FinishRegistrationButton component for updating registration status (de6fe79) [@eventuras/web]

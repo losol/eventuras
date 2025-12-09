@@ -4,7 +4,7 @@
 
 ### Minor Changes
 
-- ### Features
+### Features
   - 🧱 feat(toast): bundle the toaster (6ddf8ff) [@eventuras/toast]
 
 ### Patch Changes

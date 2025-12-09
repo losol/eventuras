@@ -4,7 +4,7 @@
 
 ### Minor Changes
 
-- ### Features
+### Features
   - 🧱 feat(api): new PDF generation library and refactor related services (e8e4129) [@eventuras/api]
 
   ### Documentation

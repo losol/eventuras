@@ -1,4 +1,4 @@
-# Relase Instructions for @eventuras/scribo
+# Release Instructions for @eventuras/scribo
 
 This document explains how to configure the automated release workflow for `@eventuras/scribo`.
 

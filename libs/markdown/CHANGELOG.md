@@ -4,7 +4,7 @@
 
 ### Patch Changes
 
-- ### Bug Fixes
+### Bug Fixes
   - 🐞 fix(markdown): update build and exports (21a1879) [@eventuras/markdown]
   - 🐞 fix(markdown): remove unused turbo definition (ac4348e) [@eventuras/markdown]
 
