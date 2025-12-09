@@ -7,10 +7,13 @@ import { formatPrice } from '@eventuras/core/currency';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
 
-import { getCartProducts } from '@/app/(frontend)/[locale]/checkout/actions';
+import {
+  calculateCart,
+  type CartLineItem,
+  type CartSummary,
+} from '@/app/(frontend)/[locale]/checkout/actions';
 import { useCart } from '@/lib/cart';
-import { calculateCartTotals, fromMinorUnits } from '@/lib/price';
-import type { Product } from '@/payload-types';
+import { fromMinorUnits } from '@/lib/price';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -20,43 +23,31 @@ interface CartDrawerProps {
 
 export function CartDrawer({ isOpen, onClose, locale }: CartDrawerProps) {
   const { items, updateCartItem, removeFromCart } = useCart();
-  const [products, setProducts] = useState<Product[]>([]);
+  const [cartSummary, setCartSummary] = useState<CartSummary | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function loadProducts() {
+    async function loadCart() {
       if (items.length === 0) {
-        setProducts([]);
+        setCartSummary(null);
         setLoading(false);
         return;
       }
 
-      const result = await getCartProducts(items.map((item) => item.productId));
+      const result = await calculateCart(items);
 
       if (result.success) {
-        setProducts(result.data);
+        setCartSummary(result.data);
       }
       setLoading(false);
     }
 
     if (isOpen) {
-      loadProducts();
+      loadCart();
     }
   }, [items, isOpen]);
 
-  const cartWithProducts = items.map((item) => ({
-    ...item,
-    product: products.find((p) => p.id === item.productId),
-  }));
-
-  // Filter out items without products and calculate totals
-  const validCartItems = cartWithProducts.filter((item) => item.product) as Array<{
-    productId: string;
-    quantity: number;
-    product: Product;
-  }>;
-
-  const totals = calculateCartTotals(validCartItems);
+  const cartItems: CartLineItem[] = cartSummary?.items ?? [];
 
   return (
     <Drawer isOpen={isOpen} onCancel={onClose}>
@@ -88,75 +79,65 @@ export function CartDrawer({ isOpen, onClose, locale }: CartDrawerProps) {
           </div>
         ) : (
           <div className="space-y-4">
-            {cartWithProducts.map((item) => {
-              const product = item.product;
-              if (!product) return null;
+            {cartItems.map((item) => (
+              <div
+                key={item.productId}
+                className="flex gap-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4"
+              >
+                <div className="flex-1">
+                  <h3 className="font-medium text-gray-900 dark:text-white">{item.title}</h3>
+                  <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                    {formatPrice(fromMinorUnits(item.pricePerUnitIncVat, item.currency), item.currency, locale)} (inkl mva{' '}
+                    {formatPrice(fromMinorUnits(item.vatAmount, item.currency), item.currency, locale)})
+                  </p>
 
-              const priceIncVat = product.price?.amountIncVat || 0;
-              const vatAmount = product.price?.vatAmount || 0;
-              const currency = product.price?.currency || 'NOK';
-              const lineTotalIncVat = priceIncVat * item.quantity;
-
-              return (
-                <div
-                  key={item.productId}
-                  className="flex gap-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4"
-                >
-                  <div className="flex-1">
-                    <h3 className="font-medium text-gray-900 dark:text-white">{product.title}</h3>
-                    <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                      {formatPrice(fromMinorUnits(priceIncVat, currency), currency, locale)} (inkl mva{' '}
-                      {formatPrice(fromMinorUnits(vatAmount, currency), currency, locale)})
-                    </p>
-
-                    <div className="mt-2 flex items-center gap-2">
-                      <button
-                        onClick={() => updateCartItem(item.productId, item.quantity - 1)}
-                        className="rounded-md border border-gray-300 dark:border-gray-600 px-2 py-1 text-sm hover:bg-gray-50 dark:hover:bg-gray-700"
-                        disabled={item.quantity <= 1}
-                      >
-                        -
-                      </button>
-                      <span className="w-8 text-center text-sm">{item.quantity}</span>
-                      <button
-                        onClick={() => updateCartItem(item.productId, item.quantity + 1)}
-                        className="rounded-md border border-gray-300 dark:border-gray-600 px-2 py-1 text-sm hover:bg-gray-50 dark:hover:bg-gray-700"
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col items-end justify-between">
+                  <div className="mt-2 flex items-center gap-2">
                     <button
-                      onClick={() => removeFromCart(item.productId)}
-                      className="text-sm text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                      onClick={() => updateCartItem(item.productId, item.quantity - 1)}
+                      className="rounded-md border border-gray-300 dark:border-gray-600 px-2 py-1 text-sm hover:bg-gray-50 dark:hover:bg-gray-700"
+                      disabled={item.quantity <= 1}
                     >
-                      Fjern
+                      -
                     </button>
-                    <div className="text-right">
-                      <p className="font-semibold text-gray-900 dark:text-white">
-                        {formatPrice(fromMinorUnits(lineTotalIncVat, currency), currency, locale)}
-                      </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
-                        inc. VAT
-                      </p>
-                    </div>
+                    <span className="w-8 text-center text-sm">{item.quantity}</span>
+                    <button
+                      onClick={() => updateCartItem(item.productId, item.quantity + 1)}
+                      className="rounded-md border border-gray-300 dark:border-gray-600 px-2 py-1 text-sm hover:bg-gray-50 dark:hover:bg-gray-700"
+                    >
+                      +
+                    </button>
                   </div>
                 </div>
-              );
-            })}
+
+                <div className="flex flex-col items-end justify-between">
+                  <button
+                    onClick={() => removeFromCart(item.productId)}
+                    className="text-sm text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                  >
+                    Fjern
+                  </button>
+                  <div className="text-right">
+                    <p className="font-semibold text-gray-900 dark:text-white">
+                      {formatPrice(fromMinorUnits(item.lineTotalIncVat, item.currency), item.currency, locale)}
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      inc. VAT
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </Drawer.Body>
 
-      {items.length > 0 && (
+      {items.length > 0 && cartSummary && (
         <Drawer.Footer>
           <div className="space-y-4">
             <div className="flex items-center justify-between border-t border-gray-200 dark:border-gray-700 pt-4">
               <span className="text-lg font-semibold text-gray-900 dark:text-white">Total</span>
               <span className="text-2xl font-bold text-gray-900 dark:text-white">
-                {formatPrice(fromMinorUnits(totals.totalIncVat, totals.currency), totals.currency, locale)}
+                {formatPrice(fromMinorUnits(cartSummary.totalIncVat, cartSummary.currency), cartSummary.currency, locale)}
               </span>
             </div>
 

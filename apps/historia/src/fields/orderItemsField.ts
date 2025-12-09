@@ -49,7 +49,7 @@ export const orderItemsField = (): ArrayField => {
         label: 'Price',
         fields: [
           {
-            name: 'amount',
+            name: 'amountExVat',
             label: 'Price per item (ex. VAT)',
             type: 'number',
             required: true,
