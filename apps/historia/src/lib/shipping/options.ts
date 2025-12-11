@@ -12,19 +12,22 @@ export interface ShippingOption {
 /**
  * Available shipping options for checkout
  * Consider making this configurable per website/tenant
+ *
  */
 export const SHIPPING_OPTIONS: ShippingOption[] = [
+  // Posten - Home Delivery
   {
-    id: 'posten-home',
-    name: 'Sende med Posten',
-    price: 5900, // 59 kr in øre
+    id: 'posten-hjem',
+    name: 'Levering hjem med Posten',
+    price: 5900,
     brand: 'POSTEN',
     type: 'HOME_DELIVERY',
   },
+  // Other - Pickup Valnesfjord
   {
     id: 'pickup-valnesfjord',
-    name: 'Pickup point i Valnesfjord etter avtale',
-    price: 0, // gratis
+    name: 'Hent i Valnesfjord etter avtale',
+    price: 0,
     brand: 'OTHER',
     type: 'PICKUP_POINT',
   },
