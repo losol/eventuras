@@ -8,7 +8,7 @@ import type {
   TemplateRegistry,
   TemplateType,
 } from './types';
-import { defaultTemplates } from './defaultTemplates';
+import { defaultTemplates } from './templates';
 
 /**
  * Template renderer for generating notification messages

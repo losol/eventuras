@@ -21,4 +21,4 @@ export {
   getDefaultTemplate,
   hasDefaultTemplate,
   getDefaultTemplateKeys,
-} from './defaultTemplates';
+} from './templates';
