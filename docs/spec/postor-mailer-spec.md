@@ -36,7 +36,7 @@ libs/postor-mailer/
 
 ```typescript
 interface EmailClientConfig {
-  transport: SmtpConfig | SendGridConfig | SesConfig;
+  transport: SmtpConfig | SendGridConfig | SesConfig | MockConfig;
   defaults?: {
     from?: string;
     replyTo?: string;
@@ -64,6 +64,12 @@ interface SesConfig {
   region: string;
   accessKeyId: string;
   secretAccessKey: string;
+}
+
+interface MockConfig {
+  type: 'mock';
+  logToConsole?: boolean;
+  saveToFile?: string; // Optional: save emails to JSON file
 }
 ```
 
@@ -124,6 +130,75 @@ export const emailClient = new EmailClient({
     from: 'Historia <noreply@eventuras.com>',
   },
 });
+```
+
+### Development Mode Setup
+
+For development, use mock transport to avoid sending real emails:
+
+```typescript
+// apps/historia/src/lib/email.ts
+import { EmailClient } from '@eventuras/postor-mailer';
+
+const isDevelopment = process.env.NODE_ENV === 'development';
+
+export const emailClient = new EmailClient({
+  transport: isDevelopment
+    ? {
+        type: 'mock',
+        logToConsole: true,
+        saveToFile: './dev-emails.json', // Optional: save for inspection
+      }
+    : {
+        type: 'smtp',
+        host: process.env.SMTP_HOST!,
+        port: parseInt(process.env.SMTP_PORT!, 10),
+        auth: {
+          user: process.env.SMTP_USER!,
+          pass: process.env.SMTP_PASS!,
+        },
+      },
+  defaults: {
+    from: 'Historia <noreply@eventuras.com>',
+  },
+});
+```
+
+**Mock transport features**:
+- Logs email details via `@eventuras/logger`
+- Optional console output for immediate visibility
+- Optional JSON file for email inspection
+- No network calls, instant response
+- Perfect for local development and testing
+
+**Alternative: Ethereal Email**
+
+For viewing emails in a web UI during development:
+
+```typescript
+// One-time setup to get test credentials
+import nodemailer from 'nodemailer';
+
+const testAccount = await nodemailer.createTestAccount();
+
+export const emailClient = new EmailClient({
+  transport: {
+    type: 'smtp',
+    host: 'smtp.ethereal.email',
+    port: 587,
+    auth: {
+      user: testAccount.user,
+      pass: testAccount.pass,
+    },
+  },
+  defaults: {
+    from: 'Historia Dev <dev@ethereal.email>',
+  },
+});
+
+// After sending, get preview URL
+const result = await emailClient.send({...});
+console.log('Preview:', nodemailer.getTestMessageUrl(result));
 ```
 
 ### Sending a Simple Email
@@ -230,7 +305,19 @@ export class EmailClient {
 function createTransport(config: TransportConfig): Transporter;
 ```
 
-Handles creation of Nodemailer transports based on configuration type.
+Handles creation of Nodemailer transports based on configuration type:
+
+- **SMTP**: Standard SMTP connection with pooling
+- **SendGrid**: SMTP via SendGrid's relay
+- **SES**: AWS SES transport (implementation pending)
+- **Mock**: In-memory transport that logs without sending
+
+**Mock Transport Behavior**:
+- Returns successful result immediately (no network calls)
+- Logs email details via `@eventuras/logger`
+- Optionally logs to console for visibility
+- Optionally saves to JSON file for inspection
+- Perfect for development and testing
 
 ## Configuration
 
@@ -238,12 +325,19 @@ Handles creation of Nodemailer transports based on configuration type.
 
 ```bash
 # .env
+
+# For production
+NODE_ENV=production
 SMTP_HOST=smtp.example.com
 SMTP_PORT=587
 SMTP_USER=your-email@example.com
 SMTP_PASS=your-password
 SMTP_FROM_EMAIL=noreply@eventuras.com
 SMTP_FROM_NAME=Historia
+
+# For development (optional - mock transport used by default)
+NODE_ENV=development
+# Mock transport requires no SMTP credentials
 ```
 
 ### SendGrid Alternative
@@ -293,7 +387,37 @@ try {
 
 ## Testing
 
-### Mock Transport for Testing
+### Using Mock Transport in Tests
+
+Use the built-in mock transport for unit and integration tests:
+
+```typescript
+import { EmailClient } from '@eventuras/postor-mailer';
+
+describe('Email functionality', () => {
+  it('should send order confirmation', async () => {
+    const emailClient = new EmailClient({
+      transport: {
+        type: 'mock',
+        logToConsole: false,
+      },
+    });
+
+    const result = await emailClient.send({
+      to: 'test@example.com',
+      subject: 'Order Confirmation',
+      html: '<p>Test</p>',
+    });
+
+    expect(result.accepted).toContain('test@example.com');
+    expect(result.messageId).toBeDefined();
+  });
+});
+```
+
+### Mocking with Vitest
+
+For unit tests that need complete control:
 
 ```typescript
 import { vi } from 'vitest';
