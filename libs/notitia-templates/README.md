@@ -399,6 +399,134 @@ const shipmentEmail = notitiaTemplates.render('email', 'order-shipped', {
 });
 ```
 
+### Enhanced Order Confirmation with Items
+
+For better-looking order confirmations without tables, use repeatable divs with Handlebars `each` helper:
+
+```typescript
+import { notitiaTemplates } from '@eventuras/notitia-templates';
+
+// Register a custom order confirmation template with item details
+notitiaTemplates.registerTemplate('email', 'order-confirmation-detailed', {
+  subject: 'Order Confirmation - #{{orderId}}',
+  content: `Hello {{name}},
+
+Thank you for your order!
+
+─────────────────────────────
+ORDER #{{orderId}}
+Order Date: {{orderDate}}
+─────────────────────────────
+
+{{#each items}}
+📦 {{this.name}}
+   Quantity: {{this.quantity}} × {{this.price}} {{../currency}}
+   Subtotal: {{this.subtotal}} {{../currency}}
+{{#unless @last}}
+
+{{/unless}}
+{{/each}}
+
+─────────────────────────────
+Subtotal:    {{subtotal}} {{currency}}
+Shipping:    {{shipping}} {{currency}}
+Tax:         {{tax}} {{currency}}
+─────────────────────────────
+TOTAL:       {{total}} {{currency}}
+─────────────────────────────
+
+{{#if shippingAddress}}
+📍 Shipping Address:
+{{shippingAddress.street}}
+{{shippingAddress.postalCode}} {{shippingAddress.city}}
+{{shippingAddress.country}}
+{{/if}}
+
+{{#if trackingNumber}}
+🚚 Tracking: {{trackingNumber}}
+{{/if}}
+
+Questions? Reply to this email or visit our support page.
+
+Best regards,
+{{organizationName}}`,
+  description: 'Detailed order confirmation with line items',
+});
+
+// Render with structured data
+const detailedOrder = notitiaTemplates.render('email', 'order-confirmation-detailed', {
+  name: 'Alice Johnson',
+  orderId: 'ORD-98765',
+  orderDate: '2025-06-15',
+  organizationName: 'Nordic Shop',
+  currency: 'NOK',
+  items: [
+    {
+      name: 'Wireless Headphones',
+      quantity: 2,
+      price: '599.00',
+      subtotal: '1198.00'
+    },
+    {
+      name: 'USB-C Cable',
+      quantity: 3,
+      price: '99.00',
+      subtotal: '297.00'
+    },
+    {
+      name: 'Phone Case',
+      quantity: 1,
+      price: '249.00',
+      subtotal: '249.00'
+    }
+  ],
+  subtotal: '1744.00',
+  shipping: '99.00',
+  tax: '435.75',
+  total: '2278.75',
+  shippingAddress: {
+    street: 'Storgata 15',
+    postalCode: '0155',
+    city: 'Oslo',
+    country: 'Norway'
+  },
+  trackingNumber: 'NO-TRACK-2025-001'
+});
+```
+
+**Alternative: Minimal Style**
+
+For a cleaner look, you can create an even simpler template:
+
+```typescript
+notitiaTemplates.registerTemplate('email', 'order-minimal', {
+  subject: '✓ Order {{orderId}} Confirmed',
+  content: `Hi {{name}}! 👋
+
+Your order is confirmed and will ship soon.
+
+{{#each items}}
+• {{this.quantity}}× {{this.name}} — {{this.subtotal}} {{../currency}}
+{{/each}}
+
+Total: {{total}} {{currency}}
+
+We'll email you when it ships.
+
+— {{organizationName}}`,
+  description: 'Minimal order confirmation',
+});
+```
+
+**Tips for Good-Looking Email Templates:**
+
+1. **Use Unicode characters** for visual appeal: ─, •, ✓, 📦, 🚚, 📍
+2. **Align with spaces** instead of tables for better plain-text rendering
+3. **Keep lines short** (< 70 chars) for mobile readability
+4. **Use blank lines** to create visual sections
+5. **Use `each` helper** for repeating items without HTML tables
+6. **Use conditional blocks** (`{{#if}}`) to show/hide optional sections
+
 ### Multi-tenant Application
 
 ```typescript

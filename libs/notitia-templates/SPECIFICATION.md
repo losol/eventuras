@@ -281,7 +281,7 @@ The library has a comprehensive test suite with 28 tests covering:
 
 ### Node.js Compatibility
 
-The library is built for Node.js 18+ and uses ESM (ECMAScript Modules). To handle TypeScript configurations in Vite with Node 20, the build script uses `NODE_OPTIONS="--import tsx"`.
+The library requires Node.js 22+ and uses ESM (ECMAScript Modules). To handle TypeScript configurations in Vite with Node 20, the build script uses `NODE_OPTIONS="--import tsx"`.
 
 ## Benefits
 
