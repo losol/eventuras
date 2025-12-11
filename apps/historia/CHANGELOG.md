@@ -1,5 +1,14 @@
 # @eventuras/historia
 
+## 0.12.0
+
+### Minor Changes
+
+- ### 🧱 Features
+  - feat(historia): add payment cancellation and refund functionality (fc2b293) [@eventuras/historia]
+  - feat(historia): implement order shipment (a2cf745) [@eventuras/historia]
+  - feat(historia): enhance shipping details and address (bd84c9f) [@eventuras/historia]
+
 ## 0.11.0
 
 ### Minor Changes
