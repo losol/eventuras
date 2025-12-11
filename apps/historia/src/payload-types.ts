@@ -1008,6 +1008,10 @@ export interface User {
   phone_number_verified?: boolean | null;
   addresses?:
     | {
+        /**
+         * E.g. "Home", "Work", "Vipps", "Cabin"
+         */
+        label?: string | null;
         isDefault?: boolean | null;
         addressLine1?: string | null;
         addressLine2?: string | null;
@@ -2187,6 +2191,7 @@ export interface UsersSelect<T extends boolean = true> {
   addresses?:
     | T
     | {
+        label?: T;
         isDefault?: T;
         addressLine1?: T;
         addressLine2?: T;

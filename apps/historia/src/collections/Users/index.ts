@@ -95,6 +95,14 @@ export const Users: CollectionConfig = {
       label: 'Addresses',
       fields: [
         {
+          name: 'label',
+          type: 'text',
+          label: 'Label',
+          admin: {
+            description: 'E.g. "Home", "Work", "Vipps", "Cabin"',
+          },
+        },
+        {
           name: 'isDefault',
           type: 'checkbox',
           label: 'Default Address',

@@ -297,20 +297,120 @@ export async function createOrderFromPayment({
     const orderItems = cart.items.map((item) => {
       const product = products.find((p) => p.id === item.productId) as Product;
       return {
+        itemId: crypto.randomUUID(),
         product: product.id,
         quantity: item.quantity,
         price: {
-          amount: product.price?.amountExVat || 0,
+          amountExVat: product.price?.amountExVat || 0,
           currency: product.price?.currency || 'NOK',
           vatRate: product.price?.vatRate || 25,
         },
       };
     });
 
+    // Add shipping line item if Vipps provided shipping details
+    logger.info(
+      {
+        hasShippingDetails: !!paymentDetails.shippingDetails,
+        shippingDetails: paymentDetails.shippingDetails,
+        paymentState: paymentDetails.state,
+      },
+      'Checking for shipping details from Vipps'
+    );
+
+    if (paymentDetails.shippingDetails) {
+      try {
+        const shippingOptionId = paymentDetails.shippingDetails.shippingOptionId;
+        const shippingOptionName = paymentDetails.shippingDetails.shippingOptionName;
+
+        // Find or create shipping product with SKU matching the shipping option ID
+        const shippingProducts = await payload.find({
+          collection: 'products',
+          where: {
+            sku: {
+              equals: shippingOptionId,
+            },
+          },
+          limit: 1,
+        });
+
+        let shippingProduct: Product;
+
+        if (shippingProducts.docs.length > 0) {
+          shippingProduct = shippingProducts.docs[0] as Product;
+          logger.info(
+            { productId: shippingProduct.id, sku: shippingOptionId },
+            'Found existing shipping product'
+          );
+        } else {
+          // Create shipping product with data from Vipps
+          const newShippingProduct = await payload.create({
+            collection: 'products',
+            draft: false,
+            data: {
+              title: shippingOptionName,
+              lead: `Levering via Vipps: ${shippingOptionName}`,
+              productType: 'shipping',
+              price: {
+                amountExVat: 0, // Actual price comes from Vipps per order
+                currency: 'NOK',
+                vatRate: 25,
+              },
+              sku: shippingOptionId,
+              slug: shippingOptionId,
+              resourceId: shippingOptionId,
+              tenant: websiteId,
+              _status: 'published',
+            },
+          });
+          shippingProduct = newShippingProduct as Product;
+          logger.info(
+            { productId: shippingProduct.id, sku: shippingOptionId, name: shippingOptionName },
+            'Created new shipping product from Vipps option'
+          );
+        }
+
+        // Vipps shippingCost is in minor units (øre), already including VAT
+        // We need to calculate ex VAT amount
+        const shippingCostIncVat = paymentDetails.shippingDetails.shippingCost;
+        const vatRate = 25; // Shipping typically has 25% VAT in Norway
+        const shippingCostExVat = Math.round(shippingCostIncVat / (1 + vatRate / 100));
+
+        // Add shipping as order item
+        orderItems.push({
+          itemId: crypto.randomUUID(),
+          product: shippingProduct.id,
+          quantity: 1,
+          price: {
+            amountExVat: shippingCostExVat,
+            currency: (paymentDetails.aggregate.authorizedAmount.currency || 'NOK') as 'NOK' | 'USD' | 'EUR' | 'GBP' | 'SEK' | 'DKK',
+            vatRate,
+          },
+        });
+
+        logger.info(
+          {
+            shippingOptionId: paymentDetails.shippingDetails.shippingOptionId,
+            shippingOptionName: paymentDetails.shippingDetails.shippingOptionName,
+            shippingCostIncVat,
+            shippingCostExVat,
+            vatRate,
+          },
+          'Added shipping line item from Vipps'
+        );
+      } catch (error) {
+        logger.error(
+          { error, paymentReference },
+          'Failed to add shipping line item - continuing without shipping'
+        );
+        // Continue without shipping rather than failing the entire order
+      }
+    }
+
     // Calculate order total and validate against authorized amount
     // Note: calculatedTotal is ex VAT, while Vipps includes VAT + shipping
     const calculatedTotal = orderItems.reduce((sum, item) => {
-      const itemTotal = (item.price.amount || 0) * item.quantity;
+      const itemTotal = (item.price.amountExVat || 0) * item.quantity;
       return sum + itemTotal;
     }, 0);
 
@@ -327,8 +427,8 @@ export async function createOrderFromPayment({
         orderItems: orderItems.map(i => ({
           productId: i.product,
           quantity: i.quantity,
-          unitPrice: i.price.amount,
-          total: i.price.amount * i.quantity,
+          unitPrice: i.price.amountExVat,
+          total: i.price.amountExVat * i.quantity,
         })),
       },
       'Validating payment amount'
@@ -385,6 +485,39 @@ export async function createOrderFromPayment({
       'Creating order in database'
     );
 
+    // Extract shipping address from Vipps (prioritize shippingDetails over userDetails)
+    const vippsShippingAddress = paymentDetails.shippingDetails?.address
+      ? {
+          addressLine1: paymentDetails.shippingDetails.address.addressLine1,
+          addressLine2: paymentDetails.shippingDetails.address.addressLine2,
+          postalCode: paymentDetails.shippingDetails.address.postCode,
+          city: paymentDetails.shippingDetails.address.city,
+          country: paymentDetails.shippingDetails.address.country,
+        }
+      : paymentDetails.userDetails
+        ? {
+            addressLine1: paymentDetails.userDetails.streetAddress,
+            postalCode: paymentDetails.userDetails.zipCode,
+            city: paymentDetails.userDetails.city,
+            country: paymentDetails.userDetails.country,
+          }
+        : undefined;
+
+    if (vippsShippingAddress) {
+      logger.info(
+        {
+          paymentReference,
+          address: vippsShippingAddress,
+        },
+        'Shipping address received from Vipps'
+      );
+    } else {
+      logger.warn(
+        { paymentReference },
+        'No shipping address available from Vipps'
+      );
+    }
+
     // Create Order
     const orderCreateStart = Date.now();
     const order = await payload.create({
@@ -397,7 +530,7 @@ export async function createOrderFromPayment({
         currency: paymentDetails.aggregate.authorizedAmount.currency,
         tenant: websiteId,
         items: orderItems,
-        shippingStatus: 'not-shipped',
+        shippingAddress: vippsShippingAddress,
       },
     });
 
@@ -412,6 +545,63 @@ export async function createOrderFromPayment({
       },
       'Order created successfully'
     );
+
+    // Update user's Vipps address in their profile
+    if (vippsShippingAddress) {
+      try {
+        // Find existing Vipps address or add new one
+        const currentAddresses = user.addresses || [];
+        const vippsAddressIndex = currentAddresses.findIndex(
+          (addr) => addr.label === 'Vipps'
+        );
+
+        let updatedAddresses;
+        if (vippsAddressIndex >= 0) {
+          // Update existing Vipps address
+          updatedAddresses = [...currentAddresses];
+          updatedAddresses[vippsAddressIndex] = {
+            ...updatedAddresses[vippsAddressIndex],
+            ...vippsShippingAddress,
+            label: 'Vipps',
+          };
+          logger.info(
+            { userId: effectiveUserId, addressIndex: vippsAddressIndex },
+            'Updated existing Vipps address in user profile'
+          );
+        } else {
+          // Add new Vipps address
+          updatedAddresses = [
+            ...currentAddresses,
+            {
+              label: 'Vipps',
+              isDefault: currentAddresses.length === 0, // First address is default
+              ...vippsShippingAddress,
+            },
+          ];
+          logger.info(
+            {
+              userId: effectiveUserId,
+              isFirstAddress: currentAddresses.length === 0,
+            },
+            'Added new Vipps address to user profile'
+          );
+        }
+
+        await payload.update({
+          collection: 'users',
+          id: effectiveUserId!,
+          data: {
+            addresses: updatedAddresses,
+          },
+        });
+      } catch (error) {
+        // Don't fail order creation if address update fails
+        logger.error(
+          { error, userId: effectiveUserId, paymentReference },
+          'Failed to update user address, but order was created successfully'
+        );
+      }
+    }
 
     // Create Transaction
     const transactionCreateStart = Date.now();

@@ -53,6 +53,8 @@ This project uses specialized agents for different contexts:
 - **Tech**: TypeScript, React, Next.js, Tailwind CSS, Playwright
 - **Focus**: UI development, shared libraries, E2E testing, refactoring to libs
 
+Frontend agents should actively look for opportunities to refactor code from `apps/web/` and `apps/historia/` into shared libraries under `libs/` to promote code reuse and maintainability. Please ask before doing refactors.
+
 ### Converto Agent
 
 - **Scope**: `apps/convertoapi/`
