@@ -92,6 +92,18 @@ export async function refundOrderPayment(
     try {
       const vippsConfig = getVippsConfig();
 
+      // Validate currency before making the API call
+      const supportedCurrencies = ['NOK', 'USD', 'EUR', 'GBP', 'SEK', 'DKK'] as const;
+      if (!supportedCurrencies.includes(transaction.currency as typeof supportedCurrencies[number])) {
+        logger.error(
+          { orderId, transactionId: transaction.id, paymentReference, currency: transaction.currency },
+          `Unsupported currency "${transaction.currency}" for refund.`
+        );
+        return actionError(
+          `Cannot refund payment: Unsupported currency "${transaction.currency}". Supported currencies are: ${supportedCurrencies.join(', ')}.`
+        );
+      }
+
       // Generate idempotency key for refund operation
       const idempotencyKey = `refund-${orderId}`;
 
@@ -101,7 +113,7 @@ export async function refundOrderPayment(
         {
           modificationAmount: {
             value: transaction.amount,
-            currency: transaction.currency as 'NOK' | 'USD' | 'EUR' | 'GBP' | 'SEK' | 'DKK',
+            currency: transaction.currency as typeof supportedCurrencies[number],
           },
         },
         idempotencyKey

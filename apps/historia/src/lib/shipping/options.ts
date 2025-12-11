@@ -23,6 +23,7 @@ export const SHIPPING_OPTIONS: ShippingOption[] = [
     brand: 'POSTEN',
     type: 'HOME_DELIVERY',
   },
+
   // Other - Pickup Valnesfjord
   {
     id: 'pickup-valnesfjord',

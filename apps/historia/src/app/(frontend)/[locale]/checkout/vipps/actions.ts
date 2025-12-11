@@ -376,6 +376,13 @@ export async function createOrderFromPayment({
         const vatRate = 25; // Shipping typically has 25% VAT in Norway
         const shippingCostExVat = Math.round(shippingCostIncVat / (1 + vatRate / 100));
 
+        // Validate currency
+        const currency = paymentDetails.aggregate.authorizedAmount.currency || 'NOK';
+        const supportedCurrencies = ['NOK', 'USD', 'EUR', 'GBP', 'SEK', 'DKK'] as const;
+        const validCurrency = supportedCurrencies.includes(currency as typeof supportedCurrencies[number])
+          ? (currency as typeof supportedCurrencies[number])
+          : 'NOK';
+
         // Add shipping as order item
         orderItems.push({
           itemId: crypto.randomUUID(),
@@ -383,7 +390,7 @@ export async function createOrderFromPayment({
           quantity: 1,
           price: {
             amountExVat: shippingCostExVat,
-            currency: (paymentDetails.aggregate.authorizedAmount.currency || 'NOK') as 'NOK' | 'USD' | 'EUR' | 'GBP' | 'SEK' | 'DKK',
+            currency: validCurrency,
             vatRate,
           },
         });

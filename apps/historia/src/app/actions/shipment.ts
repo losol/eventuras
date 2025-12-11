@@ -95,6 +95,18 @@ export async function shipCompleteOrderAndCapture(
       try {
         const vippsConfig = getVippsConfig();
 
+        // Validate currency before making the API call
+        const supportedCurrencies = ['NOK', 'USD', 'EUR', 'GBP', 'SEK', 'DKK'] as const;
+        if (!supportedCurrencies.includes(transaction.currency as typeof supportedCurrencies[number])) {
+          logger.error(
+            { orderId, transactionId: transaction.id, paymentReference, currency: transaction.currency },
+            `Unsupported currency "${transaction.currency}" for capture.`
+          );
+          return actionError(
+            `Cannot capture payment: Unsupported currency "${transaction.currency}". Supported currencies are: ${supportedCurrencies.join(', ')}.`
+          );
+        }
+
         // Generate idempotency key for capture operation
         // Uses orderId to ensure same capture attempt gets same key (idempotency)
         const idempotencyKey = `capture-${orderId}`;
@@ -106,7 +118,7 @@ export async function shipCompleteOrderAndCapture(
           {
             modificationAmount: {
               value: transaction.amount,
-              currency: transaction.currency as 'NOK' | 'USD' | 'EUR' | 'GBP' | 'SEK' | 'DKK',
+              currency: transaction.currency as typeof supportedCurrencies[number],
             },
           },
           idempotencyKey
@@ -142,9 +154,12 @@ export async function shipCompleteOrderAndCapture(
         'Payment already captured'
       );
     } else {
-      logger.warn(
+      logger.error(
         { orderId, transactionId: transaction.id, status: transaction.status },
         'Transaction status is not authorized or captured'
+      );
+      return actionError(
+        `Cannot create shipment: transaction status is '${transaction.status}', expected 'authorized' or 'captured'.`
       );
     }
 

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { toast } from '@payloadcms/ui';
+import { useRouter } from 'next/navigation';
 
 import { shipCompleteOrderAndCapture } from '@/app/actions/shipment';
 
@@ -19,6 +20,7 @@ export function ShipCompleteOrderButton({
   orderStatus,
 }: ShipCompleteOrderButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   // Don't show button for completed or canceled orders
   if (orderStatus === 'completed' || orderStatus === 'canceled') {
@@ -43,7 +45,7 @@ export function ShipCompleteOrderButton({
       toast.success(result.message || 'Order shipped and payment captured!');
 
       // Refresh the page to show updated status
-      window.location.reload();
+      router.refresh();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to ship order');
     } finally {
@@ -56,28 +58,13 @@ export function ShipCompleteOrderButton({
       type="button"
       onClick={handleShipAndCapture}
       disabled={isLoading}
-      style={{
-        padding: '0.75rem 1.5rem',
-        backgroundColor: isLoading ? '#94a3b8' : '#10b981',
-        color: 'white',
-        border: 'none',
-        borderRadius: '0.375rem',
-        fontSize: '0.875rem',
-        fontWeight: '500',
-        cursor: isLoading ? 'not-allowed' : 'pointer',
-        transition: 'background-color 0.2s',
-        marginBottom: '1rem',
-      }}
-      onMouseEnter={(e) => {
-        if (!isLoading) {
-          e.currentTarget.style.backgroundColor = '#059669';
-        }
-      }}
-      onMouseLeave={(e) => {
-        if (!isLoading) {
-          e.currentTarget.style.backgroundColor = '#10b981';
-        }
-      }}
+      className={[
+        'mb-4 px-6 py-3 rounded-md text-sm font-medium text-white transition-colors',
+        isLoading
+          ? 'bg-slate-400 cursor-not-allowed'
+          : 'bg-emerald-500 hover:bg-emerald-600 cursor-pointer',
+        'disabled:bg-slate-400 disabled:cursor-not-allowed',
+      ].join(' ')}
     >
       {isLoading ? '⏳ Shipping...' : '📦 Ship Complete Order & Capture Payment'}
     </button>
