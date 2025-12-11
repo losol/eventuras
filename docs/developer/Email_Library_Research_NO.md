@@ -7,6 +7,8 @@
 
 Dette dokumentet gir forskning og anbefalinger for implementering av et Node.js-basert e-postbibliotek for Eventuras. Dagens backend (C#) bruker SMTP og SendGrid, men det er behov for en TypeScript/Node.js e-postløsning som kan brukes på tvers av monorepoets TypeScript-applikasjoner (web, historia, convertoapi).
 
+**Endelig Beslutning**: Implementere **Nodemailer** som `@eventuras/postor-mailer` uten innebygd templating. Et separat Handlebars-basert malbibliotek vil bli laget for e-postmaler. Se `Postor_Mailer_Implementation.md` for detaljert implementeringsguide.
+
 ## Nåværende E-post Implementering
 
 Eventuras har i dag:
@@ -129,11 +131,30 @@ export function ArrangementsBekreftelse({ arrangementsNavn, brukerNavn }: Props)
 
 ---
 
-## Anbefaling for Eventuras
+## Endelig Beslutning: Postor-Mailer (Nodemailer)
 
-### Hovedanbefaling: **Resend + React Email**
+### Valgt Løsning: **Nodemailer** uten templating
+
+**Biblioteksnavn**: `@eventuras/postor-mailer`
 
 **Begrunnelse**:
+
+1. **Full Kontroll**: Komplett kontroll over e-postlevering og SMTP-konfigurasjon
+2. **Ingen Leverandørlåsing**: Open source, kan enkelt bytte leverandør
+3. **Kostnadseffektivt**: Kun infrastrukturkostnader, ingen per-e-post-avgifter
+4. **Separasjon av Ansvar**: E-postlevering adskilt fra templating
+5. **Fleksibilitet**: Støtter hvilken som helst mal-motor (Handlebars planlagt)
+6. **Velprøvd**: Nodemailer er industristandarden med 21M+ nedlastninger per uke
+
+**Implementering**: Se detaljert guide i `Postor_Mailer_Implementation.md`
+
+---
+
+## Forskning: Alternative Løsninger Vurdert
+
+### Alternativ 1: **Resend + React Email** (Ikke Valgt)
+
+**Fordeler som ble vurdert**:
 
 1. **Perfekt for Eventuras Teknologistabel**:
    - TypeScript-først (matcher apps/web, apps/historia)
@@ -181,13 +202,23 @@ libs/
         Footer.tsx
 ```
 
-### Sekundær Anbefaling: **Nodemailer + React Email**
+### Hvorfor Andre Løsninger Ikke Ble Valgt
 
-**For tilfeller der**:
-- Full kontroll er påkrevd
-- Ingen eksterne API-avhengigheter tillatt
-- Eksisterende SMTP-infrastruktur må brukes
-- Kostnad må minimeres absolutt
+**Resend**:
+- ❌ Leverandørlåsing
+- ❌ Ekstern tjenesteavhengighet
+- ❌ Per-e-post-kostnader
+- ❌ Mindre fleksibilitet for egendefinerte krav
+
+**React Email**:
+- ❌ For tett koplet til React-økosystemet
+- ❌ Krever byggesteg
+- ❌ Handlebars foretrekkes for templating
+
+**API-tjenester (SendGrid, Mailgun)**:
+- ❌ Høyere kostnader
+- ❌ Leverandørlåsing
+- ❌ Komplekse API-er
 
 ---
 

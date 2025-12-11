@@ -7,6 +7,8 @@
 
 This document provides research and recommendations for implementing a Node.js-based email library for Eventuras. The current backend (C#) uses SMTP and SendGrid, but there's a need for a TypeScript/Node.js email solution that can be used across the monorepo's TypeScript applications (web, historia, convertoapi).
 
+**Final Decision**: Implement **Nodemailer** as `@eventuras/postor-mailer` without built-in templating. A separate Handlebars-based template library will be created for email templating. See `Postor_Mailer_Implementation.md` for detailed implementation guide.
+
 ## Current Email Implementation
 
 Eventuras currently has:
@@ -234,11 +236,30 @@ await transporter.sendMail({
 
 ---
 
-## Recommended Solution for Eventuras
+## Final Decision: Postor-Mailer (Nodemailer)
 
-### Primary Recommendation: **Resend + React Email**
+### Selected Solution: **Nodemailer** without templating
+
+**Library Name**: `@eventuras/postor-mailer`
 
 **Rationale**:
+
+1. **Full Control**: Complete control over email delivery and SMTP configuration
+2. **No Vendor Lock-in**: Open source, can switch providers easily
+3. **Cost Effective**: Only infrastructure costs, no per-email charges
+4. **Separation of Concerns**: Email delivery separate from templating
+5. **Flexibility**: Support any template engine (Handlebars planned)
+6. **Battle-Tested**: Nodemailer is the industry standard with 21M+ weekly downloads
+
+**Implementation**: See detailed guide in `Postor_Mailer_Implementation.md`
+
+---
+
+## Research: Alternative Solutions Considered
+
+### Alternative 1: **Resend + React Email** (Not Selected)
+
+**Rationale that was considered**:
 
 1. **Perfect for Eventuras Tech Stack**:
    - TypeScript-first (matches apps/web, apps/historia)
@@ -286,18 +307,23 @@ libs/
         Footer.tsx
 ```
 
-### Secondary Recommendation: **Nodemailer + React Email**
+### Why Other Solutions Were Not Selected
 
-**For cases where**:
-- Full control is required
-- No external API dependencies allowed
-- Existing SMTP infrastructure must be used
-- Cost must be absolutely minimized
+**Resend**:
+- ❌ Vendor lock-in
+- ❌ External service dependency
+- ❌ Per-email costs
+- ❌ Less flexibility for custom requirements
 
-**Hybrid Approach**:
-- Use React Email for templates (same as primary)
-- Use Nodemailer as the transport layer
-- Swap transport based on environment (Resend for cloud, SMTP for on-premise)
+**React Email**:
+- ❌ Too tightly coupled to React ecosystem
+- ❌ Requires build step
+- ❌ Handlebars preferred for templating
+
+**API Services (SendGrid, Mailgun)**:
+- ❌ Higher costs
+- ❌ Vendor lock-in
+- ❌ Complex APIs
 
 ---
 
