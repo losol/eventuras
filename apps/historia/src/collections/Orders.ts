@@ -29,6 +29,11 @@ export const Orders: CollectionConfig = {
     useAsTitle: 'id',
     defaultColumns: ['id', 'user', 'status', 'totalAmount', 'createdAt'],
     group: 'Commerce',
+    components: {
+      edit: {
+        SaveButton: '@/collections/Orders/components/OrderEditComponents#OrderSaveButton',
+      },
+    },
   },
   fields: [
     {

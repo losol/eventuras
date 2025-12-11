@@ -11,6 +11,7 @@ import { InlineToolbarFeatureClient as InlineToolbarFeatureClient_e70f5e05f09f93
 import { HeadingFeatureClient as HeadingFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { SlugComponent as SlugComponent_92cc057d0a2abb4f6cf0307edf59f986 } from '@/fields/slug/SlugComponent'
 import { AssignTenantFieldTrigger as AssignTenantFieldTrigger_1d0591e3cf4f332c83a86da13a0de59a } from '@payloadcms/plugin-multi-tenant/client'
+import { OrderSaveButton as OrderSaveButton_78481da30083d3e8e0e4674008b510d6 } from '@/collections/Orders/components/OrderEditComponents'
 import { FixedToolbarFeatureClient as FixedToolbarFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { PersonNameComponent as PersonNameComponent_2a71690645e56540458fc560c4b28e52 } from '@/fields/PersonNameComponent'
 import { PriceField as PriceField_07375945334b53a2da1ffe8b4244c331 } from '@/collections/Products/PriceField'
@@ -37,6 +38,7 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#HeadingFeatureClient": HeadingFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@/fields/slug/SlugComponent#SlugComponent": SlugComponent_92cc057d0a2abb4f6cf0307edf59f986,
   "@payloadcms/plugin-multi-tenant/client#AssignTenantFieldTrigger": AssignTenantFieldTrigger_1d0591e3cf4f332c83a86da13a0de59a,
+  "@/collections/Orders/components/OrderEditComponents#OrderSaveButton": OrderSaveButton_78481da30083d3e8e0e4674008b510d6,
   "@payloadcms/richtext-lexical/client#FixedToolbarFeatureClient": FixedToolbarFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@/fields/PersonNameComponent#PersonNameComponent": PersonNameComponent_2a71690645e56540458fc560c4b28e52,
   "@/collections/Products/PriceField#PriceField": PriceField_07375945334b53a2da1ffe8b4244c331,
