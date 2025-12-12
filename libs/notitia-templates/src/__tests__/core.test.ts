@@ -112,7 +112,7 @@ describe('NotitiaTemplates - Core Functionality', () => {
       expect(info).toBeDefined();
       expect(info?.content).toBeDefined();
       expect(info?.subject).toBeDefined();
-      expect(info?.description).toBe('Welcome email for new users');
+      expect(info?.description).toBe('Welcome email for new users (en-US)');
     });
   });
 });

@@ -1,4 +1,9 @@
 /**
+ * Supported locales
+ */
+export type Locale = 'en-US' | 'nb-NO' | 'nn-NO';
+
+/**
  * Supported notification channels
  */
 export type NotificationChannel = 'email' | 'sms';
@@ -77,6 +82,12 @@ export interface TemplateRegistry {
  * Options for template rendering
  */
 export interface RenderOptions {
+  /**
+   * Locale for template selection
+   * @default 'en-US'
+   */
+  locale?: Locale;
+
   /**
    * Strict mode - throws error if variable is missing
    * @default false

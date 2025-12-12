@@ -1,6 +1,7 @@
 import Handlebars from 'handlebars';
 import type {
   BaseTemplateParams,
+  Locale,
   NotificationChannel,
   RenderOptions,
   RenderedTemplate,
@@ -8,7 +9,7 @@ import type {
   TemplateRegistry,
   TemplateType,
 } from './types';
-import { defaultTemplates } from './templates';
+import { defaultTemplates, getTemplatesForLocale } from './templates';
 
 /**
  * Template renderer for generating notification messages
@@ -16,8 +17,10 @@ import { defaultTemplates } from './templates';
 export class NotitiaTemplates {
   private customTemplates: TemplateRegistry = {};
   private handlebarsInstance: typeof Handlebars;
+  private defaultLocale: Locale = 'en-US';
 
-  constructor() {
+  constructor(defaultLocale: Locale = 'en-US') {
+    this.defaultLocale = defaultLocale;
     // Create a new Handlebars instance to avoid global pollution
     this.handlebarsInstance = Handlebars.create();
     this.registerDefaultHelpers();
@@ -61,10 +64,16 @@ export class NotitiaTemplates {
   }
 
   /**
-   * Get a template by key, checking custom templates first, then defaults
+   * Get a template by key, checking custom templates first, then locale-specific defaults
    */
-  private getTemplate(key: string): Template | undefined {
-    return this.customTemplates[key] || defaultTemplates[key];
+  private getTemplate(key: string, locale?: Locale): Template | undefined {
+    if (this.customTemplates[key]) {
+      return this.customTemplates[key];
+    }
+    
+    const targetLocale = locale || this.defaultLocale;
+    const localeTemplates = getTemplatesForLocale(targetLocale);
+    return localeTemplates[key] || defaultTemplates[key];
   }
 
   /**
@@ -122,10 +131,11 @@ export class NotitiaTemplates {
     options: RenderOptions = {}
   ): RenderedTemplate {
     const key = this.getTemplateKey(channel, type);
-    const template = this.getTemplate(key);
+    const locale = options.locale || this.defaultLocale;
+    const template = this.getTemplate(key, locale);
 
     if (!template) {
-      throw new Error(`Template not found: ${key}`);
+      throw new Error(`Template not found: ${key} for locale: ${locale}`);
     }
 
     try {
@@ -225,11 +235,11 @@ export class NotitiaTemplates {
 /**
  * Create a new NotitiaTemplates instance
  */
-export function createNotitiaTemplates(): NotitiaTemplates {
-  return new NotitiaTemplates();
+export function createNotitiaTemplates(defaultLocale: Locale = 'en-US'): NotitiaTemplates {
+  return new NotitiaTemplates(defaultLocale);
 }
 
 /**
- * Default singleton instance for convenience
+ * Default singleton instance for convenience (uses en-US)
  */
-export const notitiaTemplates = new NotitiaTemplates();
+export const notitiaTemplates = new NotitiaTemplates('en-US');

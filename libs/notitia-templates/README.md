@@ -11,6 +11,7 @@ Notitia Templates is a flexible templating library built on Handlebars that help
 - 🎯 **Built-in Templates**: Ready-to-use templates for common notification scenarios
 - 🔧 **Customizable**: Override default templates or create your own
 - 📱 **Multi-channel**: Support for both email (with subjects) and SMS
+- 🌐 **Multi-language**: Built-in support for American English, Norwegian Bokmål, and Norwegian Nynorsk
 - 🛠️ **Handlebars Powered**: Full power of Handlebars templating
 - 🎨 **Custom Helpers**: Built-in helpers and ability to add your own
 - 📦 **Type-safe**: Full TypeScript support
@@ -71,6 +72,75 @@ import { createNotitiaTemplates } from '@eventuras/notitia-templates';
 const tenantTemplates = createNotitiaTemplates();
 // Each instance has its own registry
 ```
+
+### Multi-language Support
+
+The library includes built-in templates in three languages:
+- **en-US**: American English (default)
+- **nb-NO**: Norwegian Bokmål
+- **nn-NO**: Norwegian Nynorsk
+
+#### Setting Default Locale
+
+```typescript
+import { createNotitiaTemplates } from '@eventuras/notitia-templates';
+
+// Create instance with Norwegian Bokmål as default
+const norwegianTemplates = createNotitiaTemplates('nb-NO');
+
+const welcome = norwegianTemplates.render('email', 'welcome', {
+  name: 'Ola Nordmann',
+  organizationName: 'Eventuras',
+});
+
+console.log(welcome.subject);
+// Output: "Velkommen til Eventuras"
+
+console.log(welcome.content);
+// Output: "Hei Ola Nordmann,\n\nVelkommen til Eventuras!..."
+```
+
+#### Per-request Locale Override
+
+```typescript
+import { notitiaTemplates } from '@eventuras/notitia-templates';
+
+// Default instance uses en-US, but you can override per render
+const norwegianWelcome = notitiaTemplates.render(
+  'email',
+  'welcome',
+  {
+    name: 'Kari Hansen',
+    organizationName: 'Eventuras',
+  },
+  { locale: 'nb-NO' } // Override locale for this render
+);
+
+// Render in Nynorsk
+const nynorskWelcome = notitiaTemplates.render(
+  'email',
+  'welcome',
+  {
+    name: 'Per Olsen',
+    organizationName: 'Eventuras',
+  },
+  { locale: 'nn-NO' }
+);
+
+console.log(nynorskWelcome.subject);
+// Output: "Velkomen til Eventuras" (note: "Velkomen" in Nynorsk)
+```
+
+#### Supported Locales
+
+```typescript
+import type { Locale } from '@eventuras/notitia-templates';
+
+// Available locales
+const locales: Locale[] = ['en-US', 'nb-NO', 'nn-NO'];
+```
+
+All built-in templates (welcome, registration-confirmation, event-reminder, payment-confirmation, password-reset, order-confirmation, order-shipped) are available in all three languages.
 
 ### Custom Templates
 

@@ -3,6 +3,7 @@ export { NotitiaTemplates, createNotitiaTemplates, notitiaTemplates } from './No
 
 // Types
 export type {
+  Locale,
   NotificationChannel,
   TemplateType,
   TemplateIdentifier,
@@ -21,4 +22,9 @@ export {
   getDefaultTemplate,
   hasDefaultTemplate,
   getDefaultTemplateKeys,
+  localeTemplates,
+  getTemplatesForLocale,
+  templatesEnUS,
+  templatesNbNO,
+  templatesNnNO,
 } from './templates';
