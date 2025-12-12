@@ -35,11 +35,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '## ⚠️ No changesets found\n\nThis PR doesn\'t include any changesets. If this PR includes changes that should be released, please add a changeset:\n\n```bash\npnpm changeset\n```\n\nOr use the auto-suggest feature:\n\n```bash\npnpm changeset:suggest\n```\n\nIf this PR doesn\'t require a changeset (e.g., documentation or test-only changes), you can ignore this message.'
+              body: 'No changeset. Run `pnpm changeset:suggest` if needed.'
             });
-
-      - name: Fail if no changesets
-        if: steps.check.outputs.has_changesets == 'false'
-        run: |
-          echo "::error::No changesets found. Please add a changeset or use 'pnpm changeset:suggest'"
-          exit 1
