@@ -38,8 +38,8 @@
   },
   "devDependencies": {
     "@eventuras/vite-config": "workspace:*",
-    "vite": "^7.2.6",
-    "xstate": "^5.24.0"
+    "vite": "^7.2.7",
+    "xstate": "^5.25.0"
   },
   "peerDependencies": {
     "@xstate/react": "^5.0.0 || ^6.0.0",

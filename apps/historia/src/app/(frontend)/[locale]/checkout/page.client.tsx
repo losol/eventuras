@@ -75,7 +75,7 @@ export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
         }
 
         // Show notification to user
-        toast.warn(
+        toast.info(
           `${invalidCount} product${invalidCount > 1 ? 's' : ''} ${invalidCount > 1 ? 'are' : 'is'} no longer available and ${invalidCount > 1 ? 'have' : 'has'} been removed from your cart.`
         );
       }

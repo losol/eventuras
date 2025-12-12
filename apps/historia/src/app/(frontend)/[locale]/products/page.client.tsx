@@ -44,9 +44,9 @@ export function ProductsPageClient({ products, locale }: ProductsPageClientProps
               title={product.title}
               lead={product.lead || undefined}
               price={
-                product.price?.amount
+                product.price?.amountIncVat
                   ? formatPrice(
-                      fromMinorUnits(product.price.amount, product.price.currency || 'NOK'),
+                      fromMinorUnits(product.price.amountIncVat, product.price.currency || 'NOK'),
                       product.price.currency || 'NOK',
                       locale
                     )

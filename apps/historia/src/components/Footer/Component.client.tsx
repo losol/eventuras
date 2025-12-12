@@ -71,7 +71,7 @@ export const FooterClient: React.FC<FooterClientProps> = ({ navigation }) => {
                 return (
                   <li key={item.id || itemIndex}>
                     <a
-                      href={item.href}
+                      href={item.url ?? undefined}
                       target={item.openInNewTab ? '_blank' : undefined}
                       rel={item.openInNewTab ? 'noopener noreferrer' : undefined}
                       className="hover:underline"

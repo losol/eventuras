@@ -19,7 +19,7 @@ async function seedShippingProducts() {
         lead: 'Standard delivery within 3-5 business days',
         productType: 'shipping',
         price: {
-          amount: 9900, // 99.00 NOK in cents (will be converted by hook)
+          amountExVat: 9900, // 99.00 NOK in cents (will be converted by hook)
           currency: 'NOK',
           vatRate: 25,
         },
@@ -40,7 +40,7 @@ async function seedShippingProducts() {
         lead: 'Fast delivery within 1-2 business days',
         productType: 'shipping',
         price: {
-          amount: 19900, // 199.00 NOK in cents (will be converted by hook)
+          amountExVat: 19900, // 199.00 NOK in cents (will be converted by hook)
           currency: 'NOK',
           vatRate: 25,
         },
@@ -61,7 +61,7 @@ async function seedShippingProducts() {
         lead: 'Gratis henting i popup butikk',
         productType: 'shipping',
         price: {
-          amount: 0, // Free
+          amountExVat: 0, // Free
           currency: 'NOK',
           vatRate: 0,
         },
@@ -82,7 +82,7 @@ async function seedShippingProducts() {
         lead: 'Gratis henting etter avtale',
         productType: 'shipping',
         price: {
-          amount: 0, // Free
+          amountExVat: 0, // Free
           currency: 'NOK',
           vatRate: 0,
         },
