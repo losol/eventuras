@@ -11,15 +11,15 @@
     "./next-lib": "./src/next-lib.ts"
   },
   "dependencies": {
-    "@tailwindcss/vite": "^4.1.17",
-    "@vitejs/plugin-react": "^5.1.1",
+    "@tailwindcss/vite": "^4.1.18",
+    "@vitejs/plugin-react": "^5.1.2",
     "@vitejs/plugin-react-swc": "^4.2.2",
     "glob": "^13.0.0",
     "vite-plugin-dts": "^4.5.4"
   },
   "devDependencies": {
     "typescript": "^5.9.3",
-    "vite": "^7.2.6"
+    "vite": "^7.2.7"
   },
   "peerDependencies": {
     "vite": "^6.0.0"

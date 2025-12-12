@@ -37,10 +37,10 @@
   "devDependencies": {
     "@eventuras/typescript-config": "workspace:*",
     "@eventuras/vite-config": "workspace:*",
-    "@vitest/ui": "^3.0.5",
-    "tsx": "^4.19.2",
+    "@vitest/ui": "^4.0.15",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3",
-    "vite": "^7.2.6",
-    "vitest": "^3.0.5"
+    "vite": "^7.2.7",
+    "vitest": "^4.0.15"
   }
 }

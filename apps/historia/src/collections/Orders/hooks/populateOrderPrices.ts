@@ -49,7 +49,7 @@ export const populateOrderPrices: CollectionBeforeChangeHook<Order> = async ({
       return {
         ...item,
         price: {
-          amount: product.price.amount || 0,
+          amountExVat: product.price.amountExVat || 0,
           currency: product.price.currency || 'NOK',
           vatRate: product.price.vatRate ?? 25,
         },

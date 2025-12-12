@@ -25,7 +25,7 @@
     "@eventuras/eslint-config": "workspace:*",
     "@eventuras/typescript-config": "workspace:*",
     "@eventuras/vite-config": "workspace:*",
-    "vite": "^7.2.6"
+    "vite": "^7.2.7"
   },
   "peerDependencies": {
     "react": "^19.2.1",
