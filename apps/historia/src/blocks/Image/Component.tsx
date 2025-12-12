@@ -8,7 +8,7 @@ import type { ImageBlock as ImageBlockProps, Media } from '@/payload-types';
 export const ImageBlock: React.FC<ImageBlockProps> = (props) => {
   const { media, caption } = props;
 
-  if (!media || typeof media === 'string') {
+  if (!media || typeof media !== 'object') {
     return null;
   }
 
