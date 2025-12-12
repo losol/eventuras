@@ -11,6 +11,7 @@ import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Link } from '@eventuras/ratio-ui-next';
 
 import { useCart } from '@/lib/cart';
+import { fromMinorUnits } from '@/lib/price';
 import type { Product } from '@/payload-types';
 
 interface ProductDetailClientProps {
@@ -66,7 +67,7 @@ export function ProductDetailClient({ product, locale }: ProductDetailClientProp
             <div>
               <span className="text-3xl font-bold text-gray-900 dark:text-white">
                 {formatPrice(
-                  fromMinorUnits(product.price.amount, product.price.currency || 'NOK'),
+                  fromMinorUnits(product.price.amountIncVat, product.price.currency || 'NOK'),
                   product.price.currency || 'NOK',
                   locale
                 )}
