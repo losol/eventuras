@@ -99,7 +99,7 @@ export default async function Page({ params: paramsPromise }: Args) {
   const currentSlug = slug?.length ? slug[slug.length - 1] : undefined;
 
   let page;
-  if (!currentSlug) {
+  if (!currentSlug || !fullPath) {
     // Handle the homepage logic
     const homePageId = await getHomePageId();
     if (!homePageId) {
@@ -110,8 +110,8 @@ export default async function Page({ params: paramsPromise }: Args) {
     // Query the page using the homepage ID
     page = await queryPage({ id: homePageId, locale, draft });
   } else {
-    // Query the page using slug, then verify the breadcrumbs URL matches
-    page = await queryPageByBreadcrumbsUrl({ breadcrumbsUrl: fullPath!, locale, draft });
+    // Query the page using breadcrumbs URL for nested pages
+    page = await queryPageByBreadcrumbsUrl({ breadcrumbsUrl: fullPath, locale, draft });
   }
 
   if (!page) {
@@ -219,7 +219,7 @@ const queryPage = cache(async ({
       depth: 3,
       pagination: false,
       overrideAccess: draft,
-      //@ts-expect-error locale type
+      // @ts-expect-error - Payload's locale parameter type doesn't match our string type
       locale,
       where,
       select: contentSelection,
@@ -250,16 +250,18 @@ const queryPageByBreadcrumbsUrl = cache(async ({
   const payload = await getPayload({ config: configPromise });
 
   try {
-    // Fetch all pages and filter by breadcrumbs URL
-    // We need to do this because Payload doesn't support querying nested array fields directly
+    // Fetch pages and filter by breadcrumbs URL
+    // Note: Payload doesn't support querying nested array fields directly,
+    // so we fetch pages and filter in memory. For large sites, consider
+    // adding a denormalized fullPath field on the page document.
     const result = await payload.find({
       collection: 'pages',
       draft,
-      limit: 100,
+      limit: 1000,
       depth: 3,
       pagination: false,
       overrideAccess: draft,
-      //@ts-expect-error locale type
+      // @ts-expect-error - Payload's locale parameter type doesn't match our string type
       locale,
       select: contentSelection,
     });
