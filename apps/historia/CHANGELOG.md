@@ -1,5 +1,13 @@
 # @eventuras/historia
 
+## 0.13.0
+
+### Minor Changes
+
+- ### 🧱 Features
+  - feat(historia): enhance page routing with breadcrumbs URL support (bbef557) [@eventuras/historia]
+  - feat(historia): add Image block with media and caption support (915ced8) [@eventuras/historia]
+
 ## 0.12.0
 
 ### Minor Changes

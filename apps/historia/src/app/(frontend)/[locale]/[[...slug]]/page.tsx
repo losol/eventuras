@@ -1,6 +1,6 @@
 import React, { cache } from 'react';
 import configPromise from '@payload-config';
-import { draftMode } from 'next/headers';
+import { draftMode, headers } from 'next/headers';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getPayload } from 'payload';
@@ -16,9 +16,6 @@ import PageClient from './page.client';
 const locales = process.env.NEXT_PUBLIC_CMS_LOCALES?.split(',') || ['en'];
 const defaultLocale = process.env.NEXT_PUBLIC_CMS_DEFAULT_LOCALE || 'en';
 
-// Read domain from environment variable
-const serverDomain = process.env.NEXT_PUBLIC_CMS_URL;
-
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise });
 
@@ -30,7 +27,7 @@ export async function generateStaticParams() {
     pagination: false,
     select: {
       slug: true,
-      resourceId: true,
+      breadcrumbs: true,
     },
   });
 
@@ -41,11 +38,24 @@ export async function generateStaticParams() {
 
   const paths: Array<{ locale: string; slug: string[] }> = [];
 
-  // Add paths for pages
+  // Add paths for pages using breadcrumbs URL
   for (const locale of locales) {
     for (const page of pages.docs) {
-      const slugArray = page.slug ? [page.slug] : [];
-      paths.push({ locale, slug: slugArray });
+      const breadcrumbs = page.breadcrumbs as Array<{ url?: string | null }> | null;
+      const lastBreadcrumb = breadcrumbs?.[breadcrumbs.length - 1];
+      const pageUrl = lastBreadcrumb?.url;
+
+      let slugArray: string[];
+      if (pageUrl) {
+        // Remove leading slash and split into segments
+        slugArray = pageUrl.replace(/^\//, '').split('/').filter(Boolean);
+      } else {
+        slugArray = page.slug ? [page.slug] : [];
+      }
+
+      if (slugArray.length > 0) {
+        paths.push({ locale, slug: slugArray });
+      }
     }
   }
 
@@ -83,7 +93,9 @@ export default async function Page({ params: paramsPromise }: Args) {
     notFound();
   }
 
-  // Get the last segment of the URL (the page's own slug)
+  // Build the full path from slug segments (this is the breadcrumbs URL)
+  const fullPath = slug?.length ? `/${slug.join('/')}` : undefined;
+  // Get the last segment (the page's own slug)
   const currentSlug = slug?.length ? slug[slug.length - 1] : undefined;
 
   let page;
@@ -98,8 +110,8 @@ export default async function Page({ params: paramsPromise }: Args) {
     // Query the page using the homepage ID
     page = await queryPage({ id: homePageId, locale, draft });
   } else {
-    // Query the page using the slug
-    page = await queryPage({ slug: currentSlug, locale, draft });
+    // Query the page using slug, then verify the breadcrumbs URL matches
+    page = await queryPageByBreadcrumbsUrl({ breadcrumbsUrl: fullPath!, locale, draft });
   }
 
   if (!page) {
@@ -140,8 +152,6 @@ export default async function Page({ params: paramsPromise }: Args) {
 }
 
 // Get the homepage ID from the environment
-import { headers } from 'next/headers';
-
 const getHomePageId = cache(async (): Promise<string | null> => {
   const payload = await getPayload({ config: configPromise });
   const host = (await headers()).get('host');
@@ -223,6 +233,53 @@ const queryPage = cache(async ({
     return result.docs[0];
   } catch (error) {
     console.error(`Error querying page: ${error}`, error);
+    return null;
+  }
+});
+
+// Query a page by its breadcrumbs URL (for nested pages)
+const queryPageByBreadcrumbsUrl = cache(async ({
+  breadcrumbsUrl,
+  locale,
+  draft,
+}: {
+  breadcrumbsUrl: string;
+  locale: string;
+  draft: boolean;
+}) => {
+  const payload = await getPayload({ config: configPromise });
+
+  try {
+    // Fetch all pages and filter by breadcrumbs URL
+    // We need to do this because Payload doesn't support querying nested array fields directly
+    const result = await payload.find({
+      collection: 'pages',
+      draft,
+      limit: 100,
+      depth: 3,
+      pagination: false,
+      overrideAccess: draft,
+      //@ts-expect-error locale type
+      locale,
+      select: contentSelection,
+    });
+
+    // Find the page where the last breadcrumb's URL matches
+    const page = result.docs.find((doc) => {
+      const breadcrumbs = doc.breadcrumbs as Array<{ url?: string | null }> | null;
+      if (!breadcrumbs || breadcrumbs.length === 0) return false;
+      const lastBreadcrumb = breadcrumbs[breadcrumbs.length - 1];
+      return lastBreadcrumb?.url === breadcrumbsUrl;
+    });
+
+    if (!page) {
+      console.warn(`No page found for breadcrumbs URL: ${breadcrumbsUrl}`);
+      return null;
+    }
+
+    return page;
+  } catch (error) {
+    console.error(`Error querying page by breadcrumbs URL: ${error}`, error);
     return null;
   }
 });

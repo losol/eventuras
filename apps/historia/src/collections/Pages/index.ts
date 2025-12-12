@@ -35,8 +35,14 @@ export const Pages: CollectionConfig<'pages'> = {
     defaultColumns: ['title', 'slug', 'updatedAt'],
     livePreview: {
       url: ({ data, req }) => {
+        // Get breadcrumbs URL for nested pages
+        const breadcrumbs = data?.breadcrumbs as Array<{ url?: string | null }> | undefined;
+        const lastBreadcrumb = breadcrumbs?.[breadcrumbs.length - 1];
+        const breadcrumbsUrl = lastBreadcrumb?.url || undefined;
+
         const path = generatePreviewPath({
           slug: typeof data?.slug === 'string' ? data.slug : '',
+          breadcrumbsUrl,
           collection: 'pages',
           req,
         });
@@ -45,8 +51,14 @@ export const Pages: CollectionConfig<'pages'> = {
       },
     },
     preview: (data, { req }) => {
+      // Get breadcrumbs URL for nested pages
+      const breadcrumbs = data?.breadcrumbs as Array<{ url?: string | null }> | undefined;
+      const lastBreadcrumb = breadcrumbs?.[breadcrumbs.length - 1];
+      const breadcrumbsUrl = lastBreadcrumb?.url || undefined;
+
       return generatePreviewPath({
         slug: typeof data?.slug === 'string' ? data.slug : '',
+        breadcrumbsUrl,
         collection: 'pages',
         req,
       });
