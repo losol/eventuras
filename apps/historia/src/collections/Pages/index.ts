@@ -4,6 +4,7 @@ import { admins } from '@/access/admins';
 import { anyone } from '@/access/anyone';
 import { Archive } from "@/blocks/ArchiveBlock/config";
 import { Content } from "@/blocks/Content/config";
+import { Image } from '@/blocks/Image/config';
 import { Product } from '@/blocks/Product/config';
 import { contributors } from '@/fields/contributors';
 import { image } from '@/fields/image';
@@ -43,12 +44,13 @@ export const Pages: CollectionConfig<'pages'> = {
         return path;
       },
     },
-    preview: (data, { req }) =>
-      generatePreviewPath({
+    preview: (data, { req }) => {
+      return generatePreviewPath({
         slug: typeof data?.slug === 'string' ? data.slug : '',
         collection: 'pages',
         req,
-      }),
+      });
+    },
     useAsTitle: 'name',
   },
   fields: [
@@ -62,7 +64,7 @@ export const Pages: CollectionConfig<'pages'> = {
             title,
             lead,
             image,
-            storyField([Archive, Content, Product])
+            storyField([Archive, Content, Image, Product])
           ],
         },
         {

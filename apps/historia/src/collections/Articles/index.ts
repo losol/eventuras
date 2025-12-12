@@ -3,6 +3,7 @@ import type { CollectionConfig } from 'payload';
 import { admins } from '@/access/admins';
 import { publishedOnly } from '@/access/publishedOnly';
 import { Content } from '@/blocks/Content/config';
+import { Image } from '@/blocks/Image/config';
 import { Product } from '@/blocks/Product/config';
 import { contributors } from '@/fields/contributors';
 import { image } from '@/fields/image';
@@ -36,21 +37,23 @@ export const Articles: CollectionConfig = {
       url: ({ data, req }) => {
         const path = generatePreviewPath({
           slug: typeof data?.slug === 'string' ? data.slug : '',
+          resourceId: typeof data?.resourceId === 'string' ? data.resourceId : undefined,
           collection: 'articles',
           req,
         });
 
-        return `${process.env.NEXT_PUBLIC_CMS_URL}${path}`;
+        return path;
       },
     },
     preview: (data, { req }) => {
       const path = generatePreviewPath({
         slug: typeof data?.slug === 'string' ? data.slug : '',
+        resourceId: typeof data?.resourceId === 'string' ? data.resourceId : undefined,
         collection: 'articles',
         req
       });
 
-      return `${process.env.NEXT_PUBLIC_CMS_URL}${path}`;
+      return path;
     },
     useAsTitle: 'title',
   },
@@ -64,7 +67,7 @@ export const Articles: CollectionConfig = {
             title,
             image,
             lead,
-            storyField([Content, Product]),
+            storyField([Content, Image, Product]),
           ]
         },
         {

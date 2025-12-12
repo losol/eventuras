@@ -1,9 +1,12 @@
 import {
+  BlocksFeature,
   HeadingFeature,
   InlineToolbarFeature,
   lexicalEditor,
 } from '@payloadcms/richtext-lexical';
 import type { Block } from 'payload';
+
+import { Image } from '@/blocks/Image/config';
 
 export const Content: Block = {
   slug: 'content',
@@ -19,6 +22,7 @@ export const Content: Block = {
             ...rootFeatures,
             HeadingFeature({ enabledHeadingSizes: ['h2', 'h3', 'h4'] }),
             InlineToolbarFeature(),
+            BlocksFeature({ blocks: [Image] }),
           ];
         },
       }),
