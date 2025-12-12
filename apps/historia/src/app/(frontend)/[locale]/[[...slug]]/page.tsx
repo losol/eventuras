@@ -83,7 +83,7 @@ export default async function Page({ params: paramsPromise }: Args) {
     notFound();
   }
 
-  // Get the last segment of the URL or use `undefined` for root
+  // Get the last segment of the URL (the page's own slug)
   const currentSlug = slug?.length ? slug[slug.length - 1] : undefined;
 
   let page;
@@ -190,8 +190,11 @@ const queryPage = cache(async ({
 
   const where: Record<string, any> = {};
 
-  if (id) where.id = { equals: id };
-  if (slug) where.slug = { equals: slug };
+  if (id) {
+    where.id = { equals: id };
+  } else if (slug) {
+    where.slug = { equals: slug };
+  }
 
   if (Object.keys(where).length === 0) {
     console.warn('No valid filter provided for queryPage.');
@@ -206,7 +209,7 @@ const queryPage = cache(async ({
       depth: 3,
       pagination: false,
       overrideAccess: draft,
-      //@ts-expect-error
+      //@ts-expect-error locale type
       locale,
       where,
       select: contentSelection,
@@ -243,6 +246,10 @@ const contentSelection: PagesSelect = {
       limit: true,
     },
     content: true,
+    image: {
+      media: true,
+      caption: true,
+    },
     products: {
       products: true,
     },

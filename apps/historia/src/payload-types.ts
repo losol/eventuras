@@ -180,7 +180,7 @@ export interface Article {
   title: string;
   image?: Image;
   lead?: string | null;
-  story?: (ContentBlock | ProductsBlock)[] | null;
+  story?: (ContentBlock | ImageBlock | ProductsBlock)[] | null;
   publishedAt?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
@@ -274,7 +274,7 @@ export interface Page {
   title: string;
   lead?: string | null;
   image?: Image;
-  story?: (ArchiveBlock | ContentBlock | ProductsBlock)[] | null;
+  story?: (ArchiveBlock | ContentBlock | ImageBlock | ProductsBlock)[] | null;
   slug?: string | null;
   slugLock?: boolean | null;
   resourceId: string;
@@ -744,6 +744,31 @@ export interface ArchiveBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'archive';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ImageBlock".
+ */
+export interface ImageBlock {
+  media: string | Media;
+  caption?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'image';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1670,6 +1695,7 @@ export interface ArticlesSelect<T extends boolean = true> {
     | T
     | {
         content?: T | ContentBlockSelect<T>;
+        image?: T | ImageBlockSelect<T>;
         products?: T | ProductsBlockSelect<T>;
       };
   publishedAt?: T;
@@ -1698,6 +1724,16 @@ export interface ImageSelect<T extends boolean = true> {
  */
 export interface ContentBlockSelect<T extends boolean = true> {
   richText?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ImageBlock_select".
+ */
+export interface ImageBlockSelect<T extends boolean = true> {
+  media?: T;
+  caption?: T;
   id?: T;
   blockName?: T;
 }
@@ -1948,6 +1984,7 @@ export interface PagesSelect<T extends boolean = true> {
     | {
         archive?: T | ArchiveBlockSelect<T>;
         content?: T | ContentBlockSelect<T>;
+        image?: T | ImageBlockSelect<T>;
         products?: T | ProductsBlockSelect<T>;
       };
   slug?: T;

@@ -3,7 +3,7 @@ import { CollectionSlug, PayloadRequest } from 'payload'
 import { getLocalizedCollectionName } from '@/app/(frontend)/[locale]/c/[collection]/pageCollections'
 
 const collectionPrefixMap: Partial<Record<CollectionSlug, string>> = {
-  articles: '/articles',
+  articles: 'c',
   pages: '',
   products: '/products',
 }
@@ -12,10 +12,11 @@ type Props = {
   collection: keyof typeof collectionPrefixMap
   slug: string
   resourceId?: string
+  breadcrumbsUrl?: string
   req: PayloadRequest
 }
 
-export const generatePreviewPath = ({ collection, slug, resourceId, req }: Props) => {
+export const generatePreviewPath = ({ collection, slug, resourceId, breadcrumbsUrl, req }: Props) => {
   const locale = req.locale || process.env.NEXT_PUBLIC_CMS_DEFAULT_LOCALE || 'no';
   const prefix = collectionPrefixMap[collection];
 
@@ -30,6 +31,9 @@ export const generatePreviewPath = ({ collection, slug, resourceId, req }: Props
     // Use localized collection name for /c/ routes
     const localizedCollection = getLocalizedCollectionName(collection, locale);
     path = `/${locale}/c/${localizedCollection}/${fullSlug}`;
+  } else if (collection === 'pages' && breadcrumbsUrl) {
+    // Use breadcrumbs URL for nested pages
+    path = `/${locale}${breadcrumbsUrl}`;
   } else {
     path = prefix ? `/${locale}${prefix}/${fullSlug}` : `/${locale}/${fullSlug}`;
   }

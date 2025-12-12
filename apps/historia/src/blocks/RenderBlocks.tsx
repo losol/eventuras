@@ -3,6 +3,7 @@ import React from 'react'
 import { ArchiveBlock } from "@/blocks/ArchiveBlock/Component";
 import { ContentBlock } from '@/blocks/Content/Component'
 import { FormBlock } from '@/blocks/Form/Component'
+import { ImageBlock } from '@/blocks/Image/Component'
 import { ProductsBlock } from '@/blocks/Product/Component'
 
 // Extend block components to include `disableInnerContainer`
@@ -12,6 +13,7 @@ const blockComponents: {
   archive: ArchiveBlock,
   content: ContentBlock,
   formBlock: FormBlock,
+  image: ImageBlock,
   products: ProductsBlock,
 }
 
