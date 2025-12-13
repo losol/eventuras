@@ -43,6 +43,20 @@ const isPostgres = cmsDatabaseUrl.startsWith('postgres://');
 // Email configuration - controlled by FEATURE_SMTP flag
 const smtpEnabled = process.env.FEATURE_SMTP === 'enabled';
 
+// Validate SMTP credentials when SMTP is enabled
+if (smtpEnabled) {
+  const missingCredentials = [];
+  if (!process.env.SMTP_USER) missingCredentials.push('SMTP_USER');
+  if (!process.env.SMTP_PASS) missingCredentials.push('SMTP_PASS');
+
+  if (missingCredentials.length > 0) {
+    throw new Error(
+      `SMTP is enabled (FEATURE_SMTP=enabled) but required credentials are missing: ${missingCredentials.join(', ')}. ` +
+      'Either provide the missing environment variables or disable SMTP by removing FEATURE_SMTP.'
+    );
+  }
+}
+
 const emailAdapter = smtpEnabled
   ? nodemailerAdapter({
       defaultFromAddress: process.env.SMTP_FROM_EMAIL || 'noreply@eventuras.local',
@@ -52,8 +66,8 @@ const emailAdapter = smtpEnabled
         port: parseInt(process.env.SMTP_PORT || '587', 10),
         secure: process.env.SMTP_SECURE === 'true',
         auth: {
-          user: process.env.SMTP_USER || '',
-          pass: process.env.SMTP_PASS || '',
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS,
         },
       },
     })
