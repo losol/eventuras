@@ -4,11 +4,11 @@ import { fileURLToPath } from 'url';
 
 import { postgresAdapter } from '@payloadcms/db-postgres';
 import { sqliteAdapter } from '@payloadcms/db-sqlite';
+import { nodemailerAdapter } from '@payloadcms/email-nodemailer';
 import { buildConfig } from 'payload';
 import sharp from 'sharp';
 
 import { defaultLexical } from '@/fields/defaultLexical';
-import { seedDefaultWebsite } from '@/seed/defaultWebsite';
 
 import { Articles } from './collections/Articles';
 import { BusinessEvents } from './collections/BusinessEvents';
@@ -39,6 +39,34 @@ const dirname = path.dirname(filename);
 
 const cmsDatabaseUrl = process.env.CMS_DATABASE_URL || 'file:./historia.db';
 const isPostgres = cmsDatabaseUrl.startsWith('postgres://');
+
+// Email configuration - controlled by FEATURE_SMTP flag
+const smtpEnabled = process.env.FEATURE_SMTP === 'enabled';
+
+const emailAdapter = smtpEnabled
+  ? nodemailerAdapter({
+      defaultFromAddress: process.env.SMTP_FROM_EMAIL || 'noreply@eventuras.local',
+      defaultFromName: process.env.SMTP_FROM_NAME || 'Historia',
+      transportOptions: {
+        host: process.env.SMTP_HOST || 'localhost',
+        port: parseInt(process.env.SMTP_PORT || '587', 10),
+        secure: process.env.SMTP_SECURE === 'true',
+        auth: {
+          user: process.env.SMTP_USER || '',
+          pass: process.env.SMTP_PASS || '',
+        },
+      },
+    })
+  : nodemailerAdapter({
+      defaultFromAddress: 'noreply@eventuras.local',
+      defaultFromName: 'Historia (Console Log)',
+      // Log emails to console instead of sending
+      transportOptions: {
+        streamTransport: true,
+        newline: 'unix',
+        buffer: true,
+      },
+    });
 
 export default buildConfig({
   admin: {
@@ -90,6 +118,7 @@ export default buildConfig({
   cors: allowedOrigins,
   csrf: allowedOrigins,
   editor: defaultLexical,
+  email: emailAdapter,
   localization: {
     locales: locales,
     defaultLocale: defaultLocale,
