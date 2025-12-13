@@ -164,7 +164,6 @@ jobs:
         run: |
           echo "✅ Staging deployment successful"
           echo "Image: ${{ steps.image.outputs.full-image }}"
-          echo "URL: https://${{ secrets.AZURE_WEBAPP_NAME }}.azurewebsites.net"
 
   deploy-prod:
     name: Deploy to Production
