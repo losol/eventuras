@@ -102,19 +102,12 @@ jobs:
     environment:
       name: historia-dev
     steps:
-      - name: Extract image tag
-        id: image
-        run: |
-          IMAGE_TAG="dev-pr${{ github.event.pull_request.number }}-$(echo ${{ github.sha }} | cut -c1-7)"
-          echo "tag=${IMAGE_TAG}" >> $GITHUB_OUTPUT
-          echo "full-image=${{ env.DOCKER_REPOSITORY }}:${IMAGE_TAG}" >> $GITHUB_OUTPUT
-
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          images: ${{ steps.image.outputs.full-image }}
+          images: ${{ needs.build-docker.outputs.image-tag }}
 
       - name: Comment on PR
         uses: actions/github-script@v7
@@ -125,7 +118,7 @@ jobs:
             **Status:** ✅ Deployed successfully
 
             **Environment:** historia-dev
-            **Docker Image:** \`${{ steps.image.outputs.full-image }}\`
+            **Docker Image:** \`${{ needs.build-docker.outputs.image-tag }}\`
             **Commit:** ${{ github.sha }}
 
             The preview environment is ready for testing!`;
@@ -145,25 +138,17 @@ jobs:
     environment:
       name: historia-staging
     steps:
-      - name: Extract image tag
-        id: image
-        run: |
-          DATE=$(date +%Y%m%d)
-          IMAGE_TAG="staging-${DATE}-$(echo ${{ github.sha }} | cut -c1-7)"
-          echo "tag=${IMAGE_TAG}" >> $GITHUB_OUTPUT
-          echo "full-image=${{ env.DOCKER_REPOSITORY }}:${IMAGE_TAG}" >> $GITHUB_OUTPUT
-
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          images: ${{ steps.image.outputs.full-image }}
+          images: ${{ needs.build-docker.outputs.image-tag }}
 
       - name: Create deployment notification
         run: |
           echo "✅ Staging deployment successful"
-          echo "Image: ${{ steps.image.outputs.full-image }}"
+          echo "Image: ${{ needs.build-docker.outputs.image-tag }}"
 
   deploy-prod:
     name: Deploy to Production
@@ -179,15 +164,13 @@ jobs:
           # Extract version from tag like @eventuras/historia@0.14.0
           VERSION=$(echo "${{ github.event.release.tag_name }}" | sed -n 's/.*@eventuras\/historia@\(.*\)/\1/p')
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
-          echo "image-version=${{ env.DOCKER_REPOSITORY }}:v${VERSION}" >> $GITHUB_OUTPUT
-          echo "image-latest=${{ env.DOCKER_REPOSITORY }}:latest" >> $GITHUB_OUTPUT
 
       - name: Deploy to Azure Web App (versioned)
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          images: ${{ steps.version.outputs.image-version }}
+          images: ${{ needs.build-docker.outputs.image-tag }}
 
       - name: Comment on release
         uses: actions/github-script@v7
@@ -199,9 +182,7 @@ jobs:
 
             **Version:** \`${{ steps.version.outputs.version }}\`
             **Environment:** historia-prod
-            **Docker Images:**
-            - \`${{ steps.version.outputs.image-version }}\`
-            - \`${{ steps.version.outputs.image-latest }}\`
+            **Docker Images:** \`${{ needs.build-docker.outputs.image-tag }}\`
 
             The new version is now live in production! 🚀`;
 
