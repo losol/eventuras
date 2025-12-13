@@ -11281,8 +11281,7 @@
         },
         "price_currency": {
           "name": "price_currency",
-          "type": "enum_products_price_currency",
-          "typeSchema": "public",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": false,
           "default": "'NOK'"
@@ -12007,8 +12006,7 @@
         },
         "version_price_currency": {
           "name": "version_price_currency",
-          "type": "enum__products_v_version_price_currency",
-          "typeSchema": "public",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": false,
           "default": "'NOK'"
@@ -14911,8 +14909,7 @@
         },
         "currency": {
           "name": "currency",
-          "type": "enum_transactions_currency",
-          "typeSchema": "public",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": true,
           "default": "'NOK'"
@@ -21241,18 +21238,6 @@
         "service"
       ]
     },
-    "public.enum_products_price_currency": {
-      "name": "enum_products_price_currency",
-      "schema": "public",
-      "values": [
-        "NOK",
-        "USD",
-        "EUR",
-        "GBP",
-        "SEK",
-        "DKK"
-      ]
-    },
     "public.enum_products_status": {
       "name": "enum_products_status",
       "schema": "public",
@@ -21269,18 +21254,6 @@
         "digital",
         "shipping",
         "service"
-      ]
-    },
-    "public.enum__products_v_version_price_currency": {
-      "name": "enum__products_v_version_price_currency",
-      "schema": "public",
-      "values": [
-        "NOK",
-        "USD",
-        "EUR",
-        "GBP",
-        "SEK",
-        "DKK"
       ]
     },
     "public.enum__products_v_version_status": {
@@ -21349,18 +21322,6 @@
         "partial"
       ]
     },
-    "public.enum_transactions_currency": {
-      "name": "enum_transactions_currency",
-      "schema": "public",
-      "values": [
-        "NOK",
-        "USD",
-        "EUR",
-        "GBP",
-        "SEK",
-        "DKK"
-      ]
-    },
     "public.enum_users_roles": {
       "name": "enum_users_roles",
       "schema": "public",
@@ -21414,6 +21375,6 @@
     "tables": {},
     "columns": {}
   },
-  "id": "99ca5b91-ea7a-47cc-bb02-7ee9d968385d",
+  "id": "0f84bdfd-6bec-48a1-bb4a-5b37003b03c0",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }

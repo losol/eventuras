@@ -43,7 +43,7 @@ const dirname = path.dirname(filename);
 
 const cmsDatabaseUrl = process.env.CMS_DATABASE_URL || 'file:./historia.db';
 // Use SQLite during build mode to avoid needing PostgreSQL connection
-const isPostgres = !isBuildMode && cmsDatabaseUrl.startsWith('postgres://');
+const isPostgres = !isBuildMode && (cmsDatabaseUrl.startsWith('postgres://') || cmsDatabaseUrl.startsWith('postgresql://'));
 // Use a temporary SQLite database during build
 const buildDatabaseUrl = isBuildMode ? 'file:./.historia-build.db' : cmsDatabaseUrl;
 
@@ -127,6 +127,8 @@ export default buildConfig({
       pool: {
         connectionString: cmsDatabaseUrl,
       },
+      // Never auto db push in production, even if HISTORIA_DB_DEV_PUSH is set
+      push: process.env.NODE_ENV === 'production' ? false : process.env.HISTORIA_DB_DEV_PUSH === 'true',
       // Run migrations at runtime in production
       // https://payloadcms.com/docs/database/migrations#running-migrations-in-production
       prodMigrations: migrations,
