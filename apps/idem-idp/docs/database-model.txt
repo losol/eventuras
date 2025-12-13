@@ -1,0 +1,355 @@
+====================================================================
+IDEM-IDP — COMPLETE DATABASE MODEL
+Version: 1.4 (IdP broker + PAR + RBAC + audit message)
+====================================================================
+
+The system provides:
+  - Multi-organization, multi-tenant identity
+  - OpenID Connect Provider (IdP) functionality
+  - IdP brokering (Vipps, HelseID, Idporten, AzureAD, etc.)
+  - OAuth2/OIDC tokens & state (including PAR)
+  - User profile & contact info
+  - Key management (JWKS)
+  - Logout, analytics and compliance support
+  - Auditing with human-readable context
+  - Admin RBAC (system / org / tenant scoped administration)
+
+Integrates with:
+  - node-oidc-provider
+  - OpenID Connect Core 1.0
+  - OAuth 2.0 (RFC 6749, 7009, 8628, 9126)
+
+--------------------------------------------------------------------
+SECTION 1 — ORGANIZATIONS
+--------------------------------------------------------------------
+
+Table: idem_organizations
+
+Columns:
+  id               UUID (PK)
+  slug             TEXT (unique)
+  display_name     TEXT
+  active           BOOLEAN (default true)
+  created_at       TIMESTAMPTZ
+
+Relationships:
+  Organization 1 --- N Tenants
+
+--------------------------------------------------------------------
+SECTION 2 — TENANTS (ISSUERS)
+--------------------------------------------------------------------
+
+Enum: tenant_env
+  development | staging | production
+
+Table: idem_tenants
+
+Columns:
+  id               UUID (PK)
+  org_id           UUID (FK → idem_organizations.id)
+  issuer           TEXT (unique)
+  host             TEXT (unique)
+  environment      tenant_env
+  is_primary       BOOLEAN
+  active           BOOLEAN
+  created_at       TIMESTAMPTZ
+
+Relationships:
+  Tenant 1 --- N Accounts
+  Tenant 1 --- N OAuth Clients
+  Tenant 1 --- N Keys
+  Tenant 1 --- N IdP bindings
+  Tenant 1 --- N OIDC Store entries
+  Tenant 1 --- N Audit log entries
+
+--------------------------------------------------------------------
+SECTION 3 — USER CORE MODEL
+--------------------------------------------------------------------
+
+Table: idem_accounts
+
+Columns:
+  id                 UUID (PK)
+  org_id             UUID (FK)
+  tenant_id          UUID (FK)
+  display_name       TEXT
+  preferred_username TEXT
+  primary_email      TEXT
+  active             BOOLEAN
+
+  last_login_at      TIMESTAMPTZ
+  last_used_at       TIMESTAMPTZ
+
+  created_at         TIMESTAMPTZ
+  updated_at         TIMESTAMPTZ
+
+Enum: identity_provider
+  vipps | helseid | idporten | azuread | google | github | other
+
+Table: idem_identities
+
+Columns:
+  id                UUID (PK)
+  account_id        UUID (FK)
+  org_id            UUID (FK)
+  tenant_id         UUID (FK)
+  provider          identity_provider
+  provider_subject  TEXT
+  provider_issuer   TEXT
+  is_primary        BOOLEAN
+  raw_claims        TEXT
+  created_at        TIMESTAMPTZ
+
+Constraints:
+  Unique (tenant_id, provider, provider_subject)
+
+Enum: email_source
+  self | vipps | helseid | idporten | other
+
+Table: idem_emails
+
+Columns:
+  id            UUID (PK)
+  account_id    UUID (FK)
+  org_id        UUID (FK)
+  tenant_id     UUID (FK)
+  email         TEXT
+  is_primary    BOOLEAN
+  is_verified   BOOLEAN
+  source        email_source
+  created_at    TIMESTAMPTZ
+
+--------------------------------------------------------------------
+SECTION 4 — USER PROFILE MODEL
+--------------------------------------------------------------------
+
+Table: idem_profile_person
+
+Columns:
+  id              UUID (PK)
+  account_id      UUID (FK)
+  org_id          UUID (FK)
+  tenant_id       UUID (FK)
+  full_name       TEXT
+  given_name      TEXT
+  family_name     TEXT
+  birthdate       DATE
+  national_id     TEXT
+  gender          TEXT
+  is_verified     BOOLEAN
+  verified_by     TEXT
+  verified_at     TIMESTAMPTZ
+
+Table: idem_profile_facts
+
+Columns:
+  id              UUID (PK)
+  account_id      UUID (FK)
+  tenant_id       UUID (FK)
+  claim_name      TEXT
+  claim_value     TEXT
+  source          TEXT
+  confidence      INT
+  created_at      TIMESTAMPTZ
+
+--------------------------------------------------------------------
+SECTION 5 — ADDRESS MODEL
+--------------------------------------------------------------------
+
+Table: idem_addresses
+
+Columns:
+  id            UUID (PK)
+  account_id    UUID (FK)
+  tenant_id     UUID (FK)
+  address_line1 TEXT
+  address_line2 TEXT
+  postal_code   TEXT
+  city          TEXT
+  country       TEXT
+  source        TEXT
+  is_verified   BOOLEAN
+  created_at    TIMESTAMPTZ
+
+--------------------------------------------------------------------
+SECTION 6 — OAUTH / OIDC CLIENTS
+--------------------------------------------------------------------
+
+Table: idem_oauth_clients
+
+Columns:
+  id                         UUID (PK)
+  tenant_id                  UUID (FK)
+  client_id                  TEXT (unique per tenant)
+  client_name                TEXT
+  client_type                TEXT
+  redirect_uris              TEXT[]
+  post_logout_redirect_uris  TEXT[]
+  grant_types                TEXT[]
+  response_types             TEXT[]
+  token_endpoint_auth_method TEXT
+  client_secret              TEXT
+  jwks_uri                   TEXT
+  jwks                       TEXT
+  allowed_scopes             TEXT[]
+  require_pkce               BOOLEAN
+  created_at                 TIMESTAMPTZ
+  updated_at                 TIMESTAMPTZ
+
+--------------------------------------------------------------------
+SECTION 7 — KEY MANAGEMENT (JWKS)
+--------------------------------------------------------------------
+
+Table: idem_keys
+
+Columns:
+  id            UUID (PK)
+  tenant_id     UUID (FK)
+  kid           TEXT
+  alg           TEXT
+  use           TEXT
+  kty           TEXT
+  public_jwk    TEXT
+  private_jwk   TEXT
+  expires_at    TIMESTAMPTZ
+  created_at    TIMESTAMPTZ
+
+Constraints:
+  Unique (tenant_id, kid)
+
+--------------------------------------------------------------------
+SECTION 8 — IDP BROKER MODEL
+--------------------------------------------------------------------
+
+Table: idem_idp_providers
+
+Columns:
+  id                UUID (PK)
+  key               TEXT (unique)
+  display_name      TEXT
+  type              TEXT
+  issuer            TEXT
+  discovery_url     TEXT
+  authorization_endpoint  TEXT
+  token_endpoint          TEXT
+  jwks_uri                TEXT
+  userinfo_endpoint       TEXT
+  default_scopes    TEXT[]
+  enabled           BOOLEAN
+  created_at        TIMESTAMPTZ
+  updated_at        TIMESTAMPTZ
+
+Table: idem_idp_provider_tenants
+
+Columns:
+  id              UUID (PK)
+  tenant_id       UUID (FK)
+  provider_id     UUID (FK)
+  client_id       TEXT
+  client_secret   TEXT
+  client_jwks     TEXT
+  redirect_uris   TEXT[]
+  extra_scopes    TEXT[]
+  enabled         BOOLEAN
+  last_error_at       TIMESTAMPTZ
+  last_error_code     TEXT
+  last_error_message  TEXT
+  consecutive_errors  INT
+  created_at      TIMESTAMPTZ
+  updated_at      TIMESTAMPTZ
+
+--------------------------------------------------------------------
+SECTION 9 — OIDC STORE
+--------------------------------------------------------------------
+
+Table: idem_oidc_store
+
+Columns:
+  name              TEXT
+  id                TEXT
+  tenant_id         UUID
+  client_id         TEXT
+  account_id        UUID
+  grant_id          TEXT
+  user_code         TEXT
+  uid               TEXT
+  session_id        TEXT
+  scope             TEXT
+  expires_at        TIMESTAMPTZ
+  consumed_at       TIMESTAMPTZ
+  payload           JSONB
+
+Indexes:
+  UNIQUE(name, id)
+
+--------------------------------------------------------------------
+SECTION 10 — AUDIT LOG
+--------------------------------------------------------------------
+
+Table: idem_audit_log
+
+Columns:
+  id            UUID (PK)
+  tenant_id     UUID (nullable)
+  actor_sub     TEXT
+  action        TEXT
+  resource      TEXT
+  message       TEXT
+  before        JSONB
+  after         JSONB
+  ip            TEXT
+  user_agent    TEXT
+  created_at    TIMESTAMPTZ
+
+--------------------------------------------------------------------
+SECTION 11 — ADMIN RBAC
+--------------------------------------------------------------------
+
+Enum: admin_role
+  system_admin | org_admin | tenant_admin | org_reader | tenant_reader
+
+Table: idem_admin_principals
+
+Columns:
+  id            UUID (PK)
+  tenant_id     UUID (FK)
+  account_id    UUID (FK, nullable)
+  client_id     TEXT (nullable)
+  created_at    TIMESTAMPTZ
+
+Table: idem_admin_memberships
+
+Columns:
+  id            UUID (PK)
+  principal_id  UUID (FK)
+  role          admin_role
+  org_id        UUID (nullable)
+  tenant_id     UUID (nullable)
+  created_at    TIMESTAMPTZ
+
+Constraints:
+  - system_admin → org_id NULL, tenant_id NULL
+  - org_admin    → org_id set, tenant_id NULL
+  - tenant_admin → tenant_id set
+
+--------------------------------------------------------------------
+RELATIONSHIP OVERVIEW
+--------------------------------------------------------------------
+
+Organizations
+  └── Tenants (dev / staging / prod)
+        ├── Accounts
+        │     ├── Identities
+        │     ├── Emails
+        │     ├── Profile
+        │     └── Addresses
+        ├── OAuth Clients
+        ├── Keys (JWKS)
+        ├── IdP Broker bindings
+        ├── OIDC Store (tokens, sessions, PAR)
+        ├── Audit Log
+        └── Admin RBAC
+
+====================================================================
+END OF DOCUMENT
+====================================================================
