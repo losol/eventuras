@@ -9,13 +9,18 @@
 # Base image
 FROM node:24-bookworm-slim AS base
 
+# Install sharp dependencies for Next.js image optimization
+# https://sharp.pixelplumbing.com/install#linux-memory-allocator
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libc6 \
+    libstdc++6 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
 ##########################
 # Turbo Prune + Install  #
 ##########################
 FROM base AS deps
-
-# Install required system packages
-RUN apt-get update && apt-get install -y --no-install-recommends libc6 && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -103,7 +108,9 @@ COPY --from=builder --chown=nextjs:nodejs /app/apps/historia/node_modules ./apps
 COPY --from=builder --chown=nextjs:nodejs /app/apps/historia/src/payload.config.ts ./apps/historia/src/payload.config.ts
 COPY --from=builder --chown=nextjs:nodejs /app/apps/historia/src/migrations ./apps/historia/src/migrations
 
-# Ensure .next/server directory exists and is writable for ISR cache
+# Set correct permissions for prerender/ISR cache
+# https://nextjs.org/docs/pages/api-reference/next-config-js/output
+RUN mkdir -p .next && chown nextjs:nodejs .next
 RUN mkdir -p ./apps/historia/.next/server && chown -R nextjs:nodejs ./apps/historia/.next
 
 USER nextjs
