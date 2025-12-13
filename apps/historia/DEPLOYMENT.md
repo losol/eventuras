@@ -126,7 +126,7 @@ for ENV in dev staging prod; do
     --resource-group $RESOURCE_GROUP \
     --docker-custom-image-name losolio/historia:latest \
     --docker-registry-server-url https://index.docker.io/v1/
-    
+
   # Enable continuous deployment
   az webapp deployment container config \
     --name historia-$ENV \
@@ -173,6 +173,8 @@ az webapp config appsettings set \
     PAYLOAD_PUBLIC_SERVER_URL="https://historia-prod.azurewebsites.net" \
     WEBSITES_PORT=3000
 ```
+
+**Note**: The `.azurewebsites.net` URLs above are default Azure URLs. For production, you'll typically configure a custom domain (e.g., `https://cms.yourdomain.com`) and update `PAYLOAD_PUBLIC_SERVER_URL` accordingly.
 
 ### 5. Download Publish Profiles
 
@@ -224,23 +226,27 @@ Add the following secrets to each environment:
 
 Navigate to Settings → Secrets and variables → Actions → Repository secrets:
 
-- `DOCKER_USERNAME`: Your Docker Hub username
-- `DOCKER_PASSWORD`: Your Docker Hub password or access token
+- `DOCKERHUB_USERNAME`: Your Docker Hub username
+- `DOCKERHUB_TOKEN`: Your Docker Hub access token
 - `CMS_SECRET`: Payload CMS secret key (used during build)
+
+**Note**: Generate a Docker Hub access token at https://hub.docker.com/settings/security instead of using your password.
 
 #### Environment Secrets
 
+For each environment, add these secrets (the names are the same across environments, scoped by the environment itself):
+
 **historia-dev environment**:
-- `AZURE_HISTORIA_DEV_WEBAPP_NAME`: `historia-dev`
-- `AZURE_HISTORIA_DEV_PUBLISH_PROFILE`: Contents of `historia-dev-publish-profile.xml`
+- `AZURE_WEBAPP_NAME`: `historia-dev`
+- `AZURE_WEBAPP_PUBLISH_PROFILE`: Contents of `historia-dev-publish-profile.xml`
 
 **historia-staging environment**:
-- `AZURE_HISTORIA_STAGING_WEBAPP_NAME`: `historia-staging`
-- `AZURE_HISTORIA_STAGING_PUBLISH_PROFILE`: Contents of `historia-staging-publish-profile.xml`
+- `AZURE_WEBAPP_NAME`: `historia-staging`
+- `AZURE_WEBAPP_PUBLISH_PROFILE`: Contents of `historia-staging-publish-profile.xml`
 
 **historia-prod environment**:
-- `AZURE_HISTORIA_PROD_WEBAPP_NAME`: `historia-prod`
-- `AZURE_HISTORIA_PROD_PUBLISH_PROFILE`: Contents of `historia-prod-publish-profile.xml`
+- `AZURE_WEBAPP_NAME`: `historia-prod`
+- `AZURE_WEBAPP_PUBLISH_PROFILE`: Contents of `historia-prod-publish-profile.xml`
 
 ## Database Setup
 
