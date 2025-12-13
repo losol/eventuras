@@ -103,6 +103,9 @@ COPY --from=builder --chown=nextjs:nodejs /app/apps/historia/node_modules ./apps
 COPY --from=builder --chown=nextjs:nodejs /app/apps/historia/src/payload.config.ts ./apps/historia/src/payload.config.ts
 COPY --from=builder --chown=nextjs:nodejs /app/apps/historia/src/migrations ./apps/historia/src/migrations
 
+# Ensure .next/server directory exists and is writable for ISR cache
+RUN mkdir -p ./apps/historia/.next/server && chown -R nextjs:nodejs ./apps/historia/.next
+
 USER nextjs
 
 EXPOSE 3000
