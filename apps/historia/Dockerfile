@@ -108,9 +108,8 @@ COPY --from=builder --chown=nextjs:nodejs /app/apps/historia/node_modules ./apps
 COPY --from=builder --chown=nextjs:nodejs /app/apps/historia/src/payload.config.ts ./apps/historia/src/payload.config.ts
 COPY --from=builder --chown=nextjs:nodejs /app/apps/historia/src/migrations ./apps/historia/src/migrations
 
-# Set correct permissions for prerender/ISR cache
+# Create ISR cache directory with correct permissions
 # https://nextjs.org/docs/pages/api-reference/next-config-js/output
-RUN mkdir -p .next && chown nextjs:nodejs .next
 RUN mkdir -p ./apps/historia/.next/server && chown -R nextjs:nodejs ./apps/historia/.next
 
 USER nextjs
