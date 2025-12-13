@@ -17,6 +17,12 @@ const locales = process.env.NEXT_PUBLIC_CMS_LOCALES?.split(',') || ['en'];
 const defaultLocale = process.env.NEXT_PUBLIC_CMS_DEFAULT_LOCALE || 'en';
 
 export async function generateStaticParams() {
+  // Skip static generation during build to avoid database queries
+  // Pages will be generated on-demand at runtime (ISR)
+  if (process.env.NEXT_PHASE === 'phase-production-build') {
+    return [];
+  }
+
   const payload = await getPayload({ config: configPromise });
 
   const pages = await payload.find({

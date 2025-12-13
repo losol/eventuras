@@ -334,7 +334,8 @@ async function updateOrderStatus(
   );
 
   // Map transaction status to order status
-  const orderStatusMap: Record<TransactionStatus, string> = {
+  type OrderStatus = 'pending' | 'processing' | 'on-hold' | 'completed' | 'canceled';
+  const orderStatusMap: Record<TransactionStatus, OrderStatus> = {
     'pending': 'pending',           // Payment initiated, waiting for user action
     'authorized': 'processing',     // Payment authorized, ready to be captured
     'captured': 'completed',        // Payment captured, order can be fulfilled
