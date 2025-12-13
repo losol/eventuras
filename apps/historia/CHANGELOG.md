@@ -1,5 +1,12 @@
 # @eventuras/historia
 
+## 0.14.1
+
+### Patch Changes
+
+- ### 🧹 Maintenance
+  - chore(historia, eslint-config): deps (6239f22) [@eventuras/historia]
+
 ## 0.14.0
 
 ### Minor Changes

@@ -1,6 +1,6 @@
 {
   "name": "@eventuras/historia",
-  "version": "0.14.0",
+  "version": "0.14.1",
   "description": "The knowledge CMS",
   "license": "MIT",
   "type": "module",
@@ -79,6 +79,7 @@
   "optionalDependencies": {
     "@esbuild/linux-x64": "0.27.1",
     "@libsql/linux-x64-gnu": "0.5.22",
+    "libsql": "^0.5.22",
     "sharp": "^0.34.5"
   },
   "engines": {
