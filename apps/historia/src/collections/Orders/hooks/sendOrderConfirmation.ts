@@ -68,7 +68,7 @@ export const sendOrderConfirmation: CollectionAfterChangeHook<Order> = async ({
 
     // Send the email
     await payload.sendEmail({
-      to: "ole@losol.no", // doc.userEmail,
+      to: doc.userEmail,
       subject: `Ordrebekreftelse - #${doc.id}`,
       html: emailHtml,
     });

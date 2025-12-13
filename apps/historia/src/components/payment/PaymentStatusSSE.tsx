@@ -22,6 +22,7 @@ interface PaymentStatusUpdate {
   orderId?: string;
   error?: string;
   timeout?: boolean;
+  failureReason?: string;
 }
 
 /**
@@ -100,9 +101,19 @@ export function PaymentStatusSSE({
             eventSource.close();
           }
 
-          // Handle failed payment
+          // Handle failed payment - pass failureReason via status string
           if (data.status === 'failed' || data.status === 'cancelled') {
-            logger.warn({ reference, status: data.status }, 'Payment failed');
+            logger.warn(
+              { reference, status: data.status, failureReason: data.failureReason },
+              'Payment failed'
+            );
+
+            // Pass failure reason to parent via status callback (format: "failed:reason")
+            const statusWithReason = data.failureReason
+              ? `failed:${data.failureReason}`
+              : data.status;
+            onStatusChange?.(statusWithReason);
+
             toast.error('Betaling feilet');
             eventSource.close();
           }

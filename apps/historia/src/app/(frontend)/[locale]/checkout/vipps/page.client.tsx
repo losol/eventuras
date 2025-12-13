@@ -18,6 +18,7 @@ import { PaymentStatusSSE } from '@/components/payment/PaymentStatusSSE';
 import { useSessionCart } from '@/lib/cart/use-session-cart';
 
 import { checkExistingOrder, processPaymentAndCreateOrder } from './actions';
+import { createPaymentFailureEvent } from './businessEvents';
 
 const logger = Logger.create({
   namespace: 'historia:payment',
@@ -174,10 +175,48 @@ export default function VippsCheckoutPage() {
         setMessage('En uventet feil oppstod. Vennligst kontakt support med referanse: ' + reference);
         // Error already shown in UI, only toast for critical issues
       }
+    } else if (status.startsWith('failed:')) {
+      // Parse failure reason from status string
+      const failureReason = status.split(':')[1];
+
+      logger.warn(
+        { reference, status, failureReason },
+        'Payment failed with reason'
+      );
+
+      // Create business event for analytics
+      createPaymentFailureEvent(reference!, failureReason).catch((error) => {
+        logger.error({ reference, failureReason, error }, 'Failed to create business event');
+        // Don't show error to user - this is analytics only
+      });
+
+      // Map failure reasons to user-friendly messages
+      let userMessage = 'Betalingen ble avbrutt eller feilet.';
+
+      switch (failureReason) {
+        case 'aborted':
+          userMessage = 'Betalingen ble avbrutt. Dette kan skyldes avslått kort, utilstrekkelige midler eller andre kortproblemer.';
+          break;
+        case 'expired':
+          userMessage = 'Betalingssesjonen har utløpt. Vennligst prøv igjen.';
+          break;
+        case 'terminated':
+          userMessage = 'Betalingen ble avsluttet. Vennligst prøv igjen.';
+          break;
+      }
+
+      setState('error');
+      setMessage(userMessage + ' Ingen beløp er trukket.');
     } else if (status === 'failed' || status === 'cancelled') {
+      logger.warn({ reference, status }, 'Payment failed without specific reason');
+
+      // Create business event for analytics (no specific reason)
+      createPaymentFailureEvent(reference!, 'unknown').catch((error) => {
+        logger.error({ reference, error }, 'Failed to create business event');
+      });
+
       setState('error');
       setMessage('Betalingen ble avbrutt eller feilet. Ingen beløp er trukket.');
-      // Error already shown in UI
     }
   };
 
