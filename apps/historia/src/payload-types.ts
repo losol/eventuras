@@ -848,7 +848,7 @@ export interface Product {
     /**
      * Currency code (ISO 4217)
      */
-    currency: 'NOK' | 'USD' | 'EUR' | 'GBP' | 'SEK' | 'DKK';
+    currency: string;
     /**
      * VAT/Tax rate in percentage (default: 25%)
      */
@@ -1091,7 +1091,7 @@ export interface Transaction {
   /**
    * Currency code (ISO 4217)
    */
-  currency: 'NOK' | 'USD' | 'EUR' | 'GBP' | 'SEK' | 'DKK';
+  currency: string;
   /**
    * Unique payment reference from payment provider (Vipps reference, Stripe payment intent ID, etc.)
    */

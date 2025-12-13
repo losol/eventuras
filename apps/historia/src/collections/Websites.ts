@@ -8,6 +8,7 @@ import { title } from '@/fields/title';
 
 import { admins } from '../access/admins';
 import { anyone } from '../access/anyone';
+import { authenticatedOrFirstWebsite } from '../access/authenticatedOrFirstWebsite';
 
 export const Websites: CollectionConfig = {
   slug: 'websites',
@@ -16,7 +17,7 @@ export const Websites: CollectionConfig = {
   },
   access: {
     read: anyone,
-    create: admins,
+    create: authenticatedOrFirstWebsite,
     update: admins,
     delete: admins,
   },
