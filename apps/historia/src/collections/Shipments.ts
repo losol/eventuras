@@ -3,6 +3,8 @@ import type { CollectionConfig } from 'payload';
 import { admins } from '@/access/admins';
 import { addressGroup } from '@/fields/address';
 
+import { sendShipmentNotification } from './Shipments/hooks/sendShipmentNotification';
+
 export const Shipments: CollectionConfig = {
   slug: 'shipments',
   access: {
@@ -195,5 +197,8 @@ export const Shipments: CollectionConfig = {
       },
     },
   ],
+  hooks: {
+    afterChange: [sendShipmentNotification],
+  },
   timestamps: true,
 };

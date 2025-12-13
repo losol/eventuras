@@ -184,6 +184,9 @@ importers:
       '@eventuras/logger':
         specifier: workspace:*
         version: link:../../libs/logger
+      '@eventuras/notitia-templates':
+        specifier: workspace:*
+        version: link:../../libs/notitia-templates
       '@eventuras/ratio-ui':
         specifier: workspace:*
         version: link:../../libs/ratio-ui
