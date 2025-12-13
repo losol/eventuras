@@ -21,6 +21,7 @@
     "changeset": "changeset",
     "changeset:release": "changeset publish",
     "changeset:suggest": "tsx scripts/changeset-suggest.ts --since origin/main --write",
+    "changeset:tag": "changeset tag",
     "changeset:version": "changeset version",
     "clean": "pnpm clean:build && pnpm clean:deps",
     "clean:build": "npx rimraf \"**/{.next,.turbo,.vercel,dist,build,storybook-static}\" \"!**/node_modules/**\"",
