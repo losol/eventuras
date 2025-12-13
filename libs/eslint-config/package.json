@@ -10,9 +10,9 @@
     "./rules": "./rules/index.js"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.1",
+    "@eslint/js": "^9.39.2",
     "@next/eslint-plugin-next": "^16.0.10",
-    "eslint": "^9.39.1",
+    "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-json-files": "^5.1.2",
