@@ -83,18 +83,33 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
 
+# Create non-root user
 RUN addgroup --system --gid 1001 nodejs \
   && adduser --system --uid 1001 --gid 1001 nextjs
 
 # Copy runtime output only
 COPY --from=builder --chown=nextjs:nodejs /app/apps/historia/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/apps/historia/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/apps/historia/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/apps/historia/.next/static ./apps/historia/.next/static
+
+# Copy node_modules for payload CLI
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=nextjs:nodejs /app/apps/historia/node_modules ./apps/historia/node_modules
+
+# Copy payload config and migrations
+COPY --from=builder --chown=nextjs:nodejs /app/apps/historia/src/payload.config.ts ./apps/historia/src/payload.config.ts
+COPY --from=builder --chown=nextjs:nodejs /app/apps/historia/src/migrations ./apps/historia/src/migrations
 
 USER nextjs
 
 EXPOSE 3000
 
-CMD ["/bin/sh", "-c", "pnpm dlx payload migrate && node server.js"]
+# Health check - uses PORT environment variable
+HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
+  CMD node -e "const port = process.env.PORT || 3000; require('http').get(\`http://localhost:\${port}/api/health\`, (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+
+# Run migrations then start server
+CMD ["sh", "-c", "cd apps/historia && node ../../node_modules/payload/dist/bin.js migrate && cd ../.. && node apps/historia/server.js"]
