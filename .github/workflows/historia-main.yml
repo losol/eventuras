@@ -44,7 +44,7 @@ jobs:
         run: pnpm --filter @eventuras/historia lint
 
       - name: Build
-        run: pnpm --filter @eventuras/historia build
+        run: pnpm --filter @eventuras/historia... build
 
   build-docker:
     name: Build Docker Image
