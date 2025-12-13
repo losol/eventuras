@@ -28,6 +28,7 @@ import { Topics } from './collections/Topics';
 import { Transactions } from './collections/Transactions';
 import { Users } from './collections/Users';
 import { Websites } from './collections/Websites';
+import { migrations } from './migrations';
 import { plugins } from './plugins';
 
 const locales = process.env.NEXT_PUBLIC_CMS_LOCALES ? process.env.NEXT_PUBLIC_CMS_LOCALES.split(',') : ['en'];
@@ -120,6 +121,9 @@ export default buildConfig({
       pool: {
         connectionString: cmsDatabaseUrl,
       },
+      // Run migrations at runtime in production
+      // https://payloadcms.com/docs/database/migrations#running-migrations-in-production
+      prodMigrations: migrations,
     })
     : sqliteAdapter({
       idType: 'uuid',

@@ -108,8 +108,9 @@ USER nextjs
 EXPOSE 3000
 
 # Health check - uses PORT environment variable
-HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=3 \
   CMD node -e "const port = process.env.PORT || 3000; require('http').get(\`http://localhost:\${port}/api/health\`, (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
-# Run migrations then start server
-CMD ["sh", "-c", "cd apps/historia && node ../../node_modules/payload/dist/bin.js migrate && cd ../.. && node apps/historia/server.js"]
+# Start server - migrations run automatically via prodMigrations in payload.config.ts
+# https://payloadcms.com/docs/database/migrations#running-migrations-in-production
+CMD ["node", "apps/historia/server.js"]
