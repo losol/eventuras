@@ -347,40 +347,101 @@ Historia uses Payload CMS's `prodMigrations` pattern. Migrations run automatical
 
 ### Production Environment (Release-Based)
 
-1. Create a changeset for your changes:
-   ```bash
-   pnpm changeset
-   # Select @eventuras/historia
-   # Choose version bump type (patch/minor/major)
-   # Write changelog entry
-   ```
+Historia uses an **automated release process** powered by Changesets. When you merge a version bump to `main`, a GitHub release is automatically created and deployed to production.
 
-2. Commit the changeset:
-   ```bash
-   git add .changeset/
-   git commit -m "chore: add changeset for historia"
-   git push
-   ```
+#### Step-by-Step Release Process
 
-3. Changesets bot creates a "Version Packages" PR
+**1. Create a changeset for your changes:**
 
-4. Review and merge the Version Packages PR:
-   - Updates `apps/historia/package.json` version
-   - Updates `CHANGELOG.md`
-   - Removes consumed changesets
+```bash
+# From the monorepo root
+pnpm changeset
 
-5. Create a GitHub release:
-   - Go to Releases → Draft a new release
-   - Tag format: `@eventuras/historia@{version}` (e.g., `@eventuras/historia@0.14.0`)
-   - Use the version from `package.json`
-   - Copy changelog entries as release notes
-   - Publish release
+# Interactive prompts:
+# → Select packages: @eventuras/historia
+# → Version bump: patch (bug fixes) / minor (new features) / major (breaking changes)
+# → Summary: Brief description of changes (appears in CHANGELOG)
+```
 
-6. GitHub Actions automatically:
-   - Builds Docker image with tags `v{version}` and `latest`
-   - Waits for required approvals (if configured)
-   - Deploys to `historia-prod`
-   - Comments on release with deployment details
+This creates a file in `.changeset/` describing your changes.
+
+**2. Commit and push the changeset:**
+
+```bash
+git add .changeset/
+git commit -m "chore: add changeset for historia feature"
+git push
+```
+
+**3. Merge your PR to `main`:**
+
+Once your PR (including the changeset) is merged, the release workflow automatically:
+- Creates a "Version Packages" PR
+- Bumps version in `apps/historia/package.json`
+- Updates `apps/historia/CHANGELOG.md`
+- Removes consumed changesets
+
+**4. Merge the "Version Packages" PR:**
+
+When you merge this PR, the release workflow automatically:
+- Creates git tag `@eventuras/historia@X.X.X`
+- Creates GitHub release with auto-generated notes
+- Triggers `historia-main.yml` workflow
+- Builds Docker image with tags `vX.X.X` and `latest`
+- Deploys to `historia-prod` environment
+
+**5. Monitor deployment:**
+
+Check GitHub Actions for deployment status. The workflow will:
+- Comment on the release with deployment details
+- Show Docker image tags used
+- Confirm successful deployment to production
+
+#### Quick Reference: Version Bump Types
+
+| Type    | When to Use                           | Example        |
+|---------|---------------------------------------|----------------|
+| `patch` | Bug fixes, minor improvements         | 0.14.0 → 0.14.1 |
+| `minor` | New features, backward compatible     | 0.14.0 → 0.15.0 |
+| `major` | Breaking changes, API changes         | 0.14.0 → 1.0.0  |
+
+#### Manual Release (Alternative)
+
+If you need to create a release manually:
+
+```bash
+# 1. Update version and create git tag
+pnpm changeset version
+git add .
+git commit -m "chore: version packages"
+git push
+
+# 2. Create and push tag manually
+git tag @eventuras/historia@0.14.0
+git push origin @eventuras/historia@0.14.0
+
+# 3. Create GitHub release via UI
+# Go to: https://github.com/losol/eventuras/releases/new
+# Tag: @eventuras/historia@0.14.0
+# Target: main
+# Generate release notes and publish
+```
+
+The deployment workflow will still trigger automatically from the release.
+
+#### Rollback a Release
+
+If a release needs to be rolled back:
+
+```bash
+# Deploy previous version via Azure CLI
+az webapp config container set \
+  --name historia-prod \
+  --resource-group $RESOURCE_GROUP \
+  --docker-custom-image-name losolio/historia:v0.13.0
+```
+
+Or create a new patch release with the fix.
 
 ## Monitoring
 

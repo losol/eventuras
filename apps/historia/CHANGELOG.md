@@ -1,5 +1,29 @@
 # @eventuras/historia
 
+## 0.14.0
+
+### Minor Changes
+
+- 4f5eac8: ### 🧱 Features
+  - feat(historia): implement order status update based on transaction status (00fa8ed) [@eventuras/historia]
+
+  ### 🧹 Maintenance
+  - chore(historia): add indexes and migrations (0d9de2e) [@eventuras/historia]
+
+  ### ⚙️ CI/CD
+  - ci(historia): enhance CI/CD workflow (87c2014) [@eventuras/historia]
+  - ci(historia): implement health check endpoint for service status (5799169) [@eventuras/historia]
+
+### Patch Changes
+
+- ### 🐞 Bug Fixes
+  - fix(historia): create ISR cache directory with correct permissions (9a925ec) [@eventuras/historia]
+  - fix(historia): update Dockerfile to install sharp dependencies (b4bb94f) [@eventuras/historia]
+  - fix(historia): ensure .next/server directory exists and is writable (cf88fed) [@eventuras/historia]
+
+  ### ⚙️ CI/CD
+  - ci(historia): remove obsolete CI workflow (3eccc8b) [@eventuras/historia]
+
 ## 0.13.0
 
 ### Minor Changes
