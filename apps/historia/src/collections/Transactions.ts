@@ -28,12 +28,14 @@ export const Transactions: CollectionConfig = {
       type: 'relationship',
       relationTo: 'orders',
       required: true,
+      index: true,
     },
     {
       name: 'customer',
       type: 'relationship',
       relationTo: 'users',
       required: false,
+      index: true,
     },
     {
       name: 'amount',
@@ -59,6 +61,7 @@ export const Transactions: CollectionConfig = {
       type: 'text',
       required: true,
       defaultValue: 'pending',
+      index: true,
       admin: {
         description: 'Transaction status from payment provider (e.g., pending, authorized, captured, failed, refunded)',
       },
@@ -67,6 +70,7 @@ export const Transactions: CollectionConfig = {
       name: 'paymentMethod',
       type: 'text',
       required: true,
+      index: true,
       admin: {
         description: 'Payment method (e.g., vipps, stripe, manual)',
       },

@@ -17,6 +17,11 @@ const logger = Logger.create({
 });
 
 /**
+ * Valid transaction statuses based on Transactions collection
+ */
+type TransactionStatus = 'pending' | 'authorized' | 'captured' | 'completed' | 'failed' | 'refunded' | 'partially-refunded';
+
+/**
  * Vipps webhook handler
  *
  * Receives webhook events from Vipps MobilePay and:
@@ -278,9 +283,6 @@ async function processPaymentEvent(businessEventId: string, payload: WebhookPayl
     return;
   }
 
-  // Valid transaction statuses based on Transactions collection
-  type TransactionStatus = 'pending' | 'authorized' | 'captured' | 'completed' | 'failed' | 'refunded' | 'partially-refunded';
-
   // Update transaction status
   await payloadInstance.update({
     collection: 'transactions',
@@ -300,8 +302,127 @@ async function processPaymentEvent(businessEventId: string, payload: WebhookPayl
   // Note: revalidatePath in API routes has limited effect, SSE polling is the primary mechanism
   logger.debug({ reference: payload.reference }, 'Transaction updated, SSE will detect change');
 
-  // TODO: Update order status based on transaction status
-  // For now, we just update the transaction. Order status logic can be added later.
+  // Update order status based on transaction status
+  await updateOrderStatus(transaction, newStatus as TransactionStatus, payload);
 
   logger.info({ businessEventId }, 'Payment event processed successfully');
+}
+
+/**
+ * Update order status based on transaction status
+ * Maps transaction states to appropriate order states
+ */
+async function updateOrderStatus(
+  transaction: any,
+  transactionStatus: TransactionStatus,
+  vippsPayload?: WebhookPayload
+) {
+  // Skip if transaction has no associated order
+  if (!transaction.order) {
+    logger.warn(
+      { transactionId: transaction.id, status: transactionStatus },
+      'Transaction has no associated order, skipping order update'
+    );
+    return;
+  }
+
+  const orderId = typeof transaction.order === 'string' ? transaction.order : transaction.order.id;
+
+  logger.debug(
+    { orderId, transactionId: transaction.id, transactionStatus },
+    'Updating order status based on transaction'
+  );
+
+  // Map transaction status to order status
+  const orderStatusMap: Record<TransactionStatus, string> = {
+    'pending': 'pending',           // Payment initiated, waiting for user action
+    'authorized': 'processing',     // Payment authorized, ready to be captured
+    'captured': 'completed',        // Payment captured, order can be fulfilled
+    'completed': 'completed',       // Payment completed (same as captured)
+    'failed': 'canceled',           // Payment failed or cancelled
+    'refunded': 'canceled',         // Payment refunded, treat as cancelled
+    'partially-refunded': 'completed', // Partial refund doesn't cancel the order
+  };
+
+  const newOrderStatus = orderStatusMap[transactionStatus];
+
+  if (!newOrderStatus) {
+    logger.warn(
+      { transactionStatus, orderId },
+      'Unknown transaction status, cannot map to order status'
+    );
+    return;
+  }
+
+  try {
+    const payloadInstance = await getPayload({ config });
+
+    // Get current order to check status
+    const order = await payloadInstance.findByID({
+      collection: 'orders',
+      id: orderId,
+    });
+
+    // Only update if status is different
+    if (order.status === newOrderStatus) {
+      logger.debug(
+        { orderId, status: newOrderStatus },
+        'Order status already set, skipping update'
+      );
+      return;
+    }
+
+    await payloadInstance.update({
+      collection: 'orders',
+      id: orderId,
+      data: {
+        status: newOrderStatus,
+      },
+    });
+
+    // Create business event for order status change
+    await payloadInstance.create({
+      collection: 'business-events',
+      data: {
+        eventType: `order.status.${newOrderStatus}`,
+        source: 'system',
+        externalReference: orderId,
+        entity: {
+          relationTo: 'orders',
+          value: orderId,
+        },
+        data: {
+          orderId,
+          transactionId: transaction.id,
+          oldStatus: order.status,
+          newStatus: newOrderStatus,
+          transactionStatus,
+          triggeredBy: 'vipps-webhook',
+          vippsPayload: vippsPayload ? JSON.parse(JSON.stringify(vippsPayload)) : undefined,
+        },
+      },
+    });
+
+    logger.info(
+      {
+        orderId,
+        transactionId: transaction.id,
+        oldStatus: order.status,
+        newStatus: newOrderStatus,
+        transactionStatus,
+      },
+      'Order status updated based on transaction status'
+    );
+  } catch (error) {
+    logger.error(
+      {
+        error,
+        orderId,
+        transactionId: transaction.id,
+        transactionStatus,
+      },
+      'Failed to update order status'
+    );
+    // Don't throw - we've already processed the transaction update successfully
+  }
 }

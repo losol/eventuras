@@ -40,6 +40,7 @@ export const Shipments: CollectionConfig = {
               type: 'relationship',
               relationTo: 'orders',
               required: true,
+              index: true,
               admin: {
                 description: 'The order this shipment belongs to',
               },
@@ -156,6 +157,7 @@ export const Shipments: CollectionConfig = {
       type: 'select',
       required: true,
       defaultValue: 'pending',
+      index: true,
       admin: {
         position: 'sidebar',
       },

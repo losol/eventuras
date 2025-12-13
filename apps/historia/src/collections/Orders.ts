@@ -55,6 +55,7 @@ export const Orders: CollectionConfig = {
       type: 'relationship',
       relationTo: 'users',
       required: false,
+      index: true,
       admin: {
         position: 'sidebar',
       },
@@ -63,6 +64,7 @@ export const Orders: CollectionConfig = {
       name: 'userEmail',
       type: 'email',
       required: true,
+      index: true,
       admin: {
         position: 'sidebar',
       },
@@ -72,6 +74,7 @@ export const Orders: CollectionConfig = {
       type: 'select',
       required: true,
       defaultValue: 'pending',
+      index: true,
       admin: {
         position: 'sidebar',
       },
