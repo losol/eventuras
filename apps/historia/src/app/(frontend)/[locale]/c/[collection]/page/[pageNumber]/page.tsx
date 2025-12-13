@@ -70,7 +70,11 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
   }
 }
 
-export async function generateStaticParams() {
+export async function generateStaticParams() {  // Skip static generation during build to avoid database queries
+  // Pages will be generated on-demand at runtime (ISR)
+  if (process.env.NEXT_PHASE === 'phase-production-build') {
+    return [];
+  }
   const payload = await getPayload({ config: configPromise })
   const { totalDocs } = await payload.count({
     collection: 'articles',

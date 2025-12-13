@@ -35,11 +35,17 @@ const locales = process.env.NEXT_PUBLIC_CMS_LOCALES ? process.env.NEXT_PUBLIC_CM
 const defaultLocale = process.env.NEXT_PUBLIC_CMS_DEFAULT_LOCALE ?? 'en';
 const allowedOrigins = process.env.CMS_ALLOWED_ORIGINS ? process.env.CMS_ALLOWED_ORIGINS.split(',') : [];
 
+// Detect if we're in build mode (no database needed)
+const isBuildMode = process.env.NEXT_PHASE === 'phase-production-build' || process.env.PAYLOAD_DROP_DATABASE === 'true';
+
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
 const cmsDatabaseUrl = process.env.CMS_DATABASE_URL || 'file:./historia.db';
-const isPostgres = cmsDatabaseUrl.startsWith('postgres://');
+// Use SQLite during build mode to avoid needing PostgreSQL connection
+const isPostgres = !isBuildMode && cmsDatabaseUrl.startsWith('postgres://');
+// Use a temporary SQLite database during build
+const buildDatabaseUrl = isBuildMode ? 'file:./.historia-build.db' : cmsDatabaseUrl;
 
 // Email configuration - controlled by FEATURE_SMTP flag
 const smtpEnabled = process.env.FEATURE_SMTP === 'enabled';
@@ -128,7 +134,7 @@ export default buildConfig({
     : sqliteAdapter({
       idType: 'uuid',
       client: {
-        url: cmsDatabaseUrl
+        url: buildDatabaseUrl,
       },
       push: true,
     }),

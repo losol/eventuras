@@ -112,6 +112,12 @@ export async function generateMetadata({
 }
 
 export async function generateStaticParams() {
+  // Skip static generation during build to avoid database queries
+  // Pages will be generated on-demand at runtime (ISR)
+  if (process.env.NEXT_PHASE === 'phase-production-build') {
+    return [];
+  }
+
   const payload = await getPayload({ config: configPromise });
   const locales = process.env.NEXT_PUBLIC_CMS_LOCALES?.split(',') || ['en'];
 
