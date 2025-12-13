@@ -3,7 +3,7 @@ import { getPayload } from 'payload';
 
 /**
  * Migration script to create shipping products
- * Run with: DATABASE_URI="your-db-uri" PAYLOAD_SECRET="your-secret" pnpm tsx scripts/seed-shipping-products.ts
+ * Run with: DATABASE_URI="your-db-uri" CMS_SECRET="your-secret" pnpm tsx scripts/seed-shipping-products.ts
  */
 async function seedShippingProducts() {
   const payload = await getPayload({ config: configPromise });
