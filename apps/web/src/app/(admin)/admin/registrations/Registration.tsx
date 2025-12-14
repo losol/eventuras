@@ -8,6 +8,7 @@ import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 import { Form, Select } from '@eventuras/smartform';
 
+import { CertificateActionsButton } from '@/components/eventuras/DownloadCertificateButton';
 import {
   PaymentProvider,
   RegistrationCustomerInfoDto,
@@ -213,6 +214,19 @@ const Registration = ({
         <Section>
           <Heading as="h2">{t('common.registrations.labels.notes')}</Heading>
           <p>{registration.notes ?? t('common.registrations.labels.notesEmpty')}</p>
+        </Section>
+      )}
+      {adminMode && (
+        <Section>
+          <Heading as="h2">{t('admin.events.tabs.certificate')}</Heading>
+          {registration.certificateId && registration.registrationId ? (
+            <CertificateActionsButton
+              certificateId={registration.certificateId}
+              registrationId={registration.registrationId}
+            />
+          ) : (
+            <p className="text-gray-500">{t('admin.certificates.labels.noCertificate')}</p>
+          )}
         </Section>
       )}
       {registration.orders && (

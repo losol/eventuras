@@ -1,7 +1,11 @@
 {
   "certificates": {
     "labels": {
-      "notFound": "Certificate not found"
+      "download": "Download certificate",
+      "notFound": "Certificate not found",
+      "noCertificate": "No certificate issued",
+      "send": "Send to participant",
+      "sent": "Certificate sent to participant"
     },
     "page": {
       "description": "Nothing to see here.",

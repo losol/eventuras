@@ -5,7 +5,9 @@ import { Loading } from '@eventuras/ratio-ui/core/Loading';
 import { ChevronDown, ChevronRight, FileText, Pencil, User } from '@eventuras/ratio-ui/icons';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
+import { CertificateActionsButton } from '@/components/eventuras/DownloadCertificateButton';
 import type { ProductDto, RegistrationDto } from '@/lib/eventuras-types';
+import { RegistrationStatus } from '@/lib/eventuras-types';
 
 import FinishRegistrationButton from './FinishRegistrationButton';
 import RegistrationStatusSelect from './RegistrationStatusSelect';
@@ -123,11 +125,28 @@ export function createParticipantColumns({
     columnHelper.display({
       id: 'actions',
       header: 'Actions',
-      cell: ({ row }) => (
-        <div className="flex items-center gap-2">
-          <FinishRegistrationButton registration={row.original} onStatusUpdate={onStatusUpdate} />
-        </div>
-      ),
+      cell: ({ row }) => {
+        const registration = row.original;
+        const isFinished = registration.status === RegistrationStatus.FINISHED;
+        const hasCertificate = registration.certificateId && registration.registrationId;
+
+        return (
+          <div className="flex items-center gap-2">
+            {isFinished && hasCertificate ? (
+              <CertificateActionsButton
+                certificateId={registration.certificateId!}
+                registrationId={registration.registrationId!}
+                size="sm"
+              />
+            ) : (
+              <FinishRegistrationButton
+                registration={registration}
+                onStatusUpdate={onStatusUpdate}
+              />
+            )}
+          </div>
+        );
+      },
     }),
   ];
 }
@@ -174,8 +193,9 @@ export function renderExpandedRow({
           <Link
             variant="button-outline"
             href={`/admin/registrations/${registration.registrationId}`}
+            testId={`view-registration-${registration.registrationId}`}
           >
-            <FileText className="w-4 h-4" />
+            <span>{t('admin.participantColumns.viewRegistration')}</span>
           </Link>
         </div>
       </div>
