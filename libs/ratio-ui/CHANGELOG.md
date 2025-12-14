@@ -1,32 +1,43 @@
 # @eventuras/ratio-ui
 
+## 0.8.0
+
+### Minor Changes
+
+- ### 🧱 Features
+  - feat(ratio-ui): adds new splitButton (4f50613) [@eventuras/ratio-ui]
+
 ## 0.7.0
 
 ### Minor Changes
 
 ### 🧱 Features
-  - feat(ratio-ui): add radiogroup (2e0013c) [@eventuras/ratio-ui]
-  - feat(ratio-ui): add togglebutton (13ec24a) [@eventuras/ratio-ui]
-  - feat(ratio-ui): eventuras icons from lucide (fa5e901) [@eventuras/ratio-ui]
-  - feat(ratio-ui): enhance error reporting components (53cb7b2) [@eventuras/ratio-ui]
-  - feat(ratio-ui): add Stepper component (d528a71) [@eventuras/ratio-ui]
-  - feat(web,ratio-ui): implement error handling components and overlays for better user feedback (b18c222) [@eventuras/ratio-ui]
+
+- feat(ratio-ui): add radiogroup (2e0013c) [@eventuras/ratio-ui]
+- feat(ratio-ui): add togglebutton (13ec24a) [@eventuras/ratio-ui]
+- feat(ratio-ui): eventuras icons from lucide (fa5e901) [@eventuras/ratio-ui]
+- feat(ratio-ui): enhance error reporting components (53cb7b2) [@eventuras/ratio-ui]
+- feat(ratio-ui): add Stepper component (d528a71) [@eventuras/ratio-ui]
+- feat(web,ratio-ui): implement error handling components and overlays for better user feedback (b18c222) [@eventuras/ratio-ui]
 
 ### 🐞 Bug Fixes
-  - fix(ratio-ui): align react versions (1ef8329) [@eventuras/ratio-ui]
-  - fix(ratio-ui): add @vitejs/plugin-react dependency (f92a19e) [@eventuras/ratio-ui]
-  - fix(ratio-ui): testid naming fix (8935a38) [@eventuras/ratio-ui]
-  - fix(ratio-ui): testId for phoneInput (d3b2e83) [@eventuras/ratio-ui]
-  - fix(ratio-ui): specify client only comonents (5048023) [@eventuras/ratio-ui]
+
+- fix(ratio-ui): align react versions (1ef8329) [@eventuras/ratio-ui]
+- fix(ratio-ui): add @vitejs/plugin-react dependency (f92a19e) [@eventuras/ratio-ui]
+- fix(ratio-ui): testid naming fix (8935a38) [@eventuras/ratio-ui]
+- fix(ratio-ui): testId for phoneInput (d3b2e83) [@eventuras/ratio-ui]
+- fix(ratio-ui): specify client only comonents (5048023) [@eventuras/ratio-ui]
 
 ### ♻️ Refactoring
-  - refactor(ratio-ui): move next components to separate lib (7839941) [@eventuras/ratio-ui]
-  - refactor(web,ratio-ui): streamline imports and enhance type definitions across components (9a64a93) [@eventuras/ratio-ui]
-  - refactor(ratio-ui): enhance exports (379c72f) [@eventuras/ratio-ui]
+
+- refactor(ratio-ui): move next components to separate lib (7839941) [@eventuras/ratio-ui]
+- refactor(web,ratio-ui): streamline imports and enhance type definitions across components (9a64a93) [@eventuras/ratio-ui]
+- refactor(ratio-ui): enhance exports (379c72f) [@eventuras/ratio-ui]
 
 ### 🧹 Maintenance
-  - chore(ratio-ui): add some more stories (088166b) [@eventuras/ratio-ui]
-  - chore(ratio-ui): integrate Vitest with Storybook and add accessibility testing support (157d6ed) [@eventuras/ratio-ui]
+
+- chore(ratio-ui): add some more stories (088166b) [@eventuras/ratio-ui]
+- chore(ratio-ui): integrate Vitest with Storybook and add accessibility testing support (157d6ed) [@eventuras/ratio-ui]
 
 ### Patch Changes
 

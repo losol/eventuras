@@ -1,11 +1,19 @@
 # @eventuras/toast
 
+## 0.2.1
+
+### Patch Changes
+
+- Updated dependencies
+  - @eventuras/ratio-ui@0.8.0
+
 ## 0.2.0
 
 ### Minor Changes
 
 ### 🧱 Features
-  - feat(toast): bundle the toaster (6ddf8ff) [@eventuras/toast]
+
+- feat(toast): bundle the toaster (6ddf8ff) [@eventuras/toast]
 
 ### Patch Changes
 
