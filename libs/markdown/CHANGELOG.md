@@ -1,15 +1,24 @@
 # @eventuras/markdown
 
+## 2.0.0
+
+### Patch Changes
+
+- Updated dependencies
+  - @eventuras/ratio-ui@0.8.0
+
 ## 1.0.0
 
 ### Patch Changes
 
 ### 🐞 Bug Fixes
-  - fix(markdown): update build and exports (21a1879) [@eventuras/markdown]
-  - fix(markdown): remove unused turbo definition (ac4348e) [@eventuras/markdown]
+
+- fix(markdown): update build and exports (21a1879) [@eventuras/markdown]
+- fix(markdown): remove unused turbo definition (ac4348e) [@eventuras/markdown]
 
 ### 🧹 Maintenance
-  - chore(convertoapi,docsite,web,markdown,scribo,sdk): upgrade deps (b2de638) [@eventuras/markdown]
+
+- chore(convertoapi,docsite,web,markdown,scribo,sdk): upgrade deps (b2de638) [@eventuras/markdown]
 
 - Updated dependencies
   - @eventuras/ratio-ui@0.7.0
