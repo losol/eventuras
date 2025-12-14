@@ -5,7 +5,7 @@ import { Loading } from '@eventuras/ratio-ui/core/Loading';
 import { ChevronDown, ChevronRight, FileText, Pencil, User } from '@eventuras/ratio-ui/icons';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
-import { CertificateActionsButton } from '@/components/eventuras/DownloadCertificateButton';
+import { CertificateActionsButton } from '@/components/eventuras/CertificateActionsButton';
 import type { ProductDto, RegistrationDto } from '@/lib/eventuras-types';
 import { RegistrationStatus } from '@/lib/eventuras-types';
 

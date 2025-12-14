@@ -8,7 +8,7 @@ import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 import { Form, Select } from '@eventuras/smartform';
 
-import { CertificateActionsButton } from '@/components/eventuras/DownloadCertificateButton';
+import { CertificateActionsButton } from '@/components/eventuras/CertificateActionsButton';
 import {
   PaymentProvider,
   RegistrationCustomerInfoDto,
