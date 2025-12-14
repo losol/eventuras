@@ -37,11 +37,17 @@ import { updateEvent } from '../actions';
 
 // Auto-save wrapper component that watches form changes
 const AutoSaveHandler = ({ onAutoSave }: { onAutoSave: (data: EventFormDto) => void }) => {
-  const { watch, getValues } = useFormContext<EventFormDto>();
+  const formContext = useFormContext<EventFormDto>();
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const previousValuesRef = useRef<EventFormDto | null>(null);
 
+  // Guard against missing form context (can happen during hydration)
+  const watch = formContext?.watch;
+  const getValues = formContext?.getValues;
+
   useEffect(() => {
+    if (!watch || !getValues) return;
+
     const subscription = watch(() => {
       // Clear existing timeout
       if (saveTimeoutRef.current) {
@@ -73,14 +79,17 @@ const AutoSaveHandler = ({ onAutoSave }: { onAutoSave: (data: EventFormDto) => v
 
 // Save button component that has access to form context
 const SaveButton = ({ onSave }: { onSave: (data: EventFormDto) => Promise<void> }) => {
-  const { getValues } = useFormContext<EventFormDto>();
+  const formContext = useFormContext<EventFormDto>();
   const [isSaving, setIsSaving] = useState(false);
   const t = useTranslations();
+
+  // Guard against missing form context
+  if (!formContext) return null;
 
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const data = getValues();
+      const data = formContext.getValues();
       await onSave(data);
     } finally {
       setIsSaving(false);

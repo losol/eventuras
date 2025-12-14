@@ -1,7 +1,11 @@
 {
   "certificates": {
     "labels": {
-      "notFound": "Fant ikke noe deltakerbevis"
+      "download": "Last ned kursbevis",
+      "noCertificate": "Kursbevis ikke utstedt",
+      "notFound": "Fant ikke noe deltakerbevis",
+      "send": "Send til deltaker",
+      "sent": "Kursbevis sendt til deltaker"
     },
     "page": {
       "description": "Ingenting her.",
@@ -27,6 +31,22 @@
       "titlePlaceholder": "Arrangementstittel"
     },
     "success": "Arrangement opprettet!"
+  },
+  "economy": {
+    "labels": {
+      "cancelledRegistrationWarning": "Registrering avbestilt - ikke fakturer",
+      "noOrders": "Ingen ordre for dette arrangementet",
+      "orderDetails": "Ordredetaljer",
+      "participant": "Deltaker"
+    },
+    "statistics": {
+      "cancelledOrders": "Kansellert",
+      "draftOrders": "Utkast",
+      "invoicedOrders": "Fakturert",
+      "totalOrders": "Totale ordre",
+      "totalRevenue": "Total inntekt",
+      "verifiedOrders": "Verifisert"
+    }
   },
   "editEvent": {
     "content": {
@@ -77,26 +97,10 @@
       "communication": "Kommunikasjon",
       "dates": "Dato/sted",
       "descriptions": "Beskrivelse",
+      "economy": "Økonomi",
       "overview": "Oversikt",
       "participants": "Deltakere",
-      "products": "Produkter",
-      "economy": "Økonomi"
-    }
-  },
-  "economy": {
-    "statistics": {
-      "totalOrders": "Totale ordre",
-      "totalRevenue": "Total inntekt",
-      "draftOrders": "Utkast",
-      "verifiedOrders": "Verifisert",
-      "invoicedOrders": "Fakturert",
-      "cancelledOrders": "Kansellert"
-    },
-    "labels": {
-      "noOrders": "Ingen ordre for dette arrangementet",
-      "orderDetails": "Ordredetaljer",
-      "participant": "Deltaker",
-      "cancelledRegistrationWarning": "Registrering avbestilt - ikke fakturer"
+      "products": "Produkter"
     }
   },
   "labels": {
@@ -134,7 +138,7 @@
     "telephone": "Mobil",
     "type": "Type",
     "user": "Bruker",
-    "viewRegistration": "Vis påmelding",
+    "viewRegistration": "Registrering",
     "viewUser": "Vis bruker"
   },
   "products": {
