@@ -58,8 +58,8 @@ export function SplitButton({
   const sizeClasses = buttonSizes[size];
   const variantClasses = buttonStyles[variant];
 
-  // Extract padding from size for consistent styling
-  const paddingClasses = sizeClasses.split(' ').filter(c => c.startsWith('p')).join(' ');
+  // Extract padding from size for consistent styling (only px- and py- classes)
+  const paddingClasses = sizeClasses.split(' ').filter(c => c.startsWith('px-') || c.startsWith('py-')).join(' ');
   const textClass = sizeClasses.split(' ').find(c => c.startsWith('text-')) ?? '';
 
   const baseClasses = `${variantClasses} ${textClass}`.replace('rounded-full', '');

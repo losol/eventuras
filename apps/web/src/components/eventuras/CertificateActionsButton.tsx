@@ -22,12 +22,16 @@ export const CertificateActionsButton = ({
   registrationId,
   size = 'md',
 }: CertificateActionsButtonProps) => {
-  const [loading, setLoading] = useState(false);
+  const [downloadLoading, setDownloadLoading] = useState(false);
+  const [sendLoading, setSendLoading] = useState(false);
   const t = useTranslations();
   const toast = useToast();
 
+  const isLoading = downloadLoading || sendLoading;
+
   const handleDownload = async () => {
-    setLoading(true);
+    if (isLoading) return;
+    setDownloadLoading(true);
     try {
       const result = await downloadCertificatePdf(certificateId);
 
@@ -38,21 +42,21 @@ export const CertificateActionsButton = ({
 
       // Convert base64 to blob and open in new window
       const byteCharacters = atob(result.data);
-      const byteNumbers = new Array(byteCharacters.length);
-      for (let i = 0; i < byteCharacters.length; i++) {
-        byteNumbers[i] = byteCharacters.charCodeAt(i);
-      }
+      const byteNumbers = Array.from(byteCharacters, char => char.charCodeAt(0));
       const byteArray = new Uint8Array(byteNumbers);
       const blob = new Blob([byteArray], { type: 'application/pdf' });
       const fileURL = URL.createObjectURL(blob);
       window.open(fileURL);
+      // Revoke the object URL after a short delay to free up memory
+      setTimeout(() => URL.revokeObjectURL(fileURL), 1000);
     } finally {
-      setLoading(false);
+      setDownloadLoading(false);
     }
   };
 
   const handleSend = async () => {
-    setLoading(true);
+    if (isLoading) return;
+    setSendLoading(true);
     try {
       const result = await sendCertificateToParticipant(registrationId);
 
@@ -63,14 +67,14 @@ export const CertificateActionsButton = ({
 
       toast.success(t('admin.certificates.labels.sent'));
     } finally {
-      setLoading(false);
+      setSendLoading(false);
     }
   };
 
   return (
     <SplitButton
       onClick={handleDownload}
-      loading={loading}
+      loading={isLoading}
       size={size}
       variant="outline"
       icon={<Download className="w-4 h-4" />}
@@ -87,13 +91,5 @@ export const CertificateActionsButton = ({
     </SplitButton>
   );
 };
-
-// Keep the simple button for backwards compatibility
-export interface DownloadCertificateButtonProps {
-  certificateId: number;
-  variant?: 'primary' | 'secondary' | 'outline' | 'text';
-  size?: 'sm' | 'md' | 'lg';
-  showLabel?: boolean;
-}
 
 export { CertificateActionsButton as default };
