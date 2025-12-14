@@ -2,8 +2,6 @@ import React, { forwardRef } from 'react';
 import { LoaderCircle } from '../../icons';
 import { BoxSpacingProps, buildSpacingClasses } from '../../layout/Box/Box';
 
-export const defaultButtonPadding = 'px-4 py-1';
-
 // Animation constants
 const ANIMATION_CLASSES = [
   'transition-all',
@@ -28,22 +26,32 @@ export const buttonStyles = {
     `dark:text-white rounded-full ${ANIMATION_CLASSES}`,
 };
 
+export const buttonSizes = {
+  sm: 'px-3 py-0.5 text-sm',
+  md: 'px-4 py-1 text-base',
+  lg: 'px-6 py-2 text-lg',
+};
+
 export interface ButtonProps
-  extends BoxSpacingProps,
+  extends Omit<BoxSpacingProps, 'padding'>,
           Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'className' | 'style'> {
   ariaLabel?: string;
   icon?: React.ReactNode;
   loading?: boolean;
   onDark?: boolean;
   variant?: keyof typeof buttonStyles;
+  size?: keyof typeof buttonSizes;
   block?: boolean;
   className?: string;
   testId?: string;
+  /** Custom padding - overrides size padding if provided */
+  padding?: string;
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
   {
     variant = 'primary',
+    size = 'md',
     onDark = false,
     block = false,
     disabled = false,
@@ -55,7 +63,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
     type = 'button',
     onClick,
     // spacing props:
-    padding = defaultButtonPadding,
+    padding,
     margin = 'm-1',
     border,
     width,
@@ -66,8 +74,12 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
   },
   ref
 ) {
+  // Use custom padding if provided, otherwise use size-based padding
+  const effectivePadding = padding ?? buttonSizes[size];
+  const spacingClasses = buildSpacingClasses({ padding: effectivePadding, margin, border, width, height });
 
-  const spacingClasses = buildSpacingClasses({ padding, margin, border, width, height });
+  // Get font size from size preset
+  const sizeClass = buttonSizes[size].split(' ').find(c => c.startsWith('text-')) ?? '';
 
   const displayClass    = block ? 'w-full' : '';
   const variantClass = buttonStyles[variant];
@@ -82,9 +94,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
 
   const disabledClasses = (disabled || loading) ? 'opacity-75 cursor-not-allowed' : '';
 
-  // 3) combine everything
+  // combine everything
   const classes = [
     spacingClasses,
+    sizeClass,
     displayClass,
     variantClass,
     textColorClass,

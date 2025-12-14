@@ -44,4 +44,10 @@ export {
 
   // Loading
   LoaderCircle,
+
+  // Download
+  Download,
+
+  // Communication
+  Send,
 } from 'lucide-react';

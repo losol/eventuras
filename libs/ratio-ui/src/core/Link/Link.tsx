@@ -52,7 +52,7 @@ export const Link = React.forwardRef<HTMLElement, LinkProps>(
     let variantClasses = '';
     if (variant?.startsWith('button-')) {
       const key = variant.replace('button-', '') as keyof typeof buttonStyles;
-      if (buttonStyles[key]) variantClasses = 'px-4 py-2 ' + buttonStyles[key];
+      if (buttonStyles[key]) variantClasses = 'px-4 py-2 inline-flex items-center gap-2 whitespace-nowrap ' + buttonStyles[key];
     }
 
     const classes = [
