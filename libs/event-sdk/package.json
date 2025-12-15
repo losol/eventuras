@@ -1,6 +1,6 @@
 {
   "name": "@eventuras/event-sdk",
-  "version": "0.6.1",
+  "version": "2.27.1",
   "description": "Event api sdk",
   "license": "GPL-2.0-or-later",
   "author": "Ole Kristian Losvik",

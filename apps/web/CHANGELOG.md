@@ -1,5 +1,8 @@
 # @eventuras/web
 
+## 2.27.1
+ - Sync release versions across packages api, web, event-sdk
+ 
 ## 0.9.0
 
 ### Minor Changes
