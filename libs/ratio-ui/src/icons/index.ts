@@ -50,4 +50,7 @@ export {
 
   // Communication
   Send,
+
+  // Add/Create
+  Plus,
 } from 'lucide-react';
