@@ -1,0 +1,67 @@
+name: Release - Deploy Web
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (e.g., @eventuras/web@0.9.0)'
+        required: true
+
+jobs:
+  check-release:
+    name: Check if Web release
+    runs-on: ubuntu-latest
+    outputs:
+      is_web_release: ${{ steps.check.outputs.is_web_release }}
+      version: ${{ steps.check.outputs.version }}
+    steps:
+      - name: Check release tag
+        id: check
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            TAG="${{ github.event.inputs.tag }}"
+          else
+            TAG="${{ github.event.release.tag_name }}"
+          fi
+
+          echo "Tag: $TAG"
+
+          if [[ "$TAG" == @eventuras/web@* ]]; then
+            echo "is_web_release=true" >> $GITHUB_OUTPUT
+            VERSION="${TAG#@eventuras/web@}"
+            echo "version=$VERSION" >> $GITHUB_OUTPUT
+            echo "✅ This is a Web release: $VERSION"
+          else
+            echo "is_web_release=false" >> $GITHUB_OUTPUT
+            echo "⏭️ Not a Web release, skipping"
+          fi
+
+  deploy-web-prod-1:
+    needs: check-release
+    if: needs.check-release.outputs.is_web_release == 'true'
+    uses: ./.github/workflows/util-vercel-deploy.yml
+    with:
+      environment: "web-prod-1"
+      vercel_environment: "production"
+    secrets:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+
+  deploy-web-prod-2:
+    needs: check-release
+    if: needs.check-release.outputs.is_web_release == 'true'
+    uses: ./.github/workflows/util-vercel-deploy.yml
+    with:
+      environment: "web-prod-2"
+      vercel_environment: "production"
+    secrets:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}

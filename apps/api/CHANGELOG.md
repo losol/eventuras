@@ -1,10 +1,21 @@
 # @eventuras/api
 
+
+## 2.27.1
+ - Sync release versions across packages api, web, event-sdk
+
+## 0.9.1
+
+### Patch Changes
+
+- ### 🧹 Maintenance
+  - chore(api): update deps (823704c) [@eventuras/api]
+
 ## 0.7.1
 
 ### Patch Changes
 
-- ### 📝 Documentation
+### 📝 Documentation
   - docs(api): spec file-based email template system (badb44c) [@eventuras/api]
 
 ## 0.7.0
