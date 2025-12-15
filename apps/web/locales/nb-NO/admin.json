@@ -150,6 +150,7 @@
       "addnewproduct": "Nytt produkt",
       "editProducts": "Endre produkter",
       "noOrders": "Ingen påmeldte",
+      "noproducts": "Ingen produkter",
       "productsFor": "Produkter til"
     },
     "modal": {

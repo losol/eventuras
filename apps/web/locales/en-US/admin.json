@@ -2,8 +2,8 @@
   "certificates": {
     "labels": {
       "download": "Download certificate",
-      "notFound": "Certificate not found",
       "noCertificate": "No certificate issued",
+      "notFound": "Certificate not found",
       "send": "Send to participant",
       "sent": "Certificate sent to participant"
     },
@@ -26,11 +26,27 @@
       "description": "Here you can create your event, be sure to enter both title and slug",
       "title": "Create event"
     },
+    "error": "Failed to create event. Please try again.",
     "form": {
       "titlePlaceholder": "Event Title"
     },
-    "success": "Event created successfully!",
-    "error": "Failed to create event. Please try again."
+    "success": "Event created successfully!"
+  },
+  "economy": {
+    "labels": {
+      "cancelledRegistrationWarning": "Registration cancelled - do not invoice",
+      "noOrders": "No orders for this event",
+      "orderDetails": "Order Details",
+      "participant": "Participant"
+    },
+    "statistics": {
+      "cancelledOrders": "Cancelled",
+      "draftOrders": "Draft",
+      "invoicedOrders": "Invoiced",
+      "totalOrders": "Total Orders",
+      "totalRevenue": "Total Revenue",
+      "verifiedOrders": "Verified"
+    }
   },
   "editEvent": {
     "content": {
@@ -76,31 +92,15 @@
       "create": "Add event"
     },
     "tabs": {
-      "participants": "Participants",
-      "overview": "Overview",
+      "advanced": "Advanced",
+      "certificate": "Certificate",
+      "communication": "Communication",
       "dates": "Dates & Location",
       "descriptions": "Descriptions",
-      "certificate": "Certificate",
-      "advanced": "Advanced",
-      "communication": "Communication",
-      "products": "Products",
-      "economy": "Economy"
-    }
-  },
-  "economy": {
-    "statistics": {
-      "totalOrders": "Total Orders",
-      "totalRevenue": "Total Revenue",
-      "draftOrders": "Draft",
-      "verifiedOrders": "Verified",
-      "invoicedOrders": "Invoiced",
-      "cancelledOrders": "Cancelled"
-    },
-    "labels": {
-      "noOrders": "No orders for this event",
-      "orderDetails": "Order Details",
-      "participant": "Participant",
-      "cancelledRegistrationWarning": "Registration cancelled - do not invoice"
+      "economy": "Economy",
+      "overview": "Overview",
+      "participants": "Participants",
+      "products": "Products"
     }
   },
   "labels": {
@@ -150,6 +150,7 @@
       "addnewproduct": "Add new product",
       "editProducts": "Edit products",
       "noOrders": "No orders",
+      "noproducts": "No products",
       "productsFor": "Products for"
     },
     "modal": {
