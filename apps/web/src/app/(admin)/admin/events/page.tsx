@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server';
 
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
+import { Section } from '@eventuras/ratio-ui/layout/Section';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
 import { publicEnv } from '@/config.client';
@@ -20,11 +21,11 @@ const AdminPage = async ({ searchParams }: AdminPageProps) => {
   return (
     <Container>
       <Heading as="h1">{t('admin.title')}</Heading>
-      <section className="py-10">
+      <Section className="py-10">
         <Link href={`/admin/events/create`} variant="button-primary" testId="add-event-button">
           {t('admin.events.labes.create')}
         </Link>
-      </section>
+      </Section>
       <Heading as="h2">{t('common.events.sectiontitle')}</Heading>
       <AdminEventList
         organizationId={publicEnv.NEXT_PUBLIC_ORGANIZATION_ID}
