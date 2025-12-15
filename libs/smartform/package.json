@@ -28,9 +28,9 @@
     "vite": "^7.2.7"
   },
   "peerDependencies": {
-    "react": "^19.2.1",
+    "react": "^19.2.3",
     "react-aria-components": "^1.13.0",
-    "react-dom": "^19.2.1",
-    "react-hook-form": "^7.67.0"
+    "react-dom": "^19.2.3",
+    "react-hook-form": "^7.68.0"
   }
 }

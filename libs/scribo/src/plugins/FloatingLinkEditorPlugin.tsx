@@ -452,7 +452,7 @@ function useFloatingLinkEditorToolbar(
 }
 
 export default function FloatingLinkEditorPlugin({
-  anchorElem = document.body,
+  anchorElem,
   isLinkEditMode,
   setIsLinkEditMode,
 }: {
@@ -461,9 +461,19 @@ export default function FloatingLinkEditorPlugin({
   setIsLinkEditMode: Dispatch<boolean>;
 }): JSX.Element | null {
   const [editor] = useLexicalComposerContext();
+  
+  // Use document.body as default, but only in browser environment
+  const defaultAnchorElem = typeof document !== 'undefined' ? document.body : null;
+  const effectiveAnchorElem = anchorElem ?? defaultAnchorElem;
+  
+  // Don't render if we don't have a valid anchor element
+  if (!effectiveAnchorElem) {
+    return null;
+  }
+  
   return useFloatingLinkEditorToolbar(
     editor,
-    anchorElem,
+    effectiveAnchorElem,
     isLinkEditMode,
     setIsLinkEditMode,
   );

@@ -38,7 +38,14 @@ const styles = {
 
 const Select: React.FC<SelectProps> = (props) => {
   const { label, name, options } = props;
-  const { control } = useFormContext();
+  const formContext = useFormContext();
+
+  // Guard against missing form context
+  if (!formContext) {
+    return null;
+  }
+
+  const { control } = formContext;
 
   return (
     <Controller

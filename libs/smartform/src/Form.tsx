@@ -1,19 +1,35 @@
 'use client';
 
-import { type FC, type ReactNode } from 'react';
-import { FormProvider, useForm, type UseFormProps } from 'react-hook-form';
+import { type ReactNode, useEffect } from 'react';
+import { FormProvider, useForm, type UseFormProps, type UseFormReturn } from 'react-hook-form';
 
-interface FormProps extends UseFormProps {
+interface FormProps<T extends Record<string, unknown> = Record<string, unknown>> extends UseFormProps<T> {
   children: ReactNode;
-  onSubmit: (data: any) => void;
+  onSubmit: (data: T) => void;
   className?: string;
   testId?: string;
+  /** Callback to receive form methods for external use */
+  onFormReady?: (methods: UseFormReturn<T>) => void;
 }
 
 const defaultFormClassName = 'pt-6 pb-8 mb-4';
 
-const Form: FC<FormProps> = ({ children, onSubmit, className, testId, ...formOptions }) => {
-  const methods = useForm(formOptions);
+function Form<T extends Record<string, unknown> = Record<string, unknown>>({
+  children,
+  onSubmit,
+  className,
+  testId,
+  onFormReady,
+  ...formOptions
+}: FormProps<T>) {
+  const methods = useForm<T>(formOptions);
+
+  // Expose methods to parent if callback provided
+  useEffect(() => {
+    if (onFormReady) {
+      onFormReady(methods);
+    }
+  }, [methods, onFormReady]);
 
   return (
     <FormProvider {...methods}>
@@ -26,6 +42,6 @@ const Form: FC<FormProps> = ({ children, onSubmit, className, testId, ...formOpt
       </form>
     </FormProvider>
   );
-};
+}
 
 export default Form;

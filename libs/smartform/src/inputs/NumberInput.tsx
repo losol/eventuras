@@ -7,10 +7,17 @@ export const NumberInput = React.forwardRef<HTMLInputElement, InputProps>((props
   const { id, name, placeholder, label, description, className, defaultValue, validation, disabled } =
     props;
   const inputId = id ?? name;
+  const formContext = useFormContext();
+
+  // Guard against missing form context
+  if (!formContext) {
+    return null;
+  }
+
   const {
     register,
     formState: { errors },
-  } = useFormContext();
+  } = formContext;
 
   const hasError = !!errors[name];
   let inputClassName = className ?? formStyles.defaultInputStyle;
