@@ -39,6 +39,7 @@
     "openapi:update": "cd apps/api && pnpm openapi:update && cd ../.. && cd libs/event-sdk && pnpm build",
     "openapi:update:prod": "cd apps/api && pnpm openapi:update:prod && cd ../.. && cd libs/event-sdk && pnpm build",
     "prepare": "simple-git-hooks",
+    "release": "changeset version && git add . && git commit -m 'chore: version packages' && changeset tag && git push --follow-tags",
     "test": "turbo run test"
   },
   "simple-git-hooks": {

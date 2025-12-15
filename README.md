@@ -102,6 +102,51 @@ The applications will be available at
 
 ---
 
+## 📦 Release Process
+
+Eventuras uses [Changesets](https://github.com/changesets/changesets) for version management and automated deployments.
+
+### Creating a Release
+
+**In feature branches:**
+```bash
+# 1. Make your changes
+# 2. Create a changeset describing your changes
+pnpm changeset
+
+# 3. Commit and create PR
+git add .
+git commit -m "feat: your feature"
+git push
+```
+
+**After PR is merged to main:**
+```bash
+# 1. Switch to main and pull latest
+git checkout main
+git pull
+
+# 2. Run the release command (this does everything automatically)
+pnpm release
+```
+
+The `pnpm release` command will:
+- ✅ Bump package versions based on accumulated changesets
+- ✅ Update CHANGELOGs
+- ✅ Commit version changes
+- ✅ Create git tags
+- ✅ Push to GitHub
+- ✅ Trigger automated deployments
+
+### Automated Deployments
+
+- `@eventuras/api@*` tags → Deploy API to Azure
+- `@eventuras/web@*` tags → Deploy web app to Vercel (prod-1 and prod-2)
+
+**Note:** The packages `@eventuras/api`, `@eventuras/web`, and `@eventuras/event-sdk` have linked versions — they always bump together to the same version number.
+
+---
+
 ## 🤝 Contributing
 
 Contributions are welcome! Eventuras is open source, and we appreciate all forms of contributions — from bug fixes to new features.
