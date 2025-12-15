@@ -4,7 +4,14 @@ import { Input as BaseInput, InputProps } from '@eventuras/ratio-ui/forms';
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   const { name, validation, ...restProps } = props;
-  const { register, formState: { errors } } = useFormContext();
+  const formContext = useFormContext();
+
+  // Guard against missing form context
+  if (!formContext) {
+    return null;
+  }
+
+  const { register, formState: { errors } } = formContext;
 
   const hasError = !!errors[name];
 

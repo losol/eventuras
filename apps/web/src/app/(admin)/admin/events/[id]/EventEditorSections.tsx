@@ -1,16 +1,16 @@
 'use client';
 
-import { Controller, useFormContext } from 'react-hook-form';
-
 import { Fieldset } from '@eventuras/ratio-ui/forms';
 import { MarkdownInput } from '@eventuras/scribo';
 import {
   CheckboxInput,
   CheckboxLabel,
+  Controller,
   HiddenInput,
   Input,
   NumberInput,
   Select,
+  useFormContext,
 } from '@eventuras/smartform';
 
 import { publicEnv } from '@/config.client';
@@ -20,34 +20,6 @@ import { ExcelExportButton } from './ExcelExportButton';
 import { AdminCertificatesActionsMenu } from '../AdminCertificatesActionsMenu';
 
 import '@eventuras/scribo/style.css';
-
-// Wrapper component to use react-hook-form Controller with MarkdownInput
-const ControlledMarkdownInput = ({
-  name,
-  'data-testid': testId,
-  ...props
-}: {
-  name: string;
-  'data-testid'?: string;
-  [key: string]: unknown;
-}) => {
-  const { control } = useFormContext();
-  return (
-    <Controller
-      name={name}
-      control={control}
-      render={({ field }) => (
-        <MarkdownInput
-          {...props}
-          name={name}
-          defaultValue={field.value}
-          onChange={field.onChange}
-          data-testid={testId}
-        />
-      )}
-    />
-  );
-};
 
 export const OverviewSection = ({ loading = false }: { loading?: boolean }) => (
   <>
@@ -129,53 +101,112 @@ export const DatesLocationSection = ({ loading = false }: { loading?: boolean })
   </>
 );
 
-export const DescriptionsSection = () => (
-  <Fieldset label="Additional information">
-    <ControlledMarkdownInput
-      name="description"
-      label="Description (max 300 characters)"
-      placeholder="An Event Description here (markdown supported)"
-      maxLength={300}
-      data-testid="eventeditor-markdownfield-description"
-      id="eventeditor-description"
-    />
-    <ControlledMarkdownInput
-      name="program"
-      label="Program"
-      placeholder="An Event Program here (markdown supported)"
-      data-testid="eventeditor-markdownfield-program"
-      id="eventeditor-program"
-    />
-    <ControlledMarkdownInput
-      name="practicalInformation"
-      label="Practical Information"
-      placeholder="Practical Information here (markdown supported)"
-      data-testid="eventeditor-markdownfield-practical-information"
-      id="eventeditor-practical-information"
-    />
-    <ControlledMarkdownInput
-      name="moreInformation"
-      label="More Information"
-      placeholder="More Information here (markdown supported)"
-      data-testid="eventeditor-markdownfield-more-information"
-      id="eventeditor-more-information"
-    />
-    <ControlledMarkdownInput
-      name="welcomeLetter"
-      label="Welcome Letter"
-      placeholder="Welcome letter here (markdown supported)"
-      data-testid="eventeditor-markdownfield-welcome-letter"
-      id="eventeditor-welcome-letter"
-    />
-    <ControlledMarkdownInput
-      name="informationRequest"
-      label="Information Request"
-      placeholder="Information Request (markdown supported)"
-      data-testid="eventeditor-markdownfield-information-request"
-      id="eventeditor-information-request"
-    />
-  </Fieldset>
-);
+export const DescriptionsSection = () => {
+  const formContext = useFormContext();
+
+  // Guard against missing form context
+  if (!formContext) {
+    return <div className="p-4 text-gray-500">Loading form...</div>;
+  }
+
+  const { control } = formContext;
+
+  return (
+    <Fieldset label="Additional information">
+      <Controller
+        name="description"
+        control={control}
+        render={({ field }) => (
+          <MarkdownInput
+            label="Description (max 300 characters)"
+            placeholder="An Event Description here (markdown supported)"
+            maxLength={300}
+            data-testid="eventeditor-markdownfield-description"
+            id="eventeditor-description"
+            name="description"
+            defaultValue={field.value}
+            onChange={field.onChange}
+          />
+        )}
+      />
+      <Controller
+        name="program"
+        control={control}
+        render={({ field }) => (
+          <MarkdownInput
+            label="Program"
+            placeholder="An Event Program here (markdown supported)"
+            data-testid="eventeditor-markdownfield-program"
+            id="eventeditor-program"
+            name="program"
+            defaultValue={field.value}
+            onChange={field.onChange}
+          />
+        )}
+      />
+      <Controller
+        name="practicalInformation"
+        control={control}
+        render={({ field }) => (
+          <MarkdownInput
+            label="Practical Information"
+            placeholder="Practical Information here (markdown supported)"
+            data-testid="eventeditor-markdownfield-practical-information"
+            id="eventeditor-practical-information"
+            name="practicalInformation"
+            defaultValue={field.value}
+            onChange={field.onChange}
+          />
+        )}
+      />
+      <Controller
+        name="moreInformation"
+        control={control}
+        render={({ field }) => (
+          <MarkdownInput
+            label="More Information"
+            placeholder="More Information here (markdown supported)"
+            data-testid="eventeditor-markdownfield-more-information"
+            id="eventeditor-more-information"
+            name="moreInformation"
+            defaultValue={field.value}
+            onChange={field.onChange}
+          />
+        )}
+      />
+      <Controller
+        name="welcomeLetter"
+        control={control}
+        render={({ field }) => (
+          <MarkdownInput
+            label="Welcome Letter"
+            placeholder="Welcome letter here (markdown supported)"
+            data-testid="eventeditor-markdownfield-welcome-letter"
+            id="eventeditor-welcome-letter"
+            name="welcomeLetter"
+            defaultValue={field.value}
+            onChange={field.onChange}
+          />
+        )}
+      />
+      <Controller
+        name="informationRequest"
+        control={control}
+        render={({ field }) => (
+          <MarkdownInput
+            label="Information Request"
+            placeholder="Information Request (markdown supported)"
+            data-testid="eventeditor-markdownfield-information-request"
+            id="eventeditor-information-request"
+            name="informationRequest"
+            defaultValue={field.value}
+            onChange={field.onChange}
+          />
+        )}
+      />
+    </Fieldset>
+  );
+};
 
 export const CertificateSection = ({ eventinfo }: { eventinfo: EventDto }) => (
   <>

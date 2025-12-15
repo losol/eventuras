@@ -54,7 +54,14 @@ export const CheckboxDescription: FC<SubComponentProps> = ({ children, className
 const CheckboxInput = React.forwardRef<HTMLInputElement, CheckboxProps>((props, ref) => {
   const { children, id, disabled, defaultChecked, name, validation, className } = props;
 
-  const { register } = useFormContext();
+  const formContext = useFormContext();
+
+  // Guard against missing form context
+  if (!formContext) {
+    return null;
+  }
+
+  const { register } = formContext;
 
   // Add the htmlFor attribute to the label
   const enhancedChildren = React.Children.map(children, child => {
@@ -72,7 +79,7 @@ const CheckboxInput = React.forwardRef<HTMLInputElement, CheckboxProps>((props, 
         id={id}
         disabled={disabled}
         defaultChecked={defaultChecked}
-        data-test-id={props['data-test-id']}
+        data-testid={props['data-test-id']}
         {...register(name, validation)}
         ref={e => {
           // Assign the ref from forwardRef

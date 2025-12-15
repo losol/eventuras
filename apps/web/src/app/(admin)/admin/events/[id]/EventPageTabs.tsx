@@ -1,14 +1,13 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useFormContext } from 'react-hook-form';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
 import { Logger } from '@eventuras/logger';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Tabs } from '@eventuras/ratio-ui/core/Tabs';
-import { Form } from '@eventuras/smartform';
+import { Form, useFormContext } from '@eventuras/smartform';
 import { useToast } from '@eventuras/toast';
 
 import { publicEnv } from '@/config.client';
@@ -136,11 +135,17 @@ export default function EventPageTabs({
   const pathname = usePathname();
   const t = useTranslations();
   const toast = useToast();
+  const [isMounted, setIsMounted] = useState(false);
 
   const logger = Logger.create({
     namespace: 'web:admin:events',
     context: { component: 'EventPageTabs', eventId: eventinfo.id },
   });
+
+  // Ensure component is mounted before rendering form
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Get current tab from URL or use default
   const currentTab = searchParams.get('tab') || defaultTab;
@@ -192,6 +197,11 @@ export default function EventPageTabs({
   const isEditTab = ['overview', 'dates', 'descriptions', 'certificate', 'advanced'].includes(
     currentTab
   );
+
+  // Don't render until mounted to avoid hydration/context issues
+  if (!isMounted) {
+    return <div className="p-4">Loading...</div>;
+  }
 
   return (
     <Form
