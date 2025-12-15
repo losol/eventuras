@@ -45,20 +45,20 @@
     "@eventuras/eslint-config": "workspace:*",
     "@eventuras/typescript-config": "workspace:*",
     "@eventuras/vite-config": "workspace:*",
-    "@testing-library/react": "^16.3.0",
+    "@testing-library/react": "^16.3.1",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.2",
     "lightningcss": "^1.30.2",
     "typescript": "^5.9.3",
-    "vite": "^7.2.7",
+    "vite": "^7.3.0",
     "vitest": "^4.0.15"
   },
   "peerDependencies": {
-    "react": "^19.2.1",
-    "react-dom": "^19.2.1"
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3"
   },
-  "packageManager": "pnpm@10.25.0",
+  "packageManager": "pnpm@10.26.0",
   "engines": {
     "node": ">=22.0.0 <25.0.0"
   }
