@@ -1,10 +1,11 @@
 name: Release - Deploy Web
 
-run-name: "${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || github.event.release.tag_name }}"
+run-name: "${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || github.ref_name }}"
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - '@eventuras/web@*'
   workflow_dispatch:
     inputs:
       tag:
@@ -25,7 +26,7 @@ jobs:
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             TAG="${{ github.event.inputs.tag }}"
           else
-            TAG="${{ github.event.release.tag_name }}"
+            TAG="${{ github.ref_name }}"
           fi
 
           echo "Tag: $TAG"
