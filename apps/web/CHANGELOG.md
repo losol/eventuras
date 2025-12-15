@@ -1,5 +1,16 @@
 # @eventuras/web
 
+## 0.9.0
+
+### Minor Changes
+
+- ### 🧱 Features
+  - feat(web): enhance event product management UI and localization (c145d7e) [@eventuras/web]
+  - chore(web): upgrade packages
+
+  ### 🐞 Bug Fixes
+  - fix(web): ensure correct type casting for form submission in CollectionCreator (8d2238b) [@eventuras/web]
+
 ## 0.8.0
 
 ### Minor Changes
