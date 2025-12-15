@@ -39,7 +39,7 @@ const CollectionCreator: React.FC = () => {
         {t('admin.collection.labels.create')}
       </Button>
       <Dialog isOpen={modalOpen} onClose={() => setModalOpen(false)} title={'Add collection'}>
-        <Form onSubmit={data => handleCreateCollection(data)}>
+        <Form onSubmit={data => handleCreateCollection(data as EventCollectionCreateDto)}>
           <HiddenInput name="organizationId" value={organizationId.toString()} />
           <Input name="name" label={t('common.labels.name')} />
           <Button type="submit" loading={isSubmitting}>
