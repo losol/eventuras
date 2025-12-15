@@ -34,6 +34,7 @@ const AdminEventList = async ({
     page,
     pageSize,
     startDate: includePastEvents ? undefined : aMonthAgo(),
+    ordering: includePastEvents ? ['DateStart:desc'] : ['DateStart:asc'],
   });
 
   return (

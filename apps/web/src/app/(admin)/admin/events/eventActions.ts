@@ -13,6 +13,7 @@ export interface FetchEventsParams {
   page?: number;
   pageSize?: number;
   startDate?: string;
+  ordering?: string[];
 }
 
 export interface FetchEventsResult {
@@ -27,6 +28,7 @@ export async function fetchEvents({
   page = 1,
   pageSize = 25,
   startDate,
+  ordering,
 }: FetchEventsParams): Promise<FetchEventsResult> {
   logger.debug(
     {
@@ -35,6 +37,7 @@ export async function fetchEvents({
       page,
       pageSize,
       startDate,
+      ordering,
     },
     'Fetching events'
   );
@@ -50,11 +53,25 @@ export async function fetchEvents({
         Period: 'Contain',
         Page: page,
         Count: pageSize,
+        Ordering: ordering,
       },
     });
 
     if (!response.data) {
-      logger.warn('No data in response from getV3Events');
+      logger.error(
+        {
+          error: response.error,
+          query: {
+            organizationId,
+            includePastEvents,
+            page,
+            pageSize,
+            startDate,
+            ordering,
+          },
+        },
+        'No data in response from getV3Events'
+      );
       throw new Error('No data received from API');
     }
 
