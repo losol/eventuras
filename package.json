@@ -19,7 +19,6 @@
     "build": "turbo run build --concurrency 30",
     "build:dev": "turbo run build --filter=@eventuras/web... --concurrency 20",
     "changeset": "changeset",
-    "changeset:release": "changeset publish",
     "changeset:suggest": "tsx scripts/changeset-suggest.ts --since origin/main --write",
     "changeset:tag": "changeset tag",
     "changeset:version": "changeset version",
