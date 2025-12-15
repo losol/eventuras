@@ -1,8 +1,16 @@
 # @eventuras/web
 
+## 2.27.3
+
+### Patch Changes
+
+- ### 🧹 Maintenance
+  - chore(web): add reverse sorting to pastEvents (16569e5) [@eventuras/web]
+
 ## 2.27.1
- - Sync release versions across packages api, web, event-sdk
- 
+
+- Sync release versions across packages api, web, event-sdk
+
 ## 0.9.0
 
 ### Minor Changes

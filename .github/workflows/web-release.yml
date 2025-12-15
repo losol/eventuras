@@ -1,5 +1,7 @@
 name: Release - Deploy Web
 
+run-name: "${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || github.event.release.tag_name }}"
+
 on:
   release:
     types: [published]
