@@ -102,6 +102,21 @@ function loadAliases(): Record<string, string> {
   }
 }
 
+/** Load linked packages from .changeset/config.json */
+function loadLinkedPackages(): string[][] {
+  const CONFIG_PATH = './.changeset/config.json'
+  if (!existsSync(CONFIG_PATH)) {
+    return []
+  }
+  try {
+    const config = JSON.parse(readFileSync(CONFIG_PATH, 'utf8'))
+    return config.linked ?? []
+  } catch (err) {
+    console.warn(`⚠️  Failed to parse ${CONFIG_PATH}:`, err)
+    return []
+  }
+}
+
 /** Commits since ref */
 function getCommits(ref: string): Commit[] {
   const raw = git(`log ${ref}..HEAD --pretty=format:%H:::%s:::%B`)
@@ -190,7 +205,7 @@ function slug(s: string) {
 }
 
 /** Build per-package changeset */
-function buildChangesetForPackage(pkg: string, bump: Bump, commits: Commit[]) {
+function buildChangesetForPackage(pkg: string, bump: Bump, commits: Commit[], linkedGroup: string[] = []) {
   // Sort commits by type priority: feat, docs, fix, others (refactor, test, chore, ci)
   const typePriority: Record<string, number> = {
     feat: 0,
@@ -206,7 +221,7 @@ function buildChangesetForPackage(pkg: string, bump: Bump, commits: Commit[]) {
     feat: '### 🧱 Features',
     docs: '### 📝 Documentation',
     fix: '### 🐞 Bug Fixes',
-    refactor: '### ♻️ Refactoring',
+    refactor: '♻️ Refactoring',
     test: '### ✅ Testing',
     chore: '### 🧹 Maintenance',
     ci: '### ⚙️ CI/CD',
@@ -226,7 +241,18 @@ function buildChangesetForPackage(pkg: string, bump: Bump, commits: Commit[]) {
     return priorityA - priorityB
   })
 
-  const lines = ['---', `"${pkg}": ${bump}`, '---', '']
+  const lines = ['---']
+
+  // Add all packages in the linked group with the same bump
+  if (linkedGroup.length > 0) {
+    for (const linkedPkg of linkedGroup) {
+      lines.push(`"${linkedPkg}": ${bump}`)
+    }
+  } else {
+    lines.push(`"${pkg}": ${bump}`)
+  }
+
+  lines.push('---', '')
 
   // Group commits by type and add headers with emojis
   let currentType: string | null = null
@@ -262,6 +288,15 @@ function buildChangesetForPackage(pkg: string, bump: Bump, commits: Commit[]) {
   }
 
   const aliases = loadAliases()
+  const linkedGroups = loadLinkedPackages()
+
+  // Build a map from package name to its linked group
+  const packageToLinkedGroup = new Map<string, string[]>()
+  for (const group of linkedGroups) {
+    for (const pkg of group) {
+      packageToLinkedGroup.set(pkg, group)
+    }
+  }
 
   // token -> package name
   const tokenToPkg = new Map<string, string>()
@@ -327,13 +362,51 @@ function buildChangesetForPackage(pkg: string, bump: Bump, commits: Commit[]) {
   if (!existsSync('.changeset')) mkdirSync('.changeset', {recursive: true})
   const date = new Date().toISOString().slice(0, 10)
 
+  // Track which linked groups have been written to avoid duplicates
+  const writtenLinkedGroups = new Set<string>()
+
   for (const [pkg, bump] of bumps.entries()) {
-    const pkgCommits = notes.get(pkg) ?? []
-    const firstTitle = pkgCommits[0]?.subject ?? pkg
-    const suffix = slug(pkg.split('/').pop()!)
-    const filename = `${date}-${slug(firstTitle).slice(0, 40) || 'changes'}-${suffix}.md`
-    const md = buildChangesetForPackage(pkg, bump, pkgCommits)
-    writeFileSync(join('.changeset', filename), md, 'utf8')
-    console.log(`✅  Created .changeset/${filename}`)
+    const linkedGroup = packageToLinkedGroup.get(pkg)
+
+    // If this package is in a linked group
+    if (linkedGroup && linkedGroup.length > 1) {
+      // Create a sorted key to identify this group
+      const groupKey = [...linkedGroup].sort().join('|')
+
+      // Skip if we've already written a changeset for this group
+      if (writtenLinkedGroups.has(groupKey)) {
+        continue
+      }
+
+      writtenLinkedGroups.add(groupKey)
+
+      // Collect all commits from all packages in the linked group
+      const allGroupCommits: Commit[] = []
+      for (const linkedPkg of linkedGroup) {
+        const pkgCommits = notes.get(linkedPkg) ?? []
+        allGroupCommits.push(...pkgCommits)
+      }
+
+      // Deduplicate commits by hash
+      const uniqueCommits = Array.from(
+        new Map(allGroupCommits.map(c => [c.hash, c])).values()
+      )
+
+      const firstTitle = uniqueCommits[0]?.subject ?? pkg
+      const suffix = 'linked-' + linkedGroup.map(p => slug(p.split('/').pop()!)).join('-')
+      const filename = `${date}-${slug(firstTitle).slice(0, 30) || 'changes'}-${suffix}.md`
+      const md = buildChangesetForPackage(pkg, bump, uniqueCommits, linkedGroup)
+      writeFileSync(join('.changeset', filename), md, 'utf8')
+      console.log(`✅  Created .changeset/${filename} (linked: ${linkedGroup.join(', ')})`)
+    } else {
+      // Non-linked package: create individual changeset
+      const pkgCommits = notes.get(pkg) ?? []
+      const firstTitle = pkgCommits[0]?.subject ?? pkg
+      const suffix = slug(pkg.split('/').pop()!)
+      const filename = `${date}-${slug(firstTitle).slice(0, 40) || 'changes'}-${suffix}.md`
+      const md = buildChangesetForPackage(pkg, bump, pkgCommits)
+      writeFileSync(join('.changeset', filename), md, 'utf8')
+      console.log(`✅  Created .changeset/${filename}`)
+    }
   }
 })()

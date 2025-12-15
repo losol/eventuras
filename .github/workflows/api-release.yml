@@ -1,5 +1,7 @@
 name: Release - Deploy API
 
+run-name: "${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || github.event.release.tag_name }}"
+
 on:
   release:
     types: [published]
@@ -52,6 +54,7 @@ jobs:
     needs: [check-release, build-api]
     if: needs.check-release.outputs.is_api_release == 'true'
     runs-on: ubuntu-latest
+    environment: api-prod
     defaults:
       run:
         working-directory: ./apps/api/
