@@ -46,7 +46,7 @@ export const Card: React.FC<{
       )}
       padding="p-0"
     >
-      <div ref={card.ref} className="h-full flex flex-col">
+      <div ref={card.ref as React.RefObject<HTMLDivElement>} className="h-full flex flex-col">
         {showImages && doc?.image && typeof doc.image === 'object' && doc.image.media &&
         <div className="relative w-full">
           <Media resource={doc.image.media} size="33vw" />

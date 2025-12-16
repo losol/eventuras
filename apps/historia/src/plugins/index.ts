@@ -128,10 +128,14 @@ export const plugins: Plugin[] = [
       access: {
         read: () => true,
         update: ({ req }) => {
-          if (isSystemAdmin(req.user)) {
-            return true;
+          // Check if user is from 'users' collection before passing to functions
+          if (req.user && 'email' in req.user) {
+            if (isSystemAdmin(req.user)) {
+              return true;
+            }
+            return getUserTenantIDs(req.user).length > 0;
           }
-          return getUserTenantIDs(req.user).length > 0;
+          return false;
         },
       },
     },
@@ -139,7 +143,10 @@ export const plugins: Plugin[] = [
       includeDefaultField: false,
     },
     useUsersTenantFilter: false,
-    userHasAccessToAllTenants: (user) => isSystemAdmin(user),
+    userHasAccessToAllTenants: (user) => {
+      // Check if user is from 'users' collection before passing to isSystemAdmin
+      return user && 'email' in user && isSystemAdmin(user);
+    },
   }),
   nestedDocsPlugin({
     collections: ['pages'],

@@ -1,7 +1,8 @@
 import type { Access } from 'payload';
 
 export const publishedOnly: Access = ({ req: { user } }) => {
-  if (user?.roles?.includes('admin')) {
+  // Check if user is from 'users' collection and has roles
+  if (user && 'roles' in user && user.roles?.includes('admin')) {
     return true;
   }
 

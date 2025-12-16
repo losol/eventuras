@@ -12,13 +12,19 @@ export const superAdminOrSiteAdminAccess: Access = ({ req }) => {
     return false;
   }
 
-  if (isSystemAdmin(req.user)) {
+  // Check if user is from 'users' collection before passing to isSystemAdmin
+  if (req.user && 'email' in req.user && isSystemAdmin(req.user)) {
     return true;
   }
 
-  return {
-    tenant: {
-      in: getUserTenantIDs(req.user, 'site-admin'),
-    },
-  };
+  // Only User types can have tenant access
+  if (req.user && 'email' in req.user) {
+    return {
+      tenant: {
+        in: getUserTenantIDs(req.user, 'site-admin'),
+      },
+    };
+  }
+
+  return false;
 };
