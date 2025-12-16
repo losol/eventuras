@@ -13,7 +13,8 @@ export const Orders: CollectionConfig = {
     create: admins,
     read: ({ req: { user } }) => {
       // Admins can read all orders
-      if (user?.roles?.includes('admin')) {
+      // Check if user is from 'users' collection and has roles
+      if (user && 'roles' in user && user.roles?.includes('admin')) {
         return true;
       }
       // Users can only read their own orders

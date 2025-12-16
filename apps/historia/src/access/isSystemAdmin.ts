@@ -3,7 +3,11 @@ import type { Access } from 'payload';
 import { User } from '../payload-types';
 
 export const isSystemAdminAccess: Access = ({ req }): boolean => {
-  return isSystemAdmin(req.user);
+  // Check if user is from 'users' collection before passing to isSystemAdmin
+  if (req.user && 'email' in req.user) {
+    return isSystemAdmin(req.user as User);
+  }
+  return false;
 };
 
 export const isSystemAdmin = (user: User | null): boolean => {

@@ -9,14 +9,18 @@ export const createAccess: Access<User> = ({ req }) => {
     return false;
   }
 
-  if (isSystemAdmin(req.user)) {
+  // Check if user is from 'users' collection before passing to isSystemAdmin
+  if (req.user && 'email' in req.user && isSystemAdmin(req.user)) {
     return true;
   }
 
-  const adminTenantAccessIDs = getUserTenantIDs(req.user, 'site-admin');
+  // Only User types can have tenant access
+  if (req.user && 'email' in req.user) {
+    const adminTenantAccessIDs = getUserTenantIDs(req.user, 'site-admin');
 
-  if (adminTenantAccessIDs.length) {
-    return true;
+    if (adminTenantAccessIDs.length) {
+      return true;
+    }
   }
 
   return false;

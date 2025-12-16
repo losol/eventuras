@@ -7,7 +7,8 @@ import type { Access } from 'payload';
  */
 export const authenticatedOrFirstWebsite: Access = async ({ req: { user, payload } }) => {
   // Admins can always create
-  if (user?.roles?.includes('admin') || user?.roles?.includes('system-admin')) {
+  // Check if user is from 'users' collection and has roles
+  if (user && 'roles' in user && (user.roles?.includes('admin') || user.roles?.includes('system-admin'))) {
     return true;
   }
 

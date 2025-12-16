@@ -9,7 +9,8 @@ export const Transactions: CollectionConfig = {
     create: admins,
     read: ({ req: { user } }) => {
       // Admins can read all transactions
-      if (user?.roles?.includes('admin')) return true;
+      // Check if user is from 'users' collection and has roles
+      if (user && 'roles' in user && user.roles?.includes('admin')) return true;
       // Users can only read their own transactions
       if (user) return { customer: { equals: user.id } };
       return false;
