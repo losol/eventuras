@@ -1,4 +1,6 @@
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder';
+import { importExportPlugin } from '@payloadcms/plugin-import-export'
+import { mcpPlugin } from '@payloadcms/plugin-mcp'
 import { multiTenantPlugin } from '@payloadcms/plugin-multi-tenant';
 import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs';
 import { redirectsPlugin } from '@payloadcms/plugin-redirects';
@@ -38,6 +40,37 @@ const requiredS3MediaVars = [
 const areAllS3VarsPresent = requiredS3MediaVars.every(varName => process.env[varName]);
 
 export const plugins: Plugin[] = [
+  importExportPlugin({
+    collections: ['articles', 'notes', 'pages'],
+  }),
+  mcpPlugin({
+    collections: {
+      articles: {
+        enabled: true,
+      },
+      happenings: {
+        enabled: true,
+      },
+      pages: {
+        enabled: true,
+      },
+      notes: {
+        enabled: true,
+      },
+      persons: {
+        enabled: true,
+      },
+      organizations: {
+        enabled: true,
+      },
+      topics: {
+        enabled: true,
+      },
+      websites: {
+        enabled: true,
+      },
+    },
+  }),
   s3Storage({
     enabled: areAllS3VarsPresent,
     collections: {

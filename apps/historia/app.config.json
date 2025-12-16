@@ -16,12 +16,6 @@
       "type": "string",
       "description": "Secret for CMS encryption and signing"
     },
-    "PAYLOAD_SECRET": {
-      "required": true,
-      "client": false,
-      "type": "string",
-      "description": "Secret for Payload CMS"
-    },
     "NEXT_PUBLIC_CMS_URL": {
       "required": true,
       "client": true,
