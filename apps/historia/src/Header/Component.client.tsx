@@ -9,7 +9,11 @@ import { CartButton } from '@/components/CartButton';
 import { Logo } from '@/components/Logo/Logo';
 import { useHeaderTheme } from '@/providers/HeaderTheme';
 
-export const HeaderClient: React.FC = () => {
+interface HeaderClientProps {
+  title?: string;
+}
+
+export const HeaderClient: React.FC<HeaderClientProps> = ({ title }) => {
   const [theme, setTheme] = useState<string | null>(null);
   const { headerTheme, setHeaderTheme } = useHeaderTheme();
   const pathname = usePathname();
@@ -33,13 +37,11 @@ export const HeaderClient: React.FC = () => {
   return (
     <header className={`relative z-20 ${theme ? `data-theme=${theme}` : ''}`}>
       <Navbar
+        title={title}
         titleHref="/"
         LinkComponent={Link}
         bgColor="bg-transparent"
       >
-        <Link href="/" className="flex items-center">
-          <Logo />
-        </Link>
         <CartButton locale={locale} />
       </Navbar>
     </header>

@@ -20,6 +20,11 @@ export function CartButton({ locale }: CartButtonProps) {
     setIsMounted(true);
   }, []);
 
+  // Don't render the button at all if there are no items and component is mounted
+  if (isMounted && itemCount === 0) {
+    return null;
+  }
+
   return (
     <>
       <button

@@ -1,7 +1,12 @@
 import React from 'react'
 
+import { getCurrentWebsite } from '@/lib/website'
+
 import { HeaderClient } from './Component.client'
 
 export async function Header() {
-  return <HeaderClient />
+  const website = await getCurrentWebsite()
+  const websiteTitle = website?.title || 'Historia'
+
+  return <HeaderClient title={websiteTitle} />
 }
