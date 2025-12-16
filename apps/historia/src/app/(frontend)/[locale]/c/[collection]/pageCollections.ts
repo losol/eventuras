@@ -47,8 +47,8 @@ export const getOriginalCollectionName = (localizedCollection: string, locale: s
 
 /**
  * Generates a localized URL for a given collection, resourceId, and slug.
- * Format: /{locale}/{collection}/{slug}--{resourceId}
- * Example: /no/artikler/god-artikkel--6abvh9
+ * Format: /{locale}/c/{collection}/{slug}--{resourceId}
+ * Example: /no/c/artikler/god-artikkel--6abvh9
  * @param locale - The locale (e.g., 'en', 'no').
  * @param collection - The original collection name (e.g., 'articles').
  * @param resourceId - The unique resource ID of the document.
@@ -71,5 +71,5 @@ export const getDocUrl = ({
 
   // Construct the URL with new format: slug--resourceId
   const combinedSlug = `${slug}--${resourceId}`;
-  return `/${locale}/${localizedCollectionName}/${combinedSlug}`;
+  return `/${locale}/c/${localizedCollectionName}/${combinedSlug}`;
 };
