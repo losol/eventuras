@@ -3,6 +3,8 @@ import React from 'react'
 import Link from 'next/link'
 import { usePathname } from "next/navigation";
 
+import { Card as RatioCard } from '@eventuras/ratio-ui/core/Card';
+
 import { getDocUrl } from '@/app/(frontend)/[locale]/c/[collection]/pageCollections';
 import { Media } from '@/components/Media'
 import type { Article, Happening, Note, Organization, Page, Person, Project } from '@/payload-types'
@@ -35,21 +37,23 @@ export const Card: React.FC<{
   });
 
   return (
-    <article
+    <RatioCard
+      as="article"
+      hoverEffect
       className={cn(
-        'border border-border rounded-lg overflow-hidden bg-card hover:cursor-pointer',
+        'border border-border overflow-hidden cursor-pointer h-full flex flex-col',
         className,
       )}
-      ref={card.ref}
+      padding="p-0"
     >
-      {showImages && doc?.image && typeof doc.image === 'object' && doc.image.media &&
-      <div className="relative w-full ">
-        <Media resource={doc.image.media} size="33vw" />
-      </div>
-      }
+      <div ref={card.ref} className="h-full flex flex-col">
+        {showImages && doc?.image && typeof doc.image === 'object' && doc.image.media &&
+        <div className="relative w-full">
+          <Media resource={doc.image.media} size="33vw" />
+        </div>
+        }
 
-      <div className="p-4">
-
+        <div className="p-4 flex-1">
           <div className="prose">
             <h3>
               <Link className="not-prose" href={href} ref={link.ref}>
@@ -58,8 +62,9 @@ export const Card: React.FC<{
             </h3>
           </div>
 
-        {doc && 'lead' in doc && doc.lead && <div className="mt-2">{doc.lead}</div>}
+          {doc && 'lead' in doc && doc.lead && <div className="mt-2">{doc.lead}</div>}
+        </div>
       </div>
-    </article>
+    </RatioCard>
   )
 }

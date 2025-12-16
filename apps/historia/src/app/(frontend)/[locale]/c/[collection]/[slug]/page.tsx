@@ -5,6 +5,8 @@ import { draftMode } from 'next/headers';
 import { permanentRedirect, redirect } from 'next/navigation';
 import { CollectionSlug, getPayload } from 'payload';
 
+import { Container } from '@eventuras/ratio-ui/layout/Container';
+
 import { RenderBlocks } from '@/blocks/RenderBlocks';
 import { LivePreviewListener } from '@/components/LivePreviewListener';
 import { PayloadRedirects } from '@/components/PayloadRedirects';
@@ -146,6 +148,7 @@ export default async function Page({ params: paramsPromise }: Args) {
   const titleToUse = 'title' in document ? document.title : document.name;
 
   return (
+    <Container>
     <article className="container pt-16 pb-16 prose dark:prose-invert">
       <PageClient />
 
@@ -162,7 +165,8 @@ export default async function Page({ params: paramsPromise }: Args) {
 
       {'content' in document && document.content ? <RichText data={document.content} /> : null}
       {'story' in document && document.story ? <RenderBlocks blocks={document.story} /> : null}
-    </article>
+      </article>
+    </Container>
   );
 }
 

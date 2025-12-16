@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getPayload } from 'payload';
 
+import { Container } from '@eventuras/ratio-ui/layout/Container';
+
 import { RenderBlocks } from '@/blocks/RenderBlocks';
 import { LivePreviewListener } from '@/components/LivePreviewListener';
 import { Hero } from '@/heros/Hero';
@@ -130,7 +132,8 @@ export default async function Page({ params: paramsPromise }: Args) {
     <>
       <PageClient />
       <LivePreviewListener />
-      <article className="pt-16 pb-24 px-4 max-w-6xl mx-auto">
+      <Container>
+      <article>
         {breadcrumbs && Array.isArray(breadcrumbs) && breadcrumbs.length > 1 && (
           <nav aria-label="breadcrumb" className="mb-4">
             <ol className="breadcrumb flex">
@@ -152,7 +155,8 @@ export default async function Page({ params: paramsPromise }: Args) {
         )}
         <Hero title={title} image={image} />
         {story && story.length > 0 && <RenderBlocks blocks={story} />}
-      </article>
+        </article>
+      </Container>
     </>
   );
 }
