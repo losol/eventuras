@@ -1,5 +1,13 @@
 # @eventuras/historia
 
+## 0.15.0
+
+### Minor Changes
+
+- ### 🧱 Features
+  - feat(historia): enhance layout with Container and Grid components for improved structure (494dbe9) [@eventuras/historia]
+  - feat(historia): adds mcp server and import/export (a1a2bae) [@eventuras/historia]
+
 ## 0.14.2
 
 ### Patch Changes
