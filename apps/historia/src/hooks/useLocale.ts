@@ -19,5 +19,10 @@ import { publicEnv } from '@/config.client';
 export function useLocale(defaultLocale?: string): string {
   const pathname = usePathname();
   const envDefaultLocale = publicEnv.NEXT_PUBLIC_CMS_DEFAULT_LOCALE || 'no';
-  return pathname.split('/')[1] || defaultLocale || envDefaultLocale;
+
+  // For the root path (`'/'`), `pathname.split('/')[1]` is `''`/`undefined`,
+  // so we intentionally rely on the fallback chain (`defaultLocale` → `envDefaultLocale`).
+  const localeSegment = pathname?.split('/')[1];
+
+  return localeSegment || defaultLocale || envDefaultLocale;
 }
