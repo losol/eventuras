@@ -1,3 +1,5 @@
+import { ObfuscatedEmail } from '../ObfuscatedEmail';
+
 export interface Publisher {
   name: string;
   address: string;
@@ -27,7 +29,12 @@ export const Footer = (props: FooterProps) => {
                       <p>{props.publisher.name}</p>
                       <p>{props.publisher.address}</p>
                       <p>{props.publisher.phone}</p>
-                      <p>{props.publisher.email}</p>
+                      {props.publisher.email && (
+                        <ObfuscatedEmail
+                          email={props.publisher.email}
+                          className="block"
+                        />
+                      )}
                       {props.publisher.organizationNumber && (
                         <p>Org.nr. {props.publisher.organizationNumber}</p>
                       )}
