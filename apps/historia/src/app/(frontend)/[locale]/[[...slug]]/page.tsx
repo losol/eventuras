@@ -1,4 +1,5 @@
 import React, { cache } from 'react';
+import type { Metadata } from 'next';
 import configPromise from '@payload-config';
 import { draftMode, headers } from 'next/headers';
 import Link from 'next/link';
@@ -85,6 +86,49 @@ type Args = {
     slug?: string[];
   }>;
 };
+
+export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
+  const params = await paramsPromise;
+  const { locale = defaultLocale, slug } = params;
+
+  // Build the full path from slug segments
+  const fullPath = slug?.length ? `/${slug.join('/')}` : undefined;
+  const currentSlug = slug?.length ? slug[slug.length - 1] : undefined;
+
+  let page;
+  if (!currentSlug || !fullPath) {
+    // Homepage
+    const homePageId = await getHomePageId();
+    if (homePageId) {
+      page = await queryPage({ id: homePageId, locale, draft: false });
+    }
+  } else {
+    // Nested page
+    page = await queryPageByBreadcrumbsUrl({ breadcrumbsUrl: fullPath, locale, draft: false });
+  }
+
+  if (!page) {
+    return {
+      title: 'Page Not Found',
+    };
+  }
+
+  const title = page.title || 'Historia';
+  const description = page.lead || undefined;
+  const imageUrl = typeof page.image?.media === 'object' && page.image.media?.url
+    ? page.image.media.url
+    : undefined;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: imageUrl ? [{ url: imageUrl }] : undefined,
+    },
+  };
+}
 
 // Page component
 export default async function Page({ params: paramsPromise }: Args) {
