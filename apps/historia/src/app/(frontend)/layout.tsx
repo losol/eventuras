@@ -1,4 +1,5 @@
 import React from 'react'
+import type { Metadata } from 'next'
 import { draftMode } from 'next/headers'
 
 import { AdminBar } from '@/components/AdminBar'
@@ -9,6 +10,14 @@ import { InitTheme } from '@/providers/Theme/InitTheme'
 
 import '@eventuras/ratio-ui/ratio-ui.css'
 import './globals.css'
+
+export const metadata: Metadata = {
+  title: {
+    template: '%s | Historia',
+    default: 'Historia',
+  },
+  description: 'Historia - Knowledge management and content platform',
+}
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { isEnabled } = await draftMode()
@@ -30,7 +39,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             />
 
             <Header />
-            <main className="flex-1 min-h-[80vh]">
+            <main id="main-content" className="flex-1 min-h-[80vh]">
               {children}
             </main>
             <Footer />
