@@ -21,6 +21,32 @@ export const Websites: CollectionConfig = {
     update: admins,
     delete: admins,
   },
+  hooks: {
+    afterRead: [
+      ({ doc }) => {
+        // Censor User data in contactPoints - only expose name fields
+        if (doc.contactPoints) {
+          doc.contactPoints = doc.contactPoints.map((cp: { person?: unknown }) => {
+            if (cp.person && typeof cp.person === 'object') {
+              // Keep only id and name fields
+              return {
+                ...cp,
+                person: {
+                  id: (cp.person as Record<string, unknown>).id,
+                  given_name: (cp.person as Record<string, unknown>).given_name,
+                  middle_name: (cp.person as Record<string, unknown>).middle_name,
+                  family_name: (cp.person as Record<string, unknown>).family_name,
+                  email: (cp.person as Record<string, unknown>).email,
+                },
+              };
+            }
+            return cp;
+          });
+        }
+        return doc;
+      },
+    ],
+  },
   fields: [
     name,
     title,
@@ -47,6 +73,37 @@ export const Websites: CollectionConfig = {
       admin: {
         description: 'The organization that publishes this website',
       },
+    },
+    {
+      name: 'contactPoints',
+      label: 'Contact Points',
+      type: 'array',
+      admin: {
+        description: 'Contact points for this website. Only name fields will be publicly visible.',
+      },
+      fields: [
+        {
+          name: 'user',
+          label: 'User',
+          type: 'relationship',
+          relationTo: 'users',
+          required: true,
+          admin: {
+            description: 'User responsible for this contact point. Only their name will be visible publicly.',
+          },
+        },
+        {
+          name: 'contactType',
+          label: 'Contact Type',
+          type: 'select',
+          required: true,
+          options: [
+            { label: 'Editor', value: 'editor' },
+            { label: 'Sales', value: 'sales' },
+            { label: 'Support', value: 'support' },
+          ],
+        },
+      ],
     },
     {
       name: 'siteSettings',

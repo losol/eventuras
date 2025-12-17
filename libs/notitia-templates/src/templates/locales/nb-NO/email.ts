@@ -1,4 +1,5 @@
 import type { TemplateRegistry } from '../../../types';
+import { buildOrderConfirmationTemplate } from '../../utils/orderConfirmationBuilder';
 
 /**
  * Norwegian Bokmål email templates
@@ -108,25 +109,26 @@ Beste hilsen,
 
   'email:order-confirmation': {
     subject: 'Ordrebekreftelse - #{{orderId}}',
-    content: `Hei {{name}},
-
-Takk for din bestilling!
-
-Ordredetaljer:
-- Ordre-ID: {{orderId}}
-- Bestillingsdato: {{orderDate}}
-{{#if totalAmount}}
-- Totalt: {{totalAmount}} {{currency}}
-{{/if}}
-
-{{#if trackingNumber}}
-Sporingsnummer: {{trackingNumber}}
-{{/if}}
-
-Vi varsler deg når ordren din sendes.
-
-Beste hilsen,
-{{organizationName}}-teamet`,
+    content: buildOrderConfirmationTemplate({
+      copyBanner: 'KOPI - Intern kopi av kundebekreftelse',
+      headerTitle: 'Ordrebekreftelse',
+      greeting: 'Hei {{name}}! 👋',
+      thankYouMessage: 'Takk for din bestilling! Vi har mottatt ordren din og begynner å behandle den med en gang.',
+      orderDetailsTitle: 'Ordredetaljer',
+      orderNumberLabel: 'Ordrenummer',
+      orderDateLabel: 'Ordredato',
+      customerEmailLabel: 'Kunde e-post',
+      orderedProductsTitle: 'Bestilte produkter',
+      productColumn: 'Produkt',
+      quantityColumn: 'Antall',
+      priceColumn: 'Pris',
+      sumColumn: 'Sum',
+      totalLabel: 'Totalt (inkl. mva)',
+      shippingAddressTitle: 'Leveringsadresse',
+      trackingNumberLabel: 'Sporingsnummer',
+      shippingNotification: 'Vi vil sende deg en e-post når ordren din er sendt.',
+      footerClosing: 'Med vennlig hilsen',
+    }),
     description: 'Bekreftelse på bestilling (nb-NO)',
   },
 
