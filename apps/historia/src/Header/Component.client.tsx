@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { Navbar } from '@eventuras/ratio-ui/core/Navbar';
 
 import { CartButton } from '@/components/CartButton';
-import { Logo } from '@/components/Logo/Logo';
+import { useLocale } from '@/hooks/useLocale';
 import { useHeaderTheme } from '@/providers/HeaderTheme';
 
 interface HeaderClientProps {
@@ -17,9 +17,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ title }) => {
   const [theme, setTheme] = useState<string | null>(null);
   const { headerTheme, setHeaderTheme } = useHeaderTheme();
   const pathname = usePathname();
-
-  // Extract locale from pathname (e.g., /no/products -> 'no')
-  const locale = pathname.split('/')[1] || 'no';
+  const locale = useLocale();
 
   useEffect(() => {
     if (headerTheme !== null) {

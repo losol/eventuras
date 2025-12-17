@@ -32,7 +32,10 @@ export const Nav: Block = {
               name: 'text',
               label: 'Link Text',
               type: 'text',
-              required: true,
+              required: false,
+              admin: {
+                description: 'Optional. If empty, uses the page title',
+              },
             },
             {
               name: 'page',

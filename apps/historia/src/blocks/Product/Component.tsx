@@ -13,6 +13,7 @@ import { Text } from '@eventuras/ratio-ui/core/Text';
 import { useToast } from '@eventuras/toast';
 
 import RichText from '@/components/RichText';
+import { useLocale } from '@/hooks/useLocale';
 import { useSessionCart } from '@/lib/cart/use-session-cart';
 import { fromMinorUnits } from '@/lib/price';
 import type { Product as ProductType } from '@/payload-types';
@@ -32,9 +33,7 @@ export const ProductsBlock: React.FC<ProductBlockProps> = (props) => {
   const toast = useToast();
   const { addToCart } = useSessionCart();
   const [addingProductId, setAddingProductId] = React.useState<string | null>(null);
-
-  // Extract locale from pathname (e.g., /en/page -> en)
-  const locale = pathname.split('/')[1] || 'en';
+  const locale = useLocale();
 
   // Debug logging
   logger.info({
