@@ -1,5 +1,17 @@
 # @eventuras/historia
 
+## 0.16.0
+
+### Minor Changes
+
+- ### 🧱 Features
+  - feat(historia): add contact points with user relationships (638c432) [@eventuras/historia]
+  - feat(historia): add ObfuscatedEmail in footer for email protection (b109673) [@eventuras/historia]
+  - feat(historia): enhance locale handling in RootLayout component (359a936) [@eventuras/historia]
+  - feat(historia): add skip to main content link for improved accessibility (a7455c3) [@eventuras/historia]
+  - feat(historia): implement dynamic metadata generation for pages (e093e95) [@eventuras/historia]
+  - feat(historia): upgrades footer with better styled links (e77d214) [@eventuras/historia]
+
 ## 0.15.0
 
 ### Minor Changes
