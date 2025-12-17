@@ -1,6 +1,6 @@
 import React, { cache } from 'react';
-import type { Metadata } from 'next';
 import configPromise from '@payload-config';
+import type { Metadata } from 'next';
 import { draftMode, headers } from 'next/headers';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
