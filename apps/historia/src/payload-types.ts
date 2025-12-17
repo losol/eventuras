@@ -924,7 +924,10 @@ export interface NavBlock {
   items?:
     | (
         | {
-            text: string;
+            /**
+             * Optional. If empty, uses the page title
+             */
+            text?: string | null;
             page: string | Page;
             id?: string | null;
             blockName?: string | null;
