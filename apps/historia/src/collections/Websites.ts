@@ -26,17 +26,16 @@ export const Websites: CollectionConfig = {
       ({ doc }) => {
         // Censor User data in contactPoints - only expose name fields
         if (doc.contactPoints) {
-          doc.contactPoints = doc.contactPoints.map((cp: { person?: unknown }) => {
-            if (cp.person && typeof cp.person === 'object') {
-              // Keep only id and name fields
+          doc.contactPoints = doc.contactPoints.map((cp: { user?: unknown }) => {
+            if (cp.user && typeof cp.user === 'object') {
+              // Keep only id and name fields (no email or other sensitive data)
               return {
                 ...cp,
-                person: {
-                  id: (cp.person as Record<string, unknown>).id,
-                  given_name: (cp.person as Record<string, unknown>).given_name,
-                  middle_name: (cp.person as Record<string, unknown>).middle_name,
-                  family_name: (cp.person as Record<string, unknown>).family_name,
-                  email: (cp.person as Record<string, unknown>).email,
+                user: {
+                  id: (cp.user as Record<string, unknown>).id,
+                  given_name: (cp.user as Record<string, unknown>).given_name,
+                  middle_name: (cp.user as Record<string, unknown>).middle_name,
+                  family_name: (cp.user as Record<string, unknown>).family_name,
                 },
               };
             }

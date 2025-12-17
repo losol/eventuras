@@ -1,3 +1,5 @@
+import { publicEnv } from '@/config.client';
+
 /**
  * Generates a locale-prefixed URL for a page.
  *
@@ -14,7 +16,7 @@
  */
 export function getPageUrl(slug: string, locale?: string): string {
   // Get default locale from environment if not provided
-  const effectiveLocale = locale || process.env.NEXT_PUBLIC_CMS_DEFAULT_LOCALE || 'no';
+  const effectiveLocale = locale || publicEnv.NEXT_PUBLIC_CMS_DEFAULT_LOCALE || 'no';
 
   // Remove leading slash from slug if present
   const cleanSlug = slug.startsWith('/') ? slug.slice(1) : slug;
