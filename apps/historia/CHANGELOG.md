@@ -1,5 +1,12 @@
 # @eventuras/historia
 
+## 0.16.1
+
+### Patch Changes
+
+- ### 🐞 Bug Fixes
+  - fix(historia): add the missing migrations (bec19fe) [@eventuras/historia]
+
 ## 0.16.0
 
 ### Minor Changes
