@@ -279,6 +279,19 @@ export interface Website {
    * The organization that publishes this website
    */
   publisher?: (string | null) | Organization;
+  /**
+   * Contact points for this website. Only name fields will be publicly visible.
+   */
+  contactPoints?:
+    | {
+        /**
+         * User responsible for this contact point. Only their name will be visible publicly.
+         */
+        user: string | User;
+        contactType: 'editor' | 'sales' | 'support';
+        id?: string | null;
+      }[]
+    | null;
   siteSettings?: {
     footer?: {
       /**
@@ -911,6 +924,62 @@ export interface Product {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users".
+ */
+export interface User {
+  id: string;
+  given_name?: string | null;
+  middle_name?: string | null;
+  family_name?: string | null;
+  email_verified?: boolean | null;
+  phone_number?: string | null;
+  phone_number_verified?: boolean | null;
+  addresses?:
+    | {
+        /**
+         * E.g. "Home", "Work", "Vipps", "Cabin"
+         */
+        label?: string | null;
+        isDefault?: boolean | null;
+        addressLine1?: string | null;
+        addressLine2?: string | null;
+        postalCode?: string | null;
+        city?: string | null;
+        country?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  roles?: ('admin' | 'system-admin' | 'user')[] | null;
+  /**
+   * Optional: Assign user to specific websites/tenants. Leave empty for global access.
+   */
+  tenants?:
+    | {
+        tenant: string | Website;
+        roles: ('site-admin' | 'site-member')[];
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "NavBlock".
  */
 export interface NavBlock {
@@ -1056,62 +1125,6 @@ export interface Order {
   currency: string;
   updatedAt: string;
   createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
- */
-export interface User {
-  id: string;
-  given_name?: string | null;
-  middle_name?: string | null;
-  family_name?: string | null;
-  email_verified?: boolean | null;
-  phone_number?: string | null;
-  phone_number_verified?: boolean | null;
-  addresses?:
-    | {
-        /**
-         * E.g. "Home", "Work", "Vipps", "Cabin"
-         */
-        label?: string | null;
-        isDefault?: boolean | null;
-        addressLine1?: string | null;
-        addressLine2?: string | null;
-        postalCode?: string | null;
-        city?: string | null;
-        country?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  roles?: ('admin' | 'system-admin' | 'user')[] | null;
-  /**
-   * Optional: Assign user to specific websites/tenants. Leave empty for global access.
-   */
-  tenants?:
-    | {
-        tenant: string | Website;
-        roles: ('site-admin' | 'site-member')[];
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt: string;
-  createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  sessions?:
-    | {
-        id: string;
-        createdAt?: string | null;
-        expiresAt: string;
-      }[]
-    | null;
-  password?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2629,6 +2642,13 @@ export interface WebsitesSelect<T extends boolean = true> {
   domains?: T;
   homePage?: T;
   publisher?: T;
+  contactPoints?:
+    | T
+    | {
+        user?: T;
+        contactType?: T;
+        id?: T;
+      };
   siteSettings?:
     | T
     | {

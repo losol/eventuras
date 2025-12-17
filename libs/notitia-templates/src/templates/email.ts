@@ -1,4 +1,5 @@
 import type { TemplateRegistry } from '../types';
+import { buildOrderConfirmationTemplate } from './utils/orderConfirmationBuilder';
 
 /**
  * Default email templates
@@ -107,28 +108,31 @@ The {{organizationName}} Team`,
   },
 
   'email:order-confirmation': {
-    subject: 'Order Confirmation - #{{orderId}}',
-    content: `Hello {{name}},
-
-Thank you for your order!
-
-Order Details:
-- Order ID: {{orderId}}
-- Order Date: {{orderDate}}
-{{#if totalAmount}}
-- Total: {{totalAmount}} {{currency}}
-{{/if}}
-
-{{#if trackingNumber}}
-Tracking Number: {{trackingNumber}}
-{{/if}}
-
-We will notify you when your order ships.
-
-Best regards,
-The {{organizationName}} Team`,
+    subject: 'Ordrebekreftelse - #{{orderId}}',
+    content: buildOrderConfirmationTemplate({
+      copyBanner: 'KOPI - Intern kopi av kundebekreftelse',
+      headerTitle: 'Ordrebekreftelse',
+      greeting: 'Hei {{name}}! 👋',
+      thankYouMessage: 'Takk for din bestilling! Vi har mottatt ordren din og begynner å behandle den med en gang.',
+      orderDetailsTitle: 'Ordredetaljer',
+      orderNumberLabel: 'Ordrenummer',
+      orderDateLabel: 'Ordredato',
+      customerEmailLabel: 'Kunde e-post',
+      orderedProductsTitle: 'Bestilte produkter',
+      productColumn: 'Produkt',
+      quantityColumn: 'Antall',
+      priceColumn: 'Pris',
+      sumColumn: 'Sum',
+      totalLabel: 'Totalt (inkl. mva)',
+      shippingAddressTitle: 'Leveringsadresse',
+      trackingNumberLabel: 'Sporingsnummer',
+      shippingNotification: 'Vi vil sende deg en epost når ordren din er sendt.',
+      footerClosing: 'Med vennlig hilsen',
+    }),
     description: 'Order confirmation email',
   },
+
+
 
   'email:order-shipped': {
     subject: 'Your Order Has Shipped - #{{orderId}}',
