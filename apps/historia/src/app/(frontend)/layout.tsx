@@ -19,11 +19,18 @@ export const metadata: Metadata = {
   description: 'Historia - Knowledge management and content platform',
 }
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
+type RootLayoutProps = {
+  children: React.ReactNode
+  params?: Promise<{ locale?: string }>
+}
+
+export default async function RootLayout({ children, params }: RootLayoutProps) {
   const { isEnabled } = await draftMode()
+  const resolvedParams = params ? await params : {}
+  const locale = resolvedParams.locale || process.env.NEXT_PUBLIC_CMS_DEFAULT_LOCALE || 'no'
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <head>
         <InitTheme />
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
