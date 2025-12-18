@@ -1,6 +1,6 @@
 {
   "name": "@eventuras/vipps",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "description": "Vipps MobilePay integration for Eventuras",
   "type": "module",
@@ -37,10 +37,10 @@
   "devDependencies": {
     "@eventuras/typescript-config": "workspace:*",
     "@eventuras/vite-config": "workspace:*",
-    "@vitest/ui": "^4.0.15",
+    "@vitest/ui": "^4.0.16",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "vite": "^7.3.0",
-    "vitest": "^4.0.15"
+    "vitest": "^4.0.16"
   }
 }

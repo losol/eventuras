@@ -1,6 +1,6 @@
 {
   "name": "@eventuras/scribo",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/losol/eventuras.git",
@@ -52,7 +52,7 @@
     "lightningcss": "^1.30.2",
     "typescript": "^5.9.3",
     "vite": "^7.3.0",
-    "vitest": "^4.0.15"
+    "vitest": "^4.0.16"
   },
   "peerDependencies": {
     "react": "^19.2.3",

@@ -1,5 +1,22 @@
 # @eventuras/web
 
+## 2.27.4
+
+### Patch Changes
+
+- chore: update dependencies across frontend packages
+- Updated dependencies
+  - @eventuras/fides-auth-next@0.1.2
+  - @eventuras/ratio-ui-next@0.1.3
+  - @eventuras/core-nextjs@0.1.1
+  - @eventuras/app-config@0.1.1
+  - @eventuras/datatable@0.5.2
+  - @eventuras/markdown@2.0.1
+  - @eventuras/ratio-ui@0.8.1
+  - @eventuras/scribo@0.8.1
+  - @eventuras/smartform@0.2.2
+  - @eventuras/toast@0.2.2
+
 ## 2.27.3
 
 ### Patch Changes

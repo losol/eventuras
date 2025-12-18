@@ -1,6 +1,6 @@
 {
   "name": "@eventuras/markdown",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Markdown renderer for React using react-markdown (remark/rehype) and Eventuras Ratio UI components.",
   "keywords": [
     "markdown",
@@ -53,7 +53,7 @@
     "tslib": "2.8.1",
     "typescript": "5.9.3",
     "vite": "7.3.0",
-    "vitest": "4.0.15"
+    "vitest": "4.0.16"
   },
   "peerDependencies": {
     "@eventuras/ratio-ui": "workspace:*",

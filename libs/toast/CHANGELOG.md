@@ -1,5 +1,12 @@
 # @eventuras/toast
 
+## 0.2.2
+
+### Patch Changes
+
+- Updated dependencies
+  - @eventuras/ratio-ui@0.8.1
+
 ## 0.2.1
 
 ### Patch Changes

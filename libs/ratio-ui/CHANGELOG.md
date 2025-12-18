@@ -1,5 +1,11 @@
 # @eventuras/ratio-ui
 
+## 0.8.1
+
+### Patch Changes
+
+- chore: update dependencies across frontend packages
+
 ## 0.8.0
 
 ### Minor Changes

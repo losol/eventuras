@@ -1,6 +1,6 @@
 {
   "name": "@eventuras/core-nextjs",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": "true",
   "description": "Core Next.js utilities for Eventuras",
   "type": "module",
@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "@eventuras/vite-config": "workspace:*",
-    "next": "16.0.10",
+    "next": "16.1.0",
     "react": "^19.2.3",
     "vite": "^7.3.0"
   },

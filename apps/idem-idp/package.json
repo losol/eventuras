@@ -1,6 +1,6 @@
 {
   "name": "@eventuras/idem-idp",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Eventuras identity provider",
   "license": "GPL-3.0-or-later",
   "author": "Eventuras team",
@@ -27,9 +27,9 @@
     "typescript": "^5.9.3"
   },
   "optionalDependencies": {
-    "@rollup/rollup-linux-arm64-gnu": "4.53.4",
-    "@rollup/rollup-linux-arm64-musl": "4.53.4",
-    "@rollup/rollup-linux-x64-gnu": "4.53.4"
+    "@rollup/rollup-linux-arm64-gnu": "4.53.5",
+    "@rollup/rollup-linux-arm64-musl": "4.53.5",
+    "@rollup/rollup-linux-x64-gnu": "4.53.5"
   },
   "engines": {
     "node": ">=22.0.0 <25.0.0"
