@@ -226,19 +226,86 @@ async function processPaymentEvent(businessEventId: string, payload: WebhookPayl
   });
 
   if (transactions.docs.length === 0) {
-    logger.warn(
-      { reference: payload.reference, eventType: payload.name },
-      'No transaction found for payment reference'
+    // CRITICAL: No transaction found - this could be an orphaned payment!
+    // This happens when user completed payment in Vipps but the session flow failed
+    // (e.g., cross-domain issues, browser closed, network error)
+
+    logger.error(
+      {
+        reference: payload.reference,
+        eventType: payload.name,
+        pspReference: payload.pspReference,
+        amount: payload.amount,
+      },
+      'WEBHOOK DETECTED ORPHANED PAYMENT: No transaction found for payment reference'
     );
 
-    // Mark event with error
-    await payloadInstance.update({
-      collection: 'business-events',
-      id: businessEventId,
-      data: {
-        error: 'No transaction found for payment reference',
-      },
-    });
+    // Only handle AUTHORIZED and CAPTURED events (successful payments)
+    if (payload.name === 'AUTHORIZED' || payload.name === 'CAPTURED') {
+      logger.error(
+        {
+          reference: payload.reference,
+          eventType: payload.name,
+          amount: payload.amount,
+          pspReference: payload.pspReference,
+        },
+        'CRITICAL: Payment authorized/captured but no order exists - requires manual intervention!'
+      );
+
+      // Try to get payment details from Vipps to notify sales team
+      try {
+        const { getPaymentDetails } = await import('@eventuras/vipps/epayment-v1');
+        const { getVippsConfig } = await import('@/lib/vipps/config');
+        const { notifyOrphanedPayment } = await import(
+          '@/app/(frontend)/[locale]/checkout/vipps/orphanedPaymentNotification'
+        );
+
+        const vippsConfig = getVippsConfig();
+        const paymentDetails = await getPaymentDetails(vippsConfig, payload.reference);
+
+        // Send notification to sales team
+        await notifyOrphanedPayment({
+          paymentReference: payload.reference,
+          customerEmail: paymentDetails.profile?.email || paymentDetails.userDetails?.email,
+          amount: payload.amount?.value || paymentDetails.aggregate.authorizedAmount.value,
+          currency: payload.amount?.currency || paymentDetails.aggregate.authorizedAmount.currency,
+          paymentState: paymentDetails.state,
+        });
+
+        logger.info(
+          { reference: payload.reference },
+          'Orphaned payment notification sent to sales team via webhook detection'
+        );
+      } catch (notifyError) {
+        logger.error(
+          { error: notifyError, reference: payload.reference },
+          'Failed to send orphaned payment notification from webhook'
+        );
+      }
+
+      // Mark event with orphaned payment error
+      await payloadInstance.update({
+        collection: 'business-events',
+        id: businessEventId,
+        data: {
+          error: 'ORPHANED PAYMENT: Transaction not found - manual order creation required',
+        },
+      });
+    } else {
+      // For non-success events (ABORTED, EXPIRED, etc.), just log as warning
+      logger.warn(
+        { reference: payload.reference, eventType: payload.name },
+        'No transaction found for payment reference (non-success event)'
+      );
+
+      await payloadInstance.update({
+        collection: 'business-events',
+        id: businessEventId,
+        data: {
+          error: 'No transaction found for payment reference',
+        },
+      });
+    }
 
     return;
   }

@@ -19,6 +19,7 @@ export type TemplateType =
   | 'password-reset'
   | 'order-confirmation'
   | 'order-shipped'
+  | 'orphaned-payment-alert'
   | 'custom';
 
 /**

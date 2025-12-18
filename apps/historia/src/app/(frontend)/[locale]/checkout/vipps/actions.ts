@@ -18,6 +18,8 @@ import type { Cart, SessionData } from '@/lib/cart/types';
 import { getCurrentWebsiteId } from '@/lib/website';
 import type { Product } from '@/payload-types';
 
+import { notifyOrphanedPayment } from './orphanedPaymentNotification';
+
 const logger = Logger.create({
   namespace: 'historia:payment',
   context: { module: 'paymentCallbackActions' },
@@ -26,10 +28,20 @@ const logger = Logger.create({
 /**
  * Validate that the current user's session owns this payment reference
  * SECURITY: Prevents unauthorized access to payment status and order details
- * Checks against session's paymentReferences list (encrypted session)
+ *
+ * Validation strategy:
+ * 1. Primary: Check session's paymentReferences list (encrypted session)
+ * 2. Fallback: If session validation fails, verify payment is AUTHORIZED/CAPTURED in Vipps
+ *    This handles edge cases like cross-domain session issues where customer has paid
+ *    but session cookie isn't accessible
+ *
+ * @param paymentReference - The payment reference to validate
+ * @param allowVippsFallback - If true, allows validation via Vipps API when session fails
+ * @returns Success if payment is owned by current session OR is authorized in Vipps (with fallback enabled)
  */
 async function validatePaymentOwnership(
-  paymentReference: string
+  paymentReference: string,
+  allowVippsFallback: boolean = false
 ): Promise<ServerActionResult<boolean>> {
   try {
     const session = await getCurrentSession();
@@ -38,19 +50,70 @@ async function validatePaymentOwnership(
     // Check if session has this payment reference in the list
     const paymentReferences = sessionData?.paymentReferences || [];
 
-    if (!paymentReferences.includes(paymentReference)) {
-      logger.warn(
-        {
-          paymentReference,
-          hasSession: !!session,
-          paymentCount: paymentReferences.length,
-        },
-        'Payment reference not in session - unauthorized access attempt'
-      );
+    if (paymentReferences.includes(paymentReference)) {
+      // Happy path: session validation successful
+      return actionSuccess(true);
+    }
+
+    // Session validation failed
+    logger.warn(
+      {
+        paymentReference,
+        hasSession: !!session,
+        paymentCount: paymentReferences.length,
+        allowVippsFallback,
+      },
+      'Payment reference not in session'
+    );
+
+    // If fallback is not allowed, return error immediately
+    if (!allowVippsFallback) {
       return actionError('Unauthorized access to payment');
     }
 
-    return actionSuccess(true);
+    // FALLBACK: Check if payment is actually authorized/captured in Vipps
+    // This handles cases where session cookie is inaccessible (e.g., cross-domain)
+    // but the customer has legitimately completed the payment
+    try {
+      const { getPaymentDetails } = await import('@eventuras/vipps/epayment-v1');
+      const { getVippsConfig } = await import('@/lib/vipps/config');
+      const vippsConfig = getVippsConfig();
+      const paymentDetails = await getPaymentDetails(vippsConfig, paymentReference);
+
+      const isAuthorized = paymentDetails.state === 'AUTHORIZED';
+      const isCaptured = paymentDetails.aggregate.capturedAmount.value > 0;
+
+      if (isAuthorized || isCaptured) {
+        logger.info(
+          {
+            paymentReference,
+            state: paymentDetails.state,
+            capturedAmount: paymentDetails.aggregate.capturedAmount.value,
+          },
+          'FALLBACK VALIDATION: Payment verified via Vipps API (session unavailable)'
+        );
+        return actionSuccess(true);
+      }
+
+      // Payment exists but is not in a valid state
+      logger.warn(
+        {
+          paymentReference,
+          state: paymentDetails.state,
+        },
+        'Payment found in Vipps but not in authorized/captured state'
+      );
+      return actionError('Payment not authorized');
+    } catch (vippsError) {
+      logger.error(
+        {
+          error: vippsError,
+          paymentReference,
+        },
+        'Fallback validation failed: Could not verify payment with Vipps'
+      );
+      return actionError('Could not verify payment');
+    }
   } catch (error) {
     logger.error({ error, paymentReference }, 'Error validating payment ownership');
     return actionError('Failed to validate payment ownership');
@@ -94,9 +157,48 @@ export async function createOrderFromPayment({
 
     if (!cart || !cart.items || cart.items.length === 0) {
       logger.error(
-        { paymentReference, hasSession: !!session, hasCart: !!cart },
-        'No cart found in session'
+        {
+          paymentReference,
+          hasSession: !!session,
+          hasCart: !!cart,
+          paymentState: paymentDetails.state,
+          authorizedAmount: paymentDetails.aggregate.authorizedAmount.value,
+          customerEmail: paymentDetails.profile?.email || paymentDetails.userDetails?.email
+        },
+        'CRITICAL: Cart not found in session but payment may be authorized - potential orphaned payment'
       );
+
+      // Check if this is a cross-domain session issue where payment is authorized
+      // This is a CRITICAL scenario that needs manual intervention
+      if (paymentDetails.state === 'AUTHORIZED' || paymentDetails.aggregate.capturedAmount.value > 0) {
+        const customerEmail = paymentDetails.profile?.email || paymentDetails.userDetails?.email;
+
+        logger.error(
+          {
+            paymentReference,
+            customerEmail,
+            amount: paymentDetails.aggregate.authorizedAmount.value,
+            currency: paymentDetails.aggregate.authorizedAmount.currency,
+          },
+          'CRITICAL: Payment is AUTHORIZED but cart unavailable - requires manual order creation!'
+        );
+
+        // Create business event and notify sales team
+        await notifyOrphanedPayment({
+          paymentReference,
+          customerEmail,
+          amount: paymentDetails.aggregate.authorizedAmount.value,
+          currency: paymentDetails.aggregate.authorizedAmount.currency,
+          paymentState: paymentDetails.state,
+        });
+
+        return actionError(
+          'Betalingen din ble godkjent, men vi kunne ikke automatisk opprette ordren. ' +
+          'Vennligst kontakt support med referanse: ' + paymentReference + '. ' +
+          'Pengene dine er reservert og vil bli refundert hvis nødvendig.'
+        );
+      }
+
       return actionError('Cart is empty or not found');
     }
 
@@ -729,8 +831,9 @@ export async function checkExistingOrder(
   }>
 > {
   try {
-    // Validate payment ownership
-    const ownershipCheck = await validatePaymentOwnership(paymentReference);
+    // Validate payment ownership with Vipps fallback enabled
+    // This allows checking order status even if session cookie is unavailable
+    const ownershipCheck = await validatePaymentOwnership(paymentReference, true);
     if (!ownershipCheck.success) {
       logger.warn(
         { paymentReference },
@@ -826,8 +929,10 @@ export async function processPaymentAndCreateOrder(
   }>
 > {
   try {
-    // Validate payment ownership
-    const ownershipCheck = await validatePaymentOwnership(paymentReference);
+    // Validate payment ownership with Vipps fallback enabled
+    // This ensures we can create orders even if session cookie is unavailable
+    // (e.g., cross-domain callback issues) as long as payment is authorized in Vipps
+    const ownershipCheck = await validatePaymentOwnership(paymentReference, true);
     if (!ownershipCheck.success) {
       logger.warn(
         { paymentReference },
