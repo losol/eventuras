@@ -1,6 +1,7 @@
 'use server';
 
 import configPromise from '@payload-config';
+import { headers } from 'next/headers';
 import { getPayload } from 'payload';
 
 import {
@@ -261,6 +262,17 @@ export async function createVippsPayment({
     // Total amount without shipping (Vipps will add shipping cost)
     const totalAmount = cart.totalIncVat;
 
+    // Get current host for dynamic callback URL
+    // This ensures the callback returns to the same domain where payment was initiated
+    const host = (await headers()).get('host');
+    const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+    const baseUrl = host ? `${protocol}://${host}` : appConfig.env.NEXT_PUBLIC_CMS_URL;
+
+    logger.info(
+      { host, baseUrl, reference },
+      'Building payment with dynamic callback URL'
+    );
+
     // Build ePayment request
     const paymentRequest: CreatePaymentRequest = {
       amount: {
@@ -279,7 +291,7 @@ export async function createVippsPayment({
         scope: 'name phoneNumber address email',
       },
       reference,
-      returnUrl: `${appConfig.env.NEXT_PUBLIC_CMS_URL}/${userLanguage}/checkout/vipps?reference=${reference}`,
+      returnUrl: `${baseUrl}/${userLanguage}/checkout/vipps?reference=${reference}`,
       userFlow: 'WEB_REDIRECT',
       paymentDescription,
       receipt: {
