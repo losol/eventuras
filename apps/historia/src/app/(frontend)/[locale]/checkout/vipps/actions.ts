@@ -30,18 +30,14 @@ const logger = Logger.create({
  * SECURITY: Prevents unauthorized access to payment status and order details
  *
  * Validation strategy:
- * 1. Primary: Check session's paymentReferences list (encrypted session)
- * 2. Fallback: If session validation fails, verify payment is AUTHORIZED/CAPTURED in Vipps
- *    This handles edge cases like cross-domain session issues where customer has paid
- *    but session cookie isn't accessible
+ * - Check session's paymentReferences list (encrypted session)
+ * - If validation fails, orphaned payment email will be sent to sales team for manual handling
  *
  * @param paymentReference - The payment reference to validate
- * @param allowVippsFallback - If true, allows validation via Vipps API when session fails
- * @returns Success if payment is owned by current session OR is authorized in Vipps (with fallback enabled)
+ * @returns Success if payment is owned by current session
  */
 async function validatePaymentOwnership(
-  paymentReference: string,
-  allowVippsFallback: boolean = false
+  paymentReference: string
 ): Promise<ServerActionResult<boolean>> {
   try {
     const session = await getCurrentSession();
@@ -61,59 +57,11 @@ async function validatePaymentOwnership(
         paymentReference,
         hasSession: !!session,
         paymentCount: paymentReferences.length,
-        allowVippsFallback,
       },
-      'Payment reference not in session'
+      'Payment reference not in session - will trigger manual order creation'
     );
 
-    // If fallback is not allowed, return error immediately
-    if (!allowVippsFallback) {
-      return actionError('Unauthorized access to payment');
-    }
-
-    // FALLBACK: Check if payment is actually authorized/captured in Vipps
-    // This handles cases where session cookie is inaccessible (e.g., cross-domain)
-    // but the customer has legitimately completed the payment
-    try {
-      const { getPaymentDetails } = await import('@eventuras/vipps/epayment-v1');
-      const { getVippsConfig } = await import('@/lib/vipps/config');
-      const vippsConfig = getVippsConfig();
-      const paymentDetails = await getPaymentDetails(vippsConfig, paymentReference);
-
-      const isAuthorized = paymentDetails.state === 'AUTHORIZED';
-      const isCaptured = paymentDetails.aggregate.capturedAmount.value > 0;
-
-      if (isAuthorized || isCaptured) {
-        logger.info(
-          {
-            paymentReference,
-            state: paymentDetails.state,
-            capturedAmount: paymentDetails.aggregate.capturedAmount.value,
-          },
-          'FALLBACK VALIDATION: Payment verified via Vipps API (session unavailable)'
-        );
-        return actionSuccess(true);
-      }
-
-      // Payment exists but is not in a valid state
-      logger.warn(
-        {
-          paymentReference,
-          state: paymentDetails.state,
-        },
-        'Payment found in Vipps but not in authorized/captured state'
-      );
-      return actionError('Payment not authorized');
-    } catch (vippsError) {
-      logger.error(
-        {
-          error: vippsError,
-          paymentReference,
-        },
-        'Fallback validation failed: Could not verify payment with Vipps'
-      );
-      return actionError('Could not verify payment');
-    }
+    return actionError('Unauthorized access to payment');
   } catch (error) {
     logger.error({ error, paymentReference }, 'Error validating payment ownership');
     return actionError('Failed to validate payment ownership');
@@ -193,9 +141,9 @@ export async function createOrderFromPayment({
         });
 
         return actionError(
-          'Betalingen din ble godkjent, men vi kunne ikke automatisk opprette ordren. ' +
-          'Vennligst kontakt support med referanse: ' + paymentReference + '. ' +
-          'Pengene dine er reservert og vil bli refundert hvis nødvendig.'
+          'Din betaling er godkjent og sikret! Vi behandler ordren din manuelt og sender ' +
+          'deg en bekreftelse på e-post innen kort tid. ' +
+          'Referanse: ' + paymentReference
         );
       }
 
@@ -831,9 +779,8 @@ export async function checkExistingOrder(
   }>
 > {
   try {
-    // Validate payment ownership with Vipps fallback enabled
-    // This allows checking order status even if session cookie is unavailable
-    const ownershipCheck = await validatePaymentOwnership(paymentReference, true);
+    // Validate payment ownership
+    const ownershipCheck = await validatePaymentOwnership(paymentReference);
     if (!ownershipCheck.success) {
       logger.warn(
         { paymentReference },
@@ -929,10 +876,8 @@ export async function processPaymentAndCreateOrder(
   }>
 > {
   try {
-    // Validate payment ownership with Vipps fallback enabled
-    // This ensures we can create orders even if session cookie is unavailable
-    // (e.g., cross-domain callback issues) as long as payment is authorized in Vipps
-    const ownershipCheck = await validatePaymentOwnership(paymentReference, true);
+    // Validate payment ownership
+    const ownershipCheck = await validatePaymentOwnership(paymentReference);
     if (!ownershipCheck.success) {
       logger.warn(
         { paymentReference },

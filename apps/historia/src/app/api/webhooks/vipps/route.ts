@@ -264,6 +264,8 @@ async function processPaymentEvent(businessEventId: string, payload: WebhookPayl
         const paymentDetails = await getPaymentDetails(vippsConfig, payload.reference);
 
         // Send notification to sales team
+        // Note: websiteId not provided here (webhook context), will fall back to first website
+        // in getCurrentWebsiteId(). Sales team can determine correct tenant from customer details.
         await notifyOrphanedPayment({
           paymentReference: payload.reference,
           customerEmail: paymentDetails.profile?.email || paymentDetails.userDetails?.email,
