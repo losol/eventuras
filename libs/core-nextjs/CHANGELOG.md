@@ -1,5 +1,11 @@
 # @eventuras/core-nextjs
 
+## 0.1.1
+
+### Patch Changes
+
+- chore: update dependencies across frontend packages
+
 ## 0.1.0
 
 ### Minor Changes

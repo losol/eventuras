@@ -1,5 +1,19 @@
 # @eventuras/historia
 
+## 0.16.2
+
+### Patch Changes
+- chore: update dependencies across frontend packages
+- Updated dependencies
+  - @eventuras/notitia-templates@0.1.1
+  - @eventuras/fides-auth-next@0.1.2
+  - @eventuras/ratio-ui-next@0.1.3
+  - @eventuras/core-nextjs@0.1.1
+  - @eventuras/app-config@0.1.1
+  - @eventuras/ratio-ui@0.8.1
+  - @eventuras/vipps@0.1.2
+  - @eventuras/toast@0.2.2
+
 ## 0.16.1
 
 ### Patch Changes

@@ -1,11 +1,18 @@
 # @eventuras/docsite
 
+## 0.6.3
+
+### Patch Changes
+
+- chore: update dependencies across frontend packages
+
 ## 0.6.2
 
 ### Patch Changes
 
 ### 🧹 Maintenance
-  - chore(convertoapi,docsite,web,markdown,scribo,sdk): upgrade deps (b2de638) [@eventuras/docsite]
+
+- chore(convertoapi,docsite,web,markdown,scribo,sdk): upgrade deps (b2de638) [@eventuras/docsite]
 
 ## 0.6.1
 

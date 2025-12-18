@@ -1,5 +1,11 @@
 # @eventuras/app-config
 
+## 0.1.1
+
+### Patch Changes
+
+- chore: update dependencies across frontend packages
+
 ## 0.1.0 (2025-10-18)
 
 ### 🧱 Features
@@ -11,7 +17,7 @@
 - **Default values**: Support for default values in configuration
 - **Pattern matching**: Regex pattern validation for env vars
 - **Enum validation**: Restrict env vars to allowed values
-- **Client/Server separation**: Mark env vars as client-accessible (NEXT_PUBLIC_*) or server-only
+- **Client/Server separation**: Mark env vars as client-accessible (NEXT*PUBLIC*\*) or server-only
 - **Vite-based build**: Uses `@eventuras/vite-config/vanilla-lib` preset for consistent builds
 
 ### API
@@ -31,6 +37,6 @@
 ### Dependencies
 
 - `zod`: ^3.23.8 - Schema validation
-- `@eventuras/vite-config`: workspace:* - Build configuration
+- `@eventuras/vite-config`: workspace:\* - Build configuration
 - `vite`: ^7.1.10 - Build tool
 - `typescript`: ^5.7.2 - TypeScript compiler

@@ -1,6 +1,6 @@
 {
   "name": "@eventuras/app-config",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Declarative environment configuration for Eventuras applications",
   "keywords": [
     "eventuras",
@@ -42,7 +42,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "zod": "^4.2.0"
+    "zod": "^4.2.1"
   },
   "devDependencies": {
     "@eventuras/eslint-config": "workspace:*",

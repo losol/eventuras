@@ -1,11 +1,18 @@
 # @eventuras/convertoapi
 
+## 0.4.3
+
+### Patch Changes
+
+- chore: update dependencies across frontend packages
+
 ## 0.4.2
 
 ### Patch Changes
 
 ### 🧹 Maintenance
-  - chore(convertoapi,docsite,web,markdown,scribo,sdk): upgrade deps (b2de638) [@eventuras/convertoapi]
+
+- chore(convertoapi,docsite,web,markdown,scribo,sdk): upgrade deps (b2de638) [@eventuras/convertoapi]
 
 ## 0.4.1
 

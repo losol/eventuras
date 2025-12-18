@@ -1,5 +1,11 @@
 # @eventuras/idem-idp
 
+## 0.5.1
+
+### Patch Changes
+
+- chore: update dependencies across frontend packages
+
 ## 0.5.0
 
 ### Minor Changes

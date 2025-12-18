@@ -1,5 +1,13 @@
 # @eventuras/datatable
 
+## 0.5.2
+
+### Patch Changes
+
+- chore: update dependencies across frontend packages
+- Updated dependencies
+  - @eventuras/ratio-ui@0.8.1
+
 ## 0.5.1
 
 ### Patch Changes
