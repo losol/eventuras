@@ -1,8 +1,17 @@
 # @eventuras/historia
 
+## 0.16.3
+
+### Patch Changes
+
+- ### 🐞 Bug Fixes
+  - feat(historia,vipps): handle orphaned payments (a1b2c3d) [@eventuras/historia]
+  - fix(historia): callback to origin domain (9f51549) [@eventuras/historia]
+
 ## 0.16.2
 
 ### Patch Changes
+
 - chore: update dependencies across frontend packages
 - Updated dependencies
   - @eventuras/notitia-templates@0.1.1

@@ -155,4 +155,87 @@ Best regards,
 The {{organizationName}} Team`,
     description: 'Order shipped notification email',
   },
+
+  'email:orphaned-payment-alert': {
+    subject: '⚠️ KRITISK: Betaling godkjent uten ordre - {{paymentReference}}',
+    content: `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+    .alert-banner { background: #dc2626; color: white; padding: 20px; border-radius: 8px 8px 0 0; text-align: center; }
+    .alert-content { background: #fff; border: 3px solid #dc2626; border-top: none; border-radius: 0 0 8px 8px; padding: 30px; }
+    .detail-box { background: #f3f4f6; padding: 15px; border-radius: 6px; margin: 20px 0; }
+    .detail-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e5e7eb; }
+    .detail-label { font-weight: 600; color: #6b7280; }
+    .detail-value { color: #111827; }
+    .action-box { background: #fef3c7; border: 2px solid #f59e0b; padding: 20px; border-radius: 6px; margin: 20px 0; }
+    .action-title { color: #92400e; font-weight: 700; font-size: 16px; margin-bottom: 10px; }
+    .action-steps { color: #92400e; margin: 10px 0 0 0; padding-left: 20px; }
+    .footer { color: #6b7280; font-size: 12px; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; }
+  </style>
+</head>
+<body>
+  <div class="alert-banner">
+    <h1 style="margin: 0; font-size: 24px;">⚠️ KRITISK VARSEL</h1>
+    <p style="margin: 10px 0 0 0; font-size: 14px;">Betaling godkjent - Ordre må opprettes manuelt</p>
+  </div>
+
+  <div class="alert-content">
+    <h2>Hva har skjedd?</h2>
+    <p>En kunde har fullført en betaling i Vipps, men systemet klarte ikke å opprette ordre automatisk på grunn av en teknisk feil (trolig cross-domain session-problem).</p>
+
+    <p><strong>Dette krever rask manuell handling for å sikre at kunden får sine produkter!</strong></p>
+
+    <div class="detail-box">
+      <h3 style="margin-top: 0;">Betalingsdetaljer</h3>
+      <div class="detail-row">
+        <span class="detail-label">Referanse:</span>
+        <span class="detail-value"><strong>{{paymentReference}}</strong></span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Kunde e-post:</span>
+        <span class="detail-value">{{customerEmail}}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Beløp:</span>
+        <span class="detail-value"><strong>{{amount}} {{currency}}</strong></span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Status:</span>
+        <span class="detail-value">{{paymentState}}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Tidspunkt:</span>
+        <span class="detail-value">{{timestamp}}</span>
+      </div>
+    </div>
+
+    <div class="action-box">
+      <div class="action-title">📋 NØDVENDIGE HANDLINGER</div>
+      <ol class="action-steps">
+        <li>Logg inn i admin-panelet</li>
+        <li>Finn betalingen med referanse: <strong>{{paymentReference}}</strong></li>
+        <li>Verifiser betalingsdetaljer i Vipps API</li>
+        <li>Opprett ordre manuelt basert på betalingsinformasjon</li>
+        <li>Send ordrebekreftelse til kunden: {{customerEmail}}</li>
+      </ol>
+    </div>
+
+    <h3>Teknisk informasjon</h3>
+    <p><strong>Årsak:</strong> Cart unavailable in session (cross-domain session mismatch)</p>
+    <p><strong>Business Event:</strong> payment.orphaned opprettet i systemet</p>
+    <p><strong>{{vippsApiLink}}</strong></p>
+
+    <div class="footer">
+      <p><strong>{{organizationName}}</strong></p>
+      <p>Dette er en automatisk generert varsling fra Historia betalingssystem.</p>
+      <p>Hvis du har spørsmål om denne varslingen, kontakt systemadministrator.</p>
+    </div>
+  </div>
+</body>
+</html>`,
+    description: 'Critical alert for orphaned payment (payment authorized but order not created)',
+  },
 };
