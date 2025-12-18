@@ -264,8 +264,11 @@ export async function createVippsPayment({
 
     // Get current host for dynamic callback URL
     // This ensures the callback returns to the same domain where payment was initiated
-    const host = (await headers()).get('host');
-    const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+    const headersList = await headers();
+    const host = headersList.get('host');
+    const forwardedProto = headersList.get('x-forwarded-proto');
+    const protocol =
+      forwardedProto || (process.env.NODE_ENV === 'production' ? 'https' : 'http');
     const baseUrl = host ? `${protocol}://${host}` : appConfig.env.NEXT_PUBLIC_CMS_URL;
 
     logger.info(

@@ -20,6 +20,7 @@ const logger = Logger.create({
 });
 
 interface OrphanedPaymentDetails {
+  websiteId?: string;
   paymentReference: string;
   customerEmail?: string;
   amount: number;
@@ -35,13 +36,14 @@ interface OrphanedPaymentDetails {
  * for tracking and sends an email to sales contacts for manual intervention.
  *
  * @param details - Details about the orphaned payment
+ * @param details.websiteId - Optional website/tenant ID. If not provided, will attempt to detect from request headers
  * @returns Success or error result
  */
 export async function notifyOrphanedPayment(
   details: OrphanedPaymentDetails
 ): Promise<ServerActionResult<void>> {
   try {
-    const { paymentReference, customerEmail, amount, currency, paymentState } = details;
+    const { websiteId: providedWebsiteId, paymentReference, customerEmail, amount, currency, paymentState } = details;
 
     logger.info(
       { paymentReference, customerEmail, amount },
@@ -72,14 +74,27 @@ export async function notifyOrphanedPayment(
 
     logger.info({ paymentReference }, 'Business event created for orphaned payment');
 
-    // Get current website/tenant for sales contact emails
-    const websiteId = await getCurrentWebsiteId();
+    // Get website/tenant ID from parameter or detect from request headers
+    let websiteId: string | null = providedWebsiteId ?? null;
     if (!websiteId) {
-      logger.warn(
-        { paymentReference },
-        'No website context found, cannot send sales notification'
+      websiteId = await getCurrentWebsiteId();
+      logger.info(
+        { paymentReference, websiteId },
+        'Detected website ID from request headers'
       );
-      return actionSuccess(undefined);
+    } else {
+      logger.info(
+        { paymentReference, websiteId },
+        'Using provided website ID (webhook context)'
+      );
+    }
+
+    if (!websiteId) {
+      logger.error(
+        { paymentReference },
+        'CRITICAL: No website context found - cannot send orphaned payment notification to sales team'
+      );
+      return actionError('Cannot determine website/tenant - notification not sent');
     }
 
     const website = (await payload.findByID({
@@ -96,11 +111,8 @@ export async function notifyOrphanedPayment(
       );
 
       for (const contact of salesContacts) {
-        if (contact.user && typeof contact.user === 'object' && 'email' in contact.user) {
-          const userEmail = contact.user.email;
-          if (userEmail) {
-            salesEmails.push(userEmail);
-          }
+        if (contact.user && typeof contact.user === 'object' && 'email' in contact.user && contact.user.email) {
+          salesEmails.push(contact.user.email);
         }
       }
     }
@@ -116,7 +128,7 @@ export async function notifyOrphanedPayment(
     // Prepare email template data
     const locale = (process.env.NEXT_PUBLIC_CMS_DEFAULT_LOCALE || 'no') === 'no' ? 'nb-NO' : 'en-US';
     const amountFormatted = (amount / 100).toFixed(2);
-    const timestamp = new Date().toLocaleString('nb-NO');
+    const timestamp = new Date().toLocaleString(locale);
 
     const templateData = {
       paymentReference,
