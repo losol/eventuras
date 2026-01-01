@@ -1,5 +1,23 @@
 # @eventuras/historia
 
+## 0.17.0
+
+### Minor Changes
+
+- ### 🧱 Features
+  - feat(historia): add packing queue functionality (9449285) [@eventuras/historia]
+
+- chore: update deps
+
+### Patch Changes
+
+- Updated dependencies
+  - @eventuras/ratio-ui-next@0.1.4
+  - @eventuras/core-nextjs@0.1.2
+  - @eventuras/app-config@0.1.2
+  - @eventuras/ratio-ui@0.8.2
+  - @eventuras/toast@0.2.3
+
 ## 0.16.3
 
 ### Patch Changes

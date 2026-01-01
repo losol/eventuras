@@ -1,9 +1,14 @@
 # @eventuras/event-sdk
 
+## 2.27.5
+
+### Patch Changes
+
+- chore: update deps
+
 ## 2.27.1
 
- - Sync release versions across packages api, web, event-sdk
-
+- Sync release versions across packages api, web, event-sdk
 
 ## 0.6.1
 
