@@ -1,4 +1,5 @@
 export {
+  escapeHtml,
   formatOrderDate,
   getLineTotal,
   getLineTotalMinor,
@@ -7,6 +8,7 @@ export {
   getProductId,
   getProductName,
   getVatRate,
+  sanitizeForHtml,
   toMajorUnits,
 } from './orderHelpers';
 export { formatPackingListAsHtml, formatPackingListAsText } from './packingListGenerator';
