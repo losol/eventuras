@@ -1,5 +1,11 @@
 # @eventuras/docsite
 
+## 0.6.4
+
+### Patch Changes
+
+- chore: update deps
+
 ## 0.6.3
 
 ### Patch Changes

@@ -1,5 +1,22 @@
 # @eventuras/web
 
+## 2.27.5
+
+### Patch Changes
+
+- chore: update deps
+- Updated dependencies
+  - @eventuras/ratio-ui-next@0.1.4
+  - @eventuras/core-nextjs@0.1.2
+  - @eventuras/app-config@0.1.2
+  - @eventuras/event-sdk@2.27.5
+  - @eventuras/markdown@2.0.2
+  - @eventuras/ratio-ui@0.8.2
+  - @eventuras/scribo@0.8.2
+  - @eventuras/datatable@0.5.3
+  - @eventuras/smartform@0.2.3
+  - @eventuras/toast@0.2.3
+
 ## 2.27.4
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @eventuras/idem-idp
 
+## 0.5.2
+
+### Patch Changes
+
+- chore: update deps
+
 ## 0.5.1
 
 ### Patch Changes
