@@ -3,6 +3,7 @@ import type { CollectionAfterChangeHook } from 'payload';
 import { Logger } from '@eventuras/logger';
 import { notitiaTemplates } from '@eventuras/notitia-templates';
 
+import { createPackingNotifier } from '@/lib/packing';
 import type { Order, Product, User, Website } from '@/payload-types';
 
 const logger = Logger.create({
@@ -26,6 +27,14 @@ export const sendOrderConfirmation: CollectionAfterChangeHook<Order> = async ({
     doc.status === 'processing' && previousDoc?.status !== 'processing';
 
   if (!isNewlyProcessing) {
+    logger.debug(
+      {
+        orderId: doc.id,
+        currentStatus: doc.status,
+        previousStatus: previousDoc?.status,
+      },
+      'Skipping order confirmation - not newly processing'
+    );
     return doc;
   }
 
@@ -72,15 +81,28 @@ export const sendOrderConfirmation: CollectionAfterChangeHook<Order> = async ({
           (cp) => cp.contactType === 'sales',
         );
 
+        logger.info(
+          { websiteId: tenantId, salesContactsCount: salesContacts.length },
+          'Found sales contacts for website'
+        );
+
         for (const contact of salesContacts) {
           if (contact.user && typeof contact.user === 'object' && 'email' in contact.user) {
             const userEmail = contact.user.email;
             if (userEmail) {
               salesEmails.push(userEmail);
+              logger.debug({ email: userEmail }, 'Added sales contact email');
             }
           }
         }
+      } else {
+        logger.info({ websiteId: tenantId }, 'No contactPoints found on website');
       }
+
+      logger.info(
+        { websiteId: tenantId, salesEmailsCount: salesEmails.length, salesEmails },
+        'Sales emails to notify'
+      );
     }
 
     // Prepare order items for email template
@@ -136,40 +158,28 @@ export const sendOrderConfirmation: CollectionAfterChangeHook<Order> = async ({
 
     logger.info({ orderId: doc.id, email: doc.userEmail }, 'Order confirmation email sent successfully');
 
-    // Send notification email to sales contacts using same template with KOPI banner
+    // Send packing list to sales contacts
     if (salesEmails.length > 0) {
       try {
-        const salesEmailHtml = notitiaTemplates.render(
-          'email',
-          'order-confirmation',
-          {
-            ...templateData,
-            isCopy: true, // This adds the KOPI banner
-            userEmail: doc.userEmail, // Add customer email for internal copy
-          },
-          {
-            locale: salesEmailLocale, // Use CMS default locale for internal notifications
-          },
-        );
-
-        for (const salesEmail of salesEmails) {
-          await payload.sendEmail({
-            to: salesEmail,
-            subject: `Ny ordre mottatt`,
-            html: salesEmailHtml,
-          });
-        }
+        // Create notifier and send (easy to swap out email for other methods later)
+        const notifier = createPackingNotifier(payload, 'email');
+        await notifier.notify({
+          targets: salesEmails.map(email => ({ email })),
+          order: doc,
+          customerName,
+          locale: salesEmailLocale,
+        });
 
         logger.info(
           { orderId: doc.id, salesEmails, count: salesEmails.length },
-          'Sales notification emails sent successfully',
+          'Packing list notifications sent successfully',
         );
       } catch (salesError) {
         logger.error(
           { error: salesError, orderId: doc.id, salesEmails },
-          'Failed to send sales notification emails',
+          'Failed to send packing list notifications',
         );
-        // Don't throw - we don't want to fail if sales notification fails
+        // Don't throw - we don't want to fail if packing notification fails
       }
     }
   } catch (error) {

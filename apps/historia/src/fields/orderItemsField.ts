@@ -10,6 +10,9 @@ export const orderItemsField = (): ArrayField => {
     required: true,
     admin: {
       initCollapsed: true,
+      components: {
+        RowLabel: '@/fields/orderItemsField/OrderItemRowLabel#OrderItemRowLabel',
+      },
     },
     fields: [
       {

@@ -13,6 +13,8 @@ import { HeadingFeatureClient as HeadingFeatureClient_e70f5e05f09f93e00b997edb1e
 import { SlugComponent as SlugComponent_92cc057d0a2abb4f6cf0307edf59f986 } from '@/fields/slug/SlugComponent'
 import { ExportListMenuItem as ExportListMenuItem_cdf7e044479f899a31f804427d568b36 } from '@payloadcms/plugin-import-export/rsc'
 import { AssignTenantFieldTrigger as AssignTenantFieldTrigger_1d0591e3cf4f332c83a86da13a0de59a } from '@payloadcms/plugin-multi-tenant/client'
+import { OrderItemRowLabel as OrderItemRowLabel_7a3da9e115e74f59ef3feb69bcaf4727 } from '@/fields/orderItemsField/OrderItemRowLabel'
+import { OrdersDescription as OrdersDescription_c20a86c683fba37390b5cb77012128c1 } from '@/collections/Orders/components/OrdersDescription'
 import { OrderSaveButton as OrderSaveButton_78481da30083d3e8e0e4674008b510d6 } from '@/collections/Orders/components/OrderEditComponents'
 import { FixedToolbarFeatureClient as FixedToolbarFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { PersonNameComponent as PersonNameComponent_2a71690645e56540458fc560c4b28e52 } from '@/fields/PersonNameComponent'
@@ -34,6 +36,7 @@ import { TenantSelector as TenantSelector_d6d5f193a167989e2ee7d14202901e62 } fro
 import { ImportExportProvider as ImportExportProvider_cdf7e044479f899a31f804427d568b36 } from '@payloadcms/plugin-import-export/rsc'
 import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 import { TenantSelectionProvider as TenantSelectionProvider_d6d5f193a167989e2ee7d14202901e62 } from '@payloadcms/plugin-multi-tenant/rsc'
+import { default as default_18a3a5ffaa32dfaa095af0197c89e3af } from '@/collections/Orders/views/PackingQueuePage'
 
 export const importMap = {
   "@payloadcms/plugin-multi-tenant/client#TenantField": TenantField_1d0591e3cf4f332c83a86da13a0de59a,
@@ -51,6 +54,8 @@ export const importMap = {
   "@/fields/slug/SlugComponent#SlugComponent": SlugComponent_92cc057d0a2abb4f6cf0307edf59f986,
   "@payloadcms/plugin-import-export/rsc#ExportListMenuItem": ExportListMenuItem_cdf7e044479f899a31f804427d568b36,
   "@payloadcms/plugin-multi-tenant/client#AssignTenantFieldTrigger": AssignTenantFieldTrigger_1d0591e3cf4f332c83a86da13a0de59a,
+  "@/fields/orderItemsField/OrderItemRowLabel#OrderItemRowLabel": OrderItemRowLabel_7a3da9e115e74f59ef3feb69bcaf4727,
+  "@/collections/Orders/components/OrdersDescription#OrdersDescription": OrdersDescription_c20a86c683fba37390b5cb77012128c1,
   "@/collections/Orders/components/OrderEditComponents#OrderSaveButton": OrderSaveButton_78481da30083d3e8e0e4674008b510d6,
   "@payloadcms/richtext-lexical/client#FixedToolbarFeatureClient": FixedToolbarFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@/fields/PersonNameComponent#PersonNameComponent": PersonNameComponent_2a71690645e56540458fc560c4b28e52,
@@ -71,5 +76,6 @@ export const importMap = {
   "@payloadcms/plugin-multi-tenant/rsc#TenantSelector": TenantSelector_d6d5f193a167989e2ee7d14202901e62,
   "@payloadcms/plugin-import-export/rsc#ImportExportProvider": ImportExportProvider_cdf7e044479f899a31f804427d568b36,
   "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24,
-  "@payloadcms/plugin-multi-tenant/rsc#TenantSelectionProvider": TenantSelectionProvider_d6d5f193a167989e2ee7d14202901e62
+  "@payloadcms/plugin-multi-tenant/rsc#TenantSelectionProvider": TenantSelectionProvider_d6d5f193a167989e2ee7d14202901e62,
+  "@/collections/Orders/views/PackingQueuePage#default": default_18a3a5ffaa32dfaa095af0197c89e3af
 }

@@ -93,6 +93,17 @@ export default buildConfig({
   admin: {
     components: {
       beforeLogin: ['@/components/BeforeLogin'],
+      views: {
+        packingQueue: {
+          path: '/packing-queue',
+          Component: '@/collections/Orders/views/PackingQueuePage',
+          exact: true,
+          meta: {
+            title: 'Packing Queue',
+            description: 'Orders ready to pack and ship',
+          },
+        },
+      },
     },
     importMap: {
       baseDir: path.resolve(dirname),
