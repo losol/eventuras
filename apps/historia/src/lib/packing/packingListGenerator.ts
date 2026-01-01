@@ -7,6 +7,7 @@ import {
   getPriceIncVatMinor,
   getProductName,
   getVatRate,
+  sanitizeForHtml,
   toMajorUnits,
 } from './orderHelpers';
 
@@ -115,7 +116,7 @@ export function formatPackingListAsHtml(order: Order, customerName?: string): st
   const orderItems = order.items ?? [];
 
   const items = orderItems.map((item, index) => {
-    const productName = getProductName(item);
+    const productName = sanitizeForHtml(getProductName(item));
     const quantity = item.quantity ?? 1;
     const priceExVat = getPriceExVatMinor(item);
     const vatRate = getVatRate(item);
@@ -135,7 +136,7 @@ export function formatPackingListAsHtml(order: Order, customerName?: string): st
   }).join('');
 
   const checklist = orderItems.map((item) => `
-    <li style="margin-bottom: 8px;">☐ ${item.quantity ?? 1}x ${getProductName(item)}</li>
+    <li style="margin-bottom: 8px;">☐ ${item.quantity ?? 1}x ${sanitizeForHtml(getProductName(item))}</li>
   `).join('');
 
   const shippingAddress = order.shippingAddress;
@@ -143,10 +144,10 @@ export function formatPackingListAsHtml(order: Order, customerName?: string): st
     <div style="margin-bottom: 24px;">
       <h3 style="margin: 0 0 8px 0; font-size: 14px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em;">Leveringsadresse / Shipping Address</h3>
       <div style="padding: 12px; background: #f9fafb; border-radius: 6px; color: #374151;">
-        ${shippingAddress.addressLine1 || ''}<br>
-        ${shippingAddress.addressLine2 ? `${shippingAddress.addressLine2}<br>` : ''}
-        ${shippingAddress.postalCode || ''} ${shippingAddress.city || ''}<br>
-        ${shippingAddress.country || 'NO'}
+        ${sanitizeForHtml(shippingAddress.addressLine1)}<br>
+        ${shippingAddress.addressLine2 ? `${sanitizeForHtml(shippingAddress.addressLine2)}<br>` : ''}
+        ${sanitizeForHtml(shippingAddress.postalCode)} ${sanitizeForHtml(shippingAddress.city)}<br>
+        ${sanitizeForHtml(shippingAddress.country) || 'NO'}
       </div>
     </div>
   ` : '';
@@ -181,7 +182,7 @@ export function formatPackingListAsHtml(order: Order, customerName?: string): st
         <table style="width: 100%; border-collapse: collapse;">
           <tr>
             <td style="padding: 4px 0; color: #6b7280; font-size: 14px;">Ordre-ID:</td>
-            <td style="padding: 4px 0; font-weight: 600; text-align: right;">${order.id}</td>
+            <td style="padding: 4px 0; font-weight: 600; text-align: right;">${sanitizeForHtml(order.id)}</td>
           </tr>
           <tr>
             <td style="padding: 4px 0; color: #6b7280; font-size: 14px;">Dato:</td>
@@ -189,7 +190,7 @@ export function formatPackingListAsHtml(order: Order, customerName?: string): st
           </tr>
           <tr>
             <td style="padding: 4px 0; color: #6b7280; font-size: 14px;">Status:</td>
-            <td style="padding: 4px 0; text-align: right;"><span style="padding: 4px 12px; background: #fef3c7; color: #92400e; border-radius: 12px; font-size: 12px; font-weight: 600; text-transform: uppercase;">${order.status}</span></td>
+            <td style="padding: 4px 0; text-align: right;"><span style="padding: 4px 12px; background: #fef3c7; color: #92400e; border-radius: 12px; font-size: 12px; font-weight: 600; text-transform: uppercase;">${sanitizeForHtml(order.status)}</span></td>
           </tr>
         </table>
       </div>
@@ -198,8 +199,8 @@ export function formatPackingListAsHtml(order: Order, customerName?: string): st
       <div style="margin-bottom: 24px;">
         <h3 style="margin: 0 0 8px 0; font-size: 14px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em;">Kunde / Customer</h3>
         <div style="padding: 12px; background: #f9fafb; border-radius: 6px; color: #374151;">
-          ${customerName ? `<strong>${customerName}</strong><br>` : ''}
-          ${order.userEmail}
+          ${customerName ? `<strong>${sanitizeForHtml(customerName)}</strong><br>` : ''}
+          ${sanitizeForHtml(order.userEmail)}
         </div>
       </div>
 

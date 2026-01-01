@@ -23,16 +23,32 @@ export async function getPackingQueue(): Promise<ServerActionResult<Order[]>> {
 
     const payload = await getPayload({ config });
 
-    // Get all shipments to exclude already shipped orders
-    const shipments = await payload.find({
-      collection: 'shipments',
-      limit: 1000,
-      depth: 0,
-    });
+    // Get all shipments to exclude already shipped orders (with pagination)
+    const shippedOrderIdSet = new Set<string>();
+    let page = 1;
+    const pageSize = 100;
+    let hasMore = true;
 
-    const shippedOrderIds = shipments.docs.map((s) =>
-      typeof s.order === 'string' ? s.order : s.order.id
-    );
+    while (hasMore) {
+      const shipmentsPage = await payload.find({
+        collection: 'shipments',
+        limit: pageSize,
+        page,
+        depth: 0,
+      });
+
+      shipmentsPage.docs.forEach((s) => {
+        const orderId = typeof s.order === 'string' ? s.order : s.order?.id;
+        if (orderId) {
+          shippedOrderIdSet.add(orderId);
+        }
+      });
+
+      hasMore = shipmentsPage.hasNextPage;
+      page += 1;
+    }
+
+    const shippedOrderIds = Array.from(shippedOrderIdSet);
 
     // Fetch orders that need packing
     const orders = await payload.find({
@@ -85,6 +101,11 @@ export async function markOrderPacked(
 
     if (!order) {
       return actionError('Order not found');
+    }
+
+    // Validate order has items
+    if (!order.items || order.items.length === 0) {
+      return actionError('Order has no items to ship');
     }
 
     // Extract tenant ID from order

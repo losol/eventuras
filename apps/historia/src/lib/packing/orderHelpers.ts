@@ -71,3 +71,28 @@ export const formatOrderDate = (
 ): string => {
   return new Date(createdAt).toLocaleDateString('nb-NO', options);
 };
+
+/**
+ * Escape HTML special characters to prevent XSS attacks
+ * Strips any HTML tags and escapes special characters
+ */
+export const escapeHtml = (text: string | null | undefined): string => {
+  if (!text) return '';
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+};
+
+/**
+ * Sanitize text by stripping HTML tags and escaping special characters
+ * Use this for user-controlled data before inserting into HTML
+ */
+export const sanitizeForHtml = (text: string | null | undefined): string => {
+  if (!text) return '';
+  // First strip any HTML tags, then escape special characters
+  const stripped = text.replace(/<[^>]*>/g, '');
+  return escapeHtml(stripped);
+};

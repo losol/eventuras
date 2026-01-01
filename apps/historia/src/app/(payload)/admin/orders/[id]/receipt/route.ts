@@ -8,6 +8,7 @@ import {
   getPriceIncVatMinor,
   getProductName,
   getVatRate,
+  sanitizeForHtml,
   toMajorUnits,
 } from '@/lib/packing/orderHelpers';
 import config from '@/payload.config';
@@ -90,7 +91,7 @@ export async function GET(
   let totalIncVat = 0;
 
   const itemRows = items.map((item, index) => {
-    const productName = getProductName(item);
+    const productName = sanitizeForHtml(getProductName(item));
     const quantity = item.quantity || 1;
     const priceExVat = getPriceExVatMinor(item);
     const vatRate = getVatRate(item);
@@ -126,10 +127,10 @@ export async function GET(
     <div style="margin-top: 24px;">
       <h3 style="margin: 0 0 8px 0; font-size: 12px; color: #6b7280; text-transform: uppercase;">Leveringsadresse</h3>
       <p style="margin: 0; line-height: 1.6;">
-        ${shippingAddress.addressLine1 || ''}<br>
-        ${shippingAddress.addressLine2 ? `${shippingAddress.addressLine2}<br>` : ''}
-        ${shippingAddress.postalCode || ''} ${shippingAddress.city || ''}<br>
-        ${shippingAddress.country || 'Norge'}
+        ${sanitizeForHtml(shippingAddress.addressLine1)}<br>
+        ${shippingAddress.addressLine2 ? `${sanitizeForHtml(shippingAddress.addressLine2)}<br>` : ''}
+        ${sanitizeForHtml(shippingAddress.postalCode)} ${sanitizeForHtml(shippingAddress.city)}<br>
+        ${sanitizeForHtml(shippingAddress.country) || 'Norge'}
       </p>
     </div>
   ` : '';
@@ -193,14 +194,14 @@ export async function GET(
   <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px; border-bottom: 2px solid #374151; padding-bottom: 24px;">
     <div>
       <h1 style="margin: 0 0 8px 0; font-size: 28px; font-weight: 700;">KVITTERING</h1>
-      <p style="margin: 0; color: #6b7280; font-size: 14px;">Ordre #${order.id}</p>
+      <p style="margin: 0; color: #6b7280; font-size: 14px;">Ordre #${sanitizeForHtml(order.id)}</p>
     </div>
     <div style="text-align: right;">
-      <p style="margin: 0; font-weight: 600; font-size: 18px;">${organizationName}</p>
-      ${organizationOrgNumber ? `<p style="margin: 4px 0 0 0; color: #6b7280; font-size: 14px;">Org.nr: ${organizationOrgNumber}</p>` : ''}
-      ${organizationAddress ? `<p style="margin: 4px 0 0 0; color: #6b7280; font-size: 13px;">${organizationAddress}</p>` : ''}
-      ${organizationEmail ? `<p style="margin: 4px 0 0 0; color: #6b7280; font-size: 13px;">${organizationEmail}</p>` : ''}
-      ${organizationPhone ? `<p style="margin: 4px 0 0 0; color: #6b7280; font-size: 13px;">${organizationPhone}</p>` : ''}
+      <p style="margin: 0; font-weight: 600; font-size: 18px;">${sanitizeForHtml(organizationName)}</p>
+      ${organizationOrgNumber ? `<p style="margin: 4px 0 0 0; color: #6b7280; font-size: 14px;">Org.nr: ${sanitizeForHtml(organizationOrgNumber)}</p>` : ''}
+      ${organizationAddress ? `<p style="margin: 4px 0 0 0; color: #6b7280; font-size: 13px;">${sanitizeForHtml(organizationAddress)}</p>` : ''}
+      ${organizationEmail ? `<p style="margin: 4px 0 0 0; color: #6b7280; font-size: 13px;">${sanitizeForHtml(organizationEmail)}</p>` : ''}
+      ${organizationPhone ? `<p style="margin: 4px 0 0 0; color: #6b7280; font-size: 13px;">${sanitizeForHtml(organizationPhone)}</p>` : ''}
     </div>
   </div>
 
@@ -208,8 +209,8 @@ export async function GET(
   <div style="display: flex; justify-content: space-between; margin-bottom: 32px;">
     <div>
       <h3 style="margin: 0 0 8px 0; font-size: 12px; color: #6b7280; text-transform: uppercase;">Kunde</h3>
-      <p style="margin: 0; font-weight: 500;">${customerName || 'Ikke registrert'}</p>
-      <p style="margin: 4px 0 0 0; color: #374151;">${order.userEmail}</p>
+      <p style="margin: 0; font-weight: 500;">${sanitizeForHtml(customerName) || 'Ikke registrert'}</p>
+      <p style="margin: 4px 0 0 0; color: #374151;">${sanitizeForHtml(order.userEmail)}</p>
       ${shippingHtml}
     </div>
     <div style="text-align: right;">

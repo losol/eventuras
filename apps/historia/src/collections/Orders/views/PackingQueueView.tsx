@@ -156,7 +156,7 @@ export function PackingQueueView() {
                 </tr>
               </thead>
               <tbody>
-                {order.items.map((item) => (
+                {(order.items ?? []).map((item) => (
                   <tr key={item.itemId}>
                     <td style={{ padding: 'calc(var(--base) * 0.5)' }}>{getProductName(item)}</td>
                     <td style={{ textAlign: 'right', padding: 'calc(var(--base) * 0.5)' }}>{item.quantity}</td>
