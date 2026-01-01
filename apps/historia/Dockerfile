@@ -33,7 +33,7 @@ COPY libs ./libs
 
 # Enable pnpm and prune with turbo using pnpm dlx
 RUN corepack enable && \
-    COREPACK_ENABLE_STRICT=0 corepack prepare pnpm@10.26.0 --activate
+    COREPACK_ENABLE_STRICT=0 corepack prepare pnpm@10.27.0 --activate
 RUN pnpm dlx turbo prune --scope=@eventuras/historia --docker
 
 ##########################
@@ -45,7 +45,7 @@ WORKDIR /app
 
 # Enable pnpm
 RUN corepack enable && \
-    COREPACK_ENABLE_STRICT=0 corepack prepare pnpm@10.26.0 --activate
+    COREPACK_ENABLE_STRICT=0 corepack prepare pnpm@10.27.0 --activate
 
 # Copy pruned files from previous stage
 COPY --from=deps /app/out/json/ ./
@@ -69,7 +69,7 @@ COPY --from=install /app ./
 
 # Ensure pnpm is available
 RUN corepack enable && \
-    COREPACK_ENABLE_STRICT=0 corepack prepare pnpm@10.26.0 --activate
+    COREPACK_ENABLE_STRICT=0 corepack prepare pnpm@10.27.0 --activate
 
 # Build dependencies first (all workspace packages that historia depends on)
 RUN pnpm --filter=@eventuras/historia^... build
