@@ -27,9 +27,9 @@
     "typescript": "^5.9.3"
   },
   "optionalDependencies": {
-    "@rollup/rollup-linux-arm64-gnu": "4.53.5",
-    "@rollup/rollup-linux-arm64-musl": "4.53.5",
-    "@rollup/rollup-linux-x64-gnu": "4.53.5"
+    "@rollup/rollup-linux-arm64-gnu": "4.54.0",
+    "@rollup/rollup-linux-arm64-musl": "4.54.0",
+    "@rollup/rollup-linux-x64-gnu": "4.54.0"
   },
   "engines": {
     "node": ">=22.0.0 <25.0.0"
