@@ -4,6 +4,7 @@ import React from 'react';
 import { Button, useDocumentInfo, useForm, useFormFields } from '@payloadcms/ui';
 
 import { CancelPaymentButton } from './CancelPaymentButton';
+import { PrintReceiptButton } from './PrintReceiptButton';
 import { RefundPaymentButton } from './RefundPaymentButton';
 import { ShipCompleteOrderButton } from './ShipCompleteOrderButton';
 
@@ -15,6 +16,7 @@ export const OrderSaveButton: React.FC<any> = () => {
 
   return (
     <>
+      <PrintReceiptButton />
       <CancelPaymentButton orderId={id as string} orderStatus={status?.value as string} />
       <ShipCompleteOrderButton orderId={id as string} orderStatus={status?.value as string} />
       <RefundPaymentButton orderId={id as string} orderStatus={status?.value as string} />

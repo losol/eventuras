@@ -28,13 +28,14 @@ export const Orders: CollectionConfig = {
     delete: admins,
   },
   admin: {
-    useAsTitle: 'id',
-    defaultColumns: ['id', 'user', 'status', 'totalAmount', 'createdAt'],
+    useAsTitle: 'userEmail',
+    defaultColumns: ['userEmail', 'status', 'totalAmount', 'currency', 'createdAt'],
     group: 'Commerce',
     components: {
       edit: {
         SaveButton: '@/collections/Orders/components/OrderEditComponents#OrderSaveButton',
       },
+      Description: '@/collections/Orders/components/OrdersDescription#OrdersDescription',
     },
   },
   fields: [
@@ -120,8 +121,19 @@ export const Orders: CollectionConfig = {
         position: 'sidebar',
       },
     },
+    {
+      name: 'shipments',
+      type: 'join',
+      collection: 'shipments',
+      on: 'order',
+      admin: {
+        description: 'Shipments for this order',
+      },
+    },
   ],
   hooks: {
-    beforeChange: [populateOrderPrices],    afterChange: [sendOrderConfirmation],  },
+    beforeChange: [populateOrderPrices],
+    afterChange: [sendOrderConfirmation],
+  },
   timestamps: true,
 };

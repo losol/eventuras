@@ -109,7 +109,11 @@ export interface Config {
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
-  collectionsJoins: {};
+  collectionsJoins: {
+    orders: {
+      shipments: 'shipments';
+    };
+  };
   collectionsSelect: {
     articles: ArticlesSelect<false> | ArticlesSelect<true>;
     'business-events': BusinessEventsSelect<false> | BusinessEventsSelect<true>;
@@ -1123,6 +1127,98 @@ export interface Order {
   status: 'pending' | 'processing' | 'on-hold' | 'completed' | 'canceled';
   totalAmount?: number | null;
   currency: string;
+  /**
+   * Shipments for this order
+   */
+  shipments?: {
+    docs?: (string | Shipment)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "shipments".
+ */
+export interface Shipment {
+  id: string;
+  tenant?: (string | null) | Website;
+  /**
+   * The order this shipment belongs to
+   */
+  order: string | Order;
+  /**
+   * Items included in this shipment. Reference order item IDs for partial shipments.
+   */
+  items: {
+    /**
+     * The itemId from the order items array
+     */
+    orderItemId: string;
+    /**
+     * Reference to the product being shipped
+     */
+    product: string | Product;
+    /**
+     * Number of units shipped in this shipment
+     */
+    quantity: number;
+    id?: string | null;
+  }[];
+  shippingAddress?: {
+    addressLine1?: string | null;
+    addressLine2?: string | null;
+    postalCode?: string | null;
+    city?: string | null;
+    country?: string | null;
+  };
+  /**
+   * Shipping carrier (e.g., Posten, PostNord, Bring, DHL)
+   */
+  carrier?: string | null;
+  /**
+   * Tracking number from carrier
+   */
+  trackingNumber?: string | null;
+  /**
+   * URL to track the shipment
+   */
+  trackingUrl?: string | null;
+  /**
+   * Date when the shipment was dispatched
+   */
+  shippedAt?: string | null;
+  /**
+   * Date when the shipment was delivered
+   */
+  deliveredAt?: string | null;
+  /**
+   * Internal notes about this shipment
+   */
+  notes?: string | null;
+  status:
+    | 'pending'
+    | 'processing'
+    | 'ready-to-ship'
+    | 'shipped'
+    | 'in-transit'
+    | 'out-for-delivery'
+    | 'delivered'
+    | 'attempted-delivery'
+    | 'available-for-pickup'
+    | 'returned-to-sender'
+    | 'lost-in-transit'
+    | 'canceled';
+  /**
+   * Whether this is a full or partial shipment of the order
+   */
+  shipmentType: 'full' | 'partial';
+  /**
+   * Weight in grams
+   */
+  weight?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1234,90 +1330,6 @@ export interface SessionBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'session';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "shipments".
- */
-export interface Shipment {
-  id: string;
-  tenant?: (string | null) | Website;
-  /**
-   * The order this shipment belongs to
-   */
-  order: string | Order;
-  /**
-   * Items included in this shipment. Reference order item IDs for partial shipments.
-   */
-  items: {
-    /**
-     * The itemId from the order items array
-     */
-    orderItemId: string;
-    /**
-     * Reference to the product being shipped
-     */
-    product: string | Product;
-    /**
-     * Number of units shipped in this shipment
-     */
-    quantity: number;
-    id?: string | null;
-  }[];
-  shippingAddress?: {
-    addressLine1?: string | null;
-    addressLine2?: string | null;
-    postalCode?: string | null;
-    city?: string | null;
-    country?: string | null;
-  };
-  /**
-   * Shipping carrier (e.g., Posten, PostNord, Bring, DHL)
-   */
-  carrier?: string | null;
-  /**
-   * Tracking number from carrier
-   */
-  trackingNumber?: string | null;
-  /**
-   * URL to track the shipment
-   */
-  trackingUrl?: string | null;
-  /**
-   * Date when the shipment was dispatched
-   */
-  shippedAt?: string | null;
-  /**
-   * Date when the shipment was delivered
-   */
-  deliveredAt?: string | null;
-  /**
-   * Internal notes about this shipment
-   */
-  notes?: string | null;
-  status:
-    | 'pending'
-    | 'processing'
-    | 'ready-to-ship'
-    | 'shipped'
-    | 'in-transit'
-    | 'out-for-delivery'
-    | 'delivered'
-    | 'attempted-delivery'
-    | 'available-for-pickup'
-    | 'returned-to-sender'
-    | 'lost-in-transit'
-    | 'canceled';
-  /**
-   * Whether this is a full or partial shipment of the order
-   */
-  shipmentType: 'full' | 'partial';
-  /**
-   * Weight in grams
-   */
-  weight?: number | null;
-  updatedAt: string;
-  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2308,6 +2320,7 @@ export interface OrdersSelect<T extends boolean = true> {
   status?: T;
   totalAmount?: T;
   currency?: T;
+  shipments?: T;
   updatedAt?: T;
   createdAt?: T;
 }
