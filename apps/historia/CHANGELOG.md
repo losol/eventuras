@@ -1,5 +1,16 @@
 # @eventuras/historia
 
+## 0.17.1
+
+### Patch Changes
+
+- ### 🐞 Bug Fixes
+  - fix(historia): enhance customer name display and order total calculation (9c119fb) [@eventuras/historia]
+  - fix(historia): display customer name in shipping address (e3102ab) [@eventuras/historia]
+
+  ### ⚙️ CI/CD
+  - ci(historia): optimize image build process (49c56a8) [@eventuras/historia]
+
 ## 0.17.0
 
 ### Minor Changes
