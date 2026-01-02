@@ -37,7 +37,9 @@ function hexToUint8Array(hex: string): Uint8Array {
  * @param jweToken - The encrypted JWE token from the session cookie
  * @returns The decrypted session object containing tokens
  */
-async function decryptSessionToken(jweToken: string): Promise<{ tokens?: { accessToken?: string } }> {
+async function decryptSessionToken(
+  jweToken: string
+): Promise<{ tokens?: { accessToken?: string } }> {
   if (!SESSION_SECRET) {
     throw new Error('SESSION_SECRET is required');
   }
@@ -118,7 +120,7 @@ export const apiRequest = async <T = unknown>(
   const headers: Record<string, string> = {
     ...(options.headers as Record<string, string>),
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`,
+    Authorization: `Bearer ${token}`,
   };
 
   const response = await fetch(url, {
@@ -128,9 +130,7 @@ export const apiRequest = async <T = unknown>(
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(
-      `API request failed: ${response.status} ${response.statusText}\n${errorText}`
-    );
+    throw new Error(`API request failed: ${response.status} ${response.statusText}\n${errorText}`);
   }
 
   return response.json() as Promise<T>;
@@ -161,9 +161,7 @@ export const publicApiRequest = async <T = unknown>(
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(
-      `API request failed: ${response.status} ${response.statusText}\n${errorText}`
-    );
+    throw new Error(`API request failed: ${response.status} ${response.statusText}\n${errorText}`);
   }
 
   return response.json() as Promise<T>;

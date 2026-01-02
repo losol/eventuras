@@ -19,7 +19,11 @@ import { createServer } from 'node:http';
 import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath, parse } from 'node:url';
 import { dirname, join } from 'node:path';
-import { createOAuthClient, generateOAuthConsentUrl, exchangeCodeForTokens } from '@eventuras/google-api';
+import {
+  createOAuthClient,
+  generateOAuthConsentUrl,
+  exchangeCodeForTokens,
+} from '@eventuras/google-api';
 
 // Get __dirname equivalent in ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -46,8 +50,13 @@ const PORT = 3123;
 const REDIRECT_URI = `http://localhost:${PORT}/oauth/callback`;
 
 // Validate required environment variables
-if (!process.env.EVENTURAS_TEST_GOOGLE_CLIENT_ID || !process.env.EVENTURAS_TEST_GOOGLE_CLIENT_SECRET) {
-  console.error('❌ Error: EVENTURAS_TEST_GOOGLE_CLIENT_ID and EVENTURAS_TEST_GOOGLE_CLIENT_SECRET must be set in .env');
+if (
+  !process.env.EVENTURAS_TEST_GOOGLE_CLIENT_ID ||
+  !process.env.EVENTURAS_TEST_GOOGLE_CLIENT_SECRET
+) {
+  console.error(
+    '❌ Error: EVENTURAS_TEST_GOOGLE_CLIENT_ID and EVENTURAS_TEST_GOOGLE_CLIENT_SECRET must be set in .env'
+  );
   process.exit(1);
 }
 

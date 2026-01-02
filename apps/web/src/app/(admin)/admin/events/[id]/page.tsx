@@ -48,35 +48,30 @@ export default async function EventAdminPage({ params, searchParams }: Readonly<
     logger.error('NEXT_PUBLIC_ORGANIZATION_ID is not configured properly');
   }
 
-  const [
-    eventinfoRes,
-    registrationsRes,
-    eventProductsRes,
-    statisticsRes,
-    notificationsRes,
-  ] = await Promise.all([
-    getV3EventsById({ path: { id } }),
-    getV3Registrations({
-      query: {
-        EventId: id,
-        IncludeUserInfo: true,
-        IncludeProducts: true,
-        IncludeOrders: true,
-      },
-    }),
-    getV3EventsByEventIdProducts({ path: { eventId: id } }),
-    getV3EventsByEventIdStatistics({ path: { eventId: id } }),
-    organizationId && typeof organizationId === 'number'
-      ? getV3Notifications({
-          headers: {
-            'Eventuras-Org-Id': organizationId,
-          },
-          query: {
-            EventId: id,
-          },
-        })
-      : Promise.resolve({ data: undefined, error: 'Organization ID not configured' }),
-  ]);
+  const [eventinfoRes, registrationsRes, eventProductsRes, statisticsRes, notificationsRes] =
+    await Promise.all([
+      getV3EventsById({ path: { id } }),
+      getV3Registrations({
+        query: {
+          EventId: id,
+          IncludeUserInfo: true,
+          IncludeProducts: true,
+          IncludeOrders: true,
+        },
+      }),
+      getV3EventsByEventIdProducts({ path: { eventId: id } }),
+      getV3EventsByEventIdStatistics({ path: { eventId: id } }),
+      organizationId && typeof organizationId === 'number'
+        ? getV3Notifications({
+            headers: {
+              'Eventuras-Org-Id': organizationId,
+            },
+            query: {
+              EventId: id,
+            },
+          })
+        : Promise.resolve({ data: undefined, error: 'Organization ID not configured' }),
+    ]);
   const eventinfo = eventinfoRes?.data;
   if (!eventinfo) {
     logger.error({ eventId: id, error: eventinfoRes?.error }, `Event ${id} not found`);

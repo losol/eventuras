@@ -40,7 +40,7 @@ test.describe('should be able to register as an anonymous user when hitting the 
   test('should be able to register user through the even registration page', async ({ page }) => {
     // Clean up any old OTP emails before starting
     await cleanupOtpEmails(userName);
-    
+
     await visitAndClickEventRegistrationButton(page, createdEvent.eventId);
     await page.locator('[type="submit"]').click();
     await page.waitForLoadState();

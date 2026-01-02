@@ -51,7 +51,7 @@ const EconomySection: React.FC<EconomySectionProps> = ({ participants }) => {
         if (!isRegistrationCancelled) {
           const orderTotal =
             order.items?.reduce(
-              (sum: number, item: { quantity?: number; product?: { price?: number; }; }) =>
+              (sum: number, item: { quantity?: number; product?: { price?: number } }) =>
                 sum + (item.quantity ?? 0) * (item.product?.price ?? 0),
               0
             ) ?? 0;

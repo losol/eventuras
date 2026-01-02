@@ -2,11 +2,7 @@
 
 import { test } from '@playwright/test';
 
-import {
-  addProductToEvent,
-  checkIfAccessToAdmin,
-  writeCreatedEvent,
-} from './functions';
+import { addProductToEvent, checkIfAccessToAdmin, writeCreatedEvent } from './functions';
 import { createTestEvent } from '../utils';
 
 test.describe.configure({ mode: 'serial' });

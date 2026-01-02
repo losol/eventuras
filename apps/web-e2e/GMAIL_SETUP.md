@@ -111,6 +111,7 @@ echo "1//04YOAIXqnJPoVCgYIARAAGAQSNgF-L9Ircr5Z..." > test-results/.google-refres
 ```
 
 This approach is better for CI/CD because:
+
 - The `test-results/` directory is already gitignored
 - You can upload the token file as a CI artifact or secret file
 - No need to modify environment variable configuration in CI

@@ -139,7 +139,7 @@ test.describe('markdown rendering on public event page', () => {
       await expect(blockquote.first()).toBeVisible();
 
       // Verify blockquote has border styling
-      const borderStyle = await blockquote.first().evaluate((el) => {
+      const borderStyle = await blockquote.first().evaluate(el => {
         return globalThis.getComputedStyle(el).borderLeftWidth;
       });
       expect(borderStyle).not.toBe('0px');
@@ -149,7 +149,7 @@ test.describe('markdown rendering on public event page', () => {
     // Check list styling
     debug('Checking list styling...');
     const list = page.locator('#program ul').first();
-    const listStyle = await list.evaluate((el) => {
+    const listStyle = await list.evaluate(el => {
       return globalThis.getComputedStyle(el).listStyleType;
     });
     expect(listStyle).toBe('disc');
