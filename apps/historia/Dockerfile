@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1.7
 # Dockerfile for Historia (Eventuras CMS)
 
 #
@@ -9,15 +10,22 @@
 # Base image with pnpm pre-installed
 FROM node:24-bookworm-slim AS base
 
-# Install sharp dependencies for Next.js image optimization
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+
+# Install sharp dependencies for Next.js / Payload image processing
+# Prefer runtime packages over -dev to keep the image slimmer.
 # https://sharp.pixelplumbing.com/install#linux-memory-allocator
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libc6 \
     libstdc++6 \
+  libvips \
+    ca-certificates \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && corepack enable \
-    && corepack prepare pnpm@10.27.0 --activate
+  && corepack prepare pnpm@10.27.0 --activate \
+  && pnpm config set store-dir /pnpm/store
 
 ##########################
 # Turbo Prune + Install  #
@@ -47,8 +55,14 @@ WORKDIR /app
 COPY --from=deps /app/out/json/ ./
 COPY --from=deps /app/out/full/ ./
 
-# Install dependencies (ignore scripts); no lockfile required
-RUN pnpm install --frozen-lockfile=false --ignore-scripts
+# Workaround: turbo prune currently produces a pnpm-lock.yaml that can be missing
+# some peer-resolution entries (seen as ERR_PNPM_LOCKFILE_MISSING_DEPENDENCY).
+# Using the repo lockfile keeps installs deterministic while avoiding the prune bug.
+COPY --from=deps /app/pnpm-lock.yaml ./pnpm-lock.yaml
+
+# Install dependencies with frozen lockfile for consistent and faster builds
+RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store \
+  pnpm install --frozen-lockfile --ignore-scripts
 
 ##########################
 # Build                  #
@@ -57,6 +71,12 @@ FROM base AS builder
 
 WORKDIR /app
 
+# Accept Turborepo cache tokens from build args
+ARG TURBO_TOKEN
+ARG TURBO_TEAM
+ENV TURBO_TOKEN=${TURBO_TOKEN}
+ENV TURBO_TEAM=${TURBO_TEAM}
+
 ARG NEXT_PUBLIC_CMS_DEFAULT_LOCALE=no
 ENV NEXT_PUBLIC_CMS_DEFAULT_LOCALE=${NEXT_PUBLIC_CMS_DEFAULT_LOCALE}
 ENV NEXT_TELEMETRY_DISABLED=1
@@ -64,12 +84,17 @@ ENV NEXT_TELEMETRY_DISABLED=1
 COPY --from=install /app ./
 
 # Build dependencies first (all workspace packages that historia depends on)
-RUN pnpm --filter=@eventuras/historia^... build
+# Use turbo so remote caching (TURBO_TOKEN/TURBO_TEAM) actually applies.
+RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store \
+  --mount=type=cache,id=turbo-cache,target=/app/.turbo \
+  pnpm dlx turbo run build --filter=@eventuras/historia^...
 
 WORKDIR /app/apps/historia
 
 
-RUN pnpm next build --webpack --experimental-build-mode compile
+RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store \
+  --mount=type=cache,id=next-cache,target=/app/apps/historia/.next/cache \
+  pnpm next build --webpack --experimental-build-mode compile
 
 ##########################
 # Runtime                #

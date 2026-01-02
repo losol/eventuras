@@ -203,6 +203,12 @@ ClientBin/
 *.pfx
 *.publishsettings
 node_modules/
+.next/
+.turbo/
+.vercel/
+**/.next/
+**/.turbo/
+**/.vercel/
 orleans.codegen.cs
 
 # Since there are multiple workflows, uncomment next line to ignore bower_components

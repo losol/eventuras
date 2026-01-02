@@ -43,9 +43,6 @@ jobs:
       - name: Lint
         run: pnpm --filter @eventuras/historia lint
 
-      - name: Build
-        run: pnpm --filter @eventuras/historia... build
-
   build-docker:
     name: Build Docker Image
     runs-on: ubuntu-latest
@@ -94,6 +91,9 @@ jobs:
           context: .
           file: apps/historia/Dockerfile
           push: true
+          platforms: linux/amd64
+          provenance: false
+          sbom: false
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
@@ -102,6 +102,8 @@ jobs:
             "cms_secret=${{ secrets.CMS_SECRET }}"
           build-args: |
             BUILDKIT_INLINE_CACHE=1
+            TURBO_TOKEN=${{ secrets.TURBO_TOKEN }}
+            TURBO_TEAM=${{ secrets.TURBO_TEAM }}
 
   # Retag existing staging image for releases - no rebuild needed!
   retag-for-release:
