@@ -1,6 +1,7 @@
 {
   "api": "@eventuras/api",
   "cms": "@eventuras/historia",
+  "conductor": "@eventuras/conductor",
   "converto": "@eventuras/convertoapi",
   "converto-api": "@eventuras/convertoapi",
   "convertoapi": "@eventuras/convertoapi",
