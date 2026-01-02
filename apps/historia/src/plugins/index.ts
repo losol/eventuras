@@ -41,28 +41,24 @@ const requiredS3MediaVars = [
 
 const areAllS3VarsPresent = requiredS3MediaVars.every(varName => process.env[varName]);
 
-const isSentryEnabled = process.env.FEATURE_SENTRY === 'true' && !!process.env.HISTORIA_SENTRY_DSN;
-
 export const plugins: Plugin[] = [
-  ...(isSentryEnabled ? [
-    sentryPlugin({
-      dsn: process.env.HISTORIA_SENTRY_DSN!,
-      options: {
-        captureErrors: [400, 403, 500],
-        context: ({ defaultContext, req }) => {
-          return {
-            ...defaultContext,
-            tags: {
-              locale: req.locale,
-            },
-          }
-        },
+  sentryPlugin({
+    enabled: process.env.FEATURE_SENTRY === 'true',
+    options: {
+      captureErrors: [400, 403, 500],
+      context: ({ defaultContext, req }) => {
+        return {
+          ...defaultContext,
+          tags: {
+            locale: req.locale,
+          },
+        }
       },
-      Sentry,
-    }),
-  ] : []),
+    },
+    Sentry,
+  }),
   importExportPlugin({
-    collections: ['articles', 'notes', 'pages'],
+    collections: ['articles', 'notes', 'pages', 'users', 'orders'],
   }),
   mcpPlugin({
     collections: {
