@@ -84,6 +84,19 @@
       "client": false,
       "type": "string",
       "description": "Secret token for validating Vipps callbacks"
+    },
+    "FEATURE_SENTRY": {
+      "required": false,
+      "client": false,
+      "type": "boolean",
+      "description": "Enable Sentry error tracking",
+      "default": "false"
+    },
+    "HISTORIA_SENTRY_DSN": {
+      "required": false,
+      "client": false,
+      "type": "string",
+      "description": "Sentry DSN for Historia error tracking"
     }
   }
 }
