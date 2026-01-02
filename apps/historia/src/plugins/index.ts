@@ -5,10 +5,12 @@ import { multiTenantPlugin } from '@payloadcms/plugin-multi-tenant';
 import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs';
 import { redirectsPlugin } from '@payloadcms/plugin-redirects';
 import { searchPlugin } from '@payloadcms/plugin-search';
+import { sentryPlugin } from '@payloadcms/plugin-sentry';
 import { seoPlugin } from '@payloadcms/plugin-seo';
 import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types';
 import { FixedToolbarFeature, HeadingFeature, lexicalEditor } from '@payloadcms/richtext-lexical';
 import { s3Storage } from '@payloadcms/storage-s3';
+import * as Sentry from '@sentry/nextjs';
 import { Plugin } from 'payload';
 
 import { isSystemAdmin } from '@/access/isSystemAdmin';
@@ -39,7 +41,26 @@ const requiredS3MediaVars = [
 
 const areAllS3VarsPresent = requiredS3MediaVars.every(varName => process.env[varName]);
 
+const isSentryEnabled = process.env.FEATURE_SENTRY === 'true' && !!process.env.HISTORIA_SENTRY_DSN;
+
 export const plugins: Plugin[] = [
+  ...(isSentryEnabled ? [
+    sentryPlugin({
+      dsn: process.env.HISTORIA_SENTRY_DSN!,
+      options: {
+        captureErrors: [400, 403, 500],
+        context: ({ defaultContext, req }) => {
+          return {
+            ...defaultContext,
+            tags: {
+              locale: req.locale,
+            },
+          }
+        },
+      },
+      Sentry,
+    }),
+  ] : []),
   importExportPlugin({
     collections: ['articles', 'notes', 'pages'],
   }),
