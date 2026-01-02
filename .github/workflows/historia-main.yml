@@ -1,5 +1,9 @@
 name: Historia CMS CI/CD
 
+concurrency:
+  group: historia-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   pull_request:
     paths:
@@ -38,7 +42,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --filter @eventuras/historia... --frozen-lockfile
 
       - name: Lint
         run: pnpm --filter @eventuras/historia lint
@@ -195,7 +199,7 @@ jobs:
     needs: build-docker
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     environment:
-      name: historia-staging
+      name: historia-prod
     steps:
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
