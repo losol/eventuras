@@ -6,7 +6,7 @@
 #     --secret id=cms_secret,env=CMS_SECRET .
 
 #
-# Base image
+# Base image with pnpm pre-installed
 FROM node:24-bookworm-slim AS base
 
 # Install sharp dependencies for Next.js image optimization
@@ -15,7 +15,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libc6 \
     libstdc++6 \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && corepack enable \
+    && corepack prepare pnpm@10.27.0 --activate
 
 ##########################
 # Turbo Prune + Install  #
@@ -31,9 +33,7 @@ COPY package.json turbo.json tsconfig.json pnpm-workspace.yaml pnpm-lock.yaml ./
 COPY apps/historia ./apps/historia
 COPY libs ./libs
 
-# Enable pnpm and prune with turbo using pnpm dlx
-RUN corepack enable && \
-    COREPACK_ENABLE_STRICT=0 corepack prepare pnpm@10.27.0 --activate
+# Prune with turbo using pnpm dlx
 RUN pnpm dlx turbo prune --scope=@eventuras/historia --docker
 
 ##########################
@@ -42,10 +42,6 @@ RUN pnpm dlx turbo prune --scope=@eventuras/historia --docker
 FROM base AS install
 
 WORKDIR /app
-
-# Enable pnpm
-RUN corepack enable && \
-    COREPACK_ENABLE_STRICT=0 corepack prepare pnpm@10.27.0 --activate
 
 # Copy pruned files from previous stage
 COPY --from=deps /app/out/json/ ./
@@ -66,10 +62,6 @@ ENV NEXT_PUBLIC_CMS_DEFAULT_LOCALE=${NEXT_PUBLIC_CMS_DEFAULT_LOCALE}
 ENV NEXT_TELEMETRY_DISABLED=1
 
 COPY --from=install /app ./
-
-# Ensure pnpm is available
-RUN corepack enable && \
-    COREPACK_ENABLE_STRICT=0 corepack prepare pnpm@10.27.0 --activate
 
 # Build dependencies first (all workspace packages that historia depends on)
 RUN pnpm --filter=@eventuras/historia^... build
