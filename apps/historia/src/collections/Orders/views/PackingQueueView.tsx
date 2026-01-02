@@ -5,6 +5,7 @@ import { Button, Pill, toast } from '@payloadcms/ui';
 import Link from 'next/link';
 
 import { getPackingQueue, markOrderPacked } from '@/app/actions/packing';
+import { formatPhoneForDisplay } from '@/lib/utils/formatPhone';
 import type { Order } from '@/payload-types';
 
 export function PackingQueueView() {
@@ -131,6 +132,9 @@ export function PackingQueueView() {
 
             <div style={{ marginTop: 'calc(var(--base) * 1.5)' }}>
               <p style={{ margin: 0 }}><strong>Customer:</strong> {order.userEmail}</p>
+              {typeof order.customer === 'object' && order.customer && 'phone_number' in order.customer && order.customer.phone_number && (
+                <p style={{ margin: 'calc(var(--base) * 0.25) 0 0 0' }}><strong>Phone:</strong> {formatPhoneForDisplay(order.customer.phone_number)}</p>
+              )}
             </div>
 
             {order.shippingAddress && (

@@ -26,6 +26,36 @@ const logger = Logger.create({
 });
 
 /**
+ * Normalize Norwegian phone number to E.164 format with country code
+ * @param phoneNumber - Raw phone number from Vipps (e.g., "4748755492" or "48755492")
+ * @returns Normalized phone number with country code (e.g., "+4748755492")
+ */
+function normalizePhoneNumber(phoneNumber: string | undefined): string | undefined {
+  if (!phoneNumber) return undefined;
+
+  // Remove any whitespace
+  const cleaned = phoneNumber.replace(/\s/g, '');
+
+  // If already has +, return as is
+  if (cleaned.startsWith('+')) {
+    return cleaned;
+  }
+
+  // If starts with 47 (Norwegian country code), add +
+  if (cleaned.startsWith('47') && cleaned.length >= 10) {
+    return `+${cleaned}`;
+  }
+
+  // If starts with 4 or 9 (Norwegian mobile prefix), assume it's missing country code
+  if ((cleaned.startsWith('4') || cleaned.startsWith('9')) && cleaned.length === 8) {
+    return `+47${cleaned}`;
+  }
+
+  // Default: assume it's a Norwegian number without country code
+  return `+47${cleaned}`;
+}
+
+/**
  * Validate that the current user's session owns this payment reference
  * SECURITY: Prevents unauthorized access to payment status and order details
  *
@@ -229,11 +259,14 @@ export async function createOrderFromPayment({
         );
       }
 
+      // Normalize phone number to include country code
+      const normalizedPhone = normalizePhoneNumber(vippsPhone);
+
       logger.info(
         {
           paymentReference,
           hasEmail: !!vippsEmail,
-          hasPhone: !!vippsPhone,
+          hasPhone: !!normalizedPhone,
           hasName: !!(vippsFirstName && vippsLastName),
         },
         'Guest checkout - finding or creating user from Vipps data'
@@ -266,7 +299,9 @@ export async function createOrderFromPayment({
           data: {
             email: vippsEmail,
             password: generateSecurePassword(),
-            phone_number: vippsPhone,
+            phone_number: normalizedPhone,
+            email_verified: true,
+            phone_number_verified: true,
             given_name: vippsFirstName,
             family_name: vippsLastName,
           },
@@ -276,8 +311,10 @@ export async function createOrderFromPayment({
           {
             userId: effectiveUserId,
             email: newUser.email,
-            hasPhone: !!vippsPhone,
+            hasPhone: !!normalizedPhone,
             hasName: !!(vippsFirstName && vippsLastName),
+            emailVerified: true,
+            phoneVerified: true,
           },
           'Created new user from Vipps profile'
         );
