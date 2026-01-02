@@ -3,19 +3,19 @@
   "version": "1.0.0",
   "private": true,
   "description": "Homey app for sending notifications via Conductor",
+  "type": "module",
   "scripts": {
     "build": "tsc",
     "homey:install": "homey app install",
     "homey:run": "homey app run",
-    "lint": "eslint --ext .js,.ts --ignore-path .gitignore ."
+    "lint": "eslint ."
   },
   "devDependencies": {
+    "@eventuras/eslint-config": "workspace:*",
     "@eventuras/typescript-config": "workspace:*",
     "@tsconfig/node16": "^16.1.7",
     "@types/homey": "npm:homey-apps-sdk-v3-types@^0.3.12",
     "@types/node": "^24.10.1",
-    "eslint": "^7.32.0",
-    "eslint-config-athom": "^3.1.5",
     "typescript": "^5.9.3"
   }
 }
