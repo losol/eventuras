@@ -1,0 +1,28 @@
+{
+  "name": "@eventuras/conductor",
+  "version": "0.1.0",
+  "description": "Messaging orchestration server",
+  "license": "GPL-3.0-or-later",
+  "author": "Losen",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "pnpx ts-node-dev --env-file=.env src/index.ts",
+    "start": "node --env-file=.env dist/index.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.24.2",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "uuidv7": "^1.0.2",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@eventuras/typescript-config": "workspace:*",
+    "@types/express": "^5.0.5",
+    "@types/node": "^24.10.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
