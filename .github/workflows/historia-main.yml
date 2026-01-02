@@ -50,10 +50,13 @@ jobs:
     name: Build Docker Image
     runs-on: ubuntu-latest
     needs: build-and-test
-    if: github.event_name == 'pull_request' || github.event_name == 'push' || (github.event_name == 'release' && contains(github.event.release.tag_name, '@eventuras/historia@'))
+    # Only build on PR or push to main - releases will reuse staging image
+    if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     outputs:
       image-tag: ${{ steps.meta.outputs.tags }}
       image-digest: ${{ steps.build.outputs.digest }}
+      # Output the SHA-based tag for staging builds to enable release retagging
+      staging-sha-tag: ${{ steps.staging-tag.outputs.tag }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -67,6 +70,13 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Generate staging SHA tag
+        id: staging-tag
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          # Create a deterministic tag based on commit SHA for staging
+          echo "tag=${{ env.DOCKER_REPOSITORY }}:sha-${{ github.sha }}" >> $GITHUB_OUTPUT
+
       - name: Generate Docker metadata
         id: meta
         uses: docker/metadata-action@v5
@@ -75,8 +85,7 @@ jobs:
           tags: |
             type=raw,value=dev-pr${{ github.event.pull_request.number }}-{{sha}},enable=${{ github.event_name == 'pull_request' }}
             type=raw,value=staging-{{date 'YYYYMMDD'}}-{{sha}},enable=${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-            type=semver,pattern=v{{version}},enable=${{ github.event_name == 'release' && contains(github.event.release.tag_name, '@eventuras/historia@') }}
-            type=raw,value=latest,enable=${{ github.event_name == 'release' && contains(github.event.release.tag_name, '@eventuras/historia@') }}
+            type=raw,value=sha-${{ github.sha }},enable=${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
 
       - name: Build and push Docker image
         id: build
@@ -93,6 +102,54 @@ jobs:
             "cms_secret=${{ secrets.CMS_SECRET }}"
           build-args: |
             BUILDKIT_INLINE_CACHE=1
+
+  # Retag existing staging image for releases - no rebuild needed!
+  retag-for-release:
+    name: Retag Image for Release
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    if: github.event_name == 'release' && contains(github.event.release.tag_name, '@eventuras/historia@')
+    outputs:
+      image-tag: ${{ steps.tags.outputs.primary-tag }}
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          # Extract version from tag like @eventuras/historia@0.14.0
+          VERSION=$(echo "${{ github.event.release.tag_name }}" | sed -n 's/.*@eventuras\/historia@\(.*\)/\1/p')
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Retag staging image for production
+        id: tags
+        run: |
+          # The staging image was tagged with the commit SHA
+          SOURCE_TAG="${{ env.DOCKER_REPOSITORY }}:sha-${{ github.sha }}"
+          VERSION_TAG="${{ env.DOCKER_REPOSITORY }}:v${{ steps.version.outputs.version }}"
+          LATEST_TAG="${{ env.DOCKER_REPOSITORY }}:latest"
+
+          echo "Pulling existing staging image: ${SOURCE_TAG}"
+          docker pull "${SOURCE_TAG}"
+
+          echo "Retagging to version: ${VERSION_TAG}"
+          docker tag "${SOURCE_TAG}" "${VERSION_TAG}"
+          docker push "${VERSION_TAG}"
+
+          echo "Retagging to latest: ${LATEST_TAG}"
+          docker tag "${SOURCE_TAG}" "${LATEST_TAG}"
+          docker push "${LATEST_TAG}"
+
+          echo "primary-tag=${VERSION_TAG}" >> $GITHUB_OUTPUT
+          echo "✅ Successfully retagged staging image for production release"
 
   deploy-dev:
     name: Deploy to Dev (PR Preview)
@@ -153,24 +210,17 @@ jobs:
   deploy-prod:
     name: Deploy to Production
     runs-on: ubuntu-latest
-    needs: build-docker
+    needs: retag-for-release
     if: github.event_name == 'release' && contains(github.event.release.tag_name, '@eventuras/historia@')
     environment:
       name: historia-prod
     steps:
-      - name: Extract version from tag
-        id: version
-        run: |
-          # Extract version from tag like @eventuras/historia@0.14.0
-          VERSION=$(echo "${{ github.event.release.tag_name }}" | sed -n 's/.*@eventuras\/historia@\(.*\)/\1/p')
-          echo "version=${VERSION}" >> $GITHUB_OUTPUT
-
       - name: Deploy to Azure Web App (versioned)
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          images: ${{ needs.build-docker.outputs.image-tag }}
+          images: ${{ needs.retag-for-release.outputs.image-tag }}
 
       - name: Comment on release
         uses: actions/github-script@v7
@@ -178,17 +228,19 @@ jobs:
           script: |
             const comment = `## 🎉 Historia Production Deployment
 
-            **Status:** ✅ Deployed successfully
+            **Status:** ✅ Deployed successfully (reused staging build)
 
-            **Version:** \`${{ steps.version.outputs.version }}\`
+            **Version:** \`${{ needs.retag-for-release.outputs.version }}\`
             **Environment:** historia-prod
-            **Docker Images:** \`${{ needs.build-docker.outputs.image-tag }}\`
+            **Docker Image:** \`${{ needs.retag-for-release.outputs.image-tag }}\`
 
-            The new version is now live in production! 🚀`;
+            The new version is now live in production! 🚀
 
-            github.rest.issues.createComment({
-              issue_number: context.payload.release.id,
+            _Note: This deployment reused the staging-tested Docker image - no rebuild required._`;
+
+            github.rest.repos.createCommitComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
+              commit_sha: context.sha,
               body: comment
             });
