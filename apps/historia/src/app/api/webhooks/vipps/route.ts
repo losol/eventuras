@@ -25,10 +25,13 @@ type TransactionStatus = 'pending' | 'authorized' | 'captured' | 'completed' | '
  * Vipps webhook handler
  *
  * Receives webhook events from Vipps MobilePay and:
- * 1. Verifies HMAC signature
- * 2. Stores event in WebhookEvents collection
+ * 1. Verifies HMAC signature using x-ms-date, x-ms-content-sha256, host, and authorization headers
+ * 2. Stores event in business-events collection
  * 3. Processes event (updates Transaction and Order)
  * 4. Returns 200 OK to acknowledge receipt
+ *
+ * Uses idempotencyKey from payload when available, with fallback to pspReference combined
+ * with eventType to ensure uniqueness across different event types for the same payment.
  *
  * Events handled:
  * - epayments.payment.created.v1
@@ -48,15 +51,14 @@ export async function POST(request: NextRequest) {
     const rawBody = await request.text();
 
     // Get headers for signature verification
-    const webhookId = request.headers.get('X-Vipps-Idempotency-Key');
     const xMsDate = request.headers.get('x-ms-date');
     const xMsContentSha256 = request.headers.get('x-ms-content-sha256');
     const host = request.headers.get('host');
     const authorization = request.headers.get('authorization');
 
-    if (!webhookId || !xMsDate || !xMsContentSha256 || !host || !authorization) {
+    if (!xMsDate || !xMsContentSha256 || !host || !authorization) {
       logger.warn(
-        { webhookId, xMsDate, xMsContentSha256, host, authorization: !!authorization },
+        { xMsDate, xMsContentSha256, host, authorization: !!authorization },
         'Missing required webhook headers'
       );
       return NextResponse.json(
@@ -65,7 +67,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    logger.info({ webhookId, xMsDate }, 'Processing webhook');
+    logger.info({ xMsDate }, 'Processing webhook');
 
     // Verify webhook signature
     const webhookSecret = process.env.VIPPS_WEBHOOK_SECRET;
@@ -94,19 +96,19 @@ export async function POST(request: NextRequest) {
     );
 
     if (!isValid) {
-      logger.error({ webhookId, xMsDate }, 'Invalid webhook signature');
+      logger.error({ xMsDate }, 'Invalid webhook signature');
       return NextResponse.json(
         { error: 'Invalid signature' },
         { status: 401 }
       );
     }
 
-    logger.debug({ webhookId }, 'Webhook signature verified');
+    logger.debug('Webhook signature verified');
 
     // Parse webhook payload
     const payload = parseWebhookPayload(rawBody);
     if (!payload) {
-      logger.error({ webhookId, rawBody }, 'Failed to parse webhook payload');
+      logger.error({ rawBody }, 'Failed to parse webhook payload');
       return NextResponse.json(
         { error: 'Invalid payload' },
         { status: 400 }
@@ -116,14 +118,20 @@ export async function POST(request: NextRequest) {
     // Convert PaymentEventName to WebhookEventType
     const eventType = getEventType(payload);
 
+    // Use idempotencyKey when available, with a composite fallback to ensure uniqueness across event types
+    const eventId =
+      payload.idempotencyKey ??
+      (payload.pspReference && eventType
+        ? `${payload.pspReference}-${eventType}`
+        : payload.pspReference);
+
     logger.info(
       {
-        webhookId,
+        eventId,
         eventType,
         reference: payload.reference,
         pspReference: payload.pspReference,
         success: payload.success,
-        payload, // Log complete payload for debugging
       },
       'Webhook payload parsed'
     );
@@ -134,14 +142,14 @@ export async function POST(request: NextRequest) {
       collection: 'business-events',
       where: {
         externalId: {
-          equals: webhookId,
+          equals: eventId,
         },
       },
       limit: 1,
     });
 
     if (existingEvent.docs.length > 0) {
-      logger.info({ webhookId }, 'Event already processed (duplicate)');
+      logger.info({ eventId }, 'Event already processed (duplicate)');
       return NextResponse.json({ received: true, duplicate: true });
     }
 
@@ -152,13 +160,13 @@ export async function POST(request: NextRequest) {
         eventType,
         source: 'vipps',
         externalReference: payload.reference,
-        externalId: webhookId,
+        externalId: eventId,
         data: JSON.parse(JSON.stringify(payload)),
       },
     });
 
     logger.info(
-      { webhookId, businessEventId: businessEvent.id },
+      { eventId, businessEventId: businessEvent.id },
       'Business event stored'
     );
 
@@ -167,13 +175,13 @@ export async function POST(request: NextRequest) {
       await processPaymentEvent(businessEvent.id, payload);
 
       logger.info(
-        { webhookId, duration: Date.now() - startTime },
+        { eventId, duration: Date.now() - startTime },
         'Webhook processed successfully'
       );
     } catch (error) {
       // Log error but still return 200 to acknowledge receipt
       logger.error(
-        { error, webhookId, businessEventId: businessEvent.id },
+        { error, eventId, businessEventId: businessEvent.id },
         'Error processing payment event'
       );
 
