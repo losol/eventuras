@@ -1,0 +1,28 @@
+{
+  "id": "no.losol.nuntius",
+  "version": "1.0.0",
+  "compatibility": ">=12.4.0",
+  "sdk": 3,
+  "platforms": [
+    "local"
+  ],
+  "name": {
+    "en": "nuntius"
+  },
+  "description": {
+    "en": "Adds support for domus notification conductor"
+  },
+  "category": [
+    "tools"
+  ],
+  "permissions": [],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "author": {
+    "name": "Ole Kristian Losvik",
+    "email": "losvik@gmail.com"
+  }
+}

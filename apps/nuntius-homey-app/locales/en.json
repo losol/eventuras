@@ -1,0 +1,20 @@
+{
+  "settings": {
+    "title": "Nuntius Settings",
+    "subtitle": "Configure your Nuntius API connection",
+    "api": {
+      "legend": "API Configuration",
+      "token": "API Token",
+      "tokenHint": "Enter your Nuntius API token for authentication",
+      "url": "API URL",
+      "urlHint": "The URL to your Nuntius conductor instance"
+    },
+    "save": "Save changes",
+    "saving": "Saving...",
+    "saved": "✓ Settings saved successfully!",
+    "validation": {
+      "tokenRequired": "⚠ API Token is required",
+      "urlRequired": "⚠ API URL is required"
+    }
+  }
+}

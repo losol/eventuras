@@ -1,0 +1,107 @@
+{
+  "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
+  "id": "no.losol.nuntius",
+  "version": "1.0.0",
+  "compatibility": ">=12.4.0",
+  "sdk": 3,
+  "platforms": [
+    "local"
+  ],
+  "name": {
+    "en": "nuntius"
+  },
+  "description": {
+    "en": "Adds support for domus notification conductor"
+  },
+  "category": [
+    "tools"
+  ],
+  "permissions": [],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "author": {
+    "name": "Ole Kristian Losvik",
+    "email": "losvik@gmail.com"
+  },
+  "flow": {
+    "actions": [
+      {
+        "id": "send_notification",
+        "title": {
+          "en": "Send a notification"
+        },
+        "titleFormatted": {
+          "en": "Send [[message]] to [[channel]] with [[priority]] priority"
+        },
+        "hint": {
+          "en": "Send a notification message to the selected channel via Nuntius"
+        },
+        "args": [
+          {
+            "type": "text",
+            "name": "message",
+            "title": {
+              "en": "Message"
+            },
+            "placeholder": {
+              "en": "Motion detected in living room"
+            }
+          },
+          {
+            "type": "dropdown",
+            "name": "channel",
+            "title": {
+              "en": "Channel"
+            },
+            "value": "discord-webhook",
+            "values": [
+              {
+                "id": "discord-webhook",
+                "title": {
+                  "en": "Discord Webhook"
+                }
+              },
+              {
+                "id": "discord-bot",
+                "title": {
+                  "en": "Discord Bot"
+                }
+              },
+              {
+                "id": "log",
+                "title": {
+                  "en": "Log (Console)"
+                }
+              }
+            ]
+          },
+          {
+            "type": "dropdown",
+            "name": "priority",
+            "title": {
+              "en": "Priority"
+            },
+            "value": "normal",
+            "values": [
+              {
+                "id": "normal",
+                "title": {
+                  "en": "Normal"
+                }
+              },
+              {
+                "id": "high",
+                "title": {
+                  "en": "High"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

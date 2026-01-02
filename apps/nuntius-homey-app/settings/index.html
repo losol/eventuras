@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuntius Settings</title>
+    <script
+      type="text/javascript"
+      src="/homey.js"
+      data-origin="settings"
+    ></script>
+  </head>
+  <body>
+    <header class="homey-header">
+      <h1 class="homey-title" data-i18n="settings.title">
+        Nuntius Settings
+      </h1>
+      <p class="homey-subtitle" data-i18n="settings.subtitle">
+        Configure your Nuntius API connection
+      </p>
+    </header>
+
+    <fieldset class="homey-form-fieldset">
+      <legend class="homey-form-legend" data-i18n="settings.api.legend">API Configuration</legend>
+
+      <div class="homey-form-group">
+        <label class="homey-form-label" for="apiToken" data-i18n="settings.api.token">API Token</label>
+        <input class="homey-form-input" id="apiToken" type="password" value="" />
+        <p class="homey-form-description" data-i18n="settings.api.tokenHint">
+          Enter your Nuntius API token for authentication
+        </p>
+      </div>
+
+      <div class="homey-form-group">
+        <label class="homey-form-label" for="apiUrl" data-i18n="settings.api.url">API URL</label>
+        <input class="homey-form-input" id="apiUrl" type="url" value="" placeholder="https://your-domain.com" />
+        <p class="homey-form-description" data-i18n="settings.api.urlHint">
+          The URL to your Nuntius conductor instance
+        </p>
+      </div>
+    </fieldset>
+
+    <div id="feedback" class="homey-form-group" style="display: none; padding: 1rem; border-radius: 4px; margin-bottom: 1rem;"></div>
+
+    <button id="save" class="homey-button-primary-full" data-i18n="settings.save">Save changes</button>
+
+    <script type="text/javascript">
+      function onHomeyReady(Homey) {
+        var apiTokenElement = document.getElementById("apiToken");
+        var apiUrlElement = document.getElementById("apiUrl");
+        var saveElement = document.getElementById("save");
+        var feedbackElement = document.getElementById("feedback");
+
+        function showFeedback(message, type) {
+          feedbackElement.textContent = message;
+          feedbackElement.style.display = "block";
+          
+          if (type === "success") {
+            feedbackElement.style.backgroundColor = "#4CAF50";
+            feedbackElement.style.color = "white";
+          } else if (type === "error") {
+            feedbackElement.style.backgroundColor = "#f44336";
+            feedbackElement.style.color = "white";
+          }
+          
+          setTimeout(function() {
+            feedbackElement.style.display = "none";
+          }, 3000);
+        }
+
+        // Load existing settings
+        Homey.get("apiToken", function (err, apiToken) {
+          if (err) return Homey.alert(err);
+          if (apiToken) apiTokenElement.value = apiToken;
+        });
+
+        Homey.get("apiUrl", function (err, apiUrl) {
+          if (err) return Homey.alert(err);
+          if (apiUrl) apiUrlElement.value = apiUrl;
+        });
+
+        // Save button handler
+        saveElement.addEventListener("click", function (e) {
+          var token = apiTokenElement.value.trim();
+          var url = apiUrlElement.value.trim();
+
+          if (!token) {
+            return showFeedback(Homey.__("settings.validation.tokenRequired"), "error");
+          }
+
+          if (!url) {
+            return showFeedback(Homey.__("settings.validation.urlRequired"), "error");
+          }
+
+          // Disable button during save
+          saveElement.disabled = true;
+          saveElement.textContent = Homey.__("settings.saving");
+
+          // Save settings
+          Homey.set("apiToken", token, function (err) {
+            if (err) {
+              saveElement.disabled = false;
+              saveElement.textContent = Homey.__("settings.save");
+              return showFeedback(err.message || err, "error");
+            }
+            
+            Homey.set("apiUrl", url, function (err) {
+              saveElement.disabled = false;
+              saveElement.textContent = Homey.__("settings.save");
+              
+              if (err) {
+                return showFeedback(err.message || err, "error");
+              }
+              
+              showFeedback(Homey.__("settings.saved"), "success");
+            });
+          });
+        });
+
+        // Tell Homey we're ready to be displayed
+        Homey.ready();
+      }
+    </script>
+  </body>
+</html>
