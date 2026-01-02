@@ -1,9 +1,8 @@
 {
   "extends": "@eventuras/typescript-config/node.json",
   "compilerOptions": {
-    "outDir": "../conductor-notifier/dist",
-    "baseUrl": "../conductor-notifier"
+    "outDir": "./dist",
   },
-  "include": ["../conductor-notifier/src"],
-  "exclude": ["../conductor-notifier/node_modules", "../conductor-notifier/dist"]
+  "include": ["./src"],
+  "exclude": ["./node_modules", "./dist"]
 }

@@ -17,6 +17,8 @@
   "idem-idp": "@eventuras/idem-idp",
   "logger": "@eventuras/logger",
   "markdown": "@eventuras/markdown",
+  "nuntius": "no.losol.nuntius",
+  "nuntius-homey": "no.losol.nuntius",
   "ratio": "@eventuras/ratio-ui",
   "ratio-ui": "@eventuras/ratio-ui",
   "scribo": "@eventuras/scribo",
