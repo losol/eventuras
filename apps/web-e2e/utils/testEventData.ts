@@ -17,28 +17,89 @@ export type TestEventData = EventFormDto;
  */
 const generateEventTitle = (): string => {
   const adjectives = [
-    'Amazing', 'Spectacular', 'Epic', 'Fantastic', 'Incredible', 'Awesome',
-    'Outstanding', 'Exceptional', 'Remarkable', 'Extraordinary', 'Brilliant',
-    'Magnificent', 'Phenomenal', 'Marvelous', 'Wonderful', 'Supreme'
+    'Amazing',
+    'Spectacular',
+    'Epic',
+    'Fantastic',
+    'Incredible',
+    'Awesome',
+    'Outstanding',
+    'Exceptional',
+    'Remarkable',
+    'Extraordinary',
+    'Brilliant',
+    'Magnificent',
+    'Phenomenal',
+    'Marvelous',
+    'Wonderful',
+    'Supreme',
   ];
 
   const descriptors = [
-    'International', 'Nordic', 'European', 'Global', 'Annual', 'Spring',
-    'Summer', 'Autumn', 'Winter', 'Digital', 'Virtual', 'Live', 'Hybrid',
-    'Professional', 'Advanced', 'Expert', 'Master', 'Elite', 'Premium'
+    'International',
+    'Nordic',
+    'European',
+    'Global',
+    'Annual',
+    'Spring',
+    'Summer',
+    'Autumn',
+    'Winter',
+    'Digital',
+    'Virtual',
+    'Live',
+    'Hybrid',
+    'Professional',
+    'Advanced',
+    'Expert',
+    'Master',
+    'Elite',
+    'Premium',
   ];
 
   const eventTypes = [
-    'Conference', 'Summit', 'Workshop', 'Seminar', 'Symposium', 'Convention',
-    'Forum', 'Meetup', 'Bootcamp', 'Training', 'Course', 'Hackathon',
-    'Retreat', 'Gathering', 'Festival', 'Expo', 'Showcase', 'Dinner',
-    'Gala', 'Celebration', 'Ceremony'
+    'Conference',
+    'Summit',
+    'Workshop',
+    'Seminar',
+    'Symposium',
+    'Convention',
+    'Forum',
+    'Meetup',
+    'Bootcamp',
+    'Training',
+    'Course',
+    'Hackathon',
+    'Retreat',
+    'Gathering',
+    'Festival',
+    'Expo',
+    'Showcase',
+    'Dinner',
+    'Gala',
+    'Celebration',
+    'Ceremony',
   ];
 
   const themes = [
-    'Tech', 'Innovation', 'Leadership', 'Business', 'Coding', 'Design',
-    'Marketing', 'Sales', 'AI', 'Cloud', 'DevOps', 'Agile', 'Startup',
-    'Entrepreneurship', 'Strategy', 'Development', 'Architecture', 'Data'
+    'Tech',
+    'Innovation',
+    'Leadership',
+    'Business',
+    'Coding',
+    'Design',
+    'Marketing',
+    'Sales',
+    'AI',
+    'Cloud',
+    'DevOps',
+    'Agile',
+    'Startup',
+    'Entrepreneurship',
+    'Strategy',
+    'Development',
+    'Architecture',
+    'Data',
   ];
 
   // Pick random items
@@ -63,17 +124,49 @@ const generateEventTitle = (): string => {
  */
 const generateLocation = (): { city: string; venue: string } => {
   const cities = [
-    'Oslo', 'Bergen', 'Trondheim', 'Stavanger', 'Tromsø', 'Kristiansand',
-    'Stockholm', 'Copenhagen', 'Helsinki', 'Reykjavik', 'Amsterdam',
-    'Berlin', 'Munich', 'Vienna', 'Zurich', 'London', 'Dublin', 'Paris',
-    'Barcelona', 'Lisbon', 'Prague', 'Warsaw', 'Tallinn', 'Riga'
+    'Oslo',
+    'Bergen',
+    'Trondheim',
+    'Stavanger',
+    'Tromsø',
+    'Kristiansand',
+    'Stockholm',
+    'Copenhagen',
+    'Helsinki',
+    'Reykjavik',
+    'Amsterdam',
+    'Berlin',
+    'Munich',
+    'Vienna',
+    'Zurich',
+    'London',
+    'Dublin',
+    'Paris',
+    'Barcelona',
+    'Lisbon',
+    'Prague',
+    'Warsaw',
+    'Tallinn',
+    'Riga',
   ];
 
   const venues = [
-    'Convention Center', 'Conference Hall', 'Business Hub', 'Innovation Campus',
-    'Tech Park', 'Grand Hotel', 'University Auditorium', 'Cultural Center',
-    'Exhibition Center', 'Digital Arena', 'Science Museum', 'City Hall',
-    'Waterfront Center', 'Sky Tower', 'Harbor House', 'Central Plaza'
+    'Convention Center',
+    'Conference Hall',
+    'Business Hub',
+    'Innovation Campus',
+    'Tech Park',
+    'Grand Hotel',
+    'University Auditorium',
+    'Cultural Center',
+    'Exhibition Center',
+    'Digital Arena',
+    'Science Museum',
+    'City Hall',
+    'Waterfront Center',
+    'Sky Tower',
+    'Harbor House',
+    'Central Plaza',
   ];
 
   const city = cities[Math.floor(Math.random() * cities.length)]!;

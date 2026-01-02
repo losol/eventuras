@@ -107,18 +107,38 @@ export const createTestEvent = async (
   // that should be properly rendered on the public pages by MarkdownContent component.
 
   // Use id selectors to find the editor wrapper, then get the textbox inside
-  await page.locator('#eventeditor-description-editable').getByRole('textbox').fill(eventData.description ?? '');
-  await page.locator('#eventeditor-program-editable').getByRole('textbox').fill(eventData.program ?? '');
-  await page.locator('#eventeditor-practical-information-editable').getByRole('textbox').fill(eventData.practicalInformation ?? '');
-  await page.locator('#eventeditor-more-information-editable').getByRole('textbox').fill(eventData.moreInformation ?? '');
-  await page.locator('#eventeditor-welcome-letter-editable').getByRole('textbox').fill(eventData.welcomeLetter ?? '');
-  await page.locator('#eventeditor-information-request-editable').getByRole('textbox').fill(eventData.informationRequest ?? '');
+  await page
+    .locator('#eventeditor-description-editable')
+    .getByRole('textbox')
+    .fill(eventData.description ?? '');
+  await page
+    .locator('#eventeditor-program-editable')
+    .getByRole('textbox')
+    .fill(eventData.program ?? '');
+  await page
+    .locator('#eventeditor-practical-information-editable')
+    .getByRole('textbox')
+    .fill(eventData.practicalInformation ?? '');
+  await page
+    .locator('#eventeditor-more-information-editable')
+    .getByRole('textbox')
+    .fill(eventData.moreInformation ?? '');
+  await page
+    .locator('#eventeditor-welcome-letter-editable')
+    .getByRole('textbox')
+    .fill(eventData.welcomeLetter ?? '');
+  await page
+    .locator('#eventeditor-information-request-editable')
+    .getByRole('textbox')
+    .fill(eventData.informationRequest ?? '');
 
   // Fill certificate details
   debug('Filling certificate tab...');
   await page.locator('[data-testid="tab-certificate"]').click();
   await page.locator('[name="certificateTitle"]').fill(eventData.certificateTitle ?? '');
-  await page.locator('[name="certificateDescription"]').fill(eventData.certificateDescription ?? '');
+  await page
+    .locator('[name="certificateDescription"]')
+    .fill(eventData.certificateDescription ?? '');
 
   // Navigate to advanced tab to get event ID
   debug('Navigating to advanced tab to get event ID...');

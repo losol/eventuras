@@ -4,10 +4,7 @@
  * This module exports reusable test utilities organized by category.
  */
 
-export {
-  createTestEvent,
-  type EventCreationOptions,
-} from './eventCreation';
+export { createTestEvent, type EventCreationOptions } from './eventCreation';
 
 export {
   generateTestEventData,

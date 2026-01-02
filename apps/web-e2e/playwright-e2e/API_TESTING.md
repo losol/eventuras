@@ -5,6 +5,7 @@ This guide explains how to test the backend API directly from Playwright E2E tes
 ## Overview
 
 The `api-helpers.ts` module provides functions to:
+
 1. **Decrypt the session cookie** from Playwright's auth storage
 2. **Extract the access token** from the decrypted session
 3. **Make authenticated API requests** to the backend using the token
@@ -26,6 +27,7 @@ SESSION_SECRET=your-hex-encoded-secret-key
 ### 2. Auth Storage Files
 
 Playwright auth setup must have run successfully, creating:
+
 - `playwright-auth/admin.json` - Admin user session
 - `playwright-auth/user.json` - Regular user session
 
@@ -59,11 +61,11 @@ test('Create event in UI and verify via API', async ({ page }) => {
   await page.goto('/admin/events/new');
   await page.fill('[name="title"]', 'My Test Event');
   await page.click('button[type="submit"]');
-  
+
   // 2. Verify the event was created by querying the backend API
   const events = await adminApi.get<EventDto[]>('/v3/events');
   const createdEvent = events.find(e => e.title === 'My Test Event');
-  
+
   expect(createdEvent).toBeDefined();
   expect(createdEvent?.slug).toBeTruthy();
 });
@@ -82,14 +84,14 @@ test('Admin can manage event products', async () => {
     dateStart: new Date().toISOString(),
     dateEnd: new Date(Date.now() + 86400000).toISOString(),
   });
-  
+
   // Add a product to the event
   const product = await adminApi.post(`/v3/events/${event.id}/products`, {
     name: 'Test Product',
     price: 100,
     description: 'A test product',
   });
-  
+
   expect(product.name).toBe('Test Product');
   expect(product.price).toBe(100);
 });
@@ -117,7 +119,7 @@ hexToUint8Array(SESSION_SECRET)
   → Uint8Array (encryption key)
 
 // Decrypt JWE session token (using jose library)
-decryptSessionToken(jweToken) 
+decryptSessionToken(jweToken)
   → { tokens: { accessToken, refreshToken }, user: { ... } }
 
 // Extract token from auth storage
@@ -147,6 +149,7 @@ pnpm test:playwright
 ### "Failed to decrypt session token"
 
 The `SESSION_SECRET` might be incorrect or the session format changed. Verify that:
+
 1. The same secret is used in both Next.js app and tests
 2. The session cookie name is still "session"
 3. The session encryption format hasn't changed
@@ -162,6 +165,7 @@ pnpm test:playwright --project="admin.auth.setup"
 ## Example Test File
 
 See `200-api-test-example.spec.ts` for complete examples of:
+
 - Simple API calls
 - Combined UI + API tests
 - Error handling

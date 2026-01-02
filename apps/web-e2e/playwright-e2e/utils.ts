@@ -21,7 +21,7 @@ let gmailClient: gmail_v1.Gmail | null = null;
 
 /**
  * Read refresh token from file or environment variable.
- * Priority: 
+ * Priority:
  * 1. EVENTURAS_TEST_GOOGLE_REFRESH_TOKEN env var
  * 2. test-results/.google-refresh-token file
  */
@@ -81,12 +81,12 @@ export const initializeGmailClient = async (): Promise<gmail_v1.Gmail> => {
   if (refreshToken) {
     debug('Using stored refresh token (first 20 chars): %s...', refreshToken.substring(0, 20));
     oauth2Client.setCredentials({ refresh_token: refreshToken });
-    
+
     // Log the scopes associated with this token
     try {
       const tokenInfo = await oauth2Client.getAccessToken();
       debug('Access token obtained: %s', tokenInfo.token ? 'yes' : 'no');
-      
+
       // Get token info to see scopes
       const credentials = oauth2Client.credentials;
       debug('OAuth credentials - scope: %s', credentials.scope || 'not specified');
@@ -138,7 +138,7 @@ export const fetchLoginCode = async (
   const searchQuery = `to:${userEmail} is:unread (subject:"verification code" OR "verification code") newer_than:5m`;
   debug('Gmail search query: %s', searchQuery);
   debug('Waiting for message with maxAttempts=%d, intervalMs=%d', maxRetries, intervalMs);
-  
+
   const message = await waitForMessage(gmail, {
     query: searchQuery,
     maxAttempts: maxRetries,
@@ -147,15 +147,17 @@ export const fetchLoginCode = async (
 
   if (!message?.id) {
     debug('No message found after %d attempts', maxRetries);
-    throw new Error(`No verification emails received for ${userEmail} after ${maxRetries} attempts`);
+    throw new Error(
+      `No verification emails received for ${userEmail} after ${maxRetries} attempts`
+    );
   }
 
   debug('✅ Found message with ID: %s', message.id);
-  
+
   // Log message metadata
   if (message.threadId) debug('   Thread ID: %s', message.threadId);
   if (message.labelIds) debug('   Labels: %s', message.labelIds.join(', '));
-  
+
   debug('Fetching full message details...');
   const fullMessage = await getMessage(gmail, { id: message.id });
 
@@ -168,7 +170,7 @@ export const fetchLoginCode = async (
   const fromHeader = headers.find(h => h.name?.toLowerCase() === 'from');
   const subjectHeader = headers.find(h => h.name?.toLowerCase() === 'subject');
   const dateHeader = headers.find(h => h.name?.toLowerCase() === 'date');
-  
+
   debug('Email details:');
   debug('   From: %s', fromHeader?.value || 'unknown');
   debug('   Subject: %s', subjectHeader?.value || 'unknown');
@@ -233,7 +235,7 @@ export const fetchLoginCode = async (
 /**
  * Cleans up all OTP/verification code emails for a specific user.
  * Useful to run before test suites to ensure a clean state.
- * 
+ *
  * @param userEmail - The email address to clean up verification emails for
  * @returns Number of emails trashed
  */
@@ -245,7 +247,7 @@ export const cleanupOtpEmails = async (userEmail: string): Promise<number> => {
   // Search for all verification code emails (not just unread, not just recent)
   const searchQuery = `to:${userEmail} (subject:"verification code" OR "verification code")`;
   debug('Search query: %s', searchQuery);
-  
+
   const result = await searchMessages(gmail, {
     query: searchQuery,
     maxResults: 100, // Clean up to 100 emails
@@ -262,7 +264,7 @@ export const cleanupOtpEmails = async (userEmail: string): Promise<number> => {
   // Trash all found messages
   let trashedCount = 0;
   let failedCount = 0;
-  
+
   for (const message of result.messages) {
     if (message.id) {
       try {
@@ -276,6 +278,11 @@ export const cleanupOtpEmails = async (userEmail: string): Promise<number> => {
     }
   }
 
-  debug('✅ Successfully trashed %d/%d OTP emails (%d failed)', trashedCount, messageCount, failedCount);
+  debug(
+    '✅ Successfully trashed %d/%d OTP emails (%d failed)',
+    trashedCount,
+    messageCount,
+    failedCount
+  );
   return trashedCount;
 };
