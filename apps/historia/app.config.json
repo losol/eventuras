@@ -92,7 +92,7 @@
       "description": "Enable Sentry error tracking",
       "default": "false"
     },
-    "HISTORIA_SENTRY_DSN": {
+    "NEXT_PUBLIC_CMS_SENTRY_DSN": {
       "required": false,
       "client": false,
       "type": "string",
