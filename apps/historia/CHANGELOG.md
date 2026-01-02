@@ -1,5 +1,11 @@
 # @eventuras/historia
 
+## 0.17.2
+
+### Patch Changes
+
+- feat(historia): adds phone number to packing view
+
 ## 0.17.1
 
 ### Patch Changes
