@@ -8,6 +8,7 @@ build/**
 dist/**
 dist
 .next/**
+.turbo-prune-merge/**
 
 ### ASPNETCore ###
 ## Ignore Visual Studio temporary files, build results, and

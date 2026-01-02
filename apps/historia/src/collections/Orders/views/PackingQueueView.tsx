@@ -8,6 +8,8 @@ import { getPackingQueue, markOrderPacked } from '@/app/actions/packing';
 import { formatPhoneForDisplay } from '@/lib/utils/formatPhone';
 import type { Order } from '@/payload-types';
 
+import styles from './PackingQueueView.module.css';
+
 export function PackingQueueView() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
@@ -31,7 +33,31 @@ export function PackingQueueView() {
   };
 
   useEffect(() => {
-    loadOrders();
+    let cancelled = false;
+
+    const initialLoad = async () => {
+      // Avoid synchronous setState in the effect body.
+      const result = await getPackingQueue();
+
+      if (cancelled) {
+        return;
+      }
+
+      if (!result.success) {
+        setError(result.error.message);
+        setLoading(false);
+        return;
+      }
+
+      setOrders(result.data);
+      setLoading(false);
+    };
+
+    void initialLoad();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const handleMarkPacked = async (orderId: string) => {
@@ -79,17 +105,17 @@ export function PackingQueueView() {
 
   return (
     <div>
-      <div style={{ marginBottom: 'calc(var(--base) * 1.5)' }}>
+      <div className={styles.backLinkRow}>
         <Button el="link" Link={Link} to="/admin/collections/orders" buttonStyle="icon-label">
           ← Back to Orders
         </Button>
       </div>
 
-      <h1 style={{ marginBottom: 'calc(var(--base) * 1.5)' }}>
+      <h1 className={styles.heading}>
         Packing Queue <Pill>{orders.length}</Pill>
       </h1>
 
-      <div style={{ marginBottom: 'calc(var(--base) * 2)', display: 'flex', gap: 'var(--base)' }}>
+      <div className={styles.actionsRow}>
         <Button onClick={loadOrders} buttonStyle="secondary">
           Refresh
         </Button>
@@ -102,18 +128,11 @@ export function PackingQueueView() {
         <p>✅ No orders to pack!</p>
       ) : (
         orders.map((order) => (
-          <div
-            key={order.id}
-            style={{
-              borderTop: '1px solid var(--theme-elevation-150)',
-              paddingTop: 'calc(var(--base) * 2)',
-              marginTop: 'calc(var(--base) * 2)',
-            }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 'var(--base)' }}>
+          <div key={order.id} className={styles.orderCard}>
+            <div className={styles.orderHeaderRow}>
               <div>
-                <h2 style={{ margin: 0 }}>Order #{order.id.slice(0, 8)}</h2>
-                <div style={{ marginTop: 'calc(var(--base) * 0.5)' }}>
+                <h2 className={styles.orderTitle}>Order #{order.id.slice(0, 8)}</h2>
+                <div className={styles.orderMeta}>
                   <Pill>{order.status}</Pill>
                   {' '}
                   {new Date(order.createdAt).toLocaleDateString('nb-NO')}
@@ -130,17 +149,17 @@ export function PackingQueueView() {
               </Button>
             </div>
 
-            <div style={{ marginTop: 'calc(var(--base) * 1.5)' }}>
-              <p style={{ margin: 0 }}><strong>Customer:</strong> {order.userEmail}</p>
+            <div className={styles.customerInfo}>
+              <p className={styles.customerLine}><strong>Customer:</strong> {order.userEmail}</p>
               {typeof order.customer === 'object' && order.customer && 'phone_number' in order.customer && order.customer.phone_number && (
-                <p style={{ margin: 'calc(var(--base) * 0.25) 0 0 0' }}><strong>Phone:</strong> {formatPhoneForDisplay(order.customer.phone_number)}</p>
+                <p className={styles.customerPhoneLine}><strong>Phone:</strong> {formatPhoneForDisplay(order.customer.phone_number)}</p>
               )}
             </div>
 
             {order.shippingAddress && (
-              <div style={{ marginTop: 'calc(var(--base) * 1.5)' }}>
-                <p style={{ margin: 0, marginBottom: 'calc(var(--base) * 0.5)' }}><strong>Shipping Address:</strong></p>
-                <address style={{ fontStyle: 'normal' }}>
+              <div className={styles.shippingInfo}>
+                <p className={styles.shippingTitle}><strong>Shipping Address:</strong></p>
+                <address className={styles.shippingAddress}>
                   {typeof order.customer === 'object' && order.customer && 'given_name' in order.customer && (
                     <>{[order.customer.given_name, order.customer.middle_name, order.customer.family_name].filter(Boolean).join(' ')}<br /></>
                   )}
@@ -152,23 +171,23 @@ export function PackingQueueView() {
               </div>
             )}
 
-            <h3 style={{ marginTop: 'calc(var(--base) * 2)', marginBottom: 'var(--base)' }}>Items</h3>
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <h3 className={styles.itemsHeading}>Items</h3>
+            <table className={styles.itemsTable}>
               <thead>
                 <tr>
-                  <th style={{ textAlign: 'left', padding: 'calc(var(--base) * 0.5)', borderBottom: '1px solid var(--theme-elevation-150)' }}>Product</th>
-                  <th style={{ textAlign: 'right', padding: 'calc(var(--base) * 0.5)', borderBottom: '1px solid var(--theme-elevation-150)' }}>Qty</th>
-                  <th style={{ textAlign: 'right', padding: 'calc(var(--base) * 0.5)', borderBottom: '1px solid var(--theme-elevation-150)' }}>Total</th>
+                  <th className={`${styles.itemsHeaderCell} ${styles.itemsHeaderCellLeft}`}>Product</th>
+                  <th className={`${styles.itemsHeaderCell} ${styles.itemsHeaderCellRight}`}>Qty</th>
+                  <th className={`${styles.itemsHeaderCell} ${styles.itemsHeaderCellRight}`}>Total</th>
                 </tr>
               </thead>
               <tbody>
                 {(order.items ?? []).map((item) => (
                   <tr key={item.itemId}>
-                    <td style={{ padding: 'calc(var(--base) * 0.5)' }}>
+                    <td className={styles.itemsCell}>
                       {typeof item.product === 'object' && item.product ? item.product.title : item.product}
                     </td>
-                    <td style={{ textAlign: 'right', padding: 'calc(var(--base) * 0.5)' }}>{item.quantity}</td>
-                    <td style={{ textAlign: 'right', padding: 'calc(var(--base) * 0.5)' }}>
+                    <td className={`${styles.itemsCell} ${styles.itemsCellRight}`}>{item.quantity}</td>
+                    <td className={`${styles.itemsCell} ${styles.itemsCellRight}`}>
                       {order.currency} {(item.lineTotal ? item.lineTotal / 100 : (item.price.amountExVat * item.quantity) / 100).toFixed(2)}
                     </td>
                   </tr>
@@ -176,8 +195,8 @@ export function PackingQueueView() {
               </tbody>
               <tfoot>
                 <tr>
-                  <td colSpan={2} style={{ textAlign: 'right', padding: 'calc(var(--base) * 0.5)', borderTop: '1px solid var(--theme-elevation-150)' }}><strong>Total:</strong></td>
-                  <td style={{ textAlign: 'right', padding: 'calc(var(--base) * 0.5)', borderTop: '1px solid var(--theme-elevation-150)' }}>
+                  <td colSpan={2} className={styles.itemsFooterLabel}><strong>Total:</strong></td>
+                  <td className={styles.itemsFooterValue}>
                     <strong>{order.currency} {((order.totalAmount ?? 0) / 100).toFixed(2)}</strong>
                   </td>
                 </tr>

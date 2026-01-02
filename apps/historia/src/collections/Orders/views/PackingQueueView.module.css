@@ -1,0 +1,103 @@
+.backLinkRow {
+  margin-bottom: calc(var(--base) * 1.5);
+}
+
+.heading {
+  margin-bottom: calc(var(--base) * 1.5);
+}
+
+.actionsRow {
+  margin-bottom: calc(var(--base) * 2);
+  display: flex;
+  gap: var(--base);
+}
+
+.orderCard {
+  border-top: 1px solid var(--theme-elevation-150);
+  padding-top: calc(var(--base) * 2);
+  margin-top: calc(var(--base) * 2);
+}
+
+.orderHeaderRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: var(--base);
+}
+
+.orderTitle {
+  margin: 0;
+}
+
+.orderMeta {
+  margin-top: calc(var(--base) * 0.5);
+}
+
+.customerInfo {
+  margin-top: calc(var(--base) * 1.5);
+}
+
+.customerLine {
+  margin: 0;
+}
+
+.customerPhoneLine {
+  margin: calc(var(--base) * 0.25) 0 0 0;
+}
+
+.shippingInfo {
+  margin-top: calc(var(--base) * 1.5);
+}
+
+.shippingTitle {
+  margin: 0;
+  margin-bottom: calc(var(--base) * 0.5);
+}
+
+.shippingAddress {
+  font-style: normal;
+}
+
+.itemsHeading {
+  margin-top: calc(var(--base) * 2);
+  margin-bottom: var(--base);
+}
+
+.itemsTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.itemsHeaderCell {
+  padding: calc(var(--base) * 0.5);
+  border-bottom: 1px solid var(--theme-elevation-150);
+}
+
+.itemsHeaderCellLeft {
+  text-align: left;
+}
+
+.itemsHeaderCellRight {
+  text-align: right;
+}
+
+.itemsCell {
+  padding: calc(var(--base) * 0.5);
+}
+
+.itemsCellRight {
+  text-align: right;
+}
+
+.itemsFooterLabel {
+  text-align: right;
+  padding: calc(var(--base) * 0.5);
+  border-top: 1px solid var(--theme-elevation-150);
+}
+
+.itemsFooterValue {
+  text-align: right;
+  padding: calc(var(--base) * 0.5);
+  border-top: 1px solid var(--theme-elevation-150);
+}
