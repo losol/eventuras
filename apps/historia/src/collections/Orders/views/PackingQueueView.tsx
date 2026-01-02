@@ -138,6 +138,9 @@ export function PackingQueueView() {
               <div style={{ marginTop: 'calc(var(--base) * 1.5)' }}>
                 <p style={{ margin: 0, marginBottom: 'calc(var(--base) * 0.5)' }}><strong>Shipping Address:</strong></p>
                 <address style={{ fontStyle: 'normal' }}>
+                  {typeof order.customer === 'object' && order.customer && (
+                    <>{[order.customer.given_name, order.customer.middle_name, order.customer.family_name].filter(Boolean).join(' ')}<br /></>
+                  )}
                   {order.shippingAddress.addressLine1}<br />
                   {order.shippingAddress.addressLine2 && <>{order.shippingAddress.addressLine2}<br /></>}
                   {order.shippingAddress.postalCode} {order.shippingAddress.city}<br />
