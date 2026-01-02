@@ -5,7 +5,6 @@ import { Button, Pill, toast } from '@payloadcms/ui';
 import Link from 'next/link';
 
 import { getPackingQueue, markOrderPacked } from '@/app/actions/packing';
-import { getLineTotal, getProductName, toMajorUnits } from '@/lib/packing/orderHelpers';
 import type { Order } from '@/payload-types';
 
 export function PackingQueueView() {
@@ -138,7 +137,7 @@ export function PackingQueueView() {
               <div style={{ marginTop: 'calc(var(--base) * 1.5)' }}>
                 <p style={{ margin: 0, marginBottom: 'calc(var(--base) * 0.5)' }}><strong>Shipping Address:</strong></p>
                 <address style={{ fontStyle: 'normal' }}>
-                  {typeof order.customer === 'object' && order.customer && (
+                  {typeof order.customer === 'object' && order.customer && 'given_name' in order.customer && (
                     <>{[order.customer.given_name, order.customer.middle_name, order.customer.family_name].filter(Boolean).join(' ')}<br /></>
                   )}
                   {order.shippingAddress.addressLine1}<br />
@@ -161,16 +160,22 @@ export function PackingQueueView() {
               <tbody>
                 {(order.items ?? []).map((item) => (
                   <tr key={item.itemId}>
-                    <td style={{ padding: 'calc(var(--base) * 0.5)' }}>{getProductName(item)}</td>
+                    <td style={{ padding: 'calc(var(--base) * 0.5)' }}>
+                      {typeof item.product === 'object' && item.product ? item.product.title : item.product}
+                    </td>
                     <td style={{ textAlign: 'right', padding: 'calc(var(--base) * 0.5)' }}>{item.quantity}</td>
-                    <td style={{ textAlign: 'right', padding: 'calc(var(--base) * 0.5)' }}>{order.currency} {getLineTotal(item).toFixed(2)}</td>
+                    <td style={{ textAlign: 'right', padding: 'calc(var(--base) * 0.5)' }}>
+                      {order.currency} {(item.lineTotal ? item.lineTotal / 100 : (item.price.amountExVat * item.quantity) / 100).toFixed(2)}
+                    </td>
                   </tr>
                 ))}
               </tbody>
               <tfoot>
                 <tr>
                   <td colSpan={2} style={{ textAlign: 'right', padding: 'calc(var(--base) * 0.5)', borderTop: '1px solid var(--theme-elevation-150)' }}><strong>Total:</strong></td>
-                  <td style={{ textAlign: 'right', padding: 'calc(var(--base) * 0.5)', borderTop: '1px solid var(--theme-elevation-150)' }}><strong>{order.currency} {toMajorUnits(order.totalAmount).toFixed(2)}</strong></td>
+                  <td style={{ textAlign: 'right', padding: 'calc(var(--base) * 0.5)', borderTop: '1px solid var(--theme-elevation-150)' }}>
+                    <strong>{order.currency} {((order.totalAmount ?? 0) / 100).toFixed(2)}</strong>
+                  </td>
                 </tr>
               </tfoot>
             </table>
