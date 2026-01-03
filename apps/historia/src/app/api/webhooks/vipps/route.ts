@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
 import { getPayload } from 'payload';
 
@@ -199,7 +200,7 @@ export async function POST(request: NextRequest) {
           payloadEventType: payload.name,
           payloadAmount: payload.amount,
           payloadPspReference: payload.pspReference,
-          webhookUrl: url.toString(),
+          webhookUrl: `https://${host}${url.pathname}${url.search}`,
           webhookHost: host,
         },
         'Error processing payment event - business event stored but processing failed'
@@ -227,7 +228,9 @@ export async function POST(request: NextRequest) {
         errorMessage: error instanceof Error ? error.message : String(error),
         stack: error instanceof Error ? error.stack : undefined,
         duration: Date.now() - startTime,
-        webhookUrl: request.url,
+        webhookUrl: request.headers.get('host')
+          ? `https://${request.headers.get('host')}${new URL(request.url).pathname}`
+          : request.url,
         webhookHost: request.headers.get('host'),
         webhookPath: new URL(request.url).pathname,
         headers: {
