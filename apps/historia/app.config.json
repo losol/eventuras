@@ -88,7 +88,7 @@
     "FEATURE_SENTRY": {
       "required": false,
       "client": false,
-      "type": "boolean",
+      "type": "bool",
       "description": "Enable Sentry error tracking",
       "default": "false"
     },
@@ -113,7 +113,7 @@
     "NEXT_PUBLIC_CMS_SENTRY_SEND_DEFAULT_PII": {
       "required": false,
       "client": true,
-      "type": "boolean",
+      "type": "bool",
       "description": "Enable sending user PII to Sentry",
       "default": "true"
     }
