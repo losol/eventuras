@@ -4,11 +4,7 @@
  * This logger is optimized for production use with structured logging, context fields,
  * correlation IDs, auto-redaction, and configurable log levels.
  *
- * Sentry Integration:
- * If Sentry is available and initialized in your app, error and fatal logs
- * are automatically sent to Sentry with full context. Apps without Sentry
- * continue to work normally without any configuration needed.
- *
+ * For external integrations (e.g., Sentry), use the @eventuras/logger-sentry package.
  * For development debugging, use the Debug utility instead.
  *
  * Standard log levels (Pino):
@@ -34,7 +30,6 @@
  * // Logs: { namespace: 'CollectionEditor', collectionId: 123, eventId: 456, msg: 'Event added' }
  */
 import pino, { type Logger as PinoLogger } from 'pino';
-import { SentryTransport } from './SentryTransport';
 
 export type LogLevel = 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'fatal';
 
@@ -106,10 +101,6 @@ export class Logger {
         paths: Logger.config.redact || [],
         censor: '[REDACTED]',
       },
-      hooks: {
-        // Add Sentry hook to send errors to Sentry automatically
-        logMethod: SentryTransport.createHook(),
-      },
     };
 
     // File destination if specified
@@ -133,6 +124,18 @@ export class Logger {
   static configure(config: Partial<LoggerConfig>): void {
     Logger.config = { ...Logger.config, ...config };
     Logger.pinoLogger = Logger.createPinoInstance();
+  }
+
+  /**
+   * Get the internal Pino instance for advanced use cases or external integrations.
+   * For example, @eventuras/logger-sentry uses this to connect Sentry transport.
+   *
+   * @example
+   * import { initializeSentryLogger } from '@eventuras/logger-sentry';
+   * initializeSentryLogger(); // Uses Logger.getPinoInstance() internally
+   */
+  static getPinoInstance(): PinoLogger {
+    return Logger.pinoLogger;
   }
 
   private static formatError(error: unknown): string {
