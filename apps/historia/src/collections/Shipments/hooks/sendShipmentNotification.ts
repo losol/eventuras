@@ -73,26 +73,31 @@ export const sendShipmentNotification: CollectionAfterChangeHook<Shipment> = asy
       }) || [];
 
     // Render the email template
-    const emailHtml = notitiaTemplates.render('email', 'order-shipped', {
-      name: customerName,
-      orderId: order.id,
-      trackingNumber: doc.trackingNumber || undefined,
-      trackingUrl: doc.trackingUrl || undefined,
-      estimatedDelivery: doc.deliveredAt
-        ? new Date(doc.deliveredAt).toLocaleDateString('nb-NO')
-        : undefined,
-      organizationName,
-      items: items.length > 0 ? items : undefined,
-      shippingAddress: order.shippingAddress
-        ? {
-            addressLine1: order.shippingAddress.addressLine1,
-            addressLine2: order.shippingAddress.addressLine2,
-            postalCode: order.shippingAddress.postalCode,
-            city: order.shippingAddress.city,
-            country: order.shippingAddress.country,
-          }
-        : undefined,
-    });
+    const emailHtml = notitiaTemplates.render(
+      'email',
+      'order-shipped',
+      {
+        name: customerName,
+        orderId: order.id,
+        trackingNumber: doc.trackingNumber || undefined,
+        trackingUrl: doc.trackingUrl || undefined,
+        estimatedDelivery: doc.deliveredAt
+          ? new Date(doc.deliveredAt).toLocaleDateString('nb-NO')
+          : undefined,
+        organizationName,
+        items: items.length > 0 ? items : undefined,
+        shippingAddress: order.shippingAddress
+          ? {
+              addressLine1: order.shippingAddress.addressLine1,
+              addressLine2: order.shippingAddress.addressLine2,
+              postalCode: order.shippingAddress.postalCode,
+              city: order.shippingAddress.city,
+              country: order.shippingAddress.country,
+            }
+          : undefined,
+      },
+      { locale: 'nb-NO' },
+    );
 
     // Send the email
     await payload.sendEmail({
