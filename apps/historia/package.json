@@ -22,6 +22,7 @@
     "@eventuras/fides-auth": "workspace:*",
     "@eventuras/fides-auth-next": "workspace:*",
     "@eventuras/logger": "workspace:*",
+    "@eventuras/logger-sentry": "workspace:*",
     "@eventuras/notitia-templates": "workspace:*",
     "@eventuras/ratio-ui": "workspace:*",
     "@eventuras/ratio-ui-next": "workspace:*",
