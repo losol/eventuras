@@ -738,7 +738,7 @@ export async function createOrderFromPayment({
     const transactionStatus = paymentDetails.state === 'AUTHORIZED' ? 'authorized' : 'captured';
 
     // Check if transaction already exists (from webhook)
-    const existingTransactions = await payload.find({
+    const existingWebhookTransactions = await payload.find({
       collection: 'transactions',
       where: {
         paymentReference: {
@@ -749,10 +749,10 @@ export async function createOrderFromPayment({
     });
 
     let transaction;
-    if (existingTransactions.docs.length > 0) {
+    if (existingWebhookTransactions.docs.length > 0) {
       // Transaction already exists from webhook - update it with order and customer
-      transaction = existingTransactions.docs[0];
-      
+      transaction = existingWebhookTransactions.docs[0];
+
       logger.info(
         {
           transactionId: transaction.id,
