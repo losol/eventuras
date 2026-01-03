@@ -107,7 +107,8 @@ WORKDIR /app/apps/historia
 # Build with Sentry auth token mounted as secret (not stored in image)
 RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store \
   --mount=type=cache,id=next-cache,target=/app/apps/historia/.next/cache \
-  --mount=type=secret,id=sentry_auth_token,env=CMS_SENTRY_AUTH_TOKEN \
+  --mount=type=secret,id=sentry_auth_token \
+  CMS_SENTRY_AUTH_TOKEN=$(cat /run/secrets/sentry_auth_token || echo "") \
   pnpm next build --webpack --experimental-build-mode compile
 
 ##########################
