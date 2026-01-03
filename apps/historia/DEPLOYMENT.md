@@ -170,7 +170,7 @@ az webapp config appsettings set \
     CMS_DATABASE_URL="postgresql://user:password@server.postgres.database.azure.com:5432/historia_prod" \
     CMS_SECRET="your-secret-key-prod" \
     FEATURE_SENTRY="true" \
-    CMS_SENTRY_DSN="https://your-key@o123456.ingest.sentry.io/123456" \
+    NEXT_PUBLIC_CMS_SENTRY_DSN="https://your-key@o123456.ingest.sentry.io/123456" \
     NODE_ENV="production" \
     PAYLOAD_PUBLIC_SERVER_URL="https://historia-prod.azurewebsites.net" \
     WEBSITES_PORT=3000

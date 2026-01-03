@@ -40,7 +40,7 @@ export class SentryTransport {
     // Check if Sentry is available and configured
     const isSentryEnabled =
       process.env.FEATURE_SENTRY === 'true' &&
-      (process.env.SENTRY_DSN || process.env. NEXT_PUBLIC_CMS_SENTRY_DSN || process.env.NEXT_PUBLIC_CMS_SENTRY_DSN);
+      (process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_CMS_SENTRY_DSN);
 
     if (!isSentryEnabled) {
       return null;
