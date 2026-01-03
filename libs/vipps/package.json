@@ -24,6 +24,7 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite build --watch",
+    "payment:get": "tsx --env-file=.env scripts/get-payment.ts",
     "test": "vitest run",
     "test:ui": "vitest --ui",
     "test:watch": "vitest",
