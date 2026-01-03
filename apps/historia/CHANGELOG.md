@@ -1,5 +1,13 @@
 # @eventuras/historia
 
+## 0.18.0
+
+### Minor Changes
+
+- 830907b: ### 🧱 Features
+  - feat(historia): integrate Sentry for error tracking (453bc9e) [@eventuras/historia]
+  - feat(historia): add sentry (2837fa4) [@eventuras/historia]
+
 ## 0.17.2
 
 ### Patch Changes
