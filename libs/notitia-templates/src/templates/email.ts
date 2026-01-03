@@ -1,5 +1,6 @@
 import type { TemplateRegistry } from '../types';
 import { buildOrderConfirmationTemplate } from './utils/orderConfirmationBuilder';
+import { buildOrderShippedTemplate } from './utils/orderShippedBuilder';
 
 /**
  * Default email templates
@@ -135,24 +136,23 @@ The {{organizationName}} Team`,
 
 
   'email:order-shipped': {
-    subject: 'Your Order Has Shipped - #{{orderId}}',
-    content: `Hello {{name}},
-
-Good news! Your order has been shipped.
-
-Order Details:
-- Order ID: {{orderId}}
-{{#if trackingNumber}}
-- Tracking Number: {{trackingNumber}}
-{{/if}}
-{{#if trackingUrl}}
-- Track your package: {{trackingUrl}}
-{{/if}}
-
-Estimated delivery: {{estimatedDelivery}}
-
-Best regards,
-The {{organizationName}} Team`,
+    subject: 'Din ordre er sendt - #{{orderId}}',
+    content: buildOrderShippedTemplate({
+      headerTitle: 'Ordren din er sendt! 🎉',
+      greeting: 'Hei {{name}}! 👋',
+      shippedMessage: 'Gode nyheter! Din ordre har blitt sendt og er nå på vei til deg. Du kan følge med på leveringen med informasjonen nedenfor.',
+      shipmentDetailsTitle: 'Sendingsdetaljer',
+      orderNumberLabel: 'Ordrenummer',
+      trackingNumberLabel: 'Sporingsnummer',
+      trackingUrlLabel: 'Spor pakken din',
+      estimatedDeliveryLabel: 'Estimert levering',
+      shippedProductsTitle: 'Sendte produkter',
+      productColumn: 'Produkt',
+      quantityColumn: 'Antall',
+      shippingAddressTitle: 'Leveringsadresse',
+      supportMessage: '💬 Spørsmål om din levering? Svar på denne e-posten så hjelper vi deg.',
+      footerClosing: 'Med vennlig hilsen',
+    }),
     description: 'Order shipped notification email',
   },
 

@@ -8,6 +8,13 @@
   - feat(historia): integrate Sentry for error tracking (453bc9e) [@eventuras/historia]
   - feat(historia): add sentry (2837fa4) [@eventuras/historia]
 
+- feat: adds shipping confirmation
+
+### Patch Changes
+
+- Updated dependencies
+  - @eventuras/notitia-templates@0.2.0
+
 ## 0.17.2
 
 ### Patch Changes

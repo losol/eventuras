@@ -1,4 +1,5 @@
 import type { TemplateRegistry } from '../../../types';
+import { buildOrderShippedTemplate } from '../../utils/orderShippedBuilder';
 
 /**
  * American English email templates
@@ -132,23 +133,22 @@ The {{organizationName}} Team`,
 
   'email:order-shipped': {
     subject: 'Your Order Has Shipped - #{{orderId}}',
-    content: `Hello {{name}},
-
-Good news! Your order has been shipped.
-
-Order Details:
-- Order ID: {{orderId}}
-{{#if trackingNumber}}
-- Tracking Number: {{trackingNumber}}
-{{/if}}
-{{#if trackingUrl}}
-- Track your package: {{trackingUrl}}
-{{/if}}
-
-Estimated delivery: {{estimatedDelivery}}
-
-Best regards,
-The {{organizationName}} Team`,
+    content: buildOrderShippedTemplate({
+      headerTitle: 'Your Order Has Shipped! 🎉',
+      greeting: 'Hello {{name}}! 👋',
+      shippedMessage: 'Great news! Your order has been shipped and is now on its way to you. You can track your delivery using the information below.',
+      shipmentDetailsTitle: 'Shipment Details',
+      orderNumberLabel: 'Order Number',
+      trackingNumberLabel: 'Tracking Number',
+      trackingUrlLabel: 'Track Your Package',
+      estimatedDeliveryLabel: 'Estimated Delivery',
+      shippedProductsTitle: 'Shipped Products',
+      productColumn: 'Product',
+      quantityColumn: 'Quantity',
+      shippingAddressTitle: 'Shipping Address',
+      supportMessage: '💬 Questions about your delivery? Reply to this email and we\'ll help you.',
+      footerClosing: 'Best regards',
+    }),
     description: 'Order shipped notification email (en-US)',
   },
 };
