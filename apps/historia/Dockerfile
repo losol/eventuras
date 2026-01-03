@@ -128,9 +128,9 @@ ENV HOSTNAME="0.0.0.0"
 # Sentry runtime environment variables
 # Note: CMS_SENTRY_DSN is for server-side, NEXT_PUBLIC_CMS_SENTRY_DSN is baked in at build-time
 ARG FEATURE_SENTRY=false
-ARG CMS_SENTRY_DSN
+ARG NEXT_PUBLIC_CMS_SENTRY_DSN
 ENV FEATURE_SENTRY=${FEATURE_SENTRY}
-ENV CMS_SENTRY_DSN=${CMS_SENTRY_DSN}
+ENV NEXT_PUBLIC_CMS_SENTRY_DSN=${NEXT_PUBLIC_CMS_SENTRY_DSN}
 
 # Create non-root user
 RUN addgroup --system --gid 1001 nodejs \
