@@ -9,7 +9,9 @@ import {
   type WebhookPayload,
 } from '@eventuras/vipps/webhooks-v1';
 
+import { getCurrentWebsite } from '@/lib/website';
 import config from '@/payload.config';
+import type { Transaction } from '@/payload-types';
 
 const logger = Logger.create({
   namespace: 'historia:api:webhooks:vipps',
@@ -197,6 +199,8 @@ export async function POST(request: NextRequest) {
           payloadEventType: payload.name,
           payloadAmount: payload.amount,
           payloadPspReference: payload.pspReference,
+          webhookUrl: url.toString(),
+          webhookHost: host,
         },
         'Error processing payment event - business event stored but processing failed'
       );
@@ -223,6 +227,9 @@ export async function POST(request: NextRequest) {
         errorMessage: error instanceof Error ? error.message : String(error),
         stack: error instanceof Error ? error.stack : undefined,
         duration: Date.now() - startTime,
+        webhookUrl: request.url,
+        webhookHost: request.headers.get('host'),
+        webhookPath: new URL(request.url).pathname,
         headers: {
           xMsDate: request.headers.get('x-ms-date'),
           hasAuth: !!request.headers.get('authorization'),
@@ -276,6 +283,47 @@ async function processPaymentEvent(businessEventId: string, payload: WebhookPayl
       'No transaction found - creating orphaned transaction from webhook'
     );
 
+    // Determine tenant from webhook request
+    // The host header is available in the webhook request and can be used to determine the tenant
+    let tenantId: string;
+    try {
+      const website = await getCurrentWebsite();
+      tenantId = website.id;
+      logger.info(
+        {
+          tenantId,
+          websiteTitle: website.title,
+          reference: payload.reference,
+        },
+        'Determined tenant for orphaned transaction from host header'
+      );
+    } catch (error) {
+      // Log comprehensive debugging information to help diagnose tenant determination issues
+      const payloadInstance = await getPayload({ config });
+      const allWebsites = await payloadInstance.find({
+        collection: 'websites',
+        limit: 100,
+        pagination: false,
+      });
+
+      logger.error(
+        {
+          error,
+          errorMessage: error instanceof Error ? error.message : String(error),
+          reference: payload.reference,
+          businessEventId,
+          webhookUrl: payloadInstance.config.serverURL,
+          configuredWebsites: allWebsites.docs.map(w => ({
+            id: w.id,
+            title: w.title,
+            domains: w.domains,
+          })),
+        },
+        'Failed to determine tenant for orphaned transaction - cannot create transaction'
+      );
+      throw error; // Re-throw to be caught by outer try-catch
+    }
+
     // Map event name to transaction status
     const statusMap: Record<string, string> = {
       'CREATED': 'pending',
@@ -301,6 +349,7 @@ async function processPaymentEvent(businessEventId: string, payload: WebhookPayl
         status: transactionStatus as TransactionStatus,
         paymentMethod: 'vipps',
         customer: null, // Don't know customer yet
+        tenant: tenantId,
       },
       draft: false,
     });
@@ -440,7 +489,7 @@ async function processPaymentEvent(businessEventId: string, payload: WebhookPayl
  * Maps transaction states to appropriate order states
  */
 async function updateOrderStatus(
-  transaction: any,
+  transaction: Transaction,
   transactionStatus: TransactionStatus,
   vippsPayload?: WebhookPayload
 ) {
