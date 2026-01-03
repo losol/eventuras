@@ -86,14 +86,13 @@ ARG FEATURE_SENTRY=false
 ARG NEXT_PUBLIC_CMS_SENTRY_DSN
 ARG CMS_SENTRY_ORG
 ARG CMS_SENTRY_PROJECT
-ARG CMS_SENTRY_AUTH_TOKEN
-ARG NEXT_PUBLIC_CMS_SENTRY_SEND_DEFAULT_PII=true
+ARG NEXT_PUBLIC_CMS_SENTRY_SEND_DEFAULT_PII=false
 ENV FEATURE_SENTRY=${FEATURE_SENTRY}
 ENV NEXT_PUBLIC_CMS_SENTRY_DSN=${NEXT_PUBLIC_CMS_SENTRY_DSN}
 ENV CMS_SENTRY_ORG=${CMS_SENTRY_ORG}
 ENV CMS_SENTRY_PROJECT=${CMS_SENTRY_PROJECT}
-ENV CMS_SENTRY_AUTH_TOKEN=${CMS_SENTRY_AUTH_TOKEN}
 ENV NEXT_PUBLIC_CMS_SENTRY_SEND_DEFAULT_PII=${NEXT_PUBLIC_CMS_SENTRY_SEND_DEFAULT_PII}
+# Note: CMS_SENTRY_AUTH_TOKEN is mounted as BuildKit secret during build (not stored in image)
 
 COPY --from=install /app ./
 
@@ -105,9 +104,10 @@ RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store \
 
 WORKDIR /app/apps/historia
 
-
+# Build with Sentry auth token mounted as secret (not stored in image)
 RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store \
   --mount=type=cache,id=next-cache,target=/app/apps/historia/.next/cache \
+  --mount=type=secret,id=sentry_auth_token,env=CMS_SENTRY_AUTH_TOKEN \
   pnpm next build --webpack --experimental-build-mode compile
 
 ##########################
