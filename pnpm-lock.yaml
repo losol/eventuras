@@ -338,6 +338,9 @@ importers:
       graphql:
         specifier: ^16.12.0
         version: 16.12.0
+      import-in-the-middle:
+        specifier: ^2.0.1
+        version: 2.0.1
       lucide-react:
         specifier: ^0.562.0
         version: 0.562.0(react@19.2.3)
@@ -368,6 +371,9 @@ importers:
       react-hook-form:
         specifier: 7.69.0
         version: 7.69.0(react@19.2.3)
+      require-in-the-middle:
+        specifier: 8.0.1
+        version: 8.0.1
       tailwind-merge:
         specifier: ^3.4.0
         version: 3.4.0
