@@ -112,7 +112,7 @@ export async function GET(
           if (transactions.docs.length === 0) {
             logger.debug({ reference }, 'Transaction not found yet, checking payment status');
 
-            // Strategy 1: Check if we have any payment events from webhook
+            // Strategy 1: Check if we have any AUTHORIZED/CAPTURED payment events from webhook
             const events = await payloadInstance.find({
               collection: 'business-events',
               where: {
@@ -136,22 +136,56 @@ export async function GET(
             if (events.docs.length > 0) {
               const event = events.docs[0];
               const eventData = event.data as Record<string, unknown>;
+              const eventName = eventData?.name as string;
 
-              logger.info({ reference, eventType: eventData?.name }, 'Found payment event from webhook, sending status update');
+              // Only trigger order creation for successful payment events
+              if (eventName === 'AUTHORIZED' || eventName === 'CAPTURED') {
+                logger.info(
+                  { reference, eventType: eventName },
+                  'Found AUTHORIZED/CAPTURED payment event from webhook, sending status update'
+                );
 
-              controller.enqueue(
-                encoder.encode(
-                  `data: ${JSON.stringify({
-                    status: 'authorized',
-                    source: 'webhook',
-                  })}\n\n`
-                )
-              );
+                controller.enqueue(
+                  encoder.encode(
+                    `data: ${JSON.stringify({
+                      status: 'authorized',
+                      source: 'webhook',
+                    })}\n\n`
+                  )
+                );
 
-              isActive = false;
-              clearInterval(keepaliveInterval);
-              controller.close();
-              return;
+                isActive = false;
+                clearInterval(keepaliveInterval);
+                controller.close();
+                return;
+              } else if (eventName === 'ABORTED' || eventName === 'EXPIRED' || eventName === 'TERMINATED') {
+                // Payment failed - send failure status immediately
+                logger.info(
+                  { reference, eventType: eventName },
+                  'Found payment failure event from webhook, sending failure status'
+                );
+
+                controller.enqueue(
+                  encoder.encode(
+                    `data: ${JSON.stringify({
+                      status: 'failed',
+                      failureReason: eventName.toLowerCase(),
+                      source: 'webhook',
+                    })}\n\n`
+                  )
+                );
+
+                isActive = false;
+                clearInterval(keepaliveInterval);
+                controller.close();
+                return;
+              } else {
+                // Other event types (e.g., CREATED) - continue polling
+                logger.debug(
+                  { reference, eventType: eventName },
+                  'Found payment event from webhook, but not terminal state - continue polling'
+                );
+              }
             }
 
             // Strategy 2: Poll Vipps API directly
@@ -277,7 +311,15 @@ export async function GET(
             controller.close();
           }
         } catch (error) {
-          logger.error({ reference, error }, 'Error checking transaction status');
+          logger.error({
+            error,
+            errorName: error instanceof Error ? error.name : 'Unknown',
+            errorMessage: error instanceof Error ? error.message : String(error),
+            stack: error instanceof Error ? error.stack : undefined,
+            reference,
+            pollCount,
+            currentInterval,
+          }, 'CRITICAL: Error checking transaction status in SSE polling');
 
           // Send error to client
           controller.enqueue(
