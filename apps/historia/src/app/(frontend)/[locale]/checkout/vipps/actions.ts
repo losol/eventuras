@@ -936,6 +936,16 @@ export async function checkExistingOrder(
     }
 
     const transaction = existingTransactions.docs[0];
+
+    // Handle case where transaction exists but order is not yet created
+    if (!transaction.order) {
+      logger.warning(
+        { paymentReference, transactionId: transaction.id },
+        'Transaction exists but no order created yet'
+      );
+      return actionSuccess({ exists: false });
+    }
+
     const orderId =
       typeof transaction.order === 'string' ? transaction.order : transaction.order.id;
 
