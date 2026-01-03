@@ -45,6 +45,28 @@ export function logStartupConfig() {
     );
   }
 
+  // OpenTelemetry Configuration
+  console.log('\n📊 OpenTelemetry:');
+  const otlpEndpoint = process.env.OTEL_EXPORTER_OTLP_LOGS_ENDPOINT;
+  const otlpHeaders = process.env.OTEL_EXPORTER_OTLP_LOGS_HEADERS;
+  const serviceName = process.env.OTEL_SERVICE_NAME || 'historia';
+  
+  if (otlpEndpoint) {
+    console.log(`   Logs Export: ✅ ENABLED`);
+    // Extract host from URL without revealing full path/credentials
+    try {
+      const url = new URL(otlpEndpoint);
+      console.log(`   Endpoint Host: ${url.hostname}`);
+      console.log(`   Endpoint Protocol: ${url.protocol.replace(':', '')}`);
+    } catch {
+      console.log(`   Endpoint: ✅ configured`);
+    }
+    console.log(`   Authentication: ${otlpHeaders ? '✅ configured' : '❌ missing'}`);
+    console.log(`   Service Name: ${serviceName}`);
+  } else {
+    console.log(`   Logs Export: ❌ DISABLED (OTEL_EXPORTER_OTLP_LOGS_ENDPOINT not set)`);
+  }
+
   // Database Configuration
   console.log('\n💾 Database:');
   console.log(`   Type: ${process.env.DATABASE_ADAPTER || 'not set'}`);

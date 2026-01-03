@@ -4,6 +4,7 @@ A flexible logging solution for Eventuras with two separate utilities:
 
 - **Logger** - Production-ready structured logging with Pino
 - **Debug** - Development debugging with debug-js
+- **OpenTelemetry** - Optional integration for sending logs to any OTel-compatible backend
 
 ## Features
 
@@ -373,6 +374,144 @@ async function saveCollection(data: CollectionDto) {
 
 In development with `DEBUG=eventuras:*`, you'll see both debug traces and logger output.  
 In production, only Logger output is captured (Debug is silent unless explicitly enabled).
+
+---
+
+## OpenTelemetry Integration (Optional)
+
+Send logs to any OpenTelemetry-compatible backend (Sentry, Grafana, Jaeger, etc.) without vendor lock-in.
+
+### Installation
+
+Install the required OpenTelemetry packages as peer dependencies:
+
+```bash
+pnpm add @opentelemetry/api @opentelemetry/api-logs @opentelemetry/sdk-logs @opentelemetry/instrumentation-pino @opentelemetry/exporter-logs-otlp-http
+```
+
+### Basic Setup
+
+In your application's instrumentation or entry point (e.g., `instrumentation.ts` or `sentry.server.config.ts`):
+
+```typescript
+import { setupOpenTelemetryLogger } from '@eventuras/logger/opentelemetry';
+import { OTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-http';
+import { BatchLogRecordProcessor } from '@opentelemetry/sdk-logs';
+
+// Set up OpenTelemetry logger once at startup
+setupOpenTelemetryLogger({
+  logRecordProcessor: new BatchLogRecordProcessor(
+    new OTLPLogExporter({
+      url: process.env.OTEL_EXPORTER_OTLP_LOGS_ENDPOINT,
+      headers: {
+        'x-sentry-auth': `sentry sentry_key=${process.env.SENTRY_KEY}`
+      }
+    })
+  )
+});
+```
+
+### Environment Variables
+
+```bash
+# Required: OTLP endpoint URL
+OTEL_EXPORTER_OTLP_LOGS_ENDPOINT=https://[org].ingest.sentry.io/api/[project]/integration/otlp/v1/logs
+
+# Required: Authentication header
+OTEL_EXPORTER_OTLP_LOGS_HEADERS=x-sentry-auth=sentry sentry_key=YOUR_KEY_HERE
+
+# Optional: Service name (defaults to 'eventuras')
+OTEL_SERVICE_NAME=historia
+```
+
+### Using with Sentry
+
+Example setup for sending logs to Sentry via OTLP:
+
+```typescript
+// sentry.server.config.ts
+import { OTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-http';
+import { BatchLogRecordProcessor } from '@opentelemetry/sdk-logs';
+import * as Sentry from '@sentry/nextjs';
+
+import { setupOpenTelemetryLogger } from '@eventuras/logger/opentelemetry';
+
+// Initialize Sentry
+Sentry.init({
+  dsn: process.env.SENTRY_DSN,
+  tracesSampleRate: 1.0,
+});
+
+// Set up OpenTelemetry logger integration
+const otlpLogsEndpoint = process.env.OTEL_EXPORTER_OTLP_LOGS_ENDPOINT;
+const otlpLogsHeaders = process.env.OTEL_EXPORTER_OTLP_LOGS_HEADERS;
+
+if (otlpLogsEndpoint && otlpLogsHeaders) {
+  const headers: Record<string, string> = {};
+  otlpLogsHeaders.split(',').forEach((header) => {
+    const [key, value] = header.split('=');
+    if (key && value) {
+      headers[key.trim()] = value.trim();
+    }
+  });
+
+  setupOpenTelemetryLogger({
+    logRecordProcessor: new BatchLogRecordProcessor(
+      new OTLPLogExporter({
+        url: otlpLogsEndpoint,
+        headers,
+      })
+    ),
+  });
+}
+```
+
+### Features
+
+- **Vendor-neutral**: Works with any OpenTelemetry-compatible backend
+- **Server-side only**: Automatically detects browser environment and skips initialization
+- **Lazy loading**: OpenTelemetry packages are optional peer dependencies
+- **Graceful degradation**: Works without OTel packages installed (logs warning and continues)
+- **Zero configuration**: Uses environment variables by default
+
+### Shutdown
+
+For clean shutdown (e.g., on process termination):
+
+```typescript
+import { shutdownOpenTelemetryLogger } from '@eventuras/logger/opentelemetry';
+
+process.on('SIGTERM', async () => {
+  await shutdownOpenTelemetryLogger();
+  process.exit(0);
+});
+```
+
+### Advanced: Custom Logger Provider
+
+```typescript
+import { setupOpenTelemetryLogger } from '@eventuras/logger/opentelemetry';
+import { LoggerProvider } from '@opentelemetry/sdk-logs';
+import { BatchLogRecordProcessor } from '@opentelemetry/sdk-logs';
+import { OTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-http';
+
+const loggerProvider = new LoggerProvider();
+const processor = new BatchLogRecordProcessor(new OTLPLogExporter());
+
+setupOpenTelemetryLogger({
+  loggerProvider,
+  logRecordProcessor: processor,
+});
+```
+
+### Disabling OpenTelemetry
+
+```typescript
+// Disable programmatically
+setupOpenTelemetryLogger({ enabled: false });
+
+// Or don't call setupOpenTelemetryLogger at all
+```
 
 ---
 
