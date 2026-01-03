@@ -130,6 +130,15 @@ export const Orders: CollectionConfig = {
         description: 'Shipments for this order',
       },
     },
+    {
+      name: 'transactions',
+      type: 'join',
+      collection: 'transactions',
+      on: 'order',
+      admin: {
+        description: 'Payment transactions for this order',
+      },
+    },
   ],
   hooks: {
     beforeChange: [populateOrderPrices],

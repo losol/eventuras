@@ -112,6 +112,7 @@ export interface Config {
   collectionsJoins: {
     orders: {
       shipments: 'shipments';
+      transactions: 'transactions';
     };
   };
   collectionsSelect: {
@@ -1132,6 +1133,14 @@ export interface Order {
    */
   shipments?: {
     docs?: (string | Shipment)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  /**
+   * Payment transactions for this order
+   */
+  transactions?: {
+    docs?: (string | Transaction)[];
     hasNextPage?: boolean;
     totalDocs?: number;
   };
@@ -2321,6 +2330,7 @@ export interface OrdersSelect<T extends boolean = true> {
   totalAmount?: T;
   currency?: T;
   shipments?: T;
+  transactions?: T;
   updatedAt?: T;
   createdAt?: T;
 }

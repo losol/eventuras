@@ -1,6 +1,6 @@
-# Webhook Management Scripts
+# Vipps Scripts
 
-This directory contains utility scripts for managing Vipps webhooks.
+Utility scripts for managing Vipps payments and webhooks.
 
 ## Prerequisites
 
@@ -11,10 +11,41 @@ VIPPS_CLIENT_ID=your-client-id
 VIPPS_CLIENT_SECRET=your-client-secret
 VIPPS_MERCHANT_SERIAL_NUMBER=your-msn
 VIPPS_SUBSCRIPTION_KEY=your-subscription-key
-VIPPS_USE_TEST_MODE=true  # or false for production
+VIPPS_IS_TEST=true  # or false for production
+VIPPS_WEBHOOK_SECRET=your-webhook-secret  # Only needed for webhook verification
 ```
 
-## Scripts
+## Payment Scripts
+
+### Get Payment Details
+
+Fetch detailed information about a Vipps payment using the payment reference.
+
+```bash
+pnpm payment:get <payment-reference>
+```
+
+Example:
+
+```bash
+pnpm payment:get acme-shop-123-order-3456
+```
+
+**Output:**
+- Payment state and status
+- Authorized, captured, refunded, and cancelled amounts
+- Customer profile information (if shared)
+- Shipping details (if provided)
+- Complete payment event history
+
+**Use Cases:**
+- Debug orphaned payments in production
+- Verify payment status without accessing the database
+- Check what customer information was shared via Vipps
+- Review shipping details provided by customer
+- Investigate payment issues reported by customers
+
+## Webhook Management Scripts
 
 ### Setup Webhook
 
