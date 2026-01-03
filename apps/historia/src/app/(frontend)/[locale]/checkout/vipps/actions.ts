@@ -134,11 +134,11 @@ export async function createOrderFromPayment({
 }: CreateOrderParams): Promise<ServerActionResult<{ orderId: string; transactionId: string }>> {
   const startTime = Date.now();
 
-  try {
-    // Get cart from encrypted session
-    const session = await getCurrentSession();
-    const cart = session?.data?.cart as Cart | undefined;
+  // Get cart from encrypted session (declare outside try block so it's accessible in catch)
+  const session = await getCurrentSession();
+  const cart = session?.data?.cart as Cart | undefined;
 
+  try {
     if (!cart || !cart.items || cart.items.length === 0) {
       logger.error(
         {
@@ -227,7 +227,7 @@ export async function createOrderFromPayment({
       const existingTransaction = existingTransactions.docs[0];
       const orderId = typeof existingTransaction.order === 'string'
         ? existingTransaction.order
-        : existingTransaction.order.id;
+        : existingTransaction.order?.id;
 
       logger.info(
         {
@@ -939,7 +939,7 @@ export async function checkExistingOrder(
 
     // Handle case where transaction exists but order is not yet created
     if (!transaction.order) {
-      logger.warning(
+      logger.warn(
         { paymentReference, transactionId: transaction.id },
         'Transaction exists but no order created yet'
       );

@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
 import { getPayload } from 'payload';
 
@@ -48,6 +47,10 @@ type TransactionStatus = 'pending' | 'authorized' | 'captured' | 'completed' | '
  */
 export async function POST(request: NextRequest) {
   const startTime = Date.now();
+
+  // Log all incoming webhook requests at the very start
+  console.log('[WEBHOOK] Incoming request to /api/webhooks/vipps');
+  logger.info('Webhook request received');
 
   try {
     // Read raw body for signature verification
@@ -200,7 +203,7 @@ export async function POST(request: NextRequest) {
           payloadEventType: payload.name,
           payloadAmount: payload.amount,
           payloadPspReference: payload.pspReference,
-          webhookUrl: `https://${host}${url.pathname}${url.search}`,
+          webhookUrl: url.toString(),
           webhookHost: host,
         },
         'Error processing payment event - business event stored but processing failed'

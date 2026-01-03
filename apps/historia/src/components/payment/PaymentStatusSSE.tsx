@@ -70,6 +70,7 @@ export function PaymentStatusSSE({
         const data: PaymentStatusUpdate = JSON.parse(event.data);
 
         logger.info({ reference, data }, 'Received payment status update');
+        console.log('[PaymentStatusSSE] Parsed data:', data);
 
         // Handle timeout
         if (data.timeout) {
@@ -91,7 +92,9 @@ export function PaymentStatusSSE({
 
         // Handle status update
         if (data.status) {
+          console.log('[PaymentStatusSSE] Status received:', data.status);
           setStatus(data.status);
+          console.log('[PaymentStatusSSE] Calling onStatusChange with:', data.status);
           onStatusChange?.(data.status);
 
           // Handle successful payment

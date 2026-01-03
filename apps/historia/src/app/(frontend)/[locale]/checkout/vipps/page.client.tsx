@@ -115,15 +115,19 @@ export default function VippsCheckoutPage() {
 
   // Handle payment status change from SSE
   const handlePaymentStatusChange = async (status: string) => {
+    console.log('[VippsCheckout] handlePaymentStatusChange called with:', status);
     logger.info({ reference, status }, 'Payment status changed via SSE');
 
     // Only process if payment is captured/authorized
     if (status === 'captured' || status === 'authorized') {
+      console.log('[VippsCheckout] Status is captured/authorized, processing...');
       // Prevent duplicate processing
       if (processingRef.current) {
+        console.log('[VippsCheckout] Already processing, skipping');
         logger.warn({ reference }, 'Already processing payment');
         return;
       }
+      console.log('[VippsCheckout] Setting processing flag and state');
       processingRef.current = true;
 
       setState('processing');

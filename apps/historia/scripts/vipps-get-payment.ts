@@ -1,13 +1,13 @@
 #!/usr/bin/env tsx
 /**
  * CLI tool to fetch Vipps payment details
- * 
+ *
  * Usage:
  *   pnpm tsx scripts/vipps-get-payment.ts <payment-reference>
- * 
+ *
  * Example:
  *   pnpm tsx scripts/vipps-get-payment.ts acme-shop-123-order-3456
- * 
+ *
  * Environment variables required:
  *   VIPPS_CLIENT_ID
  *   VIPPS_CLIENT_SECRET
@@ -79,10 +79,13 @@ async function main() {
     clientSecret: process.env.VIPPS_CLIENT_SECRET!,
     subscriptionKey: process.env.VIPPS_SUBSCRIPTION_KEY!,
     merchantSerialNumber: process.env.VIPPS_MERCHANT_SERIAL_NUMBER!,
-    isTest: process.env.VIPPS_IS_TEST !== 'false',
     apiUrl: process.env.VIPPS_IS_TEST !== 'false'
       ? 'https://apitest.vipps.no'
       : 'https://api.vipps.no',
+    systemName: 'eventuras-historia',
+    systemVersion: '1.0.0',
+    pluginName: '',
+    pluginVersion: '',
   };
 
   // Validate configuration
@@ -99,7 +102,7 @@ async function main() {
 
   console.log(`${colors.bright}Fetching payment details from Vipps...${colors.reset}`);
   console.log(`${colors.dim}Reference: ${paymentReference}${colors.reset}`);
-  console.log(`${colors.dim}Environment: ${config.isTest ? 'TEST' : 'PRODUCTION'}${colors.reset}\n`);
+  console.log(`${colors.dim}Environment: ${config.apiUrl.includes('apitest') ? 'TEST' : 'PRODUCTION'}${colors.reset}\n`);
 
   try {
     const payment = await getPaymentDetails(config, paymentReference);
@@ -126,19 +129,16 @@ async function main() {
       printField('Email', payment.profile.email);
       printField('Phone', payment.profile.phoneNumber);
       printField('Name', `${payment.profile.givenName || ''} ${payment.profile.familyName || ''}`.trim() || null);
-      printField('Birth Date', payment.profile.birthDate);
+      printField('Birth Date', payment.profile.birthdate);
     }
 
     // User details (alternative profile)
     if (payment.userDetails && !payment.profile) {
       printHeader('User Details');
-      printField('Bank ID Verified', payment.userDetails.bankIdVerified);
-      printField('Date of Birth', payment.userDetails.dateOfBirth);
       printField('Email', payment.userDetails.email);
       printField('First Name', payment.userDetails.firstName);
       printField('Last Name', payment.userDetails.lastName);
       printField('Mobile Number', payment.userDetails.mobileNumber);
-      printField('NIN', payment.userDetails.nin ? '***' + payment.userDetails.nin.slice(-4) : null);
       printField('SSN', payment.userDetails.ssn);
       if (payment.userDetails.streetAddress) {
         printField('Address', payment.userDetails.streetAddress);
@@ -164,20 +164,6 @@ async function main() {
       }
     }
 
-    // Payment events (history)
-    if (payment.events && payment.events.length > 0) {
-      printHeader('Payment Events History');
-      payment.events.forEach((event, index) => {
-        console.log(`\n${colors.dim}${index + 1}.${colors.reset} ${colors.bright}${event.name}${colors.reset}`);
-        printField('  Amount', event.amount ? formatAmount(event.amount) : null);
-        printField('  Timestamp', formatDate(event.timestamp));
-        printField('  Success', event.success);
-        printField('  PSP Reference', event.pspReference);
-        if (event.idempotencyKey) {
-          printField('  Idempotency Key', event.idempotencyKey);
-        }
-      });
-    }
 
     // Summary
     printHeader('Summary');
