@@ -87,11 +87,27 @@ export const sendOrderConfirmation: CollectionAfterChangeHook<Order> = async ({
         );
 
         for (const contact of salesContacts) {
-          if (contact.user && typeof contact.user === 'object' && 'email' in contact.user) {
-            const userEmail = contact.user.email;
-            if (userEmail) {
-              salesEmails.push(userEmail);
-              logger.debug({ email: userEmail }, 'Added sales contact email');
+          // Fetch user directly to get email (afterRead hook censors it from contactPoints)
+          if (contact.user) {
+            const userId = typeof contact.user === 'object' && 'id' in contact.user
+              ? contact.user.id
+              : contact.user;
+
+            try {
+              const user = (await payload.findByID({
+                collection: 'users',
+                id: userId as string,
+              })) as User;
+
+              if (user.email) {
+                salesEmails.push(user.email);
+                logger.debug({ email: user.email }, 'Added sales contact email');
+              }
+            } catch (error) {
+              logger.error(
+                { error, userId },
+                'Failed to fetch sales contact user'
+              );
             }
           }
         }
