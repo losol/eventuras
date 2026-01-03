@@ -9,7 +9,6 @@ export function logStartupConfig() {
   }
 
   const nodeEnv = process.env.NODE_ENV || 'development';
-  const isProduction = nodeEnv === 'production';
 
   console.log('\n╔════════════════════════════════════════════════════════════╗');
   console.log('║           Historia CMS - Startup Configuration            ║');

@@ -110,7 +110,7 @@ jobs:
             TURBO_TOKEN=${{ secrets.TURBO_TOKEN }}
             TURBO_TEAM=${{ secrets.TURBO_TEAM }}
             FEATURE_SENTRY=${{ vars.FEATURE_SENTRY || 'false' }}
-            NEXT_PUBLIC_CMS_SENTRY_DSN=${{ secrets.NEXT_PUBLIC_CMS_SENTRY_DSN }}
+            NEXT_PUBLIC_SENTRY_DSN=${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
             CMS_SENTRY_ORG=${{ secrets.CMS_SENTRY_ORG }}
             CMS_SENTRY_PROJECT=${{ secrets.CMS_SENTRY_PROJECT }}
             NEXT_PUBLIC_CMS_SENTRY_SEND_DEFAULT_PII=false

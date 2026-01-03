@@ -170,7 +170,7 @@ az webapp config appsettings set \
     CMS_DATABASE_URL="postgresql://user:password@server.postgres.database.azure.com:5432/historia_prod" \
     CMS_SECRET="your-secret-key-prod" \
     FEATURE_SENTRY="true" \
-    NEXT_PUBLIC_CMS_SENTRY_DSN="https://your-key@o123456.ingest.sentry.io/123456" \
+    NEXT_PUBLIC_SENTRY_DSN="https://your-key@o123456.ingest.sentry.io/123456" \
     NODE_ENV="production" \
     PAYLOAD_PUBLIC_SERVER_URL="https://historia-prod.azurewebsites.net" \
     WEBSITES_PORT=3000
@@ -180,7 +180,7 @@ az webapp config appsettings set \
 
 **Important for Sentry**:
 - Set `FEATURE_SENTRY=true` in Azure App Service settings to enable Sentry in production
-- The `NEXT_PUBLIC_CMS_SENTRY_DSN` variable must be set at **build time** as a GitHub Actions secret (see [GitHub Configuration](#github-configuration) below)
+- The `NEXT_PUBLIC_SENTRY_DSN` variable must be set at **build time** as a GitHub Actions secret (see [GitHub Configuration](#github-configuration) below)
 - Runtime variables like `CMS_SENTRY_DSN` and `FEATURE_SENTRY` can be set in Azure App Service settings
 
 ### 5. Download Publish Profiles
@@ -236,14 +236,14 @@ Navigate to Settings → Secrets and variables → Actions → Repository secret
 - `DOCKERHUB_USERNAME`: Your Docker Hub username
 - `DOCKERHUB_TOKEN`: Your Docker Hub access token
 - `CMS_SECRET`: Payload CMS secret key (used during build)
-- `NEXT_PUBLIC_CMS_SENTRY_DSN`: Sentry DSN for client-side error tracking (e.g., `https://key@o123456.ingest.sentry.io/123456`)
+- `NEXT_PUBLIC_SENTRY_DSN`: Sentry DSN for client-side error tracking (e.g., `https://key@o123456.ingest.sentry.io/123456`)
 - `CMS_SENTRY_ORG`: Sentry organization slug (e.g., `your-org`)
 - `CMS_SENTRY_PROJECT`: Sentry project slug (e.g., `historia-prod`)
 - `CMS_SENTRY_AUTH_TOKEN`: Sentry auth token for uploading source maps (create at https://sentry.io/settings/account/api/auth-tokens/)
 
 **Note**:
 - Generate a Docker Hub access token at https://hub.docker.com/settings/security instead of using your password.
-- The `NEXT_PUBLIC_CMS_SENTRY_DSN` secret is used at **build time** to inject the DSN into the client-side bundle.
+- The `NEXT_PUBLIC_SENTRY_DSN` secret is used at **build time** to inject the DSN into the client-side bundle.
 - The Sentry auth token needs `project:releases` and `project:write` scopes for source map uploads.
 
 #### Environment Secrets
