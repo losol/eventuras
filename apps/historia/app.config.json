@@ -92,11 +92,30 @@
       "description": "Enable Sentry error tracking",
       "default": "false"
     },
-    "NEXT_PUBLIC_CMS_SENTRY_DSN": {
+    "CMS_SENTRY_ORG": {
       "required": false,
       "client": false,
       "type": "string",
-      "description": "Sentry DSN for Historia error tracking"
+      "description": "Sentry organization slug"
+    },
+    "CMS_SENTRY_PROJECT": {
+      "required": false,
+      "client": false,
+      "type": "string",
+      "description": "Sentry project slug"
+    },
+    "NEXT_PUBLIC_CMS_SENTRY_DSN": {
+      "required": false,
+      "client": true,
+      "type": "string",
+      "description": "Sentry DSN for error tracking"
+    },
+    "NEXT_PUBLIC_CMS_SENTRY_SEND_DEFAULT_PII": {
+      "required": false,
+      "client": true,
+      "type": "boolean",
+      "description": "Enable sending user PII to Sentry",
+      "default": "true"
     }
   }
 }
