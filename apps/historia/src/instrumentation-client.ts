@@ -13,7 +13,7 @@ Sentry.init({
   // Can be controlled via NEXT_PUBLIC_CMS_SENTRY_SEND_DEFAULT_PII ('true' to enable, 'false' to disable).
   sendDefaultPii: process.env.NEXT_PUBLIC_CMS_SENTRY_SEND_DEFAULT_PII
     ? process.env.NEXT_PUBLIC_CMS_SENTRY_SEND_DEFAULT_PII === 'true'
-    : true,
+    : false,
 });
 
 export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
