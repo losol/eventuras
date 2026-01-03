@@ -93,7 +93,13 @@ async function validatePaymentOwnership(
 
     return actionError('Unauthorized access to payment');
   } catch (error) {
-    logger.error({ error, paymentReference }, 'Error validating payment ownership');
+    logger.error({
+      error,
+      errorName: error instanceof Error ? error.name : 'Unknown',
+      errorMessage: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+      paymentReference,
+    }, 'CRITICAL: Error validating payment ownership');
     return actionError('Failed to validate payment ownership');
   }
 }
@@ -374,8 +380,14 @@ export async function createOrderFromPayment({
           requestedIds: cart.items.map(i => i.productId),
           foundIds: products.map(p => p.id),
           missingIds,
+          paymentReference,
+          cartItems: cart.items.map(item => ({
+            productId: item.productId,
+            quantity: item.quantity,
+          })),
+          websiteId,
         },
-        'Not all products found'
+        'CRITICAL: Not all products found - products may have been deleted or are in different tenant'
       );
       return actionError('Some products not found');
     }
@@ -494,7 +506,14 @@ export async function createOrderFromPayment({
         );
       } catch (error) {
         logger.error(
-          { error, paymentReference },
+          {
+            error,
+            errorName: error instanceof Error ? error.name : 'Unknown',
+            errorMessage: error instanceof Error ? error.message : String(error),
+            stack: error instanceof Error ? error.stack : undefined,
+            paymentReference,
+            shippingDetails: paymentDetails.shippingDetails,
+          },
           'Failed to add shipping line item - continuing without shipping'
         );
         // Continue without shipping rather than failing the entire order
@@ -564,8 +583,15 @@ export async function createOrderFromPayment({
 
     if (!user || !user.email) {
       logger.error(
-        { paymentReference, userId: effectiveUserId },
-        'User or user email not found'
+        {
+          paymentReference,
+          userId: effectiveUserId,
+          hasUser: !!user,
+          hasEmail: !!user?.email,
+          paymentState: paymentDetails.state,
+          authorizedAmount: paymentDetails.aggregate.authorizedAmount,
+        },
+        'CRITICAL: User or user email not found - cannot create order'
       );
       return actionError('User account information not found');
     }
@@ -691,7 +717,15 @@ export async function createOrderFromPayment({
       } catch (error) {
         // Don't fail order creation if address update fails
         logger.error(
-          { error, userId: effectiveUserId, paymentReference },
+          {
+            error,
+            errorName: error instanceof Error ? error.name : 'Unknown',
+            errorMessage: error instanceof Error ? error.message : String(error),
+            stack: error instanceof Error ? error.stack : undefined,
+            userId: effectiveUserId,
+            paymentReference,
+            vippsShippingAddress,
+          },
           'Failed to update user address, but order was created successfully'
         );
       }
@@ -778,14 +812,20 @@ export async function createOrderFromPayment({
     logger.error(
       {
         error,
-        paymentReference,
-        userId,
         errorName: error instanceof Error ? error.name : 'Unknown',
         errorMessage: error instanceof Error ? error.message : String(error),
         stack: error instanceof Error ? error.stack : undefined,
+        paymentReference,
+        userId,
+        paymentState: paymentDetails?.state,
+        authorizedAmount: paymentDetails?.aggregate?.authorizedAmount,
+        pspReference: paymentDetails?.pspReference,
+        hasCart: !!cart,
+        cartItemCount: cart?.items?.length,
+        customerEmail: paymentDetails?.profile?.email || paymentDetails?.userDetails?.email,
         totalTimeMs: totalTime,
       },
-      'Error creating order from payment'
+      'CRITICAL: Error creating order from payment - payment may be authorized but order not created'
     );
     return actionError(
       error instanceof Error ? error.message : 'Failed to create order',
@@ -879,7 +919,13 @@ export async function checkExistingOrder(
         : undefined,
     });
   } catch (error) {
-    logger.error({ error, paymentReference }, 'Error checking existing order');
+    logger.error({
+      error,
+      errorName: error instanceof Error ? error.name : 'Unknown',
+      errorMessage: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+      paymentReference,
+    }, 'Error checking existing order - proceeding with normal flow');
     // Return exists: false on error to allow normal flow to proceed
     return actionSuccess({ exists: false });
   }
@@ -962,7 +1008,13 @@ export async function processPaymentAndCreateOrder(
         : undefined,
     });
   } catch (error) {
-    logger.error({ error, paymentReference }, 'Error processing payment');
+    logger.error({
+      error,
+      errorName: error instanceof Error ? error.name : 'Unknown',
+      errorMessage: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+      paymentReference,
+    }, 'CRITICAL: Error processing payment and creating order');
     return actionError(
       error instanceof Error ? error.message : 'Failed to process payment'
     );

@@ -108,7 +108,12 @@ export async function POST(request: NextRequest) {
     // Parse webhook payload
     const payload = parseWebhookPayload(rawBody);
     if (!payload) {
-      logger.error({ rawBody }, 'Failed to parse webhook payload');
+      logger.error({
+        rawBody: rawBody.substring(0, 500),  // Log first 500 chars to avoid huge logs
+        bodyLength: rawBody.length,
+        xMsDate,
+        host,
+      }, 'CRITICAL: Failed to parse webhook payload - invalid JSON or structure');
       return NextResponse.json(
         { error: 'Invalid payload' },
         { status: 400 }
@@ -181,16 +186,29 @@ export async function POST(request: NextRequest) {
     } catch (error) {
       // Log error but still return 200 to acknowledge receipt
       logger.error(
-        { error, eventId, businessEventId: businessEvent.id },
-        'Error processing payment event'
+        {
+          error,
+          errorName: error instanceof Error ? error.name : 'Unknown',
+          errorMessage: error instanceof Error ? error.message : String(error),
+          stack: error instanceof Error ? error.stack : undefined,
+          eventId,
+          businessEventId: businessEvent.id,
+          payloadReference: payload.reference,
+          payloadEventType: payload.name,
+          payloadAmount: payload.amount,
+          payloadPspReference: payload.pspReference,
+        },
+        'Error processing payment event - business event stored but processing failed'
       );
 
-      // Update business event with error
+      // Update business event with detailed error information
       await payloadInstance.update({
         collection: 'business-events',
         id: businessEvent.id,
         data: {
-          error: error instanceof Error ? error.message : 'Unknown error',
+          error: error instanceof Error
+            ? `${error.name}: ${error.message}\n${error.stack || ''}`
+            : String(error),
         },
       });
     }
@@ -199,8 +217,19 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ received: true });
   } catch (error) {
     logger.error(
-      { error, duration: Date.now() - startTime },
-      'Unexpected error handling webhook'
+      {
+        error,
+        errorName: error instanceof Error ? error.name : 'Unknown',
+        errorMessage: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+        duration: Date.now() - startTime,
+        headers: {
+          xMsDate: request.headers.get('x-ms-date'),
+          hasAuth: !!request.headers.get('authorization'),
+          hasContentHash: !!request.headers.get('x-ms-content-sha256'),
+        },
+      },
+      'CRITICAL: Unexpected error handling webhook - Vipps will retry'
     );
 
     // Return 500 to indicate failure - Vipps will retry
@@ -244,67 +273,37 @@ async function processPaymentEvent(businessEventId: string, payload: WebhookPayl
         eventType: payload.name,
         pspReference: payload.pspReference,
         amount: payload.amount,
+        businessEventId,
       },
       'WEBHOOK DETECTED ORPHANED PAYMENT: No transaction found for payment reference'
     );
 
     // Only handle AUTHORIZED and CAPTURED events (successful payments)
     if (payload.name === 'AUTHORIZED' || payload.name === 'CAPTURED') {
-      logger.error(
+      logger.warn(
         {
           reference: payload.reference,
           eventType: payload.name,
           amount: payload.amount,
           pspReference: payload.pspReference,
+          businessEventId,
         },
-        'CRITICAL: Payment authorized/captured but no order exists - requires manual intervention!'
+        'Payment authorized/captured but no transaction exists yet. Business event stored for SSE detection.'
       );
 
-      // Try to get payment details from Vipps to notify sales team
-      try {
-        const { getPaymentDetails } = await import('@eventuras/vipps/epayment-v1');
-        const { getVippsConfig } = await import('@/lib/vipps/config');
-        const { notifyOrphanedPayment } = await import(
-          '@/app/(frontend)/[locale]/checkout/vipps/orphanedPaymentNotification'
-        );
+      // NOTE: We do NOT attempt order creation here because:
+      // 1. Webhook context has no access to user session → cannot read cart
+      // 2. SSE endpoint polls business-events and will trigger order creation
+      // 3. SSE runs in user's session context → has cart access
+      //
+      // This is normal when webhook arrives before user returns from Vipps.
+      // The SSE-based recovery will handle this case automatically.
 
-        const vippsConfig = getVippsConfig();
-        const paymentDetails = await getPaymentDetails(vippsConfig, payload.reference);
-
-        // Send notification to sales team
-        // Note: websiteId not provided here (webhook context), will fall back to first website
-        // in getCurrentWebsiteId(). Sales team can determine correct tenant from customer details.
-        await notifyOrphanedPayment({
-          paymentReference: payload.reference,
-          customerEmail: paymentDetails.profile?.email || paymentDetails.userDetails?.email,
-          amount: payload.amount?.value || paymentDetails.aggregate.authorizedAmount.value,
-          currency: payload.amount?.currency || paymentDetails.aggregate.authorizedAmount.currency,
-          paymentState: paymentDetails.state,
-        });
-
-        logger.info(
-          { reference: payload.reference },
-          'Orphaned payment notification sent to sales team via webhook detection'
-        );
-      } catch (notifyError) {
-        logger.error(
-          { error: notifyError, reference: payload.reference },
-          'Failed to send orphaned payment notification from webhook'
-        );
-      }
-
-      // Mark event with orphaned payment error
-      await payloadInstance.update({
-        collection: 'business-events',
-        id: businessEventId,
-        data: {
-          error: 'ORPHANED PAYMENT: Transaction not found - manual order creation required',
-        },
-      });
+      return; // Event stored, SSE will handle order creation
     } else {
       // For non-success events (ABORTED, EXPIRED, etc.), just log as warning
       logger.warn(
-        { reference: payload.reference, eventType: payload.name },
+        { reference: payload.reference, eventType: payload.name, businessEventId },
         'No transaction found for payment reference (non-success event)'
       );
 
@@ -321,7 +320,16 @@ async function processPaymentEvent(businessEventId: string, payload: WebhookPayl
   }
 
   const transaction = transactions.docs[0];
-  logger.debug({ transactionId: transaction.id, eventType: payload.name }, 'Transaction found');
+  logger.info(
+    {
+      transactionId: transaction.id,
+      eventType: payload.name,
+      oldStatus: transaction.status,
+      paymentReference: payload.reference,
+      businessEventId,
+    },
+    'Transaction found, updating status'
+  );
 
   // Update business event with entity relationship
   await payloadInstance.update({
@@ -349,7 +357,18 @@ async function processPaymentEvent(businessEventId: string, payload: WebhookPayl
 
   const newStatus = statusMap[payload.name];
   if (!newStatus) {
-    logger.warn({ eventType: payload.name }, 'Unknown event type');
+    logger.error(
+      {
+        eventType: payload.name,
+        reference: payload.reference,
+        transactionId: transaction.id,
+        businessEventId,
+        availableStatuses: Object.keys(statusMap),
+        payloadAmount: payload.amount,
+        payloadSuccess: payload.success,
+      },
+      'CRITICAL: Unknown event type - cannot map to transaction status'
+    );
     await payloadInstance.update({
       collection: 'business-events',
       id: businessEventId,
@@ -370,8 +389,16 @@ async function processPaymentEvent(businessEventId: string, payload: WebhookPayl
   });
 
   logger.info(
-    { transactionId: transaction.id, oldStatus: transaction.status, newStatus },
-    'Transaction status updated'
+    {
+      transactionId: transaction.id,
+      orderId: transaction.order,
+      oldStatus: transaction.status,
+      newStatus,
+      eventType: payload.name,
+      reference: payload.reference,
+      businessEventId,
+    },
+    'Transaction status updated successfully'
   );
 
   // Trigger revalidation for SSE endpoints and pages
@@ -382,7 +409,16 @@ async function processPaymentEvent(businessEventId: string, payload: WebhookPayl
   // Update order status based on transaction status
   await updateOrderStatus(transaction, newStatus as TransactionStatus, payload);
 
-  logger.info({ businessEventId }, 'Payment event processed successfully');
+  logger.info(
+    {
+      businessEventId,
+      transactionId: transaction.id,
+      orderId: transaction.order,
+      reference: payload.reference,
+      eventType: payload.name,
+    },
+    'Payment event processed successfully'
+  );
 }
 
 /**
@@ -397,7 +433,11 @@ async function updateOrderStatus(
   // Skip if transaction has no associated order
   if (!transaction.order) {
     logger.warn(
-      { transactionId: transaction.id, status: transactionStatus },
+      {
+        transactionId: transaction.id,
+        status: transactionStatus,
+        reference: vippsPayload?.reference,
+      },
       'Transaction has no associated order, skipping order update'
     );
     return;
@@ -405,9 +445,14 @@ async function updateOrderStatus(
 
   const orderId = typeof transaction.order === 'string' ? transaction.order : transaction.order.id;
 
-  logger.debug(
-    { orderId, transactionId: transaction.id, transactionStatus },
-    'Updating order status based on transaction'
+  logger.info(
+    {
+      orderId,
+      transactionId: transaction.id,
+      transactionStatus,
+      reference: vippsPayload?.reference,
+    },
+    'Starting order status update based on transaction'
   );
 
   // Map transaction status to order status
@@ -425,9 +470,16 @@ async function updateOrderStatus(
   const newOrderStatus = orderStatusMap[transactionStatus];
 
   if (!newOrderStatus) {
-    logger.warn(
-      { transactionStatus, orderId },
-      'Unknown transaction status, cannot map to order status'
+    logger.error(
+      {
+        transactionStatus,
+        orderId,
+        transactionId: transaction.id,
+        reference: vippsPayload?.reference,
+        availableStatuses: Object.keys(orderStatusMap),
+        vippsEventType: vippsPayload?.name,
+      },
+      'CRITICAL: Unknown transaction status, cannot map to order status'
     );
     return;
   }
@@ -441,7 +493,7 @@ async function updateOrderStatus(
       id: orderId,
     });
 
-    // Only update if status is different
+    // Skip if order already has the correct status
     if (order.status === newOrderStatus) {
       logger.debug(
         { orderId, status: newOrderStatus },
@@ -449,6 +501,18 @@ async function updateOrderStatus(
       );
       return;
     }
+
+    logger.info(
+      {
+        orderId,
+        transactionId: transaction.id,
+        oldStatus: order.status,
+        newStatus: newOrderStatus,
+        transactionStatus,
+        reference: vippsPayload?.reference,
+      },
+      'Updating order status'
+    );
 
     await payloadInstance.update({
       collection: 'orders',
@@ -495,11 +559,17 @@ async function updateOrderStatus(
     logger.error(
       {
         error,
+        errorName: error instanceof Error ? error.name : 'Unknown',
+        errorMessage: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
         orderId,
         transactionId: transaction.id,
         transactionStatus,
+        newOrderStatus,
+        vippsReference: vippsPayload?.reference,
+        vippsEventType: vippsPayload?.name,
       },
-      'Failed to update order status'
+      'CRITICAL: Failed to update order status - transaction updated but order status not synced'
     );
     // Don't throw - we've already processed the transaction update successfully
   }
