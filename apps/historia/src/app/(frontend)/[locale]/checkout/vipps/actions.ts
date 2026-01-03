@@ -134,9 +134,131 @@ export async function createOrderFromPayment({
 }: CreateOrderParams): Promise<ServerActionResult<{ orderId: string; transactionId: string }>> {
   const startTime = Date.now();
 
-  // Get cart from encrypted session (declare outside try block so it's accessible in catch)
+  // Get cart from database using cartId and secret from session
   const session = await getCurrentSession();
-  const cart = session?.data?.cart as Cart | undefined;
+  const cartId = session?.data?.cartId;
+  const cartSecret = session?.data?.cartSecret;
+
+  let cart: Cart | undefined;
+
+  // Fetch cart from database if we have cartId and secret
+  if (cartId && cartSecret) {
+    try {
+      const payload = await getPayload({ config: configPromise });
+      const cartDoc = await payload.findByID({
+        collection: 'carts' as any, // Type will be generated after running dev server
+        id: cartId,
+        // Pass secret as query parameter to leverage hasCartSecretAccess
+        req: {
+          query: {
+            secret: cartSecret,
+          },
+        } as any,
+      });
+
+      // Access control validates the secret automatically via hasCartSecretAccess
+      // If we get here, the secret was valid
+      if (cartDoc) {
+        // Convert Payload cart to Cart type
+        cart = {
+          items: (cartDoc as any).items.map((item: any) => ({
+            productId: item.productId,
+            quantity: item.quantity,
+          })),
+          paymentReference: paymentReference, // Will be validated below
+        };
+
+        logger.info(
+          {
+            cartId,
+            itemCount: cart?.items.length || 0,
+            paymentReference,
+          },
+          'Cart retrieved from database and secret validated via access control'
+        );
+      } else {
+        logger.error(
+          {
+            cartId,
+            paymentReference,
+          },
+          'Cart not found in database'
+        );
+      }
+    } catch (error) {
+      logger.error(
+        {
+          error,
+          cartId,
+          paymentReference,
+        },
+        'Failed to retrieve cart from database'
+      );
+    }
+  } else {
+    logger.warn(
+      {
+        hasCartId: !!cartId,
+        hasCartSecret: !!cartSecret,
+        paymentReference,
+      },
+      'No cart ID or secret in session - attempting to find cart by payment reference'
+    );
+
+    // Fallback: Try to find cart by payment reference
+    // This handles cases where session was lost (browser closed, cookie expired, etc.)
+    // but cart was saved to database during payment initiation
+    try {
+      const payload = await getPayload({ config: configPromise });
+
+      const cartResults = await payload.find({
+        collection: 'carts' as any,
+        where: {
+          paymentReference: {
+            equals: paymentReference,
+          },
+        },
+        limit: 1,
+        overrideAccess: true, // Session is lost, but we have payment reference
+      });
+
+      if (cartResults.docs && cartResults.docs.length > 0) {
+        const recoveredCart = cartResults.docs[0] as any;
+
+        if (recoveredCart && recoveredCart.items && recoveredCart.items.length > 0) {
+          cart = {
+            items: recoveredCart.items.map((item: any) => ({
+              productId: item.productId,
+              quantity: item.quantity,
+            })),
+            paymentReference: paymentReference,
+          };
+
+          logger.info(
+            {
+              cartId: recoveredCart.id,
+              itemCount: cart.items.length,
+              paymentReference,
+            },
+            'Successfully recovered cart from database using payment reference'
+          );
+        }
+      } else {
+        logger.error(
+          { paymentReference },
+          'Cart not found in database by payment reference'
+        );
+      }
+    } catch (error) {
+      logger.error(
+        {
+          error,
+          paymentReference,
+        },
+        'Failed to recover cart from database'
+      );
+    }
+  }
 
   try {
     if (!cart || !cart.items || cart.items.length === 0) {
@@ -801,20 +923,72 @@ export async function createOrderFromPayment({
         'Creating new transaction in database'
       );
 
-      transaction = await payload.create({
-        collection: 'transactions',
-        draft: false,
-        data: {
-          order: order.id,
-          customer: effectiveUserId!,
-          amount: transactionAmount, // Store in minor units
-          currency: transactionCurrency as 'NOK' | 'USD' | 'EUR' | 'SEK' | 'DKK',
-          status: transactionStatus,
-          paymentMethod: 'vipps',
-          paymentReference,
-          tenant: websiteId,
-        },
-      });
+      try {
+        transaction = await payload.create({
+          collection: 'transactions',
+          draft: false,
+          data: {
+            order: order.id,
+            customer: effectiveUserId!,
+            amount: transactionAmount, // Store in minor units
+            currency: transactionCurrency as 'NOK' | 'USD' | 'EUR' | 'SEK' | 'DKK',
+            status: transactionStatus,
+            paymentMethod: 'vipps',
+            paymentReference,
+            tenant: websiteId,
+          },
+        });
+      } catch (createError: any) {
+        // Handle race condition: webhook and client callback both tried to create transaction
+        // The unique constraint on paymentReference prevents duplicates
+        if (createError?.message?.includes('unique') || createError?.message?.includes('duplicate')) {
+          logger.warn(
+            {
+              paymentReference,
+              orderId: order.id,
+              createError: createError.message,
+            },
+            'Transaction already exists (race condition) - retrieving existing transaction'
+          );
+
+          // Retrieve the existing transaction that was created by webhook
+          const existingDuplicateTransactions = await payload.find({
+            collection: 'transactions',
+            where: {
+              paymentReference: {
+                equals: paymentReference,
+              },
+            },
+            limit: 1,
+          });
+
+          if (existingDuplicateTransactions.docs.length === 0) {
+            // This shouldn't happen, but handle it
+            logger.error(
+              {
+                paymentReference,
+                orderId: order.id,
+              },
+              'CRITICAL: Unique constraint violation but transaction not found'
+            );
+            throw createError; // Re-throw original error
+          }
+
+          transaction = existingDuplicateTransactions.docs[0];
+
+          logger.info(
+            {
+              transactionId: transaction.id,
+              paymentReference,
+              orderId: order.id,
+            },
+            'Using existing transaction created by concurrent request (webhook/client race)'
+          );
+        } else {
+          // Different error - re-throw
+          throw createError;
+        }
+      }
     }
 
     const transactionCreateTime = Date.now() - transactionCreateStart;
@@ -913,9 +1087,11 @@ export async function checkExistingOrder(
     if (!ownershipCheck.success) {
       logger.warn(
         { paymentReference },
-        'Unauthorized attempt to check existing order'
+        'Session lost or unauthorized access - allowing normal flow with fallback recovery'
       );
-      return actionError('Unauthorized access');
+      // Don't block the flow - let the normal payment processing handle it
+      // with cart recovery via paymentReference fallback
+      return actionSuccess({ exists: false });
     }
 
     const payload = await getPayload({ config: configPromise });

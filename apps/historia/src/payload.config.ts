@@ -12,6 +12,7 @@ import { defaultLexical } from '@/fields/defaultLexical';
 
 import { Articles } from './collections/Articles';
 import { BusinessEvents } from './collections/BusinessEvents';
+import { Carts } from './collections/Carts';
 import { Happenings } from './collections/Happenings';
 import { Licenses } from './collections/Licenses';
 import { Media } from './collections/Media';
@@ -151,7 +152,7 @@ export default buildConfig({
       },
       push: true,
     }),
-  collections: [Articles, BusinessEvents, Happenings, Licenses, Media, Notes, Orders, Organizations, Pages, Persons, Places, Products, Projects, Shipments, Topics, Transactions, Users, Websites],
+  collections: [Articles, BusinessEvents, Carts, Happenings, Licenses, Media, Notes, Orders, Organizations, Pages, Persons, Places, Products, Projects, Shipments, Topics, Transactions, Users, Websites],
   cors: allowedOrigins,
   csrf: allowedOrigins,
   editor: defaultLexical,
