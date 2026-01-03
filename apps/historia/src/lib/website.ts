@@ -16,13 +16,13 @@ const logger = Logger.create({
  *
  * This function determines which website/tenant the current request belongs to
  * by looking up the host header and matching it against configured website domains.
- * If no exact match is found, it falls back to the first available website.
  *
- * @returns The website ID if found, null otherwise
+ * @returns The website ID
+ * @throws {Error} If no host header is found or no matching website exists
  */
-export async function getCurrentWebsiteId(): Promise<string | null> {
+export async function getCurrentWebsiteId(): Promise<string> {
   const website = await getCurrentWebsite();
-  return website?.id ?? null;
+  return website.id;
 }
 
 /**
@@ -30,20 +30,23 @@ export async function getCurrentWebsiteId(): Promise<string | null> {
  *
  * This function retrieves the full website object for the current request
  * by looking up the host header and matching it against configured website domains.
- * If no exact match is found, it falls back to the first available website.
  *
- * @returns The website object if found, null otherwise
+ * Security: This function throws an error if no matching website is found to prevent
+ * accidentally serving content from the wrong tenant/website.
+ *
+ * @returns The website object
+ * @throws {Error} If no host header is found or no matching website exists
  */
-export async function getCurrentWebsite(): Promise<Website | null> {
+export async function getCurrentWebsite(): Promise<Website> {
   const payload = await getPayload({ config: configPromise });
   const host = (await headers()).get('host');
 
   if (!host) {
-    logger.warn('No host header found - cannot determine website/tenant');
-    return null;
+    logger.error('No host header found - cannot determine website/tenant');
+    throw new Error('No host header found - cannot determine website/tenant');
   }
 
-  // Try to find website by domain
+  // Find website by domain
   const website = await payload.find({
     collection: 'websites',
     pagination: false,
@@ -60,29 +63,17 @@ export async function getCurrentWebsite(): Promise<Website | null> {
     return website.docs[0];
   }
 
-  // Fallback: Get the first website if no match found
-  logger.warn({ host }, 'No website configuration found for host, trying fallback to first website');
+  // No match found - fail fast to prevent serving wrong content
+  const requestHeaders = await headers();
+  const requestUrl = `${requestHeaders.get('x-forwarded-proto') || 'http'}://${host}${requestHeaders.get('x-forwarded-path') || requestHeaders.get('x-original-url') || '/'}`;
 
-  const fallbackWebsite = await payload.find({
-    collection: 'websites',
-    pagination: false,
-    limit: 1,
-  });
+  logger.error(
+    {
+      host,
+      requestedUrl: requestUrl,
+    },
+    'No website configuration found for host'
+  );
 
-  if (fallbackWebsite.docs.length && fallbackWebsite.docs[0]) {
-    logger.info(
-      {
-        host,
-        websiteId: fallbackWebsite.docs[0].id,
-        websiteName: fallbackWebsite.docs[0].name,
-        title: fallbackWebsite.docs[0].title,
-        configuredDomains: fallbackWebsite.docs[0].domains
-      },
-      'Using fallback website (first available)'
-    );
-    return fallbackWebsite.docs[0];
-  }
-
-  logger.error({ host }, 'No websites found in database');
-  return null;
+  throw new Error(`No website configuration found for host: ${host}. Please configure the domain in the website settings.`);
 }
