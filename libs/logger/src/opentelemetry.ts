@@ -32,13 +32,16 @@
  */
 
 // Lazy load OpenTelemetry packages to handle optional peer dependencies
-function loadOpenTelemetry() {
+async function loadOpenTelemetry() {
   try {
-     
-    const { PinoInstrumentation } = require('@opentelemetry/instrumentation-pino');
-     
-    const { LoggerProvider } = require('@opentelemetry/sdk-logs');
-    return { PinoInstrumentation, LoggerProvider };
+    const [pinoModule, logsModule] = await Promise.all([
+      import('@opentelemetry/instrumentation-pino'),
+      import('@opentelemetry/sdk-logs'),
+    ]);
+    return {
+      PinoInstrumentation: pinoModule.PinoInstrumentation,
+      LoggerProvider: logsModule.LoggerProvider
+    };
   } catch {
     return null;
   }
@@ -109,15 +112,15 @@ let loggerProvider: any | null = null;
  * import { OTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-http';
  * import { BatchLogRecordProcessor } from '@opentelemetry/sdk-logs';
  *
- * setupOpenTelemetryLogger({
+ * await setupOpenTelemetryLogger({
  *   logRecordProcessor: new BatchLogRecordProcessor(
  *     new OTLPLogExporter() // Reads from env vars
  *   )
  * });
  */
-export function setupOpenTelemetryLogger(
+export async function setupOpenTelemetryLogger(
   options: OpenTelemetryLoggerOptions = {}
-): void {
+): Promise<void> {
   // Check if we're running in a browser environment
   if (typeof window !== 'undefined') {
     console.warn('[logger] OpenTelemetry integration is server-side only - skipping in browser');
@@ -132,7 +135,7 @@ export function setupOpenTelemetryLogger(
   }
 
   // Lazy load OpenTelemetry packages
-  const otel = loadOpenTelemetry();
+  const otel = await loadOpenTelemetry();
 
   if (!otel) {
     console.warn('[logger] OpenTelemetry packages not available - integration disabled');

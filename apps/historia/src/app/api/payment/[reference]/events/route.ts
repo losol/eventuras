@@ -44,8 +44,8 @@ export async function GET(
     async start(controller) {
       let isActive = true;
       let pollCount = 0;
-      let currentInterval = 2000; // Start with 2 seconds
-      const MAX_POLLS = 50; // Safety limit: ~8 minutes at max interval
+      let currentInterval = 3000; // Start with 3 seconds
+      const MAX_POLLS = 30; // Safety limit: ~3 minutes total
 
       // Keepalive interval to prevent connection timeout
       const keepaliveInterval = setInterval(() => {
@@ -94,13 +94,13 @@ export async function GET(
         }
 
         // Implement backoff strategy:
-        // 0-10s: poll every 2s (5 attempts)
-        // 10-60s: poll every 5s (10 attempts)
-        // 60s+: poll every 10s (remaining time)
-        if (pollCount === 5) {
+        // 0-9s: poll every 3s (3 attempts)
+        // 9-39s: poll every 5s (6 attempts)
+        // 39s+: poll every 10s (remaining time)
+        if (pollCount === 3) {
           currentInterval = 5000;
           logger.debug({ reference, newInterval: '5s' }, 'Increasing poll interval');
-        } else if (pollCount === 15) {
+        } else if (pollCount === 9) {
           currentInterval = 10000;
           logger.debug({ reference, newInterval: '10s' }, 'Increasing poll interval');
         }
@@ -120,7 +120,68 @@ export async function GET(
           });
 
           if (transactions.docs.length === 0) {
-            logger.debug({ reference, pollCount }, 'Transaction not found yet, continuing to poll');
+            logger.debug({ reference, pollCount }, 'Transaction not found yet');
+
+            // Fallback: After 3 polls (9 seconds), try polling Vipps API directly
+            // This handles cases where webhook is not configured/arrives late
+            if (pollCount >= 3) {
+              logger.info({ reference, pollCount }, 'Trying Vipps API fallback after no transaction found');
+
+              try {
+                const { getPaymentDetails } = await import('@eventuras/vipps/epayment-v1');
+                const { getVippsConfig } = await import('@/lib/vipps/config');
+
+                const vippsConfig = getVippsConfig();
+                const paymentDetails = await getPaymentDetails(vippsConfig, reference);
+
+                logger.info(
+                  {
+                    reference,
+                    state: paymentDetails.state,
+                    capturedAmount: paymentDetails.aggregate.capturedAmount.value,
+                    authorizedAmount: paymentDetails.aggregate.authorizedAmount.value,
+                    pollCount
+                  },
+                  'Got payment details from Vipps API'
+                );
+
+                // Check if payment is authorized or captured
+                const isAuthorized = paymentDetails.state === 'AUTHORIZED';
+                const isCaptured = paymentDetails.aggregate.capturedAmount.value > 0;
+
+                if (isAuthorized || isCaptured) {
+                  const status = isCaptured ? 'captured' : 'authorized';
+                  logger.info(
+                    { reference, state: paymentDetails.state, status },
+                    'Payment confirmed via Vipps API fallback'
+                  );
+
+                  controller.enqueue(
+                    encoder.encode(
+                      `data: ${JSON.stringify({
+                        status,
+                        source: 'vipps-api-fallback',
+                      })}\n\n`
+                    )
+                  );
+
+                  isActive = false;
+                  clearInterval(keepaliveInterval);
+                  controller.close();
+                  return;
+                }
+              } catch (apiError) {
+                logger.warn(
+                  {
+                    error: apiError,
+                    errorMessage: apiError instanceof Error ? apiError.message : String(apiError),
+                    reference,
+                    pollCount
+                  },
+                  'Failed to poll Vipps API, continuing with database polling'
+                );
+              }
+            }
 
             // No transaction yet - webhook hasn't arrived or hasn't been processed
             // Continue polling
