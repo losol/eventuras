@@ -81,14 +81,14 @@ ARG NEXT_PUBLIC_CMS_DEFAULT_LOCALE=no
 ENV NEXT_PUBLIC_CMS_DEFAULT_LOCALE=${NEXT_PUBLIC_CMS_DEFAULT_LOCALE}
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Sentry configuration for build-time injection (required for NEXT_PUBLIC_* vars)
-ARG FEATURE_SENTRY=false
-ARG NEXT_PUBLIC_CMS_SENTRY_DSN
+# Sentry configuration for build-time injection (required for NEXT_PUBLIC_* vars and source maps)
+ARG NEXT_PUBLIC_FEATURE_SENTRY=false
+ARG NEXT_PUBLIC_SENTRY_DSN
 ARG CMS_SENTRY_ORG
 ARG CMS_SENTRY_PROJECT
 ARG NEXT_PUBLIC_CMS_SENTRY_SEND_DEFAULT_PII=false
-ENV FEATURE_SENTRY=${FEATURE_SENTRY}
-ENV NEXT_PUBLIC_CMS_SENTRY_DSN=${NEXT_PUBLIC_CMS_SENTRY_DSN}
+ENV NEXT_PUBLIC_FEATURE_SENTRY=${NEXT_PUBLIC_FEATURE_SENTRY}
+ENV NEXT_PUBLIC_SENTRY_DSN=${NEXT_PUBLIC_SENTRY_DSN}
 ENV CMS_SENTRY_ORG=${CMS_SENTRY_ORG}
 ENV CMS_SENTRY_PROJECT=${CMS_SENTRY_PROJECT}
 ENV NEXT_PUBLIC_CMS_SENTRY_SEND_DEFAULT_PII=${NEXT_PUBLIC_CMS_SENTRY_SEND_DEFAULT_PII}
@@ -106,11 +106,13 @@ WORKDIR /app/apps/historia
 
 # Build with Sentry auth token mounted as secret (not stored in image)
 # Increase Node.js heap size for large builds
+# Build with Sentry auth token mounted as secret (not stored in image)
+# Increase Node.js heap size for large builds
 RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store \
   --mount=type=cache,id=next-cache,target=/app/apps/historia/.next/cache \
   --mount=type=secret,id=sentry_auth_token \
-  CMS_SENTRY_AUTH_TOKEN=$(cat /run/secrets/sentry_auth_token || echo "") \
-  NODE_OPTIONS="--max-old-space-size=4096" \
+  export CMS_SENTRY_AUTH_TOKEN=$(cat /run/secrets/sentry_auth_token 2>/dev/null || echo "") && \
+  export NODE_OPTIONS="--max-old-space-size=4096" && \
   pnpm next build --webpack --experimental-build-mode compile
 
 ##########################
@@ -126,11 +128,12 @@ ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
 # Sentry runtime environment variables
-# Note: CMS_SENTRY_DSN is for server-side, NEXT_PUBLIC_CMS_SENTRY_DSN is baked in at build-time
-ARG FEATURE_SENTRY=false
-ARG NEXT_PUBLIC_CMS_SENTRY_DSN
-ENV FEATURE_SENTRY=${FEATURE_SENTRY}
-ENV NEXT_PUBLIC_CMS_SENTRY_DSN=${NEXT_PUBLIC_CMS_SENTRY_DSN}
+# Note: NEXT_PUBLIC_* vars are also baked into client bundle at build-time,
+# but server-side code (SSR, API routes) needs them at runtime too
+ARG NEXT_PUBLIC_FEATURE_SENTRY=false
+ARG NEXT_PUBLIC_SENTRY_DSN
+ENV NEXT_PUBLIC_FEATURE_SENTRY=${NEXT_PUBLIC_FEATURE_SENTRY}
+ENV NEXT_PUBLIC_SENTRY_DSN=${NEXT_PUBLIC_SENTRY_DSN}
 
 # Create non-root user
 RUN addgroup --system --gid 1001 nodejs \

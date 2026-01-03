@@ -4,15 +4,26 @@
 
 import * as Sentry from '@sentry/nextjs';
 
-Sentry.init({
-  dsn: process.env.NEXT_PUBLIC_CMS_SENTRY_DSN,
+const isSentryEnabled = process.env.NEXT_PUBLIC_FEATURE_SENTRY === 'true';
+const sentryDsn = process.env.NEXT_PUBLIC_SENTRY_DSN;
 
-  // Enable logs to be sent to Sentry
-  enableLogs: true,
+if (isSentryEnabled && sentryDsn) {
+  Sentry.init({
+    dsn: sentryDsn,
 
-  // Enable sending user PII (Personally Identifiable Information).
-  // Can be controlled via NEXT_PUBLIC_CMS_SENTRY_SEND_DEFAULT_PII ('true' to enable, 'false' to disable).
-  sendDefaultPii: process.env.NEXT_PUBLIC_CMS_SENTRY_SEND_DEFAULT_PII
-    ? process.env.NEXT_PUBLIC_CMS_SENTRY_SEND_DEFAULT_PII === 'true'
-    : false,
-});
+    // Enable logs to be sent to Sentry
+    enableLogs: true,
+
+    // Enable sending user PII (Personally Identifiable Information).
+    // Can be controlled via NEXT_PUBLIC_CMS_SENTRY_SEND_DEFAULT_PII ('true' to enable, 'false' to disable).
+    sendDefaultPii: process.env.NEXT_PUBLIC_CMS_SENTRY_SEND_DEFAULT_PII
+      ? process.env.NEXT_PUBLIC_CMS_SENTRY_SEND_DEFAULT_PII === 'true'
+      : true,
+  });
+
+  console.log('[Sentry] Server-side initialized successfully');
+} else {
+  console.log(
+    `[Sentry] Server-side disabled (NEXT_PUBLIC_FEATURE_SENTRY=${process.env.NEXT_PUBLIC_FEATURE_SENTRY}, has DSN=${!!sentryDsn})`
+  );
+}
