@@ -1,4 +1,5 @@
 import type { TemplateRegistry } from '../../../types';
+import { buildOrderShippedTemplate } from '../../utils/orderShippedBuilder';
 
 /**
  * Norwegian Nynorsk email templates
@@ -132,23 +133,22 @@ Beste helsing,
 
   'email:order-shipped': {
     subject: 'Ordren din er sendt - #{{orderId}}',
-    content: `Hei {{name}},
-
-Gode nyhendar! Ordren din er sendt.
-
-Ordredetaljar:
-- Ordre-ID: {{orderId}}
-{{#if trackingNumber}}
-- Sporingsnummer: {{trackingNumber}}
-{{/if}}
-{{#if trackingUrl}}
-- Spor pakken din: {{trackingUrl}}
-{{/if}}
-
-Estimert levering: {{estimatedDelivery}}
-
-Beste helsing,
-{{organizationName}}-teamet`,
+    content: buildOrderShippedTemplate({
+      headerTitle: 'Ordren din er sendt! 🎉',
+      greeting: 'Hei {{name}}! 👋',
+      shippedMessage: 'Gode nyhendar! Ordren din har vorte sendt og er no på veg til deg. Du kan følgje med på leveringa med informasjonen nedanfor.',
+      shipmentDetailsTitle: 'Sendingsdetaljar',
+      orderNumberLabel: 'Ordrenummer',
+      trackingNumberLabel: 'Sporingsnummer',
+      trackingUrlLabel: 'Spor pakken din',
+      estimatedDeliveryLabel: 'Estimert levering',
+      shippedProductsTitle: 'Sendte produkt',
+      productColumn: 'Produkt',
+      quantityColumn: 'Tal',
+      shippingAddressTitle: 'Leveringsadresse',
+      supportMessage: '💬 Spørsmål om leveringa? Svar på denne e-posten så hjelper vi deg.',
+      footerClosing: 'Med venleg helsing',
+    }),
     description: 'Varsel om sending av ordre (nn-NO)',
   },
 };

@@ -3,7 +3,7 @@ import type { CollectionAfterChangeHook } from 'payload';
 import { Logger } from '@eventuras/logger';
 import { notitiaTemplates } from '@eventuras/notitia-templates';
 
-import type { Order, Shipment, User, Website } from '@/payload-types';
+import type { Order, Product, Shipment, User, Website } from '@/payload-types';
 
 const logger = Logger.create({
   namespace: 'historia:shipments',
@@ -59,6 +59,19 @@ export const sendShipmentNotification: CollectionAfterChangeHook<Shipment> = asy
       organizationName = website.title || organizationName;
     }
 
+    // Build items list for email template
+    const items =
+      order.items?.map((item) => {
+        const productName =
+          typeof item.product === 'string'
+            ? 'Product'
+            : (item.product as Product)?.title || 'Product';
+        return {
+          name: productName,
+          quantity: item.quantity,
+        };
+      }) || [];
+
     // Render the email template
     const emailHtml = notitiaTemplates.render('email', 'order-shipped', {
       name: customerName,
@@ -69,6 +82,16 @@ export const sendShipmentNotification: CollectionAfterChangeHook<Shipment> = asy
         ? new Date(doc.deliveredAt).toLocaleDateString('nb-NO')
         : undefined,
       organizationName,
+      items: items.length > 0 ? items : undefined,
+      shippingAddress: order.shippingAddress
+        ? {
+            addressLine1: order.shippingAddress.addressLine1,
+            addressLine2: order.shippingAddress.addressLine2,
+            postalCode: order.shippingAddress.postalCode,
+            city: order.shippingAddress.city,
+            country: order.shippingAddress.country,
+          }
+        : undefined,
     });
 
     // Send the email
