@@ -1,5 +1,11 @@
 # @eventuras/historia
 
+## 0.18.1
+
+### Patch Changes
+
+- fix: use norwegien shipping confirmation as default
+
 ## 0.18.0
 
 ### Minor Changes
