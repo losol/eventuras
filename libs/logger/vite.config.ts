@@ -1,5 +1,8 @@
 import { defineVanillaLibConfig } from '@eventuras/vite-config/vanilla-lib';
 
 export default defineVanillaLibConfig({
-  entry: 'src/index.ts',
+  entry: {
+    index: 'src/index.ts',
+    opentelemetry: 'src/opentelemetry.ts',
+  },
 });

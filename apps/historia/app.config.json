@@ -116,6 +116,25 @@
       "type": "bool",
       "description": "Enable sending user PII to Sentry",
       "default": "true"
+    },
+    "OTEL_EXPORTER_OTLP_LOGS_ENDPOINT": {
+      "required": false,
+      "client": false,
+      "type": "url",
+      "description": "OpenTelemetry OTLP logs endpoint (e.g., Sentry: https://[org].ingest.sentry.io/api/[project]/integration/otlp/v1/logs). Sentry docs: https://docs.sentry.io/concepts/otlp/"
+    },
+    "OTEL_EXPORTER_OTLP_LOGS_HEADERS": {
+      "required": false,
+      "client": false,
+      "type": "string",
+      "description": "OpenTelemetry OTLP logs authentication headers (e.g., x-sentry-auth=sentry sentry_key=[key])"
+    },
+    "OTEL_SERVICE_NAME": {
+      "required": false,
+      "client": false,
+      "type": "string",
+      "description": "OpenTelemetry service name",
+      "default": "historia"
     }
   }
 }
