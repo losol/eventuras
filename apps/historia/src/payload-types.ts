@@ -1238,7 +1238,10 @@ export interface Shipment {
 export interface Transaction {
   id: string;
   tenant?: (string | null) | Website;
-  order: string | Order;
+  /**
+   * The order this transaction belongs to. Can be null for orphaned payments that will be linked later.
+   */
+  order?: (string | null) | Order;
   customer?: (string | null) | User;
   /**
    * Amount in minor units (øre for NOK, cents for USD/EUR). Positive for payments, negative for refunds.
