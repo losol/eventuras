@@ -21,6 +21,7 @@ import {
 
 import { setCartPaymentReference } from '@/app/actions/cart';
 import { appConfig } from '@/config.server';
+import { saveCartToDatabase } from '@/lib/cart/saveCartToDatabase';
 import { SHIPPING_OPTIONS } from '@/lib/shipping/options';
 import { getVippsConfig } from '@/lib/vipps/config';
 import type { Product } from '@/payload-types';
@@ -211,7 +212,23 @@ export async function createVippsPayment({
   userLanguage = 'no',
 }: CreateVippsPaymentParams): Promise<ServerActionResult<CreatePaymentResponse>> {
   try {
-    // Calculate cart totals server-side
+    // STEP 1: Save cart to database for secure payment validation
+    // This ensures cart persists during payment flow even if session expires
+    const saveResult = await saveCartToDatabase();
+    if (!saveResult.success) {
+      logger.error(
+        { error: saveResult.error },
+        'Failed to save cart to database',
+      );
+      return actionError(
+        'Failed to save cart to database',
+      );
+    }
+
+    const { cartId, cartSecret } = saveResult.data;
+    logger.info({ cartId }, 'Cart saved to database successfully');
+
+    // STEP 2: Calculate cart totals server-side
     const cartResult = await calculateCart(items);
     if (!cartResult.success) {
       logger.error({ error: cartResult.error }, 'Failed to calculate cart');
@@ -333,6 +350,23 @@ export async function createVippsPayment({
 
     // Store payment reference in cart session
     await setCartPaymentReference(reference);
+
+    // Update cart in database with payment reference for recovery if session is lost
+    try {
+      const payload = await getPayload({ config: configPromise });
+      await payload.update({
+        collection: 'carts' as any,
+        id: cartId,
+        data: {
+          paymentReference: reference,
+        },
+        overrideAccess: true, // We have the cartId from saveCartToDatabase
+      });
+      logger.debug({ cartId, reference }, 'Cart updated with payment reference');
+    } catch (error) {
+      // Non-critical - cart can still be recovered via session
+      logger.warn({ error, cartId, reference }, 'Failed to update cart with payment reference');
+    }
 
     logger.info({ reference }, 'Vipps payment created');
 

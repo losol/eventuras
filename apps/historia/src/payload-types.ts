@@ -81,6 +81,7 @@ export interface Config {
   collections: {
     articles: Article;
     'business-events': BusinessEvent;
+    carts: Cart;
     happenings: Happening;
     licenses: License;
     media: Media;
@@ -118,6 +119,7 @@ export interface Config {
   collectionsSelect: {
     articles: ArticlesSelect<false> | ArticlesSelect<true>;
     'business-events': BusinessEventsSelect<false> | BusinessEventsSelect<true>;
+    carts: CartsSelect<false> | CartsSelect<true>;
     happenings: HappeningsSelect<false> | HappeningsSelect<true>;
     licenses: LicensesSelect<false> | LicensesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
@@ -1267,6 +1269,38 @@ export interface Transaction {
   createdAt: string;
 }
 /**
+ * Shopping carts saved at payment initiation for secure validation
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "carts".
+ */
+export interface Cart {
+  id: string;
+  tenant?: (string | null) | Website;
+  items: {
+    /**
+     * Product ID (validated in beforeChange hook)
+     */
+    productId: string;
+    /**
+     * Quantity of this product
+     */
+    quantity: number;
+    id?: string | null;
+  }[];
+  /**
+   * Payment provider reference (set during payment creation)
+   */
+  paymentReference?: string | null;
+  secret?: string | null;
+  /**
+   * Customer who owns this cart (nullable for guest checkout)
+   */
+  customer?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "happenings".
  */
@@ -1936,6 +1970,10 @@ export interface PayloadLockedDocument {
         value: string | BusinessEvent;
       } | null)
     | ({
+        relationTo: 'carts';
+        value: string | Cart;
+      } | null)
+    | ({
         relationTo: 'happenings';
         value: string | Happening;
       } | null)
@@ -2161,6 +2199,25 @@ export interface BusinessEventsSelect<T extends boolean = true> {
   externalReference?: T;
   data?: T;
   error?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "carts_select".
+ */
+export interface CartsSelect<T extends boolean = true> {
+  tenant?: T;
+  items?:
+    | T
+    | {
+        productId?: T;
+        quantity?: T;
+        id?: T;
+      };
+  paymentReference?: T;
+  secret?: T;
+  customer?: T;
   updatedAt?: T;
   createdAt?: T;
 }

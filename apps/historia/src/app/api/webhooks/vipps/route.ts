@@ -53,8 +53,37 @@ export async function POST(request: NextRequest) {
   logger.info('Webhook request received');
 
   try {
+    // Log all headers FIRST - before reading body or any validation
+    const allHeaders: Record<string, string> = {};
+    request.headers.forEach((value, key) => {
+      allHeaders[key] = value;
+    });
+
+    const url = new URL(request.url);
+
+    logger.info(
+      {
+        url: request.url,
+        method: request.method,
+        host: request.headers.get('host'),
+        pathAndQuery: url.pathname + url.search,
+        headers: allHeaders,
+        headerKeys: Object.keys(allHeaders), // Easier to see what headers are present
+      },
+      'Incoming webhook request - full details'
+    );
+
     // Read raw body for signature verification
     const rawBody = await request.text();
+
+    logger.info(
+      {
+        bodyLength: rawBody.length,
+        bodyPreview: rawBody.substring(0, 200),
+        isEmptyBody: rawBody.length === 0,
+      },
+      'Webhook body received'
+    );
 
     // Get headers for signature verification
     const xMsDate = request.headers.get('x-ms-date');
@@ -64,18 +93,25 @@ export async function POST(request: NextRequest) {
 
     if (!xMsDate || !xMsContentSha256 || !host || !authorization) {
       logger.warn(
-        { xMsDate, xMsContentSha256, host, authorization: !!authorization },
+        {
+          xMsDate,
+          xMsContentSha256,
+          host,
+          authorization: !!authorization,
+          allHeaderKeys: Object.keys(allHeaders),
+        },
         'Missing required webhook headers'
       );
       return NextResponse.json(
-        { error: 'Missing required headers' },
+        { error: 'Missing required headers', required: ['x-ms-date', 'x-ms-content-sha256', 'host', 'authorization'] },
         { status: 400 }
       );
     }
 
-    logger.info({ xMsDate }, 'Processing webhook');
+    logger.info({ xMsDate }, 'Processing webhook - validating signature');
 
     // Verify webhook signature
+    // See: https://developer.vippsmobilepay.com/docs/APIs/webhooks-api/request-authentication/
     const webhookSecret = process.env.VIPPS_WEBHOOK_SECRET;
     if (!webhookSecret) {
       logger.error('VIPPS_WEBHOOK_SECRET not configured');
@@ -85,7 +121,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const url = new URL(request.url);
     const isValid = verifyWebhookSignature(
       {
         method: 'POST',
@@ -102,14 +137,25 @@ export async function POST(request: NextRequest) {
     );
 
     if (!isValid) {
-      logger.error({ xMsDate }, 'Invalid webhook signature');
+      logger.error(
+        {
+          xMsDate,
+          host,
+          pathAndQuery: url.pathname + url.search,
+          contentSha256: xMsContentSha256,
+          authHeader: authorization?.substring(0, 50) + '...', // Log first 50 chars only
+          bodyLength: rawBody.length,
+          expectedSignatureFormat: 'HMAC-SHA256 SignedHeaders=x-ms-date;host;x-ms-content-sha256&Signature=...',
+        },
+        'Invalid webhook signature - HMAC verification failed. Check VIPPS_WEBHOOK_SECRET matches registration.'
+      );
       return NextResponse.json(
         { error: 'Invalid signature' },
         { status: 401 }
       );
     }
 
-    logger.debug('Webhook signature verified');
+    logger.info('Webhook signature verified successfully');
 
     // Parse webhook payload
     const payload = parseWebhookPayload(rawBody);
@@ -251,6 +297,20 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
+}
+
+/**
+ * GET handler for webhook verification
+ * Some webhook systems send GET requests to verify endpoint availability
+ */
+export async function GET(request: NextRequest) {
+  logger.info('Webhook verification request received (GET)');
+
+  return NextResponse.json({
+    status: 'ok',
+    endpoint: 'vipps-webhook',
+    message: 'Webhook endpoint is active and ready to receive POST requests',
+  });
 }
 
 /**

@@ -65,10 +65,23 @@ async function main() {
     console.log(`📋 Found ${webhooks.length} webhook(s):\n`);
 
     webhooks.forEach((webhook, i) => {
-      console.log(`${i + 1}. ID: ${webhook.id}`);
-      console.log(`   URL: ${webhook.url}`);
-      console.log(`   Events: ${webhook.events.join(', ')}\n`);
+      console.log(`${i + 1}. Webhook Details:`);
+      console.log(`   ID:         ${webhook.id}`);
+      console.log(`   URL:        ${webhook.url}`);
+      console.log(`   Created:    ${new Date(webhook.createdAt).toLocaleString('no-NO')}`);
+      console.log(`   Events (${webhook.events.length}):`);
+      webhook.events.forEach((event) => {
+        console.log(`               - ${event}`);
+      });
+      console.log('');
     });
+
+    // Summary
+    console.log('📊 Summary:');
+    console.log(`   Total webhooks: ${webhooks.length}`);
+    const allEvents = new Set(webhooks.flatMap((w) => w.events));
+    console.log(`   Unique events:  ${allEvents.size}`);
+    console.log(`   Events covered: ${Array.from(allEvents).join(', ')}\n`);
   } catch (error) {
     console.error('\n❌ Failed to list webhooks:');
     if (error instanceof Error) {

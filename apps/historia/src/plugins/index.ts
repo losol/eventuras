@@ -131,6 +131,7 @@ export const plugins: Plugin[] = [
     cleanupAfterTenantDelete: false,
     collections: {
       articles: {},
+      carts: {},
       happenings: {},
       notes: {},
       orders: {},

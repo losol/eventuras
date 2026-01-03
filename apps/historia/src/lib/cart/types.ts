@@ -24,8 +24,8 @@ export interface CustomerInfo {
 
 export interface Cart {
   items: CartItem[];
-  createdAt: string;
-  expiresAt: string;
+  createdAt?: string;
+  expiresAt?: string;
   paymentReference?: string;
   customerInfo?: CustomerInfo;
 }
@@ -37,4 +37,12 @@ export interface SessionData {
   cart?: Cart;
   /** List of payment references owned by this session for access control */
   paymentReferences?: string[];
+  /**
+   * Database cart ID - set when cart is saved to database at payment initiation
+   */
+  cartId?: string;
+  /**
+   * Cart secret for secure access to database cart during payment callback
+   */
+  cartSecret?: string;
 }
