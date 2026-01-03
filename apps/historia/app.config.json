@@ -85,9 +85,9 @@
       "type": "string",
       "description": "Secret token for validating Vipps callbacks"
     },
-    "FEATURE_SENTRY": {
+    "NEXT_PUBLIC_FEATURE_SENTRY": {
       "required": false,
-      "client": false,
+      "client": true,
       "type": "bool",
       "description": "Enable Sentry error tracking",
       "default": "false"
@@ -104,7 +104,7 @@
       "type": "string",
       "description": "Sentry project slug"
     },
-    "NEXT_PUBLIC_CMS_SENTRY_DSN": {
+    "NEXT_PUBLIC_SENTRY_DSN": {
       "required": false,
       "client": true,
       "type": "string",

@@ -43,7 +43,7 @@ const areAllS3VarsPresent = requiredS3MediaVars.every(varName => process.env[var
 
 export const plugins: Plugin[] = [
   sentryPlugin({
-    enabled: process.env.FEATURE_SENTRY === 'true',
+    enabled: process.env.NEXT_PUBLIC_FEATURE_SENTRY === 'true',
     options: {
       captureErrors: [400, 403, 500],
       context: ({ defaultContext, req }) => {
