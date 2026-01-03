@@ -2,9 +2,7 @@ import { NextRequest } from 'next/server';
 import { getPayload } from 'payload';
 
 import { Logger } from '@eventuras/logger';
-import { getPaymentDetails } from '@eventuras/vipps/epayment-v1';
 
-import { getVippsConfig } from '@/lib/vipps/config';
 import config from '@/payload.config';
 
 const logger = Logger.create({
@@ -16,7 +14,19 @@ const logger = Logger.create({
  * Server-Sent Events endpoint for real-time payment status updates
  *
  * Client connects to this endpoint while waiting for payment completion.
- * The endpoint polls the transaction status and sends updates via SSE.
+ * The endpoint polls transactions (not business-events) to detect status changes.
+ *
+ * Architecture:
+ * - Transactions are the source of truth (created by webhook)
+ * - Business-events are audit logs only (not polled for state)
+ * - SSE polls transactions.status to detect payment completion
+ *
+ * Flow:
+ * 1. Poll transactions by paymentReference
+ * 2. If transaction found with authorized/captured status:
+ *    - If has order: notify client (payment already processed)
+ *    - If no order: notify client to trigger order creation (orphaned transaction)
+ * 3. If transaction not found yet: continue polling (webhook not arrived)
  *
  * @param params.reference - Payment reference from Vipps
  */
@@ -110,253 +120,124 @@ export async function GET(
           });
 
           if (transactions.docs.length === 0) {
-            logger.debug({ reference }, 'Transaction not found yet, checking payment status');
+            logger.debug({ reference, pollCount }, 'Transaction not found yet, continuing to poll');
 
-            // Strategy 1: Check if we have any AUTHORIZED/CAPTURED payment events from webhook
-            const events = await payloadInstance.find({
-              collection: 'business-events',
-              where: {
-                and: [
-                  {
-                    eventType: {
-                      equals: 'payment',
-                    },
-                  },
-                  {
-                    externalReference: {
-                      equals: reference,
-                    },
-                  },
-                ],
-              },
-              limit: 1,
-              sort: '-createdAt',
-            });
-
-            if (events.docs.length > 0) {
-              const event = events.docs[0];
-              const eventData = event.data as Record<string, unknown>;
-              const eventName = eventData?.name as string;
-
-              // Only trigger order creation for successful payment events
-              if (eventName === 'AUTHORIZED' || eventName === 'CAPTURED') {
-                logger.info(
-                  { reference, eventType: eventName },
-                  'Found AUTHORIZED/CAPTURED payment event from webhook, sending status update'
-                );
-
-                controller.enqueue(
-                  encoder.encode(
-                    `data: ${JSON.stringify({
-                      status: 'authorized',
-                      source: 'webhook',
-                    })}\n\n`
-                  )
-                );
-
-                isActive = false;
-                clearInterval(keepaliveInterval);
-                controller.close();
-                return;
-              } else if (eventName === 'ABORTED' || eventName === 'EXPIRED' || eventName === 'TERMINATED') {
-                // Payment failed - send failure status immediately
-                logger.info(
-                  { reference, eventType: eventName },
-                  'Found payment failure event from webhook, sending failure status'
-                );
-
-                controller.enqueue(
-                  encoder.encode(
-                    `data: ${JSON.stringify({
-                      status: 'failed',
-                      failureReason: eventName.toLowerCase(),
-                      source: 'webhook',
-                    })}\n\n`
-                  )
-                );
-
-                isActive = false;
-                clearInterval(keepaliveInterval);
-                controller.close();
-                return;
-              } else {
-                // Other event types (e.g., CREATED) - continue polling
-                logger.debug(
-                  { reference, eventType: eventName },
-                  'Found payment event from webhook, but not terminal state - continue polling'
-                );
-              }
-            }
-
-            // Strategy 2: Poll Vipps API directly
-            try {
-              const vippsConfig = getVippsConfig();
-              const paymentDetails = await getPaymentDetails(vippsConfig, reference);
-
-              // Check if payment is authorized or captured
-              const isAuthorized = paymentDetails.state === 'AUTHORIZED';
-              const isCaptured = paymentDetails.aggregate.capturedAmount.value > 0;
-
-              if (isAuthorized || isCaptured) {
-                logger.info(
-                  {
-                    reference,
-                    state: paymentDetails.state,
-                    capturedAmount: paymentDetails.aggregate.capturedAmount.value,
-                  },
-                  'Payment verified via Vipps API polling, sending status update'
-                );
-
-                controller.enqueue(
-                  encoder.encode(
-                    `data: ${JSON.stringify({
-                      status: isCaptured ? 'captured' : 'authorized',
-                      source: 'vipps-api',
-                    })}\n\n`
-                  )
-                );
-
-                isActive = false;
-                clearInterval(keepaliveInterval);
-
-                controller.close();
-                return;
-              }
-
-              // Check if payment failed
-              const isAborted = paymentDetails.state === 'ABORTED';
-              const isExpired = paymentDetails.state === 'EXPIRED';
-              const isTerminated = paymentDetails.state === 'TERMINATED';
-
-              if (isAborted || isExpired || isTerminated) {
-                logger.info(
-                  {
-                    reference,
-                    state: paymentDetails.state,
-                  },
-                  'Payment failed, sending failure status update'
-                );
-
-                controller.enqueue(
-                  encoder.encode(
-                    `data: ${JSON.stringify({
-                      status: 'failed',
-                      failureReason: paymentDetails.state.toLowerCase(),
-                      source: 'vipps-api',
-                    })}\n\n`
-                  )
-                );
-
-                isActive = false;
-                clearInterval(keepaliveInterval);
-
-                controller.close();
-                return;
-              }
-
-              logger.debug(
-                { reference, state: paymentDetails.state },
-                'Payment not yet confirmed by Vipps'
-              );
-            } catch (error) {
-              // Check if this is a transient Vipps API error that should be retried silently
-              const errorMessage = error instanceof Error ? error.message : String(error);
-              const isTransientError =
-                errorMessage.includes('423') || // Resource locked
-                errorMessage.includes('500') || // Internal server error
-                errorMessage.includes('502') || // Bad gateway
-                errorMessage.includes('503') || // Service unavailable
-                errorMessage.includes('504');   // Gateway timeout
-
-              if (isTransientError) {
-                // Only log transient errors at debug level to avoid flooding logs
-                logger.debug(
-                  { reference, error: errorMessage },
-                  'Vipps API transient error, will retry'
-                );
-              } else {
-                // Log other errors at debug level too, but with different message
-                logger.debug({ reference, error }, 'Failed to poll Vipps API, will retry');
-              }
-            }
-
+            // No transaction yet - webhook hasn't arrived or hasn't been processed
+            // Continue polling
             return;
           }
 
           const transaction = transactions.docs[0];
-          const status = transaction.status;
 
-          // Send status update to client
-          if (status !== 'pending') {
+          // Check if transaction has successful status (authorized or captured)
+          if (transaction.status === 'authorized' || transaction.status === 'captured') {
+            // Check if transaction already has an order
+            if (transaction.order) {
+              logger.info(
+                {
+                  reference,
+                  transactionId: transaction.id,
+                  orderId: transaction.order,
+                  status: transaction.status
+                },
+                'Transaction already linked to order, notifying client'
+              );
+
+              controller.enqueue(
+                encoder.encode(
+                  `data: ${JSON.stringify({
+                    status: transaction.status,
+                    hasOrder: true,
+                    orderId: typeof transaction.order === 'string' ? transaction.order : transaction.order.id,
+                  })}\n\n`
+                )
+              );
+
+              isActive = false;
+              clearInterval(keepaliveInterval);
+              controller.close();
+              return;
+            }
+
+            // Transaction exists but no order yet - webhook arrived before user returned
+            // Trigger client-side order creation (SSE has session access)
             logger.info(
-              { reference, transactionId: transaction.id, status },
-              'Payment status changed, sending update'
+              {
+                reference,
+                transactionId: transaction.id,
+                status: transaction.status,
+                pollCount
+              },
+              'Orphaned transaction detected - sending signal to client to create order'
             );
 
             controller.enqueue(
               encoder.encode(
                 `data: ${JSON.stringify({
-                  status,
-                  transactionId: transaction.id,
-                  orderId: typeof transaction.order === 'object'
-                    ? transaction.order.id
-                    : transaction.order,
+                  status: transaction.status,
+                  source: 'webhook',
                 })}\n\n`
               )
             );
 
-            // Close connection after sending final status
             isActive = false;
             clearInterval(keepaliveInterval);
             controller.close();
+            return;
           }
-        } catch (error) {
-          logger.error({
-            error,
-            errorName: error instanceof Error ? error.name : 'Unknown',
-            errorMessage: error instanceof Error ? error.message : String(error),
-            stack: error instanceof Error ? error.stack : undefined,
-            reference,
-            pollCount,
-            currentInterval,
-          }, 'CRITICAL: Error checking transaction status in SSE polling');
 
-          // Send error to client
-          controller.enqueue(
-            encoder.encode(
-              `data: ${JSON.stringify({ error: 'Failed to check status' })}\n\n`
-            )
+          // Transaction exists but status is not authorized/captured yet
+          if (transaction.status === 'failed') {
+            logger.info(
+              { reference, transactionId: transaction.id, status: transaction.status },
+              'Transaction failed, sending failure status'
+            );
+
+            controller.enqueue(
+              encoder.encode(
+                `data: ${JSON.stringify({
+                  status: 'failed',
+                  source: 'transaction',
+                })}\n\n`
+              )
+            );
+
+            isActive = false;
+            clearInterval(keepaliveInterval);
+            controller.close();
+            return;
+          }
+
+          // Transaction exists but still pending - continue polling
+          logger.debug(
+            { reference, transactionId: transaction.id, status: transaction.status, pollCount },
+            'Transaction pending, continuing to poll'
+          );
+        } catch (error) {
+          logger.error(
+            {
+              error,
+              errorName: error instanceof Error ? error.name : 'Unknown',
+              errorMessage: error instanceof Error ? error.message : String(error),
+              stack: error instanceof Error ? error.stack : undefined,
+              reference,
+              pollCount,
+              currentInterval,
+            },
+            'Error polling payment status'
           );
 
-          isActive = false;
-          clearInterval(keepaliveInterval);
-          controller.close();
+          // Don't close connection on error, just continue polling
         }
       };
 
-      // Start polling
+      // Start polling immediately
+      await pollPaymentStatus();
       schedulePoll();
 
-      // Cleanup after 5 minutes (timeout)
-      setTimeout(() => {
-        if (!isActive) return;
-
-        logger.info({ reference }, 'SSE connection timeout');
-
-        controller.enqueue(
-          encoder.encode(
-            `data: ${JSON.stringify({ timeout: true })}\n\n`
-          )
-        );
-
-        isActive = false;
-        clearInterval(keepaliveInterval);
-        controller.close();
-      }, 5 * 60 * 1000);
-
-      // Handle client disconnect
+      // Cleanup on client disconnect
       request.signal.addEventListener('abort', () => {
-        logger.info({ reference }, 'SSE connection closed by client');
+        logger.info({ reference, pollCount }, 'SSE connection closed by client');
         isActive = false;
         clearInterval(keepaliveInterval);
         controller.close();
@@ -367,9 +248,8 @@ export async function GET(
   return new Response(stream, {
     headers: {
       'Content-Type': 'text/event-stream',
-      'Cache-Control': 'no-cache, no-transform',
-      'Connection': 'keep-alive',
-      'X-Accel-Buffering': 'no', // Disable nginx buffering
+      'Cache-Control': 'no-cache',
+      Connection: 'keep-alive',
     },
   });
 }

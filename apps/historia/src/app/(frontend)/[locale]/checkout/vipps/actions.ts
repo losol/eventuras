@@ -731,39 +731,91 @@ export async function createOrderFromPayment({
       }
     }
 
-    // Create Transaction
+    // Create or update Transaction
     const transactionCreateStart = Date.now();
     const transactionAmount = paymentDetails.aggregate.authorizedAmount.value; // Keep in minor units (øre)
     const transactionCurrency = paymentDetails.aggregate.authorizedAmount.currency;
     const transactionStatus = paymentDetails.state === 'AUTHORIZED' ? 'authorized' : 'captured';
 
-    logger.info(
-      {
-        orderId: order.id,
-        customerId: effectiveUserId,
-        amount: transactionAmount,
-        amountMajor: transactionAmount / 100, // For logging readability
-        currency: transactionCurrency,
-        status: transactionStatus,
-        paymentReference,
-      },
-      'Creating transaction in database'
-    );
-
-    const transaction = await payload.create({
+    // Check if transaction already exists (from webhook)
+    const existingTransactions = await payload.find({
       collection: 'transactions',
-      draft: false,
-      data: {
-        order: order.id,
-        customer: effectiveUserId!,
-        amount: transactionAmount, // Store in minor units
-        currency: transactionCurrency as 'NOK' | 'USD' | 'EUR' | 'SEK' | 'DKK',
-        status: transactionStatus,
-        paymentMethod: 'vipps',
-        paymentReference,
-        tenant: websiteId,
+      where: {
+        paymentReference: {
+          equals: paymentReference,
+        },
       },
+      limit: 1,
     });
+
+    let transaction;
+    if (existingTransactions.docs.length > 0) {
+      // Transaction already exists from webhook - update it with order and customer
+      transaction = existingTransactions.docs[0];
+      
+      logger.info(
+        {
+          transactionId: transaction.id,
+          orderId: order.id,
+          customerId: effectiveUserId,
+          paymentReference,
+          hadOrder: !!transaction.order,
+        },
+        'Transaction already exists (from webhook) - linking to order'
+      );
+
+      transaction = await payload.update({
+        collection: 'transactions',
+        id: transaction.id,
+        data: {
+          order: order.id,
+          customer: effectiveUserId!,
+          amount: transactionAmount,
+          currency: transactionCurrency as 'NOK' | 'USD' | 'EUR' | 'SEK' | 'DKK',
+          status: transactionStatus,
+          paymentMethod: 'vipps',
+          tenant: websiteId,
+        },
+      });
+
+      logger.info(
+        {
+          transactionId: transaction.id,
+          orderId: order.id,
+          paymentReference,
+        },
+        'Orphaned transaction successfully linked to order'
+      );
+    } else {
+      // Create new transaction
+      logger.info(
+        {
+          orderId: order.id,
+          customerId: effectiveUserId,
+          amount: transactionAmount,
+          amountMajor: transactionAmount / 100, // For logging readability
+          currency: transactionCurrency,
+          status: transactionStatus,
+          paymentReference,
+        },
+        'Creating new transaction in database'
+      );
+
+      transaction = await payload.create({
+        collection: 'transactions',
+        draft: false,
+        data: {
+          order: order.id,
+          customer: effectiveUserId!,
+          amount: transactionAmount, // Store in minor units
+          currency: transactionCurrency as 'NOK' | 'USD' | 'EUR' | 'SEK' | 'DKK',
+          status: transactionStatus,
+          paymentMethod: 'vipps',
+          paymentReference,
+          tenant: websiteId,
+        },
+      });
+    }
 
     const transactionCreateTime = Date.now() - transactionCreateStart;
 

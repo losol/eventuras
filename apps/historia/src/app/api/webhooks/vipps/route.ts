@@ -262,12 +262,10 @@ async function processPaymentEvent(businessEventId: string, payload: WebhookPayl
     limit: 1,
   });
 
+  // If no transaction exists, create one (orphaned payment scenario)
+  let transaction;
   if (transactions.docs.length === 0) {
-    // CRITICAL: No transaction found - this could be an orphaned payment!
-    // This happens when user completed payment in Vipps but the session flow failed
-    // (e.g., cross-domain issues, browser closed, network error)
-
-    logger.error(
+    logger.info(
       {
         reference: payload.reference,
         eventType: payload.name,
@@ -275,51 +273,65 @@ async function processPaymentEvent(businessEventId: string, payload: WebhookPayl
         amount: payload.amount,
         businessEventId,
       },
-      'WEBHOOK DETECTED ORPHANED PAYMENT: No transaction found for payment reference'
+      'No transaction found - creating orphaned transaction from webhook'
     );
 
-    // Only handle AUTHORIZED and CAPTURED events (successful payments)
-    if (payload.name === 'AUTHORIZED' || payload.name === 'CAPTURED') {
-      logger.warn(
-        {
-          reference: payload.reference,
-          eventType: payload.name,
-          amount: payload.amount,
-          pspReference: payload.pspReference,
-          businessEventId,
+    // Map event name to transaction status
+    const statusMap: Record<string, string> = {
+      'CREATED': 'pending',
+      'AUTHORIZED': 'authorized',
+      'CAPTURED': 'captured',
+      'CANCELLED': 'failed',
+      'ABORTED': 'failed',
+      'EXPIRED': 'failed',
+      'TERMINATED': 'failed',
+      'REFUNDED': 'refunded',
+    };
+
+    const transactionStatus = statusMap[payload.name] || 'pending';
+
+    // Create transaction without order (will be linked later by SSE)
+    transaction = await payloadInstance.create({
+      collection: 'transactions',
+      data: {
+        order: null, // No order yet - SSE will link it
+        paymentReference: payload.reference,
+        amount: payload.amount.value,
+        currency: payload.amount.currency,
+        status: transactionStatus as TransactionStatus,
+        paymentMethod: 'vipps',
+        customer: null, // Don't know customer yet
+      },
+      draft: false,
+    });
+
+    logger.info(
+      {
+        transactionId: transaction.id,
+        reference: payload.reference,
+        status: transactionStatus,
+        businessEventId,
+      },
+      'Orphaned transaction created - SSE will link to order'
+    );
+
+    // Update business event with transaction relationship
+    await payloadInstance.update({
+      collection: 'business-events',
+      id: businessEventId,
+      data: {
+        entity: {
+          relationTo: 'transactions',
+          value: transaction.id,
         },
-        'Payment authorized/captured but no transaction exists yet. Business event stored for SSE detection.'
-      );
+      },
+    });
 
-      // NOTE: We do NOT attempt order creation here because:
-      // 1. Webhook context has no access to user session → cannot read cart
-      // 2. SSE endpoint polls business-events and will trigger order creation
-      // 3. SSE runs in user's session context → has cart access
-      //
-      // This is normal when webhook arrives before user returns from Vipps.
-      // The SSE-based recovery will handle this case automatically.
-
-      return; // Event stored, SSE will handle order creation
-    } else {
-      // For non-success events (ABORTED, EXPIRED, etc.), just log as warning
-      logger.warn(
-        { reference: payload.reference, eventType: payload.name, businessEventId },
-        'No transaction found for payment reference (non-success event)'
-      );
-
-      await payloadInstance.update({
-        collection: 'business-events',
-        id: businessEventId,
-        data: {
-          error: 'No transaction found for payment reference',
-        },
-      });
-    }
-
-    return;
+    return; // Transaction created, SSE will handle order creation and linking
+  } else {
+    transaction = transactions.docs[0];
   }
 
-  const transaction = transactions.docs[0];
   logger.info(
     {
       transactionId: transaction.id,
@@ -331,17 +343,19 @@ async function processPaymentEvent(businessEventId: string, payload: WebhookPayl
     'Transaction found, updating status'
   );
 
-  // Update business event with entity relationship
-  await payloadInstance.update({
-    collection: 'business-events',
-    id: businessEventId,
-    data: {
-      entity: {
-        relationTo: 'transactions',
-        value: transaction.id,
+  // Update business event with entity relationship (if not already set)
+  if (!transaction.order) {
+    await payloadInstance.update({
+      collection: 'business-events',
+      id: businessEventId,
+      data: {
+        entity: {
+          relationTo: 'transactions',
+          value: transaction.id,
+        },
       },
-    },
-  });
+    });
+  }
 
   // Map event name to transaction status
   const statusMap: Record<string, string> = {

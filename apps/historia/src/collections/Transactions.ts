@@ -28,8 +28,11 @@ export const Transactions: CollectionConfig = {
       name: 'order',
       type: 'relationship',
       relationTo: 'orders',
-      required: true,
+      required: false,
       index: true,
+      admin: {
+        description: 'The order this transaction belongs to. Can be null for orphaned payments that will be linked later.',
+      },
     },
     {
       name: 'customer',
