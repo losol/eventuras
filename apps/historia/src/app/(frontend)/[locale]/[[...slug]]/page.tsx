@@ -141,7 +141,18 @@ export default async function Page({ params: paramsPromise }: Args) {
 
   // Return 404 for invalid locale
   if (!locales.includes(locale)) {
-    console.warn(`Invalid locale: ${locale}`);
+    const headersData = await headers();
+    const ip = headersData.get('x-forwarded-for')?.split(',')[0].trim() ||
+               headersData.get('x-real-ip') ||
+               'unknown';
+    const userAgent = headersData.get('user-agent') || 'unknown';
+
+    console.warn('Invalid locale access attempt', {
+      locale,
+      ip,
+      userAgent,
+      timestamp: new Date().toISOString(),
+    });
     notFound();
   }
 
@@ -329,7 +340,18 @@ const queryPageByBreadcrumbsUrl = cache(async ({
     });
 
     if (!page) {
-      console.warn(`No page found for breadcrumbs URL: ${breadcrumbsUrl}`);
+      const headersData = await headers();
+      const ip = headersData.get('x-forwarded-for')?.split(',')[0].trim() ||
+                 headersData.get('x-real-ip') ||
+                 'unknown';
+      const userAgent = headersData.get('user-agent') || 'unknown';
+
+      console.warn('No page found for breadcrumbs URL', {
+        breadcrumbsUrl,
+        ip,
+        userAgent,
+        timestamp: new Date().toISOString(),
+      });
       return null;
     }
 
