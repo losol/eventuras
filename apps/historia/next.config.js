@@ -1,4 +1,5 @@
 import { withPayload } from '@payloadcms/next/withPayload'
+import { withSentryConfig } from '@sentry/nextjs'
 
 import redirects from './redirects.js'
 
@@ -26,14 +27,8 @@ const nextConfig = {
   redirects,
 }
 
-export default withPayload(nextConfig)
-
-
-// Injected content via Sentry wizard below
-
-const { withSentryConfig } = require("@sentry/nextjs");
-
-module.exports = withSentryConfig(module.exports, {
+// Compose the configurations: Sentry wraps Payload
+export default withSentryConfig(withPayload(nextConfig), {
   // For all available options, see:
   // https://www.npmjs.com/package/@sentry/webpack-plugin#options
 
@@ -53,7 +48,7 @@ module.exports = withSentryConfig(module.exports, {
   // This can increase your server load as well as your hosting bill.
   // Note: Check that the configured route will not match with your Next.js middleware, otherwise reporting of client-
   // side errors will fail.
-  tunnelRoute: "/monitoring",
+  tunnelRoute: '/monitoring',
 
   webpack: {
     // Enables automatic instrumentation of Vercel Cron Monitors. (Does not yet work with App Router route handlers.)
@@ -68,4 +63,4 @@ module.exports = withSentryConfig(module.exports, {
       removeDebugLogging: true,
     },
   },
-});
+})
