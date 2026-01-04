@@ -177,11 +177,19 @@ export const sendOrderConfirmation: CollectionAfterChangeHook<Order> = async ({
     // Send packing list to sales contacts
     if (salesEmails.length > 0) {
       try {
+        // Fetch order with populated product relationships for packing list
+        const orderWithProducts = (await payload.findByID({
+          collection: 'orders',
+          id: doc.id,
+          depth: 1, // Populate product relationships
+          req, // Pass request context for authentication
+        })) as Order;
+
         // Create notifier and send (easy to swap out email for other methods later)
         const notifier = createPackingNotifier(payload, 'email');
         await notifier.notify({
           targets: salesEmails.map(email => ({ email })),
-          order: doc,
+          order: orderWithProducts,
           customerName,
           locale: salesEmailLocale,
         });
