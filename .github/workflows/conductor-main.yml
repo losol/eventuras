@@ -10,6 +10,13 @@ on:
       - 'libs/logger/**'
       - 'libs/typescript-config/**'
       - '.github/workflows/conductor-deploy.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'apps/conductor/**'
+      - 'libs/typescript-config/**'
+      - '.github/workflows/conductor-deploy.yml'
 
 env:
   DOCKER_ORG: losolio
@@ -30,7 +37,11 @@ jobs:
       - name: Set Docker Tag
         run: |
           SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
-          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            PR_NUMBER=${{ github.event.pull_request.number }}
+            echo "DOCKER_TAG=${{ env.DOCKER_ORG }}/${{ env.DOCKER_IMAGE }}:pr-${PR_NUMBER}" >> $GITHUB_ENV
+            echo "DOCKER_TAG_VERSIONED=${{ env.DOCKER_ORG }}/${{ env.DOCKER_IMAGE }}:pr-${PR_NUMBER}-${SHORT_SHA}" >> $GITHUB_ENV
+          elif [ "${{ github.ref }}" = "refs/heads/main" ]; then
             echo "DOCKER_TAG=${{ env.DOCKER_ORG }}/${{ env.DOCKER_IMAGE }}:latest" >> $GITHUB_ENV
             echo "DOCKER_TAG_VERSIONED=${{ env.DOCKER_ORG }}/${{ env.DOCKER_IMAGE }}:$(date +'%Y%m%d-%H%M%S')-${SHORT_SHA}" >> $GITHUB_ENV
           else
