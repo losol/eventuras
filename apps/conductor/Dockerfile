@@ -25,32 +25,42 @@ RUN apt-get update && apt-get upgrade -y && \
     && pnpm config set store-dir /pnpm/store
 
 ##################
-# Stage 2: Build #
+# Stage 2: Prune #
+##################
+FROM base AS pruner
+
+WORKDIR /app
+
+# Copy entire monorepo for pruning
+COPY . .
+
+# Prune the workspace to only include Conductor and its dependencies
+RUN pnpm turbo prune @eventuras/conductor --docker
+
+##################
+# Stage 3: Build #
 ##################
 FROM base AS builder
 
 WORKDIR /app
 
-# Copy package files for dependency resolution
-COPY package.json pnpm-workspace.yaml pnpm-lock.yaml turbo.json ./
-COPY apps/conductor/package.json ./apps/conductor/package.json
-COPY libs/logger/package.json ./libs/logger/package.json
-COPY libs/typescript-config/package.json ./libs/typescript-config/package.json
+# Copy pruned lockfile and package.json files
+COPY --from=pruner /app/out/json/ .
+COPY --from=pruner /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=pruner /app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
 
-# Install all dependencies (including devDependencies for build)
+# Install dependencies for pruned workspace
 RUN pnpm install --frozen-lockfile
 
-# Copy source files
-COPY apps/conductor ./apps/conductor
-COPY libs/logger ./libs/logger
-COPY libs/typescript-config ./libs/typescript-config
+# Copy pruned source files
+COPY --from=pruner /app/out/full/ .
 
-# Build the application
+# Build Conductor
 WORKDIR /app/apps/conductor
 RUN pnpm run build
 
 ##########################
-# Stage 3: Production    #
+# Stage 4: Production    #
 ##########################
 FROM base AS production
 
