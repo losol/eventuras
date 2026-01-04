@@ -70,6 +70,27 @@ export const Orders: CollectionConfig = {
       admin: {
         position: 'sidebar',
       },
+      hooks: {
+        beforeValidate: [
+          async ({ value, data, req }) => {
+            // Auto-populate from customer if empty
+            if (!value && data?.customer && req?.payload) {
+              try {
+                const userId = typeof data.customer === 'object' ? data.customer.id : data.customer;
+                const user = await req.payload.findByID({
+                  collection: 'users',
+                  id: userId,
+                  depth: 0,
+                });
+                return user?.email || value;
+              } catch (error) {
+                console.error('Failed to fetch user email:', error);
+              }
+            }
+            return value;
+          },
+        ],
+      },
     },
     {
       name: 'status',
