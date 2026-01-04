@@ -1,50 +1,146 @@
 # @eventuras/conductor
 
-Messaging orchestration server - send messages from Homey or Home Assistant to Discord, Matrix/Element or WhatsApp.
+Messaging orchestration server with multi-tenant plugin architecture - send messages from Homey, Home Assistant, or any HTTP client to Discord, Matrix/Element, or WhatsApp.
 
 ## Overview
 
-Domus will be a messaging gateway that lets you send notifications and messages from smart home systems to various communication channels.
+Conductor is a flexible messaging gateway with a plugin-based architecture that lets you route notifications from smart home systems and other sources to various communication channels.
+
+### Key Features
+
+- 🔌 **Plugin Architecture** - Extensible channel system with easy-to-add plugins
+- 👥 **Multi-Tenant** - Support multiple tenants with isolated configurations
+- 🔐 **Secure** - Per-tenant API key authentication
+- 📝 **Auto-Configuration** - Generates default config files on first run
+- 🐳 **Docker Ready** - Persistent config storage via volume mounts
 
 ### Supported Sources
 
 - 🏠 **Homey** - via webhook or HTTP requests
 - 🏡 **Home Assistant** - via REST command or automations
+- 🌐 **Any HTTP Client** - standard REST API
 
-### Supported Channels
+### Available Plugins
 
-- 💬 **Discord Webhook** - via Discord webhooks
-- 🤖 **Discord Bot** - via Discord bot API
-- 📝 **Log** - outputs to server console
+- 🤖 **Discord Bot** (`discord`) - Persistent bot connection with channel targeting
+- 📝 **Log** (`log`) - Console output for debugging
 
-#### Planned Channels
+#### Planned Plugins
 
-- 🔐 **Matrix/Element** - via Matrix client API (coming soon)
-- 📱 **WhatsApp** - via WhatsApp Business API (coming soon)
+- 💬 **Discord Webhook** - Simple webhook-based notifications
+- 🔐 **Matrix/Element** - Matrix client API integration
+- 📱 **WhatsApp** - WhatsApp Business API integration
 
-## Installation
+## Quick Start
+
+### Installation
 
 ```bash
-npm install
+pnpm install
 ```
 
-## Configuration
+### First Run
 
-Create a `.env` file in the root directory:
+Start the server for the first time:
+
+```bash
+pnpm dev
+```
+
+Conductor will automatically:
+
+1. Create `/data/config/` directory
+2. Generate default configuration files:
+   - `tenants.json` - Tenant definitions with UUIDs
+   - `channels.json` - Channel configurations per tenant
+   - `plugins.json` - Plugin enable/disable settings
+3. Generate a random API key for the default tenant
+4. Display the generated credentials in the console
+
+**Important:** Copy the generated API key from the console output and add it to your `.env` file:
+
+```env
+# Replace the UUID and key with your actual values from console output
+TENANT_01943c2a_7c3e_7000_8000_123456789abc_AUTHKEY=a1b2c3d4e5f6...
+```
+
+### Configuration Files
+
+All configuration is stored in `/data/config/` (auto-generated on first run):
+
+#### `tenants.json`
+
+Defines available tenants:
+
+```json
+{
+  "tenants": [
+    {
+      "id": "01943c2a-7c3e-7000-8000-123456789abc",
+      "name": "Default Tenant",
+      "authKeyEnvVar": "TENANT_01943c2a_7c3e_7000_8000_123456789abc_AUTHKEY"
+    }
+  ]
+}
+```
+
+#### `channels.json`
+
+Maps tenants to channel types and their credentials:
+
+```json
+{
+  "channels": [
+    {
+      "tenantId": "01943c2a-7c3e-7000-8000-123456789abc",
+      "channelType": "discord",
+      "providerIdEnvVar": "TENANT_01943c2a_7c3e_7000_8000_123456789abc_DISCORD_CHANNEL_ID",
+      "providerSecretEnvVar": "TENANT_01943c2a_7c3e_7000_8000_123456789abc_DISCORD_BOT_TOKEN"
+    },
+    {
+      "tenantId": "01943c2a-7c3e-7000-8000_123456789abc",
+      "channelType": "log"
+    }
+  ]
+}
+```
+
+#### `plugins.json`
+
+Control which plugins are loaded:
+
+```json
+{
+  "plugins": [
+    {
+      "name": "discord",
+      "enabled": true,
+      "options": {
+        "reconnectAttempts": 3
+      }
+    },
+    {
+      "name": "log",
+      "enabled": true
+    }
+  ]
+}
+```
+
+### Environment Variables
+
+See `.env.example` for a complete template. Key variables:
 
 ```env
 PORT=3333
+NODE_ENV=development
 
-# Authentication (required)
-API_KEY=your_secret_api_key_here
+# Tenant API Key (from console output on first run)
+TENANT_01943c2a_7c3e_7000_8000_123456789abc_AUTHKEY=your-secure-api-key-here
 
-# Discord Webhook
-DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/...
-
-# Discord Bot (optional)
-DISCORD_BOT_TOKEN=your_bot_token_here
-# DISCORD_BOT_CHANNEL_ID is optional - can be specified per request instead
-DISCORD_BOT_CHANNEL_ID=1234567890123456789
+# Discord Bot Configuration (optional)
+TENANT_01943c2a_7c3e_7000_8000_123456789abc_DISCORD_BOT_TOKEN=your-discord-bot-token
+TENANT_01943c2a_7c3e_7000_8000_123456789abc_DISCORD_CHANNEL_ID=123456789012345678
 ```
 
 ### Setting up Discord Webhook
@@ -214,45 +310,287 @@ action:
       target_id: "1234567890123456789"
 ```
 
-## API Endpoints
+## API Reference
 
-### `POST /notifications`
+### Authentication
 
-Send a notification to the selected channel.
+All requests require Bearer token authentication:
+
+```bash
+Authorization: Bearer <your-tenant-api-key>
+```
+
+The API key must match the value in the environment variable specified by `authKeyEnvVar` for the tenant.
+
+### Endpoints
+
+#### `GET /health`
+
+Health check endpoint (no authentication required).
+
+**Response:**
+
+```json
+{
+  "status": "ok",
+  "timestamp": "2024-01-15T10:30:00.000Z"
+}
+```
+
+#### `POST /notifications`
+
+Send a notification through a configured channel.
+
+**Headers:**
+
+```
+Content-Type: application/json
+Authorization: Bearer <your-tenant-api-key>
+```
 
 **Body:**
 
 ```json
 {
-  "channel": "discord-webhook|discord-bot|log",
+  "channel": "discord|log",
   "message": "Your message here",
   "priority": "normal|high",
-  "targetId": "1234567890123456789"  // Optional - target channel/room/group ID
+  "targetId": "optional-channel-id"
 }
 ```
 
-**Examples:**
+**Fields:**
 
-Send to default Discord bot channel (uses `DISCORD_BOT_CHANNEL_ID` from `.env`):
+- `channel` (required): Channel type to send through (must be configured for your tenant)
+- `message` (required): Message content (non-empty string)
+- `priority` (optional): Message priority, defaults to "normal"
+- `targetId` (optional): Target-specific identifier (e.g., Discord channel ID)
+
+**Response (Success):**
 
 ```json
 {
-  "channel": "discord-bot",
-  "message": "Server is online",
-  "priority": "normal"
+  "success": true,
+  "id": "01943c2a-7c3e-7000-8000-123456789abc",
+  "tenantId": "01943c2a-7c3e-7000-8000-123456789abc",
+  "tenantName": "Default Tenant",
+  "channel": "discord",
+  "message": "Test notification",
+  "priority": "normal",
+  "timestamp": "2024-01-15T10:30:00.000Z"
 }
 ```
 
-Send to specific Discord channel:
+**Response (Error):**
 
 ```json
 {
-  "channel": "discord-bot",
-  "message": "Critical alert!",
-  "priority": "high",
-  "targetId": "1234567890123456789"
+  "error": "Validation failed",
+  "details": [
+    {
+      "field": "channel",
+      "message": "Channel must be one of: discord, log"
+    }
+  ]
 }
 ```
+
+### Examples
+
+#### Send to Discord Bot (Default Channel)
+
+```bash
+curl -X POST https://your-server.com/notifications \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer your-api-key" \
+  -d '{
+    "channel": "discord",
+    "message": "Server is online",
+    "priority": "normal"
+  }'
+```
+
+#### Send to Specific Discord Channel
+
+```bash
+curl -X POST https://your-server.com/notifications \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer your-api-key" \
+  -d '{
+    "channel": "discord",
+    "message": "Critical alert!",
+    "priority": "high",
+    "targetId": "1234567890123456789"
+  }'
+```
+
+#### Send to Log Channel
+
+```bash
+curl -X POST https://your-server.com/notifications \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer your-api-key" \
+  -d '{
+    "channel": "log",
+    "message": "Debug message",
+    "priority": "normal"
+  }'
+```
+
+## Plugin Development
+
+### Creating a New Plugin
+
+Plugins are defined inline in `src/plugins/`. To create a new plugin:
+
+1. **Create the plugin file** (`src/plugins/my-plugin.ts`):
+
+```typescript
+import { ConductorPlugin, PluginContext, ChannelMessage, ChannelResponse } from './types.js';
+
+export function createMyPlugin(): ConductorPlugin {
+  let connection: any;
+
+  return {
+    async initialize(context: PluginContext): Promise<void> {
+      const apiKey = context.getEnvVar('API_KEY');
+      
+      context.logger.info(
+        { tenantId: context.tenantId },
+        'Initializing my-plugin'
+      );
+
+      // Set up connections, clients, etc.
+      connection = await connectToService(apiKey);
+    },
+
+    async send(message: ChannelMessage): Promise<ChannelResponse> {
+      try {
+        await connection.sendMessage(message.message);
+        
+        return {
+          success: true,
+          messageId: message.notificationId,
+        };
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : 'Unknown error',
+        };
+      }
+    },
+
+    async healthCheck(): Promise<boolean> {
+      return connection?.isConnected() ?? false;
+    },
+
+    async shutdown(): Promise<void> {
+      await connection?.disconnect();
+    },
+  };
+}
+```
+
+2. **Register in the plugin registry** (`src/plugins/registry.ts`):
+
+```typescript
+const PLUGIN_FACTORIES: Record<string, () => Promise<PluginFactory>> = {
+  discord: async () => (await import('./discord.js')).createDiscordPlugin,
+  log: async () => (await import('./log.js')).createLogPlugin,
+  'my-plugin': async () => (await import('./my-plugin.js')).createMyPlugin, // Add here
+};
+```
+
+3. **Enable in config** (`data/config/plugins.json`):
+
+```json
+{
+  "plugins": [
+    {
+      "name": "my-plugin",
+      "enabled": true,
+      "options": {
+        "customOption": "value"
+      }
+    }
+  ]
+}
+```
+
+4. **Configure for tenant** (`data/config/channels.json`):
+
+```json
+{
+  "channels": [
+    {
+      "tenantId": "your-tenant-id",
+      "channelType": "my-plugin",
+      "providerSecretEnvVar": "TENANT_xxx_MY_PLUGIN_API_KEY"
+    }
+  ]
+}
+```
+
+### Plugin Interface
+
+All plugins must implement the `ConductorPlugin` interface:
+
+```typescript
+interface ConductorPlugin {
+  /**
+   * Initialize the plugin with context
+   * Called once per tenant when the registry initializes
+   */
+  initialize(context: PluginContext): Promise<void>;
+
+  /**
+   * Send a message through this channel
+   * Called for each notification request
+   */
+  send(message: ChannelMessage): Promise<ChannelResponse>;
+
+  /**
+   * Check if the plugin is healthy and ready
+   * Optional: Used for health monitoring
+   */
+  healthCheck?(): Promise<boolean>;
+
+  /**
+   * Clean up resources before shutdown
+   * Optional: Called during graceful shutdown
+   */
+  shutdown?(): Promise<void>;
+}
+```
+
+### Plugin Context
+
+The `PluginContext` provides access to configuration and utilities:
+
+```typescript
+interface PluginContext {
+  /** Retrieve environment variable value (with validation) */
+  getEnvVar(key: string): string;
+  
+  /** Logger instance with plugin namespace */
+  logger: Logger;
+  
+  /** Tenant ID this plugin instance serves */
+  tenantId: string;
+  
+  /** Plugin-specific options from plugins.json */
+  options?: Record<string, any>;
+}
+```
+
+### Best Practices
+
+- **Use structured logging**: Always use `context.logger` instead of `console.log`
+- **Handle errors gracefully**: Return `{ success: false, error: message }` instead of throwing
+- **Validate environment variables**: Use `context.getEnvVar()` for required secrets
+- **Implement health checks**: Optional but recommended for monitoring
+- **Clean up resources**: Implement `shutdown()` for persistent connections
+- **Per-tenant isolation**: Each plugin instance is unique per tenant
 
 ## License
 

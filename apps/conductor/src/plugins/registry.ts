@@ -1,0 +1,246 @@
+import { createLogger, type Logger } from '../utils/logger.js';
+import type { ValidatedConfig } from '../config/validator.js';
+import type {
+  ConductorPlugin,
+  PluginFactory,
+  PluginContext,
+  ChannelMessage,
+  ChannelResponse,
+} from './types.js';
+
+const logger = createLogger('conductor:core:registry');
+
+// Hardcoded plugin mapping
+// Import plugins here as they are created
+const PLUGIN_FACTORIES: Record<string, () => Promise<PluginFactory>> = {
+  log: async () => (await import('./log/index.js')).createLogPlugin,
+  discord: async () => (await import('./discord/index.js')).createDiscordPlugin,
+};
+
+/**
+ * Plugin instance with its context
+ */
+interface PluginInstance {
+  plugin: ConductorPlugin;
+  context: PluginContext;
+}
+
+/**
+ * Plugin Registry
+ * Manages loading, initialization, and routing of plugins
+ */
+export class PluginRegistry {
+  private plugins: Map<string, PluginInstance> = new Map();
+  private channelMap: Map<string, Map<string, string>> = new Map(); // tenantId -> channelType -> pluginName
+
+  constructor() {
+    // Registry logger is the module-level logger
+  }
+
+  /**
+   * Initialize all enabled plugins from configuration
+   */
+  async initialize(config: ValidatedConfig): Promise<void> {
+    logger.info('Initializing plugin registry');
+
+    // Get enabled plugins
+    const enabledPlugins = config.plugins.filter((p) => p.enabled);
+
+    if (enabledPlugins.length === 0) {
+      logger.warn('No plugins enabled in configuration');
+      return;
+    }
+
+    // Build channel map first
+    for (const channel of config.channels) {
+      if (!this.channelMap.has(channel.tenantId)) {
+        this.channelMap.set(channel.tenantId, new Map());
+      }
+      const tenantChannels = this.channelMap.get(channel.tenantId)!;
+
+      // Map channel type to plugin name (they're the same for now)
+      const pluginName = channel.channelType;
+      tenantChannels.set(channel.channelType, pluginName);
+    }
+
+    // Load and initialize each enabled plugin
+    for (const pluginConfig of enabledPlugins) {
+      const { name, options } = pluginConfig;
+
+      // Check if plugin factory exists
+      if (!PLUGIN_FACTORIES[name]) {
+        logger.warn(
+          { pluginName: name },
+          `Plugin "${name}" not found in registry, skipping`,
+        );
+        continue;
+      }
+
+      try {
+        // Dynamically import the plugin factory
+        const factoryLoader = PLUGIN_FACTORIES[name];
+        const factory = await factoryLoader();
+        const plugin = factory();
+
+        // Create plugin context for each tenant that uses this plugin
+        for (const [tenantId, channels] of this.channelMap.entries()) {
+          for (const [channelType, pluginName] of channels.entries()) {
+            if (pluginName === name) {
+              // Find channel config for this tenant
+              const channelConfig = config.channels.find(
+                (c) => c.tenantId === tenantId && c.channelType === channelType,
+              );
+
+              const context: PluginContext & {
+                providerIdEnvVar?: string;
+                providerSecretEnvVar?: string;
+              } = {
+                tenantId,
+                options,
+                logger: createLogger(`conductor:plugin:${name}`),
+                getEnvVar: (varName: string) => process.env[varName],
+                getRequiredEnvVar: (varName: string) => {
+                  const value = process.env[varName];
+                  if (!value) {
+                    throw new Error(
+                      `Required environment variable "${varName}" not set for plugin "${name}" (tenant: ${tenantId})`,
+                    );
+                  }
+                  return value;
+                },
+              };
+
+              // Store channel config env vars in context for the plugin to access
+              if (channelConfig) {
+                context.providerIdEnvVar = channelConfig.providerIdEnvVar;
+                context.providerSecretEnvVar =
+                  channelConfig.providerSecretEnvVar;
+              }
+
+              // Initialize plugin
+              await plugin.initialize(context);
+
+              // Store plugin instance with unique key
+              const instanceKey = `${name}:${tenantId}`;
+              this.plugins.set(instanceKey, { plugin, context });
+
+              logger.info(
+                { pluginName: name, tenantId },
+                `Plugin initialized for tenant`,
+              );
+            }
+          }
+        }
+      } catch (error) {
+        logger.error(
+          { error, pluginName: name },
+          `Failed to initialize plugin "${name}"`,
+        );
+        throw error;
+      }
+    }
+
+    logger.info(
+      { pluginCount: this.plugins.size },
+      'Plugin registry initialized',
+    );
+  }
+
+  /**
+   * Send a message through a channel
+   */
+  async send(
+    tenantId: string,
+    channelType: string,
+    message: ChannelMessage,
+  ): Promise<ChannelResponse> {
+    // Find the plugin for this tenant and channel
+    const tenantChannels = this.channelMap.get(tenantId);
+    if (!tenantChannels) {
+      return {
+        success: false,
+        error: `No channels configured for tenant: ${tenantId}`,
+      };
+    }
+
+    const pluginName = tenantChannels.get(channelType);
+    if (!pluginName) {
+      return {
+        success: false,
+        error: `Channel type "${channelType}" not configured for tenant`,
+      };
+    }
+
+    const instanceKey = `${pluginName}:${tenantId}`;
+    const instance = this.plugins.get(instanceKey);
+
+    if (!instance) {
+      return {
+        success: false,
+        error: `Plugin "${pluginName}" not initialized for tenant`,
+      };
+    }
+
+    try {
+      return await instance.plugin.send(message);
+    } catch (error) {
+      logger.error(
+        { error, pluginName, tenantId, channelType },
+        'Error sending message through plugin',
+      );
+      return {
+        success: false,
+        error:
+          error instanceof Error ? error.message : 'Unknown error occurred',
+      };
+    }
+  }
+
+  /**
+   * Get list of available channels for a tenant
+   */
+  getAvailableChannels(tenantId: string): string[] {
+    const tenantChannels = this.channelMap.get(tenantId);
+    if (!tenantChannels) {
+      return [];
+    }
+    return Array.from(tenantChannels.keys());
+  }
+
+  /**
+   * Get all available channel types across all tenants
+   */
+  getAllChannelTypes(): string[] {
+    const types = new Set<string>();
+    for (const channels of this.channelMap.values()) {
+      for (const channelType of channels.keys()) {
+        types.add(channelType);
+      }
+    }
+    return Array.from(types);
+  }
+
+  /**
+   * Shutdown all plugins gracefully
+   */
+  async shutdown(): Promise<void> {
+    logger.info('Shutting down plugin registry');
+
+    for (const [key, instance] of this.plugins.entries()) {
+      if (instance.plugin.shutdown) {
+        try {
+          await instance.plugin.shutdown();
+          logger.info({ instanceKey: key }, 'Plugin shut down');
+        } catch (error) {
+          logger.error(
+            { error, instanceKey: key },
+            'Error shutting down plugin',
+          );
+        }
+      }
+    }
+
+    this.plugins.clear();
+    this.channelMap.clear();
+  }
+}

@@ -1,0 +1,8 @@
+node_modules
+dist
+.env
+.env.local
+
+# Runtime configuration files (auto-generated)
+data/config/*
+!data/config/.gitkeep
