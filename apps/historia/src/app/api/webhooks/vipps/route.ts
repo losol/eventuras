@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getPayload } from 'payload';
 
 import { Logger } from '@eventuras/logger';
+import { getPaymentDetails } from '@eventuras/vipps/epayment-v1';
 import {
   getEventType,
   parseWebhookPayload,
@@ -9,6 +10,7 @@ import {
   type WebhookPayload,
 } from '@eventuras/vipps/webhooks-v1';
 
+import { getVippsConfig } from '@/lib/vipps/config';
 import { getCurrentWebsite } from '@/lib/website';
 import config from '@/payload.config';
 import type { Transaction } from '@/payload-types';
@@ -533,12 +535,80 @@ async function processPaymentEvent(businessEventId: string, payload: WebhookPayl
     return;
   }
 
-  // Update transaction status
+  // Fetch full payment details from Vipps API for successful payments
+  let paymentDetails;
+  let customerId = transaction.customer;
+
+  if (payload.name === 'AUTHORIZED' || payload.name === 'CAPTURED') {
+    try {
+      const vippsConfig = getVippsConfig();
+      paymentDetails = await getPaymentDetails(vippsConfig, payload.reference);
+      logger.info(
+        {
+          reference: payload.reference,
+          state: paymentDetails.state,
+          hasProfile: !!paymentDetails.profile,
+          hasUserDetails: !!paymentDetails.userDetails,
+          hasShipping: !!paymentDetails.shippingDetails,
+        },
+        'Retrieved full payment details from Vipps API'
+      );
+
+      // Try to find and link customer by email from Vipps userDetails
+      if (paymentDetails.userDetails?.email && !customerId) {
+        try {
+          const users = await payloadInstance.find({
+            collection: 'users',
+            where: {
+              email: {
+                equals: paymentDetails.userDetails.email,
+              },
+            },
+            limit: 1,
+          });
+
+          if (users.docs.length > 0) {
+            customerId = users.docs[0].id;
+            logger.info(
+              {
+                userId: customerId,
+                email: paymentDetails.userDetails.email,
+                reference: payload.reference,
+              },
+              'Found and linked existing user from Vipps email'
+            );
+          }
+        } catch (error) {
+          logger.warn(
+            {
+              error,
+              email: paymentDetails.userDetails?.email,
+              reference: payload.reference,
+            },
+            'Failed to lookup user by email from Vipps userDetails'
+          );
+        }
+      }
+    } catch (error) {
+      logger.warn(
+        {
+          error,
+          reference: payload.reference,
+          eventType: payload.name,
+        },
+        'Failed to fetch payment details from Vipps API - continuing with webhook data only'
+      );
+    }
+  }
+
+  // Update transaction status and store full payment details if available
   await payloadInstance.update({
     collection: 'transactions',
     id: transaction.id,
     data: {
       status: newStatus as TransactionStatus,
+      ...(paymentDetails && { data: paymentDetails as any }),
+      ...(customerId && { customer: customerId }),
     },
   });
 
