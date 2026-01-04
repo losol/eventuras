@@ -58,6 +58,9 @@ RUN pnpm install --frozen-lockfile
 # Copy pruned source files
 COPY --from=pruner /app/out/full/ .
 
+# Build workspace dependencies first (logger must be built before conductor)
+RUN pnpm --filter @eventuras/logger run build
+
 # Build Conductor
 WORKDIR /app/apps/conductor
 RUN pnpm run build
