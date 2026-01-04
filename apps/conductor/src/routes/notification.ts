@@ -2,33 +2,19 @@ import express, { Request, Response, Router } from 'express';
 import { uuidv7 } from 'uuidv7';
 import { z } from 'zod';
 import { getPluginRegistry } from '../instrumentation.js';
+import { createLogger } from '../utils/logger.js';
+
+const logger = createLogger('conductor:routes:notification');
 
 export const notificationRouter: Router = express.Router();
 
-/**
- * Create notification schema dynamically based on available channels
- * This will be called on each request to get the latest channel list
- */
-function getNotificationSchema() {
-  const registry = getPluginRegistry();
-  const channelTypes = registry.getAllChannelTypes();
-
-  if (channelTypes.length === 0) {
-    throw new Error('No channel types available');
-  }
-
-  return z.object({
-    channel: z.enum(channelTypes as [string, ...string[]]).refine(
-      (val) => channelTypes.includes(val),
-      {
-        message: `Channel must be one of: ${channelTypes.join(', ')}`,
-      },
-    ),
-    message: z.string().min(1, 'Message cannot be empty'),
-    priority: z.enum(['normal', 'high']).default('normal'),
-    targetId: z.string().optional(),
-  });
-}
+// Base notification schema
+const notificationSchema = z.object({
+  channel: z.string().min(1, 'Channel is required'),
+  message: z.string().min(1, 'Message cannot be empty'),
+  priority: z.enum(['normal', 'high']).default('normal'),
+  targetId: z.string().optional(),
+});
 
 /**
  * POST /notifications
@@ -38,8 +24,7 @@ notificationRouter.post('/', async (req: Request, res: Response) => {
   try {
     const registry = getPluginRegistry();
 
-    // Validate request body with dynamic schema
-    const notificationSchema = getNotificationSchema();
+    // Validate request body with base schema
     const validatedData = notificationSchema.parse(req.body);
     const { channel, message, priority, targetId } = validatedData;
     const tenantId = req.tenantId || 'default';
@@ -85,7 +70,7 @@ notificationRouter.post('/', async (req: Request, res: Response) => {
       });
     }
 
-    console.error('Error sending notification:', error);
+    logger.error({ error }, 'Error sending notification');
     res.status(500).json({
       error: 'Failed to send notification',
       message: error instanceof Error ? error.message : 'Unknown error',

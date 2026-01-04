@@ -84,7 +84,7 @@ curl -X POST http://localhost:3333/notifications \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer your-api-key" \
   -d '{
-    "channel": "discord",
+    "channel": "discord-bot",
     "message": "Server is online",
     "priority": "normal"
   }'
@@ -97,7 +97,7 @@ curl -X POST http://localhost:3333/notifications \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer your-api-key" \
   -d '{
-    "channel": "discord",
+    "channel": "discord-bot",
     "message": "Critical alert!",
     "priority": "high",
     "targetId": "9876543210987654321"

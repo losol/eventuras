@@ -112,6 +112,14 @@ export function loadAndValidateConfig(): ValidatedConfig {
 export function validateEnvironmentVariables(config: ValidatedConfig): void {
   const missing: string[] = [];
 
+  // Check PORT environment variable
+  const port = process.env['PORT'];
+  if (port && (isNaN(Number(port)) || Number(port) < 1 || Number(port) > 65535)) {
+    throw new Error(
+      `Invalid PORT environment variable: "${port}". Must be a number between 1 and 65535.`,
+    );
+  }
+
   // Check tenant auth keys
   for (const tenant of config.tenants) {
     if (!process.env[tenant.authKeyEnvVar]) {

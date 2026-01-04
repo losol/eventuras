@@ -1,15 +1,19 @@
 import { Request, Response, NextFunction } from 'express';
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, existsSync, watchFile } from 'fs';
 import { join } from 'path';
+import { timingSafeEqual } from 'crypto';
 import type { TenantsConfig } from '../config/schemas.js';
 
 const CONFIG_DIR = join(process.cwd(), 'data', 'config');
 const TENANTS_FILE = join(CONFIG_DIR, 'tenants.json');
 
+// Cached tenants configuration
+let cachedTenants: TenantsConfig | null = null;
+
 /**
- * Load tenants configuration
+ * Load tenants configuration from disk
  */
-function loadTenants(): TenantsConfig {
+function loadTenantsFromDisk(): TenantsConfig {
   if (!existsSync(TENANTS_FILE)) {
     return [];
   }
@@ -17,6 +21,40 @@ function loadTenants(): TenantsConfig {
     return JSON.parse(readFileSync(TENANTS_FILE, 'utf-8'));
   } catch {
     return [];
+  }
+}
+
+/**
+ * Get tenants configuration (cached)
+ */
+function getTenants(): TenantsConfig {
+  if (cachedTenants === null) {
+    cachedTenants = loadTenantsFromDisk();
+
+    // Watch for file changes and reload cache
+    watchFile(TENANTS_FILE, { interval: 5000 }, () => {
+      cachedTenants = loadTenantsFromDisk();
+    });
+  }
+  return cachedTenants;
+}
+
+/**
+ * Constant-time string comparison to prevent timing attacks
+ */
+function constantTimeCompare(a: string, b: string): boolean {
+  try {
+    const bufA = Buffer.from(a, 'utf-8');
+    const bufB = Buffer.from(b, 'utf-8');
+
+    // If lengths differ, still compare to avoid timing leak
+    if (bufA.length !== bufB.length) {
+      return false;
+    }
+
+    return timingSafeEqual(bufA, bufB);
+  } catch {
+    return false;
   }
 }
 
@@ -47,8 +85,8 @@ export const authMiddleware = (
     ? authHeader.slice(7)
     : authHeader;
 
-  // Load tenants and validate API key
-  const tenants = loadTenants();
+  // Get cached tenants
+  const tenants = getTenants();
 
   if (tenants.length === 0) {
     return res
@@ -56,11 +94,11 @@ export const authMiddleware = (
       .json({ error: 'Server configuration error: No tenants configured' });
   }
 
-  // Find tenant by matching API key
+  // Find tenant by matching API key using constant-time comparison
   let authenticatedTenant = null;
   for (const tenant of tenants) {
     const tenantApiKey = process.env[tenant.authKeyEnvVar];
-    if (tenantApiKey && providedKey === tenantApiKey) {
+    if (tenantApiKey && constantTimeCompare(providedKey, tenantApiKey)) {
       authenticatedTenant = tenant;
       break;
     }

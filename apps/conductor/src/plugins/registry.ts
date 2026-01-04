@@ -81,7 +81,6 @@ export class PluginRegistry {
         // Dynamically import the plugin factory
         const factoryLoader = PLUGIN_FACTORIES[name];
         const factory = await factoryLoader();
-        const plugin = factory();
 
         // Create plugin context for each channel that uses this plugin
         for (const channelKey of this.channelMap.keys()) {
@@ -90,6 +89,9 @@ export class PluginRegistry {
 
           for (const [channelType, pluginName] of channelRouting.entries()) {
             if (pluginName === name) {
+              // Create a NEW plugin instance for each channel to ensure isolation
+              const plugin = factory();
+
               // Find channel config for this tenant and channel
               const channelConfig = config.channels.find(
                 (c) =>
