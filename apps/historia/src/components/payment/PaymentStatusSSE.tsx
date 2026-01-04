@@ -43,34 +43,38 @@ export function PaymentStatusSSE({
   const isConnectedRef = useRef(false);
 
   useEffect(() => {
-    console.log('[PaymentStatusSSE] Component mounted, reference:', reference);
+    console.log('🔌 [PaymentStatusSSE] useEffect triggered - Component mounting');
+    console.log('🔌 [PaymentStatusSSE] reference:', reference);
+    console.log('🔌 [PaymentStatusSSE] onStatusChange defined?', typeof onStatusChange);
 
     // Prevent duplicate connections
     if (isConnectedRef.current) {
-      console.log('[PaymentStatusSSE] Already connected, skipping');
+      console.log('⚠️ [PaymentStatusSSE] Already connected, skipping');
       return;
     }
     isConnectedRef.current = true;
 
     logger.info({ reference }, 'Opening SSE connection for payment status');
-    console.log('[PaymentStatusSSE] Creating EventSource to:', `/api/payment/${reference}/events`);
+    console.log('🔌 [PaymentStatusSSE] Creating EventSource to:', `/api/payment/${reference}/events`);
 
     // Create EventSource connection
     const eventSource = new EventSource(`/api/payment/${reference}/events`);
     eventSourceRef.current = eventSource;
-    console.log('[PaymentStatusSSE] EventSource created');
+    console.log('✅ [PaymentStatusSSE] EventSource created successfully');
 
     eventSource.onopen = () => {
       logger.debug({ reference }, 'SSE connection opened');
-      console.log('[PaymentStatusSSE] Connection opened');
+      console.log('✅ [PaymentStatusSSE] Connection opened (onopen event fired)');
     };
 
     eventSource.onmessage = (event) => {
+      console.log('📬 [PaymentStatusSSE] Message received from server:', event.data);
+
       try {
         const data: PaymentStatusUpdate = JSON.parse(event.data);
 
         logger.info({ reference, data }, 'Received payment status update');
-        console.log('[PaymentStatusSSE] Parsed data:', data);
+        console.log('📬 [PaymentStatusSSE] Parsed data:', data);
 
         // Handle timeout
         if (data.timeout) {
@@ -92,10 +96,17 @@ export function PaymentStatusSSE({
 
         // Handle status update
         if (data.status) {
-          console.log('[PaymentStatusSSE] Status received:', data.status);
+          console.log('📨 [PaymentStatusSSE] Status received:', data.status);
+          console.log('📨 [PaymentStatusSSE] onStatusChange defined?', typeof onStatusChange);
           setStatus(data.status);
-          console.log('[PaymentStatusSSE] Calling onStatusChange with:', data.status);
-          onStatusChange?.(data.status);
+
+          if (onStatusChange) {
+            console.log('📞 [PaymentStatusSSE] Calling onStatusChange with:', data.status);
+            onStatusChange(data.status);
+            console.log('✅ [PaymentStatusSSE] onStatusChange called successfully');
+          } else {
+            console.error('❌ [PaymentStatusSSE] onStatusChange is NOT defined!');
+          }
 
           // Handle successful payment
           if (data.status === 'captured' || data.status === 'completed') {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import { Logger } from '@eventuras/logger';
@@ -114,28 +114,39 @@ export default function VippsCheckoutPage() {
   }, [reference]);
 
   // Handle payment status change from SSE
-  const handlePaymentStatusChange = async (status: string) => {
-    console.log('[VippsCheckout] handlePaymentStatusChange called with:', status);
-    logger.info({ reference, status }, 'Payment status changed via SSE');
+  // CRITICAL: useCallback to prevent EventSource recreation on every render
+  const handlePaymentStatusChange = React.useCallback(async (status: string) => {
+    // Log to both console and logger to ensure visibility
+    console.log('🔔 [CLIENT] handlePaymentStatusChange called with status:', status);
+    console.log('🔔 [CLIENT] reference:', reference);
+    console.log('🔔 [CLIENT] Current state:', { currentState: state, processingFlag: processingRef.current });
+
+    logger.info({ reference, status, currentState: state }, '🔔 Payment status changed via SSE');
 
     // Only process if payment is captured/authorized
     if (status === 'captured' || status === 'authorized') {
-      console.log('[VippsCheckout] Status is captured/authorized, processing...');
+      console.log('✅ [CLIENT] Status is captured/authorized, will process');
+
       // Prevent duplicate processing
       if (processingRef.current) {
-        console.log('[VippsCheckout] Already processing, skipping');
+        console.log('⚠️ [CLIENT] Already processing, skipping');
         logger.warn({ reference }, 'Already processing payment');
         return;
       }
-      console.log('[VippsCheckout] Setting processing flag and state');
+
+      console.log('🚀 [CLIENT] Setting processing flag and calling server action');
       processingRef.current = true;
 
       setState('processing');
       setMessage('Oppretter ordre...');
 
       try {
+        console.log('📞 [CLIENT] Calling processPaymentAndCreateOrder with reference:', reference);
+
         // Call server action to process payment and create order
         const orderResult = await processPaymentAndCreateOrder(reference!);
+
+        console.log('📬 [CLIENT] Received response from server action:', orderResult);
 
         if (!orderResult.success) {
           logger.error(
@@ -222,7 +233,7 @@ export default function VippsCheckoutPage() {
       setState('error');
       setMessage('Betalingen ble avbrutt eller feilet. Ingen beløp er trukket.');
     }
-  };
+  }, [reference, clearCart, toast]);
 
   // Validate reference on mount
   if (!reference) {
