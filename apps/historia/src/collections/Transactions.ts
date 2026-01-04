@@ -25,6 +25,16 @@ export const Transactions: CollectionConfig = {
   },
   fields: [
     {
+      name: 'updateButton',
+      type: 'ui',
+      admin: {
+        position: 'sidebar',
+        components: {
+          Field: '@/collections/Transactions/ui/UpdateDetailsButton#UpdateDetailsButton',
+        },
+      },
+    },
+    {
       name: 'order',
       type: 'relationship',
       relationTo: 'orders',
@@ -77,6 +87,14 @@ export const Transactions: CollectionConfig = {
       index: true,
       admin: {
         description: 'Payment method (e.g., vipps, stripe, manual)',
+      },
+    },
+    {
+      name: 'data',
+      type: 'json',
+      required: false,
+      admin: {
+        description: 'Full payment details from payment provider (includes profile, shipping, state, amounts, etc.)',
       },
     },
   ],

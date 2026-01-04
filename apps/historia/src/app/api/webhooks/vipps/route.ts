@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getPayload } from 'payload';
 
 import { Logger } from '@eventuras/logger';
+import { getPaymentDetails } from '@eventuras/vipps/epayment-v1';
 import {
   getEventType,
   parseWebhookPayload,
@@ -9,6 +10,7 @@ import {
   type WebhookPayload,
 } from '@eventuras/vipps/webhooks-v1';
 
+import { getVippsConfig } from '@/lib/vipps/config';
 import { getCurrentWebsite } from '@/lib/website';
 import config from '@/payload.config';
 import type { Transaction } from '@/payload-types';
@@ -350,19 +352,44 @@ async function processPaymentEvent(businessEventId: string, payload: WebhookPayl
     );
 
     // Determine tenant from webhook request
-    // The host header is available in the webhook request and can be used to determine the tenant
+    // First try to find the cart by paymentReference to get the correct tenant
     let tenantId: string;
     try {
-      const website = await getCurrentWebsite();
-      tenantId = website.id;
-      logger.info(
-        {
-          tenantId,
-          websiteTitle: website.title,
-          reference: payload.reference,
+      const carts = await payloadInstance.find({
+        collection: 'carts',
+        where: {
+          paymentReference: {
+            equals: payload.reference,
+          },
         },
-        'Determined tenant for orphaned transaction from host header'
-      );
+        limit: 1,
+      });
+
+      if (carts.docs.length > 0 && typeof carts.docs[0].tenant === 'object' && carts.docs[0].tenant !== null) {
+        tenantId = carts.docs[0].tenant.id;
+        logger.info(
+          {
+            tenantId,
+            reference: payload.reference,
+            cartId: carts.docs[0].id,
+          },
+          'Determined tenant for orphaned transaction from cart'
+        );
+      } else {
+        // Fallback: try getCurrentWebsite() which uses host header
+        // Note: This may not work correctly if webhook comes from web.losol.no
+        const website = await getCurrentWebsite();
+        tenantId = website.id;
+        logger.warn(
+          {
+            tenantId,
+            websiteTitle: website.title,
+            reference: payload.reference,
+            reason: 'cart_not_found_or_no_tenant',
+          },
+          'Determined tenant for orphaned transaction from host header (fallback)'
+        );
+      }
     } catch (error) {
       // Log comprehensive debugging information to help diagnose tenant determination issues
       const payloadInstance = await getPayload({ config });
@@ -508,12 +535,80 @@ async function processPaymentEvent(businessEventId: string, payload: WebhookPayl
     return;
   }
 
-  // Update transaction status
+  // Fetch full payment details from Vipps API for successful payments
+  let paymentDetails;
+  let customerId = transaction.customer;
+
+  if (payload.name === 'AUTHORIZED' || payload.name === 'CAPTURED') {
+    try {
+      const vippsConfig = getVippsConfig();
+      paymentDetails = await getPaymentDetails(vippsConfig, payload.reference);
+      logger.info(
+        {
+          reference: payload.reference,
+          state: paymentDetails.state,
+          hasProfile: !!paymentDetails.profile,
+          hasUserDetails: !!paymentDetails.userDetails,
+          hasShipping: !!paymentDetails.shippingDetails,
+        },
+        'Retrieved full payment details from Vipps API'
+      );
+
+      // Try to find and link customer by email from Vipps userDetails
+      if (paymentDetails.userDetails?.email && !customerId) {
+        try {
+          const users = await payloadInstance.find({
+            collection: 'users',
+            where: {
+              email: {
+                equals: paymentDetails.userDetails.email,
+              },
+            },
+            limit: 1,
+          });
+
+          if (users.docs.length > 0) {
+            customerId = users.docs[0].id;
+            logger.info(
+              {
+                userId: customerId,
+                email: paymentDetails.userDetails.email,
+                reference: payload.reference,
+              },
+              'Found and linked existing user from Vipps email'
+            );
+          }
+        } catch (error) {
+          logger.warn(
+            {
+              error,
+              email: paymentDetails.userDetails?.email,
+              reference: payload.reference,
+            },
+            'Failed to lookup user by email from Vipps userDetails'
+          );
+        }
+      }
+    } catch (error) {
+      logger.warn(
+        {
+          error,
+          reference: payload.reference,
+          eventType: payload.name,
+        },
+        'Failed to fetch payment details from Vipps API - continuing with webhook data only'
+      );
+    }
+  }
+
+  // Update transaction status and store full payment details if available
   await payloadInstance.update({
     collection: 'transactions',
     id: transaction.id,
     data: {
       status: newStatus as TransactionStatus,
+      ...(paymentDetails && { data: paymentDetails as any }),
+      ...(customerId && { customer: customerId }),
     },
   });
 

@@ -20,6 +20,7 @@ import { FixedToolbarFeatureClient as FixedToolbarFeatureClient_e70f5e05f09f93e0
 import { PersonNameComponent as PersonNameComponent_2a71690645e56540458fc560c4b28e52 } from '@/fields/PersonNameComponent'
 import { PriceField as PriceField_07375945334b53a2da1ffe8b4244c331 } from '@/collections/Products/PriceField'
 import { TotalPriceField as TotalPriceField_70f8c825e5769517eb93cd56bc5b44b3 } from '@/collections/Products/TotalPriceField'
+import { UpdateDetailsButton as UpdateDetailsButton_4bb4f902e628615c8ea9c86fdc4e4860 } from '@/collections/Transactions/ui/UpdateDetailsButton'
 import { WatchTenantCollection as WatchTenantCollection_1d0591e3cf4f332c83a86da13a0de59a } from '@payloadcms/plugin-multi-tenant/client'
 import { Page as Page_cdf7e044479f899a31f804427d568b36 } from '@payloadcms/plugin-import-export/rsc'
 import { SortBy as SortBy_cdf7e044479f899a31f804427d568b36 } from '@payloadcms/plugin-import-export/rsc'
@@ -62,6 +63,7 @@ export const importMap = {
   "@/fields/PersonNameComponent#PersonNameComponent": PersonNameComponent_2a71690645e56540458fc560c4b28e52,
   "@/collections/Products/PriceField#PriceField": PriceField_07375945334b53a2da1ffe8b4244c331,
   "@/collections/Products/TotalPriceField#TotalPriceField": TotalPriceField_70f8c825e5769517eb93cd56bc5b44b3,
+  "@/collections/Transactions/ui/UpdateDetailsButton#UpdateDetailsButton": UpdateDetailsButton_4bb4f902e628615c8ea9c86fdc4e4860,
   "@payloadcms/plugin-multi-tenant/client#WatchTenantCollection": WatchTenantCollection_1d0591e3cf4f332c83a86da13a0de59a,
   "@payloadcms/plugin-import-export/rsc#Page": Page_cdf7e044479f899a31f804427d568b36,
   "@payloadcms/plugin-import-export/rsc#SortBy": SortBy_cdf7e044479f899a31f804427d568b36,

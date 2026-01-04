@@ -28,8 +28,8 @@ export const Orders: CollectionConfig = {
     delete: admins,
   },
   admin: {
-    useAsTitle: 'userEmail',
-    defaultColumns: ['userEmail', 'status', 'totalAmount', 'currency', 'createdAt'],
+    useAsTitle: 'id',
+    defaultColumns: ['id', 'userEmail', 'status', 'totalAmount', 'currency', 'createdAt'],
     group: 'Commerce',
     components: {
       edit: {
