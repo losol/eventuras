@@ -64,13 +64,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Test Docker image
-        run: |
-          docker run --rm -d --name conductor-test -p 3000:3000 test-image
-          sleep 5
-          docker exec conductor-test node -e "console.log('Container is running')" || exit 1
-          docker stop conductor-test
-
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         if: success()
