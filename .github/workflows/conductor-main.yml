@@ -1,0 +1,78 @@
+name: Release - Conductor docker image
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'apps/conductor/**'
+      - 'libs/logger/**'
+      - 'libs/typescript-config/**'
+      - '.github/workflows/conductor-deploy.yml'
+
+env:
+  DOCKER_ORG: losolio
+  DOCKER_IMAGE: conductor
+  DOCKER_FILE: apps/conductor/Dockerfile
+
+jobs:
+  docker:
+    name: Docker build and push
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Set Docker Tag
+        run: |
+          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            echo "DOCKER_TAG=${{ env.DOCKER_ORG }}/${{ env.DOCKER_IMAGE }}:latest" >> $GITHUB_ENV
+            echo "DOCKER_TAG_VERSIONED=${{ env.DOCKER_ORG }}/${{ env.DOCKER_IMAGE }}:$(date +'%Y%m%d-%H%M%S')-${SHORT_SHA}" >> $GITHUB_ENV
+          else
+            echo "DOCKER_TAG=${{ env.DOCKER_ORG }}/${{ env.DOCKER_IMAGE }}:$(date +'%Y%m%d-%H%M%S')-${SHORT_SHA}" >> $GITHUB_ENV
+          fi
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and test Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ${{ env.DOCKER_FILE }}
+          load: true
+          tags: test-image
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Test Docker image
+        run: |
+          docker run --rm -d --name conductor-test -p 3000:3000 test-image
+          sleep 5
+          docker exec conductor-test node -e "console.log('Container is running')" || exit 1
+          docker stop conductor-test
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        if: success()
+        with:
+          context: .
+          file: ${{ env.DOCKER_FILE }}
+          platforms: linux/amd64,linux/arm64
+          tags: |
+            ${{ env.DOCKER_TAG }}
+            ${{ env.DOCKER_TAG_VERSIONED }}
+          push: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Image digest
+        run: echo "Image pushed successfully with tags ${{ env.DOCKER_TAG }} and ${{ env.DOCKER_TAG_VERSIONED }}"
