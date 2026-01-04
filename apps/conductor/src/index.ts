@@ -1,11 +1,11 @@
 import express, { Request, Response } from 'express';
-import { createLogger } from './utils/logger.js';
+import { Logger } from '@eventuras/logger';
 import { authMiddleware } from './middleware/auth.js';
 import { tenantMiddleware } from './middleware/tenant.js';
 import { notificationRouter } from './routes/notification.js';
 import { register, shutdown } from './instrumentation.js';
 
-const logger = createLogger('conductor:core');
+const logger = Logger.create({ namespace: 'conductor:core' });
 
 const app = express();
 const port = process.env.PORT || 3333;

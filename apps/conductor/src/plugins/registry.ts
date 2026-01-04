@@ -1,4 +1,4 @@
-import { createLogger, type Logger } from '../utils/logger.js';
+import { Logger } from '@eventuras/logger';
 import type { ValidatedConfig } from '../config/validator.js';
 import type {
   ConductorPlugin,
@@ -8,7 +8,7 @@ import type {
   ChannelResponse,
 } from './types.js';
 
-const logger = createLogger('conductor:core:registry');
+const logger = Logger.create({ namespace: 'conductor:core:registry' });
 
 // Hardcoded plugin mapping
 // Import plugins here as they are created
@@ -113,7 +113,7 @@ export class PluginRegistry {
               } = {
                 tenantId,
                 options,
-                logger: createLogger(`conductor:plugin:${name}`),
+                logger: Logger.create({ namespace: `conductor:plugin:${name}` }),
                 getEnvVar: (varName: string) => process.env[varName],
                 getRequiredEnvVar: (varName: string) => {
                   const value = process.env[varName];

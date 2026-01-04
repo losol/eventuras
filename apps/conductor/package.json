@@ -8,10 +8,11 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "dev": "pnpx ts-node-dev --env-file=.env src/index.ts",
+    "dev": "tsx watch --env-file=.env src/index.ts",
     "start": "node --env-file=.env dist/index.js"
   },
   "dependencies": {
+    "@eventuras/logger": "workspace:*",
     "discord.js": "^14.24.2",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
@@ -22,7 +23,7 @@
     "@eventuras/typescript-config": "workspace:*",
     "@types/express": "^5.0.5",
     "@types/node": "^24.10.1",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }
 }

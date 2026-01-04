@@ -1,4 +1,4 @@
-import { createLogger } from './utils/logger.js';
+import { Logger } from '@eventuras/logger';
 import {
   initializeConfigFiles,
   logInitializationResults,
@@ -10,7 +10,7 @@ import {
 } from './config/validator.js';
 import { PluginRegistry } from './plugins/registry.js';
 
-const logger = createLogger('conductor:core');
+const logger = Logger.create({ namespace: 'conductor:core' });
 
 let registry: PluginRegistry | null = null;
 

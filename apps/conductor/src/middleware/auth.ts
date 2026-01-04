@@ -9,6 +9,7 @@ const TENANTS_FILE = join(CONFIG_DIR, 'tenants.json');
 
 // Cached tenants configuration
 let cachedTenants: TenantsConfig | null = null;
+let watcherInitialized = false;
 
 /**
  * Load tenants configuration from disk
@@ -25,19 +26,29 @@ function loadTenantsFromDisk(): TenantsConfig {
 }
 
 /**
+ * Initialize file watcher for tenants configuration (called once)
+ */
+function initializeTenantsWatcher(): void {
+  if (!watcherInitialized) {
+    watcherInitialized = true;
+    watchFile(TENANTS_FILE, { interval: 5000 }, () => {
+      cachedTenants = loadTenantsFromDisk();
+    });
+  }
+}
+
+/**
  * Get tenants configuration (cached)
  */
 function getTenants(): TenantsConfig {
   if (cachedTenants === null) {
     cachedTenants = loadTenantsFromDisk();
-
-    // Watch for file changes and reload cache
-    watchFile(TENANTS_FILE, { interval: 5000 }, () => {
-      cachedTenants = loadTenantsFromDisk();
-    });
   }
   return cachedTenants;
 }
+
+// Initialize watcher on module load
+initializeTenantsWatcher();
 
 /**
  * Constant-time string comparison to prevent timing attacks
