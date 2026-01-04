@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  conductor:
+    build: .
+    ports:
+      - "3333:3333"
+    volumes:
+      # Mount config directory for persistence
+      - ./data/config:/app/data/config
+    environment:
+      - NODE_ENV=production
+      - PORT=3333
+    restart: unless-stopped

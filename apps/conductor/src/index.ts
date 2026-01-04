@@ -1,45 +1,50 @@
 import express, { Request, Response } from 'express';
-import { authMiddleware } from './middleware/auth';
-import { tenantMiddleware } from './middleware/tenant';
-import { notificationRouter } from './routes/notification';
-import { initializeDiscordBot, shutdownDiscordBot } from './channels/discord-bot';
+import { createLogger } from './utils/logger.js';
+import { authMiddleware } from './middleware/auth.js';
+import { tenantMiddleware } from './middleware/tenant.js';
+import { notificationRouter } from './routes/notification.js';
+import { register, shutdown } from './instrumentation.js';
+
+const logger = createLogger('conductor:core');
 
 const app = express();
 const port = process.env.PORT || 3333;
 
 app.use(express.json());
 
-// Authentication middleware (will validate API key from env for now)
+// Authentication middleware
 app.use(authMiddleware);
 
-// Tenant context middleware (will use TENANT_ID from env for now)
+// Tenant context middleware
 app.use(tenantMiddleware);
 
 // Routes
 app.use('/notifications', notificationRouter);
 
 app.get('/', (req: Request, res: Response) => {
-  res.send('Domus - Smart home messaging orchestration');
+  res.send('Conductor - Smart home messaging orchestration');
 });
 
-// Initialize Discord bot
-initializeDiscordBot().catch((error) => {
-  console.error('Failed to initialize Discord bot:', error);
+// Initialize application
+register().catch((error) => {
+  logger.error({ error }, 'Failed to initialize application');
+  process.exit(1);
 });
 
 // Graceful shutdown
 process.on('SIGTERM', async () => {
-  console.log('SIGTERM received, shutting down gracefully...');
-  await shutdownDiscordBot();
+  logger.info('SIGTERM received, shutting down gracefully');
+  await shutdown();
   process.exit(0);
 });
 
 process.on('SIGINT', async () => {
-  console.log('SIGINT received, shutting down gracefully...');
-  await shutdownDiscordBot();
+  logger.info('SIGINT received, shutting down gracefully');
+  await shutdown();
   process.exit(0);
 });
 
 app.listen(port, () => {
+  logger.info({ port }, 'Server started');
   console.log(`Server running at http://localhost:${port}`);
 });

@@ -5,28 +5,26 @@ declare global {
   namespace Express {
     interface Request {
       tenantId?: string;
+      tenantName?: string;
     }
   }
 }
 
 /**
  * Tenant context middleware
- * For now: uses TENANT_ID from environment
- * Future: will extract tenant from JWT token, subdomain, or header
+ * Tenant is now set by the auth middleware based on the API key
+ * This middleware is kept for backward compatibility and potential future extensions
  */
 export const tenantMiddleware = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
-  // For now, use the tenant ID from environment
-  const tenantId = process.env.TENANT_ID || 'default';
-  
-  // Attach tenant context to request
-  req.tenantId = tenantId;
-  
-  // Future: could validate tenant exists in database here
-  // Future: could load tenant-specific configuration
-  
+  // Tenant ID should already be set by auth middleware
+  // If not set (e.g., for health check), use a default
+  if (!req.tenantId) {
+    req.tenantId = 'default';
+  }
+
   next();
 };
