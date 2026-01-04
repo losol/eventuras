@@ -1104,6 +1104,9 @@ export interface Order {
   id: string;
   tenant?: (string | null) | Website;
   items: {
+    /**
+     * Auto-generated unique identifier
+     */
     itemId: string;
     product: string | Product;
     quantity: number;

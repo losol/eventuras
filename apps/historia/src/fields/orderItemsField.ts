@@ -19,16 +19,13 @@ export const orderItemsField = (): ArrayField => {
         name: 'itemId',
         type: 'text',
         required: true,
+        defaultValue: () => randomUUID(),
         admin: {
           readOnly: true,
-        },
-        hooks: {
-          beforeValidate: [
-            ({ value }) => {
-              // Generate UUID if not already set
-              return value || randomUUID();
-            },
-          ],
+          description: 'Auto-generated unique identifier',
+          style: {
+            width: '50%',
+          },
         },
       },
       {
@@ -56,6 +53,27 @@ export const orderItemsField = (): ArrayField => {
             label: 'Price per item (ex. VAT)',
             type: 'number',
             required: true,
+            hooks: {
+              beforeValidate: [
+                async ({ value, data, req }) => {
+                  // Auto-populate from product if empty
+                  if (!value && data?.product && req?.payload) {
+                    try {
+                      const productId = typeof data.product === 'object' ? data.product.id : data.product;
+                      const product = await req.payload.findByID({
+                        collection: 'products',
+                        id: productId,
+                        depth: 0,
+                      });
+                      return product?.price?.amountExVat || value;
+                    } catch (error) {
+                      console.error('Failed to fetch product price:', error);
+                    }
+                  }
+                  return value;
+                },
+              ],
+            },
           },
           {
             name: 'currency',
@@ -63,6 +81,27 @@ export const orderItemsField = (): ArrayField => {
             defaultValue: 'NOK',
             required: true,
             label: 'Currency',
+            hooks: {
+              beforeValidate: [
+                async ({ value, data, req }) => {
+                  // Auto-populate from product if empty
+                  if (!value && data?.product && req?.payload) {
+                    try {
+                      const productId = typeof data.product === 'object' ? data.product.id : data.product;
+                      const product = await req.payload.findByID({
+                        collection: 'products',
+                        id: productId,
+                        depth: 0,
+                      });
+                      return product?.price?.currency || value || 'NOK';
+                    } catch (error) {
+                      console.error('Failed to fetch product currency:', error);
+                    }
+                  }
+                  return value || 'NOK';
+                },
+              ],
+            },
           },
           {
             name: 'vatRate',
@@ -72,6 +111,27 @@ export const orderItemsField = (): ArrayField => {
             label: 'VAT Rate (%)',
             admin: {
               description: 'VAT/Tax rate in percentage',
+            },
+            hooks: {
+              beforeValidate: [
+                async ({ value, data, req }) => {
+                  // Auto-populate from product if empty
+                  if (!value && data?.product && req?.payload) {
+                    try {
+                      const productId = typeof data.product === 'object' ? data.product.id : data.product;
+                      const product = await req.payload.findByID({
+                        collection: 'products',
+                        id: productId,
+                        depth: 0,
+                      });
+                      return product?.price?.vatRate ?? value ?? 25;
+                    } catch (error) {
+                      console.error('Failed to fetch product VAT rate:', error);
+                    }
+                  }
+                  return value ?? 25;
+                },
+              ],
             },
           },
         ],
