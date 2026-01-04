@@ -24,27 +24,34 @@ export function generateDefaultTenantsConfig(): TenantsConfig {
 
 /**
  * Generate default channels configuration
- * Creates a log channel for the default tenant
+ * Creates a discord-bot channel for the default tenant
  */
 export function generateDefaultChannelsConfig(
   tenantId: string,
 ): ChannelsConfig {
+  const channelId = uuidv7();
+  const tenantPrefix = tenantId.toUpperCase().replace(/-/g, '_');
+
   return [
     {
+      channelId,
+      channelName: 'default',
       tenantId,
-      channelType: 'log',
+      channelType: 'discord-bot',
+      providerIdEnvVar: `TENANT_${tenantPrefix}_DISCORD_CHANNEL_ID`,
+      providerSecretEnvVar: `TENANT_${tenantPrefix}_DISCORD_BOT_TOKEN`,
     },
   ];
 }
 
 /**
  * Generate default plugins configuration
- * Enables the log plugin by default
+ * Enables the discord plugin by default
  */
 export function generateDefaultPluginsConfig(): PluginsConfig {
   return [
     {
-      name: 'log',
+      name: 'discord',
       enabled: true,
       options: {},
     },

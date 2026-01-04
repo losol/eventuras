@@ -20,6 +20,8 @@ export type TenantsConfig = z.infer<typeof tenantsConfigSchema>;
  * Represents a channel instance for a specific tenant
  */
 export const channelConfigSchema = z.object({
+  channelId: z.string().uuid(),
+  channelName: z.string().optional(),
   tenantId: z.string().uuid(),
   channelType: z.enum(['discord-bot', 'discord-webhook', 'log']),
   providerIdEnvVar: z.string().optional(),
