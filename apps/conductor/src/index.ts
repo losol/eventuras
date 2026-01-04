@@ -25,13 +25,7 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Conductor - Smart home messaging orchestration');
 });
 
-// Initialize application
-register().catch((error) => {
-  logger.error({ error }, 'Failed to initialize application');
-  process.exit(1);
-});
-
-// Graceful shutdown
+// Graceful shutdown handlers
 process.on('SIGTERM', async () => {
   logger.info('SIGTERM received, shutting down gracefully');
   await shutdown();
@@ -44,7 +38,17 @@ process.on('SIGINT', async () => {
   process.exit(0);
 });
 
-app.listen(port, () => {
-  logger.info({ port }, 'Server started');
-  console.log(`Server running at http://localhost:${port}`);
-});
+// Initialize application and start server
+(async () => {
+  try {
+    await register();
+
+    app.listen(port, () => {
+      logger.info({ port }, 'Server started');
+      console.log(`Server running at http://localhost:${port}`);
+    });
+  } catch (error) {
+    logger.error({ error }, 'Failed to initialize application');
+    process.exit(1);
+  }
+})();

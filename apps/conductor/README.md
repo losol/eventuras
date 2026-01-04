@@ -88,16 +88,15 @@ Defines available tenants:
 Maps tenants to channel types and their credentials:
 
 ```json
-{
-  "channels": [
-    {
-      "channelId": "550e8400-e29b-41d4-a716-446655440000",
-      "channelName": "alerts",
-      "tenantId": "01943c2a-7c3e-7000-8000-123456789abc",
-      "channelType": "discord-bot",
-      "providerIdEnvVar": "TENANT_01943c2a_7c3e_7000_8000_123456789abc_DISCORD_ALERTS_CHANNEL_ID",
-      "providerSecretEnvVar": "TENANT_01943c2a_7c3e_7000_8000_123456789abc_DISCORD_ALERTS_BOT_TOKEN"
-    },
+[
+  {
+    "channelId": "550e8400-e29b-41d4-a716-446655440000",
+    "channelName": "alerts",
+    "tenantId": "01943c2a-7c3e-7000-8000-123456789abc",
+    "channelType": "discord-bot",
+    "providerIdEnvVar": "TENANT_01943c2a_7c3e_7000_8000_123456789abc_DISCORD_ALERTS_CHANNEL_ID",
+    "providerSecretEnvVar": "TENANT_01943c2a_7c3e_7000_8000_123456789abc_DISCORD_ALERTS_BOT_TOKEN"
+  },
     {
 
 }

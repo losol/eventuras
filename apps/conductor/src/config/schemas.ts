@@ -23,7 +23,7 @@ export const channelConfigSchema = z.object({
   channelId: z.string().uuid(),
   channelName: z.string().optional(),
   tenantId: z.string().uuid(),
-  channelType: z.enum(['discord-bot', 'discord-webhook', 'log']),
+  channelType: z.enum(['discord', 'discord-bot', 'discord-webhook', 'log']),
   providerIdEnvVar: z.string().optional(),
   providerSecretEnvVar: z.string().optional(),
 });

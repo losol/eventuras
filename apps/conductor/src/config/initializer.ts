@@ -50,7 +50,15 @@ export function initializeConfigFiles(): {
     const tenantsData = readFileSync(TENANTS_FILE, 'utf-8');
     const tenants = JSON.parse(tenantsData);
     const tenantId = tenants[0]?.id || defaultTenantId;
-    const channelsConfig = generateDefaultChannelsConfig(tenantId!);
+
+    if (!tenantId) {
+      throw new Error(
+        'Unable to determine tenant ID for channel configuration. ' +
+        'Please ensure tenants.json contains at least one tenant.'
+      );
+    }
+
+    const channelsConfig = generateDefaultChannelsConfig(tenantId);
     writeFileSync(CHANNELS_FILE, JSON.stringify(channelsConfig, null, 2));
     channelsCreated = true;
   }

@@ -30,20 +30,20 @@ export async function register() {
 
     // Step 1: Initialize config files if they don't exist
     const initResults = initializeConfigFiles();
-      logInitializationResults(initResults);
+    logInitializationResults(initResults);
 
-      // Step 2: Load and validate configuration
-      const config = loadAndValidateConfig();
+    // Step 2: Load and validate configuration
+    const config = loadAndValidateConfig();
 
-      // Step 3: Validate environment variables
-      validateEnvironmentVariables(config);
+    // Step 3: Validate environment variables
+    validateEnvironmentVariables(config);
 
-      // Step 4: Log startup configuration
-      logStartupConfig(config);
+    // Step 4: Log startup configuration
+    logStartupConfig(config);
 
-      // Step 5: Initialize plugin registry
-      registry = new PluginRegistry();
-      await registry.initialize(config);
+    // Step 5: Initialize plugin registry
+    registry = new PluginRegistry();
+    await registry.initialize(config);
 
     logger.info('Conductor initialization complete');
   } catch (error) {
