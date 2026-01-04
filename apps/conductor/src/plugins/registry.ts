@@ -31,7 +31,7 @@ interface PluginInstance {
  */
 export class PluginRegistry {
   private plugins: Map<string, PluginInstance> = new Map();
-  private channelMap: Map<string, Map<string, string>> = new Map(); // tenantId -> channelType -> pluginName
+  private channelMap: Map<string, Map<string, string>> = new Map(); // tenantId:channelId -> channelType:pluginName
 
   constructor() {
     // Registry logger is the module-level logger
@@ -53,14 +53,15 @@ export class PluginRegistry {
 
     // Build channel map first
     for (const channel of config.channels) {
-      if (!this.channelMap.has(channel.tenantId)) {
-        this.channelMap.set(channel.tenantId, new Map());
+      const channelKey = `${channel.tenantId}:${channel.channelId}`;
+      if (!this.channelMap.has(channelKey)) {
+        this.channelMap.set(channelKey, new Map());
       }
-      const tenantChannels = this.channelMap.get(channel.tenantId)!;
+      const channelRouting = this.channelMap.get(channelKey)!;
 
       // Map channel type to plugin name (they're the same for now)
       const pluginName = channel.channelType;
-      tenantChannels.set(channel.channelType, pluginName);
+      channelRouting.set(channel.channelType, pluginName);
     }
 
     // Load and initialize each enabled plugin
@@ -82,13 +83,19 @@ export class PluginRegistry {
         const factory = await factoryLoader();
         const plugin = factory();
 
-        // Create plugin context for each tenant that uses this plugin
-        for (const [tenantId, channels] of this.channelMap.entries()) {
-          for (const [channelType, pluginName] of channels.entries()) {
+        // Create plugin context for each channel that uses this plugin
+        for (const channelKey of this.channelMap.keys()) {
+          const [tenantId, channelId] = channelKey.split(':');
+          const channelRouting = this.channelMap.get(channelKey)!;
+
+          for (const [channelType, pluginName] of channelRouting.entries()) {
             if (pluginName === name) {
-              // Find channel config for this tenant
+              // Find channel config for this tenant and channel
               const channelConfig = config.channels.find(
-                (c) => c.tenantId === tenantId && c.channelType === channelType,
+                (c) =>
+                  c.tenantId === tenantId &&
+                  c.channelId === channelId &&
+                  c.channelType === channelType,
               );
 
               const context: PluginContext & {
@@ -120,13 +127,13 @@ export class PluginRegistry {
               // Initialize plugin
               await plugin.initialize(context);
 
-              // Store plugin instance with unique key
-              const instanceKey = `${name}:${tenantId}`;
+              // Store plugin instance with unique key (includes channelId now)
+              const instanceKey = `${name}:${tenantId}:${channelId}`;
               this.plugins.set(instanceKey, { plugin, context });
 
               logger.info(
-                { pluginName: name, tenantId },
-                `Plugin initialized for tenant`,
+                { pluginName: name, tenantId, channelId },
+                `Plugin initialized for channel`,
               );
             }
           }
@@ -154,57 +161,104 @@ export class PluginRegistry {
     channelType: string,
     message: ChannelMessage,
   ): Promise<ChannelResponse> {
-    // Find the plugin for this tenant and channel
-    const tenantChannels = this.channelMap.get(tenantId);
-    if (!tenantChannels) {
-      return {
-        success: false,
-        error: `No channels configured for tenant: ${tenantId}`,
-      };
+    // If channelId is provided in message, use it for exact routing
+    if (message.channelId) {
+      const channelKey = `${tenantId}:${message.channelId}`;
+      const channelRouting = this.channelMap.get(channelKey);
+
+      if (!channelRouting) {
+        return {
+          success: false,
+          error: `Channel ${message.channelId} not configured for tenant: ${tenantId}`,
+        };
+      }
+
+      const pluginName = channelRouting.get(channelType);
+      if (!pluginName) {
+        return {
+          success: false,
+          error: `Channel type "${channelType}" not configured for channel ${message.channelId}`,
+        };
+      }
+
+      const instanceKey = `${pluginName}:${tenantId}:${message.channelId}`;
+      const instance = this.plugins.get(instanceKey);
+
+      if (!instance) {
+        return {
+          success: false,
+          error: `Plugin "${pluginName}" not initialized for channel`,
+        };
+      }
+
+      try {
+        return await instance.plugin.send(message);
+      } catch (error) {
+        logger.error(
+          { error, pluginName, tenantId, channelId: message.channelId, channelType },
+          'Error sending message through plugin',
+        );
+        return {
+          success: false,
+          error:
+            error instanceof Error ? error.message : 'Unknown error occurred',
+        };
+      }
     }
 
-    const pluginName = tenantChannels.get(channelType);
-    if (!pluginName) {
-      return {
-        success: false,
-        error: `Channel type "${channelType}" not configured for tenant`,
-      };
+    // Fallback: No channelId provided, route to first matching channel type for tenant
+    for (const [channelKey, channelRouting] of this.channelMap.entries()) {
+      const [keyTenantId] = channelKey.split(':');
+
+      if (keyTenantId !== tenantId) continue;
+
+      const pluginName = channelRouting.get(channelType);
+      if (pluginName) {
+        const instanceKey = `${pluginName}:${channelKey}`;
+        const instance = this.plugins.get(instanceKey);
+
+        if (instance) {
+          try {
+            return await instance.plugin.send(message);
+          } catch (error) {
+            logger.error(
+              { error, pluginName, tenantId, channelType },
+              'Error sending message through plugin',
+            );
+            return {
+              success: false,
+              error:
+                error instanceof Error
+                  ? error.message
+                  : 'Unknown error occurred',
+            };
+          }
+        }
+      }
     }
 
-    const instanceKey = `${pluginName}:${tenantId}`;
-    const instance = this.plugins.get(instanceKey);
-
-    if (!instance) {
-      return {
-        success: false,
-        error: `Plugin "${pluginName}" not initialized for tenant`,
-      };
-    }
-
-    try {
-      return await instance.plugin.send(message);
-    } catch (error) {
-      logger.error(
-        { error, pluginName, tenantId, channelType },
-        'Error sending message through plugin',
-      );
-      return {
-        success: false,
-        error:
-          error instanceof Error ? error.message : 'Unknown error occurred',
-      };
-    }
+    return {
+      success: false,
+      error: `No channels of type "${channelType}" configured for tenant: ${tenantId}`,
+    };
   }
 
   /**
    * Get list of available channels for a tenant
    */
   getAvailableChannels(tenantId: string): string[] {
-    const tenantChannels = this.channelMap.get(tenantId);
-    if (!tenantChannels) {
-      return [];
+    const channels: string[] = [];
+    for (const [channelKey, channelRouting] of this.channelMap.entries()) {
+      const [keyTenantId] = channelKey.split(':');
+      if (keyTenantId === tenantId) {
+        for (const channelType of channelRouting.keys()) {
+          if (!channels.includes(channelType)) {
+            channels.push(channelType);
+          }
+        }
+      }
     }
-    return Array.from(tenantChannels.keys());
+    return channels;
   }
 
   /**
@@ -212,8 +266,8 @@ export class PluginRegistry {
    */
   getAllChannelTypes(): string[] {
     const types = new Set<string>();
-    for (const channels of this.channelMap.values()) {
-      for (const channelType of channels.keys()) {
+    for (const channelRouting of this.channelMap.values()) {
+      for (const channelType of channelRouting.keys()) {
         types.add(channelType);
       }
     }

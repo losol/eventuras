@@ -46,6 +46,7 @@ export interface ChannelMessage {
   priority: 'normal' | 'high';
   targetId?: string;
   tenantId: string;
+  channelId?: string;
   notificationId: string;
 }
 

@@ -22,8 +22,7 @@ Conductor is a flexible messaging gateway with a plugin-based architecture that 
 
 ### Available Plugins
 
-- 🤖 **Discord Bot** (`discord`) - Persistent bot connection with channel targeting
-- 📝 **Log** (`log`) - Console output for debugging
+- 🤖 **Discord Bot** (`discord`) - Persistent bot connection (channel type: `discord-bot`)
 
 #### Planned Plugins
 
@@ -92,16 +91,15 @@ Maps tenants to channel types and their credentials:
 {
   "channels": [
     {
+      "channelId": "550e8400-e29b-41d4-a716-446655440000",
+      "channelName": "alerts",
       "tenantId": "01943c2a-7c3e-7000-8000-123456789abc",
-      "channelType": "discord",
-      "providerIdEnvVar": "TENANT_01943c2a_7c3e_7000_8000_123456789abc_DISCORD_CHANNEL_ID",
-      "providerSecretEnvVar": "TENANT_01943c2a_7c3e_7000_8000_123456789abc_DISCORD_BOT_TOKEN"
+      "channelType": "discord-bot",
+      "providerIdEnvVar": "TENANT_01943c2a_7c3e_7000_8000_123456789abc_DISCORD_ALERTS_CHANNEL_ID",
+      "providerSecretEnvVar": "TENANT_01943c2a_7c3e_7000_8000_123456789abc_DISCORD_ALERTS_BOT_TOKEN"
     },
     {
-      "tenantId": "01943c2a-7c3e-7000-8000_123456789abc",
-      "channelType": "log"
-    }
-  ]
+
 }
 ```
 
@@ -121,11 +119,7 @@ Control which plugins are loaded:
     },
     {
       "name": "log",
-      "enabled": true
-    }
-  ]
-}
-```
+     
 
 ### Environment Variables
 
@@ -277,6 +271,7 @@ Create a Flow in Homey with "Make a web request":
 ```json
 {
   "channel": "discord-bot",
+  "channelId": "550e8400-e29b-41d4-a716-446655440000",
   "message": "Motion detected in living room",
   "targetId": "1234567890123456789"
 }
@@ -296,7 +291,7 @@ rest_command:
     content_type: application/json
     headers:
       authorization: 'Bearer YOUR_API_KEY'
-    payload: '{"channel": "{{ channel }}", "message": "{{ message }}", "targetId": "{{ target_id }}"}'
+    payload: '{"channel": "{{ channel }}", "channelId": "{{ channel_id }}", "message": "{{ message }}", "targetId": "{{ target_id }}"}'
 ```
 
 In an automation:
@@ -352,7 +347,8 @@ Authorization: Bearer <your-tenant-api-key>
 
 ```json
 {
-  "channel": "discord|log",
+  "channel": "discord-bot",
+  "channelId": "550e8400-e29b-41d4-a716-446655440000",
   "message": "Your message here",
   "priority": "normal|high",
   "targetId": "optional-channel-id"
@@ -362,6 +358,7 @@ Authorization: Bearer <your-tenant-api-key>
 **Fields:**
 
 - `channel` (required): Channel type to send through (must be configured for your tenant)
+- `channelId` (optional): Specific channel UUID to route to (if omitted, uses first matching channel type)
 - `message` (required): Message content (non-empty string)
 - `priority` (optional): Message priority, defaults to "normal"
 - `targetId` (optional): Target-specific identifier (e.g., Discord channel ID)
@@ -374,7 +371,8 @@ Authorization: Bearer <your-tenant-api-key>
   "id": "01943c2a-7c3e-7000-8000-123456789abc",
   "tenantId": "01943c2a-7c3e-7000-8000-123456789abc",
   "tenantName": "Default Tenant",
-  "channel": "discord",
+  "channel": "discord-bot",
+  "channelId": "550e8400-e29b-41d4-a716-446655440000",
   "message": "Test notification",
   "priority": "normal",
   "timestamp": "2024-01-15T10:30:00.000Z"
@@ -389,7 +387,7 @@ Authorization: Bearer <your-tenant-api-key>
   "details": [
     {
       "field": "channel",
-      "message": "Channel must be one of: discord, log"
+      "message": "Channel must be one of: discord-bot"
     }
   ]
 }
@@ -404,7 +402,7 @@ curl -X POST https://your-server.com/notifications \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer your-api-key" \
   -d '{
-    "channel": "discord",
+    "channel": "discord-bot",
     "message": "Server is online",
     "priority": "normal"
   }'
@@ -417,7 +415,7 @@ curl -X POST https://your-server.com/notifications \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer your-api-key" \
   -d '{
-    "channel": "discord",
+    "channel": "discord-bot",
     "message": "Critical alert!",
     "priority": "high",
     "targetId": "1234567890123456789"
