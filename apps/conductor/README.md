@@ -118,7 +118,11 @@ Control which plugins are loaded:
     },
     {
       "name": "log",
-     
+      "enabled": true
+    }
+  ]
+}
+```
 
 ### Environment Variables
 

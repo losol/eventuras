@@ -2,9 +2,9 @@ import express, { Request, Response, Router } from 'express';
 import { uuidv7 } from 'uuidv7';
 import { z } from 'zod';
 import { getPluginRegistry } from '../instrumentation.js';
-import { createLogger } from '../utils/logger.js';
+import { Logger } from '@eventuras/logger';
 
-const logger = createLogger('conductor:routes:notification');
+const logger = Logger.create({ namespace: 'conductor:routes:notification' });
 
 export const notificationRouter: Router = express.Router();
 

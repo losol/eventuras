@@ -1,12 +1,4 @@
-/**
- * Simple logger interface for plugins
- */
-export interface Logger {
-  info(message: string | object, ...args: unknown[]): void;
-  error(message: string | object, ...args: unknown[]): void;
-  warn(message: string | object, ...args: unknown[]): void;
-  debug(message: string | object, ...args: unknown[]): void;
-}
+import type { Logger } from '@eventuras/logger';
 
 /**
  * Plugin context provides access to configuration and utilities

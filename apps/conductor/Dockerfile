@@ -87,15 +87,15 @@ USER conductor
 
 # Set environment variables
 ENV NODE_ENV=production \
-    PORT=3000 \
+    PORT=3333 \
     CONFIG_DIR=/data/config
 
 # Expose application port
-EXPOSE 3000
+EXPOSE 3333
 
-# Health check
+# Health check using wget (available in alpine)
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:3000/health', (r) => process.exit(r.statusCode === 200 ? 0 : 1))"
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3333/health || exit 1
 
 # Start the application
 CMD ["node", "dist/index.js"]
