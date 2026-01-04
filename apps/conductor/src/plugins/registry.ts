@@ -13,7 +13,6 @@ const logger = createLogger('conductor:core:registry');
 // Hardcoded plugin mapping
 // Import plugins here as they are created
 const PLUGIN_FACTORIES: Record<string, () => Promise<PluginFactory>> = {
-  log: async () => (await import('./log/index.js')).createLogPlugin,
   discord: async () => (await import('./discord/index.js')).createDiscordPlugin,
 };
 
@@ -84,7 +83,15 @@ export class PluginRegistry {
 
         // Create plugin context for each channel that uses this plugin
         for (const channelKey of this.channelMap.keys()) {
-          const [tenantId, channelId] = channelKey.split(':');
+          const parts = channelKey.split(':');
+          const tenantId = parts[0];
+          const channelId = parts[1];
+
+          if (!tenantId || !channelId) {
+            logger.warn({ channelKey }, 'Invalid channel key format');
+            continue;
+          }
+
           const channelRouting = this.channelMap.get(channelKey)!;
 
           for (const [channelType, pluginName] of channelRouting.entries()) {
@@ -121,9 +128,12 @@ export class PluginRegistry {
 
               // Store channel config env vars in context for the plugin to access
               if (channelConfig) {
-                context.providerIdEnvVar = channelConfig.providerIdEnvVar;
-                context.providerSecretEnvVar =
-                  channelConfig.providerSecretEnvVar;
+                if (channelConfig.providerIdEnvVar) {
+                  context.providerIdEnvVar = channelConfig.providerIdEnvVar;
+                }
+                if (channelConfig.providerSecretEnvVar) {
+                  context.providerSecretEnvVar = channelConfig.providerSecretEnvVar;
+                }
               }
 
               // Initialize plugin

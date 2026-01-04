@@ -31,6 +31,9 @@ FROM base AS pruner
 
 WORKDIR /app
 
+# Install turbo globally for pruning
+RUN pnpm add -g turbo
+
 # Copy entire monorepo for pruning
 COPY . .
 
