@@ -60,35 +60,67 @@ function normalizePhoneNumber(phoneNumber: string | undefined): string | undefin
  * SECURITY: Prevents unauthorized access to payment status and order details
  *
  * Validation strategy:
- * - Check session's paymentReferences list (encrypted session)
- * - If validation fails, orphaned payment email will be sent to sales team for manual handling
+ * 1. Primary: Check if cart exists in database with this paymentReference (ROBUST)
+ * 2. Fallback: Check session's paymentReferences list (OPTIONAL - for performance)
+ *
+ * Database validation is preferred because:
+ * - Works even if session expires or cookies are lost
+ * - More reliable for slow payment completions
+ * - Better for mobile where session handling can be problematic
  *
  * @param paymentReference - The payment reference to validate
- * @returns Success if payment is owned by current session
+ * @returns Success if payment is owned by current session or found in cart database
  */
 async function validatePaymentOwnership(
   paymentReference: string
 ): Promise<ServerActionResult<boolean>> {
   try {
-    const session = await getCurrentSession();
-    const sessionData = session?.data as SessionData | undefined;
+    // PRIMARY VALIDATION: Check database for cart with this paymentReference
+    const payload = await getPayload({ config: configPromise });
+    const carts = await payload.find({
+      collection: 'carts' as any,
+      where: {
+        paymentReference: {
+          equals: paymentReference,
+        },
+      },
+      limit: 1,
+    });
 
-    // Check if session has this payment reference in the list
-    const paymentReferences = sessionData?.paymentReferences || [];
-
-    if (paymentReferences.includes(paymentReference)) {
-      // Happy path: session validation successful
+    if (carts.docs.length > 0) {
+      logger.info(
+        {
+          paymentReference,
+          cartId: (carts.docs[0] as any).id,
+        },
+        'Payment validated via database cart lookup'
+      );
       return actionSuccess(true);
     }
 
-    // Session validation failed
+    // FALLBACK VALIDATION: Check session (optional, for performance)
+    const session = await getCurrentSession();
+    const sessionData = session?.data as SessionData | undefined;
+    const paymentReferences = sessionData?.paymentReferences || [];
+
+    if (paymentReferences.includes(paymentReference)) {
+      logger.info(
+        {
+          paymentReference,
+        },
+        'Payment validated via session fallback'
+      );
+      return actionSuccess(true);
+    }
+
+    // Both validations failed
     logger.warn(
       {
         paymentReference,
         hasSession: !!session,
         paymentCount: paymentReferences.length,
       },
-      'Payment reference not in session - will trigger manual order creation'
+      'Payment reference not found in database or session - will trigger manual order creation'
     );
 
     return actionError('Unauthorized access to payment');
@@ -134,72 +166,64 @@ export async function createOrderFromPayment({
 }: CreateOrderParams): Promise<ServerActionResult<{ orderId: string; transactionId: string }>> {
   const startTime = Date.now();
 
-  // Get cart from database using cartId and secret from session
-  const session = await getCurrentSession();
-  const cartId = session?.data?.cartId;
-  const cartSecret = session?.data?.cartSecret;
-
   let cart: Cart | undefined;
 
-  // Fetch cart from database if we have cartId and secret
-  if (cartId && cartSecret) {
-    try {
-      const payload = await getPayload({ config: configPromise });
-      const cartDoc = await payload.findByID({
-        collection: 'carts' as any, // Type will be generated after running dev server
-        id: cartId,
-        // Pass secret as query parameter to leverage hasCartSecretAccess
-        req: {
-          query: {
-            secret: cartSecret,
-          },
-        } as any,
-      });
+  try {
+    const payload = await getPayload({ config: configPromise });
 
-      // Access control validates the secret automatically via hasCartSecretAccess
-      // If we get here, the secret was valid
-      if (cartDoc) {
-        // Convert Payload cart to Cart type
-        cart = {
-          items: (cartDoc as any).items.map((item: any) => ({
-            productId: item.productId,
-            quantity: item.quantity,
-          })),
-          paymentReference: paymentReference, // Will be validated below
-        };
+    // ROBUST APPROACH: Find cart by paymentReference
+    // This works even if session cookies are lost/expired
+    const carts = await payload.find({
+      collection: 'carts' as any,
+      where: {
+        paymentReference: {
+          equals: paymentReference,
+        },
+      },
+      limit: 1,
+    });
 
-        logger.info(
-          {
-            cartId,
-            itemCount: cart?.items.length || 0,
-            paymentReference,
-          },
-          'Cart retrieved from database and secret validated via access control'
-        );
-      } else {
-        logger.error(
-          {
-            cartId,
-            paymentReference,
-          },
-          'Cart not found in database'
-        );
-      }
-    } catch (error) {
-      logger.error(
+    if (carts.docs.length > 0) {
+      const cartDoc = carts.docs[0];
+
+      // Convert Payload cart to Cart type
+      cart = {
+        items: (cartDoc as any).items.map((item: any) => ({
+          productId: item.productId,
+          quantity: item.quantity,
+        })),
+        paymentReference: paymentReference,
+      };
+
+      logger.info(
         {
-          error,
-          cartId,
+          cartId: (cartDoc as any).id,
+          itemCount: cart?.items.length || 0,
           paymentReference,
         },
-        'Failed to retrieve cart from database'
+        'Cart retrieved from database by paymentReference'
+      );
+    } else {
+      logger.error(
+        {
+          paymentReference,
+        },
+        'Cart not found by paymentReference in database'
       );
     }
-  } else {
+  } catch (error) {
+    logger.error(
+      {
+        error,
+        paymentReference,
+      },
+      'Failed to retrieve cart from database'
+    );
+  }
+
+  if (!cart) {
     logger.warn(
       {
-        hasCartId: !!cartId,
-        hasCartSecret: !!cartSecret,
         paymentReference,
       },
       'No cart ID or secret in session - attempting to find cart by payment reference'
@@ -1081,6 +1105,10 @@ export async function checkExistingOrder(
     };
   }>
 > {
+  // CRITICAL: Log immediately when server action is invoked
+  console.log('[SERVER ACTION] checkExistingOrder called with reference:', paymentReference);
+  logger.info({ paymentReference }, '🔍 SERVER ACTION INVOKED: checkExistingOrder');
+
   try {
     // Validate payment ownership
     const ownershipCheck = await validatePaymentOwnership(paymentReference);
@@ -1196,6 +1224,10 @@ export async function processPaymentAndCreateOrder(
     };
   }>
 > {
+  // CRITICAL: Log immediately when server action is invoked
+  console.log('[SERVER ACTION] processPaymentAndCreateOrder called with reference:', paymentReference);
+  logger.info({ paymentReference }, '🚀 SERVER ACTION INVOKED: processPaymentAndCreateOrder');
+
   try {
     // Validate payment ownership
     const ownershipCheck = await validatePaymentOwnership(paymentReference);
