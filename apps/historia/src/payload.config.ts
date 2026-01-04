@@ -5,6 +5,8 @@ import { fileURLToPath } from 'url';
 import { postgresAdapter } from '@payloadcms/db-postgres';
 import { sqliteAdapter } from '@payloadcms/db-sqlite';
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer';
+import * as Sentry from '@sentry/nextjs';
+import type { APIError } from 'payload';
 import { buildConfig } from 'payload';
 import sharp from 'sharp';
 
@@ -164,6 +166,48 @@ export default buildConfig({
   },
   i18n: {
     fallbackLanguage: 'en',
+  },
+  hooks: {
+    afterError: [
+      async (args) => {
+        // Only capture errors if Sentry is enabled
+        if (!process.env.NEXT_PUBLIC_SENTRY_DSN) {
+          return;
+        }
+
+        const status = (args.error as APIError).status ?? 500;
+        // Capture server errors (5xx) and optionally specific client errors
+        if (status >= 500) {
+          const context = {
+            extra: {
+              errorCollectionSlug: args.collection?.slug,
+              url: args.req.url,
+              method: args.req.method,
+            },
+            tags: {
+              host: args.req.headers?.get('host') ?? undefined,
+              userAgent: args.req.headers?.get('user-agent') ?? undefined,
+              referer: args.req.headers?.get('referer') ?? undefined,
+            },
+            ...(args.req.user && {
+              user: {
+                id: args.req.user.id,
+                collection: args.req.user.collection,
+                ip_address: args.req.headers?.get('X-Forwarded-For') ?? undefined,
+              },
+            }),
+          };
+
+          const id = Sentry.captureException(args.error, context);
+
+          if (process.env.NODE_ENV === 'development') {
+            args.req.payload.logger.info(
+              `Captured exception ${id} to Sentry, error msg: ${args.error.message}`,
+            );
+          }
+        }
+      },
+    ],
   },
   plugins: [
     ...plugins, // Additional plugins
