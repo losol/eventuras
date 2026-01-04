@@ -350,19 +350,44 @@ async function processPaymentEvent(businessEventId: string, payload: WebhookPayl
     );
 
     // Determine tenant from webhook request
-    // The host header is available in the webhook request and can be used to determine the tenant
+    // First try to find the cart by paymentReference to get the correct tenant
     let tenantId: string;
     try {
-      const website = await getCurrentWebsite();
-      tenantId = website.id;
-      logger.info(
-        {
-          tenantId,
-          websiteTitle: website.title,
-          reference: payload.reference,
+      const carts = await payloadInstance.find({
+        collection: 'carts',
+        where: {
+          paymentReference: {
+            equals: payload.reference,
+          },
         },
-        'Determined tenant for orphaned transaction from host header'
-      );
+        limit: 1,
+      });
+
+      if (carts.docs.length > 0 && typeof carts.docs[0].tenant === 'object' && carts.docs[0].tenant !== null) {
+        tenantId = carts.docs[0].tenant.id;
+        logger.info(
+          {
+            tenantId,
+            reference: payload.reference,
+            cartId: carts.docs[0].id,
+          },
+          'Determined tenant for orphaned transaction from cart'
+        );
+      } else {
+        // Fallback: try getCurrentWebsite() which uses host header
+        // Note: This may not work correctly if webhook comes from web.losol.no
+        const website = await getCurrentWebsite();
+        tenantId = website.id;
+        logger.warn(
+          {
+            tenantId,
+            websiteTitle: website.title,
+            reference: payload.reference,
+            reason: 'cart_not_found_or_no_tenant',
+          },
+          'Determined tenant for orphaned transaction from host header (fallback)'
+        );
+      }
     } catch (error) {
       // Log comprehensive debugging information to help diagnose tenant determination issues
       const payloadInstance = await getPayload({ config });
