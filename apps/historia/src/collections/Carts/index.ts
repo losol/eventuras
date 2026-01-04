@@ -27,8 +27,8 @@ export const Carts: CollectionConfig = {
   slug: 'carts',
   access: cartsAccess,
   admin: {
-    useAsTitle: 'createdAt',
-    defaultColumns: ['createdAt', 'customer', 'updatedAt'],
+    useAsTitle: 'id',
+    defaultColumns: ['id', 'paymentReference','createdAt', 'customer', 'updatedAt'],
     group: 'Commerce',
     description: 'Shopping carts saved at payment initiation for secure validation',
   },

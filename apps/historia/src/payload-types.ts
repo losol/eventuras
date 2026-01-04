@@ -1265,6 +1265,18 @@ export interface Transaction {
    * Payment method (e.g., vipps, stripe, manual)
    */
   paymentMethod: string;
+  /**
+   * Full payment details from payment provider (includes profile, shipping, state, amounts, etc.)
+   */
+  data?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -2663,6 +2675,7 @@ export interface TransactionsSelect<T extends boolean = true> {
   paymentReference?: T;
   status?: T;
   paymentMethod?: T;
+  data?: T;
   updatedAt?: T;
   createdAt?: T;
 }

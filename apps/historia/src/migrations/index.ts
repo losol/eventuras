@@ -3,6 +3,7 @@ import * as migration_20251216_202151_mcp from './20251216_202151_mcp';
 import * as migration_20251217_233706_contactinfos from './20251217_233706_contactinfos';
 import * as migration_20260103_192818_nullables from './20260103_192818_nullables';
 import * as migration_20260103_230557_carts from './20260103_230557_carts';
+import * as migration_20260104_011858_transactiondata from './20260104_011858_transactiondata';
 
 export const migrations = [
   {
@@ -28,6 +29,11 @@ export const migrations = [
   {
     up: migration_20260103_230557_carts.up,
     down: migration_20260103_230557_carts.down,
-    name: '20260103_230557_carts'
+    name: '20260103_230557_carts',
+  },
+  {
+    up: migration_20260104_011858_transactiondata.up,
+    down: migration_20260104_011858_transactiondata.down,
+    name: '20260104_011858_transactiondata'
   },
 ];
