@@ -11,7 +11,6 @@ import {
 } from '@eventuras/vipps/webhooks-v1';
 
 import { getVippsConfig } from '@/lib/vipps/config';
-import { getCurrentWebsite } from '@/lib/website';
 import config from '@/payload.config';
 import type { Transaction } from '@/payload-types';
 
@@ -51,9 +50,7 @@ export async function POST(request: NextRequest) {
   const startTime = Date.now();
 
   // Log all incoming webhook requests at the very start
-  console.log('[WEBHOOK] Incoming request to /api/webhooks/vipps');
   logger.info('Webhook request received');
-
   try {
     // Log all headers FIRST - before reading body or any validation
     const allHeaders: Record<string, string> = {};
@@ -63,16 +60,66 @@ export async function POST(request: NextRequest) {
 
     const url = new URL(request.url);
 
+    // Extract and log only safe headers (proxy and host information)
+    const safeHeaders = {
+      // Proxy headers
+      'x-forwarded-for': allHeaders['x-forwarded-for'],
+      'x-forwarded-host': allHeaders['x-forwarded-host'],
+      'x-forwarded-proto': allHeaders['x-forwarded-proto'],
+      'x-forwarded-path': allHeaders['x-forwarded-path'],
+      'x-original-url': allHeaders['x-original-url'],
+      'x-real-ip': allHeaders['x-real-ip'],
+
+      // Azure-specific headers
+      'x-azure-clientip': allHeaders['x-azure-clientip'],
+      'x-azure-socketip': allHeaders['x-azure-socketip'],
+
+      // Request metadata
+      'host': allHeaders['host'],
+      'user-agent': allHeaders['user-agent'],
+      'referer': allHeaders['referer'],
+      'content-type': allHeaders['content-type'],
+      'content-length': allHeaders['content-length'],
+
+      // Vipps webhook headers (non-sensitive)
+      'x-ms-date': allHeaders['x-ms-date'],
+      'x-ms-content-sha256': allHeaders['x-ms-content-sha256'],
+    };
+
+    // Extract request origin information
+    // When behind Azure App Service proxy, use X-Forwarded-* headers to get real client info
+    const requestOrigin = {
+      // Client IP addresses - check proxy headers first
+      forwardedFor: allHeaders['x-forwarded-for'] || 'none',
+      forwardedProto: allHeaders['x-forwarded-proto'] || 'none',
+      forwardedHost: allHeaders['x-forwarded-host'] || 'none',
+      originalUrl: allHeaders['x-original-url'] || 'none',
+
+      // Azure-specific headers
+      azureClientIp: allHeaders['x-azure-clientip'] || 'none',
+      azureSocketIp: allHeaders['x-azure-socketip'] || 'none',
+
+      // Request details
+      // Use X-Forwarded-Host if available (real domain behind proxy), otherwise fall back to Host header
+      host: allHeaders['x-forwarded-host'] || request.headers.get('host') || 'unknown',
+      actualHostHeader: request.headers.get('host') || 'unknown',
+      userAgent: allHeaders['user-agent'] || 'none',
+      referer: allHeaders['referer'] || 'none',
+
+      // Request URL
+      fullUrl: request.url,
+      pathname: url.pathname,
+      search: url.search,
+    };
+
     logger.info(
       {
-        url: request.url,
+        requestOrigin,
         method: request.method,
-        host: request.headers.get('host'),
-        pathAndQuery: url.pathname + url.search,
-        headers: allHeaders,
-        headerKeys: Object.keys(allHeaders), // Easier to see what headers are present
+        safeHeaders,
+        allHeaderKeys: Object.keys(allHeaders),
       },
-      'Incoming webhook request - full details'
+      'Incoming Vipps webhook request - full details'
     );
 
     // Read raw body for signature verification
@@ -81,10 +128,11 @@ export async function POST(request: NextRequest) {
     logger.info(
       {
         bodyLength: rawBody.length,
-        bodyPreview: rawBody.substring(0, 200),
+        bodyPreview: rawBody.substring(0, 500), // Increased from 200 to see more
+        fullBody: rawBody, // Log complete payload for debugging
         isEmptyBody: rawBody.length === 0,
       },
-      'Webhook body received'
+      'Vipps webhook body received'
     );
 
     // Get headers for signature verification
@@ -376,18 +424,18 @@ async function processPaymentEvent(businessEventId: string, payload: WebhookPayl
           'Determined tenant for orphaned transaction from cart'
         );
       } else {
-        // Fallback: try getCurrentWebsite() which uses host header
-        // Note: This may not work correctly if webhook comes from web.losol.no
-        const website = await getCurrentWebsite();
-        tenantId = website.id;
-        logger.warn(
+        // Cannot determine tenant - cart not found or has no tenant
+        // This is a critical error as we cannot create a transaction without knowing which tenant it belongs to
+        logger.error(
           {
-            tenantId,
-            websiteTitle: website.title,
             reference: payload.reference,
-            reason: 'cart_not_found_or_no_tenant',
+            cartFound: carts.docs.length > 0,
+            cartHasTenant: carts.docs.length > 0 && carts.docs[0].tenant !== null,
           },
-          'Determined tenant for orphaned transaction from host header (fallback)'
+          'Cannot determine tenant for orphaned transaction - cart not found or has no tenant'
+        );
+        throw new Error(
+          `Cannot create orphaned transaction for reference ${payload.reference}: Unable to determine tenant. Cart not found or missing tenant information.`
         );
       }
     } catch (error) {
@@ -745,6 +793,73 @@ async function updateOrderStatus(
         status: newOrderStatus,
       },
     });
+
+    // Update cart status to completed and link to order
+    // Idempotent: Only update if not already completed (prevents race condition with checkout callback)
+    if (newOrderStatus === 'completed') {
+      try {
+        const carts = await payloadInstance.find({
+          collection: 'carts' as any,
+          where: {
+            paymentReference: {
+              equals: vippsPayload?.reference,
+            },
+          },
+          limit: 1,
+        });
+
+        if (carts.docs.length > 0) {
+          const cart = carts.docs[0] as any;
+
+          // Idempotent check: Skip if already completed (checkout callback may have updated it)
+          if (cart.status === 'completed') {
+            logger.info(
+              {
+                cartId: cart.id,
+                orderId,
+                paymentReference: vippsPayload?.reference,
+              },
+              'Cart already marked as completed (likely by checkout callback) - skipping update'
+            );
+          } else {
+            await payloadInstance.update({
+              collection: 'carts' as any,
+              id: cart.id,
+              data: {
+                status: 'completed',
+                order: orderId,
+              },
+            });
+            logger.info(
+              {
+                cartId: cart.id,
+                orderId,
+                paymentReference: vippsPayload?.reference,
+                previousStatus: cart.status,
+              },
+              'Cart status updated to completed and linked to order (from webhook)'
+            );
+          }
+        } else {
+          logger.warn(
+            {
+              paymentReference: vippsPayload?.reference,
+              orderId,
+            },
+            'No cart found for payment reference when updating status from webhook'
+          );
+        }
+      } catch (error) {
+        logger.error(
+          {
+            error,
+            paymentReference: vippsPayload?.reference,
+            orderId,
+          },
+          'Failed to update cart status from webhook'
+        );
+      }
+    }
 
     // Create business event for order status change
     await payloadInstance.create({

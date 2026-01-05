@@ -251,13 +251,14 @@ export async function clearCart(): Promise<ServerActionResult<void>> {
       data: {
         ...session?.data,
         cart: undefined,
+        paymentReferences: undefined, // Clear payment references when cart is cleared
       },
     };
 
     const jwt = await createSession(updatedSession);
     await setSessionCookie(jwt);
 
-    logger.info('Cart cleared successfully');
+    logger.info('Cart and payment references cleared successfully');
     return actionSuccess(undefined);
   } catch (error) {
     logger.error({ error }, 'Error clearing cart');
