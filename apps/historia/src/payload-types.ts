@@ -1307,6 +1307,14 @@ export interface Cart {
    * Payment provider reference (set during payment creation)
    */
   paymentReference?: string | null;
+  /**
+   * Cart status tracking
+   */
+  status: 'draft' | 'payment-initiated' | 'completed' | 'cancelled';
+  /**
+   * Order created from this cart (when payment completed)
+   */
+  order?: (string | null) | Order;
   secret?: string | null;
   /**
    * Customer who owns this cart (nullable for guest checkout)
@@ -2231,6 +2239,8 @@ export interface CartsSelect<T extends boolean = true> {
         id?: T;
       };
   paymentReference?: T;
+  status?: T;
+  order?: T;
   secret?: T;
   customer?: T;
   updatedAt?: T;

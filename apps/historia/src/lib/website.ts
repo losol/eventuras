@@ -31,6 +31,9 @@ export async function getCurrentWebsiteId(): Promise<string> {
  * This function retrieves the full website object for the current request
  * by looking up the host header and matching it against configured website domains.
  *
+ * When running behind a reverse proxy (e.g., Azure App Service), this will use
+ * the X-Forwarded-Host header if available to get the actual requested domain.
+ *
  * Security: This function throws an error if no matching website is found to prevent
  * accidentally serving content from the wrong tenant/website.
  *
@@ -39,7 +42,11 @@ export async function getCurrentWebsiteId(): Promise<string> {
  */
 export async function getCurrentWebsite(): Promise<Website> {
   const payload = await getPayload({ config: configPromise });
-  const host = (await headers()).get('host');
+  const requestHeaders = await headers();
+
+  // When behind a reverse proxy, X-Forwarded-Host contains the original host
+  // Otherwise fall back to the standard Host header
+  const host = requestHeaders.get('x-forwarded-host') || requestHeaders.get('host');
 
   if (!host) {
     logger.error('No host header found - cannot determine website/tenant');
@@ -64,13 +71,21 @@ export async function getCurrentWebsite(): Promise<Website> {
   }
 
   // No match found - fail fast to prevent serving wrong content
-  const requestHeaders = await headers();
-  const requestUrl = `${requestHeaders.get('x-forwarded-proto') || 'http'}://${host}${requestHeaders.get('x-forwarded-path') || requestHeaders.get('x-original-url') || '/'}`;
+  // Build complete request URL using proxy headers for accurate debugging
+  const proto = requestHeaders.get('x-forwarded-proto') || 'http';
+  const path = requestHeaders.get('x-forwarded-path') || requestHeaders.get('x-original-url') || '/';
+  const requestUrl = `${proto}://${host}${path}`;
 
   logger.error(
     {
       host,
       requestedUrl: requestUrl,
+      xForwardedHost: requestHeaders.get('x-forwarded-host'),
+      xForwardedProto: requestHeaders.get('x-forwarded-proto'),
+      xForwardedPath: requestHeaders.get('x-forwarded-path'),
+      xOriginalUrl: requestHeaders.get('x-original-url'),
+      hostHeader: requestHeaders.get('host'),
+      userAgent: requestHeaders.get('user-agent'),
     },
     'No website configuration found for host'
   );

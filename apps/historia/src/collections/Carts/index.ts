@@ -71,6 +71,46 @@ export const Carts: CollectionConfig = {
       },
     },
     {
+      name: 'status',
+      type: 'select',
+      required: true,
+      defaultValue: 'draft',
+      index: true,
+      options: [
+        {
+          label: 'Draft',
+          value: 'draft',
+        },
+        {
+          label: 'Payment Initiated',
+          value: 'payment-initiated',
+        },
+        {
+          label: 'Completed',
+          value: 'completed',
+        },
+        {
+          label: 'Cancelled',
+          value: 'cancelled',
+        },
+      ],
+      admin: {
+        position: 'sidebar',
+        description: 'Cart status tracking',
+      },
+    },
+    {
+      name: 'order',
+      type: 'relationship',
+      relationTo: 'orders',
+      required: false,
+      index: true,
+      admin: {
+        position: 'sidebar',
+        description: 'Order created from this cart (when payment completed)',
+      },
+    },
+    {
       name: 'secret',
       type: 'text',
       access: {
