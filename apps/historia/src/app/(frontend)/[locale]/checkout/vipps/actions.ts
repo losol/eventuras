@@ -375,18 +375,32 @@ export async function createOrderFromPayment({
         ? existingTransaction.order
         : existingTransaction.order?.id;
 
-      logger.info(
-        {
-          paymentReference,
-          existingOrderId: orderId,
-          existingTransactionId: existingTransaction.id,
-        },
-        'Order already exists for this payment reference, returning existing order'
-      );
-      return actionSuccess({
-        orderId: orderId as string,
-        transactionId: existingTransaction.id as string,
-      });
+      // Only return early if order actually exists
+      // Transaction might exist without order (orphaned from webhook)
+      if (orderId) {
+        logger.info(
+          {
+            paymentReference,
+            existingOrderId: orderId,
+            existingTransactionId: existingTransaction.id,
+          },
+          'Order already exists for this payment reference, returning existing order'
+        );
+        return actionSuccess({
+          orderId: orderId as string,
+          transactionId: existingTransaction.id as string,
+        });
+      } else {
+        logger.warn(
+          {
+            paymentReference,
+            existingTransactionId: existingTransaction.id,
+            transactionStatus: existingTransaction.status,
+          },
+          'Transaction exists but has no order (orphaned from webhook) - will create order now'
+        );
+        // Continue to order creation below
+      }
     }
 
     // If no authenticated user, try to find or create from Vipps profile data
@@ -812,6 +826,71 @@ export async function createOrderFromPayment({
       'Order created successfully'
     );
 
+    // Update cart status to completed and link to order
+    // Idempotent: Only update if not already completed (prevents race condition with webhook)
+    try {
+      const carts = await payload.find({
+        collection: 'carts' as any,
+        where: {
+          paymentReference: {
+            equals: paymentReference,
+          },
+        },
+        limit: 1,
+      });
+
+      if (carts.docs.length > 0) {
+        const cart = carts.docs[0] as any;
+
+        // Idempotent check: Skip if already completed (webhook may have updated it)
+        if (cart.status === 'completed') {
+          logger.info(
+            {
+              cartId: cart.id,
+              orderId: order.id,
+              paymentReference,
+            },
+            'Cart already marked as completed (likely by webhook) - skipping update'
+          );
+        } else {
+          await payload.update({
+            collection: 'carts' as any,
+            id: cart.id,
+            data: {
+              status: 'completed',
+              order: order.id,
+            },
+          });
+          logger.info(
+            {
+              cartId: cart.id,
+              orderId: order.id,
+              paymentReference,
+              previousStatus: cart.status,
+            },
+            'Cart status updated to completed and linked to order'
+          );
+        }
+      } else {
+        logger.warn(
+          {
+            paymentReference,
+            orderId: order.id,
+          },
+          'No cart found for payment reference when updating status - order was created successfully'
+        );
+      }
+    } catch (error) {
+      logger.error(
+        {
+          error,
+          paymentReference,
+          orderId: order.id,
+        },
+        'Failed to update cart status - order was created successfully'
+      );
+    }
+
     // Update user's Vipps address in their profile
     if (vippsShippingAddress) {
       try {
@@ -1050,7 +1129,7 @@ export async function createOrderFromPayment({
         businessEventTimeMs: businessEventTime,
         totalTimeMs: totalTime,
       },
-      'Order, transaction and business event created successfully'
+      'Order, transaction and business event created successfully - cart will be cleared client-side'
     );
 
     return actionSuccess({

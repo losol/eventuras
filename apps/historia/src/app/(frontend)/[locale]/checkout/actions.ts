@@ -351,7 +351,7 @@ export async function createVippsPayment({
     // Store payment reference in cart session
     await setCartPaymentReference(reference);
 
-    // Update cart in database with payment reference for recovery if session is lost
+    // Update cart in database with payment reference and status for recovery if session is lost
     try {
       const payload = await getPayload({ config: configPromise });
       await payload.update({
@@ -359,13 +359,14 @@ export async function createVippsPayment({
         id: cartId,
         data: {
           paymentReference: reference,
+          status: 'payment-initiated',
         },
         overrideAccess: true, // We have the cartId from saveCartToDatabase
       });
-      logger.debug({ cartId, reference }, 'Cart updated with payment reference');
+      logger.debug({ cartId, reference }, 'Cart updated with payment reference and status=payment-initiated');
     } catch (error) {
       // Non-critical - cart can still be recovered via session
-      logger.warn({ error, cartId, reference }, 'Failed to update cart with payment reference');
+      logger.warn({ error, cartId, reference }, 'Failed to update cart with payment reference and status');
     }
 
     logger.info({ reference }, 'Vipps payment created');
