@@ -183,7 +183,7 @@ export async function buildAuthorizationUrl(
  * Configuration for OAuth client credentials flow (machine-to-machine authentication)
  */
 export type ClientCredentialsConfig = {
-  /** Token endpoint URL or issuer URL (will discover token endpoint if issuer) */
+  /** OAuth token endpoint URL */
   tokenEndpoint: string;
   /** OAuth client ID */
   clientId: string;
@@ -219,10 +219,7 @@ export async function clientCredentialsGrant(
   logger.debug({ tokenEndpoint: config.tokenEndpoint }, 'Starting client credentials grant');
 
   try {
-    // If tokenEndpoint looks like an issuer URL, discover the actual token endpoint
-    const tokenUrl = config.tokenEndpoint.includes('/.well-known/') || config.tokenEndpoint.endsWith('/token')
-      ? config.tokenEndpoint
-      : config.tokenEndpoint;
+    const tokenUrl = config.tokenEndpoint;
 
     const params = new URLSearchParams({
       grant_type: 'client_credentials',
