@@ -23,6 +23,7 @@
   "ratio-ui": "@eventuras/ratio-ui",
   "scribo": "@eventuras/scribo",
   "sdk": "@eventuras/event-sdk",
+  "shipper": "@eventuras/shipper",
   "smartform": "@eventuras/smartform",
   "toast": "@eventuras/toast",
   "toaster": "@eventuras/toast",

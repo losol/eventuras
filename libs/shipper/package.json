@@ -1,0 +1,38 @@
+{
+  "name": "@eventuras/shipper",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Shipping and logistics integration library for Eventuras",
+  "type": "module",
+  "exports": {
+    "./core": {
+      "types": "./dist/core/index.d.ts",
+      "import": "./dist/core/index.js"
+    },
+    "./bring-v1": {
+      "types": "./dist/bring-v1/index.d.ts",
+      "import": "./dist/bring-v1/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@eventuras/fides-auth": "workspace:*",
+    "@eventuras/logger": "workspace:*"
+  },
+  "devDependencies": {
+    "@eventuras/typescript-config": "workspace:*",
+    "@eventuras/vite-config": "workspace:*",
+    "@vitest/ui": "^4.0.16",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.0",
+    "vitest": "^4.0.16"
+  }
+}
