@@ -178,3 +178,102 @@ export async function buildAuthorizationUrl(
     throw error;
   }
 }
+
+/**
+ * Configuration for OAuth client credentials flow (machine-to-machine authentication)
+ */
+export type ClientCredentialsConfig = {
+  /** Token endpoint URL or issuer URL (will discover token endpoint if issuer) */
+  tokenEndpoint: string;
+  /** OAuth client ID */
+  clientId: string;
+  /** OAuth client secret */
+  clientSecret: string;
+  /** Optional scope for the access token */
+  scope?: string;
+};
+
+/**
+ * Performs OAuth 2.0 client credentials grant flow for machine-to-machine authentication.
+ * This is used when an application needs to access an API on its own behalf (not on behalf of a user).
+ *
+ * @param config - Client credentials configuration including token endpoint, client ID, and secret
+ * @returns A Promise that resolves to the token response from the OAuth provider
+ * @throws Error if the token request fails
+ *
+ * @example
+ * ```typescript
+ * const tokens = await clientCredentialsGrant({
+ *   tokenEndpoint: 'https://api.example.com/oauth2/token',
+ *   clientId: 'my-client-id',
+ *   clientSecret: 'my-client-secret',
+ *   scope: 'api:read api:write',
+ * });
+ *
+ * console.log(tokens.access_token);
+ * ```
+ */
+export async function clientCredentialsGrant(
+  config: ClientCredentialsConfig
+): Promise<openid.TokenEndpointResponse> {
+  logger.debug({ tokenEndpoint: config.tokenEndpoint }, 'Starting client credentials grant');
+
+  try {
+    // If tokenEndpoint looks like an issuer URL, discover the actual token endpoint
+    const tokenUrl = config.tokenEndpoint.includes('/.well-known/') || config.tokenEndpoint.endsWith('/token')
+      ? config.tokenEndpoint
+      : config.tokenEndpoint;
+
+    const params = new URLSearchParams({
+      grant_type: 'client_credentials',
+      client_id: config.clientId,
+      client_secret: config.clientSecret,
+    });
+
+    if (config.scope) {
+      params.set('scope', config.scope);
+    }
+
+    const response = await fetch(tokenUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: params,
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      logger.error(
+        {
+          status: response.status,
+          error: errorText,
+          tokenEndpoint: config.tokenEndpoint,
+        },
+        'Client credentials grant failed'
+      );
+
+      throw new Error(
+        `Client credentials grant failed: ${response.status} - ${errorText}`
+      );
+    }
+
+    const tokens = await response.json() as openid.TokenEndpointResponse;
+
+    logger.info(
+      {
+        hasAccessToken: !!tokens.access_token,
+        expiresIn: tokens.expires_in,
+      },
+      'Client credentials grant successful'
+    );
+
+    return tokens;
+  } catch (error) {
+    logger.error(
+      { error, tokenEndpoint: config.tokenEndpoint },
+      'Client credentials grant error'
+    );
+    throw error;
+  }
+}
