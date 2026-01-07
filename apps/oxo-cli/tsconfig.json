@@ -11,6 +11,7 @@
     "types": ["node"]
   },
   "include": ["./src/**/*"],
+  "exclude": ["./src/**/*.test.ts", "./src/**/__tests__/**"],
   "ts-node": {
     "esm": true
   }

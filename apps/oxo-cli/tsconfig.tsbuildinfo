@@ -1,1 +1,1 @@
-{"root":["./src/index.ts","./src/commands/hello/index.ts","./src/commands/hello/world.ts"],"version":"5.9.3"}
+{"root":["./src/index.ts","./src/commands/shipper/bring/create.ts","./src/commands/shipper/bring/label.ts","./src/commands/shipper/bring/test.ts","./src/utils/env.ts"],"version":"5.9.3"}

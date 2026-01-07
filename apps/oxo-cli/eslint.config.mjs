@@ -6,4 +6,16 @@ import {fileURLToPath} from 'node:url'
 
 const gitignorePath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '.gitignore')
 
-export default [includeIgnoreFile(gitignorePath), ...oclif, prettier]
+export default [
+  includeIgnoreFile(gitignorePath), 
+  ...oclif, 
+  prettier,
+  {
+    files: ['**/*.test.ts', '**/*.spec.ts'],
+    rules: {
+      // Disable Mocha rules for Vitest test files
+      'mocha/no-skipped-tests': 'off',
+      'mocha/no-top-level-hooks': 'off',
+    },
+  },
+]

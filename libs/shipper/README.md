@@ -204,6 +204,47 @@ async function getAccessToken(config: BringConfig): Promise<string> {
 - `BringShipmentResponse` - Shipment creation response
 - Full type definitions available in source
 
+## Environment Variables
+
+For testing and CLI usage, set up environment variables in the monorepo root `.env`:
+
+```bash
+# Bring API credentials (get from https://developer.bring.com/)
+BRING_CLIENT_ID=your_client_id
+BRING_CLIENT_SECRET=your_client_secret
+BRING_CUSTOMER_ID=your_customer_number
+
+# Optional: API URL (defaults to test environment)
+BRING_API_URL=https://api.qa.bring.com
+
+# Optional: Client URL for API identification
+BRING_CLIENT_URL=https://eventuras.losol.io
+```
+
+## Testing
+
+### Integration Tests
+
+Integration tests require valid Bring test credentials:
+
+```bash
+# Run all tests (will skip integration tests if no credentials)
+pnpm test
+
+# Run only integration tests
+pnpm test -- bring-client.test.ts
+```
+
+Tests automatically skip if credentials are missing.
+
+### Unit Tests
+
+Unit tests use mocks and don't require credentials:
+
+```bash
+pnpm test -- *.unit.test.ts
+```
+
 ## Development
 
 ```bash
@@ -215,6 +256,9 @@ pnpm dev
 
 # Run tests
 pnpm test
+
+# Run tests in watch mode
+pnpm test:watch
 ```
 
 ## Resources
