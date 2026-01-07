@@ -1,0 +1,95 @@
+/**
+ * Test utilities and helpers for Shipper integration tests
+ */
+
+import type { BringConfig } from '../bring-v1/types';
+import { hasShipperConfig, getShipperConfig } from '../utils/environment';
+
+/**
+ * Check if we have valid test environment configuration
+ */
+export function hasTestConfig(): boolean {
+  return hasShipperConfig();
+}
+
+/**
+ * Get test configuration for Bring API
+ */
+export function getTestConfig(): BringConfig {
+  return getShipperConfig();
+}
+
+/**
+ * Generate a unique correlation ID for testing
+ */
+export function generateTestCorrelationId(prefix: string = 'test'): string {
+  const timestamp = Date.now();
+  const random = Math.random().toString(36).substring(2, 8);
+  return `${prefix}-${timestamp}-${random}`;
+}
+
+/**
+ * Sleep for specified milliseconds (useful for polling)
+ */
+export function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/**
+ * Get test sender address (Eventuras office)
+ */
+export function getTestSenderAddress() {
+  return {
+    name: 'Eventuras AS',
+    addressLine1: 'Testveien 1',
+    postalCode: '0001',
+    city: 'Oslo',
+    countryCode: 'NO',
+    phone: '+4712345678',
+    email: 'test@eventuras.com',
+  };
+}
+
+/**
+ * Get test recipient address
+ */
+export function getTestRecipientAddress() {
+  return {
+    name: 'Test Recipient',
+    addressLine1: 'Testgata 42',
+    postalCode: '0010',
+    city: 'Oslo',
+    countryCode: 'NO',
+    phone: '+4787654321',
+    email: 'recipient@example.com',
+  };
+}
+
+/**
+ * Get test package dimensions
+ */
+export function getTestPackage() {
+  return {
+    weightInGrams: 1000, // 1 kg
+    lengthInCm: 30,
+    widthInCm: 20,
+    heightInCm: 10,
+  };
+}
+
+/**
+ * Get current date in ISO format for shipping date
+ */
+export function getTodayISODate(): string {
+  const today = new Date();
+  return today.toISOString().split('T')[0];
+}
+
+/**
+ * Get tomorrow's date in ISO format for shipping date
+ */
+export function getTomorrowISODate(): string {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  return tomorrow.toISOString().split('T')[0];
+}

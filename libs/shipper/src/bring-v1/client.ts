@@ -4,7 +4,7 @@ import type {
   BringConfig,
   BringConsignment,
   BringShipmentResponse,
-} from './types';
+} from './types.js';
 
 const logger = Logger.create({
   namespace: 'eventuras:shipper',

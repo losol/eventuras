@@ -26,8 +26,9 @@
     "lint": "eslint .",
     "prepack": "oclif manifest && oclif readme",
     "postpack": "shx rm -f oclif.manifest.json",
-    "test": "mocha --forbid-only \"test/**/*.test.ts\"",
+    "test": "vitest run",
     "posttest": "pnpm run lint",
+    "test:watch": "vitest",
     "version": "oclif readme && git add README.md"
   },
   "oclif": {
@@ -40,12 +41,13 @@
     ],
     "topicSeparator": " ",
     "topics": {
-      "hello": {
-        "description": "Say hello to the world and others"
+      "shipper": {
+        "description": "Shipping and logistics integration commands"
       }
     }
   },
   "dependencies": {
+    "@eventuras/shipper": "workspace:*",
     "@oclif/core": "^4",
     "@oclif/plugin-help": "^6",
     "@oclif/plugin-plugins": "^5"
@@ -54,18 +56,16 @@
     "@eslint/compat": "^2",
     "@oclif/prettier-config": "^0.2.1",
     "@oclif/test": "^4",
-    "@types/chai": "^5",
-    "@types/mocha": "^10",
     "@types/node": "^18",
-    "chai": "^6",
+    "@vitest/ui": "^4.0.16",
     "eslint": "^9",
     "eslint-config-oclif": "^6",
     "eslint-config-prettier": "^10",
-    "mocha": "^11",
     "oclif": "^4",
     "shx": "^0.4.0",
     "ts-node": "^10",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.0.16"
   },
   "engines": {
     "node": ">=22.0.0 <25.0.0"

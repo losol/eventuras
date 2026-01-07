@@ -1,6 +1,6 @@
 import { clientCredentialsGrant } from '@eventuras/fides-auth/oauth';
 import { ShippingAuthError } from '../core/types';
-import type { BringConfig, BringTokenResponse } from './types';
+import type { BringConfig, BringTokenResponse } from './types.js';
 
 /**
  * Fetches an OAuth access token using client credentials flow
