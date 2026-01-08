@@ -1,4 +1,4 @@
-import { BringClient, fetchAccessToken } from '@eventuras/shipper/bring-v1';
+import { BringClient } from '@eventuras/shipper/bring-v1';
 import { Command, Flags } from '@oclif/core';
 import { writeFileSync } from 'node:fs';
 
@@ -33,13 +33,13 @@ static override flags = {
     loadEnvFile();
 
     // Validate required environment variables
-    const clientId = requireEnvVar(
-      'BRING_CLIENT_ID',
-      'Error: BRING_CLIENT_ID is required. Set it in .env file'
+    const apiUid = requireEnvVar(
+      'BRING_API_UID',
+      'Error: BRING_API_UID is required. Set it in .env file'
     );
-    const clientSecret = requireEnvVar(
-      'BRING_CLIENT_SECRET',
-      'Error: BRING_CLIENT_SECRET is required. Set it in .env file'
+    const apiKey = requireEnvVar(
+      'BRING_API_KEY',
+      'Error: BRING_API_KEY is required. Set it in .env file'
     );
     const customerId = requireEnvVar(
       'BRING_CUSTOMER_ID',
@@ -47,23 +47,19 @@ static override flags = {
     );
 
     const config = {
+      apiKey,
+      apiUid,
       apiUrl: process.env.BRING_API_URL || 'https://api.qa.bring.com',
-      clientId,
-      clientSecret,
       clientUrl: process.env.BRING_CLIENT_URL || 'https://eventuras.losol.io',
       customerId,
     };
 
     try {
-      // Fetch access token
-      const tokenResponse = await fetchAccessToken(config);
-      const accessToken = tokenResponse.access_token;
-
       // Create client
       const client = new BringClient(config);
 
       // Fetch label
-      const labelData = await client.fetchLabel(flags['label-url'], accessToken);
+      const labelData = await client.fetchLabel(flags['label-url']);
 
       // Generate output filename
       const outputPath = flags.output || `label-${Date.now()}.pdf`;

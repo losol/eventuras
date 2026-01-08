@@ -6,8 +6,8 @@
  * Required environment variables for Shipper (Bring API)
  */
 const REQUIRED_ENV_VARS = [
-  'BRING_CLIENT_ID',
-  'BRING_CLIENT_SECRET',
+  'BRING_API_UID',
+  'BRING_API_KEY',
   'BRING_CUSTOMER_ID',
 ] as const;
 
@@ -44,8 +44,8 @@ export function getShipperConfig() {
 
   return {
     apiUrl: process.env.BRING_API_URL || OPTIONAL_ENV_VARS.BRING_API_URL,
-    clientId: process.env.BRING_CLIENT_ID!,
-    clientSecret: process.env.BRING_CLIENT_SECRET!,
+    apiUid: process.env.BRING_API_UID!,
+    apiKey: process.env.BRING_API_KEY!,
     customerId: process.env.BRING_CUSTOMER_ID!,
     clientUrl: process.env.BRING_CLIENT_URL || OPTIONAL_ENV_VARS.BRING_CLIENT_URL,
   };

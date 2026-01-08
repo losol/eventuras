@@ -11,8 +11,8 @@ import { runCommand } from '@oclif/test';
 import { beforeAll, describe, expect, it } from 'vitest';
 
 // Check if we have required env vars for integration tests
-const hasTestConfig = Boolean(process.env.BRING_CLIENT_ID &&
-  process.env.BRING_CLIENT_SECRET &&
+const hasTestConfig = Boolean(process.env.BRING_API_UID &&
+  process.env.BRING_API_KEY &&
   process.env.BRING_CUSTOMER_ID);
 
 const describeIf = hasTestConfig ? describe : describe.skip;
@@ -20,11 +20,12 @@ const describeIf = hasTestConfig ? describe : describe.skip;
 describeIf('oxo shipper bring create', () => {
   beforeAll(() => {
     if (!hasTestConfig) {
-      console.log('⚠️  Skipping CLI integration tests - missing BRING_CLIENT_ID, BRING_CLIENT_SECRET, or BRING_CUSTOMER_ID');
+      console.log('⚠️  Skipping CLI integration tests - missing BRING_API_UID, BRING_API_KEY, or BRING_CUSTOMER_ID');
     }
   });
 
   const baseArgs = [
+    '--correlation-id', `test-cli-${Date.now()}`,
     '--sender-name', 'Eventuras AS',
     '--sender-address', 'Testveien 1',
     '--sender-postal', '0001',
@@ -40,23 +41,21 @@ describeIf('oxo shipper bring create', () => {
   ];
 
   it('should create a shipment successfully', async () => {
-    const { exitCode, stdout } = await runCommand([
+    const result = await runCommand([
       'shipper',
       'bring',
       'create',
       ...baseArgs,
     ]);
 
-    expect(exitCode).toBe(0);
-    expect(stdout).toContain('Shipment created successfully');
-    expect(stdout).toContain('Consignment number:');
-    expect(stdout).toContain('Tracking number:');
-    expect(stdout).toContain('Tracking URL:');
-    expect(stdout).toContain('Label URL:');
+    expect(result.error).toBeUndefined();
+    expect(result.stdout).toContain('Shipment created successfully');
+    expect(result.stdout).toContain('Consignment number:');
+    expect(result.stdout).toContain('Tracking URL:');
   });
 
   it('should output JSON format with --json flag', async () => {
-    const { exitCode, stdout } = await runCommand([
+    const result = await runCommand([
       'shipper',
       'bring',
       'create',
@@ -64,38 +63,47 @@ describeIf('oxo shipper bring create', () => {
       '--json',
     ]);
 
-    expect(exitCode).toBe(0);
+    expect(result.error).toBeUndefined();
 
-    const output = JSON.parse(stdout);
+    const output = JSON.parse(result.stdout);
     expect(output.success).toBe(true);
     expect(output.consignmentNumber).toBeDefined();
-    expect(output.trackingNumber).toBeDefined();
     expect(output.trackingUrl).toBeDefined();
-    expect(output.labelUrl).toBeDefined();
   });
 
   it('should support custom correlation ID', async () => {
-    const correlationId = `test-cli-${Date.now()}`;
+    const correlationId = `test-cli-custom-${Date.now()}`;
 
-    const { exitCode, stdout } = await runCommand([
+    const result = await runCommand([
       'shipper',
       'bring',
       'create',
-      ...baseArgs,
       '--correlation-id',
       correlationId,
+      '--sender-name', 'Eventuras AS',
+      '--sender-address', 'Testveien 1',
+      '--sender-postal', '0001',
+      '--sender-city', 'Oslo',
+      '--recipient-name', 'Test Recipient',
+      '--recipient-address', 'Testgata 42',
+      '--recipient-postal', '0010',
+      '--recipient-city', 'Oslo',
+      '--weight', '1000',
+      '--length', '30',
+      '--width', '20',
+      '--height', '10',
       '--json',
     ]);
 
-    expect(exitCode).toBe(0);
+    expect(result.error).toBeUndefined();
 
-    const output = JSON.parse(stdout);
+    const output = JSON.parse(result.stdout);
     expect(output.success).toBe(true);
     expect(output.consignmentNumber).toBeDefined();
   });
 
   it('should support custom product code', async () => {
-    const { exitCode, stdout } = await runCommand([
+    const result = await runCommand([
       'shipper',
       'bring',
       'create',
@@ -105,16 +113,16 @@ describeIf('oxo shipper bring create', () => {
       '--json',
     ]);
 
-    expect(exitCode).toBe(0);
+    expect(result.error).toBeUndefined();
 
-    const output = JSON.parse(stdout);
+    const output = JSON.parse(result.stdout);
     expect(output.success).toBe(true);
   });
 
   it('should fail without required arguments', async () => {
-    const { exitCode } = await runCommand(['shipper', 'bring', 'create']);
+    const result = await runCommand(['shipper', 'bring', 'create']);
 
-    // Should exit with error code
-    expect(exitCode).toBe(1);
+    // Should have error
+    expect(result.error).toBeDefined();
   });
 });

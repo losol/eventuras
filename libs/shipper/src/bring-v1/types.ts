@@ -6,24 +6,19 @@ import type { Address, Package } from '../core/types';
 export interface BringConfig {
   /** Bring API base URL (test: https://api.qa.bring.com, prod: https://api.bring.com) */
   apiUrl: string;
-  /** OAuth client ID from Bring Developer Portal */
-  clientId: string;
-  /** OAuth client secret from Bring Developer Portal */
-  clientSecret: string;
+  /** Mybring user email address (API UID) */
+  apiUid: string;
+  /** Mybring API key */
+  apiKey: string;
   /** Bring customer number */
   customerId: string;
   /** Client URL that identifies where you're using the API (e.g., 'https://eventuras.losol.io') */
   clientUrl: string;
-}
-
-/**
- * OAuth token response from Bring
- */
-export interface BringTokenResponse {
-  access_token: string;
-  token_type: string;
-  expires_in: number;
-  scope: string;
+  /**
+   * Explicitly set test mode (true/false).
+   * If not provided, auto-detects based on apiUrl containing 'qa' or 'test'
+   */
+  testMode?: boolean;
 }
 
 /**
@@ -106,21 +101,26 @@ export interface BringShipmentResponse {
  * Individual consignment in the response
  */
 export interface BringConsignmentResponse {
-  correlationId: string;
+  correlationId?: string;
   confirmation: {
     /** Consignment number (tracking number) */
     consignmentNumber: string;
+    /** Expected delivery date and time */
+    dateAndTimes?: {
+      expectedDelivery?: string;
+    };
     links: {
       /** Link to tracking page */
       tracking: string;
       /** Link to label (PDF) */
       labels?: string;
     };
+    /** Package details with tracking numbers */
+    packages?: Array<{
+      /** Package tracking number */
+      packageNumber: string;
+    }>;
   };
-  packages: Array<{
-    correlationId: string;
-    packageNumber: string;
-  }>;
 }
 
 /**

@@ -16,18 +16,9 @@ vi.mock('@eventuras/shipper/bring-v1', () => ({
   BringClient: vi.fn().mockImplementation(() => ({
     fetchLabel: vi.fn().mockResolvedValue(
       // Mock PDF data
-      new ArrayBuffer(1024)
+      new ArrayBuffer(1024),
     ),
   })),
-  fetchAccessToken: vi.fn().mockResolvedValue({
-     
-    access_token: 'mock_access_token',
-     
-    expires_in: 3600,
-    scope: 'test',
-     
-    token_type: 'Bearer',
-  }),
 }));
 
 describe.skip('oxo shipper bring label (unit)', () => {
@@ -36,8 +27,8 @@ describe.skip('oxo shipper bring label (unit)', () => {
 
   beforeEach(() => {
     // Set required env vars for the command
-    process.env.BRING_CLIENT_ID = 'mock_client_id';
-    process.env.BRING_CLIENT_SECRET = 'mock_client_secret';
+    process.env.BRING_API_UID = 'test@example.com';
+    process.env.BRING_API_KEY = 'mock_api_key';
     process.env.BRING_CUSTOMER_ID = 'mock_customer_id';
   });
 

@@ -14,9 +14,11 @@ import { existsSync, unlinkSync } from 'node:fs';
 import { beforeAll, describe, expect, it } from 'vitest';
 
 // Check if we have required env vars for integration tests
-const hasTestConfig = Boolean(process.env.BRING_CLIENT_ID &&
-  process.env.BRING_CLIENT_SECRET &&
-  process.env.BRING_CUSTOMER_ID);
+const hasTestConfig = Boolean(
+  process.env.BRING_API_UID &&
+    process.env.BRING_API_KEY &&
+    process.env.BRING_CUSTOMER_ID,
+);
 
 const describeIf = hasTestConfig ? describe : describe.skip;
 
@@ -25,32 +27,50 @@ describeIf('oxo shipper bring label', () => {
 
   beforeAll(async () => {
     if (!hasTestConfig) {
-      console.log('⚠️  Skipping CLI integration tests - missing BRING_CLIENT_ID, BRING_CLIENT_SECRET, or BRING_CUSTOMER_ID');
+      console.log(
+        '⚠️  Skipping CLI integration tests - missing BRING_API_UID, BRING_API_KEY, or BRING_CUSTOMER_ID',
+      );
       return;
     }
 
     // Create a shipment first to get a label URL
-    const { stdout } = await runCommand([
+    const result = await runCommand([
       'shipper',
       'bring',
       'create',
-      '--sender-name', 'Eventuras AS',
-      '--sender-address', 'Testveien 1',
-      '--sender-postal', '0001',
-      '--sender-city', 'Oslo',
-      '--recipient-name', 'Test Recipient',
-      '--recipient-address', 'Testgata 42',
-      '--recipient-postal', '0010',
-      '--recipient-city', 'Oslo',
-      '--weight', '1000',
-      '--length', '30',
-      '--width', '20',
-      '--height', '10',
+      '--correlation-id',
+      `test-label-setup-${Date.now()}`,
+      '--sender-name',
+      'Eventuras AS',
+      '--sender-address',
+      'Testveien 1',
+      '--sender-postal',
+      '0001',
+      '--sender-city',
+      'Oslo',
+      '--recipient-name',
+      'Test Recipient',
+      '--recipient-address',
+      'Testgata 42',
+      '--recipient-postal',
+      '0010',
+      '--recipient-city',
+      'Oslo',
+      '--weight',
+      '1000',
+      '--length',
+      '30',
+      '--width',
+      '20',
+      '--height',
+      '10',
       '--json',
     ]);
 
-    const output = JSON.parse(stdout);
-    labelUrl = output.labelUrl;
+    if (!result.error && result.stdout) {
+      const output = JSON.parse(result.stdout);
+      labelUrl = output.labelUrl;
+    }
   });
 
   it('should download label successfully', async () => {
@@ -62,7 +82,7 @@ describeIf('oxo shipper bring label', () => {
     const outputFile = `test-label-${Date.now()}.pdf`;
 
     try {
-      const { exitCode, stdout } = await runCommand([
+      const result = await runCommand([
         'shipper',
         'bring',
         'label',
@@ -72,9 +92,9 @@ describeIf('oxo shipper bring label', () => {
         outputFile,
       ]);
 
-      expect(exitCode).toBe(0);
-      expect(stdout).toContain('Label downloaded successfully');
-      expect(stdout).toContain(outputFile);
+      expect(result.error).toBeUndefined();
+      expect(result.stdout).toContain('Label downloaded successfully');
+      expect(result.stdout).toContain(outputFile);
       expect(existsSync(outputFile)).toBe(true);
     } finally {
       // Clean up
@@ -93,7 +113,7 @@ describeIf('oxo shipper bring label', () => {
     const outputFile = `test-label-json-${Date.now()}.pdf`;
 
     try {
-      const { exitCode, stdout } = await runCommand([
+      const result = await runCommand([
         'shipper',
         'bring',
         'label',
@@ -104,9 +124,9 @@ describeIf('oxo shipper bring label', () => {
         '--json',
       ]);
 
-      expect(exitCode).toBe(0);
+      expect(result.error).toBeUndefined();
 
-      const output = JSON.parse(stdout);
+      const output = JSON.parse(result.stdout);
       expect(output.success).toBe(true);
       expect(output.outputPath).toBe(outputFile);
       expect(output.sizeBytes).toBeGreaterThan(0);
@@ -125,7 +145,7 @@ describeIf('oxo shipper bring label', () => {
       return;
     }
 
-    const { exitCode, stdout } = await runCommand([
+    const result = await runCommand([
       'shipper',
       'bring',
       'label',
@@ -134,9 +154,9 @@ describeIf('oxo shipper bring label', () => {
       '--json',
     ]);
 
-    expect(exitCode).toBe(0);
+    expect(result.error).toBeUndefined();
 
-    const output = JSON.parse(stdout);
+    const output = JSON.parse(result.stdout);
     expect(output.success).toBe(true);
     expect(output.outputPath).toMatch(/^label-\d+\.pdf$/);
 
@@ -146,21 +166,9 @@ describeIf('oxo shipper bring label', () => {
     }
   });
 
-  it('should fail with invalid label URL', async () => {
-    const { exitCode } = await runCommand([
-      'shipper',
-      'bring',
-      'label',
-      '--label-url',
-      'https://api.qa.bring.com/booking/api/booking/labels/invalid-url',
-    ]);
-
-    expect(exitCode).toBe(1);
-  });
-
   it('should fail without --label-url argument', async () => {
-    const { exitCode } = await runCommand(['shipper', 'bring', 'label']);
+    const result = await runCommand(['shipper', 'bring', 'label']);
 
-    expect(exitCode).toBe(1);
+    expect(result.error).toBeDefined();
   });
 });

@@ -1,4 +1,4 @@
-import { BringClient, fetchAccessToken, toBringAddress } from '@eventuras/shipper/bring-v1';
+import { BringClient, toBringAddress } from '@eventuras/shipper/bring-v1';
 import { Command, Flags } from '@oclif/core';
 
 import { loadEnvFile, requireEnvVar } from '../../../utils/env.js';
@@ -7,6 +7,7 @@ export default class BringCreate extends Command {
   static override description = 'Create a Bring shipment';
 static override examples = [
     `$ oxo shipper bring create \\
+      --correlation-id "EVENT-2026-001" \\
       --sender-name "Eventuras AS" \\
       --sender-address "Testveien 1" \\
       --sender-postal "0001" \\
@@ -17,11 +18,12 @@ static override examples = [
       --recipient-city "Oslo" \\
       --weight 1000 \\
       --length 30 --width 20 --height 10`,
-    `$ oxo shipper bring create --json [options]`,
+    `$ oxo shipper bring create --correlation-id "REG-456" --json [options]`,
   ];
 static override flags = {
     'correlation-id': Flags.string({
-      description: 'Correlation ID for tracking (optional)',
+      description: 'Correlation ID for tracking (e.g., EVENT-123, ORDER-456, REG-789)',
+      required: true,
     }),
     height: Flags.integer({
       description: 'Package height in cm',
@@ -121,13 +123,13 @@ static override flags = {
     loadEnvFile();
 
     // Validate required environment variables
-    const clientId = requireEnvVar(
-      'BRING_CLIENT_ID',
-      'Error: BRING_CLIENT_ID is required. Set it in .env file'
+    const apiUid = requireEnvVar(
+      'BRING_API_UID',
+      'Error: BRING_API_UID is required. Set it in .env file'
     );
-    const clientSecret = requireEnvVar(
-      'BRING_CLIENT_SECRET',
-      'Error: BRING_CLIENT_SECRET is required. Set it in .env file'
+    const apiKey = requireEnvVar(
+      'BRING_API_KEY',
+      'Error: BRING_API_KEY is required. Set it in .env file'
     );
     const customerId = requireEnvVar(
       'BRING_CUSTOMER_ID',
@@ -135,18 +137,23 @@ static override flags = {
     );
 
     const config = {
+      apiKey,
+      apiUid,
       apiUrl: process.env.BRING_API_URL || 'https://api.qa.bring.com',
-      clientId,
-      clientSecret,
       clientUrl: process.env.BRING_CLIENT_URL || 'https://eventuras.losol.io',
       customerId,
     };
 
-    try {
-      // Fetch access token
-      const tokenResponse = await fetchAccessToken(config);
-      const accessToken = tokenResponse.access_token;
+    // Warn if using production API
+    const isProduction = config.apiUrl.includes('api.bring.com') && !config.apiUrl.includes('qa');
+    if (isProduction && !flags.json) {
+      this.warn('⚠️  WARNING: Using PRODUCTION Bring API!');
+      this.warn('   This will create a REAL shipment and may incur costs.');
+      this.warn('   Set BRING_API_URL=https://api.qa.bring.com to use test environment.');
+      this.error('Production mode requires explicit --production flag (not yet implemented)', { exit: 1 });
+    }
 
+    try {
       // Create client
       const client = new BringClient(config);
 
@@ -157,10 +164,10 @@ static override flags = {
 
       // Create consignment with correct Bring types
       const consignment = {
-        correlationId: flags['correlation-id'] || `cli-${Date.now()}`,
+        correlationId: flags['correlation-id'],
         packages: [
           {
-            correlationId: `${flags['correlation-id'] || 'cli'}-pkg-1`,
+            correlationId: `${flags['correlation-id']}-pkg-1`,
             dimensions: {
               heightInCm: flags.height,
               lengthInCm: flags.length,
@@ -199,17 +206,14 @@ static override flags = {
       };
 
       // Create shipment
-      const response = await client.createShipment(consignment, accessToken);
+      const response = await client.createShipment(consignment);
 
       const shipment = response.consignments?.[0];
       if (!shipment) {
         throw new Error('Bring API did not return any consignments for the created shipment.');
       }
 
-      const pkg = shipment.packages?.[0];
-      if (!pkg) {
-        throw new Error('Bring API did not return any packages for the created consignment.');
-      }
+      const pkg = shipment.confirmation.packages?.[0];
 
       if (flags.json) {
         this.log(
@@ -217,8 +221,8 @@ static override flags = {
             {
               consignmentNumber: shipment.confirmation.consignmentNumber,
               labelUrl: shipment.confirmation.links.labels,
+              packageNumber: pkg?.packageNumber,
               success: true,
-              trackingNumber: pkg.trackingNumber,
               trackingUrl: shipment.confirmation.links.tracking,
             },
             null,
@@ -228,7 +232,10 @@ static override flags = {
       } else {
         this.log('✓ Shipment created successfully!');
         this.log(`Consignment number: ${shipment.confirmation.consignmentNumber}`);
-        this.log(`Tracking number: ${pkg.trackingNumber}`);
+        if (pkg?.packageNumber) {
+          this.log(`Package number: ${pkg.packageNumber}`);
+        }
+
         this.log(`Tracking URL: ${shipment.confirmation.links.tracking}`);
         if (shipment.confirmation.links.labels) {
           this.log(`Label URL: ${shipment.confirmation.links.labels}`);
