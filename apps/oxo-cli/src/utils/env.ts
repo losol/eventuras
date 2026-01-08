@@ -39,8 +39,8 @@ export function loadEnvFile(projectRoot?: string): void {
         continue;
       }
 
-      const key = trimmed.slice(0, Math.max(0, equalsIndex)).trim();
-      let value = trimmed.slice(Math.max(0, equalsIndex + 1)).trim();
+      const key = trimmed.slice(0, equalsIndex).trim();
+      let value = trimmed.slice(equalsIndex + 1).trim();
 
       // Remove quotes if present
       if ((value.startsWith('"') && value.endsWith('"')) ||

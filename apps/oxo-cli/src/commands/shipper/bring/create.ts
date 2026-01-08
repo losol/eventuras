@@ -201,8 +201,15 @@ static override flags = {
       // Create shipment
       const response = await client.createShipment(consignment, accessToken);
 
-      const shipment = response.consignments[0];
-      const pkg = shipment.packages[0];
+      const shipment = response.consignments?.[0];
+      if (!shipment) {
+        throw new Error('Bring API did not return any consignments for the created shipment.');
+      }
+
+      const pkg = shipment.packages?.[0];
+      if (!pkg) {
+        throw new Error('Bring API did not return any packages for the created consignment.');
+      }
 
       if (flags.json) {
         this.log(
@@ -210,8 +217,8 @@ static override flags = {
             {
               consignmentNumber: shipment.confirmation.consignmentNumber,
               labelUrl: shipment.confirmation.links.labels,
-              packageNumber: pkg.packageNumber,
               success: true,
+              trackingNumber: pkg.trackingNumber,
               trackingUrl: shipment.confirmation.links.tracking,
             },
             null,
@@ -221,7 +228,7 @@ static override flags = {
       } else {
         this.log('✓ Shipment created successfully!');
         this.log(`Consignment number: ${shipment.confirmation.consignmentNumber}`);
-        this.log(`Package number: ${pkg.packageNumber}`);
+        this.log(`Tracking number: ${pkg.trackingNumber}`);
         this.log(`Tracking URL: ${shipment.confirmation.links.tracking}`);
         if (shipment.confirmation.links.labels) {
           this.log(`Label URL: ${shipment.confirmation.links.labels}`);
