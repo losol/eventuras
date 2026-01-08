@@ -1,4 +1,4 @@
-import { BringClient , fetchAccessToken } from '@eventuras/shipper/bring-v1';
+import { BringClient, fetchAccessToken } from '@eventuras/shipper/bring-v1';
 import { Command, Flags } from '@oclif/core';
 import { writeFileSync } from 'node:fs';
 

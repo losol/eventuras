@@ -6,12 +6,4 @@ export default [
   {
     ignores: ['**/dist/**', '**/node_modules/**', '**/.next/**', '**/build/**'],
   },
-  {
-    files: ['**/*.test.ts', '**/*.test.tsx', '**/*.spec.ts', '**/*.spec.tsx'],
-    rules: {
-      // Disable Mocha rules for Vitest/other test frameworks
-      'mocha/no-skipped-tests': 'off',
-      'mocha/no-top-level-hooks': 'off',
-    },
-  },
 ];
