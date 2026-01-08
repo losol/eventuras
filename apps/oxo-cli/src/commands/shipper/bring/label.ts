@@ -49,9 +49,9 @@ static override flags = {
     const config = {
       apiKey,
       apiUid,
-      apiUrl: process.env.BRING_API_URL || 'https://api.qa.bring.com',
       clientUrl: process.env.BRING_CLIENT_URL || 'https://eventuras.losol.io',
       customerId,
+      environment: (process.env.BRING_ENVIRONMENT || 'test') as 'production' | 'test',
     };
 
     try {

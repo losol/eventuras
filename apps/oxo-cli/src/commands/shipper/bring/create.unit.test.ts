@@ -61,6 +61,7 @@ describe.skip('oxo shipper bring create (unit)', () => {
     process.env.BRING_API_UID = 'test@example.com';
     process.env.BRING_API_KEY = 'mock_api_key';
     process.env.BRING_CUSTOMER_ID = 'mock_customer_id';
+    process.env.BRING_ENVIRONMENT = 'test';
   });
 
   const baseArgs = [

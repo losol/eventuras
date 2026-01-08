@@ -2,6 +2,8 @@
  * Environment variable validation and configuration for Shipper
  */
 
+import type { BringEnvironment } from '../bring-v1/types';
+
 /**
  * Required environment variables for Shipper (Bring API)
  */
@@ -15,7 +17,7 @@ const REQUIRED_ENV_VARS = [
  * Optional environment variables with defaults
  */
 const OPTIONAL_ENV_VARS = {
-  BRING_API_URL: 'https://api.qa.bring.com', // Default to test environment
+  BRING_ENVIRONMENT: 'test' as BringEnvironment, // Default to test environment
   BRING_CLIENT_URL: 'https://eventuras.losol.io',
 } as const;
 
@@ -43,11 +45,11 @@ export function getShipperConfig() {
   }
 
   return {
-    apiUrl: process.env.BRING_API_URL || OPTIONAL_ENV_VARS.BRING_API_URL,
-    apiUid: process.env.BRING_API_UID!,
     apiKey: process.env.BRING_API_KEY!,
-    customerId: process.env.BRING_CUSTOMER_ID!,
+    apiUid: process.env.BRING_API_UID!,
     clientUrl: process.env.BRING_CLIENT_URL || OPTIONAL_ENV_VARS.BRING_CLIENT_URL,
+    customerId: process.env.BRING_CUSTOMER_ID!,
+    environment: (process.env.BRING_ENVIRONMENT || OPTIONAL_ENV_VARS.BRING_ENVIRONMENT) as BringEnvironment,
   };
 }
 
