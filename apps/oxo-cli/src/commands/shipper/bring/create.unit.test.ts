@@ -22,7 +22,8 @@ vi.mock('@eventuras/shipper/bring-v1', () => ({
           confirmation: {
             consignmentNumber: 'TEST123456789',
             links: {
-              labels: 'https://api.qa.bring.com/booking/api/booking/labels/TEST123',
+              labels:
+                'https://api.qa.bring.com/booking/api/booking/labels/TEST123',
               tracking: 'https://tracking.bring.com/tracking/TEST123456789',
             },
           },
@@ -37,23 +38,17 @@ vi.mock('@eventuras/shipper/bring-v1', () => ({
       ],
     }),
   })),
-  fetchAccessToken: vi.fn().mockResolvedValue({
-     
-    access_token: 'mock_access_token',
-     
-    expires_in: 3600,
-    scope: 'test',
-     
-    token_type: 'Bearer',
-  }),
   toBringAddress: vi.fn((addr) => ({
     addressLine: addr.addressLine1,
     addressLine2: addr.addressLine2,
     city: addr.city,
-    contact: addr.email || addr.phone ? {
-      email: addr.email,
-      phoneNumber: addr.phone,
-    } : undefined,
+    contact:
+      addr.email || addr.phone
+        ? {
+            email: addr.email,
+            phoneNumber: addr.phone,
+          }
+        : undefined,
     countryCode: addr.countryCode,
     name: addr.name,
     postalCode: addr.postalCode,
@@ -63,8 +58,8 @@ vi.mock('@eventuras/shipper/bring-v1', () => ({
 describe.skip('oxo shipper bring create (unit)', () => {
   beforeEach(() => {
     // Set required env vars for the command
-    process.env.BRING_CLIENT_ID = 'mock_client_id';
-    process.env.BRING_CLIENT_SECRET = 'mock_client_secret';
+    process.env.BRING_API_UID = 'test@example.com';
+    process.env.BRING_API_KEY = 'mock_api_key';
     process.env.BRING_CUSTOMER_ID = 'mock_customer_id';
   });
 

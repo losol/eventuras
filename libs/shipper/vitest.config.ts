@@ -6,7 +6,7 @@ export default defineConfig(({ mode }) => ({
   test: {
     globals: true,
     environment: 'node',
-    setupFiles: ['./src/__tests__/setup.ts'],
+    setupFiles: ['./src/setup.ts'],
     include: ['src/**/*.{test,spec}.{js,ts}'],
     env: loadEnv(mode, process.cwd(), ''),
     coverage: {

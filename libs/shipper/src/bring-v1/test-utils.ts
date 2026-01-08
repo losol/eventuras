@@ -2,7 +2,7 @@
  * Test utilities and helpers for Shipper integration tests
  */
 
-import type { BringConfig } from '../bring-v1/types';
+import type { BringConfig } from './types';
 import { hasShipperConfig, getShipperConfig } from '../utils/environment';
 
 /**
@@ -39,13 +39,15 @@ export function sleep(ms: number): Promise<void> {
  */
 export function getTestSenderAddress() {
   return {
-    name: 'Eventuras AS',
-    addressLine1: 'Testveien 1',
+    name: 'Losvik kommune',
+    addressLine: 'Testveien 1',
     postalCode: '0001',
     city: 'Oslo',
     countryCode: 'NO',
-    phone: '+4712345678',
-    email: 'test@eventuras.com',
+    contact: {
+      phoneNumber: '+4712345678',
+      email: 'test@eventuras.com',
+    },
   };
 }
 
@@ -55,12 +57,14 @@ export function getTestSenderAddress() {
 export function getTestRecipientAddress() {
   return {
     name: 'Test Recipient',
-    addressLine1: 'Testgata 42',
+    addressLine: 'Testgata 42',
     postalCode: '0010',
     city: 'Oslo',
     countryCode: 'NO',
-    phone: '+4787654321',
-    email: 'recipient@example.com',
+    contact: {
+      phoneNumber: '+4787654321',
+      email: 'recipient@example.com',
+    },
   };
 }
 
@@ -81,7 +85,7 @@ export function getTestPackage() {
  */
 export function getTodayISODate(): string {
   const today = new Date();
-  return today.toISOString().split('T')[0];
+  return today.toISOString().split('T')[0]!;
 }
 
 /**
@@ -90,5 +94,5 @@ export function getTodayISODate(): string {
 export function getTomorrowISODate(): string {
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
-  return tomorrow.toISOString().split('T')[0];
+  return tomorrow.toISOString().split('T')[0]!;
 }

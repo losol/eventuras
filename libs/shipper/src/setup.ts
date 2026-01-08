@@ -8,7 +8,7 @@
  * from the project root automatically. No need for dotenv package in tests.
  */
 
-import { validateEnvConfig } from '../utils/environment';
+import { validateEnvConfig } from './utils/environment';
 
 // Validate and warn about missing environment variables
 validateEnvConfig();

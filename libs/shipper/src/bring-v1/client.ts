@@ -19,17 +19,26 @@ export class BringClient {
   constructor(private readonly config: BringConfig) {}
 
   /**
+   * Determines if the client is configured for test environment
+   */
+  private isTestEnvironment(): boolean {
+    // Use explicit testMode if provided, otherwise auto-detect from URL
+    if (this.config.testMode !== undefined) {
+      return this.config.testMode;
+    }
+    return this.config.apiUrl.includes('qa.bring.com') || this.config.apiUrl.includes('test');
+  }
+
+  /**
    * Creates a new shipment with Bring
    *
    * @param consignment - Consignment data
-   * @param accessToken - OAuth access token (fetch using fetchAccessToken)
    * @returns Shipment response with tracking number and label links
    * @throws {ShippingAuthError} If authentication fails (401)
    * @throws {ShippingError} If shipment creation fails
    */
   async createShipment(
-    consignment: BringConsignment,
-    accessToken: string
+    consignment: BringConsignment
   ): Promise<BringShipmentResponse> {
     const url = `${this.config.apiUrl}/booking/api/booking`;
     const startTime = Date.now();
@@ -43,19 +52,39 @@ export class BringClient {
       'Creating Bring shipment'
     );
 
+    // Transform consignment data to match Bring API format
+    const transformedConsignment = {
+      ...consignment,
+      packages: consignment.packages.map(pkg => ({
+        correlationId: pkg.correlationId,
+        weightInKg: pkg.weightInGrams / 1000, // Convert grams to kg
+        dimensions: pkg.dimensions ? {
+          heightInCm: pkg.dimensions.heightInCm,
+          widthInCm: pkg.dimensions.widthInCm,
+          lengthInCm: pkg.dimensions.lengthInCm,
+        } : undefined,
+      })),
+    };
+
+    const payload = {
+      schemaVersion: 1,
+      consignments: [transformedConsignment],
+      testIndicator: this.isTestEnvironment(),
+    };
+    logger.debug({ payload: JSON.stringify(payload, null, 2) }, 'Request payload');
+
     try {
       const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`,
-          'X-MyBring-API-Uid': this.config.clientId,
+          'Accept': 'application/json',
+          'X-MyBring-API-Uid': this.config.apiUid,
+          'X-MyBring-API-Key': this.config.apiKey,
           'X-Bring-Client-URL': this.config.clientUrl,
+          'X-Bring-Test-Indicator': this.isTestEnvironment() ? 'true' : 'false',
         },
-        body: JSON.stringify({
-          schemaVersion: 1,
-          consignments: [consignment],
-        }),
+        body: JSON.stringify(payload),
       });
 
       const responseTime = Date.now() - startTime;
@@ -97,6 +126,9 @@ export class BringClient {
       }
 
       const data = await response.json() as BringShipmentResponse;
+
+      // Log the actual response for debugging
+      logger.debug({ response: JSON.stringify(data, null, 2) }, 'API response');
 
       // Check for API-level errors
       if (data.errors && data.errors.length > 0) {
@@ -155,14 +187,12 @@ export class BringClient {
    * Fetches the PDF label for a shipment
    *
    * @param labelUrl - Label URL from the shipment response
-   * @param accessToken - OAuth access token
    * @returns PDF label as ArrayBuffer
    * @throws {ShippingAuthError} If authentication fails (401)
    * @throws {ShippingError} If label fetch fails
    */
   async fetchLabel(
-    labelUrl: string,
-    accessToken: string
+    labelUrl: string
   ): Promise<ArrayBuffer> {
     const startTime = Date.now();
 
@@ -172,7 +202,8 @@ export class BringClient {
       const response = await fetch(labelUrl, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${accessToken}`,
+          'X-MyBring-API-Uid': this.config.apiUid,
+          'X-MyBring-API-Key': this.config.apiKey,
           'Accept': 'application/pdf',
         },
       });
