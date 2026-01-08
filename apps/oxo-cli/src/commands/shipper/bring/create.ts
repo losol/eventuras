@@ -42,6 +42,10 @@ static override flags = {
       default: 'SERVICEPAKKE',
       description: 'Bring product code',
     }),
+    production: Flags.boolean({
+      default: false,
+      description: 'Allow production shipments (required when BRING_ENVIRONMENT=production)',
+    }),
     'recipient-address': Flags.string({
       description: 'Recipient street address',
       required: true,
@@ -146,11 +150,11 @@ static override flags = {
 
     // Warn if using production API
     const isProduction = config.environment === 'production';
-    if (isProduction && !flags.json) {
+    if (isProduction && !flags.production) {
       this.warn('⚠️  WARNING: Using PRODUCTION Bring API!');
       this.warn('   This will create a REAL shipment and may incur costs.');
       this.warn('   Set BRING_ENVIRONMENT=test to use test environment.');
-      this.error('Production environment requires explicit --production flag (not yet implemented)', { exit: 1 });
+      this.error('Production environment requires explicit --production flag', { exit: 1 });
     }
 
     try {
