@@ -139,18 +139,18 @@ static override flags = {
     const config = {
       apiKey,
       apiUid,
-      apiUrl: process.env.BRING_API_URL || 'https://api.qa.bring.com',
       clientUrl: process.env.BRING_CLIENT_URL || 'https://eventuras.losol.io',
       customerId,
+      environment: (process.env.BRING_ENVIRONMENT || 'test') as 'production' | 'test',
     };
 
     // Warn if using production API
-    const isProduction = config.apiUrl.includes('api.bring.com') && !config.apiUrl.includes('qa');
+    const isProduction = config.environment === 'production';
     if (isProduction && !flags.json) {
       this.warn('⚠️  WARNING: Using PRODUCTION Bring API!');
       this.warn('   This will create a REAL shipment and may incur costs.');
-      this.warn('   Set BRING_API_URL=https://api.qa.bring.com to use test environment.');
-      this.error('Production mode requires explicit --production flag (not yet implemented)', { exit: 1 });
+      this.warn('   Set BRING_ENVIRONMENT=test to use test environment.');
+      this.error('Production environment requires explicit --production flag (not yet implemented)', { exit: 1 });
     }
 
     try {

@@ -39,7 +39,7 @@ describeIf('BringClient Integration Tests', () => {
 
     console.log(`
       ℹ️  Running Bring integration tests
-      API URL: ${config!.apiUrl}
+      Environment: ${config!.environment}
       Customer ID: ${config!.customerId}
     `);
 

@@ -1,11 +1,16 @@
 import type { Address, Package } from '../core/types';
 
 /**
+ * Bring API environment
+ */
+export type BringEnvironment = 'test' | 'production';
+
+/**
  * Configuration for Bring API client
  */
 export interface BringConfig {
-  /** Bring API base URL (test: https://api.qa.bring.com, prod: https://api.bring.com) */
-  apiUrl: string;
+  /** API environment - determines which Bring API to use and whether to send test indicator */
+  environment: BringEnvironment;
   /** Mybring user email address (API UID) */
   apiUid: string;
   /** Mybring API key */
@@ -14,11 +19,6 @@ export interface BringConfig {
   customerId: string;
   /** Client URL that identifies where you're using the API (e.g., 'https://eventuras.losol.io') */
   clientUrl: string;
-  /**
-   * Explicitly set test mode (true/false).
-   * If not provided, auto-detects based on apiUrl containing 'qa' or 'test'
-   */
-  testMode?: boolean;
 }
 
 /**

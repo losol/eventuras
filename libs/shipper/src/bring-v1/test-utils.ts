@@ -14,9 +14,15 @@ export function hasTestConfig(): boolean {
 
 /**
  * Get test configuration for Bring API
+ * Always uses test environment to ensure tests don't hit production
  */
 export function getTestConfig(): BringConfig {
-  return getShipperConfig();
+  const config = getShipperConfig();
+  // Force test environment for integration tests
+  return {
+    ...config,
+    environment: 'test',
+  };
 }
 
 /**

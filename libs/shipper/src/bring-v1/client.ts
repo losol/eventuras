@@ -12,6 +12,12 @@ const logger = Logger.create({
 });
 
 /**
+ * Bring API base URL (same for both test and production)
+ * Test vs production is controlled by testIndicator in request body
+ */
+const BRING_API_URL = 'https://api.bring.com';
+
+/**
  * Bring Booking API client
  * Handles shipment creation, tracking, and label retrieval
  */
@@ -19,14 +25,17 @@ export class BringClient {
   constructor(private readonly config: BringConfig) {}
 
   /**
+   * Get the API URL (always uses production URL, test mode controlled by testIndicator)
+   */
+  private getApiUrl(): string {
+    return BRING_API_URL;
+  }
+
+  /**
    * Determines if the client is configured for test environment
    */
   private isTestEnvironment(): boolean {
-    // Use explicit testMode if provided, otherwise auto-detect from URL
-    if (this.config.testMode !== undefined) {
-      return this.config.testMode;
-    }
-    return this.config.apiUrl.includes('qa.bring.com') || this.config.apiUrl.includes('test');
+    return this.config.environment === 'test';
   }
 
   /**
@@ -40,7 +49,7 @@ export class BringClient {
   async createShipment(
     consignment: BringConsignment
   ): Promise<BringShipmentResponse> {
-    const url = `${this.config.apiUrl}/booking/api/booking`;
+    const url = `${this.getApiUrl()}/booking/api/booking`;
     const startTime = Date.now();
 
     logger.info(

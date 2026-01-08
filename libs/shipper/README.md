@@ -22,35 +22,31 @@ pnpm add @eventuras/shipper
 #### 1. Setup Configuration
 
 ```typescript
-import { BRING_API_TEST, BRING_API_PROD, type BringConfig } from '@eventuras/shipper/bring-v1';
+import { BringClient, type BringConfig } from '@eventuras/shipper/bring-v1';
 
 const config: BringConfig = {
-  // Use BRING_API_TEST for testing, BRING_API_PROD for production
-  apiUrl: BRING_API_TEST,
-  clientId: process.env.BRING_CLIENT_ID!,
-  clientSecret: process.env.BRING_CLIENT_SECRET!,
+  environment: 'test', // 'test' or 'production' - automatically sets correct API URL and test indicator
+  apiUid: process.env.BRING_API_UID!, // Your Mybring email address
+  apiKey: process.env.BRING_API_KEY!, // API key from Mybring account settings
   customerId: process.env.BRING_CUSTOMER_ID!,
   clientUrl: 'https://eventuras.losol.io', // URL identifying where you're using the API
 };
+
+// Create client
+const client = new BringClient(config);
 ```
+
+**Environment behavior:**
+- `environment: 'test'` - Sets `testIndicator: true` in requests (creates test shipments)
+- `environment: 'production'` - Sets `testIndicator: false` in requests (creates real shipments)
+
+**Note:** Both environments use the same API URL (`https://api.bring.com`). Test vs production is controlled by the `testIndicator` field in the request body.
 
 #### 2. Create a Shipment
 
 ```typescript
-import {
-  createBringClient,
-  fetchAccessToken,
-  toBringAddress,
-  toBringPackage,
-  type BringConsignment,
-} from '@eventuras/shipper/bring-v1';
+import { BringClient, type BringConsignment } from '@eventuras/shipper/bring-v1';
 import type { Address, Package } from '@eventuras/shipper/core';
-
-// Get access token (consumer should cache this)
-const tokenResponse = await fetchAccessToken(config);
-
-// Create client
-const client = createBringClient(config);
 
 // Define shipment details using common types
 const sender: Address = {
@@ -74,7 +70,7 @@ const recipient: Address = {
 };
 
 const package: Package = {
-  weightInGrams: 2500,
+  weightInGrams: 500,
   lengthInCm: 30,
   widthInCm: 20,
   heightInCm: 10,
@@ -85,27 +81,52 @@ const consignment: BringConsignment = {
   correlationId: 'order-12345',
   shippingDateTime: '2026-01-07', // ISO date
   parties: {
-    sender: toBringAddress(sender),
-    recipient: toBringAddress(recipient),
+    sender: {
+      name: sender.name,
+      addressLine: sender.addressLine1,
+      postalCode: sender.postalCode,
+      city: sender.city,
+      countryCode: sender.countryCode,
+      contact: {
+        email: sender.email,
+        phoneNumber: sender.phone,
+      },
+    },
+    recipient: {
+      name: recipient.name,
+      addressLine: recipient.addressLine1,
+      postalCode: recipient.postalCode,
+      city: recipient.city,
+      countryCode: recipient.countryCode,
+      contact: {
+        email: recipient.email,
+        phoneNumber: recipient.phone,
+      },
+    },
   },
   product: {
     id: 'SERVICEPAKKE', // Bring product code
     customerNumber: config.customerId,
   },
-  packages: [toBringPackage(package, 'pkg-1')],
+  packages: [{
+    correlationId: 'pkg-1',
+    weightInGrams: package.weightInGrams,
+    dimensions: {
+      lengthInCm: package.lengthInCm,
+      widthInCm: package.widthInCm,
+      heightInCm: package.heightInCm,
+    },
+  }],
 };
 
 // Create the shipment
-const response = await client.createShipment(
-  consignment,
-  tokenResponse.access_token
-);
+const response = await client.createShipment(consignment);
 
-// Extract tracking number and label URL
-const trackingNumber = response.consignments[0].confirmation.consignmentNumber;
-const labelUrl = response.consignments[0].confirmation.links.labels;
+// Extract package number and label URL
+const packageNumber = response.consignments[0]!.confirmation.packages![0]!.packageNumber;
+const labelUrl = response.consignments[0]!.confirmation.links.labels;
 
-console.log('Tracking number:', trackingNumber);
+console.log('Package number:', packageNumber);
 console.log('Label URL:', labelUrl);
 ```
 
@@ -113,7 +134,7 @@ console.log('Label URL:', labelUrl);
 
 ```typescript
 if (labelUrl) {
-  const pdfBuffer = await client.fetchLabel(labelUrl, tokenResponse.access_token);
+  const pdfBuffer = await client.fetchLabel(labelUrl);
   
   // Save to file or serve to user
   // Example: fs.writeFileSync('label.pdf', Buffer.from(pdfBuffer));
@@ -126,12 +147,11 @@ if (labelUrl) {
 import { ShippingError, ShippingAuthError } from '@eventuras/shipper/core';
 
 try {
-  const response = await client.createShipment(consignment, accessToken);
+  const response = await client.createShipment(consignment);
 } catch (error) {
   if (error instanceof ShippingAuthError) {
-    // Handle authentication errors (401) - token may be expired
+    // Handle authentication errors (401) - invalid API key or UID
     console.error('Authentication failed:', error.message);
-    // Fetch a new token and retry
   } else if (error instanceof ShippingError) {
     // Handle other shipping errors (validation, API errors, etc.)
     console.error('Shipping error:', error.message, error.code, error.details);
@@ -142,33 +162,28 @@ try {
 }
 ```
 
-### Token Management
+### Environment Variables
 
-The library does not cache access tokens. Consumers should implement token caching based on the `expires_in` value (typically 3600 seconds = 1 hour).
+The library can load configuration from environment variables:
 
-**Simple in-memory cache example:**
+```bash
+# Required
+BRING_API_UID=your-mybring-email@example.com
+BRING_API_KEY=your-api-key-from-mybring
+BRING_CUSTOMER_ID=your-customer-number
+
+# Optional
+BRING_ENVIRONMENT=test                       # 'test' or 'production' (default: 'test')
+BRING_CLIENT_URL=https://eventuras.losol.io  # Default shown
+```
+
+**Using environment config:**
 
 ```typescript
-let cachedToken: { token: string; expiresAt: number } | null = null;
+import { getShipperConfig, BringClient } from '@eventuras/shipper/bring-v1';
 
-async function getAccessToken(config: BringConfig): Promise<string> {
-  const now = Date.now();
-  
-  // Return cached token if still valid (with 5 min buffer)
-  if (cachedToken && cachedToken.expiresAt > now + 5 * 60 * 1000) {
-    return cachedToken.token;
-  }
-  
-  // Fetch new token
-  const response = await fetchAccessToken(config);
-  
-  cachedToken = {
-    token: response.access_token,
-    expiresAt: now + response.expires_in * 1000,
-  };
-  
-  return cachedToken.token;
-}
+const config = getShipperConfig(); // Reads from process.env
+const client = new BringClient(config);
 ```
 
 ## API Reference
