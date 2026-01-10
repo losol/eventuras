@@ -36,10 +36,10 @@
     "AUTH0_CLIENT_SECRET",
     "AUTH0_API_AUDIENCE",
     "SESSION_SECRET",
-    "BRING_API_URL",
-    "BRING_CLIENT_ID",
-    "BRING_CLIENT_SECRET",
+    "BRING_API_UID",
+    "BRING_API_KEY",
     "BRING_CUSTOMER_ID",
+    "BRING_ENVIRONMENT",
     "BRING_CLIENT_URL"
   ],
   "globalPassThroughEnv": [
@@ -71,10 +71,10 @@
     "AUTH0_CLIENT_SECRET",
     "AUTH0_API_AUDIENCE",
     "SESSION_SECRET",
-    "BRING_API_URL",
-    "BRING_CLIENT_ID",
-    "BRING_CLIENT_SECRET",
+    "BRING_API_UID",
+    "BRING_API_KEY",
     "BRING_CUSTOMER_ID",
+    "BRING_ENVIRONMENT",
     "BRING_CLIENT_URL"
   ],
   "tasks": {
@@ -84,10 +84,10 @@
         "AUTH0_CLIENT_SECRET",
         "AUTH0_API_AUDIENCE",
         "SESSION_SECRET",
-        "BRING_API_URL",
-        "BRING_CLIENT_ID",
-        "BRING_CLIENT_SECRET",
+        "BRING_API_UID",
+        "BRING_API_KEY",
         "BRING_CUSTOMER_ID",
+        "BRING_ENVIRONMENT",
         "BRING_CLIENT_URL"
       ],
       "dependsOn": ["^build"],
@@ -96,10 +96,10 @@
         "AUTH0_CLIENT_SECRET",
         "AUTH0_API_AUDIENCE",
         "SESSION_SECRET",
-        "BRING_API_URL",
-        "BRING_CLIENT_ID",
-        "BRING_CLIENT_SECRET",
+        "BRING_API_UID",
+        "BRING_API_KEY",
         "BRING_CUSTOMER_ID",
+        "BRING_ENVIRONMENT",
         "BRING_CLIENT_URL"
       ],
       "outputs": [

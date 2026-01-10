@@ -118,7 +118,7 @@ export interface BringConsignmentResponse {
     /** Package details with tracking numbers */
     packages?: Array<{
       /** Package tracking number */
-      packageNumber: string;
+      trackingNumber: string;
     }>;
   };
 }
