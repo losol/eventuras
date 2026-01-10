@@ -91,7 +91,7 @@ export function getTestPackage() {
  */
 export function getTodayISODate(): string {
   const today = new Date();
-  return today.toISOString().split('T')[0]!;
+  return today.toISOString().slice(0, 10);
 }
 
 /**
@@ -100,5 +100,5 @@ export function getTodayISODate(): string {
 export function getTomorrowISODate(): string {
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
-  return tomorrow.toISOString().split('T')[0]!;
+  return tomorrow.toISOString().slice(0, 10);
 }

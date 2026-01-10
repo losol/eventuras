@@ -219,18 +219,19 @@ const client = new BringClient(config);
 - `BringShipmentResponse` - Shipment creation response
 - Full type definitions available in source
 
-## Environment Variables
+## Configuration for Testing and CLI
 
 For testing and CLI usage, set up environment variables in the monorepo root `.env`:
 
 ```bash
 # Bring API credentials (get from https://developer.bring.com/)
-BRING_CLIENT_ID=your_client_id
-BRING_CLIENT_SECRET=your_client_secret
+BRING_API_UID=your-mybring-email@example.com
+BRING_API_KEY=your_api_key
 BRING_CUSTOMER_ID=your_customer_number
 
-# Optional: API URL (defaults to test environment)
-BRING_API_URL=https://api.qa.bring.com
+# Optional: Environment (defaults to 'test')
+# 'test' creates test shipments, 'production' creates real shipments
+BRING_ENVIRONMENT=test
 
 # Optional: Client URL for API identification
 BRING_CLIENT_URL=https://eventuras.losol.io

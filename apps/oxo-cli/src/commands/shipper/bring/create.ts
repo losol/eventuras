@@ -151,9 +151,12 @@ static override flags = {
     // Warn if using production API
     const isProduction = config.environment === 'production';
     if (isProduction && !flags.production) {
-      this.warn('⚠️  WARNING: Using PRODUCTION Bring API!');
-      this.warn('   This will create a REAL shipment and may incur costs.');
-      this.warn('   Set BRING_ENVIRONMENT=test to use test environment.');
+      if (!flags.json) {
+        this.warn('⚠️  WARNING: Using PRODUCTION Bring API!');
+        this.warn('   This will create a REAL shipment and may incur costs.');
+        this.warn('   Set BRING_ENVIRONMENT=test to use test environment.');
+      }
+
       this.error('Production environment requires explicit --production flag', { exit: 1 });
     }
 
@@ -164,7 +167,7 @@ static override flags = {
       // Generate shipping date (tomorrow if not specified)
       const shippingDate =
         flags['shipping-date'] ||
-        new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0]!;
+        new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
 
       // Create consignment with correct Bring types
       const consignment = {
@@ -218,6 +221,9 @@ static override flags = {
       }
 
       const pkg = shipment.confirmation.packages?.[0];
+      if (!pkg) {
+        throw new Error('Bring API did not return any packages for the created consignment.');
+      }
 
       if (flags.json) {
         this.log(
@@ -225,8 +231,8 @@ static override flags = {
             {
               consignmentNumber: shipment.confirmation.consignmentNumber,
               labelUrl: shipment.confirmation.links.labels,
-              packageNumber: pkg?.packageNumber,
               success: true,
+              trackingNumber: pkg?.trackingNumber,
               trackingUrl: shipment.confirmation.links.tracking,
             },
             null,
@@ -236,8 +242,8 @@ static override flags = {
       } else {
         this.log('✓ Shipment created successfully!');
         this.log(`Consignment number: ${shipment.confirmation.consignmentNumber}`);
-        if (pkg?.packageNumber) {
-          this.log(`Package number: ${pkg.packageNumber}`);
+        if (pkg?.trackingNumber) {
+          this.log(`Tracking number: ${pkg.trackingNumber}`);
         }
 
         this.log(`Tracking URL: ${shipment.confirmation.links.tracking}`);

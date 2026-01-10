@@ -112,9 +112,9 @@ describeIf('BringClient Integration Tests', () => {
 
         const pkg = shipment.confirmation.packages[0]!;
         expect(pkg).toBeDefined();
-        expect(pkg.packageNumber).toBeTruthy();
+        expect(pkg.trackingNumber).toBeTruthy();
 
-        console.log(`✓ Package number: ${pkg.packageNumber}`);
+        console.log(`✓ Tracking number: ${pkg.trackingNumber}`);
       } else {
         console.log(`✓ Shipment created (consignment number: ${shipment.confirmation.consignmentNumber})`);
       }
@@ -140,13 +140,13 @@ describeIf('BringClient Integration Tests', () => {
       const shipment = response.consignments[0]!;
       expect(shipment).toBeDefined();
 
-      // Check for package numbers in the confirmation
+      // Check for package tracking numbers in the confirmation
       if (shipment.confirmation.packages && shipment.confirmation.packages.length > 0) {
         expect(shipment.confirmation.packages.length).toBe(2);
 
         shipment.confirmation.packages.forEach((pkg, idx) => {
-          expect(pkg.packageNumber).toBeTruthy();
-          console.log(`✓ Package ${idx + 1} number: ${pkg.packageNumber}`);
+          expect(pkg.trackingNumber).toBeTruthy();
+          console.log(`✓ Package ${idx + 1} tracking number: ${pkg.trackingNumber}`);
         });
       } else {
         console.log(`✓ Multi-package shipment created (consignment number: ${shipment.confirmation.consignmentNumber})`);

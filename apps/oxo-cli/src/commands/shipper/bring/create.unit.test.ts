@@ -158,7 +158,7 @@ describe.skip('oxo shipper bring create (unit)', () => {
   it('should support custom shipping date', async () => {
     const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000)
       .toISOString()
-      .split('T')[0]!;
+      .slice(0, 10);
 
     await runCommand([
       ...baseArgs,

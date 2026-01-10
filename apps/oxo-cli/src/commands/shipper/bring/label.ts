@@ -7,7 +7,7 @@ import { loadEnvFile, requireEnvVar } from '../../../utils/env.js';
 export default class BringLabel extends Command {
   static override description = 'Download a Bring shipping label as PDF';
 static override examples = [
-    '$ oxo shipper bring label --label-url "https://api.qa.bring.com/booking/api/booking/labels/XXX"',
+    '$ oxo shipper bring label --label-url "https://api.bring.com/booking/api/booking/labels/XXX"',
     '$ oxo shipper bring label --label-url "..." --output custom-label.pdf',
     '$ oxo shipper bring label --label-url "..." --json',
   ];
