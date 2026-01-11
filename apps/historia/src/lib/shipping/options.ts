@@ -18,12 +18,18 @@ export const SHIPPING_OPTIONS: ShippingOption[] = [
   // Posten - Home Delivery
   {
     id: 'posten-hjem',
-    name: 'Levering hjem med Posten',
+    name: 'Levering hjem med Posten (Norge utenom Svalbard og Jan Mayen)',
     price: 5900,
     brand: 'POSTEN',
     type: 'HOME_DELIVERY',
   },
-
+  {
+    id: 'posten-svalbard',
+    name: 'Levering hjem med Posten (Svalbard og Jan Mayen)',
+    price: 39900,
+    brand: 'POSTEN',
+    type: 'HOME_DELIVERY',
+  },
   // Other - Pickup Valnesfjord
   {
     id: 'pickup-valnesfjord',
