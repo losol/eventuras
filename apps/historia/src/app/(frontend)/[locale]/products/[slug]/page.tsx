@@ -5,8 +5,6 @@ import { getPayload } from 'payload';
 import { RenderBlocks } from '@/blocks/RenderBlocks';
 import { ProductActions } from '@/components/ProductActions';
 
-import { ProductDetailClient } from './page.client';
-
 interface ProductPageProps {
   params: Promise<{
     slug: string;
@@ -55,7 +53,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   return (
     <>
-      <ProductDetailClient product={product} locale={locale} />
       <ProductActions product={product} locale={locale} />
       {product.story ? <RenderBlocks blocks={product.story} /> : null}
     </>
