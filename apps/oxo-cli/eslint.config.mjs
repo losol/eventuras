@@ -11,6 +11,18 @@ export default [
   ...oclif,
   prettier,
   {
+    // Disable import/no-unresolved for @eventuras/* workspace packages
+    // ESLint's import resolver doesn't handle package.json subpath exports well
+    rules: {
+      'import/no-unresolved': [
+        'error',
+        {
+          ignore: ['^@eventuras/'],
+        },
+      ],
+    },
+  },
+  {
     // Disable mocha rules for Vitest test files
     files: ['**/*.test.ts', '**/*.spec.ts'],
     rules: {
