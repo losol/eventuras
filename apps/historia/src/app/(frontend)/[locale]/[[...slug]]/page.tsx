@@ -386,7 +386,19 @@ const contentSelection: PagesSelect = {
       caption: true,
     },
     products: {
-      products: true,
+      products: {
+        title: true,
+        slug: true,
+        resourceId: true,
+        lead: true,
+        description: true,
+        price: true,
+        image: {
+          media: true,
+          caption: true,
+        },
+      },
+      showImage: true,
     },
   },
 };

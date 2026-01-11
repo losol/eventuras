@@ -10,6 +10,7 @@ import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Text } from '@eventuras/ratio-ui/core/Text';
+import { Link } from '@eventuras/ratio-ui-next';
 import { useToast } from '@eventuras/toast';
 
 import RichText from '@/components/RichText';
@@ -25,6 +26,7 @@ const logger = Logger.create({
 
 interface ProductBlockProps {
   products?: (string | ProductType)[];
+  showImage?: boolean;
 }
 
 export const ProductsBlock: React.FC<ProductBlockProps> = (props) => {
@@ -103,26 +105,29 @@ export const ProductsBlock: React.FC<ProductBlockProps> = (props) => {
   return (
     <div className="my-16 space-y-8">
       {products.map((product) => {
-        const hasImage =
+        // Check if product has an image with populated media
+        const imageMedia =
           product.image &&
           typeof product.image === 'object' &&
-          'url' in product.image &&
-          product.image.url &&
-          typeof product.image.url === 'string';
+          'media' in product.image &&
+          product.image.media &&
+          typeof product.image.media === 'object' &&
+          'url' in product.image.media
+            ? product.image.media
+            : null;
+
+        const hasImage = props.showImage !== false && imageMedia && typeof imageMedia.url === 'string';
 
         const isAdding = addingProductId === product.id;
 
         return (
           <Card key={product.id} padding="p-6">
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className={`grid gap-6 ${hasImage ? 'md:grid-cols-2' : ''}`}>
               {/* Product Image */}
-              {hasImage &&
-              product.image &&
-              typeof product.image === 'object' &&
-              'url' in product.image ? (
+              {hasImage && imageMedia && typeof imageMedia.url === 'string' ? (
                 <div className="relative aspect-square overflow-hidden rounded-lg">
                   <Image
-                    src={product.image.url as string}
+                    src={imageMedia.url}
                     alt={product.title || 'Product image'}
                     fill
                     className="object-cover"
@@ -163,8 +168,13 @@ export const ProductsBlock: React.FC<ProductBlockProps> = (props) => {
                   )}
                 </div>
 
-                {/* Order Button */}
-                <div className="mt-6">
+                {/* Action Buttons */}
+                <div className="mt-6 flex flex-col gap-3">
+                  {product.slug && product.resourceId && (
+                    <Link href={`/${locale}/products/${product.slug}--${product.resourceId}`}>
+                      Les mer
+                    </Link>
+                  )}
                   <Button
                     onClick={() => handleOrder(product)}
                     disabled={isAdding}
@@ -172,7 +182,7 @@ export const ProductsBlock: React.FC<ProductBlockProps> = (props) => {
                     block
                     padding="px-6 py-3"
                   >
-                    {isAdding ? 'Adding...' : 'Order'}
+                    {isAdding ? 'Legger til...' : 'Bestill'}
                   </Button>
                 </div>
               </div>

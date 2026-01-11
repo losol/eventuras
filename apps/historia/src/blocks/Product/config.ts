@@ -14,5 +14,14 @@ export const Product: Block = {
         description: 'Select one or more products to display',
       },
     },
+    {
+      name: 'showImage',
+      type: 'checkbox',
+      label: 'Show product images',
+      defaultValue: true,
+      admin: {
+        description: 'Display product images in the block',
+      },
+    },
   ],
 };
