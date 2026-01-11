@@ -34,6 +34,12 @@ export function formatPackingListAsText(order: Order, customerName?: string): st
     minute: '2-digit',
   })}`);
   lines.push(`Status:       ${order.status.toUpperCase()}`);
+  if (order.taxExempt) {
+    lines.push(`MVA-fritatt:  JA`);
+    if (order.taxExemptReason) {
+      lines.push(`Årsak:        ${order.taxExemptReason}`);
+    }
+  }
   lines.push('');
 
   // Customer info
@@ -72,14 +78,15 @@ export function formatPackingListAsText(order: Order, customerName?: string): st
 
   const currency = order.currency ?? 'NOK';
   const items = order.items ?? [];
+  const isTaxExempt = order.taxExempt === true;
 
   items.forEach((item, index) => {
     const productName = getProductName(item);
     const quantity = item.quantity ?? 1;
     const priceExVat = getPriceExVatMinor(item);
-    const vatRate = getVatRate(item);
-    const priceIncVat = getPriceIncVatMinor(item);
-    const lineTotal = getLineTotalMinor(item);
+    const vatRate = getVatRate(item, isTaxExempt);
+    const priceIncVat = getPriceIncVatMinor(item, isTaxExempt);
+    const lineTotal = getLineTotalMinor(item, isTaxExempt);
 
     lines.push(`${index + 1}. ${productName}`);
     lines.push(`   Antall:           ${quantity} stk`);
@@ -114,14 +121,15 @@ export function formatPackingListAsText(order: Order, customerName?: string): st
 export function formatPackingListAsHtml(order: Order, customerName?: string): string {
   const currency = order.currency ?? 'NOK';
   const orderItems = order.items ?? [];
+  const isTaxExempt = order.taxExempt === true;
 
   const items = orderItems.map((item, index) => {
     const productName = sanitizeForHtml(getProductName(item));
     const quantity = item.quantity ?? 1;
     const priceExVat = getPriceExVatMinor(item);
-    const vatRate = getVatRate(item);
-    const priceIncVat = getPriceIncVatMinor(item);
-    const lineTotal = getLineTotalMinor(item);
+    const vatRate = getVatRate(item, isTaxExempt);
+    const priceIncVat = getPriceIncVatMinor(item, isTaxExempt);
+    const lineTotal = getLineTotalMinor(item, isTaxExempt);
 
     return `
     <tr style="border-bottom: 1px solid #e5e7eb;">
@@ -192,6 +200,18 @@ export function formatPackingListAsHtml(order: Order, customerName?: string): st
             <td style="padding: 4px 0; color: #6b7280; font-size: 14px;">Status:</td>
             <td style="padding: 4px 0; text-align: right;"><span style="padding: 4px 12px; background: #fef3c7; color: #92400e; border-radius: 12px; font-size: 12px; font-weight: 600; text-transform: uppercase;">${sanitizeForHtml(order.status)}</span></td>
           </tr>
+          ${isTaxExempt ? `
+          <tr>
+            <td style="padding: 4px 0; color: #6b7280; font-size: 14px;">MVA-fritatt:</td>
+            <td style="padding: 4px 0; text-align: right;"><span style="padding: 4px 12px; background: #fef2f2; color: #dc2626; border-radius: 12px; font-size: 12px; font-weight: 600; text-transform: uppercase;">⚠️ JA</span></td>
+          </tr>
+          ` : ''}
+          ${isTaxExempt && order.taxExemptReason ? `
+          <tr>
+            <td style="padding: 4px 0; color: #6b7280; font-size: 14px;">Årsak:</td>
+            <td style="padding: 4px 0; text-align: right; color: #dc2626;">${sanitizeForHtml(order.taxExemptReason)}</td>
+          </tr>
+          ` : ''}
         </table>
       </div>
 

@@ -107,11 +107,35 @@ Beste helsing,
     description: 'E-post for tilbakestilling av passord (nn-NO)',
   },
 
+  'email:order-received': {
+    subject: 'Bestilling mottatt - #{{orderId}}',
+    content: `Hei {{name}},
+
+Takk for bestillinga di! Vi har mottatt ordren din og vil behandle han så snart som mogleg.
+
+Ordredetaljar:
+- Ordre-ID: {{orderId}}
+- Bestillingsdato: {{orderDate}}
+{{#if totalAmount}}
+- Totalt: {{totalAmount}} {{currency}}
+{{/if}}
+
+{{#if trackingNumber}}
+Sporingsnummer: {{trackingNumber}}
+{{/if}}
+
+Vi varslar deg når betalinga er stadfesta og ordren din vert behandla.
+
+Beste helsing,
+{{organizationName}}-teamet`,
+    description: 'Stadfesting på mottatt bestilling (nn-NO)',
+  },
+
   'email:order-confirmation': {
     subject: 'Ordrestadfesting - #{{orderId}}',
     content: `Hei {{name}},
 
-Takk for bestillinga di!
+Betalinga di er nå stadfesta og ordren din er under behandling. Vi startar å pakke varene dine snarest.
 
 Ordredetaljar:
 - Ordre-ID: {{orderId}}
@@ -128,7 +152,7 @@ Vi varslar deg når ordren din blir sendt.
 
 Beste helsing,
 {{organizationName}}-teamet`,
-    description: 'Stadfesting på bestilling (nn-NO)',
+    description: 'Stadfesting på bestilling etter betaling (nn-NO)',
   },
 
   'email:order-shipped': {

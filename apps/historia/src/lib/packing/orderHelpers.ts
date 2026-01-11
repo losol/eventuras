@@ -31,34 +31,43 @@ export const getPriceExVatMinor = (item: Order['items'][0]): number => {
 
 /**
  * Get VAT rate as percentage
+ * @param item - The order item
+ * @param isTaxExempt - Whether the entire order is tax exempt
  */
-export const getVatRate = (item: Order['items'][0]): number => {
+export const getVatRate = (item: Order['items'][0], isTaxExempt = false): number => {
+  if (isTaxExempt) return 0;
   return item.price?.vatRate ?? 25;
 };
 
 /**
  * Calculate line total including VAT (in minor units)
+ * @param item - The order item
+ * @param isTaxExempt - Whether the entire order is tax exempt
  */
-export const getLineTotalMinor = (item: Order['items'][0]): number => {
+export const getLineTotalMinor = (item: Order['items'][0], isTaxExempt = false): number => {
   const quantity = item.quantity || 1;
   const priceExVat = getPriceExVatMinor(item);
-  const vatRate = getVatRate(item);
+  const vatRate = getVatRate(item, isTaxExempt);
   return quantity * priceExVat * (1 + vatRate / 100);
 };
 
 /**
  * Calculate line total including VAT (in major units)
+ * @param item - The order item
+ * @param isTaxExempt - Whether the entire order is tax exempt
  */
-export const getLineTotal = (item: Order['items'][0]): number => {
-  return toMajorUnits(getLineTotalMinor(item));
+export const getLineTotal = (item: Order['items'][0], isTaxExempt = false): number => {
+  return toMajorUnits(getLineTotalMinor(item, isTaxExempt));
 };
 
 /**
  * Get price including VAT (in minor units)
+ * @param item - The order item
+ * @param isTaxExempt - Whether the entire order is tax exempt
  */
-export const getPriceIncVatMinor = (item: Order['items'][0]): number => {
+export const getPriceIncVatMinor = (item: Order['items'][0], isTaxExempt = false): number => {
   const priceExVat = getPriceExVatMinor(item);
-  const vatRate = getVatRate(item);
+  const vatRate = getVatRate(item, isTaxExempt);
   return priceExVat * (1 + vatRate / 100);
 };
 

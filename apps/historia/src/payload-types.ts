@@ -1134,6 +1134,14 @@ export interface Order {
   totalAmount?: number | null;
   currency: string;
   /**
+   * Mark order as exempt from VAT (e.g., Svalbard, export)
+   */
+  taxExempt?: boolean | null;
+  /**
+   * Explain why this order is tax exempt
+   */
+  taxExemptReason?: string | null;
+  /**
    * Shipments for this order
    */
   shipments?: {
@@ -2414,6 +2422,8 @@ export interface OrdersSelect<T extends boolean = true> {
   status?: T;
   totalAmount?: T;
   currency?: T;
+  taxExempt?: T;
+  taxExemptReason?: T;
   shipments?: T;
   transactions?: T;
   updatedAt?: T;

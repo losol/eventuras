@@ -29,7 +29,7 @@ export const Orders: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'id',
-    defaultColumns: ['id', 'userEmail', 'status', 'totalAmount', 'currency', 'createdAt'],
+    defaultColumns: ['id', 'userEmail', 'status', 'totalAmount', 'currency', 'taxExempt', 'createdAt'],
     group: 'Commerce',
     components: {
       edit: {
@@ -122,10 +122,12 @@ export const Orders: CollectionConfig = {
           ({ data }) => {
             if (!data?.items || !Array.isArray(data.items)) return 0;
 
+            const isTaxExempt = data.taxExempt === true;
+
             return data.items.reduce((total, item) => {
               const quantity = item.quantity || 1;
               const amount = item.price?.amountExVat || 0;
-              const vatRate = item.price?.vatRate ?? 25;
+              const vatRate = isTaxExempt ? 0 : (item.price?.vatRate ?? 25);
               const lineTotal = quantity * amount * (1 + vatRate / 100);
               return total + lineTotal;
             }, 0);
@@ -140,6 +142,26 @@ export const Orders: CollectionConfig = {
       required: true,
       admin: {
         position: 'sidebar',
+      },
+    },
+    {
+      name: 'taxExempt',
+      label: 'Tax Exempt',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        position: 'sidebar',
+        description: 'Mark order as exempt from VAT (e.g., Svalbard, export)',
+      },
+    },
+    {
+      name: 'taxExemptReason',
+      label: 'Tax Exempt Reason',
+      type: 'textarea',
+      admin: {
+        position: 'sidebar',
+        description: 'Explain why this order is tax exempt',
+        condition: (data) => data.taxExempt === true,
       },
     },
     {
