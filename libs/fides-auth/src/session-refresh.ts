@@ -1,5 +1,5 @@
 import { Logger } from '@eventuras/logger';
-import { OAuthConfig, refreshAccesstoken } from "./oauth";
+import { OAuthConfig, refreshAccessToken } from "./oauth";
 import { CreateSessionOptions, Session } from "./types";
 
 const logger = Logger.create({ namespace: 'fides-auth:session-refresh' });
@@ -17,7 +17,7 @@ export const refreshSession = async (
   }
 
   try {
-    const newtokens = await refreshAccesstoken(config, current_session.tokens.refreshToken);
+    const newtokens = await refreshAccessToken(config, current_session.tokens.refreshToken);
 
     const updatedSession = {
       ...current_session,

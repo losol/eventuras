@@ -1,33 +1,34 @@
 'use client';
 
-import React, { useCallback } from 'react';
-import { RelationshipField, useFormFields } from '@payloadcms/ui';
+import React, { useEffect } from 'react';
+import { RelationshipField, useField } from '@payloadcms/ui';
 import type { RelationshipFieldClientComponent } from 'payload';
 
 export const ProductFieldWithPricePopulation: RelationshipFieldClientComponent = (props) => {
   const { path } = props;
+
+  // Use useField to monitor the product value and update other fields
+  const { value: productValue } = useField({ path });
 
   // Get the form field updaters for price fields
   const priceAmountPath = path.replace('product', 'price.amountExVat');
   const priceCurrencyPath = path.replace('product', 'price.currency');
   const priceVatRatePath = path.replace('product', 'price.vatRate');
 
-  const priceAmount = useFormFields(([fields]) => fields[priceAmountPath]);
-  const priceCurrency = useFormFields(([fields]) => fields[priceCurrencyPath]);
-  const priceVatRate = useFormFields(([fields]) => fields[priceVatRatePath]);
+  const priceAmount = useField({ path: priceAmountPath });
+  const priceCurrency = useField({ path: priceCurrencyPath });
+  const priceVatRate = useField({ path: priceVatRatePath });
 
-  const handleChange = useCallback(
-    async (incomingValue: any) => {
-      // Call the original onChange if it exists
-      if (props.onChange) {
-        props.onChange(incomingValue);
-      }
-
+  // Watch for changes to the product field and populate price
+  useEffect(() => {
+    const populatePrice = async () => {
       // If a product was selected and price is not already set
-      if (incomingValue && !priceAmount?.value) {
+      if (productValue && !priceAmount?.value) {
         try {
           const productId =
-            typeof incomingValue === 'object' ? incomingValue.value : incomingValue;
+            typeof productValue === 'object' && productValue && 'value' in productValue
+              ? productValue.value
+              : productValue;
 
           console.log('Fetching product:', productId);
 
@@ -66,9 +67,10 @@ export const ProductFieldWithPricePopulation: RelationshipFieldClientComponent =
           console.error('Failed to fetch product data:', error);
         }
       }
-    },
-    [props, priceAmount, priceCurrency, priceVatRate]
-  );
+    };
 
-  return <RelationshipField {...props} onChange={handleChange} />;
+    populatePrice();
+  }, [productValue, priceAmount, priceCurrency, priceVatRate]);
+
+  return <RelationshipField {...props} />;
 };

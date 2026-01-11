@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import { VippsLoginButton } from './VippsLoginButton';
 
 const BeforeLogin: React.FC = () => {
   return (
@@ -7,8 +8,9 @@ const BeforeLogin: React.FC = () => {
         <b>Los Dash!</b>
         {' This is where site admins will log in to manage your website.'}
       </p>
+      <VippsLoginButton />
     </div>
-  )
-}
+  );
+};
 
-export default BeforeLogin
+export default BeforeLogin;

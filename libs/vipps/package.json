@@ -33,7 +33,9 @@
     "webhook:setup": "tsx --env-file=.env scripts/setup-webhook.ts"
   },
   "dependencies": {
-    "@eventuras/logger": "workspace:*"
+    "@eventuras/fides-auth": "workspace:*",
+    "@eventuras/logger": "workspace:*",
+    "openid-client": "^6.2.0"
   },
   "devDependencies": {
     "@eventuras/typescript-config": "workspace:*",

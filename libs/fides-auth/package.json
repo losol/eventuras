@@ -4,6 +4,10 @@
   "private": "true",
   "description": "auth library eventuras",
   "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
     "./session-refresh": {
       "types": "./dist/session-refresh.d.ts",
       "import": "./dist/session-refresh.js"
@@ -31,6 +35,10 @@
     "./rate-limit": {
       "types": "./dist/rate-limit.d.ts",
       "import": "./dist/rate-limit.js"
+    },
+    "./providers/vipps": {
+      "types": "./dist/providers/vipps/index.d.ts",
+      "import": "./dist/providers/vipps/index.js"
     }
   },
   "main": "./dist/session-refresh.js",

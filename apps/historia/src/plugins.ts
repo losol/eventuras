@@ -1,6 +1,12 @@
+/**
+ * Payload CMS Plugins Configuration
+ *
+ * Centralized configuration for all Payload plugins used in Historia.
+ */
+
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder';
-import { importExportPlugin } from '@payloadcms/plugin-import-export'
-import { mcpPlugin } from '@payloadcms/plugin-mcp'
+import { importExportPlugin } from '@payloadcms/plugin-import-export';
+import { mcpPlugin } from '@payloadcms/plugin-mcp';
 import { multiTenantPlugin } from '@payloadcms/plugin-multi-tenant';
 import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs';
 import { redirectsPlugin } from '@payloadcms/plugin-redirects';
@@ -10,6 +16,8 @@ import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types';
 import { FixedToolbarFeature, HeadingFeature, lexicalEditor } from '@payloadcms/richtext-lexical';
 import { s3Storage } from '@payloadcms/storage-s3';
 import { Plugin } from 'payload';
+
+import { vippsAuthPlugin } from '@eventuras/payload-vipps-auth';
 
 import { isSystemAdmin } from '@/access/isSystemAdmin';
 import { revalidateRedirects } from '@/hooks/revalidateRedirects';
@@ -34,10 +42,10 @@ const requiredS3MediaVars = [
   'CMS_MEDIA_S3_ENDPOINT',
   'CMS_MEDIA_S3_SECRET_ACCESS_KEY',
   'CMS_MEDIA_S3_REGION',
-  'CMS_MEDIA_S3_BUCKET'
+  'CMS_MEDIA_S3_BUCKET',
 ];
 
-const areAllS3VarsPresent = requiredS3MediaVars.every(varName => process.env[varName]);
+const areAllS3VarsPresent = requiredS3MediaVars.every((varName) => process.env[varName]);
 
 export const plugins: Plugin[] = [
   importExportPlugin({
@@ -85,8 +93,7 @@ export const plugins: Plugin[] = [
       endpoint: process.env.CMS_MEDIA_S3_ENDPOINT!,
       region: process.env.CMS_MEDIA_S3_REGION!,
     },
-  })
-  ,
+  }),
   redirectsPlugin({
     collections: ['articles', 'notes', 'pages'],
     overrides: {
@@ -192,5 +199,29 @@ export const plugins: Plugin[] = [
         return [...defaultFields, ...searchFields];
       },
     },
+  }),
+  vippsAuthPlugin({
+    enabled: process.env.VIPPS_LOGIN_ENABLED === 'true',
+    environment: process.env.VIPPS_LOGIN_ENVIRONMENT === 'production' ? 'production' : 'test',
+    clientId: process.env.VIPPS_LOGIN_CLIENT_ID!,
+    clientSecret: process.env.VIPPS_LOGIN_CLIENT_SECRET!,
+
+    mapVippsUser: (vippsUser) => ({
+      email: vippsUser.email,
+      email_verified: vippsUser.email_verified,
+      given_name: vippsUser.given_name,
+      family_name: vippsUser.family_name,
+      phone_number: vippsUser.phone_number,
+      phone_number_verified: vippsUser.phone_number_verified,
+      // Map Vipps addresses to Payload addresses array
+      addresses: vippsUser.addresses?.map((addr) => ({
+        label: addr.address_type || 'Vipps',
+        isDefault: false,
+        street_address: addr.street_address,
+        postal_code: addr.postal_code,
+        region: addr.region,
+        country: addr.country,
+      })),
+    }),
   }),
 ];
