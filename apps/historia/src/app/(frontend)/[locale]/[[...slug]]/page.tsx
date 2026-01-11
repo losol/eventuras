@@ -386,18 +386,7 @@ const contentSelection: PagesSelect = {
       caption: true,
     },
     products: {
-      products: {
-        title: true,
-        slug: true,
-        resourceId: true,
-        lead: true,
-        description: true,
-        price: true,
-        image: {
-          media: true,
-          caption: true,
-        },
-      },
+      products: true,
       showImage: true,
     },
   },
