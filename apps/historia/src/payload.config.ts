@@ -31,12 +31,12 @@ import { Topics } from './collections/Topics';
 import { Transactions } from './collections/Transactions';
 import { Users } from './collections/Users';
 import { Websites } from './collections/Websites';
+import { allowedOrigins } from './config/allowed-origins';
 import { migrations } from './migrations';
 import { plugins } from './plugins';
 
 const locales = process.env.NEXT_PUBLIC_CMS_LOCALES ? process.env.NEXT_PUBLIC_CMS_LOCALES.split(',') : ['en'];
 const defaultLocale = process.env.NEXT_PUBLIC_CMS_DEFAULT_LOCALE ?? 'en';
-const allowedOrigins = process.env.CMS_ALLOWED_ORIGINS ? process.env.CMS_ALLOWED_ORIGINS.split(',') : [];
 
 // Detect if we're in build mode (no database needed)
 const isBuildMode = process.env.NEXT_PHASE === 'phase-production-build' || process.env.PAYLOAD_DROP_DATABASE === 'true';

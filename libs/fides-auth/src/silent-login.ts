@@ -10,7 +10,7 @@
 
 import { Logger } from '@eventuras/logger';
 import * as openid from 'openid-client';
-import { OAuthConfig, discoverOpenIdConfig } from './oauth';
+import { OAuthConfig } from './oauth';
 
 const logger = Logger.create({ namespace: 'fides-auth:silent-login' });
 
@@ -62,7 +62,12 @@ export async function buildSilentLoginUrl(
   logger.debug({ issuer: config.issuer }, 'Building silent login URL');
 
   try {
-    const server = await discoverOpenIdConfig(config);
+    const server = await openid.discovery(
+      new URL(config.issuer),
+      config.clientId,
+      config.clientSecret,
+      openid.ClientSecretPost(config.clientSecret)
+    );
 
     const parameters: Record<string, string> = {
       redirect_uri: config.redirect_uri,

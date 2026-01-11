@@ -289,7 +289,6 @@ export async function createOrderFromPayment({
       logger.error(
         {
           paymentReference,
-          hasSession: !!session,
           hasCart: !!cart,
           paymentState: paymentDetails.state,
           authorizedAmount: paymentDetails.aggregate.authorizedAmount.value,

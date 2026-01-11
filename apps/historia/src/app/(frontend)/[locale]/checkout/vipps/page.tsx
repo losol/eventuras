@@ -9,6 +9,7 @@ import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Loading } from '@eventuras/ratio-ui/core/Loading';
 import { Text } from '@eventuras/ratio-ui/core/Text';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
+import { Link } from '@eventuras/ratio-ui-next';
 
 import { checkExistingOrder, processPaymentAndCreateOrder } from './actions';
 import VippsCheckoutPage from './page.client';
@@ -51,9 +52,9 @@ export default async function VippsCheckoutPageWrapper({
                 Betalingsreferansen mangler eller er ugyldig.
               </Error.Description>
               <Error.Actions>
-                <Button href="/no" variant="primary">
+                <Link href="/no">
                   Tilbake til forsiden
-                </Button>
+                </Link>
               </Error.Actions>
             </Error>
           </Card>

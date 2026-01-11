@@ -1,6 +1,8 @@
 import { tenantsArrayField } from '@payloadcms/plugin-multi-tenant/fields';
 import type { CollectionConfig } from 'payload';
 
+import { createVippsAuthStrategy } from '@eventuras/payload-vipps-auth';
+
 import { createAccess } from './access/create';
 import { readAccess } from './access/read';
 import { updateAndDeleteAccess } from './access/updateAndDelete';
@@ -40,7 +42,11 @@ export const Users: CollectionConfig = {
     defaultColumns: ['email'],
     useAsTitle: 'email',
   },
-  auth: true,
+  auth: {
+    strategies: [createVippsAuthStrategy()],
+    tokenExpiration: 60 * 60 * 24 * 7, // 7 days
+    useSessions: true,
+  },
   fields: [
     {
       label: 'Name',
