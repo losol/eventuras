@@ -20,6 +20,7 @@ export interface PackingNotificationOptions {
   targets: NotificationTarget[];
   order: Order;
   customerName?: string;
+  customerPhone?: string;
   locale?: 'nb-NO' | 'en-US';
 }
 
@@ -39,7 +40,7 @@ export class EmailPackingNotifier implements PackingNotifier {
   constructor(private payload: Payload) {}
 
   async notify(options: PackingNotificationOptions): Promise<void> {
-    const { targets, order, customerName, locale = 'nb-NO' } = options;
+    const { targets, order, customerName, customerPhone, locale = 'nb-NO' } = options;
 
     if (targets.length === 0) {
       logger.warn({ orderId: order.id }, 'No notification targets provided');
@@ -50,7 +51,7 @@ export class EmailPackingNotifier implements PackingNotifier {
       ? `📦 Ny ordre å pakke - ${order.id}`
       : `📦 New order to pack - ${order.id}`;
 
-    const htmlContent = formatPackingListAsHtml(order, customerName);
+    const htmlContent = formatPackingListAsHtml(order, customerName, customerPhone);
 
     for (const target of targets) {
       try {
