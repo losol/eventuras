@@ -12,11 +12,11 @@ const logger = Logger.create({
 });
 
 /**
- * Hook to send order emails:
+ * Hook to send order status emails:
  * - "order-received" when order is created (pending status)
  * - "order-confirmation" when payment is successful (status changes to processing)
  */
-export const sendOrderConfirmation: CollectionAfterChangeHook<Order> = async ({
+export const sendOrderStatus: CollectionAfterChangeHook<Order> = async ({
   doc,
   previousDoc,
   req,

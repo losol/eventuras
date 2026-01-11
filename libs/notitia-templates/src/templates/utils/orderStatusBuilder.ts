@@ -1,7 +1,7 @@
 /**
- * Locale-specific text for order confirmation email template
+ * Locale-specific text for order status email templates
  */
-export interface OrderConfirmationTexts {
+export interface OrderStatusTexts {
   copyBanner: string;
   headerTitle: string;
   greeting: string;
@@ -26,9 +26,9 @@ export interface OrderConfirmationTexts {
 }
 
 /**
- * Shared CSS styles for order confirmation email
+ * Shared CSS styles for order status emails
  */
-export const ORDER_CONFIRMATION_STYLES = `
+export const ORDER_STATUS_STYLES = `
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f4f4f4; margin: 0; padding: 0; }
     .container { max-width: 600px; margin: 0 auto; background: #ffffff; }
     .copy-banner { background: #ffc107; color: #000; padding: 15px 30px; text-align: center; font-weight: 600; font-size: 14px; letter-spacing: 1px; }
@@ -58,16 +58,16 @@ export const ORDER_CONFIRMATION_STYLES = `
 `.trim();
 
 /**
- * Build order confirmation email template with locale-specific text
+ * Build order status email template with locale-specific text
  */
-export function buildOrderConfirmationTemplate(texts: OrderConfirmationTexts): string {
+export function buildOrderStatusTemplate(texts: OrderStatusTexts): string {
   return `<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    ${ORDER_CONFIRMATION_STYLES}
+    ${ORDER_STATUS_STYLES}
   </style>
 </head>
 <body>

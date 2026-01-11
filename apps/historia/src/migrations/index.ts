@@ -46,6 +46,6 @@ export const migrations = [
   {
     up: migration_20260111_135638_taxexempt.up,
     down: migration_20260111_135638_taxexempt.down,
-    name: '20260111_135638_taxexempt'
+    name: '20260111_135638_taxexempt',
   },
 ];

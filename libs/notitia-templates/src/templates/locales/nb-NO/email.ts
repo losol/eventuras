@@ -1,5 +1,5 @@
 import type { TemplateRegistry } from '../../../types';
-import { buildOrderConfirmationTemplate } from '../../utils/orderConfirmationBuilder';
+import { buildOrderStatusTemplate } from '../../utils/orderStatusBuilder';
 import { buildOrderShippedTemplate } from '../../utils/orderShippedBuilder';
 
 /**
@@ -110,7 +110,7 @@ Beste hilsen,
 
   'email:order-received': {
     subject: 'Bestilling mottatt - #{{orderId}}',
-    content: buildOrderConfirmationTemplate({
+    content: buildOrderStatusTemplate({
       copyBanner: 'KOPI - Intern kopi av kundebekreftelse',
       headerTitle: 'Bestilling mottatt',
       greeting: 'Hei {{name}}! 👋',
@@ -125,6 +125,9 @@ Beste hilsen,
       priceColumn: 'Pris',
       sumColumn: 'Sum',
       totalLabel: 'Totalt (inkl. mva)',
+      totalLabelTaxExempt: 'Totalt (MVA-fritatt)',
+      taxExemptLabel: 'MVA-fritatt',
+      taxExemptReasonLabel: 'Årsak',
       shippingAddressTitle: 'Leveringsadresse',
       trackingNumberLabel: 'Sporingsnummer',
       shippingNotification: 'Vi vil sende deg en e-post når ordren din er bekreftet og klar for behandling.',
@@ -135,7 +138,7 @@ Beste hilsen,
 
   'email:order-confirmation': {
     subject: 'Ordrebekreftelse - #{{orderId}}',
-    content: buildOrderConfirmationTemplate({
+    content: buildOrderStatusTemplate({
       copyBanner: 'KOPI - Intern kopi av kundebekreftelse',
       headerTitle: 'Ordrebekreftelse',
       greeting: 'Hei {{name}}! 👋',
@@ -150,6 +153,9 @@ Beste hilsen,
       priceColumn: 'Pris',
       sumColumn: 'Sum',
       totalLabel: 'Totalt (inkl. mva)',
+      totalLabelTaxExempt: 'Totalt (MVA-fritatt)',
+      taxExemptLabel: 'MVA-fritatt',
+      taxExemptReasonLabel: 'Årsak',
       shippingAddressTitle: 'Leveringsadresse',
       trackingNumberLabel: 'Sporingsnummer',
       shippingNotification: 'Vi vil sende deg en e-post når ordren din er sendt.',

@@ -5,7 +5,7 @@ import { addressGroup } from '@/fields/address';
 import { orderItemsField } from '@/fields/orderItemsField';
 
 import { populateOrderPrices } from './Orders/hooks/populateOrderPrices';
-import { sendOrderConfirmation } from './Orders/hooks/sendOrderConfirmation';
+import { sendOrderStatus } from './Orders/hooks/sendOrderStatus';
 
 export const Orders: CollectionConfig = {
   slug: 'orders',
@@ -185,7 +185,7 @@ export const Orders: CollectionConfig = {
   ],
   hooks: {
     beforeChange: [populateOrderPrices],
-    afterChange: [sendOrderConfirmation],
+    afterChange: [sendOrderStatus],
   },
   timestamps: true,
 };

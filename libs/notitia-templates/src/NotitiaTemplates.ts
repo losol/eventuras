@@ -70,7 +70,7 @@ export class NotitiaTemplates {
     if (this.customTemplates[key]) {
       return this.customTemplates[key];
     }
-    
+
     const targetLocale = locale || this.defaultLocale;
     const localeTemplates = getTemplatesForLocale(targetLocale);
     return localeTemplates[key] || defaultTemplates[key];
@@ -179,6 +179,19 @@ export class NotitiaTemplates {
         `Failed to render template ${key}: ${error instanceof Error ? error.message : String(error)}`
       );
     }
+  }
+
+  /**
+   * Get only the subject line of a template with the provided parameters
+   */
+  getSubject(
+    channel: NotificationChannel,
+    type: TemplateType,
+    params: BaseTemplateParams,
+    options: RenderOptions = {}
+  ): string {
+    const result = this.render(channel, type, params, options);
+    return result.subject || '';
   }
 
   /**

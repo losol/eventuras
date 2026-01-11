@@ -1,9 +1,7 @@
 import { Suspense } from 'react';
-import { redirect } from 'next/navigation';
 
 import { Logger } from '@eventuras/logger';
 import { Error } from '@eventuras/ratio-ui/blocks/Error';
-import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Loading } from '@eventuras/ratio-ui/core/Loading';
@@ -36,6 +34,8 @@ export default async function VippsCheckoutPageWrapper({
 }) {
   const params = await searchParams;
   const reference = params.reference;
+
+  logger.warn('🚀 User visiting page planned for deletion');
 
   logger.info({ reference }, '🚀 Server-side checkout page load');
 

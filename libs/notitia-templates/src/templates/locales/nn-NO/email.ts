@@ -1,4 +1,5 @@
 import type { TemplateRegistry } from '../../../types';
+import { buildOrderStatusTemplate } from '../../utils/orderStatusBuilder';
 import { buildOrderShippedTemplate } from '../../utils/orderShippedBuilder';
 
 /**
@@ -109,49 +110,57 @@ Beste helsing,
 
   'email:order-received': {
     subject: 'Bestilling mottatt - #{{orderId}}',
-    content: `Hei {{name}},
-
-Takk for bestillinga di! Vi har mottatt ordren din og vil behandle han så snart som mogleg.
-
-Ordredetaljar:
-- Ordre-ID: {{orderId}}
-- Bestillingsdato: {{orderDate}}
-{{#if totalAmount}}
-- Totalt: {{totalAmount}} {{currency}}
-{{/if}}
-
-{{#if trackingNumber}}
-Sporingsnummer: {{trackingNumber}}
-{{/if}}
-
-Vi varslar deg når betalinga er stadfesta og ordren din vert behandla.
-
-Beste helsing,
-{{organizationName}}-teamet`,
+    content: buildOrderStatusTemplate({
+      copyBanner: 'KOPI - Intern kopi av kundestadfesting',
+      headerTitle: 'Bestilling mottatt',
+      greeting: 'Hei {{name}}! 👋',
+      thankYouMessage: 'Takk for bestillinga di! Vi har mottatt ordren din og vil behandle han så snart som mogleg.',
+      orderDetailsTitle: 'Ordredetaljar',
+      orderNumberLabel: 'Ordrenummer',
+      orderDateLabel: 'Ordredato',
+      customerEmailLabel: 'Kunde e-post',
+      orderedProductsTitle: 'Bestilte produkt',
+      productColumn: 'Produkt',
+      quantityColumn: 'Tal',
+      priceColumn: 'Pris',
+      sumColumn: 'Sum',
+      totalLabel: 'Totalt (inkl. mva)',
+      totalLabelTaxExempt: 'Totalt (MVA-fritatt)',
+      taxExemptLabel: 'MVA-fritatt',
+      taxExemptReasonLabel: 'Årsak',
+      shippingAddressTitle: 'Leveringsadresse',
+      trackingNumberLabel: 'Sporingsnummer',
+      shippingNotification: 'Vi varslar deg når betalinga er stadfesta og ordren din vert behandla.',
+      footerClosing: 'Beste helsing',
+    }),
     description: 'Stadfesting på mottatt bestilling (nn-NO)',
   },
 
   'email:order-confirmation': {
     subject: 'Ordrestadfesting - #{{orderId}}',
-    content: `Hei {{name}},
-
-Betalinga di er nå stadfesta og ordren din er under behandling. Vi startar å pakke varene dine snarest.
-
-Ordredetaljar:
-- Ordre-ID: {{orderId}}
-- Bestillingsdato: {{orderDate}}
-{{#if totalAmount}}
-- Totalt: {{totalAmount}} {{currency}}
-{{/if}}
-
-{{#if trackingNumber}}
-Sporingsnummer: {{trackingNumber}}
-{{/if}}
-
-Vi varslar deg når ordren din blir sendt.
-
-Beste helsing,
-{{organizationName}}-teamet`,
+    content: buildOrderStatusTemplate({
+      copyBanner: 'KOPI - Intern kopi av kundestadfesting',
+      headerTitle: 'Ordrestadfesting',
+      greeting: 'Hei {{name}}! 👋',
+      thankYouMessage: 'Betalinga di er nå stadfesta og ordren din er under behandling. Vi startar å pakke varene dine snarest.',
+      orderDetailsTitle: 'Ordredetaljar',
+      orderNumberLabel: 'Ordrenummer',
+      orderDateLabel: 'Ordredato',
+      customerEmailLabel: 'Kunde e-post',
+      orderedProductsTitle: 'Bestilte produkt',
+      productColumn: 'Produkt',
+      quantityColumn: 'Tal',
+      priceColumn: 'Pris',
+      sumColumn: 'Sum',
+      totalLabel: 'Totalt (inkl. mva)',
+      totalLabelTaxExempt: 'Totalt (MVA-fritatt)',
+      taxExemptLabel: 'MVA-fritatt',
+      taxExemptReasonLabel: 'Årsak',
+      shippingAddressTitle: 'Leveringsadresse',
+      trackingNumberLabel: 'Sporingsnummer',
+      shippingNotification: 'Vi varslar deg når ordren din blir sendt.',
+      footerClosing: 'Beste helsing',
+    }),
     description: 'Stadfesting på bestilling etter betaling (nn-NO)',
   },
 

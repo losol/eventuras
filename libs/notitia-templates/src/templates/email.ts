@@ -1,5 +1,5 @@
 import type { TemplateRegistry } from '../types';
-import { buildOrderConfirmationTemplate } from './utils/orderConfirmationBuilder';
+import { buildOrderStatusTemplate } from './utils/orderStatusBuilder';
 import { buildOrderShippedTemplate } from './utils/orderShippedBuilder';
 
 /**
@@ -110,7 +110,7 @@ The {{organizationName}} Team`,
 
   'email:order-confirmation': {
     subject: 'Ordrebekreftelse - #{{orderId}}',
-    content: buildOrderConfirmationTemplate({
+    content: buildOrderStatusTemplate({
       copyBanner: 'KOPI - Intern kopi av kundebekreftelse',
       headerTitle: 'Ordrebekreftelse',
       greeting: 'Hei {{name}}! 👋',
