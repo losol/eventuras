@@ -192,7 +192,7 @@ For production with load balancing:
 
 - Cookie encryption secret changed
 - Not using HTTPS in production
-- **Fix**: Use consistent `VSESSION_SECRET` and enable HTTPS
+- **Fix**: Use consistent `SESSION_SECRET` and enable HTTPS
 
 ### Can't login after Vipps authentication
 

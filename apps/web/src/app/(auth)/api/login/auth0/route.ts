@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { buildAuthorizationUrl, buildPKCEOptions } from '@eventuras/fides-auth-next';
+import { buildPKCEOptions, discoverAndBuildAuthorizationUrl } from '@eventuras/fides-auth-next';
 import { globalGETRateLimit } from '@eventuras/fides-auth-next/request';
 
 import { oauthConfig } from '@/utils/oauthConfig';
@@ -11,12 +11,12 @@ export async function GET(request: NextRequest) {
     return new NextResponse('Too many requests', { status: 429 });
   }
 
-  // 2) Grab our returnTo param (fallback to “/”)
+  // 2) Grab our returnTo param (fallback to "/")
   const returnTo = request.nextUrl.searchParams.get('returnTo');
 
   // 3) Build PKCE & Auth0 URL
   const pkce = await buildPKCEOptions(oauthConfig);
-  const authorizationUrl = await buildAuthorizationUrl(oauthConfig, pkce);
+  const authorizationUrl = await discoverAndBuildAuthorizationUrl(oauthConfig, pkce);
 
   // 4) Create our redirect response
   const response = NextResponse.redirect(authorizationUrl.toString());

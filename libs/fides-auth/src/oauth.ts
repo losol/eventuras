@@ -125,6 +125,35 @@ export async function buildAuthorizationUrl(
 }
 
 /**
+ * Convenience function to discover OpenID configuration and build authorization URL.
+ * This combines discovery + buildAuthorizationUrl in one call.
+ *
+ * @param oauthConfig - Your OAuth configuration
+ * @param pkceOptions - The PKCE options (e.g., code challenge, state, parameters)
+ * @returns A Promise that resolves to the authorization URL
+ */
+export async function discoverAndBuildAuthorizationUrl(
+  oauthConfig: OAuthConfig,
+  pkceOptions: PKCEOptions
+): Promise<URL> {
+  logger.debug({ issuer: oauthConfig.issuer }, 'Discovering OpenID configuration');
+
+  try {
+    const config = await openid.discovery(
+      new URL(oauthConfig.issuer),
+      oauthConfig.clientId,
+      oauthConfig.clientSecret,
+      openid.ClientSecretPost(oauthConfig.clientSecret)
+    );
+
+    return buildAuthorizationUrl(config, pkceOptions);
+  } catch (error) {
+    logger.error({ error, issuer: oauthConfig.issuer }, 'Failed to discover config or build URL');
+    throw error;
+  }
+}
+
+/**
  * Configuration for OAuth client credentials flow (machine-to-machine authentication)
  */
 export type ClientCredentialsConfig = {
