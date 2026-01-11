@@ -120,20 +120,6 @@ export const ProductsBlock: React.FC<ProductBlockProps> = (props) => {
 
         const isAdding = addingProductId === product.id;
 
-        // Debug logging for image
-        logger.info({
-          productId: product.id,
-          productTitle: product.title,
-          hasProductImage: !!product.image,
-          imageMediaType: typeof imageMedia,
-          hasImageMedia: !!imageMedia,
-          imageUrl: imageMedia && typeof imageMedia === 'object' && 'url' in imageMedia ? imageMedia.url : null,
-          hasImage,
-          showImageProp: props.showImage,
-          showImageValue: props.showImage !== false,
-          willRenderImage: hasImage && imageMedia && typeof imageMedia.url === 'string',
-        }, 'Product image debug');
-
         return (
           <Card key={product.id} padding="p-6">
             <div className={`grid gap-6 ${hasImage ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1'}`}>

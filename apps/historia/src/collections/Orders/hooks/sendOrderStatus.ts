@@ -3,12 +3,11 @@ import type { CollectionAfterChangeHook } from 'payload';
 import { Logger } from '@eventuras/logger';
 import { notitiaTemplates } from '@eventuras/notitia-templates';
 
-import { createPackingNotifier } from '@/lib/packing';
 import type { Order, Product, User, Website } from '@/payload-types';
 
 const logger = Logger.create({
   namespace: 'historia:orders',
-  context: { module: 'sendOrderConfirmation' },
+  context: { module: 'sendOrderStatus' },
 });
 
 /**
@@ -57,7 +56,6 @@ export const sendOrderStatus: CollectionAfterChangeHook<Order> = async ({
   }
 
   try {
-    logger.info({ orderId: doc.id }, 'Sending order confirmation email');
 
     // Get locale from request, fallback to CMS default
     const defaultLocale = (process.env.NEXT_PUBLIC_CMS_DEFAULT_LOCALE || 'no') as 'no' | 'en';
@@ -252,7 +250,7 @@ export const sendOrderStatus: CollectionAfterChangeHook<Order> = async ({
         orderId: doc.id,
         email: doc.userEmail,
       },
-      'Failed to send order confirmation email',
+      'Failed to send order status email',
     );
     // Don't throw - we don't want to fail the order creation
   }
