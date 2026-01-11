@@ -84,6 +84,7 @@ export async function GET(
 
   const currency = order.currency || 'NOK';
   const items = order.items || [];
+  const isTaxExempt = order.taxExempt === true;
 
   // Calculate totals
   let totalExVat = 0;
@@ -94,9 +95,9 @@ export async function GET(
     const productName = sanitizeForHtml(getProductName(item));
     const quantity = item.quantity || 1;
     const priceExVat = getPriceExVatMinor(item);
-    const vatRate = getVatRate(item);
-    const priceIncVat = getPriceIncVatMinor(item);
-    const lineTotal = getLineTotalMinor(item);
+    const vatRate = getVatRate(item, isTaxExempt);
+    const priceIncVat = getPriceIncVatMinor(item, isTaxExempt);
+    const lineTotal = getLineTotalMinor(item, isTaxExempt);
     const lineTotalExVat = priceExVat * quantity;
     const lineVat = lineTotal - lineTotalExVat;
 
@@ -218,8 +219,16 @@ export async function GET(
       <p style="margin: 0;"><strong>Dato:</strong> ${orderDate}</p>
       <p style="margin: 4px 0 0 0;"><strong>Status:</strong> ${order.status}</p>
       <p style="margin: 4px 0 0 0;"><strong>Valuta:</strong> ${currency}</p>
+      ${isTaxExempt ? `<p style="margin: 4px 0 0 0; color: #dc2626; font-weight: 600;">⚠️ MVA-fritatt</p>` : ''}
     </div>
   </div>
+
+  ${isTaxExempt && order.taxExemptReason ? `
+  <div style="margin-bottom: 24px; padding: 16px; background: #fef2f2; border-left: 4px solid #dc2626; border-radius: 4px;">
+    <h3 style="margin: 0 0 8px 0; font-size: 12px; color: #991b1b; text-transform: uppercase;">Årsak til MVA-fritak</h3>
+    <p style="margin: 0; color: #991b1b;">${sanitizeForHtml(order.taxExemptReason)}</p>
+  </div>
+  ` : ''}
 
   <!-- Items table -->
   <table style="margin-bottom: 24px;">

@@ -5,6 +5,7 @@ import * as migration_20260103_192818_nullables from './20260103_192818_nullable
 import * as migration_20260103_230557_carts from './20260103_230557_carts';
 import * as migration_20260104_011858_transactiondata from './20260104_011858_transactiondata';
 import * as migration_20260105_205907_cart_status from './20260105_205907_cart_status';
+import * as migration_20260111_135638_taxexempt from './20260111_135638_taxexempt';
 
 export const migrations = [
   {
@@ -40,6 +41,11 @@ export const migrations = [
   {
     up: migration_20260105_205907_cart_status.up,
     down: migration_20260105_205907_cart_status.down,
-    name: '20260105_205907_cart_status'
+    name: '20260105_205907_cart_status',
+  },
+  {
+    up: migration_20260111_135638_taxexempt.up,
+    down: migration_20260111_135638_taxexempt.down,
+    name: '20260111_135638_taxexempt'
   },
 ];

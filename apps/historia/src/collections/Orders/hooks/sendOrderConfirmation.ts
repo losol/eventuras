@@ -12,28 +12,46 @@ const logger = Logger.create({
 });
 
 /**
- * Hook to send order confirmation email when payment is successful
- * (when order status changes to 'processing' after payment)
+ * Hook to send order emails:
+ * - "order-received" when order is created (pending status)
+ * - "order-confirmation" when payment is successful (status changes to processing)
  */
 export const sendOrderConfirmation: CollectionAfterChangeHook<Order> = async ({
   doc,
   previousDoc,
   req,
+  operation,
 }) => {
   const { payload } = req;
 
-  // Only send email when order status changes to 'processing' (successful payment)
-  const isNewlyProcessing =
-    doc.status === 'processing' && previousDoc?.status !== 'processing';
+  // Determine which email to send
+  let shouldSendOrderReceived = false;
+  let shouldSendOrderConfirmation = false;
 
-  if (!isNewlyProcessing) {
+  if (operation === 'create') {
+    // Send "order-received" when order is created
+    shouldSendOrderReceived = true;
+    logger.info({ orderId: doc.id, status: doc.status }, 'Sending order received email (new order)');
+  } else if (operation === 'update') {
+    // Send "order-confirmation" when order status changes to 'processing' (successful payment)
+    const isNewlyProcessing =
+      doc.status === 'processing' && previousDoc?.status !== 'processing';
+    
+    if (isNewlyProcessing) {
+      shouldSendOrderConfirmation = true;
+      logger.info({ orderId: doc.id }, 'Sending order confirmation email (payment confirmed)');
+    }
+  }
+
+  if (!shouldSendOrderReceived && !shouldSendOrderConfirmation) {
     logger.debug(
       {
         orderId: doc.id,
+        operation,
         currentStatus: doc.status,
         previousStatus: previousDoc?.status,
       },
-      'Skipping order confirmation - not newly processing'
+      'Skipping order emails - no trigger conditions met'
     );
     return doc;
   }
@@ -122,11 +140,12 @@ export const sendOrderConfirmation: CollectionAfterChangeHook<Order> = async ({
     }
 
     // Prepare order items for email template
+    const isTaxExempt = doc.taxExempt === true;
     const items = doc.items?.map((item) => {
       const product = item.product as Product;
       const quantity = item.quantity || 1;
       const priceExVat = item.price?.amountExVat || 0;
-      const vatRate = item.price?.vatRate ?? 25;
+      const vatRate = isTaxExempt ? 0 : (item.price?.vatRate ?? 25);
       const priceIncVat = priceExVat * (1 + vatRate / 100);
       const lineTotal = quantity * priceIncVat;
 
@@ -148,6 +167,8 @@ export const sendOrderConfirmation: CollectionAfterChangeHook<Order> = async ({
       currency: doc.currency || 'NOK',
       organizationName,
       items,
+      taxExempt: isTaxExempt,
+      taxExemptReason: doc.taxExemptReason,
       // Add shipping address
       shippingAddress: doc.shippingAddress
         ? {
@@ -160,50 +181,57 @@ export const sendOrderConfirmation: CollectionAfterChangeHook<Order> = async ({
         : undefined,
     };
 
+    // Determine which template to use
+    const templateType = shouldSendOrderReceived ? 'order-received' : 'order-confirmation';
+    const emailSubject = shouldSendOrderReceived ? 'Bestilling mottatt' : 'Ordrebekreftelse';
+
     // Render the email template
-    const emailHtml = notitiaTemplates.render('email', 'order-confirmation', templateData, {
+    const emailHtml = notitiaTemplates.render('email', templateType, templateData, {
       locale: emailLocale,
     });
 
     // Send the email
     await payload.sendEmail({
       to: doc.userEmail,
-      subject: `Ordrebekreftelse`,
+      subject: emailSubject,
       html: emailHtml,
     });
 
-    logger.info({ orderId: doc.id, email: doc.userEmail }, 'Order confirmation email sent successfully');
+    logger.info(
+      { orderId: doc.id, email: doc.userEmail, templateType }, 
+      `${shouldSendOrderReceived ? 'Order received' : 'Order confirmation'} email sent successfully`
+    );
 
-    // Send packing list to sales contacts
-    if (salesEmails.length > 0) {
+    // Send notification to sales contacts when new order is received
+    if (shouldSendOrderReceived && salesEmails.length > 0) {
       try {
-        // Fetch order with populated product relationships for packing list
-        const orderWithProducts = (await payload.findByID({
-          collection: 'orders',
-          id: doc.id,
-          depth: 1, // Populate product relationships
-          req, // Pass request context for authentication
-        })) as Order;
-
-        // Create notifier and send (easy to swap out email for other methods later)
-        const notifier = createPackingNotifier(payload, 'email');
-        await notifier.notify({
-          targets: salesEmails.map(email => ({ email })),
-          order: orderWithProducts,
-          customerName,
+        // Render the sales notification email
+        const salesEmailHtml = notitiaTemplates.render('email', 'order-received', {
+          ...templateData,
+          isCopy: true, // Show the copy banner for sales
+        }, {
           locale: salesEmailLocale,
         });
 
+        // Send to all sales contacts
+        for (const salesEmail of salesEmails) {
+          await payload.sendEmail({
+            to: salesEmail,
+            subject: `Ny bestilling mottatt - #${doc.id}`,
+            html: salesEmailHtml,
+          });
+        }
+
         logger.info(
           { orderId: doc.id, salesEmails, count: salesEmails.length },
-          'Packing list notifications sent successfully',
+          'New order notifications sent to sales successfully',
         );
       } catch (salesError) {
         logger.error(
           { error: salesError, orderId: doc.id, salesEmails },
-          'Failed to send packing list notifications',
+          'Failed to send new order notifications to sales',
         );
-        // Don't throw - we don't want to fail if packing notification fails
+        // Don't throw - we don't want to fail if sales notification fails
       }
     }
   } catch (error) {

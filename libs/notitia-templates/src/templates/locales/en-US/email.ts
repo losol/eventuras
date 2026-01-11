@@ -107,11 +107,35 @@ The {{organizationName}} Team`,
     description: 'Password reset email (en-US)',
   },
 
+  'email:order-received': {
+    subject: 'Order Received - #{{orderId}}',
+    content: `Hello {{name}},
+
+Thank you for your order! We have received it and will process it as soon as possible.
+
+Order Details:
+- Order ID: {{orderId}}
+- Order Date: {{orderDate}}
+{{#if totalAmount}}
+- Total: {{totalAmount}} {{currency}}
+{{/if}}
+
+{{#if trackingNumber}}
+Tracking Number: {{trackingNumber}}
+{{/if}}
+
+We will notify you when your payment is confirmed and your order is being processed.
+
+Best regards,
+The {{organizationName}} Team`,
+    description: 'Order received confirmation email (en-US)',
+  },
+
   'email:order-confirmation': {
     subject: 'Order Confirmation - #{{orderId}}',
     content: `Hello {{name}},
 
-Thank you for your order!
+Your payment has been confirmed and your order is now being processed. We will start packing your items shortly.
 
 Order Details:
 - Order ID: {{orderId}}
@@ -128,7 +152,7 @@ We will notify you when your order ships.
 
 Best regards,
 The {{organizationName}} Team`,
-    description: 'Order confirmation email (en-US)',
+    description: 'Order confirmation email after payment (en-US)',
   },
 
   'email:order-shipped': {

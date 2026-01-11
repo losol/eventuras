@@ -17,6 +17,7 @@ export type TemplateType =
   | 'event-reminder'
   | 'payment-confirmation'
   | 'password-reset'
+  | 'order-received'
   | 'order-confirmation'
   | 'order-shipped'
   | 'orphaned-payment-alert'
