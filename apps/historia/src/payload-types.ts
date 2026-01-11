@@ -834,6 +834,10 @@ export interface ProductsBlock {
    * Select one or more products to display
    */
   products: (string | Product)[];
+  /**
+   * Display product images in the block
+   */
+  showImage?: boolean | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'products';
@@ -2205,6 +2209,7 @@ export interface ImageBlockSelect<T extends boolean = true> {
  */
 export interface ProductsBlockSelect<T extends boolean = true> {
   products?: T;
+  showImage?: T;
   id?: T;
   blockName?: T;
 }

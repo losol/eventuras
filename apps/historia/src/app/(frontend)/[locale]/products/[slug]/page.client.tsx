@@ -39,7 +39,7 @@ export function ProductDetailClient({ product, locale }: ProductDetailClientProp
   return (
     <Container>
       <div className="mb-6">
-        <Link href={`/${locale}/products`}>← Back to Products</Link>
+        <Link href={`/${locale}/products`}>← Tilbake til Produkter</Link>
       </div>
 
       <div className={hasImage ? 'grid gap-8 md:grid-cols-2' : 'max-w-2xl'}>
@@ -77,22 +77,22 @@ export function ProductDetailClient({ product, locale }: ProductDetailClientProp
 
           <div className="space-y-4">
             <Button onClick={handleAddToCart} variant="primary" block padding="px-6 py-3">
-              Add to Cart
+              Legg i handlekurv
             </Button>
 
             {quantityInCart > 0 && (
               <Card
-                padding="p-4"
+                padding="p-4 m-4"
                 className="text-center bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800"
               >
                 <Text className="text-sm text-green-800 dark:text-green-300">
-                  {quantityInCart} {quantityInCart === 1 ? 'item' : 'items'} in cart
+                  {quantityInCart} {quantityInCart === 1 ? 'vare' : 'varer'} i handlekurven
                 </Text>
                 <Link
                   href={`/${locale}/checkout`}
                   className="mt-2 inline-block text-sm text-green-700 dark:text-green-400 underline"
                 >
-                  Go to Checkout
+                  Gå til handlekurv
                 </Link>
               </Card>
             )}
