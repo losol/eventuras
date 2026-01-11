@@ -1,0 +1,47 @@
+{
+  "name": "@eventuras/payload-vipps-auth",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Vipps Login authentication plugin for Payload CMS",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@eventuras/fides-auth": "workspace:*",
+    "@eventuras/logger": "workspace:*",
+    "@eventuras/vipps": "workspace:*",
+    "openid-client": "^6.2.0",
+    "uuid": "^13.0.0"
+  },
+  "devDependencies": {
+    "@eventuras/typescript-config": "workspace:*",
+    "@eventuras/vite-config": "workspace:*",
+    "@payloadcms/next": "3.69.0",
+    "@types/node": "^24.10.6",
+    "@types/react": "^19.2.8",
+    "@types/uuid": "^11.0.0",
+    "next": "^16.0.0",
+    "payload": "3.69.0",
+    "react": "^19.2.3",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.0",
+    "vitest": "^4.0.16"
+  },
+  "peerDependencies": {
+    "@payloadcms/next": "^3.0.0",
+    "payload": "^3.0.0"
+  }
+}
