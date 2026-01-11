@@ -2,6 +2,9 @@ import configPromise from '@payload-config';
 import { notFound } from 'next/navigation';
 import { getPayload } from 'payload';
 
+import { RenderBlocks } from '@/blocks/RenderBlocks';
+import { ProductActions } from '@/components/ProductActions';
+
 import { ProductDetailClient } from './page.client';
 
 interface ProductPageProps {
@@ -41,6 +44,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     },
     limit: 1,
     locale: locale as 'en' | 'no',
+    depth: 2,
   });
 
   const product = docs[0];
@@ -49,5 +53,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
     notFound();
   }
 
-  return <ProductDetailClient product={product} locale={locale} />;
+  return (
+    <>
+      <ProductDetailClient product={product} locale={locale} />
+      <ProductActions product={product} locale={locale} />
+      {product.story ? <RenderBlocks blocks={product.story} /> : null}
+    </>
+  );
 }

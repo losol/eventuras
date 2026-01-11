@@ -108,11 +108,11 @@ export const ProductsBlock: React.FC<ProductBlockProps> = (props) => {
         // Check if product has an image with populated media
         const imageMedia =
           product.image &&
-          typeof product.image === 'object' &&
-          'media' in product.image &&
-          product.image.media &&
-          typeof product.image.media === 'object' &&
-          'url' in product.image.media
+            typeof product.image === 'object' &&
+            'media' in product.image &&
+            product.image.media &&
+            typeof product.image.media === 'object' &&
+            'url' in product.image.media
             ? product.image.media
             : null;
 
@@ -120,17 +120,33 @@ export const ProductsBlock: React.FC<ProductBlockProps> = (props) => {
 
         const isAdding = addingProductId === product.id;
 
+        // Debug logging for image
+        logger.info({
+          productId: product.id,
+          productTitle: product.title,
+          hasProductImage: !!product.image,
+          imageMediaType: typeof imageMedia,
+          hasImageMedia: !!imageMedia,
+          imageUrl: imageMedia && typeof imageMedia === 'object' && 'url' in imageMedia ? imageMedia.url : null,
+          hasImage,
+          showImageProp: props.showImage,
+          showImageValue: props.showImage !== false,
+          willRenderImage: hasImage && imageMedia && typeof imageMedia.url === 'string',
+        }, 'Product image debug');
+
         return (
           <Card key={product.id} padding="p-6">
-            <div className={`grid gap-6 ${hasImage ? 'md:grid-cols-2' : ''}`}>
+            <div className={`grid gap-6 ${hasImage ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1'}`}>
               {/* Product Image */}
               {hasImage && imageMedia && typeof imageMedia.url === 'string' ? (
-                <div className="relative aspect-square overflow-hidden rounded-lg">
+                <div className="w-full">
                   <Image
                     src={imageMedia.url}
                     alt={product.title || 'Product image'}
-                    fill
-                    className="object-cover"
+                    width={600}
+                    height={600}
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="w-full h-auto object-cover rounded-lg"
                   />
                 </div>
               ) : null}
@@ -171,7 +187,7 @@ export const ProductsBlock: React.FC<ProductBlockProps> = (props) => {
                 {/* Action Buttons */}
                 <div className="mt-6 flex flex-col gap-3">
                   {product.slug && product.resourceId && (
-                    <Link href={`/${locale}/products/${product.slug}--${product.resourceId}`}>
+                    <Link href={`/${locale}/c/produkter/${product.slug}--${product.resourceId}`}>
                       Les mer
                     </Link>
                   )}

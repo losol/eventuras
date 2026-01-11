@@ -10,8 +10,10 @@ import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { RenderBlocks } from '@/blocks/RenderBlocks';
 import { LivePreviewListener } from '@/components/LivePreviewListener';
 import { PayloadRedirects } from '@/components/PayloadRedirects';
+import { ProductActions } from '@/components/ProductActions';
 import RichText from '@/components/RichText';
 import { Hero } from '@/heros/Hero';
+import type { Product } from '@/payload-types';
 import { generateMeta } from '@/utilities/generateMeta';
 
 import PageClient from './page.client';
@@ -146,10 +148,11 @@ export default async function Page({ params: paramsPromise }: Args) {
   }
 
   const titleToUse = 'title' in document ? document.title : document.name;
+  const isProduct = originalCollectionName === 'products';
 
   return (
     <Container>
-    <article className="container pt-16 pb-16 prose dark:prose-invert">
+    <article className="container pt-16 pb-16 prose dark:prose-invert prose-p:py-3">
       <PageClient />
 
       <PayloadRedirects
@@ -162,6 +165,8 @@ export default async function Page({ params: paramsPromise }: Args) {
       {'lead' in document && document.lead
         ? <Hero title={titleToUse} image={document.image} lead={document.lead} />
         : <Hero title={titleToUse} image={document.image} />}
+
+      {isProduct && <ProductActions product={document as Product} locale={locale} />}
 
       {'content' in document && document.content ? <RichText data={document.content} /> : null}
       {'story' in document && document.story ? <RenderBlocks blocks={document.story} /> : null}
