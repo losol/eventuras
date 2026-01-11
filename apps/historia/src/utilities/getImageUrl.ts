@@ -135,3 +135,59 @@ export function getImageAlt(
 
   return fallback;
 }
+
+/**
+ * Get comprehensive image properties for rendering.
+ *
+ * @param image - The image object from Payload CMS
+ * @param preferredSize - The preferred image size ('thumbnail', 'standard', or 'original')
+ * @returns Object with url, alt, caption, width, and height
+ *
+ * @example
+ * ```tsx
+ * const imageProps = getImageProps(hero.image, 'standard');
+ * if (imageProps.url) {
+ *   <Image src={imageProps.url} alt={imageProps.alt} width={imageProps.width} height={imageProps.height} />
+ * }
+ * ```
+ */
+export function getImageProps(
+  image: Image | null | undefined,
+  preferredSize: ImageSize = 'standard',
+) {
+  const url = getImageUrl(image, preferredSize);
+  const caption = getImageCaption(image);
+  const alt = getImageAlt(image);
+
+  let width: number | undefined;
+  let height: number | undefined;
+
+  if (image && typeof image === 'object' && 'media' in image && image.media && typeof image.media === 'object') {
+    const media = image.media as Media;
+
+    // Get dimensions from preferred size
+    if (preferredSize !== 'original' && 'sizes' in media && media.sizes) {
+      const size = media.sizes[preferredSize];
+      if (size) {
+        width = typeof size.width === 'number' ? size.width : undefined;
+        height = typeof size.height === 'number' ? size.height : undefined;
+      }
+    }
+
+    // Fallback to original dimensions
+    if (!width && 'width' in media && typeof media.width === 'number') {
+      width = media.width;
+    }
+    if (!height && 'height' in media && typeof media.height === 'number') {
+      height = media.height;
+    }
+  }
+
+  return {
+    url,
+    alt,
+    caption,
+    width,
+    height,
+  };
+}

@@ -38,7 +38,7 @@ const Heading = (props: HeadingProps) => {
       defaultPadding = 'pt-12 pb-3';
       break;
     case 'h3':
-      defaultPadding = 'pt-19 pb-3';
+      defaultPadding = 'pt-6 pb-3';
       break;
     default:
       break;
