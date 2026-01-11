@@ -3,6 +3,8 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next/types';
 import { CollectionSlug, getPayload } from 'payload';
 
+import { Container } from '@eventuras/ratio-ui/layout/Container';
+
 import { CollectionArchive } from '@/components/CollectionArchive';
 import { PageRange } from '@/components/PageRange';
 import { Pagination } from '@/components/Pagination';
@@ -13,9 +15,6 @@ import {
   pageCollections,
   PageCollectionsType,
 } from './pageCollections';
-
-export const dynamic = 'force-static';
-export const revalidate = 600;
 
 type Props = {
   params: Promise<{
@@ -52,6 +51,15 @@ export default async function Page({ params: paramsPromise }: Props) {
         slug: true,
         resourceId: true,
       },
+      // exclude shipping products if it is a product listings
+      where:
+        originalCollectionName === 'products'
+          ? {
+              productType: {
+                not_equals: 'shipping',
+              },
+            }
+          : undefined,
     });
 
     if (!docsPage.docs?.length) {
@@ -63,7 +71,7 @@ export default async function Page({ params: paramsPromise }: Props) {
       collection.charAt(0).toUpperCase() + collection.slice(1);
 
     return (
-      <div className="container pt-24 pb-24 prose dark:prose-invert">
+      <Container>
         <h1>{capitalizedCollection}</h1>
 
         <CollectionArchive
@@ -84,7 +92,7 @@ export default async function Page({ params: paramsPromise }: Props) {
             />
           </div>
         )}
-      </div>
+      </Container>
     );
   } catch (error) {
     console.warn('Error fetching collection:', error);

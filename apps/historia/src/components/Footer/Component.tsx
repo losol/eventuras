@@ -8,6 +8,9 @@ import { getCurrentWebsiteId } from '@/lib/website';
 
 import { FooterClient } from './Component.client';
 
+// Force dynamic rendering to ensure headers are available
+export const dynamic = 'force-dynamic';
+
 export async function Footer() {
   const websiteId = await getCurrentWebsiteId();
 

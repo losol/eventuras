@@ -4,6 +4,7 @@ import { getPayload } from 'payload';
 
 import { Logger } from '@eventuras/logger';
 
+import { allowedOrigins } from '@/config/allowed-origins';
 import type { Website } from '@/payload-types';
 
 const logger = Logger.create({
@@ -12,17 +13,44 @@ const logger = Logger.create({
 });
 
 /**
+ * Normalize allowed domains from origins
+ */
+function getAllowedDomains(): Set<string> {
+  const domains = allowedOrigins
+    .map(origin => {
+      try {
+        return new URL(origin).host;
+      } catch {
+        return origin;
+      }
+    })
+    .map(s => s.trim().toLowerCase())
+    .filter(Boolean);
+
+  return new Set(domains);
+}
+
+/**
+ * Check if a host is in the allowed list
+ */
+function isAllowedHost(host: string, allowed: Set<string>): boolean {
+  const h = host.toLowerCase();
+  if (allowed.has(h)) return true;
+  const hostname = h.split(':')[0];
+  return !!hostname && allowed.has(hostname);
+}
+
+/**
  * Get the current website/tenant ID from the host header
  *
  * This function determines which website/tenant the current request belongs to
  * by looking up the host header and matching it against configured website domains.
  *
- * @returns The website ID
- * @throws {Error} If no host header is found or no matching website exists
+ * @returns The website ID or null if not available (e.g., during static generation)
  */
-export async function getCurrentWebsiteId(): Promise<string> {
+export async function getCurrentWebsiteId(): Promise<string | null> {
   const website = await getCurrentWebsite();
-  return website.id;
+  return website?.id || null;
 }
 
 /**
@@ -34,13 +62,16 @@ export async function getCurrentWebsiteId(): Promise<string> {
  * When running behind a reverse proxy (e.g., Azure App Service), this will use
  * the X-Forwarded-Host header if available to get the actual requested domain.
  *
- * Security: This function throws an error if no matching website is found to prevent
- * accidentally serving content from the wrong tenant/website.
+ * During static generation (e.g., generateStaticParams), headers are not available
+ * and this function will return null instead of throwing an error.
  *
- * @returns The website object
- * @throws {Error} If no host header is found or no matching website exists
+ * Security: This function throws an error if a host is provided but no matching
+ * website is found to prevent accidentally serving content from the wrong tenant/website.
+ *
+ * @returns The website object or null if headers are not available
+ * @throws {Error} If host header exists but no matching website is found
  */
-export async function getCurrentWebsite(): Promise<Website> {
+export async function getCurrentWebsite(): Promise<Website | null> {
   const payload = await getPayload({ config: configPromise });
   const requestHeaders = await headers();
 
@@ -49,8 +80,22 @@ export async function getCurrentWebsite(): Promise<Website> {
   const host = requestHeaders.get('x-forwarded-host') || requestHeaders.get('host');
 
   if (!host) {
-    logger.error('No host header found - cannot determine website/tenant');
-    throw new Error('No host header found - cannot determine website/tenant');
+    // During static generation, headers are not available - return null instead of throwing
+    logger.debug('No host header found - likely during static generation');
+    return null;
+  }
+
+  // Security: Validate host against allowed origins if configured
+  const allowedDomains = getAllowedDomains();
+  if (allowedDomains.size > 0 && !isAllowedHost(host, allowedDomains)) {
+    logger.warn(
+      {
+        host,
+        allowedOrigins,
+      },
+      'Host not in allowed origins - rejecting request'
+    );
+    throw new Error(`Host ${host} is not in the allowed origins list`);
   }
 
   // Find website by domain
