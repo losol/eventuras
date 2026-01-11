@@ -9,7 +9,7 @@ import {
 
 export type { ImageProps } from '@eventuras/ratio-ui/core/Image';
 
-const NextImageRenderer = (p: ImageRendererProps) => {
+export const NextImageRenderer = (p: ImageRendererProps) => {
   // Ensure alt is defined for NextImage
   const { alt = '', ...rest } = p;
 

@@ -20,7 +20,7 @@ export const Card: React.FC<CardProps> = ({
   padding, margin, backgroundColorClass, backgroundImageUrl, className, style, ...rest
 },) => {
 
-  const baseClasses = "p-4 relative rounded-md";
+  const baseClasses = "p-4 relative rounded-lg";
   const transitionClasses = hoverEffect ? "transform transition duration-300 ease-in-out" : "";
   const backgroundColorClasses = backgroundColorClass ??
     hoverEffect
