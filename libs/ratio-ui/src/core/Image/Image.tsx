@@ -31,6 +31,8 @@ export interface ImageProps {
   height?: number;
   /** Force wrapper semantics */
   as?: 'img' | 'figure';
+  /** Loading strategy (lazy or eager) */
+  loading?: 'lazy' | 'eager';
   /** Optional custom renderer (e.g. NextImage) */
   renderer?: ComponentType<ImageRendererProps>;
   /** Extra props passed to the renderer (e.g. sizes, priority) */
@@ -51,7 +53,7 @@ export function Image(props: ImageProps) {
     props.renderer ??
     ((p) => (
       // native img fallback
-      <img loading="lazy" decoding="async" {...p} />
+      <img loading={props.loading ?? 'lazy'} decoding="async" {...p} />
     ));
 
   // common image props
@@ -61,6 +63,7 @@ export function Image(props: ImageProps) {
     width: props.width,
     height: props.height,
     className: props.imgClassName ?? 'h-auto max-w-full',
+    loading: props.loading,
     ...(props.rendererProps ?? {}),
   };
 
