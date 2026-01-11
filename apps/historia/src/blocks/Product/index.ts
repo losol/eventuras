@@ -1,2 +1,2 @@
-export { ProductsBlock } from './Component';
 export { Product } from './config';
+export { ProductsBlock } from './ProductsBlock';

@@ -1,0 +1,137 @@
+import type { Image, Media } from '@/payload-types';
+
+/**
+ * Size preference for image URL retrieval
+ */
+export type ImageSize = 'thumbnail' | 'standard' | 'original';
+
+/**
+ * Extract the best available image URL from a Payload CMS image object.
+ *
+ * @param image - The image object from Payload CMS
+ * @param preferredSize - The preferred image size ('thumbnail', 'standard', or 'original')
+ * @returns The image URL or null if not available
+ *
+ * @example
+ * ```tsx
+ * const imageUrl = getImageUrl(product.image, 'standard');
+ * if (imageUrl) {
+ *   <img src={imageUrl} alt="Product" />
+ * }
+ * ```
+ */
+export function getImageUrl(
+  image: Image | null | undefined,
+  preferredSize: ImageSize = 'standard',
+): string | null {
+  if (!image || typeof image !== 'object') {
+    return null;
+  }
+
+  if (!('media' in image) || !image.media || typeof image.media !== 'object') {
+    return null;
+  }
+
+  const media = image.media as Media;
+
+  // Try to get the preferred size
+  if (preferredSize !== 'original' && 'sizes' in media && media.sizes) {
+    const sizeUrl = media.sizes[preferredSize]?.url;
+    if (sizeUrl) {
+      return sizeUrl;
+    }
+  }
+
+  // Fallback to standard size
+  if (preferredSize === 'thumbnail' && 'sizes' in media && media.sizes?.standard?.url) {
+    return media.sizes.standard.url;
+  }
+
+  // Fallback to original URL
+  if ('url' in media && media.url) {
+    return media.url;
+  }
+
+  return null;
+}
+
+/**
+ * Get the caption for an image.
+ *
+ * @param image - The image object from Payload CMS
+ * @returns The caption object or null
+ *
+ * @example
+ * ```tsx
+ * const caption = getImageCaption(product.image);
+ * if (caption) {
+ *   <RichText data={caption} />
+ * }
+ * ```
+ */
+export function getImageCaption(
+  image: Image | null | undefined,
+): Image['caption'] | null {
+  if (!image || typeof image !== 'object') {
+    return null;
+  }
+
+  if ('caption' in image && image.caption) {
+    return image.caption;
+  }
+
+  return null;
+}
+
+/**
+ * Get the alt text for an image from various sources.
+ *
+ * @param image - The image object from Payload CMS
+ * @param fallback - Fallback text if no alt text is available
+ * @returns The alt text or fallback
+ *
+ * @example
+ * ```tsx
+ * const alt = getImageAlt(product.image, product.title);
+ * ```
+ */
+export function getImageAlt(
+  image: Image | null | undefined,
+  fallback: string = '',
+): string {
+  if (!image || typeof image !== 'object') {
+    return fallback;
+  }
+
+  // Try to get alt text from caption
+  if ('caption' in image && image.caption) {
+    if (typeof image.caption === 'object' && 'root' in image.caption) {
+      const captionText = image.caption.root.children
+        .map((child: any) => {
+          if (typeof child === 'object' && 'text' in child) {
+            return child.text;
+          }
+          return '';
+        })
+        .join(' ')
+        .trim();
+
+      if (captionText) {
+        return captionText;
+      }
+    }
+  }
+
+  // Try to get alt from media alt field
+  if (
+    'media' in image &&
+    image.media &&
+    typeof image.media === 'object' &&
+    'alt' in image.media &&
+    typeof image.media.alt === 'string'
+  ) {
+    return image.media.alt;
+  }
+
+  return fallback;
+}

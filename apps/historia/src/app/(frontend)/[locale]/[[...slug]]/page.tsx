@@ -12,6 +12,7 @@ import { RenderBlocks } from '@/blocks/RenderBlocks';
 import { LivePreviewListener } from '@/components/LivePreviewListener';
 import { Hero } from '@/heros/Hero';
 import { PagesSelect } from '@/payload-types';
+import { getImageUrl } from '@/utilities/image';
 
 import PageClient from './page.client';
 
@@ -115,9 +116,7 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
 
   const title = page.title || 'Historia';
   const description = page.lead || undefined;
-  const imageUrl = typeof page.image?.media === 'object' && page.image.media?.url
-    ? page.image.media.url
-    : undefined;
+  const imageUrl = getImageUrl(page.image, 'original') || undefined;
 
   return {
     title,
@@ -188,7 +187,7 @@ export default async function Page({ params: paramsPromise }: Args) {
       <PageClient />
       <LivePreviewListener />
       <Container>
-      <article>
+
         {breadcrumbs && Array.isArray(breadcrumbs) && breadcrumbs.length > 1 && (
           <nav aria-label="breadcrumb" className="mb-4">
             <ol className="breadcrumb flex">
@@ -208,8 +207,9 @@ export default async function Page({ params: paramsPromise }: Args) {
             </ol>
           </nav>
         )}
-        <Hero title={title} image={image} />
-        {story && story.length > 0 && <RenderBlocks blocks={story} />}
+        <article>
+          <Hero title={title} image={image} />
+          {story && story.length > 0 && <RenderBlocks blocks={story} />}
         </article>
       </Container>
     </>
