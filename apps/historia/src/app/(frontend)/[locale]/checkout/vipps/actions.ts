@@ -805,7 +805,7 @@ export async function createOrderFromPayment({
       data: {
         customer: effectiveUserId!,
         userEmail: user.email,
-        status: 'processing',
+        status: 'pending',
         currency: paymentDetails.aggregate.authorizedAmount.currency,
         tenant: websiteId,
         items: orderItems,

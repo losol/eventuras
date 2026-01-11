@@ -10,6 +10,7 @@ export interface OrderStatusTexts {
   orderNumberLabel: string;
   orderDateLabel: string;
   customerEmailLabel: string;
+  customerPhoneLabel?: string;
   orderedProductsTitle: string;
   productColumn: string;
   quantityColumn: string;
@@ -99,6 +100,12 @@ export function buildOrderStatusTemplate(texts: OrderStatusTexts): string {
           <li>
             <span class="label">${texts.customerEmailLabel}:</span>
             <span class="value">{{userEmail}}</span>
+          </li>
+          {{/if}}
+          {{#if phone}}
+          <li>
+            <span class="label">${texts.customerPhoneLabel || 'Phone'}:</span>
+            <span class="value">{{phone}}</span>
           </li>
           {{/if}}
           {{#if taxExempt}}

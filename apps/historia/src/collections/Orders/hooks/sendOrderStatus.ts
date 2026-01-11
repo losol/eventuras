@@ -3,6 +3,7 @@ import type { CollectionAfterChangeHook } from 'payload';
 import { Logger } from '@eventuras/logger';
 import { notitiaTemplates } from '@eventuras/notitia-templates';
 
+import { formatPhoneForDisplay } from '@/lib/utils/formatPhone';
 import type { Order, Product, User, Website } from '@/payload-types';
 
 const logger = Logger.create({
@@ -64,8 +65,9 @@ export const sendOrderStatus: CollectionAfterChangeHook<Order> = async ({
     const emailLocale = requestLocale === 'no' ? 'nb-NO' : 'en-US';
     const salesEmailLocale = defaultLocale === 'no' ? 'nb-NO' : 'en-US';
 
-    // Fetch the customer to get their name
+    // Fetch the customer to get their name and phone
     let customerName = 'Kunde'; // Default fallback
+    let customerPhone: string | undefined;
     if (doc.customer) {
       const customerId = typeof doc.customer === 'string' ? doc.customer : doc.customer.id;
       const customer = (await payload.findByID({
@@ -76,6 +78,18 @@ export const sendOrderStatus: CollectionAfterChangeHook<Order> = async ({
       const firstName = customer.given_name || '';
       const lastName = customer.family_name || '';
       customerName = `${firstName} ${lastName}`.trim() || customerName;
+      customerPhone = customer.phone_number
+        ? formatPhoneForDisplay(customer.phone_number)
+        : undefined;
+
+      logger.info(
+        {
+          customerId: customer.id,
+          rawPhone: customer.phone_number,
+          formattedPhone: customerPhone,
+        },
+        'Customer phone info',
+      );
     }
 
     // Fetch the tenant/website for organization name
@@ -159,6 +173,8 @@ export const sendOrderStatus: CollectionAfterChangeHook<Order> = async ({
     // Prepare common template data
     const templateData = {
       name: customerName,
+      userEmail: doc.userEmail,
+      phone: customerPhone,
       orderId: doc.id,
       orderDate: new Date(doc.createdAt).toLocaleDateString('nb-NO'),
       totalAmount: ((doc.totalAmount || 0) / 100).toFixed(2),
@@ -181,6 +197,16 @@ export const sendOrderStatus: CollectionAfterChangeHook<Order> = async ({
 
     // Determine which template to use
     const templateType = shouldSendOrderReceived ? 'order-received' : 'order-confirmation';
+
+    logger.info(
+      {
+        orderId: doc.id,
+        templateType,
+        hasPhone: !!templateData.phone,
+        phoneValue: templateData.phone,
+      },
+      'Preparing to send email',
+    );
 
     // Get locale-aware subject from template
     const emailSubject = notitiaTemplates.getSubject('email', templateType, templateData, {

@@ -1,3 +1,4 @@
+import { formatPhoneForDisplay } from '@/lib/utils/formatPhone';
 import type { Order } from '@/payload-types';
 
 import {
@@ -15,7 +16,7 @@ import {
  * Format packing list as plain text
  * Simple, readable format for email or printing
  */
-export function formatPackingListAsText(order: Order, customerName?: string): string {
+export function formatPackingListAsText(order: Order, customerName?: string, customerPhone?: string): string {
   const lines: string[] = [];
 
   // Header
@@ -49,6 +50,9 @@ export function formatPackingListAsText(order: Order, customerName?: string): st
     lines.push(`Navn:         ${customerName}`);
   }
   lines.push(`E-post:       ${order.userEmail}`);
+  if (customerPhone) {
+    lines.push(`Telefon:      ${formatPhoneForDisplay(customerPhone)}`);
+  }
   lines.push('');
 
   // Shipping address
@@ -118,7 +122,7 @@ export function formatPackingListAsText(order: Order, customerName?: string): st
  * Format packing list as simple HTML
  * Clean, readable format for email
  */
-export function formatPackingListAsHtml(order: Order, customerName?: string): string {
+export function formatPackingListAsHtml(order: Order, customerName?: string, customerPhone?: string): string {
   const currency = order.currency ?? 'NOK';
   const orderItems = order.items ?? [];
   const isTaxExempt = order.taxExempt === true;
@@ -220,7 +224,8 @@ export function formatPackingListAsHtml(order: Order, customerName?: string): st
         <h3 style="margin: 0 0 8px 0; font-size: 14px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em;">Kunde / Customer</h3>
         <div style="padding: 12px; background: #f9fafb; border-radius: 6px; color: #374151;">
           ${customerName ? `<strong>${sanitizeForHtml(customerName)}</strong><br>` : ''}
-          ${sanitizeForHtml(order.userEmail)}
+          ${sanitizeForHtml(order.userEmail)}<br>
+          ${customerPhone ? `${sanitizeForHtml(formatPhoneForDisplay(customerPhone))}` : ''}
         </div>
       </div>
 
