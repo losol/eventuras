@@ -26,7 +26,7 @@ export const ProductFieldWithPricePopulation: RelationshipFieldClientComponent =
       if (productValue && !priceAmount?.value) {
         try {
           const productId =
-            typeof productValue === 'object' && productValue && 'value' in productValue
+            typeof productValue === 'object' && 'value' in productValue
               ? productValue.value
               : productValue;
 
