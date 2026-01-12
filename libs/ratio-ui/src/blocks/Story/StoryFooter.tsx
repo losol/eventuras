@@ -14,7 +14,7 @@ export interface StoryFooterProps extends BoxProps {
  * @example
  * ```tsx
  * <StoryFooter>
- *   <Text className="text-sm">Published: 2026-01-12</Text>
+ *   <Text className="text-sm">Published: January 1, 2024</Text>
  * </StoryFooter>
  * ```
  */
