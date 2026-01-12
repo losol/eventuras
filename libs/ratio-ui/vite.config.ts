@@ -1,7 +1,7 @@
 import { defineReactLibConfig } from '@eventuras/vite-config/react-lib';
 
 export default defineReactLibConfig({
-  entry: 'src/**/index.ts',
+  entry: 'src/**/index.{ts,tsx}',
   tailwind: true,
   preserveUseClientDirectives: true,
   external: [

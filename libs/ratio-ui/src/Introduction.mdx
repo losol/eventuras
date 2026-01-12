@@ -1,0 +1,139 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Introduction" />
+
+# Ratio UI
+
+Welcome to **Ratio UI** — a comprehensive design system and component library built for the Eventuras platform.
+
+## What is Ratio UI?
+
+Ratio UI is a collection of accessible, reusable React components designed to create consistent and beautiful user interfaces across all Eventuras applications. Built with modern web standards and best practices, it provides everything you need to build production-ready applications.
+
+## Key Features
+
+### 🎨 **Design System**
+- Consistent design tokens (colors, spacing, typography)
+- Built with Tailwind CSS 4 for utility-first styling
+- Dark mode support out of the box
+- Responsive by default
+
+### ♿ **Accessibility First**
+- WCAG 2.1 AA compliant components
+- Built on React Aria Components for complex interactions
+- Keyboard navigation support
+- Screen reader friendly
+
+### 🧩 **Comprehensive Component Library**
+- **Core Components**: Buttons, Links, Headings, Text, Images, Cards, Badges, and more
+- **Layout Components**: Box, Grid, Container, Section, Dialog, Drawer
+- **Form Components**: Inputs, Selects, Radio Groups, Checkboxes with validation
+- **Content Blocks**: Story (article/blog layout), Error pages, Session warnings
+- **Data Display**: Tables, Description Lists, Pagination, Number Cards
+
+### 🔧 **Developer Experience**
+- Full TypeScript support with strict typing
+- BoxProps system for consistent spacing and layout
+- Compound component patterns (e.g., Story with Header/Body/Footer)
+- Extensive Storybook documentation with examples
+- Vite-powered for fast builds
+
+### 📦 **Built for Monorepo**
+Ratio UI is designed to work seamlessly in the Eventuras monorepo structure:
+- Used by `apps/web` (participant and organizer frontend)
+- Used by `apps/historia` (CMS frontend)
+- Available to all TypeScript applications in the workspace
+
+## Getting Started
+
+### Installation
+
+In the Eventuras monorepo, Ratio UI is already available:
+
+```bash
+# Import components in your app
+import { Button, Card, Heading } from '@eventuras/ratio-ui';
+import { Link } from '@eventuras/ratio-ui-next'; // Next.js specific
+```
+
+### Basic Usage
+
+```tsx
+import { Story, StoryHeader, StoryBody, Lead, Heading, Text } from '@eventuras/ratio-ui';
+
+function Article() {
+  return (
+    <Story>
+      <StoryHeader>
+        <Heading as="h1">Welcome to Ratio UI</Heading>
+        <Lead>
+          Build accessible and beautiful user interfaces with ease.
+        </Lead>
+      </StoryHeader>
+      <StoryBody>
+        <Text>
+          Ratio UI provides all the components you need to create
+          consistent, accessible web applications.
+        </Text>
+      </StoryBody>
+    </Story>
+  );
+}
+```
+
+## Design Principles
+
+### **Composition over Configuration**
+We favor composable components over props-heavy APIs. Use compound components like `Card.Header` and `Card.Body` instead of passing everything as props.
+
+### **Semantic HTML**
+Components use appropriate HTML elements by default (`<button>`, `<nav>`, `<header>`) but allow customization via the `as` prop when needed.
+
+### **BoxProps Pattern**
+Most components accept spacing props (padding, margin, gap, width, height) through the BoxProps system, enabling flexible layouts without custom CSS.
+
+### **TypeScript First**
+All components are fully typed with strict TypeScript. Props extend native HTML element props, so you get full autocompletion and type safety.
+
+## Architecture
+
+### **Component Structure**
+```
+libs/ratio-ui/
+├── src/
+│   ├── core/          # Basic UI components
+│   ├── blocks/        # Composite/content components
+│   ├── forms/         # Form inputs and controls
+│   ├── layout/        # Layout primitives
+│   ├── pages/         # Full page components
+│   └── tokens/        # Design tokens
+```
+
+### **Styling Approach**
+- **Tailwind CSS 4**: Utility-first CSS framework
+- **Custom CSS**: Minimal, only for complex patterns in `ratio-ui.css`
+- **No CSS-in-JS**: Keep styles declarative with utilities
+
+## Contributing
+
+When creating new components in Ratio UI:
+
+1. **Follow the pattern**: Look at existing components for structure
+2. **Extend native props**: Use `ComponentProps<'button'>` etc.
+3. **Add BoxProps**: Include spacing props when appropriate
+4. **Ensure accessibility**: Use semantic HTML and ARIA where needed
+5. **Document with Storybook**: Create stories showing different variants
+6. **Type everything**: Use strict TypeScript
+
+See [UI Component Guidelines](https://github.com/losol/eventuras/blob/main/.github/instructions/ui-components.instructions.md) for detailed instructions.
+
+## Resources
+
+- [GitHub Repository](https://github.com/losol/eventuras)
+- [Component Guidelines](https://github.com/losol/eventuras/blob/main/.github/instructions/ui-components.instructions.md)
+- [React Aria Components](https://react-spectrum.adobe.com/react-aria/)
+- [Tailwind CSS](https://tailwindcss.com/)
+
+---
+
+**Browse the components** in the sidebar to see examples, props, and usage guidelines. Each component has interactive stories you can explore and modify.

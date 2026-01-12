@@ -1,5 +1,5 @@
 import type { Preview } from '@storybook/react-vite';
-import { withThemeByDataAttribute } from '@storybook/addon-themes';
+import { withThemeByClassName } from '@storybook/addon-themes';
 import ratioTheme from './theme';
 
 import '../src/ratio-ui.css';
@@ -18,13 +18,12 @@ const preview: Preview = {
     },
   },
   decorators: [
-    withThemeByDataAttribute({
+    withThemeByClassName({
       themes: {
-        light: 'light',
+        light: '',
         dark: 'dark',
       },
-      defaultTheme: 'light',
-      attributeName: 'data-theme',
+      defaultTheme: 'dark',
     }),
   ],
 };
