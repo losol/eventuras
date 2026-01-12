@@ -53,5 +53,5 @@ export function extractTextFromChildren(children: React.ReactNode): string {
  * Type guard to check if a value is a valid internal link relation
  */
 export function isValidRelation(value: unknown): value is { slug: string } {
-  return value && typeof value === 'object' && 'slug' in value;
+  return typeof value === 'object' && value !== null && 'slug' in value;
 }

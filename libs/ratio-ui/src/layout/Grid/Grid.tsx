@@ -33,7 +33,7 @@ const Grid: React.FC<GridProps> = ({
   const gridCols = getGridCols(cols);
 
   const content = (
-    <div className={`grid ${gridCols} gap-2 ${containerClass} ${additionalClasses}`}>
+    <div className={`grid ${gridCols} gap-4 ${containerClass} ${additionalClasses}`}>
       {children}
     </div>
   );

@@ -62,7 +62,7 @@ export function Image(props: ImageProps) {
     alt: props.alt ?? '',
     width: props.width,
     height: props.height,
-    className: props.imgClassName ?? 'h-auto max-w-full',
+    className: props.imgClassName ?? 'h-auto max-w-full rounded',
     loading: props.loading,
     ...(props.rendererProps ?? {}),
   };
