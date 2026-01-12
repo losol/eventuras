@@ -6,6 +6,11 @@ export interface StoryProps extends BoxProps {
    * Content of the story
    */
   children: React.ReactNode;
+  /**
+   * HTML element to render as
+   * @default 'div'
+   */
+  as?: 'div' | 'article' | 'section';
 }
 
 /**

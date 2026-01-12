@@ -3,7 +3,7 @@ import type { Image, Media } from '@/payload-types';
 /**
  * Size preference for image URL retrieval
  */
-export type ImageSize = 'thumbnail' | 'standard' | 'original';
+export type ImageSize = 'thumbnail' | 'square600px' | 'standard' | 'original';
 
 /**
  * Extract the best available image URL from a Payload CMS image object.

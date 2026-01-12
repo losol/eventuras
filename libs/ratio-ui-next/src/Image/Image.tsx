@@ -11,14 +11,14 @@ export type { ImageProps } from '@eventuras/ratio-ui/core/Image';
 
 export const NextImageRenderer = (p: ImageRendererProps) => {
   // Ensure alt is defined for NextImage
-  const { alt = '', ...rest } = p;
+  const { alt = '', className, ...rest } = p;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return <NextImage alt={alt} {...(rest as any)} />;
+  return <NextImage alt={alt} className={className} {...(rest as any)} />;
 };
 
 export const Image = (props: RatioImageProps) => {
-  const imgClassName = props.imgClassName ?? 'h-auto max-w-full';
+  const imgClassName = props.imgClassName ?? 'h-auto max-w-full rounded-lg';
 
   return <RatioImage {...props} renderer={NextImageRenderer} imgClassName={imgClassName} />;
 };

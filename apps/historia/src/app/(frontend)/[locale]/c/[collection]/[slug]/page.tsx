@@ -5,16 +5,21 @@ import { draftMode } from 'next/headers';
 import { permanentRedirect, redirect } from 'next/navigation';
 import { CollectionSlug, getPayload } from 'payload';
 
+import { Story, StoryBody,StoryHeader } from '@eventuras/ratio-ui/blocks/Story';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Lead } from '@eventuras/ratio-ui/core/Lead';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
+import { Grid } from '@eventuras/ratio-ui/layout/Grid';
+import { Image } from '@eventuras/ratio-ui-next/Image';
 
 import { RenderBlocks } from '@/blocks/RenderBlocks';
 import { LivePreviewListener } from '@/components/LivePreviewListener';
 import { PayloadRedirects } from '@/components/PayloadRedirects';
 import { ProductActions } from '@/components/ProductActions';
 import RichText from '@/components/RichText';
-import { Hero } from '@/heros/Hero';
 import type { Product } from '@/payload-types';
 import { generateMeta } from '@/utilities/generateMeta';
+import { getImageProps } from '@/utilities/image';
 
 import PageClient from './page.client';
 import { getLocalizedCollectionName, getOriginalCollectionName, pageCollections,PageCollectionsType } from '../pageCollections';
@@ -149,28 +154,71 @@ export default async function Page({ params: paramsPromise }: Args) {
 
   const titleToUse = 'title' in document ? document.title : document.name;
   const isProduct = originalCollectionName === 'products';
+  const hasLead = 'lead' in document && document.lead;
+  const hasImage = 'image' in document && document.image;
+  const imageProps = hasImage ? getImageProps(document.image, isProduct ? 'square600px' : 'standard') : null;
 
   return (
     <Container>
-    <article className="container pt-16 pb-16 prose dark:prose-invert prose-p:py-3">
-      <PageClient />
+      <Story as="article">
+        <PageClient />
 
-      <PayloadRedirects
-        disableNotFound
-        url={`/${locale}/${localizedCollectionName}/${combinedSlug}`}
-      />
+        <PayloadRedirects
+          disableNotFound
+          url={`/${locale}/${localizedCollectionName}/${combinedSlug}`}
+        />
 
-      {draft && <LivePreviewListener />}
+        {draft && <LivePreviewListener />}
 
-      {'lead' in document && document.lead
-        ? <Hero title={titleToUse} image={document.image} lead={document.lead} />
-        : <Hero title={titleToUse} image={document.image} />}
+        {isProduct && imageProps?.url ? (
+          <>
+            <StoryHeader>
+              <Grid cols={{ sm: 1, md: 2 }} paddingClassName="gap-8">
+                <Image
+                  src={imageProps.url}
+                  alt={imageProps.alt || titleToUse || ''}
+                  width={imageProps.width}
+                  height={imageProps.height}
+                  loading="eager"
+                />
+                <div className="flex flex-col justify-center gap-4">
+                  <Heading as="h1">{titleToUse}</Heading>
+                  {hasLead && <Lead>{document.lead}</Lead>}
+                  <ProductActions product={document as Product} locale={locale} />
+                </div>
+              </Grid>
+            </StoryHeader>
 
-      {isProduct && <ProductActions product={document as Product} locale={locale} />}
+            <StoryBody>
+              {'content' in document && document.content ? <RichText data={document.content} /> : null}
+              {'story' in document && document.story ? <RenderBlocks blocks={document.story} /> : null}
+            </StoryBody>
+          </>
+        ) : (
+          <>
+            <StoryHeader>
+              {imageProps?.url && (
+                <Image
+                  src={imageProps.url}
+                  alt={imageProps.alt || titleToUse || ''}
+                  width={imageProps.width}
+                  height={imageProps.height}
+                  loading="eager"
+                />
+              )}
+              <Heading as="h1">{titleToUse}</Heading>
+              {hasLead && <Lead>{document.lead}</Lead>}
+            </StoryHeader>
 
-      {'content' in document && document.content ? <RichText data={document.content} /> : null}
-      {'story' in document && document.story ? <RenderBlocks blocks={document.story} /> : null}
-      </article>
+            <StoryBody>
+              {isProduct && <ProductActions product={document as Product} locale={locale} />}
+
+              {'content' in document && document.content ? <RichText data={document.content} /> : null}
+              {'story' in document && document.story ? <RenderBlocks blocks={document.story} /> : null}
+            </StoryBody>
+          </>
+        )}
+      </Story>
     </Container>
   );
 }
