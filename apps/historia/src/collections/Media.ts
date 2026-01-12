@@ -54,8 +54,8 @@ export const Media: CollectionConfig = {
       },
       {
         name: 'square1080',
-        width: 600,
-        height: 600,
+        width: 1080,
+        height: 1080,
         position: 'center',
         withoutEnlargement: false
       },
