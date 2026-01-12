@@ -1,14 +1,16 @@
-import React from 'react'
+import React from 'react';
 
-import RichText from '@/components/RichText'
-import type { ContentBlock as ContentBlockProps } from '@/payload-types'
+import { Story } from '@eventuras/ratio-ui/blocks/Story';
+
+import RichText from '@/components/RichText';
+import type { ContentBlock as ContentBlockProps } from '@/payload-types';
 
 export const ContentBlock: React.FC<ContentBlockProps> = (props) => {
-  if (!props) return null
+  if (!props?.richText) return null;
 
   return (
-    <div className="my-16">
-        {props.richText && <RichText data={props.richText} enableGutter={false} />}
-    </div>
-  )
-}
+    <Story className="prose md:prose-md dark:prose-invert max-w-none">
+      <RichText data={props.richText} enableProse={false} />
+    </Story>
+  );
+};

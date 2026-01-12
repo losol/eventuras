@@ -93,6 +93,10 @@
     @apply text-xl italic font-semibold text-gray-900;
   }
 
+  .prose p {
+    @apply py-3 text-lg;
+  }
+
      .link-overlay {
       /* parent must be relative */
        &::after {
