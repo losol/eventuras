@@ -3,7 +3,7 @@ import type { SerializedLinkNode } from '@payloadcms/richtext-lexical';
 import type { SerializedHeadingNode } from '@payloadcms/richtext-lexical';
 import type { JSXConverters } from '@payloadcms/richtext-lexical/react';
 
-import { extractTextFromChildren,textToId } from '@eventuras/ratio-ui/blocks/Story';
+import { extractTextFromChildren, textToId } from '@eventuras/ratio-ui/blocks/Story';
 
 /**
  * Converts internal Payload document links to proper href paths
@@ -50,6 +50,8 @@ export const headingConverter: JSXConverters<SerializedHeadingNode> = {
     const children = nodesToJSX({ nodes: node.children });
 
     // Generate ID from heading text for anchor links
+    // Note: Duplicate heading texts will result in duplicate IDs.
+    // For unique IDs across the page, consider maintaining a counter or using a library.
     if (node.tag === 'h2' || node.tag === 'h3') {
       const textContent = extractTextFromChildren(children);
       const id = textToId(textContent);
