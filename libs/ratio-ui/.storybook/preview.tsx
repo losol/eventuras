@@ -1,5 +1,6 @@
 import type { Preview } from '@storybook/react-vite';
-import { withThemeByClassName } from '@storybook/addon-themes';
+import { themes } from 'storybook/theming';
+import { ModeDecorator } from './modeDecorator';
 import ratioTheme from './theme';
 
 import '../src/ratio-ui.css';
@@ -7,7 +8,7 @@ import '../src/ratio-ui.css';
 const preview: Preview = {
   parameters: {
     docs: {
-      theme: ratioTheme,
+      theme: themes.dark,
     },
 
     a11y: {
@@ -17,15 +18,7 @@ const preview: Preview = {
       test: 'todo',
     },
   },
-  decorators: [
-    withThemeByClassName({
-      themes: {
-        light: '',
-        dark: 'dark',
-      },
-      defaultTheme: 'dark',
-    }),
-  ],
+  decorators: [ModeDecorator],
 };
 
 export default preview;
