@@ -53,6 +53,13 @@ export const Media: CollectionConfig = {
         withoutEnlargement: false
       },
       {
+        name: 'square600px',
+        width: 600,
+        height: 600,
+        position: 'center',
+        withoutEnlargement: false
+      },
+      {
         name: 'standard',
         width: 1920,
         height: 1080,
