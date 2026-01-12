@@ -456,7 +456,7 @@ export interface Media {
       filesize?: number | null;
       filename?: string | null;
     };
-    square600px?: {
+    square1080?: {
       url?: string | null;
       width?: number | null;
       height?: number | null;
@@ -2370,7 +2370,7 @@ export interface MediaSelect<T extends boolean = true> {
               filesize?: T;
               filename?: T;
             };
-        square600px?:
+        square1080?:
           | T
           | {
               url?: T;

@@ -7,6 +7,7 @@ import * as migration_20260104_011858_transactiondata from './20260104_011858_tr
 import * as migration_20260105_205907_cart_status from './20260105_205907_cart_status';
 import * as migration_20260111_135638_taxexempt from './20260111_135638_taxexempt';
 import * as migration_20260111_145904_show_image_products_block from './20260111_145904_show_image_products_block';
+import * as migration_20260112_224002_imagesize from './20260112_224002_imagesize';
 
 export const migrations = [
   {
@@ -53,5 +54,10 @@ export const migrations = [
     up: migration_20260111_145904_show_image_products_block.up,
     down: migration_20260111_145904_show_image_products_block.down,
     name: '20260111_145904_show_image_products_block',
+  },
+  {
+    up: migration_20260112_224002_imagesize.up,
+    down: migration_20260112_224002_imagesize.down,
+    name: '20260112_224002_imagesize'
   },
 ];
