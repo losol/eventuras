@@ -1,6 +1,4 @@
 import { addons } from 'storybook/manager-api';
-import ratioTheme from './theme';
+import { themes } from 'storybook/theming';
 
-addons.setConfig({
-  theme: ratioTheme,
-});
+addons.setConfig({ theme: themes.dark, });
