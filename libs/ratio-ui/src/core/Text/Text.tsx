@@ -8,6 +8,7 @@ export interface TextProps extends BoxSpacingProps {
   text?: string | null;
   children?: React.ReactNode;
   as?: 'div' | 'span' | 'p';
+  variant?: 'default' | 'muted';
   className?: string;
   icon?: React.ReactNode;
   testId?: string;
@@ -16,7 +17,8 @@ export interface TextProps extends BoxSpacingProps {
 export const Text: React.FC<TextProps> = ({
   text,
   children,
-  as: Component = 'div',
+  as: Component = 'p',
+  variant = 'default',
   className = '',
   icon,
   padding,
@@ -39,11 +41,17 @@ export const Text: React.FC<TextProps> = ({
   }
   const content = text != null ? text : children;
 
-  // 3) Compute spacing
+  // 3) Variant styles
+  const variantStyles = {
+    default: '',
+    muted: 'text-sm text-gray-600 dark:text-gray-400',
+  };
+
+  // 4) Compute spacing
   const spacingCls = buildSpacingClasses({ padding, margin, border, width, height });
 
-  // 4) Final class list
-  const classes = [spacingCls, className].filter(Boolean).join(' ');
+  // 5) Final class list
+  const classes = [variantStyles[variant], spacingCls, className].filter(Boolean).join(' ');
 
   return (
     <Component

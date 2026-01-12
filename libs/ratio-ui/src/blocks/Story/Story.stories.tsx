@@ -7,6 +7,7 @@ import { Text } from '../../core/Text';
 import { Image } from '../../core/Image';
 import { Button } from '../../core/Button';
 import { Link } from '../../core/Link';
+import { Grid } from '../../layout/Grid';
 
 const meta: Meta<typeof Story> = {
   title: 'Blocks/Story',
@@ -205,7 +206,7 @@ export const BlogPost: StoryStory = {
     children: (
       <>
         <StoryHeader>
-          <Text className="text-sm text-gray-600 dark:text-gray-400">
+          <Text variant="muted">
             Technology • 12 min read
           </Text>
           <Heading as="h1">Building Accessible Web Applications</Heading>
@@ -341,7 +342,7 @@ export const BlogPost: StoryStory = {
         <StoryFooter>
           <div className="flex items-center gap-4">
             <Text>Written by Sarah Johnson</Text>
-            <Text className="text-gray-600 dark:text-gray-400">•</Text>
+            <Text variant="muted">•</Text>
             <Text>January 12, 2026</Text>
           </div>
         </StoryFooter>
@@ -405,7 +406,7 @@ export const NewsArticle: StoryStory = {
             The latest version introduces groundbreaking features that promise to
             change how developers build web applications.
           </Lead>
-          <Text className="text-sm text-gray-600 dark:text-gray-400">
+          <Text variant="muted">
             January 12, 2026 at 09:30 AM PST
           </Text>
         </StoryHeader>
@@ -486,6 +487,58 @@ export const CustomSpacing: StoryStory = {
             spacious layout.
           </Text>
         </StoryBody>
+      </>
+    ),
+  },
+};
+
+export const TwoColumnHeader: StoryStory = {
+  args: {
+    children: (
+      <>
+        <StoryHeader>
+          <Grid cols={{ sm: 1, md: 2 }}>
+            <Image
+              src="https://picsum.photos/600/600"
+              alt="Featured article"
+            />
+            <div className="flex flex-col justify-center gap-4">
+              <Heading as="h1">Two-Column Hero Layout</Heading>
+              <Lead>
+                This demonstrates a flexible two-column header layout with an
+                image on the left and content on the right. Perfect for hero
+                sections and featured articles.
+              </Lead>
+              <Text>
+                Published: January 12, 2024 • 5 min read
+              </Text>
+            </div>
+          </Grid>
+        </StoryHeader>
+        <StoryBody>
+          <Text>
+            This story showcases how you can compose the StoryHeader with a
+            two-column grid layout. The grid is responsive and collapses to a
+            single column on mobile devices.
+          </Text>
+          <Heading as="h2">Flexible Composition</Heading>
+          <Text>
+            The Story component system is built for composition. You can use any
+            layout within the compound components - grids, flexbox, or custom
+            arrangements.
+          </Text>
+          <Text>
+            Simply wrap your content in standard HTML or Tailwind utility classes
+            to achieve the desired layout. The compound components handle spacing
+            and structure, while you control the visual arrangement.
+          </Text>
+        </StoryBody>
+        <StoryFooter>
+          <div className="flex gap-2">
+            <Button variant="primary">Read More</Button>
+            <Button variant="outline">Share</Button>
+          </div>
+        </StoryFooter>
       </>
     ),
   },

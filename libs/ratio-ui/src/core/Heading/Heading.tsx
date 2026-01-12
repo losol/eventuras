@@ -18,7 +18,7 @@ const Heading = (props: HeadingProps) => {
       textSize = 'text-6xl';
       break;
     case 'h2':
-      textSize = 'text-3xl';
+      textSize = 'text-4xl';
       break;
     case 'h3':
       textSize = 'text-2xl';
@@ -29,16 +29,16 @@ const Heading = (props: HeadingProps) => {
   }
 
   // Adjust padding based on heading level
-  let defaultPadding = 'pt-6 pb-0';
+  let defaultPadding = 'pt-6 pb-1';
   switch (HeadingComponent) {
     case 'h1':
-      defaultPadding = 'pt-18 pb-6';
+      defaultPadding = 'pt-12 pb-1';
       break;
     case 'h2':
-      defaultPadding = 'pt-12 pb-3';
+      defaultPadding = 'pt-9 pb-1';
       break;
     case 'h3':
-      defaultPadding = 'pt-6 pb-3';
+      defaultPadding = 'pt-6 pb-1';
       break;
     default:
       break;

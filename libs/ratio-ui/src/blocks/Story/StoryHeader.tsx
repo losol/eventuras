@@ -22,8 +22,8 @@ export interface StoryHeaderProps extends BoxProps {
 export function StoryHeader({
   children,
   className,
-  padding,
-  margin,
+  padding = 'py-3',
+  margin = 'mb-6',
   border,
   width,
   height,

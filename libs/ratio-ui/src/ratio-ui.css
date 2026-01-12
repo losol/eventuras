@@ -52,6 +52,15 @@
   /* Vipps brand colors */
   --color-vipps-orange: #FF5B24;
   --color-vipps-hover: #E64E1A;
+
+  /* Border radius tokens */
+  --radius-sm: 0.25rem;
+  --radius-DEFAULT: 0.5rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-3xl: 2rem;
 }
 
 
@@ -66,15 +75,15 @@
   }
 
   h1 {
-    @apply text-6xl pt-16 pb-6 leading-tight tracking-tighter;
+    @apply text-6xl pt-12 pb-3 leading-tight tracking-tighter;
   }
 
   h2 {
-    @apply text-3xl pt-16 pb-3 leading-tight tracking-tighter;
+    @apply text-3xl pt-9 pb-3 leading-tight tracking-tighter;
   }
 
   h3 {
-    @apply text-2xl pt-12 pb-6 leading-tight tracking-tighter;
+    @apply text-2xl pt-6 pb-3 leading-tight tracking-tighter;
   }
 
   h4 {
@@ -93,8 +102,9 @@
     @apply text-xl italic font-semibold text-gray-900;
   }
 
-  .prose p {
-    @apply py-3 text-lg;
+
+  .story p {
+    @apply pt-1 pb-3 text-lg;
   }
 
      .link-overlay {
