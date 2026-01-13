@@ -7,8 +7,8 @@ import { formatPrice } from '@eventuras/core/currency';
 import { Logger } from '@eventuras/logger';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
-import { Section } from '@eventuras/ratio-ui/core/Section';
 import { Text } from '@eventuras/ratio-ui/core/Text';
+import { Stack } from '@eventuras/ratio-ui/layout/Stack';
 import { ImageCard, Link } from '@eventuras/ratio-ui-next';
 import { useToast } from '@eventuras/toast';
 
@@ -89,7 +89,7 @@ export const ProductsBlock: React.FC<ProductBlockProps> = (props) => {
   };
 
   return (
-    <Section id="products">
+    <Stack>
       {products.map((product) => {
         const imageUrl = getImageUrl(product.image, 'standard');
         const showImage = props.showImage !== false && imageUrl;
@@ -99,7 +99,7 @@ export const ProductsBlock: React.FC<ProductBlockProps> = (props) => {
         return (
           <ImageCard
             key={product.id}
-            gap="lg"
+            gap="md"
             imageSrc={showImage ? imageUrl : undefined}
             imageAlt={product.title || 'Product image'}
           >
@@ -146,6 +146,6 @@ export const ProductsBlock: React.FC<ProductBlockProps> = (props) => {
           </ImageCard>
   );
       })}
-    </Section>
+    </Stack>
   );
 };

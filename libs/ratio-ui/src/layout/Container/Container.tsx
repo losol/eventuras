@@ -4,7 +4,7 @@ import { Box, BoxProps } from '../Box/Box';
 export type ContainerProps = Omit<BoxProps, 'as'>;
 
 const Container: React.FC<ContainerProps> = ({
-  className = '',
+  className = 'container',
   margin = 'mx-auto',
   padding = 'pb-18',
   ...rest

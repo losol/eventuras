@@ -2,11 +2,13 @@ import React, { cache } from 'react';
 import configPromise from '@payload-config';
 import type { Metadata } from 'next';
 import { draftMode, headers } from 'next/headers';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getPayload } from 'payload';
 
+import { Story, StoryHeader } from '@eventuras/ratio-ui/blocks/Story';
+import { Breadcrumb,Breadcrumbs } from '@eventuras/ratio-ui/core/Breadcrumbs';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
+import { Link } from '@eventuras/ratio-ui-next';
 
 import { RenderBlocks } from '@/blocks/RenderBlocks';
 import { LivePreviewListener } from '@/components/LivePreviewListener';
@@ -186,32 +188,25 @@ export default async function Page({ params: paramsPromise }: Args) {
     <>
       <PageClient />
       <LivePreviewListener />
-      <Container>
-
         {breadcrumbs && Array.isArray(breadcrumbs) && breadcrumbs.length > 1 && (
-          <nav aria-label="breadcrumb" className="mb-4">
-            <ol className="breadcrumb flex">
-              <li className="breadcrumb-item">
-                <Link href="/">Home</Link>
-              </li>
-              {breadcrumbs.map((breadcrumb, index) => (
-                <li key={breadcrumb.id || index} className="breadcrumb-item flex items-center">
-                  <span className="mx-2">/</span>
-                  {index === breadcrumbs.length - 1 ? (
-                    <span>{breadcrumb.label}</span>
-                  ) : (
-                    <Link href={breadcrumb.url!}>{breadcrumb.label}</Link>
-                  )}
-                </li>
+          <nav className="mb-4">
+            <Breadcrumbs LinkComponent={Link}>
+              <Breadcrumb href="/">{locale === 'en' ? 'Home' : 'Hjem'}</Breadcrumb>
+              {breadcrumbs.map((bc, idx) => (
+                <Breadcrumb key={bc.id || `bc-${idx}`} href={bc.url || undefined}>
+                  {bc.label || ''}
+                </Breadcrumb>
               ))}
-            </ol>
+            </Breadcrumbs>
           </nav>
         )}
-        <article>
+      <Story className='container mx-auto p-3'>
+        <StoryHeader>
           <Hero title={title} image={image} />
+        </StoryHeader>
           {story && story.length > 0 && <RenderBlocks blocks={story} />}
-        </article>
-      </Container>
+      </Story>
+
     </>
   );
 }
