@@ -2,7 +2,7 @@ type Options = {
   allowedDomains?: string[];
 };
 
-import { allowedOrigins } from '@/config/allowed-origins';
+import { allowedOrigins, getAllowedDomainsFromAllowedOrigins } from '@/config/allowed-origins';
 
 function firstForwardedValue(value: string | null): string | undefined {
   if (!value) return undefined;
@@ -45,23 +45,6 @@ export function getPublicRequestOrigin(request: Request, options: Options = {}):
   const protocol = proto || (selectedHost.includes('localhost') ? 'http' : 'https');
 
   return `${protocol}://${selectedHost}`;
-}
-
-function getAllowedDomainsFromAllowedOrigins(origins: string[]): string[] | undefined {
-  const domains = origins
-    .map(origin => {
-      try {
-        // Typical case: origin is like "https://example.com"
-        return new URL(origin).host;
-      } catch {
-        // Fallback: allow hostnames/hosts directly
-        return origin;
-      }
-    })
-    .map(s => s.trim())
-    .filter(Boolean);
-
-  return domains.length ? domains : undefined;
 }
 
 export function getAllowedVippsLoginDomains(): string[] | undefined {
