@@ -31,7 +31,7 @@ export interface NumberFieldProps
 }
 
 const styles = {
-  wrapper: 'flex flex-col gap-1 w-full',
+  wrapper: 'flex flex-col gap-1',
   label: 'text-sm font-medium text-gray-900 dark:text-gray-100 cursor-default',
 
   description: 'text-sm text-gray-600 dark:text-gray-400',
@@ -50,7 +50,7 @@ const styles = {
     'transition-colors',
   ].join(' '),
   separatedInput: [
-    'w-16 text-center',
+    'box-border w-16 text-center',
     'rounded-md',
     'border border-gray-300 dark:border-gray-600',
     'bg-white dark:bg-gray-800',
@@ -74,7 +74,7 @@ const styles = {
     'transition-colors',
   ].join(' '),
   segmentedInput: [
-    'w-16 text-center',
+    'box-border w-16 text-center',
     'border-x border-gray-300 dark:border-gray-600',
     'bg-white dark:bg-gray-900',
     'text-gray-900 dark:text-gray-100',
@@ -87,22 +87,22 @@ const sizeConfig = {
   sm: {
     separatedButton: 'h-8 w-8',
     separatedInput: 'h-8 text-sm',
-    segmentedButton: 'px-4 py-3',
-    segmentedInput: 'px-6 py-3 text-sm',
+    segmentedButton: 'h-8 w-10',
+    segmentedInput: 'h-8 w-12 text-sm',
     icon: 'h-4 w-4',
   },
   md: {
     separatedButton: 'h-9 w-9',
     separatedInput: 'h-9 text-sm',
-    segmentedButton: 'px-4 py-3',
-    segmentedInput: 'px-6 py-3 text-sm',
+    segmentedButton: 'h-9 w-11',
+    segmentedInput: 'h-9 w-14 text-sm',
     icon: 'h-5 w-5',
   },
   lg: {
     separatedButton: 'h-10 w-10',
     separatedInput: 'h-10 text-base',
-    segmentedButton: 'px-5 py-4',
-    segmentedInput: 'px-7 py-4 text-base',
+    segmentedButton: 'h-10 w-12',
+    segmentedInput: 'h-10 w-16 text-base',
     icon: 'h-5 w-5',
   },
 } as const;
