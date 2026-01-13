@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 
 import { formatPrice } from '@eventuras/core/currency';
 import { Logger } from '@eventuras/logger';
+import { CartLineItem } from '@eventuras/ratio-ui/commerce/CartLineItem';
+import { OrderSummary } from '@eventuras/ratio-ui/commerce/OrderSummary';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
@@ -237,85 +239,51 @@ export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
         ) : (
           <div className="space-y-6">
             {/* Order Summary */}
-            <Card>
-              <Heading as="h2" padding="pb-4">
-                Ordresammendrag
-              </Heading>
-
-              {/* Products */}
-              <div className="space-y-4 mb-6 pb-6 border-b border-gray-200 dark:border-gray-700">
-                {cart?.items.map((item) => {
-
-                  return (
-                    <div key={item.productId} className="flex items-start gap-4">
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                          {item.title}
-                        </p>
-                        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                          {item.quantity} x {formatPrice(fromMinorUnits(item.pricePerUnitIncVat, item.currency), item.currency, locale)} (inkl mva {formatPrice(fromMinorUnits(item.vatAmount, item.currency), item.currency, locale)})
-                        </p>
-
-                        <div className="mt-2">
-                          <NumberField
-                            value={item.quantity}
-                            minValue={0}
-                            onChange={(nextQuantity: number) => {
-                              if (nextQuantity === 0) {
-                                removeFromCart(item.productId);
-                                return;
-                              }
-                              updateCartItem(item.productId, nextQuantity);
-                            }}
-                            decrementAriaLabel="Reduser antall"
-                            incrementAriaLabel="Øk antall"
-                            aria-label="Antall"
-                            testId={`checkout-quantity-${item.productId}`}
-                          />
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-sm font-semibold text-gray-900 dark:text-white whitespace-nowrap">
-                          {formatPrice(fromMinorUnits(item.lineTotalIncVat, item.currency), item.currency, locale)}
-                        </p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">
-                          inkl. mva
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })}
-            </div>
-
-
-            {/* Price breakdown */}
-            <div className="space-y-3 mb-6 pb-6 border-b border-gray-200 dark:border-gray-700">
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600 dark:text-gray-400">Delsum (ekskl. mva)</span>
-                <span className="font-medium text-gray-900 dark:text-white">
-                  {cart && formatPrice(fromMinorUnits(cart.subtotalExVat, cart.currency), cart.currency, locale)}
-                </span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600 dark:text-gray-400">MVA</span>
-                <span className="font-medium text-gray-900 dark:text-white">
-                  {cart && formatPrice(fromMinorUnits(cart.totalVat, cart.currency), cart.currency, locale)}
-                </span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600 dark:text-gray-400">Frakt</span>
-                <span className="text-gray-600 dark:text-gray-400">Velges i Vipps</span>
-              </div>
-            </div>
-
-            {/* Total */}
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-base font-semibold text-gray-900 dark:text-white">Total</span>
-              <span className="text-2xl font-bold text-gray-900 dark:text-white">
-                {cart && formatPrice(fromMinorUnits(cart.totalIncVat, cart.currency), cart.currency, locale)}
-              </span>
-            </div>
-          </Card>
+            {cart && (
+              <OrderSummary
+                summary={{
+                  items: cart.items.map(item => ({
+                    productId: item.productId,
+                    title: item.title,
+                    quantity: item.quantity,
+                    pricePerUnitIncVat: fromMinorUnits(item.pricePerUnitIncVat, item.currency),
+                    vatAmount: fromMinorUnits(item.vatAmount, item.currency),
+                    lineTotalIncVat: fromMinorUnits(item.lineTotalIncVat, item.currency),
+                    currency: item.currency,
+                  })),
+                  subtotalExVat: fromMinorUnits(cart.subtotalExVat, cart.currency),
+                  totalVat: fromMinorUnits(cart.totalVat, cart.currency),
+                  totalIncVat: fromMinorUnits(cart.totalIncVat, cart.currency),
+                  currency: cart.currency,
+                }}
+                locale={locale}
+                formatPrice={formatPrice}
+                title="Ordresammendrag"
+                showVatBreakdown
+              >
+                {cart.items.map((item) => (
+                  <CartLineItem
+                    key={item.productId}
+                    item={{
+                      productId: item.productId,
+                      title: item.title,
+                      quantity: item.quantity,
+                      pricePerUnitIncVat: fromMinorUnits(item.pricePerUnitIncVat, item.currency),
+                      vatAmount: fromMinorUnits(item.vatAmount, item.currency),
+                      lineTotalIncVat: fromMinorUnits(item.lineTotalIncVat, item.currency),
+                      currency: item.currency,
+                    }}
+                    locale={locale}
+                    formatPrice={formatPrice}
+                    showQuantityControls
+                    onQuantityChange={updateCartItem}
+                    onRemove={removeFromCart}
+                    testIdPrefix="checkout"
+                    QuantityField={NumberField}
+                  />
+                ))}
+              </OrderSummary>
+            )}
 
           <Button
             onClick={handleVippsCheckout}
