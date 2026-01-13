@@ -43,6 +43,10 @@
       "types": "./dist/blocks/*/index.d.ts",
       "import": "./dist/blocks/*/index.js"
     },
+    "./commerce/*": {
+      "types": "./dist/commerce/*/index.d.ts",
+      "import": "./dist/commerce/*/index.js"
+    },
     "./ratio-ui.css": "./dist/ratio-ui.css"
   },
   "main": "./dist/index.js",

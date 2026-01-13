@@ -4,13 +4,13 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
 import { formatPrice } from '@eventuras/core/currency';
+import { CartLineItem } from '@eventuras/ratio-ui/commerce/CartLineItem';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { NumberField } from '@eventuras/ratio-ui/forms';
 import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
 
 import {
   calculateCart,
-  type CartLineItem,
   type CartSummary,
 } from '@/app/(frontend)/[locale]/checkout/actions';
 import { useCart } from '@/lib/cart';
@@ -48,7 +48,7 @@ export function CartDrawer({ isOpen, onClose, locale }: CartDrawerProps) {
     }
   }, [items, isOpen]);
 
-  const cartItems: CartLineItem[] = cartSummary?.items ?? [];
+
 
   return (
     <Drawer isOpen={isOpen} onCancel={onClose}>
@@ -80,53 +80,29 @@ export function CartDrawer({ isOpen, onClose, locale }: CartDrawerProps) {
           </div>
         ) : (
           <div className="space-y-4">
-            {cartItems.map((item) => (
+            {cartSummary?.items.map((item) => (
               <div
                 key={item.productId}
-                className="flex gap-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4"
+                className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4"
               >
-                <div className="flex-1">
-                  <h3 className="font-medium text-gray-900 dark:text-white">{item.title}</h3>
-                  <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                    {formatPrice(fromMinorUnits(item.pricePerUnitIncVat, item.currency), item.currency, locale)} (inkl mva{' '}
-                    {formatPrice(fromMinorUnits(item.vatAmount, item.currency), item.currency, locale)})
-                  </p>
-
-                  <div className="mt-2">
-                    <NumberField
-                      value={item.quantity}
-                      minValue={0}
-                      onChange={(nextQuantity: number) => {
-                        if (nextQuantity === 0) {
-                          removeFromCart(item.productId);
-                          return;
-                        }
-                        updateCartItem(item.productId, nextQuantity);
-                      }}
-                      decrementAriaLabel="Reduser antall"
-                      incrementAriaLabel="Øk antall"
-                      aria-label="Antall"
-                      testId={`cartdrawer-quantity-${item.productId}`}
-                    />
-                  </div>
-                </div>
-
-                <div className="flex flex-col items-end justify-between">
-                  <button
-                    onClick={() => removeFromCart(item.productId)}
-                    className="text-sm text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
-                  >
-                    Fjern
-                  </button>
-                  <div className="text-right">
-                    <p className="font-semibold text-gray-900 dark:text-white">
-                      {formatPrice(fromMinorUnits(item.lineTotalIncVat, item.currency), item.currency, locale)}
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      inc. VAT
-                    </p>
-                  </div>
-                </div>
+                <CartLineItem
+                  item={{
+                    productId: item.productId,
+                    title: item.title,
+                    quantity: item.quantity,
+                    pricePerUnitIncVat: fromMinorUnits(item.pricePerUnitIncVat, item.currency),
+                    vatAmount: fromMinorUnits(item.vatAmount, item.currency),
+                    lineTotalIncVat: fromMinorUnits(item.lineTotalIncVat, item.currency),
+                    currency: item.currency,
+                  }}
+                  locale={locale}
+                  formatPrice={formatPrice}
+                  showQuantityControls
+                  onQuantityChange={updateCartItem}
+                  onRemove={removeFromCart}
+                  testIdPrefix="cartdrawer"
+                  QuantityField={NumberField}
+                />
               </div>
             ))}
           </div>
