@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Box } from 'node_modules/@eventuras/ratio-ui/dist/layout/Box/Box';
+import { Box } from 'node_modules/@eventuras/ratio-ui/dist/layout/Box';
 
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { List } from '@eventuras/ratio-ui/core/List';
@@ -110,7 +110,9 @@ export const FooterClient: React.FC<FooterClientProps> = ({ navigation }) => {
         </div>
       ))}
     </Grid>
-    <Box className='clear-both'><ThemeToggle /></Box>
+      <Box className='clear-both'>
+        <ThemeToggle />
+      </Box>
     </>
   );
 };
