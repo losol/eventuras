@@ -183,6 +183,11 @@ az webapp config appsettings set \
 - The `NEXT_PUBLIC_SENTRY_DSN` variable must be set at **build time** as a GitHub Actions secret (see [GitHub Configuration](#github-configuration) below)
 - Runtime variables like `CMS_SENTRY_DSN` and `FEATURE_SENTRY` can be set in Azure App Service settings
 
+**Important for images (Next.js `/_next/image`)**:
+- `apps/historia/next.config.js` reads `NEXT_PUBLIC_CMS_URL` and `CMS_ALLOWED_ORIGINS` during `next build` to generate `images.remotePatterns`.
+- When using `output: 'standalone'` in a Docker image, this allowlist is baked into the build output.
+- Therefore, if you rely on remote images (e.g. `https://web.losol.no/api/media/file/...`), you must provide `NEXT_PUBLIC_CMS_URL` and `CMS_ALLOWED_ORIGINS` at **Docker build time** (via `--build-arg`) in CI/CD — not only as Azure App Service runtime app settings.
+
 ### 5. Download Publish Profiles
 
 Download publish profiles for GitHub Actions:

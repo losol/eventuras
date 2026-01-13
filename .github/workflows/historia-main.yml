@@ -109,6 +109,10 @@ jobs:
             BUILDKIT_INLINE_CACHE=1
             TURBO_TOKEN=${{ secrets.TURBO_TOKEN }}
             TURBO_TEAM=${{ secrets.TURBO_TEAM }}
+            # IMPORTANT: These must be available at build time for Next.js image allowlisting
+            # (/_next/image) and for client bundle replacement of NEXT_PUBLIC_*.
+            NEXT_PUBLIC_CMS_URL=${{ vars.HISTORIA_NEXT_PUBLIC_CMS_URL }}
+            CMS_ALLOWED_ORIGINS=${{ vars.HISTORIA_CMS_ALLOWED_ORIGINS }}
             FEATURE_SENTRY=${{ vars.FEATURE_SENTRY || 'false' }}
             NEXT_PUBLIC_SENTRY_DSN=${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
             CMS_SENTRY_ORG=${{ secrets.CMS_SENTRY_ORG }}
