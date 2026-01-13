@@ -5,6 +5,7 @@ import Link from 'next/link';
 
 import { formatPrice } from '@eventuras/core/currency';
 import { Button } from '@eventuras/ratio-ui/core/Button';
+import { NumberField } from '@eventuras/ratio-ui/forms';
 import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
 
 import {
@@ -91,21 +92,22 @@ export function CartDrawer({ isOpen, onClose, locale }: CartDrawerProps) {
                     {formatPrice(fromMinorUnits(item.vatAmount, item.currency), item.currency, locale)})
                   </p>
 
-                  <div className="mt-2 flex items-center gap-2">
-                    <button
-                      onClick={() => updateCartItem(item.productId, item.quantity - 1)}
-                      className="rounded-md border border-gray-300 dark:border-gray-600 px-2 py-1 text-sm hover:bg-gray-50 dark:hover:bg-gray-700"
-                      disabled={item.quantity <= 1}
-                    >
-                      -
-                    </button>
-                    <span className="w-8 text-center text-sm">{item.quantity}</span>
-                    <button
-                      onClick={() => updateCartItem(item.productId, item.quantity + 1)}
-                      className="rounded-md border border-gray-300 dark:border-gray-600 px-2 py-1 text-sm hover:bg-gray-50 dark:hover:bg-gray-700"
-                    >
-                      +
-                    </button>
+                  <div className="mt-2">
+                    <NumberField
+                      value={item.quantity}
+                      minValue={0}
+                      onChange={(nextQuantity: number) => {
+                        if (nextQuantity === 0) {
+                          removeFromCart(item.productId);
+                          return;
+                        }
+                        updateCartItem(item.productId, nextQuantity);
+                      }}
+                      decrementAriaLabel="Reduser antall"
+                      incrementAriaLabel="Øk antall"
+                      aria-label="Antall"
+                      testId={`cartdrawer-quantity-${item.productId}`}
+                    />
                   </div>
                 </div>
 

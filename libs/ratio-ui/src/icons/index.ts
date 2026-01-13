@@ -53,4 +53,7 @@ export {
 
   // Add/Create
   Plus,
+
+  // Subtract/Remove
+  Minus,
 } from 'lucide-react';

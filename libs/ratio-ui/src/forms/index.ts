@@ -8,5 +8,7 @@ export type { InputProps } from './Input/InputProps';
 export { Input } from './Input/Input';
 export { RadioGroup } from './RadioGroup';
 export type { RadioGroupProps, RadioOption } from './RadioGroup';
+export { NumberField } from './NumberField';
+export type { NumberFieldProps, NumberFieldSize, NumberFieldVariant } from './NumberField';
 export { Select } from './Select';
 export type { SelectProps, SelectOption } from './Select';
