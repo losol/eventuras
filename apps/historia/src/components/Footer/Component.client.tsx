@@ -1,14 +1,18 @@
 'use client';
 
 import React from 'react';
+import { Box } from 'node_modules/@eventuras/ratio-ui/dist/layout/Box/Box';
 
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { List } from '@eventuras/ratio-ui/core/List';
+import { Grid } from '@eventuras/ratio-ui/layout/Grid';
 import { Link } from '@eventuras/ratio-ui-next';
 
 import { useLocale } from '@/hooks/useLocale';
 import type { NavBlock, Page } from '@/payload-types';
 import { getPageUrl } from '@/utilities/getPageUrl';
+
+import { ThemeToggle } from '../ThemeToggle';
 
 interface FooterClientProps {
   navigation?: NavBlock[] | null;
@@ -22,7 +26,8 @@ export const FooterClient: React.FC<FooterClientProps> = ({ navigation }) => {
   }
 
   return (
-    <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+    <>
+    <Grid>
       {navigation.map((navBlock, index) => (
         <div key={navBlock.id || index}>
           {navBlock.title && (
@@ -104,6 +109,8 @@ export const FooterClient: React.FC<FooterClientProps> = ({ navigation }) => {
           </List>
         </div>
       ))}
-    </div>
+    </Grid>
+    <Box className='clear-both'><ThemeToggle /></Box>
+    </>
   );
 };
