@@ -2,10 +2,13 @@ import { withPayload } from '@payloadcms/next/withPayload'
 import { withSentryConfig } from '@sentry/nextjs'
 
 import redirects from './redirects.js'
+import { allowedOrigins, getAllowedDomainsFromAllowedOrigins } from './src/config/allowed-origins.ts'
 
 const NEXT_PUBLIC_CMS_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
   ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
   : undefined || process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3100'
+
+const allowedImageDomains = getAllowedDomainsFromAllowedOrigins(allowedOrigins) || []
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -13,9 +16,17 @@ const nextConfig = {
 
   images: {
     remotePatterns: [
+      ...allowedImageDomains.map((hostname) => ({
+        protocol: 'https',
+        hostname,
+      })),
+      ...allowedImageDomains.map((hostname) => ({
+        protocol: 'http',
+        hostname,
+      })),
+      // Always allow the CMS URL
       ...[NEXT_PUBLIC_CMS_URL].map((item) => {
         const url = new URL(item)
-
         return {
           hostname: url.hostname,
           protocol: url.protocol.replace(':', ''),
