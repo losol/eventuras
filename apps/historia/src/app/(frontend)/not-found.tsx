@@ -1,18 +1,19 @@
-import React from 'react'
-import Link from 'next/link'
+import React from 'react';
 
-import { Button } from '@/components/ui/button'
+import { NotFound as NotFoundBlock } from '@eventuras/ratio-ui/blocks/NotFound';
+import { Link } from '@eventuras/ratio-ui-next';
 
 export default function NotFound() {
   return (
-    <div className="container py-28">
-      <div className="prose max-w-none">
-        <h1 style={{ marginBottom: 0 }}>404</h1>
-        <p className="mb-4">This page could not be found.</p>
-      </div>
-      <Button asChild variant="default">
-        <Link href="/">Go home</Link>
-      </Button>
-    </div>
-  )
+      <NotFoundBlock
+        title="404"
+        message="This page could not be found."
+        actions={
+          <Link href="/" variant="button-primary">
+            Go home
+          </Link>
+        }
+      />
+  );
 }
+

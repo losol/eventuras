@@ -146,7 +146,7 @@ export default async function Page({ params: paramsPromise }: Args) {
                'unknown';
     const userAgent = headersData.get('user-agent') || 'unknown';
 
-    console.warn('Invalid locale access attempt', {
+    console.info('Invalid locale access attempt', {
       locale,
       ip,
       userAgent,

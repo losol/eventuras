@@ -37,7 +37,7 @@ export const Navbar = ({
   const LinkTag = LinkComponent ?? ('a' as React.ElementType);
 
   return (
-    <nav className={`${bgColor} z-10 dark:bg-slate-900 ${textColor} m-0 p-0`}>
+    <nav className={`${bgColor} z-10 ${textColor} m-0 p-0`}>
       <div className="container flex flex-wrap items-center justify-between mx-auto py-2 px-3">
         { title && (
         <LinkTag href={titleHref} className={`text-2xl tracking-tight whitespace-nowrap ${textColor}`}>
