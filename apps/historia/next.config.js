@@ -4,9 +4,19 @@ import { withSentryConfig } from '@sentry/nextjs'
 import redirects from './redirects.js'
 import { allowedOrigins, getAllowedDomainsFromAllowedOrigins } from './src/config/allowed-origins.ts'
 
-const NEXT_PUBLIC_CMS_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
-  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-  : undefined || process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3100'
+const cmsUrlCandidates = [
+  // Prefer explicit configuration (custom domain) when present
+  process.env.NEXT_PUBLIC_CMS_URL,
+
+  // Vercel-provided production URL can differ from the custom domain.
+  // Allowlisting both avoids Next Image rejecting valid media URLs.
+  process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : undefined,
+
+  // Local development default
+  'http://localhost:3100',
+].filter(Boolean)
 
 const allowedImageDomains = getAllowedDomainsFromAllowedOrigins(allowedOrigins) || []
 
@@ -24,8 +34,8 @@ const nextConfig = {
         protocol: 'http',
         hostname,
       })),
-      // Always allow the CMS URL
-      ...[NEXT_PUBLIC_CMS_URL].map((item) => {
+      // Always allow the CMS URL(s)
+      ...cmsUrlCandidates.map((item) => {
         const url = new URL(item)
         return {
           hostname: url.hostname,

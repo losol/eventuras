@@ -81,6 +81,14 @@ ARG NEXT_PUBLIC_CMS_DEFAULT_LOCALE=no
 ENV NEXT_PUBLIC_CMS_DEFAULT_LOCALE=${NEXT_PUBLIC_CMS_DEFAULT_LOCALE}
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# IMPORTANT: next.config.js is evaluated during `next build` and the resulting
+# image allowlist is baked into the output (standalone/required-server-files).
+# Therefore these must be available at build time (not only as Azure runtime app settings).
+ARG NEXT_PUBLIC_CMS_URL
+ARG CMS_ALLOWED_ORIGINS
+ENV NEXT_PUBLIC_CMS_URL=${NEXT_PUBLIC_CMS_URL}
+ENV CMS_ALLOWED_ORIGINS=${CMS_ALLOWED_ORIGINS}
+
 # Sentry configuration for build-time injection (required for NEXT_PUBLIC_* vars and source maps)
 ARG NEXT_PUBLIC_FEATURE_SENTRY=false
 ARG NEXT_PUBLIC_SENTRY_DSN

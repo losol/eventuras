@@ -34,22 +34,54 @@ export function getImageUrl(
 
   const media = image.media as Media;
 
+  const normalizeUrl = (candidate: string): string => {
+    // If Payload returns an absolute URL for the current site (same origin),
+    // prefer a relative path so Next.js treats it as a local image.
+    // This avoids relying on build-time `images.remotePatterns`.
+    if (!candidate.startsWith('http://') && !candidate.startsWith('https://')) {
+      return candidate;
+    }
+
+    try {
+      const parsed = new URL(candidate);
+
+      if (typeof window !== 'undefined' && window?.location?.hostname) {
+        if (parsed.hostname === window.location.hostname) {
+          return `${parsed.pathname}${parsed.search}`;
+        }
+        return candidate;
+      }
+
+      const cmsUrl = process.env.NEXT_PUBLIC_CMS_URL;
+      if (cmsUrl) {
+        const cmsParsed = new URL(cmsUrl);
+        if (parsed.hostname === cmsParsed.hostname) {
+          return `${parsed.pathname}${parsed.search}`;
+        }
+      }
+    } catch {
+      // Ignore parsing errors and keep original
+    }
+
+    return candidate;
+  };
+
   // Try to get the preferred size
   if (preferredSize !== 'original' && 'sizes' in media && media.sizes) {
     const sizeUrl = media.sizes[preferredSize]?.url;
     if (sizeUrl) {
-      return sizeUrl;
+      return normalizeUrl(sizeUrl);
     }
   }
 
   // Fallback to standard size
   if (preferredSize === 'thumbnail' && 'sizes' in media && media.sizes?.standard?.url) {
-    return media.sizes.standard.url;
+    return normalizeUrl(media.sizes.standard.url);
   }
 
   // Fallback to original URL
   if ('url' in media && media.url) {
-    return media.url;
+    return normalizeUrl(media.url);
   }
 
   return null;
