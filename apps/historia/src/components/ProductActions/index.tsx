@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 
 import { formatPrice } from '@eventuras/core/currency';
 import { Button } from '@eventuras/ratio-ui/core/Button';
-import { Text } from '@eventuras/ratio-ui/core/Text';
+import { NumberField } from '@eventuras/ratio-ui/forms';
 
 import { useCart } from '@/lib/cart';
 import { fromMinorUnits } from '@/lib/price';
@@ -24,14 +24,6 @@ export function ProductActions({ product, locale }: ProductActionsProps) {
 
   const handleAddToCart = () => {
     addToCart(product.id, 1);
-  };
-
-  const handleDecreaseQuantity = () => {
-    if (quantityInCart > 1) {
-      updateCartItem(product.id, quantityInCart - 1);
-    } else {
-      removeFromCart(product.id);
-    }
   };
 
   const handleGoToCheckout = () => {
@@ -54,25 +46,23 @@ export function ProductActions({ product, locale }: ProductActionsProps) {
 
       {quantityInCart > 0 ? (
         <div className="flex items-center gap-3">
-          <div className="flex items-center border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
-            <button
-              onClick={handleDecreaseQuantity}
-              className="px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-              aria-label="Fjern en"
-            >
-              <Text className="text-xl font-semibold">−</Text>
-            </button>
-            <div className="px-6 py-3 border-x border-gray-300 dark:border-gray-600">
-              <Text className="font-semibold">{quantityInCart}</Text>
-            </div>
-            <button
-              onClick={handleAddToCart}
-              className="px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-              aria-label="Legg til en"
-            >
-              <Text className="text-xl font-semibold">+</Text>
-            </button>
-          </div>
+          <NumberField
+            value={quantityInCart}
+            variant="segmented"
+            size="sm"
+            minValue={0}
+            onChange={(nextQuantity: number) => {
+              if (nextQuantity === 0) {
+                removeFromCart(product.id);
+                return;
+              }
+              updateCartItem(product.id, nextQuantity);
+            }}
+            decrementAriaLabel="Fjern en"
+            incrementAriaLabel="Legg til en"
+            aria-label="Antall"
+            testId={`productactions-quantity-${product.id}`}
+          />
           <Button onClick={handleGoToCheckout} variant="primary" className="flex-1" padding="px-6 py-3">
             Gå til handlekurv
           </Button>
