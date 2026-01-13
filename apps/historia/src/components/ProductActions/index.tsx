@@ -48,6 +48,7 @@ export function ProductActions({ product, locale }: ProductActionsProps) {
         <div className="flex items-center gap-3">
           <NumberField
             value={quantityInCart}
+            className="w-fit shrink-0"
             variant="segmented"
             size="sm"
             minValue={0}
@@ -61,7 +62,7 @@ export function ProductActions({ product, locale }: ProductActionsProps) {
             decrementAriaLabel="Fjern en"
             incrementAriaLabel="Legg til en"
             aria-label="Antall"
-            testId={`productactions-quantity-${product.id}`}
+            id={`productactions-quantity-${product.id}`}
           />
           <Button onClick={handleGoToCheckout} variant="primary" className="flex-1" padding="px-6 py-3">
             Gå til handlekurv
