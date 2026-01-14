@@ -368,8 +368,8 @@ export async function createOrderFromPayment({
     }
 
     logger.info(
-      {...sessionContext,
-
+      {
+        ...sessionContext,
         paymentReference,
         itemCount: cart.items.length,
         paymentState: paymentDetails.state,
@@ -1176,8 +1176,8 @@ export async function createOrderFromPayment({
   } catch (error) {
     const totalTime = Date.now() - startTime;
     logger.error(
-      {...sessionContext,
-
+      {
+        ...sessionContext,
         error,
         errorName: error instanceof Error ? error.name : 'Unknown',
         errorMessage: error instanceof Error ? error.message : String(error),
