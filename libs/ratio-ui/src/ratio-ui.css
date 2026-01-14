@@ -1,24 +1,12 @@
-@import url('https://use.typekit.net/iyw4txx.css') layer(base);
-@import 'tailwindcss';
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600&family=Source+Serif+4:wght@400;600;700&display=swap");
+@import "tailwindcss";
 @plugin 'tailwindcss-react-aria-components';
 @source '**/*.tsx';
 @source '../../forms/src';
 @source '../../datatable/src';
-@source inline("md:grid-cols-2 lg:grid-cols-3 gap-2 bg-gray-500 dark:bg-gray-700 sm:hidden sm:block md:hidden md:block lg:hidden lg:block my-2 my-3 my-4 p-2 rounded-lg");
-@source inline("my-1 my-2 my-3 my-4 my-5 my-6 my-7 my-8 my-9 my-10");
-@source inline("py-1 py-2 py-3 py-4 py-5 py-6 py-7 py-8 py-9 py-10");
-
 
 @custom-variant dark (&:where(html[data-theme="dark"] &, body[data-theme="dark"] &, [data-theme="dark"] *));
 
-/*
-  The default border color has changed to `currentcolor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
 @layer base {
   *,
   ::after,
@@ -30,199 +18,144 @@
 }
 
 @theme {
-  --font-*: initial;
-  --font-sans: source-sans-pro,
-  sans-serif;
-  --font-serif: source-serif-pro,
-  serif;
-  --font-mono: ui-monospace,
-  Courier New,
-  monospace;
-  --font-display: source-sans-pro,
-  sans-serif;
-  --font-body: source-sans-pro,
-  sans-serif;
+  /* Fonts */
+  --font-sans: "Source Sans 3", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Source Serif 4", ui-serif, Georgia, serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", monospace;
+  --font-display: var(--font-serif);
+  --font-body: var(--font-sans);
 
-  --color-primary-50: #f0f9ff;
-  --color-primary-100: #e0f2fe;
-  --color-primary-200: #bae6fd;
-  --color-primary-300: #7dd3fc;
+  /* Fluid typography - @link https://utopia.fyi/type/calculator */
+  --font-size-xs: clamp(0.75rem, 0.7rem + 0.13vw, 0.81rem);
+  --font-size-sm: clamp(0.88rem, 0.83rem + 0.16vw, 0.96rem);
+  --font-size-base: clamp(1rem, 0.96rem + 0.19vw, 1.13rem);
+  --font-size-lg: clamp(1.13rem, 1.06rem + 0.23vw, 1.27rem);
+  --font-size-xl: clamp(1.27rem, 1.19rem + 0.27vw, 1.42rem);
+  --font-size-2xl: clamp(1.42rem, 1.33rem + 0.32vw, 1.6rem);
+  --font-size-3xl: clamp(1.6rem, 1.48rem + 0.37vw, 1.8rem);
+  --font-size-4xl: clamp(1.8rem, 1.66rem + 0.43vw, 2.03rem);
+  --font-size-5xl: clamp(2.03rem, 1.85rem + 0.49vw, 2.28rem);
+  --font-size-6xl: clamp(2.28rem, 2.07rem + 0.55vw, 2.57rem);
+
+  /* Fluid spacing - @link https://utopia.fyi/space/calculator */
+  --space-3xs: clamp(0.3125rem, 0.3125rem + 0vw, 0.3125rem);
+  --space-2xs: clamp(0.5625rem, 0.5369rem + 0.1136vw, 0.625rem);
+  --space-xs: clamp(0.875rem, 0.8494rem + 0.1136vw, 0.9375rem);
+  --space-s: clamp(1.125rem, 1.0739rem + 0.2273vw, 1.25rem);
+  --space-m: clamp(1.6875rem, 1.6108rem + 0.3409vw, 1.875rem);
+  --space-l: clamp(2.25rem, 2.1477rem + 0.4545vw, 2.5rem);
+  --space-xl: clamp(3.375rem, 3.2216rem + 0.6818vw, 3.75rem);
+  --space-2xl: clamp(4.5rem, 4.2955rem + 0.9091vw, 5rem);
+  --space-3xl: clamp(6.75rem, 6.4432rem + 1.3636vw, 7.5rem);
+
+  /* Colors */
   --color-primary-400: #38bdf8;
   --color-primary-500: #0ea5e9;
   --color-primary-600: #0284c7;
-  --color-primary-700: #0369a1;
-  --color-primary-800: #075985;
-  --color-primary-900: #0c4a6e;
-  --color-primary-950: #082f49;
 
-  --color-secondary-50: #fff1f2;
-  --color-secondary-100: #ffe4e6;
-  --color-secondary-200: #fecdd3;
-  --color-secondary-300: #fda4af;
-  --color-secondary-400: #fb7185;
-  --color-secondary-500: #f43f5e;
-  --color-secondary-600: #e11d48;
-  --color-secondary-700: #be123c;
-  --color-secondary-800: #9f1239;
-  --color-secondary-900: #881337;
-  --color-secondary-950: #4c0519;
+  --color-vipps-orange: #ff5b24;
+  --color-vipps-hover: #e64e1a;
 
-  /* Vipps brand colors */
-  --color-vipps-orange: #FF5B24;
-  --color-vipps-hover: #E64E1A;
-
-  /* Border radius tokens */
+  /* Border radius */
   --radius-sm: 0.25rem;
-  --radius-DEFAULT: 0.5rem;
-  --radius-md: 0.5rem;
+  --radius: 0.5rem;
   --radius-lg: 0.75rem;
   --radius-xl: 1rem;
-  --radius-2xl: 1.5rem;
-  --radius-3xl: 2rem;
 }
 
-
-
 @layer base {
+  /* Prevent FOUC during theme initialization */
+  html {
+    opacity: 0;
+    font-size: var(--font-size-base);
+  }
+
+  html[data-theme="dark"],
+  html[data-theme="light"] {
+    opacity: 1;
+  }
+
   body {
-    @apply h-full m-0 flex flex-col min-h-screen antialiased text-gray-800 dark:text-gray-200 bg-linear-to-tr from-stone-100 via-stone-200 to-orange-50 bg-linear-to-r dark:from-gray-800 dark:via-gray-900 dark:to-gray-800;
+    @apply h-full m-0 flex flex-col min-h-screen antialiased;
+    @apply text-gray-800 dark:text-gray-200;
+    @apply bg-gradient-to-tr from-stone-100 via-stone-200 to-orange-50;
+    @apply dark:bg-gradient-to-r dark:from-gray-800 dark:via-gray-900 dark:to-gray-800;
   }
 
   main {
     @apply grow;
   }
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-size: auto;
-    font-weight: auto;
+  /* Typography */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.025em;
   }
 
   h1 {
-    @apply text-6xl pt-12 pb-3 leading-tight tracking-tighter;
+    font-size: var(--font-size-6xl);
+    margin-top: var(--space-3xl);
+    margin-bottom: var(--space-m);
   }
 
   h2 {
-    @apply text-3xl pt-9 pb-3 leading-tight tracking-tighter;
+    font-size: var(--font-size-3xl);
+    margin-top: var(--space-2xl);
+    margin-bottom: var(--space-s);
   }
 
   h3 {
-    @apply text-2xl pt-6 pb-3 leading-tight tracking-tighter;
+    font-size: var(--font-size-2xl);
+    margin-top: var(--space-xl);
+    margin-bottom: var(--space-s);
   }
 
   h4 {
-    @apply font-bold pt-3 pb-0 leading-tight tracking-tighter;
+    font-size: var(--font-size-xl);
+    margin-top: var(--space-l);
+    margin-bottom: var(--space-xs);
   }
 
   h5 {
-    @apply text-base pt-2 pb-0 leading-tight tracking-tighter;
+    font-size: var(--font-size-lg);
+    margin-top: var(--space-m);
+    margin-bottom: var(--space-xs);
   }
 
   h6 {
-    @apply text-base pt-1 pb-1 leading-tight tracking-tighter;
+    font-size: var(--font-size-base);
+    margin-top: var(--space-s);
+    margin-bottom: var(--space-2xs);
+  }
+
+  p {
+    margin-top: var(--space-s);
+    margin-bottom: var(--space-s);
   }
 
   blockquote {
-    @apply text-xl italic font-semibold text-gray-900;
+    font-size: var(--font-size-xl);
+    font-style: italic;
+    font-weight: 600;
+    margin-top: var(--space-l);
+    margin-bottom: var(--space-l);
+    @apply text-gray-900 dark:text-gray-100;
   }
 
+  /* Story context */
   .story p {
-    @apply pt-1 pb-3 text-lg;
+    font-size: var(--font-size-lg);
+    margin-top: var(--space-m);
+    margin-bottom: var(--space-m);
   }
 
-  .link-overlay {
-    /* parent must be relative */
-    &::after {
-      position: absolute;
-      inset: 0;
-      z-index: 1;
-      pointer-events: auto;
-      content: '';
-    }
+  /* Utilities */
+  .link-overlay::after {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    content: "";
   }
-
-  /* shadcn/ui design tokens */
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
-    --card: 240 5% 96%;
-    --card-foreground: 222.2 84% 4.9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 240 6% 90%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.2rem;
-
-    --success: 196 52% 74%;
-    --warning: 34 89% 85%;
-    --error: 10 100% 86%;
-  }
-
-  [data-theme='dark'] {
-    --background: 0 0% 0%;
-    --foreground: 210 40% 98%;
-
-    --card: 0 0% 4%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 0, 0%, 15%, 0.5;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-
-    --success: 196 100% 14%;
-    --warning: 34 51% 25%;
-    --error: 10 39% 43%;
-  }
-}
-
-/* Prevent flash of unstyled content during theme initialization */
-html {
-  opacity: 0;
-}
-
-html[data-theme='dark'],
-html[data-theme='light'] {
-  opacity: initial;
 }
