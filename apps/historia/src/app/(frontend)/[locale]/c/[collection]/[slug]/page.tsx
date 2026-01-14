@@ -173,7 +173,7 @@ export default async function Page({ params: paramsPromise }: Args) {
         {isProduct && imageProps?.url ? (
           <>
             <StoryHeader>
-              <Grid cols={{ sm: 1, md: 2 }} paddingClassName="gap-8">
+              <Grid cols={{ sm: 1, md: 2 }} paddingClassName="p-3 gap-8">
                 <Image
                   src={imageProps.url}
                   alt={imageProps.alt || titleToUse || ''}
@@ -189,7 +189,7 @@ export default async function Page({ params: paramsPromise }: Args) {
               </Grid>
             </StoryHeader>
 
-            <StoryBody>
+            <StoryBody className='container p-3'>
               {'content' in document && document.content ? <RichText data={document.content} /> : null}
               {'story' in document && document.story ? <RenderBlocks blocks={document.story} /> : null}
             </StoryBody>
