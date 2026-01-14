@@ -8,7 +8,6 @@ import { Error } from '@eventuras/ratio-ui/blocks/Error';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
-import { List } from '@eventuras/ratio-ui/core/List';
 import { Loading } from '@eventuras/ratio-ui/core/Loading';
 import { Text } from '@eventuras/ratio-ui/core/Text';
 import { Container } from '@eventuras/ratio-ui/layout/Container';

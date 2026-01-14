@@ -678,6 +678,147 @@ async function processPaymentEvent(businessEventId: string, payload: WebhookPayl
   // Note: revalidatePath in API routes has limited effect, SSE polling is the primary mechanism
   logger.debug({ reference: payload.reference }, 'Transaction updated, SSE will detect change');
 
+  // Automatic order creation for AUTHORIZED payments without order
+  // This handles cases where the callback (SSE) fails or is delayed
+  if ((payload.name === 'AUTHORIZED' || payload.name === 'CAPTURED') && !transaction.order && paymentDetails) {
+    logger.info(
+      {
+        reference: payload.reference,
+        transactionId: transaction.id,
+        eventType: payload.name,
+      },
+      'Attempting automatic order creation from webhook (no order linked to transaction)'
+    );
+
+    try {
+      // Import createOrderFromPayment from checkout actions
+      const { createOrderFromPayment } = await import(
+        '@/app/(frontend)/[locale]/checkout/vipps/actions'
+      );
+      const { createOrderAutoCreatedEvent } = await import(
+        '@/app/(frontend)/[locale]/checkout/vipps/businessEvents'
+      );
+
+      // Attempt to create order from payment
+      const orderResult = await createOrderFromPayment({
+        paymentReference: payload.reference,
+        paymentDetails: paymentDetails,
+        // Extract user ID if customerId is a User object, otherwise use as string
+        userId: customerId
+          ? (typeof customerId === 'string' ? customerId : customerId.id)
+          : undefined,
+      });
+
+      if (orderResult.success) {
+        logger.info(
+          {
+            orderId: orderResult.data.orderId,
+            transactionId: orderResult.data.transactionId,
+            reference: payload.reference,
+          },
+          'Order auto-created successfully from webhook'
+        );
+
+        // Update transaction with order reference
+        transaction = await payloadInstance.update({
+          collection: 'transactions',
+          id: transaction.id,
+          data: {
+            order: orderResult.data.orderId,
+          },
+        });
+
+        // Create business event for tracking
+        await createOrderAutoCreatedEvent(
+          payload.reference,
+          orderResult.data.orderId,
+          paymentDetails.aggregate.authorizedAmount,
+          'webhook'
+        );
+
+        logger.info(
+          {
+            orderId: orderResult.data.orderId,
+            transactionId: transaction.id,
+            reference: payload.reference,
+          },
+          'Webhook successfully created order and linked to transaction'
+        );
+      } else {
+        // Order creation failed - this is a critical issue
+        logger.error(
+          {
+            reference: payload.reference,
+            transactionId: transaction.id,
+            error: orderResult.error,
+            errorMessage: orderResult.error.message,
+            paymentState: paymentDetails.state,
+            authorizedAmount: paymentDetails.aggregate.authorizedAmount,
+          },
+          'Automatic order creation from webhook failed - creating orphaned payment notification'
+        );
+
+        // Send orphaned payment notification for manual handling
+        const { notifyOrphanedPayment } = await import(
+          '@/app/(frontend)/[locale]/checkout/vipps/orphanedPaymentNotification'
+        );
+
+        await notifyOrphanedPayment({
+          paymentReference: payload.reference,
+          customerEmail: paymentDetails.profile?.email || paymentDetails.userDetails?.email || 'unknown',
+          amount: paymentDetails.aggregate.authorizedAmount.value,
+          currency: paymentDetails.aggregate.authorizedAmount.currency,
+          paymentState: paymentDetails.state,
+        });
+
+        logger.warn(
+          {
+            reference: payload.reference,
+            transactionId: transaction.id,
+          },
+          'Orphaned payment notification sent - manual order creation required'
+        );
+      }
+    } catch (error) {
+      // Unexpected error during automatic order creation
+      logger.error(
+        {
+          error,
+          errorName: error instanceof Error ? error.name : 'Unknown',
+          errorMessage: error instanceof Error ? error.message : String(error),
+          stack: error instanceof Error ? error.stack : undefined,
+          reference: payload.reference,
+          transactionId: transaction.id,
+          paymentState: paymentDetails?.state,
+        },
+        'CRITICAL: Unexpected error during automatic order creation from webhook'
+      );
+
+      // Send orphaned payment notification
+      try {
+        const { notifyOrphanedPayment } = await import(
+          '@/app/(frontend)/[locale]/checkout/vipps/orphanedPaymentNotification'
+        );
+
+        await notifyOrphanedPayment({
+          paymentReference: payload.reference,
+          customerEmail: paymentDetails?.profile?.email || paymentDetails?.userDetails?.email || 'unknown',
+          amount: paymentDetails?.aggregate?.authorizedAmount?.value || 0,
+          currency: paymentDetails?.aggregate?.authorizedAmount?.currency || 'NOK',
+          paymentState: paymentDetails?.state || 'UNKNOWN',
+        });
+      } catch (notifyError) {
+        logger.error(
+          {
+            notifyError,
+            reference: payload.reference,
+          },
+          'Failed to send orphaned payment notification after order creation error'
+        );
+      }
+    }
+  }
+
   // Update order status based on transaction status
   await updateOrderStatus(transaction, newStatus as TransactionStatus, payload);
 
