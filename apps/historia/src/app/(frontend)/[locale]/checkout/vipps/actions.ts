@@ -15,9 +15,11 @@ import { Logger } from '@eventuras/logger';
 import { type PaymentDetails } from '@eventuras/vipps/epayment-v1';
 
 import type { Cart, SessionData } from '@/lib/cart/types';
+import { getSessionContext } from '@/lib/session/sessionId';
 import { getCurrentWebsiteId } from '@/lib/website';
 import type { Product } from '@/payload-types';
 
+import { createOrderAutoCreatedEvent } from './businessEvents';
 import { notifyOrphanedPayment } from './orphanedPaymentNotification';
 
 const logger = Logger.create({
@@ -74,6 +76,9 @@ function normalizePhoneNumber(phoneNumber: string | undefined): string | undefin
 async function validatePaymentOwnership(
   paymentReference: string
 ): Promise<ServerActionResult<boolean>> {
+  // Get session context for logging
+  const sessionContext = await getSessionContext();
+
   try {
     // PRIMARY VALIDATION: Check database for cart with this paymentReference
     const payload = await getPayload({ config: configPromise });
@@ -90,6 +95,7 @@ async function validatePaymentOwnership(
     if (carts.docs.length > 0) {
       logger.info(
         {
+          ...sessionContext,
           paymentReference,
           cartId: (carts.docs[0] as any).id,
         },
@@ -106,6 +112,7 @@ async function validatePaymentOwnership(
     if (paymentReferences.includes(paymentReference)) {
       logger.info(
         {
+          ...sessionContext,
           paymentReference,
         },
         'Payment validated via session fallback'
@@ -116,6 +123,7 @@ async function validatePaymentOwnership(
     // Both validations failed
     logger.warn(
       {
+        ...sessionContext,
         paymentReference,
         hasSession: !!session,
         paymentCount: paymentReferences.length,
@@ -126,6 +134,7 @@ async function validatePaymentOwnership(
     return actionError('Unauthorized access to payment');
   } catch (error) {
     logger.error({
+      ...sessionContext,
       error,
       errorName: error instanceof Error ? error.name : 'Unknown',
       errorMessage: error instanceof Error ? error.message : String(error),
@@ -155,9 +164,11 @@ interface CreateOrderParams {
 /**
  * Create order and transaction after successful payment
  *
- * SECURITY: This function retrieves cart from encrypted session (not from client!),
+ * SECURITY: This function retrieves cart from database (not from client!),
  * verifies payment with Vipps API, and validates the order total matches the
  * authorized amount. Cart cannot be tampered with by client.
+ *
+ * NOTE: This function is exported for use by webhook handler for automatic order recovery
  */
 export async function createOrderFromPayment({
   paymentReference,
@@ -165,6 +176,9 @@ export async function createOrderFromPayment({
   userId,
 }: CreateOrderParams): Promise<ServerActionResult<{ orderId: string; transactionId: string }>> {
   const startTime = Date.now();
+
+  // Get session context for logging throughout this function
+  const sessionContext = await getSessionContext();
 
   let cart: Cart | undefined;
 
@@ -197,6 +211,7 @@ export async function createOrderFromPayment({
 
       logger.info(
         {
+          ...sessionContext,
           cartId: (cartDoc as any).id,
           itemCount: cart?.items.length || 0,
           paymentReference,
@@ -206,6 +221,7 @@ export async function createOrderFromPayment({
     } else {
       logger.error(
         {
+          ...sessionContext,
           paymentReference,
         },
         'Cart not found by paymentReference in database'
@@ -214,6 +230,7 @@ export async function createOrderFromPayment({
   } catch (error) {
     logger.error(
       {
+        ...sessionContext,
         error,
         paymentReference,
       },
@@ -224,6 +241,7 @@ export async function createOrderFromPayment({
   if (!cart) {
     logger.warn(
       {
+        ...sessionContext,
         paymentReference,
       },
       'No cart ID or secret in session - attempting to find cart by payment reference'
@@ -260,6 +278,7 @@ export async function createOrderFromPayment({
 
           logger.info(
             {
+              ...sessionContext,
               cartId: recoveredCart.id,
               itemCount: cart.items.length,
               paymentReference,
@@ -269,13 +288,14 @@ export async function createOrderFromPayment({
         }
       } else {
         logger.error(
-          { paymentReference },
+          { ...sessionContext, paymentReference },
           'Cart not found in database by payment reference'
         );
       }
     } catch (error) {
       logger.error(
         {
+          ...sessionContext,
           error,
           paymentReference,
         },
@@ -288,6 +308,7 @@ export async function createOrderFromPayment({
     if (!cart || !cart.items || cart.items.length === 0) {
       logger.error(
         {
+          ...sessionContext,
           paymentReference,
           hasCart: !!cart,
           paymentState: paymentDetails.state,
@@ -304,6 +325,7 @@ export async function createOrderFromPayment({
 
         logger.error(
           {
+            ...sessionContext,
             paymentReference,
             customerEmail,
             amount: paymentDetails.aggregate.authorizedAmount.value,
@@ -346,7 +368,8 @@ export async function createOrderFromPayment({
     }
 
     logger.info(
-      {
+      {...sessionContext,
+
         paymentReference,
         itemCount: cart.items.length,
         paymentState: paymentDetails.state,
@@ -1131,6 +1154,21 @@ export async function createOrderFromPayment({
       'Order, transaction and business event created successfully - cart will be cleared client-side'
     );
 
+    // Create business event for order auto-creation tracking
+    // Note: We don't await this to avoid slowing down the response
+    // Errors in event creation are logged but don't fail the order creation
+    createOrderAutoCreatedEvent(
+      paymentReference,
+      order.id as string,
+      paymentDetails.aggregate.authorizedAmount,
+      'callback' // This is called from client callback (SSE path)
+    ).catch((error) => {
+      logger.error(
+        { error, orderId: order.id, paymentReference },
+        'Failed to create order auto-created event (non-critical)'
+      );
+    });
+
     return actionSuccess({
       orderId: order.id as string,
       transactionId: transaction.id as string,
@@ -1138,7 +1176,8 @@ export async function createOrderFromPayment({
   } catch (error) {
     const totalTime = Date.now() - startTime;
     logger.error(
-      {
+      {...sessionContext,
+
         error,
         errorName: error instanceof Error ? error.name : 'Unknown',
         errorMessage: error instanceof Error ? error.message : String(error),
