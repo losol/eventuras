@@ -16,8 +16,8 @@ interface FooterProps {
 
 export const Footer = (props: FooterProps) => {
   return (
-      <footer className="p-3 pt-10 bg-white dark:bg-gray-900">
-        <div className="container p-3 mx-auto">
+      <footer className="p-3 pt-10">
+      <div className="container p-3 mx-auto pt-5 border-t-1 border-opacity-10 border-black">
           <div className="md:flex md:justify-between">
             {props.siteTitle && (
               <div className="mb-6 md:mb-0">
@@ -25,7 +25,7 @@ export const Footer = (props: FooterProps) => {
                   {props.siteTitle}
                 </span>
                 {props.publisher && (
-                    <div className="mt-2 font-light">
+                <div className="mt-2 font-light leading-tight">
                       <p>{props.publisher.name}</p>
                       <p>{props.publisher.address}</p>
                       <p>{props.publisher.phone}</p>

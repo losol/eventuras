@@ -42,7 +42,6 @@ const styles = {
     'flex items-center justify-center',
     'rounded-md',
     'border border-gray-300 dark:border-gray-600',
-    'bg-white dark:bg-gray-800',
     'text-gray-700 dark:text-gray-300',
     'hover:bg-gray-50 dark:hover:bg-gray-700',
     'focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400',
@@ -53,7 +52,6 @@ const styles = {
     'box-border w-16 text-center',
     'rounded-md',
     'border border-gray-300 dark:border-gray-600',
-    'bg-white dark:bg-gray-800',
     'text-gray-900 dark:text-gray-100',
     'focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400',
     'disabled:opacity-50 disabled:cursor-not-allowed',
@@ -76,7 +74,6 @@ const styles = {
   segmentedInput: [
     'box-border w-16 text-center',
     'border-x border-gray-300 dark:border-gray-600',
-    'bg-white dark:bg-gray-900',
     'text-gray-900 dark:text-gray-100',
     'font-semibold',
     'focus:outline-none',

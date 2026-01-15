@@ -1,0 +1,11 @@
+/**
+ * Link overlay utility
+ * Creates a clickable overlay that covers the parent element
+ * Useful for card components where the entire card should be clickable
+ */
+.link-overlay::after {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  content: "";
+}

@@ -1,0 +1,308 @@
+/**
+ * Global page-level styles
+ * Only import this if you want ratio-ui to control the entire page layout
+ */
+
+@layer base {
+  /* Prevent FOUC during theme initialization */
+  html {
+    opacity: 0;
+    font-size: var(--font-size-base);
+  }
+
+  html[data-theme="dark"],
+  html[data-theme="light"] {
+    opacity: 1;
+  }
+
+  main {
+    @apply grow;
+  }
+
+  /* Typography - base styles for semantic HTML */
+  html {
+    font-family: var(--font-body);
+  }
+
+  body {
+    font-family: var(--font-body);
+    line-height: 1.6;
+    letter-spacing: 0;
+  }
+
+  h1,
+  h2,
+  h3 {
+    /* Display warmth */
+    font-family: var(--font-display);
+    font-weight: 650;
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+  }
+
+  h4,
+  h5,
+  h6 {
+    /* Keep smaller headings crisp */
+    font-family: var(--font-body);
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+
+  h1 {
+    font-size: var(--font-size-6xl);
+    margin-top: var(--space-2xl);
+    margin-bottom: var(--space-s);
+  }
+
+  h2 {
+    font-size: var(--font-size-4xl);
+    margin-top: var(--space-xl);
+    margin-bottom: var(--space-xs);
+  }
+
+  h3 {
+    font-size: var(--font-size-2xl);
+    margin-top: var(--space-lg);
+    margin-bottom: var(--space-xs);
+  }
+
+  h4 {
+    font-size: var(--font-size-xl);
+    margin-top: var(--space-m);
+    margin-bottom: var(--space-xs);
+  }
+
+  h5 {
+    font-size: var(--font-size-lg);
+    margin-top: var(--space-m);
+    margin-bottom: var(--space-xs);
+  }
+
+  h6 {
+    font-size: var(--font-size-base);
+    margin-top: var(--space-s);
+    margin-bottom: var(--space-xs);
+    text-transform: none;
+  }
+
+  p {
+    margin-top: var(--space-s);
+    margin-bottom: var(--space-s);
+    max-width: 70ch;
+  }
+}
+
+@layer base {
+  body {
+    @apply h-full m-0 flex flex-col min-h-screen antialiased;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Main animated gradient background */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: -15%;
+    z-index: -1;
+    pointer-events: none;
+    will-change: transform;
+
+    background-image:
+      /* Organic blob 1 - Ocean teal */
+      radial-gradient(
+        ellipse 1200px 800px at 15% 20%,
+        rgba(91, 163, 181, 0.3),
+        transparent 75%
+      ),
+
+      /* Organic blob 2 - Sunny yellow */
+      radial-gradient(
+        ellipse 900px 1100px at 85% 15%,
+        rgba(255, 194, 32, 0.22),
+        transparent 80%
+      ),
+
+      /* Warm accent - Terracotta */
+      radial-gradient(
+        ellipse 700px 600px at 75% 80%,
+        rgba(244, 137, 109, 0.18),
+        transparent 85%
+      ),
+
+      /* Support color - subtle sage */
+      radial-gradient(
+        ellipse 1000px 700px at 25% 75%,
+        rgba(159, 183, 176, 0.15),
+        transparent 88%
+      ),
+
+      /* Spotlight effect (subtle white glow) */
+      radial-gradient(
+        circle 600px at 50% 10%,
+        rgba(255, 255, 255, 0.14),
+        transparent 75%
+      ),
+
+      /* Fine grain texture */
+      radial-gradient(
+        1px 1px,
+        rgba(22, 20, 18, 0.05),
+        transparent 60%
+      );
+
+    background-size: auto, auto, auto, auto, auto, 5px 5px;
+    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, repeat;
+    background-blend-mode: normal, normal, normal, normal, screen, multiply;
+    background-color: #fafcfd;
+
+    /* Elegant mask to blend edges */
+    -webkit-mask-image: radial-gradient(
+      130% 130% at 50% 30%,
+      #000 52%,
+      transparent 90%
+    );
+    mask-image: radial-gradient(
+      130% 130% at 50% 30%,
+      #000 52%,
+      transparent 90%
+    );
+  }
+
+  /* Dark mode variant - more dramatic and moody */
+  :root[data-theme="dark"] body::before {
+    background-image:
+      /* Ocean teal - deeper */
+      radial-gradient(
+        ellipse 1300px 900px at 12% 18%,
+        rgba(58, 114, 135, 0.35),
+        transparent 78%
+      ),
+
+      /* Sunny yellow - warmer glow */
+      radial-gradient(
+        ellipse 800px 1000px at 88% 12%,
+        rgba(187, 99, 9, 0.25),
+        transparent 82%
+      ),
+
+      /* Terracotta - warm bottom accent */
+      radial-gradient(
+        ellipse 800px 700px at 72% 85%,
+        rgba(200, 93, 63, 0.22),
+        transparent 84%
+      ),
+
+      /* Support sage - subtle atmospheric */
+      radial-gradient(
+        ellipse 1100px 800px at 28% 78%,
+        rgba(76, 101, 96, 0.18),
+        transparent 86%
+      ),
+
+      /* Subtle highlight */
+      radial-gradient(
+        circle 500px at 50% 8%,
+        rgba(255, 255, 255, 0.06),
+        transparent 78%
+      ),
+
+      /* Grain - more visible in dark */
+      radial-gradient(
+        1px 1px,
+        rgba(250, 247, 243, 0.08),
+        transparent 60%
+      );
+
+    background-size: auto, auto, auto, auto, auto, 5px 5px;
+    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, repeat;
+    background-blend-mode: normal, normal, normal, normal, screen, screen;
+    background-color: #08141a;
+  }
+
+  /* Smooth organic drift animation */
+  @media (prefers-reduced-motion: no-preference) {
+    body::before {
+      animation: losol-organic-flow 90s ease-in-out infinite alternate;
+    }
+
+    :root[data-theme="dark"] body::before {
+      animation-duration: 110s;
+    }
+
+    @keyframes losol-organic-flow {
+      0% {
+        transform: translate3d(0, 0, 0) scale(1);
+      }
+      33% {
+        transform: translate3d(25px, -15px, 0) scale(1.02);
+      }
+      66% {
+        transform: translate3d(-20px, 20px, 0) scale(0.98);
+      }
+      100% {
+        transform: translate3d(15px, -10px, 0) scale(1.01);
+      }
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    body::before {
+      animation: none !important;
+    }
+  }
+
+  /* Optional: Add a secondary layer for extra depth */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.4;
+
+    background-image:
+      /* Subtle mesh pattern overlay */
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(22, 20, 18, 0.01) 2px,
+        rgba(22, 20, 18, 0.01) 4px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 2px,
+        rgba(22, 20, 18, 0.01) 2px,
+        rgba(22, 20, 18, 0.01) 4px
+      );
+  }
+
+  :root[data-theme="dark"] body::after {
+    opacity: 0.2;
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(250, 247, 243, 0.015) 2px,
+        rgba(250, 247, 243, 0.015) 4px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 2px,
+        rgba(250, 247, 243, 0.015) 2px,
+        rgba(250, 247, 243, 0.015) 4px
+      );
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    body::after {
+      display: none;
+    }
+  }
+}

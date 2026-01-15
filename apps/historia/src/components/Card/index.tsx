@@ -8,7 +8,6 @@ import { Card as RatioCard } from '@eventuras/ratio-ui/core/Card';
 import { getDocUrl } from '@/app/(frontend)/[locale]/c/[collection]/pageCollections';
 import { Media } from '@/components/Media'
 import type { Article, Happening, Note, Organization, Page, Person, Project } from '@/payload-types'
-import { cn } from '@/utilities/cn'
 import useClickableCard from '@/utilities/useClickableCard'
 
 export const Card: React.FC<{
@@ -20,7 +19,7 @@ export const Card: React.FC<{
   title?: string
 }> = (props) => {
   const { card, link } = useClickableCard({})
-  const { className, doc, relationTo, showImages = true } = props
+  const { className,doc, relationTo, showImages = true } = props
 
   // the first part of the pathname is the locale
   const locale = usePathname().split('/')[1]
@@ -37,15 +36,7 @@ export const Card: React.FC<{
   });
 
   return (
-    <RatioCard
-      as="article"
-      hoverEffect
-      className={cn(
-        'border border-border overflow-hidden cursor-pointer h-full flex flex-col',
-        className,
-      )}
-      padding="p-0"
-    >
+    <RatioCard className={className}>
       <div ref={card.ref as React.RefObject<HTMLDivElement>} className="h-full flex flex-col">
         {showImages && doc?.image && typeof doc.image === 'object' && doc.image.media &&
         <div className="relative w-full">

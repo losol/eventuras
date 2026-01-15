@@ -17,6 +17,7 @@ const preview: Preview = {
       // 'off' - skip a11y checks entirely
       test: 'todo',
     },
+    layout: 'fullscreen', // Use fullscreen layout to show body background
   },
   decorators: [ModeDecorator],
 };

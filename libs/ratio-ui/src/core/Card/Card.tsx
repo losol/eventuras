@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react';
 import { Box, BoxProps, getBackgroundStyle } from '../../layout/Box/Box';
 import Container from '../../layout/Container/Container';
 import { getGridClasses } from '../../tokens';
+import './Card.css';
 
 // Card-specific props that should not be passed to Box
 interface CardSpecificProps {
@@ -66,24 +67,20 @@ export const Card: React.FC<CardProps> = ({
 
   const variantStyles = {
     default: hoverEffect
-      ? 'bg-white dark:bg-slate-900 hover:bg-primary-200 dark:hover:bg-primary-900'
-      : 'bg-white dark:bg-slate-900',
+      ? 'bg-card text hover:bg-overlay-hover'
+      : 'bg-card text',
     wide: hoverEffect
-      ? 'bg-white dark:bg-slate-900 hover:bg-primary-200 dark:hover:bg-primary-900 mx-auto min-h-[33vh]'
-      : 'bg-white dark:bg-slate-900 mx-auto min-h-[33vh]',
-    outline: 'border border-gray-200 dark:border-gray-700 bg-transparent',
-    transparent: 'bg-transparent',
+      ? 'bg-card text hover:bg-overlay-hover mx-auto min-h-[33vh]'
+      : 'bg-card text mx-auto min-h-[33vh]',
+    outline: 'border border-border-1 bg-transparent text',
+    transparent: 'bg-transparent text',
   };
 
   const backgroundColorClasses = backgroundColorClass ?? variantStyles[variant];
 
-  const textColorClasses = dark
-    ? 'text-white'
-    : 'text-slate-900 dark:text-gray-100';
-
   const gridClasses = grid ? getGridClasses(gap as '4' | '6' | '8') : '';
 
-  const cardClasses = [baseClasses, transitionClasses, backgroundColorClasses, textColorClasses, gridClasses, className];
+  const cardClasses = [baseClasses, transitionClasses, backgroundColorClasses, gridClasses, className];
 
   const combinedStyle = getBackgroundStyle(backgroundImageUrl) || style;
 

@@ -1,0 +1,20 @@
+/**
+ * Blockquote styling
+ * Warm, collective feel with display font
+ */
+blockquote {
+  font-family: var(--font-display);
+  font-size: var(--font-size-xl);
+  font-style: italic;
+  font-weight: 600;
+  line-height: 1.4;
+
+  margin-top: var(--space-l);
+  margin-bottom: var(--space-l);
+  padding-left: var(--space-m);
+
+  border-left: 3px solid var(--color-secondary-500);
+  color: var(--text);
+  background: var(--overlay-hover);
+  border-radius: 0.75rem;
+}

@@ -6,10 +6,12 @@ import { useRouter } from 'next/navigation';
 import { formatPrice } from '@eventuras/core/currency';
 import { Logger } from '@eventuras/logger';
 import { Button } from '@eventuras/ratio-ui/core/Button';
+import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Image } from '@eventuras/ratio-ui/core/Image';
 import { Text } from '@eventuras/ratio-ui/core/Text';
 import { Stack } from '@eventuras/ratio-ui/layout/Stack';
-import { ImageCard, Link } from '@eventuras/ratio-ui-next';
+import { Link } from '@eventuras/ratio-ui-next';
 import { useToast } from '@eventuras/toast';
 
 import RichText from '@/components/RichText';
@@ -97,54 +99,58 @@ export const ProductsBlock: React.FC<ProductBlockProps> = (props) => {
         const isAdding = addingProductId === product.id;
 
         return (
-          <ImageCard
-            key={product.id}
-            gap="md"
-            imageSrc={showImage ? imageUrl : undefined}
-            imageAlt={product.title || 'Product image'}
-          >
-              <Heading as="h3" padding="py-0 pt-0">{product.title}</Heading>
+          <Card key={product.id} grid={showImage} gap="6">
+            {showImage && (
+              <Image src={imageUrl} alt={product.title || 'Product image'} />
+            )}
+            <div>
+              <Heading as="h3" padding="py-0 pt-0">
+                {product.title}
+              </Heading>
 
               {product.lead && <Text className="mt-2">{product.lead}</Text>}
 
-                {product.description && (
-                  <div className="mt-4">
-                    <RichText data={product.description} enableGutter={false} />
-                  </div>
-                )}
-
-                {product.price?.amountIncVat != null && (
-                  <Text className="text-3xl font-bold">
-                    {formatPrice(
-                      fromMinorUnits(
-                        product.price.amountIncVat,
-                        product.price.currency || 'NOK',
-                      ),
-                      product.price.currency || 'NOK',
-                      locale,
-                    )}
-                  </Text>
-                )}
-
-                {/* Action Buttons */}
-                <div className="mt-6 flex flex-col gap-3">
-                  {product.slug && product.resourceId && (
-                    <Link href={`/${locale}/c/produkter/${product.slug}--${product.resourceId}`}>
-                      Les mer
-                    </Link>
-                  )}
-                  <Button
-                    onClick={() => handleOrder(product)}
-                    disabled={isAdding}
-                    variant="primary"
-                    block
-                    padding="px-6 py-3"
-                  >
-                    {isAdding ? 'Legger til...' : 'Bestill'}
-                  </Button>
+              {product.description && (
+                <div className="mt-4">
+                  <RichText data={product.description} enableGutter={false} />
                 </div>
-          </ImageCard>
-  );
+              )}
+
+              {product.price?.amountIncVat != null && (
+                <Text className="text-3xl font-bold">
+                  {formatPrice(
+                    fromMinorUnits(
+                      product.price.amountIncVat,
+                      product.price.currency || 'NOK'
+                    ),
+                    product.price.currency || 'NOK',
+                    locale
+                  )}
+                </Text>
+              )}
+
+              {/* Action Buttons */}
+              <div className="mt-6 flex flex-col gap-3">
+                {product.slug && product.resourceId && (
+                  <Link
+                    href={`/${locale}/c/produkter/${product.slug}--${product.resourceId}`}
+                  >
+                    Les mer
+                  </Link>
+                )}
+                <Button
+                  onClick={() => handleOrder(product)}
+                  disabled={isAdding}
+                  variant="primary"
+                  block
+                  padding="px-6 py-3"
+                >
+                  {isAdding ? 'Legger til...' : 'Bestill'}
+                </Button>
+              </div>
+            </div>
+          </Card>
+        );
       })}
     </Stack>
   );
