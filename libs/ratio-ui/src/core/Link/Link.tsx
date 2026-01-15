@@ -2,6 +2,7 @@
 import React from 'react';
 import { BoxSpacingProps, buildSpacingClasses } from '../../layout/Box/Box';
 import { buttonStyles } from '../Button/Button';
+import './Link.css';
 
 export interface LinkProps extends BoxSpacingProps {
   href: string;

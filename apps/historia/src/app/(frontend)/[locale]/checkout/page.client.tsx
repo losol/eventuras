@@ -9,7 +9,9 @@ import { OrderSummary } from '@eventuras/ratio-ui/commerce/OrderSummary';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Loading } from '@eventuras/ratio-ui/core/Loading';
 import { NumberField } from '@eventuras/ratio-ui/forms';
+import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { useToast } from '@eventuras/toast';
 import type { PaymentDetails } from '@eventuras/vipps/epayment-v1';
 
@@ -168,20 +170,12 @@ export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
 
   if (loading || cartLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <div className="container mx-auto max-w-7xl px-4 py-8">
-          <div className="flex items-center justify-center py-12">
-            <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-blue-600"></div>
-            <span className="ml-3 text-gray-600 dark:text-gray-400">Laster...</span>
-          </div>
-        </div>
-      </div>
+      <Loading />
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="container mx-auto max-w-4xl px-4 py-6 sm:py-8">
+  <Container className='p-3'>
         {/* Header */}
         <Heading as="h1" padding="pb-6">
           Kasse
@@ -293,8 +287,7 @@ export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
             Kjøp nå med Vipps
           </Button>
         </div>
-        )}
-      </div>
-    </div>
+      )}
+    </Container>
   );
 }

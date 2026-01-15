@@ -47,13 +47,18 @@
       "types": "./dist/commerce/*/index.d.ts",
       "import": "./dist/commerce/*/index.js"
     },
-    "./ratio-ui.css": "./dist/ratio-ui.css"
+    "./ratio-ui.css": "./dist/ratio-ui.css",
+    "./components.css": "./dist/components.css",
+    "./global.css": "./dist/global.css"
   },
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "src/components.css",
+    "src/global.css",
+    "src/tokens"
   ],
   "scripts": {
     "build": "tsc && vite build",

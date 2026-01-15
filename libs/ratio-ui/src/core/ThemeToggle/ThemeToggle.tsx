@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '../Button';
 
 export interface ThemeToggleProps {
@@ -29,11 +29,32 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
   className = '',
   ariaLabel = 'Toggle theme',
 }) => {
+  const [mounted, setMounted] = useState(false);
   const isDark = theme === 'dark';
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleToggle = () => {
     onThemeChange(isDark ? 'light' : 'dark');
   };
+
+  // Prevent hydration mismatch by not rendering icon until mounted
+  if (!mounted) {
+    return (
+      <Button
+        variant="text"
+        size="sm"
+        onClick={handleToggle}
+        className={className}
+        aria-label={ariaLabel}
+        type="button"
+      >
+        <span className="w-5 h-5 block" />
+      </Button>
+    );
+  }
 
   return (
     <Button

@@ -1,0 +1,13 @@
+/**
+ * Component-only styles
+ * Import this if you only want to use ratio-ui components without global page styling
+ */
+
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600&family=Source+Serif+4:wght@400;600;700&display=swap");
+@import "tailwindcss";
+@plugin 'tailwindcss-react-aria-components';
+@source '**/*.tsx';
+
+@custom-variant dark (&:where(html[data-theme="dark"] &, body[data-theme="dark"] &, [data-theme="dark"] *));
+
+@import "./tokens/index.css";

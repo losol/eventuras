@@ -58,7 +58,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
   children,
 }) => {
   return (
-    <Card>
+    <>
       <Heading as="h2" padding="pb-4">
         {title}
       </Heading>
@@ -92,6 +92,6 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
           </span>
         </div>
       </div>
-    </Card>
+    </>
   );
 };

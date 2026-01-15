@@ -1,0 +1,397 @@
+@import "tailwindcss";
+
+/* ============================================
+   LOSOL DESIGN SYSTEM - FARGER
+   ============================================ */
+
+/* Brand Colors */
+:root {
+  /* Primary - Ocean Teal */
+  --color-primary-50: #fafcfd;
+  --color-primary-100: #d9ebf0;
+  --color-primary-200: #b7dae3;
+  --color-primary-300: #88c0cf;
+  --color-primary-400: #5ba3b5;
+  --color-primary-500: #4a8ea1;
+  --color-primary-600: #3a7287;
+  --color-primary-700: #2f5f6d;
+  --color-primary-800: #1f3d47;
+  --color-primary-900: #142b32;
+  --color-primary-950: #08141a;
+
+  /* Secondary - Sunny Yellow */
+  --color-secondary-50: #fffef9;
+  --color-secondary-100: #fff4c6;
+  --color-secondary-200: #ffe688;
+  --color-secondary-300: #ffd44a;
+  --color-secondary-400: #ffc220;
+  --color-secondary-500: #ffb549;
+  --color-secondary-600: #e08b07;
+  --color-secondary-700: #bb6309;
+  --color-secondary-800: #7a4006;
+  --color-secondary-900: #4d2904;
+  --color-secondary-950: #1f1002;
+
+  /* Accent - Warm Terracotta */
+  --color-accent-50: #fffcfb;
+  --color-accent-100: #fdeae3;
+  --color-accent-200: #fcd2c3;
+  --color-accent-300: #f9b199;
+  --color-accent-400: #f4896d;
+  --color-accent-500: #e07a5f;
+  --color-accent-600: #c85d3f;
+  --color-accent-700: #a84933;
+  --color-accent-800: #6d2e20;
+  --color-accent-900: #3d1a12;
+  --color-accent-950: #1a0b08;
+
+  /* Neutral - Cool Gray */
+  --color-neutral-50: #fafafa;
+  --color-neutral-100: #f5f5f5;
+  --color-neutral-200: #e5e5e5;
+  --color-neutral-300: #d4d4d4;
+  --color-neutral-400: #a3a3a3;
+  --color-neutral-500: #737373;
+  --color-neutral-600: #525252;
+  --color-neutral-700: #404040;
+  --color-neutral-800: #262626;
+  --color-neutral-900: #171717;
+  --color-neutral-950: #0a0a0a;
+
+  /* Success - Mint Green */
+  --color-success-50: #f0fdf6;
+  --color-success-100: #dcfce8;
+  --color-success-200: #bbf7d1;
+  --color-success-300: #86efad;
+  --color-success-400: #4ade80;
+  --color-success-500: #22c55e;
+  --color-success-600: #16a34a;
+  --color-success-700: #15803d;
+  --color-success-800: #166534;
+  --color-success-900: #14532d;
+  --color-success-950: #052e16;
+
+  /* Warning - Amber */
+  --color-warning-50: #fffbeb;
+  --color-warning-100: #fef3c7;
+  --color-warning-200: #fde68a;
+  --color-warning-300: #fcd34d;
+  --color-warning-400: #fbbf24;
+  --color-warning-500: #f59e0b;
+  --color-warning-600: #d97706;
+  --color-warning-700: #b45309;
+  --color-warning-800: #92400e;
+  --color-warning-900: #78350f;
+  --color-warning-950: #451a03;
+
+  /* Error - Coral Red */
+  --color-error-50: #fef2f2;
+  --color-error-100: #fee2e2;
+  --color-error-200: #fecaca;
+  --color-error-300: #fca5a5;
+  --color-error-400: #f87171;
+  --color-error-500: #ef4444;
+  --color-error-600: #dc2626;
+  --color-error-700: #b91c1c;
+  --color-error-800: #991b1b;
+  --color-error-900: #7f1d1d;
+  --color-error-950: #450a0a;
+
+  /* Info - Sky Blue */
+  --color-info-50: #f0f9ff;
+  --color-info-100: #e0f2fe;
+  --color-info-200: #bae6fd;
+  --color-info-300: #7dd3fc;
+  --color-info-400: #38bdf8;
+  --color-info-500: #0ea5e9;
+  --color-info-600: #0284c7;
+  --color-info-700: #0369a1;
+  --color-info-800: #075985;
+  --color-info-900: #0c4a6e;
+  --color-info-950: #082f49;
+
+  /* Support - Sage Green */
+  --color-support-50: #fbfcfc;
+  --color-support-100: #e2ebe8;
+  --color-support-200: #c7d8d3;
+  --color-support-300: #9fb7b0;
+  --color-support-400: #7a9890;
+  --color-support-500: #5f7e76;
+  --color-support-600: #4c6560;
+  --color-support-700: #40534f;
+  --color-support-800: #242f2d;
+  --color-support-900: #161e1d;
+  --color-support-950: #0a0f0e;
+}
+
+/* --------------------------------------------
+   Semantic tokens (light)
+   -------------------------------------------- */
+:root {
+  /* Brand colors (semantic) */
+  --primary: var(--color-primary-500);
+  --secondary: var(--color-secondary-500);
+  --accent: var(--color-accent-500);
+
+  /* Text (theme-aware) */
+  --text: var(--color-neutral-900);
+  --text-muted: var(--color-neutral-700);
+  --text-subtle: var(--color-neutral-500);
+
+  /* Text (fixed for specific surfaces) */
+  --text-light: var(--color-neutral-50);
+  --text-dark: var(--color-neutral-900);
+
+  /* On-color text */
+  --text-on-primary: var(--color-neutral-50);
+  --text-on-secondary: #1A1405;
+  --text-on-accent: var(--color-neutral-50);
+
+  /* Borders */
+  --border-1: var(--color-neutral-200);
+  --border-2: var(--color-neutral-300);
+
+  /* Alpha scale (light) */
+  --alpha-1: 0.04;
+  --alpha-2: 0.08;
+  --alpha-3: 0.12;
+
+  /* Overlay ink (light) */
+  --overlay-ink: 22 20 18;
+
+  /* Overlays (light) */
+  --overlay-hover: rgba(var(--overlay-ink), var(--alpha-1));
+  --overlay-press: rgba(var(--overlay-ink), var(--alpha-2));
+  --overlay-drag: rgba(var(--overlay-ink), var(--alpha-3));
+
+  /* Focus ring (light) */
+  --focus-ring: rgba(74, 142, 161, 0.45);
+
+  /* Status: Success */
+  --success-solid: #2E9A62;
+  --success-on-solid: var(--color-neutral-50);
+  --success-bg: #EAF7F0;
+  --success-border: #BFE8D2;
+  --success-text: #1F6B46;
+
+  /* Status: Info */
+  --info-solid: #2F7FA0;
+  --info-on-solid: var(--color-neutral-50);
+  --info-bg: #EAF4FA;
+  --info-border: #C6E3F1;
+  --info-text: #225E77;
+
+  /* Status: Warning */
+  --warning-solid: #D97706;
+  --warning-on-solid: #1A1405;
+  --warning-bg: #FFF6DE;
+  --warning-border: #FFE0A3;
+  --warning-text: #8A4B05;
+
+  /* Status: Error */
+  --error-solid: #D64545;
+  --error-on-solid: var(--color-neutral-50);
+  --error-bg: #FDEEEE;
+  --error-border: #F6CACA;
+  --error-text: #8E2A2A;
+}
+
+/* --------------------------------------------
+   Semantic tokens (dark)
+   Apply by setting: document.documentElement.dataset.theme = "dark"
+   -------------------------------------------- */
+:root[data-theme="dark"] {
+
+  /* Brand colors (semantic, lighter in dark mode) */
+  --primary: var(--color-primary-400);
+  --secondary: var(--color-secondary-400);
+  --accent: var(--color-accent-400);
+
+  /* Text (theme-aware) */
+  --text: var(--color-neutral-50);
+  --text-muted: var(--color-neutral-200);
+  --text-subtle: var(--color-neutral-400);
+
+  /* Text (fixed for specific surfaces) */
+  --text-light: var(--color-neutral-50);
+  --text-dark: var(--color-neutral-900);
+
+  /* On-color text */
+  --text-on-primary: #071114;
+  --text-on-secondary: #1A1405;
+  --text-on-accent: #160B08;
+
+  /* Borders */
+  --border-1: rgba(250, 247, 243, 0.10);
+  --border-2: rgba(250, 247, 243, 0.16);
+
+  /* Alpha scale (dark) */
+  --alpha-1: 0.06;
+  --alpha-2: 0.10;
+  --alpha-3: 0.16;
+
+  /* Overlay ink (dark) */
+  --overlay-ink: 250 247 243;
+
+  /* Overlays (dark) */
+  --overlay-hover: rgba(var(--overlay-ink), var(--alpha-1));
+  --overlay-press: rgba(var(--overlay-ink), var(--alpha-2));
+  --overlay-drag: rgba(var(--overlay-ink), var(--alpha-3));
+
+  /* Focus ring (dark) */
+  --focus-ring: rgba(91, 163, 181, 0.55);
+
+  /* Status backgrounds/borders/text in dark */
+  --success-bg: rgba(46, 154, 98, 0.16);
+  --success-border: rgba(46, 154, 98, 0.28);
+  --success-text: #A7E7C6;
+
+  --info-bg: rgba(47, 127, 160, 0.16);
+  --info-border: rgba(47, 127, 160, 0.28);
+  --info-text: #A7D9EE;
+
+  --warning-bg: rgba(217, 119, 6, 0.18);
+  --warning-border: rgba(217, 119, 6, 0.30);
+  --warning-text: #FFD18A;
+
+  --error-bg: rgba(214, 69, 69, 0.18);
+  --error-border: rgba(214, 69, 69, 0.30);
+  --error-text: #FFB3B3;
+}
+
+/* --------------------------------------------
+   Tailwind v4 theme export
+   -------------------------------------------- */
+@theme {
+
+  /* Brand (semantic) */
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+
+  /* Text (theme-aware) */
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-text-subtle: var(--text-subtle);
+
+  /* Text (fixed) */
+  --color-text-light: var(--text-light);
+  --color-text-dark: var(--text-dark);
+
+  --color-text-on-primary: var(--text-on-primary);
+  --color-text-on-secondary: var(--text-on-secondary);
+  --color-text-on-accent: var(--text-on-accent);
+
+  /* Borders */
+  --color-border-1: var(--border-1);
+  --color-border-2: var(--border-2);
+
+  /* Overlays */
+  --color-overlay-hover: var(--overlay-hover);
+  --color-overlay-press: var(--overlay-press);
+  --color-overlay-drag: var(--overlay-drag);
+
+  /* Alpha (if you want to read these in CSS) */
+  --alpha-1: var(--alpha-1);
+  --alpha-2: var(--alpha-2);
+  --alpha-3: var(--alpha-3);
+
+  /* Brand scales */
+  --color-primary-50: var(--color-primary-50);
+  --color-primary-100: var(--color-primary-100);
+  --color-primary-200: var(--color-primary-200);
+  --color-primary-300: var(--color-primary-300);
+  --color-primary-400: var(--color-primary-400);
+  --color-primary-500: var(--color-primary-500);
+  --color-primary-600: var(--color-primary-600);
+  --color-primary-700: var(--color-primary-700);
+  --color-primary-800: var(--color-primary-800);
+  --color-primary-900: var(--color-primary-900);
+  --color-primary-950: var(--color-primary-950);
+
+  --color-secondary-50: var(--color-secondary-50);
+  --color-secondary-100: var(--color-secondary-100);
+  --color-secondary-200: var(--color-secondary-200);
+  --color-secondary-300: var(--color-secondary-300);
+  --color-secondary-400: var(--color-secondary-400);
+  --color-secondary-500: var(--color-secondary-500);
+  --color-secondary-600: var(--color-secondary-600);
+  --color-secondary-700: var(--color-secondary-700);
+  --color-secondary-800: var(--color-secondary-800);
+  --color-secondary-900: var(--color-secondary-900);
+  --color-secondary-950: var(--color-secondary-950);
+
+  --color-accent-50: var(--color-accent-50);
+  --color-accent-100: var(--color-accent-100);
+  --color-accent-200: var(--color-accent-200);
+  --color-accent-300: var(--color-accent-300);
+  --color-accent-400: var(--color-accent-400);
+  --color-accent-500: var(--color-accent-500);
+  --color-accent-600: var(--color-accent-600);
+  --color-accent-700: var(--color-accent-700);
+  --color-accent-800: var(--color-accent-800);
+  --color-accent-900: var(--color-accent-900);
+  --color-accent-950: var(--color-accent-950);
+
+  --color-neutral-50: var(--color-neutral-50);
+  --color-neutral-100: var(--color-neutral-100);
+  --color-neutral-200: var(--color-neutral-200);
+  --color-neutral-300: var(--color-neutral-300);
+  --color-neutral-400: var(--color-neutral-400);
+  --color-neutral-500: var(--color-neutral-500);
+  --color-neutral-600: var(--color-neutral-600);
+  --color-neutral-700: var(--color-neutral-700);
+  --color-neutral-800: var(--color-neutral-800);
+  --color-neutral-900: var(--color-neutral-900);
+  --color-neutral-950: var(--color-neutral-950);
+
+  /* Status */
+  --color-success: var(--success-solid);
+  --color-success-bg: var(--success-bg);
+  --color-success-border: var(--success-border);
+  --color-success-text: var(--success-text);
+  --color-success-on: var(--success-on-solid);
+
+  --color-info: var(--info-solid);
+  --color-info-bg: var(--info-bg);
+  --color-info-border: var(--info-border);
+  --color-info-text: var(--info-text);
+  --color-info-on: var(--info-on-solid);
+
+  --color-warning: var(--warning-solid);
+  --color-warning-bg: var(--warning-bg);
+  --color-warning-border: var(--warning-border);
+  --color-warning-text: var(--warning-text);
+  --color-warning-on: var(--warning-on-solid);
+
+  --color-error: var(--error-solid);
+  --color-error-bg: var(--error-bg);
+  --color-error-border: var(--error-border);
+  --color-error-text: var(--error-text);
+  --color-error-on: var(--error-on-solid);
+
+  /* Shadow tokens */
+  --shadow-focus: 0 0 0 4px var(--focus-ring);
+}
+
+/* --------------------------------------------
+   Base document styling
+   -------------------------------------------- */
+html {
+  color: var(--text);
+}
+
+/* --------------------------------------------
+   Usage notes (examples)
+   -------------------------------------------- */
+/*
+text:          text / text-muted / text-subtle / text-light / text-dark
+hover overlay: hover:bg-overlay-hover active:bg-overlay-press
+focus ring:    focus-visible:shadow-focus focus-visible:outline-none
+
+alerts:
+  bg-info-bg border border-info-border text-info-text
+  bg-success-bg border border-success-border text-success-text
+  bg-warning-bg border border-warning-border text-warning-text
+  bg-error-bg border border-error-border text-error-text
+*/

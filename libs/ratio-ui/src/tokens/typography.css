@@ -1,0 +1,22 @@
+@theme {
+  /* Fonts */
+  --font-sans: "Source Sans 3", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Source Serif 4", ui-serif, Georgia, serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", monospace;
+
+  /* Recommended roles */
+  --font-display: var(--font-serif);
+  --font-body: var(--font-sans);
+
+  /* Fluid typography - @link https://utopia.fyi/type/calculator */
+  --font-size-xs: clamp(0.75rem, 0.7rem + 0.13vw, 0.81rem);
+  --font-size-sm: clamp(0.88rem, 0.83rem + 0.16vw, 0.96rem);
+  --font-size-base: clamp(1rem, 0.96rem + 0.19vw, 1.13rem);
+  --font-size-lg: clamp(1.13rem, 1.06rem + 0.23vw, 1.27rem);
+  --font-size-xl: clamp(1.27rem, 1.19rem + 0.27vw, 1.42rem);
+  --font-size-2xl: clamp(1.42rem, 1.33rem + 0.32vw, 1.6rem);
+  --font-size-3xl: clamp(1.6rem, 1.48rem + 0.37vw, 1.8rem);
+  --font-size-4xl: clamp(1.8rem, 1.66rem + 0.43vw, 2.03rem);
+  --font-size-5xl: clamp(2.03rem, 1.85rem + 0.49vw, 2.28rem);
+  --font-size-6xl: clamp(2.28rem, 2.07rem + 0.55vw, 2.57rem);
+}
