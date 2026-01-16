@@ -35,7 +35,7 @@ export const Hero: React.FC<HeroProps> = ({
     setHeaderTheme('dark');
   }, [setHeaderTheme]);
 
-  const imageProps = getImageProps(image, 'standard');
+  const imageProps = getImageProps(image, 'landscape');
 
   return (
     <Section grid={!!imageProps.url} container={false} gap="8">

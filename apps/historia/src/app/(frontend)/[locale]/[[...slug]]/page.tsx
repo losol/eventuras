@@ -7,14 +7,14 @@ import { getPayload } from 'payload';
 
 import { Story, StoryHeader } from '@eventuras/ratio-ui/blocks/Story';
 import { Breadcrumb,Breadcrumbs } from '@eventuras/ratio-ui/core/Breadcrumbs';
-import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Link } from '@eventuras/ratio-ui-next';
 
 import { RenderBlocks } from '@/blocks/RenderBlocks';
 import { LivePreviewListener } from '@/components/LivePreviewListener';
 import { Hero } from '@/heros/Hero';
+import { generateMeta } from '@/lib/seo';
+import { getCurrentWebsite } from '@/lib/website';
 import { PagesSelect } from '@/payload-types';
-import { getImageUrl } from '@/utilities/image';
 
 import PageClient from './page.client';
 
@@ -116,19 +116,9 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
     };
   }
 
-  const title = page.title || 'Historia';
-  const description = page.lead || undefined;
-  const imageUrl = getImageUrl(page.image, 'original') || undefined;
+  const website = await getCurrentWebsite();
 
-  return {
-    title,
-    description,
-    openGraph: {
-      title,
-      description,
-      images: imageUrl ? [{ url: imageUrl }] : undefined,
-    },
-  };
+  return generateMeta({ doc: page, website });
 }
 
 // Page component

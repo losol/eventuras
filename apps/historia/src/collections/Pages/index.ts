@@ -16,6 +16,7 @@ import resourceId from '@/fields/resourceId';
 import { slugField } from '@/fields/slug';
 import { storyField } from '@/fields/story';
 import { title } from '@/fields/title';
+import { seoTab } from '@/lib/payload-plugin-seo';
 
 import { revalidateDelete, revalidatePage } from './hooks/revalidatePage';
 import { populatePublishedAt } from '../../hooks/populatePublishedAt';
@@ -89,8 +90,10 @@ export const Pages: CollectionConfig<'pages'> = {
             publishedAt
           ]
         },
+        seoTab(),
       ],
-    }],
+    },
+  ],
   defaultPopulate: {
     title: true,
     slug: true,

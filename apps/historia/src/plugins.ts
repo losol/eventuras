@@ -11,8 +11,6 @@ import { multiTenantPlugin } from '@payloadcms/plugin-multi-tenant';
 import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs';
 import { redirectsPlugin } from '@payloadcms/plugin-redirects';
 import { searchPlugin } from '@payloadcms/plugin-search';
-import { seoPlugin } from '@payloadcms/plugin-seo';
-import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types';
 import { FixedToolbarFeature, HeadingFeature, lexicalEditor } from '@payloadcms/richtext-lexical';
 import { s3Storage } from '@payloadcms/storage-s3';
 import { Plugin } from 'payload';
@@ -21,21 +19,10 @@ import { vippsAuthPlugin } from '@eventuras/payload-vipps-auth';
 
 import { isSystemAdmin } from '@/access/isSystemAdmin';
 import { revalidateRedirects } from '@/hooks/revalidateRedirects';
-import { Article, Config, Note, Page } from '@/payload-types';
+import { Config } from '@/payload-types';
 import { beforeSyncWithSearch } from '@/search/beforeSync';
 import { searchFields } from '@/search/fieldOverrides';
-import { getServerSideURL } from '@/utilities/getURL';
 import { getUserTenantIDs } from '@/utilities/getUserTenantIDs';
-
-const generateTitle: GenerateTitle<Article | Note | Page> = ({ doc }) => {
-  return doc?.title ? `${doc.title} | Historia` : 'Historia';
-};
-
-const generateURL: GenerateURL<Article | Note | Page> = ({ doc }) => {
-  const url = getServerSideURL();
-
-  return doc?.slug ? `${url}/${doc.slug}` : url;
-};
 
 const requiredS3MediaVars = [
   'CMS_MEDIA_S3_ACCESS_KEY_ID',
@@ -160,10 +147,6 @@ export const plugins: Plugin[] = [
     collections: ['pages'],
     generateLabel: (_, doc) => doc.title as string,
     generateURL: (docs) => docs.reduce((url, doc) => `${url}/${doc.slug}`, ''),
-  }),
-  seoPlugin({
-    generateTitle,
-    generateURL,
   }),
   formBuilderPlugin({
     fields: {

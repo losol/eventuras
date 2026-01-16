@@ -3,18 +3,18 @@ import type { Image, Media } from '@/payload-types';
 /**
  * Size preference for image URL retrieval
  */
-export type ImageSize = 'thumbnail' | 'square1080' | 'standard' | 'original';
+export type ImageSize = 'thumbnail' | 'square' | 'landscape' | 'socialShare' | 'verticalStory' | 'banner' | 'original';
 
 /**
  * Extract the best available image URL from a Payload CMS image object.
  *
  * @param image - The image object from Payload CMS
- * @param preferredSize - The preferred image size ('thumbnail', 'standard', or 'original')
+ * @param preferredSize - The preferred image size ('thumbnail', 'landscape', or 'original')
  * @returns The image URL or null if not available
  *
  * @example
  * ```tsx
- * const imageUrl = getImageUrl(product.image, 'standard');
+ * const imageUrl = getImageUrl(product.image, 'landscape');
  * if (imageUrl) {
  *   <img src={imageUrl} alt="Product" />
  * }
@@ -22,7 +22,7 @@ export type ImageSize = 'thumbnail' | 'square1080' | 'standard' | 'original';
  */
 export function getImageUrl(
   image: Image | null | undefined,
-  preferredSize: ImageSize = 'standard',
+  preferredSize: ImageSize = 'landscape',
 ): string | null {
   if (!image || typeof image !== 'object') {
     return null;
@@ -74,9 +74,9 @@ export function getImageUrl(
     }
   }
 
-  // Fallback to standard size
-  if (preferredSize === 'thumbnail' && 'sizes' in media && media.sizes?.standard?.url) {
-    return normalizeUrl(media.sizes.standard.url);
+  // Fallback to landscape size
+  if (preferredSize === 'thumbnail' && 'sizes' in media && media.sizes?.landscape?.url) {
+    return normalizeUrl(media.sizes.landscape.url);
   }
 
   // Fallback to original URL
@@ -135,7 +135,11 @@ export function getImageAlt(
     return fallback;
   }
 
-  // Try to get alt text from caption
+  const media = 'media' in image && image.media && typeof image.media === 'object'
+    ? (image.media as Media)
+    : null;
+
+  // Try to get alt text from caption (most specific - per-usage context)
   if ('caption' in image && image.caption) {
     if (typeof image.caption === 'object' && 'root' in image.caption) {
       const captionText = image.caption.root.children
@@ -154,15 +158,23 @@ export function getImageAlt(
     }
   }
 
-  // Try to get alt from media alt field
-  if (
-    'media' in image &&
-    image.media &&
-    typeof image.media === 'object' &&
-    'alt' in image.media &&
-    typeof image.media.alt === 'string'
-  ) {
-    return image.media.alt;
+  // Try to get plaintext from media description (general description of the media)
+  if (media && 'description' in media && media.description) {
+    if (typeof media.description === 'object' && 'root' in media.description) {
+      const descriptionText = media.description.root.children
+        .map((child: any) => {
+          if (typeof child === 'object' && 'text' in child) {
+            return child.text;
+          }
+          return '';
+        })
+        .join(' ')
+        .trim();
+
+      if (descriptionText) {
+        return descriptionText;
+      }
+    }
   }
 
   return fallback;
@@ -172,12 +184,12 @@ export function getImageAlt(
  * Get comprehensive image properties for rendering.
  *
  * @param image - The image object from Payload CMS
- * @param preferredSize - The preferred image size ('thumbnail', 'standard', or 'original')
+ * @param preferredSize - The preferred image size ('thumbnail', 'landscape', or 'original')
  * @returns Object with url, alt, caption, width, and height
  *
  * @example
  * ```tsx
- * const imageProps = getImageProps(hero.image, 'standard');
+ * const imageProps = getImageProps(hero.image, 'landscape');
  * if (imageProps.url) {
  *   <Image src={imageProps.url} alt={imageProps.alt} width={imageProps.width} height={imageProps.height} />
  * }
@@ -185,7 +197,7 @@ export function getImageAlt(
  */
 export function getImageProps(
   image: Image | null | undefined,
-  preferredSize: ImageSize = 'standard',
+  preferredSize: ImageSize = 'landscape',
 ) {
   const url = getImageUrl(image, preferredSize);
   const caption = getImageCaption(image);

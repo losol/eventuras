@@ -10,6 +10,7 @@ import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Image } from '@eventuras/ratio-ui/core/Image';
 import { Text } from '@eventuras/ratio-ui/core/Text';
+import { ImageCard } from '@eventuras/ratio-ui/layout/ImageCard';
 import { Stack } from '@eventuras/ratio-ui/layout/Stack';
 import { Link } from '@eventuras/ratio-ui-next';
 import { useToast } from '@eventuras/toast';

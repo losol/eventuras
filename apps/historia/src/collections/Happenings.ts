@@ -13,6 +13,7 @@ import { slugField } from '@/fields/slug';
 import { startDate } from '@/fields/startDate';
 import { storyField } from '@/fields/story';
 import { title } from '@/fields/title';
+import { seoTab } from '@/lib/payload-plugin-seo';
 
 
 
@@ -28,16 +29,32 @@ export const Happenings: CollectionConfig = {
     useAsTitle: 'title',
   },
   fields: [
-    title,
-    lead,
-    image,
-    storyField(),
-    startDate,
-    endDate,
-    program,
-    contentLocations,
-    ...slugField(),
-    resourceId,
-    config,
+    {
+      type: 'tabs',
+      tabs: [
+        {
+          label: 'Content',
+          fields: [
+            title,
+            lead,
+            image,
+            storyField(),
+            startDate,
+            endDate,
+            program,
+            contentLocations,
+          ],
+        },
+        {
+          label: 'Meta',
+          fields: [
+            ...slugField(),
+            resourceId,
+            config,
+          ],
+        },
+        seoTab(),
+      ],
+    },
   ],
 };

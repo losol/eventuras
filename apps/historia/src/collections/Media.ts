@@ -49,22 +49,37 @@ export const Media: CollectionConfig = {
         name: 'thumbnail',
         width: 400,
         height: 400,
-        position: 'center',
-        withoutEnlargement: false
+        withoutEnlargement: false,
       },
       {
-        name: 'square1080',
+        name: 'square',
         width: 1080,
         height: 1080,
-        position: 'center',
-        withoutEnlargement: false
+        withoutEnlargement: false,
       },
       {
-        name: 'standard',
+        name: 'landscape',
         width: 1920,
         height: 1080,
-        position: 'center',
-        withoutEnlargement: false
+        withoutEnlargement: false,
+      },
+      {
+        name: 'socialShare',
+        width: 1200,
+        height: 630,
+        withoutEnlargement: false,
+      },
+      {
+        name: 'verticalStory',
+        width: 1080,
+        height: 1920,
+        withoutEnlargement: false,
+      },
+      {
+        name: 'banner',
+        width: 2560,
+        height: 1080,
+        withoutEnlargement: false,
       },
     ],
   },

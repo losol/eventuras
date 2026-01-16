@@ -10,6 +10,7 @@ import resourceId from '@/fields/resourceId';
 import { slugField } from '@/fields/slug';
 import { storyField } from '@/fields/story';
 import { title } from '@/fields/title';
+import { seoTab } from '@/lib/payload-plugin-seo';
 import { generatePreviewPath } from '@/utilities/generatePreviewPath';
 
 export const Products: CollectionConfig = {
@@ -183,9 +184,15 @@ export const Products: CollectionConfig = {
             },
           ],
         },
+        {
+          label: 'Meta',
+          fields: [
+            ...slugField(),
+            resourceId,
+          ],
+        },
+        seoTab(),
       ],
     },
-    ...slugField(),
-    resourceId,
   ],
 };

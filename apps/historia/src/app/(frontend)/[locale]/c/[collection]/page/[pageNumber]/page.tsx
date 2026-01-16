@@ -7,6 +7,8 @@ import { getPayload } from 'payload'
 import { CollectionArchive } from '@/components/CollectionArchive'
 import { PageRange } from '@/components/PageRange'
 import { Pagination } from '@/components/Pagination'
+import { generateMeta } from '@/lib/seo'
+import { getCurrentWebsite } from '@/lib/website'
 
 import PageClient from './page.client'
 
@@ -65,9 +67,13 @@ export default async function Page({ params: paramsPromise }: Args) {
 
 export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
   const { pageNumber } = await paramsPromise
-  return {
-    title: `Historia Articles Page ${pageNumber || ''}`,
+  const website = await getCurrentWebsite()
+
+  const doc = {
+    title: `Articles - Page ${pageNumber || ''}`,
   }
+
+  return generateMeta({ doc, website })
 }
 
 export async function generateStaticParams() {  // Skip static generation during build to avoid database queries
