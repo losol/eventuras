@@ -264,6 +264,20 @@ export interface Article {
           }
       )[]
     | null;
+  meta?: {
+    /**
+     * 50-60 characters recommended for optimal display in search results. Leave empty to auto-generate from title.
+     */
+    title?: string | null;
+    /**
+     * 150-160 characters recommended for search result snippets. Leave empty to use excerpt or lead text.
+     */
+    description?: string | null;
+    /**
+     * Image used when sharing on social media (Facebook, LinkedIn, Twitter). Recommended: Use the "socialShare" format (1200×630px) for best results. Leave empty to use featured image.
+     */
+    image?: (string | null) | Media;
+  };
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -308,8 +322,17 @@ export interface Website {
     };
   };
   meta?: {
+    /**
+     * 50-60 characters recommended for optimal display in search results. Leave empty to auto-generate from title.
+     */
     title?: string | null;
+    /**
+     * 150-160 characters recommended for search result snippets. Leave empty to use excerpt or lead text.
+     */
     description?: string | null;
+    /**
+     * Image used when sharing on social media (Facebook, LinkedIn, Twitter). Recommended: Use the "socialShare" format (1200×630px) for best results. Leave empty to use featured image.
+     */
     image?: (string | null) | Media;
   };
   updatedAt: string;
@@ -339,6 +362,20 @@ export interface Page {
   license?: (string | null) | License;
   contributors?: Contributors;
   publishedAt?: string | null;
+  meta?: {
+    /**
+     * 50-60 characters recommended for optimal display in search results. Leave empty to auto-generate from title.
+     */
+    title?: string | null;
+    /**
+     * 150-160 characters recommended for search result snippets. Leave empty to use excerpt or lead text.
+     */
+    description?: string | null;
+    /**
+     * Image used when sharing on social media (Facebook, LinkedIn, Twitter). Recommended: Use the "socialShare" format (1200×630px) for best results. Leave empty to use featured image.
+     */
+    image?: (string | null) | Media;
+  };
   parent?: (string | null) | Page;
   breadcrumbs?:
     | {
@@ -456,7 +493,7 @@ export interface Media {
       filesize?: number | null;
       filename?: string | null;
     };
-    square1080?: {
+    square?: {
       url?: string | null;
       width?: number | null;
       height?: number | null;
@@ -464,7 +501,31 @@ export interface Media {
       filesize?: number | null;
       filename?: string | null;
     };
-    standard?: {
+    landscape?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    socialShare?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    verticalStory?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    banner?: {
       url?: string | null;
       width?: number | null;
       height?: number | null;
@@ -612,6 +673,20 @@ export interface Note {
   slug?: string | null;
   slugLock?: boolean | null;
   resourceId: string;
+  meta?: {
+    /**
+     * 50-60 characters recommended for optimal display in search results. Leave empty to auto-generate from title.
+     */
+    title?: string | null;
+    /**
+     * 150-160 characters recommended for search result snippets. Leave empty to use excerpt or lead text.
+     */
+    description?: string | null;
+    /**
+     * Image used when sharing on social media (Facebook, LinkedIn, Twitter). Recommended: Use the "socialShare" format (1200×630px) for best results. Leave empty to use featured image.
+     */
+    image?: (string | null) | Media;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -733,6 +808,20 @@ export interface Project {
   slugLock?: boolean | null;
   resourceId: string;
   publishedAt?: string | null;
+  meta?: {
+    /**
+     * 50-60 characters recommended for optimal display in search results. Leave empty to auto-generate from title.
+     */
+    title?: string | null;
+    /**
+     * 150-160 characters recommended for search result snippets. Leave empty to use excerpt or lead text.
+     */
+    description?: string | null;
+    /**
+     * Image used when sharing on social media (Facebook, LinkedIn, Twitter). Recommended: Use the "socialShare" format (1200×630px) for best results. Leave empty to use featured image.
+     */
+    image?: (string | null) | Media;
+  };
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -937,6 +1026,20 @@ export interface Product {
   slug?: string | null;
   slugLock?: boolean | null;
   resourceId: string;
+  meta?: {
+    /**
+     * 50-60 characters recommended for optimal display in search results. Leave empty to auto-generate from title.
+     */
+    title?: string | null;
+    /**
+     * 150-160 characters recommended for search result snippets. Leave empty to use excerpt or lead text.
+     */
+    description?: string | null;
+    /**
+     * Image used when sharing on social media (Facebook, LinkedIn, Twitter). Recommended: Use the "socialShare" format (1200×630px) for best results. Leave empty to use featured image.
+     */
+    image?: (string | null) | Media;
+  };
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -1373,6 +1476,20 @@ export interface Happening {
     | number
     | boolean
     | null;
+  meta?: {
+    /**
+     * 50-60 characters recommended for optimal display in search results. Leave empty to auto-generate from title.
+     */
+    title?: string | null;
+    /**
+     * 150-160 characters recommended for search result snippets. Leave empty to use excerpt or lead text.
+     */
+    description?: string | null;
+    /**
+     * Image used when sharing on social media (Facebook, LinkedIn, Twitter). Recommended: Use the "socialShare" format (1200×630px) for best results. Leave empty to use featured image.
+     */
+    image?: (string | null) | Media;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -2180,6 +2297,13 @@ export interface ArticlesSelect<T extends boolean = true> {
   contributors?: T | ContributorsSelect<T>;
   topics?: T;
   relatedContent?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -2294,6 +2418,13 @@ export interface HappeningsSelect<T extends boolean = true> {
   slugLock?: T;
   resourceId?: T;
   config?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2370,7 +2501,7 @@ export interface MediaSelect<T extends boolean = true> {
               filesize?: T;
               filename?: T;
             };
-        square1080?:
+        square?:
           | T
           | {
               url?: T;
@@ -2380,7 +2511,37 @@ export interface MediaSelect<T extends boolean = true> {
               filesize?: T;
               filename?: T;
             };
-        standard?:
+        landscape?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        socialShare?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        verticalStory?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        banner?:
           | T
           | {
               url?: T;
@@ -2406,6 +2567,13 @@ export interface NotesSelect<T extends boolean = true> {
   slug?: T;
   slugLock?: T;
   resourceId?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2503,6 +2671,13 @@ export interface PagesSelect<T extends boolean = true> {
   license?: T;
   contributors?: T | ContributorsSelect<T>;
   publishedAt?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
   parent?: T;
   breadcrumbs?:
     | T
@@ -2622,6 +2797,13 @@ export interface ProductsSelect<T extends boolean = true> {
   slug?: T;
   slugLock?: T;
   resourceId?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -2653,6 +2835,13 @@ export interface ProjectsSelect<T extends boolean = true> {
   slugLock?: T;
   resourceId?: T;
   publishedAt?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   _status?: T;

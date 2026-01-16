@@ -9,7 +9,7 @@ const getImageURL = (image?: Media | Config['db']['defaultIDType'] | null) => {
   let url = serverUrl + '/images/historia.png';
 
   if (image && typeof image === 'object') {
-    const ogUrl = image.sizes?.standard?.url;
+    const ogUrl = image.sizes?.landscape?.url;
 
     url = ogUrl ? serverUrl + ogUrl : serverUrl + image.url;
   }

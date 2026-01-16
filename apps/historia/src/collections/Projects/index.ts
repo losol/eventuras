@@ -12,6 +12,7 @@ import { slugField } from '@/fields/slug';
 import { startDate } from '@/fields/startDate';
 import { storyField } from '@/fields/story';
 import { title } from '@/fields/title';
+import { seoTab } from '@/lib/payload-plugin-seo';
 
 import { revalidateDelete, revalidatePage } from './hooks/revalidateProject';
 import { populatePublishedAt } from '../../hooks/populatePublishedAt';
@@ -31,16 +32,32 @@ export const Projects: CollectionConfig<'projects'> = {
     useAsTitle: 'title',
   },
   fields: [
-    title,
-    lead,
-    image,
-    storyField(),
-    startDate,
-    endDate,
-    partners,
-    ...slugField(),
-    resourceId,
-    publishedAt,
+    {
+      type: 'tabs',
+      tabs: [
+        {
+          label: 'Content',
+          fields: [
+            title,
+            lead,
+            image,
+            storyField(),
+            startDate,
+            endDate,
+            partners,
+          ],
+        },
+        {
+          label: 'Meta',
+          fields: [
+            ...slugField(),
+            resourceId,
+            publishedAt,
+          ],
+        },
+        seoTab(),
+      ],
+    },
   ],
   defaultPopulate: {
     title: true,

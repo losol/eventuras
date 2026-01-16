@@ -8,6 +8,8 @@ import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { CollectionArchive } from '@/components/CollectionArchive';
 import { PageRange } from '@/components/PageRange';
 import { Pagination } from '@/components/Pagination';
+import { generateMeta } from '@/lib/seo';
+import { getCurrentWebsite } from '@/lib/website';
 
 import {
   getLocalizedCollectionName,
@@ -114,9 +116,14 @@ export async function generateMetadata({
   const capitalizedCollection =
     originalCollectionName.charAt(0).toUpperCase() + originalCollectionName.slice(1);
 
-  return {
-    title: `Historia ${capitalizedCollection}`,
+  const website = await getCurrentWebsite();
+
+  // Create a minimal doc object for collection pages
+  const doc = {
+    title: capitalizedCollection,
   };
+
+  return generateMeta({ doc, website });
 }
 
 export async function generateStaticParams() {

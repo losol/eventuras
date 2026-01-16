@@ -44,7 +44,6 @@
     "@payloadcms/plugin-nested-docs": "3.69.0",
     "@payloadcms/plugin-redirects": "3.69.0",
     "@payloadcms/plugin-search": "3.69.0",
-    "@payloadcms/plugin-seo": "3.69.0",
     "@payloadcms/richtext-lexical": "3.69.0",
     "@payloadcms/storage-s3": "^3.69.0",
     "@payloadcms/translations": "3.69.0",

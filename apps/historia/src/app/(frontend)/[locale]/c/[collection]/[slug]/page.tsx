@@ -17,8 +17,9 @@ import { LivePreviewListener } from '@/components/LivePreviewListener';
 import { PayloadRedirects } from '@/components/PayloadRedirects';
 import { ProductActions } from '@/components/ProductActions';
 import RichText from '@/components/RichText';
+import { generateMeta } from '@/lib/seo';
+import { getCurrentWebsite } from '@/lib/website';
 import type { Product } from '@/payload-types';
-import { generateMeta } from '@/utilities/generateMeta';
 import { getImageProps } from '@/utilities/image';
 
 import PageClient from './page.client';
@@ -156,7 +157,7 @@ export default async function Page({ params: paramsPromise }: Args) {
   const isProduct = originalCollectionName === 'products';
   const hasLead = 'lead' in document && document.lead;
   const hasImage = 'image' in document && document.image;
-  const imageProps = hasImage ? getImageProps(document.image, isProduct ? 'square1080' : 'standard') : null;
+  const imageProps = hasImage ? getImageProps(document.image, isProduct ? 'square' : 'landscape') : null;
 
   return (
     <Container>
@@ -241,7 +242,9 @@ export async function generateMetadata({ params }: Args): Promise<Metadata> {
     resourceId,
   });
 
-  return generateMeta({ doc: document });
+  const website = await getCurrentWebsite();
+
+  return generateMeta({ doc: document, website });
 }
 
 const queryDocumentByResourceId = cache(

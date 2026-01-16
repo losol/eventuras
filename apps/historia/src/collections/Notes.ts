@@ -6,6 +6,7 @@ import { richText } from '@/fields/richText';
 import { slugField } from '@/fields/slug';
 import { title } from '@/fields/title';
 import { topics } from '@/fields/topics';
+import { seoTab } from '@/lib/payload-plugin-seo';
 
 import { admins } from '../access/admins';
 import { anyone } from '../access/anyone';
@@ -24,13 +25,29 @@ export const Notes: CollectionConfig = {
     delete: admins,
   },
   fields: [
-    title,
-    image,
-    richText({ name: 'content', localized: true }),
-    topics,
-    relatedContent,
-    ...slugField(),
-    resourceId
+    {
+      type: 'tabs',
+      tabs: [
+        {
+          label: 'Content',
+          fields: [
+            title,
+            image,
+            richText({ name: 'content', localized: true }),
+            topics,
+            relatedContent,
+          ],
+        },
+        {
+          label: 'Meta',
+          fields: [
+            ...slugField(),
+            resourceId,
+          ],
+        },
+        seoTab(),
+      ],
+    },
   ],
 };
 

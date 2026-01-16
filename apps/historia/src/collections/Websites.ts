@@ -1,10 +1,10 @@
 import type { CollectionConfig } from 'payload';
 
 import { Nav } from '@/blocks/Nav/config';
-import { meta } from '@/fields/meta';
 import { name } from '@/fields/name';
 import { summary } from '@/fields/summary';
 import { title } from '@/fields/title';
+import { metaField } from '@/lib/payload-plugin-seo';
 
 import { admins } from '../access/admins';
 import { anyone } from '../access/anyone';
@@ -127,7 +127,7 @@ export const Websites: CollectionConfig = {
         },
       ],
     },
-    meta,
+    metaField,
   ],
 };
 

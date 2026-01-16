@@ -16,6 +16,7 @@ import { slugField } from '@/fields/slug';
 import { storyField } from '@/fields/story';
 import { title } from '@/fields/title';
 import { topics } from '@/fields/topics';
+import { seoTab } from '@/lib/payload-plugin-seo';
 
 import { revalidateArticle } from './hooks/revalidateArticle';
 import { authenticated } from '../../access/authenticated';
@@ -82,6 +83,7 @@ export const Articles: CollectionConfig = {
             relatedContent,
           ],
         },
+        seoTab(),
       ],
     },
   ],
