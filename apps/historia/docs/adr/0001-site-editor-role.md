@@ -1,7 +1,7 @@
 # ADR 0001 — Site Roles and Access Control
 
 ## Status
-Proposed
+Accepted
 
 ## Context
 
