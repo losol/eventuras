@@ -9,4 +9,5 @@ export { default as NumberInput } from './inputs/NumberInput';
 export { PhoneInput } from './inputs/PhoneInput';
 export { default as Select } from './inputs/Select';
 export { Input } from './inputs/Input';
+export { TextField } from './inputs/TextField';
 

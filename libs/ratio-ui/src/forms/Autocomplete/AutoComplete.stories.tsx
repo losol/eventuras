@@ -28,8 +28,34 @@ const meta: Meta<typeof AutoComplete> = {
 export default meta;
 type Story = StoryObj<typeof AutoComplete>;
 
+type Country = {
+  id: number;
+  name: string;
+  code: string;
+  continent: string;
+  population: string;
+};
+
+type User = {
+  id: number;
+  name: string;
+  email: string;
+  role: 'Admin' | 'User' | 'Manager';
+  avatar: string;
+  department: string;
+};
+
+type Event = {
+  id: number;
+  title: string;
+  location: string;
+  date: string;
+  category: string;
+  attendees: number;
+};
+
 // Mock data - Countries
-const countries = [
+const countries: Country[] = [
   { id: 1, name: 'Norway', code: 'NO', continent: 'Europe', population: '5.5M' },
   { id: 2, name: 'Sweden', code: 'SE', continent: 'Europe', population: '10.5M' },
   { id: 3, name: 'Denmark', code: 'DK', continent: 'Europe', population: '5.9M' },
@@ -63,7 +89,7 @@ const countries = [
 ];
 
 // Mock data - Users with detailed profiles
-const mockUsers = [
+const mockUsers: User[] = [
   {
     id: 1,
     name: 'Emma Johnson',
@@ -163,7 +189,7 @@ const mockUsers = [
 ];
 
 // Mock data - Events
-const mockEvents = [
+const mockEvents: Event[] = [
   {
     id: 1,
     title: 'React Conference 2026',
@@ -247,7 +273,7 @@ const mockEvents = [
 ];
 
 // Mock API for async examples
-const mockSearchAPI = async (query: string, delay = 500): Promise<any[]> => {
+const mockSearchAPI = async (query: string, delay = 500): Promise<Country[]> => {
   await new Promise(resolve => setTimeout(resolve, delay));
   const regex = new RegExp(query, 'gi');
   return countries.filter(c => regex.test(c.name));
@@ -283,11 +309,14 @@ export const ClientSideFiltering: Story = {
               </div>
             )}
           >
-            {item => (
-              <ListBoxItem textValue={item.name}>
-                {item.name} ({item.code})
-              </ListBoxItem>
-            )}
+            {item => {
+              const country = item as Country;
+              return (
+                <ListBoxItem textValue={country.name}>
+                  {country.name} ({country.code})
+                </ListBoxItem>
+              );
+            }}
           </ListBox>
         </AutoComplete>
       </div>
@@ -343,14 +372,19 @@ export const AsyncSearch: Story = {
               </div>
             )}
           >
-            {item => (
-              <ListBoxItem textValue={item.name}>
-                <div className="flex items-center justify-between">
-                  <span>{item.name}</span>
-                  <span className="text-sm text-gray-500 dark:text-gray-400">{item.code}</span>
-                </div>
-              </ListBoxItem>
-            )}
+            {item => {
+              const country = item as Country;
+              return (
+                <ListBoxItem textValue={country.name}>
+                  <div className="flex items-center justify-between">
+                    <span>{country.name}</span>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">
+                      {country.code}
+                    </span>
+                  </div>
+                </ListBoxItem>
+              );
+            }}
           </ListBox>
         </AutoComplete>
       </div>
@@ -388,7 +422,9 @@ export const CustomRendering: Story = {
               </div>
             )}
           >
-            {user => (
+            {item => {
+              const user = item as User;
+              return (
               <ListBoxItem textValue={`${user.name} ${user.email} ${user.department}`}>
                   <div className="flex items-center gap-3">
                     <div className="text-2xl">{user.avatar}</div>
@@ -410,7 +446,8 @@ export const CustomRendering: Story = {
                     )}
                   </div>
                 </ListBoxItem>
-              )}
+              );
+              }}
             </ListBox>
         </AutoComplete>
       </div>
@@ -462,11 +499,14 @@ export const WithSelectionHandler: Story = {
               </div>
             )}
           >
-            {item => (
-              <ListBoxItem textValue={item.name}>
-                {item.name}
-              </ListBoxItem>
-            )}
+            {item => {
+              const country = item as Country;
+              return (
+                <ListBoxItem textValue={country.name}>
+                  {country.name}
+                </ListBoxItem>
+              );
+            }}
           </ListBox>
         </AutoComplete>
 
@@ -516,11 +556,14 @@ export const Minimal: Story = {
                 </div>
               )}
             >
-              {item => (
-                <ListBoxItem textValue={item.name}>
-                  {item.name}
-                </ListBoxItem>
-              )}
+              {item => {
+                const country = item as Country;
+                return (
+                  <ListBoxItem textValue={country.name}>
+                    {country.name}
+                  </ListBoxItem>
+                );
+              }}
             </ListBox>
           </AutoComplete>
           <p className="text-xs text-gray-500 mt-2">
@@ -563,11 +606,13 @@ export const EventSearch: Story = {
               </div>
             )}
           >
-            {event => (
-              <ListBoxItem
-                textValue={`${event.title} ${event.location} ${event.category}`}
-                className="px-3 py-3 border-b border-gray-100 dark:border-gray-700 last:border-0"
-              >
+            {item => {
+              const event = item as Event;
+              return (
+                <ListBoxItem
+                  textValue={`${event.title} ${event.location} ${event.category}`}
+                  className="px-3 py-3 border-b border-gray-100 dark:border-gray-700 last:border-0"
+                >
                   <div className="space-y-1">
                     <div className="flex items-start justify-between gap-2">
                       <div className="font-medium text-gray-900">{event.title}</div>
@@ -591,7 +636,8 @@ export const EventSearch: Story = {
                     </div>
                   </div>
                 </ListBoxItem>
-              )}
+              );
+            }}
             </ListBox>
         </AutoComplete>
       </div>

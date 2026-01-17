@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl';
 import { Logger } from '@eventuras/logger';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Dialog } from '@eventuras/ratio-ui/layout/Dialog';
-import { Form, Input, NumberInput } from '@eventuras/smartform';
+import { Form, NumberInput, TextField } from '@eventuras/smartform';
 import { useToast } from '@eventuras/toast';
 
 import type { NewProductDto, ProductDto } from '@/lib/eventuras-sdk';
@@ -84,14 +84,14 @@ const ProductModal: React.FC<ProductModalProps> = ({
     <>
       <Dialog isOpen={isOpen} onClose={onClose} title={titleText}>
         <Form onSubmit={submitProduct} className="space-y-6" defaultValues={product}>
-          <Input
+          <TextField
             name="name"
             label={t('common.products.labels.name')}
             placeholder={t('common.products.labels.name')}
             testId="product-name-input"
             required
           />
-          <Input
+          <TextField
             name="description"
             label={t('common.products.labels.description')}
             placeholder={t('common.products.labels.description')}

@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
-import { Fieldset, Form, Input } from '@eventuras/ratio-ui/forms';
+import { Fieldset, Form, TextField } from '@eventuras/ratio-ui/forms';
 
 import { UserDto } from '@/lib/eventuras-sdk';
 import { PaymentFormValues } from '@/types';
@@ -104,7 +104,7 @@ const Step03PaymentConfiguration = ({
           </ul>
         </Fieldset>
         <Fieldset className="hidden">
-          <Input
+          <TextField
             {...register('username', { value: userProfile.name! })}
             label={t('user.registration.user.name')}
             defaultValue={userProfile.name}
@@ -112,7 +112,7 @@ const Step03PaymentConfiguration = ({
             errors={errors}
             hidden
           />
-          <Input
+          <TextField
             {...register('email', { value: userProfile.email! })}
             label={t('user.registration.user.email')}
             defaultValue={userProfile.email}
@@ -120,7 +120,7 @@ const Step03PaymentConfiguration = ({
             errors={errors}
             hidden
           />
-          <Input
+          <TextField
             {...register('phoneNumber', { value: userProfile.phoneNumber! })}
             label={t('user.registration.user.phoneNumber')}
             defaultValue={userProfile.phoneNumber}
@@ -130,7 +130,7 @@ const Step03PaymentConfiguration = ({
           />
         </Fieldset>
         <Fieldset label={t('user.registration.address.legend')}>
-          <Input
+          <TextField
             {...register('zip', {
               required: 'Zip code is Required',
             })}
@@ -139,7 +139,7 @@ const Step03PaymentConfiguration = ({
             placeholder="Zip Code"
             errors={errors}
           />
-          <Input
+          <TextField
             {...register('city', {
               required: 'City is required',
             })}
@@ -148,7 +148,7 @@ const Step03PaymentConfiguration = ({
             placeholder="City"
             errors={errors}
           />
-          <Input
+          <TextField
             {...register('country', {
               required: 'Country is required',
             })}
@@ -161,7 +161,7 @@ const Step03PaymentConfiguration = ({
         </Fieldset>
         {showBusinessFieldset && (
           <Fieldset label={t('user.registration.businessinfo.legend')}>
-            <Input
+            <TextField
               {...register('vatNumber', {
                 required: 'Vat Number is required for business customers',
               })}
@@ -170,7 +170,7 @@ const Step03PaymentConfiguration = ({
               placeholder="Vat Number"
               errors={errors}
             />
-            <Input
+            <TextField
               {...register('invoiceReference')}
               label={t('user.registration.businessinfo.invoiceReference')}
               placeholder="Invoice Reference"

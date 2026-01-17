@@ -1,7 +1,7 @@
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 
-import { formStyles, InputLabel, InputProps } from '@eventuras/ratio-ui/forms';
+import { formStyles, Label, InputProps } from '@eventuras/ratio-ui/forms';
 
 export const NumberInput = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   const { id, name, placeholder, label, description, className, defaultValue, validation, disabled } =
@@ -30,7 +30,7 @@ export const NumberInput = React.forwardRef<HTMLInputElement, InputProps>((props
 
   return (
     <div className="my-6">
-      {label && <InputLabel htmlFor={inputId}>{label}</InputLabel>}
+      {label && <Label htmlFor={inputId}>{label}</Label>}
       {description && <p className={formStyles.inputDescription}>{description}</p>}
 
       <input

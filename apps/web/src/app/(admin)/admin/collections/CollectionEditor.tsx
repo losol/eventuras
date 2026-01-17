@@ -8,7 +8,7 @@ import { Loading } from '@eventuras/ratio-ui/core/Loading';
 import { Trash2 } from '@eventuras/ratio-ui/icons';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 import { MarkdownInput } from '@eventuras/scribo';
-import { CheckboxInput, CheckboxLabel, Form, Input } from '@eventuras/smartform';
+import { CheckboxInput, CheckboxLabel, Form, TextField } from '@eventuras/smartform';
 import { useToast } from '@eventuras/toast';
 
 import EventLookup from '@/components/event/EventLookup';
@@ -107,18 +107,18 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
           onSubmit={onSubmitForm}
           testId="event-collection-edit-form"
         >
-          <Input name="name" label="Name" placeholder="Collection Name" required />
+          <TextField name="name" label="Name" placeholder="Collection Name" required />
           <MarkdownInput
             name="description"
             label="Description"
             placeholder="Collection Description"
           />
-          <Input name="slug" label="Slug" placeholder="Collection Slug" disabled />
+          <TextField name="slug" label="Slug" placeholder="Collection Slug" disabled />
           <CheckboxInput name="featured">
             <CheckboxLabel>Featured</CheckboxLabel>
           </CheckboxInput>
-          <Input name="featuredImageUrl" label="Featured Image URL" placeholder="Image URL" />
-          <Input
+          <TextField name="featuredImageUrl" label="Featured Image URL" placeholder="Image URL" />
+          <TextField
             name="featuredImageCaption"
             label="Featured Image Caption"
             placeholder="Image Caption"

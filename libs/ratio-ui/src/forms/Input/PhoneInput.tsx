@@ -11,7 +11,7 @@ import {
 } from 'react-aria-components';
 import { Input } from './Input';
 import { formStyles, textStyles, componentStyles } from '../styles/formStyles';
-import { InputLabel } from '../common/InputLabel';
+import { Label } from '../common/Label';
 import { InputDescription } from '../common/InputDescription';
 import { InputError } from '../common/InputError';
 import { COUNTRY_CODES } from './PhoneInputCountryCodes';
@@ -274,7 +274,7 @@ export function PhoneInput({
 
   return (
     <div className={formStyles.inputWrapper}>
-      {label && <InputLabel>{label}</InputLabel>}
+      {label && <Label>{label}</Label>}
       {description && <InputDescription>{description}</InputDescription>}
 
       <div className={`${componentStyles.phoneInputContainer} flex items-stretch`}>
@@ -337,8 +337,7 @@ export function PhoneInput({
           disabled={disabled}
           placeholder="Enter phone number"
           className="p-2 bg-gray-50 dark:bg-gray-900 border-0 rounded-none focus:ring-0 flex-1 w-full"
-          noWrapper
-          testId={testId}
+          data-testid={testId}
         />
       </div>
 

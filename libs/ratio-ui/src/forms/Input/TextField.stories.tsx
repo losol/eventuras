@@ -1,10 +1,10 @@
 import React from 'react';
 import { Meta, StoryObj } from '@storybook/react-vite';
-import { Input } from './Input';
+import { TextField } from './TextField';
 
-const meta: Meta<typeof Input> = {
-  title: 'Forms/Input',
-  component: Input,
+const meta: Meta<typeof TextField> = {
+  title: 'Forms/TextField',
+  component: TextField,
   tags: ['autodocs'],
   argTypes: {
     label: { control: 'text' },
@@ -16,7 +16,7 @@ const meta: Meta<typeof Input> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof Input>;
+type Story = StoryObj<typeof TextField>;
 
 /** Default text input */
 export const Default: Story = {
