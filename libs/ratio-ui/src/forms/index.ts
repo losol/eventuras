@@ -4,6 +4,8 @@ export { Fieldset } from './common/Fieldset';
 export { Form } from './common/Form';
 export { formStyles } from './styles/formStyles';
 export { Label, InputLabel } from './common/Label';
+export { ListBox, ListBoxItem } from './ListBox';
+export type { ListBoxProps, ListBoxItemProps } from './ListBox';
 export type { InputProps } from './Input/InputProps';
 export { Input } from './Input/Input';
 export { TextField } from './Input/TextField';
