@@ -20,12 +20,20 @@ const defaultTenantArrayField = tenantsArrayField({
   tenantFieldAccess: {},
   rowFields: [
     {
-      name: 'roles',
+      name: 'siteRoles',
       type: 'select',
-      defaultValue: ['site-member'],
+      defaultValue: ['member'],
       hasMany: true,
-      options: ['site-admin', 'site-member'],
+      options: [
+        { label: 'Admin', value: 'admin' },
+        { label: 'Editor', value: 'editor' },
+        { label: 'Commerce', value: 'commerce' },
+        { label: 'Member', value: 'member' },
+      ],
       required: true,
+      admin: {
+        description: 'Site-specific roles. Users can have multiple roles on a website.',
+      },
     },
   ],
 });

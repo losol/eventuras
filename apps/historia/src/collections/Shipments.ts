@@ -1,6 +1,9 @@
 import type { CollectionConfig } from 'payload';
 
 import { admins } from '@/access/admins';
+import { shipmentsReadAccess } from '@/access/commerceReadAccess';
+import { siteCommerceManagers } from '@/access/siteRoleAccess';
+import { accessOR } from '@/access/utils/accessOR';
 import { addressGroup } from '@/fields/address';
 
 import { sendShipmentNotification } from './Shipments/hooks/sendShipmentNotification';
@@ -8,20 +11,9 @@ import { sendShipmentNotification } from './Shipments/hooks/sendShipmentNotifica
 export const Shipments: CollectionConfig = {
   slug: 'shipments',
   access: {
-    create: admins,
-    read: ({ req: { user } }) => {
-      // Admins can read all shipments
-      // Check if user is from 'users' collection and has roles
-      if (user && 'roles' in user && user.roles?.includes('admin')) return true;
-      // Users can only read shipments for their orders
-      if (user) {
-        return {
-          'order.customer': { equals: user.id },
-        };
-      }
-      return false;
-    },
-    update: admins,
+    create: accessOR(admins, siteCommerceManagers),
+    read: shipmentsReadAccess,
+    update: accessOR(admins, siteCommerceManagers),
     delete: admins,
   },
   admin: {

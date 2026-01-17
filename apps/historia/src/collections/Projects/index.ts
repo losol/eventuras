@@ -2,6 +2,8 @@ import type { CollectionConfig } from 'payload';
 
 import { admins } from '@/access/admins';
 import { anyone } from '@/access/anyone';
+import { siteEditors } from '@/access/siteRoleAccess';
+import { accessOR } from '@/access/utils/accessOR';
 import { endDate } from '@/fields/endDate';
 import { image } from '@/fields/image';
 import { lead } from '@/fields/lead';
@@ -21,10 +23,10 @@ import { populatePublishedAt } from '../../hooks/populatePublishedAt';
 export const Projects: CollectionConfig<'projects'> = {
   slug: 'projects',
   access: {
-    create: admins,
+    create: accessOR(admins, siteEditors),
     read: anyone,
     readVersions: admins,
-    update: admins,
+    update: accessOR(admins, siteEditors),
     delete: admins,
   },
   admin: {

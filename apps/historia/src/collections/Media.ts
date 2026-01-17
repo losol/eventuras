@@ -5,12 +5,11 @@ import type { CollectionConfig } from 'payload';
 
 import { admins } from '@/access/admins';
 import { anyone } from '@/access/anyone';
-import { contentLocations } from '@/fields/contentLocations';
-import { contentPersons } from '@/fields/contentPersons';
+import { siteEditors } from '@/access/siteRoleAccess';
+import { accessOR } from '@/access/utils/accessOR';
 import { contributors } from '@/fields/contributors';
 import { description } from '@/fields/description';
 import { license } from '@/fields/license';
-import { name } from '@/fields/name';
 import { relatedContent } from '@/fields/relatedContent';
 import { title } from '@/fields/title';
 
@@ -21,8 +20,8 @@ export const Media: CollectionConfig = {
   slug: 'media',
   access: {
     read: anyone,
-    create: admins,
-    update: admins,
+    create: accessOR(admins, siteEditors),
+    update: accessOR(admins, siteEditors),
     delete: admins,
   },
   fields: [

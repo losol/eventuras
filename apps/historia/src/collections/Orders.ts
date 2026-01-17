@@ -1,6 +1,9 @@
 import type { CollectionConfig } from 'payload';
 
 import { admins } from '@/access/admins';
+import { ordersReadAccess } from '@/access/commerceReadAccess';
+import { siteCommerceManagers } from '@/access/siteRoleAccess';
+import { accessOR } from '@/access/utils/accessOR';
 import { addressGroup } from '@/fields/address';
 import { orderItemsField } from '@/fields/orderItemsField';
 
@@ -10,21 +13,9 @@ import { sendOrderStatus } from './Orders/hooks/sendOrderStatus';
 export const Orders: CollectionConfig = {
   slug: 'orders',
   access: {
-    create: admins,
-    read: ({ req: { user } }) => {
-      // Admins can read all orders
-      // Check if user is from 'users' collection and has roles
-      if (user && 'roles' in user && user.roles?.includes('admin')) {
-        return true;
-      }
-      // Users can only read their own orders
-      return {
-        user: {
-          equals: user?.id,
-        },
-      };
-    },
-    update: admins,
+    create: accessOR(admins, siteCommerceManagers),
+    read: ordersReadAccess,
+    update: accessOR(admins, siteCommerceManagers),
     delete: admins,
   },
   admin: {

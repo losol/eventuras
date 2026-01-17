@@ -2,6 +2,8 @@ import type { CollectionConfig } from 'payload';
 
 import { admins } from '@/access/admins';
 import { anyone } from '@/access/anyone';
+import { siteEditors } from '@/access/siteRoleAccess';
+import { accessOR } from '@/access/utils/accessOR';
 import { addressGroup } from '@/fields/address';
 import { description } from '@/fields/description';
 import { image } from '@/fields/image';
@@ -15,7 +17,7 @@ export const Organizations: CollectionConfig = {
   access: {
     read: anyone,
     create: admins,
-    update: admins,
+    update: accessOR(admins, siteEditors),
     delete: admins,
   },
   admin: {

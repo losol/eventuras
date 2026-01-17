@@ -10,6 +10,8 @@ import { seoTab } from '@/lib/payload-plugin-seo';
 
 import { admins } from '../access/admins';
 import { anyone } from '../access/anyone';
+import { siteEditors } from '../access/siteRoleAccess';
+import { accessOR } from '../access/utils/accessOR';
 import { image } from '../fields/image';
 
 
@@ -20,8 +22,8 @@ export const Notes: CollectionConfig = {
   },
   access: {
     read: anyone,
-    create: admins,
-    update: admins,
+    create: accessOR(admins, siteEditors),
+    update: accessOR(admins, siteEditors),
     delete: admins,
   },
   fields: [

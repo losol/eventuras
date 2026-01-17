@@ -16,7 +16,7 @@ export const createAccess: Access<User> = ({ req }) => {
 
   // Only User types can have tenant access
   if (req.user && 'email' in req.user) {
-    const adminTenantAccessIDs = getUserTenantIDs(req.user, 'site-admin');
+    const adminTenantAccessIDs = getUserTenantIDs(req.user, 'admin');
 
     if (adminTenantAccessIDs.length) {
       return true;

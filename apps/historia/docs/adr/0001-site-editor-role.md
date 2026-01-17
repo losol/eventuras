@@ -184,92 +184,118 @@ export const getUserTenantIDs = (
 // apps/historia/src/access/siteRoleAccess.ts
 
 /**
- * Editors and admins can create/update content.
- *
- * Combines tenant IDs from both roles - users with either role (or both)
- * get access. The spread operator merges arrays, and Payload's `in` operator
- * handles duplicates gracefully.
- *
- * Example:
- * - User has 'admin' on Site A → access to Site A
- * - User has 'editor' on Site B → access to Site B
- * - User has both 'admin' and 'editor' on Site C → access to Site C (no conflict)
+ * Site editors only.
+ * Grants access to users with the 'editor' role on specific tenants.
  */
-export const siteEditorAccess: Access = ({ req }) => {
+export const editors: Access = ({ req }) => {
   if (!req.user || !('email' in req.user)) return false;
   if (isSystemAdmin(req.user)) return true;
 
-  // Combine tenant IDs from both admin and editor roles
-  const adminTenantIDs = getUserTenantIDs(req.user, 'admin');
   const editorTenantIDs = getUserTenantIDs(req.user, 'editor');
-  const allTenantIDs = [...adminTenantIDs, ...editorTenantIDs];
 
-  return allTenantIDs.length > 0
-    ? { tenant: { in: allTenantIDs } }
+  return editorTenantIDs.length > 0
+    ? { tenant: { in: editorTenantIDs } }
     : false;
 };
 
 /**
- * Commerce managers and admins can manage products/orders
+ * Commerce managers only.
  */
-export const siteCommerceAccess: Access = ({ req }) => {
+export const commerceManagers: Access = ({ req }) => {
   if (!req.user || !('email' in req.user)) return false;
   if (isSystemAdmin(req.user)) return true;
 
-  const adminTenantIDs = getUserTenantIDs(req.user, 'admin');
   const commerceTenantIDs = getUserTenantIDs(req.user, 'commerce');
-  const allTenantIDs = [...adminTenantIDs, ...commerceTenantIDs];
 
-  return allTenantIDs.length > 0
-    ? { tenant: { in: allTenantIDs } }
+  return commerceTenantIDs.length > 0
+    ? { tenant: { in: commerceTenantIDs } }
     : false;
 };
 
 /**
- * Site admins only (for sensitive operations)
+ * Site members only.
  */
-export const siteAdminAccess: Access = ({ req }) => {
+export const members: Access = ({ req }) => {
   if (!req.user || !('email' in req.user)) return false;
   if (isSystemAdmin(req.user)) return true;
 
-  const adminTenantIDs = getUserTenantIDs(req.user, 'admin');
+  const memberTenantIDs = getUserTenantIDs(req.user, 'member');
 
-  return adminTenantIDs.length > 0
-    ? { tenant: { in: adminTenantIDs } }
+  return memberTenantIDs.length > 0
+    ? { tenant: { in: memberTenantIDs } }
     : false;
 };
+```
 
-/**
- * Any site member (inclueditors can create/update):
+**Create `accessOR` helper for combining roles:**
 
 ```typescript
+// apps/historia/src/access/utils/accessOR.ts
+
+/**
+ * Combines multiple access control functions with OR logic.
+ * Returns true if any of the access functions returns true.
+ */
+export const accessOR = (accessFunctions: Access[]): Access => {
+  return async (args) => {
+    const results = await Promise.all(accessFunctions.map((fn) => fn(args)));
+
+    // If any function returns true, grant access
+    if (results.some((result) => result === true)) {
+      return true;
+    }
+
+    // Collect constraint objects and combine with OR
+    const constraints = results.filter(
+      (result) => typeof result === 'object' && result !== null,
+    );
+
+    if (constraints.length === 0) return false;
+    if (constraints.length === 1) return constraints[0];
+
+    return { or: constraints };
+  };
+};
+```
+
+#### 3. Collection Access Patterns
+
+**Content collections — editors can create/update:**
+
+```typescript
+// Articles, Happenings, Notes, Projects, Pages
+{
+  access: {
+    create: accessOR([admins, editors]),
+    read: publishedOnly,
+    update: accessOR([admins, editors]),
 // Articles, Happenings, Notes, Projects, Pages
 {
   access: {
     create: siteEditorAccess,
     read: publishedOnly,
     update: siteEditorAccess,
-    delete: isSystemAdmin,  // Only system-admin
-    readVersions: siteEditorAccess,
+    delete: admins,
+    readVersions: accessOR([admins, editors]),
   },
 }
 
 // Media
 {
   access: {
-    create: siteEditorAccess,
-    read: siteMemberAccess,  // Members can view media
-    update: siteEditorAccess,
-    delete: isSystemAdmin,  // Only system-admin
+    create: accessOR([admins, editors]),
+    read: anyone,
+    update: accessOR([admins, editors]),
+    delete: admins,
   },
 }
 
 // Organizations
 {
   access: {
-    create: admins,  // Only system-admin creates orgs
+    create: admins,
     read: anyone,
-    update: accessOR([editors, admins]),  // Editors and admins
+    update: accessOR([admins, editors]),
     delete: admins,
   },
 }
@@ -281,18 +307,18 @@ export const siteAdminAccess: Access = ({ req }) => {
 // Products
 {
   access: {
-    create: siteCommerceAccess,
+    create: accessOR([admins, commerceManagers]),
     read: publishedOnly,
-    update: siteCommerceAccess,
-    delete: isSystemAdmin,
-    readVersions: siteCommerceAccess,
+    update: accessOR([admins, commerceManagers]),
+    delete: admins,
+    readVersions: accessOR([admins, commerceManagers]),
   },
 }
 
 // Orders
 {
   access: {
-    create: authenticated,  // Users create their own orders
+    create: accessOR([admins, commerceManagers]),
     read: ({ req }) => {
       // System admins see all, commerce sees all in their tenants, users see own
       if (isSystemAdmin(req.user)) return true;
@@ -311,20 +337,20 @@ export const siteAdminAccess: Access = ({ req }) => {
 
       return { user: { equals: req.user?.id } };
     },
-    update: siteCommerceAccess,
-    delete: isSystemAdmin,
+    update: accessOR([admins, commerceManagers]),
+    delete: admins,
   },
 }
 
 // Shipments
 {
   access: {
-    create: siteCommerceAccess,
+    create: accessOR([admins, commerceManagers]),
     read: ({ req }) => {
       // Same pattern as Orders
     },
-    update: siteCommerceAccess,
-    delete: isSystemAdmin,
+    update: accessOR([admins, commerceManagers]),
+    delete: admins,
   },
 }
 
