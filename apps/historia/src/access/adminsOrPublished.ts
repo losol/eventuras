@@ -1,10 +1,10 @@
 import type { Access } from 'payload';
 
-import { checkRole } from '../collections/Users/checkRole';
+import { isSystemAdmin } from './isSystemAdmin';
 
 export const adminsOrPublished: Access = ({ req: { user } }) => {
-  // Check if user is from 'users' collection (has email property) before passing to checkRole
-  if (user && 'email' in user && checkRole(['admin'], user)) {
+  // System admins can see unpublished content
+  if (user && 'email' in user && isSystemAdmin(user)) {
     return true;
   }
 

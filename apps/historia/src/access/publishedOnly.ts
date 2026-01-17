@@ -1,8 +1,10 @@
 import type { Access } from 'payload';
 
+import { isSystemAdmin } from './isSystemAdmin';
+
 export const publishedOnly: Access = ({ req: { user } }) => {
-  // Check if user is from 'users' collection and has roles
-  if (user && 'roles' in user && user.roles?.includes('admin')) {
+  // System admins can see unpublished content
+  if (user && 'email' in user && isSystemAdmin(user)) {
     return true;
   }
 
