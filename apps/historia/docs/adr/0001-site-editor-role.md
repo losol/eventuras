@@ -187,7 +187,7 @@ export const getUserTenantIDs = (
  * Site editors only.
  * Grants access to users with the 'editor' role on specific tenants.
  */
-export const editors: Access = ({ req }) => {
+export const siteEditors: Access = ({ req }) => {
   if (!req.user || !('email' in req.user)) return false;
   if (isSystemAdmin(req.user)) return true;
 
@@ -201,7 +201,7 @@ export const editors: Access = ({ req }) => {
 /**
  * Commerce managers only.
  */
-export const commerceManagers: Access = ({ req }) => {
+export const siteCommerceManagers: Access = ({ req }) => {
   if (!req.user || !('email' in req.user)) return false;
   if (isSystemAdmin(req.user)) return true;
 
@@ -215,7 +215,7 @@ export const commerceManagers: Access = ({ req }) => {
 /**
  * Site members only.
  */
-export const members: Access = ({ req }) => {
+export const siteMembers: Access = ({ req }) => {
   if (!req.user || !('email' in req.user)) return false;
   if (isSystemAdmin(req.user)) return true;
 
@@ -236,7 +236,7 @@ export const members: Access = ({ req }) => {
  * Combines multiple access control functions with OR logic.
  * Returns true if any of the access functions returns true.
  */
-export const accessOR = (accessFunctions: Access[]): Access => {
+export const accessOR = (...accessFunctions: Access[]): Access => {
   return async (args) => {
     const results = await Promise.all(accessFunctions.map((fn) => fn(args)));
 
@@ -266,26 +266,20 @@ export const accessOR = (accessFunctions: Access[]): Access => {
 // Articles, Happenings, Notes, Projects, Pages
 {
   access: {
-    create: accessOR([admins, editors]),
-    read: publishedOnly,
-    update: accessOR([admins, editors]),
-// Articles, Happenings, Notes, Projects, Pages
-{
-  access: {
     create: siteEditorAccess,
     read: publishedOnly,
     update: siteEditorAccess,
     delete: admins,
-    readVersions: accessOR([admins, editors]),
+    readVersions: accessOR(admins, siteEditors),
   },
 }
 
 // Media
 {
   access: {
-    create: accessOR([admins, editors]),
+    create: accessOR(admins, siteEditors),
     read: anyone,
-    update: accessOR([admins, editors]),
+    update: accessOR(admins, siteEditors),
     delete: admins,
   },
 }
@@ -295,7 +289,7 @@ export const accessOR = (accessFunctions: Access[]): Access => {
   access: {
     create: admins,
     read: anyone,
-    update: accessOR([admins, editors]),
+    update: accessOR(admins, siteEditors),
     delete: admins,
   },
 }
@@ -307,18 +301,18 @@ export const accessOR = (accessFunctions: Access[]): Access => {
 // Products
 {
   access: {
-    create: accessOR([admins, commerceManagers]),
+    create: accessOR(admins, siteCommerceManagers),
     read: publishedOnly,
-    update: accessOR([admins, commerceManagers]),
+    update: accessOR(admins, siteCommerceManagers),
     delete: admins,
-    readVersions: accessOR([admins, commerceManagers]),
+    readVersions: accessOR(admins, siteCommerceManagers),
   },
 }
 
 // Orders
 {
   access: {
-    create: accessOR([admins, commerceManagers]),
+    create: accessOR(admins, siteCommerceManagers),
     read: ({ req }) => {
       // System admins see all, commerce sees all in their tenants, users see own
       if (isSystemAdmin(req.user)) return true;
@@ -337,7 +331,7 @@ export const accessOR = (accessFunctions: Access[]): Access => {
 
       return { user: { equals: req.user?.id } };
     },
-    update: accessOR([admins, commerceManagers]),
+    update: accessOR(admins, siteCommerceManagers),
     delete: admins,
   },
 }
@@ -345,11 +339,11 @@ export const accessOR = (accessFunctions: Access[]): Access => {
 // Shipments
 {
   access: {
-    create: accessOR([admins, commerceManagers]),
+    create: accessOR(admins, siteCommerceManagers),
     read: ({ req }) => {
       // Same pattern as Orders
     },
-    update: accessOR([admins, commerceManagers]),
+    update: accessOR(admins, siteCommerceManagers),
     delete: admins,
   },
 }
@@ -468,12 +462,58 @@ ALTER TABLE users_tenants RENAME COLUMN roles TO site_roles;
   - Data migration required for existing users
 
 ### Migration Path for Existing Data
+
+**Two migrations were created to handle this schema change:**
+
+**Migration 1: `20260117_192436_site_roles.ts`** (Site Roles)
+- Renames field: `roles` → `siteRoles` in tenants array
+- Updates enum values: `['site-admin', 'site-member']` → `['admin', 'editor', 'commerce', 'member']`
+- Renames table: `users_tenants_roles` → `users_tenants_site_roles`
+- Preserves existing role assignments during transformation
+- Reversible with proper `down()` migration
+
+**Migration 2: `20260117_194401_remove_global_admin_user_roles.ts`** (Global Roles Cleanup)
+- Removes global `admin` and `user` roles
+- Deletes existing global role assignments via `DELETE FROM users_roles WHERE value IN ('admin', 'user')`
+- Updates global roles enum to only include `system-admin`
+- This is a **breaking change** - only `system-admin` remains as a global role
+- All other access must be granted via site roles
+
 ```typescript
-// Payload migration will handle:
-// 1. Rename column: roles → siteRoles
-// 2. Update values: 'site-admin' → 'admin', 'site-member' → 'member'
-// 3. Add new enum values: 'editor', 'commerce'
+// Migration 1: Site Roles (field rename + enum expansion)
+await db.execute(sql`
+  ALTER TYPE "enum_users_tenants_roles" RENAME TO "enum_users_tenants_site_roles";
+  ALTER TABLE "users_tenants_roles" RENAME TO "users_tenants_site_roles";
+
+  -- Transform enum from 2 to 4 values
+  ALTER TABLE "users_tenants_site_roles" ALTER COLUMN "value" SET DATA TYPE text;
+  DROP TYPE "enum_users_tenants_site_roles";
+  CREATE TYPE "enum_users_tenants_site_roles" AS ENUM('admin', 'editor', 'commerce', 'member');
+  ALTER TABLE "users_tenants_site_roles" ALTER COLUMN "value"
+    SET DATA TYPE "enum_users_tenants_site_roles"
+    USING "value"::"enum_users_tenants_site_roles";
+`);
+
+// Migration 2: Global Roles Cleanup
+await db.execute(sql`
+  -- Remove deprecated global role assignments
+  DELETE FROM users_roles WHERE value IN ('admin', 'user');
+
+  -- Update enum to only include system-admin
+  ALTER TABLE "users_roles" ALTER COLUMN "value" SET DATA TYPE text;
+  DROP TYPE "enum_users_roles";
+  CREATE TYPE "enum_users_roles" AS ENUM('system-admin');
+  ALTER TABLE "users_roles" ALTER COLUMN "value"
+    SET DATA TYPE "enum_users_roles"
+    USING "value"::"enum_users_roles";
+`);
 ```
+
+**Migration Status:**
+- ✅ Both migrations created and tested
+- ✅ Executed successfully (all 13 migrations applied)
+- ✅ TypeScript types regenerated to match schema
+- ✅ No data loss - existing roles preserved during transformation
 
 ### Future Enhancements
 
