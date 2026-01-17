@@ -95,9 +95,9 @@ The applications will be available at
 - **Docs**: Take a look at the `docs` folder
 - **API Documentation:** Available at `/swagger` when the backend is running
 - **AI Agent Guides:** Specialized instructions for AI-assisted development
-  - [Backend Agent](.ai/agents/backend-agent.md) — for `apps/api`
-  - [Frontend Agent](.ai/agents/frontend-agent.md) — for `apps/web` and `libs/*`
-  - [Converto Agent](.ai/agents/converto-agent.md) — for `apps/convertoapi`
+  - [Backend Agent](.github/agents/backend-developer.md) — for `apps/api`
+  - [Frontend Agent](.github/agents/frontend-developer.md) — for `apps/web` and `libs/*`
+  - [Converto Agent](.github/agents/converto-developer.md) — for `apps/convertoapi`
   - [Complete AI Guide](.ai/README.md)
 
 ---

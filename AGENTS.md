@@ -42,14 +42,14 @@ This project uses specialized agents for different contexts:
 ### Backend Agent
 
 - **Scope**: `apps/api/`
-- **File**: `.ai/agents/backend-agent.md`
+- **File**: `.github/agents/backend-developer.md`
 - **Tech**: C# .NET, ASP.NET Core, Entity Framework Core, PostgreSQL
 - **Focus**: API development, business logic, database migrations, external integrations
 
 ### Frontend Agent
 
 - **Scope**: `apps/web/`, `apps/historia/`, `libs/`, `apps/web-e2e/`
-- **File**: `.ai/agents/frontend-agent.md`
+- **File**: `.github/agents/frontend-developer.md`
 - **Tech**: TypeScript, React, Next.js, Tailwind CSS, Playwright
 - **Focus**: UI development, shared libraries, E2E testing, refactoring to libs
 
@@ -58,7 +58,7 @@ Frontend agents should actively look for opportunities to refactor code from `ap
 ### Converto Agent
 
 - **Scope**: `apps/convertoapi/`
-- **File**: `.ai/agents/converto-agent.md`
+- **File**: `.github/agents/converto-developer.md`
 - **Tech**: TypeScript, Node.js, Fastify/Express, Playwright
 - **Focus**: PDF generation, microservice architecture, API design
 

@@ -636,6 +636,6 @@ public class EmailService
 
 ## Resources
 
-- Project backend guidelines: `.ai/agents/backend-agent.md`
+- Project backend guidelines: `.github/agents/backend-developer.md`
 - ASP.NET Core Documentation: https://docs.microsoft.com/aspnet/core
 - Entity Framework Core: https://docs.microsoft.com/ef/core

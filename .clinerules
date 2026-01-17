@@ -17,7 +17,7 @@ Based on the file path, use the appropriate agent instructions:
 
 ### Backend (C# .NET)
 **Path**: `apps/api/`
-**Instructions**: `.ai/agents/backend-agent.md`
+**Instructions**: `.github/agents/backend-developer.md`
 
 Key context:
 - ASP.NET Core + Entity Framework Core + PostgreSQL
@@ -27,7 +27,7 @@ Key context:
 
 ### Frontend (TypeScript/React)
 **Paths**: `apps/web/`, `apps/historia/`, `libs/`, `apps/web-e2e/`
-**Instructions**: `.ai/agents/frontend-agent.md`
+**Instructions**: `.github/agents/frontend-developer.md`
 
 Key context:
 - React 19+ with Next.js 15+ (App Router)
@@ -38,7 +38,7 @@ Key context:
 
 ### Converto Service (Node.js)
 **Path**: `apps/convertoapi/`
-**Instructions**: `.ai/agents/converto-agent.md`
+**Instructions**: `.github/agents/converto-developer.md`
 
 Key context:
 - TypeScript with Fastify (migrating to Express.js)
@@ -81,7 +81,7 @@ Use Conventional Commits:
 - **Performance**: Optimize queries, use caching, implement timeouts
 
 For detailed guidance, always reference:
-- `.ai/agents/backend-agent.md`
-- `.ai/agents/frontend-agent.md`
-- `.ai/agents/converto-agent.md`
+- `.github/agents/backend-developer.md`
+- `.github/agents/frontend-developer.md`
+- `.github/agents/converto-developer.md`
 - `CONTRIBUTING.md`

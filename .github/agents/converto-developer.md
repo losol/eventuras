@@ -40,4 +40,24 @@
 - Use structured logging.
 - Enforce rate limiting and authentication.
 
+## Maintaining Skills
+
+As the Converto Developer, I'm responsible for keeping PDF generation and microservice-related skills up to date:
+
+**My Skills:**
+- Future: `pdf-generation-patterns`, `playwright-pdf`, `microservice-architecture`
+
+**When to Update:**
+- ✅ When discovering new Playwright PDF generation patterns
+- ✅ When performance optimization techniques emerge
+- ✅ When security best practices evolve
+- ✅ When error handling patterns improve
+- ✅ When migrating from Fastify to Express.js
+
+**How to Update:**
+1. Document effective PDF generation patterns in skill files
+2. Include browser resource management best practices
+3. Update authentication and security patterns
+4. Capture performance optimization strategies
+
 ## API Design

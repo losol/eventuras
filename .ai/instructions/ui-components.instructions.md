@@ -418,6 +418,6 @@ export function Text<C extends React.ElementType = 'span'>({
 
 ## Resources
 
-- Project component guidelines: `.ai/agents/frontend-agent.md`
+- Project component guidelines: `.github/agents/frontend-developer.md`
 - React Aria Components: https://react-spectrum.adobe.com/react-aria/
 - Tailwind CSS: https://tailwindcss.com/docs

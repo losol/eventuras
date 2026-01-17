@@ -26,7 +26,7 @@ Key principles:
 - Follow SOLID principles
 - Validate inputs, use DTOs for API models
 
-See detailed guidelines: `.ai/agents/backend-agent.md`
+See detailed guidelines: `.github/agents/backend-developer.md`
 
 ### When working in `apps/web/`, `apps/historia/`, or `libs/` (TypeScript Frontend)
 - **Language**: TypeScript 5+
@@ -43,7 +43,7 @@ Key principles:
 - Use Server Components by default, `'use client'` only when needed
 - Implement responsive design and accessibility
 
-See detailed guidelines: `.ai/agents/frontend-agent.md`
+See detailed guidelines: `.github/agents/frontend-developer.md`
 
 ### When working in `apps/convertoapi/` (Node.js Microservice)
 - **Language**: TypeScript
@@ -57,7 +57,7 @@ Key principles:
 - Validate inputs with Zod schemas
 - Handle browser resource cleanup
 
-See detailed guidelines: `.ai/agents/converto-agent.md`
+See detailed guidelines: `.github/agents/converto-developer.md`
 
 ## Code Standards
 
@@ -236,4 +236,4 @@ Use this connection string for backend integration tests. The database is automa
 - Implement proper error handling and logging
 - Use rate limiting for public APIs
 
-For detailed instructions, always refer to the agent-specific files in `.ai/agents/`.
+For detailed instructions, always refer to the agent-specific files in `.github/agents/`.

@@ -1,39 +1,108 @@
-# AI Agents for Eventuras
+# Eventuras AI Development System
 
-This project uses specialized AI agents for different parts of the codebase.
+> **Central hub for AI agents, instructions, and skills in the Eventuras monorepo**
 
-## Agent Structure
+## 📂 Directory Structure
 
-### Backend Agent
-- Scope: `apps/api`
-- Language: C# .NET
-- File: [backend-agent.md](./agents/backend-agent.md)
+```
+.ai/
+├── README.md                    # ← You are here
+├── AGENTS.md                    # Quick agent directory and reference
+│
+├── agents/                      # Agent resources (specs in .github/agents/)
+│   ├── README.md               # Agent directory with links
+│   └── FULL_GUIDE.md           # Comprehensive agent guide
+│
+├── instructions/                # Context-aware guidelines
+│   ├── backend-services.instructions.md
+│   ├── playwright-tests.instructions.md
+│   └── ui-components.instructions.md
+│
+└── skills/                      # Specialized capabilities
+    ├── eventuras-testing/       # Testing commands & patterns
+    └── implementation-planner/  # Planning methodology
+```
 
-### Frontend Agent
-- Scope: `apps/web`, `apps/historia`, `apps/web-e2e`, `libs/*`
-- Language: TypeScript, React, Next.js
-- File: [frontend-agent.md](./agents/frontend-agent.md)
+## 🎯 Quick Start
 
-### Converto Agent
-- Scope: `apps/convertoapi`
-- Language: TypeScript, Node.js
-- File: [converto-agent.md](./agents/converto-agent.md)
+### For Developers
 
-## How to Use the Agents
+**Need help with a task?** Check [AGENTS.md](AGENTS.md) for a quick agent directory.
 
-1. Select the appropriate agent based on what you're working on.
-2. Read through the agent's instructions end-to-end before starting.
-3. Follow coding standards and best practices defined for the agent.
-4. Document changes according to the agent's guidelines.
+**Working on specific code?** Instructions auto-apply based on file patterns:
+- `apps/api/src/**/*.cs` → [backend-services.instructions.md](instructions/backend-services.instructions.md)
+- `**/playwright-e2e/**/*.spec.ts` → [playwright-tests.instructions.md](instructions/playwright-tests.instructions.md)
+- `libs/ratio-ui/**/*.{ts,tsx}` → [ui-components.instructions.md](instructions/ui-components.instructions.md)
 
-## Documentation Responsibility
+### For AI Agents
 
-Each agent is responsible for documenting its own code:
-- Inline comments
-- README files in their scope areas
-- API documentation (JSDoc/TSDoc/XML comments)
-- Example code and usage guides
+**New to this codebase?** Read [agents/README.md](agents/README.md) for comprehensive guidance.
 
-## Contributing
+**Looking for capabilities?** Check [skills/](skills/) for specialized knowledge.
 
-See [CONTRIBUTING.md](../CONTRIBUTING.md) for general guidelines on how to contribute to the project.
+## 📋 Components
+
+### Agents
+
+Specialized AI personas with distinct roles and expertise.
+
+**Full specifications**: [`.github/agents/`](../.github/agents/)  
+**Summary and guides**: [agents/README.md](agents/README.md)
+
+- **Architects** - Strategic planning and design
+- **Developers** - Tactical implementation
+- **Specialists** - Maintenance and documentation
+
+### Instructions
+
+Context-aware guidelines that automatically apply when editing specific file types:
+
+- Auto-load based on file path patterns
+- Provide detailed coding standards
+- Include best practices and anti-patterns
+
+[→ Browse instructions](instructions/)
+
+### Skills
+
+Reusable capabilities that agents can leverage:
+
+- Testing commands and patterns
+- Implementation planning templates
+- Specialized knowledge domains
+
+[→ Explore skills](skills/)
+
+## 🔗 External Documentation
+
+- **[AGENTS.md](../AGENTS.md)** - Project-level agent overview
+- **[.github/copilot-instructions.md](../.github/copilot-instructions.md)** - Global Copilot configuration
+- **[CONTRIBUTING.md](../CONTRIBUTING.md)** - Contribution guidelines
+
+## 🎓 How It All Works Together
+
+```
+1. User makes a request
+   ↓
+2. Appropriate agent is selected (based on task)
+   ↓
+3. Agent context loads (role, responsibilities, skills)
+   ↓
+4. Instructions auto-apply (based on file patterns)
+   ↓
+5. Skills provide specialized knowledge
+   ↓
+6. Agent produces high-quality output
+```
+
+## ✨ Features
+
+- **🎯 Clear separation of concerns** - Each agent has distinct expertise
+- **🔄 Cross-agent collaboration** - Agents consult each other when needed
+- **📚 Context-aware** - Instructions apply automatically
+- **🧠 Skill-based** - Reusable capabilities across agents
+- **📖 Well-documented** - Comprehensive guides and examples
+
+---
+
+**Agent specs**: See [`.github/agents/`](../.github/agents/) • **Guide**: [agents/FULL_GUIDE.md](agents/FULL_GUIDE.md)
