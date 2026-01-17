@@ -12,3 +12,5 @@ export { NumberField } from './NumberField';
 export type { NumberFieldProps, NumberFieldSize, NumberFieldVariant } from './NumberField';
 export { Select } from './Select';
 export type { SelectProps, SelectOption } from './Select';
+export { AutoComplete } from './Autocomplete';
+export type { AutoCompleteProps } from './Autocomplete';
