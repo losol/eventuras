@@ -3,7 +3,7 @@ import { useActionState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 
 import { Button } from '@eventuras/ratio-ui/core/Button';
-import { Fieldset, Form, Input } from '@eventuras/ratio-ui/forms';
+import { Fieldset, Form, TextField } from '@eventuras/ratio-ui/forms';
 import { useToast } from '@eventuras/toast';
 
 import { publicEnv } from '@/config.client';
@@ -24,12 +24,12 @@ export const CreateEventForm = () => {
   return (
     <Form action={formAction}>
       <Fieldset>
-        <Input
+        <TextField
           name="organizationId"
           type="hidden"
           value={publicEnv.NEXT_PUBLIC_ORGANIZATION_ID?.toString() ?? ''}
         />
-        <Input
+        <TextField
           name="title"
           placeholder={t('admin.createEvent.form.titlePlaceholder')}
           testId="event-title-input"

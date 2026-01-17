@@ -7,9 +7,9 @@ import {
   CheckboxLabel,
   Controller,
   HiddenInput,
-  Input,
   NumberInput,
   Select,
+  TextField,
   useFormContext,
 } from '@eventuras/smartform';
 
@@ -37,9 +37,9 @@ export const OverviewSection = ({ loading = false }: { loading?: boolean }) => (
       </div>
     </Fieldset>
     <Fieldset label="Headings" disabled={loading}>
-      <Input name="title" required label="Title" placeholder="Event Title" />
-      <Input name="headline" label="Headline" placeholder="Event Headline" />
-      <Input name="category" label="Category" placeholder="Event Category" />
+      <TextField name="title" required label="Title" placeholder="Event Title" />
+      <TextField name="headline" label="Headline" placeholder="Event Headline" />
+      <TextField name="category" label="Category" placeholder="Event Category" />
       <Select
         name="type"
         label="Type"
@@ -69,7 +69,7 @@ export const OverviewSection = ({ loading = false }: { loading?: boolean }) => (
       <NumberInput name="maxParticipants" label="Max Participants" placeholder="Max Participants" />
     </Fieldset>
     <Fieldset label="Image" disabled={loading}>
-      <Input
+      <TextField
         name="featuredImageUrl"
         label="Image Url"
         placeholder="Image Url"
@@ -81,7 +81,7 @@ export const OverviewSection = ({ loading = false }: { loading?: boolean }) => (
           },
         }}
       />
-      <Input name="featuredImageCaption" label="Image Caption" placeholder="Image Caption" />
+      <TextField name="featuredImageCaption" label="Image Caption" placeholder="Image Caption" />
     </Fieldset>
   </>
 );
@@ -89,14 +89,14 @@ export const OverviewSection = ({ loading = false }: { loading?: boolean }) => (
 export const DatesLocationSection = ({ loading = false }: { loading?: boolean }) => (
   <>
     <Fieldset label="Date and time">
-      <Input label="Start date:" name="dateStart" type="date" />
-      <Input label="End date:" name="dateEnd" type="date" />
-      <Input label="Last Registration Date" name="lastRegistrationDate" type="date" />
-      <Input label="Last Cancellation Date" name="lastCancellationDate" type="date" />
+      <TextField label="Start date:" name="dateStart" type="date" />
+      <TextField label="End date:" name="dateEnd" type="date" />
+      <TextField label="Last Registration Date" name="lastRegistrationDate" type="date" />
+      <TextField label="Last Cancellation Date" name="lastCancellationDate" type="date" />
     </Fieldset>
     <Fieldset label="Location" disabled={loading}>
-      <Input name="city" label="City" placeholder="City" />
-      <Input name="location" label="Location" placeholder="Location" />
+      <TextField name="city" label="City" placeholder="City" />
+      <TextField name="location" label="Location" placeholder="Location" />
     </Fieldset>
   </>
 );
@@ -211,8 +211,12 @@ export const DescriptionsSection = () => {
 export const CertificateSection = ({ eventinfo }: { eventinfo: EventDto }) => (
   <>
     <Fieldset label="Certificate info">
-      <Input name="certificateTitle" label="Certificate Title" placeholder="Certificate Title" />
-      <Input
+      <TextField
+        name="certificateTitle"
+        label="Certificate Title"
+        placeholder="Certificate Title"
+      />
+      <TextField
         name="certificateDescription"
         label="Certificate Description"
         placeholder="Certificate Description"
@@ -242,13 +246,13 @@ export const AdvancedSection = ({
         disabled
         testId="eventeditor-form-eventid"
       />
-      <Input name="slug" label="Slug" placeholder="Event Slug" disabled />
-      <Input
+      <TextField name="slug" label="Slug" placeholder="Event Slug" disabled />
+      <TextField
         name="externalInfoPageUrl"
         label="External Info Page URL"
         placeholder="External Info Page URL"
       />
-      <Input
+      <TextField
         name="externalRegistrationsUrl"
         label="External Registrations URL"
         placeholder="External Registrations URL"

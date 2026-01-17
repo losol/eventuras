@@ -6,7 +6,7 @@ import { Logger } from '@eventuras/logger';
 import { Button, ButtonGroup } from '@eventuras/ratio-ui/core/Button';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { MarkdownInput } from '@eventuras/scribo';
-import { CheckboxInput, CheckboxLabel, Form, Input } from '@eventuras/smartform';
+import { CheckboxInput, CheckboxLabel, Form, TextField } from '@eventuras/smartform';
 import { useToast } from '@eventuras/toast';
 
 import {
@@ -219,7 +219,7 @@ export default function EventNotificator({
       {/* Subject field for emails */}
       {notificatorType === EventNotificatorType.EMAIL && (
         <div>
-          <Input
+          <TextField
             name="subject"
             label={t('admin.eventNotifier.form.subject.label')}
             placeholder={t('admin.eventNotifier.form.subject.label')}
@@ -237,7 +237,7 @@ export default function EventNotificator({
             />
           </div>
         ) : (
-          <Input
+          <TextField
             name="body"
             label={t('eventNotifier.form.body.label')}
             placeholder={t('eventNotifier.form.body.label')}

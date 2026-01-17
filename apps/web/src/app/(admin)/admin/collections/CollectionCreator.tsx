@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Dialog } from '@eventuras/ratio-ui/layout/Dialog';
-import { Form, HiddenInput, Input } from '@eventuras/smartform';
+import { Form, HiddenInput, TextField } from '@eventuras/smartform';
 
 import { publicEnv } from '@/config.client';
 import { EventCollectionCreateDto } from '@/lib/eventuras-sdk';
@@ -41,7 +41,7 @@ const CollectionCreator: React.FC = () => {
       <Dialog isOpen={modalOpen} onClose={() => setModalOpen(false)} title={'Add collection'}>
         <Form onSubmit={data => handleCreateCollection(data as EventCollectionCreateDto)}>
           <HiddenInput name="organizationId" value={organizationId.toString()} />
-          <Input name="name" label={t('common.labels.name')} />
+          <TextField name="name" label={t('common.labels.name')} />
           <Button type="submit" loading={isSubmitting}>
             {t('admin.collection.labels.create')}
           </Button>

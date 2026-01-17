@@ -81,23 +81,26 @@ const EventLookup = (props: EventLookupProps) => {
             <div className="px-3 py-2 text-sm text-gray-500">No events found</div>
           )}
         >
-          {event => (
-            <ListBoxItem
-              textValue={event.title ?? ''}
-              className="px-3 py-2 cursor-pointer outline-none hover:bg-blue-50 focus:bg-blue-100"
-            >
-              <div>
-                <span className="block truncate font-bold">
-                  {event.title} {event.headline ?? ''}
-                </span>
-                <p className="text-sm text-gray-600">Location: {event.location}</p>
-                <p className="text-sm text-gray-600">
-                  Dates: {event.dateStart?.toString() ?? ''}
-                  {event.dateEnd !== null ? ' => ' : ''} {event.dateEnd?.toString() ?? ''}
-                </p>
-              </div>
-            </ListBoxItem>
-          )}
+          {item => {
+            const event = item as EventDto;
+            return (
+              <ListBoxItem
+                textValue={event.title ?? ''}
+                className="px-3 py-2 cursor-pointer outline-none hover:bg-blue-50 focus:bg-blue-100"
+              >
+                <div>
+                  <span className="block truncate font-bold">
+                    {event.title} {event.headline ?? ''}
+                  </span>
+                  <p className="text-sm text-gray-600">Location: {event.location}</p>
+                  <p className="text-sm text-gray-600">
+                    Dates: {event.dateStart?.toString() ?? ''}
+                    {event.dateEnd !== null ? ' => ' : ''} {event.dateEnd?.toString() ?? ''}
+                  </p>
+                </div>
+              </ListBoxItem>
+            );
+          }}
         </ListBox>
       </Popover>
     </AutoComplete>

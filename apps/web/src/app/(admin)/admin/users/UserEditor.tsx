@@ -6,7 +6,7 @@ import * as regex from '@eventuras/core/regex';
 import { Logger } from '@eventuras/logger';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Fieldset } from '@eventuras/ratio-ui/forms';
-import { Form, Input, PhoneInput } from '@eventuras/smartform';
+import { Form, PhoneInput, TextField } from '@eventuras/smartform';
 import { useToast } from '@eventuras/toast';
 
 import { UserDto, UserFormDto } from '@/lib/eventuras-sdk';
@@ -87,7 +87,7 @@ const UserEditor: FC<UserEditorProps> = props => {
     <Form onSubmit={onSubmit} defaultValues={user} testId={props.testId}>
       {/* Given Name Field */}
       <Fieldset label={t('common.account.name.legend')}>
-        <Input
+        <TextField
           name="givenName"
           label={t('common.labels.givenName')}
           description={t('user.account.name.description')}
@@ -102,7 +102,7 @@ const UserEditor: FC<UserEditorProps> = props => {
           }}
           testId="accounteditor-form-givenname"
         />
-        <Input
+        <TextField
           name="middleName"
           label={t('common.labels.middleName')}
           description={t('user.account.name.description')}
@@ -117,7 +117,7 @@ const UserEditor: FC<UserEditorProps> = props => {
           testId="accounteditor-form-middlename"
         />
         {/* Family Name Field */}
-        <Input
+        <TextField
           name="familyName"
           label={t('common.labels.familyName')}
           description={t('user.account.name.description')}
@@ -134,7 +134,7 @@ const UserEditor: FC<UserEditorProps> = props => {
       </Fieldset>
       <Fieldset label={t('common.account.contactInfo.legend')}>
         {/* Email Field */}
-        <Input
+        <TextField
           name="email"
           label={t('user.account.email.label')}
           description={
@@ -163,13 +163,13 @@ const UserEditor: FC<UserEditorProps> = props => {
         />
       </Fieldset>
       <Fieldset label={t('common.account.moreInfo.legend')}>
-        <Input
+        <TextField
           name="professionalIdentityNumber"
           label={t('common.account.professionalIdentityNumber.label')}
           description={t('common.account.professionalIdentityNumber.description')}
           testId="accounteditor-form-professionalIdentityNumber"
         />
-        <Input
+        <TextField
           name="supplementaryInformation"
           label={t('common.account.supplementaryInformation.label')}
           description={t('common.account.supplementaryInformation.description')}

@@ -7,7 +7,7 @@ import { type ServerActionResult } from '@eventuras/core-nextjs/actions';
 import { Logger } from '@eventuras/logger';
 import { Button, ButtonGroup } from '@eventuras/ratio-ui/core/Button';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
-import { Checkbox, CheckBoxLabel, Form, Input } from '@eventuras/ratio-ui/forms';
+import { Checkbox, CheckBoxLabel, Form, TextField } from '@eventuras/ratio-ui/forms';
 import { MarkdownInput } from '@eventuras/scribo';
 import { useToast } from '@eventuras/toast';
 
@@ -127,7 +127,7 @@ export default function Notificator<T = unknown>({
       {/* Subject field (email only) */}
       {notificationType === NotificationType.EMAIL && (
         <div>
-          <Input
+          <TextField
             name="subject"
             label={t('admin.eventNotifier.form.subject.label')}
             placeholder={t('admin.eventNotifier.form.subject.label')}
@@ -146,7 +146,7 @@ export default function Notificator<T = unknown>({
             />
           </div>
         ) : (
-          <Input
+          <TextField
             name="body"
             multiline
             label={t('admin.eventNotifier.form.body.label')}
