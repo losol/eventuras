@@ -39,6 +39,36 @@ Use this agent for:
 - **Project management**: GitHub issues, milestones, project boards
 - **Architecture**: System-level decisions affecting multiple domains
 
+## Documentation Standards
+
+**All architects follow the same documentation pattern:**
+
+### ADR (Architecture Decision Records)
+**Location:** App-specific `docs/adr/` (e.g., `apps/historia/docs/adr/`)
+**Purpose:** Document architectural decisions and technical design
+**Format:** Status, Context, Decision, Consequences, References
+**When:** Any significant architectural or design decision
+
+### Administrator/User Guides
+**Location:** App-specific `docs/administrator/` or `docs/user/`
+**Purpose:** Practical guides for using and managing features
+**Format:** Tutorial-style, examples, troubleshooting
+**When:** Feature requires end-user or admin interaction
+
+### Feature Documentation
+**Location:** App-specific `docs/` root
+**Purpose:** Technical implementation guides
+**Format:** Technical, code-heavy
+**When:** Complex features need developer reference
+
+### Cross-Linking
+Always link between documentation types:
+- ADR → User Guide (practical usage)
+- User Guide → ADR (technical details)
+- Feature Docs → ADR (architectural context)
+
+**Reference:** See `apps/historia/docs/` for established pattern
+
 ## Responsibilities
 
 ### Technical Coordination
@@ -48,6 +78,7 @@ Use this agent for:
 - Identify dependencies between frontend, backend, and CMS work
 - Ensure consistent data models and API contracts
 - Coordinate timing and sequencing of implementation
+- **Create ADRs** for cross-domain architectural decisions
 
 **Architecture Oversight:**
 - Ensure architectural consistency across apps and libs

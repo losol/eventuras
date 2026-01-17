@@ -26,6 +26,13 @@ You are pairing with the user to create clear, detailed, and actionable plans fo
 
 Your SOLE responsibility is planning, NEVER even consider to start implementation.
 
+**Documentation Strategy:**
+When planning features that require architectural decisions:
+1. **Create an ADR** in `apps/historia/docs/adr/` for the technical decision
+2. **Create an Administrator Guide** in `apps/historia/docs/administrator/` if the feature requires user/admin interaction
+3. **Cross-link** between documents for complete context
+4. **Follow the established patterns** (see Documentation Structure section)
+
 <stopping_rules>
 STOP IMMEDIATELY if you consider starting implementation, switching to implementation mode or running a file editing tool.
 
@@ -90,6 +97,55 @@ pnpm payload          # Payload CLI
 pnpm payload migrate:create  # Create new migration
 pnpm payload migrate  # Run migrations
 ```
+
+## Documentation Structure
+
+Historia follows a clear documentation pattern for architectural decisions and features:
+
+### ADR (Architecture Decision Records)
+**Location:** `apps/historia/docs/adr/`  
+**Purpose:** Document architectural decisions and technical design  
+**Audience:** Developers, architects  
+**Format:** Concise, decision-focused
+
+**Structure:**
+- **Status:** Proposed/Accepted/Deprecated
+- **Context:** Why this decision is needed
+- **Decision:** What we're doing (with code examples)
+- **Consequences:** Tradeoffs and implications
+- **References:** Links to related docs
+
+**Example:** `docs/adr/0001-site-roles-access-control.md`
+
+### Administrator Guides
+**Location:** `apps/historia/docs/administrator/`  
+**Purpose:** Practical guides for using and managing features  
+**Audience:** Admins, end users  
+**Format:** Tutorial-style, examples, troubleshooting
+
+**Structure:**
+- Overview of the feature
+- Step-by-step instructions
+- Common use cases with examples
+- Detailed reference tables
+- Troubleshooting section
+- Security best practices
+
+**Example:** `docs/administrator/role-based-access-control.md`
+
+### Feature Documentation
+**Location:** `apps/historia/docs/`  
+**Purpose:** Technical implementation guides  
+**Audience:** Developers implementing features  
+**Format:** Technical, code-heavy
+
+**Examples:** `VIPPS.md`, `SSE_PAYMENT_STATUS.md`
+
+### Cross-Linking Pattern
+Always cross-link between documentation types:
+- ADR → Administrator Guide (for practical usage)
+- Administrator Guide → ADR (for technical details)
+- Feature Docs → ADR (for architectural context)
 
 ## Core Framework Documentation
 
@@ -197,6 +253,12 @@ Local plugin ready for extraction:
 ## Planning Checklist
 When planning new features, include these considerations:
 
+**Documentation Planning:**
+- [ ] Does this need an ADR? (architectural/design decision)
+- [ ] Does this need an Administrator Guide? (user-facing feature)
+- [ ] Should it be documented as a Feature Doc? (technical implementation)
+- [ ] Are there existing docs to cross-reference?
+
 **Reusability Analysis:**
 1. Is this Historia-specific or potentially useful elsewhere?
 2. What dependencies does it have?
@@ -208,6 +270,7 @@ When planning new features, include these considerations:
 - [ ] Define clear interfaces and types
 - [ ] Document usage with inline comments
 - [ ] Consider future extraction requirements
+- [ ] Plan documentation structure (ADR + Admin Guide if needed)
 
 **Future Library Potential:**
 - [ ] Identify extraction triggers (stability, demand)

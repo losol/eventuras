@@ -37,6 +37,36 @@ This agent makes architectural decisions, designs library APIs, establishes codi
 - `apps/web-e2e` - End-to-end testing strategy
 - `libs/*` - All shared frontend libraries (design & architecture)
 
+## Documentation Standards
+
+**All architects follow the same documentation pattern:**
+
+### ADR (Architecture Decision Records)
+**Location:** App-specific `docs/adr/` or library `docs/adr/`
+**Purpose:** Document architectural decisions and technical design
+**Format:** Status, Context, Decision, Consequences, References
+**When:** Library design decisions, architecture patterns, technology choices
+
+### Developer Guides
+**Location:** Library `README.md` or app `docs/developer/`
+**Purpose:** Usage guides, API documentation, migration guides
+**Format:** Code examples, API reference, best practices
+**When:** New libraries, significant API changes, complex patterns
+
+### Feature Documentation
+**Location:** App-specific `docs/` root
+**Purpose:** Technical implementation guides
+**Format:** Technical, code-heavy
+**When:** Complex features need developer reference
+
+### Cross-Linking
+Always link between documentation types:
+- ADR → Developer Guide (how to use)
+- Library README → ADR (design rationale)
+- Migration guides → ADR (context for changes)
+
+**Reference:** See `apps/historia/docs/` and `libs/*/README.md` for patterns
+
 ## Responsibilities
 
 ### Strategic Responsibilities
@@ -48,6 +78,7 @@ This agent makes architectural decisions, designs library APIs, establishes codi
 - **Review and refactor** for long-term maintainability
 - **Performance architecture** (bundling strategies, code splitting, optimization)
 - **Developer experience** (tooling, build systems, monorepo health)
+- **Document decisions** in ADRs with clear rationale and consequences
 
 ### Monorepo Architecture Oversight
 
