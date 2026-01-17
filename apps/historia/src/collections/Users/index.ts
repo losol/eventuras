@@ -129,23 +129,22 @@ export const Users: CollectionConfig = {
       name: 'roles',
       type: 'select',
       hasMany: true,
-      defaultValue: ['user'],
       options: [
         {
-          label: 'admin',
-          value: 'admin',
-        },
-        {
-          label: 'system-admin',
+          label: 'System Admin',
           value: 'system-admin',
-        },
-        {
-          label: 'user',
-          value: 'user',
         },
       ],
       hooks: {
         beforeChange: [ensureFirstUserIsAdmin],
+      },
+      access: {
+        create: adminsFieldLevel,
+        read: adminsFieldLevel,
+        update: adminsFieldLevel,
+      },
+      admin: {
+        description: 'Global system administrator role. Only system admins can assign this role.',
       },
     },
     {

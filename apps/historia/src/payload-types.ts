@@ -1071,14 +1071,20 @@ export interface User {
         id?: string | null;
       }[]
     | null;
-  roles?: ('admin' | 'system-admin' | 'user')[] | null;
+  /**
+   * Global system administrator role. Only system admins can assign this role.
+   */
+  roles?: 'system-admin'[] | null;
   /**
    * Optional: Assign user to specific websites/tenants. Leave empty for global access.
    */
   tenants?:
     | {
         tenant: string | Website;
-        roles: ('site-admin' | 'site-member')[];
+        /**
+         * Site-specific roles. Users can have multiple roles on a website.
+         */
+        siteRoles: ('admin' | 'editor' | 'commerce' | 'member')[];
         id?: string | null;
       }[]
     | null;
@@ -2942,7 +2948,7 @@ export interface UsersSelect<T extends boolean = true> {
     | T
     | {
         tenant?: T;
-        roles?: T;
+        siteRoles?: T;
         id?: T;
       };
   updatedAt?: T;
