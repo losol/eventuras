@@ -2,6 +2,8 @@ import type { CollectionConfig } from 'payload';
 
 import { admins } from '@/access/admins';
 import { publishedOnly } from '@/access/publishedOnly';
+import { siteEditors } from '@/access/siteRoleAccess';
+import { accessOR } from '@/access/utils/accessOR';
 import { Content } from '@/blocks/Content/config';
 import { Image } from '@/blocks/Image/config';
 import { Product } from '@/blocks/Product/config';
@@ -19,18 +21,17 @@ import { topics } from '@/fields/topics';
 import { seoTab } from '@/lib/payload-plugin-seo';
 
 import { revalidateArticle } from './hooks/revalidateArticle';
-import { authenticated } from '../../access/authenticated';
 import { generatePreviewPath } from '../../utilities/generatePreviewPath';
 
 
 export const Articles: CollectionConfig = {
   slug: 'articles',
   access: {
-    create: authenticated,
+    create: accessOR(admins, siteEditors),
     read: publishedOnly,
     readVersions: admins,
-    update: authenticated,
-    delete: authenticated,
+    update: accessOR(admins, siteEditors),
+    delete: admins,
   },
   admin: {
     defaultColumns: ['title', 'slug', 'updatedAt'],

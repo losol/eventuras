@@ -30,7 +30,7 @@ export const readAccess: Access<User> = ({ req, id }) => {
       req.headers,
       getCollectionIDType({ payload: req.payload, collectionSlug: 'websites' }),
     );
-    const adminTenantAccessIDs = getUserTenantIDs(req.user, 'site-admin');
+    const adminTenantAccessIDs = getUserTenantIDs(req.user, 'admin');
 
     if (selectedTenant) {
       // If they have access to the tenant ID set in cookie

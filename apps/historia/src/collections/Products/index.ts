@@ -2,6 +2,8 @@ import type { CollectionConfig } from 'payload';
 
 import { admins } from '@/access/admins';
 import { anyone } from '@/access/anyone';
+import { siteCommerceManagers } from '@/access/siteRoleAccess';
+import { accessOR } from '@/access/utils/accessOR';
 import { currency } from '@/fields/currency';
 import { description } from '@/fields/description';
 import { image } from '@/fields/image';
@@ -17,8 +19,8 @@ export const Products: CollectionConfig = {
   slug: 'products',
   access: {
     read: anyone,
-    create: admins,
-    update: admins,
+    create: accessOR(admins, siteCommerceManagers),
+    update: accessOR(admins, siteCommerceManagers),
     delete: admins,
   },
   admin: {

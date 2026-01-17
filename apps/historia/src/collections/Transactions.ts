@@ -1,22 +1,16 @@
 import type { CollectionConfig } from 'payload';
 
-import { admins } from '@/access/admins';
+import { transactionsReadAccess } from '@/access/commerceReadAccess';
+import { isSystemAdminAccess } from '@/access/isSystemAdmin';
 import { currency } from '@/fields/currency';
 
 export const Transactions: CollectionConfig = {
   slug: 'transactions',
   access: {
-    create: admins,
-    read: ({ req: { user } }) => {
-      // Admins can read all transactions
-      // Check if user is from 'users' collection and has roles
-      if (user && 'roles' in user && user.roles?.includes('admin')) return true;
-      // Users can only read their own transactions
-      if (user) return { customer: { equals: user.id } };
-      return false;
-    },
-    update: admins,
-    delete: admins,
+    create: isSystemAdminAccess,  // Only system-admin can create transactions
+    read: transactionsReadAccess,
+    update: isSystemAdminAccess,  // Only system-admin can update transactions
+    delete: isSystemAdminAccess,  // Only system-admin can delete transactions
   },
   admin: {
     defaultColumns: ['id', 'order', 'customer', 'amount', 'currency', 'status', 'createdAt'],

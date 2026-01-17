@@ -2,6 +2,8 @@ import type { CollectionConfig } from 'payload';
 
 import { admins } from '@/access/admins';
 import { anyone } from '@/access/anyone';
+import { siteEditors } from '@/access/siteRoleAccess';
+import { accessOR } from '@/access/utils/accessOR';
 import { Archive } from "@/blocks/ArchiveBlock/config";
 import { Content } from "@/blocks/Content/config";
 import { Image } from '@/blocks/Image/config';
@@ -26,10 +28,10 @@ import { generatePreviewPath } from '../../utilities/generatePreviewPath';
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
   access: {
-    create: admins,
+    create: accessOR(admins, siteEditors),
     read: anyone,
     readVersions: admins,
-    update: admins,
+    update: accessOR(admins, siteEditors),
     delete: admins,
   },
   admin: {
