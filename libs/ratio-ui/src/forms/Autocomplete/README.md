@@ -5,8 +5,7 @@ A composable autocomplete component built on React Aria's Autocomplete primitive
 ## Installation
 
 ```tsx
-import { AutoComplete } from '@eventuras/ratio-ui/forms/Autocomplete';
-import { SearchField, ListBox, ListBoxItem } from 'react-aria-components';
+import { AutoComplete, SearchField, ListBox, ListBoxItem } from '@eventuras/ratio-ui/forms/Autocomplete';
 import { useAsyncList } from 'react-stately';
 ```
 
