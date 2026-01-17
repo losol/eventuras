@@ -7,11 +7,8 @@ export const ensureFirstUserIsAdmin: FieldHook<User> = async ({ req, operation, 
     const users = await req.payload.find({ collection: 'users', limit: 0, depth: 0 });
 
     if (users.totalDocs === 0) {
-      const roles = new Set(value || []);
-      roles.add('admin');
-      roles.add('system-admin');
-
-      return Array.from(roles);
+      // First user must be system-admin
+      return ['system-admin'];
     }
   }
 

@@ -25,8 +25,14 @@ export async function GET(
   const headersList = await headers();
   const { user } = await payload.auth({ headers: headersList });
 
-  if (!user || !('roles' in user) || !user.roles?.includes('admin')) {
+  if (!user || !('email' in user)) {
     return new Response('Unauthorized', { status: 401 });
+  }
+
+  // Only system admins can access receipts
+  const isAdmin = user.roles?.includes('system-admin');
+  if (!isAdmin) {
+    return new Response('Forbidden', { status: 403 });
   }
 
   // Fetch the order with depth to get product and tenant details
