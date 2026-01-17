@@ -3,7 +3,7 @@ import React, { useMemo, useState } from 'react';
 import type { Key, Selection } from 'react-aria-components';
 import { ListBox, ListBoxItem } from './ListBox';
 
-const meta = {
+const meta: Meta<typeof ListBox> = {
   title: 'Forms/ListBox',
   component: ListBox,
   parameters: {
@@ -22,7 +22,7 @@ const meta = {
       </div>
     ),
   ],
-} satisfies Meta<typeof ListBox>;
+};
 
 export default meta;
 type Story = StoryObj<typeof meta>;

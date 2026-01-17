@@ -4,7 +4,7 @@ import { SearchField } from './SearchField';
 import { Label } from '../common/Label';
 import { Input } from '../Input/Input';
 
-const meta = {
+const meta: Meta<typeof SearchField> = {
   title: 'Forms/SearchField',
   component: SearchField,
   parameters: {
@@ -23,7 +23,7 @@ const meta = {
       </div>
     ),
   ],
-} satisfies Meta<typeof SearchField>;
+};
 
 export default meta;
 type Story = StoryObj<typeof meta>;
