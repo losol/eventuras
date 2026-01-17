@@ -1,4 +1,5 @@
 'use client';
+import { useState } from 'react';
 import { Input, Label, Popover } from 'react-aria-components';
 import { useAsyncList } from 'react-stately';
 
@@ -23,8 +24,13 @@ export type UserLookupProps = {
 };
 
 const UserLookup = (props: UserLookupProps) => {
+  const [selectedLabel, setSelectedLabel] = useState<string | null>(null);
   const list = useAsyncList<UserDto>({
     async load({ signal, filterText }) {
+      if (selectedLabel && filterText === selectedLabel) {
+        return { items: [] };
+      }
+
       if (!filterText || filterText.length < 3) {
         return { items: [] };
       }
@@ -50,12 +56,23 @@ const UserLookup = (props: UserLookupProps) => {
     if (user && props.onUserSelected) {
       props.onUserSelected(user);
     }
+
+    const label = user?.name?.trim();
+    if (label) {
+      setSelectedLabel(label);
+      list.setFilterText(label);
+    }
   };
 
   return (
     <AutoComplete
       inputValue={list.filterText}
-      onInputChange={list.setFilterText}
+      onInputChange={value => {
+        if (selectedLabel && value !== selectedLabel) {
+          setSelectedLabel(null);
+        }
+        list.setFilterText(value);
+      }}
       isLoading={list.isLoading}
     >
       <SearchField className="flex flex-col gap-1">
