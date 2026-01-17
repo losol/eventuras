@@ -109,7 +109,7 @@ Example user configuration:
 | Happenings | Read published | ✅ Create/Update<br>❌ Delete | Read published | ✅ Full access | ✅ Full access |
 | Notes | Read published | ✅ Create/Update<br>❌ Delete | Read published | ✅ Full access | ✅ Full access |
 | Projects | Read published | ✅ Create/Update<br>❌ Delete | Read published | ✅ Full access | ✅ Full access |
-| Pages | Read published | Read published | Read published | ✅ Full access | ✅ Full access |
+| Pages | Read published | ✅ Create/Update<br>❌ Delete | Read published | ✅ Full access | ✅ Full access |
 | Media | Read | ✅ Create/Update<br>❌ Delete | Read | ✅ Full access | ✅ Full access |
 | **E-commerce Collections** |
 | Products | Read published | Read published | ✅ Create/Update<br>❌ Delete | ✅ Full access | ✅ Full access |
@@ -243,7 +243,7 @@ export const siteAdminAccess: Access = ({ req }) => {
  * Any site member (inclueditors can create/update):
 
 ```typescript
-// Articles, Happenings, Notes, Projects
+// Articles, Happenings, Notes, Projects, Pages
 {
   access: {
     create: siteEditorAccess,
@@ -342,7 +342,7 @@ export const siteAdminAccess: Access = ({ req }) => {
 **Structural Collections** (admin-only):
 
 ```typescript
-// Pages, Websites, Topics, Places, Persons
+// Websites, Topics, Places, Persons
 {
   access: {
     create: isSystemAdmin,
@@ -508,13 +508,13 @@ ALTER TABLE users_tenants RENAME COLUMN roles TO site_roles;
 - Articles: `create/update: siteEditorAccess, delete: admins`
 - Happenings: `create/update: siteEditorAccess, delete: admins`
 - Notes: `create/update: siteEditorAccess, delete: admins`
+- Pages: `create/update: siteEditorAccess, delete: admins`
 - Products: `create/update: siteEditorAccess, delete: admins`
 - Projects: `create/update: siteEditorAccess, delete: admins`
 - Organizations: `update: siteEditorAccess` (update only, no create/delete)
 - Media: `create/update: siteEditorAccess, delete: admins`
 
 **Structural Collections** (admin-only, no editor access):
-- Pages: `create/update/delete: admins` (structural changes)
 - Websites: `create/update/delete: admins` (tenant configuration)
 - Topics, Places, Persons: `create/update/delete: admins` (taxonomy affects all sites)
 
