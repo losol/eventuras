@@ -1,5 +1,70 @@
 # Changelog
 
+## 0.2.1
+
+### Patch Changes
+
+- ### 🧱 Features
+
+  **historia:**
+  - Implement site roles RBAC system (ADR 0001) for fine-grained access control
+  - Add Vipps Login authentication plugin for Payload CMS
+  - Implement dynamic allowed domains for images
+  - Add square1080 media sizes for better image handling
+  - Enhance product handling with dynamic rendering and showImage prop
+  - Implement order status email notifications
+  - Add tax exemption handling and order received email template
+  - Add customer phone handling in order notifications
+  - Add 'data' column to transactions table
+  - Implement database storage for carts during payment initiation
+  - Enhance webhook processing with tenant determination and improved logging
+  - Handle transactions without orders better
+  - Update media and SEO for sites
+  - Update collections pages layout
+  - Update shipping option names for clarity
+  - Add Sentry integration for error tracking and monitoring
+  - Enhance image handling and build configuration
+
+  **notitia-templates:**
+  - Support for order status notifications
+  - Enhanced email templates for customer communication
+
+  ### 🐞 Bug Fixes
+
+  **historia:**
+  - Update architecture decision links and role descriptions in RBAC guide
+  - Correct image size handling
+  - Remove unused ProductDetailClient import
+  - Update order confirmation hook to fetch populated product relationships
+  - Enhance Vipps payment fetching and logging
+  - Log warning when transaction exists but order is not created
+  - Improve webhook URL handling
+  - Allow null values for order_id in transactions table
+  - Fetch user email directly for sales contacts in order confirmation
+  - Standardize Sentry DSN configuration
+  - Update Sentry configuration for proper error tracking
+  - Increase Node.js heap size for large builds
+  - Update Sentry auth token handling
+  - Update Sentry configuration to use NEXT_PUBLIC_CMS_SENTRY_DSN
+
+  ### ♻️ Refactoring
+
+  **historia:**
+  - Streamline access control for system admins
+  - Remove admin and user from global roles
+  - Enhance image handling and build configuration for Next.js
+  - Enhance payment validation and logging in checkout process
+  - Implement hooks for auto-populating order item fields
+  - Enhance tenant determination logic in payment processing
+  - Code review fixes and improvements
+
+  ### 📝 Documentation
+
+  **historia:**
+  - Accept ADR 0001 - Site Roles and Access Control
+  - Add role-based auth specification
+  - Update editor rights documentation
+
 ## 0.2.0
 
 ### Minor Changes

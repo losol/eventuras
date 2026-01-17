@@ -1,5 +1,61 @@
 # @eventuras/ratio-ui
 
+## 0.9.0
+
+### Minor Changes
+
+- ### 🧱 Features
+
+  **ratio-ui:**
+  - Add new `AutoComplete` component with async loading and client-side filtering capabilities
+  - Add new `SearchField` component for search inputs
+  - Add new `ListBox` component for accessible list selection
+  - Add new `TextField` component as complete form field with label, description, and error handling
+
+  **smartform:**
+  - Export new `TextField` component for react-hook-form integration
+  - Refactor `Input` component to be a lightweight primitive
+  - Update `NumberInput` to use `Label` component instead of `InputLabel`
+
+  **web:**
+  - Update multiple admin forms to use new AutoComplete component
+  - Migrate forms from Input to TextField where appropriate
+
+  ### 🐞 Bug Fixes
+
+  **ratio-ui:**
+  - Enhance AutoComplete with improved selected label handling and filtering logic
+
+  ### ♻️ Refactoring
+
+  **ratio-ui:**
+  - Replace Input component with TextField for better separation of concerns
+  - Rename `InputLabel` to `Label` for consistency
+
+- ### 🧱 Features
+  - Add `CartLineItem` and `OrderSummary` components for e-commerce functionality
+  - Add `Stack` component for flexible layout
+  - Add `Breadcrumbs` component for navigation
+  - Add `Story` components with two-column layout support
+  - Add `ThemeToggle` component for dark mode switching
+  - Add `NumberField` component integration
+  - Enhance `Image` component with improved handling and grid layout support
+  - Update theme configuration with mode toggle decorator
+
+  ### 🐞 Bug Fixes
+  - Add missing colors to theme
+  - Correct prose handling in `RichText` component
+  - Decrease width of `NumberField` for better UI consistency
+
+  ### ♻️ Refactoring
+  - Restructure CSS imports and add new styling options
+  - Code cleanup and organization improvements
+
+### Patch Changes
+
+- Updated dependencies
+  - @eventuras/logger@0.6.0
+
 ## 0.8.2
 
 ### Patch Changes
