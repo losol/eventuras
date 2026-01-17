@@ -64,6 +64,9 @@ const UserLookup = (props: UserLookupProps) => {
     }
   };
 
+  const shouldShowList =
+    list.filterText.length >= 3 && (!selectedLabel || list.filterText !== selectedLabel);
+
   return (
     <AutoComplete
       inputValue={list.filterText}
@@ -89,7 +92,10 @@ const UserLookup = (props: UserLookupProps) => {
           )}
         </div>
       </SearchField>
-      <Popover className="w-[--trigger-width] mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto entering:animate-in entering:fade-in exiting:animate-out exiting:fade-out">
+      <Popover
+        isOpen={shouldShowList}
+        className="w-[--trigger-width] mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto entering:animate-in entering:fade-in exiting:animate-out exiting:fade-out"
+      >
         <ListBox
           items={list.items}
           className="outline-none"
