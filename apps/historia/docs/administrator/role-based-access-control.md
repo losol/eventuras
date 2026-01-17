@@ -2,7 +2,7 @@
 
 **Last Updated:** 2026-01-17
 **Version:** Historia CMS v3.x (Payload CMS 3.69+)
-**Architecture Decision:** See [ADR 0001](../adr/0001-site-roles-access-control.md)
+**Architecture Decision:** See [ADR 0001](../adr/0001-site-editor-role.md)
 
 ---
 
@@ -13,15 +13,15 @@ Historia uses a **role-based access control (RBAC)** system to manage what users
 ### Role Types
 
 **Global Roles** (apply across all websites):
-- `system-admin` — Full system access
-- `admin` — Full access to all content
-- `user` — Basic authenticated user
+- `system-admin` — Full system access (the only global role)
 
-**Site Roles** (apply per website):
+**Site Roles** (apply per website/tenant):
 - `admin` — Full control of the website
 - `editor` — Content creation and editing
 - `commerce` — Product and order management
 - `member` — Read-only access
+
+**Important:** As of v3.x, only `system-admin` exists as a global role. All other access must be granted through site-specific roles assigned per website.
 
 ---
 
@@ -261,6 +261,6 @@ Sarah Johnson
 ## Technical Details
 
 For technical implementation details, see:
-- [ADR 0001: Site Roles and Access Control](../adr/0001-site-roles-access-control.md)
+- [ADR 0001: Site Roles and Access Control](../adr/0001-site-editor-role.md)
 - [Payload CMS Access Control Documentation](https://payloadcms.com/docs/access-control/overview)
 - [Payload Multi-Tenant Plugin](https://payloadcms.com/docs/plugins/multi-tenant)
