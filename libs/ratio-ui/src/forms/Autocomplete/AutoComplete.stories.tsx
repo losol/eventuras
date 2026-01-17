@@ -286,14 +286,21 @@ const mockSearchAPI = async (query: string, delay = 500): Promise<Country[]> => 
 export const ClientSideFiltering: Story = {
   render: () => {
     const [inputValue, setInputValue] = useState('');
+    const [selected, setSelected] = useState<string | null>(null);
 
     return (
       <div className="w-full max-w-md p-4">
         <AutoComplete
           inputValue={inputValue}
-          onInputChange={setInputValue}
+          onInputChange={(value) => {
+            if (selected && value !== selected) {
+              setSelected(null);
+            }
+            setInputValue(value);
+          }}
           filter={(textValue, inputValue) => {
             if (!inputValue) return false;
+            if (selected && inputValue === selected) return false;
             return textValue.toLowerCase().includes(inputValue.toLowerCase());
           }}
         >
@@ -303,6 +310,15 @@ export const ClientSideFiltering: Story = {
           </SearchField>
           <ListBox
             items={countries}
+            selectionMode="single"
+            onSelectionChange={(keys) => {
+              const countryId = Array.from(keys)[0] as number;
+              const country = countries.find(c => c.id === countryId);
+              if (country) {
+                setSelected(country.name);
+                setInputValue(country.name);
+              }
+            }}
             renderEmptyState={() => (
               <div className="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">
                 {inputValue ? 'No countries found' : 'Start typing to search'}
@@ -330,8 +346,13 @@ export const ClientSideFiltering: Story = {
  */
 export const AsyncSearch: Story = {
   render: () => {
+    const [selected, setSelected] = useState<string | null>(null);
     const list = useAsyncList<typeof countries[number]>({
       async load({ signal, filterText }) {
+        if (selected && filterText === selected) {
+          return { items: [] };
+        }
+
         if (!filterText || filterText.length < 2) {
           return { items: [] };
         }
@@ -345,7 +366,12 @@ export const AsyncSearch: Story = {
       <div className="w-full max-w-md p-4">
         <AutoComplete
           inputValue={list.filterText}
-          onInputChange={list.setFilterText}
+          onInputChange={(value) => {
+            if (selected && value !== selected) {
+              setSelected(null);
+            }
+            list.setFilterText(value);
+          }}
           isLoading={list.isLoading}
         >
           <SearchField className="flex flex-col gap-1">
@@ -364,6 +390,15 @@ export const AsyncSearch: Story = {
           </SearchField>
           <ListBox
             items={list.items}
+            selectionMode="single"
+            onSelectionChange={(keys) => {
+              const countryId = Array.from(keys)[0] as number;
+              const country = list.items.find(c => c.id === countryId);
+              if (country) {
+                setSelected(country.name);
+                list.setFilterText(country.name);
+              }
+            }}
             renderEmptyState={() => (
               <div className="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">
                 {list.filterText.length < 2
@@ -528,6 +563,7 @@ export const WithSelectionHandler: Story = {
 export const Minimal: Story = {
   render: () => {
     const [inputValue, setInputValue] = useState('');
+    const [selected, setSelected] = useState<string | null>(null);
 
     return (
       <div className="p-8 min-h-100">
@@ -537,10 +573,16 @@ export const Minimal: Story = {
           </p>
           <AutoComplete
             inputValue={inputValue}
-            onInputChange={setInputValue}
+            onInputChange={(value) => {
+              if (selected && value !== selected) {
+                setSelected(null);
+              }
+              setInputValue(value);
+            }}
             filter={(textValue, inputValue) => {
               // Only show results when user has typed something
               if (!inputValue) return false;
+              if (selected && inputValue === selected) return false;
               return textValue.toLowerCase().includes(inputValue.toLowerCase());
             }}
           >
@@ -550,6 +592,15 @@ export const Minimal: Story = {
             </SearchField>
             <ListBox
               items={countries}
+              selectionMode="single"
+              onSelectionChange={(keys) => {
+                const countryId = Array.from(keys)[0] as number;
+                const country = countries.find(c => c.id === countryId);
+                if (country) {
+                  setSelected(country.name);
+                  setInputValue(country.name);
+                }
+              }}
               renderEmptyState={() => (
                 <div className="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">
                   {inputValue ? 'No countries found' : 'Start typing to search'}

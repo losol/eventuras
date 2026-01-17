@@ -1,4 +1,5 @@
 'use client';
+import { useState } from 'react';
 import { Input, Label, Popover } from 'react-aria-components';
 import { useAsyncList } from 'react-stately';
 
@@ -25,10 +26,15 @@ export type EventLookupProps = {
 };
 
 const EventLookup = (props: EventLookupProps) => {
+  const [selectedLabel, setSelectedLabel] = useState<string | null>(null);
   const list = useAsyncList<EventDto>({
     async load({ signal, filterText }) {
       const tester = new RegExp(`${filterText ?? ''}`, 'gi');
       let data: EventDto[] = [];
+
+      if (selectedLabel && filterText === selectedLabel) {
+        return { items: [] };
+      }
 
       if (!cachedEvents) {
         const result = await fetchEventsForLookup();
@@ -55,12 +61,26 @@ const EventLookup = (props: EventLookupProps) => {
     if (event && props.onEventSelected) {
       props.onEventSelected(event);
     }
+
+    const label = event?.title?.trim();
+    if (label) {
+      setSelectedLabel(label);
+      list.setFilterText(label);
+    }
   };
+
+  const shouldShowList =
+    list.filterText.length > 0 && (!selectedLabel || list.filterText !== selectedLabel);
 
   return (
     <AutoComplete
       inputValue={list.filterText}
-      onInputChange={list.setFilterText}
+      onInputChange={value => {
+        if (selectedLabel && value !== selectedLabel) {
+          setSelectedLabel(null);
+        }
+        list.setFilterText(value);
+      }}
       isLoading={list.isLoading}
     >
       <SearchField className="flex flex-col gap-1">
@@ -71,7 +91,10 @@ const EventLookup = (props: EventLookupProps) => {
           placeholder="Event name"
         />
       </SearchField>
-      <Popover className="w-[--trigger-width] mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto entering:animate-in entering:fade-in exiting:animate-out exiting:fade-out">
+      <Popover
+        isOpen={shouldShowList}
+        className="w-[--trigger-width] mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto entering:animate-in entering:fade-in exiting:animate-out exiting:fade-out"
+      >
         <ListBox
           items={list.items}
           className="outline-none"
