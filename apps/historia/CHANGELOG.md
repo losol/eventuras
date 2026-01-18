@@ -1,5 +1,27 @@
 # @eventuras/historia
 
+## 0.19.2
+
+### Patch Changes
+
+- feat(historia): implement status-based order access control
+
+  Introduces business rules for order editing based on order status:
+  - **New module**: `lib/commerce/` with reusable business logic
+    - `orderStatusRules.ts` - Pure status validation functions
+    - `orderPermissions.ts` - Payload access control integration
+    - Clean, testable API for order status rules
+  - **Access control**:
+    - Pending/Processing orders: Editable by commerce managers and admins
+    - On-hold/Completed/Canceled orders: System admins only
+    - Protects financial integrity and audit trails
+  - **Documentation**: New administrator guide at `docs/administrator/orders.md`
+    - Detailed permission matrices
+    - Role-based access breakdown
+    - Practical examples and troubleshooting
+
+  This pattern can be reused for other commerce rules (refunds, shipments, etc.).
+
 ## 0.19.1
 
 ### Patch Changes

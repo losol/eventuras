@@ -6,6 +6,7 @@ import { siteCommerceManagers } from '@/access/siteRoleAccess';
 import { accessOR } from '@/access/utils/accessOR';
 import { addressGroup } from '@/fields/address';
 import { orderItemsField } from '@/fields/orderItemsField';
+import { ordersUpdateAccess } from '@/lib/commerce';
 
 import { populateOrderPrices } from './Orders/hooks/populateOrderPrices';
 import { sendOrderStatus } from './Orders/hooks/sendOrderStatus';
@@ -15,7 +16,7 @@ export const Orders: CollectionConfig = {
   access: {
     create: accessOR(admins, siteCommerceManagers),
     read: ordersReadAccess,
-    update: accessOR(admins, siteCommerceManagers),
+    update: ordersUpdateAccess,
     delete: admins,
   },
   admin: {
