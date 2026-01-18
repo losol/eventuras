@@ -283,157 +283,160 @@ const mockSearchAPI = async (query: string, delay = 500): Promise<Country[]> => 
  * Client-side filtering example.
  * Uses the `filter` prop to filter a static list.
  */
-export const ClientSideFiltering: Story = {
-  render: () => {
-    const [inputValue, setInputValue] = useState('');
-    const [selected, setSelected] = useState<string | null>(null);
+const ClientSideFilteringExample = () => {
+  const [inputValue, setInputValue] = useState('');
+  const [selected, setSelected] = useState<string | null>(null);
 
-    return (
-      <div className="w-full max-w-md p-4">
-        <AutoComplete
-          inputValue={inputValue}
-          onInputChange={(value) => {
-            if (selected && value !== selected) {
-              setSelected(null);
+  return (
+    <div className="w-full max-w-md p-4">
+      <AutoComplete
+        inputValue={inputValue}
+        onInputChange={(value) => {
+          if (selected && value !== selected) {
+            setSelected(null);
+          }
+          setInputValue(value);
+        }}
+        filter={(textValue, inputValue) => {
+          if (!inputValue) return false;
+          if (selected && inputValue === selected) return false;
+          return textValue.toLowerCase().includes(inputValue.toLowerCase());
+        }}
+      >
+        <SearchField className="flex flex-col gap-1">
+          <Label>Country</Label>
+          <Input placeholder="Search countries..." />
+        </SearchField>
+        <ListBox
+          items={countries}
+          selectionMode="single"
+          onSelectionChange={(keys) => {
+            const countryId = Array.from(keys)[0] as number;
+            const country = countries.find(c => c.id === countryId);
+            if (country) {
+              setSelected(country.name);
+              setInputValue(country.name);
             }
-            setInputValue(value);
           }}
-          filter={(textValue, inputValue) => {
-            if (!inputValue) return false;
-            if (selected && inputValue === selected) return false;
-            return textValue.toLowerCase().includes(inputValue.toLowerCase());
-          }}
+          renderEmptyState={() => (
+            <div className="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">
+              {inputValue ? 'No countries found' : 'Start typing to search'}
+            </div>
+          )}
         >
-          <SearchField className="flex flex-col gap-1">
-            <Label>Country</Label>
-            <Input placeholder="Search countries..." />
-          </SearchField>
-          <ListBox
-            items={countries}
-            selectionMode="single"
-            onSelectionChange={(keys) => {
-              const countryId = Array.from(keys)[0] as number;
-              const country = countries.find(c => c.id === countryId);
-              if (country) {
-                setSelected(country.name);
-                setInputValue(country.name);
-              }
-            }}
-            renderEmptyState={() => (
-              <div className="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">
-                {inputValue ? 'No countries found' : 'Start typing to search'}
-              </div>
-            )}
-          >
-            {item => {
-              const country = item as Country;
-              return (
-                <ListBoxItem textValue={country.name}>
-                  {country.name} ({country.code})
-                </ListBoxItem>
-              );
-            }}
-          </ListBox>
-        </AutoComplete>
-      </div>
-    );
-  },
+          {item => {
+            const country = item as Country;
+            return (
+              <ListBoxItem textValue={country.name}>
+                {country.name} ({country.code})
+              </ListBoxItem>
+            );
+          }}
+        </ListBox>
+      </AutoComplete>
+    </div>
+  );
+};
+
+export const ClientSideFiltering: Story = {
+  render: () => <ClientSideFilteringExample />,
 };
 
 /**
  * Async search pattern with useAsyncList.
  * Shows loading state and minimum character threshold.
  */
-export const AsyncSearch: Story = {
-  render: () => {
-    const [selected, setSelected] = useState<string | null>(null);
-    const list = useAsyncList<typeof countries[number]>({
-      async load({ signal, filterText }) {
-        if (selected && filterText === selected) {
-          return { items: [] };
-        }
+const AsyncSearchExample = () => {
+  const [selected, setSelected] = useState<string | null>(null);
+  const list = useAsyncList<typeof countries[number]>({
+    async load({ signal, filterText }) {
+      if (selected && filterText === selected) {
+        return { items: [] };
+      }
 
-        if (!filterText || filterText.length < 2) {
-          return { items: [] };
-        }
+      if (!filterText || filterText.length < 2) {
+        return { items: [] };
+      }
 
-        const results = await mockSearchAPI(filterText);
-        return { items: results };
-      },
-    });
+      const results = await mockSearchAPI(filterText);
+      return { items: results };
+    },
+  });
 
-    return (
-      <div className="w-full max-w-md p-4">
-        <AutoComplete
-          inputValue={list.filterText}
-          onInputChange={(value) => {
-            if (selected && value !== selected) {
-              setSelected(null);
-            }
-            list.setFilterText(value);
-          }}
-          isLoading={list.isLoading}
-        >
-          <SearchField className="flex flex-col gap-1">
-            <Label>Search Countries</Label>
-            <div className="relative">
-              <Input
-                className="w-full pr-10"
-                placeholder="Type at least 2 characters..."
-              />
-              {list.isLoading && (
-                <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                  <div className="animate-spin h-4 w-4 border-2 border-blue-500 border-t-transparent rounded-full" />
-                </div>
-              )}
-            </div>
-          </SearchField>
-          <ListBox
-            items={list.items}
-            selectionMode="single"
-            onSelectionChange={(keys) => {
-              const countryId = Array.from(keys)[0] as number;
-              const country = list.items.find(c => c.id === countryId);
-              if (country) {
-                setSelected(country.name);
-                list.setFilterText(country.name);
-              }
-            }}
-            renderEmptyState={() => (
-              <div className="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">
-                {list.filterText.length < 2
-                  ? 'Type at least 2 characters to search'
-                  : 'No countries found'}
+  return (
+    <div className="w-full max-w-md p-4">
+      <AutoComplete
+        inputValue={list.filterText}
+        onInputChange={(value) => {
+          if (selected && value !== selected) {
+            setSelected(null);
+          }
+          list.setFilterText(value);
+        }}
+        isLoading={list.isLoading}
+      >
+        <SearchField className="flex flex-col gap-1">
+          <Label>Search Countries</Label>
+          <div className="relative">
+            <Input
+              className="w-full pr-10"
+              placeholder="Type at least 2 characters..."
+            />
+            {list.isLoading && (
+              <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                <div className="animate-spin h-4 w-4 border-2 border-blue-500 border-t-transparent rounded-full" />
               </div>
             )}
-          >
-            {item => {
-              const country = item as Country;
-              return (
-                <ListBoxItem textValue={country.name}>
-                  <div className="flex items-center justify-between">
-                    <span>{country.name}</span>
-                    <span className="text-sm text-gray-500 dark:text-gray-400">
-                      {country.code}
-                    </span>
-                  </div>
-                </ListBoxItem>
-              );
-            }}
-          </ListBox>
-        </AutoComplete>
-      </div>
-    );
-  },
+          </div>
+        </SearchField>
+        <ListBox
+          items={list.items}
+          selectionMode="single"
+          onSelectionChange={(keys) => {
+            const countryId = Array.from(keys)[0] as number;
+            const country = list.items.find(c => c.id === countryId);
+            if (country) {
+              setSelected(country.name);
+              list.setFilterText(country.name);
+            }
+          }}
+          renderEmptyState={() => (
+            <div className="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">
+              {list.filterText.length < 2
+                ? 'Type at least 2 characters to search'
+                : 'No countries found'}
+            </div>
+          )}
+        >
+          {item => {
+            const country = item as Country;
+            return (
+              <ListBoxItem textValue={country.name}>
+                <div className="flex items-center justify-between">
+                  <span>{country.name}</span>
+                  <span className="text-sm text-gray-500 dark:text-gray-400">
+                    {country.code}
+                  </span>
+                </div>
+              </ListBoxItem>
+            );
+          }}
+        </ListBox>
+      </AutoComplete>
+    </div>
+  );
+};
+
+export const AsyncSearch: Story = {
+  render: () => <AsyncSearchExample />,
 };
 
 /**
  * Custom rendering with rich content.
  * Shows how to render complex items with multiple lines and badges.
  */
-export const CustomRendering: Story = {
-  render: () => {
-    const [inputValue, setInputValue] = useState('');
+const CustomRenderingExample = () => {
+  const [inputValue, setInputValue] = useState('');
 
     return (
       <div className="w-full max-w-md p-4">
@@ -486,18 +489,20 @@ export const CustomRendering: Story = {
             </ListBox>
         </AutoComplete>
       </div>
-    );
-  },
+  );
+};
+
+export const CustomRendering: Story = {
+  render: () => <CustomRenderingExample />,
 };
 
 /**
  * With selection handler.
  * Shows how to handle item selection and display the selected value.
  */
-export const WithSelectionHandler: Story = {
-  render: () => {
-    const [inputValue, setInputValue] = useState('');
-    const [selected, setSelected] = useState<string | null>(null);
+const WithSelectionHandlerExample = () => {
+  const [inputValue, setInputValue] = useState('');
+  const [selected, setSelected] = useState<string | null>(null);
 
     const handleSelectionChange = (keys: any) => {
       const countryId = Array.from(keys)[0] as number;
@@ -553,17 +558,19 @@ export const WithSelectionHandler: Story = {
           </div>
         )}
       </div>
-    );
-  },
+  );
+};
+
+export const WithSelectionHandler: Story = {
+  render: () => <WithSelectionHandlerExample />,
 };
 
 /**
  * Minimal example showing the simplest usage.
  */
-export const Minimal: Story = {
-  render: () => {
-    const [inputValue, setInputValue] = useState('');
-    const [selected, setSelected] = useState<string | null>(null);
+const MinimalExample = () => {
+  const [inputValue, setInputValue] = useState('');
+  const [selected, setSelected] = useState<string | null>(null);
 
     return (
       <div className="p-8 min-h-100">
@@ -622,17 +629,19 @@ export const Minimal: Story = {
           </p>
         </div>
       </div>
-    );
-  },
+  );
+};
+
+export const Minimal: Story = {
+  render: () => <MinimalExample />,
 };
 
 /**
  * Event search with detailed event information.
  * Demonstrates searching through events with multiple data points.
  */
-export const EventSearch: Story = {
-  render: () => {
-    const [inputValue, setInputValue] = useState('');
+const EventSearchExample = () => {
+  const [inputValue, setInputValue] = useState('');
 
     return (
       <div className="w-full max-w-2xl p-4">
@@ -692,6 +701,9 @@ export const EventSearch: Story = {
             </ListBox>
         </AutoComplete>
       </div>
-    );
-  },
+  );
+};
+
+export const EventSearch: Story = {
+  render: () => <EventSearchExample />,
 };

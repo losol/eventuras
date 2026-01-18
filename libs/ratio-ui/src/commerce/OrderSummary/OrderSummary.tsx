@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { Card } from '../../core/Card';
 import { Heading } from '../../core/Heading';
 import type { CartLineItemData } from '../CartLineItem';
 
