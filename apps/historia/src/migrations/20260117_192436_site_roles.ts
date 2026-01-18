@@ -5,8 +5,13 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
    ALTER TYPE "public"."enum_users_tenants_roles" RENAME TO "enum_users_tenants_site_roles";
   ALTER TABLE "users_tenants_roles" RENAME TO "users_tenants_site_roles";
   ALTER TABLE "users_tenants_site_roles" DROP CONSTRAINT "users_tenants_roles_parent_fk";
-  
+
   ALTER TABLE "users_tenants_site_roles" ALTER COLUMN "value" SET DATA TYPE text;
+
+  -- Map old enum values to new ones
+  UPDATE "users_tenants_site_roles" SET "value" = 'admin' WHERE "value" = 'site-admin';
+  UPDATE "users_tenants_site_roles" SET "value" = 'member' WHERE "value" = 'site-member';
+
   DROP TYPE "public"."enum_users_tenants_site_roles";
   CREATE TYPE "public"."enum_users_tenants_site_roles" AS ENUM('admin', 'editor', 'commerce', 'member');
   ALTER TABLE "users_tenants_site_roles" ALTER COLUMN "value" SET DATA TYPE "public"."enum_users_tenants_site_roles" USING "value"::"public"."enum_users_tenants_site_roles";
@@ -22,7 +27,7 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
    ALTER TYPE "public"."enum_users_tenants_site_roles" RENAME TO "enum_users_tenants_roles";
   ALTER TABLE "users_tenants_site_roles" RENAME TO "users_tenants_roles";
   ALTER TABLE "users_tenants_roles" DROP CONSTRAINT "users_tenants_site_roles_parent_fk";
-  
+
   ALTER TABLE "users_tenants_roles" ALTER COLUMN "value" SET DATA TYPE text;
   DROP TYPE "public"."enum_users_tenants_roles";
   CREATE TYPE "public"."enum_users_tenants_roles" AS ENUM('site-admin', 'site-member');
