@@ -33,14 +33,20 @@ import { isOrderEditableByCommerce } from './orderStatusRules';
  * }
  * ```
  */
-export const ordersUpdateAccess: Access = ({ req, data }) => {
+export const ordersUpdateAccess: Access = ({ req, data, doc }) => {
   if (!req.user || !('email' in req.user)) return false;
 
   // System admins can always update
   if (isSystemAdmin(req.user)) return true;
 
-  // Check order status - only pending/processing can be edited by commerce/admin
-  const orderStatus = data?.status;
+  // Check the CURRENT order status from the database (not the incoming data)
+  // This prevents bypassing the restriction by changing status in the same request
+  if (!doc) {
+    // If we cannot load the current document, fail closed
+    return false;
+  }
+
+  const orderStatus = (doc as any).status;
   if (!isOrderEditableByCommerce(orderStatus)) {
     return false;
   }
