@@ -49,20 +49,39 @@ async function updateUserFromVipps(
   }
 ): Promise<void> {
   try {
+    // Build update object with only fields that Vipps actually provided
+    const updateData: Record<string, any> = {};
+
+    // Update name fields if provided (treated as atomic unit per ADR 0002)
+    if (vippsData.given_name || vippsData.family_name) {
+      if (vippsData.given_name) updateData.given_name = vippsData.given_name;
+      updateData.middle_name = vippsData.middle_name || null;
+      if (vippsData.family_name) updateData.family_name = vippsData.family_name;
+      updateData.name_verified = true;
+    }
+
+    // Update email if provided
+    if (vippsData.email) {
+      updateData.email = vippsData.email;
+      updateData.email_verified = true;
+    }
+
+    // Update phone if provided
+    if (vippsData.phone_number) {
+      updateData.phone_number = vippsData.phone_number;
+      updateData.phone_number_verified = true;
+    }
+
+    // Only update if we have data to update
+    if (Object.keys(updateData).length === 0) {
+      return;
+    }
+
     // Update user data with Vipps verified information
     await payload.update({
       collection: 'users',
       id: userId,
-      data: {
-        given_name: vippsData.given_name,
-        middle_name: vippsData.middle_name || null,
-        family_name: vippsData.family_name,
-        name_verified: true,
-        email: vippsData.email,
-        email_verified: true,
-        phone_number: vippsData.phone_number,
-        phone_number_verified: true,
-      },
+      data: updateData,
       overrideAccess: true, // Required to bypass field-level access control per ADR 0003
     });
 
