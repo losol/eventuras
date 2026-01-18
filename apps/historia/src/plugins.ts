@@ -193,7 +193,9 @@ export const plugins: Plugin[] = [
       email: vippsUser.email,
       email_verified: vippsUser.email_verified,
       given_name: vippsUser.given_name,
+      middle_name: null, // Vipps doesn't provide middle_name as separate field
       family_name: vippsUser.family_name,
+      name_verified: true,
       phone_number: vippsUser.phone_number,
       phone_number_verified: vippsUser.phone_number_verified,
       // Map Vipps addresses to Payload addresses array

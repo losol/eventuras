@@ -978,6 +978,76 @@ export async function createOrderFromPayment({
       }
     }
 
+    // Update user's name and phone from Vipps (verified data from Folkeregisteret)
+    if (paymentDetails.userDetails) {
+      try {
+        const { firstName, lastName, mobileNumber, email } = paymentDetails.userDetails;
+
+        if (firstName || lastName || mobileNumber) {
+          await payload.update({
+            collection: 'users',
+            id: effectiveUserId!,
+            data: {
+              ...(firstName && { given_name: firstName }),
+              middle_name: null, // Vipps doesn't provide middle name
+              ...(lastName && { family_name: lastName }),
+              ...(mobileNumber && { phone_number: normalizePhoneNumber(mobileNumber) }),
+              name_verified: true, // Mark as verified from Vipps
+            },
+            overrideAccess: true, // Bypass field-level access control (trusted source)
+          });
+
+          // Create business event for audit trail
+          await payload.create({
+            collection: 'business-events',
+            data: {
+              eventType: 'user.verified',
+              source: 'vipps',
+              externalReference: paymentReference,
+              actor: effectiveUserId,
+              entity: {
+                relationTo: 'users',
+                value: effectiveUserId!,
+              },
+              data: {
+                description: `User data verified and updated via Vipps payment`,
+                paymentReference,
+                firstName,
+                lastName,
+                mobileNumber,
+                email,
+              },
+            },
+          });
+
+          logger.info(
+            {
+              userId: effectiveUserId,
+              paymentReference,
+              updatedFields: {
+                given_name: !!firstName,
+                family_name: !!lastName,
+                phone_number: !!mobileNumber,
+              },
+            },
+            'Updated user name and phone from Vipps verified data'
+          );
+        }
+      } catch (error) {
+        // Don't fail order creation if user update fails
+        logger.error(
+          {
+            error,
+            errorName: error instanceof Error ? error.name : 'Unknown',
+            errorMessage: error instanceof Error ? error.message : String(error),
+            userId: effectiveUserId,
+            paymentReference,
+          },
+          'Failed to update user from Vipps data, but order was created successfully'
+        );
+      }
+    }
+
     // Create or update Transaction
     const transactionCreateStart = Date.now();
     const transactionAmount = paymentDetails.aggregate.authorizedAmount.value; // Keep in minor units (øre)

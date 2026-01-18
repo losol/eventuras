@@ -1,5 +1,18 @@
 # @eventuras/historia
 
+## 0.19.3
+
+### Patch Changes
+
+- Add verified user fields with Vipps integration
+  - Add `name_verified` field to Users collection for tracking verified name data from trusted identity providers
+  - Implement field-level access control - only system-admin can edit verified fields
+  - Update user name and phone from Vipps payment flow (verified data from Folkeregisteret)
+  - Update user name and phone from Vipps Login flow
+  - Create business events for audit trail when user data is verified
+  - Add database migration to set `name_verified=false` for existing users
+  - Add administrator documentation for Vipps Commerce and Vipps Login user data handling
+
 ## 0.19.2
 
 ### Patch Changes

@@ -1053,8 +1053,18 @@ export interface User {
   given_name?: string | null;
   middle_name?: string | null;
   family_name?: string | null;
+  /**
+   * Indicates if the user's email has been verified by a trusted identity provider
+   */
   email_verified?: boolean | null;
+  /**
+   * Indicates if the user's name has been verified by a trusted identity provider
+   */
+  name_verified?: boolean | null;
   phone_number?: string | null;
+  /**
+   * Indicates if the user's phone number has been verified.
+   */
   phone_number_verified?: boolean | null;
   addresses?:
     | {
@@ -2929,6 +2939,7 @@ export interface UsersSelect<T extends boolean = true> {
   middle_name?: T;
   family_name?: T;
   email_verified?: T;
+  name_verified?: T;
   phone_number?: T;
   phone_number_verified?: T;
   addresses?:
