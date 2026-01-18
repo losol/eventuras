@@ -9,51 +9,54 @@ export interface AutoCompleteProps {
    * The children to render inside the autocomplete.
    * Must include a TextField/SearchField and a collection (ListBox, Menu, etc.)
    */
-  children: ReactNode;
+  readonly children: ReactNode;
 
   /**
    * The current input value (controlled).
    */
-  inputValue?: string;
+  readonly inputValue?: string;
 
   /**
    * Handler called when the input value changes.
    */
-  onInputChange?: (value: string) => void;
+  readonly onInputChange?: (value: string) => void;
 
   /**
    * Optional filter function for client-side filtering.
    * When omitted, filtering is expected to be handled by the consumer (e.g., async).
    */
-  filter?: (textValue: string, inputValue: string, node: any) => boolean;
+  readonly filter?: (textValue: string, inputValue: string, node: any) => boolean;
 
   /**
    * Whether to auto-focus the first item after filtering.
    * @default false
    */
-  disableAutoFocusFirst?: boolean;
+  readonly disableAutoFocusFirst?: boolean;
 
   /**
    * Whether to disable virtual focus (makes collection directly tabbable).
    * @default false
    */
-  disableVirtualFocus?: boolean;
+  readonly disableVirtualFocus?: boolean;
 
   /**
    * Optional loading state indicator.
-   * When true, consumers can show loading UI in their children.
+   * Consumers can use this to show loading UI in their children.
+   * Note: This prop is not used by AutoComplete itself, it's for consumer convenience.
    */
-  isLoading?: boolean;
+  readonly isLoading?: boolean;
 
   /**
    * Selection mode for the collection.
+   * Note: This should be passed to the child ListBox/collection component, not AutoComplete.
    */
-  selectionMode?: 'none' | 'single' | 'multiple';
+  readonly selectionMode?: 'none' | 'single' | 'multiple';
 
   /**
    * Handler called when selection changes.
+   * Note: This should be passed to the child ListBox/collection component, not AutoComplete.
    */
-  onSelectionChange?: (keys: Selection) => void;
+  readonly onSelectionChange?: (keys: Selection) => void;
 }
 
 /**

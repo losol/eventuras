@@ -118,7 +118,7 @@ const EventLookup = (props: EventLookupProps) => {
                   <p className="text-sm text-gray-600">Location: {event.location}</p>
                   <p className="text-sm text-gray-600">
                     Dates: {event.dateStart?.toString() ?? ''}
-                    {event.dateEnd !== null ? ' => ' : ''} {event.dateEnd?.toString() ?? ''}
+                    {event.dateEnd && ' => '} {event.dateEnd?.toString() ?? ''}
                   </p>
                 </div>
               </ListBoxItem>
