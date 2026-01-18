@@ -983,17 +983,34 @@ export async function createOrderFromPayment({
       try {
         const { firstName, lastName, mobileNumber, email } = paymentDetails.userDetails;
 
-        if (firstName || lastName || mobileNumber) {
+        // Build update object with only fields that Vipps actually provided
+        const updateData: Record<string, any> = {};
+
+        // Update name fields if provided (treated as atomic unit per ADR 0002)
+        if (firstName || lastName) {
+          if (firstName) updateData.given_name = firstName;
+          updateData.middle_name = null; // Vipps doesn't provide middle name
+          if (lastName) updateData.family_name = lastName;
+          updateData.name_verified = true;
+        }
+
+        // Update email if provided (always provided in userDetails)
+        if (email) {
+          updateData.email_verified = true;
+        }
+
+        // Update phone if provided
+        if (mobileNumber) {
+          updateData.phone_number = normalizePhoneNumber(mobileNumber);
+          updateData.phone_number_verified = true;
+        }
+
+        // Only update if we have data to update
+        if (Object.keys(updateData).length > 0) {
           await payload.update({
             collection: 'users',
             id: effectiveUserId!,
-            data: {
-              ...(firstName && { given_name: firstName }),
-              middle_name: null, // Vipps doesn't provide middle name
-              ...(lastName && { family_name: lastName }),
-              ...(mobileNumber && { phone_number: normalizePhoneNumber(mobileNumber) }),
-              name_verified: true, // Mark as verified from Vipps
-            },
+            data: updateData,
             overrideAccess: true, // Bypass field-level access control (trusted source)
           });
 
