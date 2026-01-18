@@ -196,6 +196,7 @@ export async function handleVippsCallback(
           collection: 'users',
           id: user?.id || '',
           data: updates,
+          overrideAccess: true, // Vipps is a trusted identity provider
         });
         logger.debug({ userId: user.id }, 'Updated user with Vipps data');
       }
