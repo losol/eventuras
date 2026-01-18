@@ -25,6 +25,84 @@ const logger = Logger.create({
 type TransactionStatus = 'pending' | 'authorized' | 'captured' | 'completed' | 'failed' | 'refunded' | 'partially-refunded';
 
 /**
+ * Update user with verified data from Vipps
+ *
+ * Per ADR 0004, Vipps is a trusted identity provider with highest data authority.
+ * This function:
+ * 1. Updates user fields with Vipps data
+ * 2. Sets verification flags to true
+ * 3. Creates business event for audit trail
+ *
+ * @param payload - Payload instance
+ * @param userId - User ID to update
+ * @param vippsData - Verified data from Vipps
+ */
+async function updateUserFromVipps(
+  payload: ReturnType<typeof getPayload>,
+  userId: string,
+  vippsData: {
+    given_name?: string;
+    middle_name?: string;
+    family_name?: string;
+    email?: string;
+    phone_number?: string;
+  }
+): Promise<void> {
+  try {
+    // Update user data with Vipps verified information
+    await payload.update({
+      collection: 'users',
+      id: userId,
+      data: {
+        given_name: vippsData.given_name,
+        middle_name: vippsData.middle_name || null,
+        family_name: vippsData.family_name,
+        name_verified: true,
+        email: vippsData.email,
+        email_verified: true,
+        phone_number: vippsData.phone_number,
+        phone_number_verified: true,
+      },
+      overrideAccess: true, // Required to bypass field-level access control per ADR 0003
+    });
+
+    // Create business event for audit trail (required per ADR 0002)
+    await payload.create({
+      collection: 'business-events',
+      data: {
+        eventType: 'user.verified',
+        source: 'vipps',
+        entity: {
+          relationTo: 'users',
+          value: userId,
+        },
+        data: {
+          verified_fields: ['name', 'email', 'phone_number'],
+          vipps_data: {
+            given_name: vippsData.given_name,
+            middle_name: vippsData.middle_name,
+            family_name: vippsData.family_name,
+            email: vippsData.email,
+            phone_number: vippsData.phone_number,
+          },
+        },
+      },
+    });
+
+    logger.info(
+      { userId, verifiedFields: ['name', 'email', 'phone_number'] },
+      'Updated user with verified Vipps data'
+    );
+  } catch (error) {
+    logger.error(
+      { error, userId, vippsData },
+      'Failed to update user with Vipps data'
+    );
+    throw error;
+  }
+}
+
+/**
  * Vipps webhook handler
  *
  * Receives webhook events from Vipps MobilePay and:
@@ -602,8 +680,26 @@ async function processPaymentEvent(businessEventId: string, payload: WebhookPayl
         'Retrieved full payment details from Vipps API'
       );
 
-      // Try to find and link customer by email from Vipps userDetails
-      if (paymentDetails.userDetails?.email && !customerId) {
+      // Update existing logged-in user with Vipps data
+      if (customerId && paymentDetails.userDetails) {
+        await updateUserFromVipps(payloadInstance, customerId, {
+          given_name: paymentDetails.userDetails.firstName,
+          middle_name: undefined, // Vipps userDetails doesn't have middle name
+          family_name: paymentDetails.userDetails.lastName,
+          email: paymentDetails.userDetails.email,
+          phone_number: paymentDetails.userDetails.mobileNumber,
+        });
+        logger.info(
+          {
+            userId: customerId,
+            email: paymentDetails.userDetails.email,
+            reference: payload.reference,
+          },
+          'Updated logged-in user with Vipps data'
+        );
+      }
+      // Try to find and link customer by email from Vipps userDetails (guest checkout)
+      else if (paymentDetails.userDetails?.email && !customerId) {
         try {
           const users = await payloadInstance.find({
             collection: 'users',
@@ -617,13 +713,23 @@ async function processPaymentEvent(businessEventId: string, payload: WebhookPayl
 
           if (users.docs.length > 0) {
             customerId = users.docs[0].id;
+
+            // Update user with Vipps data
+            await updateUserFromVipps(payloadInstance, customerId, {
+              given_name: paymentDetails.userDetails.firstName,
+              middle_name: undefined, // Vipps userDetails doesn't have middle name
+              family_name: paymentDetails.userDetails.lastName,
+              email: paymentDetails.userDetails.email,
+              phone_number: paymentDetails.userDetails.mobileNumber,
+            });
+
             logger.info(
               {
                 userId: customerId,
                 email: paymentDetails.userDetails.email,
                 reference: payload.reference,
               },
-              'Found and linked existing user from Vipps email'
+              'Found and updated existing user from Vipps email'
             );
           }
         } catch (error) {

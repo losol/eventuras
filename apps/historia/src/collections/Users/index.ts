@@ -6,6 +6,7 @@ import { createVippsAuthStrategy } from '@eventuras/payload-vipps-auth';
 import { createAccess } from './access/create';
 import { readAccess } from './access/read';
 import { updateAndDeleteAccess } from './access/updateAndDelete';
+import { createVerifiedFieldAccess, verificationFlagAccess } from './access/verifiedFieldAccess';
 import { ensureFirstUserIsAdmin } from './hooks/ensureFirstUserIsAdmin';
 import { setCookieBasedOnDomain } from './hooks/setCookieBasedOnDomain';
 import { adminsFieldLevel } from '../../access/admins';
@@ -64,16 +65,19 @@ export const Users: CollectionConfig = {
           name: 'given_name',
           label: 'Given Name',
           type: 'text',
+          access: createVerifiedFieldAccess('name_verified'),
         },
         {
           name: 'middle_name',
           label: 'Middle Name',
           type: 'text',
+          access: createVerifiedFieldAccess('name_verified'),
         },
         {
           name: 'family_name',
           label: 'Family Name',
           type: 'text',
+          access: createVerifiedFieldAccess('name_verified'),
         },
       ],
     },
@@ -82,25 +86,41 @@ export const Users: CollectionConfig = {
       type: 'email',
       required: true,
       unique: true,
+      access: createVerifiedFieldAccess('email_verified'),
     },
     {
-      name: 'email_verified', type: 'checkbox', access: {
-        create: adminsFieldLevel,
-        read: adminsFieldLevel,
-        update: adminsFieldLevel
-      }
+      name: 'email_verified',
+      type: 'checkbox',
+      defaultValue: false,
+      access: verificationFlagAccess,
+      admin: {
+        description: 'Indicates if the user\'s email has been verified by a trusted identity provider',
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'name_verified',
+      type: 'checkbox',
+      defaultValue: false,
+      access: verificationFlagAccess,
+      admin: {
+        description: 'Indicates if the user\'s name has been verified by a trusted identity provider',
+        position: 'sidebar',
+      },
     },
     {
       name: 'phone_number',
       type: 'text',
+      access: createVerifiedFieldAccess('phone_number_verified'),
     },
     {
       name: 'phone_number_verified',
       type: 'checkbox',
-      access: {
-        create: adminsFieldLevel,
-        read: adminsFieldLevel,
-        update: adminsFieldLevel,
+      defaultValue: false,
+      access: verificationFlagAccess,
+      admin: {
+        description: 'Indicates if the user\'s phone number has been verified.',
+        position: 'sidebar',
       },
     },
     {
