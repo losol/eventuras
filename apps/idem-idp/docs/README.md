@@ -19,7 +19,8 @@ ADRs are used to document *why* decisions were made, not just *what*.
 ### Core Documentation
 
 - [Architecture Overview](architecture-overview.md)
-- [Database Model](database-model.txt) - Complete schema with 11 table groups
+- [Database Model v2 (Single-Tenant)](database-model-v2-single-tenant.txt) - Simplified schema with 15 tables (40% less complexity)
+- [Database Model v1 (Multi-Tenant)](database-model.txt) - Original schema (DEPRECATED)
 - [Development Plan](development-plan.md) - 9-phase implementation roadmap
 - [Incident Response Playbook](incident-response-playbook.md) - Security incident procedures
 
@@ -27,9 +28,9 @@ ADRs are used to document *why* decisions were made, not just *what*.
 
 **System Architecture (0001-0004):**
 
-- [ADR 0001: System Scope](adr/0001-system-scope.md)
+- [ADR 0001: System Scope](adr/0001-system-scope.md) - Updated with authentication methods and scope boundaries
 - [ADR 0002: Environment Model](adr/0002-environment-model.md)
-- [ADR 0003: Multi-Organization and Multi-Tenant](adr/0003-multi-org-multi-tenant.md)
+- [ADR 0003: Development Shortcuts](adr/0003-development-shortcuts.md) ⭐ *New*
 - [ADR 0004: Database and ORM](adr/0004-database-and-orm.md)
 
 **OIDC Provider (0005-0007):**
@@ -56,11 +57,32 @@ ADRs are used to document *why* decisions were made, not just *what*.
 
 ## Recent Updates (2026-01-19)
 
-Three new ADRs and an incident response playbook were added to address critical security gaps:
+### Architecture Simplification
 
-1. **ADR 0015 - Session Management**: Covers session fixation prevention, hijacking detection, local/federated logout, and back-channel logout
-2. **ADR 0016 - IdP Broker Security**: Comprehensive threat model covering state/nonce validation, PKCE, token substitution prevention, and IdP-specific security considerations
-3. **ADR 0017 - Token Cleanup Monitoring**: Robust cleanup job with health monitoring, alerting, and emergency recovery procedures
-4. **Incident Response Playbook**: Step-by-step procedures for handling private key compromise, database breach, upstream IdP compromise, and mass token revocation
+Idem has been **simplified to a single-tenant architecture** serving only Eventuras applications:
 
-These additions close critical security gaps identified during the initial security review.
+- **Removed multi-tenancy complexity**: No organizations or tenants tables, 40% fewer columns
+- **Static issuer per environment**: One issuer per deployment (dev/staging/prod), no hostname resolution
+- **Simplified RBAC**: Global roles only (2 roles vs 5), no tenant scoping
+- **Environment-specific IdP configs**: One config per provider (mock dev, test staging, prod)
+- **Database Model v2**: Simplified from 17 to 15 tables, removed all `org_id`/`tenant_id` columns
+
+**Impact**: 30-40% less code, 1-2 months faster development, significantly easier debugging and maintenance.
+
+### New Security & Developer Documentation
+
+Four new ADRs and an incident response playbook close critical security gaps:
+
+1. **ADR 0003 - Development Shortcuts**: Mock IdPs, direct token issuance, auto-login query parameter, token introspection UI for fast local development
+2. **ADR 0015 - Session Management**: Session fixation prevention, hijacking detection, local/federated logout, back-channel logout
+3. **ADR 0016 - IdP Broker Security**: Comprehensive threat model covering state/nonce validation, PKCE, token substitution prevention, mix-up attacks
+4. **ADR 0017 - Token Cleanup Monitoring**: Robust cleanup job with health monitoring, Prometheus metrics, alerting, emergency recovery
+5. **Incident Response Playbook**: Step-by-step procedures for private key compromise, database breach, upstream IdP compromise, mass token revocation
+
+### Updated Documentation
+
+- **ADR 0001 (System Scope)**: Clarified authentication methods (IdP brokering + OTP), removed multi-tenancy, defined scope boundaries
+- **ADR 0002 (Environment Model)**: Single-tenant architecture with dev/staging/prod environments
+- **ADR 0012 (Deployment Model)**: One deployment per environment, static issuer configuration
+- **Database Model v2**: Completely rewritten for single-tenant (15 tables, 40% less complexity)
+- **Development Plan**: All phases updated to reflect simplified architecture
