@@ -83,6 +83,11 @@ Columns:
   created_at         TIMESTAMPTZ
   updated_at         TIMESTAMPTZ
 
+Indexes:
+  CREATE INDEX idx_accounts_tenant ON idem_accounts(tenant_id);
+  CREATE INDEX idx_accounts_tenant_email ON idem_accounts(tenant_id, primary_email);
+  CREATE INDEX idx_accounts_tenant_username ON idem_accounts(tenant_id, preferred_username);
+
 Enum: identity_provider
   vipps | helseid | idporten | azuread | google | github | other
 
@@ -103,6 +108,11 @@ Columns:
 Constraints:
   Unique (tenant_id, provider, provider_subject)
 
+Indexes:
+  CREATE INDEX idx_identities_account ON idem_identities(account_id);
+  CREATE INDEX idx_identities_provider_lookup ON idem_identities(tenant_id, provider, provider_subject);
+  CREATE INDEX idx_identities_primary ON idem_identities(account_id) WHERE is_primary = true;
+
 Enum: email_source
   self | vipps | helseid | idporten | other
 
@@ -118,6 +128,11 @@ Columns:
   is_verified   BOOLEAN
   source        email_source
   created_at    TIMESTAMPTZ
+
+Indexes:
+  CREATE INDEX idx_emails_account ON idem_emails(account_id);
+  CREATE INDEX idx_emails_lookup ON idem_emails(tenant_id, email) WHERE is_verified = true;
+  CREATE INDEX idx_emails_primary ON idem_emails(account_id) WHERE is_primary = true;
 
 --------------------------------------------------------------------
 SECTION 4 — USER PROFILE MODEL
@@ -188,13 +203,21 @@ Columns:
   grant_types                TEXT[]
   response_types             TEXT[]
   token_endpoint_auth_method TEXT
-  client_secret              TEXT
+  client_secret              TEXT  -- MUST be hashed with bcrypt, never plaintext
   jwks_uri                   TEXT
   jwks                       TEXT
   allowed_scopes             TEXT[]
   require_pkce               BOOLEAN
   created_at                 TIMESTAMPTZ
   updated_at                 TIMESTAMPTZ
+
+Indexes:
+  CREATE INDEX idx_oauth_clients_tenant ON idem_oauth_clients(tenant_id);
+  CREATE INDEX idx_oauth_clients_tenant_client_id ON idem_oauth_clients(tenant_id, client_id);
+
+Security Notes:
+  - client_secret MUST be hashed with bcrypt (cost factor 10+)
+  - Never log or return client_secret in API responses
 
 --------------------------------------------------------------------
 SECTION 7 — KEY MANAGEMENT (JWKS)
@@ -210,12 +233,22 @@ Columns:
   use           TEXT
   kty           TEXT
   public_jwk    TEXT
-  private_jwk   TEXT
+  private_jwk   TEXT  -- MUST be encrypted at application level (MVP) or KMS (prod)
   expires_at    TIMESTAMPTZ
   created_at    TIMESTAMPTZ
 
 Constraints:
   Unique (tenant_id, kid)
+
+Indexes:
+  CREATE INDEX idx_keys_tenant ON idem_keys(tenant_id);
+  CREATE INDEX idx_keys_tenant_kid ON idem_keys(tenant_id, kid);
+  CREATE INDEX idx_keys_active ON idem_keys(tenant_id) WHERE expires_at > NOW();
+
+Security Notes:
+  - private_jwk MUST be encrypted (application-level for MVP, migrate to KMS for production)
+  - Implement key rotation strategy
+  - Never log private keys
 
 --------------------------------------------------------------------
 SECTION 8 — IDP BROKER MODEL
@@ -246,7 +279,7 @@ Columns:
   tenant_id       UUID (FK)
   provider_id     UUID (FK)
   client_id       TEXT
-  client_secret   TEXT
+  client_secret   TEXT  -- MUST be encrypted (bcrypt or application-level encryption)
   client_jwks     TEXT
   redirect_uris   TEXT[]
   extra_scopes    TEXT[]
@@ -257,6 +290,15 @@ Columns:
   consecutive_errors  INT
   created_at      TIMESTAMPTZ
   updated_at      TIMESTAMPTZ
+
+Indexes:
+  CREATE INDEX idx_idp_provider_tenants_tenant ON idem_idp_provider_tenants(tenant_id);
+  CREATE INDEX idx_idp_provider_tenants_provider ON idem_idp_provider_tenants(provider_id);
+  CREATE INDEX idx_idp_provider_tenants_enabled ON idem_idp_provider_tenants(tenant_id, enabled);
+
+Security Notes:
+  - client_secret MUST be encrypted (never store plaintext)
+  - Monitor consecutive_errors for potential attacks
 
 --------------------------------------------------------------------
 SECTION 9 — OIDC STORE
@@ -281,6 +323,12 @@ Columns:
 
 Indexes:
   UNIQUE(name, id)
+  CREATE INDEX idx_oidc_store_tenant ON idem_oidc_store(tenant_id);
+  CREATE INDEX idx_oidc_store_grant ON idem_oidc_store(grant_id) WHERE grant_id IS NOT NULL;
+  CREATE INDEX idx_oidc_store_session ON idem_oidc_store(session_id) WHERE session_id IS NOT NULL;
+  CREATE INDEX idx_oidc_store_uid ON idem_oidc_store(uid) WHERE uid IS NOT NULL;
+  CREATE INDEX idx_oidc_store_expires ON idem_oidc_store(expires_at) WHERE consumed_at IS NULL;
+  CREATE INDEX idx_oidc_store_cleanup ON idem_oidc_store(expires_at) WHERE expires_at < NOW();
 
 --------------------------------------------------------------------
 SECTION 10 — AUDIT LOG
@@ -300,6 +348,16 @@ Columns:
   ip            TEXT
   user_agent    TEXT
   created_at    TIMESTAMPTZ
+
+Indexes:
+  CREATE INDEX idx_audit_log_tenant_created ON idem_audit_log(tenant_id, created_at DESC);
+  CREATE INDEX idx_audit_log_actor ON idem_audit_log(actor_sub);
+  CREATE INDEX idx_audit_log_action ON idem_audit_log(action);
+  CREATE INDEX idx_audit_log_created ON idem_audit_log(created_at DESC);
+
+Notes:
+  - Consider partitioning by month when > 1M records
+  - Sanitize before/after JSONB to never log secrets, tokens, or sensitive PII
 
 --------------------------------------------------------------------
 SECTION 11 — ADMIN RBAC
@@ -331,6 +389,12 @@ Constraints:
   - system_admin → org_id NULL, tenant_id NULL
   - org_admin    → org_id set, tenant_id NULL
   - tenant_admin → tenant_id set
+
+Indexes:
+  CREATE INDEX idx_admin_memberships_principal ON idem_admin_memberships(principal_id);
+  CREATE INDEX idx_admin_memberships_org ON idem_admin_memberships(org_id) WHERE org_id IS NOT NULL;
+  CREATE INDEX idx_admin_memberships_tenant ON idem_admin_memberships(tenant_id) WHERE tenant_id IS NOT NULL;
+  CREATE INDEX idx_admin_memberships_role ON idem_admin_memberships(role);
 
 --------------------------------------------------------------------
 RELATIONSHIP OVERVIEW
