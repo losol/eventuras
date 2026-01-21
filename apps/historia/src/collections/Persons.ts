@@ -24,7 +24,7 @@ export const Persons: CollectionConfig = {
     {
       name: 'name',
       type: 'text',
-      required: true,
+      required: false,
       label: 'Name',
       admin: {
         hidden: true,
