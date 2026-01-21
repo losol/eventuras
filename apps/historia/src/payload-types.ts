@@ -574,7 +574,7 @@ export interface License {
  */
 export interface Person {
   id: string;
-  name: string;
+  name?: string | null;
   given_name: string;
   middle_name?: string | null;
   family_name?: string | null;
