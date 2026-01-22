@@ -24,6 +24,12 @@ const allowedImageDomains = getAllowedDomainsFromAllowedOrigins(allowedOrigins) 
 const nextConfig = {
   output: 'standalone',
 
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '10mb',
+    },
+  },
+
   images: {
     remotePatterns: [
       ...allowedImageDomains.map((hostname) => ({
