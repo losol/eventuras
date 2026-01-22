@@ -4,8 +4,9 @@ import { getLocalizedCollectionName } from '@/app/(frontend)/[locale]/c/[collect
 
 const collectionPrefixMap: Partial<Record<CollectionSlug, string>> = {
   articles: 'c',
+  notes: 'c',
+  products: 'c',
   pages: '',
-  products: '/products',
 }
 
 type Props = {
@@ -24,10 +25,7 @@ export const generatePreviewPath = ({ collection, slug, resourceId, breadcrumbsU
   const fullSlug = resourceId ? `${slug}--${resourceId}` : slug;
 
   let path: string;
-  if (collection === 'products') {
-    // Products use /products/[slug] routes
-    path = `/${locale}/products/${fullSlug}`;
-  } else if (prefix === 'c') {
+  if (prefix === 'c') {
     // Use localized collection name for /c/ routes
     const localizedCollection = getLocalizedCollectionName(collection, locale);
     path = `/${locale}/c/${localizedCollection}/${fullSlug}`;

@@ -7,6 +7,7 @@ import { slugField } from '@/fields/slug';
 import { title } from '@/fields/title';
 import { topics } from '@/fields/topics';
 import { seoTab } from '@/lib/payload-plugin-seo';
+import { generatePreviewPath } from '@/utilities/generatePreviewPath';
 
 import { admins } from '../access/admins';
 import { anyone } from '../access/anyone';
@@ -19,6 +20,28 @@ export const Notes: CollectionConfig = {
   slug: 'notes',
   admin: {
     useAsTitle: 'title',
+    livePreview: {
+      url: ({ data, req }) => {
+        const path = generatePreviewPath({
+          slug: typeof data?.slug === 'string' ? data.slug : '',
+          resourceId: typeof data?.resourceId === 'string' ? data.resourceId : undefined,
+          collection: 'notes',
+          req,
+        });
+
+        return path;
+      },
+    },
+    preview: (data, { req }) => {
+      const path = generatePreviewPath({
+        slug: typeof data?.slug === 'string' ? data.slug : '',
+        resourceId: typeof data?.resourceId === 'string' ? data.resourceId : undefined,
+        collection: 'notes',
+        req,
+      });
+
+      return path;
+    },
   },
   access: {
     read: anyone,

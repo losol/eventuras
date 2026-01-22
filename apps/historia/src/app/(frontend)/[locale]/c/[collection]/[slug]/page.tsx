@@ -8,8 +8,8 @@ import { CollectionSlug, getPayload } from 'payload';
 import { Story, StoryBody,StoryHeader } from '@eventuras/ratio-ui/blocks/Story';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Lead } from '@eventuras/ratio-ui/core/Lead';
+import { Section } from '@eventuras/ratio-ui/core/Section';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
-import { Grid } from '@eventuras/ratio-ui/layout/Grid';
 import { Image } from '@eventuras/ratio-ui-next/Image';
 
 import { RenderBlocks } from '@/blocks/RenderBlocks';
@@ -161,7 +161,7 @@ export default async function Page({ params: paramsPromise }: Args) {
 
   return (
     <Container>
-      <Story as="article">
+      <Story as="article" className='px-3'>
         <PageClient />
 
         <PayloadRedirects
@@ -171,54 +171,33 @@ export default async function Page({ params: paramsPromise }: Args) {
 
         {draft && <LivePreviewListener />}
 
-        {isProduct && imageProps?.url ? (
-          <>
-            <StoryHeader>
-              <Grid cols={{ sm: 1, md: 2 }} paddingClassName="p-3 gap-8">
-                <Image
-                  src={imageProps.url}
-                  alt={imageProps.alt || titleToUse || ''}
-                  width={imageProps.width}
-                  height={imageProps.height}
-                  loading="eager"
-                />
-                <div className="flex flex-col justify-center gap-4">
-                  <Heading as="h1">{titleToUse}</Heading>
-                  {hasLead && <Lead>{document.lead}</Lead>}
-                  <ProductActions product={document as Product} locale={locale} />
+        <StoryHeader>
+          {imageProps?.url && (
+            <>
+              <Image
+                src={imageProps.url}
+                alt={imageProps.alt || titleToUse || ''}
+                width={imageProps.width}
+                height={imageProps.height}
+                loading="eager"
+              />
+              {imageProps.caption && (
+                <div className="text-sm text-muted-foreground mt-2">
+                  <RichText data={imageProps.caption} />
                 </div>
-              </Grid>
-            </StoryHeader>
-
-            <StoryBody className='container p-3'>
-              {'content' in document && document.content ? <RichText data={document.content} /> : null}
-              {'story' in document && document.story ? <RenderBlocks blocks={document.story} /> : null}
-            </StoryBody>
-          </>
-        ) : (
-          <>
-            <StoryHeader>
-              {imageProps?.url && (
-                <Image
-                  src={imageProps.url}
-                  alt={imageProps.alt || titleToUse || ''}
-                  width={imageProps.width}
-                  height={imageProps.height}
-                  loading="eager"
-                />
               )}
-              <Heading as="h1">{titleToUse}</Heading>
-              {hasLead && <Lead>{document.lead}</Lead>}
-            </StoryHeader>
+            </>
+          )}
+          <Heading as="h1">{titleToUse}</Heading>
+          {hasLead && <Lead>{document.lead}</Lead>}
+        </StoryHeader>
 
-            <StoryBody>
-              {isProduct && <ProductActions product={document as Product} locale={locale} />}
+        <StoryBody>
+          {isProduct && <ProductActions product={document as Product} locale={locale} />}
 
-              {'content' in document && document.content ? <RichText data={document.content} /> : null}
-              {'story' in document && document.story ? <RenderBlocks blocks={document.story} /> : null}
-            </StoryBody>
-          </>
-        )}
+          {'content' in document && document.content ? <RichText data={document.content} /> : null}
+          {'story' in document && document.story ? <RenderBlocks blocks={document.story} /> : null}
+        </StoryBody>
       </Story>
     </Container>
   );
