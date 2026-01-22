@@ -16,12 +16,12 @@ import { storyField } from '@/fields/story';
 import { title } from '@/fields/title';
 import { seoTab } from '@/lib/payload-plugin-seo';
 
-import { revalidateDelete, revalidatePage } from './hooks/revalidateProject';
+import { revalidateDelete, revalidatePage } from './hooks/revalidateCase';
 import { populatePublishedAt } from '../../hooks/populatePublishedAt';
 
 
-export const Projects: CollectionConfig<'projects'> = {
-  slug: 'projects',
+export const Cases: CollectionConfig<'cases'> = {
+  slug: 'cases',
   access: {
     create: accessOR(admins, siteEditors),
     read: anyone,

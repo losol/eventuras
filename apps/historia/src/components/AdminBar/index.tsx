@@ -23,9 +23,9 @@ const collectionLabels = {
     plural: 'Articles',
     singular: 'Article',
   },
-  projects: {
-    plural: 'Projects',
-    singular: 'Project',
+  cases: {
+    plural: 'Cases',
+    singular: 'Case',
   },
 }
 
@@ -37,7 +37,7 @@ export const AdminBar: React.FC<{
   const { adminBarProps } = props || {}
   const segments = useSelectedLayoutSegments()
   const [show, setShow] = useState(false)
-  const collectionKeys = ['pages', 'articles', 'projects'] as const;
+  const collectionKeys = ['pages', 'articles', 'cases'] as const;
   type CollectionKey = typeof collectionKeys[number];
 
   const collection = collectionKeys.includes(segments?.[1] as CollectionKey)

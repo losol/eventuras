@@ -7,13 +7,13 @@ import { Card as RatioCard } from '@eventuras/ratio-ui/core/Card';
 
 import { getDocUrl } from '@/app/(frontend)/[locale]/c/[collection]/pageCollections';
 import { Media } from '@/components/Media'
-import type { Article, Happening, Note, Organization, Page, Person, Project } from '@/payload-types'
+import type { Article, Case,Happening, Note, Organization, Page, Person } from '@/payload-types'
 import useClickableCard from '@/utilities/useClickableCard'
 
 export const Card: React.FC<{
   className?: string
-  doc?: Article | Happening | Page | Person | Organization | Project | Note
-  relationTo?: 'articles' | 'happenings' | 'pages' | 'persons' | 'projects' | 'notes'
+  doc?: Article | Happening | Page | Person | Organization | Case | Note
+  relationTo?: 'articles' | 'happenings' | 'pages' | 'persons' | 'cases' | 'notes'
   showTopics?: boolean
   showImages?: boolean
   title?: string

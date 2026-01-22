@@ -49,7 +49,7 @@ Historia uses a **role-based access control (RBAC)** system to manage what users
 **Content creation and editorial work**
 
 **Can do:**
-- ✅ Create and edit articles, notes, happenings, projects
+- ✅ Create and edit articles, notes, happenings, cases
 - ✅ Upload media (images, documents)
 - ✅ Update organization details
 - ✅ View and edit drafts
@@ -148,7 +148,7 @@ Sarah Johnson
 | **Articles** | Read published | ✅ Create/Edit<br>❌ Delete | Read published | ✅ Full | ✅ Full |
 | **Happenings** | Read published | ✅ Create/Edit<br>❌ Delete | Read published | ✅ Full | ✅ Full |
 | **Notes** | Read published | ✅ Create/Edit<br>❌ Delete | Read published | ✅ Full | ✅ Full |
-| **Projects** | Read published | ✅ Create/Edit<br>❌ Delete | Read published | ✅ Full | ✅ Full |
+| **Cases** | Read published | ✅ Create/Edit<br>❌ Delete | Read published | ✅ Full | ✅ Full |
 | **Pages** | Read published | Read published | Read published | ✅ Full | ✅ Full |
 | **Media** | Read | ✅ Upload/Edit<br>❌ Delete | Read | ✅ Full | ✅ Full |
 

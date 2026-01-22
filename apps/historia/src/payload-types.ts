@@ -92,7 +92,7 @@ export interface Config {
     persons: Person;
     places: Place;
     products: Product;
-    projects: Project;
+    cases: Case;
     shipments: Shipment;
     topics: Topic;
     transactions: Transaction;
@@ -130,7 +130,7 @@ export interface Config {
     persons: PersonsSelect<false> | PersonsSelect<true>;
     places: PlacesSelect<false> | PlacesSelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
-    projects: ProjectsSelect<false> | ProjectsSelect<true>;
+    cases: CasesSelect<false> | CasesSelect<true>;
     shipments: ShipmentsSelect<false> | ShipmentsSelect<true>;
     topics: TopicsSelect<false> | TopicsSelect<true>;
     transactions: TransactionsSelect<false> | TransactionsSelect<true>;
@@ -259,8 +259,8 @@ export interface Article {
             value: string | Place;
           }
         | {
-            relationTo: 'projects';
-            value: string | Project;
+            relationTo: 'cases';
+            value: string | Case;
           }
       )[]
     | null;
@@ -468,8 +468,8 @@ export interface Media {
             value: string | Place;
           }
         | {
-            relationTo: 'projects';
-            value: string | Project;
+            relationTo: 'cases';
+            value: string | Case;
           }
       )[]
     | null;
@@ -665,8 +665,8 @@ export interface Note {
             value: string | Place;
           }
         | {
-            relationTo: 'projects';
-            value: string | Project;
+            relationTo: 'cases';
+            value: string | Case;
           }
       )[]
     | null;
@@ -772,9 +772,9 @@ export interface Place {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "projects".
+ * via the `definition` "cases".
  */
-export interface Project {
+export interface Case {
   id: string;
   tenant?: (string | null) | Website;
   /**
@@ -889,7 +889,7 @@ export interface ArchiveBlock {
     };
     [k: string]: unknown;
   } | null;
-  relationTo?: ('articles' | 'happenings' | 'notes' | 'projects') | null;
+  relationTo?: ('articles' | 'happenings' | 'notes' | 'cases') | null;
   topics?: (string | Topic)[] | null;
   showImages?: boolean | null;
   limit?: number | null;
@@ -2190,8 +2190,8 @@ export interface PayloadLockedDocument {
         value: string | Product;
       } | null)
     | ({
-        relationTo: 'projects';
-        value: string | Project;
+        relationTo: 'cases';
+        value: string | Case;
       } | null)
     | ({
         relationTo: 'shipments';
@@ -2826,9 +2826,9 @@ export interface ProductsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "projects_select".
+ * via the `definition` "cases_select".
  */
-export interface ProjectsSelect<T extends boolean = true> {
+export interface CasesSelect<T extends boolean = true> {
   tenant?: T;
   title?: T;
   lead?: T;
