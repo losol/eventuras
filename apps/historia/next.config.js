@@ -26,6 +26,11 @@ const nextConfig = {
 
   experimental: {
     serverActions: {
+      // Increased from default 1mb to 10mb to support rich text content with:
+      // - Multiple embedded images and media
+      // - Large text content with formatting
+      // - Complex nested content structures
+      // This limit applies to all Server Actions payloads
       bodySizeLimit: '10mb',
     },
   },
