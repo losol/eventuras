@@ -44,8 +44,8 @@ export const Archive: Block = {
           value: 'notes',
         },
         {
-          label: 'Projects',
-          value: 'projects',
+          label: 'Cases',
+          value: 'cases',
         }
       ],
     },

@@ -114,7 +114,7 @@ export const plugins: Plugin[] = [
       orders: {},
       pages: {},
       products: {},
-      projects: {},
+      cases: {},
       shipments: {},
       topics: {},
       transactions: {},

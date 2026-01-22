@@ -1,5 +1,27 @@
 # @eventuras/historia
 
+## 0.20.0
+
+### Minor Changes
+
+- Rename "Projects" collection to "Cases" for modern case study UX
+
+  **Breaking Changes:**
+  - Collection slug changed from `projects` to `cases`
+  - Database tables renamed (migration provided: `20260122_191632_cases`)
+  - URLs changed from `/c/projects/*` to `/c/cases/*` (EN) and `/c/spor/*` (NO)
+  - TypeScript types updated: `Project` → `Case`, `ProjectsSelect` → `CasesSelect`
+
+  **Migration Required:**
+  Run `pnpm payload migrate` to rename database tables and update relationships.
+
+  **What Changed:**
+  - Collection folder: `collections/Projects/` → `collections/Cases/`
+  - Collection slug: `'projects'` → `'cases'`
+  - Localized names: EN "Cases", NO "Spor" (tracks/traces)
+  - Archive block and related content fields updated
+  - All foreign key relationships maintained
+
 ## 0.19.3
 
 ### Patch Changes

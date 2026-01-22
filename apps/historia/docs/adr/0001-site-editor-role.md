@@ -108,7 +108,7 @@ Example user configuration:
 | Articles | Read published | ✅ Create/Update<br>❌ Delete | Read published | ✅ Full access | ✅ Full access |
 | Happenings | Read published | ✅ Create/Update<br>❌ Delete | Read published | ✅ Full access | ✅ Full access |
 | Notes | Read published | ✅ Create/Update<br>❌ Delete | Read published | ✅ Full access | ✅ Full access |
-| Projects | Read published | ✅ Create/Update<br>❌ Delete | Read published | ✅ Full access | ✅ Full access |
+| Cases | Read published | ✅ Create/Update<br>❌ Delete | Read published | ✅ Full access | ✅ Full access |
 | Pages | Read published | ✅ Create/Update<br>❌ Delete | Read published | ✅ Full access | ✅ Full access |
 | Media | Read | ✅ Create/Update<br>❌ Delete | Read | ✅ Full access | ✅ Full access |
 | **E-commerce Collections** |
@@ -263,7 +263,7 @@ export const accessOR = (...accessFunctions: Access[]): Access => {
 **Content collections — editors can create/update:**
 
 ```typescript
-// Articles, Happenings, Notes, Projects, Pages
+// Articles, Happenings, Notes, Cases, Pages
 {
   access: {
     create: siteEditorAccess,
@@ -576,7 +576,7 @@ await db.execute(sql`
 - Notes: `create/update: siteEditorAccess, delete: admins`
 - Pages: `create/update: siteEditorAccess, delete: admins`
 - Products: `create/update: siteEditorAccess, delete: admins`
-- Projects: `create/update: siteEditorAccess, delete: admins`
+- Cases: `create/update: siteEditorAccess, delete: admins`
 - Organizations: `update: siteEditorAccess` (update only, no create/delete)
 - Media: `create/update: siteEditorAccess, delete: admins`
 
@@ -638,7 +638,7 @@ export const publishedOrEditableAccess: Access = ({ req }) => {
 - [ ] `apps/historia/src/collections/Happenings.ts` — Update access
 - [ ] `apps/historia/src/collections/Notes.ts` — Update access (if exists)
 - [ ] `apps/historia/src/collections/Products.ts` — Update access
-- [ ] `apps/historia/src/collections/Projects.ts` — Update access
+- [ ] `apps/historia/src/collections/Cases.ts` — Update access
 - [ ] `apps/historia/src/collections/Media.ts` — Update access
 - [ ] `apps/historia/src/collections/Organizations.ts` — Update access (update only)
 - [ ] Database migration (auto-generated)

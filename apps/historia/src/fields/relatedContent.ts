@@ -1,6 +1,6 @@
 import { CollectionSlug, Field, Where } from 'payload';
 
-const relatedCollections: CollectionSlug[] = ['articles', 'notes', 'pages', 'persons', 'places', 'projects'];
+const relatedCollections: CollectionSlug[] = ['articles', 'notes', 'pages', 'persons', 'places', 'cases'];
 
 export const relatedContent: Field = {
   name: 'relatedContent',
