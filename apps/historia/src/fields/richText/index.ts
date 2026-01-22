@@ -14,6 +14,25 @@ type RichText = (
   additionalFeatures?: FeatureProviderServer[],
 ) => RichTextField;
 
+/**
+ * Creates a configured richText field with inline formatting toolbar.
+ *
+ * @param overrides - Partial RichTextField properties to override defaults
+ * @param additionalFeatures - Additional Lexical editor features to append to the default set
+ * @returns A fully configured RichTextField with Bold, Italic, and Link features
+ *
+ * @example
+ * ```ts
+ * // Basic usage
+ * richText({ name: 'content', localized: true })
+ *
+ * // With additional features
+ * richText(
+ *   { name: 'content', required: true },
+ *   [UnderlineFeature(), StrikethroughFeature()]
+ * )
+ * ```
+ */
 export const richText: RichText = (
   overrides = {},
   additionalFeatures = [],
@@ -40,7 +59,7 @@ export const richText: RichText = (
               condition: ({ linkType }) => linkType !== 'internal',
             },
             label: ({ t }) => t('fields:enterURL'),
-            required: true,
+            required: ({ siblingData }) => siblingData?.linkType !== 'internal',
           },
         ];
       },
@@ -52,10 +71,10 @@ export const richText: RichText = (
     name: 'richText',
     type: 'richText',
     required: false,
-    ...overrides,
     editor: lexicalEditor({
       features: () => defaultFeatures,
     }),
+    ...overrides,
   };
 };
 
