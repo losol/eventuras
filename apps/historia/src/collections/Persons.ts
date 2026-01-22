@@ -20,6 +20,29 @@ export const Persons: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
   },
+  hooks: {
+    beforeValidate: [
+      ({ data }) => {
+        if (!data) return data;
+
+        // Auto-generate name from name parts
+        const givenName = data.given_name || '';
+        const middleName = data.middle_name || '';
+        const familyName = data.family_name || '';
+
+        const fullName = [givenName, middleName, familyName]
+          .filter(Boolean)
+          .join(' ')
+          .trim();
+
+        if (fullName) {
+          data.name = fullName;
+        }
+
+        return data;
+      },
+    ],
+  },
   fields: [
     {
       name: 'name',
