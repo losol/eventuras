@@ -220,13 +220,12 @@ export function generateSourceJsonLd(source: Source): object {
     jsonLd.datePublished = source.publishedDate;
   }
 
-  // URL and access date
+  // URL
   if (source.url) {
     jsonLd.url = source.url;
   }
-  if (source.accessedDate) {
-    jsonLd.sdDatePublished = source.accessedDate; // Structured data date
-  }
+  // Note: accessedDate is kept in Payload for citation purposes but not emitted to schema.org
+  // (sdDatePublished refers to when structured data was published, not when a webpage was accessed)
 
   // Identifiers (ISBN, DOI, etc.)
   if (Array.isArray(source.identifiers) && source.identifiers.length > 0) {

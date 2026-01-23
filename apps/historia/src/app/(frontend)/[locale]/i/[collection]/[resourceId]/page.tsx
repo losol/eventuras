@@ -59,14 +59,14 @@ export async function generateStaticParams() {
   });
 
   for (const locale of locales) {
-    const collectionName = locale === 'nb' ? 'sitat' : 'quote';
+    const collectionName = locale === 'no' ? 'sitat' : 'quote';
     quotes.docs.forEach(({ resourceId }) => {
       if (resourceId) {
         params.push({ locale, collection: collectionName, resourceId });
       }
     });
 
-    const sourceCollectionName = locale === 'nb' ? 'kilde' : 'source';
+    const sourceCollectionName = locale === 'no' ? 'kilde' : 'source';
     sources.docs.forEach(({ resourceId }) => {
       if (resourceId) {
         params.push({ locale, collection: sourceCollectionName, resourceId });

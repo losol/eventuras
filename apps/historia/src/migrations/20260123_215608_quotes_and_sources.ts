@@ -14,7 +14,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
-  
+
   CREATE TABLE "quotes_locales" (
   	"quote" jsonb NOT NULL,
   	"attribution_text" varchar,
@@ -24,14 +24,14 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"_locale" "_locales" NOT NULL,
   	"_parent_id" uuid NOT NULL
   );
-  
+
   CREATE TABLE "sources_contributors" (
   	"_order" integer NOT NULL,
   	"_parent_id" uuid NOT NULL,
   	"id" varchar PRIMARY KEY NOT NULL,
   	"role" "enum_sources_contributors_role" DEFAULT 'author' NOT NULL
   );
-  
+
   CREATE TABLE "sources_identifiers" (
   	"_order" integer NOT NULL,
   	"_parent_id" uuid NOT NULL,
@@ -39,7 +39,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"type" "enum_sources_identifiers_type" NOT NULL,
   	"value" varchar NOT NULL
   );
-  
+
   CREATE TABLE "sources" (
   	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
   	"title" varchar NOT NULL,
@@ -58,7 +58,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
-  
+
   CREATE TABLE "sources_rels" (
   	"id" serial PRIMARY KEY NOT NULL,
   	"order" integer,
@@ -68,7 +68,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"organizations_id" uuid,
   	"media_id" uuid
   );
-  
+
   ALTER TABLE "payload_locked_documents_rels" ADD COLUMN "quotes_id" uuid;
   ALTER TABLE "payload_locked_documents_rels" ADD COLUMN "sources_id" uuid;
   ALTER TABLE "quotes" ADD CONSTRAINT "quotes_author_id_persons_id_fk" FOREIGN KEY ("author_id") REFERENCES "public"."persons"("id") ON DELETE set null ON UPDATE no action;
@@ -113,16 +113,19 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   ALTER TABLE "sources_identifiers" DISABLE ROW LEVEL SECURITY;
   ALTER TABLE "sources" DISABLE ROW LEVEL SECURITY;
   ALTER TABLE "sources_rels" DISABLE ROW LEVEL SECURITY;
+  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT IF EXISTS "payload_locked_documents_rels_quotes_fk";
+  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT IF EXISTS "payload_locked_documents_rels_sources_fk";
+  DROP INDEX IF EXISTS "payload_locked_documents_rels_quotes_id_idx";
+  DROP INDEX IF EXISTS "payload_locked_documents_rels_sources_id_idx";
+  ALTER TABLE "payload_locked_documents_rels" DROP COLUMN IF EXISTS "quotes_id";
+  ALTER TABLE "payload_locked_documents_rels" DROP COLUMN IF EXISTS "sources_id";
   DROP TABLE "quotes" CASCADE;
   DROP TABLE "quotes_locales" CASCADE;
   DROP TABLE "sources_contributors" CASCADE;
   DROP TABLE "sources_identifiers" CASCADE;
   DROP TABLE "sources" CASCADE;
   DROP TABLE "sources_rels" CASCADE;
-  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT "payload_locked_documents_rels_quotes_fk";
-  
-  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT "payload_locked_documents_rels_sources_fk";
-  
+
   DROP INDEX "payload_locked_documents_rels_quotes_id_idx";
   DROP INDEX "payload_locked_documents_rels_sources_id_idx";
   ALTER TABLE "payload_locked_documents_rels" DROP COLUMN "quotes_id";
