@@ -1,7 +1,6 @@
 import type { CollectionConfig } from 'payload';
 
 import resourceId from '@/fields/resourceId';
-import { title } from '@/fields/title';
 import { generatePreviewPath } from '@/utilities/generatePreviewPath';
 
 import { admins } from '../access/admins';
@@ -46,7 +45,12 @@ export const Sources: CollectionConfig = {
           label: 'Content',
           fields: [
             // Title
-            title,
+            {
+              name: 'title',
+              type: 'text',
+              required: true,
+              label: 'Title',
+            },
 
             // Contributors (with roles)
             {

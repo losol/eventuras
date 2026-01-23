@@ -14,6 +14,7 @@ import * as migration_20260117_194401_remove_global_admin_user_roles from './202
 import * as migration_20260118_202627_user_data_policy from './20260118_202627_user_data_policy';
 import * as migration_20260121_185111_remove_persons_name_required from './20260121_185111_remove_persons_name_required';
 import * as migration_20260122_191632_cases from './20260122_191632_cases';
+import * as migration_20260123_215608_quotes_and_sources from './20260123_215608_quotes_and_sources';
 
 export const migrations = [
   {
@@ -94,6 +95,11 @@ export const migrations = [
   {
     up: migration_20260122_191632_cases.up,
     down: migration_20260122_191632_cases.down,
-    name: '20260122_191632_cases'
+    name: '20260122_191632_cases',
+  },
+  {
+    up: migration_20260123_215608_quotes_and_sources.up,
+    down: migration_20260123_215608_quotes_and_sources.down,
+    name: '20260123_215608_quotes_and_sources'
   },
 ];
