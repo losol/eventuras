@@ -15,6 +15,7 @@ import { LivePreviewListener } from '@/components/LivePreviewListener';
 import RichText from '@/components/RichText';
 import { generateMeta } from '@/lib/seo';
 import type { Quote, Source } from '@/payload-types';
+import { generateQuoteJsonLd, generateSourceJsonLd } from '@/utilities/json-ld';
 
 // Map URL collection names to Payload collection slugs
 const collectionMap: Record<string, CollectionSlug> = {
@@ -26,10 +27,9 @@ const collectionMap: Record<string, CollectionSlug> = {
 
 export async function generateStaticParams() {
   // Skip static generation during build (ISR will handle runtime generation)
-  // Note: NEXT_PHASE check disabled to avoid turbo.json dependency warning
-  // if (process.env.NEXT_PHASE === 'phase-production-build') {
-  //   return [];
-  // }
+  if (process.env.NEXT_PHASE === 'phase-production-build') {
+    return [];
+  }
 
   const payload = await getPayload({ config: configPromise });
   const locales = process.env.NEXT_PUBLIC_CMS_LOCALES?.split(',') || ['en'];
@@ -142,14 +142,19 @@ function QuotePage({ quote }: { quote: Quote }) {
     typeof quote.source === 'object' && quote.source !== null ? quote.source : undefined;
 
   return (
-    <Container>
-      <Story>
-        <StoryHeader>
-          <Heading as="h1">
-            {quote.quote && typeof quote.quote === 'object' && <RichText data={quote.quote} />}
-          </Heading>
-          <Lead>— {authorName}</Lead>
-        </StoryHeader>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(generateQuoteJsonLd(quote)) }}
+      />
+      <Container>
+        <Story>
+          <StoryHeader>
+            <Heading as="h1">
+              {quote.quote && typeof quote.quote === 'object' && <RichText data={quote.quote} />}
+            </Heading>
+            <Lead>— {authorName}</Lead>
+          </StoryHeader>
 
         <StoryBody>
           {source && (
@@ -171,6 +176,7 @@ function QuotePage({ quote }: { quote: Quote }) {
         </StoryBody>
       </Story>
     </Container>
+    </>
   );
 }
 
@@ -181,12 +187,17 @@ function SourcePage({ source, locale }: { source: Source; locale: string }) {
       : [];
 
   return (
-    <Container>
-      <Story>
-        <StoryHeader>
-          <Heading as="h1">
-            {source.title}
-          </Heading>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(generateSourceJsonLd(source)) }}
+      />
+      <Container>
+        <Story>
+          <StoryHeader>
+            <Heading as="h1">
+              {source.title}
+            </Heading>
           {contributors.length > 0 && (
             <Lead>
               {contributors
@@ -278,6 +289,7 @@ function SourcePage({ source, locale }: { source: Source; locale: string }) {
         </StoryBody>
       </Story>
     </Container>
+    </>
   );
 }
 
