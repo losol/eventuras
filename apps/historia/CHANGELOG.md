@@ -1,5 +1,40 @@
 # @eventuras/historia
 
+## 0.21.0
+
+### Features
+
+- Add Quotes and Sources collections with schema.org JSON-LD support
+
+  This release introduces two new Payload collections for managing quotations and bibliographic sources:
+
+  **Quotes Collection:**
+  - Single author (Person) with fallback to attributionText
+  - Rich text quote content with localization
+  - Source relationship with optional locator (page numbers, timestamps)
+  - Context field for additional attribution details
+  - Auto-generated titles from author + resourceId
+  - ResourceId-based public URLs (`/[locale]/i/quote/[resourceId]`)
+  - Schema.org Quotation JSON-LD for SEO
+
+  **Sources Collection:**
+  - Contributors array with roles (author, editor, translator, etc.)
+  - Polymorphic contributors (Persons or Organizations)
+  - CSL JSON-compatible source types (book, article-journal, webpage, etc.)
+  - Publication context (journal, volume, issue, pages)
+  - Multiple file uploads support
+  - Identifiers array (ISBN, DOI, PMID, arXiv, ISSN)
+  - Conditional fields based on source type
+  - ResourceId-based public URLs (`/[locale]/i/source/[resourceId]`)
+  - Schema.org CreativeWork JSON-LD with intelligent type mapping
+
+  **Additional Features:**
+  - Live preview support for both collections
+  - Localized URL segments (quote/sitat, source/kilde)
+  - XSS-safe JSON-LD injection
+  - Polymorphic relationship handling throughout
+  - Database migrations included
+
 ## 0.20.1
 
 ### Patch Changes
