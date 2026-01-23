@@ -16,7 +16,7 @@ import type { Quote, Source } from '@/payload-types';
  * Extract plain text from Payload richText field
  * Simplified extraction - walks the lexical tree and concatenates text nodes
  */
-function extractPlainText(richText: unknown): string {
+export function extractPlainText(richText: unknown): string {
   if (!richText || typeof richText !== 'object') return '';
   if (!('root' in richText)) return '';
 
@@ -160,26 +160,41 @@ export function generateSourceJsonLd(source: Source): object {
     const editors: Record<string, unknown>[] = [];
 
     source.contributors.forEach((contributor) => {
-      const entity =
+      const rawEntity =
         typeof contributor.entity === 'object' && contributor.entity !== null
           ? contributor.entity
           : null;
 
-      if (!entity || !('name' in entity)) return;
+      if (!rawEntity || !('value' in rawEntity) || !rawEntity.value || typeof rawEntity.value !== 'object') {
+        return;
+      }
 
-      const person: Record<string, unknown> = {
-        '@type': 'name' in entity && 'email' in entity ? 'Person' : 'Organization',
+      const entity = rawEntity.value as unknown as Record<string, unknown>;
+      if (!('name' in entity) || typeof entity.name !== 'string') {
+        return;
+      }
+
+      const relationTo = 'relationTo' in rawEntity ? rawEntity.relationTo : undefined;
+      let entityType: string = 'Person';
+      if (relationTo === 'organizations') {
+        entityType = 'Organization';
+      } else if (relationTo === 'persons') {
+        entityType = 'Person';
+      }
+
+      const contributorEntity: Record<string, unknown> = {
+        '@type': entityType,
         name: entity.name,
       };
 
       if ('url' in entity && entity.url) {
-        person.url = entity.url;
+        contributorEntity.url = entity.url;
       }
 
       if (contributor.role === 'author') {
-        authors.push(person);
+        authors.push(contributorEntity);
       } else if (contributor.role === 'editor') {
-        editors.push(person);
+        editors.push(contributorEntity);
       }
       // translator, interviewer, etc. not in base schema.org
     });

@@ -714,8 +714,8 @@ The **Sources** collection maps to various [`schema.org/CreativeWork`](https://s
 - [x] Implement identifiers array (type + value)
 - [x] Test locator conditional display
 - [x] Configure live preview with resourceId-only URLs
-- [ ] Create frontend routes: `/i/quote/[resourceId]` and `/i/source/[resourceId]`
-- [ ] Implement schema.org JSON-LD on frontend
-- [ ] Generate TypeScript types
+- [x] Create frontend item routes for Quotes and Sources detail pages
+- [x] Implement schema.org JSON-LD on frontend item/detail pages
+- [x] Generate TypeScript types
 - [ ] Run database migrations
 - [ ] Test in Historia admin UI

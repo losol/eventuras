@@ -43,17 +43,32 @@ export const Quotes: CollectionConfig = {
         // Get author name from person relationship or text field
         if (data.author) {
           try {
-            const authorId = typeof data.author === 'object' ? data.author.value : data.author;
+            let authorId: string | undefined;
 
-            const authorDoc = await req.payload.findByID({
-              collection: 'persons',
-              id: authorId,
-            });
-
-            if (authorDoc?.name) {
-              titleParts.push(authorDoc.name);
+            if (typeof data.author === 'string') {
+              authorId = data.author;
+            } else if (typeof data.author === 'object' && data.author !== null) {
+              // For non-polymorphic relationships, Payload commonly provides either a populated doc with `.id`
+              // or (less commonly) an object with `.value`. Prefer `.id`, fall back to `.value` if present.
+              const authorObj = data.author as { id?: unknown; value?: unknown };
+              if (typeof authorObj.id === 'string') {
+                authorId = authorObj.id;
+              } else if (typeof authorObj.value === 'string') {
+                authorId = authorObj.value;
+              }
             }
-          } catch (error) {
+
+            if (authorId) {
+              const authorDoc = await req.payload.findByID({
+                collection: 'persons',
+                id: authorId,
+              });
+
+              if (authorDoc?.name) {
+                titleParts.push(authorDoc.name);
+              }
+            }
+          } catch {
             // Author not found, skip
           }
         }

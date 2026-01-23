@@ -15,7 +15,7 @@ import { LivePreviewListener } from '@/components/LivePreviewListener';
 import RichText from '@/components/RichText';
 import { generateMeta } from '@/lib/seo';
 import type { Quote, Source } from '@/payload-types';
-import { generateQuoteJsonLd, generateSourceJsonLd } from '@/utilities/json-ld';
+import { extractPlainText, generateQuoteJsonLd, generateSourceJsonLd } from '@/utilities/json-ld';
 
 // Map URL collection names to Payload collection slugs
 const collectionMap: Record<string, CollectionSlug> = {
@@ -77,17 +77,16 @@ export async function generateStaticParams() {
   return params;
 }
 
-type Args = Promise<{
+type Args = {
   params: Promise<{
     locale: string;
     collection: string;
     resourceId: string;
   }>;
-}>;
+};
 
-export default async function ItemPage(props: Args) {
-  const { params } = await props;
-  const { locale, collection: urlCollection, resourceId } = await params;
+export default async function ItemPage({ params: paramsPromise }: Args) {
+  const { locale, collection: urlCollection, resourceId } = await paramsPromise;
   const { isEnabled: draft } = await draftMode();
 
   const collectionSlug = collectionMap[urlCollection];
@@ -145,18 +144,26 @@ function QuotePage({ quote }: { quote: Quote }) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(generateQuoteJsonLd(quote)) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(generateQuoteJsonLd(quote)).replace(/</g, '\\u003c'),
+        }}
       />
       <Container>
         <Story>
           <StoryHeader>
             <Heading as="h1">
-              {quote.quote && typeof quote.quote === 'object' && <RichText data={quote.quote} />}
+              {extractPlainText(quote.quote)}
             </Heading>
             <Lead>— {authorName}</Lead>
           </StoryHeader>
 
         <StoryBody>
+          {quote.quote && typeof quote.quote === 'object' && (
+            <Section>
+              <RichText data={quote.quote} />
+            </Section>
+          )}
+
           {source && (
             <Section>
               <Heading as="h2">Source</Heading>
@@ -190,7 +197,9 @@ function SourcePage({ source, locale }: { source: Source; locale: string }) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(generateSourceJsonLd(source)) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(generateSourceJsonLd(source)).replace(/</g, '\\u003c'),
+        }}
       />
       <Container>
         <Story>
@@ -202,15 +211,41 @@ function SourcePage({ source, locale }: { source: Source; locale: string }) {
             <Lead>
               {contributors
                 .map((c) => {
-                  const entity =
-                    typeof c.entity === 'object' && c.entity !== null ? c.entity : null;
-                  const name = entity && 'name' in entity ? entity.name : '';
+                  let entityValue: unknown = null;
+
+                  if (c && typeof c.entity === 'object' && c.entity !== null) {
+                    const entity = c.entity as Record<string, unknown>;
+                    entityValue =
+                      'value' in entity && entity.value !== undefined ? entity.value : entity;
+                  }
+
+                  if (typeof entityValue === 'string' || entityValue === null) {
+                    // Unresolved relation (ID only) or missing entity; skip this contributor
+                    return '';
+                  }
+
+                  let name = '';
+                  if (
+                    entityValue &&
+                    typeof entityValue === 'object' &&
+                    'name' in entityValue &&
+                    typeof entityValue.name === 'string'
+                  ) {
+                    name = entityValue.name;
+                  }
+
+                  if (!name) {
+                    return '';
+                  }
+
                   const role = c.role || 'contributor';
                   return `${name} (${role})`;
                 })
+                .filter(Boolean)
                 .join(', ')}
             </Lead>
           )}
+
         </StoryHeader>
 
         <StoryBody>
@@ -293,9 +328,8 @@ function SourcePage({ source, locale }: { source: Source; locale: string }) {
   );
 }
 
-export async function generateMetadata(props: Args): Promise<Metadata> {
-  const { params } = await props;
-  const { locale, collection: urlCollection, resourceId } = await params;
+export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
+  const { locale, collection: urlCollection, resourceId } = await paramsPromise;
 
   const collectionSlug = collectionMap[urlCollection];
 
@@ -331,12 +365,7 @@ export async function generateMetadata(props: Args): Promise<Metadata> {
       author && 'name' in author ? author.name : quote.attributionText || 'Unknown';
 
     // Extract plain text from rich text
-    const quoteText =
-      quote.quote && typeof quote.quote === 'object' && 'root' in quote.quote
-        ? JSON.stringify(quote.quote)
-            .substring(0, 160)
-            .replace(/[{}"[\]]/g, '')
-        : '';
+    const quoteText = extractPlainText(quote.quote).substring(0, 160);
 
     return generateMeta({
       doc: {
@@ -358,7 +387,20 @@ export async function generateMetadata(props: Args): Promise<Metadata> {
     const authorNames = contributors
       .map((c) => {
         const entity = typeof c.entity === 'object' && c.entity !== null ? c.entity : null;
-        return entity && 'name' in entity ? entity.name : '';
+        if (!entity) {
+          return '';
+        }
+
+        // Handle polymorphic relationship objects: { relationTo, value }
+        const entityRecord = entity as Record<string, unknown>;
+        const value =
+          typeof entityRecord.value === 'object' && entityRecord.value !== null
+            ? entityRecord.value
+            : entity;
+
+        return typeof value === 'object' && value !== null && 'name' in value
+          ? (value as Record<string, unknown>).name
+          : '';
       })
       .filter(Boolean)
       .join(', ');
