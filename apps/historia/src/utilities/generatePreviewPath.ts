@@ -7,11 +7,13 @@ const collectionPrefixMap: Partial<Record<CollectionSlug, string>> = {
   notes: 'c',
   products: 'c',
   pages: '',
+  quotes: 'i',
+  sources: 'i',
 }
 
 type Props = {
   collection: keyof typeof collectionPrefixMap
-  slug: string
+  slug?: string
   resourceId?: string
   breadcrumbsUrl?: string
   req: PayloadRequest
@@ -21,26 +23,40 @@ export const generatePreviewPath = ({ collection, slug, resourceId, breadcrumbsU
   const locale = req.locale || process.env.NEXT_PUBLIC_CMS_DEFAULT_LOCALE || 'no';
   const prefix = collectionPrefixMap[collection];
 
-  // Build full slug with resourceId if available
-  const fullSlug = resourceId ? `${slug}--${resourceId}` : slug;
-
   let path: string;
-  if (prefix === 'c') {
+
+  // Handle resourceId-only routes (quotes, sources)
+  if (prefix === 'i' && resourceId) {
+    // Map collection to URL name (quote/source vs quotes/sources)
+    const urlCollection = collection === 'quotes' ? (locale === 'no' ? 'sitat' : 'quote') : (locale === 'no' ? 'kilde' : 'source');
+    path = `/${locale}/i/${urlCollection}/${resourceId}`;
+  } else if (prefix === 'c' && slug) {
     // Use localized collection name for /c/ routes
     const localizedCollection = getLocalizedCollectionName(collection, locale);
+    // Build full slug with resourceId if available
+    const fullSlug = resourceId ? `${slug}--${resourceId}` : slug;
     path = `/${locale}/c/${localizedCollection}/${fullSlug}`;
   } else if (collection === 'pages' && breadcrumbsUrl) {
     // Use breadcrumbs URL for nested pages
     path = `/${locale}${breadcrumbsUrl}`;
-  } else {
+  } else if (slug) {
+    // Build full slug with resourceId if available
+    const fullSlug = resourceId ? `${slug}--${resourceId}` : slug;
     path = prefix ? `/${locale}${prefix}/${fullSlug}` : `/${locale}/${fullSlug}`;
+  } else {
+    // Fallback for missing slug/resourceId
+    path = `/${locale}`;
   }
 
-  const params = {
-    slug,
+  const params: Record<string, string> = {
     collection,
     path,
     previewSecret: process.env.PREVIEW_SECRET || '',
+  }
+
+  // Only add slug if it exists (not required for resourceId-only routes)
+  if (slug) {
+    params.slug = slug;
   }
 
   const encodedParams = new URLSearchParams()
