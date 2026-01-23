@@ -1606,9 +1606,6 @@ export interface Quote {
  */
 export interface Source {
   id: string;
-  /**
-   * The title of the entry.
-   */
   title: string;
   /**
    * People or organizations who contributed to this work. Order matters.

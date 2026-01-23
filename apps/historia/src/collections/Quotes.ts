@@ -126,6 +126,7 @@ export const Quotes: CollectionConfig = {
               name: 'attributionText',
               type: 'text',
               label: 'Attribution',
+              localized: true,
               admin: {
                 description: 'Use when author is not in database (e.g., "World Health Organization", "Anonymous", "Often attributed to Mark Twain")',
                 condition: (data) => !data.author,
@@ -145,6 +146,7 @@ export const Quotes: CollectionConfig = {
               name: 'locator',
               type: 'text',
               label: 'Locator',
+              localized: true,
               admin: {
                 description: 'Specific location in source (e.g., "p. 42", "ch. 3", "01:23:45")',
                 condition: (data) => !!data.source,
