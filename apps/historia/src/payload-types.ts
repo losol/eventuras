@@ -92,8 +92,10 @@ export interface Config {
     persons: Person;
     places: Place;
     products: Product;
+    quotes: Quote;
     cases: Case;
     shipments: Shipment;
+    sources: Source;
     topics: Topic;
     transactions: Transaction;
     users: User;
@@ -130,8 +132,10 @@ export interface Config {
     persons: PersonsSelect<false> | PersonsSelect<true>;
     places: PlacesSelect<false> | PlacesSelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
+    quotes: QuotesSelect<false> | QuotesSelect<true>;
     cases: CasesSelect<false> | CasesSelect<true>;
     shipments: ShipmentsSelect<false> | ShipmentsSelect<true>;
+    sources: SourcesSelect<false> | SourcesSelect<true>;
     topics: TopicsSelect<false> | TopicsSelect<true>;
     transactions: TransactionsSelect<false> | TransactionsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
@@ -1555,6 +1559,132 @@ export interface SessionBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quotes".
+ */
+export interface Quote {
+  id: string;
+  title?: string | null;
+  quote: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * Person who said/wrote this. For complex sources with multiple contributors, create a Source entry.
+   */
+  author?: (string | null) | Person;
+  /**
+   * Use when author is not in database (e.g., "World Health Organization", "Anonymous", "Often attributed to Mark Twain")
+   */
+  attributionText?: string | null;
+  source?: (string | null) | Source;
+  /**
+   * Specific location in source (e.g., "p. 42", "ch. 3", "01:23:45")
+   */
+  locator?: string | null;
+  /**
+   * Optional context about when/where the quote was said
+   */
+  context?: string | null;
+  resourceId: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sources".
+ */
+export interface Source {
+  id: string;
+  /**
+   * The title of the entry.
+   */
+  title: string;
+  /**
+   * People or organizations who contributed to this work. Order matters.
+   */
+  contributors?:
+    | {
+        entity:
+          | {
+              relationTo: 'persons';
+              value: string | Person;
+            }
+          | {
+              relationTo: 'organizations';
+              value: string | Organization;
+            };
+        role: 'author' | 'editor' | 'translator' | 'interviewer' | 'interviewee' | 'producer' | 'contributor';
+        id?: string | null;
+      }[]
+    | null;
+  sourceType?:
+    | (
+        | 'article-journal'
+        | 'book'
+        | 'chapter'
+        | 'report'
+        | 'thesis'
+        | 'paper-conference'
+        | 'webpage'
+        | 'article-newspaper'
+        | 'legislation'
+      )
+    | null;
+  /**
+   * Name of the publisher
+   */
+  publisher?: string | null;
+  publishedDate?: string | null;
+  url?: string | null;
+  accessedDate?: string | null;
+  /**
+   * e.g. "Oslo", "New York"
+   */
+  publicationPlace?: string | null;
+  edition?: string | null;
+  /**
+   * Upload source documents (PDFs, different editions, etc.)
+   */
+  files?: (string | Media)[] | null;
+  /**
+   * Add one or more identifiers (ISBN, DOI, PMID, etc.)
+   */
+  identifiers?:
+    | {
+        type: 'isbn' | 'doi' | 'pmid' | 'arxiv' | 'issn' | 'other';
+        value: string;
+        id?: string | null;
+      }[]
+    | null;
+  publicationContext?: {
+    /**
+     * Title of journal, magazine, or edited book containing this article
+     */
+    containerTitle?: string | null;
+    volume?: string | null;
+    issue?: string | null;
+    /**
+     * e.g. "123-145", "S12-S15", "xii-xv"
+     */
+    page?: string | null;
+  };
+  resourceId: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "exports".
  */
 export interface Export {
@@ -2190,12 +2320,20 @@ export interface PayloadLockedDocument {
         value: string | Product;
       } | null)
     | ({
+        relationTo: 'quotes';
+        value: string | Quote;
+      } | null)
+    | ({
         relationTo: 'cases';
         value: string | Case;
       } | null)
     | ({
         relationTo: 'shipments';
         value: string | Shipment;
+      } | null)
+    | ({
+        relationTo: 'sources';
+        value: string | Source;
       } | null)
     | ({
         relationTo: 'topics';
@@ -2826,6 +2964,22 @@ export interface ProductsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quotes_select".
+ */
+export interface QuotesSelect<T extends boolean = true> {
+  title?: T;
+  quote?: T;
+  author?: T;
+  attributionText?: T;
+  source?: T;
+  locator?: T;
+  context?: T;
+  resourceId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "cases_select".
  */
 export interface CasesSelect<T extends boolean = true> {
@@ -2895,6 +3049,46 @@ export interface ShipmentsSelect<T extends boolean = true> {
   status?: T;
   shipmentType?: T;
   weight?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sources_select".
+ */
+export interface SourcesSelect<T extends boolean = true> {
+  title?: T;
+  contributors?:
+    | T
+    | {
+        entity?: T;
+        role?: T;
+        id?: T;
+      };
+  sourceType?: T;
+  publisher?: T;
+  publishedDate?: T;
+  url?: T;
+  accessedDate?: T;
+  publicationPlace?: T;
+  edition?: T;
+  files?: T;
+  identifiers?:
+    | T
+    | {
+        type?: T;
+        value?: T;
+        id?: T;
+      };
+  publicationContext?:
+    | T
+    | {
+        containerTitle?: T;
+        volume?: T;
+        issue?: T;
+        page?: T;
+      };
+  resourceId?: T;
   updatedAt?: T;
   createdAt?: T;
 }
