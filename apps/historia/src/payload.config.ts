@@ -26,7 +26,9 @@ import { Pages } from './collections/Pages';
 import { Persons } from './collections/Persons';
 import { Places } from './collections/Places';
 import { Products } from './collections/Products';
+import { Quotes } from './collections/Quotes';
 import { Shipments } from './collections/Shipments';
+import { Sources } from './collections/Sources';
 import { Topics } from './collections/Topics';
 import { Transactions } from './collections/Transactions';
 import { Users } from './collections/Users';
@@ -154,7 +156,7 @@ export default buildConfig({
       },
       push: true,
     }),
-  collections: [Articles, BusinessEvents, Carts, Happenings, Licenses, Media, Notes, Orders, Organizations, Pages, Persons, Places, Products, Cases, Shipments, Topics, Transactions, Users, Websites],
+  collections: [Articles, BusinessEvents, Carts, Happenings, Licenses, Media, Notes, Orders, Organizations, Pages, Persons, Places, Products, Quotes, Cases, Shipments, Sources, Topics, Transactions, Users, Websites],
   cors: allowedOrigins,
   csrf: allowedOrigins,
   editor: defaultLexical,
