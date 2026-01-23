@@ -10,6 +10,7 @@ Historia needs to support structured document storage beyond traditional CMS con
 - **Collaboration frameworks** (Team Canvas, Business Model Canvas, Lean Canvas)
 - **Health questionnaires** (FHIR Questionnaires for mental health, intake forms)
 - **Assessment frameworks** (Step-Up frameworks, evaluation tools)
+- **Datasets and statistics** (Time-series data, historical statistics, demographic data)
 - **Custom structured data** (Organization-specific schemas)
 
 **Current Limitations:**
@@ -24,6 +25,7 @@ Historia needs to support structured document storage beyond traditional CMS con
 - Teams want to collaboratively fill out a Team Canvas and store it
 - Health organizations need to collect FHIR-compliant questionnaire responses
 - Consultants want to create assessment templates and share them with clients
+- Historians need to store and visualize statistical data (e.g., "Folkemengde i Norge 1801-1900")
 - Organizations want to build custom structured forms without coding
 
 **Requirements:**
@@ -62,6 +64,35 @@ Introduce three new Payload collections to enable schema-driven resource managem
 └─────────────────────────┘
 ```
 
+### Versioning Strategy
+
+**Full versioning enabled** for Resources collection:
+- **Rationale:** Datasets and statistical data are updated when new sources are discovered or historical research progresses
+- **Academic integrity:** Researchers must be able to reference specific versions
+- **Auditability:** Track how data has evolved over time
+- **Configuration:**
+  ```typescript
+  versions: {
+    drafts: {
+      autosave: true,
+    },
+    maxPerDoc: 50,
+  }
+  ```
+
+**Draft/published only** for ResourceSchemas and ResourceTemplates:
+- Schemas and templates need review workflow but full history less critical
+- Configuration: `versions: { drafts: true }`
+
+### Multi-Tenancy Strategy
+
+**Organization-scoped:** All data (Resources, Templates, Schemas) is isolated per organization.
+
+- **Rationale:** Team canvases, questionnaires, and datasets are organization-specific
+- **No cross-tenant sharing:** Each organization has their own schemas, templates, and data
+- **Data isolation:** Users can only access resources belonging to their organization
+- **Implementation:** Handled at config level via tenant isolation plugin/hooks (organization field auto-managed)
+
 ### 1. Resource Schemas Collection
 
 **Purpose:** Define the technical structure and validation rules for different resource types.
@@ -77,7 +108,12 @@ export const ResourceSchemas: CollectionConfig = {
     description: 'Define JSON schemas for resource types'
   },
   access: {
-    read: () => true,  // Everyone can read schemas
+    read: ({ req }) => {
+      if (!req.user) return false;
+      return {
+        organization: { equals: req.user.organization },
+      };
+    },
     create: isSystemAdmin,
     update: isSystemAdmin,
     delete: isSystemAdmin
@@ -122,6 +158,7 @@ export const ResourceSchemas: CollectionConfig = {
         { label: 'Collaboration Canvas', value: 'canvas' },
         { label: 'Health & Wellbeing', value: 'health' },
         { label: 'Assessment Framework', value: 'framework' },
+        { label: 'Dataset / Statistics', value: 'dataset' },
         { label: 'Other', value: 'other' }
       ],
       admin: {
@@ -154,7 +191,7 @@ export const ResourceSchemas: CollectionConfig = {
 }
 ```
 
-**Example Schema:**
+**Example Schema 1: Team Canvas**
 ```json
 {
   "schemaId": "team-canvas-v1",
@@ -185,6 +222,123 @@ export const ResourceSchemas: CollectionConfig = {
           }
         }
       }
+    }
+  }
+}
+```
+
+**Example Schema 2: Time-Series Dataset**
+```json
+{
+  "schemaId": "time-series-v1",
+  "version": "1.0.0",
+  "name": "Time-Series Dataset",
+  "category": "dataset",
+  "description": "For historical statistics, demographic data, and time-based measurements",
+  "jsonSchema": {
+    "type": "object",
+    "required": ["title", "series"],
+    "properties": {
+      "title": {
+        "type": "string",
+        "title": "Dataset Title"
+      },
+      "description": {
+        "type": "string",
+        "title": "Description"
+      },
+      "sourceId": {
+        "type": "string",
+        "title": "Source Reference",
+        "description": "ID of Source document (from Sources collection)"
+      },
+      "unit": {
+        "type": "string",
+        "title": "Unit of Measurement",
+        "examples": ["persons", "NOK", "degrees Celsius"]
+      },
+      "series": {
+        "type": "array",
+        "title": "Data Points",
+        "items": {
+          "type": "object",
+          "required": ["date", "value"],
+          "properties": {
+            "date": {
+              "type": "string",
+              "format": "date",
+              "title": "Date or Year"
+            },
+            "value": {
+              "type": "number",
+              "title": "Value"
+            },
+            "label": {
+              "type": "string",
+              "title": "Optional Label"
+            },
+            "note": {
+              "type": "string",
+              "title": "Optional Note"
+            }
+          }
+        }
+      },
+      "visualization": {
+        "type": "object",
+        "title": "Visualization Config",
+        "properties": {
+          "chartType": {
+            "type": "string",
+            "enum": ["line", "bar", "area", "scatter"],
+            "default": "line"
+          },
+          "xAxisLabel": {
+            "type": "string",
+            "default": "Time"
+          },
+          "yAxisLabel": {
+            "type": "string"
+          },
+          "showPoints": {
+            "type": "boolean",
+            "default": true
+          },
+          "interpolation": {
+            "type": "string",
+            "enum": ["linear", "step", "smooth"],
+            "default": "linear"
+          }
+        }
+      }
+    }
+  },
+  "uiSchema": {
+    "series": {
+      "ui:options": {
+        "orderable": true,
+        "addable": true,
+        "removable": true
+      }
+    }
+  },
+  "exampleData": {
+    "title": "Folkemengde i Norge 1801-1900",
+    "description": "Historisk befolkningsutvikling i Norge på 1800-tallet",
+    "sourceId": "SRC-ssb-befolkning-historisk",
+    "unit": "personer",
+    "series": [
+      { "date": "1801-01-01", "value": 883000, "label": "1801" },
+      { "date": "1825-01-01", "value": 1051000, "label": "1825" },
+      { "date": "1850-01-01", "value": 1490000, "label": "1850" },
+      { "date": "1875-01-01", "value": 1813000, "label": "1875" },
+      { "date": "1900-01-01", "value": 2240000, "label": "1900" }
+    ],
+    "visualization": {
+      "chartType": "line",
+      "xAxisLabel": "År",
+      "yAxisLabel": "Folkemengde",
+      "showPoints": true
     }
   }
 }
