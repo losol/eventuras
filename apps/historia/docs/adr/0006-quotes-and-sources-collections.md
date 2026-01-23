@@ -1,7 +1,7 @@
 # ADR 0006 — Quotes and Sources Collections
 
 ## Status
-Draft
+Accepted (Implemented with MVP simplifications)
 
 ## Context
 
@@ -36,7 +36,7 @@ Historia needs a system for managing quotations with proper attribution and sour
 - Link to source materials (books, articles, speeches)
 - Precise location references (page numbers, timestamps)
 - Multilingual quotes
-- Public-facing quote pages with SEO
+- Public-facing quote pages (resourceId-based URLs)
 - Reusable across articles and pages (future)
 
 ## Decision
@@ -74,50 +74,56 @@ Implement two new Payload collections with a clear separation of concerns:
 
 **Key Design Decisions:**
 
-**1.1 Polymorphic Author Relationships**
+**1.1 Author Field (MVP Simplification)**
 
 ```typescript
 {
-  name: 'authors',
+  name: 'author',
   type: 'relationship',
-  relationTo: ['persons', 'organizations'],
-  hasMany: true,
+  relationTo: 'persons',
 }
 ```
 
+**MVP Decision:**
+- **Single author** (not array) - For simple quotes with one person
+- **Persons only** (not organizations) - Organizations use `attributionText` instead
+- **For complex sources** - Users should create a Source entry with contributors array
+
 **Rationale:**
-- Organizations can be quoted (e.g., WHO policy statements, company announcements)
-- Joint statements may have multiple authors (persons and/or organizations)
-- Avoids separate fields for "person authors" vs "organization authors"
+- Covers 95% of use cases (single person quotes)
+- Reduces UI complexity for MVP
+- Sources collection handles multi-author and organizational works properly
+- Can expand to polymorphic array later if needed
 
 **Alternatives Considered:**
-- Single person-only relationship → Too restrictive (excludes org quotes)
-- Separate `personAuthors` and `orgAuthors` fields → More complex UI, harder queries
+- ~~Polymorphic persons/organizations~~ → Deferred to Sources collection
+- ~~Multiple authors (array)~~ → Deferred; use Sources for complex cases
 
-**1.2 Attribution System**
+**1.2 Attribution System (MVP Simplification)**
 
 ```typescript
-{
-  name: 'attributionType',
-  type: 'select',
-  options: ['confirmed', 'attributed', 'unknown'],
-}
 {
   name: 'attributionText',
   type: 'text',
+  admin: {
+    condition: (data) => !data.author,
+  }
 }
 ```
 
+**MVP Decision:**
+- **Single text field** - For organizations, uncertain attribution, or unknown authors
+- **Conditional display** - Only shown when `author` is not selected
+- **Removed `attributionType`** - Deferred to future enhancement
+
 **Rationale:**
-- Many quotes have uncertain origins (e.g., "Often attributed to Mark Twain")
-- Anonymous quotes are common ("Unknown", "Anonymous")
-- Structured type enables filtering (show only confirmed quotes)
-- Text field provides flexibility for nuanced attribution
+- Simpler UX for MVP - either pick a person or type attribution text
+- Free-form text handles all edge cases ("WHO", "Anonymous", "Attributed to Mark Twain")
+- Can add structured type field later if filtering becomes important
 
 **Alternatives Considered:**
-- Only `attributionText` → Loses ability to filter/query by certainty
-- Only `attributionType` → Can't express nuanced attribution details
-- Boolean `isConfirmed` → Too simplistic (doesn't distinguish attributed from unknown)
+- ~~attributionType + attributionText~~ → Over-engineered for MVP
+- Separate authorText field → Merged into attributionText for simplicity
 
 **1.3 Auto-Generated Titles**
 
@@ -125,7 +131,10 @@ Implement two new Payload collections with a clear separation of concerns:
 hooks: {
   beforeValidate: [
     async ({ data, req }) => {
-      // Generate: "Einstein, Bohr - #QUOT-123"
+      // Lookup author.name if relationship exists
+      // Else use attributionText
+      // Append resourceId
+      // Generate: "Einstein - #QUOT-123"
       // Or: "Anonymous - #QUOT-124"
     }
   ]
@@ -198,72 +207,105 @@ richText({
 
 ```typescript
 {
-  name: 'type',
+  name: 'sourceType',
   type: 'select',
+  required: true,
+  defaultValue: 'default',
   options: [
-    'book', 'article', 'speech', 'interview',
-    'website', 'document', 'other'
+    'default',
+    'article-journal', 'book', 'chapter', 'report', 'thesis', 'paper-conference',
+    'webpage', 'article-newspaper',
+    'legislation'
   ]
 }
 ```
 
 **Rationale:**
-- Different source types have different metadata needs
-- Enables filtering (show all book sources)
-- Extensible with "other" option
+- CSL JSON citation style types for compatibility with Zotero, Mendeley, etc.
+- Different source types trigger conditional fields (accessedDate, publicationPlace, edition)
+- Required field with default ensures consistency
 
-**2.2 File Upload Support**
+**2.2 File Upload Support (Multiple Files)**
 
 ```typescript
 {
-  name: 'file',
+  name: 'files',
   type: 'upload',
   relationTo: 'media',
+  hasMany: true,
 }
 ```
 
 **Rationale:**
+- Sources may have multiple files (different editions, supplements, appendices)
+- `hasMany: true` enables uploading multiple PDFs per source
 - Users may have PDFs of articles, speeches, etc.
 - Enables self-contained knowledge base
 - Optional (not all sources are downloadable)
 
-**2.3 Polymorphic Authors**
+**2.3 Contributors Array (with Roles)**
 
-Same pattern as Quotes — sources can have person or organization authors.
+```typescript
+{
+  name: 'contributors',
+  type: 'array',
+  fields: [
+    {
+      name: 'entity',
+      type: 'relationship',
+      relationTo: ['persons', 'organizations'],
+      required: true,
+    },
+    {
+      name: 'role',
+      type: 'select',
+      required: true,
+      options: [
+        'author', 'editor', 'translator', 'interviewer',
+        'interviewee', 'producer', 'contributor'
+      ],
+    },
+  ],
+}
+```
 
-**2.4 Publisher Relationship**
+**Rationale:**
+- Sources often have multiple contributors with different roles
+- Polymorphic entity relationship handles both persons and organizations
+- Role field enables proper attribution ("Edited by X", "Translated by Y")
+- Order matters - Payload preserves array order automatically
+- Maps to schema.org `author`, `editor`, `translator`, etc.
+
+**2.4 Publisher Field (MVP Simplification)**
 
 ```typescript
 {
   name: 'publisher',
-  type: 'relationship',
-  relationTo: 'organizations',
+  type: 'text',
 }
 ```
 
-**Rationale:**
-- Essential for proper academic citations
-- Reuses existing Organizations collection
-- Schema.org `publisher` property
-
-**2.5 Hierarchical Sources (isPartOf)**
-
-```typescript
-{
-  name: 'isPartOf',
-  type: 'relationship',
-  relationTo: 'sources', // Self-reference!
-}
-```
+**MVP Decision:**
+- **Text field** instead of organization relationship
+- Reduces friction - no need to create Organization for every publisher
+- Can migrate to relationship later if needed
 
 **Rationale:**
-- Enables modeling articles within journals, chapters within books
-- Self-referencing allows complex bibliographic hierarchies
-- Schema.org `isPartOf` property
+- Most publishers are one-time mentions ("Oxford University Press", "Random House")
+- Creating Organization entries for all publishers is overhead
+- Text field sufficient for citation generation
+- Can upgrade to relationship when publisher pages become valuable
 
-**Examples:**
-- Article "The Future of AI" → isPartOf → Journal "Nature"
-- Chapter "Introduction" → isPartOf → Book "Complete Works"
+**2.5 ~~Hierarchical Sources (isPartOf)~~ — Deferred**
+
+**MVP Decision:** Removed self-referencing `isPartOf` field.
+
+**Rationale:**
+- Adds complexity for uncertain value in MVP
+- Can be modeled via `publicationContext.containerTitle` for most cases
+- Can add later if hierarchical source management becomes important
+
+**Alternative:** Use `publicationContext.containerTitle` for journal/book names
 
 **2.6 Publication Context**
 
@@ -271,9 +313,6 @@ Same pattern as Quotes — sources can have person or organization authors.
 {
   name: 'publicationContext',
   type: 'group',
-  admin: {
-    condition: (data) => ['article', 'document'].includes(data.type),
-  },
   fields: [
     {
       name: 'containerTitle',
@@ -289,39 +328,48 @@ Same pattern as Quotes — sources can have person or organization authors.
       type: 'text',
     },
     {
-      name: 'pageStart',
+      name: 'page',
       type: 'text',
-    },
-    {
-      name: 'pageEnd',
-      type: 'text',
+      label: 'Pages',
+      admin: {
+        description: 'e.g. "123-145", "S12-S15", "xii-xv"',
+      },
     },
   ]
 }
 ```
 
+**MVP Changes:**
+- **No condition** - Always visible (user decides when to fill it)
+- **Single `page` field** - Handles ranges and roman numerals as free text ("123-145", "xii-xv")
+- Removed `pageStart`/`pageEnd` - Free text is more flexible
+
 **Rationale:**
 - Essential metadata for scholarly articles
 - Enables generation of proper citations (APA, MLA, Chicago)
-- Schema.org `isPartOf`, `pageStart`, `pageEnd` properties
-- Conditional display (only for articles/documents)
+- Free-text pages handle edge cases (roman numerals, supplement pages)
+- Always showing the group is simpler than conditional logic
 
-**Alternatives Considered:**
-- Use `isPartOf` relationship only → Loses structured metadata (volume, issue, pages)
-- Both `isPartOf` + `publicationContext` → Flexibility for different use cases
+**2.7 ~~Public Pages with SEO~~ — Simplified to ResourceId URLs**
 
-**2.7 Public Pages with SEO**
-
-Sources get their own slug and SEO tab.
+**MVP Decision:**
+- **No slug field** - Use resourceId instead (`/i/source/SRC-abc123`)
+- **No seoTab** - Deferred SEO optimization
 
 **Rationale:**
-- Source pages can display metadata + all quotes from that source
-- SEO enables discovery (people searching for "quotes from X book")
-- Creates hub pages for content organization
+- Slug generation is complex for bibliographic sources (long titles, special characters)
+- ResourceId-based URLs are consistent and collision-free
+- Can add slug later if SEO becomes important
+- `/i/source/SRC-123` pattern clearly indicates "item by ID" URLs
+
+**URL Pattern:**
+- Quotes: `/locale/i/quote/QUOT-abc123`
+- Sources: `/locale/i/source/SRC-def456`
+- `/i/` = "item" (ID-based reference page)
 
 **Alternatives Considered:**
-- Sources as pure metadata (no pages) → Misses SEO opportunity
-- Sources embedded in Quotes → Duplication, no reusability
+- Auto-generate slugs from title → Too complex, many edge cases
+- Manual slugs → Extra overhead, not worth it for reference pages
 
 ### 3. Separation of Quotes and Sources
 
@@ -367,6 +415,70 @@ Sources get their own slug and SEO tab.
 - Can't link to source material
 - No source pages
 
+### 4. Additional Bibliographic Fields
+
+**4.1 Conditional Fields Based on Source Type**
+
+```typescript
+// For webpages
+{
+  name: 'accessedDate',
+  type: 'date',
+  admin: {
+    condition: (data) => data?.sourceType === 'webpage',
+  },
+}
+
+// For books, chapters, theses
+{
+  name: 'publicationPlace',
+  type: 'text',
+  admin: {
+    condition: (data) => ['book', 'chapter', 'thesis'].includes(data?.sourceType),
+  },
+}
+
+// For books
+{
+  name: 'edition',
+  type: 'text',
+  admin: {
+    condition: (data) => data?.sourceType === 'book',
+  },
+}
+```
+
+**Rationale:**
+- **accessedDate** - Required for web citations (content changes over time)
+- **publicationPlace** - Standard in book citations ("Oslo: Universitetsforlaget")
+- **edition** - Critical for books (1st vs 2nd edition can have major differences)
+- Conditional display reduces clutter for irrelevant fields
+
+### 5. Identifiers Array
+
+```typescript
+{
+  name: 'identifiers',
+  type: 'array',
+  fields: [
+    {
+      name: 'type',
+      type: 'select',
+      options: ['isbn', 'doi', 'pmid', 'arxiv', 'issn', 'other'],
+    },
+    {
+      name: 'value',
+      type: 'text',
+    },
+  ],
+}
+```
+
+**Rationale:**
+- Academic sources often have multiple identifiers (ISBN + DOI)
+- Type + value pattern enables proper citation formatting
+- Extensible with "other" option for edge cases
+
 ## Consequences
 
 ### Positive
@@ -395,16 +507,19 @@ Sources get their own slug and SEO tab.
 
 ⚠️ **Additional admin overhead** — Users must create sources separately
 
-⚠️ **Polymorphic complexity** — Developers must handle person vs organization logic
+⚠️ **No SEO optimization** — ResourceId URLs are functional but not SEO-friendly
 
 ⚠️ **Auto-title hook** — Requires async database calls in beforeValidate hook
+
+⚠️ **Limited Quotes flexibility** — Single author, persons-only (complex cases use Sources)
 
 ### Mitigations
 
 - **Query complexity** → Use Payload's populate/depth features
 - **Admin overhead** → Add quick-create modals for sources (future)
-- **Polymorphic logic** → Encapsulate in helper functions/utilities
+- **No SEO** → Can add slug field later if needed (MVP focuses on functionality)
 - **Hook performance** → Consider caching author names (if needed)
+- **Limited Quotes** → Guidance text directs users to Sources for complex attribution
 
 ## Future Enhancements (Out of Scope)
 
@@ -590,15 +705,17 @@ The **Sources** collection maps to various [`schema.org/CreativeWork`](https://s
 
 ## Implementation Checklist
 
-- [ ] Create `apps/historia/src/collections/Quotes.ts`
-- [ ] Create `apps/historia/src/collections/Sources.ts`
-- [ ] Register collections in `payload.config.ts`
-- [ ] Implement auto-title hook in Quotes
-- [ ] Test polymorphic relationships (persons + organizations)
-- [ ] Test attribution system (confirmed, attributed, unknown)
-- [ ] Test locator conditional display
-- [ ] Test live preview for both collections
-- [ ] Create frontend routes: `/quotes/[slug]` and `/sources/[slug]`
+- [x] Create `apps/historia/src/collections/Quotes.ts`
+- [x] Create `apps/historia/src/collections/Sources.ts`
+- [x] Register collections in `payload.config.ts`
+- [x] Implement auto-title hook in Quotes (author → attributionText → "Quote")
+- [x] Implement contributors array with roles in Sources
+- [x] Implement conditional fields (accessedDate, publicationPlace, edition)
+- [x] Implement identifiers array (type + value)
+- [x] Test locator conditional display
+- [x] Configure live preview with resourceId-only URLs
+- [ ] Create frontend routes: `/i/quote/[resourceId]` and `/i/source/[resourceId]`
+- [ ] Implement schema.org JSON-LD on frontend
 - [ ] Generate TypeScript types
-- [ ] Run database migrations (if needed)
-- [ ] Update documentation
+- [ ] Run database migrations
+- [ ] Test in Historia admin UI
