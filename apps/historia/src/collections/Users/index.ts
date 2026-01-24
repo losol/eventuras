@@ -55,6 +55,7 @@ export const Users: CollectionConfig = {
     strategies: [createVippsAuthStrategy()],
     tokenExpiration: 60 * 60 * 24 * 7, // 7 days
     useSessions: true,
+    useAPIKey: true,
   },
   fields: [
     {
