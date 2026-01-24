@@ -1,7 +1,7 @@
 # ADR 0008 — Timeline Events Collection
 
 ## Status
-Draft
+Accepted
 
 ## Context
 
@@ -55,7 +55,7 @@ Without a dedicated Events/Timeline collection:
 
 ## Decision
 
-Implement an **Events collection** (slug: `events`) with flexible date representation and rich semantic relationships.
+Implement a **Timeline collection** (slug: `timelines`) with flexible date representation and rich semantic relationships.
 
 ### Versioning Strategy
 
@@ -102,12 +102,22 @@ import { slugField } from '@/fields/slug';
 import { storyField } from '@/fields/story';
 import { seoTab } from '@/lib/payload-plugin-seo';
 
-export const Events: CollectionConfig = {
-  slug: 'events',
+export const Timelines: CollectionConfig = {
+  slug: 'timelines',
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'startDate', 'eventType', 'updatedAt'],
-    defaultSort: 'startDate',
+    defaultColumns: ['title', 'updatedAt'],
+    livePreview: {
+      url: ({ data, req }) => {
+        const path = generatePreviewPath({
+          resourceId: typeof data?.resourceId === 'string' ? data.resourceId : undefined,
+          slug: typeof data?.slug === 'string' ? data.slug : undefined,
+          collection: 'timelines',
+          req,
+        });
+        return path;
+      },
+    },
   },
   versions: {
     drafts: {
@@ -150,6 +160,9 @@ export const Events: CollectionConfig = {
                 description: 'Brief summary for timeline tooltips and previews (max 300 characters)',
               },
             },
+
+            // Rich description
+            storyField([Content, Image]),
 
             // Featured image (reuses shared image field pattern from Articles)
             image,
@@ -219,56 +232,6 @@ export const Events: CollectionConfig = {
                   },
                 },
               ],
-            },
-
-            // Location
-            {
-              name: 'location',
-              type: 'relationship',
-              relationTo: 'places',
-              label: 'Location',
-              admin: {
-                description: 'Where did this event take place?',
-              },
-            },
-
-            // Participants
-            {
-              name: 'participants',
-              type: 'array',
-              label: 'Participants',
-              admin: {
-                description: 'People and organizations involved in this event',
-              },
-              fields: [
-                {
-                  name: 'entity',
-                  type: 'relationship',
-                  relationTo: ['persons', 'organizations'],
-                  required: true,
-                  label: 'Person/Organization',
-                },
-                {
-                  name: 'role',
-                  type: 'text',
-                  label: 'Role',
-                  admin: {
-                    description: 'Their role in the event (e.g., "signatory", "commander", "victim", "witness")',
-                  },
-                },
-              ],
-            },
-
-            // Sources
-            {
-              name: 'sources',
-              type: 'relationship',
-              relationTo: 'sources',
-              hasMany: true,
-              label: 'Sources',
-              admin: {
-                description: 'Historical sources documenting this event',
-              },
             },
 
             // Topics/categories
@@ -664,11 +627,11 @@ Store dates as "1939-09-01/1945-05-08" strings.
 
 ## Implementation Checklist
 
-- [ ] Create `apps/historia/src/collections/Events.ts`
-- [ ] Register collection in `payload.config.ts`
+- [x] Create `apps/historia/src/collections/Timelines.ts` (exports `Timelines`)
+- [x] Register collection in `payload.config.ts`
 - [ ] Implement date validation (endDate >= startDate)
-- [ ] Add to localized collection name mapping (events/hendelser)
-- [ ] Create frontend route: `/[locale]/c/event/[slug]`
+- [x] Add to localized collection name mapping (timelines/tidslinjer)
+- [ ] Create frontend route: `/[locale]/c/timelines/[slug]` (tidslinjer in Norwegian)
 - [ ] Implement schema.org Event JSON-LD
 - [ ] Create event page component (full details + timeline visualization)
 - [ ] Implement date formatting based on precision

@@ -97,6 +97,7 @@ export interface Config {
     shipments: Shipment;
     sources: Source;
     terms: Term;
+    timelines: Timeline;
     topics: Topic;
     transactions: Transaction;
     users: User;
@@ -138,6 +139,7 @@ export interface Config {
     shipments: ShipmentsSelect<false> | ShipmentsSelect<true>;
     sources: SourcesSelect<false> | SourcesSelect<true>;
     terms: TermsSelect<false> | TermsSelect<true>;
+    timelines: TimelinesSelect<false> | TimelinesSelect<true>;
     topics: TopicsSelect<false> | TopicsSelect<true>;
     transactions: TransactionsSelect<false> | TransactionsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
@@ -1759,6 +1761,81 @@ export interface Term {
   slugLock?: boolean | null;
   updatedAt: string;
   createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "timelines".
+ */
+export interface Timeline {
+  id: string;
+  tenant?: (string | null) | Website;
+  /**
+   * Short, descriptive title (e.g., "Grunnloven undertegnes", "French Revolution begins")
+   */
+  title: string;
+  /**
+   * Brief summary for timeline tooltips and previews (max 300 characters)
+   */
+  summary?: string | null;
+  story?: (ContentBlock | ImageBlock)[] | null;
+  image?: Image;
+  temporal: {
+    /**
+     * Date when this occurred (or began for multi-day entries)
+     */
+    startDate: string;
+    /**
+     * Optional end date for entries spanning multiple days/years
+     */
+    endDate?: string | null;
+    /**
+     * How precise is the date?
+     */
+    datePrecision: 'exact-time' | 'exact' | 'month' | 'year' | 'decade' | 'century' | 'circa';
+    /**
+     * Optional human-readable date (e.g., "Early 1800s", "Spring 1814", "ca. 1850"). Overrides auto-formatted date.
+     */
+    displayDate?: string | null;
+    /**
+     * Check if this is still happening (no end date)
+     */
+    isOngoing?: boolean | null;
+  };
+  /**
+   * Thematic categories (e.g., "Norwegian Constitution", "World War II")
+   */
+  topics?: (string | Topic)[] | null;
+  /**
+   * Connect to other timeline entries (cause/effect, hierarchy)
+   */
+  relatedEvents?:
+    | {
+        event: string | Timeline;
+        relationshipType: 'caused_by' | 'led_to' | 'part_of' | 'concurrent_with' | 'related_to';
+        id?: string | null;
+      }[]
+    | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  resourceId: string;
+  meta?: {
+    /**
+     * 50-60 characters recommended for optimal display in search results. Leave empty to auto-generate from title.
+     */
+    title?: string | null;
+    /**
+     * 150-160 characters recommended for search result snippets. Leave empty to use excerpt or lead text.
+     */
+    description?: string | null;
+    /**
+     * Image used when sharing on social media (Facebook, LinkedIn, Twitter). Recommended: Use the "socialShare" format (1200×630px) for best results. Leave empty to use featured image.
+     */
+    image?: (string | null) | Media;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2415,6 +2492,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'terms';
         value: string | Term;
+      } | null)
+    | ({
+        relationTo: 'timelines';
+        value: string | Timeline;
       } | null)
     | ({
         relationTo: 'topics';
@@ -3207,6 +3288,53 @@ export interface TermsSelect<T extends boolean = true> {
   slugLock?: T;
   updatedAt?: T;
   createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "timelines_select".
+ */
+export interface TimelinesSelect<T extends boolean = true> {
+  tenant?: T;
+  title?: T;
+  summary?: T;
+  story?:
+    | T
+    | {
+        content?: T | ContentBlockSelect<T>;
+        image?: T | ImageBlockSelect<T>;
+      };
+  image?: T | ImageSelect<T>;
+  temporal?:
+    | T
+    | {
+        startDate?: T;
+        endDate?: T;
+        datePrecision?: T;
+        displayDate?: T;
+        isOngoing?: T;
+      };
+  topics?: T;
+  relatedEvents?:
+    | T
+    | {
+        event?: T;
+        relationshipType?: T;
+        id?: T;
+      };
+  slug?: T;
+  slugLock?: T;
+  resourceId?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

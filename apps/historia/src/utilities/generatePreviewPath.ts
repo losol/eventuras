@@ -6,6 +6,7 @@ const collectionPrefixMap: Partial<Record<CollectionSlug, string>> = {
   articles: 'c',
   notes: 'c',
   products: 'c',
+  timelines: 'c',
   pages: '',
   quotes: 'i',
   sources: 'i',
