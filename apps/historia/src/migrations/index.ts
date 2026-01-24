@@ -16,6 +16,7 @@ import * as migration_20260121_185111_remove_persons_name_required from './20260
 import * as migration_20260122_191632_cases from './20260122_191632_cases';
 import * as migration_20260123_215608_quotes_and_sources from './20260123_215608_quotes_and_sources';
 import * as migration_20260124_123434_terms from './20260124_123434_terms';
+import * as migration_20260124_224858_media_collections from './20260124_224858_media_collections';
 
 export const migrations = [
   {
@@ -106,6 +107,11 @@ export const migrations = [
   {
     up: migration_20260124_123434_terms.up,
     down: migration_20260124_123434_terms.down,
-    name: '20260124_123434_terms'
+    name: '20260124_123434_terms',
+  },
+  {
+    up: migration_20260124_224858_media_collections.up,
+    down: migration_20260124_224858_media_collections.down,
+    name: '20260124_224858_media_collections'
   },
 ];
