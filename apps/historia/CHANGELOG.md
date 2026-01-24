@@ -1,5 +1,11 @@
 # @eventuras/historia
 
+## 0.22.0
+
+### Minor Changes
+
+- 004280c: Add Terms/Glossary collection for knowledge management. A flexible glossary/terminology collection with hybrid structure supporting both nested and flat organization patterns.
+
 ## 0.21.0
 
 ### Features
