@@ -59,6 +59,42 @@ export const Users: CollectionConfig = {
   },
   fields: [
     {
+      name: 'enableAPIKey',
+      type: 'checkbox',
+      access: {
+        create: adminsFieldLevel,
+        read: adminsFieldLevel,
+        update: adminsFieldLevel,
+      },
+      admin: {
+        hidden: true, // Managed through API Keys UI tab
+      },
+    },
+    {
+      name: 'apiKey',
+      type: 'text',
+      access: {
+        create: adminsFieldLevel,
+        read: adminsFieldLevel,
+        update: adminsFieldLevel,
+      },
+      admin: {
+        hidden: true, // Managed through API Keys UI tab
+      },
+    },
+    {
+      name: 'apiKeyIndex',
+      type: 'text',
+      access: {
+        create: adminsFieldLevel,
+        read: adminsFieldLevel,
+        update: adminsFieldLevel,
+      },
+      admin: {
+        hidden: true, // Managed through API Keys UI tab
+      },
+    },
+    {
       label: 'Name',
       type: 'collapsible',
       fields: [

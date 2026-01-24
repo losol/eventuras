@@ -47,9 +47,11 @@ We will enable **Payload CMS API Keys** on the Users collection.
    - Existing access controls on Media and Notes collections apply automatically
 
 3. **Management:**
-   - Only system admins can create/manage API keys (Payload's default behavior)
+   - Only system admins can create/manage API keys (enforced via field-level access control)
+   - Field-level access restricts `enableAPIKey`, `apiKey`, and `apiKeyIndex` fields to admins
    - System admins access the "API Keys" tab on user documents in the admin panel
    - Keys can be generated, viewed (once), and deleted
+   - Non-admin users (including tenant admins and self-updates) cannot access API key fields
 
 4. **Usage:**
    ```bash
@@ -97,13 +99,50 @@ We considered adding `auth.useAPIKey` to Media and Notes collections directly, b
 
 ### Security Considerations
 
-1. **Key rotation:** Admins should rotate keys periodically
-2. **Service accounts:** Use dedicated user accounts for automation (not personal accounts)
-3. **Least privilege:** Assign minimal necessary roles to service accounts
-4. **Audit logging:** Monitor API usage through Payload's request logs
-5. **HTTPS only:** API keys must only be transmitted over HTTPS in production
+1. **Admin-only field access:** API key fields (`enableAPIKey`, `apiKey`, `apiKeyIndex`) are restricted to system admins via field-level access control. This prevents:
+   - Users from generating API keys for themselves
+   - Tenant admins from managing API keys for users in their tenant
+   - Any non-admin user from viewing or modifying API key data
+2. **Key rotation:** Admins should rotate keys periodically
+3. **Service accounts:** Use dedicated user accounts for automation (not personal accounts)
+4. **Least privilege:** Assign minimal necessary roles to service accounts
+5. **Audit logging:** Monitor API usage through Payload's request logs
+6. **HTTPS only:** API keys must only be transmitted over HTTPS in production
 
 ## Implementation Notes
+
+### Field-Level Access Control
+
+To enforce system-admin-only API key management, we explicitly define the API key fields with field-level access restrictions:
+
+```typescript
+fields: [
+  {
+    name: 'enableAPIKey',
+    type: 'checkbox',
+    access: {
+      create: adminsFieldLevel,
+      read: adminsFieldLevel,
+      update: adminsFieldLevel,
+    },
+    admin: {
+      hidden: true, // Managed through API Keys UI tab
+    },
+  },
+  // Similar for 'apiKey' and 'apiKeyIndex' fields
+]
+```
+
+This is necessary because the Users collection has `updateAndDeleteAccess` that allows:
+- System admins (✅ should have access)
+- Users updating themselves (❌ should NOT have API key access)
+- Tenant admins updating users in their tenant (❌ should NOT have API key access)
+
+By adding field-level access control, only system admins can:
+- View the API Keys tab in the admin UI
+- Generate API keys for users
+- Delete existing API keys
+- Access the `enableAPIKey`, `apiKey`, and `apiKeyIndex` fields
 
 ### Creating an API Key
 
