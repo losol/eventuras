@@ -82,6 +82,7 @@ export interface Config {
     articles: Article;
     'business-events': BusinessEvent;
     carts: Cart;
+    cases: Case;
     happenings: Happening;
     licenses: License;
     media: Media;
@@ -93,9 +94,9 @@ export interface Config {
     places: Place;
     products: Product;
     quotes: Quote;
-    cases: Case;
     shipments: Shipment;
     sources: Source;
+    terms: Term;
     topics: Topic;
     transactions: Transaction;
     users: User;
@@ -122,6 +123,7 @@ export interface Config {
     articles: ArticlesSelect<false> | ArticlesSelect<true>;
     'business-events': BusinessEventsSelect<false> | BusinessEventsSelect<true>;
     carts: CartsSelect<false> | CartsSelect<true>;
+    cases: CasesSelect<false> | CasesSelect<true>;
     happenings: HappeningsSelect<false> | HappeningsSelect<true>;
     licenses: LicensesSelect<false> | LicensesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
@@ -133,9 +135,9 @@ export interface Config {
     places: PlacesSelect<false> | PlacesSelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
     quotes: QuotesSelect<false> | QuotesSelect<true>;
-    cases: CasesSelect<false> | CasesSelect<true>;
     shipments: ShipmentsSelect<false> | ShipmentsSelect<true>;
     sources: SourcesSelect<false> | SourcesSelect<true>;
+    terms: TermsSelect<false> | TermsSelect<true>;
     topics: TopicsSelect<false> | TopicsSelect<true>;
     transactions: TransactionsSelect<false> | TransactionsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
@@ -1563,6 +1565,7 @@ export interface SessionBlock {
  */
 export interface Quote {
   id: string;
+  tenant?: (string | null) | Website;
   title?: string | null;
   quote: {
     root: {
@@ -1606,6 +1609,7 @@ export interface Quote {
  */
 export interface Source {
   id: string;
+  tenant?: (string | null) | Website;
   title: string;
   /**
    * People or organizations who contributed to this work. Order matters.
@@ -1677,6 +1681,82 @@ export interface Source {
     page?: string | null;
   };
   resourceId: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "terms".
+ */
+export interface Term {
+  id: string;
+  tenant?: (string | null) | Website;
+  /**
+   * The term being defined (e.g., "Kildekritikk", "Database")
+   */
+  term: string;
+  /**
+   * Optional context/specialization (e.g., "historical method", "media studies"). Leave empty for general terms.
+   */
+  context?: string | null;
+  title?: string | null;
+  /**
+   * Add multiple definitions if the term has different meanings within the same context.
+   */
+  definitions: {
+    definition: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+    /**
+     * Concise definition for tooltips and previews (max 200 characters)
+     */
+    shortDefinition: string;
+    /**
+     * Optional sub-context or variant (e.g., "early period", "modern usage", "legal")
+     */
+    variant?: string | null;
+    /**
+     * Show this definition by default in tooltips and previews
+     */
+    isPrimary?: boolean | null;
+    /**
+     * Authoritative sources for this definition
+     */
+    sources?: (string | Source)[] | null;
+    id?: string | null;
+  }[];
+  /**
+   * Alternative terms, translations, or common misspellings
+   */
+  synonyms?:
+    | {
+        synonym: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Semantically related concepts (broader, narrower, or related terms)
+   */
+  relatedTerms?: (string | Term)[] | null;
+  /**
+   * Primary topic/discipline for this term
+   */
+  category?: (string | Topic)[] | null;
+  resourceId: string;
+  slug?: string | null;
+  slugLock?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -2277,6 +2357,10 @@ export interface PayloadLockedDocument {
         value: string | Cart;
       } | null)
     | ({
+        relationTo: 'cases';
+        value: string | Case;
+      } | null)
+    | ({
         relationTo: 'happenings';
         value: string | Happening;
       } | null)
@@ -2321,16 +2405,16 @@ export interface PayloadLockedDocument {
         value: string | Quote;
       } | null)
     | ({
-        relationTo: 'cases';
-        value: string | Case;
-      } | null)
-    | ({
         relationTo: 'shipments';
         value: string | Shipment;
       } | null)
     | ({
         relationTo: 'sources';
         value: string | Source;
+      } | null)
+    | ({
+        relationTo: 'terms';
+        value: string | Term;
       } | null)
     | ({
         relationTo: 'topics';
@@ -2541,6 +2625,44 @@ export interface CartsSelect<T extends boolean = true> {
   customer?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "cases_select".
+ */
+export interface CasesSelect<T extends boolean = true> {
+  tenant?: T;
+  title?: T;
+  lead?: T;
+  image?: T | ImageSelect<T>;
+  story?:
+    | T
+    | {
+        content?: T | ContentBlockSelect<T>;
+      };
+  startDate?: T;
+  endDate?: T;
+  partners?:
+    | T
+    | {
+        entity?: T;
+        role?: T;
+        id?: T;
+      };
+  slug?: T;
+  slugLock?: T;
+  resourceId?: T;
+  publishedAt?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2964,6 +3086,7 @@ export interface ProductsSelect<T extends boolean = true> {
  * via the `definition` "quotes_select".
  */
 export interface QuotesSelect<T extends boolean = true> {
+  tenant?: T;
   title?: T;
   quote?: T;
   author?: T;
@@ -2974,44 +3097,6 @@ export interface QuotesSelect<T extends boolean = true> {
   resourceId?: T;
   updatedAt?: T;
   createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "cases_select".
- */
-export interface CasesSelect<T extends boolean = true> {
-  tenant?: T;
-  title?: T;
-  lead?: T;
-  image?: T | ImageSelect<T>;
-  story?:
-    | T
-    | {
-        content?: T | ContentBlockSelect<T>;
-      };
-  startDate?: T;
-  endDate?: T;
-  partners?:
-    | T
-    | {
-        entity?: T;
-        role?: T;
-        id?: T;
-      };
-  slug?: T;
-  slugLock?: T;
-  resourceId?: T;
-  publishedAt?: T;
-  meta?:
-    | T
-    | {
-        title?: T;
-        description?: T;
-        image?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -3054,6 +3139,7 @@ export interface ShipmentsSelect<T extends boolean = true> {
  * via the `definition` "sources_select".
  */
 export interface SourcesSelect<T extends boolean = true> {
+  tenant?: T;
   title?: T;
   contributors?:
     | T
@@ -3086,6 +3172,39 @@ export interface SourcesSelect<T extends boolean = true> {
         page?: T;
       };
   resourceId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "terms_select".
+ */
+export interface TermsSelect<T extends boolean = true> {
+  tenant?: T;
+  term?: T;
+  context?: T;
+  title?: T;
+  definitions?:
+    | T
+    | {
+        definition?: T;
+        shortDefinition?: T;
+        variant?: T;
+        isPrimary?: T;
+        sources?: T;
+        id?: T;
+      };
+  synonyms?:
+    | T
+    | {
+        synonym?: T;
+        id?: T;
+      };
+  relatedTerms?: T;
+  category?: T;
+  resourceId?: T;
+  slug?: T;
+  slugLock?: T;
   updatedAt?: T;
   createdAt?: T;
 }

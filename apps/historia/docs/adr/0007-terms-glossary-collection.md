@@ -62,18 +62,15 @@ This flexibility allows editors to choose the most appropriate structure based o
 
 ### Versioning Strategy
 
-**Full versioning enabled:**
-- **Rationale:** Definitions evolve as language develops and new research emerges
-- **Example:** "Folkemord" (genocide) - legal definition has evolved over time
-- **Use case:** Show how understanding of concepts has changed historically
-- **Academic value:** Reference specific definition versions in scholarly work
+**Draft/publish workflow enabled:**
+- **Rationale:** Editors need to review and refine definitions before publication
+- **No full history:** Definitions are updated in place, not preserved as versions
 - **Configuration:**
   ```typescript
   versions: {
     drafts: {
       autosave: true,
     },
-    maxPerDoc: 50,
   }
   ```
 
@@ -84,7 +81,8 @@ This flexibility allows editors to choose the most appropriate structure based o
 - **Rationale:** Organizations have their own terminology, internal jargon, and context-specific definitions
 - **No cross-tenant sharing:** Each organization maintains their own glossary
 - **Use case:** Corporate terminology, discipline-specific definitions, localized vocabulary
-- **Implementation:** Handled at config level via tenant isolation plugin/hooks (organization field auto-managed)
+- **Implementation:** Handled by multiTenantPlugin - adds tenant field and filters queries automatically
+- **Access control:** Collection uses standard access patterns; plugin enforces tenant isolation at query level
 
 ### Collection Structure
 
@@ -95,12 +93,9 @@ export const Terms: CollectionConfig = {
     useAsTitle: 'title',
     defaultColumns: ['title', 'category', 'updatedAt'],
   },
-  access: {
-    read: ({ req }) => {
-      if (!req.user) return false;
-      return {
-        organization: { equals: req.user.organization },
-      };
+  versions: {
+    drafts: {
+      autosave: true,
     },
   },
   fields: [

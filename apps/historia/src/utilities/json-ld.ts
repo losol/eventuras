@@ -10,7 +10,7 @@
  * - API responses for external consumption
  */
 
-import type { Quote, Source } from '@/payload-types';
+import type { Quote, Source, Term } from '@/payload-types';
 
 /**
  * Extract plain text from Payload richText field
@@ -282,6 +282,94 @@ export function generateSourceJsonLd(source: Source): object {
   // Publication place (for books)
   if (source.publicationPlace) {
     jsonLd.contentLocation = source.publicationPlace;
+  }
+
+  return jsonLd;
+}
+
+/**
+ * Generate schema.org DefinedTerm JSON-LD for a Term
+ *
+ * Maps glossary terms to schema.org DefinedTerm type with support for:
+ * - Multiple definitions (array)
+ * - Related terms (semantic network)
+ * - Category (inDefinedTermSet)
+ * - Synonyms (alternateName)
+ *
+ * @see https://schema.org/DefinedTerm
+ * @see ADR 0007 - Terms/Glossary Collection
+ *
+ * @example
+ * ```tsx
+ * <script
+ *   type="application/ld+json"
+ *   dangerouslySetInnerHTML={{ __html: JSON.stringify(generateTermJsonLd(term)) }}
+ * />
+ * ```
+ */
+/**
+ * Helper: Extract description from term definitions and context
+ */
+function extractTermDescription(term: Term): string | undefined {
+  const definitions = Array.isArray(term.definitions) ? term.definitions : [];
+  const primaryDefinition = definitions.find((d) => d.isPrimary) || definitions[0];
+
+  if (!primaryDefinition && !term.context) {
+    return undefined;
+  }
+
+  const definitionText = primaryDefinition
+    ? primaryDefinition.shortDefinition || extractPlainText(primaryDefinition.definition)
+    : '';
+  return definitionText || term.context;
+}
+
+/**
+ * Helper: Extract synonym names from term synonyms
+ */
+function extractSynonymNames(term: Term): string[] {
+  const synonyms = Array.isArray(term.synonyms) ? term.synonyms : [];
+  return synonyms
+    .map((s) => (typeof s === 'object' && s !== null && 'synonym' in s ? s.synonym : ''))
+    .filter(Boolean);
+}
+
+/**
+ * Helper: Extract category names from term categories
+ */
+function extractCategoryNames(term: Term): string[] {
+  const categories = Array.isArray(term.category) ? term.category : [];
+  return categories
+    .map((cat) => (typeof cat === 'object' && cat !== null && 'title' in cat ? cat.title : ''))
+    .filter(Boolean);
+}
+
+export function generateTermJsonLd(term: Term): object {
+  const jsonLd: Record<string, unknown> = {
+    '@context': 'https://schema.org',
+    '@type': 'DefinedTerm',
+    name: term.term,
+  };
+
+  // Add description
+  const description = extractTermDescription(term);
+  if (description) {
+    jsonLd.description = description;
+  }
+
+  // Add synonyms as alternateName
+  const synonymNames = extractSynonymNames(term);
+  if (synonymNames.length > 0) {
+    jsonLd.alternateName = synonymNames.length === 1 ? synonymNames[0] : synonymNames;
+  }
+
+  // Add category as inDefinedTermSet
+  const categoryNames = extractCategoryNames(term);
+  if (categoryNames.length > 0) {
+    jsonLd.inDefinedTermSet = {
+      '@type': 'DefinedTermSet',
+      name: categoryNames.join(', '),
+    };
   }
 
   return jsonLd;
