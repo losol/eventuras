@@ -9,6 +9,7 @@ const collectionPrefixMap: Partial<Record<CollectionSlug, string>> = {
   pages: '',
   quotes: 'i',
   sources: 'i',
+  terms: 't',
 }
 
 type Props = {
@@ -25,11 +26,16 @@ export const generatePreviewPath = ({ collection, slug, resourceId, breadcrumbsU
 
   let path: string;
 
-  // Handle resourceId-only routes (quotes, sources)
-  if (prefix === 'i' && resourceId) {
-    // Map collection to URL name (quote/source vs quotes/sources)
-    const urlCollection = collection === 'quotes' ? (locale === 'no' ? 'sitat' : 'quote') : (locale === 'no' ? 'kilde' : 'source');
-    path = `/${locale}/i/${urlCollection}/${resourceId}`;
+  // Handle resourceId-only routes (quotes, sources, terms)
+  if ((prefix === 'i' || prefix === 't') && resourceId) {
+    if (prefix === 't') {
+      // Terms use /t/[resourceId] pattern
+      path = `/${locale}/t/${resourceId}`;
+    } else {
+      // Map collection to URL name (quote/source vs quotes/sources)
+      const urlCollection = collection === 'quotes' ? (locale === 'no' ? 'sitat' : 'quote') : (locale === 'no' ? 'kilde' : 'source');
+      path = `/${locale}/i/${urlCollection}/${resourceId}`;
+    }
   } else if (prefix === 'c' && slug) {
     // Use localized collection name for /c/ routes
     const localizedCollection = getLocalizedCollectionName(collection, locale);

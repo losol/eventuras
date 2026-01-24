@@ -91,7 +91,8 @@ Introduce three new Payload collections to enable schema-driven resource managem
 - **Rationale:** Team canvases, questionnaires, and datasets are organization-specific
 - **No cross-tenant sharing:** Each organization has their own schemas, templates, and data
 - **Data isolation:** Users can only access resources belonging to their organization
-- **Implementation:** Handled at config level via tenant isolation plugin/hooks (organization field auto-managed)
+- **Implementation:** Handled by multiTenantPlugin - adds tenant field and filters queries automatically
+- **Access control:** Collections use standard access patterns; plugin enforces tenant isolation at query level
 
 ### 1. Resource Schemas Collection
 
@@ -108,12 +109,7 @@ export const ResourceSchemas: CollectionConfig = {
     description: 'Define JSON schemas for resource types'
   },
   access: {
-    read: ({ req }) => {
-      if (!req.user) return false;
-      return {
-        organization: { equals: req.user.organization },
-      };
-    },
+    read: () => true,
     create: isSystemAdmin,
     update: isSystemAdmin,
     delete: isSystemAdmin

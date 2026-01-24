@@ -82,7 +82,8 @@ Implement an **Events collection** (slug: `events`) with flexible date represent
 - **No cross-tenant sharing:** Each organization maintains their own timeline
 - **Use case:** Company history, project milestones, discipline-specific chronologies
 - **Different interpretations:** Multiple organizations can have different versions of the same historical event
-- **Implementation:** Handled at config level via tenant isolation plugin/hooks (organization field auto-managed)
+- **Implementation:** Handled by multiTenantPlugin - adds tenant field and filters queries automatically
+- **Access control:** Collection uses standard access patterns; plugin enforces tenant isolation at query level
 
 ### Collection Structure
 
@@ -108,13 +109,11 @@ export const Events: CollectionConfig = {
     defaultColumns: ['title', 'startDate', 'eventType', 'updatedAt'],
     defaultSort: 'startDate',
   },
-  access: {
-    read: ({ req }) => {
-      if (!req.user) return false;
-      return {
-        organization: { equals: req.user.organization },
-      };
+  versions: {
+    drafts: {
+      autosave: true,
     },
+    maxPerDoc: 50,
   },
   fields: [
     {
