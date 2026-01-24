@@ -111,9 +111,13 @@ We considered adding `auth.useAPIKey` to Media and Notes collections directly, b
 
 ## Implementation Notes
 
-### Field-Level Access Control
+### Defense-in-Depth Security Model
 
-To enforce system-admin-only API key management, we explicitly define the API key fields with field-level access restrictions:
+We implement **two layers** of security to enforce system-admin-only API key management:
+
+#### Layer 1: Field-Level Access Control
+
+Field-level access restrictions prevent non-admins from reading or writing API key fields:
 
 ```typescript
 fields: [
@@ -133,16 +137,47 @@ fields: [
 ]
 ```
 
+#### Layer 2: beforeChange Hook Protection
+
+An additional `beforeChange` hook explicitly blocks modification attempts:
+
+```typescript
+export const protectApiKeyFields: FieldHook = ({ req, operation, value, originalDoc, field }) => {
+  const { user } = req;
+
+  // Only system admins can modify
+  if (user && 'email' in user && isSystemAdmin(user)) {
+    return value;
+  }
+
+  // For non-admins updating: preserve original value (block changes)
+  if (operation === 'update' && originalDoc && field?.name) {
+    return originalDoc[field.name];
+  }
+
+  // For create: prevent setting
+  return undefined;
+};
+```
+
+This hook is applied to all three API key fields (`enableAPIKey`, `apiKey`, `apiKeyIndex`).
+
+### Why Two Layers?
+
 This is necessary because the Users collection has `updateAndDeleteAccess` that allows:
-- System admins (✅ should have access)
+- System admins (✅ should have API key access)
 - Users updating themselves (❌ should NOT have API key access)
 - Tenant admins updating users in their tenant (❌ should NOT have API key access)
 
-By adding field-level access control, only system admins can:
+The dual-layer approach ensures:
+1. **Field-level access** - Primary defense, strips fields from responses/updates for non-admins
+2. **beforeChange hook** - Secondary defense, explicitly blocks any modification attempts that bypass field-level access
+
+Together, these layers guarantee only system admins can:
 - View the API Keys tab in the admin UI
 - Generate API keys for users
 - Delete existing API keys
-- Access the `enableAPIKey`, `apiKey`, and `apiKeyIndex` fields
+- Access or modify the `enableAPIKey`, `apiKey`, and `apiKeyIndex` fields
 
 ### Creating an API Key
 

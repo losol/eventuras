@@ -8,6 +8,7 @@ import { readAccess } from './access/read';
 import { updateAndDeleteAccess } from './access/updateAndDelete';
 import { createVerifiedFieldAccess, verificationFlagAccess } from './access/verifiedFieldAccess';
 import { ensureFirstUserIsAdmin } from './hooks/ensureFirstUserIsAdmin';
+import { protectApiKeyFields } from './hooks/protectApiKeyFields';
 import { setCookieBasedOnDomain } from './hooks/setCookieBasedOnDomain';
 import { adminsFieldLevel } from '../../access/admins';
 import { isSystemAdmin } from '../../access/isSystemAdmin';
@@ -66,6 +67,9 @@ export const Users: CollectionConfig = {
         read: adminsFieldLevel,
         update: adminsFieldLevel,
       },
+      hooks: {
+        beforeChange: [protectApiKeyFields],
+      },
       admin: {
         hidden: true, // Managed through API Keys UI tab
       },
@@ -78,6 +82,9 @@ export const Users: CollectionConfig = {
         read: adminsFieldLevel,
         update: adminsFieldLevel,
       },
+      hooks: {
+        beforeChange: [protectApiKeyFields],
+      },
       admin: {
         hidden: true, // Managed through API Keys UI tab
       },
@@ -89,6 +96,9 @@ export const Users: CollectionConfig = {
         create: adminsFieldLevel,
         read: adminsFieldLevel,
         update: adminsFieldLevel,
+      },
+      hooks: {
+        beforeChange: [protectApiKeyFields],
       },
       admin: {
         hidden: true, // Managed through API Keys UI tab
