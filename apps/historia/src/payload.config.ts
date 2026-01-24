@@ -19,6 +19,7 @@ import { Cases } from './collections/Cases';
 import { Happenings } from './collections/Happenings';
 import { Licenses } from './collections/Licenses';
 import { Media } from './collections/Media';
+import { MediaCollections } from './collections/MediaCollections';
 import { Notes } from './collections/Notes';
 import { Orders } from './collections/Orders';
 import { Organizations } from './collections/Organizations';
@@ -158,7 +159,7 @@ export default buildConfig({
       },
       push: true,
     }),
-  collections: [Articles, BusinessEvents, Carts, Cases, Happenings, Licenses, Media, Notes, Orders, Organizations, Pages, Persons, Places, Products, Quotes, Shipments, Sources, Terms, Timelines, Topics, Transactions, Users, Websites],
+  collections: [Articles, BusinessEvents, Carts, Cases, Happenings, Licenses, Media, MediaCollections, Notes, Orders, Organizations, Pages, Persons, Places, Products, Quotes, Shipments, Sources, Terms, Timelines, Topics, Transactions, Users, Websites],
   cors: allowedOrigins,
   csrf: allowedOrigins,
   editor: defaultLexical,

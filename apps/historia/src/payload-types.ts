@@ -86,6 +86,7 @@ export interface Config {
     happenings: Happening;
     licenses: License;
     media: Media;
+    'media-collections': MediaCollection;
     notes: Note;
     orders: Order;
     organizations: Organization;
@@ -128,6 +129,7 @@ export interface Config {
     happenings: HappeningsSelect<false> | HappeningsSelect<true>;
     licenses: LicensesSelect<false> | LicensesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    'media-collections': MediaCollectionsSelect<false> | MediaCollectionsSelect<true>;
     notes: NotesSelect<false> | NotesSelect<true>;
     orders: OrdersSelect<false> | OrdersSelect<true>;
     organizations: OrganizationsSelect<false> | OrganizationsSelect<true>;
@@ -420,6 +422,8 @@ export interface Image {
   } | null;
 }
 /**
+ * Organize media assets into collections with optional hierarchy
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
  */
@@ -453,6 +457,10 @@ export interface Media {
    * A URL to the original source of the media.
    */
   attributionUrl?: string | null;
+  /**
+   * Optional: organize media into collections
+   */
+  collection?: (string | MediaCollection)[] | null;
   relatedContent?:
     | (
         | {
@@ -618,6 +626,31 @@ export interface ContentBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'content';
+}
+/**
+ * Organize media assets into collections with optional hierarchy
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media-collections".
+ */
+export interface MediaCollection {
+  id: string;
+  /**
+   * e.g., "Product Photos", "Marketing Assets", "Event 2025"
+   */
+  name: string;
+  /**
+   * What this collection is for
+   */
+  description?: string | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  /**
+   * Optional nesting: "Marketing > Social Media > 2025"
+   */
+  parentCollection?: (string | null) | MediaCollection;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2450,6 +2483,10 @@ export interface PayloadLockedDocument {
         value: string | Media;
       } | null)
     | ({
+        relationTo: 'media-collections';
+        value: string | MediaCollection;
+      } | null)
+    | ({
         relationTo: 'notes';
         value: string | Note;
       } | null)
@@ -2830,6 +2867,7 @@ export interface MediaSelect<T extends boolean = true> {
   license?: T;
   contributors?: T | ContributorsSelect<T>;
   attributionUrl?: T;
+  collection?: T;
   relatedContent?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -2906,6 +2944,19 @@ export interface MediaSelect<T extends boolean = true> {
               filename?: T;
             };
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media-collections_select".
+ */
+export interface MediaCollectionsSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  slug?: T;
+  slugLock?: T;
+  parentCollection?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

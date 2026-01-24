@@ -24,6 +24,10 @@ export const Media: CollectionConfig = {
     update: accessOR(admins, siteEditors),
     delete: admins,
   },
+  admin: {
+    group: 'Media',
+    description: 'Organize media assets into collections with optional hierarchy',
+  },
   fields: [
     title,
     description,
@@ -34,6 +38,15 @@ export const Media: CollectionConfig = {
       type: 'text',
       admin: {
         description: 'A URL to the original source of the media.'
+      },
+    },
+    {
+      name: 'collection',
+      type: 'relationship',
+      hasMany: true,
+      relationTo: 'media-collections',
+      admin: {
+        description: 'Optional: organize media into collections',
       },
     },
     relatedContent
