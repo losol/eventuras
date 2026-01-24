@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload';
 
+import { publishedAt } from '@/fields/publishedAt';
 import { relatedContent } from '@/fields/relatedContent';
 import resourceId from '@/fields/resourceId';
 import { richText } from '@/fields/richText';
@@ -61,6 +62,7 @@ export const Notes: CollectionConfig = {
             richText({ name: 'content', localized: true }),
             topics,
             relatedContent,
+            publishedAt,
           ],
         },
         {

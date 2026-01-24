@@ -711,6 +711,7 @@ export interface Note {
           }
       )[]
     | null;
+  publishedAt?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
   resourceId: string;
@@ -2969,6 +2970,7 @@ export interface NotesSelect<T extends boolean = true> {
   content?: T;
   topics?: T;
   relatedContent?: T;
+  publishedAt?: T;
   slug?: T;
   slugLock?: T;
   resourceId?: T;
