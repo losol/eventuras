@@ -57,7 +57,7 @@
     "@oclif/prettier-config": "^0.2.1",
     "@oclif/test": "^4",
     "@types/node": "^18",
-    "@vitest/ui": "^4.0.16",
+    "@vitest/ui": "^4.0.18",
     "eslint": "^9",
     "eslint-config-oclif": "^6",
     "eslint-config-prettier": "^10",
@@ -65,7 +65,7 @@
     "shx": "^0.4.0",
     "ts-node": "^10",
     "typescript": "^5",
-    "vitest": "^4.0.16"
+    "vitest": "^4.0.18"
   },
   "engines": {
     "node": ">=22.0.0 <25.0.0"
