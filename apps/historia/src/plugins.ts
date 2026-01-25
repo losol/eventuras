@@ -36,7 +36,14 @@ const areAllS3VarsPresent = requiredS3MediaVars.every((varName) => process.env[v
 
 export const plugins: Plugin[] = [
   importExportPlugin({
-    collections: ['articles', 'notes', 'pages', 'users', 'orders'],
+    collections: [
+      { slug: 'articles' },
+      { slug: 'instructions' },
+      { slug: 'notes' },
+      { slug: 'pages' },
+      { slug: 'users' },
+      { slug: 'orders' },
+    ],
   }),
   mcpPlugin({
     collections: {
@@ -111,6 +118,7 @@ export const plugins: Plugin[] = [
       carts: {},
       cases: {},
       happenings: {},
+      instructions: {},
       notes: {},
       orders: {},
       pages: {},
