@@ -16,18 +16,21 @@ export const ResourcesBlock: React.FC<ResourcesBlockType> = ({
       <h3>{title}</h3>
       {description && <RichText data={description} />}
       <ul className="resources-list">
-        {items?.map((item: ResourceItem, index: number) => (
-          <li key={index} className="resource-item">
-            <strong>{item.name}</strong>
-            {item.quantity && <span className="quantity"> — {item.quantity}</span>}
-            {item.unit && <span className="unit"> {item.unit}</span>}
-            {item.description && (
-              <div className="resource-description">
-                <RichText data={item.description} />
-              </div>
-            )}
-          </li>
-        ))}
+        {items?.map((item: ResourceItem, index: number) => {
+          const key = item.id ?? `${item.name ?? 'resource'}-${index}`;
+          return (
+            <li key={key} className="resource-item">
+              <strong>{item.name}</strong>
+              {item.quantity && <span className="quantity"> — {item.quantity}</span>}
+              {item.unit && <span className="unit"> {item.unit}</span>}
+              {item.description && (
+                <div className="resource-description">
+                  <RichText data={item.description} />
+                </div>
+              )}
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
