@@ -8,8 +8,10 @@ export const revalidateInstruction: CollectionAfterChangeHook<Instruction> = ({
   previousDoc,
   req: { payload },
 }) => {
-  if (doc._status === 'published') {
-    const path = `/instructions/${doc.slug}`;
+  const slug = doc.slug;
+
+  if (doc._status === 'published' && typeof slug === 'string' && slug.length > 0) {
+    const path = `/instructions/${slug}`;
 
     payload.logger.info(`Revalidating instruction at path: ${path}`);
 
@@ -17,8 +19,9 @@ export const revalidateInstruction: CollectionAfterChangeHook<Instruction> = ({
   }
 
   // If the instruction was previously published, we need to revalidate the old path
-  if (previousDoc._status === 'published' && doc._status !== 'published') {
-    const oldPath = `/instructions/${previousDoc.slug}`;
+  const oldSlug = previousDoc?.slug;
+  if (previousDoc?._status === 'published' && doc._status !== 'published' && typeof oldSlug === 'string' && oldSlug.length > 0) {
+    const oldPath = `/instructions/${oldSlug}`;
 
     payload.logger.info(`Revalidating old instruction at path: ${oldPath}`);
 

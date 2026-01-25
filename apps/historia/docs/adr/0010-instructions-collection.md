@@ -113,12 +113,12 @@ The story-based structure enables multiple presentation modes:
 ```typescript
 // Aggregate all materials across story
 const allMaterials = instruction.story
-  .filter(block => block.blockType === 'resourcesBlock' && block.type === 'materials')
+  .filter(block => block.blockType === 'resources' && block.type === 'materials')
   .flatMap(block => block.items);
 
 // Get all tools
 const allTools = instruction.story
-  .filter(block => block.blockType === 'resourcesBlock' && block.type === 'tools')
+  .filter(block => block.blockType === 'resources' && block.type === 'tools')
   .flatMap(block => block.items);
 ```
 
@@ -278,8 +278,9 @@ The chosen structure allows the following additions without data migration:
 - Localization: title, resource names, instruction titles, richText content
 
 ### Block Definitions
-- ResourcesBlock slug: `resourcesBlock`
-- InstructionBlock slug: `instructionBlock`
+
+- ResourcesBlock slug: `resources`
+- InstructionBlock slug: `instruction`
 - InstructionSection slug: `instructionSection`
 - All blocks use clear interfaceName for type generation
 
