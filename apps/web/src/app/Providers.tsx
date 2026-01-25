@@ -8,6 +8,7 @@ import { ToastRenderer, ToastsContext } from '@eventuras/toast';
 import { authStore } from '@/auth/authStore';
 import { LoginSuccessHandler } from '@/components/auth/LoginSuccessHandler';
 import { SessionWarningOverlay } from '@/components/SessionWarningOverlay';
+import { ThemeProvider } from '@/providers/theme';
 import { getAuthStatus } from '@/utils/auth/getAuthStatus';
 
 const logger = Logger.create({
@@ -57,11 +58,13 @@ export default function Providers({ children }: ProvidersProps) {
   }, []);
 
   return (
-    <ToastsContext.Provider>
-      <ToastRenderer />
-      <LoginSuccessHandler />
-      <SessionWarningOverlay />
-      {children}
-    </ToastsContext.Provider>
+    <ThemeProvider>
+      <ToastsContext.Provider>
+        <ToastRenderer />
+        <LoginSuccessHandler />
+        <SessionWarningOverlay />
+        {children}
+      </ToastsContext.Provider>
+    </ThemeProvider>
   );
 }

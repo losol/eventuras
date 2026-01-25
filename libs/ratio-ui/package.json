@@ -48,7 +48,6 @@
       "import": "./dist/commerce/*/index.js"
     },
     "./ratio-ui.css": "./dist/ratio-ui.css",
-    "./components.css": "./dist/components.css",
     "./global.css": "./dist/global.css"
   },
   "main": "./dist/index.js",
@@ -56,7 +55,6 @@
   "types": "./dist/index.d.ts",
   "files": [
     "dist",
-    "src/components.css",
     "src/global.css",
     "src/tokens"
   ],

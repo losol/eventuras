@@ -12,6 +12,8 @@ export interface SectionProps
           BoxBackgroundProps {
   container?: boolean;
   className?: string;
+  /** Add dark overlay to background image (default: false) */
+  backgroundImageOverlay?: boolean;
   /** Any other <section> attrs (e.g. id) */
   [key: string]: any;
 }
@@ -28,13 +30,16 @@ export const Section: React.FC<SectionProps> = ({
   // background props
   backgroundColorClass,
   backgroundImageUrl,
+  backgroundImageOverlay = false,
   // section‑specific
+  // deprecated; use Container component inside Section instead
+  // @deprecated
   container = false,
   ...rest
 }) => {
 
   const spacingClasses = buildSpacingClasses({ padding, margin, border, width, height });
-  const style = getBackgroundStyle(backgroundImageUrl);
+  const style = getBackgroundStyle(backgroundImageUrl, undefined, backgroundImageOverlay);
 
   const classes = [spacingClasses, backgroundColorClass, className]
     .filter(Boolean)
