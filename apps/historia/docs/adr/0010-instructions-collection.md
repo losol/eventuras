@@ -1,7 +1,7 @@
 # ADR 0010 — Instructions Collection for Procedural Content
 
 ## Status
-Proposed
+Accepted
 
 ## Context
 
@@ -12,225 +12,262 @@ Historia needs a domain-agnostic way to model instructional and procedural conte
 - How-to guides and tutorials
 
 The MVP focus is to establish:
-- A stable and explicit content structure
+- A stable and composable content structure
 - A good authoring experience in Payload CMS
-- Clear separation between materials/tools (what you need) and steps (what you do)
-- Minimal abstraction, with a clear path for future extensions
+- Clear separation between resources (what you need) and instructions (what you do)
+- Minimal abstraction with a clear path for future extensions
 
-### Inspiration from Happenings
+### Inspiration from Existing Patterns
 
-The existing `happenings` collection provides a proven pattern:
-- **Program field** (blocks) contains structured event content
-- **Session blocks** represent logical sections with metadata
-- **Schedule arrays** within sessions contain ordered segments
-- Clear hierarchy: Happening → Sessions (blocks) → Schedule items (arrays)
+**Historia's Story Block Pattern:**
+The existing `storyField()` provides a proven pattern for composable content:
+- Used successfully in Articles, Pages, and Cases collections
+- Provides flexible block-based content with drag-and-drop reordering
+- Mature admin UI with good editor experience
+- Automatic type generation and rendering infrastructure
 
-This pattern balances:
-- Editorial flexibility (blocks for major sections)
-- Authoring simplicity (arrays for numerous similar items)
-- Semantic clarity (explicit structure, not free-form)
+**Happenings Collection Pattern:**
+The `happenings` collection demonstrates hierarchical structure:
+- Top-level context fields (title, lead, image)
+- Story field for narrative content
+- Program field (blocks) for structured event content
+- Clean separation of concerns
 
 ### Key Design Question
 
-How to structure procedural content in Payload CMS without:
-- Reverting to free-form story blocks for procedural logic
-- Creating excessive block nesting (poor UX with many steps)
-- Losing the ability to query and validate structure
+How to structure procedural content in Payload CMS that:
+- Leverages proven storyField infrastructure
+- Supports both flat and nested instruction structures
+- Allows mixing narrative and procedural content
+- Enables easy querying (e.g., shopping list aggregation)
+- Provides flexibility without complexity
 
 ## Decision
 
-Create an **Instructions collection** (slug: `instructions`) following the happenings/program pattern:
-- **Sections as Payload blocks** (visual units in admin UI)
-- **Steps as ordered arrays** inside each section (lightweight, numerous items)
-- **Materials and tools at instruction level** (overview before you start)
+Create an **Instructions collection** (slug: `instructions`) using the story-based pattern:
+- **Story field** contains all content as composable blocks
+- **ResourcesBlock** for materials and tools (unified via type field)
+- **InstructionBlock** for individual instruction steps
+- **InstructionSection** for grouping instructions and section-specific resources
+- **Content block** (existing) for narrative intro, tips, and notes
 
 ### Content Model
 
 ```
-Instructions
-├── title (text)
+Instructions Collection
+├── title (text, localized)
 ├── lead (richText, localized)
 ├── image (group: media + caption)
-├── materials (array of MaterialGroup)
-│   └── MaterialGroup
-│       ├── title (text, e.g., "For dough", "For filling")
-│       └── items (array)
-│           ├── name (text, required)
-│           ├── quantity (text, optional)
-│           └── unit (text, optional)
-├── tools (array)
-│   └── Tool
-│       ├── name (text, for MVP)
-│       └── toolRef (relationship to 'tools' collection, future)
-└── sections (blocks)
-    └── Section block
-        ├── title (text)
-        ├── description (richText, localized, optional intro)
-        └── steps (array)
-            ├── title (text, required)
-            ├── image (group: media + caption)
-            └── content (richText, localized, optional detail)
+└── story (blocks)
+    └── Available block types:
+        ├── ResourcesBlock
+        │   ├── title (text, e.g., "For dough", "Required Tools")
+        │   ├── type (select: 'materials' | 'tools')
+        │   ├── description (richText, localized, optional)
+        │   └── items (array)
+        │       ├── name (text, required, localized)
+        │       ├── description (richText, optional)
+        │       ├── resourceRef (relationship to 'resources', future)
+        │       ├── quantity (text, optional)
+        │       └── unit (text, optional)
+        │
+        ├── InstructionBlock
+        │   ├── title (text, required, localized)
+        │   ├── image (group: media + caption, optional)
+        │   └── content (richText, localized, optional)
+        │
+        ├── InstructionSection
+        │   ├── title (text, required, localized)
+        │   ├── description (richText, localized, optional)
+        │   └── sectionContent (blocks)
+        │       └── Can contain: ResourcesBlock, InstructionBlock
+        │
+        └── Content (existing Historia block)
+            └── richText (for narrative intro, tips, notes)
 ```
 
 ### Authoring Experience
 
-**Materials & Tools (Top Level):**
-- Editors define grouped material lists (e.g., "For crust", "For filling")
-- Tools listed separately (reusable items like "mixer", "hammer")
-- Clear overview before diving into procedural steps
+**Top-Level Fields:**
+- Editors define title, lead (summary), and hero image
+- Standard Historia pattern for basic metadata
 
-**Sections (Blocks):**
-- Each section is a visual unit in Payload admin
-- Maps to real-world concepts (e.g., "Preparation", "Assembly", "Testing")
-- Can be reordered, added, or removed easily
-- Allows future extension (section templates) without schema changes
+**Story Blocks (Composable Content):**
+- Editors build content by adding blocks in any order
+- ResourcesBlock for materials or tools (type field differentiates)
+- InstructionBlock for individual steps
+- InstructionSection for grouping related instructions
+- Content block for narrative text, tips, warnings
 
-**Steps (Arrays):**
-- Lightweight items within sections
-- Simple to add, edit, and reorder
-- Each step can have a main image with caption
-- RichText content allows embedded images, formatting, lists
-- Avoids block nesting complexity
+**Flexible Structure:**
+- **Flat structure** - Add ResourcesBlock + multiple InstructionBlocks directly
+- **Nested structure** - Use InstructionSection with nested resources and steps
+- **Mixed content** - Combine narrative (Content) with procedural blocks
+- **Section-specific resources** - Add ResourcesBlock inside InstructionSection for "just-in-time" materials
 
 ### Frontend Flexibility
 
-Although materials are defined at instruction level in CMS, frontend can present them multiple ways:
-- **Complete shopping list** (aggregate all materials)
-- **Grouped by material group** (as authored)
-- **Just-in-time** (show relevant materials per section/step)
-- **Interactive checklist** (future feature)
+The story-based structure enables multiple presentation modes:
+
+**Shopping List Aggregation:**
+```typescript
+// Aggregate all materials across story
+const allMaterials = instruction.story
+  .filter(block => block.blockType === 'resourcesBlock' && block.type === 'materials')
+  .flatMap(block => block.items);
+
+// Get all tools
+const allTools = instruction.story
+  .filter(block => block.blockType === 'resourcesBlock' && block.type === 'tools')
+  .flatMap(block => block.items);
+```
+
+**Section-specific Resources:**
+```typescript
+// Get materials for a specific section
+const prepStepResources = instruction.story
+  .find(b => b.blockType === 'instructionSection' && b.title === 'Preparation')
+  ?.sectionContent
+  ?.filter(b => b.blockType === 'resourcesBlock');
+```
+
+**Progressive Disclosure:**
+- Frontend can show complete overview (all resources upfront)
+- Or progressive sections (resources shown per section)
+- Interactive checklist (user tracks progress)
 
 This separation of authoring structure (admin UX) from presentation (frontend UX) is intentional.
 
 ## Rationale
 
-### Why Sections as Blocks
+### Why Story Field
 
-- ✅ Blocks give editors a clear, visual unit in the admin UI
-- ✅ Sections map naturally to real-world procedural phases
-- ✅ Blocks allow future extension (templates, metadata) without data migration
-- ✅ Editors can reorganize entire sections with drag-and-drop
-- ✅ Proven pattern from happenings/program
+- ✅ **Proven pattern** - Already successful in Articles, Pages, Cases
+- ✅ **Mature infrastructure** - RenderBlocks, type generation, admin UI
+- ✅ **Single content flow** - Editors work in one unified area
+- ✅ **Flexible composition** - Flat, nested, or mixed structures
+- ✅ **Reordering** - Full drag-and-drop freedom
+- ✅ **No migration** - Adding new block types doesn't require data migration
 
-### Why Steps as Arrays (Not Blocks)
+### Why Unified ResourcesBlock
 
-- ✅ Steps are numerous and lightweight (recipes can have 15+ steps)
-- ✅ Arrays are simpler to edit than nested blocks
-- ✅ Reduces authoring friction in MVP
-- ✅ Avoids block sprawl in admin UI
-- ✅ Clear ordering and validation
-- ✅ Each step can still have rich content (image + richText)
+- ✅ **DRY principle** - One block instead of separate Materials/Tools blocks
+- ✅ **Type field** - Simple select differentiates materials vs tools
+- ✅ **Consistent structure** - Same fields for both resource types
+- ✅ **Flexible placement** - Can be top-level or section-specific
+- ✅ **Easy querying** - Filter by type field for aggregation
 
-### Why Materials/Tools at Instruction Level
+### Why InstructionBlock (Not Arrays)
 
-- ✅ Matches real-world pattern (recipe lists all ingredients first)
-- ✅ Editors provide complete overview
-- ✅ Frontend can aggregate and present flexibly
-- ✅ Grouped materials (MaterialGroup) organize related items
-- ✅ Tools as separate concept (reusable vs consumable)
+- ✅ **Visual prominence** - Each step is a distinct block in admin UI
+- ✅ **Rich content** - Image + richText per step
+- ✅ **Consistent with story** - Same block pattern throughout
+- ✅ **Reorderable** - Drag-and-drop between sections
+- ✅ **Future extensibility** - Easy to add templates, duration, etc.
 
-### Why Not Story Blocks for Procedural Flow
+### Why InstructionSection
 
-- ❌ Procedural steps have strict order and semantics
-- ❌ Story blocks optimized for narrative content, not execution logic
-- ❌ Using story blocks would obscure ordering guarantees
-- ❌ Complicates future features (templates, interactivity, progress tracking)
-- ❌ Creates competing representations of "how-to" content
+- ✅ **Logical grouping** - Maps to real-world procedural phases
+- ✅ **Nested resources** - Section-specific materials/tools
+- ✅ **Optional** - Simple instructions can skip sections entirely
+- ✅ **Composable** - Sections can contain both resources and instructions
 
-**Note:** Story blocks remain suitable for:
-- Introductory context and background
-- Tips, variations, and explanations
-- Narrative content surrounding instructions
+### Why Not Separate Fields for Materials/Tools
+
+- ❌ **Multiple content areas** - Forces editors to jump between fields
+- ❌ **Fixed structure** - Can't intersperse narrative with procedural
+- ❌ **Less flexible** - Top-level only, no section-specific resources
+- ❌ **More complex queries** - Need to access multiple field paths
 
 ## Consequences
 
 ### Positive
 
-- ✅ Clear separation between overview (materials/tools) and procedure (sections/steps)
-- ✅ Strong editor experience without sacrificing semantic clarity
-- ✅ Follows proven happenings/program pattern
-- ✅ Minimal MVP complexity
-- ✅ Stable foundation for future extensions
-- ✅ No migration required to add templates later
-- ✅ Frontend presentation flexibility
-- ✅ Works across cooking, building, IT procedures, and more
+- ✅ **Reuses proven infrastructure** - storyField, RenderBlocks, type generation
+- ✅ **Flexible authoring** - Editors choose flat, nested, or mixed structures
+- ✅ **Simple data model** - 3 new blocks vs. separate field hierarchies
+- ✅ **Easy shopping list** - Simple filter + flatMap for aggregation
+- ✅ **Section-specific resources** - "Just-in-time" material lists
+- ✅ **Mixed content** - Narrative and procedural seamlessly combined
+- ✅ **Future-proof** - New block types add features without migration
+- ✅ **Consistent UX** - Same block editing experience across Historia
 
 ### Trade-offs
 
-- ⚠️ Materials defined at top level (not per step) requires frontend aggregation for granular UX
-- ⚠️ Less flexibility inside individual steps compared to full block-based content
-- ⚠️ Rich formatting inside steps intentionally limited to richText capabilities
-- ⚠️ Step reuse is manual (copy/paste) until templates are introduced
-- ⚠️ Tools field is simple text for MVP (relationship to tools collection deferred)
+- ⚠️ **Query complexity** - Must traverse block structure vs. direct field access
+- ⚠️ **Shopping list not explicit** - Frontend must aggregate from blocks
+- ⚠️ **Block count** - Many steps = long story field (mitigated by sections)
+- ⚠️ **Less structured** - Editors have more freedom (can be misused)
 
 ### Future Extensions (Explicitly Supported)
 
 The chosen structure allows the following additions without data migration:
 
-**Step Templates:**
-- Add `stepTemplateRef` (relationship field)
-- Add `templateParams` (config object)
-- Editors can select from library of common steps
+**Resources Collection:**
+- Activate `resourceRef` in ResourcesBlock items
+- Link to dedicated collection with images, substitutes, nutritional data
+- Reusable resource definitions across instructions
 
-**Section Templates:**
-- Add `sectionTemplateRef` to Section block
-- Pre-built sections for common workflows
+**Instruction Templates:**
+- Add `templateRef` to InstructionBlock
+- Library of common steps (e.g., "Preheat oven", "Measure ingredients")
+- Parameterized templates with variable fields
 
-**Tool Relationships:**
-- Activate `toolRef` in tools array
-- Link to dedicated `tools` collection
-- Reusable tool definitions with images, links, specs
-
-**Step-Level Metadata:**
-- Duration estimates
-- Expected outcomes
+**Enhanced Metadata:**
+- Duration estimates per InstructionBlock
 - Difficulty indicators
-- Required tools per step
+- Expected outcomes
+- Prerequisites
+
+**Additional Block Types:**
+- NutritionBlock (for recipes)
+- WarningBlock (safety warnings)
+- VideoBlock (instructional videos)
+- ComparisonBlock (alternatives/substitutes)
 
 **Interactive Features:**
-- Progress tracking
-- Checklists
+- Progress tracking (checkboxes per step)
 - Timer integration
-- Conditional steps (advanced)
-
-**Enhanced Materials:**
-- Images per material item
-- Substitution suggestions
-- Nutritional data (recipes)
-- Material relationships to products collection
+- Voice control for hands-free following
+- Conditional steps (advanced workflows)
 
 ## Acceptance Criteria
 
 ### Authoring (Payload CMS)
 - ✅ Editors can create Instructions with title, lead, and hero image
-- ✅ Editors can define grouped materials (MaterialGroups with items)
-- ✅ Editors can list required tools
-- ✅ Editors can create multiple Sections (as blocks)
-- ✅ Editors can add ordered Steps within each Section
-- ✅ Each Step can have title, image, and richText content
-- ✅ Sections can be reordered via drag-and-drop
-- ✅ Steps can be reordered within sections
+- ✅ Editors can add ResourcesBlock with type selection (materials/tools)
+- ✅ Editors can add items to ResourcesBlock (name, quantity, unit, description)
+- ✅ Editors can add InstructionBlock with title, image, and content
+- ✅ Editors can add InstructionSection with nested blocks
+- ✅ ResourcesBlock can be added inside InstructionSection
+- ✅ InstructionBlock can be added inside InstructionSection
+- ✅ All blocks can be reordered via drag-and-drop
+- ✅ Content block can be mixed with instruction blocks
 
 ### Frontend Rendering
 - ✅ Frontend can render complete instruction deterministically
-- ✅ Materials and tools displayed before procedural content
-- ✅ Sections rendered in authored order
-- ✅ Steps rendered in authored order
-- ✅ Images and captions displayed correctly
-- ✅ RichText content rendered with proper formatting
+- ✅ RenderBlocks handles all instruction block types
+- ✅ ResourcesBlock renders materials and tools appropriately
+- ✅ InstructionBlock renders with title, image, and formatted content
+- ✅ InstructionSection renders nested content recursively
+- ✅ Shopping list can be aggregated from all ResourcesBlocks
+- ✅ Section-specific resources can be queried and displayed
 
 ### Data Integrity
-- ✅ Required fields validated (title, step title)
-- ✅ Optional fields remain optional (quantities, descriptions)
+- ✅ Required fields validated (title, resource name, instruction title)
+- ✅ Optional fields remain optional (quantities, descriptions, images)
+- ✅ Type field enforces materials/tools selection
+- ✅ Nested blocks (InstructionSection) maintain integrity
 - ✅ Data model remains stable as features are added incrementally
-- ✅ No breaking changes when adding template support later
+- ✅ No breaking changes when adding templates or resource relationships
 
 ## References
 
-- **Happenings collection pattern**: [apps/historia/src/collections/happenings.ts](../../src/collections/happenings.ts)
-- **Session block example**: [apps/historia/src/blocks/session.ts](../../src/blocks/session.ts)
+- **storyField pattern**: [apps/historia/src/fields/story.ts](../../src/fields/story.ts)
+- **Content block**: [apps/historia/src/blocks/Content/config.ts](../../src/blocks/Content/config.ts)
+- **RenderBlocks component**: [apps/historia/src/blocks/RenderBlocks.tsx](../../src/blocks/RenderBlocks.tsx)
 - **Image field pattern**: [apps/historia/src/fields/image.ts](../../src/fields/image.ts)
-- **RichText usage**: [apps/historia/src/fields/description.ts](../../src/fields/description.ts)
+- **RichText usage**: [apps/historia/src/fields/richText.ts](../../src/fields/richText.ts)
 
 ## Implementation Notes
 
@@ -238,20 +275,41 @@ The chosen structure allows the following additions without data migration:
 - Collection slug: `instructions`
 - Admin useAsTitle: `title`
 - Access control: Same pattern as other Historia collections (admins + site editors)
-- Localization: title, lead, step content, descriptions
+- Localization: title, resource names, instruction titles, richText content
 
-### Block Definition
-- Section block slug: `section`
-- Block interface name: `SectionBlock`
-- Reusable across other collections if needed
+### Block Definitions
+- ResourcesBlock slug: `resourcesBlock`
+- InstructionBlock slug: `instructionBlock`
+- InstructionSection slug: `instructionSection`
+- All blocks use clear interfaceName for type generation
 
 ### Field Reuse
-- Leverage existing fields: `title`, `lead`, `image`
-- Create new fields: `materials`, `tools`, `sections`
+- Leverage existing fields: `title`, `lead`, `image`, `storyField`
+- Use `richText()` factory for content fields
 - Follow established field patterns for consistency
+
+### Block Structure Files
+```
+/apps/historia/src/blocks/
+├── ResourcesBlock/
+│   ├── config.ts         # Block definition
+│   ├── Component.tsx     # React component
+│   └── index.ts         # Barrel export
+├── InstructionBlock/
+│   ├── config.ts
+│   ├── Component.tsx
+│   └── index.ts
+└── InstructionSection/
+    ├── config.ts
+    ├── Component.tsx
+    └── index.ts
+```
 
 ---
 
-**Date**: 2026-01-24
-**Author**: Project Architect
+**Date**: 2026-01-25
+**Author**: Project Architect (revised from original)
 **Related ADRs**: None
+**Changelog**:
+- 2026-01-25: Revised to use story-based approach instead of separate fields
+- 2026-01-24: Initial proposal with separate materials/tools/sections fields

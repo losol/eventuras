@@ -84,6 +84,7 @@ export interface Config {
     carts: Cart;
     cases: Case;
     happenings: Happening;
+    instructions: Instruction;
     licenses: License;
     media: Media;
     'media-collections': MediaCollection;
@@ -104,6 +105,7 @@ export interface Config {
     users: User;
     websites: Website;
     exports: Export;
+    imports: Import;
     'payload-mcp-api-keys': PayloadMcpApiKey;
     redirects: Redirect;
     forms: Form;
@@ -127,6 +129,7 @@ export interface Config {
     carts: CartsSelect<false> | CartsSelect<true>;
     cases: CasesSelect<false> | CasesSelect<true>;
     happenings: HappeningsSelect<false> | HappeningsSelect<true>;
+    instructions: InstructionsSelect<false> | InstructionsSelect<true>;
     licenses: LicensesSelect<false> | LicensesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'media-collections': MediaCollectionsSelect<false> | MediaCollectionsSelect<true>;
@@ -147,6 +150,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     websites: WebsitesSelect<false> | WebsitesSelect<true>;
     exports: ExportsSelect<false> | ExportsSelect<true>;
+    imports: ImportsSelect<false> | ImportsSelect<true>;
     'payload-mcp-api-keys': PayloadMcpApiKeysSelect<false> | PayloadMcpApiKeysSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
@@ -175,6 +179,7 @@ export interface Config {
   jobs: {
     tasks: {
       createCollectionExport: TaskCreateCollectionExport;
+      createCollectionImport: TaskCreateCollectionImport;
       inline: {
         input: unknown;
         output: unknown;
@@ -1600,6 +1605,156 @@ export interface SessionBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "instructions".
+ */
+export interface Instruction {
+  id: string;
+  tenant?: (string | null) | Website;
+  /**
+   * The title of the entry.
+   */
+  title: string;
+  lead?: string | null;
+  image?: Image;
+  story?: (ContentBlock | ResourcesBlock | InstructionBlock | InstructionSectionBlock)[] | null;
+  publishedAt?: string | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  resourceId: string;
+  config?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  meta?: {
+    /**
+     * 50-60 characters recommended for optimal display in search results. Leave empty to auto-generate from title.
+     */
+    title?: string | null;
+    /**
+     * 150-160 characters recommended for search result snippets. Leave empty to use excerpt or lead text.
+     */
+    description?: string | null;
+    /**
+     * Image used when sharing on social media (Facebook, LinkedIn, Twitter). Recommended: Use the "socialShare" format (1200×630px) for best results. Leave empty to use featured image.
+     */
+    image?: (string | null) | Media;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ResourcesBlock".
+ */
+export interface ResourcesBlock {
+  title: string;
+  /**
+   * Choose whether this is a list of materials or tools
+   */
+  type: 'materials' | 'tools';
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  items: {
+    name: string;
+    description?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    quantity?: string | null;
+    unit?: string | null;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'resources';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "InstructionBlock".
+ */
+export interface InstructionBlock {
+  title: string;
+  image?: Image;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'instruction';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "InstructionSectionBlock".
+ */
+export interface InstructionSectionBlock {
+  title: string;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Add resources and instruction steps for this section
+   */
+  sectionContent?: (ResourcesBlock | InstructionBlock)[] | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'instructionSection';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "quotes".
  */
 export interface Quote {
@@ -1900,6 +2055,43 @@ export interface Export {
     | number
     | boolean
     | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "imports".
+ */
+export interface Import {
+  id: string;
+  collectionSlug: 'articles' | 'instructions' | 'notes' | 'pages' | 'users' | 'orders';
+  importMode?: ('create' | 'update' | 'upsert') | null;
+  matchField?: string | null;
+  status?: ('pending' | 'completed' | 'partial' | 'failed') | null;
+  summary?: {
+    imported?: number | null;
+    updated?: number | null;
+    total?: number | null;
+    issues?: number | null;
+    issueDetails?:
+      | {
+          [k: string]: unknown;
+        }
+      | unknown[]
+      | string
+      | number
+      | boolean
+      | null;
+  };
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -2411,7 +2603,7 @@ export interface PayloadJob {
     | {
         executedAt: string;
         completedAt: string;
-        taskSlug: 'inline' | 'createCollectionExport';
+        taskSlug: 'inline' | 'createCollectionExport' | 'createCollectionImport';
         taskID: string;
         input?:
           | {
@@ -2444,7 +2636,7 @@ export interface PayloadJob {
         id?: string | null;
       }[]
     | null;
-  taskSlug?: ('inline' | 'createCollectionExport') | null;
+  taskSlug?: ('inline' | 'createCollectionExport' | 'createCollectionImport') | null;
   queue?: string | null;
   waitUntil?: string | null;
   processing?: boolean | null;
@@ -2477,6 +2669,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'happenings';
         value: string | Happening;
+      } | null)
+    | ({
+        relationTo: 'instructions';
+        value: string | Instruction;
       } | null)
     | ({
         relationTo: 'licenses';
@@ -2553,10 +2749,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'websites';
         value: string | Website;
-      } | null)
-    | ({
-        relationTo: 'exports';
-        value: string | Export;
       } | null)
     | ({
         relationTo: 'payload-mcp-api-keys';
@@ -2845,6 +3037,86 @@ export interface SessionBlockSelect<T extends boolean = true> {
               id?: T;
             };
         id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "instructions_select".
+ */
+export interface InstructionsSelect<T extends boolean = true> {
+  tenant?: T;
+  title?: T;
+  lead?: T;
+  image?: T | ImageSelect<T>;
+  story?:
+    | T
+    | {
+        content?: T | ContentBlockSelect<T>;
+        resources?: T | ResourcesBlockSelect<T>;
+        instruction?: T | InstructionBlockSelect<T>;
+        instructionSection?: T | InstructionSectionBlockSelect<T>;
+      };
+  publishedAt?: T;
+  slug?: T;
+  slugLock?: T;
+  resourceId?: T;
+  config?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ResourcesBlock_select".
+ */
+export interface ResourcesBlockSelect<T extends boolean = true> {
+  title?: T;
+  type?: T;
+  description?: T;
+  items?:
+    | T
+    | {
+        name?: T;
+        description?: T;
+        quantity?: T;
+        unit?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "InstructionBlock_select".
+ */
+export interface InstructionBlockSelect<T extends boolean = true> {
+  title?: T;
+  image?: T | ImageSelect<T>;
+  content?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "InstructionSectionBlock_select".
+ */
+export interface InstructionSectionBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  sectionContent?:
+    | T
+    | {
+        resources?: T | ResourcesBlockSelect<T>;
+        instruction?: T | InstructionBlockSelect<T>;
       };
   id?: T;
   blockName?: T;
@@ -3585,6 +3857,36 @@ export interface ExportsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "imports_select".
+ */
+export interface ImportsSelect<T extends boolean = true> {
+  collectionSlug?: T;
+  importMode?: T;
+  matchField?: T;
+  status?: T;
+  summary?:
+    | T
+    | {
+        imported?: T;
+        updated?: T;
+        total?: T;
+        issues?: T;
+        issueDetails?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-mcp-api-keys_select".
  */
 export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
@@ -3949,9 +4251,74 @@ export interface TaskCreateCollectionExport {
       | number
       | boolean
       | null;
-    user?: string | null;
+    userID?: string | null;
     userCollection?: string | null;
     exportsCollection?: string | null;
+  };
+  output?: unknown;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskCreateCollectionImport".
+ */
+export interface TaskCreateCollectionImport {
+  input: {
+    collectionSlug:
+      | 'articles'
+      | 'business-events'
+      | 'carts'
+      | 'cases'
+      | 'happenings'
+      | 'instructions'
+      | 'licenses'
+      | 'media'
+      | 'media-collections'
+      | 'notes'
+      | 'orders'
+      | 'organizations'
+      | 'pages'
+      | 'persons'
+      | 'places'
+      | 'products'
+      | 'quotes'
+      | 'shipments'
+      | 'sources'
+      | 'terms'
+      | 'timelines'
+      | 'topics'
+      | 'transactions'
+      | 'users'
+      | 'websites'
+      | 'exports'
+      | 'imports';
+    importMode?: ('create' | 'update' | 'upsert') | null;
+    matchField?: string | null;
+    status?: ('pending' | 'completed' | 'partial' | 'failed') | null;
+    summary?: {
+      imported?: number | null;
+      updated?: number | null;
+      total?: number | null;
+      issues?: number | null;
+      issueDetails?:
+        | {
+            [k: string]: unknown;
+          }
+        | unknown[]
+        | string
+        | number
+        | boolean
+        | null;
+    };
+    user?: string | null;
+    userCollection?: string | null;
+    importsCollection?: string | null;
+    file?: {
+      data?: string | null;
+      mimetype?: string | null;
+      name?: string | null;
+    };
+    format?: ('csv' | 'json') | null;
+    debug?: boolean | null;
   };
   output?: unknown;
 }

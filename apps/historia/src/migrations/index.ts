@@ -18,6 +18,7 @@ import * as migration_20260123_215608_quotes_and_sources from './20260123_215608
 import * as migration_20260124_123434_terms from './20260124_123434_terms';
 import * as migration_20260124_224858_media_collections from './20260124_224858_media_collections';
 import * as migration_20260124_232154_notes_publish_time from './20260124_232154_notes_publish_time';
+import * as migration_20260125_230327_instructions from './20260125_230327_instructions';
 
 export const migrations = [
   {
@@ -118,6 +119,11 @@ export const migrations = [
   {
     up: migration_20260124_232154_notes_publish_time.up,
     down: migration_20260124_232154_notes_publish_time.down,
-    name: '20260124_232154_notes_publish_time'
+    name: '20260124_232154_notes_publish_time',
+  },
+  {
+    up: migration_20260125_230327_instructions.up,
+    down: migration_20260125_230327_instructions.down,
+    name: '20260125_230327_instructions'
   },
 ];
