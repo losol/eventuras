@@ -1,5 +1,48 @@
 # @eventuras/historia
 
+## 0.23.0
+
+### Minor Changes
+
+- edca705: Adds publishedAt to notes
+- fad550a: Add Timeline collection for chronological event management
+
+  Implements a new Timeline collection (slug: `timelines`) for managing historical events with:
+  - Flexible date precision (exact to century level, with circa support)
+  - Event relationships (caused_by, led_to, part_of, concurrent_with)
+  - Full versioning support for scholarly updates
+  - Multi-tenant organization isolation
+  - SEO optimization with schema.org Event markup
+
+  Localized as "timelines" (English) / "tidslinjer" (Norwegian).
+
+  See ADR 0008 for architectural decisions and rationale.
+
+- 621d692: Add Media Collections for organizing media assets
+
+  Implements a new Media Collections collection (slug: `media-collections`) for organizing media assets:
+  - Named collections with localized names and descriptions
+  - Optional hierarchical structure (collections can have parent collections)
+  - Auto-generated slugs for URL-friendly references
+  - Circular reference prevention to avoid invalid parent-child relationships
+  - Backward compatible: existing media remains uncategorized
+
+  Media now has an optional `collection` field to assign it to a collection.
+
+  Enables better organization as media library grows, with support for folder-like structures (e.g., "Marketing > Social Media > 2025").
+
+  See ADR 0009 for architectural decisions and future ACL implementation plans.
+
+### Patch Changes
+
+- d1b48c4: Add API key authentication support for programmatic access to Media and Notes collections.
+
+  **Documentation:**
+  - ADR 0011: API Keys for Media and Notes - architecture decision and rationale
+  - Administrator guide with setup instructions and code examples
+
+  This enables external services and automation scripts to authenticate with Historia's REST API using stable, non-expiring credentials while maintaining strict access control.
+
 ## 0.22.0
 
 ### Minor Changes
