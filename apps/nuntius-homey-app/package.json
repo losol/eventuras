@@ -13,7 +13,7 @@
   "devDependencies": {
     "@eventuras/eslint-config": "workspace:*",
     "@eventuras/typescript-config": "workspace:*",
-    "@tsconfig/node16": "^16.1.7",
+    "@tsconfig/node16": "^16.1.8",
     "@types/homey": "npm:homey-apps-sdk-v3-types@^0.3.12",
     "@types/node": "^24.10.1",
     "typescript": "^5.9.3"

@@ -8,7 +8,7 @@ FROM node:22-alpine AS prune
 WORKDIR /repo
 
 # Enable pnpm and use turbo via pnpm dlx
-RUN corepack enable && corepack prepare pnpm@10.27.0 --activate
+RUN corepack enable && corepack prepare pnpm@10.28.1 --activate
 
 # Copy repo files including lockfile for turbo prune
 COPY package.json turbo.json tsconfig.json pnpm-workspace.yaml pnpm-lock.yaml ./
@@ -25,7 +25,7 @@ WORKDIR /srv
 
 # Use pruned manifests for deterministic install
 COPY --from=prune /repo/out/json/ ./
-RUN corepack enable && corepack prepare pnpm@10.27.0 --activate && pnpm install --frozen-lockfile=false
+RUN corepack enable && corepack prepare pnpm@10.28.1 --activate && pnpm install --frozen-lockfile=false
 
 # ---- 2) BUILD ----
 FROM node:22-alpine AS build
@@ -39,7 +39,7 @@ COPY --from=install /srv/node_modules ./node_modules
 COPY --from=install /srv/apps/idem-idp/node_modules ./apps/idem-idp/node_modules
 
 # Enable pnpm and build
-RUN corepack enable && corepack prepare pnpm@10.27.0 --activate
+RUN corepack enable && corepack prepare pnpm@10.28.1 --activate
 
 # Build just the idem-idp workspace
 RUN pnpm -C apps/idem-idp run build

@@ -13,15 +13,15 @@
   },
   "dependencies": {
     "@eventuras/logger": "workspace:*",
-    "discord.js": "^14.24.2",
+    "discord.js": "^14.25.1",
     "dotenv": "^17.2.3",
-    "express": "^5.1.0",
-    "uuidv7": "^1.0.2",
-    "zod": "^4.1.12"
+    "express": "^5.2.1",
+    "uuidv7": "^1.1.0",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@eventuras/typescript-config": "workspace:*",
-    "@types/express": "^5.0.5",
+    "@types/express": "^5.0.6",
     "@types/node": "^24.10.1",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
