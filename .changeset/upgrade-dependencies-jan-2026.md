@@ -17,7 +17,6 @@
 "@eventuras/fides-auth-next": patch
 "@eventuras/google-api": patch
 "@eventuras/logger": patch
-"@eventuras/logger-sentry": patch
 "@eventuras/markdown": patch
 "@eventuras/notitia-templates": patch
 "@eventuras/payload-vipps-auth": patch
@@ -27,7 +26,6 @@
 "@eventuras/shipper": patch
 "@eventuras/smartform": patch
 "@eventuras/toast": patch
-"@eventuras/typescript-config": patch
 "@eventuras/vipps": patch
 "@eventuras/vite-config": patch
 ---
