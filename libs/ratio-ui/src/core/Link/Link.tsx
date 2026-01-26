@@ -37,8 +37,8 @@ export const Link = React.forwardRef<HTMLElement, LinkProps>(
   ) => {
     const spacingClasses = buildSpacingClasses({ padding, margin, border, width, height });
 
-    // Default link styling (when no variant is set)
-    const defaultLinkClasses = !variant
+    // Default link styling (when no variant or custom className is set)
+    const defaultLinkClasses = !variant && !className
       ? 'text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 underline decoration-blue-600/30 hover:decoration-blue-800 underline-offset-2 transition-colors'
       : '';
 

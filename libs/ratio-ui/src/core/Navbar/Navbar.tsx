@@ -30,12 +30,12 @@ export const Navbar = ({
   title,
   children,
   bgDark = false,
-  bgColor = 'bg-transparent',
+  bgColor,
   titleHref = '/',
   sticky = false,
   LinkComponent,
 }: NavbarProps) => {
-  const textColor = bgDark ? 'text-white' : 'text-black dark:text-white';
+  const textColor = bgDark ? 'text-light' : 'text-dark dark:text-light';
   const LinkTag = LinkComponent ?? ('a' as React.ElementType);
   const positionClass = sticky ? 'sticky top-0 z-50' : '';
 

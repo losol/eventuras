@@ -56,13 +56,13 @@ const TableBody: React.FC<TableBodyProps> = ({ children, className = '' }) => {
 };
 
 const TableRow: React.FC<TableRowProps> = ({ children, className = '' }) => {
-  return <tr className={`border-b ${className}`}>{children}</tr>;
+  return <tr className={`border-b border-gray-200 dark:border-gray-700 ${className}`}>{children}</tr>;
 };
 
 const TableHeadCell: React.FC<TableHeadCellProps> = ({ children, className = '' }) => {
   return (
     <th
-      className={`px-4 py-3 text-left text-sm font-semibold text-gray-900 bg-gray-50 ${className}`}
+      className={`px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-white/10 ${className}`}
     >
       {children}
     </th>
@@ -70,7 +70,7 @@ const TableHeadCell: React.FC<TableHeadCellProps> = ({ children, className = '' 
 };
 
 const TableCell: React.FC<TableCellProps> = ({ children, className = '' }) => {
-  return <td className={`px-4 py-3 text-sm text-gray-700 ${className}`}>{children}</td>;
+  return <td className={`px-4 py-3 text-sm text-gray-700 dark:text-gray-300 ${className}`}>{children}</td>;
 };
 
 Table.Header = TableHeader;
