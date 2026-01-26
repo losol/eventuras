@@ -6,7 +6,7 @@
   "linked": [
     ["@eventuras/api", "@eventuras/web", "@eventuras/event-sdk"]
   ],
-  "access": "restricted",
+  "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
   "ignore": []

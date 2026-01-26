@@ -1,5 +1,5 @@
 {
-  "name": "@eventuras/oxo",
+  "name": "@eventuras/oxo-cli",
   "version": "0.0.1",
   "description": "Eventuras CLI tools",
   "keywords": [

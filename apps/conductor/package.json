@@ -1,6 +1,7 @@
 {
   "name": "@eventuras/conductor",
   "version": "0.1.0",
+  "private": true,
   "description": "Messaging orchestration server",
   "license": "GPL-3.0-or-later",
   "author": "Losen",
