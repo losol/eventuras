@@ -1,5 +1,11 @@
 # @eventuras/scribo
 
+## 0.8.3
+
+### Patch Changes
+
+- 4a6097f: Enhanced dark mode support across UI components.
+
 ## 0.8.2
 
 ### Patch Changes

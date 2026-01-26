@@ -1,5 +1,52 @@
 # @eventuras/historia
 
+## 0.24.0
+
+### Minor Changes
+
+- 61b3f06: Add Instructions Collection for procedural content
+
+  Implements a new Instructions collection (slug: `instructions`) using a story-based block architecture for flexible procedural and instructional content:
+
+  **New Blocks:**
+  - **ResourcesBlock**: Unified block for materials and tools (differentiated by type field)
+    - Supports localized names, descriptions, quantities, and units
+    - Section-specific or top-level placement
+  - **InstructionBlock**: Individual instruction steps
+    - Optional images with rich text captions
+    - Localized titles and content
+  - **InstructionSection**: Hierarchical grouping of instructions and resources
+    - Nested block support for organized multi-phase procedures
+
+  **Features:**
+  - Story-based architecture reusing proven `storyField()` pattern
+  - Full localization support for all text fields
+  - Live preview and draft/publish workflow
+  - Automatic cache invalidation on publish
+  - SEO metadata and Open Graph support
+  - Import/export capability
+
+  **Use Cases:**
+  - Cooking recipes with ingredients and steps
+  - Assembly instructions with required tools
+  - IT procedures and test plans
+  - How-to guides and tutorials
+
+  The flexible block model allows editors to create flat instruction lists, nested sections, or mixed narrative + procedural content. Shopping list aggregation can be performed by filtering ResourcesBlocks by type.
+
+  See ADR 0010 for architectural decisions and implementation details.
+
+### Patch Changes
+
+- b44822c: Upgrade dependencies across monorepo
+
+  This update brings the latest stability improvements and bug fixes from upstream dependencies.
+
+- Updated dependencies [4a6097f]
+  - @eventuras/ratio-ui@0.10.1
+  - @eventuras/ratio-ui-next@0.1.7
+  - @eventuras/toast@0.2.6
+
 ## 0.23.0
 
 ### Minor Changes
