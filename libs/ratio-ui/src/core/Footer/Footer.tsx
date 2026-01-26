@@ -1,3 +1,4 @@
+import { Container } from '../../layout/Container';
 import { ObfuscatedEmail } from '../ObfuscatedEmail';
 
 export interface Publisher {
@@ -16,8 +17,8 @@ interface FooterProps {
 
 export const Footer = (props: FooterProps) => {
   return (
-      <footer className="p-3 pt-10">
-      <div className="container p-3 mx-auto pt-5 border-t-1 border-opacity-10 border-black">
+      <footer className="p-3 pt-10 bg-black/10 dark:bg-white/10">
+      <Container>
           <div className="md:flex md:justify-between">
             {props.siteTitle && (
               <div className="mb-6 md:mb-0">
@@ -48,7 +49,7 @@ export const Footer = (props: FooterProps) => {
               </div>
             )}
           </div>
-        </div>
+        </Container>
       </footer>
   );
 };

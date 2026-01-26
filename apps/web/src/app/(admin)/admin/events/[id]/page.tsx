@@ -130,7 +130,7 @@ export default async function EventAdminPage({ params, searchParams }: Readonly<
   );
   return (
     <>
-      <Section className="bg-white dark:bg-black pb-8">
+      <Section>
         <Container>
           <Heading as="h1">{eventinfo.title}</Heading>
           {hasPartialErrors && (
@@ -156,7 +156,7 @@ export default async function EventAdminPage({ params, searchParams }: Readonly<
           )}
         </Container>
       </Section>
-      <Section className="bg-gray-50 dark:bg-gray-900">
+      <Section>
         <Container>
           <EventPageTabs
             eventinfo={eventinfo}

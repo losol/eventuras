@@ -27,11 +27,11 @@ const styles = {
   tab: {
     base: 'font-medium py-2 px-5 cursor-pointer focus:outline-none transition-colors rounded-t-lg whitespace-nowrap',
     selected:
-      'text-primary-600 dark:text-primary-400 bg-gray-50 dark:bg-gray-800 border-b-2 border-primary-600 dark:border-primary-400 font-semibold',
+      'text-primary-600 dark:text-primary-400 bg-transparent dark:bg-white/10 border-b-2 border-primary-600 dark:border-primary-400 font-semibold',
     notSelected:
-      'text-gray-600 dark:text-gray-400 hover:text-gray-900 bg-gray-100 bg-opacity-80 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800',
+      'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 bg-transparent hover:bg-gray-100/50 dark:hover:bg-white/5',
   },
-  panel: 'p-3 bg-white dark:bg-black',
+  panel: 'p-3 bg-white/10 dark:bg-white/10',
 };
 
 export const Tabs: TabsComponent = ({
