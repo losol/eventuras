@@ -6,20 +6,20 @@
  *
  *
  */
-.PlaygroundEditorTheme__ltr {
+.EditorTheme__ltr {
   text-align: left;
 }
 
-.PlaygroundEditorTheme__rtl {
+.EditorTheme__rtl {
   text-align: right;
 }
 
-.PlaygroundEditorTheme__paragraph {
+.EditorTheme__paragraph {
   margin: 0;
   position: relative;
 }
 
-.PlaygroundEditorTheme__quote {
+.EditorTheme__quote {
   margin: 0;
   margin-left: 20px;
   margin-bottom: 10px;
@@ -31,7 +31,7 @@
   padding-left: 16px;
 }
 
-.PlaygroundEditorTheme__h1 {
+.EditorTheme__h1 {
   font-size: 32px;
   line-height: 1.3;
   padding-top: 2rem;
@@ -41,7 +41,11 @@
   margin: 0;
 }
 
-.PlaygroundEditorTheme__h2 {
+[data-theme="dark"] .EditorTheme__h1 {
+  color: #ffffff;
+}
+
+.EditorTheme__h2 {
   font-size: 24px;
   color: #406280;
   padding-top: 2rem;
@@ -50,7 +54,11 @@
   margin: 0;
 }
 
-.PlaygroundEditorTheme__h3 {
+[data-theme="dark"] .EditorTheme__h2 {
+  color: #ffffff;
+}
+
+.EditorTheme__h3 {
   font-size: 24px;
   color: #406280;
   padding-top: 2rem;
@@ -59,7 +67,11 @@
   margin: 0;
 }
 
-.PlaygroundEditorTheme__h4 {
+[data-theme="dark"] .EditorTheme__h3 {
+  color: #ffffff;
+}
+
+.EditorTheme__h4 {
   font-size: 16px;
   color: #406280;
   padding-top: 1.5rem;
@@ -68,63 +80,67 @@
   margin: 0;
 }
 
-.PlaygroundEditorTheme__indent {
+[data-theme="dark"] .EditorTheme__h4 {
+  color: #ffffff;
+}
+
+.EditorTheme__indent {
   --lexical-indent-base-value: 40px;
 }
 
-.PlaygroundEditorTheme__textBold {
+.EditorTheme__textBold {
   font-weight: bold;
 }
 
-.PlaygroundEditorTheme__textItalic {
+.EditorTheme__textItalic {
   font-style: italic;
 }
 
-.PlaygroundEditorTheme__textUnderline {
+.EditorTheme__textUnderline {
   text-decoration: underline;
 }
 
-.PlaygroundEditorTheme__textStrikethrough {
+.EditorTheme__textStrikethrough {
   text-decoration: line-through;
 }
 
-.PlaygroundEditorTheme__textUnderlineStrikethrough {
+.EditorTheme__textUnderlineStrikethrough {
   text-decoration: underline line-through;
 }
 
-.PlaygroundEditorTheme__textSubscript {
+.EditorTheme__textSubscript {
   font-size: 0.8em;
   vertical-align: sub !important;
 }
 
-.PlaygroundEditorTheme__textSuperscript {
+.EditorTheme__textSuperscript {
   font-size: 0.8em;
   vertical-align: super;
 }
 
-.PlaygroundEditorTheme__textCode {
+.EditorTheme__textCode {
   background-color: rgb(240, 242, 245);
   padding: 1px 0.25rem;
   font-family: Menlo, Consolas, Monaco, monospace;
   font-size: 94%;
 }
 
-.PlaygroundEditorTheme__hashtag {
+.EditorTheme__hashtag {
   background-color: rgba(88, 144, 255, 0.15);
   border-bottom: 1px solid rgba(88, 144, 255, 0.3);
 }
 
-.PlaygroundEditorTheme__link {
+.EditorTheme__link {
   color: rgb(33, 111, 219);
   text-decoration: none;
 }
 
-.PlaygroundEditorTheme__link:hover {
+.EditorTheme__link:hover {
   text-decoration: underline;
   cursor: pointer;
 }
 
-.PlaygroundEditorTheme__code {
+.EditorTheme__code {
   background-color: rgb(240, 242, 245);
   font-family: Menlo, Consolas, Monaco, monospace;
   display: block;
@@ -139,7 +155,7 @@
   tab-size: 2;
 }
 
-.PlaygroundEditorTheme__code:before {
+.EditorTheme__code:before {
   content: attr(data-gutter);
   position: absolute;
   background-color: #eee;
@@ -153,57 +169,57 @@
   min-width: 25px;
 }
 
-.PlaygroundEditorTheme__characterLimit {
+.EditorTheme__characterLimit {
   display: inline;
   background-color: #ffbbbb !important;
 }
 
-.PlaygroundEditorTheme__ol1 {
+.EditorTheme__ol1 {
   padding: 0;
   margin: 0;
   list-style-position: inside;
 }
 
-.PlaygroundEditorTheme__ol2 {
+.EditorTheme__ol2 {
   padding: 0;
   margin: 0;
   list-style-type: upper-alpha;
   list-style-position: inside;
 }
 
-.PlaygroundEditorTheme__ol3 {
+.EditorTheme__ol3 {
   padding: 0;
   margin: 0;
   list-style-type: lower-alpha;
   list-style-position: inside;
 }
 
-.PlaygroundEditorTheme__ol4 {
+.EditorTheme__ol4 {
   padding: 0;
   margin: 0;
   list-style-type: upper-roman;
   list-style-position: inside;
 }
 
-.PlaygroundEditorTheme__ol5 {
+.EditorTheme__ol5 {
   padding: 0;
   margin: 0;
   list-style-type: lower-roman;
   list-style-position: inside;
 }
 
-.PlaygroundEditorTheme__ul {
+.EditorTheme__ul {
   padding: 0;
   margin: 0;
   list-style-position: inside;
 }
 
-.PlaygroundEditorTheme__listItem {
+.EditorTheme__listItem {
   margin: 0 32px;
 }
 
-.PlaygroundEditorTheme__listItemChecked,
-.PlaygroundEditorTheme__listItemUnchecked {
+.EditorTheme__listItemChecked,
+.EditorTheme__listItemUnchecked {
   position: relative;
   margin-left: 8px;
   margin-right: 8px;
@@ -213,12 +229,12 @@
   outline: none;
 }
 
-.PlaygroundEditorTheme__listItemChecked {
+.EditorTheme__listItemChecked {
   text-decoration: line-through;
 }
 
-.PlaygroundEditorTheme__listItemUnchecked:before,
-.PlaygroundEditorTheme__listItemChecked:before {
+.EditorTheme__listItemUnchecked:before,
+.EditorTheme__listItemChecked:before {
   content: "";
   width: 16px;
   height: 16px;
@@ -230,31 +246,31 @@
   position: absolute;
 }
 
-.PlaygroundEditorTheme__listItemUnchecked[dir="rtl"]:before,
-.PlaygroundEditorTheme__listItemChecked[dir="rtl"]:before {
+.EditorTheme__listItemUnchecked[dir="rtl"]:before,
+.EditorTheme__listItemChecked[dir="rtl"]:before {
   left: auto;
   right: 0;
 }
 
-.PlaygroundEditorTheme__listItemUnchecked:focus:before,
-.PlaygroundEditorTheme__listItemChecked:focus:before {
+.EditorTheme__listItemUnchecked:focus:before,
+.EditorTheme__listItemChecked:focus:before {
   box-shadow: 0 0 0 2px #a6cdfe;
   border-radius: 2px;
 }
 
-.PlaygroundEditorTheme__listItemUnchecked:before {
+.EditorTheme__listItemUnchecked:before {
   border: 1px solid #999;
   border-radius: 2px;
 }
 
-.PlaygroundEditorTheme__listItemChecked:before {
+.EditorTheme__listItemChecked:before {
   border: 1px solid rgb(61, 135, 245);
   border-radius: 2px;
   background-color: #3d87f5;
   background-repeat: no-repeat;
 }
 
-.PlaygroundEditorTheme__listItemChecked:after {
+.EditorTheme__listItemChecked:after {
   content: "";
   cursor: pointer;
   border-color: #fff;
@@ -270,83 +286,83 @@
   border-width: 0 2px 2px 0;
 }
 
-.PlaygroundEditorTheme__nestedListItem {
+.EditorTheme__nestedListItem {
   list-style-type: none;
 }
 
-.PlaygroundEditorTheme__nestedListItem:before,
-.PlaygroundEditorTheme__nestedListItem:after {
+.EditorTheme__nestedListItem:before,
+.EditorTheme__nestedListItem:after {
   display: none;
 }
 
-.PlaygroundEditorTheme__tokenComment {
+.EditorTheme__tokenComment {
   color: slategray;
 }
 
-.PlaygroundEditorTheme__tokenPunctuation {
+.EditorTheme__tokenPunctuation {
   color: #999;
 }
 
-.PlaygroundEditorTheme__tokenProperty {
+.EditorTheme__tokenProperty {
   color: #905;
 }
 
-.PlaygroundEditorTheme__tokenSelector {
+.EditorTheme__tokenSelector {
   color: #690;
 }
 
-.PlaygroundEditorTheme__tokenOperator {
+.EditorTheme__tokenOperator {
   color: #9a6e3a;
 }
 
-.PlaygroundEditorTheme__tokenAttr {
+.EditorTheme__tokenAttr {
   color: #07a;
 }
 
-.PlaygroundEditorTheme__tokenVariable {
+.EditorTheme__tokenVariable {
   color: #e90;
 }
 
-.PlaygroundEditorTheme__tokenFunction {
+.EditorTheme__tokenFunction {
   color: #dd4a68;
 }
 
-.PlaygroundEditorTheme__mark {
+.EditorTheme__mark {
   background: rgba(255, 212, 0, 0.14);
   border-bottom: 2px solid rgba(255, 212, 0, 0.3);
   padding-bottom: 2px;
 }
 
-.PlaygroundEditorTheme__markOverlap {
+.EditorTheme__markOverlap {
   background: rgba(255, 212, 0, 0.3);
   border-bottom: 2px solid rgba(255, 212, 0, 0.7);
 }
 
-.PlaygroundEditorTheme__mark.selected {
+.EditorTheme__mark.selected {
   background: rgba(255, 212, 0, 0.5);
   border-bottom: 2px solid rgba(255, 212, 0, 1);
 }
 
-.PlaygroundEditorTheme__markOverlap.selected {
+.EditorTheme__markOverlap.selected {
   background: rgba(255, 212, 0, 0.7);
   border-bottom: 2px solid rgba(255, 212, 0, 0.7);
 }
 
-.PlaygroundEditorTheme__embedBlock {
+.EditorTheme__embedBlock {
   user-select: none;
 }
 
-.PlaygroundEditorTheme__embedBlockFocus {
+.EditorTheme__embedBlockFocus {
   outline: 2px solid rgb(60, 132, 244);
 }
 
-.PlaygroundEditorTheme__layoutContaner {
+.EditorTheme__layoutContaner {
   display: grid;
   gap: 10px;
   margin: 10px 0;
 }
 
-.PlaygroundEditorTheme__layoutItem {
+.EditorTheme__layoutItem {
   border: 1px dashed #ddd;
   padding: 8px 16px;
 }
