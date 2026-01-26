@@ -67,7 +67,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
     editorState: props.initialMarkdown
       ? () => {
           // Unescape backslash-escaped markdown characters
-          const unescapedMarkdown = props.initialMarkdown!.replace(/\\([*_`[\]()#+-])/g, '$1');
+          const unescapedMarkdown = props.initialMarkdown!.replace(/\\([*_`\[\]()#+-])/g, '$1');
           $convertFromMarkdownString(unescapedMarkdown, TRANSFORMERS);
         }
       : undefined,
