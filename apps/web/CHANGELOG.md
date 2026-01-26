@@ -1,5 +1,24 @@
 # @eventuras/web
 
+## 2.27.8
+
+### Patch Changes
+
+- f2b3605: Layout enhancements
+- 4a6097f: Enhanced dark mode support across UI components.
+- b44822c: Upgrade dependencies across monorepo
+
+  This update brings the latest stability improvements and bug fixes from upstream dependencies.
+
+- Updated dependencies [4a6097f]
+  - @eventuras/ratio-ui@0.10.1
+  - @eventuras/scribo@0.8.3
+  - @eventuras/datatable@0.5.6
+  - @eventuras/markdown@4.0.1
+  - @eventuras/ratio-ui-next@0.1.7
+  - @eventuras/smartform@0.2.6
+  - @eventuras/toast@0.2.6
+
 ## 2.27.7
 
 ### Patch Changes

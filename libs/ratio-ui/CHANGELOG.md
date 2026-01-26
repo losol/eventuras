@@ -1,5 +1,11 @@
 # @eventuras/ratio-ui
 
+## 0.10.1
+
+### Patch Changes
+
+- 4a6097f: Enhanced dark mode support across UI components.
+
 ## 0.10.0
 
 ### Minor Changes
