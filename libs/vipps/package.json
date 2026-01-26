@@ -35,15 +35,15 @@
   "dependencies": {
     "@eventuras/fides-auth": "workspace:*",
     "@eventuras/logger": "workspace:*",
-    "openid-client": "^6.2.0"
+    "openid-client": "^6.8.1"
   },
   "devDependencies": {
     "@eventuras/typescript-config": "workspace:*",
     "@eventuras/vite-config": "workspace:*",
-    "@vitest/ui": "^4.0.16",
+    "@vitest/ui": "^4.0.18",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
-    "vite": "^7.3.0",
-    "vitest": "^4.0.16"
+    "vite": "^7.3.1",
+    "vitest": "^4.0.18"
   }
 }

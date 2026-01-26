@@ -4,6 +4,7 @@ import { getLocalizedCollectionName } from '@/app/(frontend)/[locale]/c/[collect
 
 const collectionPrefixMap: Partial<Record<CollectionSlug, string>> = {
   articles: 'c',
+  instructions: 'c',
   notes: 'c',
   products: 'c',
   timelines: 'c',

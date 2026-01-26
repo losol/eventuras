@@ -6,13 +6,13 @@ export type ContainerProps = Omit<BoxProps, 'as'>;
 const Container: React.FC<ContainerProps> = ({
   className = 'container',
   margin = 'mx-auto',
-  padding = 'pb-18',
+  padding = 'px-3 pb-18',
   ...rest
 }) => {
   return (
     <Box
       as="div"
-      className={`container ${className}`}
+      className={`${className}`}
       margin={margin}
       padding={padding}
       {...rest}

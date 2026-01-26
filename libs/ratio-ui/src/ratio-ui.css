@@ -1,9 +1,13 @@
 /**
- * Full page styling with ratio-ui
- * Import this to get complete page layout control + all components
+ * Ratio UI - Complete styling
  *
- * For component-only usage without global page styles, import './components.css' instead
+ * Import this in your app's root layout to get:
+ * - Tailwind CSS with React Aria Components plugin
+ * - Design tokens (colors, spacing, typography)
+ * - Google Fonts (Source Sans 3, Source Serif 4)
+ * - Base HTML styles (html, body, headings, paragraphs)
+ * - Animated gradient background
+ * - Dark mode support
  */
 
-@import "./components.css";
 @import "./global.css";

@@ -1,8 +1,23 @@
 /**
- * Global page-level styles
- * Only import this if you want ratio-ui to control the entire page layout
+ * Ratio UI - Complete styling
+ * Includes Tailwind, design tokens, fonts, and base styles
  */
 
+/* Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600&family=Source+Serif+4:wght@400;600;700&display=swap");
+
+/* Tailwind + plugins */
+@import "tailwindcss";
+@plugin 'tailwindcss-react-aria-components';
+@source '**/*.tsx';
+
+/* Dark mode variant */
+@custom-variant dark (&:where(html[data-theme="dark"] &, body[data-theme="dark"] &, [data-theme="dark"] *));
+
+/* Design tokens */
+@import "./tokens/index.css";
+
+/* Base styles */
 @layer base {
   /* Prevent FOUC during theme initialization */
   html {

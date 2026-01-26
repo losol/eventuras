@@ -4,7 +4,10 @@ import { ArchiveBlock } from "@/blocks/ArchiveBlock/Component";
 import { ContentBlock } from '@/blocks/Content/Component'
 import { FormBlock } from '@/blocks/Form/Component'
 import { ImageBlock } from '@/blocks/Image/Component'
+import { InstructionBlock } from '@/blocks/InstructionBlock/Component'
+import { InstructionSectionBlock } from '@/blocks/InstructionSection/Component'
 import { ProductsBlock } from '@/blocks/Product'
+import { ResourcesBlock } from '@/blocks/ResourcesBlock/Component'
 
 // Extend block components to include `disableInnerContainer`
 const blockComponents: {
@@ -14,7 +17,10 @@ const blockComponents: {
   content: ContentBlock,
   formBlock: FormBlock,
   image: ImageBlock,
+  instruction: InstructionBlock,
+  instructionSection: InstructionSectionBlock,
   products: ProductsBlock,
+  resources: ResourcesBlock,
 }
 
 // Define the type for block keys
