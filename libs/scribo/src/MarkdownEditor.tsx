@@ -3,9 +3,7 @@ import {
   $convertToMarkdownString,
   TRANSFORMERS,
 } from "@lexical/markdown";
-import {
-  $getRoot,
-} from 'lexical';
+import { $getRoot } from 'lexical';
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
@@ -19,6 +17,7 @@ import EditorTheme from "./themes/EditorTheme";
 import ContentEditable from "./ui/ContentEditable";
 import Placeholder from "./ui/Placeholder";
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
+import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPlugin';
 import LinkPlugin from "./plugins/LinkPlugin";
 import FloatingLinkEditorPlugin from "./plugins/FloatingLinkEditorPlugin";
 import AutoLinkPlugin from "./plugins/AutoLinkPlugin";
@@ -65,9 +64,13 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
       throw error;
     },
     theme: EditorTheme,
-    editorState: () => {
-      $convertFromMarkdownString(props.initialMarkdown ?? "", TRANSFORMERS);
-    },
+    editorState: props.initialMarkdown
+      ? () => {
+          // Unescape backslash-escaped markdown characters
+          const unescapedMarkdown = props.initialMarkdown!.replace(/\\([*_`[\]()#+-])/g, '$1');
+          $convertFromMarkdownString(unescapedMarkdown, TRANSFORMERS);
+        }
+      : undefined,
   };
 
   return (
@@ -77,6 +80,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
           <ToolbarPlugin setIsLinkEditMode={setIsLinkEditMode} />
           <div className="editor-container rich-text">
             <HistoryPlugin externalHistoryState={historyState} />
+            <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
             <AutoLinkPlugin />
             <LinkPlugin />
             <FloatingLinkEditorPlugin
