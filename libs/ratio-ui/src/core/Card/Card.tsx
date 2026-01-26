@@ -67,10 +67,10 @@ export const Card: React.FC<CardProps> = ({
 
   const variantStyles = {
     default: hoverEffect
-      ? 'bg-card text hover:bg-overlay-hover'
+      ? 'bg-card bg-overlay-hover text'
       : 'bg-card text',
     wide: hoverEffect
-      ? 'bg-card text hover:bg-overlay-hover mx-auto min-h-[33vh]'
+      ? 'bg-card bg-overlay-hover text mx-auto min-h-[33vh]'
       : 'bg-card text mx-auto min-h-[33vh]',
     outline: 'border border-border-1 bg-transparent text',
     transparent: 'bg-transparent text',

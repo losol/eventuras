@@ -85,7 +85,6 @@ export default async function Homepage() {
       <Section
         backgroundImageUrl="/assets/images/mountains.jpg"
         backgroundImageOverlay
-        padding="py-24 md:py-32"
         className="min-h-[30vh] flex items-center"
       >
         <Container>
@@ -105,7 +104,7 @@ export default async function Homepage() {
         </Section>
       )}
       {hasEvents && (
-        <Section backgroundColorClass="bg-primary-50 dark:bg-slate-950" padding="py-8" container>
+        <Section padding="py-8" container>
           <Heading as="h2" padding="pb-6">
             {t('common.events.sectiontitle')}
           </Heading>
