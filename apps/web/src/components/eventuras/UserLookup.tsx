@@ -1,6 +1,6 @@
 'use client';
-import { useState } from 'react';
-import { Input, Label, Popover } from 'react-aria-components';
+import { useRef, useState } from 'react';
+import { Group, Input, Label, Popover } from 'react-aria-components';
 import { useAsyncList } from 'react-stately';
 
 import { Logger } from '@eventuras/logger';
@@ -25,6 +25,7 @@ export type UserLookupProps = {
 
 const UserLookup = (props: UserLookupProps) => {
   const [selectedLabel, setSelectedLabel] = useState<string | null>(null);
+  const triggerRef = useRef<HTMLDivElement>(null);
   const list = useAsyncList<UserDto>({
     async load({ signal, filterText }) {
       if (selectedLabel && filterText === selectedLabel) {
@@ -80,19 +81,20 @@ const UserLookup = (props: UserLookupProps) => {
     >
       <SearchField className="flex flex-col gap-1">
         <Label className="text-sm font-medium">Search User</Label>
-        <div className="relative">
+        <Group ref={triggerRef} className="relative">
           <Input
             className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Search by name or email (min 3 characters)"
           />
           {list.isLoading && (
-            <div className="absolute right-3 top-1/2 -translate-y-1/2">
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
               <div className="animate-spin h-4 w-4 border-2 border-blue-500 border-t-transparent rounded-full" />
             </div>
           )}
-        </div>
+        </Group>
       </SearchField>
       <Popover
+        triggerRef={triggerRef}
         isOpen={shouldShowList}
         className="w-[--trigger-width] mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto entering:animate-in entering:fade-in exiting:animate-out exiting:fade-out"
       >

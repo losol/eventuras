@@ -122,7 +122,7 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
   };
   return (
     <form
-      className="space-y-4 p-4 bg-white dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-slate-700"
+      className="space-y-4 p-4 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-slate-700"
       onSubmit={handleSubmit(onSubmitForm)}
     >
       <div className="space-y-2">
@@ -155,11 +155,11 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
               <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                 Registration Type
               </Label>
-              <AriaButton className="flex items-center cursor-default border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 pressed:bg-gray-50 dark:pressed:bg-slate-700 transition pl-3 pr-2 py-2 text-sm text-left leading-normal shadow-sm text-gray-700 dark:text-gray-300 focus:outline-hidden focus-visible:ring-2 ring-blue-500 rounded-md">
+              <AriaButton className="flex items-center cursor-default border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 pressed:bg-gray-50 dark:pressed:bg-gray-700 transition pl-3 pr-2 py-2 text-sm text-left leading-normal shadow-sm text-gray-700 dark:text-gray-300 focus:outline-hidden focus-visible:ring-2 ring-blue-500 rounded-md">
                 <SelectValue className="flex-1 truncate placeholder-shown:italic" />
                 <div className="text-gray-500 dark:text-gray-400 px-2">▼</div>
               </AriaButton>
-              <Popover className="max-h-60 w-(--trigger-width) overflow-auto rounded-md bg-white dark:bg-slate-800 text-sm shadow-lg ring-1 ring-black/5 dark:ring-white/10 entering:animate-in entering:fade-in exiting:animate-out exiting:fade-out">
+              <Popover className="max-h-60 w-(--trigger-width) overflow-auto rounded-md bg-white dark:bg-gray-800 text-sm shadow-lg ring-1 ring-black/5 dark:ring-white/10 entering:animate-in entering:fade-in exiting:animate-out exiting:fade-out">
                 <ListBox className="outline-hidden p-1">
                   {registrationTypeOptions.map(value => renderRegistrationTypeItem(value))}
                 </ListBox>
