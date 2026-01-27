@@ -31,7 +31,6 @@ export default function CommunicationSection({
           <h3 className="mb-4 text-lg font-semibold">Send Notifications</h3>
           <div className="flex flex-wrap gap-3">
             <Button
-              variant="outline"
               onClick={() => {
                 setEmailDrawerOpen(true);
               }}
@@ -39,7 +38,6 @@ export default function CommunicationSection({
               {t('admin.eventNotifier.title')}
             </Button>
             <Button
-              variant="outline"
               onClick={() => {
                 setSMSDrawerOpen(true);
               }}

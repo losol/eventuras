@@ -2,7 +2,7 @@ import { Label as AriaLabel } from 'react-aria-components';
 import type { ComponentProps } from 'react';
 
 const styles = {
-  label: 'block font-bold mb-2',
+  label: 'block mb-2',
 };
 
 /**
@@ -45,7 +45,9 @@ export function Label({ children, className, ...props }: ComponentProps<typeof A
     <AriaLabel
       className={className ?? styles.label}
       {...props}
-    />
+    >
+      {children}
+    </AriaLabel>
   );
 }
 

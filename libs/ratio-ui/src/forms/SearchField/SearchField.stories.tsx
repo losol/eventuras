@@ -1,8 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import React, { useState } from 'react';
 import { SearchField } from './SearchField';
-import { Label } from '../common/Label';
-import { Input } from '../Input/Input';
 
 const meta: Meta<typeof SearchField> = {
   title: 'Forms/SearchField',
@@ -12,7 +10,7 @@ const meta: Meta<typeof SearchField> = {
     docs: {
       description: {
         component:
-          'Accessible search field built on react-aria-components. Use with ratio-ui Label and Input for consistent styling.',
+          'Accessible search field with built-in debouncing (300ms default) and clear button. Built on react-aria-components.',
       },
     },
   },
@@ -31,30 +29,32 @@ type Story = StoryObj<typeof meta>;
 /** Basic usage */
 export const Basic: Story = {
   render: () => (
-    <SearchField>
-      <Label>Search</Label>
-      <Input placeholder="Search..." />
-    </SearchField>
+    <SearchField
+      placeholder="Search..."
+      aria-label="Search"
+    />
   ),
 };
 
-/** With placeholder and custom width */
+/** With custom placeholder */
 export const WithPlaceholder: Story = {
   render: () => (
-    <SearchField className="flex flex-col gap-1">
-      <Label>Find events</Label>
-      <Input placeholder="Type event name" />
-    </SearchField>
+    <SearchField
+      placeholder="Type event name"
+      aria-label="Find events"
+      className="w-full"
+    />
   ),
 };
 
 /** Disabled state */
 export const Disabled: Story = {
   render: () => (
-    <SearchField isDisabled>
-      <Label>Search</Label>
-      <Input placeholder="Search..." />
-    </SearchField>
+    <SearchField
+      placeholder="Search..."
+      aria-label="Search"
+      isDisabled
+    />
   ),
 };
 
@@ -64,10 +64,12 @@ const ControlledExample = () => {
 
   return (
     <div className="space-y-2">
-      <SearchField value={value} onChange={setValue}>
-        <Label>Search</Label>
-        <Input placeholder="Search..." />
-      </SearchField>
+      <SearchField
+        value={value}
+        onChange={setValue}
+        placeholder="Search..."
+        aria-label="Search"
+      />
       <div className="text-sm text-gray-600 dark:text-gray-400">
         Current value: <span className="font-medium">{value || 'empty'}</span>
       </div>

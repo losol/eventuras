@@ -5,7 +5,6 @@ export type { AutoCompleteProps } from './AutoComplete';
 export { Label } from '../common/Label';
 export { Input } from '../Input/Input';
 export { ListBox, ListBoxItem } from '../ListBox';
-export { SearchField } from '../SearchField';
 
-// Re-export TextField for other use cases
-export { TextField } from 'react-aria-components';
+// Re-export React Aria components for composable autocomplete patterns
+export { SearchField, TextField } from 'react-aria-components';

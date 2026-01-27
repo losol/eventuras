@@ -9,11 +9,6 @@ export const NumberInput = React.forwardRef<HTMLInputElement, InputProps>((props
   const inputId = id ?? name;
   const formContext = useFormContext();
 
-  // Guard against missing form context
-  if (!formContext) {
-    return null;
-  }
-
   const {
     register,
     formState: { errors },

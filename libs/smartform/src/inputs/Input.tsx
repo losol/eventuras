@@ -28,11 +28,6 @@ export const Input = React.forwardRef<HTMLInputElement, SmartInputProps>((props,
   const { name, validation, ...restProps } = props;
   const formContext = useFormContext();
 
-  // Guard against missing form context
-  if (!formContext) {
-    return null;
-  }
-
   const { register } = formContext;
   const registrationProps = register(name, validation);
 

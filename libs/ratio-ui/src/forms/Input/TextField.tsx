@@ -3,13 +3,13 @@ import React, {
   InputHTMLAttributes,
   TextareaHTMLAttributes,
 } from 'react';
-import { InputProps } from './InputProps';
+import { InputFieldProps } from './InputProps';
 import { formStyles } from '../styles/formStyles';
 import { Label } from '../common/Label';
 import { InputError } from '../common/InputError';
 import { InputDescription } from '../common/InputDescription';
 
-interface ExtendedInputProps extends InputProps {
+interface ExtendedInputProps extends InputFieldProps {
   multiline?: boolean;
   rows?: number;
   cols?: number;

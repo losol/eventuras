@@ -56,11 +56,6 @@ const CheckboxInput = React.forwardRef<HTMLInputElement, CheckboxProps>((props, 
 
   const formContext = useFormContext();
 
-  // Guard against missing form context
-  if (!formContext) {
-    return null;
-  }
-
   const { register } = formContext;
 
   // Add the htmlFor attribute to the label
