@@ -1,5 +1,4 @@
 export { default as Checkbox, CheckBoxDescription, CheckBoxLabel } from './Input/Checkbox';
-export { DebouncedInput } from './Input/DebouncedInput';
 export { Fieldset } from './common/Fieldset';
 export { Form } from './common/Form';
 export { formStyles } from './styles/formStyles';

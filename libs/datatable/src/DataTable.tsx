@@ -17,7 +17,7 @@ import {
 } from '@tanstack/react-table';
 import { useEffect } from 'react';
 import React from 'react';
-import { DebouncedInput } from '@eventuras/ratio-ui/forms';
+import { SearchField } from '@eventuras/ratio-ui/forms';
 ;
 type DataTableProps = {
   columns: any[];
@@ -149,11 +149,11 @@ const DataTable = (props: DataTableProps) => {
   }, []);
 
   const searchInput = props.enableGlobalSearch ? (
-    <DebouncedInput
+    <SearchField
       value={globalFilter ?? ''}
-      onChange={value => setGlobalFilter(String(value))}
+      onChange={value => setGlobalFilter(value)}
       placeholder="Search all columns..."
-      className="px-3 py-1.5 rounded border border-gray-300 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm w-80"
+      aria-label="Search table"
     />
   ) : null;
 
@@ -182,7 +182,7 @@ const DataTable = (props: DataTableProps) => {
           {table.getRowModel().rows.map(row => (
             <React.Fragment key={row.id ?? row.index}>
               <tr
-                className="group even:bg-gray-50 odd:bg-white dark:even:bg-slate-950 dark:odd:bg-slate-900 text-black dark:text-white"
+                className="group even:bg-gray-50 odd:bg-white dark:even:bg-gray-950 dark:odd:bg-gray-900 text-black dark:text-white"
               >
                 {row.getVisibleCells().map(cell => (
                   <td key={cell.id} className="p-2">
@@ -191,7 +191,7 @@ const DataTable = (props: DataTableProps) => {
                 ))}
               </tr>
               {row.getIsExpanded() && props.renderSubComponent && (
-                <tr className="bg-gray-100 dark:bg-slate-800">
+                <tr className="bg-gray-100 dark:bg-gray-800">
                   <td colSpan={row.getVisibleCells().length} className="p-4">
                     {props.renderSubComponent({ row })}
                   </td>
