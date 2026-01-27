@@ -14,7 +14,6 @@ interface EventCardProps {
 }
 
 const EventCard: React.FC<EventCardProps> = ({ eventinfo }) => {
-  console.log('Rendering md', eventinfo.description);
   return (
     <Card hoverEffect>
       {eventinfo.title && (

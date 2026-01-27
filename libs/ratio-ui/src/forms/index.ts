@@ -8,7 +8,7 @@ export { ListBox, ListBoxItem } from './ListBox';
 export type { ListBoxProps, ListBoxItemProps } from './ListBox';
 export { SearchField } from './SearchField';
 export type { SearchFieldProps } from './SearchField';
-export type { InputProps } from './Input/InputProps';
+export type { InputProps, InputFieldProps } from './Input/InputProps';
 export { Input } from './Input/Input';
 export { TextField } from './Input/TextField';
 export { RadioGroup } from './RadioGroup';
