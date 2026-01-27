@@ -14,5 +14,13 @@ export default defineReactLibConfig({
 
     // Workspace dependencies
     '@eventuras/ratio-ui',
+    /^@eventuras\/ratio-ui/,
+
+    // React Aria (used by ratio-ui)
+    'react-aria-components',
+    /^react-aria-components/,
+    /^@react-aria\//,
+    /^@react-stately\//,
+    /^@internationalized\//,
   ],
 });
