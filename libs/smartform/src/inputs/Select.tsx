@@ -1,6 +1,6 @@
 import { ChevronDown } from "@eventuras/ratio-ui/icons";
 import React from "react";
-import { Controller, useFormContext } from "react-hook-form";
+import { useController, useFormContext } from "react-hook-form";
 
 import {
   Button as AriaButton,
@@ -40,24 +40,20 @@ const Select: React.FC<SelectProps> = (props) => {
   const { label, name, options } = props;
   const formContext = useFormContext();
 
-  // Guard against missing form context
-  if (!formContext) {
-    return null;
-  }
-
   const { control } = formContext;
 
+  const { field } = useController({
+    name,
+    control,
+  });
+
   return (
-    <Controller
-      control={control}
-      name={name}
-      render={({ field: { onChange, onBlur, value } }) => (
-        <AriaSelect
-          className="flex flex-col gap-1 w-full"
-          onBlur={onBlur}
-          onSelectionChange={onChange}
-          defaultSelectedKey={value}
-        >
+    <AriaSelect
+      className="flex flex-col gap-1 w-full"
+      selectedKey={field.value}
+      onSelectionChange={field.onChange}
+      onBlur={field.onBlur}
+    >
           <Label className="text-white cursor-default">Registration Type</Label>
           <AriaButton className={styles.button.base}  data-testid={props.testId}>
             <SelectValue className="flex-1 truncate placeholder-shown:italic" />
@@ -92,8 +88,6 @@ const Select: React.FC<SelectProps> = (props) => {
             </ListBox>
           </Popover>
         </AriaSelect>
-      )}
-    />
   );
 };
 

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Controller, useFormContext } from 'react-hook-form';
+import { useController, useFormContext } from 'react-hook-form';
 import {PhoneInput as CorePhoneInput, PhoneInputProps} from '@eventuras/ratio-ui/forms/Input';
 
 interface SmartformPhoneInputProps extends Omit<PhoneInputProps, 'onChange'> {
@@ -16,24 +16,23 @@ export const PhoneInput: React.FC<SmartformPhoneInputProps> = ({
 }) => {
   const { control } = useFormContext();
 
+  const { field, fieldState } = useController({
+    name,
+    control,
+    rules: validation,
+  });
+
   return (
-    <Controller
+    <CorePhoneInput
+      {...props}
       name={name}
-      control={control}
-      rules={validation}
-      render={({ field, fieldState }) => (
-        <CorePhoneInput
-          {...props}
-          name={name}
-          value={field.value || ''}
-          onChange={({ fullNumber }: { fullNumber: string }) => field.onChange(fullNumber)}
-          errors={
-            fieldState.error
-              ? { [name]: { message: fieldState.error.message || '' } }
-              : {}
-          }
-        />
-      )}
+      value={field.value || ''}
+      onChange={({ fullNumber }: { fullNumber: string }) => field.onChange(fullNumber)}
+      errors={
+        fieldState.error
+          ? { [name]: { message: fieldState.error.message || '' } }
+          : {}
+      }
     />
   );
 };

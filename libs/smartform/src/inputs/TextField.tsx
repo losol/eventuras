@@ -12,9 +12,6 @@ export const TextField = React.forwardRef<
 >(({ label, name, validation, ...restProps }, forwardedRef) => {
     const formContext = useFormContext();
 
-    // Guard against missing form context
-    if (!formContext) return null;
-
     const {
       field,
       fieldState: { error },
@@ -34,7 +31,7 @@ export const TextField = React.forwardRef<
         onChange={field.onChange}
         onBlur={field.onBlur}
         // Keep RHF's ref, and also forward to parent ref
-        ref={(el: any) => {
+        ref={(el: HTMLInputElement | null) => {
           field.ref(el);
           if (typeof forwardedRef === 'function') forwardedRef(el);
           else if (forwardedRef && 'current' in forwardedRef) forwardedRef.current = el;
