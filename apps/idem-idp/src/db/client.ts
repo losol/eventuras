@@ -1,0 +1,37 @@
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
+import * as schema from './schema/index';
+
+/**
+ * Database connection configuration
+ */
+const connectionString = process.env.DATABASE_URL || 'postgresql://localhost:5432/idem_dev';
+
+/**
+ * Create PostgreSQL connection
+ */
+const queryClient = postgres(connectionString, {
+  max: 10, // Maximum number of connections
+  idle_timeout: 20, // Close idle connections after 20 seconds
+  connect_timeout: 10, // Connection timeout in seconds
+});
+
+/**
+ * Drizzle ORM instance
+ *
+ * This is the main database client for Idem IdP.
+ * Import this to execute queries against the database.
+ *
+ * @example
+ * import { db } from './db/client';
+ * const accounts = await db.select().from(schema.accounts);
+ */
+export const db = drizzle(queryClient, { schema });
+
+/**
+ * Close database connection
+ * Call this on application shutdown
+ */
+export async function closeDb() {
+  await queryClient.end();
+}
