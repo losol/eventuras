@@ -11,17 +11,27 @@
   ],
   "scripts": {
     "build": "tsup",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:seed": "tsx src/db/seed.ts",
+    "db:studio": "drizzle-kit studio",
     "dev": "tsx watch src/main.ts",
     "start": "node --enable-source-maps dist/main.js",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "express": "5.2.1"
+    "bcrypt": "^5.1.1",
+    "drizzle-orm": "^0.44.7",
+    "express": "5.2.1",
+    "postgres": "^3.4.8"
   },
   "devDependencies": {
     "@eventuras/eslint-config": "workspace:*",
     "@eventuras/typescript-config": "workspace:*",
+    "@types/bcrypt": "^5.0.2",
     "@types/express": "5.0.6",
+    "drizzle-kit": "^0.31.7",
     "tsup": "8.5.1",
     "tsx": "^4",
     "typescript": "^5.9.3"
