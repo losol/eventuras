@@ -23,7 +23,6 @@
   "dependencies": {
     "@eventuras/logger": "workspace:*",
     "bcrypt": "^5.1.1",
-    "connect-pg-simple": "^10.0.0",
     "drizzle-orm": "^0.44.7",
     "express": "5.2.1",
     "express-session": "^1.19.0",
