@@ -79,7 +79,7 @@ export function renderHomepage(opts: { name: string; version?: string }) {
     <div class="links">
       <a href="/health">Health Check</a>
       <a href="/.well-known/openid-configuration">OIDC Discovery</a>
-      <a href="/jwks">Public Keys (JWKS)</a>
+      <a href="/.well-known/jwks.json">Public Keys (JWKS)</a>
     </div>
   </body>
 </html>`;
