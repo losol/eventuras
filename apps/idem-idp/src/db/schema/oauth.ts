@@ -1,5 +1,5 @@
 import { text, timestamp, uuid, jsonb, boolean, integer, index } from 'drizzle-orm/pg-core';
-import { idem } from './core';
+import { idem } from './account';
 
 /**
  * OAuth Clients table

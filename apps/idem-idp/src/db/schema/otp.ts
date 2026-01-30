@@ -1,6 +1,6 @@
 import { text, timestamp, uuid, integer, boolean, index, unique } from 'drizzle-orm/pg-core';
-import { idem } from './core';
-import { accounts } from './core';
+import { idem } from './account';
+import { accounts } from './account';
 
 /**
  * OTP table: One-Time Passwords

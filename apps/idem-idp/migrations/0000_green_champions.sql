@@ -3,8 +3,17 @@ CREATE SCHEMA "idem";
 CREATE TABLE "idem"."accounts" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"primary_email" text NOT NULL,
-	"display_name" text NOT NULL,
 	"active" boolean DEFAULT true NOT NULL,
+	"given_name" text,
+	"middle_name" text,
+	"family_name" text,
+	"display_name" text NOT NULL,
+	"phone" text,
+	"birthdate" date,
+	"locale" text DEFAULT 'nb-NO',
+	"timezone" text DEFAULT 'Europe/Oslo',
+	"picture" text,
+	"system_role" text,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp,
@@ -40,6 +49,18 @@ CREATE TABLE "idem"."identities" (
 	CONSTRAINT "idx_identities_provider_subject" UNIQUE("provider","provider_subject")
 );
 --> statement-breakpoint
+CREATE TABLE "idem"."account_claims" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"account_id" uuid NOT NULL,
+	"claim_type" text NOT NULL,
+	"claim_value" jsonb NOT NULL,
+	"source_provider" text NOT NULL,
+	"source_verified_at" timestamp,
+	"raw_claims" jsonb,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE "idem"."otp_codes" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"recipient" text NOT NULL,
@@ -67,52 +88,6 @@ CREATE TABLE "idem"."otp_rate_limits" (
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "idx_otp_ratelimit_recipient" UNIQUE("recipient","recipient_type")
-);
---> statement-breakpoint
-CREATE TABLE "idem"."addresses" (
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"account_id" uuid NOT NULL,
-	"address_type" text NOT NULL,
-	"street_address" text,
-	"locality" text,
-	"region" text,
-	"postal_code" text,
-	"country" text,
-	"formatted" text,
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL
-);
---> statement-breakpoint
-CREATE TABLE "idem"."profile_facts" (
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"account_id" uuid NOT NULL,
-	"fact_type" text NOT NULL,
-	"fact_value" text NOT NULL,
-	"source_provider" text NOT NULL,
-	"source_verified_at" timestamp,
-	"raw_claims" jsonb,
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL
-);
---> statement-breakpoint
-CREATE TABLE "idem"."profile_person" (
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"account_id" uuid NOT NULL,
-	"given_name" text,
-	"middle_name" text,
-	"family_name" text,
-	"display_name" text,
-	"email" text,
-	"phone" text,
-	"birthdate" date,
-	"gender" text,
-	"locale" text,
-	"timezone" text,
-	"picture" text,
-	"website" text,
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL,
-	CONSTRAINT "profile_person_account_id_unique" UNIQUE("account_id")
 );
 --> statement-breakpoint
 CREATE TABLE "idem"."jwks_keys" (
@@ -158,23 +133,6 @@ CREATE TABLE "idem"."oauth_clients" (
 	CONSTRAINT "oauth_clients_client_id_unique" UNIQUE("client_id")
 );
 --> statement-breakpoint
-CREATE TABLE "idem"."idp_configs" (
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"provider_id" uuid NOT NULL,
-	"client_id" text NOT NULL,
-	"client_secret_encrypted" text NOT NULL,
-	"scopes" jsonb NOT NULL,
-	"redirect_uri" text NOT NULL,
-	"additional_params" jsonb,
-	"consecutive_failures" integer DEFAULT 0 NOT NULL,
-	"last_failure_at" timestamp,
-	"last_success_at" timestamp,
-	"enabled" boolean DEFAULT true NOT NULL,
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL,
-	CONSTRAINT "idx_idp_configs_provider" UNIQUE("provider_id")
-);
---> statement-breakpoint
 CREATE TABLE "idem"."idp_providers" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"provider_key" text NOT NULL,
@@ -188,6 +146,14 @@ CREATE TABLE "idem"."idp_providers" (
 	"display_name" text NOT NULL,
 	"logo_url" text,
 	"button_color" text,
+	"client_id" text,
+	"client_secret_encrypted" text,
+	"scopes" jsonb,
+	"redirect_uri" text,
+	"additional_params" jsonb,
+	"consecutive_failures" integer DEFAULT 0 NOT NULL,
+	"last_failure_at" timestamp,
+	"last_success_at" timestamp,
 	"enabled" boolean DEFAULT true NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
@@ -301,60 +267,32 @@ CREATE TABLE "idem"."system_health" (
 	"timestamp" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "idem"."admin_memberships" (
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"principal_id" uuid NOT NULL,
-	"role" text NOT NULL,
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	"granted_by" uuid,
-	CONSTRAINT "idx_admin_memberships_principal_role" UNIQUE("principal_id","role")
-);
---> statement-breakpoint
-CREATE TABLE "idem"."admin_principals" (
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"account_id" uuid NOT NULL,
-	"display_name" text NOT NULL,
-	"email" text NOT NULL,
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL,
-	CONSTRAINT "admin_principals_account_id_unique" UNIQUE("account_id")
-);
---> statement-breakpoint
 ALTER TABLE "idem"."emails" ADD CONSTRAINT "emails_account_id_accounts_id_fk" FOREIGN KEY ("account_id") REFERENCES "idem"."accounts"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "idem"."identities" ADD CONSTRAINT "identities_account_id_accounts_id_fk" FOREIGN KEY ("account_id") REFERENCES "idem"."accounts"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "idem"."account_claims" ADD CONSTRAINT "account_claims_account_id_accounts_id_fk" FOREIGN KEY ("account_id") REFERENCES "idem"."accounts"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "idem"."otp_codes" ADD CONSTRAINT "otp_codes_account_id_accounts_id_fk" FOREIGN KEY ("account_id") REFERENCES "idem"."accounts"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "idem"."addresses" ADD CONSTRAINT "addresses_account_id_accounts_id_fk" FOREIGN KEY ("account_id") REFERENCES "idem"."accounts"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "idem"."profile_facts" ADD CONSTRAINT "profile_facts_account_id_accounts_id_fk" FOREIGN KEY ("account_id") REFERENCES "idem"."accounts"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "idem"."profile_person" ADD CONSTRAINT "profile_person_account_id_accounts_id_fk" FOREIGN KEY ("account_id") REFERENCES "idem"."accounts"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "idem"."idp_configs" ADD CONSTRAINT "idp_configs_provider_id_idp_providers_id_fk" FOREIGN KEY ("provider_id") REFERENCES "idem"."idp_providers"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "idem"."idp_states" ADD CONSTRAINT "idp_states_provider_id_idp_providers_id_fk" FOREIGN KEY ("provider_id") REFERENCES "idem"."idp_providers"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "idem"."used_id_tokens" ADD CONSTRAINT "used_id_tokens_provider_id_idp_providers_id_fk" FOREIGN KEY ("provider_id") REFERENCES "idem"."idp_providers"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "idem"."oidc_store" ADD CONSTRAINT "oidc_store_account_id_accounts_id_fk" FOREIGN KEY ("account_id") REFERENCES "idem"."accounts"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "idem"."audit_log" ADD CONSTRAINT "audit_log_actor_id_accounts_id_fk" FOREIGN KEY ("actor_id") REFERENCES "idem"."accounts"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "idem"."admin_memberships" ADD CONSTRAINT "admin_memberships_principal_id_admin_principals_id_fk" FOREIGN KEY ("principal_id") REFERENCES "idem"."admin_principals"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "idem"."admin_memberships" ADD CONSTRAINT "admin_memberships_granted_by_admin_principals_id_fk" FOREIGN KEY ("granted_by") REFERENCES "idem"."admin_principals"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "idem"."admin_principals" ADD CONSTRAINT "admin_principals_account_id_accounts_id_fk" FOREIGN KEY ("account_id") REFERENCES "idem"."accounts"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX "idx_accounts_active" ON "idem"."accounts" USING btree ("active");--> statement-breakpoint
 CREATE INDEX "idx_emails_account" ON "idem"."emails" USING btree ("account_id");--> statement-breakpoint
 CREATE INDEX "idx_emails_verified" ON "idem"."emails" USING btree ("verified");--> statement-breakpoint
 CREATE INDEX "idx_identities_account" ON "idem"."identities" USING btree ("account_id");--> statement-breakpoint
 CREATE INDEX "idx_identities_primary" ON "idem"."identities" USING btree ("account_id","is_primary");--> statement-breakpoint
+CREATE INDEX "idx_account_claims_account" ON "idem"."account_claims" USING btree ("account_id");--> statement-breakpoint
+CREATE INDEX "idx_account_claims_type" ON "idem"."account_claims" USING btree ("claim_type");--> statement-breakpoint
+CREATE INDEX "idx_account_claims_provider" ON "idem"."account_claims" USING btree ("source_provider");--> statement-breakpoint
 CREATE INDEX "idx_otp_recipient" ON "idem"."otp_codes" USING btree ("recipient","recipient_type");--> statement-breakpoint
 CREATE INDEX "idx_otp_expires" ON "idem"."otp_codes" USING btree ("expires_at");--> statement-breakpoint
 CREATE INDEX "idx_otp_consumed" ON "idem"."otp_codes" USING btree ("consumed");--> statement-breakpoint
 CREATE INDEX "idx_otp_session" ON "idem"."otp_codes" USING btree ("session_id");--> statement-breakpoint
 CREATE INDEX "idx_otp_ratelimit_window" ON "idem"."otp_rate_limits" USING btree ("window_end");--> statement-breakpoint
 CREATE INDEX "idx_otp_ratelimit_blocked" ON "idem"."otp_rate_limits" USING btree ("blocked","blocked_until");--> statement-breakpoint
-CREATE INDEX "idx_addresses_account" ON "idem"."addresses" USING btree ("account_id");--> statement-breakpoint
-CREATE INDEX "idx_addresses_type" ON "idem"."addresses" USING btree ("address_type");--> statement-breakpoint
-CREATE INDEX "idx_profile_facts_account" ON "idem"."profile_facts" USING btree ("account_id");--> statement-breakpoint
-CREATE INDEX "idx_profile_facts_type" ON "idem"."profile_facts" USING btree ("fact_type");--> statement-breakpoint
-CREATE INDEX "idx_profile_person_account" ON "idem"."profile_person" USING btree ("account_id");--> statement-breakpoint
 CREATE INDEX "idx_jwks_keys_active" ON "idem"."jwks_keys" USING btree ("active");--> statement-breakpoint
 CREATE INDEX "idx_jwks_keys_primary" ON "idem"."jwks_keys" USING btree ("primary");--> statement-breakpoint
 CREATE INDEX "idx_jwks_keys_expires" ON "idem"."jwks_keys" USING btree ("expires_at");--> statement-breakpoint
 CREATE INDEX "idx_oauth_clients_active" ON "idem"."oauth_clients" USING btree ("active");--> statement-breakpoint
-CREATE INDEX "idx_idp_configs_enabled" ON "idem"."idp_configs" USING btree ("enabled");--> statement-breakpoint
 CREATE INDEX "idx_idp_providers_enabled" ON "idem"."idp_providers" USING btree ("enabled");--> statement-breakpoint
 CREATE INDEX "idx_idp_states_provider" ON "idem"."idp_states" USING btree ("provider_id");--> statement-breakpoint
 CREATE INDEX "idx_idp_states_expires" ON "idem"."idp_states" USING btree ("expires_at");--> statement-breakpoint
@@ -380,6 +318,4 @@ CREATE INDEX "idx_cleanup_runs_status" ON "idem"."cleanup_runs" USING btree ("st
 CREATE INDEX "idx_cleanup_runs_started" ON "idem"."cleanup_runs" USING btree ("started_at");--> statement-breakpoint
 CREATE INDEX "idx_system_health_type" ON "idem"."system_health" USING btree ("check_type");--> statement-breakpoint
 CREATE INDEX "idx_system_health_status" ON "idem"."system_health" USING btree ("status");--> statement-breakpoint
-CREATE INDEX "idx_system_health_timestamp" ON "idem"."system_health" USING btree ("timestamp");--> statement-breakpoint
-CREATE INDEX "idx_admin_memberships_role" ON "idem"."admin_memberships" USING btree ("role");--> statement-breakpoint
-CREATE INDEX "idx_admin_principals_email" ON "idem"."admin_principals" USING btree ("email");
+CREATE INDEX "idx_system_health_timestamp" ON "idem"."system_health" USING btree ("timestamp");

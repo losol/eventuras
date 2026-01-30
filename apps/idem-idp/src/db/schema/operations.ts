@@ -1,5 +1,5 @@
 import { text, timestamp, uuid, jsonb, integer, index } from 'drizzle-orm/pg-core';
-import { idem, accounts } from './core';
+import { idem, accounts } from './account';
 
 /**
  * Audit Log table

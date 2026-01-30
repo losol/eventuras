@@ -1,4 +1,4 @@
-import { text, timestamp, uuid, boolean, index, unique, pgSchema } from 'drizzle-orm/pg-core';
+import { text, timestamp, uuid, boolean, index, unique, pgSchema, date } from 'drizzle-orm/pg-core';
 
 /**
  * Idem PostgreSQL schema
@@ -16,14 +16,23 @@ export const accounts = idem.table(
   {
     id: uuid('id').defaultRandom().primaryKey(),
 
-    // Primary email for the account
+    // Core identity
     primaryEmail: text('primary_email').notNull(),
-
-    // Display name
-    displayName: text('display_name').notNull(),
-
-    // Account status
     active: boolean('active').notNull().default(true),
+
+    // Profile fields (merged from profile_person)
+    givenName: text('given_name'),
+    middleName: text('middle_name'),
+    familyName: text('family_name'),
+    displayName: text('display_name').notNull(),
+    phone: text('phone'),
+    birthdate: date('birthdate'),
+    locale: text('locale').default('nb-NO'),
+    timezone: text('timezone').default('Europe/Oslo'),
+    picture: text('picture'),
+
+    // System role (merged from admin_principals + admin_memberships)
+    systemRole: text('system_role'), // null | 'system_admin' | 'system_reader'
 
     // Timestamps
     createdAt: timestamp('created_at').notNull().defaultNow(),

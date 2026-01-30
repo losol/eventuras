@@ -34,7 +34,10 @@ async function seed() {
       .insert(schema.accounts)
       .values({
         primaryEmail: 'admin@eventuras.local',
+        givenName: 'Admin',
+        familyName: 'User',
         displayName: 'Admin User',
+        systemRole: 'system_admin', // System role directly on account
         active: true,
       })
       .returning();
@@ -44,6 +47,8 @@ async function seed() {
       .insert(schema.accounts)
       .values({
         primaryEmail: 'developer@eventuras.local',
+        givenName: 'Developer',
+        familyName: 'User',
         displayName: 'Developer User',
         active: true,
       })
@@ -54,13 +59,15 @@ async function seed() {
       .insert(schema.accounts)
       .values({
         primaryEmail: 'test@eventuras.local',
+        givenName: 'Test',
+        familyName: 'User',
         displayName: 'Test User',
         active: true,
       })
       .returning();
     if (!testAccount) throw new Error('Failed to create test account');
 
-    console.log(`✓ Created 3 accounts`);
+    console.log(`✓ Created 3 accounts (admin has system_admin role)`);
 
     // 2. Create identities for accounts
     console.log('Creating identities...');
@@ -91,32 +98,7 @@ async function seed() {
 
     console.log(`✓ Created 3 identities`);
 
-    // 3. Create admin principals
-    console.log('Creating admin principals...');
-
-    const [adminPrincipal] = await db
-      .insert(schema.adminPrincipals)
-      .values({
-        accountId: adminAccount.id,
-        displayName: 'Admin User',
-        email: 'admin@eventuras.local',
-      })
-      .returning();
-    if (!adminPrincipal) throw new Error('Failed to create admin principal');
-
-    console.log(`✓ Created 1 admin principal`);
-
-    // 4. Grant admin role
-    console.log('Granting admin roles...');
-
-    await db.insert(schema.adminMemberships).values({
-      principalId: adminPrincipal.id,
-      role: 'system_admin',
-    });
-
-    console.log(`✓ Granted system_admin role to admin@eventuras.local`);
-
-    // 5. Create test OAuth client
+    // 3. Create test OAuth clients
     console.log('Creating OAuth clients...');
 
     await db.insert(schema.oauthClients).values([
@@ -149,7 +131,7 @@ async function seed() {
 
     console.log(`✓ Created 2 OAuth clients`);
 
-    // 6. Create test IdP providers
+    // 4. Create test IdP providers
     console.log('Creating IdP providers...');
 
     await db.insert(schema.idpProviders).values([
@@ -159,6 +141,7 @@ async function seed() {
         providerType: 'oidc',
         displayName: 'Vipps (Dev Only)',
         enabled: true,
+        // Config fields are nullable - not configured in seed data
       },
       {
         providerKey: 'mock_google',
@@ -166,6 +149,7 @@ async function seed() {
         providerType: 'oidc',
         displayName: 'Google (Dev Only)',
         enabled: true,
+        // Config fields are nullable - not configured in seed data
       },
     ]);
 
