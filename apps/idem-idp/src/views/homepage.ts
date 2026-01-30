@@ -50,6 +50,24 @@ export function renderHomepage(opts: { name: string; version?: string }) {
         color: #94a3b8;
         font-size: 0.9rem;
       }
+      .links {
+        margin-top: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      .links a {
+        padding: 0.5rem 1rem;
+        background: rgba(59, 130, 246, 0.1);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        border-radius: 0.5rem;
+        transition: all 0.2s;
+      }
+      .links a:hover {
+        background: rgba(59, 130, 246, 0.2);
+        border-color: rgba(59, 130, 246, 0.5);
+        text-decoration: none;
+      }
     </style>
   </head>
   <body>
@@ -57,8 +75,12 @@ export function renderHomepage(opts: { name: string; version?: string }) {
     <h1>${name} is running 🚀</h1>
     <p>Eventuras experimental OpenID Connect Provider</p>
     <p class="muted">version ${version}</p>
-    <p><a href="/health">Health check</a></p>
-    <p><a href="/oidc">OIDC discovery</a></p>
+
+    <div class="links">
+      <a href="/health">Health Check</a>
+      <a href="/.well-known/openid-configuration">OIDC Discovery</a>
+      <a href="/jwks">Public Keys (JWKS)</a>
+    </div>
   </body>
 </html>`;
 }

@@ -5,7 +5,7 @@ import * as schema from './schema/index';
 /**
  * Database connection configuration
  */
-const connectionString = process.env.DATABASE_URL || 'postgresql://localhost:5432/idem_dev';
+const connectionString = process.env.IDEM_DATABASE_URL || 'postgresql://idem:idem@localhost:5432/idem';
 
 /**
  * Create PostgreSQL connection

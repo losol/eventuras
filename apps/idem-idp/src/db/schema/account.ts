@@ -1,4 +1,5 @@
-import { text, timestamp, uuid, boolean, index, unique, pgSchema, date } from 'drizzle-orm/pg-core';
+import { text, timestamp, uuid, boolean, index, unique, pgSchema, date, check } from 'drizzle-orm/pg-core';
+import { sql } from 'drizzle-orm';
 
 /**
  * Idem PostgreSQL schema
@@ -10,6 +11,7 @@ export const idem = pgSchema('idem');
  *
  * Represents a user account in Idem.
  * One account can have multiple identities (Vipps, Google, HelseID, etc.)
+ * Profile fields and system role are merged into this table for simplicity (single-tenant).
  */
 export const accounts = idem.table(
   'accounts',
@@ -20,7 +22,7 @@ export const accounts = idem.table(
     primaryEmail: text('primary_email').notNull(),
     active: boolean('active').notNull().default(true),
 
-    // Profile fields (merged from profile_person)
+    // Profile fields
     givenName: text('given_name'),
     middleName: text('middle_name'),
     familyName: text('family_name'),
@@ -32,7 +34,7 @@ export const accounts = idem.table(
     picture: text('picture'),
 
     // System role (merged from admin_principals + admin_memberships)
-    systemRole: text('system_role'), // null | 'system_admin' | 'system_reader'
+    systemRole: text('system_role'),
 
     // Timestamps
     createdAt: timestamp('created_at').notNull().defaultNow(),
@@ -44,6 +46,8 @@ export const accounts = idem.table(
   (table) => [
     unique('idx_accounts_primary_email').on(table.primaryEmail),
     index('idx_accounts_active').on(table.active),
+    // CHECK constraint: systemRole can only be NULL, 'system_admin', or 'admin_reader'
+    check('valid_system_role', sql`system_role IS NULL OR system_role IN ('system_admin', 'admin_reader')`),
   ]
 );
 

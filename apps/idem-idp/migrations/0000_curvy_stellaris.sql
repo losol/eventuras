@@ -17,7 +17,8 @@ CREATE TABLE "idem"."accounts" (
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp,
-	CONSTRAINT "idx_accounts_primary_email" UNIQUE("primary_email")
+	CONSTRAINT "idx_accounts_primary_email" UNIQUE("primary_email"),
+	CONSTRAINT "valid_system_role" CHECK (system_role IS NULL OR system_role IN ('system_admin', 'admin_reader'))
 );
 --> statement-breakpoint
 CREATE TABLE "idem"."emails" (

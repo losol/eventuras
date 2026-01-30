@@ -1,5 +1,5 @@
 {
-  "id": "42897bb5-a985-4931-95bd-4a4512c65cfc",
+  "id": "85bc33fa-edf5-4e9e-82b8-610f1493f7ea",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -140,7 +140,12 @@
         }
       },
       "policies": {},
-      "checkConstraints": {},
+      "checkConstraints": {
+        "valid_system_role": {
+          "name": "valid_system_role",
+          "value": "system_role IS NULL OR system_role IN ('system_admin', 'admin_reader')"
+        }
+      },
       "isRLSEnabled": false
     },
     "idem.emails": {

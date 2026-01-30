@@ -6,6 +6,8 @@ This document describes the database schema for the Idem Identity Provider.
 
 All tables are in the `idem` PostgreSQL schema.
 
+**Total tables: 17** (simplified single-tenant design)
+
 ## Entity Relationship Diagram
 
 ```mermaid
@@ -13,12 +15,9 @@ erDiagram
     %% Core Tables
     accounts ||--o{ identities : "has many"
     accounts ||--o{ emails : "has many"
-    accounts ||--o{ profile_person : "has one"
-    accounts ||--o{ profile_facts : "has many"
-    accounts ||--o{ addresses : "has many"
+    accounts ||--o{ account_claims : "has many"
     accounts ||--o{ otp_codes : "may have"
     accounts ||--o{ oidc_store : "has tokens"
-    accounts ||--o{ admin_principals : "may be admin"
     accounts ||--o{ audit_log : "actions logged"
 
     %% Identity & Profile
@@ -41,6 +40,15 @@ erDiagram
         text primary_email UK
         text display_name
         boolean active
+        text given_name
+        text middle_name
+        text family_name
+        text phone
+        date birthdate
+        text locale
+        text timezone
+        text picture
+        text system_role "NULL or system_admin or admin_reader"
         timestamp created_at
         timestamp updated_at
         timestamp deleted_at
@@ -88,48 +96,15 @@ erDiagram
         timestamp updated_at
     }
 
-    %% Profile
-    profile_person {
-        uuid id PK
-        uuid account_id FK "unique"
-        text given_name
-        text middle_name
-        text family_name
-        text display_name
-        text email
-        text phone
-        date birthdate
-        text gender
-        text locale
-        text timezone
-        text picture
-        text website
-        timestamp created_at
-        timestamp updated_at
-    }
-
-    profile_facts {
+    %% Profile Claims (verified facts from IdPs)
+    account_claims {
         uuid id PK
         uuid account_id FK
-        text fact_type
-        text fact_value
+        text claim_type "email, phone_number, address, no:national_id"
+        jsonb claim_value
         text source_provider
         timestamp source_verified_at
         jsonb raw_claims
-        timestamp created_at
-        timestamp updated_at
-    }
-
-    addresses {
-        uuid id PK
-        uuid account_id FK
-        text address_type
-        text street_address
-        text locality
-        text region
-        text postal_code
-        text country
-        text formatted
         timestamp created_at
         timestamp updated_at
     }
@@ -167,7 +142,7 @@ erDiagram
         text alg
         text kty
         jsonb public_key
-        text private_key_encrypted
+        text private_key_encrypted "AES-256-GCM with per-key salt"
         boolean active
         boolean primary
         timestamp rotated_at
@@ -211,7 +186,6 @@ erDiagram
     }
 
     %% IdP Brokering
-    idp_providers ||--o{ idp_configs : "has config"
     idp_providers ||--o{ idp_states : "has states"
     idp_providers ||--o{ used_id_tokens : "tracks used tokens"
 
@@ -228,14 +202,6 @@ erDiagram
         text display_name
         text logo_url
         text button_color
-        boolean enabled
-        timestamp created_at
-        timestamp updated_at
-    }
-
-    idp_configs {
-        uuid id PK
-        uuid provider_id FK
         text client_id
         text client_secret_encrypted
         jsonb scopes
@@ -320,104 +286,77 @@ erDiagram
         text message
         timestamp timestamp
     }
-
-    %% Admin RBAC
-    admin_principals ||--o{ admin_memberships : "has roles"
-    admin_principals ||--o{ admin_memberships : "granted roles"
-    accounts ||--o| admin_principals : "may be admin"
-
-    admin_principals {
-        uuid id PK
-        uuid account_id FK "unique"
-        text display_name
-        text email
-        timestamp created_at
-        timestamp updated_at
-    }
-
-    admin_memberships {
-        uuid id PK
-        uuid principal_id FK
-        text role
-        timestamp created_at
-        uuid granted_by FK
-    }
 ```
 
 ## Table Groups
 
 ### Core Identity (3 tables)
-- **accounts** - User accounts
-- **identities** - Links to external IdPs (Vipps, Google, etc.)
+
+- **accounts** - User accounts with profile fields and optional admin role
+- **identities** - Links to external IdPs (Vipps, HelseID, etc.)
 - **emails** - Email addresses for accounts
 
 ### OTP Authentication (2 tables)
+
 - **otp_codes** - One-time password codes for passwordless login
 - **otp_rate_limits** - Rate limiting for OTP requests
 
-### User Profile (3 tables)
-- **profile_person** - Personal information
-- **profile_facts** - Verified identity facts from IdPs
-- **addresses** - Address information
+### User Profile (1 table)
 
-### OAuth & OIDC (4 tables)
+- **account_claims** - Verified identity claims from IdPs (email, phone, address, national ID, etc.)
+
+### OAuth & OIDC (5 tables)
+
 - **oauth_clients** - OAuth client registrations
-- **jwks_keys** - JSON Web Keys for signing
+- **jwks_keys** - JSON Web Keys for signing (private keys encrypted at rest)
 - **oidc_store** - Token storage (for node-oidc-provider)
-- **express_sessions** - Session data
+- **express_sessions** - Session data (PostgreSQL session store)
 - **session_fingerprints** - Session hijacking detection
 
-### IdP Brokering (4 tables)
-- **idp_providers** - Registry of external IdPs
-- **idp_configs** - Environment-specific IdP configurations
+### IdP Brokering (3 tables)
+
+- **idp_providers** - Registry of external IdPs with configuration
 - **idp_states** - OAuth state tracking (CSRF protection)
 - **used_id_tokens** - Token replay prevention
 
 ### Operations (3 tables)
+
 - **audit_log** - Comprehensive audit trail
 - **cleanup_runs** - Token cleanup job tracking
 - **system_health** - Health check metrics
 
-### Admin RBAC (2 tables)
-- **admin_principals** - Administrative users
-- **admin_memberships** - Role assignments
-
 ## Key Design Decisions
 
 ### PostgreSQL Schema
+
 All tables are in the `idem` schema, providing namespace isolation:
 ```sql
 CREATE SCHEMA "idem";
 CREATE TABLE "idem"."accounts" (...);
 ```
 
-### Single-Tenant Architecture
-- No `tenant_id` or `org_id` columns
-- Static issuer per environment
-- Simplified queries and reduced complexity
+### Schema Constraints
 
-### Security Features
-- **OTP codes** are hashed before storage
-- **Client secrets** use bcrypt hashing
-- **Private keys** are encrypted at application level
-- **Audit logging** for all sensitive operations
-- **Rate limiting** for OTP and authentication endpoints
-- **Token replay prevention** via `used_id_tokens`
-- **Session hijacking detection** via `session_fingerprints`
+- **`accounts.system_role`** - CHECK constraint: `NULL | 'system_admin' | 'admin_reader'`
+- **`jwks_keys.private_key_encrypted`** - Private keys encrypted at rest (AES-256-GCM)
+- **`session_fingerprints`** - Tracks session changes for hijacking detection
 
 ### Performance Optimizations
+
 - Strategic indexes on lookup columns
-- JSONB for flexible metadata
+- JSONB for flexible metadata (claims, scopes, params)
 - Cleanup jobs for expired tokens
-- Partitioning strategy for audit logs
+- Partitioning strategy for audit logs (future)
 
 ## Indexes
 
 Critical indexes are created for:
-- Primary lookups (email, provider+subject)
-- Foreign key relationships
-- Token expiration queries
-- Session lookups
-- Audit log queries
 
-See migration file for complete index definitions.
+- Primary lookups (email, provider+subject, client_id)
+- Foreign key relationships
+- Token expiration queries (`expires_at`)
+- Session lookups (`session_id`)
+- Audit log queries (event_type, actor_id, timestamp)
+- Account claims (account_id, claim_type, source_provider)
+
+See migration file `0000_curvy_stellaris.sql` for complete index definitions.

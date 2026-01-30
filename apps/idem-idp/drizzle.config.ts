@@ -5,7 +5,7 @@ export default defineConfig({
   out: './migrations',
   dialect: 'postgresql',
   dbCredentials: {
-    url: process.env.DATABASE_URL || 'postgresql://localhost:5432/idem_dev',
+    url: process.env.IDEM_DATABASE_URL || 'postgresql://idem:idem@localhost:5432/idem',
   },
   verbose: true,
   strict: true,
