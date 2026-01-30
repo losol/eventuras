@@ -1,4 +1,4 @@
-import { Store } from 'express-session';
+import { Store, SessionData } from 'express-session';
 import { db } from '../db/client';
 import { expressSessions } from '../db/schema/oidc';
 import { eq, lt } from 'drizzle-orm';
@@ -14,7 +14,7 @@ export class DrizzleSessionStore extends Store {
   /**
    * Get a session by ID
    */
-  async get(sid: string, callback: (err?: any, session?: Express.SessionData | null) => void): Promise<void> {
+  async get(sid: string, callback: (err?: any, session?: SessionData | null) => void): Promise<void> {
     try {
       const [row] = await db
         .select()
@@ -33,7 +33,7 @@ export class DrizzleSessionStore extends Store {
         return callback(null, null);
       }
 
-      callback(null, row.sess as Express.SessionData);
+      callback(null, row.sess as SessionData);
     } catch (err) {
       logger.error({ err, sid }, 'Failed to get session');
       callback(err);
@@ -43,7 +43,7 @@ export class DrizzleSessionStore extends Store {
   /**
    * Set/update a session
    */
-  async set(sid: string, session: Express.SessionData, callback?: (err?: any) => void): Promise<void> {
+  async set(sid: string, session: SessionData, callback?: (err?: any) => void): Promise<void> {
     try {
       const expire = this.getExpireDate(session);
       const sess = session as any; // Cast to any for JSONB
@@ -79,7 +79,7 @@ export class DrizzleSessionStore extends Store {
   /**
    * Touch a session to update expiry
    */
-  async touch(sid: string, session: Express.SessionData, callback?: (err?: any) => void): Promise<void> {
+  async touch(sid: string, session: SessionData, callback?: (err?: any) => void): Promise<void> {
     try {
       const expire = this.getExpireDate(session);
 
@@ -132,9 +132,10 @@ export class DrizzleSessionStore extends Store {
     try {
       const deleted = await db
         .delete(expressSessions)
-        .where(lt(expressSessions.expire, new Date()));
+        .where(lt(expressSessions.expire, new Date()))
+        .returning({ sid: expressSessions.sid });
 
-      const count = deleted.length || 0;
+      const count = deleted.length;
       if (count > 0) {
         logger.info({ count }, 'Pruned expired sessions');
       }
@@ -148,7 +149,7 @@ export class DrizzleSessionStore extends Store {
   /**
    * Calculate expiration date from session
    */
-  private getExpireDate(session: Express.SessionData): Date {
+  private getExpireDate(session: any): Date {
     const maxAge = session.cookie?.maxAge;
     if (maxAge) {
       return new Date(Date.now() + maxAge);

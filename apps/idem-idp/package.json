@@ -37,7 +37,6 @@
   "devDependencies": {
     "@eventuras/eslint-config": "workspace:*",
     "@eventuras/typescript-config": "workspace:*",
-    "@types/bcrypt": "^5.0.2",
     "@types/express": "5.0.6",
     "@types/express-session": "^1.18.2",
     "@types/supertest": "^6.0.3",

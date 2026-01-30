@@ -42,8 +42,23 @@ export async function comparePassword(
   const hashedPasswordBuf = Buffer.from(hashedPassword, 'hex');
   const suppliedBuf = (await scryptAsync(supplied, salt, 64)) as Buffer;
 
-  const match = timingSafeEqual(hashedPasswordBuf, suppliedBuf);
-  logger.debug({ match }, 'Password comparison');
+  // Ensure buffers are valid and of equal length before timing-safe compare
+  // timingSafeEqual throws if buffers have different lengths
+  if (
+    hashedPasswordBuf.length === 0 ||
+    suppliedBuf.length === 0 ||
+    hashedPasswordBuf.length !== suppliedBuf.length
+  ) {
+    logger.warn('Invalid password hash length for comparison');
+    return false;
+  }
 
-  return match;
+  try {
+    const match = timingSafeEqual(hashedPasswordBuf, suppliedBuf);
+    logger.debug({ match }, 'Password comparison');
+    return match;
+  } catch (err) {
+    logger.warn({ err }, 'Password comparison failed');
+    return false;
+  }
 }
