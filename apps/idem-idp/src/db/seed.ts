@@ -37,7 +37,7 @@ async function seed() {
         givenName: 'Admin',
         familyName: 'User',
         displayName: 'Admin User',
-        systemRole: 'system_admin', // System role directly on account
+        systemRole: 'system_admin',
         active: true,
       })
       .returning();

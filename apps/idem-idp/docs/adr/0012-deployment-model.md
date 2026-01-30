@@ -111,7 +111,7 @@ NODE_ENV=production pnpm start
 
 ```sql
 -- Development database
-CREATE DATABASE idem_dev;
+CREATE DATABASE idem;
 -- Contains: Test accounts, mock data, dev OAuth clients
 
 -- Staging database (separate server)
@@ -137,7 +137,7 @@ CREATE DATABASE idem_prod;
 ```yaml
 # .env.development (local, can be committed)
 NODE_ENV=development
-DATABASE_URL=postgresql://localhost/idem_dev
+DATABASE_URL=postgresql://localhost/idem
 # No real secrets needed
 
 # .env.staging (stored in CI/CD)
