@@ -29,8 +29,8 @@ export function validateConfig() {
     throw new Error('NODE_ENV must be development, staging, or production');
   }
   if (config.nodeEnv !== 'development') {
-    if (!process.env.SESSION_SECRET) throw new Error('SESSION_SECRET required');
-    if (!process.env.MASTER_KEY) throw new Error('MASTER_KEY required');
+    if (!process.env.IDEM_SESSION_SECRET) throw new Error('SESSION_SECRET required');
+    if (!process.env.IDEM_MASTER_KEY) throw new Error('MASTER_KEY required');
   }
   logger.info({ environment: config.nodeEnv }, 'Config validated');
 }
