@@ -10,6 +10,7 @@ export const config = {
     development: 'http://localhost:3200',
     staging: 'https://auth-staging.eventuras.com',
     production: 'https://auth.eventuras.com',
+    test: 'http://localhost:3200',
   }[process.env.NODE_ENV || 'development'],
 
   databaseUrl: process.env.IDEM_DATABASE_URL || 'postgresql://idem:idem@localhost:5432/idem',

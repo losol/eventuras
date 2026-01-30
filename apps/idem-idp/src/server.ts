@@ -1,7 +1,6 @@
-// Express app (no HTML inline)
-import express from 'express';
+// Express app with Next.js integration
+import express, { type Request, type Response } from 'express';
 import helmet from 'helmet';
-import type Provider from 'oidc-provider';
 import { renderHomepage } from './views/homepage';
 import { config } from './config';
 import { createInteractionRoutes } from './routes/interaction';
@@ -9,12 +8,15 @@ import { Logger } from '@eventuras/logger';
 
 const logger = Logger.create({ namespace: 'idem:server' });
 
+type NextHandler = (req: Request, res: Response) => Promise<void>;
+
 /**
- * Creates the Express app with optional OIDC provider.
+ * Creates the Express app with optional OIDC provider and Next.js handler.
  * @param oidcProvider - Optional OIDC provider instance
+ * @param nextHandler - Optional Next.js request handler
  * @returns Express.Application
  */
-export function createServer(oidcProvider?: Provider) {
+export function createServer(oidcProvider?: any, nextHandler?: NextHandler): express.Application {
   const app = express();
 
   // Trust proxy (CRITICAL for production behind reverse proxy)
@@ -70,6 +72,13 @@ export function createServer(oidcProvider?: Provider) {
         '/userinfo'
       ]
     }, 'OIDC routes mounted');
+  }
+
+  // Next.js handler for all other routes (UI pages)
+  // Use middleware without a path to catch all remaining requests
+  if (nextHandler) {
+    logger.info('Mounting Next.js handler');
+    app.use((req, res) => nextHandler(req, res));
   }
 
   return app;

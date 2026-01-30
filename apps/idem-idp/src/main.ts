@@ -1,3 +1,4 @@
+import next from 'next';
 import { createServer } from './server';
 import { createOidcProvider } from './oidc/provider';
 import { config, validateConfig } from './config';
@@ -12,8 +13,16 @@ async function main() {
   validateConfig();
   await bootstrapKeys();
 
+  // Initialize Next.js
+  const dev = config.nodeEnv === 'development';
+  const nextApp = next({ dev, dir: process.cwd() });
+  const nextHandler = nextApp.getRequestHandler();
+
+  await nextApp.prepare();
+  logger.info('Next.js ready');
+
   const oidcProvider = await createOidcProvider();
-  const app = createServer(oidcProvider);
+  const app = createServer(oidcProvider, nextHandler);
 
   app.listen(config.port, () => {
     logger.info({

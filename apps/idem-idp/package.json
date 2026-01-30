@@ -26,19 +26,26 @@
   },
   "dependencies": {
     "@eventuras/logger": "workspace:*",
+    "@eventuras/ratio-ui": "workspace:*",
     "drizzle-orm": "^0.44.7",
     "express": "5.2.1",
     "express-session": "^1.19.0",
     "helmet": "^8.1.0",
     "jose": "^6.1.3",
+    "next": "16.1.4",
+    "next-intl": "^4.8.1",
     "oidc-provider": "^9.6.0",
-    "postgres": "^3.4.8"
+    "postgres": "^3.4.8",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3"
   },
   "devDependencies": {
     "@eventuras/eslint-config": "workspace:*",
     "@eventuras/typescript-config": "workspace:*",
     "@types/express": "5.0.6",
     "@types/express-session": "^1.18.2",
+    "@types/react": "19.2.9",
+    "@types/react-dom": "^19.2.3",
     "@types/supertest": "^6.0.3",
     "@vitest/ui": "^4.0.18",
     "drizzle-kit": "^0.31.7",
