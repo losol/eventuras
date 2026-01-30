@@ -18,11 +18,14 @@
     "db:studio": "drizzle-kit studio",
     "dev": "tsx watch src/main.ts",
     "start": "node --enable-source-maps dist/main.js",
+    "test": "sh -c 'export $(cat .env | xargs) && vitest run'",
+    "test:coverage": "sh -c 'export $(cat .env | xargs) && vitest run --coverage'",
+    "test:ui": "sh -c 'export $(cat .env | xargs) && vitest --ui'",
+    "test:watch": "sh -c 'export $(cat .env | xargs) && vitest'",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
     "@eventuras/logger": "workspace:*",
-    "bcrypt": "^5.1.1",
     "drizzle-orm": "^0.44.7",
     "express": "5.2.1",
     "express-session": "^1.19.0",
@@ -37,10 +40,14 @@
     "@types/bcrypt": "^5.0.2",
     "@types/express": "5.0.6",
     "@types/express-session": "^1.18.2",
+    "@types/supertest": "^6.0.3",
+    "@vitest/ui": "^4.0.18",
     "drizzle-kit": "^0.31.7",
+    "supertest": "^7.2.2",
     "tsup": "8.5.1",
     "tsx": "^4",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
   },
   "optionalDependencies": {
     "@rollup/rollup-linux-arm64-gnu": "4.56.0",

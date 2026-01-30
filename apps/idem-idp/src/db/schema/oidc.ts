@@ -1,4 +1,4 @@
-import { text, timestamp, uuid, jsonb, integer, index } from 'drizzle-orm/pg-core';
+import { text, timestamp, uuid, jsonb, integer, index, unique } from 'drizzle-orm/pg-core';
 import { idem, accounts } from './account';
 
 /**
@@ -41,8 +41,8 @@ export const oidcStore = idem.table(
     createdAt: timestamp('created_at').notNull().defaultNow(),
   },
   (table) => [
-    // Critical index for node-oidc-provider lookups
-    index('idx_oidc_store_name_oidc_id').on(table.name, table.oidcId),
+    // UNIQUE constraint for oidc-provider adapter upsert
+    unique('idx_oidc_store_name_oidc_id_unique').on(table.name, table.oidcId),
 
     // Grant-based revocation
     index('idx_oidc_store_grant').on(table.grantId),

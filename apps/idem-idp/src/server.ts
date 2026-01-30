@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import type Provider from 'oidc-provider';
 import { renderHomepage } from './views/homepage';
 import { config } from './config';
+import { createInteractionRoutes } from './routes/interaction';
 import { Logger } from '@eventuras/logger';
 
 const logger = Logger.create({ namespace: 'idem:server' });
@@ -50,6 +51,13 @@ export function createServer(oidcProvider?: Provider) {
   // Mount OIDC provider
   if (oidcProvider) {
     logger.info('Mounting OIDC provider');
+
+    // Mount interaction API routes BEFORE provider callback
+    // This ensures /api/interaction/* routes are handled first
+    app.use(createInteractionRoutes(oidcProvider));
+    logger.info('Interaction API routes mounted');
+
+    // Mount OIDC provider (handles all OIDC endpoints)
     app.use(oidcProvider.callback());
     logger.info({
       endpoints: [
