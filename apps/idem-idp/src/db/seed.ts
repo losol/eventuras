@@ -1,6 +1,6 @@
-import bcrypt from 'bcrypt';
 import { db } from './client';
 import * as schema from './schema/index';
+import { hashPassword } from '../crypto/password';
 
 /**
  * Development seed script
@@ -23,9 +23,9 @@ async function seed() {
   }
 
   try {
-    // Generate bcrypt hash for dev client secret
+    // Generate scrypt hash for dev client secret
     const devClientSecret = 'dev_secret_DO_NOT_USE_IN_PRODUCTION';
-    const clientSecretHash = await bcrypt.hash(devClientSecret, 10);
+    const clientSecretHash = await hashPassword(devClientSecret);
 
     // 1. Create test accounts
     console.log('Creating test accounts...');

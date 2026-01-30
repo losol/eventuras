@@ -2,6 +2,8 @@ import Provider from 'oidc-provider';
 import { config } from '../config';
 import { getKeyStore } from '../crypto/jwks';
 import { adapterFactory } from './adapter';
+import { loadAllClients } from './clients';
+import { findAccount } from './accounts';
 import { Logger } from '@eventuras/logger';
 
 const logger = Logger.create({ namespace: 'idem:oidc' });
@@ -10,9 +12,16 @@ export async function createOidcProvider(): Promise<Provider> {
   logger.info('Creating OIDC Provider');
   const jwks = await getKeyStore();
 
+  // Load clients from database for oidc-provider v9
+  const clients = await loadAllClients();
+  logger.info({ clientCount: clients.length }, 'Loaded clients for provider');
+
   const provider = new Provider(config.issuer, {
     adapter: adapterFactory,
     jwks: { keys: jwks },
+
+    // Pre-configured clients (oidc-provider v9 requires this)
+    clients,
 
     routes: {
       userinfo: '/userinfo',
@@ -26,7 +35,10 @@ export async function createOidcProvider(): Promise<Provider> {
     },
 
     pkce: {
-      required: (ctx, client) => client.requirePkce !== false,
+      required: (_ctx: any, client: any) => {
+        // Check if client requires PKCE (default: true for public clients)
+        return client.token_endpoint_auth_method === 'none';
+      },
     },
 
     grantTypes: ['authorization_code', 'refresh_token'],
@@ -53,14 +65,36 @@ export async function createOidcProvider(): Promise<Provider> {
       long: { signed: true, httpOnly: true, sameSite: 'lax' },
     },
 
-    // Stub implementations (Phase 1)
-    findAccount: async (ctx, sub) => ({
-      accountId: sub,
-      async claims() { return { sub }; },
-    }),
+    // Account lookup
+    findAccount,
 
-    async findClient(clientId) {
-      return null; // Implement in Phase 2
+    // Interaction URL
+    interactions: {
+      url(_ctx: any, interaction: any) {
+        return `/interaction/${interaction.uid}`;
+      },
+    },
+
+    // Error rendering (log errors for debugging)
+    async renderError(ctx: any, out: any, error: any) {
+      logger.error({
+        error: error?.message || error,
+        details: error,
+        status: ctx.status,
+        path: ctx.path,
+      }, 'OIDC provider error');
+
+      // Default error rendering
+      ctx.type = 'html';
+      ctx.body = `<!DOCTYPE html>
+<html>
+<head><title>Error</title></head>
+<body>
+  <h1>Error</h1>
+  <pre>${error?.message || 'An error occurred'}</pre>
+  <pre>${error?.stack || ''}</pre>
+</body>
+</html>`;
     },
   });
 
