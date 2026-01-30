@@ -57,7 +57,7 @@ export function createServer(oidcProvider?: Provider) {
         '/.well-known/jwks.json',
         '/auth',
         '/token',
-        '/me'
+        '/userinfo'
       ]
     }, 'OIDC routes mounted');
   }

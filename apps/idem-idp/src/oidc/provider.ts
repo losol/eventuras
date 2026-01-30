@@ -12,6 +12,11 @@ export async function createOidcProvider(): Promise<Provider> {
   const provider = new Provider(config.issuer, {
     jwks: { keys: jwks },
 
+    routes: {
+      userinfo: '/userinfo',
+      jwks: '/.well-known/jwks.json',
+    },
+
     features: {
       devInteractions: { enabled: config.features.devShortcuts },
       pushedAuthorizationRequests: { enabled: true }, // PAR (RFC 9126)
