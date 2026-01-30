@@ -1,0 +1,24 @@
+{
+  "common": {
+    "appName": "Idem IdP",
+    "loading": "Laster...",
+    "error": "En feil oppstod",
+    "continue": "Fortsett",
+    "cancel": "Avbryt"
+  },
+  "auth": {
+    "login": {
+      "title": "Logg Inn",
+      "description": "Logg inn for å fortsette",
+      "signInWith": "Logg inn med {provider}",
+      "devLogin": "Utviklerinnlogging"
+    },
+    "consent": {
+      "title": "Gi Tillatelser",
+      "description": "{clientName} ber om tilgang til kontoen din",
+      "scopes": "Forespurte tillatelser:",
+      "allow": "Tillat Tilgang",
+      "deny": "Nekt"
+    }
+  }
+}

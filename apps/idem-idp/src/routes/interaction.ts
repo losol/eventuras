@@ -8,14 +8,15 @@ const logger = Logger.create({ namespace: 'idem:interaction' });
  * Create interaction routes for OIDC flows
  * These are API endpoints that handle login and consent
  */
-export function createInteractionRoutes(provider: Provider): Router {
+export function createInteractionRoutes(provider: any): Router {
   const router = Router();
 
   /**
-   * GET /api/interaction/:uid/details
+   * GET /interaction/:uid/details
    * Returns interaction details for frontend rendering
+   * Note: Must be /interaction/* (not /api/interaction/*) to match OIDC cookie paths
    */
-  router.get('/api/interaction/:uid/details', async (req, res) => {
+  router.get('/interaction/:uid/details', async (req, res) => {
     const { uid } = req.params;
 
     try {
@@ -40,10 +41,11 @@ export function createInteractionRoutes(provider: Provider): Router {
   });
 
   /**
-   * POST /api/interaction/:uid/login
+   * POST /interaction/:uid/login
    * Process login submission (dev: auto-login, prod: verify credentials)
+   * Note: Must be /interaction/* (not /api/interaction/*) to match OIDC cookie paths
    */
-  router.post('/api/interaction/:uid/login', async (req, res) => {
+  router.post('/interaction/:uid/login', async (req, res) => {
     const { uid } = req.params;
     const { accountId } = req.body;
 
@@ -72,10 +74,11 @@ export function createInteractionRoutes(provider: Provider): Router {
   });
 
   /**
-   * POST /api/interaction/:uid/consent
+   * POST /interaction/:uid/consent
    * Process consent submission
+   * Note: Must be /interaction/* (not /api/interaction/*) to match OIDC cookie paths
    */
-  router.post('/api/interaction/:uid/consent', async (req, res) => {
+  router.post('/interaction/:uid/consent', async (req, res) => {
     const { uid } = req.params;
     const { rejectedScopes = [], rejectedClaims = [] } = req.body;
 
@@ -84,6 +87,7 @@ export function createInteractionRoutes(provider: Provider): Router {
         uid,
         rejectedScopes,
         rejectedClaims,
+        cookies: req.headers.cookie,
       }, 'Processing consent');
 
       // IMPORTANT: interactionFinished() sends response (redirect)

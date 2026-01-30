@@ -78,7 +78,7 @@ export async function bootstrapKeys(): Promise<void> {
 export async function getPublicJWKS(): Promise<{ keys: object[] }> {
   const keys = await db.select().from(jwksKeys)
     .where(and(eq(jwksKeys.active, true), eq(jwksKeys.use, 'sig')));
-  return { keys: keys.map(k => k.publicKey) };
+  return { keys: keys.map(k => k.publicKey as object) };
 }
 
 // Get keystore for node-oidc-provider (includes private keys)

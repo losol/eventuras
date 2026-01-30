@@ -8,7 +8,7 @@ import { Logger } from '@eventuras/logger';
 
 const logger = Logger.create({ namespace: 'idem:oidc' });
 
-export async function createOidcProvider(): Promise<Provider> {
+export async function createOidcProvider(): Promise<any> {
   logger.info('Creating OIDC Provider');
   const jwks = await getKeyStore();
 
@@ -29,7 +29,7 @@ export async function createOidcProvider(): Promise<Provider> {
     },
 
     features: {
-      devInteractions: { enabled: config.features.devShortcuts },
+      devInteractions: { enabled: false }, // Disabled - using custom interaction routes
       pushedAuthorizationRequests: { enabled: true }, // PAR (RFC 9126)
       rpInitiatedLogout: { enabled: true },
     },
@@ -61,8 +61,8 @@ export async function createOidcProvider(): Promise<Provider> {
 
     cookies: {
       keys: [config.sessionSecret],
-      short: { signed: true, httpOnly: true, sameSite: 'lax' },
-      long: { signed: true, httpOnly: true, sameSite: 'lax' },
+      short: { signed: true, httpOnly: true, sameSite: 'lax', secure: config.features.requireHttps },
+      long: { signed: true, httpOnly: true, sameSite: 'lax', secure: config.features.requireHttps },
     },
 
     // Account lookup
@@ -73,6 +73,41 @@ export async function createOidcProvider(): Promise<Provider> {
       url(_ctx: any, interaction: any) {
         return `/interaction/${interaction.uid}`;
       },
+    },
+
+    // Skip consent in development/testing (auto-approve all prompts except login)
+    async loadExistingGrant(ctx: any) {
+      const grantId = (ctx.oidc.result
+        && ctx.oidc.result.consent
+        && ctx.oidc.result.consent.grantId) || ctx.oidc.session?.grantIdFor(ctx.oidc.client.clientId);
+
+      if (grantId) {
+        return ctx.oidc.provider.Grant.find(grantId);
+      } else {
+        // Auto-grant in development (skip consent prompt)
+        if (config.nodeEnv === 'development') {
+          const grant = new ctx.oidc.provider.Grant({
+            clientId: ctx.oidc.client.clientId,
+            accountId: ctx.oidc.session.accountId,
+          });
+
+          // Add the exact scopes from the authorization request
+          const scopes = ctx.oidc.params.scope.split(' ').filter(Boolean);
+          grant.addOIDCScope(scopes.filter((scope: string) => ['openid', 'profile', 'email', 'offline_access'].includes(scope)).join(' '));
+
+          // Add any requested claims
+          grant.addOIDCClaims(['sub']);
+          if (scopes.includes('profile')) {
+            grant.addOIDCClaims(['name', 'given_name', 'family_name', 'picture', 'locale']);
+          }
+          if (scopes.includes('email')) {
+            grant.addOIDCClaims(['email', 'email_verified']);
+          }
+
+          await grant.save();
+          return grant;
+        }
+      }
     },
 
     // Error rendering (log errors for debugging)

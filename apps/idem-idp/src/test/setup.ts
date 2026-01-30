@@ -5,7 +5,7 @@
 
 // Set test environment variables
 // Use 'development' so config.issuer resolves correctly
-process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+// NODE_ENV is read-only in TS, set via command line instead
 
 // Use test database if available, otherwise fall back to dev database
 const testDbUrl = process.env.IDEM_DATABASE_URL;
