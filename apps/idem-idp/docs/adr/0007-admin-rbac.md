@@ -1,7 +1,7 @@
 # ADR 0007 — Admin RBAC
 
 ## Status
-Accepted (Updated 2026-01-19 for single-tenant architecture)
+Accepted (Updated 2026-01-30 for simplified schema with systemRole on accounts)
 
 ## Context
 
@@ -52,39 +52,47 @@ Idem uses **2 global roles** for the single-tenant architecture:
 
 ### Database Model
 
-**Admin Principals Table:**
+**Simplified Approach: systemRole on Accounts Table**
+
+Admin roles are stored directly on the `accounts` table for single-tenant simplicity:
+
 ```sql
-CREATE TABLE idem_admin_principals (
+CREATE TABLE idem.accounts (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  account_id UUID NOT NULL REFERENCES idem_accounts(id) ON DELETE CASCADE,
-  display_name TEXT NOT NULL,  -- For audit logging
+
+  -- Core identity
+  primary_email TEXT NOT NULL UNIQUE,
+  active BOOLEAN NOT NULL DEFAULT true,
+
+  -- Profile fields
+  given_name TEXT,
+  middle_name TEXT,
+  family_name TEXT,
+  display_name TEXT NOT NULL,
+  phone TEXT,
+  birthdate DATE,
+  locale TEXT DEFAULT 'nb-NO',
+  timezone TEXT DEFAULT 'Europe/Oslo',
+  picture TEXT,
+
+  -- System role (admin authorization)
+  system_role TEXT CHECK (system_role IN ('system_admin', 'admin_reader')),
+  -- NULL = regular user, 'system_admin' = full admin, 'admin_reader' = read-only admin
+
+  -- Timestamps
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-
-  UNIQUE(account_id)
-);
-```
-
-**Admin Memberships Table (Role Grants):**
-```sql
-CREATE TABLE idem_admin_memberships (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  principal_id UUID NOT NULL REFERENCES idem_admin_principals(id) ON DELETE CASCADE,
-  role TEXT NOT NULL CHECK (role IN ('system_admin', 'admin_reader')),
-  granted_at TIMESTAMP NOT NULL DEFAULT NOW(),
-  granted_by UUID REFERENCES idem_admin_principals(id),  -- Audit trail
-
-  UNIQUE(principal_id, role)  -- One role grant per principal
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  deleted_at TIMESTAMP  -- Soft delete
 );
 
-CREATE INDEX idx_admin_memberships_principal ON idem_admin_memberships(principal_id);
-CREATE INDEX idx_admin_memberships_role ON idem_admin_memberships(role);
+CREATE INDEX idx_accounts_system_role ON idem.accounts(system_role) WHERE system_role IS NOT NULL;
 ```
 
-**Critical Index for Authorization Checks:**
-```sql
--- Fast lookup: "Is this account an admin?"
-CREATE INDEX idx_admin_principals_account ON idem_admin_principals(account_id);
-```
+**Benefits:**
+- No separate tables needed for admin tracking
+- Single query to check admin status (no joins)
+- Simpler audit trail (track account updates directly)
+- Easier to grant/revoke admin access (simple UPDATE)
 
 ### Authorization Flow
 
@@ -98,30 +106,27 @@ export async function requireAdmin(req, res, next) {
     return res.status(401).json({ error: 'Not authenticated' });
   }
 
-  // Check if account has admin privileges
-  const adminPrincipal = await db
+  // Check if account has admin privileges (simple single query)
+  const account = await db
     .select()
-    .from(adminPrincipals)
-    .where(eq(adminPrincipals.accountId, accountId))
-    .leftJoin(adminMemberships, eq(adminMemberships.principalId, adminPrincipals.id))
-    .where(
-      inArray(adminMemberships.role, ['system_admin', 'admin_reader'])
-    )
+    .from(accounts)
+    .where(eq(accounts.id, accountId))
     .limit(1);
 
-  if (!adminPrincipal) {
+  if (!account || !account.systemRole) {
     await auditLog.log({
       action: 'admin_access_denied',
       accountId,
-      reason: 'No admin role',
+      reason: 'No system role',
     });
     return res.status(403).json({ error: 'Forbidden: Admin access required' });
   }
 
   // Attach admin context to request
   req.admin = {
-    principalId: adminPrincipal.id,
-    role: adminPrincipal.role,  // 'system_admin' or 'admin_reader'
+    accountId: account.id,
+    systemRole: account.systemRole,  // 'system_admin' or 'admin_reader'
+    displayName: account.displayName,
   };
 
   next();
@@ -134,11 +139,11 @@ app.use('/admin/*', requireAdmin);
 **Write Operations Check:**
 ```typescript
 export async function requireWriteAccess(req, res, next) {
-  if (req.admin.role !== 'system_admin') {
+  if (req.admin.systemRole !== 'system_admin') {
     await auditLog.log({
       action: 'write_access_denied',
-      principalId: req.admin.principalId,
-      role: req.admin.role,
+      accountId: req.admin.accountId,
+      systemRole: req.admin.systemRole,
     });
     return res.status(403).json({ error: 'Forbidden: system_admin role required' });
   }
@@ -259,81 +264,78 @@ async function requireMfa(req, res, next) {
 
 ```sql
 -- Create first system_admin (done manually in production)
-INSERT INTO idem_admin_principals (account_id, display_name)
-VALUES ('existing-account-uuid', 'Initial Admin');
-
-INSERT INTO idem_admin_memberships (principal_id, role, granted_by)
-VALUES (
-  (SELECT id FROM idem_admin_principals WHERE account_id = 'existing-account-uuid'),
-  'system_admin',
-  NULL  -- Bootstrap admin has no granter
-);
+UPDATE idem.accounts
+SET system_role = 'system_admin'
+WHERE id = 'existing-account-uuid';
 ```
 
 **Granting Admin via Admin UI:**
 
 ```typescript
-// POST /admin/principals
+// POST /admin/system-roles
 async function grantAdminAccess(req, res) {
-  const { accountId, role } = req.body;  // role: 'system_admin' | 'admin_reader'
+  const { accountId, systemRole } = req.body;  // systemRole: 'system_admin' | 'admin_reader'
 
   // Only system_admin can grant admin access
-  if (req.admin.role !== 'system_admin') {
+  if (req.admin.systemRole !== 'system_admin') {
     return res.status(403).json({ error: 'Forbidden' });
   }
 
-  // Create admin principal
-  const principal = await db.insert(adminPrincipals).values({
-    accountId,
-    displayName: account.email,
-  }).returning();
-
-  // Grant role
-  await db.insert(adminMemberships).values({
-    principalId: principal.id,
-    role,
-    grantedBy: req.admin.principalId,
-  });
+  // Update account with system role
+  const [updatedAccount] = await db
+    .update(accounts)
+    .set({
+      systemRole,
+      updatedAt: new Date(),
+    })
+    .where(eq(accounts.id, accountId))
+    .returning();
 
   await auditLog.log({
-    action: 'admin_access_granted',
-    principalId: req.admin.principalId,
+    action: 'system_role_granted',
+    accountId: req.admin.accountId,
     targetAccountId: accountId,
-    role,
+    systemRole,
   });
 
-  res.json({ success: true, principal });
+  res.json({ success: true, account: updatedAccount });
 }
 ```
 
 ### Revoking Admin Access
 
 ```typescript
-// DELETE /admin/principals/:id
+// DELETE /admin/system-roles/:accountId
 async function revokeAdminAccess(req, res) {
-  const { id } = req.params;
+  const { accountId } = req.params;
 
   // Only system_admin can revoke
-  if (req.admin.role !== 'system_admin') {
+  if (req.admin.systemRole !== 'system_admin') {
     return res.status(403).json({ error: 'Forbidden' });
   }
 
   // Prevent self-revocation
-  if (id === req.admin.principalId) {
+  if (accountId === req.admin.accountId) {
     return res.status(400).json({ error: 'Cannot revoke your own admin access' });
   }
 
-  // Delete memberships (cascades to principal)
-  await db.delete(adminMemberships).where(eq(adminMemberships.principalId, id));
-  await db.delete(adminPrincipals).where(eq(adminPrincipals.id, id));
+  // Remove system role from account
+  const [updatedAccount] = await db
+    .update(accounts)
+    .set({
+      systemRole: null,
+      updatedAt: new Date(),
+    })
+    .where(eq(accounts.id, accountId))
+    .returning();
 
   await auditLog.log({
-    action: 'admin_access_revoked',
-    principalId: req.admin.principalId,
-    targetPrincipalId: id,
+    action: 'system_role_revoked',
+    accountId: req.admin.accountId,
+    targetAccountId: accountId,
   });
 
-  res.json({ success: true });
+  res.json({ success: true, account: updatedAccount });
 }
 ```
 
@@ -352,7 +354,8 @@ async function revokeAdminAccess(req, res) {
 
 - **Database Lookups**: Authorization requires DB query on each request
   - **Mitigation**: Caching with short TTL (5-15 minutes)
-  - **Mitigation**: Partial index on `account_id` makes lookups fast (<1ms)
+  - **Mitigation**: Index on `system_role` makes lookups fast (<1ms)
+  - **Note**: With simplified schema, this is now a single-table query (no joins)
 - **Admin Account Security**: If admin account is compromised, attacker has elevated privileges
   - **Mitigation**: Recommend Vipps/HelseID (strong authentication)
   - **Mitigation**: Shorter session timeouts for admins
@@ -403,15 +406,10 @@ describe('Admin RBAC', () => {
     const account = await createAccount('admin@example.com');
 
     // Grant system_admin role
-    const principal = await db.insert(adminPrincipals).values({
-      accountId: account.id,
-      displayName: 'Test Admin',
-    }).returning();
-
-    await db.insert(adminMemberships).values({
-      principalId: principal.id,
-      role: 'system_admin',
-    });
+    await db
+      .update(accounts)
+      .set({ systemRole: 'system_admin' })
+      .where(eq(accounts.id, account.id));
 
     const session = await loginAs(account.id);
 
@@ -438,7 +436,7 @@ describe('Admin RBAC', () => {
 
   it('should audit log all admin actions', async () => {
     const admin = await createSystemAdmin();
-    const session = await loginAs(admin.accountId);
+    const session = await loginAs(admin.id);
 
     await request(app)
       .delete('/admin/users/some-user-id')
@@ -446,7 +444,7 @@ describe('Admin RBAC', () => {
 
     const logs = await db.select().from(auditLog)
       .where(eq(auditLog.action, 'user_deleted'))
-      .where(eq(auditLog.principalId, admin.principalId));
+      .where(eq(auditLog.accountId, admin.id));
 
     expect(logs).toHaveLength(1);
     expect(logs[0].resourceId).toBe('some-user-id');
@@ -472,14 +470,14 @@ describe('Admin RBAC', () => {
 
 Before production deployment:
 
-- [ ] Create first `system_admin` via SQL (bootstrap)
+- [ ] Create first `system_admin` via SQL UPDATE (bootstrap)
 - [ ] Verify admin can log in via Vipps/HelseID
 - [ ] Verify admin can access `/admin/*` endpoints
-- [ ] Verify `admin_reader` can read but not write
-- [ ] Verify regular users get 403 on `/admin/*`
-- [ ] Verify admin actions are audit logged
+- [ ] Verify account with `system_role='admin_reader'` can read but not write
+- [ ] Verify accounts with `system_role=null` get 403 on `/admin/*`
+- [ ] Verify admin actions are audit logged with accountId
 - [ ] Verify admin sessions expire after 4 hours
-- [ ] Test admin access revocation (instant effect)
+- [ ] Test admin access revocation (instant effect with simple UPDATE)
 - [ ] Test self-revocation prevention
 - [ ] Verify re-authentication prompt for sensitive operations
 

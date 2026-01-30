@@ -1,10 +1,11 @@
 import { text, timestamp, uuid, jsonb, boolean, integer, index, unique } from 'drizzle-orm/pg-core';
-import { idem } from './core';
+import { idem } from './account';
 
 /**
  * IdP Providers table
  *
  * Registry of supported identity providers (Vipps, HelseID, social login).
+ * Configuration merged from idp_configs for single-tenant simplicity.
  */
 export const idpProviders = idem.table(
   'idp_providers',
@@ -17,9 +18,9 @@ export const idpProviders = idem.table(
 
     providerName: text('provider_name').notNull(),
     providerType: text('provider_type').notNull(),
-    // 'oidc', 'oauth2', 'saml' (but we only support OIDC/OAuth2)
+    // 'oidc', 'oauth2',
 
-    // Provider metadata
+    // Provider metadata (OIDC endpoints)
     issuer: text('issuer'),
     authorizationEndpoint: text('authorization_endpoint'),
     tokenEndpoint: text('token_endpoint'),
@@ -31,46 +32,14 @@ export const idpProviders = idem.table(
     logoUrl: text('logo_url'),
     buttonColor: text('button_color'),
 
-    // Status
-    enabled: boolean('enabled').notNull().default(true),
-
-    // Timestamps
-    createdAt: timestamp('created_at').notNull().defaultNow(),
-    updatedAt: timestamp('updated_at').notNull().defaultNow(),
-  },
-  (table) => [
-    index('idx_idp_providers_enabled').on(table.enabled),
-  ]
-);
-
-/**
- * IdP Configs table
- *
- * Environment-specific configurations for IdP providers.
- * One config per provider (single-tenant).
- */
-export const idpConfigs = idem.table(
-  'idp_configs',
-  {
-    id: uuid('id').defaultRandom().primaryKey(),
-
-    // Link to provider
-    providerId: uuid('provider_id')
-      .notNull()
-      .references(() => idpProviders.id, { onDelete: 'cascade' }),
-
-    // Client credentials (encrypted)
-    clientId: text('client_id').notNull(),
-    clientSecretEncrypted: text('client_secret_encrypted').notNull(),
-
-    // Scopes
-    scopes: jsonb('scopes').notNull().$type<string[]>(),
-
-    // Configuration
-    redirectUri: text('redirect_uri').notNull(),
+    // Configuration (merged from idp_configs - nullable since not all providers are configured)
+    clientId: text('client_id'),
+    clientSecretEncrypted: text('client_secret_encrypted'),
+    scopes: jsonb('scopes').$type<string[]>(),
+    redirectUri: text('redirect_uri'),
     additionalParams: jsonb('additional_params').$type<Record<string, string>>(),
 
-    // Error tracking
+    // Health tracking
     consecutiveFailures: integer('consecutive_failures').notNull().default(0),
     lastFailureAt: timestamp('last_failure_at'),
     lastSuccessAt: timestamp('last_success_at'),
@@ -83,8 +52,7 @@ export const idpConfigs = idem.table(
     updatedAt: timestamp('updated_at').notNull().defaultNow(),
   },
   (table) => [
-    unique('idx_idp_configs_provider').on(table.providerId),
-    index('idx_idp_configs_enabled').on(table.enabled),
+    index('idx_idp_providers_enabled').on(table.enabled),
   ]
 );
 

@@ -4,14 +4,14 @@
  * Exports all tables for use with Drizzle ORM.
  */
 
-// Core tables
-export * from './core';
+// Account
+export * from './account';
+
+// Account claims
+export * from './accountClaim';
 
 // OTP authentication
 export * from './otp';
-
-// User profiles
-export * from './profile';
 
 // OAuth / OIDC
 export * from './oauth';
@@ -24,6 +24,3 @@ export * from './oidc';
 
 // Operations and audit
 export * from './operations';
-
-// Admin RBAC
-export * from './admin';
