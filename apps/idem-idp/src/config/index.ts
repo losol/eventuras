@@ -5,7 +5,7 @@ const logger = Logger.create({ namespace: 'idem:config' });
 export const config = {
   nodeEnv: process.env.NODE_ENV || 'development',
 
-  // Static issuer per environmen
+  // Static issuer per environment
   issuer: {
     development: 'http://localhost:3200',
     staging: 'https://auth-staging.eventuras.com',
@@ -29,8 +29,12 @@ export function validateConfig() {
     throw new Error('NODE_ENV must be development, staging, or production');
   }
   if (config.nodeEnv !== 'development') {
-    if (!process.env.IDEM_SESSION_SECRET) throw new Error('SESSION_SECRET required');
-    if (!process.env.IDEM_MASTER_KEY) throw new Error('MASTER_KEY required');
+    if (!config.sessionSecret || config.sessionSecret === 'dev-session-secret-DO-NOT-USE-IN-PROD') {
+      throw new Error('IDEM_SESSION_SECRET is required and must not use the development default in non-development environments');
+    }
+    if (!config.masterKey || config.masterKey === 'dev-master-key-DO-NOT-USE-IN-PROD') {
+      throw new Error('IDEM_MASTER_KEY is required and must not use the development default in non-development environments');
+    }
   }
   logger.info({ environment: config.nodeEnv }, 'Config validated');
 }

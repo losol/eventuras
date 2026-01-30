@@ -86,13 +86,20 @@ export async function createOidcProvider(): Promise<Provider> {
 
       // Default error rendering
       ctx.type = 'html';
+
+      // Only include stack traces in development mode
+      const errorDetails = config.nodeEnv === 'development'
+        ? `<pre>${error?.message || 'An error occurred'}</pre>
+           <pre>${error?.stack || ''}</pre>`
+        : `<p>${error?.message || 'An error occurred'}</p>
+           <p>Please contact support if the problem persists.</p>`;
+
       ctx.body = `<!DOCTYPE html>
 <html>
 <head><title>Error</title></head>
 <body>
   <h1>Error</h1>
-  <pre>${error?.message || 'An error occurred'}</pre>
-  <pre>${error?.stack || ''}</pre>
+  ${errorDetails}
 </body>
 </html>`;
     },

@@ -210,9 +210,10 @@ export async function pruneExpiredTokens(): Promise<number> {
   try {
     const deleted = await db
       .delete(oidcStore)
-      .where(lt(oidcStore.expiresAt, new Date()));
+      .where(lt(oidcStore.expiresAt, new Date()))
+      .returning({ id: oidcStore.id });
 
-    const count = deleted.length || 0;
+    const count = deleted.length;
     if (count > 0) {
       logger.info({ count }, 'Pruned expired OIDC entities');
     }

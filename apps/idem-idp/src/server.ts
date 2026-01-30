@@ -35,10 +35,7 @@ export function createServer(oidcProvider?: Provider) {
   // These endpoints are polled by clients and should always be accessible
   // Only apply rate limits to: /auth, /token, /interaction/* endpoints
 
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: false }));
-
-  // Health probe
+  // Health probe (before everything else)
   app.get('/health', (_req, res) => res.json({ status: 'ok' }));
 
   // Root page (HTML from view)
@@ -48,16 +45,21 @@ export function createServer(oidcProvider?: Provider) {
     res.type('html').send(renderHomepage({ name, version }));
   });
 
-  // Mount OIDC provider
-  if (oidcProvider) {
-    logger.info('Mounting OIDC provider');
+  // Body parsers for API routes (BEFORE interaction routes, AFTER/parallel to oidc-provider)
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: false }));
 
-    // Mount interaction API routes BEFORE provider callback
-    // This ensures /api/interaction/* routes are handled first
+  // Interaction API routes (need body parsing)
+  if (oidcProvider) {
     app.use(createInteractionRoutes(oidcProvider));
     logger.info('Interaction API routes mounted');
+  }
 
-    // Mount OIDC provider (handles all OIDC endpoints)
+  // Mount OIDC provider
+  // Note: oidc-provider handles its own body parsing for /token, /userinfo, /request endpoints
+  // Our body parsers above won't interfere because oidc-provider routes are mounted after and have specific paths
+  if (oidcProvider) {
+    logger.info('Mounting OIDC provider');
     app.use(oidcProvider.callback());
     logger.info({
       endpoints: [
