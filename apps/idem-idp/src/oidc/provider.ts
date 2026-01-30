@@ -1,6 +1,7 @@
 import Provider from 'oidc-provider';
 import { config } from '../config';
 import { getKeyStore } from '../crypto/jwks';
+import { adapterFactory } from './adapter';
 import { Logger } from '@eventuras/logger';
 
 const logger = Logger.create({ namespace: 'idem:oidc' });
@@ -10,6 +11,7 @@ export async function createOidcProvider(): Promise<Provider> {
   const jwks = await getKeyStore();
 
   const provider = new Provider(config.issuer, {
+    adapter: adapterFactory,
     jwks: { keys: jwks },
 
     routes: {
