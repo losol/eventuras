@@ -1,11 +1,13 @@
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import * as schema from './schema/index';
+import { config } from '../config';
 
 /**
  * Database connection configuration
+ * Uses centralized config as single source of truth
  */
-const connectionString = process.env.IDEM_DATABASE_URL || 'postgresql://idem:idem@localhost:5432/idem';
+const connectionString = config.databaseUrl;
 
 /**
  * Create PostgreSQL connection

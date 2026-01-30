@@ -137,12 +137,12 @@ CREATE DATABASE idem_prod;
 ```yaml
 # .env.development (local, can be committed)
 NODE_ENV=development
-DATABASE_URL=postgresql://localhost/idem
+IDEM_DATABASE_URL=postgresql://localhost/idem
 # No real secrets needed
 
 # .env.staging (stored in CI/CD)
 NODE_ENV=staging
-DATABASE_URL=postgresql://staging.postgres/idem_staging
+IDEM_DATABASE_URL=postgresql://staging.postgres/idem_staging
 MASTER_KEY=<staging-master-key>
 VIPPS_CLIENT_ID=<vipps-test-client-id>
 VIPPS_CLIENT_SECRET=<vipps-test-secret>
@@ -151,7 +151,7 @@ HELSEID_CLIENT_SECRET=<helseid-test-secret>
 
 # .env.production (stored in KMS/Vault)
 NODE_ENV=production
-DATABASE_URL=postgresql://prod.postgres/idem_prod
+IDEM_DATABASE_URL=postgresql://prod.postgres/idem_prod
 MASTER_KEY=<production-master-key>  # KMS-backed
 VIPPS_CLIENT_ID=<vipps-prod-client-id>
 VIPPS_CLIENT_SECRET=<vipps-prod-secret>  # KMS-backed
