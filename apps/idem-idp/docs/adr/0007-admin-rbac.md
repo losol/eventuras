@@ -76,16 +76,15 @@ CREATE TABLE idem.accounts (
   picture TEXT,
 
   -- System role (admin authorization)
-  system_role TEXT CHECK (system_role IN ('system_admin', 'admin_reader')),
-  -- NULL = regular user, 'system_admin' = full admin, 'admin_reader' = read-only admin
+  system_role TEXT,
+  -- NULL = regular user; allowed values: 'system_admin' (full admin), 'admin_reader' (read-only admin)
+  -- Note: Allowed values are enforced at the application layer; no DB CHECK constraint is defined
 
   -- Timestamps
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
   deleted_at TIMESTAMP  -- Soft delete
 );
-
-CREATE INDEX idx_accounts_system_role ON idem.accounts(system_role) WHERE system_role IS NOT NULL;
 ```
 
 **Benefits:**
