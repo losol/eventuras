@@ -15,6 +15,34 @@
       "loading": "Signing in...",
       "error": "Login failed. Please try again."
     },
+    "otp": {
+      "emailStep": {
+        "title": "Sign in with email",
+        "description": "Enter your email address to receive a login code",
+        "emailLabel": "Email address",
+        "emailPlaceholder": "you@example.com",
+        "sendCode": "Send code",
+        "sending": "Sending...",
+        "success": "Check your email for the login code",
+        "error": "Failed to send code. Please try again.",
+        "rateLimited": "Too many attempts. Please wait {minutes} minutes.",
+        "invalidEmail": "Please enter a valid email address"
+      },
+      "codeStep": {
+        "title": "Enter login code",
+        "description": "We sent a 6-digit code to {email}",
+        "codeLabel": "Login code",
+        "codePlaceholder": "000000",
+        "verify": "Verify",
+        "verifying": "Verifying...",
+        "resend": "Resend code",
+        "changeEmail": "Use different email",
+        "error": "Invalid code. Please try again.",
+        "expired": "Code expired. Please request a new one.",
+        "maxAttempts": "Too many failed attempts. Please request a new code.",
+        "expiresIn": "Code expires in {minutes} minutes"
+      }
+    },
     "consent": {
       "title": "Grant Permissions",
       "description": "{clientName} is requesting access to your account",
