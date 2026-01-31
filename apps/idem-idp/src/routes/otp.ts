@@ -3,6 +3,7 @@ import { generateOtp, verifyOtp, OtpError, findOrCreateAccountByEmail } from '..
 import { Mailer } from '@eventuras/mailer';
 import { createNotitiaTemplates } from '@eventuras/notitia-templates';
 import { Logger } from '@eventuras/logger';
+import { config } from '../config';
 
 const logger = Logger.create({ namespace: 'idem:otp-routes' });
 
@@ -12,7 +13,7 @@ const logger = Logger.create({ namespace: 'idem:otp-routes' });
  */
 export function createOtpRoutes(mailer: Mailer): Router {
   const router = Router();
-  const notitia = createNotitiaTemplates('nb-NO'); // Default locale, should be configurable
+  const notitia = createNotitiaTemplates(config.locale);
 
   /**
    * POST /api/otp/request
@@ -56,12 +57,12 @@ export function createOtpRoutes(mailer: Mailer): Router {
 
       // Render email template
       const rendered = notitia.render('email', 'otp-login', {
-        appName: 'Eventuras',
+        appName: config.appName,
         code,
         expiresInMinutes: 10,
       });
 
-      const subject = notitia.getSubject('email', 'otp-login', { appName: 'Eventuras' });
+      const subject = notitia.getSubject('email', 'otp-login', { appName: config.appName });
 
       // Send email
       await mailer.sendEmail({
@@ -76,7 +77,6 @@ export function createOtpRoutes(mailer: Mailer): Router {
       return res.status(200).json({
         success: true,
         message: 'If this email is registered, you will receive a login code shortly.',
-        expiresAt,
       });
     } catch (error) {
       logger.error({ error }, 'OTP request failed');
@@ -130,7 +130,7 @@ export function createOtpRoutes(mailer: Mailer): Router {
       logger.info({ email }, 'OTP verification requested');
 
       // Verify OTP
-      const { otpId, accountId, sessionId } = await verifyOtp({
+      const { otpId, accountId } = await verifyOtp({
         recipient: email,
         recipientType: 'email',
         code,
