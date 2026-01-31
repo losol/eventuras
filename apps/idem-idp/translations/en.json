@@ -11,14 +11,25 @@
       "title": "Sign In",
       "description": "Sign in to continue",
       "signInWith": "Sign in with {provider}",
-      "devLogin": "Development Login"
+      "devLogin": "Development Login",
+      "loading": "Signing in...",
+      "error": "Login failed. Please try again."
     },
     "consent": {
       "title": "Grant Permissions",
       "description": "{clientName} is requesting access to your account",
       "scopes": "Requested permissions:",
       "allow": "Allow Access",
-      "deny": "Deny"
+      "deny": "Deny",
+      "loading": "Processing...",
+      "error": "Failed to process your consent. Please try again.",
+      "scopeDescriptions": {
+        "openid": "Basic authentication information",
+        "profile": "Your profile information (name, picture)",
+        "email": "Your email address",
+        "offline_access": "Access when you are offline (refresh tokens)",
+        "default": "Access to {scope}"
+      }
     }
   }
 }

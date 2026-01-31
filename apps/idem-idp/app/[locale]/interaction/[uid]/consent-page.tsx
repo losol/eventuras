@@ -19,13 +19,15 @@ type ConsentPageProps = {
 export function ConsentPage({ uid, clientId, clientName, scope, claims }: ConsentPageProps) {
   const t = useTranslations('auth.consent');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const scopes = scope.split(' ').filter(Boolean);
 
   const handleConsent = async (grant: boolean) => {
     setLoading(true);
+    setError(null);
     try {
-      const response = await fetch(`/api/interaction/${uid}/consent`, {
+      const response = await fetch(`/interaction/${uid}/consent`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -39,11 +41,14 @@ export function ConsentPage({ uid, clientId, clientName, scope, claims }: Consen
         await new Promise(resolve => setTimeout(resolve, 500));
         window.location.reload();
       } else {
-        console.error('Consent failed:', await response.text());
+        const errorText = await response.text();
+        console.error('Consent failed:', errorText);
+        setError(t('error'));
         setLoading(false);
       }
-    } catch (error) {
-      console.error('Consent error:', error);
+    } catch (err) {
+      console.error('Consent error:', err);
+      setError(t('error'));
       setLoading(false);
     }
   };
@@ -92,6 +97,19 @@ export function ConsentPage({ uid, clientId, clientName, scope, claims }: Consen
             </Stack>
           </div>
 
+          {error && (
+            <div style={{
+              padding: '0.75rem',
+              background: 'rgba(239, 68, 68, 0.1)',
+              borderRadius: '0.375rem',
+              border: '1px solid rgba(239, 68, 68, 0.3)',
+            }}>
+              <Text size="sm" style={{ color: 'rgb(239, 68, 68)' }}>
+                {error}
+              </Text>
+            </div>
+          )}
+
           <Stack spacing="sm">
             <Button
               onClick={() => handleConsent(true)}
@@ -100,7 +118,7 @@ export function ConsentPage({ uid, clientId, clientName, scope, claims }: Consen
               size="lg"
               variant="primary"
             >
-              {loading ? t('common.loading') : t('allow')}
+              {loading ? t('loading') : t('allow')}
             </Button>
             <Button
               onClick={() => handleConsent(false)}
@@ -119,11 +137,17 @@ export function ConsentPage({ uid, clientId, clientName, scope, claims }: Consen
 }
 
 function getScopeDescription(scope: string, t: any): string {
-  const descriptions: Record<string, string> = {
-    openid: 'Basic authentication information',
-    profile: 'Your profile information (name, picture)',
-    email: 'Your email address',
-    offline_access: 'Access when you are offline (refresh tokens)',
-  };
-  return descriptions[scope] || `Access to ${scope}`;
+  // Use translation keys for scope descriptions
+  switch (scope) {
+    case 'openid':
+      return t('scopeDescriptions.openid');
+    case 'profile':
+      return t('scopeDescriptions.profile');
+    case 'email':
+      return t('scopeDescriptions.email');
+    case 'offline_access':
+      return t('scopeDescriptions.offline_access');
+    default:
+      return t('scopeDescriptions.default', { scope });
+  }
 }

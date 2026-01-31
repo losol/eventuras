@@ -18,11 +18,12 @@ export const config = {
   matcher: [
     // Match all pathnames except for
     // - API routes
+    // - interaction routes (OIDC interaction API endpoints)
     // - _next/static (static files)
     // - _next/image (image optimization files)
     // - favicon.ico (favicon file)
     // - health endpoint
     // - OIDC endpoints
-    '/((?!api|_next/static|_next/image|favicon.ico|health|auth|token|userinfo|request|\\.well-known).*)',
+    '/((?!api|interaction|_next/static|_next/image|favicon.ico|health|auth|token|userinfo|request|\\.well-known).*)',
   ],
 };
