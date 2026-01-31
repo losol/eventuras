@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
 interface InteractionDetails {
@@ -16,7 +16,6 @@ interface InteractionDetails {
 
 export default function Interaction() {
   const { uid } = useParams<{ uid: string }>();
-  const navigate = useNavigate();
   const [details, setDetails] = useState<InteractionDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -75,7 +74,78 @@ export default function Interaction() {
 }
 
 function LoginPrompt({ uid, details }: { uid: string; details: InteractionDetails }) {
-  const [accountId, setAccountId] = useState('');
+  const [step, setStep] = useState<'email' | 'otp'>('email');
+  const [email, setEmail] = useState('');
+  const [otpCode, setOtpCode] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleRequestOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    try {
+      const res = await fetch('/api/otp/request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ email }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || 'Failed to send OTP');
+      }
+
+      setStep('otp');
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    try {
+      // Verify OTP
+      const verifyRes = await fetch('/api/otp/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ email, code: otpCode }),
+      });
+
+      if (!verifyRes.ok) {
+        const data = await verifyRes.json();
+        throw new Error(data.message || 'Invalid code');
+      }
+
+      const { accountId: verifiedAccountId } = await verifyRes.json();
+
+      // Complete OIDC login with the verified account ID
+      const loginRes = await fetch(`/interaction/${uid}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ accountId: verifiedAccountId }),
+      });
+
+      if (!loginRes.ok) {
+        throw new Error('Login failed');
+      }
+
+      // OIDC provider will redirect - follow it
+      window.location.href = loginRes.url;
+    } catch (err: any) {
+      setError(err.message);
+      setLoading(false);
+    }
+  };
 
   return (
     <div style={{
@@ -92,54 +162,137 @@ function LoginPrompt({ uid, details }: { uid: string; details: InteractionDetail
         <p style={{ margin: '0.5rem 0', color: '#64748b' }}>
           <strong>Application:</strong> {details.params.client_id}
         </p>
-        <p style={{ margin: '0.5rem 0', color: '#64748b' }}>
-          <strong>Requested scopes:</strong> {details.params.scope}
-        </p>
       </div>
 
-      {/* Use a plain HTML form POST - this will naturally follow the OIDC provider's redirect */}
-      <form method="POST" action={`/interaction/${uid}/login`}>
-        <div style={{ marginBottom: '1rem' }}>
-          <label htmlFor="accountId" style={{ display: 'block', marginBottom: '0.5rem', color: '#475569' }}>
-            Account ID (Development)
-          </label>
-          <input
-            id="accountId"
-            name="accountId"
-            type="text"
-            value={accountId}
-            onChange={(e) => setAccountId(e.target.value)}
-            placeholder="Enter account ID"
-            required
+      {error && (
+        <div style={{
+          padding: '0.75rem',
+          marginBottom: '1rem',
+          background: '#fee2e2',
+          color: '#dc2626',
+          borderRadius: '4px',
+        }}>
+          {error}
+        </div>
+      )}
+
+      {step === 'email' ? (
+        <form onSubmit={handleRequestOtp}>
+          <div style={{ marginBottom: '1rem' }}>
+            <label htmlFor="email" style={{ display: 'block', marginBottom: '0.5rem', color: '#475569' }}>
+              Email
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              required
+              autoFocus
+              style={{
+                width: '100%',
+                padding: '0.5rem',
+                border: '1px solid #cbd5e1',
+                borderRadius: '4px',
+                fontSize: '1rem',
+                boxSizing: 'border-box',
+              }}
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            style={{
+              width: '100%',
+              padding: '0.75rem',
+              background: loading ? '#93c5fd' : '#1976d2',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              fontSize: '1rem',
+              cursor: loading ? 'not-allowed' : 'pointer',
+            }}
+          >
+            {loading ? 'Sending...' : 'Send Login Code'}
+          </button>
+        </form>
+      ) : (
+        <form onSubmit={handleVerifyOtp}>
+          <p style={{ color: '#64748b', marginBottom: '1rem' }}>
+            We sent a code to <strong>{email}</strong>
+          </p>
+
+          <div style={{ marginBottom: '1rem' }}>
+            <label htmlFor="otpCode" style={{ display: 'block', marginBottom: '0.5rem', color: '#475569' }}>
+              Login Code
+            </label>
+            <input
+              id="otpCode"
+              name="otpCode"
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              value={otpCode}
+              onChange={(e) => setOtpCode(e.target.value)}
+              placeholder="123456"
+              required
+              autoFocus
+              autoComplete="one-time-code"
+              style={{
+                width: '100%',
+                padding: '0.5rem',
+                border: '1px solid #cbd5e1',
+                borderRadius: '4px',
+                fontSize: '1.25rem',
+                textAlign: 'center',
+                letterSpacing: '0.25em',
+                boxSizing: 'border-box',
+              }}
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            style={{
+              width: '100%',
+              padding: '0.75rem',
+              background: loading ? '#93c5fd' : '#1976d2',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              fontSize: '1rem',
+              cursor: loading ? 'not-allowed' : 'pointer',
+            }}
+          >
+            {loading ? 'Verifying...' : 'Sign In'}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setStep('email');
+              setOtpCode('');
+              setError(null);
+            }}
             style={{
               width: '100%',
               padding: '0.5rem',
-              border: '1px solid #cbd5e1',
-              borderRadius: '4px',
-              fontSize: '1rem',
+              marginTop: '0.5rem',
+              background: 'transparent',
+              color: '#64748b',
+              border: 'none',
+              fontSize: '0.875rem',
+              cursor: 'pointer',
             }}
-          />
-          <small style={{ color: '#94a3b8', fontSize: '0.875rem' }}>
-            In development, any account ID works. In production, use real credentials.
-          </small>
-        </div>
-
-        <button
-          type="submit"
-          style={{
-            width: '100%',
-            padding: '0.75rem',
-            background: '#1976d2',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            fontSize: '1rem',
-            cursor: 'pointer',
-          }}
-        >
-          Sign In
-        </button>
-      </form>
+          >
+            Use a different email
+          </button>
+        </form>
+      )}
     </div>
   );
 }

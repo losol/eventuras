@@ -211,10 +211,8 @@ describe.sequential('OTP API Routes', () => {
         })
         .expect(200);
 
-      expect(response.body).toEqual({
-        success: true,
-        message: 'Login successful',
-      });
+      expect(response.body.success).toBe(true);
+      expect(response.body.accountId).toBeDefined();
 
       // Verify session was created
       const sessionResponse = await agent.get('/api/otp/session').expect(200);
@@ -260,7 +258,7 @@ describe.sequential('OTP API Routes', () => {
         })
         .expect(401);
 
-      expect(response.body.error).toBe('Verification failed');
+      expect(response.body.error).toBe('INVALID_CODE');
     });
 
     it('should return 401 for non-existent email', async () => {
@@ -272,7 +270,7 @@ describe.sequential('OTP API Routes', () => {
         })
         .expect(401);
 
-      expect(response.body.error).toBe('Verification failed');
+      expect(response.body.error).toBe('NOT_FOUND');
     });
 
     it('should not allow code reuse', async () => {
@@ -302,7 +300,7 @@ describe.sequential('OTP API Routes', () => {
         })
         .expect(401);
 
-      expect(response.body.error).toBe('Verification failed');
+      expect(response.body.error).toBe('NOT_FOUND');
     });
   });
 

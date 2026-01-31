@@ -4,9 +4,6 @@ import { Mailer } from '@eventuras/mailer';
 import { createNotitiaTemplates } from '@eventuras/notitia-templates';
 import { Logger } from '@eventuras/logger';
 import { config } from '../config';
-import { db } from '../db/client';
-import { accounts } from '../db/schema';
-import { eq } from 'drizzle-orm';
 
 const logger = Logger.create({ namespace: 'idem:otp-routes' });
 
@@ -54,7 +51,7 @@ export function createOtpRoutes(mailer: Mailer): Router {
       const accountId = await findOrCreateAccountByEmail(email);
 
       // Generate OTP code
-      const { code, expiresAt, otpId } = await generateOtp({
+      const { code, otpId } = await generateOtp({
         recipient: email,
         recipientType: 'email',
         accountId,

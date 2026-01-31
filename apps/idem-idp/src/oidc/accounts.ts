@@ -23,7 +23,10 @@ export async function findAccount(ctx: any, sub: string) {
     return undefined;
   }
 
-  logger.info({ sub, email: account.primaryEmail }, 'Account found');
+  logger.info({
+    sub,
+    systemRole: account.systemRole || 'none',
+  }, 'Account found for OIDC login');
 
   return {
     accountId: account.id,
@@ -32,8 +35,6 @@ export async function findAccount(ctx: any, sub: string) {
      * Return claims for this account based on requested scope
      */
     async claims(use: string, scope: string) {
-      logger.debug({ sub, use, scope }, 'Returning claims');
-
       const claims: Record<string, any> = {
         sub: account.id,
       };
@@ -53,6 +54,15 @@ export async function findAccount(ctx: any, sub: string) {
           claims.system_role = account.systemRole;
         }
       }
+
+      logger.info({
+        sub,
+        email: account.primaryEmail,
+        use,
+        scope,
+        systemRole: account.systemRole || 'none',
+        claimsReturned: Object.keys(claims),
+      }, 'Returning claims for account');
 
       // Email claims
       if (scope.includes('email')) {

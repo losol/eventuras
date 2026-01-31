@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { useEffect } from 'react';
-import { isAuthenticated, isAdmin, handleCallback } from './lib/auth';
+import { isAuthenticated, isAdmin } from './lib/auth';
 import Dashboard from './routes/admin/Dashboard';
 import Clients from './routes/admin/Clients';
 import Login from './routes/Login';
