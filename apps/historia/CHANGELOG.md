@@ -1,5 +1,15 @@
 # @eventuras/historia
 
+## 0.24.1
+
+### Patch Changes
+
+- Updated dependencies [c32e23c]
+- Updated dependencies [c32e23c]
+  - @eventuras/ratio-ui@0.11.0
+  - @eventuras/ratio-ui-next@0.1.8
+  - @eventuras/toast@0.2.7
+
 ## 0.24.0
 
 ### Minor Changes
