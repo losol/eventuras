@@ -19,32 +19,17 @@ COPY libs ./libs
 # - Ensure the workspace name matches apps/idem-idp/package.json "name"
 RUN pnpm dlx turbo@^2 prune --scope=@eventuras/idem-idp --docker
 
-# ---- 1) INSTALL DEPS (LOCKED) ----
-FROM node:22-alpine AS install
-WORKDIR /srv
-
-# Use pruned manifests for deterministic install
-COPY --from=prune /repo/out/json/ ./
-RUN corepack enable && corepack prepare pnpm@10.28.1 --activate && pnpm install --frozen-lockfile=false
-
-# ---- 2) BUILD ----
+# ---- 1) BUILD ----
 FROM node:22-alpine AS build
 WORKDIR /srv
 
-# Bring in pruned source first
+# Copy pruned source and install dependencies
 COPY --from=prune /repo/out/full/ ./
+RUN corepack enable && corepack prepare pnpm@10.28.1 --activate && \
+    pnpm install --frozen-lockfile=false && \
+    pnpm dlx turbo@^2 run build --filter=@eventuras/idem-idp
 
-# Copy installed node_modules (this preserves the monorepo structure)
-COPY --from=install /srv/node_modules ./node_modules
-COPY --from=install /srv/apps/idem-idp/node_modules ./apps/idem-idp/node_modules
-
-# Enable pnpm and build
-RUN corepack enable && corepack prepare pnpm@10.28.1 --activate
-
-# Build just the idem-idp workspace
-RUN pnpm -C apps/idem-idp run build
-
-# ---- 3) RUNTIME ----
+# ---- 2) RUNTIME ----
 FROM node:22-alpine AS runtime
 WORKDIR /srv
 
@@ -67,6 +52,7 @@ ENV NODE_ENV=production \
 # Copy artifacts
 COPY --from=build /srv/apps/idem-idp/package.json ./
 COPY --from=build /srv/apps/idem-idp/dist ./dist
+COPY --from=build /srv/apps/idem-idp/dist-ui ./dist-ui
 COPY --from=build /srv/node_modules ./node_modules
 
 # (rest unchanged)
