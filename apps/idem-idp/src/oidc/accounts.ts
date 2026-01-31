@@ -47,6 +47,11 @@ export async function findAccount(ctx: any, sub: string) {
         if (account.picture) claims.picture = account.picture;
         if (account.locale) claims.locale = account.locale;
         if (account.birthdate) claims.birthdate = account.birthdate;
+
+        // Include system role in profile scope for RBAC
+        if (account.systemRole) {
+          claims.system_role = account.systemRole;
+        }
       }
 
       // Email claims

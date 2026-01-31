@@ -21,7 +21,9 @@ pnpm add @eventuras/fides-auth
 
 ### OAuth (`@eventuras/fides-auth/oauth`)
 
-Functions for OAuth 2.0 / OpenID Connect flows with PKCE support.
+**Node.js only** - Functions for OAuth 2.0 / OpenID Connect flows with PKCE support.
+
+Uses `openid-client` library. For browser environments, use `oauth-browser` instead.
 
 #### Individual Functions
 
@@ -64,6 +66,64 @@ async function startLoginFlow(oauthConfig: OAuthConfig) {
   return { authUrl, pkce };
 }
 ```
+
+### OAuth Browser (`@eventuras/fides-auth/oauth-browser`)
+
+**Browser only** - OAuth 2.0 helpers using Web Crypto API (no Node.js dependencies).
+
+Perfect for Vite SPAs, React applications, and any browser-only frontend.
+
+#### Browser Flow Example
+
+```typescript
+import { generatePKCE, buildAuthorizationUrl, exchangeCodeForTokens }
+  from '@eventuras/fides-auth/oauth-browser';
+
+const config = {
+  issuer: 'https://auth.example.com',
+  clientId: 'my-client-id',
+  redirect_uri: 'https://myapp.com/callback',
+  scope: 'openid profile email',
+};
+
+// 1. Start OAuth flow
+async function startLogin() {
+  const pkce = await generatePKCE();
+
+  // Store in sessionStorage
+  sessionStorage.setItem('code_verifier', pkce.code_verifier);
+  sessionStorage.setItem('state', pkce.state);
+
+  // Redirect to authorization endpoint
+  const authUrl = buildAuthorizationUrl(config, pkce);
+  window.location.href = authUrl;
+}
+
+// 2. Handle callback
+async function handleCallback() {
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get('code');
+  const state = params.get('state');
+
+  // Verify state matches
+  if (state !== sessionStorage.getItem('state')) {
+    throw new Error('State mismatch');
+  }
+
+  // Exchange code for tokens
+  const verifier = sessionStorage.getItem('code_verifier')!;
+  const tokens = await exchangeCodeForTokens(config, code, verifier);
+
+  // Store tokens
+  sessionStorage.setItem('access_token', tokens.access_token);
+  sessionStorage.setItem('id_token', tokens.id_token);
+}
+```
+
+**When to use which:**
+
+- `oauth` - Use in Node.js, Next.js API routes, backend services
+- `oauth-browser` - Use in Vite, React SPA, browser-only apps
 
 For detailed documentation on all modules, examples, and best practices, see the full documentation at [docs/README.md](./docs/README.md).
 

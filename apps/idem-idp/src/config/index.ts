@@ -5,8 +5,8 @@ const logger = Logger.create({ namespace: 'idem:config' });
 export const config = {
   nodeEnv: process.env.NODE_ENV || 'development',
 
-  // Static issuer per environment
-  issuer: {
+  // Issuer URL (can be overridden with IDEM_ISSUER for Cloudflare Tunnel)
+  issuer: process.env.IDEM_ISSUER || {
     development: 'http://localhost:3200',
     staging: 'https://auth-staging.eventuras.com',
     production: 'https://auth.eventuras.com',

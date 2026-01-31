@@ -2,8 +2,29 @@ import { db } from '../db/client';
 import { oauthClients } from '../db/schema/oauth';
 import { eq } from 'drizzle-orm';
 import { Logger } from '@eventuras/logger';
+import { config } from '../config';
 
 const logger = Logger.create({ namespace: 'idem:oidc-clients' });
+
+/**
+ * Built-in clients that don't require database entries
+ * These are hardcoded for critical functionality (admin console, etc.)
+ */
+const BUILT_IN_CLIENTS: Record<string, any> = {
+  'idem-admin-ui': {
+    client_id: 'idem-admin-ui',
+    client_name: 'Idem Frontend',
+    redirect_uris: [
+      `${config.issuer}/callback`, // Production
+      'http://localhost:3200/callback', // Development (localhost)
+      'https://idem-dev.losol.io/callback', // Development (Cloudflare Tunnel)
+    ],
+    grant_types: ['authorization_code', 'refresh_token'],
+    response_types: ['code'],
+    token_endpoint_auth_method: 'none', // Public client (Vite SPA)
+    // No client_secret required for public clients
+  },
+};
 
 /**
  * Convert database client to oidc-provider format
@@ -36,28 +57,47 @@ function toOidcClient(client: any) {
 
 /**
  * Load all active clients for oidc-provider initialization
+ * Includes both built-in clients and database clients
  */
 export async function loadAllClients() {
   logger.debug('Loading all active clients');
 
-  const clients = await db
+  const dbClients = await db
     .select()
     .from(oauthClients)
     .where(eq(oauthClients.active, true));
 
-  logger.info({ count: clients.length }, 'Loaded active clients');
+  const builtInClients = Object.values(BUILT_IN_CLIENTS);
+  const allClients = [...builtInClients, ...dbClients.map(toOidcClient)];
 
-  return clients.map(toOidcClient);
+  logger.info(
+    {
+      total: allClients.length,
+      builtIn: builtInClients.length,
+      database: dbClients.length,
+    },
+    'Loaded active clients'
+  );
+
+  return allClients;
 }
 
 /**
  * Find OAuth client by client ID
  * Returns oidc-provider compatible client object
+ * Checks built-in clients first, then database
  */
 export async function findClient(clientId: string) {
   try {
     logger.debug({ clientId }, 'Looking up client');
 
+    // Check built-in clients first
+    if (BUILT_IN_CLIENTS[clientId]) {
+      logger.info({ clientId, source: 'built-in' }, 'Client found');
+      return BUILT_IN_CLIENTS[clientId];
+    }
+
+    // Fall back to database lookup
     const [client] = await db
       .select()
       .from(oauthClients)
@@ -69,7 +109,7 @@ export async function findClient(clientId: string) {
       return undefined;
     }
 
-    logger.info({ clientId, clientName: client.clientName }, 'Client found');
+    logger.info({ clientId, clientName: client.clientName, source: 'database' }, 'Client found');
 
     // Return oidc-provider compatible client object
     return {

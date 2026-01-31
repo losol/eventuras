@@ -23,6 +23,13 @@ export async function createOidcProvider(): Promise<any> {
     // Pre-configured clients (oidc-provider v9 requires this)
     clients,
 
+    // Trust proxy headers (CRITICAL when behind Cloudflare Tunnel or reverse proxy)
+    // This ensures redirects use HTTPS even when receiving HTTP requests
+    proxy: true,
+
+    // NOTE: PKCE parameters (code_challenge, code_challenge_method) are handled natively
+    // by oidc-provider and should NOT be in extraParams
+
     routes: {
       userinfo: '/userinfo',
       jwks: '/.well-known/jwks.json',
@@ -47,7 +54,7 @@ export async function createOidcProvider(): Promise<any> {
 
     claims: {
       openid: ['sub'],
-      profile: ['name', 'given_name', 'family_name', 'middle_name', 'picture', 'locale'],
+      profile: ['name', 'given_name', 'family_name', 'middle_name', 'picture', 'locale', 'system_role'],
       email: ['email', 'email_verified'],
     },
 
@@ -57,20 +64,27 @@ export async function createOidcProvider(): Promise<any> {
       IdToken: 3600,            // 1 hour
       RefreshToken: 2592000,    // 30 days
       Grant: 2592000,           // 30 days
+      Interaction: 3600,        // 1 hour (login/consent session)
+      Session: 86400,           // 24 hours (user session)
     },
 
     cookies: {
       keys: [config.sessionSecret],
-      short: { signed: true, httpOnly: true, sameSite: 'lax', secure: config.features.requireHttps },
-      long: { signed: true, httpOnly: true, sameSite: 'lax', secure: config.features.requireHttps },
+      // secure: undefined allows oidc-provider to auto-detect based on request protocol
+      // This works with both http://localhost:3200 and https://idem-dev.losol.io
+      // IMPORTANT: Set path to '/' so cookies are sent on ALL routes, enabling
+      // the clear-session endpoint to receive and clear them
+      short: { signed: true, httpOnly: true, sameSite: 'lax', path: '/' },
+      long: { signed: true, httpOnly: true, sameSite: 'lax', path: '/' },
     },
 
     // Account lookup
     findAccount,
 
-    // Interaction URL
+    // Interaction URL (must stay on same origin for cookies)
     interactions: {
       url(_ctx: any, interaction: any) {
+        // Always use relative URL to keep cookies working
         return `/interaction/${interaction.uid}`;
       },
     },
@@ -98,7 +112,7 @@ export async function createOidcProvider(): Promise<any> {
           // Add any requested claims
           grant.addOIDCClaims(['sub']);
           if (scopes.includes('profile')) {
-            grant.addOIDCClaims(['name', 'given_name', 'family_name', 'picture', 'locale']);
+            grant.addOIDCClaims(['name', 'given_name', 'family_name', 'picture', 'locale', 'system_role']);
           }
           if (scopes.includes('email')) {
             grant.addOIDCClaims(['email', 'email_verified']);
@@ -110,34 +124,127 @@ export async function createOidcProvider(): Promise<any> {
       }
     },
 
-    // Error rendering (log errors for debugging)
+    // Error rendering (redirect to frontend error page)
     async renderError(ctx: any, out: any, error: any) {
+      // Log full error details (never shown to user)
       logger.error({
-        error: error?.message || error,
-        details: error,
+        error: error?.message || 'Unknown error',
+        errorName: error?.name,
+        errorCode: error?.error,
+        stack: config.nodeEnv === 'development' ? error?.stack : undefined,
         status: ctx.status,
         path: ctx.path,
+        method: ctx.method,
+        query: ctx.query,
+        oidcDetails: {
+          client: ctx.oidc?.client?.clientId,
+          session: ctx.oidc?.session?.accountId,
+          prompt: ctx.oidc?.prompt?.name,
+        },
       }, 'OIDC provider error');
 
-      // Default error rendering
-      ctx.type = 'html';
+      // Redirect to frontend error page with query params
+      const userMessage = config.nodeEnv === 'development'
+        ? error?.message || 'An error occurred'
+        : 'An error occurred during authentication. Please try again.';
 
-      // Only include stack traces in development mode
-      const errorDetails = config.nodeEnv === 'development'
-        ? `<pre>${error?.message || 'An error occurred'}</pre>
-           <pre>${error?.stack || ''}</pre>`
-        : `<p>${error?.message || 'An error occurred'}</p>
-           <p>Please contact support if the problem persists.</p>`;
+      const params = new URLSearchParams({
+        message: userMessage,
+      });
 
-      ctx.body = `<!DOCTYPE html>
-<html>
-<head><title>Error</title></head>
-<body>
-  <h1>Error</h1>
-  ${errorDetails}
-</body>
-</html>`;
+      // Include error details in development
+      if (config.nodeEnv === 'development') {
+        if (error?.name) params.set('errorName', error.name);
+        if (error?.error) params.set('errorCode', error.error);
+        if (error?.stack) params.set('stack', error.stack);
+      }
+
+      ctx.redirect(`/error?${params.toString()}`);
     },
+  });
+
+  // CRITICAL: Ensure the internal Koa app trusts proxy headers
+  // Without this, redirects will use HTTP even behind HTTPS proxy
+  (provider as any).app.proxy = true;
+
+  // Add error event listener for detailed token endpoint errors
+  provider.on('grant.error', async (ctx: any, error: any) => {
+    const codeVerifier = ctx.oidc?.params?.code_verifier;
+    const authCode = ctx.oidc?.entities?.AuthorizationCode;
+
+    // Compute what the challenge SHOULD be from the received verifier
+    let computedChallenge = null;
+    if (codeVerifier) {
+      try {
+        const crypto = await import('crypto');
+        const hash = crypto.createHash('sha256').update(codeVerifier).digest('base64url');
+        computedChallenge = hash;
+      } catch (e) {
+        computedChallenge = 'computation_failed';
+      }
+    }
+
+    // Log available entities for debugging
+    const availableEntities = ctx.oidc?.entities ? Object.keys(ctx.oidc.entities) : [];
+
+    // Log all error properties to understand the exact cause
+    const errorProps = Object.getOwnPropertyNames(error).reduce((acc: any, key) => {
+      acc[key] = error[key];
+      return acc;
+    }, {});
+
+    logger.error({
+      error: error.message,
+      errorName: error.name,
+      errorDescription: error.error_description,
+      errorDetail: error.error_detail,
+      errorStack: error.stack?.split('\n').slice(0, 5).join('\n'), // First 5 lines of stack
+      allErrorProps: Object.keys(errorProps),
+      grantType: ctx.oidc?.params?.grant_type,
+      clientId: ctx.oidc?.client?.clientId,
+      code: ctx.oidc?.params?.code?.substring(0, 10) + '...',
+      codeVerifier: codeVerifier ? `present (${codeVerifier?.length} chars)` : 'missing',
+      codeVerifierPrefix: codeVerifier?.substring(0, 20),
+      codeVerifierSuffix: codeVerifier?.substring(codeVerifier.length - 20),
+      computedChallenge,
+      computedChallengePrefix: computedChallenge?.substring(0, 20),
+      redirectUri: ctx.oidc?.params?.redirect_uri,
+      // Debug: what entities are available
+      availableEntities,
+      hasAuthCodeEntity: !!authCode,
+      // Log the authorization code entity if available
+      storedCodeChallenge: authCode?.codeChallenge,
+      storedCodeChallengeMethod: authCode?.codeChallengeMethod,
+      storedRedirectUri: authCode?.redirectUri,
+      storedClientId: authCode?.clientId,
+      challengeMatch: computedChallenge && authCode?.codeChallenge
+        ? computedChallenge === authCode.codeChallenge
+        : 'entity_not_available',
+    }, 'Token grant error - PKCE DEBUG');
+  });
+
+  // Add listener for successful authorization codes
+  provider.on('authorization_code.saved', (code: any) => {
+    logger.info({
+      codePrefix: code.jti?.substring(0, 10),
+      clientId: code.clientId,
+      redirectUri: code.redirectUri,
+      hasCodeChallenge: !!code.codeChallenge,
+      codeChallengeMethod: code.codeChallengeMethod,
+    }, 'Authorization code saved');
+  });
+
+  // Add listener for code exchange attempts
+  provider.on('grant.success', (ctx: any) => {
+    const authCode = ctx.oidc?.entities?.AuthorizationCode;
+    logger.info({
+      grantType: ctx.oidc?.params?.grant_type,
+      clientId: ctx.oidc?.client?.clientId,
+      // Log PKCE details on success for comparison
+      codeVerifierLength: ctx.oidc?.params?.code_verifier?.length,
+      storedChallengeLength: authCode?.codeChallenge?.length,
+      storedChallengeMethod: authCode?.codeChallengeMethod,
+    }, 'Token grant success');
   });
 
   logger.info({ issuer: config.issuer }, 'OIDC Provider created');

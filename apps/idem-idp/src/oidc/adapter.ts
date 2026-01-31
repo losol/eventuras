@@ -15,6 +15,7 @@ export class DrizzleOidcAdapter implements Adapter {
 
   constructor(name: string) {
     this.name = name;
+    logger.debug({ adapterName: name }, 'DrizzleOidcAdapter created');
   }
 
   /**
@@ -23,6 +24,29 @@ export class DrizzleOidcAdapter implements Adapter {
   async upsert(id: string, payload: AdapterPayload, expiresIn: number): Promise<void> {
     const expiresAt = new Date(Date.now() + expiresIn * 1000);
     const oidcId = `${this.name}:${id}`;
+
+    // Determine the uid value to store for findByUid() lookups
+    // - For DeviceCode: use userCode
+    // - For Session: use payload.uid (NOT id!) - this is what isSessionBound mixin looks up
+    //   The auth code stores sessionUid = session.uid, so findByUid must find by payload.uid
+    // - For Interaction: use the interaction uid (same as id)
+    // This enables findByUid() to work for all entity types
+    let uidValue: string | null = null;
+    if (this.name === 'Session') {
+      // CRITICAL: Session.findByUid() is called with the session's uid from the payload
+      // NOT the session's id. The auth code references session.uid, not session.id.
+      uidValue = payload.uid || id; // Fallback to id if uid not present
+      if (!payload.uid) {
+        logger.warn({
+          id,
+          payloadKeys: Object.keys(payload),
+        }, 'Session payload has NO uid field - falling back to id. This may cause findByUid failures!');
+      }
+    } else if (this.name === 'Interaction') {
+      uidValue = id;
+    } else {
+      uidValue = payload.userCode || payload.uid || null;
+    }
 
     try {
       await db
@@ -35,7 +59,7 @@ export class DrizzleOidcAdapter implements Adapter {
           grantId: payload.grantId || null,
           sessionId: payload.sessionUid || payload.uid || null,
           scope: payload.scope || null,
-          uid: payload.userCode || null,
+          uid: uidValue,
           payload: payload as any, // JSONB
           expiresAt,
         })
@@ -47,7 +71,7 @@ export class DrizzleOidcAdapter implements Adapter {
             grantId: payload.grantId || null,
             sessionId: payload.sessionUid || payload.uid || null,
             scope: payload.scope || null,
-            uid: payload.userCode || null,
+            uid: uidValue,
             payload: payload as any,
             expiresAt,
           },
@@ -62,6 +86,11 @@ export class DrizzleOidcAdapter implements Adapter {
 
   /**
    * Find an OIDC entity by ID
+   *
+   * IMPORTANT: Per oidc-provider docs, if an entity is consumed, we must return
+   * the payload with a `consumed` property set to the timestamp. This allows
+   * the provider to distinguish between "not found" and "already used" for
+   * proper error handling (e.g., code replay attack detection).
    */
   async find(id: string): Promise<AdapterPayload | undefined> {
     const oidcId = `${this.name}:${id}`;
@@ -74,22 +103,31 @@ export class DrizzleOidcAdapter implements Adapter {
         .limit(1);
 
       if (!record) {
+        logger.debug({ name: this.name, id }, 'OIDC entity not found');
         return undefined;
       }
 
-      // Check if expired
+      // Check if expired - return undefined for expired entities
       if (record.expiresAt < new Date()) {
         logger.debug({ name: this.name, id }, 'OIDC entity expired');
         return undefined;
       }
 
-      // Check if consumed
+      const payload = record.payload as AdapterPayload;
+
+      // If consumed, return payload WITH consumed timestamp (per oidc-provider spec)
+      // This allows the provider to detect code replay attacks
+      // Spread to ensure plain object (JSONB might return something oidc-provider doesn't accept)
       if (record.consumedAt) {
         logger.debug({ name: this.name, id }, 'OIDC entity already consumed');
-        return undefined;
+        return {
+          ...payload,
+          consumed: Math.floor(record.consumedAt.getTime() / 1000),
+        };
       }
 
-      return record.payload as AdapterPayload;
+      // Spread to ensure plain object (JSONB might return something oidc-provider doesn't accept)
+      return { ...payload };
     } catch (err) {
       logger.error({ err, name: this.name, id }, 'Failed to find OIDC entity');
       throw err;
@@ -107,11 +145,22 @@ export class DrizzleOidcAdapter implements Adapter {
         .where(and(eq(oidcStore.name, this.name), eq(oidcStore.uid, userCode)))
         .limit(1);
 
-      if (!record || record.expiresAt < new Date() || record.consumedAt) {
+      if (!record || record.expiresAt < new Date()) {
         return undefined;
       }
 
-      return record.payload as AdapterPayload;
+      const payload = record.payload as AdapterPayload;
+
+      // Return with consumed timestamp if consumed
+      // Spread to ensure plain object
+      if (record.consumedAt) {
+        return {
+          ...payload,
+          consumed: Math.floor(record.consumedAt.getTime() / 1000),
+        };
+      }
+
+      return { ...payload };
     } catch (err) {
       logger.error({ err, name: this.name, userCode }, 'Failed to find by user code');
       throw err;
@@ -120,6 +169,10 @@ export class DrizzleOidcAdapter implements Adapter {
 
   /**
    * Find an OIDC entity by UID
+   * This is used by Session.findByUid() which is called by isSessionBound mixin
+   *
+   * IMPORTANT: For Sessions, this looks up by the session's payload.uid (not id)
+   * The authorization code stores sessionUid = session.uid, so this must match
    */
   async findByUid(uid: string): Promise<AdapterPayload | undefined> {
     try {
@@ -129,11 +182,32 @@ export class DrizzleOidcAdapter implements Adapter {
         .where(and(eq(oidcStore.name, this.name), eq(oidcStore.uid, uid)))
         .limit(1);
 
-      if (!record || record.expiresAt < new Date() || record.consumedAt) {
+      if (!record) {
+        if (this.name === 'Session') {
+          logger.warn({ uid }, 'Session not found by uid - authorization code validation will fail');
+        }
         return undefined;
       }
 
-      return record.payload as AdapterPayload;
+      if (record.expiresAt < new Date()) {
+        if (this.name === 'Session') {
+          logger.warn({ uid, expiresAt: record.expiresAt }, 'Session expired');
+        }
+        return undefined;
+      }
+
+      const payload = record.payload as AdapterPayload;
+
+      // Return with consumed timestamp if consumed
+      // Spread to ensure plain object
+      if (record.consumedAt) {
+        return {
+          ...payload,
+          consumed: Math.floor(record.consumedAt.getTime() / 1000),
+        };
+      }
+
+      return { ...payload };
     } catch (err) {
       logger.error({ err, name: this.name, uid }, 'Failed to find by UID');
       throw err;

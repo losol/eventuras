@@ -4,12 +4,15 @@
 
 A standalone OpenID Connect (OIDC) identity provider for Eventuras.
 
-## Features (Planned)
+## Features
 
-- Email OTP passwordless authentication
-- IdP brokering (Vipps, HelseID, Google, etc.)
-- OAuth 2.0 / OIDC provider
-- Single-tenant architecture
+- ✅ OAuth 2.0 / OIDC provider (PAR + PKCE)
+- ✅ Email OTP passwordless authentication
+- ✅ Admin API for managing OAuth clients
+- 🚧 IdP brokering (Vipps, HelseID, Google, etc.)
+- 🚧 Account management UI
+
+**Frontend**: Separate app at `apps/idem-idp-frontend` - see its README for details.
 
 ## Development
 

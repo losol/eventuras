@@ -20,6 +20,10 @@
       "types": "./dist/oauth.d.ts",
       "import": "./dist/oauth.js"
     },
+    "./oauth-browser": {
+      "types": "./dist/oauth-browser.d.ts",
+      "import": "./dist/oauth-browser.js"
+    },
     "./silent-login": {
       "types": "./dist/silent-login.d.ts",
       "import": "./dist/silent-login.js"
