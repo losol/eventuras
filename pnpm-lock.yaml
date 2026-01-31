@@ -494,15 +494,9 @@ importers:
       '@vitest/ui':
         specifier: ^4.0.18
         version: 4.0.18(vitest@4.0.18)
-      cross-env:
-        specifier: ^10.1.0
-        version: 10.1.0
       drizzle-kit:
         specifier: ^0.31.7
         version: 0.31.7
-      nodemon:
-        specifier: ^3.1.11
-        version: 3.1.11
       supertest:
         specifier: ^7.2.2
         version: 7.2.2
@@ -531,52 +525,6 @@ importers:
       '@rollup/rollup-linux-x64-gnu':
         specifier: 4.56.0
         version: 4.56.0
-
-  apps/idem-idp-frontend:
-    dependencies:
-      '@eventuras/fides-auth':
-        specifier: workspace:*
-        version: link:../../libs/fides-auth
-      '@eventuras/ratio-ui':
-        specifier: workspace:*
-        version: link:../../libs/ratio-ui
-      i18next:
-        specifier: ^25.8.0
-        version: 25.8.0(typescript@5.9.3)
-      react:
-        specifier: ^19.2.3
-        version: 19.2.3
-      react-dom:
-        specifier: ^19.2.3
-        version: 19.2.3(react@19.2.3)
-      react-i18next:
-        specifier: ^16.5.4
-        version: 16.5.4(i18next@25.8.0(typescript@5.9.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.9.3)
-      react-router-dom:
-        specifier: ^7.13.0
-        version: 7.13.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-    devDependencies:
-      '@eventuras/eslint-config':
-        specifier: workspace:*
-        version: link:../../libs/eslint-config
-      '@eventuras/typescript-config':
-        specifier: workspace:*
-        version: link:../../libs/typescript-config
-      '@types/react':
-        specifier: 19.2.9
-        version: 19.2.9
-      '@types/react-dom':
-        specifier: ^19.2.3
-        version: 19.2.3(@types/react@19.2.9)
-      '@vitejs/plugin-react':
-        specifier: ^5.1.2
-        version: 5.1.2(vite@7.3.1(@types/node@24.10.7)(jiti@2.6.1)(lightningcss@1.31.1)(sass@1.77.4)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1))
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-      vite:
-        specifier: ^7.3.1
-        version: 7.3.1(@types/node@24.10.7)(jiti@2.6.1)(lightningcss@1.31.1)(sass@1.77.4)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1)
 
   apps/nuntius-homey-app:
     devDependencies:
