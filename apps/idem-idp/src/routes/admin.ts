@@ -1,8 +1,6 @@
 import { Router } from 'express';
 import { db } from '../db/client';
 import { oauthClients } from '../db/schema/oauth';
-import { accounts } from '../db/schema/account';
-import { eq } from 'drizzle-orm';
 import { Logger } from '@eventuras/logger';
 
 const logger = Logger.create({ namespace: 'idem:routes:admin' });

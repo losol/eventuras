@@ -1,10 +1,9 @@
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
 
 export default function ErrorPage() {
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
   const [isDevMode, setIsDevMode] = useState(false);
 
   const message = searchParams.get('message') || 'An error occurred during authentication. Please try again.';

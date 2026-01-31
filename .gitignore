@@ -7,6 +7,8 @@
 build/**
 dist/**
 dist
+ui-dist/**
+dist-ui/**
 .next/**
 .turbo-prune-merge/**
 

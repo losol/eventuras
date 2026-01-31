@@ -144,7 +144,7 @@ Beste helsing,
       <!-- Security Notice -->
       <div style="background-color: #fffbeb; border-left: 4px solid #f59e0b; padding: 16px; text-align: left; border-radius: 4px;">
         <p style="margin: 0; font-size: 14px; color: #92400e;">
-          <strong>🔒 Sikkerheitsvarsel:</strong><br>
+          <strong>🔒 Tryggleiksvarsel:</strong><br>
           Dersom du ikkje ba om denne koden, kan du trygt ignorere denne e-posten. Nokon kan ha oppgitt e-postadressa di ved ein feil.
         </p>
       </div>

@@ -6,7 +6,7 @@ async function cleanup() {
   console.log('🧹 Cleaning up old OIDC store entries...');
 
   try {
-    const result = await db
+    await db
       .delete(oidcStore)
       .where(
         inArray(oidcStore.name, [

@@ -41,6 +41,10 @@ export async function createOidcProvider(): Promise<any> {
       rpInitiatedLogout: { enabled: true },
     },
 
+    // Include profile/email claims in ID token (not just userinfo endpoint)
+    // This is needed for SPAs that rely on ID token claims for authorization
+    conformIdTokenClaims: false,
+
     pkce: {
       required: (_ctx: any, client: any) => {
         // Check if client requires PKCE (default: true for public clients)
