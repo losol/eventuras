@@ -1,5 +1,4 @@
-import { Router } from 'express';
-import type Provider from 'oidc-provider';
+import { Router, json, urlencoded } from 'express';
 import { Logger } from '@eventuras/logger';
 
 const logger = Logger.create({ namespace: 'idem:interaction' });
@@ -11,6 +10,39 @@ const logger = Logger.create({ namespace: 'idem:interaction' });
 export function createInteractionRoutes(provider: any): Router {
   const router = Router();
 
+  // Body parsers will be applied per-route, not to all routes
+  const bodyParser = [json(), urlencoded({ extended: false })];
+
+  // Simple cookie clearing - just the essential cookies with path=/
+  const cookieNames = [
+    '_session', '_session.sig',
+    '_interaction', '_interaction.sig',
+    '_interaction_resume', '_interaction_resume.sig',
+    '_state', '_state.sig',
+    'idem.sid',
+  ];
+
+  function clearOidcCookies(res: any) {
+    for (const name of cookieNames) {
+      res.clearCookie(name, { path: '/' });
+    }
+  }
+
+  /**
+   * GET /interaction/clear-session - redirect to /session/clear
+   */
+  router.get('/interaction/clear-session', (_req, res) => {
+    res.redirect('/session/clear');
+  });
+
+  /**
+   * POST /interaction/clear-session
+   */
+  router.post('/interaction/clear-session', (_req, res) => {
+    clearOidcCookies(res);
+    res.json({ success: true, message: 'Session cookies cleared' });
+  });
+
   /**
    * GET /interaction/:uid/details
    * Returns interaction details for frontend rendering
@@ -20,6 +52,12 @@ export function createInteractionRoutes(provider: any): Router {
     const { uid } = req.params;
 
     try {
+      logger.info({
+        uid,
+        cookies: req.headers.cookie,
+        hasInteractionCookie: req.headers.cookie?.includes('_interaction'),
+      }, 'Fetching interaction details');
+
       const details = await provider.interactionDetails(req, res);
 
       logger.info({
@@ -35,8 +73,16 @@ export function createInteractionRoutes(provider: any): Router {
         session: details.session,
       });
     } catch (err) {
-      logger.error({ err, uid }, 'Failed to get interaction details');
-      res.status(500).json({ error: 'Failed to get interaction details' });
+      logger.error({
+        err,
+        uid,
+        errorMessage: err instanceof Error ? err.message : 'Unknown error',
+        errorStack: err instanceof Error ? err.stack : undefined,
+      }, 'Failed to get interaction details');
+      res.status(500).json({
+        error: 'Failed to get interaction details',
+        details: err instanceof Error ? err.message : 'Unknown error',
+      });
     }
   });
 
@@ -45,12 +91,19 @@ export function createInteractionRoutes(provider: any): Router {
    * Process login submission (dev: auto-login, prod: verify credentials)
    * Note: Must be /interaction/* (not /api/interaction/*) to match OIDC cookie paths
    */
-  router.post('/interaction/:uid/login', async (req, res) => {
+  router.post('/interaction/:uid/login', ...bodyParser, async (req, res) => {
     const { uid } = req.params;
     const { accountId } = req.body;
 
     try {
-      logger.info({ uid, accountId }, 'Processing login');
+      logger.info({
+        uid,
+        accountId,
+        protocol: req.protocol,
+        secure: req.secure,
+        forwardedProto: req.get('x-forwarded-proto'),
+        host: req.get('host'),
+      }, 'Processing login');
 
       // TODO: In production, verify credentials here
       // For dev: accept any accountId (from seed data or test)
@@ -78,7 +131,7 @@ export function createInteractionRoutes(provider: any): Router {
    * Process consent submission
    * Note: Must be /interaction/* (not /api/interaction/*) to match OIDC cookie paths
    */
-  router.post('/interaction/:uid/consent', async (req, res) => {
+  router.post('/interaction/:uid/consent', ...bodyParser, async (req, res) => {
     const { uid } = req.params;
     const { rejectedScopes = [], rejectedClaims = [] } = req.body;
 

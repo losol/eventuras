@@ -1,4 +1,4 @@
-import { Router, RequestHandler } from 'express';
+import { Router, RequestHandler, json, urlencoded } from 'express';
 import { generateOtp, verifyOtp, OtpError, findOrCreateAccountByEmail } from '../services/otp';
 import { Mailer } from '@eventuras/mailer';
 import { createNotitiaTemplates } from '@eventuras/notitia-templates';
@@ -18,11 +18,16 @@ export function createOtpRoutes(mailer: Mailer): Router {
   const router = Router();
   const notitia = createNotitiaTemplates(config.locale);
 
+  // Body parsers - applied per-route to avoid interfering with OIDC provider's body parsing
+  // IMPORTANT: Do NOT use router.use() for body parsers - it would run for ALL requests,
+  // including /token which must be parsed by oidc-provider itself
+  const bodyParsers = [json(), urlencoded({ extended: false })];
+
   /**
    * POST /api/otp/request
    * Request an OTP code via email
    */
-  router.post('/api/otp/request', (async (req, res) => {
+  router.post('/api/otp/request', ...bodyParsers, (async (req, res) => {
     try {
       const { email } = req.body;
 
@@ -111,7 +116,7 @@ export function createOtpRoutes(mailer: Mailer): Router {
    * POST /api/otp/verify
    * Verify OTP code and create session
    */
-  router.post('/api/otp/verify', (async (req, res) => {
+  router.post('/api/otp/verify', ...bodyParsers, (async (req, res) => {
     try {
       const { email, code } = req.body;
 
