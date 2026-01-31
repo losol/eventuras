@@ -1,26 +1,20 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import type { FastifyInstance } from 'fastify';
 import { createServer } from '../server';
 import { createOidcProvider } from './provider';
-import type { Server } from 'http';
-import request from 'supertest';
 import crypto from 'crypto';
 
 describe('PAR (Pushed Authorization Request) - RFC 9126', () => {
-  let server: Server;
-  let baseURL: string;
+  let app: FastifyInstance;
 
   beforeAll(async () => {
     const oidcProvider = await createOidcProvider();
-    const app = createServer(oidcProvider);
-
-    server = app.listen(0);
-    const address = server.address();
-    const port = typeof address === 'object' && address ? address.port : 3200;
-    baseURL = `http://localhost:${port}`;
+    app = await createServer(oidcProvider);
+    await app.ready();
   });
 
-  afterAll((done) => {
-    server?.close(done);
+  afterAll(async () => {
+    await app.close();
   });
 
   function generatePKCE() {
@@ -29,18 +23,29 @@ describe('PAR (Pushed Authorization Request) - RFC 9126', () => {
     return { verifier, challenge };
   }
 
+  /**
+   * Helper to encode form data for application/x-www-form-urlencoded
+   */
+  function encodeForm(data: Record<string, string>): string {
+    return Object.entries(data)
+      .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+      .join('&');
+  }
+
   describe('POST /request (PAR endpoint)', () => {
     it('should reject PAR without required parameters', async () => {
-      const response = await request(baseURL)
-        .post('/request')
-        .type('form')
-        .send({
+      const response = await app.inject({
+        method: 'POST',
+        url: '/request',
+        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        payload: encodeForm({
           client_id: 'dev_web_app',
           // Missing response_type, redirect_uri, etc.
-        })
-        .expect(400);
+        }),
+      });
 
-      expect(response.body.error).toBeDefined();
+      expect(response.statusCode).toBe(400);
+      expect(response.json().error).toBeDefined();
     });
   });
 
@@ -49,10 +54,11 @@ describe('PAR (Pushed Authorization Request) - RFC 9126', () => {
       const pkce = generatePKCE();
 
       // Step 1: Push authorization request
-      const parResponse = await request(baseURL)
-        .post('/request')
-        .type('form')
-        .send({
+      const parResponse = await app.inject({
+        method: 'POST',
+        url: '/request',
+        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        payload: encodeForm({
           client_id: 'dev_web_app',
           response_type: 'code',
           scope: 'openid profile email',
@@ -60,20 +66,24 @@ describe('PAR (Pushed Authorization Request) - RFC 9126', () => {
           code_challenge: pkce.challenge,
           code_challenge_method: 'S256',
           state: 'test-state',
-        })
-        .expect(201);
+        }),
+      });
 
-      const { request_uri } = parResponse.body;
+      expect(parResponse.statusCode).toBe(201);
+      const { request_uri } = parResponse.json();
 
       // Step 2: Use request_uri in authorization endpoint
-      const authResponse = await request(baseURL)
-        .get('/auth')
-        .query({
-          client_id: 'dev_web_app',
-          request_uri,
-        })
-        .expect(303); // Redirect to interaction
+      const queryParams = new URLSearchParams({
+        client_id: 'dev_web_app',
+        request_uri,
+      }).toString();
 
+      const authResponse = await app.inject({
+        method: 'GET',
+        url: `/auth?${queryParams}`,
+      });
+
+      expect(authResponse.statusCode).toBe(303); // Redirect to interaction
       expect(authResponse.headers.location).toMatch(/\/interaction\//);
     });
 
@@ -87,32 +97,37 @@ describe('PAR (Pushed Authorization Request) - RFC 9126', () => {
     it('should not allow mixing request_uri with other parameters', async () => {
       const pkce = generatePKCE();
 
-      const parResponse = await request(baseURL)
-        .post('/request')
-        .type('form')
-        .send({
+      const parResponse = await app.inject({
+        method: 'POST',
+        url: '/request',
+        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        payload: encodeForm({
           client_id: 'dev_web_app',
           response_type: 'code',
           scope: 'openid',
           redirect_uri: 'http://localhost:3000/callback',
           code_challenge: pkce.challenge,
           code_challenge_method: 'S256',
-        })
-        .expect(201);
+        }),
+      });
 
-      const { request_uri } = parResponse.body;
+      expect(parResponse.statusCode).toBe(201);
+      const { request_uri } = parResponse.json();
 
       // Try to override scope via query param (should be ignored/rejected)
-      const response = await request(baseURL)
-        .get('/auth')
-        .query({
-          client_id: 'dev_web_app',
-          request_uri,
-          scope: 'openid profile email admin', // Trying to escalate
-        });
+      const queryParams = new URLSearchParams({
+        client_id: 'dev_web_app',
+        request_uri,
+        scope: 'openid profile email admin', // Trying to escalate
+      }).toString();
+
+      const response = await app.inject({
+        method: 'GET',
+        url: `/auth?${queryParams}`,
+      });
 
       // OIDC provider should either ignore or reject
-      expect(response.status).toBeGreaterThanOrEqual(303);
+      expect(response.statusCode).toBeGreaterThanOrEqual(303);
     });
   });
 });

@@ -1,36 +1,47 @@
-import { Router, RequestHandler, json, urlencoded } from 'express';
+import type { FastifyPluginAsync } from 'fastify';
 import { generateOtp, verifyOtp, OtpError, findOrCreateAccountByEmail } from '../services/otp';
 import { Mailer } from '@eventuras/mailer';
-import { createNotitiaTemplates } from '@eventuras/notitia-templates';
+import { createNotitiaTemplates, type Locale } from '@eventuras/notitia-templates';
 import { Logger } from '@eventuras/logger';
 import { config } from '../config';
+import { db } from '../db/client';
+import { accounts } from '../db/schema/account';
+import { eq } from 'drizzle-orm';
 
 const logger = Logger.create({ namespace: 'idem:otp-routes' });
 
+interface OtpRoutesOptions {
+  mailer: Mailer;
+}
+
+interface OtpRequestBody {
+  email: string;
+}
+
+interface OtpVerifyBody {
+  email: string;
+  code: string;
+}
+
 /**
- * Create OTP routes
+ * OTP routes plugin
  * Handles email + OTP passwordless authentication
  */
-export function createOtpRoutes(mailer: Mailer): Router {
-  const router = Router();
-  const notitia = createNotitiaTemplates(config.locale);
-
-  // Body parsers - applied per-route to avoid interfering with OIDC provider's body parsing
-  // IMPORTANT: Do NOT use router.use() for body parsers - it would run for ALL requests,
-  // including /token which must be parsed by oidc-provider itself
-  const bodyParsers = [json(), urlencoded({ extended: false })];
+export const registerOtpRoutes: FastifyPluginAsync<OtpRoutesOptions> = async (fastify, opts) => {
+  const { mailer } = opts;
+  const notitia = createNotitiaTemplates(config.locale as Locale);
 
   /**
    * POST /api/otp/request
    * Request an OTP code via email
    */
-  router.post('/api/otp/request', ...bodyParsers, (async (req, res) => {
+  fastify.post<{ Body: OtpRequestBody }>('/api/otp/request', async (request, reply) => {
     try {
-      const { email } = req.body;
+      const { email } = request.body;
 
       // Validate email
       if (!email || typeof email !== 'string') {
-        return res.status(400).json({
+        return reply.code(400).send({
           error: 'Invalid request',
           message: 'Email is required',
         });
@@ -39,7 +50,7 @@ export function createOtpRoutes(mailer: Mailer): Router {
       // Basic email validation
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
-        return res.status(400).json({
+        return reply.code(400).send({
           error: 'Invalid request',
           message: 'Invalid email format',
         });
@@ -55,7 +66,7 @@ export function createOtpRoutes(mailer: Mailer): Router {
         recipient: email,
         recipientType: 'email',
         accountId,
-        sessionId: req.sessionID,
+        sessionId: request.session.sessionId,
       });
 
       logger.info({ email, otpId }, 'OTP code generated');
@@ -79,7 +90,7 @@ export function createOtpRoutes(mailer: Mailer): Router {
       logger.info({ email, otpId }, 'OTP email sent');
 
       // Return success (don't leak whether account exists)
-      return res.status(200).json({
+      return reply.code(200).send({
         success: true,
         message: 'If this email is registered, you will receive a login code shortly.',
       });
@@ -88,45 +99,45 @@ export function createOtpRoutes(mailer: Mailer): Router {
 
       // Handle rate limiting errors specifically
       if (error instanceof OtpError && error.code === 'RATE_LIMITED') {
-        return res.status(429).json({
+        return reply.code(429).send({
           error: 'Too many requests',
           message: error.message,
         });
       }
 
       if (error instanceof OtpError && error.code === 'BLOCKED') {
-        return res.status(429).json({
+        return reply.code(429).send({
           error: 'Blocked',
           message: error.message,
         });
       }
 
       // Generic error (don't leak internal details)
-      return res.status(500).json({
+      return reply.code(500).send({
         error: 'Server error',
         message: 'Failed to send OTP code. Please try again later.',
       });
     }
-  }) as RequestHandler);
+  });
 
   /**
    * POST /api/otp/verify
    * Verify OTP code and create session
    */
-  router.post('/api/otp/verify', ...bodyParsers, (async (req, res) => {
+  fastify.post<{ Body: OtpVerifyBody }>('/api/otp/verify', async (request, reply) => {
     try {
-      const { email, code } = req.body;
+      const { email, code } = request.body;
 
       // Validate input
       if (!email || typeof email !== 'string') {
-        return res.status(400).json({
+        return reply.code(400).send({
           error: 'Invalid request',
           message: 'Email is required',
         });
       }
 
       if (!code || typeof code !== 'string') {
-        return res.status(400).json({
+        return reply.code(400).send({
           error: 'Invalid request',
           message: 'Code is required',
         });
@@ -143,30 +154,15 @@ export function createOtpRoutes(mailer: Mailer): Router {
 
       logger.info({ email, otpId, accountId }, 'OTP verified successfully');
 
-      // Create session
-      if (!req.session) {
-        logger.error('Session not available');
-        return res.status(500).json({
-          error: 'Server error',
-          message: 'Session not available',
-        });
-      }
-
       // Store account ID in session
-      req.session.accountId = accountId;
-      req.session.authenticatedAt = new Date().toISOString();
-      req.session.authMethod = 'otp';
+      request.session.set('accountId', accountId);
+      request.session.set('authenticatedAt', new Date().toISOString());
+      request.session.set('authMethod', 'otp');
+      await request.session.save();
 
-      await new Promise<void>((resolve, reject) => {
-        req.session.save((err) => {
-          if (err) reject(err);
-          else resolve();
-        });
-      });
+      logger.info({ email, accountId, sessionId: request.session.sessionId }, 'Session created');
 
-      logger.info({ email, accountId, sessionId: req.sessionID }, 'Session created');
-
-      return res.status(200).json({
+      return reply.code(200).send({
         success: true,
         accountId,
       });
@@ -182,89 +178,70 @@ export function createOtpRoutes(mailer: Mailer): Router {
           error.code === 'MAX_ATTEMPTS' ? 429 :
           400;
 
-        return res.status(statusCode).json({
+        return reply.code(statusCode).send({
           error: error.code,
           message: error.message,
         });
       }
 
       // Generic error
-      return res.status(500).json({
+      return reply.code(500).send({
         error: 'Server error',
         message: 'Verification failed. Please try again later.',
       });
     }
-  }) as RequestHandler);
+  });
 
   /**
    * GET /api/otp/session
    * Get current session information
    */
-  router.get('/api/otp/session', (async (req, res) => {
-    if (!req.session || !req.session.accountId) {
-      return res.status(200).json({
+  fastify.get('/api/otp/session', async (request, reply) => {
+    const accountId = request.session.get('accountId');
+
+    if (!accountId) {
+      return reply.code(200).send({
         authenticated: false,
         account: null,
       });
     }
 
     // Fetch account details
-    const account = await db.query.accounts.findFirst({
-      where: eq(accounts.id, req.session.accountId),
-    });
+    const [account] = await db
+      .select()
+      .from(accounts)
+      .where(eq(accounts.id, accountId))
+      .limit(1);
 
     if (!account) {
-      return res.status(200).json({
+      return reply.code(200).send({
         authenticated: false,
         account: null,
       });
     }
 
-    return res.status(200).json({
+    return reply.code(200).send({
       authenticated: true,
       account: {
         id: account.id,
         email: account.primaryEmail,
         displayName: account.displayName,
       },
-      authenticatedAt: req.session.authenticatedAt,
-      authMethod: req.session.authMethod,
+      authenticatedAt: request.session.get('authenticatedAt'),
+      authMethod: request.session.get('authMethod'),
     });
-  }) as RequestHandler);
+  });
 
   /**
    * POST /api/otp/logout
    * Logout (destroy session)
    */
-  router.post('/api/otp/logout', (async (req, res) => {
-    if (!req.session) {
-      return res.status(200).json({
-        success: true,
-        message: 'Logged out successfully',
-      });
-    }
+  fastify.post('/api/otp/logout', async (request, reply) => {
+    await request.session.destroy();
 
-    await new Promise<void>((resolve, reject) => {
-      req.session.destroy((err) => {
-        if (err) reject(err);
-        else resolve();
-      });
-    });
-
-    return res.status(200).json({
+    return reply.code(200).send({
       success: true,
       message: 'Logged out successfully',
     });
-  }) as RequestHandler);
-
-  return router;
-}
-
-// Extend session type to include our custom fields
-declare module 'express-session' {
-  interface SessionData {
-    accountId?: string | null;
-    authenticatedAt?: string;
-    authMethod?: 'otp' | 'idp';
-  }
-}
+  });
+};

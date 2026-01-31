@@ -1,4 +1,4 @@
-import type { Application } from 'express';
+import type { FastifyInstance } from 'fastify';
 import { createServer } from '../server';
 import { createOidcProvider } from '../oidc/provider';
 
@@ -6,12 +6,15 @@ import { createOidcProvider } from '../oidc/provider';
  * Create a test server instance
  * This is a lightweight version that can be used in tests
  */
-export async function createTestServer(): Promise<Application> {
+export async function createTestServer(): Promise<FastifyInstance> {
   // Create OIDC provider with test configuration
   const oidcProvider = await createOidcProvider();
 
-  // Create Express server with OIDC provider
-  const app = createServer(oidcProvider);
+  // Create Fastify server with OIDC provider
+  const app = await createServer(oidcProvider);
+
+  // Ensure all plugins are loaded
+  await app.ready();
 
   return app;
 }

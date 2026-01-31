@@ -1,35 +1,32 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import type { FastifyInstance } from 'fastify';
 import { createServer } from '../server';
 import { createOidcProvider } from './provider';
-import type { Server } from 'http';
-import request from 'supertest';
 
 describe('OIDC Discovery Endpoints', () => {
-  let server: Server;
-  let baseURL: string;
+  let app: FastifyInstance;
 
   beforeAll(async () => {
     const oidcProvider = await createOidcProvider();
-    const app = createServer(oidcProvider);
-
-    server = app.listen(0); // Random port
-    const address = server.address();
-    const port = typeof address === 'object' && address ? address.port : 3200;
-    baseURL = `http://localhost:${port}`;
+    app = await createServer(oidcProvider);
+    await app.ready();
   });
 
-  afterAll((done) => {
-    server?.close(done);
+  afterAll(async () => {
+    await app.close();
   });
 
   describe('GET /.well-known/openid-configuration', () => {
     it('should return valid OIDC discovery metadata', async () => {
-      const response = await request(baseURL)
-        .get('/.well-known/openid-configuration')
-        .expect(200)
-        .expect('Content-Type', /json/);
+      const response = await app.inject({
+        method: 'GET',
+        url: '/.well-known/openid-configuration',
+      });
 
-      const discovery = response.body;
+      expect(response.statusCode).toBe(200);
+      expect(response.headers['content-type']).toMatch(/json/);
+
+      const discovery = response.json();
 
       // Required OIDC discovery fields
       // Note: issuer is static from config.ts (http://localhost:3200)
@@ -59,32 +56,39 @@ describe('OIDC Discovery Endpoints', () => {
     });
 
     it('should advertise PAR endpoint', async () => {
-      const response = await request(baseURL)
-        .get('/.well-known/openid-configuration')
-        .expect(200);
+      const response = await app.inject({
+        method: 'GET',
+        url: '/.well-known/openid-configuration',
+      });
 
-      expect(response.body.pushed_authorization_request_endpoint).toBeDefined();
-      expect(response.body.pushed_authorization_request_endpoint).toMatch(/\/request$/);
+      expect(response.statusCode).toBe(200);
+      expect(response.json().pushed_authorization_request_endpoint).toBeDefined();
+      expect(response.json().pushed_authorization_request_endpoint).toMatch(/\/request$/);
     });
 
     it('should indicate PKCE support', async () => {
-      const response = await request(baseURL)
-        .get('/.well-known/openid-configuration')
-        .expect(200);
+      const response = await app.inject({
+        method: 'GET',
+        url: '/.well-known/openid-configuration',
+      });
 
-      expect(response.body.code_challenge_methods_supported).toBeDefined();
-      expect(response.body.code_challenge_methods_supported).toEqual(['S256']);
+      expect(response.statusCode).toBe(200);
+      expect(response.json().code_challenge_methods_supported).toBeDefined();
+      expect(response.json().code_challenge_methods_supported).toEqual(['S256']);
     });
   });
 
   describe('GET /.well-known/jwks.json', () => {
     it('should return public JWKS keys', async () => {
-      const response = await request(baseURL)
-        .get('/.well-known/jwks.json')
-        .expect(200)
-        .expect('Content-Type', /json/);
+      const response = await app.inject({
+        method: 'GET',
+        url: '/.well-known/jwks.json',
+      });
 
-      const jwks = response.body;
+      expect(response.statusCode).toBe(200);
+      expect(response.headers['content-type']).toMatch(/json/);
+
+      const jwks = response.json();
 
       expect(jwks.keys).toBeDefined();
       expect(Array.isArray(jwks.keys)).toBe(true);
@@ -105,11 +109,14 @@ describe('OIDC Discovery Endpoints', () => {
     });
 
     it('should only include active signing keys', async () => {
-      const response = await request(baseURL)
-        .get('/.well-known/jwks.json')
-        .expect(200);
+      const response = await app.inject({
+        method: 'GET',
+        url: '/.well-known/jwks.json',
+      });
 
-      const jwks = response.body;
+      expect(response.statusCode).toBe(200);
+
+      const jwks = response.json();
 
       jwks.keys.forEach((key: any) => {
         expect(key.use).toBe('sig');

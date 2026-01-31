@@ -1,51 +1,67 @@
-import { describe, it, expect, beforeAll } from 'vitest';
-import request from 'supertest';
-import type { Application } from 'express';
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import type { FastifyInstance } from 'fastify';
 import { createTestServer } from './test/helpers';
 
 describe('Public Endpoints', () => {
-  let app: Application;
+  let app: FastifyInstance;
 
   beforeAll(async () => {
     app = await createTestServer();
   });
 
-  describe('GET /', () => {
-    it('should return homepage HTML', async () => {
-      const response = await request(app).get('/');
+  afterAll(async () => {
+    await app.close();
+  });
 
-      expect(response.status).toBe(200);
-      expect(response.type).toBe('text/html');
-      expect(response.text).toContain('idem-idp');
-      expect(response.text).toContain('is running');
+  describe('GET /', () => {
+    it('should return SPA HTML', async () => {
+      const response = await app.inject({
+        method: 'GET',
+        url: '/',
+      });
+
+      expect(response.statusCode).toBe(200);
+      expect(response.headers['content-type']).toContain('text/html');
+      // SPA serves index.html with React mount point
+      expect(response.payload).toContain('<div id="root">');
+      expect(response.payload).toContain('Idem IdP');
     });
 
-    it('should include links to discovery and JWKS', async () => {
-      const response = await request(app).get('/');
+    it('should include script bundle for React SPA', async () => {
+      const response = await app.inject({
+        method: 'GET',
+        url: '/',
+      });
 
-      expect(response.text).toContain('/.well-known/openid-configuration');
-      expect(response.text).toContain('/.well-known/jwks.json');
-      expect(response.text).toContain('/health');
+      // SPA loads JavaScript bundle
+      expect(response.payload).toContain('<script type="module"');
+      expect(response.payload).toContain('/assets/');
     });
   });
 
   describe('GET /health', () => {
     it('should return health status', async () => {
-      const response = await request(app).get('/health');
+      const response = await app.inject({
+        method: 'GET',
+        url: '/health',
+      });
 
-      expect(response.status).toBe(200);
-      expect(response.body).toEqual({ status: 'ok' });
+      expect(response.statusCode).toBe(200);
+      expect(response.json()).toEqual({ status: 'ok' });
     });
   });
 
   describe('GET /.well-known/openid-configuration', () => {
     it('should return OIDC discovery metadata', async () => {
-      const response = await request(app).get('/.well-known/openid-configuration');
+      const response = await app.inject({
+        method: 'GET',
+        url: '/.well-known/openid-configuration',
+      });
 
-      expect(response.status).toBe(200);
-      expect(response.type).toBe('application/json');
+      expect(response.statusCode).toBe(200);
+      expect(response.headers['content-type']).toContain('application/json');
 
-      const metadata = response.body;
+      const metadata = response.json();
 
       // Check issuer exists (will be dynamic URL in tests)
       expect(metadata.issuer).toBeDefined();
@@ -83,13 +99,16 @@ describe('Public Endpoints', () => {
 
   describe('GET /.well-known/jwks.json', () => {
     it('should return JWKS with public keys', async () => {
-      const response = await request(app).get('/.well-known/jwks.json');
+      const response = await app.inject({
+        method: 'GET',
+        url: '/.well-known/jwks.json',
+      });
 
-      expect(response.status).toBe(200);
+      expect(response.statusCode).toBe(200);
       // JWKS uses application/jwk-set+json per RFC 8785
-      expect(response.type).toMatch(/application\/(jwk-set\+)?json/);
+      expect(response.headers['content-type']).toMatch(/application\/(jwk-set\+)?json/);
 
-      const jwks = response.body;
+      const jwks = response.json();
 
       expect(jwks).toHaveProperty('keys');
       expect(Array.isArray(jwks.keys)).toBe(true);
@@ -110,8 +129,12 @@ describe('Public Endpoints', () => {
     });
 
     it('should return keys compatible with RS256', async () => {
-      const response = await request(app).get('/.well-known/jwks.json');
-      const jwks = response.body;
+      const response = await app.inject({
+        method: 'GET',
+        url: '/.well-known/jwks.json',
+      });
+
+      const jwks = response.json();
 
       // Keys should be RSA type (kty: 'RSA') for RS256
       const rsaKeys = jwks.keys.filter((key: any) => key.kty === 'RSA');

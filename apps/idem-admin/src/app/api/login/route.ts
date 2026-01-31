@@ -11,8 +11,14 @@ export async function GET(request: NextRequest) {
     return new NextResponse('Too many requests', { status: 429 });
   }
 
-  // Grab returnTo param (fallback to "/admin")
-  const returnTo = request.nextUrl.searchParams.get('returnTo') ?? '/admin';
+  // Grab and validate returnTo param (fallback to "/admin")
+  // Prevent open redirect by only allowing relative paths that start with /admin
+  const rawReturnTo = request.nextUrl.searchParams.get('returnTo');
+  const isValidReturnTo =
+    typeof rawReturnTo === 'string' &&
+    rawReturnTo.startsWith('/admin') &&
+    !rawReturnTo.startsWith('//');
+  const returnTo = isValidReturnTo ? rawReturnTo : '/admin';
 
   // Build PKCE & authorization URL
   const pkce = await buildPKCEOptions(oauthConfig);

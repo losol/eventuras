@@ -62,13 +62,13 @@ export const oidcStore = idem.table(
 );
 
 /**
- * Express Sessions table
+ * Sessions table
  *
- * Stores Express session data for authentication flows.
- * Used by express-session middleware.
+ * Stores session data for authentication flows.
+ * Used by @fastify/session middleware.
  */
-export const expressSessions = idem.table(
-  'express_sessions',
+export const sessions = idem.table(
+  'sessions',
   {
     sid: text('sid').primaryKey(),
 
@@ -79,7 +79,7 @@ export const expressSessions = idem.table(
     expire: timestamp('expire').notNull(),
   },
   (table) => [
-    index('idx_express_sessions_expire').on(table.expire),
+    index('idx_sessions_expire').on(table.expire),
   ]
 );
 
