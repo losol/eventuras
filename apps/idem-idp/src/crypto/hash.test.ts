@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { hashPassword, comparePassword } from './password';
+import { hashPassword, comparePassword } from './hash';
 
-describe('Password Hashing (scrypt)', () => {
+describe('Scrypt Hashing (for passwords and OTP codes)', () => {
   describe('hashPassword', () => {
     it('should hash a password', async () => {
       const password = 'testPassword123';

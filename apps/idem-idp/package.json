@@ -26,6 +26,8 @@
   },
   "dependencies": {
     "@eventuras/logger": "workspace:*",
+    "@eventuras/mailer": "workspace:*",
+    "@eventuras/notitia-templates": "workspace:*",
     "@eventuras/ratio-ui": "workspace:*",
     "drizzle-orm": "^0.44.7",
     "express": "5.2.1",

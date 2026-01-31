@@ -4,6 +4,9 @@ import helmet from 'helmet';
 import { renderHomepage } from './views/homepage';
 import { config } from './config';
 import { createInteractionRoutes } from './routes/interaction';
+import { createOtpRoutes } from './routes/otp';
+import { createSessionMiddleware } from './middleware/session';
+import type { Mailer } from '@eventuras/mailer';
 import { Logger } from '@eventuras/logger';
 
 const logger = Logger.create({ namespace: 'idem:server' });
@@ -11,12 +14,13 @@ const logger = Logger.create({ namespace: 'idem:server' });
 type NextHandler = (req: Request, res: Response) => Promise<void>;
 
 /**
- * Creates the Express app with optional OIDC provider and Next.js handler.
+ * Creates the Express app with optional OIDC provider, mailer, and Next.js handler.
  * @param oidcProvider - Optional OIDC provider instance
+ * @param mailer - Optional mailer instance for OTP routes
  * @param nextHandler - Optional Next.js request handler
  * @returns Express.Application
  */
-export function createServer(oidcProvider?: any, nextHandler?: NextHandler): express.Application {
+export function createServer(oidcProvider?: any, mailer?: Mailer, nextHandler?: NextHandler): express.Application {
   const app = express();
 
   // Trust proxy (CRITICAL for production behind reverse proxy)
@@ -47,9 +51,19 @@ export function createServer(oidcProvider?: any, nextHandler?: NextHandler): exp
     res.type('html').send(renderHomepage({ name, version }));
   });
 
+  // Session middleware (BEFORE body parsers and routes)
+  app.use(createSessionMiddleware());
+  logger.info('Session middleware mounted');
+
   // Body parsers for API routes (BEFORE interaction routes, AFTER/parallel to oidc-provider)
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
+
+  // OTP API routes (need body parsing and mailer)
+  if (mailer) {
+    app.use(createOtpRoutes(mailer));
+    logger.info('OTP API routes mounted');
+  }
 
   // Interaction API routes (need body parsing)
   if (oidcProvider) {
