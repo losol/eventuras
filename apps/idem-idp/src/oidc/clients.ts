@@ -10,19 +10,20 @@ const logger = Logger.create({ namespace: 'idem:oidc-clients' });
  * Built-in clients that don't require database entries
  * These are hardcoded for critical functionality (admin console, etc.)
  */
+const idemAdminUrl = process.env.IDEM_ADMIN_URL ?? 'http://localhost:3210';
+
 const BUILT_IN_CLIENTS: Record<string, any> = {
-  'idem-admin-ui': {
-    client_id: 'idem-admin-ui',
-    client_name: 'Idem Frontend',
+  'idem-admin': {
+    client_id: 'idem-admin',
+    client_secret: process.env.IDEM_ADMIN_CLIENT_SECRET ?? 'idem-admin-dev-secret',
+    client_name: 'Idem Admin Console',
     redirect_uris: [
-      `${config.issuer}/callback`, // Production
-      'http://localhost:3200/callback', // Development (localhost)
-      'https://idem-dev.losol.io/callback', // Development (Cloudflare Tunnel)
+      `${idemAdminUrl}/api/callback`,
+      'https://idem-admin.losol.io/api/callback', // Production
     ],
     grant_types: ['authorization_code', 'refresh_token'],
     response_types: ['code'],
-    token_endpoint_auth_method: 'none', // Public client (Vite SPA)
-    // No client_secret required for public clients
+    token_endpoint_auth_method: 'client_secret_post', // Confidential client
   },
 };
 

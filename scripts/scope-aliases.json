@@ -14,6 +14,7 @@
   "historia": "@eventuras/historia",
   "historia-cms": "@eventuras/historia",
   "idem": "@eventuras/idem-idp",
+  "idem-admin": "@eventuras/idem-admin",
   "idem-idp": "@eventuras/idem-idp",
   "logger": "@eventuras/logger",
   "mailer": "@eventuras/mailer",

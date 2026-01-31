@@ -30,6 +30,15 @@ pnpm db:seed
 pnpm dev
 ```
 
+## Cloudflare Tunnel (Dev)
+
+```bash
+# Config: ~/.cloudflared/config.yml
+# Tunnel: dev | Hostname: idem-idp-dev.domain.io → localhost:3100
+cloudflared tunnel route dns dev idem-idp-dev.domain.io
+cloudflared tunnel run dev
+```
+
 ## Architecture
 
 See [docs/](./docs/) for architecture decision records and database schema documentation.

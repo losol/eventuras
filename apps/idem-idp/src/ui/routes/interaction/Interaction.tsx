@@ -320,8 +320,8 @@ function ConsentPrompt({ uid, details }: { uid: string; details: InteractionDeta
         throw new Error('Consent failed');
       }
 
-      // Provider redirects automatically
-      window.location.reload();
+      // Follow the redirect from the OIDC provider
+      window.location.href = res.url;
     } catch (err: any) {
       setError(err.message);
       setSubmitting(false);
