@@ -17,11 +17,13 @@ type LoginPageProps = {
 export function LoginPage({ uid, clientId, scope }: LoginPageProps) {
   const t = useTranslations('auth.login');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleDevLogin = async () => {
     setLoading(true);
+    setError(null);
     try {
-      const response = await fetch(`/api/interaction/${uid}/login`, {
+      const response = await fetch(`/interaction/${uid}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -35,11 +37,14 @@ export function LoginPage({ uid, clientId, scope }: LoginPageProps) {
         await new Promise(resolve => setTimeout(resolve, 500));
         window.location.reload();
       } else {
-        console.error('Login failed:', await response.text());
+        const errorText = await response.text();
+        console.error('Login failed:', errorText);
+        setError(t('error'));
         setLoading(false);
       }
-    } catch (error) {
-      console.error('Login error:', error);
+    } catch (err) {
+      console.error('Login error:', err);
+      setError(t('error'));
       setLoading(false);
     }
   };
@@ -74,13 +79,26 @@ export function LoginPage({ uid, clientId, scope }: LoginPageProps) {
             </Text>
           </div>
 
+          {error && (
+            <div style={{
+              padding: '0.75rem',
+              background: 'rgba(239, 68, 68, 0.1)',
+              borderRadius: '0.375rem',
+              border: '1px solid rgba(239, 68, 68, 0.3)',
+            }}>
+              <Text size="sm" style={{ color: 'rgb(239, 68, 68)' }}>
+                {error}
+              </Text>
+            </div>
+          )}
+
           <Button
             onClick={handleDevLogin}
             disabled={loading}
             fullWidth
             size="lg"
           >
-            {loading ? t('common.loading') : t('devLogin')}
+            {loading ? t('loading') : t('devLogin')}
           </Button>
 
           <Text size="xs" color="muted" style={{ textAlign: 'center' }}>

@@ -11,14 +11,25 @@
       "title": "Logg Inn",
       "description": "Logg inn for å fortsette",
       "signInWith": "Logg inn med {provider}",
-      "devLogin": "Utviklerinnlogging"
+      "devLogin": "Utviklerinnlogging",
+      "loading": "Logger inn...",
+      "error": "Innlogging feilet. Vennligst prøv igjen."
     },
     "consent": {
       "title": "Gi Tillatelser",
       "description": "{clientName} ber om tilgang til kontoen din",
       "scopes": "Forespurte tillatelser:",
       "allow": "Tillat Tilgang",
-      "deny": "Nekt"
+      "deny": "Nekt",
+      "loading": "Behandler...",
+      "error": "Kunne ikke behandle samtykket ditt. Vennligst prøv igjen.",
+      "scopeDescriptions": {
+        "openid": "Grunnleggende autentiseringsinformasjon",
+        "profile": "Din profilinformasjon (navn, bilde)",
+        "email": "Din e-postadresse",
+        "offline_access": "Tilgang når du er frakoblet (fornyelsestokens)",
+        "default": "Tilgang til {scope}"
+      }
     }
   }
 }
