@@ -139,8 +139,9 @@ function LoginPrompt({ uid, details }: { uid: string; details: InteractionDetail
         throw new Error('Login failed');
       }
 
-      // OIDC provider will redirect - follow it
-      window.location.href = loginRes.url;
+      // Get redirect URL from response and navigate
+      const loginData = await loginRes.json() as { redirectTo: string };
+      window.location.href = loginData.redirectTo;
     } catch (err: any) {
       setError(err.message);
       setLoading(false);
@@ -306,22 +307,26 @@ function ConsentPrompt({ uid, details }: { uid: string; details: InteractionDeta
     setError(null);
 
     try {
-      const res = await fetch(`/interaction/${uid}/consent`, {
+      // If user denies, use the abort endpoint
+      const endpoint = allow ? `/interaction/${uid}/consent` : `/interaction/${uid}/abort`;
+      const body = allow
+        ? { rejectedScopes: [], rejectedClaims: [] }
+        : {};
+
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({
-          rejectedScopes: allow ? [] : details.params.scope.split(' '),
-          rejectedClaims: [],
-        }),
+        body: JSON.stringify(body),
       });
 
       if (!res.ok) {
-        throw new Error('Consent failed');
+        throw new Error(allow ? 'Consent failed' : 'Failed to deny access');
       }
 
-      // Follow the redirect from the OIDC provider
-      window.location.href = res.url;
+      // Get redirect URL from response and navigate
+      const data = await res.json() as { redirectTo: string };
+      window.location.href = data.redirectTo;
     } catch (err: any) {
       setError(err.message);
       setSubmitting(false);

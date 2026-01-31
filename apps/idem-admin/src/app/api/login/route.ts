@@ -7,7 +7,7 @@ import { oauthConfig } from '@/utils/config';
 
 export async function GET(request: NextRequest) {
   // Rate limit check
-  if (!globalGETRateLimit()) {
+  if (!(await globalGETRateLimit())) {
     return new NextResponse('Too many requests', { status: 429 });
   }
 

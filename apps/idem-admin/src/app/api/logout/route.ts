@@ -11,7 +11,7 @@ const logger = Logger.create({
 
 export async function GET() {
   // Rate limit check
-  if (!globalGETRateLimit()) {
+  if (!(await globalGETRateLimit())) {
     return new NextResponse('Too many requests', { status: 429 });
   }
 

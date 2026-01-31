@@ -12,10 +12,23 @@ const logger = Logger.create({ namespace: 'idem:oidc-clients' });
  */
 const idemAdminUrl = process.env.IDEM_ADMIN_URL ?? 'http://localhost:3210';
 
+// Get admin client secret - require env var in production
+function getAdminClientSecret(): string {
+  const secret = process.env.IDEM_ADMIN_CLIENT_SECRET;
+  if (secret) return secret;
+
+  if (config.nodeEnv === 'production') {
+    throw new Error('IDEM_ADMIN_CLIENT_SECRET must be set in production');
+  }
+
+  logger.warn('Using default client secret for idem-admin - DO NOT USE IN PRODUCTION');
+  return 'idem-admin-dev-secret';
+}
+
 const BUILT_IN_CLIENTS: Record<string, any> = {
   'idem-admin': {
     client_id: 'idem-admin',
-    client_secret: process.env.IDEM_ADMIN_CLIENT_SECRET ?? 'idem-admin-dev-secret',
+    client_secret: getAdminClientSecret(),
     client_name: 'Idem Admin Console',
     redirect_uris: [
       `${idemAdminUrl}/api/callback`,

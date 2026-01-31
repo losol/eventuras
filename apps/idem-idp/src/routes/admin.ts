@@ -30,7 +30,7 @@ export const registerAdminRoutes: FastifyPluginAsync = async (fastify) => {
       }
 
       const payload = JSON.parse(
-        Buffer.from(parts[1]!, 'base64').toString()
+        Buffer.from(parts[1]!, 'base64url').toString()
       );
 
       // Check if user has system_admin or admin_reader role
