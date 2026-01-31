@@ -3,6 +3,7 @@ import { createServer } from './server';
 import { createOidcProvider } from './oidc/provider';
 import { config, validateConfig } from './config';
 import { bootstrapKeys } from './crypto/jwks';
+import { createMailerFromEnv } from '@eventuras/mailer';
 import { Logger } from '@eventuras/logger';
 
 const logger = Logger.create({ namespace: 'idem:main' });
@@ -13,6 +14,10 @@ async function main() {
   validateConfig();
   await bootstrapKeys();
 
+  // Initialize mailer
+  const mailer = createMailerFromEnv();
+  logger.info('Mailer initialized');
+
   // Initialize Next.js
   const dev = config.nodeEnv === 'development';
   const nextApp = next({ dev, dir: process.cwd() });
@@ -22,7 +27,7 @@ async function main() {
   logger.info('Next.js ready');
 
   const oidcProvider = await createOidcProvider();
-  const app = createServer(oidcProvider, nextHandler);
+  const app = createServer(oidcProvider, mailer, nextHandler);
 
   app.listen(config.port, () => {
     logger.info({

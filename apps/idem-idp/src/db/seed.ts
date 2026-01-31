@@ -1,6 +1,6 @@
 import { db } from './client';
 import * as schema from './schema/index';
-import { hashPassword } from '../crypto/password';
+import { hashPassword } from '../crypto/hash';
 
 /**
  * Development seed script

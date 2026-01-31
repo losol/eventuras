@@ -2,31 +2,32 @@ import { scrypt, randomBytes, timingSafeEqual } from 'crypto';
 import { promisify } from 'util';
 import { Logger } from '@eventuras/logger';
 
-const logger = Logger.create({ namespace: 'idem:crypto-password' });
+const logger = Logger.create({ namespace: 'idem:crypto-hash' });
 const scryptAsync = promisify(scrypt);
 
 /**
- * Hash a password using Node.js built-in scrypt
+ * Hash a secret value (password, OTP code, etc.) using Node.js built-in scrypt
  * Format: {hash}.{salt}
  *
- * @param password - Plain text password
- * @returns Hashed password with salt
+ * @param password - Plain text secret value to hash
+ * @returns Hashed value with salt
  */
 export async function hashPassword(password: string): Promise<string> {
   const salt = randomBytes(16).toString('hex');
   const derivedKey = (await scryptAsync(password, salt, 64)) as Buffer;
   const hash = derivedKey.toString('hex');
 
-  logger.debug('Password hashed');
+  logger.debug('Value hashed');
   return `${hash}.${salt}`;
 }
 
 /**
- * Compare a supplied password with a stored hash
+ * Compare a supplied secret value with a stored hash
+ * Uses timing-safe comparison to prevent timing attacks
  *
- * @param supplied - Plain text password to check
+ * @param supplied - Plain text value to check
  * @param stored - Stored hash (format: {hash}.{salt})
- * @returns True if password matches
+ * @returns True if value matches hash
  */
 export async function comparePassword(
   supplied: string,
@@ -35,7 +36,7 @@ export async function comparePassword(
   const [hashedPassword, salt] = stored.split('.');
 
   if (!hashedPassword || !salt) {
-    logger.warn('Invalid password hash format');
+    logger.warn('Invalid hash format');
     return false;
   }
 
@@ -49,16 +50,16 @@ export async function comparePassword(
     suppliedBuf.length === 0 ||
     hashedPasswordBuf.length !== suppliedBuf.length
   ) {
-    logger.warn('Invalid password hash length for comparison');
+    logger.warn('Invalid hash length for comparison');
     return false;
   }
 
   try {
     const match = timingSafeEqual(hashedPasswordBuf, suppliedBuf);
-    logger.debug({ match }, 'Password comparison');
+    logger.debug({ match }, 'Hash comparison');
     return match;
   } catch (err) {
-    logger.warn({ err }, 'Password comparison failed');
+    logger.warn({ err }, 'Hash comparison failed');
     return false;
   }
 }

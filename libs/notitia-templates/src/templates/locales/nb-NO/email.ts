@@ -186,4 +186,50 @@ Beste hilsen,
     }),
     description: 'Varsel om sending av ordre (nb-NO)',
   },
+
+  'email:otp-login': {
+    subject: '{{appName}} - Din innloggingskode',
+    content: `<!DOCTYPE html>
+<html lang="nb">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Din innloggingskode</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f5f5f5;">
+  <div style="max-width: 600px; margin: 40px auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; padding: 32px; text-align: center;">
+      <h1 style="margin: 0; font-size: 24px; font-weight: 600;">{{appName}} - Innloggingskode</h1>
+    </div>
+    <div style="padding: 40px 32px; text-align: center;">
+      <p style="color: #4a5568; font-size: 16px; line-height: 1.5; margin: 0 0 24px 0;">
+        Din engangs innloggingskode er:
+      </p>
+      <div style="background-color: #f7fafc; border: 2px solid #e2e8f0; border-radius: 8px; padding: 24px; margin: 32px 0;">
+        <div style="font-size: 36px; font-weight: 700; letter-spacing: 8px; color: #2d3748; font-family: 'Courier New', monospace;">
+          {{code}}
+        </div>
+        <p style="color: #718096; font-size: 14px; margin-top: 16px;">
+          Denne koden utløper om {{expiresInMinutes}} minutter.
+        </p>
+      </div>
+      <div style="background-color: #fffbeb; border-left: 4px solid #f59e0b; padding: 16px; margin: 24px 0; text-align: left;">
+        <p style="margin: 0; color: #92400e; font-size: 14px;">
+          Hvis du ikke ba om denne koden, kan du trygt ignorere denne e-posten.
+        </p>
+      </div>
+    </div>
+    <div style="background-color: #f7fafc; padding: 24px 32px; text-align: center; border-top: 1px solid #e2e8f0;">
+      <p style="margin: 0; color: #a0aec0; font-size: 12px;">
+        Dette er en automatisk melding, vennligst ikke svar.
+      </p>
+      <p style="margin: 8px 0 0 0; color: #a0aec0; font-size: 12px;">
+        &copy; {{year}} {{appName}}
+      </p>
+    </div>
+  </div>
+</body>
+</html>`,
+    description: 'OTP innloggingskode e-post (nb-NO)',
+  },
 };
