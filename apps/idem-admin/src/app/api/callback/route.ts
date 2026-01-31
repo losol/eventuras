@@ -123,8 +123,14 @@ export async function GET(request: Request): Promise<Response> {
     });
 
     // Clean up PKCE & returnTo cookies
-    const returnTo = cookieStore2.get('returnTo')?.value ?? '/admin';
-    logger.debug({ returnTo }, 'Cleaning up cookies and redirecting');
+    const rawReturnTo = cookieStore2.get('returnTo')?.value;
+    // Validate returnTo to prevent open redirect - must be relative path starting with /admin
+    const isValidReturnTo =
+      typeof rawReturnTo === 'string' &&
+      rawReturnTo.startsWith('/admin') &&
+      !rawReturnTo.startsWith('//');
+    const returnTo = isValidReturnTo ? rawReturnTo : '/admin';
+    logger.debug({ returnTo, rawReturnTo }, 'Cleaning up cookies and redirecting');
 
     cookieStore2.delete('oauth_state');
     cookieStore2.delete('oauth_code_verifier');

@@ -105,6 +105,7 @@ export const registerInteractionRoutes: FastifyPluginAsync<InteractionRoutesOpti
    * POST /interaction/:uid/login
    * Process login submission (dev: auto-login, prod: verify credentials)
    * Note: Must be /interaction/* (not /api/interaction/*) to match OIDC cookie paths
+   * Returns JSON with redirectTo URL instead of doing redirect (to avoid CORS issues)
    */
   fastify.post<{ Params: InteractionParams; Body: LoginBody }>('/interaction/:uid/login', async (request, reply) => {
     const { uid } = request.params;
@@ -122,25 +123,18 @@ export const registerInteractionRoutes: FastifyPluginAsync<InteractionRoutesOpti
       // TODO: In production, verify credentials here
       // For dev: accept any accountId (from seed data or test)
 
-      // IMPORTANT: interactionFinished() sends response (redirect)
-      // Use raw Node.js request/response for oidc-provider compatibility
-      // Use hijack() to tell Fastify we're handling the response ourselves
-      reply.hijack();
-
-      await provider.interactionFinished(request.raw, reply.raw, {
+      // Use interactionResult() instead of interactionFinished() to get redirect URL
+      // This avoids CORS issues with cross-origin redirects in fetch()
+      const redirectTo = await provider.interactionResult(request.raw, reply.raw, {
         login: { accountId },
       }, { mergeWithLastSubmission: false });
 
-      logger.info({ uid, accountId }, 'Login successful');
-      // Provider handles response - just return
-      return;
+      logger.info({ uid, accountId, redirectTo }, 'Login successful');
+
+      return reply.send({ redirectTo });
     } catch (err) {
       logger.error({ err, uid }, 'Login failed');
-      // Only send error if interactionFinished didn't send response
-      if (!reply.raw.headersSent) {
-        reply.raw.writeHead(500, { 'Content-Type': 'application/json' });
-        reply.raw.end(JSON.stringify({ error: 'Login failed' }));
-      }
+      return reply.code(500).send({ error: 'Login failed' });
     }
   });
 
@@ -148,6 +142,7 @@ export const registerInteractionRoutes: FastifyPluginAsync<InteractionRoutesOpti
    * POST /interaction/:uid/consent
    * Process consent submission
    * Note: Must be /interaction/* (not /api/interaction/*) to match OIDC cookie paths
+   * Returns JSON with redirectTo URL instead of doing redirect (to avoid CORS issues)
    */
   fastify.post<{ Params: InteractionParams; Body: ConsentBody }>('/interaction/:uid/consent', async (request, reply) => {
     const { uid } = request.params;
@@ -206,23 +201,46 @@ export const registerInteractionRoutes: FastifyPluginAsync<InteractionRoutesOpti
         approvedClaims,
       }, 'Grant saved for consent');
 
-      // IMPORTANT: interactionFinished() sends response (redirect)
-      // Use hijack() to tell Fastify we're handling the response ourselves
-      reply.hijack();
-
-      await provider.interactionFinished(request.raw, reply.raw, {
+      // Use interactionResult() instead of interactionFinished() to get redirect URL
+      // This avoids CORS issues with cross-origin redirects in fetch()
+      const redirectTo = await provider.interactionResult(request.raw, reply.raw, {
         consent: { grantId },
       }, { mergeWithLastSubmission: true });
 
-      logger.info({ uid, grantId }, 'Consent granted');
-      // Provider handles response - just return
-      return;
+      logger.info({ uid, grantId, redirectTo }, 'Consent granted');
+
+      return reply.send({ redirectTo });
     } catch (err) {
       logger.error({ err, uid }, 'Consent failed');
-      if (!reply.raw.headersSent) {
-        reply.raw.writeHead(500, { 'Content-Type': 'application/json' });
-        reply.raw.end(JSON.stringify({ error: 'Consent failed' }));
-      }
+      return reply.code(500).send({ error: 'Consent failed' });
+    }
+  });
+
+  /**
+   * POST /interaction/:uid/abort
+   * Abort the interaction (user denied consent or cancelled login)
+   * Returns access_denied error to the client
+   * Returns JSON with redirectTo URL instead of doing redirect (to avoid CORS issues)
+   */
+  fastify.post<{ Params: InteractionParams }>('/interaction/:uid/abort', async (request, reply) => {
+    const { uid } = request.params;
+
+    try {
+      logger.info({ uid }, 'User aborted interaction');
+
+      // Use interactionResult() instead of interactionFinished() to get redirect URL
+      // This avoids CORS issues with cross-origin redirects in fetch()
+      const redirectTo = await provider.interactionResult(request.raw, reply.raw, {
+        error: 'access_denied',
+        error_description: 'End-User aborted interaction',
+      }, { mergeWithLastSubmission: false });
+
+      logger.info({ uid, redirectTo }, 'Interaction aborted, returning redirect URL');
+
+      return reply.send({ redirectTo });
+    } catch (err) {
+      logger.error({ err, uid }, 'Failed to abort interaction');
+      return reply.code(500).send({ error: 'Failed to abort interaction' });
     }
   });
 };

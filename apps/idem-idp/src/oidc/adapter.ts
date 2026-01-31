@@ -15,12 +15,7 @@ export class DrizzleOidcAdapter implements Adapter {
 
   constructor(name: string) {
     this.name = name;
-    // Log Interaction adapter creation
-    if (name === 'Interaction') {
-      logger.info({ adapterName: name }, 'Interaction adapter CREATED');
-    } else {
-      logger.debug({ adapterName: name }, 'DrizzleOidcAdapter created');
-    }
+    logger.debug({ adapterName: name }, 'DrizzleOidcAdapter created');
   }
 
   /**
@@ -30,10 +25,7 @@ export class DrizzleOidcAdapter implements Adapter {
     const expiresAt = new Date(Date.now() + expiresIn * 1000);
     const oidcId = `${this.name}:${id}`;
 
-    // Log ALL upsert calls to track what's being saved
-    if (this.name === 'Interaction') {
-      logger.info({ name: this.name, id, oidcId, expiresIn }, 'Interaction upsert CALLED');
-    }
+    logger.debug({ name: this.name, id, oidcId, expiresIn }, 'Upsert called');
 
     // Determine the uid value to store for findByUid() lookups
     // - For DeviceCode: use userCode
@@ -87,12 +79,7 @@ export class DrizzleOidcAdapter implements Adapter {
           },
         });
 
-      // More verbose logging for Interactions
-      if (this.name === 'Interaction') {
-        logger.info({ name: this.name, id, oidcId, expiresAt }, 'Interaction SAVED to database');
-      } else {
-        logger.debug({ name: this.name, id }, 'Upserted OIDC entity');
-      }
+      logger.debug({ name: this.name, id }, 'Upserted OIDC entity');
     } catch (err) {
       logger.error({ err, name: this.name, id }, 'Failed to upsert OIDC entity');
       throw err;
@@ -110,10 +97,7 @@ export class DrizzleOidcAdapter implements Adapter {
   async find(id: string): Promise<AdapterPayload | undefined> {
     const oidcId = `${this.name}:${id}`;
 
-    // Debug logging for Interaction lookups
-    if (this.name === 'Interaction') {
-      logger.info({ name: this.name, id, oidcId }, 'Looking up Interaction');
-    }
+    logger.debug({ name: this.name, id, oidcId }, 'Looking up OIDC entity');
 
     try {
       const [record] = await db
@@ -123,12 +107,7 @@ export class DrizzleOidcAdapter implements Adapter {
         .limit(1);
 
       if (!record) {
-        // More verbose logging for missing interactions
-        if (this.name === 'Interaction') {
-          logger.warn({ name: this.name, id, oidcId }, 'Interaction NOT FOUND in database');
-        } else {
-          logger.debug({ name: this.name, id }, 'OIDC entity not found');
-        }
+        logger.debug({ name: this.name, id }, 'OIDC entity not found');
         return undefined;
       }
 
@@ -269,12 +248,7 @@ export class DrizzleOidcAdapter implements Adapter {
         .delete(oidcStore)
         .where(and(eq(oidcStore.name, this.name), eq(oidcStore.oidcId, oidcId)));
 
-      // More verbose logging for Interaction destruction
-      if (this.name === 'Interaction') {
-        logger.info({ name: this.name, id, oidcId }, 'Interaction DESTROYED');
-      } else {
-        logger.debug({ name: this.name, id }, 'Destroyed OIDC entity');
-      }
+      logger.debug({ name: this.name, id }, 'Destroyed OIDC entity');
     } catch (err) {
       logger.error({ err, name: this.name, id }, 'Failed to destroy OIDC entity');
       throw err;

@@ -77,6 +77,16 @@ export async function createServer(oidcProvider?: any, mailer?: Mailer): Promise
   });
   logger.info({ uiDistPath, __dirname }, 'Serving static assets from dist-ui/assets');
 
+  // Cache index.html at startup to avoid sync reads on every request
+  const indexPath = path.join(uiDistPath, 'index.html');
+  let cachedIndexHtml: string | null = null;
+  try {
+    cachedIndexHtml = fs.readFileSync(indexPath, 'utf-8');
+    logger.info('Cached index.html for SPA serving');
+  } catch {
+    logger.warn({ indexPath }, 'Frontend build not found, will use fallback');
+  }
+
   // Cookie and session middleware (BEFORE routes)
   await app.register(fastifyCookie);
   await app.register(fastifySession, {
@@ -110,16 +120,12 @@ export async function createServer(oidcProvider?: any, mailer?: Mailer): Promise
   await app.register(registerAdminRoutes);
   logger.info('Admin API routes mounted');
 
-  // Helper function to serve the React SPA
+  // Helper function to serve the React SPA (uses cached index.html)
   const serveSpa = async (_request: FastifyRequest, reply: FastifyReply) => {
-    const indexPath = path.join(uiDistPath, 'index.html');
-    try {
-      const content = fs.readFileSync(indexPath, 'utf-8');
-      return reply.type('text/html').send(content);
-    } catch {
-      logger.warn('Frontend build not found, serving fallback');
-      return reply.type('text/html').send(renderHomepage({ name: 'idem-idp', version: config.nodeEnv }));
+    if (cachedIndexHtml) {
+      return reply.type('text/html').send(cachedIndexHtml);
     }
+    return reply.type('text/html').send(renderHomepage({ name: 'idem-idp', version: config.nodeEnv }));
   };
 
   // Serve frontend routes BEFORE OIDC provider (so they don't get caught by oidc-provider)
@@ -156,7 +162,7 @@ export async function createServer(oidcProvider?: any, mailer?: Mailer): Promise
         return reply
           .code(200)
           .type('text/html')
-          .send('<html><head><meta http-equiv="refresh" content="0;url=/login?cleared=1"></head><body>Redirecting...</body></html>');
+          .send('<html><head><meta http-equiv="refresh" content="0;url=/?cleared=1"></head><body>Redirecting...</body></html>');
       }
     } catch (err) {
       logger.error({ err }, 'Failed to clear session');
@@ -186,6 +192,8 @@ export async function createServer(oidcProvider?: any, mailer?: Mailer): Promise
       '/revocation',
       '/certs',
       '/me',
+      '/request', // PAR (Pushed Authorization Request)
+      '/session', // Session management
     ];
 
     // Wrap oidc-provider callback to only handle OIDC-specific paths
@@ -206,18 +214,13 @@ export async function createServer(oidcProvider?: any, mailer?: Mailer): Promise
     }, 'OIDC routes mounted');
   }
 
-  // SPA fallback - serve index.html for all unmatched routes
+  // SPA fallback - serve cached index.html for all unmatched routes
   app.setNotFoundHandler(async (request, reply) => {
-    const indexPath = path.join(uiDistPath, 'index.html');
-    logger.info({ path: request.url, indexPath }, 'SPA fallback hit');
-
-    try {
-      const content = fs.readFileSync(indexPath, 'utf-8');
-      return reply.type('text/html').send(content);
-    } catch {
-      logger.warn({ indexPath }, 'Frontend build not found');
-      return reply.type('text/html').send(renderHomepage({ name: 'idem-idp', version: config.nodeEnv }));
+    logger.debug({ path: request.url }, 'SPA fallback hit');
+    if (cachedIndexHtml) {
+      return reply.type('text/html').send(cachedIndexHtml);
     }
+    return reply.type('text/html').send(renderHomepage({ name: 'idem-idp', version: config.nodeEnv }));
   });
 
   // Error handler
