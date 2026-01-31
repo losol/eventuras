@@ -138,7 +138,7 @@ Beste helsing,
       </div>
 
       <p style="font-size: 14px; color: #6b7280; margin: 0 0 32px 0;">
-        Denne koden går ut om <strong>{{expiresInMinutes}} minutt</strong>.
+        Denne koden går ut om <strong>{{expiresInMinutes}} minuttar</strong>.
       </p>
 
       <!-- Security Notice -->

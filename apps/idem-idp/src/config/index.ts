@@ -18,6 +18,10 @@ export const config = {
   masterKey: process.env.IDEM_MASTER_KEY || 'dev-master-key-DO-NOT-USE-IN-PROD', // For JWKS encryption
   port: Number(process.env.PORT) || 3200,
 
+  // Localization and branding
+  locale: process.env.IDEM_LOCALE || process.env.DEFAULT_LOCALE || 'nb-NO',
+  appName: process.env.IDEM_APP_NAME || 'Eventuras',
+
   features: {
     devShortcuts: process.env.NODE_ENV === 'development',
     mockIdPs: process.env.NODE_ENV === 'development',
