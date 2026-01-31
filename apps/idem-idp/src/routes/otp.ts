@@ -4,6 +4,9 @@ import { Mailer } from '@eventuras/mailer';
 import { createNotitiaTemplates } from '@eventuras/notitia-templates';
 import { Logger } from '@eventuras/logger';
 import { config } from '../config';
+import { db } from '../db/client';
+import { accounts } from '../db/schema';
+import { eq } from 'drizzle-orm';
 
 const logger = Logger.create({ namespace: 'idem:otp-routes' });
 
@@ -197,14 +200,31 @@ export function createOtpRoutes(mailer: Mailer): Router {
    */
   router.get('/api/otp/session', (async (req, res) => {
     if (!req.session || !req.session.accountId) {
-      return res.status(401).json({
+      return res.status(200).json({
         authenticated: false,
+        account: null,
+      });
+    }
+
+    // Fetch account details
+    const account = await db.query.accounts.findFirst({
+      where: eq(accounts.id, req.session.accountId),
+    });
+
+    if (!account) {
+      return res.status(200).json({
+        authenticated: false,
+        account: null,
       });
     }
 
     return res.status(200).json({
       authenticated: true,
-      accountId: req.session.accountId,
+      account: {
+        id: account.id,
+        email: account.primaryEmail,
+        displayName: account.displayName,
+      },
       authenticatedAt: req.session.authenticatedAt,
       authMethod: req.session.authMethod,
     });
@@ -216,7 +236,10 @@ export function createOtpRoutes(mailer: Mailer): Router {
    */
   router.post('/api/otp/logout', (async (req, res) => {
     if (!req.session) {
-      return res.status(200).json({ success: true });
+      return res.status(200).json({
+        success: true,
+        message: 'Logged out successfully',
+      });
     }
 
     await new Promise<void>((resolve, reject) => {
@@ -226,7 +249,10 @@ export function createOtpRoutes(mailer: Mailer): Router {
       });
     });
 
-    return res.status(200).json({ success: true });
+    return res.status(200).json({
+      success: true,
+      message: 'Logged out successfully',
+    });
   }) as RequestHandler);
 
   return router;
