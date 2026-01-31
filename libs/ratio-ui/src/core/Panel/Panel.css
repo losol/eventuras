@@ -1,0 +1,85 @@
+@reference "../../ratio-ui.css";
+
+.panel {
+  @apply py-3 px-4 rounded-md text-sm leading-relaxed;
+}
+
+/* ===== Variant: Alert (with border-left accent) ===== */
+.panel--alert {
+  @apply border-l-4;
+}
+
+/* ===== Variant: Callout (subtle background) ===== */
+.panel--callout {
+  @apply border bg-transparent;
+}
+
+/* ===== Variant: Notice (full background with border) ===== */
+.panel--notice {
+  @apply border;
+}
+
+/* ===== Intent: Info (Blue) ===== */
+.panel--info.panel--alert {
+  @apply bg-blue-100 border-blue-500 text-blue-800;
+}
+
+.panel--info.panel--callout {
+  @apply border-blue-500 text-blue-800 bg-blue-50;
+}
+
+.panel--info.panel--notice {
+  @apply bg-blue-100 border-blue-500 text-blue-800;
+}
+
+/* ===== Intent: Success (Green) ===== */
+.panel--success.panel--alert {
+  @apply bg-green-100 border-green-500 text-green-800;
+}
+
+.panel--success.panel--callout {
+  @apply border-green-500 text-green-800 bg-green-50;
+}
+
+.panel--success.panel--notice {
+  @apply bg-green-100 border-green-500 text-green-800;
+}
+
+/* ===== Intent: Warning (Yellow/Orange) ===== */
+.panel--warning.panel--alert {
+  @apply bg-amber-100 border-amber-500 text-amber-800;
+}
+
+.panel--warning.panel--callout {
+  @apply border-amber-500 text-amber-800 bg-amber-50;
+}
+
+.panel--warning.panel--notice {
+  @apply bg-amber-100 border-amber-500 text-amber-800;
+}
+
+/* ===== Intent: Error (Red) ===== */
+.panel--error.panel--alert {
+  @apply bg-red-100 border-red-500 text-red-800;
+}
+
+.panel--error.panel--callout {
+  @apply border-red-500 text-red-800 bg-red-50;
+}
+
+.panel--error.panel--notice {
+  @apply bg-red-100 border-red-500 text-red-800;
+}
+
+/* ===== Intent: Neutral (Gray) ===== */
+.panel--neutral.panel--alert {
+  @apply bg-gray-100 border-gray-500 text-gray-700;
+}
+
+.panel--neutral.panel--callout {
+  @apply border-gray-300 text-gray-700 bg-gray-50;
+}
+
+.panel--neutral.panel--notice {
+  @apply bg-gray-100 border-gray-400 text-gray-700;
+}
