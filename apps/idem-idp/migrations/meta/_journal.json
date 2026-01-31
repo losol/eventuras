@@ -15,6 +15,13 @@
       "when": 1769809491310,
       "tag": "0001_giant_cloak",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1769899082999,
+      "tag": "0002_rename-express-sessions-to-sessions",
+      "breakpoints": true
     }
   ]
 }

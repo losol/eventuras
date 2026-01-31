@@ -25,14 +25,14 @@ async function logTestAccounts() {
     .limit(10);
 
     if (testAccounts.length > 0) {
-      logger.info('📋 Test accounts available for login:');
+      logger.info('Test accounts available for login:');
       testAccounts.forEach(acc => {
         logger.info({
           accountId: acc.id,
           email: acc.email,
           name: acc.displayName,
           role: acc.systemRole || 'user',
-        }, `  → ${acc.displayName} (${acc.email})`);
+        }, `  -> ${acc.displayName} (${acc.email})`);
       });
     } else {
       logger.warn('No test accounts found. Run: pnpm db:seed');
@@ -54,15 +54,19 @@ async function main() {
   logger.info('Mailer initialized');
 
   const oidcProvider = await createOidcProvider();
-  const app = createServer(oidcProvider, mailer);
+  const app = await createServer(oidcProvider, mailer);
 
-  app.listen(config.port, () => {
+  try {
+    await app.listen({ port: config.port, host: '0.0.0.0' });
     logger.info({
       issuer: config.issuer,
       port: config.port,
       discoveryEndpoint: `${config.issuer}/.well-known/openid-configuration`
     }, 'Idem IdP listening');
-  });
+  } catch (err) {
+    logger.fatal({ error: err }, 'Failed to start server');
+    process.exit(1);
+  }
 }
 
 main().catch(error => {

@@ -1,25 +1,23 @@
-import { Router } from 'express';
+import type { FastifyPluginAsync } from 'fastify';
 import { db } from '../db/client';
 import { oauthClients } from '../db/schema/oauth';
 import { Logger } from '@eventuras/logger';
 
 const logger = Logger.create({ namespace: 'idem:routes:admin' });
 
-export function createAdminRoutes(): Router {
-  const router = Router();
-
+export const registerAdminRoutes: FastifyPluginAsync = async (fastify) => {
   /**
    * GET /api/admin/clients
    * Returns list of all OAuth clients
    * Requires authentication with Bearer token
    */
-  router.get('/api/admin/clients', async (req, res) => {
+  fastify.get('/api/admin/clients', async (request, reply) => {
     try {
       // Get access token from Authorization header
-      const authHeader = req.headers.authorization;
+      const authHeader = request.headers.authorization;
       if (!authHeader || !authHeader.startsWith('Bearer ')) {
         logger.warn('Missing or invalid Authorization header');
-        return res.status(401).json({ error: 'Unauthorized' });
+        return reply.code(401).send({ error: 'Unauthorized' });
       }
 
       const accessToken = authHeader.substring(7); // Remove 'Bearer '
@@ -28,11 +26,11 @@ export function createAdminRoutes(): Router {
       const parts = accessToken.split('.');
       if (parts.length !== 3) {
         logger.warn('Invalid JWT format');
-        return res.status(401).json({ error: 'Unauthorized' });
+        return reply.code(401).send({ error: 'Unauthorized' });
       }
 
       const payload = JSON.parse(
-        Buffer.from(parts[1], 'base64').toString()
+        Buffer.from(parts[1]!, 'base64').toString()
       );
 
       // Check if user has system_admin or admin_reader role
@@ -42,7 +40,7 @@ export function createAdminRoutes(): Router {
           { user: payload.email, systemRole },
           'Unauthorized access attempt to admin API'
         );
-        return res.status(403).json({ error: 'Forbidden' });
+        return reply.code(403).send({ error: 'Forbidden' });
       }
 
       // Fetch all clients from database
@@ -51,7 +49,7 @@ export function createAdminRoutes(): Router {
 
       logger.info({ count: clients.length, user: payload.email }, 'OAuth clients retrieved');
 
-      return res.json({
+      return reply.send({
         clients: clients.map((client) => ({
           id: client.id,
           clientId: client.clientId,
@@ -70,9 +68,7 @@ export function createAdminRoutes(): Router {
       });
     } catch (error) {
       logger.error({ error }, 'Error fetching OAuth clients');
-      return res.status(500).json({ error: 'Internal Server Error' });
+      return reply.code(500).send({ error: 'Internal Server Error' });
     }
   });
-
-  return router;
-}
+};

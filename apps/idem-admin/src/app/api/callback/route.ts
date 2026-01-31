@@ -42,7 +42,10 @@ export async function GET(request: Request): Promise<Response> {
 
     if (!storedState || !storedCodeVerifier) {
       logger.warn('Missing state or code verifier');
-      return new Response('Please restart the login process.', { status: 400 });
+      return new Response(errorPage('Session expired', 'Your login session has expired. Please try again.'), {
+        status: 400,
+        headers: { 'Content-Type': 'text/html' },
+      });
     }
 
     // Exchange code for tokens
@@ -139,8 +142,72 @@ export async function GET(request: Request): Promise<Response> {
     });
   } catch (error) {
     logger.error({ error }, 'OAuth callback error');
-    return new Response('An unexpected error occurred. Please restart the login process.', {
+    return new Response(errorPage('Login failed', 'An unexpected error occurred during login.'), {
       status: 500,
+      headers: { 'Content-Type': 'text/html' },
     });
   }
+}
+
+function errorPage(title: string, message: string): string {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${title} - Idem Admin</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      color: #e2e8f0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .container {
+      text-align: center;
+      max-width: 400px;
+    }
+    .icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: #f8fafc;
+    }
+    p {
+      color: #94a3b8;
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+    .button {
+      display: inline-block;
+      background: #3b82f6;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      text-decoration: none;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+    .button:hover {
+      background: #2563eb;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="icon">⚠️</div>
+    <h1>${title}</h1>
+    <p>${message}</p>
+    <a href="/api/login" class="button">Try Again</a>
+  </div>
+</body>
+</html>`;
 }

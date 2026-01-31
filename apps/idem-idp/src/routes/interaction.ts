@@ -1,46 +1,60 @@
-import { Router, json, urlencoded } from 'express';
+import type { FastifyPluginAsync, FastifyReply } from 'fastify';
 import { Logger } from '@eventuras/logger';
 
 const logger = Logger.create({ namespace: 'idem:interaction' });
 
+interface InteractionRoutesOptions {
+  provider: any;
+}
+
+interface InteractionParams {
+  uid: string;
+}
+
+interface LoginBody {
+  accountId: string;
+}
+
+interface ConsentBody {
+  rejectedScopes?: string[];
+  rejectedClaims?: string[];
+}
+
+// Simple cookie clearing - just the essential cookies with path=/
+const cookieNames = [
+  '_session', '_session.sig',
+  '_interaction', '_interaction.sig',
+  '_interaction_resume', '_interaction_resume.sig',
+  '_state', '_state.sig',
+  'idem.sid',
+];
+
+function clearOidcCookies(reply: FastifyReply) {
+  for (const name of cookieNames) {
+    reply.clearCookie(name, { path: '/' });
+  }
+}
+
 /**
- * Create interaction routes for OIDC flows
+ * Interaction routes plugin for OIDC flows
  * These are API endpoints that handle login and consent
  */
-export function createInteractionRoutes(provider: any): Router {
-  const router = Router();
-
-  // Body parsers will be applied per-route, not to all routes
-  const bodyParser = [json(), urlencoded({ extended: false })];
-
-  // Simple cookie clearing - just the essential cookies with path=/
-  const cookieNames = [
-    '_session', '_session.sig',
-    '_interaction', '_interaction.sig',
-    '_interaction_resume', '_interaction_resume.sig',
-    '_state', '_state.sig',
-    'idem.sid',
-  ];
-
-  function clearOidcCookies(res: any) {
-    for (const name of cookieNames) {
-      res.clearCookie(name, { path: '/' });
-    }
-  }
+export const registerInteractionRoutes: FastifyPluginAsync<InteractionRoutesOptions> = async (fastify, opts) => {
+  const { provider } = opts;
 
   /**
    * GET /interaction/clear-session - redirect to /session/clear
    */
-  router.get('/interaction/clear-session', (_req, res) => {
-    res.redirect('/session/clear');
+  fastify.get('/interaction/clear-session', async (_request, reply) => {
+    return reply.redirect('/session/clear');
   });
 
   /**
    * POST /interaction/clear-session
    */
-  router.post('/interaction/clear-session', (_req, res) => {
-    clearOidcCookies(res);
-    res.json({ success: true, message: 'Session cookies cleared' });
+  fastify.post('/interaction/clear-session', async (_request, reply) => {
+    clearOidcCookies(reply);
+    return reply.send({ success: true, message: 'Session cookies cleared' });
   });
 
   /**
@@ -48,17 +62,18 @@ export function createInteractionRoutes(provider: any): Router {
    * Returns interaction details for frontend rendering
    * Note: Must be /interaction/* (not /api/interaction/*) to match OIDC cookie paths
    */
-  router.get('/interaction/:uid/details', async (req, res) => {
-    const { uid } = req.params;
+  fastify.get<{ Params: InteractionParams }>('/interaction/:uid/details', async (request, reply) => {
+    const { uid } = request.params;
 
     try {
       logger.info({
         uid,
-        cookies: req.headers.cookie,
-        hasInteractionCookie: req.headers.cookie?.includes('_interaction'),
+        cookies: request.headers.cookie,
+        hasInteractionCookie: request.headers.cookie?.includes('_interaction'),
       }, 'Fetching interaction details');
 
-      const details = await provider.interactionDetails(req, res);
+      // Use raw Node.js request/response for oidc-provider compatibility
+      const details = await provider.interactionDetails(request.raw, reply.raw);
 
       logger.info({
         uid,
@@ -66,7 +81,7 @@ export function createInteractionRoutes(provider: any): Router {
         clientId: details.params.client_id,
       }, 'Interaction details requested');
 
-      res.json({
+      return reply.send({
         uid: details.uid,
         prompt: details.prompt,
         params: details.params,
@@ -79,7 +94,7 @@ export function createInteractionRoutes(provider: any): Router {
         errorMessage: err instanceof Error ? err.message : 'Unknown error',
         errorStack: err instanceof Error ? err.stack : undefined,
       }, 'Failed to get interaction details');
-      res.status(500).json({
+      return reply.code(500).send({
         error: 'Failed to get interaction details',
         details: err instanceof Error ? err.message : 'Unknown error',
       });
@@ -91,26 +106,28 @@ export function createInteractionRoutes(provider: any): Router {
    * Process login submission (dev: auto-login, prod: verify credentials)
    * Note: Must be /interaction/* (not /api/interaction/*) to match OIDC cookie paths
    */
-  router.post('/interaction/:uid/login', ...bodyParser, async (req, res) => {
-    const { uid } = req.params;
-    const { accountId } = req.body;
+  fastify.post<{ Params: InteractionParams; Body: LoginBody }>('/interaction/:uid/login', async (request, reply) => {
+    const { uid } = request.params;
+    const { accountId } = request.body;
 
     try {
       logger.info({
         uid,
         accountId,
-        protocol: req.protocol,
-        secure: req.secure,
-        forwardedProto: req.get('x-forwarded-proto'),
-        host: req.get('host'),
+        protocol: request.protocol,
+        forwardedProto: request.headers['x-forwarded-proto'],
+        host: request.headers.host,
       }, 'Processing login');
 
       // TODO: In production, verify credentials here
       // For dev: accept any accountId (from seed data or test)
 
       // IMPORTANT: interactionFinished() sends response (redirect)
-      // Do NOT send res.json() after this - it will fail with "headers already sent"
-      await provider.interactionFinished(req, res, {
+      // Use raw Node.js request/response for oidc-provider compatibility
+      // Use hijack() to tell Fastify we're handling the response ourselves
+      reply.hijack();
+
+      await provider.interactionFinished(request.raw, reply.raw, {
         login: { accountId },
       }, { mergeWithLastSubmission: false });
 
@@ -120,8 +137,9 @@ export function createInteractionRoutes(provider: any): Router {
     } catch (err) {
       logger.error({ err, uid }, 'Login failed');
       // Only send error if interactionFinished didn't send response
-      if (!res.headersSent) {
-        res.status(500).json({ error: 'Login failed' });
+      if (!reply.raw.headersSent) {
+        reply.raw.writeHead(500, { 'Content-Type': 'application/json' });
+        reply.raw.end(JSON.stringify({ error: 'Login failed' }));
       }
     }
   });
@@ -131,33 +149,80 @@ export function createInteractionRoutes(provider: any): Router {
    * Process consent submission
    * Note: Must be /interaction/* (not /api/interaction/*) to match OIDC cookie paths
    */
-  router.post('/interaction/:uid/consent', ...bodyParser, async (req, res) => {
-    const { uid } = req.params;
-    const { rejectedScopes = [], rejectedClaims = [] } = req.body;
+  fastify.post<{ Params: InteractionParams; Body: ConsentBody }>('/interaction/:uid/consent', async (request, reply) => {
+    const { uid } = request.params;
+    const { rejectedScopes = [], rejectedClaims = [] } = request.body || {};
 
     try {
       logger.info({
         uid,
         rejectedScopes,
         rejectedClaims,
-        cookies: req.headers.cookie,
+        cookies: request.headers.cookie,
       }, 'Processing consent');
 
+      // Get interaction details to access session and requested scopes
+      const details = await provider.interactionDetails(request.raw, reply.raw);
+      const { session, params, prompt } = details;
+
+      if (!session) {
+        throw new Error('No session found for consent');
+      }
+
+      // Create a Grant to persist the consent
+      const grant = new provider.Grant({
+        accountId: session.accountId,
+        clientId: params.client_id as string,
+      });
+
+      // Add requested scopes (minus any rejected ones)
+      const requestedScopes = (prompt.details.missingOIDCScope as string[] || []);
+      const approvedScopes = requestedScopes.filter((s: string) => !rejectedScopes.includes(s));
+      if (approvedScopes.length > 0) {
+        grant.addOIDCScope(approvedScopes.join(' '));
+      }
+
+      // Add requested claims (minus any rejected ones)
+      const requestedClaims = (prompt.details.missingOIDCClaims as string[] || []);
+      const approvedClaims = requestedClaims.filter((c: string) => !rejectedClaims.includes(c));
+      if (approvedClaims.length > 0) {
+        grant.addOIDCClaims(approvedClaims);
+      }
+
+      // If offline_access was requested and approved, add refresh token scope
+      if (params.scope?.includes('offline_access') && !rejectedScopes.includes('offline_access')) {
+        grant.addOIDCScope('offline_access');
+      }
+
+      // Save the grant and get grantId
+      const grantId = await grant.save();
+
+      logger.info({
+        uid,
+        grantId,
+        accountId: session.accountId,
+        clientId: params.client_id,
+        approvedScopes,
+        approvedClaims,
+      }, 'Grant saved for consent');
+
       // IMPORTANT: interactionFinished() sends response (redirect)
-      await provider.interactionFinished(req, res, {
-        consent: { rejectedScopes, rejectedClaims },
+      // Use hijack() to tell Fastify we're handling the response ourselves
+      reply.hijack();
+
+      await provider.interactionFinished(request.raw, reply.raw, {
+        consent: { grantId },
       }, { mergeWithLastSubmission: true });
 
-      logger.info({ uid }, 'Consent granted');
+      logger.info({ uid, grantId }, 'Consent granted');
       // Provider handles response - just return
       return;
     } catch (err) {
       logger.error({ err, uid }, 'Consent failed');
-      if (!res.headersSent) {
-        res.status(500).json({ error: 'Consent failed' });
+      if (!reply.raw.headersSent) {
+        reply.raw.writeHead(500, { 'Content-Type': 'application/json' });
+        reply.raw.end(JSON.stringify({ error: 'Consent failed' }));
       }
     }
   });
-
-  return router;
-}
+};
