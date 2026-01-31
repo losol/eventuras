@@ -15,6 +15,34 @@
       "loading": "Logger inn...",
       "error": "Innlogging feilet. Vennligst prøv igjen."
     },
+    "otp": {
+      "emailStep": {
+        "title": "Logg inn med e-post",
+        "description": "Skriv inn e-postadressen din for å motta en innloggingskode",
+        "emailLabel": "E-postadresse",
+        "emailPlaceholder": "deg@eksempel.no",
+        "sendCode": "Send kode",
+        "sending": "Sender...",
+        "success": "Sjekk e-posten din for innloggingskoden",
+        "error": "Kunne ikke sende kode. Vennligst prøv igjen.",
+        "rateLimited": "For mange forsøk. Vennligst vent {minutes} minutter.",
+        "invalidEmail": "Vennligst skriv inn en gyldig e-postadresse"
+      },
+      "codeStep": {
+        "title": "Skriv inn innloggingskode",
+        "description": "Vi sendte en 6-sifret kode til {email}",
+        "codeLabel": "Innloggingskode",
+        "codePlaceholder": "000000",
+        "verify": "Bekreft",
+        "verifying": "Bekrefter...",
+        "resend": "Send kode på nytt",
+        "changeEmail": "Bruk en annen e-post",
+        "error": "Ugyldig kode. Vennligst prøv igjen.",
+        "expired": "Koden har utløpt. Vennligst be om en ny.",
+        "maxAttempts": "For mange feilede forsøk. Vennligst be om en ny kode.",
+        "expiresIn": "Koden utløper om {minutes} minutter"
+      }
+    },
     "consent": {
       "title": "Gi Tillatelser",
       "description": "{clientName} ber om tilgang til kontoen din",
