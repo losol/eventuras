@@ -47,6 +47,8 @@
     "@eventuras/typescript-config": "workspace:*",
     "@eventuras/vite-config": "workspace:*",
     "@testing-library/react": "^16.3.2",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^5.1.2",
     "lightningcss": "^1.31.1",
     "typescript": "^5.9.3",

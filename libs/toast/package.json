@@ -24,6 +24,8 @@
     "@eventuras/eslint-config": "workspace:*",
     "@eventuras/typescript-config": "workspace:*",
     "@eventuras/vite-config": "workspace:*",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
     "@xstate/react": "6.0.0",
     "uuid": "^13.0.0",
     "vite": "^7.3.1",

@@ -35,7 +35,7 @@
     "@eventuras/vite-config": "workspace:*",
     "@payloadcms/next": "3.74.0",
     "@types/node": "^24.10.6",
-    "@types/react": "^19.2.10",
+    "@types/react": "^19",
     "@types/uuid": "^11.0.0",
     "next": "^16.1.6",
     "payload": "3.74.0",
