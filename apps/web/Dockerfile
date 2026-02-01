@@ -3,7 +3,7 @@ FROM node:alpine AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 COPY package.json ./
-RUN corepack enable && corepack prepare pnpm@10.28.1 --activate && pnpm install --ignore-scripts
+RUN corepack enable && corepack prepare pnpm@10.28.2 --activate && pnpm install --ignore-scripts
 
 # Build next.js
 FROM node:alpine AS builder

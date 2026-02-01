@@ -21,7 +21,7 @@ RUN apt-get update && apt-get upgrade -y && \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && corepack enable \
-    && corepack prepare pnpm@10.28.1 --activate \
+    && corepack prepare pnpm@10.28.2 --activate \
     && pnpm config set store-dir /pnpm/store
 
 ##################

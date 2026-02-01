@@ -8,7 +8,7 @@ FROM node:22-alpine AS prune
 WORKDIR /repo
 
 # Enable pnpm and use turbo via pnpm dlx
-RUN corepack enable && corepack prepare pnpm@10.28.1 --activate
+RUN corepack enable && corepack prepare pnpm@10.28.2 --activate
 
 # Copy repo files including lockfile for turbo prune
 COPY package.json turbo.json tsconfig.json pnpm-workspace.yaml pnpm-lock.yaml ./
@@ -25,7 +25,7 @@ WORKDIR /srv
 
 # Copy pruned source and install dependencies
 COPY --from=prune /repo/out/full/ ./
-RUN corepack enable && corepack prepare pnpm@10.28.1 --activate && \
+RUN corepack enable && corepack prepare pnpm@10.28.2 --activate && \
     pnpm install --frozen-lockfile=false && \
     pnpm dlx turbo@^2 run build --filter=@eventuras/idem-idp
 
