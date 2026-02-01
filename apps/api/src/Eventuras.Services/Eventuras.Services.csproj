@@ -15,9 +15,9 @@
     <ProjectReference Include="..\..\src\Losol.Communication.Sms\Losol.Communication.Sms.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="DocumentFormat.OpenXml" Version="3.3.0" />
+    <PackageReference Include="DocumentFormat.OpenXml" Version="3.4.1" />
     <PackageReference Include="Markdig" Version="0.44.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="10.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="10.0.2" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Shared\Templates\Certificates\">

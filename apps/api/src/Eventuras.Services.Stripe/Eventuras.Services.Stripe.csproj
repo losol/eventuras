@@ -6,8 +6,8 @@
     <ProjectReference Include="..\Eventuras.Services\Eventuras.Services.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Stripe.net" Version="50.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="10.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.1" />
+    <PackageReference Include="Stripe.net" Version="50.3.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="10.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.2" />
   </ItemGroup>
 </Project>
