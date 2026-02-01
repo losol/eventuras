@@ -17,7 +17,7 @@ COPY libs/typescript-config/package.json ./libs/typescript-config/package.json
 
 # Enable pnpm and install all dependencies (including devDependencies for build)
 RUN corepack enable && \
-    COREPACK_ENABLE_STRICT=0 corepack prepare pnpm@10.28.1 --activate && \
+    COREPACK_ENABLE_STRICT=0 corepack prepare pnpm@10.28.2 --activate && \
     pnpm install --ignore-scripts
 
 # Copy source files after install

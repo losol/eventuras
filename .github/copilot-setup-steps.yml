@@ -50,7 +50,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: '10.28.1'
+          version: '10.28.2'
 
       # Cache pnpm dependencies
       - name: Cache pnpm store

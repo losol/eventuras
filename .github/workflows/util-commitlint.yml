@@ -30,7 +30,7 @@ jobs:
       - name: Setup PNPM
         uses: pnpm/action-setup@v4
         with:
-          version: 10.28.1
+          version: 10.28.2
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
