@@ -31,6 +31,8 @@
     "@eventuras/eslint-config": "workspace:*",
     "@eventuras/typescript-config": "workspace:*",
     "@types/node": "24.0.3",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
     "postcss": "^8.5.6",
     "prettier": "^3.8.1",
     "tailwindcss": "^4.1.18",

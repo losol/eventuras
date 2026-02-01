@@ -28,6 +28,8 @@
   "devDependencies": {
     "@eventuras/eslint-config": "workspace:*",
     "@types/node": "^24.0.3",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
     "pagefind": "^1.4.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"

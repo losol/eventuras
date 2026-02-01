@@ -4,7 +4,7 @@ import { getCurrentSession } from '@eventuras/fides-auth-next/session';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Unauthorized } from '@eventuras/ratio-ui/blocks/Unauthorized';
 
-import { oauthConfig } from '@/utils/config';
+import { getOAuthConfig } from '@/utils/config';
 import { AdminNavbar } from '@/components/AdminNavbar';
 
 export const dynamic = 'force-dynamic';
@@ -23,7 +23,7 @@ type UserWithRole = {
 };
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  const session = await getCurrentSession(oauthConfig);
+  const session = await getCurrentSession(getOAuthConfig());
 
   // Not logged in - redirect to login
   if (!session?.user) {

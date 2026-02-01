@@ -91,11 +91,12 @@ const emailAdapter = smtpEnabled
       defaultFromAddress: 'noreply@eventuras.local',
       defaultFromName: 'Historia (Console Log)',
       // Log emails to console instead of sending
+      // Using type assertion for nodemailer's stream transport options
       transportOptions: {
         streamTransport: true,
         newline: 'unix',
         buffer: true,
-      },
+      } as Record<string, unknown>,
     });
 
 export default buildConfig({

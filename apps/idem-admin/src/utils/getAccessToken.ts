@@ -9,7 +9,7 @@ import {
 } from '@eventuras/fides-auth-next';
 import { Logger } from '@eventuras/logger';
 
-import { oauthConfig } from '@/utils/config';
+import { getOAuthConfig } from '@/utils/config';
 
 const logger = Logger.create({ namespace: 'idem-admin:utils:getAccessToken' });
 
@@ -29,7 +29,7 @@ export async function getAccessToken(): Promise<string | null> {
     return null;
   }
 
-  const session = await getCurrentSession(oauthConfig);
+  const session = await getCurrentSession(getOAuthConfig());
 
   if (!session) {
     logger.warn('Session decoding failed');
@@ -53,7 +53,7 @@ export async function getAccessToken(): Promise<string | null> {
     }
 
     try {
-      const refreshedSession = await refreshCurrentSession(oauthConfig);
+      const refreshedSession = await refreshCurrentSession(getOAuthConfig());
 
       if (!refreshedSession) {
         logger.info('Token refresh failed - user needs to re-authenticate');
