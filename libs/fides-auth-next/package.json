@@ -39,13 +39,13 @@
   "devDependencies": {
     "@eventuras/vite-config": "workspace:*",
     "vite": "^7.3.1",
-    "xstate": "^5.25.1"
+    "xstate": "^5.26.0"
   },
   "peerDependencies": {
     "@xstate/react": "^5.0.0 || ^6.0.0",
     "@xstate/store": "^3.11.0",
     "next": "16.0.7",
-    "react": "^19.2.3",
+    "react": "^19.2.4",
     "xstate": "^5.0.0"
   }
 }

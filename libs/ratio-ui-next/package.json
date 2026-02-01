@@ -32,15 +32,11 @@
     "@eventuras/eslint-config": "workspace:*",
     "@eventuras/typescript-config": "workspace:*",
     "@eventuras/vite-config": "workspace:*",
-    "@types/react": "^19.2.9",
-    "@types/react-dom": "^19.2.3",
-    "next": "16.1.4",
+    "next": "16.1.6",
     "typescript": "5.9.3",
     "vite": "7.3.1"
   },
   "peerDependencies": {
-    "next": "^15.0.0 || ^16.0.0",
-    "react": "^19.2.3",
-    "react-dom": "^19.2.3"
+    "next": "^16.0.0"
   }
 }
