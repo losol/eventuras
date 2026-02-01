@@ -26,6 +26,14 @@ export interface SEOConfig {
 }
 
 /**
+ * Image field structure used by Payload (with media and caption)
+ */
+export interface ImageField {
+  media?: string | Media | null;
+  caption?: unknown;
+}
+
+/**
  * Document with SEO fields and common content fields
  */
 export interface SEODocument extends SEOFields {
@@ -33,7 +41,7 @@ export interface SEODocument extends SEOFields {
   slug?: string | null;
   resourceId?: string | null;
   locale?: string | null;
-  image?: string | Media | null;
+  image?: string | Media | ImageField | null;
   featuredImage?: string | Media | null;
   lead?: string | null;
   excerpt?: string | null;

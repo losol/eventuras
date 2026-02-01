@@ -59,7 +59,7 @@ export const richText: RichText = (
               condition: ({ linkType }) => linkType !== 'internal',
             },
             label: ({ t }) => t('fields:enterURL'),
-            validate: (value, { siblingData }) => {
+            validate: (value: string | null | undefined, { siblingData }: { siblingData?: { linkType?: string } }) => {
               if (siblingData?.linkType !== 'internal' && !value) {
                 return 'URL is required for external links';
               }

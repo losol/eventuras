@@ -6,7 +6,7 @@ import { globalGETRateLimit } from '@eventuras/fides-auth-next/request';
 import { createSession } from '@eventuras/fides-auth-next/session';
 import { Logger } from '@eventuras/logger';
 
-import { config, oauthConfig, redirect_uri } from '@/utils/config';
+import { config, getOAuthConfig, redirect_uri } from '@/utils/config';
 
 const logger = Logger.create({
   namespace: 'idem-admin:auth',
@@ -49,6 +49,7 @@ export async function GET(request: Request): Promise<Response> {
     }
 
     // Exchange code for tokens
+    const oauthConfig = getOAuthConfig();
     logger.debug(
       {
         issuer: oauthConfig.issuer,

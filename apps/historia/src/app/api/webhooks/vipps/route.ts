@@ -38,7 +38,7 @@ type TransactionStatus = 'pending' | 'authorized' | 'captured' | 'completed' | '
  * @param vippsData - Verified data from Vipps
  */
 async function updateUserFromVipps(
-  payload: ReturnType<typeof getPayload>,
+  payload: Awaited<ReturnType<typeof getPayload>>,
   userId: string,
   vippsData: {
     given_name?: string;
@@ -701,7 +701,8 @@ async function processPaymentEvent(businessEventId: string, payload: WebhookPayl
 
       // Update existing logged-in user with Vipps data
       if (customerId && paymentDetails.userDetails) {
-        await updateUserFromVipps(payloadInstance, customerId, {
+        const userId = typeof customerId === 'string' ? customerId : customerId.id;
+        await updateUserFromVipps(payloadInstance, userId, {
           given_name: paymentDetails.userDetails.firstName,
           middle_name: undefined, // Vipps userDetails doesn't have middle name
           family_name: paymentDetails.userDetails.lastName,

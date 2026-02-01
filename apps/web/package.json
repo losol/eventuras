@@ -59,6 +59,8 @@
     "@eventuras/eslint-config": "workspace:*",
     "@next/bundle-analyzer": "16.1.6",
     "@types/node": "24.0.3",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
     "@typescript-eslint/eslint-plugin": "^8.54.0",
     "@typescript-eslint/parser": "^8.54.0",
     "autoprefixer": "^10.4.24",

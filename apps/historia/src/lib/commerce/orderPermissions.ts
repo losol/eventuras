@@ -33,7 +33,9 @@ import { isOrderEditableByCommerce } from './orderStatusRules';
  * }
  * ```
  */
-export const ordersUpdateAccess: Access = ({ req, data, doc }) => {
+export const ordersUpdateAccess: Access = (args) => {
+  const { req, data } = args;
+  const doc = (args as { doc?: unknown }).doc;
   if (!req.user || !('email' in req.user)) return false;
 
   // System admins can always update

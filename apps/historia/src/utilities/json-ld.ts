@@ -321,7 +321,7 @@ function extractTermDescription(term: Term): string | undefined {
   const definitionText = primaryDefinition
     ? primaryDefinition.shortDefinition || extractPlainText(primaryDefinition.definition)
     : '';
-  return definitionText || term.context;
+  return definitionText || term.context || undefined;
 }
 
 /**

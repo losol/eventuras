@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { buildPKCEOptions, discoverAndBuildAuthorizationUrl } from '@eventuras/fides-auth-next';
 import { globalGETRateLimit } from '@eventuras/fides-auth-next/request';
 
-import { oauthConfig } from '@/utils/config';
+import { getOAuthConfig } from '@/utils/config';
 
 export async function GET(request: NextRequest) {
   // Rate limit check
@@ -21,8 +21,9 @@ export async function GET(request: NextRequest) {
   const returnTo = isValidReturnTo ? rawReturnTo : '/admin';
 
   // Build PKCE & authorization URL
-  const pkce = await buildPKCEOptions(oauthConfig);
-  const authorizationUrl = await discoverAndBuildAuthorizationUrl(oauthConfig, pkce);
+  const config = getOAuthConfig();
+  const pkce = await buildPKCEOptions(config);
+  const authorizationUrl = await discoverAndBuildAuthorizationUrl(config, pkce);
 
   // Create redirect response
   const response = NextResponse.redirect(authorizationUrl.toString());

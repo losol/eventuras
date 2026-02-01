@@ -4,7 +4,7 @@ import { getCurrentSession } from '@eventuras/fides-auth-next/session';
 import { Logger } from '@eventuras/logger';
 
 import { getAccessToken } from '@/utils/getAccessToken';
-import { oauthConfig } from '@/utils/config';
+import { getOAuthConfig } from '@/utils/config';
 
 const logger = Logger.create({ namespace: 'idem-admin:utils:getAuthStatus' });
 
@@ -35,7 +35,7 @@ export async function getAuthStatus(): Promise<AuthStatus> {
       return { authenticated: false };
     }
 
-    const session = await getCurrentSession(oauthConfig);
+    const session = await getCurrentSession(getOAuthConfig());
 
     if (!session?.user) {
       return { authenticated: false };

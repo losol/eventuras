@@ -10,7 +10,6 @@ import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Image } from '@eventuras/ratio-ui/core/Image';
 import { Text } from '@eventuras/ratio-ui/core/Text';
-import { ImageCard } from '@eventuras/ratio-ui/layout/ImageCard';
 import { Stack } from '@eventuras/ratio-ui/layout/Stack';
 import { Link } from '@eventuras/ratio-ui-next';
 import { useToast } from '@eventuras/toast';
@@ -94,8 +93,8 @@ export const ProductsBlock: React.FC<ProductBlockProps> = (props) => {
   return (
     <Stack>
       {products.map((product) => {
-        const imageUrl = getImageUrl(product.image, 'standard');
-        const showImage = props.showImage !== false && imageUrl;
+        const imageUrl = getImageUrl(product.image, 'landscape');
+        const showImage = props.showImage !== false && !!imageUrl;
 
         const isAdding = addingProductId === product.id;
 
