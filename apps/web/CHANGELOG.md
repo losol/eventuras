@@ -1,5 +1,21 @@
 # @eventuras/web
 
+## 2.27.9
+
+### Patch Changes
+
+- Updated dependencies [c32e23c]
+- Updated dependencies [c32e23c]
+- Updated dependencies [39bd56b]
+- Updated dependencies [c32e23c]
+- Updated dependencies [c32e23c]
+  - @eventuras/datatable@0.5.7
+  - @eventuras/ratio-ui@0.11.0
+  - @eventuras/smartform@0.3.0
+  - @eventuras/markdown@5.0.0
+  - @eventuras/ratio-ui-next@0.1.8
+  - @eventuras/toast@0.2.7
+
 ## 2.27.8
 
 ### Patch Changes

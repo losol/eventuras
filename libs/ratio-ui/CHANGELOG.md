@@ -1,5 +1,61 @@
 # @eventuras/ratio-ui
 
+## 0.11.0
+
+### Minor Changes
+
+- c32e23c: ## UI Components: Form improvements and new SearchField
+
+  ### Bug Fixes
+  - **Label component**: Fixed critical bug where children were not rendered inside `<AriaLabel>` tags, causing labels to appear empty
+
+  ### Features
+  - **SearchField component**: New search input with built-in 300ms debouncing, search icon, and clear button
+    - Dark mode support
+    - Configurable debounce delay
+    - forwardRef support
+    - Uses formStyles.defaultInputStyle for consistency
+  - **ToggleButtonGroup**: Added dark mode styling with proper border rendering using z-index layering
+
+  ### Improvements
+  - **SearchField stories**: Updated to demonstrate new debouncing API
+  - **AutoComplete**: Exports raw React Aria SearchField for composable patterns
+  - Removed DebouncedInput export (replaced by SearchField with built-in debouncing)
+
+- 39bd56b: Add Panel component for alerts, callouts, and notices
+
+  **New Component:**
+  - **Panel**: Versatile container component for displaying contextual messages
+    - Three variants: `alert`, `callout`, `notice`
+    - Five intents: `info`, `success`, `warning`, `error`, `neutral`
+    - Automatic ARIA `role="alert"` for alert variant
+    - Dark mode support
+    - Customizable via className prop
+
+- c32e23c: ## Refactor: Form components and UI improvements
+
+  ### Breaking Changes
+  - **TextField**: Now uses `useController` instead of `register` for better field state access
+    - Provides direct access to field errors and validation state
+    - More consistent with React Hook Form best practices
+
+  ### Bug Fixes
+  - **Label component**: Fixed critical bug where children were not rendered inside `<AriaLabel>` tags
+  - **SearchField**: Removed duplicate clear button by relying on React Aria's built-in clear functionality
+  - **React Hooks violations**: Removed all conditional returns before hook calls in form components (TextField, Input, NumberInput, Select, CheckboxInput, HiddenInput)
+  - **UserLookup**: Fixed Popover positioning error by adding explicit `triggerRef` prop
+
+  ### Features
+  - **SearchField component** (ratio-ui): New component with built-in 300ms debouncing, search icon, and dark mode support
+  - **ToggleButtonGroup**: Added dark mode styling and fixed border rendering with z-index layering
+  - **Form consistency**: Refactored Select and PhoneInput to use `useController` for consistent patterns across controlled components
+
+  ### Pattern Improvements
+
+  All smartform components now follow consistent patterns:
+  - **Uncontrolled inputs** (Input, NumberInput, CheckboxInput, HiddenInput): Use `register`
+  - **Controlled components** (TextField, Select, PhoneInput): Use `useController`
+
 ## 0.10.1
 
 ### Patch Changes
