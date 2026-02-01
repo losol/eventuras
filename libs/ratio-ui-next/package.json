@@ -32,6 +32,8 @@
     "@eventuras/eslint-config": "workspace:*",
     "@eventuras/typescript-config": "workspace:*",
     "@eventuras/vite-config": "workspace:*",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
     "next": "16.1.6",
     "typescript": "5.9.3",
     "vite": "7.3.1"
