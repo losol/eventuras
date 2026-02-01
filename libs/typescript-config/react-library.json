@@ -7,10 +7,6 @@
     "moduleResolution": "Bundler",
     "jsx": "react-jsx",
     "lib": ["ES2022", "DOM"],
-    "types": [
-      "react",
-      "react-dom"
-    ],
     "skipLibCheck": true,
     "noEmit": false,
     "outDir": "dist"
