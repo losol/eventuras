@@ -521,10 +521,6 @@
 }
 
 @media print {
-  :global(.app-header) {
-    display: none;
-  }
-
   .container {
     color: #000;
     -webkit-print-color-adjust: exact;
