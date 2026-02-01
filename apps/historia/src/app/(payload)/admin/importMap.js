@@ -42,7 +42,8 @@ import { ImportExportProvider as ImportExportProvider_cdf7e044479f899a31f804427d
 import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 import { TenantSelectionProvider as TenantSelectionProvider_d6d5f193a167989e2ee7d14202901e62 } from '@payloadcms/plugin-multi-tenant/rsc'
 import { default as default_18a3a5ffaa32dfaa095af0197c89e3af } from '@/collections/Orders/views/PackingQueuePage'
-import { CollectionCards as CollectionCards_ab83ff7e88da8d3530831f296ec4756a } from '@payloadcms/ui/rsc'
+import { default as default_2489fe7b0e47532b4393bba9a15ce909 } from '@/collections/Orders/views/SalesReportPage'
+import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
 export const importMap = {
   "@payloadcms/plugin-multi-tenant/client#TenantField": TenantField_1d0591e3cf4f332c83a86da13a0de59a,
@@ -89,5 +90,6 @@ export const importMap = {
   "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24,
   "@payloadcms/plugin-multi-tenant/rsc#TenantSelectionProvider": TenantSelectionProvider_d6d5f193a167989e2ee7d14202901e62,
   "@/collections/Orders/views/PackingQueuePage#default": default_18a3a5ffaa32dfaa095af0197c89e3af,
-  "@payloadcms/ui/rsc#CollectionCards": CollectionCards_ab83ff7e88da8d3530831f296ec4756a
+  "@/collections/Orders/views/SalesReportPage#default": default_2489fe7b0e47532b4393bba9a15ce909,
+  "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }

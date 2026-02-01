@@ -1,0 +1,737 @@
+.container {
+  max-width: 1200px;
+}
+
+.backLinkRow {
+  margin-bottom: calc(var(--base) * 1.5);
+}
+
+.heading {
+  margin-bottom: calc(var(--base) * 0.5);
+}
+
+.dateRangeDisplay {
+  display: none;
+  margin: 0 0 calc(var(--base) * 1.5) 0;
+  font-size: 1rem;
+  color: var(--theme-elevation-600);
+}
+
+.dateRangeSection {
+  display: flex;
+  align-items: flex-end;
+  gap: calc(var(--base) * 1.5);
+  margin-bottom: calc(var(--base) * 2);
+  flex-wrap: wrap;
+}
+
+.presetSelector {
+  display: flex;
+  gap: 0;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--theme-elevation-150);
+}
+
+.presetButton {
+  padding: calc(var(--base) * 0.75) calc(var(--base) * 1.25);
+  background: var(--theme-elevation-0);
+  border: none;
+  border-right: 1px solid var(--theme-elevation-150);
+  font-size: 0.875rem;
+  cursor: pointer;
+  color: var(--theme-text);
+  transition: background 0.15s ease;
+}
+
+.presetButton:last-child {
+  border-right: none;
+}
+
+.presetButton:hover {
+  background: var(--theme-elevation-50);
+}
+
+.presetButtonActive {
+  background: var(--theme-elevation-100);
+  font-weight: 500;
+}
+
+.customDateInputs {
+  display: flex;
+  gap: calc(var(--base) * 1.5);
+}
+
+.dateInputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base) * 0.5);
+}
+
+.dateInputGroup label {
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.dateInput {
+  padding: calc(var(--base) * 0.75) calc(var(--base) * 1);
+  border: 1px solid var(--theme-elevation-150);
+  border-radius: 4px;
+  font-size: 1rem;
+  background: var(--theme-elevation-0);
+  color: var(--theme-text);
+}
+
+.dateInput:focus {
+  outline: none;
+  border-color: var(--theme-elevation-400);
+}
+
+.actionsRow {
+  margin-bottom: calc(var(--base) * 2);
+  display: flex;
+  gap: var(--base);
+}
+
+.error {
+  color: var(--theme-error-500);
+  margin-bottom: calc(var(--base) * 2);
+}
+
+.reportSection {
+  margin-bottom: calc(var(--base) * 3);
+}
+
+.reportSection h2 {
+  margin-bottom: calc(var(--base) * 1.5);
+  padding-bottom: calc(var(--base) * 0.5);
+  border-bottom: 1px solid var(--theme-elevation-150);
+}
+
+.reportTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.reportTable th,
+.reportTable td {
+  padding: calc(var(--base) * 0.75);
+  text-align: left;
+  border-bottom: 1px solid var(--theme-elevation-100);
+}
+
+.reportTable th {
+  font-weight: 600;
+  background: var(--theme-elevation-50);
+}
+
+.reportTable tbody tr:hover {
+  background: var(--theme-elevation-50);
+}
+
+.rightAlign {
+  text-align: right;
+}
+
+.totalRow {
+  font-weight: 600;
+  background: var(--theme-elevation-100);
+}
+
+.totalRow td {
+  border-top: 2px solid var(--theme-elevation-200);
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: calc(var(--base) * 1.5);
+  margin-bottom: calc(var(--base) * 1.5);
+}
+
+.summaryCard {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base) * 0.5);
+  padding: calc(var(--base) * 1.5);
+  background: var(--theme-elevation-50);
+  border-radius: 8px;
+  border: 1px solid var(--theme-elevation-100);
+}
+
+.summaryLabel {
+  font-size: 0.875rem;
+  color: var(--theme-elevation-600);
+  font-weight: 500;
+}
+
+.summaryValue {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.transactionCount {
+  color: var(--theme-elevation-500);
+  font-size: 0.875rem;
+}
+
+/* Receipt card styles */
+.receipt {
+  border: 1px solid var(--theme-elevation-200);
+  border-radius: 8px;
+  padding: calc(var(--base) * 2);
+  margin-bottom: calc(var(--base) * 2);
+  background: var(--theme-elevation-0);
+  max-width: 800px;
+}
+
+.receiptHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: calc(var(--base) * 1.5);
+  margin-bottom: calc(var(--base) * 1.5);
+  border-bottom: 2px solid var(--theme-elevation-200);
+}
+
+.receiptTitle {
+  margin: 0 0 calc(var(--base) * 0.5) 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.receiptOrderId {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--theme-elevation-500);
+}
+
+.receiptOrderId a {
+  color: var(--theme-elevation-500);
+  text-decoration: none;
+}
+
+.receiptOrderId a:hover {
+  text-decoration: underline;
+}
+
+.receiptHeaderRight {
+  text-align: right;
+}
+
+.receiptDate {
+  margin: 0;
+  font-weight: 500;
+}
+
+.receiptStatus {
+  margin: calc(var(--base) * 0.25) 0 0 0;
+  font-size: 0.875rem;
+  color: var(--theme-elevation-600);
+}
+
+.receiptTaxExempt {
+  margin: calc(var(--base) * 0.25) 0 0 0;
+  color: var(--theme-error-500);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.receiptInfo {
+  margin-bottom: calc(var(--base) * 1.5);
+}
+
+.receiptCustomer h4 {
+  margin: 0 0 calc(var(--base) * 0.5) 0;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--theme-elevation-500);
+  letter-spacing: 0.05em;
+}
+
+.receiptCustomerName {
+  margin: 0;
+  font-weight: 500;
+}
+
+.receiptCustomer p {
+  margin: calc(var(--base) * 0.25) 0;
+}
+
+.receiptAddress {
+  font-style: normal;
+  margin-top: calc(var(--base) * 0.5);
+  line-height: 1.5;
+}
+
+.receiptTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: calc(var(--base) * 1.5);
+  font-size: 0.875rem;
+}
+
+.receiptTable th {
+  text-align: left;
+  padding: calc(var(--base) * 0.5);
+  border-bottom: 2px solid var(--theme-elevation-200);
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--theme-elevation-500);
+}
+
+.receiptTable td {
+  padding: calc(var(--base) * 0.5);
+  border-bottom: 1px solid var(--theme-elevation-100);
+}
+
+.receiptTotals {
+  margin-left: auto;
+  width: 280px;
+  border-top: 2px solid var(--theme-elevation-200);
+  padding-top: calc(var(--base) * 1);
+}
+
+.receiptTotalLine {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: calc(var(--base) * 0.5);
+  color: var(--theme-elevation-600);
+}
+
+.receiptTotalFinal {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.125rem;
+  font-weight: 700;
+  border-top: 1px solid var(--theme-elevation-100);
+  padding-top: calc(var(--base) * 0.5);
+  margin-top: calc(var(--base) * 0.5);
+}
+
+.receiptTransactions {
+  margin-top: calc(var(--base) * 2);
+  padding-top: calc(var(--base) * 1.5);
+  border-top: 2px solid var(--theme-elevation-200);
+}
+
+.receiptTransactions h4 {
+  margin: 0 0 calc(var(--base) * 1) 0;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  color: var(--theme-elevation-500);
+}
+
+.receiptRef {
+  font-family: monospace;
+  font-size: 0.75rem;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.statusBadge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  background: var(--theme-elevation-100);
+}
+
+.status_captured {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status_refunded {
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.status_authorized {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status_pending {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.orderCard {
+  border: 1px solid var(--theme-elevation-150);
+  border-radius: 8px;
+  padding: calc(var(--base) * 1.5);
+  margin-bottom: calc(var(--base) * 1.5);
+  background: var(--theme-elevation-0);
+}
+
+.orderHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--base);
+  margin-bottom: calc(var(--base) * 1);
+}
+
+.orderTitle {
+  margin: 0 0 calc(var(--base) * 0.5) 0;
+  font-size: 1.1rem;
+}
+
+.orderTitle a {
+  color: var(--theme-text);
+  text-decoration: none;
+}
+
+.orderTitle a:hover {
+  text-decoration: underline;
+}
+
+.receiptLink {
+  margin-left: calc(var(--base) * 1);
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--theme-elevation-500);
+  text-decoration: none;
+  padding: 2px 8px;
+  border: 1px solid var(--theme-elevation-200);
+  border-radius: 4px;
+}
+
+.receiptLink:hover {
+  background: var(--theme-elevation-50);
+  color: var(--theme-text);
+}
+
+.orderMeta {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--base) * 0.75);
+  font-size: 0.875rem;
+  color: var(--theme-elevation-600);
+}
+
+.orderTotalBox {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+}
+
+.orderTotalLabel {
+  font-size: 0.75rem;
+  color: var(--theme-elevation-500);
+  text-transform: uppercase;
+}
+
+.orderTotalValue {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.customerSection {
+  margin-bottom: calc(var(--base) * 1.5);
+  padding: calc(var(--base) * 1);
+  background: var(--theme-elevation-50);
+  border-radius: 6px;
+}
+
+.customerSection h4 {
+  margin: 0 0 calc(var(--base) * 0.5) 0;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--theme-elevation-600);
+}
+
+.customerDetails {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: calc(var(--base) * 0.5);
+  font-size: 0.875rem;
+}
+
+.customerDetails div {
+  line-height: 1.4;
+}
+
+.orderDetails {
+  display: grid;
+  gap: calc(var(--base) * 1.5);
+}
+
+.orderItemsSection h4,
+.orderTransactionsSection h4 {
+  margin: 0 0 calc(var(--base) * 0.75) 0;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  color: var(--theme-elevation-600);
+}
+
+.itemsTable,
+.transactionsTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.itemsTable th,
+.itemsTable td,
+.transactionsTable th,
+.transactionsTable td {
+  padding: calc(var(--base) * 0.5);
+  text-align: left;
+  border-bottom: 1px solid var(--theme-elevation-100);
+}
+
+.itemsTable th,
+.transactionsTable th {
+  font-weight: 500;
+  color: var(--theme-elevation-600);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.referenceCell {
+  font-family: monospace;
+  font-size: 0.75rem;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.noTransactions {
+  color: var(--theme-elevation-500);
+  font-size: 0.875rem;
+  font-style: italic;
+}
+
+.transactionSummaryRow {
+  display: flex;
+  gap: calc(var(--base) * 2);
+  margin-top: calc(var(--base) * 1);
+  padding-top: calc(var(--base) * 0.75);
+  border-top: 1px solid var(--theme-elevation-100);
+  font-size: 0.875rem;
+  color: var(--theme-elevation-600);
+}
+
+@media print {
+  :global(.app-header) {
+    display: none;
+  }
+
+  .container {
+    color: #000;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .backLinkRow,
+  .actionsRow,
+  .dateRangeSection,
+  .presetSelector,
+  .customDateInputs {
+    display: none;
+  }
+
+  .heading {
+    color: #000;
+    font-weight: 700;
+    margin-bottom: calc(var(--base) * 0.5);
+  }
+
+  .dateRangeDisplay {
+    display: block;
+    color: #333;
+    margin-bottom: calc(var(--base) * 1.5);
+  }
+
+  .receiptLink {
+    display: none;
+  }
+
+  .reportSection h2 {
+    color: #000;
+    font-weight: 700;
+  }
+
+  .reportTable {
+    color: #000;
+  }
+
+  .reportTable th {
+    color: #000;
+    font-weight: 700;
+    background: #f0f0f0;
+  }
+
+  .reportTable td {
+    color: #000;
+  }
+
+  .reportTable th,
+  .reportTable td {
+    padding: calc(var(--base) * 0.5);
+    font-size: 0.875rem;
+    border-color: #999;
+  }
+
+  .totalRow {
+    background: #e0e0e0;
+  }
+
+  .summaryCard {
+    break-inside: avoid;
+    background: #f5f5f5;
+    border-color: #999;
+  }
+
+  .summaryLabel {
+    color: #333;
+  }
+
+  .summaryValue {
+    color: #000;
+  }
+
+  .reportSection {
+    break-inside: avoid;
+  }
+
+  .orderCard {
+    break-inside: avoid;
+    border: 1px solid #999;
+    page-break-inside: avoid;
+    background: #fff;
+  }
+
+  .orderTitle,
+  .orderTitle a {
+    color: #000;
+  }
+
+  .orderMeta {
+    color: #333;
+  }
+
+  .orderTotalValue {
+    color: #000;
+  }
+
+  .customerSection {
+    background: #f5f5f5;
+  }
+
+  .customerSection h4 {
+    color: #333;
+  }
+
+  .customerDetails {
+    color: #000;
+  }
+
+  .orderItemsSection h4,
+  .orderTransactionsSection h4 {
+    color: #333;
+  }
+
+  .itemsTable,
+  .transactionsTable {
+    font-size: 0.75rem;
+    color: #000;
+  }
+
+  .itemsTable th,
+  .transactionsTable th {
+    color: #000;
+    font-weight: 600;
+  }
+
+  .itemsTable td,
+  .transactionsTable td {
+    color: #000;
+  }
+
+  .transactionSummaryRow {
+    color: #333;
+  }
+
+  /* Receipt print styles */
+  .receipt {
+    break-before: page;
+    page-break-before: always;
+    break-inside: avoid;
+    page-break-inside: avoid;
+    border: 1px solid #999;
+    background: #fff;
+  }
+
+  .receipt:first-child {
+    break-before: auto;
+    page-break-before: auto;
+  }
+
+  .receiptHeader {
+    border-color: #333;
+  }
+
+  .receiptTitle {
+    color: #000;
+  }
+
+  .receiptOrderId,
+  .receiptOrderId a {
+    color: #333;
+  }
+
+  .receiptDate,
+  .receiptStatus {
+    color: #000;
+  }
+
+  .receiptCustomer h4 {
+    color: #333;
+  }
+
+  .receiptTable th {
+    color: #000;
+    border-color: #333;
+  }
+
+  .receiptTable td {
+    color: #000;
+    border-color: #999;
+  }
+
+  .receiptTotals {
+    border-color: #333;
+  }
+
+  .receiptTotalLine {
+    color: #333;
+  }
+
+  .receiptTotalFinal {
+    color: #000;
+    border-color: #999;
+  }
+
+  .receiptTransactions {
+    border-color: #333;
+  }
+
+  .receiptTransactions h4 {
+    color: #333;
+  }
+
+  .statusBadge {
+    border: 1px solid #999;
+    background: #f5f5f5;
+    color: #000;
+  }
+}
