@@ -1,5 +1,27 @@
 # @eventuras/historia
 
+## 0.25.0
+
+### Minor Changes
+
+- 33c72c2: Add sales report feature for accounting
+  - New admin view at `/admin/sales-report` for generating sales reports
+  - Product summary grouped by product and VAT rate
+  - Transaction summary showing authorized, captured, refunded, and pending totals
+  - Receipt-style order cards with full transaction details
+  - Date range presets: Last week, Previous month, Year to date, Custom
+  - Print-optimized styling with page breaks between receipts
+  - Extended standalone receipt route with transaction details
+
+### Patch Changes
+
+- Updated dependencies [c32e23c]
+- Updated dependencies [39bd56b]
+- Updated dependencies [c32e23c]
+  - @eventuras/ratio-ui@0.11.0
+  - @eventuras/ratio-ui-next@0.1.8
+  - @eventuras/toast@0.2.7
+
 ## 0.24.0
 
 ### Minor Changes

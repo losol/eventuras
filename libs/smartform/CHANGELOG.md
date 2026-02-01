@@ -1,5 +1,69 @@
 # @eventuras/smartform
 
+## 0.3.0
+
+### Minor Changes
+
+- c32e23c: ## Refactor: Form components and UI improvements
+
+  ### Breaking Changes
+  - **TextField**: Now uses `useController` instead of `register` for better field state access
+    - Provides direct access to field errors and validation state
+    - More consistent with React Hook Form best practices
+
+  ### Bug Fixes
+  - **Label component**: Fixed critical bug where children were not rendered inside `<AriaLabel>` tags
+  - **SearchField**: Removed duplicate clear button by relying on React Aria's built-in clear functionality
+  - **React Hooks violations**: Removed all conditional returns before hook calls in form components (TextField, Input, NumberInput, Select, CheckboxInput, HiddenInput)
+  - **UserLookup**: Fixed Popover positioning error by adding explicit `triggerRef` prop
+
+  ### Features
+  - **SearchField component** (ratio-ui): New component with built-in 300ms debouncing, search icon, and dark mode support
+  - **ToggleButtonGroup**: Added dark mode styling and fixed border rendering with z-index layering
+  - **Form consistency**: Refactored Select and PhoneInput to use `useController` for consistent patterns across controlled components
+
+  ### Pattern Improvements
+
+  All smartform components now follow consistent patterns:
+  - **Uncontrolled inputs** (Input, NumberInput, CheckboxInput, HiddenInput): Use `register`
+  - **Controlled components** (TextField, Select, PhoneInput): Use `useController`
+
+- c32e23c: ## Form Components: Consistent patterns with useController
+
+  ### Breaking Changes
+  - **TextField**: Refactored to use `useController` instead of `register`
+    - Provides direct access to field state (errors, touched, dirty)
+    - More consistent with React Hook Form best practices
+    - Better TypeScript types
+
+  ### Bug Fixes
+  - **React Hooks violations**: Removed all conditional returns before hook calls across all form components
+    - Fixed in: TextField, Input, NumberInput, Select, CheckboxInput, HiddenInput
+    - All components now follow Rules of Hooks correctly
+    - React Hook Form will throw clear errors if used outside FormProvider
+
+  ### Refactoring
+  - **Select**: Migrated from `Controller` to `useController` for consistency
+    - Changed from `defaultSelectedKey` to `selectedKey` (controlled mode)
+  - **PhoneInput**: Migrated from `Controller` to `useController` for consistency
+
+  ### Type Safety
+  - **TextField**: Replaced `any` type with proper `HTMLInputElement | null` in ref callbacks
+
+  ### Pattern Improvements
+
+  All smartform components now follow consistent patterns:
+  - **Uncontrolled inputs** (Input, NumberInput, CheckboxInput, HiddenInput): Use `register`
+  - **Controlled components** (TextField, Select, PhoneInput): Use `useController`
+  - All hooks called unconditionally (follows Rules of Hooks)
+
+### Patch Changes
+
+- Updated dependencies [c32e23c]
+- Updated dependencies [39bd56b]
+- Updated dependencies [c32e23c]
+  - @eventuras/ratio-ui@0.11.0
+
 ## 0.2.6
 
 ### Patch Changes
