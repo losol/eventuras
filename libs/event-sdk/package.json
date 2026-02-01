@@ -25,7 +25,7 @@
     "build": "openapi-ts && tsc"
   },
   "dependencies": {
-    "@hey-api/openapi-ts": "0.90.10"
+    "@hey-api/openapi-ts": "0.91.1"
   },
   "devDependencies": {
     "@eventuras/api": "workspace:*",

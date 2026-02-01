@@ -52,17 +52,15 @@
     "**/*.{jsx,ts,tsx,cjs,mjs}": "eslint --fix"
   },
   "dependencies": {
-    "turbo": "^2.7.6"
+    "turbo": "^2.8.1"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.8",
-    "@commitlint/cli": "^20.3.1",
-    "@commitlint/config-conventional": "^20.3.1",
+    "@commitlint/cli": "^20.4.0",
+    "@commitlint/config-conventional": "^20.4.0",
     "@eventuras/eslint-config": "workspace:*",
     "@eventuras/typescript-config": "workspace:*",
     "@types/node": "^24.7.2",
-    "@types/react": "^19.2.9",
-    "@types/react-dom": "^19.2.3",
     "eslint": "^9.39.2",
     "lint-staged": "^16.2.7",
     "prettier": "^3.8.1",
@@ -70,7 +68,7 @@
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   },
-  "packageManager": "pnpm@10.28.1",
+  "packageManager": "pnpm@10.28.2",
   "engines": {
     "node": ">=22.0.0 <25.0.0",
     "pnpm": ">=9.0.0"

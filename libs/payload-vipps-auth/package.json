@@ -33,13 +33,13 @@
   "devDependencies": {
     "@eventuras/typescript-config": "workspace:*",
     "@eventuras/vite-config": "workspace:*",
-    "@payloadcms/next": "3.73.0",
+    "@payloadcms/next": "3.74.0",
     "@types/node": "^24.10.6",
-    "@types/react": "^19.2.9",
+    "@types/react": "^19.2.10",
     "@types/uuid": "^11.0.0",
-    "next": "^16.1.4",
-    "payload": "3.73.0",
-    "react": "^19.2.3",
+    "next": "^16.1.6",
+    "payload": "3.74.0",
+    "react": "^19.2.4",
     "typescript": "^5.9.3",
     "vite": "^7.3.1",
     "vitest": "^4.0.18"
