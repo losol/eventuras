@@ -113,6 +113,15 @@ export default buildConfig({
             description: 'Orders ready to pack and ship',
           },
         },
+        salesReport: {
+          path: '/sales-report',
+          Component: '@/collections/Orders/views/SalesReportPage',
+          exact: true,
+          meta: {
+            title: 'Sales Report',
+            description: 'Generate sales reports for accounting',
+          },
+        },
       },
     },
     importMap: {

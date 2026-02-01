@@ -12,7 +12,19 @@ import {
   toMajorUnits,
 } from '@/lib/packing/orderHelpers';
 import config from '@/payload.config';
-import type { Order, Organization, User, Website } from '@/payload-types';
+import type { Order, Organization, Transaction, User, Website } from '@/payload-types';
+
+function getStatusLabel(status: string): string {
+  const labels: Record<string, string> = {
+    pending: 'Ventende',
+    authorized: 'Autorisert',
+    captured: 'Captured',
+    refunded: 'Refundert',
+    failed: 'Feilet',
+    canceled: 'Kansellert',
+  };
+  return labels[status] || status;
+}
 
 export async function GET(
   request: Request,
@@ -128,6 +140,43 @@ export async function GET(
     month: 'long',
     day: 'numeric',
   });
+
+  // Build transactions section
+  const transactions = (order.transactions?.docs ?? []).filter(
+    (t): t is Transaction => typeof t !== 'string'
+  );
+
+  const transactionsHtml = transactions.length > 0 ? `
+    <div style="margin-top: 32px; border-top: 2px solid #374151; padding-top: 24px;">
+      <h3 style="margin: 0 0 16px 0; font-size: 14px; text-transform: uppercase; color: #6b7280;">Transaksjoner</h3>
+      <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+          <tr>
+            <th style="text-align: left; padding: 8px; border-bottom: 2px solid #374151; font-weight: 600; font-size: 12px; text-transform: uppercase; color: #6b7280;">Dato</th>
+            <th style="text-align: left; padding: 8px; border-bottom: 2px solid #374151; font-weight: 600; font-size: 12px; text-transform: uppercase; color: #6b7280;">Status</th>
+            <th style="text-align: left; padding: 8px; border-bottom: 2px solid #374151; font-weight: 600; font-size: 12px; text-transform: uppercase; color: #6b7280;">Metode</th>
+            <th style="text-align: left; padding: 8px; border-bottom: 2px solid #374151; font-weight: 600; font-size: 12px; text-transform: uppercase; color: #6b7280;">Referanse</th>
+            <th style="text-align: right; padding: 8px; border-bottom: 2px solid #374151; font-weight: 600; font-size: 12px; text-transform: uppercase; color: #6b7280;">Beløp</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${transactions.map(txn => `
+            <tr>
+              <td style="padding: 8px; border-bottom: 1px solid #e5e7eb;">${new Date(txn.createdAt).toLocaleDateString('nb-NO')}</td>
+              <td style="padding: 8px; border-bottom: 1px solid #e5e7eb;">
+                <span style="display: inline-block; padding: 2px 8px; background: ${txn.status === 'captured' ? '#dcfce7' : txn.status === 'refunded' ? '#fef2f2' : '#f3f4f6'}; border-radius: 4px; font-size: 12px;">
+                  ${getStatusLabel(txn.status)}
+                </span>
+              </td>
+              <td style="padding: 8px; border-bottom: 1px solid #e5e7eb;">${sanitizeForHtml(txn.paymentMethod)}</td>
+              <td style="padding: 8px; border-bottom: 1px solid #e5e7eb; font-family: monospace; font-size: 11px;">${sanitizeForHtml(txn.paymentReference)}</td>
+              <td style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: right;">${currency} ${toMajorUnits(txn.amount).toFixed(2)}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  ` : '';
 
   const shippingAddress = order.shippingAddress;
   const shippingHtml = shippingAddress ? `
@@ -268,6 +317,8 @@ export async function GET(
       <span>${currency} ${toMajorUnits(totalIncVat).toFixed(2)}</span>
     </div>
   </div>
+
+  ${transactionsHtml}
 
   <!-- Footer -->
   <div style="margin-top: 48px; padding-top: 24px; border-top: 1px solid #e5e7eb; text-align: center; color: #6b7280; font-size: 12px;">
