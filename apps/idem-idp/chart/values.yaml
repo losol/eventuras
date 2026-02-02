@@ -1,0 +1,33 @@
+# Default values for idem-idp
+# Environment-specific values are set by Argo CD, not here
+
+replicaCount: 1
+
+image:
+  registry: ""      # Set by Argo: docker.io
+  repository: ""    # Set by Argo: losolio/idem-idp
+  tag: ""           # Set by Argo: sha-abc123, v1.2.3
+  pullPolicy: IfNotPresent
+
+dns:
+  domain: ""        # Set by Argo: app.domain.no
+  appName: ""       # Set by Argo: idem
+  prefix: ""        # Set by Argo: "dev.", "staging.", ""
+
+service:
+  port: 80
+  targetPort: 3001
+
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "100m"
+  limits:
+    memory: "512Mi"
+    cpu: "500m"
+
+env: {}
+# Set by Argo:
+#   NODE_ENV: production
+#   PORT: "3001"
+#   LOG_LEVEL: info
