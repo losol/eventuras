@@ -1,0 +1,44 @@
+# Default values for eventuras-api
+# Environment-specific values are set by Argo CD, not here
+
+replicaCount: 1
+
+image:
+  registry: ""      # Set by Argo: docker.io
+  repository: ""    # Set by Argo: losolio/eventuras-api
+  tag: ""           # Set by Argo: sha-abc123, v1.2.3
+  pullPolicy: IfNotPresent
+
+dns:
+  domain: ""        # Set by Argo: app.domain.no
+  appName: ""       # Set by Argo: api
+  prefix: ""        # Set by Argo: "dev.", "staging.", ""
+
+service:
+  port: 80
+  targetPort: 8080
+
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "100m"
+  limits:
+    memory: "1Gi"
+    cpu: "1000m"
+
+# Health check configuration
+healthCheck:
+  path: /health
+  initialDelaySeconds: 15
+  periodSeconds: 30
+
+# Environment variables (non-sensitive)
+env: {}
+# Set by Argo:
+#   ASPNETCORE_ENVIRONMENT: Production
+#   ASPNETCORE_URLS: http://+:8080
+
+# Database configuration
+database:
+  enabled: true
+  # Connection string set via secrets, not here
