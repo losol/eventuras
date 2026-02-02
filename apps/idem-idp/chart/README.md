@@ -2,6 +2,14 @@
 
 Helm chart for Idem Identity Provider. All environment-specific values are set by Argo CD.
 
+## Environments
+
+| Environment | Namespace | Hostname | Description |
+|-------------|-----------|----------|-------------|
+| Development | `idem-idp-dev` | `dev.idem.app.losol.no` | For development and testing |
+| Staging | `idem-idp-staging` | `staging.idem.app.losol.no` | Pre-production validation |
+| Production | `idem-idp-prod` | `idem.app.losol.no` | Live production environment |
+
 ## Required Values
 
 Set these in Argo CD Application:
@@ -43,26 +51,58 @@ helm:
 
 ## Required Secrets
 
-Create a Kubernetes Secret named `idem-idp-secrets` in the target namespace:
+Create a Kubernetes Secret named `idem-idp-secrets` in the target namespace.
+
+### Generate Secure Secrets
 
 ```bash
-kubectl create secret generic idem-idp-secrets \
-  -n <namespace> \
-  --from-literal=IDEM_DATABASE_URL='postgresql://user:pass@host:5432/db' \
-  --from-literal=IDEM_ISSUER='https://idem.app.domain.no' \
-  --from-literal=IDEM_ADMIN_URL='https://admin.idem.app.domain.no'
+# Generate cryptographically secure random values
+openssl rand -base64 32  # For IDEM_SESSION_SECRET
+openssl rand -base64 32  # For IDEM_ADMIN_CLIENT_SECRET
+```
+
+### Create Secret (with auto-generated values)
+
+```bash
+# Development environment
+ kubectl create secret generic idem-idp-secrets \
+  -n idem-idp-dev \
+  --from-literal=IDEM_DATABASE_URL='postgresql://user:pass@host:5432/idem_dev' \
+  --from-literal=IDEM_ISSUER='https://dev.idem.app.losol.no' \
+  --from-literal=IDEM_ADMIN_URL='https://dev.admin.idem.app.losol.no' \
+  --from-literal=IDEM_SESSION_SECRET="$(openssl rand -base64 32)" \
+  --from-literal=IDEM_ADMIN_CLIENT_SECRET="$(openssl rand -base64 32)"
+
+# Staging environment
+ kubectl create secret generic idem-idp-secrets \
+  -n idem-idp-staging \
+  --from-literal=IDEM_DATABASE_URL='postgresql://user:pass@host:5432/idem_staging' \
+  --from-literal=IDEM_ISSUER='https://staging.idem.app.losol.no' \
+  --from-literal=IDEM_ADMIN_URL='https://staging.admin.idem.app.losol.no' \
+  --from-literal=IDEM_SESSION_SECRET="$(openssl rand -base64 32)" \
+  --from-literal=IDEM_ADMIN_CLIENT_SECRET="$(openssl rand -base64 32)"
+
+# Production environment
+ kubectl create secret generic idem-idp-secrets \
+  -n idem-idp-prod \
+  --from-literal=IDEM_DATABASE_URL='postgresql://user:pass@host:5432/idem_prod' \
+  --from-literal=IDEM_ISSUER='https://idem.app.losol.no' \
+  --from-literal=IDEM_ADMIN_URL='https://admin.idem.app.losol.no' \
+  --from-literal=IDEM_SESSION_SECRET="$(openssl rand -base64 32)" \
+  --from-literal=IDEM_ADMIN_CLIENT_SECRET="$(openssl rand -base64 32)"
 ```
 
 | Secret Key | Description | Example |
-|------------|-------------|---------|
 | `IDEM_DATABASE_URL` | PostgreSQL connection string | `postgresql://user:pass@host:5432/db` |
 | `IDEM_ISSUER` | OIDC issuer URL (must match public URL) | `https://idem.app.domain.no` |
 | `IDEM_ADMIN_URL` | Admin interface URL | `https://admin.idem.app.domain.no` |
+| `IDEM_SESSION_SECRET` | Session encryption secret (min 32 chars) | `$(openssl rand -base64 32)` |
+| `IDEM_ADMIN_CLIENT_SECRET` | Admin OAuth client secret | `$(openssl rand -base64 32)` |
 
 ## Resulting Hostnames
 
-| Environment | Prefix | Hostname |
-|-------------|--------|----------|
-| dev | `dev.` | `dev.idem.app.domain.no` |
-| staging | `staging.` | `staging.idem.app.domain.no` |
-| prod | `` | `idem.app.domain.no` |
+| Environment | Namespace | Prefix | Hostname |
+|-------------|-----------|--------|----------|
+| Development | `idem-idp-dev` | `dev.` | `dev.idem.app.losol.no` |
+| Staging | `idem-idp-staging` | `staging.` | `staging.idem.app.losol.no` |
+| Production | `idem-idp-prod` | `` | `idem.app.losol.no` |

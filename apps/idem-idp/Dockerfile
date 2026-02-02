@@ -4,7 +4,7 @@
 #
 #
 # ---- 0) PRUNE MONOREPO ----
-FROM node:22-alpine AS prune
+FROM node:24-alpine AS prune
 WORKDIR /repo
 
 # Enable pnpm and use turbo via pnpm dlx
@@ -20,14 +20,15 @@ COPY libs ./libs
 RUN pnpm dlx turbo@^2 prune --scope=@eventuras/idem-idp --docker
 
 # ---- 1) BUILD ----
-FROM node:22-alpine AS build
+FROM node:24-alpine AS build
 WORKDIR /srv
 
 # Copy pruned source and install dependencies
 COPY --from=prune /repo/out/full/ ./
 RUN corepack enable && corepack prepare pnpm@10.28.2 --activate && \
     pnpm install --frozen-lockfile=false && \
-    pnpm dlx turbo@^2 run build --filter=@eventuras/idem-idp
+    pnpm dlx turbo@^2 run build --filter=@eventuras/idem-idp && \
+    pnpm deploy --filter=@eventuras/idem-idp --prod --legacy /srv/deploy
 
 # ---- 2) RUNTIME ----
 FROM node:22-alpine AS runtime
@@ -41,7 +42,7 @@ ARG GIT_SHA=unknown
 LABEL org.opencontainers.image.title="idem-idp" \
       org.opencontainers.image.version="${APP_VERSION}" \
       org.opencontainers.image.revision="${GIT_SHA}" \
-      org.opencontainers.image.source="https://github.com/losolio/eventuras"
+      org.opencontainers.image.source="https://github.com/losol/eventuras"
 
 # Also expose in env (handy for / and /health)
 ENV NODE_ENV=production \
@@ -49,11 +50,8 @@ ENV NODE_ENV=production \
     GIT_SHA=${GIT_SHA} \
     PORT=3001
 
-# Copy artifacts
-COPY --from=build /srv/apps/idem-idp/package.json ./
-COPY --from=build /srv/apps/idem-idp/dist ./dist
-COPY --from=build /srv/apps/idem-idp/dist-ui ./dist-ui
-COPY --from=build /srv/node_modules ./node_modules
+# Copy built artifacts (dependencies are bundled by tsup)
+COPY --from=build /srv/deploy ./
 
 # (rest unchanged)
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s \

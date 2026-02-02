@@ -1,0 +1,64 @@
+name: idem-idp - Release
+
+run-name: "Release ${{ github.event.release.tag_name }}"
+
+on:
+  release:
+    types: [published]
+
+env:
+  ORG: losolio
+  IMAGE_NAME: idem-idp
+
+jobs:
+  retag-for-release:
+    name: Retag Image for Release
+    runs-on: ubuntu-latest
+    # Only run for idem-idp releases
+    if: contains(github.event.release.tag_name, '@eventuras/idem-idp@')
+    outputs:
+      image-tag: ${{ steps.tags.outputs.primary-tag }}
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          # Extract version from tag like @eventuras/idem-idp@1.0.0
+          VERSION=$(echo "${{ github.event.release.tag_name }}" | sed -n 's/.*@eventuras\/idem-idp@\(.*\)/\1/p')
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "Extracted version: ${VERSION}"
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Retag staging image for production
+        id: tags
+        run: |
+          # The staging image was tagged with the commit SHA
+          SOURCE_TAG="${{ env.ORG }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}"
+          VERSION_TAG="${{ env.ORG }}/${{ env.IMAGE_NAME }}:v${{ steps.version.outputs.version }}"
+          LATEST_TAG="${{ env.ORG }}/${{ env.IMAGE_NAME }}:latest"
+
+          echo "Pulling existing staging image: ${SOURCE_TAG}"
+          docker pull "${SOURCE_TAG}"
+
+          echo "Retagging to version: ${VERSION_TAG}"
+          docker tag "${SOURCE_TAG}" "${VERSION_TAG}"
+          docker push "${VERSION_TAG}"
+
+          echo "Retagging to latest: ${LATEST_TAG}"
+          docker tag "${SOURCE_TAG}" "${LATEST_TAG}"
+          docker push "${LATEST_TAG}"
+
+          echo "primary-tag=${VERSION_TAG}" >> $GITHUB_OUTPUT
+          echo "✅ Successfully retagged staging image for production release"
+          echo ""
+          echo "Tags pushed:"
+          echo "  - ${VERSION_TAG}"
+          echo "  - ${LATEST_TAG}"
