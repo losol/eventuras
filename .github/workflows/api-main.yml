@@ -85,42 +85,60 @@ jobs:
       run:
         working-directory: ./apps/api/
     outputs:
-      docker_tag: ${{ env.DOCKER_TAG }}
+      docker_tags: ${{ steps.meta.outputs.tags }}
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Run tests
-        run: |
-          if [ -f docker-compose.test.yml ]; then
-            docker-compose --file docker-compose.test.yml build
-            docker-compose --file docker-compose.test.yml run sut
-          else
-            docker build . --file Dockerfile
-          fi
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
 
-      - name: Set Docker Tag
-        if: github.ref == 'refs/heads/main'
-        run: echo "DOCKER_TAG=${{ env.ORGANIZATION_NAME }}/${{ env.IMAGE_NAME }}:$(date +'%Y%m%d-%H%M%S')-${{ github.run_id }}" >> $GITHUB_ENV
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Read package version
+        id: ver
+        run: |
+          V="$(jq -r '.version' package.json 2>/dev/null || echo '0.0.0')"
+          echo "version=$V" >> "$GITHUB_OUTPUT"
+          echo "sha=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+
+      - name: Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.ORGANIZATION_NAME }}/${{ env.IMAGE_NAME }}
+          tags: |
+            # Main branch: canary + main-<sha>
+            type=raw,value=canary,enable=${{ github.ref == 'refs/heads/main' }}
+            type=raw,value=main-${{ steps.ver.outputs.sha }},enable=${{ github.ref == 'refs/heads/main' }}
+            # Feature branches: edge + edge-<sha>
+            type=raw,value=edge,enable=${{ github.ref != 'refs/heads/main' }}
+            type=raw,value=edge-${{ steps.ver.outputs.sha }},enable=${{ github.ref != 'refs/heads/main' }}
+          labels: |
+            org.opencontainers.image.version=${{ steps.ver.outputs.version }}
+            org.opencontainers.image.revision=${{ steps.ver.outputs.sha }}
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
 
       - name: Login to Docker Hub
-        if: github.ref == 'refs/heads/main'
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push Docker image
-        if: github.ref == 'refs/heads/main'
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./apps/api/
-          push: true
-          tags: ${{ env.DOCKER_TAG }}
+          platforms: linux/amd64,linux/arm64
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
-      - name: Output Docker tag
-        if: github.ref == 'refs/heads/main'
-        run: echo "Docker tag is ${{ env.DOCKER_TAG }}"
+      - name: Output Docker tags
+        run: echo "Docker tags are ${{ steps.meta.outputs.tags }}"
 
   deploy-docker:
     if: github.ref == 'refs/heads/main'
@@ -135,4 +153,4 @@ jobs:
         with:
           app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          images: ${{ needs.docker.outputs.docker_tag }}
+          images: ${{ env.ORGANIZATION_NAME }}/${{ env.IMAGE_NAME }}:canary

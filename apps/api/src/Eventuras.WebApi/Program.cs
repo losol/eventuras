@@ -73,6 +73,7 @@ builder.Services.AddInvoicingServices(builder.Configuration, features);
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddFeatureManagement();
 builder.Services.AddMemoryCache();
+builder.Services.AddHealthChecks();
 builder.Services.Configure<AuthSettings>(builder.Configuration.GetSection("Auth"));
 
 builder.Services.AddCors(options =>
@@ -154,6 +155,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHealthChecks("/health");
 
 // Seed database, run OnStartup builder.Services, etc.
 await PreStartupRoutine(app);

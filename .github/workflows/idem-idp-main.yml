@@ -66,35 +66,23 @@ jobs:
           echo "version=$V" >> "$GITHUB_OUTPUT"
           echo "sha=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
 
-      # Generate staging SHA tag for release retagging
-      - name: Generate staging SHA tag
-        id: staging-tag
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: |
-          echo "tag=${{ env.ORG }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}" >> $GITHUB_OUTPUT
-
       # generate tags/labels
-      # - canary: always latest build (for Argo CD dev environment)
-      # - main: latest main branch build (for Argo CD staging environment)
-      # - dev-pr*: PR builds with PR number and sha
-      # - main-*: main branch with date and sha (for traceability)
-      # - sha-*: main branch only (for release retagging)
+      # - canary: latest main branch build (for Argo CD staging)
+      # - main-<sha>: main branch with sha (for traceability)
+      # - edge: latest feature branch build (for Argo CD dev)
+      # - edge-<sha>: feature branch with sha (for traceability)
       - name: Docker metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.ORG }}/${{ env.IMAGE_NAME }}
           tags: |
-            # canary tag - always latest build (Argo CD dev points here)
-            type=raw,value=canary
-            # main tag - latest main branch build (Argo CD staging points here)
-            type=raw,value=main,enable=${{ github.ref == 'refs/heads/main' }}
-            # dev-pr<number>-<sha> for PR builds
-            type=raw,value=dev-pr${{ github.event.pull_request.number }}-{{sha}},enable=${{ github.event_name == 'pull_request' }}
-            # main-<date>-<sha> for main branch
-            type=raw,value=main-{{date 'YYYYMMDD'}}-{{sha}},enable=${{ github.ref == 'refs/heads/main' }}
-            # sha tag for main branch (enables release retagging)
-            type=raw,value=sha-${{ github.sha }},enable=${{ github.ref == 'refs/heads/main' }}
+            # Main branch: canary + main-<sha>
+            type=raw,value=canary,enable=${{ github.ref == 'refs/heads/main' }}
+            type=raw,value=main-${{ steps.ver.outputs.sha }},enable=${{ github.ref == 'refs/heads/main' }}
+            # Feature branches: edge + edge-<sha>
+            type=raw,value=edge,enable=${{ github.ref != 'refs/heads/main' }}
+            type=raw,value=edge-${{ steps.ver.outputs.sha }},enable=${{ github.ref != 'refs/heads/main' }}
           labels: |
             org.opencontainers.image.version=${{ steps.ver.outputs.version }}
             org.opencontainers.image.revision=${{ steps.ver.outputs.sha }}
