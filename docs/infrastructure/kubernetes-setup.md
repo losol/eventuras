@@ -191,9 +191,171 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 4. **GitHub App**: Add repository connection via GitHub App in Argo CD Settings → Repositories
 5. **Applications**: Create Argo CD Applications for each environment
 
+## Adding New Applications
+
+### 1. Create Namespace
+
+```sh
+kubectl create namespace my-app-dev
+```
+
+### 2. Create Certificate and ReferenceGrant
+
+Each application needs a TLS certificate and a ReferenceGrant to allow the Gateway to access it:
+
+```yaml
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: my-app-tls
+  namespace: my-app-dev
+spec:
+  secretName: my-app-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+    - my-app.app.domain.no
+---
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: ReferenceGrant
+metadata:
+  name: allow-traefik-tls
+  namespace: my-app-dev
+spec:
+  from:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      namespace: traefik
+  to:
+    - group: ""
+      kind: Secret
+      name: my-app-tls
+```
+
+### 3. Add Listener to Gateway
+
+Update the Gateway in `traefik` namespace to add a new HTTPS listener:
+
+```yaml
+- name: https-my-app
+  port: 8443
+  protocol: HTTPS
+  hostname: my-app.app.domain.no
+  allowedRoutes:
+    namespaces:
+      from: All
+  tls:
+    mode: Terminate
+    certificateRefs:
+      - kind: Secret
+        name: my-app-tls
+        namespace: my-app-dev
+```
+
+### 4. Create HTTPRoute
+
+```yaml
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: my-app
+  namespace: my-app-dev
+spec:
+  parentRefs:
+    - name: traefik-gateway
+      namespace: traefik
+      sectionName: https-my-app
+  hostnames:
+    - my-app.app.domain.no
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: my-app-service
+          port: 80
+```
+
+### 5. Configure Environment Variables
+
+Use ConfigMaps for non-sensitive configuration and Secrets for sensitive values:
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-app-config
+  namespace: my-app-dev
+data:
+  NODE_ENV: "production"
+  APP_URL: "https://my-app.app.domain.no"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-app-secrets
+  namespace: my-app-dev
+type: Opaque
+stringData:
+  DATABASE_URL: "postgresql://user:password@host:5432/database"
+```
+
+Then reference them in the Deployment:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+  namespace: my-app-dev
+spec:
+  template:
+    spec:
+      containers:
+        - name: my-app
+          envFrom:
+            - configMapRef:
+                name: my-app-config
+            - secretRef:
+                name: my-app-secrets
+          # Or reference individual keys:
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: my-app-secrets
+                  key: DATABASE_URL
+```
+
+## HTTP to HTTPS Redirect
+
+All HTTP traffic is automatically redirected to HTTPS via an HTTPRoute:
+
+```yaml
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: http-to-https-redirect
+  namespace: traefik
+spec:
+  parentRefs:
+    - name: traefik-gateway
+      namespace: traefik
+      sectionName: http
+  rules:
+    - filters:
+        - type: RequestRedirect
+          requestRedirect:
+            scheme: https
+            statusCode: 301
+```
+
 ## Architecture
 
 - **Traefik**: Ingress controller using Gateway API (Helm, DaemonSet with hostNetwork on ports 8000/8443)
 - **cert-manager**: Automatic TLS certificates from Let's Encrypt
 - **Argo CD**: GitOps deployments from this repository
 - **LoadBalancer**: Cloud provider translates 80→8000, 443→8443 to Traefik
+- **Per-hostname listeners**: Each application gets its own HTTPS listener with dedicated TLS certificate

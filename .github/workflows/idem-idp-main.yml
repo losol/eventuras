@@ -3,11 +3,21 @@ name: idem-idp - docker build & push
 on:
   push:
     branches:
-      [main, feature/**, feat/**, fix/**, bugfix/**, chore/**, release/**]
-    paths: ["apps/idem-idp/**"]
+      - main
+      - "feature/**"
+      - "feat/**"
+      - "fix/**"
+      - "bugfix/**"
+      - "chore/**"
+      - "release/**"
+    paths:
+      - "apps/idem-idp/**"
+      - ".github/workflows/idem-idp-main.yml"
   pull_request:
     branches: [main]
-    paths: ["apps/idem-idp/**"]
+    paths:
+      - "apps/idem-idp/**"
+      - ".github/workflows/idem-idp-main.yml"
 
 # avoid parallel runs fighting over tags
 concurrency:
@@ -24,6 +34,10 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    outputs:
+      image-tag: ${{ steps.meta.outputs.tags }}
+      image-digest: ${{ steps.build.outputs.digest }}
+      staging-sha-tag: ${{ steps.staging-tag.outputs.tag }}
 
     steps:
       - name: Checkout
@@ -52,46 +66,54 @@ jobs:
           echo "version=$V" >> "$GITHUB_OUTPUT"
           echo "sha=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
 
-      # generate tags/labels (adds :latest on main, semver tags, branch, sha)
+      # Generate staging SHA tag for release retagging
+      - name: Generate staging SHA tag
+        id: staging-tag
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          echo "tag=${{ env.ORG }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}" >> $GITHUB_OUTPUT
+
+      # generate tags/labels
+      # - canary: always latest build (for Argo CD dev environment)
+      # - main: latest main branch build (for Argo CD staging environment)
+      # - dev-pr*: PR builds with PR number and sha
+      # - main-*: main branch with date and sha (for traceability)
+      # - sha-*: main branch only (for release retagging)
       - name: Docker metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.ORG }}/${{ env.IMAGE_NAME }}
           tags: |
-            # branch tag (e.g., main)
-            type=ref,event=branch
-            # short sha
-            type=sha,format=short
-            # semver from package.json (vX.Y.Z, vX.Y, vX)
-            type=semver,pattern={{version}},value=${{ steps.ver.outputs.version }}
-            # latest on main only
-            type=raw,value=latest,enable={{is_default_branch}}
+            # canary tag - always latest build (Argo CD dev points here)
+            type=raw,value=canary
+            # main tag - latest main branch build (Argo CD staging points here)
+            type=raw,value=main,enable=${{ github.ref == 'refs/heads/main' }}
+            # dev-pr<number>-<sha> for PR builds
+            type=raw,value=dev-pr${{ github.event.pull_request.number }}-{{sha}},enable=${{ github.event_name == 'pull_request' }}
+            # main-<date>-<sha> for main branch
+            type=raw,value=main-{{date 'YYYYMMDD'}}-{{sha}},enable=${{ github.ref == 'refs/heads/main' }}
+            # sha tag for main branch (enables release retagging)
+            type=raw,value=sha-${{ github.sha }},enable=${{ github.ref == 'refs/heads/main' }}
           labels: |
             org.opencontainers.image.version=${{ steps.ver.outputs.version }}
             org.opencontainers.image.revision=${{ steps.ver.outputs.sha }}
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
 
       - name: Build & push (multi-arch)
+        id: build
         uses: docker/build-push-action@v6
         with:
-          # repo root for turbo prune Dockerfile path
           context: .
-          # your Dockerfile path
           file: apps/idem-idp/Dockerfile
           platforms: linux/amd64,linux/arm64
-          # push only on non-PR events
           push: ${{ github.event_name != 'pull_request' }}
-          # pass build args
           build-args: |
             TURBO_VERSION=${{ env.TURBO_VERSION }}
             APP_VERSION=${{ steps.ver.outputs.version }}
             GIT_SHA=${{ steps.ver.outputs.sha }}
-          # tags/labels from metadata action
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          # gha cache speeds up rebuilds
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          # optional: disable provenance attestation if Hub/tooling complains
           provenance: false
