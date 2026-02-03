@@ -33,9 +33,11 @@ resources:
   requests:
     memory: "256Mi"
     cpu: "100m"
+    ephemeral-storage: "100Mi"
   limits:
     memory: "512Mi"
     cpu: "500m"
+    ephemeral-storage: "500Mi"
 
 # Traefik IngressRoute
 # Enable for external access with IP whitelist + OIDC
