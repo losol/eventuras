@@ -1,0 +1,33 @@
+{{- if .Values.traefik.enabled }}
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app: {{ .Release.Name }}
+spec:
+  entryPoints:
+    {{- toYaml .Values.traefik.entryPoints | nindent 4 }}
+  routes:
+    - match: Host(`{{ required "traefik.hostname is required when traefik.enabled is true" .Values.traefik.hostname }}`)
+      kind: Rule
+      services:
+        - name: {{ .Release.Name }}
+          port: {{ .Values.service.port }}
+      {{- if .Values.traefik.ipWhitelist.enabled }}
+      middlewares:
+        - name: {{ .Release.Name }}-ipwhitelist
+      {{- end }}
+  {{- if .Values.traefik.tls.enabled }}
+  {{- if and .Values.traefik.tls.certResolver .Values.traefik.tls.secretName }}
+  {{- fail "traefik.tls.certResolver and traefik.tls.secretName cannot both be set" }}
+  {{- end }}
+  tls:
+    {{- if .Values.traefik.tls.certResolver }}
+    certResolver: {{ .Values.traefik.tls.certResolver }}
+    {{- end }}
+    {{- if .Values.traefik.tls.secretName }}
+    secretName: {{ .Values.traefik.tls.secretName }}
+    {{- end }}
+  {{- end }}
+{{- end }}
