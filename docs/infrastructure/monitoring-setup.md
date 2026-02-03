@@ -21,39 +21,8 @@ helm install monitoring prometheus-community/kube-prometheus-stack \
   -n monitoring --create-namespace \
   --set grafana.adminPassword='<your-password>'
 
-# 3. Create ReferenceGrant for TLS certificate access
+# 3. Create HTTPRoute for Grafana (uses wildcard cert, no per-app certificate needed)
 kubectl apply -f - <<'EOF'
-apiVersion: gateway.networking.k8s.io/v1beta1
-kind: ReferenceGrant
-metadata:
-  name: allow-traefik-tls
-  namespace: monitoring
-spec:
-  from:
-    - group: gateway.networking.k8s.io
-      kind: Gateway
-      namespace: traefik
-  to:
-    - group: ""
-      kind: Secret
-      name: grafana-tls
-EOF
-
-# 4. Create Certificate and HTTPRoute for Grafana
-kubectl apply -f - <<'EOF'
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: grafana-tls
-  namespace: monitoring
-spec:
-  secretName: grafana-tls
-  issuerRef:
-    name: letsencrypt-prod
-    kind: ClusterIssuer
-  dnsNames:
-    - grafana.app.domain.no
----
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
@@ -63,6 +32,7 @@ spec:
   parentRefs:
     - name: traefik-gateway
       namespace: traefik
+      sectionName: https  # Uses wildcard listener
   hostnames:
     - grafana.app.domain.no
   rules:
@@ -70,11 +40,6 @@ spec:
         - name: monitoring-grafana
           port: 80
 EOF
-
-# 5. Add grafana-tls to Gateway certificate refs
-kubectl patch gateway traefik-gateway -n traefik --type='json' -p='[
-  {"op": "add", "path": "/spec/listeners/1/tls/certificateRefs/-", "value": {"kind": "Secret", "name": "grafana-tls", "namespace": "monitoring"}}
-]'
 ```
 
 ## Access
