@@ -1,0 +1,46 @@
+# Traefik Gateway with wildcard TLS
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: {{ .Values.gateway.name }}
+  namespace: {{ .Values.gateway.namespace }}
+spec:
+  gatewayClassName: {{ .Values.gateway.className }}
+  listeners:
+    # HTTP listener (for redirects or non-TLS traffic)
+    - name: http
+      port: {{ .Values.gateway.httpPort }}
+      protocol: HTTP
+      allowedRoutes:
+        namespaces:
+          from: All
+
+    # HTTPS wildcard listener for primary domain
+    - name: https
+      port: {{ .Values.gateway.httpsPort }}
+      protocol: HTTPS
+      hostname: "*.{{ .Values.domain }}"
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: {{ include "traefik-gateway.certSecretName" . }}
+      allowedRoutes:
+        namespaces:
+          from: All
+
+    {{- range .Values.additionalDomains }}
+    # HTTPS listener for {{ .name }} (*.{{ .domain }})
+    - name: https-{{ .name }}
+      port: {{ $.Values.gateway.httpsPort }}
+      protocol: HTTPS
+      hostname: "*.{{ .domain }}"
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: {{ include "traefik-gateway.certSecretName" $ }}
+      allowedRoutes:
+        namespaces:
+          from: All
+    {{- end }}

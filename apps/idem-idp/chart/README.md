@@ -6,9 +6,9 @@ Helm chart for Idem Identity Provider. All environment-specific values are set b
 
 | Environment | Namespace | Hostname | Description |
 |-------------|-----------|----------|-------------|
-| Development | `idem-idp-dev` | `dev.idem.app.losol.no` | For development and testing |
-| Staging | `idem-idp-staging` | `staging.idem.app.losol.no` | Pre-production validation |
-| Production | `idem-idp-prod` | `idem.app.losol.no` | Live production environment |
+| Development | `idem-idp-dev` | `dev.idem.example.com` | For development and testing |
+| Staging | `idem-idp-staging` | `staging.idem.example.com` | Pre-production validation |
+| Production | `idem-idp-prod` | `idem.example.com` | Live production environment |
 
 ## Required Values
 
@@ -23,8 +23,8 @@ helm:
       tag: sha-abc123
 
     dns:
-      domain: app.domain.no
-      appName: idem
+      domain: idem.example.com
+      appName: ""     # Empty for idem.example.com
       prefix: "dev."  # "dev.", "staging.", or "" for prod
 
     env:
@@ -69,8 +69,8 @@ openssl rand -base64 32  # For IDEM_ADMIN_CLIENT_SECRET
 kubectl create secret generic idem-idp-secrets \
   -n idem-idp-dev \
   --from-literal=IDEM_DATABASE_URL='postgresql://user:pass@host:5432/idem_dev' \
-  --from-literal=IDEM_ISSUER='https://dev.idem.app.losol.no' \
-  --from-literal=IDEM_ADMIN_URL='https://dev.admin.idem.app.losol.no' \
+  --from-literal=IDEM_ISSUER='https://dev.idem.example.com' \
+  --from-literal=IDEM_ADMIN_URL='https://dev.admin.idem.example.com' \
   --from-literal=IDEM_MASTER_KEY="$(openssl rand -base64 32)" \
   --from-literal=IDEM_SESSION_SECRET="$(openssl rand -base64 32)" \
   --from-literal=IDEM_ADMIN_CLIENT_SECRET="$(openssl rand -base64 32)"
@@ -79,8 +79,8 @@ kubectl create secret generic idem-idp-secrets \
 kubectl create secret generic idem-idp-secrets \
   -n idem-idp-staging \
   --from-literal=IDEM_DATABASE_URL='postgresql://user:pass@host:5432/idem_staging' \
-  --from-literal=IDEM_ISSUER='https://staging.idem.app.losol.no' \
-  --from-literal=IDEM_ADMIN_URL='https://staging.admin.idem.app.losol.no' \
+  --from-literal=IDEM_ISSUER='https://staging.idem.example.com' \
+  --from-literal=IDEM_ADMIN_URL='https://staging.admin.idem.example.com' \
   --from-literal=IDEM_MASTER_KEY="$(openssl rand -base64 32)" \
   --from-literal=IDEM_SESSION_SECRET="$(openssl rand -base64 32)" \
   --from-literal=IDEM_ADMIN_CLIENT_SECRET="$(openssl rand -base64 32)"
@@ -89,8 +89,8 @@ kubectl create secret generic idem-idp-secrets \
 kubectl create secret generic idem-idp-secrets \
   -n idem-idp-prod \
   --from-literal=IDEM_DATABASE_URL='postgresql://user:pass@host:5432/idem_prod' \
-  --from-literal=IDEM_ISSUER='https://idem.app.losol.no' \
-  --from-literal=IDEM_ADMIN_URL='https://admin.idem.app.losol.no' \
+  --from-literal=IDEM_ISSUER='https://idem.example.com' \
+  --from-literal=IDEM_ADMIN_URL='https://admin.idem.example.com' \
   --from-literal=IDEM_MASTER_KEY="$(openssl rand -base64 32)" \
   --from-literal=IDEM_SESSION_SECRET="$(openssl rand -base64 32)" \
   --from-literal=IDEM_ADMIN_CLIENT_SECRET="$(openssl rand -base64 32)"
@@ -108,9 +108,9 @@ kubectl create secret generic idem-idp-secrets \
 
 | Environment | Namespace | Prefix | Hostname |
 |-------------|-----------|--------|----------|
-| Development | `idem-idp-dev` | `dev.` | `dev.idem.app.losol.no` |
-| Staging | `idem-idp-staging` | `staging.` | `staging.idem.app.losol.no` |
-| Production | `idem-idp-prod` | `` | `idem.app.losol.no` |
+| Development | `idem-idp-dev` | `dev.` | `dev.idem.example.com` |
+| Staging | `idem-idp-staging` | `staging.` | `staging.idem.example.com` |
+| Production | `idem-idp-prod` | `` | `idem.example.com` |
 
 ## Updating Secrets
 
@@ -139,7 +139,7 @@ kubectl get secret idem-idp-secrets -n idem-idp-dev -o yaml | \
 
 ## TLS Configuration
 
-HTTPS is handled by a **wildcard certificate** (`*.app.example.com`) managed centrally in the `traefik` namespace. 
+HTTPS is handled by a **wildcard certificate** (`*.idem.example.com`) managed centrally in the `traefik` namespace. 
 
 - No per-app certificates needed
 - No ReferenceGrants needed

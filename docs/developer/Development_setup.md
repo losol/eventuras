@@ -41,7 +41,7 @@ Add an `.env` file in the `Eventuras.WebFrontend` folder. Example file below.
 
 ```env
 NEXTAUTH_URL=http://localhost:3000
-NEXT_PUBLIC_API_BASE_URL=https://api.eventuras.losol.io
+NEXT_PUBLIC_API_BASE_URL=https://api.example.com
 NEXT_PUBLIC_APPLICATION_URL=http://localhost:3000
 AUTH0_DOMAIN=https://eventuras.eu.auth0.com
 AUTH0_CLIENT_ID=xxxxxx

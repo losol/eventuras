@@ -18,7 +18,7 @@ const REQUIRED_ENV_VARS = [
  */
 const OPTIONAL_ENV_VARS = {
   BRING_ENVIRONMENT: 'test' as BringEnvironment, // Default to test environment
-  BRING_CLIENT_URL: 'https://eventuras.losol.io',
+  BRING_CLIENT_URL: 'https://your-app.example.com',
 } as const;
 
 /**

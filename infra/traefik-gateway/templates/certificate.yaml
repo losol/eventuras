@@ -1,0 +1,19 @@
+# Wildcard certificate for primary and additional domains
+# Created in traefik namespace so Gateway can reference it directly
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ include "traefik-gateway.certName" . }}
+  namespace: {{ .Values.gateway.namespace }}
+spec:
+  secretName: {{ include "traefik-gateway.certSecretName" . }}
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+    - "*.{{ .Values.domain }}"
+    - {{ .Values.domain | quote }}
+    {{- range .Values.additionalDomains }}
+    - "*.{{ .domain }}"
+    - {{ .domain | quote }}
+    {{- end }}

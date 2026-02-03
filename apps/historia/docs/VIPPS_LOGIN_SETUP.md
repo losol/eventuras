@@ -213,8 +213,8 @@ vippsAuthPlugin({
     given_name: vippsUser.given_name,
     family_name: vippsUser.family_name,
     phone_number: vippsUser.phone_number,
-    // Custom: Auto-assign admin role for @losol.io emails
-    roles: vippsUser.email?.endsWith('@losol.io') ? ['admin'] : ['user'],
+    // Custom: Auto-assign admin role for @example.com emails
+    roles: vippsUser.email?.endsWith('@example.com') ? ['admin'] : ['user'],
     // Custom: Map Vipps addresses
     addresses: vippsUser.addresses?.map((addr) => ({
       label: 'Vipps',

@@ -124,7 +124,7 @@ The admin console for managing Idem itself.
   "sub": "admin-uuid",
   "aud": ["idem-admin"],
   "roles": ["systemadmin"],
-  "email": "admin@eventuras.no"
+  "email": "admin@example.com"
 }
 ```
 
@@ -144,7 +144,7 @@ Continuous deployment platform for Kubernetes. Uses [Argo CD's built-in roles](h
   "sub": "developer-uuid",
   "aud": ["argo-cd"],
   "roles": ["readonly"],
-  "email": "dev@eventuras.no"
+  "email": "dev@example.com"
 }
 ```
 
@@ -169,7 +169,7 @@ Monitoring and observability platform.
   "sub": "ops-uuid",
   "aud": ["grafana"],
   "roles": ["editor"],
-  "email": "ops@eventuras.no"
+  "email": "ops@example.com"
 }
 ```
 
@@ -191,7 +191,7 @@ Headless CMS for content management.
   "sub": "editor-uuid",
   "aud": ["historia"],
   "roles": ["site_editor"],
-  "email": "editor@eventuras.no"
+  "email": "editor@example.com"
 }
 ```
 
@@ -213,7 +213,7 @@ The C# backend for event management (future integration).
   "sub": "organizer-uuid",
   "aud": ["eventuras-api"],
   "roles": ["organizer"],
-  "email": "organizer@eventuras.no"
+  "email": "organizer@example.com"
 }
 ```
 
@@ -289,8 +289,8 @@ With RFC 8707, clients can request tokens valid for multiple resource servers:
 ```text
 GET /authorize?
   client_id=web-app&
-  resource=https://api.eventuras.no&
-  resource=https://graphql.eventuras.no&
+  resource=https://api.example.com&
+  resource=https://graphql.example.com&
   scope=openid profile
 ```
 
@@ -298,7 +298,7 @@ Resulting token:
 
 ```json
 {
-  "aud": ["https://api.eventuras.no", "https://graphql.eventuras.no"],
+  "aud": ["https://api.example.com", "https://graphql.example.com"],
   "roles": ["organizer"]
 }
 ```

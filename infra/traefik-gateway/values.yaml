@@ -1,0 +1,33 @@
+# Traefik Gateway configuration
+# Override these values for your environment
+
+# Primary domain for wildcard certificate
+domain: example.com
+
+# Additional wildcard domains (each gets its own listener)
+additionalDomains:
+  - name: idem
+    domain: idem.example.com
+
+# Let's Encrypt configuration
+letsencrypt:
+  email: admin@example.com
+  # Use staging for testing: https://acme-staging-v02.api.letsencrypt.org/directory
+  server: https://acme-v02.api.letsencrypt.org/directory
+
+# Cloudflare DNS01 configuration
+cloudflare:
+  # DNS zone for the solver
+  dnsZone: example.com
+  # Secret containing API token (must exist in cert-manager namespace)
+  apiTokenSecret:
+    name: cloudflare-api-token
+    key: api-token
+
+# Gateway configuration
+gateway:
+  name: traefik-gateway
+  namespace: traefik
+  className: traefik
+  httpPort: 8000
+  httpsPort: 8443

@@ -1,6 +1,6 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: process.env.SITE_URL || 'https://docs.eventuras.losol.io',
+  siteUrl: process.env.SITE_URL || 'https://docs.example.com',
   generateRobotsTxt: true,
   exclude: ['/404'],
 };

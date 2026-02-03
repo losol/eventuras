@@ -17,7 +17,7 @@ export interface BringConfig {
   apiKey: string;
   /** Bring customer number */
   customerId: string;
-  /** Client URL that identifies where you're using the API (e.g., 'https://eventuras.losol.io') */
+  /** Client URL that identifies where you're using the API (e.g., 'https://eventuras.example.com') */
   clientUrl: string;
 }
 

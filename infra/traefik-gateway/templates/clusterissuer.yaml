@@ -2,11 +2,11 @@
 #
 # Prerequisites:
 # 1. Create Cloudflare API token at https://dash.cloudflare.com/profile/api-tokens
-#    - Permissions: Zone:DNS:Edit, Zone:Zone:Read for losol.no
+#    - Permissions: Zone:DNS:Edit, Zone:Zone:Read for your domain
 # 2. Create secret:
-#    kubectl create secret generic cloudflare-api-token \
+#    kubectl create secret generic {{ .Values.cloudflare.apiTokenSecret.name }} \
 #      --namespace cert-manager \
-#      --from-literal=api-token=<YOUR-TOKEN>
+#      --from-literal={{ .Values.cloudflare.apiTokenSecret.key }}=<YOUR-TOKEN>
 #
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
@@ -14,17 +14,16 @@ metadata:
   name: letsencrypt-prod
 spec:
   acme:
-    email: ole@losol.no
-    server: https://acme-v02.api.letsencrypt.org/directory
+    email: {{ .Values.letsencrypt.email }}
+    server: {{ .Values.letsencrypt.server }}
     privateKeySecretRef:
       name: letsencrypt-prod-key
     solvers:
-      # DNS01 for wildcard and all losol.no certs
       - dns01:
           cloudflare:
             apiTokenSecretRef:
-              name: cloudflare-api-token
-              key: api-token
+              name: {{ .Values.cloudflare.apiTokenSecret.name }}
+              key: {{ .Values.cloudflare.apiTokenSecret.key }}
         selector:
           dnsZones:
-            - "losol.no"
+            - {{ .Values.cloudflare.dnsZone | quote }}

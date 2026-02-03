@@ -223,7 +223,7 @@ vippsAuthPlugin({
       phone_number: vippsUser.phone_number,
       
       // Custom logic
-      roles: vippsUser.email?.endsWith('@losol.io') 
+      roles: vippsUser.email?.endsWith('@example.com') 
         ? ['admin'] 
         : ['user'],
       

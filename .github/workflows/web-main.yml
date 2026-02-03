@@ -104,7 +104,7 @@ jobs:
     with:
       environment: ${{ github.event.inputs.environment || 'web-dev' }}
       vercel_environment: preview
-      url: dev.eventuras.losol.io
+      url: ${{ vars.DEPLOY_URL || 'dev.example.com' }}
     secrets:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}

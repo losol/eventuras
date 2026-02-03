@@ -45,9 +45,9 @@ cloudflared tunnel run dev
 
 | Environment | Namespace | Hostname | Description |
 |-------------|-----------|----------|-------------|
-| Development | `idem-idp-dev` | `dev.idem.app.losol.no` | For development and testing |
-| Staging | `idem-idp-staging` | `staging.idem.app.losol.no` | Pre-production validation |
-| Production | `idem-idp-prod` | `idem.app.losol.no` | Live production environment |
+| Development | `idem-idp-dev` | `dev.idem.example.com` | For development and testing |
+| Staging | `idem-idp-staging` | `staging.idem.example.com` | Pre-production validation |
+| Production | `idem-idp-prod` | `idem.example.com` | Live production environment |
 
 ### Environment Variables
 
@@ -148,7 +148,7 @@ spec:
 
 ### TLS and HTTPRoute
 
-HTTPS is handled by a **wildcard certificate** (`*.app.losol.no`) in the `traefik` namespace.
+HTTPS is handled by a **wildcard certificate** (`*.idem.example.com`) in the `traefik` namespace.
 
 - No per-app certificates needed
 - No ReferenceGrants needed
