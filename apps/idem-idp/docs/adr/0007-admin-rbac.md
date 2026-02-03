@@ -1,7 +1,10 @@
 # ADR 0007 — Admin RBAC
 
 ## Status
-Accepted (Updated 2026-01-30 for simplified schema with systemRole on accounts)
+
+Superseded by [ADR 0018](0018-per-client-rbac.md)
+
+*Previously: Accepted (Updated 2026-01-30 for simplified schema with systemRole on accounts)*
 
 ## Context
 
