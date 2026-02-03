@@ -14,6 +14,7 @@ spec:
       labels:
         app: {{ .Release.Name }}
     spec:
+      automountServiceAccountToken: false
       securityContext:
         runAsUser: 5050
         runAsGroup: 5050
