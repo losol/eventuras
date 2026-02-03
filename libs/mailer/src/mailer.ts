@@ -11,7 +11,7 @@ export interface EmailOptions {
 }
 
 export interface MailerConfig {
-  mode: 'development' | 'production';
+  mode: 'development' | 'production' | 'disabled';
   smtp?: {
     host: string;
     port: number;
@@ -52,6 +52,7 @@ export class Mailer {
   /**
    * Send an email
    * In development mode, emails are logged to console instead of being sent
+   * In disabled mode, emails are logged with a warning
    */
   async sendEmail(options: EmailOptions): Promise<void> {
     const fromAddress = this.config.from
@@ -77,6 +78,13 @@ export class Mailer {
       return;
     }
 
+    if (this.config.mode === 'disabled') {
+      console.warn(
+        `⚠️  Email NOT sent (SMTP disabled): To: ${Array.isArray(options.to) ? options.to.join(', ') : options.to}, Subject: ${options.subject}`
+      );
+      return;
+    }
+
     if (!this.transporter) {
       throw new Error('SMTP transporter not configured for production mode');
     }
@@ -94,7 +102,7 @@ export class Mailer {
    * Verify SMTP connection (production mode only)
    */
   async verify(): Promise<boolean> {
-    if (this.config.mode === 'development') {
+    if (this.config.mode === 'development' || this.config.mode === 'disabled') {
       return true;
     }
 
@@ -125,28 +133,35 @@ export class Mailer {
  * Create a mailer instance from environment variables
  */
 export function createMailerFromEnv(): Mailer {
-  const mode =
-    process.env.NODE_ENV === 'production' ? 'production' : 'development';
+  const isProduction = process.env.NODE_ENV === 'production';
+
+  const host = process.env.SMTP_HOST;
+  const port = process.env.SMTP_PORT;
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASS;
+
+  const hasSmtpConfig = host && port && user && pass;
+
+  let mode: MailerConfig['mode'];
+  if (!isProduction) {
+    mode = 'development';
+  } else if (hasSmtpConfig) {
+    mode = 'production';
+  } else {
+    console.warn(
+      '⚠️  SMTP configuration missing (SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS). Email sending is disabled.'
+    );
+    mode = 'disabled';
+  }
 
   const config: MailerConfig = { mode };
 
-  if (mode === 'production') {
-    const host = process.env.SMTP_HOST;
-    const port = process.env.SMTP_PORT;
-    const user = process.env.SMTP_USER;
-    const pass = process.env.SMTP_PASS;
-
-    if (!host || !port || !user || !pass) {
-      throw new Error(
-        'SMTP configuration missing. Required: SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS'
-      );
-    }
-
+  if (mode === 'production' && hasSmtpConfig) {
     config.smtp = {
-      host,
-      port: parseInt(port, 10),
+      host: host!,
+      port: parseInt(port!, 10),
       secure: process.env.SMTP_SECURE === 'true',
-      auth: { user, pass },
+      auth: { user: user!, pass: pass! },
     };
   }
 
