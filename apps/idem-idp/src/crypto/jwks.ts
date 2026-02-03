@@ -50,7 +50,10 @@ export async function bootstrapKeys(): Promise<void> {
   }
 
   logger.info('Generating RS256 key');
-  const { publicKey, privateKey } = await generateKeyPair('RS256', { modulusLength: 2048 });
+  const { publicKey, privateKey } = await generateKeyPair('RS256', {
+    modulusLength: 2048,
+    extractable: true,
+  });
   const publicJwk = await exportJWK(publicKey);
   const privateJwk = await exportJWK(privateKey);
   const kid = crypto.randomBytes(16).toString('hex');

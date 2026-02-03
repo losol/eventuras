@@ -1,8 +1,12 @@
 #
-# Build this from the repo root folder:
-# docker build -f apps/idem-idp/Dockerfile -t eventuras/idem-idp:latest .
+# Build from repo root:
+#   docker build -f apps/idem-idp/Dockerfile -t losolio/idem-idp:edge .
 #
+# Multi-arch build and push:
+#   docker buildx build --platform linux/amd64,linux/arm64 \
+#     -f apps/idem-idp/Dockerfile -t losolio/idem-idp:edge --push .
 #
+
 # ---- 0) PRUNE MONOREPO ----
 FROM node:24-alpine AS prune
 WORKDIR /repo
