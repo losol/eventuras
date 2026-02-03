@@ -75,7 +75,7 @@ export async function createOidcProvider(): Promise<any> {
     cookies: {
       keys: [config.sessionSecret],
       // secure: undefined allows oidc-provider to auto-detect based on request protocol
-      // This works with both http://localhost:3200 and https://idem-dev.losol.io
+      // This works with both http://localhost:3200 and https://idem-dev.example.com
       // IMPORTANT: Set path to '/' so cookies are sent on ALL routes, enabling
       // the clear-session endpoint to receive and clear them
       short: { signed: true, httpOnly: true, sameSite: 'lax', path: '/' },

@@ -11,7 +11,7 @@ If the user needs to login or create a user, he should still be redirected back 
 
 ### Step 1: Customize products
 
-**API Endpoint:** `GET https://api.eventuras.losol.io/v3/events/{eventId}/products`
+**API Endpoint:** `GET https://api.example.com/v3/events/{eventId}/products`
 
 The user should see a list of products which is available for the event. If the users is allready registered, he should just see a message that he is registered.
 

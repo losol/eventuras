@@ -29,7 +29,7 @@ const config: BringConfig = {
   apiUid: process.env.BRING_API_UID!, // Your Mybring email address
   apiKey: process.env.BRING_API_KEY!, // API key from Mybring account settings
   customerId: process.env.BRING_CUSTOMER_ID!,
-  clientUrl: 'https://eventuras.losol.io', // URL identifying where you're using the API
+  clientUrl: 'https://eventuras.example.com', // URL identifying where you're using the API
 };
 
 // Create client
@@ -174,7 +174,7 @@ BRING_CUSTOMER_ID=your-customer-number
 
 # Optional
 BRING_ENVIRONMENT=test                       # 'test' or 'production' (default: 'test')
-BRING_CLIENT_URL=https://eventuras.losol.io  # Default shown
+BRING_CLIENT_URL=https://your-app.example.com  # Your application URL
 ```
 
 **Using environment config:**
@@ -234,7 +234,7 @@ BRING_CUSTOMER_ID=your_customer_number
 BRING_ENVIRONMENT=test
 
 # Optional: Client URL for API identification
-BRING_CLIENT_URL=https://eventuras.losol.io
+BRING_CLIENT_URL=https://your-app.example.com
 ```
 
 ## Testing

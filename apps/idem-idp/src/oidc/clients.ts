@@ -32,7 +32,7 @@ const BUILT_IN_CLIENTS: Record<string, any> = {
     client_name: 'Idem Admin Console',
     redirect_uris: [
       `${idemAdminUrl}/api/callback`,
-      'https://idem-admin.losol.io/api/callback', // Production
+      // Add production URL here: 'https://idem-admin.example.com/api/callback'
     ],
     grant_types: ['authorization_code', 'refresh_token'],
     response_types: ['code'],

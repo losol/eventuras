@@ -37,7 +37,7 @@ Using console.log will throw an eslint error - which means for commits no consol
 
 ## API swagger documentation
 
-<https://api.eventuras.losol.io/swagger/index.html>
+<https://api.example.com/swagger/index.html>
 
 ## API documentation
 

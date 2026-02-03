@@ -49,7 +49,7 @@ static override flags = {
     const config = {
       apiKey,
       apiUid,
-      clientUrl: process.env.BRING_CLIENT_URL || 'https://eventuras.losol.io',
+      clientUrl: process.env.BRING_CLIENT_URL || 'https://your-app.example.com',
       customerId,
       environment: (process.env.BRING_ENVIRONMENT || 'test') as 'production' | 'test',
     };

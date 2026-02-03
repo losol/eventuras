@@ -4,9 +4,9 @@ We do have a demo site available. It is not meant for production use. However, i
 
 The following urls are provided:
 
--   [eventuras.losol.io](https://eventuras.losol.io) - The new eventuras web frontend under development
--   [classic.eventuras.losol.io](https://classic.eventuras.losol.io) - The old eventuras web frontend
--   [api.eventuras.losol.io](https://api.eventuras.losol.io) - The eventuras API
+-   `eventuras.example.com` - The new eventuras web frontend under development
+-   `classic.eventuras.example.com` - The old eventuras web frontend
+-   `api.eventuras.example.com` - The eventuras API
 
 ## Credentials
 
