@@ -54,7 +54,62 @@ ports:
 EOF
 helm install traefik traefik/traefik -n traefik -f /tmp/traefik-values.yaml
 
-# 6. Create Gateway
+# 6. Install cert-manager with Gateway API support
+helm repo add jetstack https://charts.jetstack.io
+helm repo update
+helm install cert-manager jetstack/cert-manager \
+  -n cert-manager --create-namespace \
+  --set crds.enabled=true \
+  --set extraArgs="{--enable-gateway-api}"
+
+# 7. Create Cloudflare API token secret for DNS01 challenge
+# Get token from https://dash.cloudflare.com/profile/api-tokens
+# Required permissions: Zone:DNS:Edit, Zone:Zone:Read for your domain
+kubectl create secret generic cloudflare-api-token \
+  --namespace cert-manager \
+  --from-literal=api-token=<YOUR-CLOUDFLARE-API-TOKEN>
+
+# 8. Create ClusterIssuer with Cloudflare DNS01 (enables wildcard certs)
+kubectl apply -f - <<'EOF'
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: user@domain
+    privateKeySecretRef:
+      name: letsencrypt-prod-key
+    solvers:
+      - dns01:
+          cloudflare:
+            apiTokenSecretRef:
+              name: cloudflare-api-token
+              key: api-token
+        selector:
+          dnsZones:
+            - "yourdomain.no"
+EOF
+
+# 9. Create wildcard certificate (in traefik namespace for easy Gateway access)
+kubectl apply -f - <<'EOF'
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wildcard-app-domain
+  namespace: traefik
+spec:
+  secretName: wildcard-app-domain-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+    - "*.app.domain.no"
+    - "app.domain.no"
+EOF
+
+# 10. Create Gateway with wildcard HTTPS listener
 kubectl apply -f - <<'EOF'
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
@@ -73,88 +128,27 @@ spec:
     - name: https
       port: 8443
       protocol: HTTPS
-      allowedRoutes:
-        namespaces:
-          from: All
+      hostname: "*.app.domain.no"
       tls:
         mode: Terminate
         certificateRefs:
           - kind: Secret
-            name: argocd-tls
-            namespace: argocd
+            name: wildcard-app-domain-tls
+      allowedRoutes:
+        namespaces:
+          from: All
 EOF
 
-# 7. Install cert-manager with Gateway API support
-helm repo add jetstack https://charts.jetstack.io
-helm repo update
-helm install cert-manager jetstack/cert-manager \
-  -n cert-manager --create-namespace \
-  --set crds.enabled=true \
-  --set extraArgs="{--enable-gateway-api}"
-
-# 8. Create ClusterIssuer for Let's Encrypt
-# Remember to replace `user@domain` with your actual email address.
-kubectl apply -f - <<'EOF'
-apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
-metadata:
-  name: letsencrypt-prod
-spec:
-  acme:
-    server: https://acme-v02.api.letsencrypt.org/directory
-    email: user@domain
-    privateKeySecretRef:
-      name: letsencrypt-prod-key
-    solvers:
-      - http01:
-          gatewayHTTPRoute:
-            parentRefs:
-              - name: traefik-gateway
-                namespace: traefik
-                kind: Gateway
-EOF
-
-# 9. Install Argo CD
+# 11. Install Argo CD
 kubectl create namespace argocd
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
-# 10. Patch Argo CD for insecure mode (TLS handled by gateway)
+# 12. Patch Argo CD for insecure mode (TLS handled by gateway)
 kubectl -n argocd patch deployment argocd-server --type='json' \
   -p='[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value": "--insecure"}]'
 
-# 11. Create ReferenceGrant for TLS certificate access
+# 13. Create Argo CD HTTPRoute (uses wildcard cert, no ReferenceGrant needed)
 kubectl apply -f - <<'EOF'
-apiVersion: gateway.networking.k8s.io/v1beta1
-kind: ReferenceGrant
-metadata:
-  name: allow-traefik-tls
-  namespace: argocd
-spec:
-  from:
-    - group: gateway.networking.k8s.io
-      kind: Gateway
-      namespace: traefik
-  to:
-    - group: ""
-      kind: Secret
-      name: argocd-tls
-EOF
-
-# 12. Create Argo CD Certificate and HTTPRoute
-kubectl apply -f - <<'EOF'
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: argocd-tls
-  namespace: argocd
-spec:
-  secretName: argocd-tls
-  issuerRef:
-    name: letsencrypt-prod
-    kind: ClusterIssuer
-  dnsNames:
-    - argo.app.domain.no
----
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
@@ -177,7 +171,7 @@ spec:
           port: 80
 EOF
 
-# 13. Get Argo CD admin password
+# 14. Get Argo CD admin password
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d && echo
 ```
 
@@ -187,9 +181,10 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 2. **LoadBalancer**: Configure port translation:
    - Frontend 80 → Backend 8000
    - Frontend 443 → Backend 8443
-3. **Argo CD**: Log in at https://argo.app.domain.no with username `admin`
-4. **GitHub App**: Add repository connection via GitHub App in Argo CD Settings → Repositories
-5. **Applications**: Create Argo CD Applications for each environment
+3. **Wait for certificate**: `kubectl get certificate -n traefik -w` (wait for READY=True)
+4. **Argo CD**: Log in at https://argo.app.domain.no with username `admin`
+5. **GitHub App**: Add repository connection via GitHub App in Argo CD Settings → Repositories
+6. **Applications**: Create Argo CD Applications for each environment
 
 ## Adding New Applications
 
@@ -199,58 +194,31 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 kubectl create namespace my-app-dev
 ```
 
-### 2. Create Certificate and ReferenceGrant
+### 2. Create HTTPRoute
 
-Each application needs a TLS certificate and a ReferenceGrant to allow the Gateway to access it:
+With the wildcard certificate (`*.app.domain.no`), new applications only need an HTTPRoute - no per-app certificates or ReferenceGrants required:
 
 ```yaml
-apiVersion: cert-manager.io/v1
-kind: Certificate
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
 metadata:
-  name: my-app-tls
+  name: my-app
   namespace: my-app-dev
 spec:
-  secretName: my-app-tls
-  issuerRef:
-    name: letsencrypt-prod
-    kind: ClusterIssuer
-  dnsNames:
-    - my-app.app.domain.no
----
-apiVersion: gateway.networking.k8s.io/v1beta1
-kind: ReferenceGrant
-metadata:
-  name: allow-traefik-tls
-  namespace: my-app-dev
-spec:
-  from:
-    - group: gateway.networking.k8s.io
-      kind: Gateway
+  parentRefs:
+    - name: traefik-gateway
       namespace: traefik
-  to:
-    - group: ""
-      kind: Secret
-      name: my-app-tls
-```
-
-### 3. Add Listener to Gateway
-
-Update the Gateway in `traefik` namespace to add a new HTTPS listener:
-
-```yaml
-- name: https-my-app
-  port: 8443
-  protocol: HTTPS
-  hostname: my-app.app.domain.no
-  allowedRoutes:
-    namespaces:
-      from: All
-  tls:
-    mode: Terminate
-    certificateRefs:
-      - kind: Secret
-        name: my-app-tls
-        namespace: my-app-dev
+      sectionName: https  # Uses wildcard listener
+  hostnames:
+    - my-app.app.domain.no
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: my-app
+          port: 80
 ```
 
 ### 4. Create HTTPRoute

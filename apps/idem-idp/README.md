@@ -146,15 +146,15 @@ spec:
                 name: idem-idp-secrets
 ```
 
-### TLS Certificate and HTTPRoute
+### TLS and HTTPRoute
 
-See [Kubernetes Setup](../../docs/infrastructure/kubernetes-setup.md) for full instructions on adding new applications with TLS certificates.
+HTTPS is handled by a **wildcard certificate** (`*.app.losol.no`) in the `traefik` namespace.
 
-Quick reference:
+- No per-app certificates needed
+- No ReferenceGrants needed
+- HTTPRoutes automatically use the wildcard HTTPS listener
 
-1. Create Certificate and ReferenceGrant in namespace
-2. Add HTTPS listener to Gateway with hostname
-3. Create HTTPRoute pointing to service
+See [Kubernetes Setup](../../docs/infrastructure/kubernetes-setup.md) for infrastructure details.
 
 ## Architecture
 

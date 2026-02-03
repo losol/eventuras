@@ -54,15 +54,13 @@ After creation:
 
 ## Creating Applications
 
-### idem-idp-dev
-
 **In Argo CD UI:**
 
 1. **Applications** → **New App**
 2. Fill in:
-   - **Application Name:** `idem-idp-dev`
+   - **Application Name:** `<app>-<env>` (e.g., `myapp-dev`)
    - **Project:** `default`
-   - **Sync Policy:** Automatic
+   - **Sync Policy:** Automatic (dev/staging) or Manual (prod)
      - ✓ Prune Resources
      - ✓ Self Heal
    - **Auto-Create Namespace:** ✓
@@ -70,110 +68,71 @@ After creation:
 3. **Source:**
    - **Repository URL:** `https://github.com/losol/eventuras`
    - **Revision:** `HEAD`
-   - **Path:** `apps/idem-idp/chart`
+   - **Path:** `apps/<app>/chart`
 
 4. **Destination:**
    - **Cluster URL:** `https://kubernetes.default.svc`
-   - **Namespace:** `idem-idp-dev`
+   - **Namespace:** `<app>-<env>`
 
-5. **Helm** section - add these parameters:
-   ```yaml
-   image.registry: docker.io
-   image.repository: losolio/idem-idp
-   image.tag: canary
-   dns.domain: app.domain.no
-   dns.appName: idem
-   dns.prefix: "dev."
-   env.NODE_ENV: production
-   env.PORT: "3001"
-   env.LOG_LEVEL: debug
-   ```
+5. **Helm** section - add environment-specific parameters (see each app's chart README)
 
 6. Click **Create**
 
-### idem-idp-staging
+### Application-specific Setup
 
-Same as dev, but with:
-- **Application Name:** `idem-idp-staging`
-- **Namespace:** `idem-idp-staging`
-- **dns.prefix:** `staging.`
-- **image.tag:** `latest`
-- **env.LOG_LEVEL:** `info`
+See each application's chart README for detailed setup instructions:
 
-### idem-idp-prod
-
-Same as dev, but with:
-- **Application Name:** `idem-idp-prod`
-- **Namespace:** `idem-idp-prod`
-- **Sync Policy:** Manual (no auto-sync for prod)
-- **dns.prefix:** `` (empty string)
-- **image.tag:** `v1.0.0` (or specific version)
-- **env.LOG_LEVEL:** `warn`
-- **replicaCount:** `2`
+- [idem-idp](../../apps/idem-idp/chart/README.md#argo-cd-application-setup)
 
 ## Secrets Setup
 
-Before syncing applications, create secrets in each namespace:
+Before syncing applications, create required secrets in each namespace. See each application's chart README for specific secret requirements:
+
+- [idem-idp secrets](../../apps/idem-idp/chart/README.md#required-secrets)
+
+### Generic Pattern
 
 ```bash
-# Dev
-kubectl create namespace idem-idp-dev
-kubectl create secret generic idem-idp-secrets -n idem-idp-dev \
-  --from-literal=IDEM_DATABASE_URL='postgresql://user:pass@host:5432/idem_dev' \
-  --from-literal=IDEM_ISSUER='https://dev.idem.app.domain.no' \
-  --from-literal=IDEM_ADMIN_URL='https://admin.dev.idem.app.domain.no'
+# Create namespace
+kubectl create namespace <app>-<env>
 
-# Staging
-kubectl create namespace idem-idp-staging
-kubectl create secret generic idem-idp-secrets -n idem-idp-staging \
-  --from-literal=IDEM_DATABASE_URL='postgresql://user:pass@host:5432/idem_staging' \
-  --from-literal=IDEM_ISSUER='https://staging.idem.app.domain.no' \
-  --from-literal=IDEM_ADMIN_URL='https://admin.staging.idem.app.domain.no'
-
-# Prod
-kubectl create namespace idem-idp-prod
-kubectl create secret generic idem-idp-secrets -n idem-idp-prod \
-  --from-literal=IDEM_DATABASE_URL='postgresql://user:pass@host:5432/idem_prod' \
-  --from-literal=IDEM_ISSUER='https://idem.app.domain.no' \
-  --from-literal=IDEM_ADMIN_URL='https://admin.idem.app.domain.no'
+# Create secret with required values
+kubectl create secret generic <app>-secrets -n <app>-<env> \
+  --from-literal=KEY1='value1' \
+  --from-literal=KEY2='value2'
 ```
 
-## ReferenceGrants for TLS
+### Updating Secrets
 
-Each app namespace needs a ReferenceGrant for the Gateway to access its TLS secret:
+To update a single secret value:
 
 ```bash
-for ns in idem-idp-dev idem-idp-staging idem-idp-prod; do
-  kubectl apply -f - <<EOF
-apiVersion: gateway.networking.k8s.io/v1beta1
-kind: ReferenceGrant
-metadata:
-  name: allow-traefik-tls
-  namespace: $ns
-spec:
-  from:
-    - group: gateway.networking.k8s.io
-      kind: Gateway
-      namespace: traefik
-  to:
-    - group: ""
-      kind: Secret
-      name: idem-idp-tls
-EOF
-done
+# Patch a single key
+kubectl patch secret <secret-name> -n <namespace> --type='json' \
+  -p='[{"op": "replace", "path": "/data/<KEY>", "value": "'$(echo -n 'new-value' | base64)'"}]'
 ```
+
+## TLS Configuration
+
+TLS is handled by a **wildcard certificate** (`*.app.domain.no`) in the `traefik` namespace.
+
+- No per-app certificates needed
+- No ReferenceGrants needed  
+- All HTTPRoutes use the `https` listener automatically
+
+See [Kubernetes Setup](./kubernetes-setup.md) for the infrastructure configuration.
 
 ## Image Tagging Strategy
 
 | Tag | Description | Used in |
 |-----|-------------|---------|
-| `canary` | Latest CI build from main | dev |
-| `latest` | Latest stable release | staging |
-| `v1.2.3` | Semantic version | prod |
+| `edge` | Every CI build from PR/branch | dev |
+| `canary` | CI build from main branch | staging |
+| `v1.2.3` | Semantic version release | prod |
 | `sha-abc123` | Specific commit | debugging |
 
 ## Deployment Flow
 
-1. **PR merged to main** → CI builds and pushes `canary` tag → dev auto-syncs
-2. **Release created** → CI builds and pushes `latest` + `v1.2.3` → staging auto-syncs
-3. **Manual promotion** → Update prod app to new version tag → manual sync
+1. **PR/branch push** → CI builds and pushes `edge` tag → dev auto-syncs
+2. **PR merged to main** → CI builds and pushes `canary` tag → staging auto-syncs
+3. **Release created** → CI builds and pushes `v1.2.3` tag → prod manual sync

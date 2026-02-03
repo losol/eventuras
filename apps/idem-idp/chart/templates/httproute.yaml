@@ -8,6 +8,7 @@ spec:
   parentRefs:
     - name: traefik-gateway
       namespace: traefik
+      sectionName: https  # Uses wildcard listener
   hostnames:
     - {{ .Values.dns.prefix }}{{ .Values.dns.appName }}.{{ .Values.dns.domain }}
   rules:
