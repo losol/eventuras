@@ -118,7 +118,7 @@ Check secret values with:
 
 ```bash
 kubectl get secret idem-idp-secrets -n idem-idp-staging -o jsonpath='{.data.IDEM_DATABASE_URL}' | base64 -d
-
+```
 
 To update a single secret value (e.g., `IDEM_DATABASE_URL`):
 
