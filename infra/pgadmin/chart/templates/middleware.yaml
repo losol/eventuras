@@ -1,0 +1,17 @@
+{{- if and .Values.traefik.enabled .Values.traefik.ipWhitelist.enabled }}
+{{- if not .Values.traefik.ipWhitelist.sourceRange }}
+{{- fail "traefik.ipWhitelist.sourceRange cannot be empty when ipWhitelist is enabled" }}
+{{- end }}
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: {{ .Release.Name }}-ipwhitelist
+  labels:
+    app: {{ .Release.Name }}
+spec:
+  ipAllowList:
+    sourceRange:
+      {{- range .Values.traefik.ipWhitelist.sourceRange }}
+      - {{ . | quote }}
+      {{- end }}
+{{- end }}

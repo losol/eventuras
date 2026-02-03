@@ -1,0 +1,80 @@
+# Default values for pgAdmin
+# SECURITY: Default is port-forward only. Enable Traefik IngressRoute for IP-restricted OIDC access.
+
+replicaCount: 1
+
+image:
+  repository: dpage/pgadmin4
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+# pgAdmin configuration
+pgadmin:
+  # Default admin email (required)
+  # This is a placeholder - override with a real, monitored address for production,
+  # as pgAdmin uses it for admin access and notifications.
+  defaultEmail: "admin@example.com"
+  # Default admin password (required)
+  # MUST be set via --set or a separate values file; do not commit real passwords here.
+  defaultPassword: ""
+
+service:
+  type: ClusterIP  # No external access by default
+  port: 80
+  targetPort: 80
+
+# Persistence for pgAdmin data
+persistence:
+  enabled: true
+  size: 1Gi
+  storageClass: ""  # Use default
+
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "100m"
+  limits:
+    memory: "512Mi"
+    cpu: "500m"
+
+# Traefik IngressRoute
+# Enable for external access with IP whitelist + OIDC
+traefik:
+  enabled: false
+  # Traefik entrypoint (usually "websecure" for HTTPS)
+  entryPoints:
+    - websecure
+  # Hostname for pgAdmin
+  hostname: ""  # e.g., pgadmin.example.com
+  # TLS configuration
+  tls:
+    enabled: true
+    # Use cert-manager or existing secret
+    certResolver: ""  # e.g., letsencrypt
+    secretName: ""    # Alternative: existing TLS secret
+  # IP whitelist (creates Traefik Middleware)
+  ipWhitelist:
+    enabled: false
+    sourceRange: []
+      # - "203.0.113.50/32"   # Your IP
+
+# OIDC authentication
+# Replaces email/password login with SSO
+# Configuration is loaded from a Secret containing PGADMIN_CONFIG_* env vars
+oidc:
+  enabled: false
+  # Secret containing PGADMIN_CONFIG_* environment variables
+  # See README.md for how to create this Secret
+  secretRef:
+    name: ""  # e.g., pgadmin-oidc-config
+
+# Pre-configured database servers (optional)
+# These are loaded into pgAdmin on startup
+servers: {}
+  # mydb:
+  #   name: "My Database"
+  #   host: "postgres-rw.myapp.svc.cluster.local"
+  #   port: 5432
+  #   database: "mydb"
+  #   username: "myuser"
+  #   sslMode: "prefer"

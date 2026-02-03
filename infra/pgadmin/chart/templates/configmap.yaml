@@ -1,0 +1,30 @@
+{{- if .Values.servers }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-servers
+  labels:
+    app: {{ .Release.Name }}
+data:
+  servers.json: |
+    {
+      "Servers": {
+        {{- $first := true }}
+        {{- $index := 1 }}
+        {{- range $key, $server := .Values.servers }}
+        {{- if not $first }},{{ end }}
+        "{{ $index }}": {
+          "Name": {{ $server.name | quote }},
+          "Group": "Servers",
+          "Host": {{ $server.host | quote }},
+          "Port": {{ $server.port | default 5432 }},
+          "MaintenanceDB": {{ $server.database | default "postgres" | quote }},
+          "Username": {{ $server.username | quote }},
+          "SSLMode": {{ $server.sslMode | default "prefer" | quote }}
+        }
+        {{- $first = false }}
+        {{- $index = add $index 1 }}
+        {{- end }}
+      }
+    }
+{{- end }}
