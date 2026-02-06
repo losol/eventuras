@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed (Supersedes [ADR 0007](0007-admin-rbac.md))
+Accepted (Supersedes [ADR 0007](0007-admin-rbac.md))
 
 ## Context
 
@@ -54,7 +54,9 @@ CREATE TABLE idem.role_grants (
   UNIQUE(account_id, client_role_id)
 );
 
+-- Indexes for common query patterns
 CREATE INDEX role_grants_account_idx ON idem.role_grants(account_id);
+CREATE INDEX client_roles_lookup_idx ON idem.client_roles(client_id, role_name);
 ```
 
 ### Token Claims
@@ -77,10 +79,12 @@ When a user authenticates with an OAuth client, their ID token includes roles fo
 ```text
 1. User authenticates via OAuth client (e.g., idem-admin)
 2. Idem queries role_grants for user's roles in that client
-3. Roles are included in ID token claims
+3. Roles are included in ID token claims (empty array if no roles)
 4. Client application checks roles claim for authorization
 5. For idem-admin: requires "systemadmin" or "admin_reader" role
 ```
+
+**Note on empty roles:** Users without any roles for a client will receive a token with an empty `roles` array. It is the client application's responsibility to handle authorization based on the roles claim. This allows users to authenticate without necessarily having access to all features.
 
 ### Admin Access Control
 
@@ -314,37 +318,89 @@ To support RFC 8707:
 
 *This is prepared for but not implemented in the initial release.*
 
-### Migration from systemRole
+### Bootstrap: Creating the First Client and Admin
+
+The system requires a bootstrap mechanism to create the first `systemadmin`. This is a one-time operation that should be disabled after initial setup.
+
+**Account creation policy:** Any user can create an account by logging in via a configured IdP. However, accounts without roles have no access to any client applications. This is secure because:
+
+- Account creation alone grants no privileges
+- The `roles` claim will be an empty array until explicitly granted
+- Only users with the bootstrap token can claim `systemadmin`
+- Subsequent role assignments require `systemadmin` privileges
+
+**Database seeding (runs on startup via migration):**
 
 ```sql
--- 1. Create idem-admin client if not exists
-INSERT INTO idem.oauth_clients (client_id, client_name, ...)
-VALUES ('idem-admin', 'Idem Admin Console', ...);
+-- 1. Create the idem-admin OAuth client
+INSERT INTO idem.oauth_clients (id, client_id, client_name, redirect_uris)
+VALUES (
+  gen_random_uuid(),
+  'idem-admin',
+  'Idem Admin Console',
+  ARRAY['http://localhost:3000/callback', 'https://admin.example.com/callback']
+) ON CONFLICT (client_id) DO NOTHING;
 
--- 2. Create roles for idem-admin
+-- 2. Create the predefined roles for idem-admin
 INSERT INTO idem.client_roles (client_id, role_name, description)
 SELECT id, 'systemadmin', 'Full administrative access'
-FROM idem.oauth_clients WHERE client_id = 'idem-admin';
+FROM idem.oauth_clients WHERE client_id = 'idem-admin'
+ON CONFLICT (client_id, role_name) DO NOTHING;
 
 INSERT INTO idem.client_roles (client_id, role_name, description)
 SELECT id, 'admin_reader', 'Read-only admin access'
-FROM idem.oauth_clients WHERE client_id = 'idem-admin';
-
--- 3. Migrate existing systemRole grants
-INSERT INTO idem.role_grants (account_id, client_role_id)
-SELECT a.id, cr.id
-FROM idem.accounts a
-JOIN idem.client_roles cr ON cr.role_name =
-  CASE a.system_role
-    WHEN 'system_admin' THEN 'systemadmin'
-    WHEN 'admin_reader' THEN 'admin_reader'
-  END
-JOIN idem.oauth_clients oc ON oc.id = cr.client_id AND oc.client_id = 'idem-admin'
-WHERE a.system_role IS NOT NULL;
-
--- 4. Remove systemRole column
-ALTER TABLE idem.accounts DROP COLUMN system_role;
+FROM idem.oauth_clients WHERE client_id = 'idem-admin'
+ON CONFLICT (client_id, role_name) DO NOTHING;
 ```
+
+**Bootstrap endpoint:**
+
+```
+POST /api/systemadmin/claim
+Authorization: Bearer <bootstrap_token>
+Content-Type: application/json
+
+{
+  "account_id": "uuid-of-logged-in-user"
+}
+```
+
+The endpoint grants `systemadmin` role to the specified account. Only available when bootstrap mode is enabled.
+
+**Configuration:**
+
+| Environment Variable | Description | Example |
+|---------------------|-------------|---------|
+| `IDEM_BOOTSTRAP_ENABLED` | Enable bootstrap endpoint | `true` |
+| `IDEM_BOOTSTRAP_TOKEN` | Secret token (min 32 chars) | `a1b2c3d4...` (cryptographically random) |
+
+**Startup behavior:**
+
+| Environment | Bootstrap enabled | Systemadmin exists | Behavior |
+|-------------|-------------------|-------------------|----------|
+| Development | `true` | Yes | ⚠️ Log WARNING, endpoint disabled |
+| Development | `true` | No | ✅ Endpoint available |
+| Production | `true` | Yes | ❌ Log ERROR, endpoint disabled |
+| Production | `true` | No | ✅ Endpoint available |
+| Any | `false` | Any | ✅ Endpoint not registered |
+
+**Workflow:**
+
+1. Set `IDEM_BOOTSTRAP_ENABLED=true` and `IDEM_BOOTSTRAP_TOKEN=<random-32-chars>`
+2. Deploy Idem
+3. Admin creates account (or logs in via IdP)
+4. Admin calls `POST /api/bootstrap` with the token
+5. Admin receives `systemadmin` role for `idem-admin` client
+6. Remove environment variables (or set `IDEM_BOOTSTRAP_ENABLED=false`)
+7. Redeploy
+
+**Security considerations:**
+
+- Token must be cryptographically random (use `openssl rand -hex 32`)
+- Token comparison uses constant-time algorithm to prevent timing attacks
+- All bootstrap attempts (success and failure) are logged to audit log
+- Rate limiting applies to the endpoint
+- First successful bootstrap wins; endpoint auto-disables after success
 
 ## Consequences
 
@@ -359,7 +415,7 @@ ALTER TABLE idem.accounts DROP COLUMN system_role;
 ### Negative
 
 - **More complex queries**: Authorization requires joins across three tables
-  - *Mitigation*: Create helper functions and cache role lookups
+  - *Mitigation*: Create helper functions and optimize with proper indexes
 - **Migration required**: Existing systemRole data must be migrated
   - *Mitigation*: Provide migration script
 - **Breaking change**: Token claims change from `system_role` to `roles`
@@ -369,7 +425,7 @@ ALTER TABLE idem.accounts DROP COLUMN system_role;
 
 - **Role assignment is privileged**: Only `systemadmin` can grant roles
 - **Cascade deletes**: Deleting a client removes all its roles and grants
-- **Audit logging**: All role changes should be logged (existing audit infrastructure)
+- **Audit logging**: All role changes (grants and revocations) are logged via existing audit infrastructure, providing full history of who granted/revoked what and when
 
 ## References
 
