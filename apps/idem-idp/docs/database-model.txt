@@ -1,18 +1,19 @@
 ====================================================================
-IDEM-IDP — COMPLETE DATABASE MODEL
-Version: 1.4 (IdP broker + PAR + RBAC + audit message)
+IDEM-IDP — DATABASE MODEL
+Version: 2.0
+Updated: 2026-02-08
 ====================================================================
 
 The system provides:
-  - Multi-organization, multi-tenant identity
+  - Single-tenant identity provider for Eventuras applications
   - OpenID Connect Provider (IdP) functionality
-  - IdP brokering (Vipps, HelseID, Idporten, AzureAD, etc.)
+  - Prepared for IdP brokering
   - OAuth2/OIDC tokens & state (including PAR)
   - User profile & contact info
   - Key management (JWKS)
   - Logout, analytics and compliance support
   - Auditing with human-readable context
-  - Admin RBAC (system / org / tenant scoped administration)
+  - Admin RBAC (global roles only, no tenant scoping)
 
 Integrates with:
   - node-oidc-provider
@@ -20,58 +21,13 @@ Integrates with:
   - OAuth 2.0 (RFC 6749, 7009, 8628, 9126)
 
 --------------------------------------------------------------------
-SECTION 1 — ORGANIZATIONS
---------------------------------------------------------------------
-
-Table: idem_organizations
-
-Columns:
-  id               UUID (PK)
-  slug             TEXT (unique)
-  display_name     TEXT
-  active           BOOLEAN (default true)
-  created_at       TIMESTAMPTZ
-
-Relationships:
-  Organization 1 --- N Tenants
-
---------------------------------------------------------------------
-SECTION 2 — TENANTS (ISSUERS)
---------------------------------------------------------------------
-
-Enum: tenant_env
-  development | staging | production
-
-Table: idem_tenants
-
-Columns:
-  id               UUID (PK)
-  org_id           UUID (FK → idem_organizations.id)
-  issuer           TEXT (unique)
-  host             TEXT (unique)
-  environment      tenant_env
-  is_primary       BOOLEAN
-  active           BOOLEAN
-  created_at       TIMESTAMPTZ
-
-Relationships:
-  Tenant 1 --- N Accounts
-  Tenant 1 --- N OAuth Clients
-  Tenant 1 --- N Keys
-  Tenant 1 --- N IdP bindings
-  Tenant 1 --- N OIDC Store entries
-  Tenant 1 --- N Audit log entries
-
---------------------------------------------------------------------
-SECTION 3 — USER CORE MODEL
+SECTION 1 — USER CORE MODEL
 --------------------------------------------------------------------
 
 Table: idem_accounts
 
 Columns:
   id                 UUID (PK)
-  org_id             UUID (FK)
-  tenant_id          UUID (FK)
   display_name       TEXT
   preferred_username TEXT
   primary_email      TEXT
@@ -84,45 +40,41 @@ Columns:
   updated_at         TIMESTAMPTZ
 
 Indexes:
-  CREATE INDEX idx_accounts_tenant ON idem_accounts(tenant_id);
-  CREATE INDEX idx_accounts_tenant_email ON idem_accounts(tenant_id, primary_email);
-  CREATE INDEX idx_accounts_tenant_username ON idem_accounts(tenant_id, preferred_username);
+  CREATE INDEX idx_accounts_email ON idem_accounts(primary_email);
+  CREATE INDEX idx_accounts_username ON idem_accounts(preferred_username);
+  CREATE INDEX idx_accounts_active ON idem_accounts(active) WHERE active = true;
 
 Enum: identity_provider
-  vipps | helseid | idporten | azuread | google | github | other
+  vipps | helseid | idporten | azuread | google | github | mock_vipps | mock_helseid | dev_mock | other
 
 Table: idem_identities
 
 Columns:
   id                UUID (PK)
-  account_id        UUID (FK)
-  org_id            UUID (FK)
-  tenant_id         UUID (FK)
+  account_id        UUID (FK → idem_accounts.id)
   provider          identity_provider
   provider_subject  TEXT
   provider_issuer   TEXT
   is_primary        BOOLEAN
-  raw_claims        TEXT
+  raw_claims        JSONB
   created_at        TIMESTAMPTZ
 
 Constraints:
-  Unique (tenant_id, provider, provider_subject)
+  Unique (provider, provider_subject)
 
 Indexes:
   CREATE INDEX idx_identities_account ON idem_identities(account_id);
-  CREATE INDEX idx_identities_provider_lookup ON idem_identities(tenant_id, provider, provider_subject);
+  CREATE INDEX idx_identities_provider_lookup ON idem_identities(provider, provider_subject);
   CREATE INDEX idx_identities_primary ON idem_identities(account_id) WHERE is_primary = true;
 
 Enum: email_source
-  self | vipps | helseid | idporten | other
+  self | vipps | helseid | idporten | dev_seed | other
 
 Table: idem_emails
 
 Columns:
   id            UUID (PK)
-  account_id    UUID (FK)
-  org_id        UUID (FK)
-  tenant_id     UUID (FK)
+  account_id    UUID (FK → idem_accounts.id)
   email         TEXT
   is_primary    BOOLEAN
   is_verified   BOOLEAN
@@ -131,25 +83,24 @@ Columns:
 
 Indexes:
   CREATE INDEX idx_emails_account ON idem_emails(account_id);
-  CREATE INDEX idx_emails_lookup ON idem_emails(tenant_id, email) WHERE is_verified = true;
+  CREATE INDEX idx_emails_lookup ON idem_emails(email) WHERE is_verified = true;
   CREATE INDEX idx_emails_primary ON idem_emails(account_id) WHERE is_primary = true;
 
 --------------------------------------------------------------------
-SECTION 4 — USER PROFILE MODEL
+SECTION 2 — USER PROFILE MODEL
 --------------------------------------------------------------------
 
 Table: idem_profile_person
 
 Columns:
   id              UUID (PK)
-  account_id      UUID (FK)
-  org_id          UUID (FK)
-  tenant_id       UUID (FK)
+  account_id      UUID (FK → idem_accounts.id)
   full_name       TEXT
   given_name      TEXT
   family_name     TEXT
+  middle_name     TEXT
   birthdate       DATE
-  national_id     TEXT
+  national_id     TEXT  -- Encrypted (application-level MVP, KMS prod)
   gender          TEXT
   is_verified     BOOLEAN
   verified_by     TEXT
@@ -159,8 +110,7 @@ Table: idem_profile_facts
 
 Columns:
   id              UUID (PK)
-  account_id      UUID (FK)
-  tenant_id       UUID (FK)
+  account_id      UUID (FK → idem_accounts.id)
   claim_name      TEXT
   claim_value     TEXT
   source          TEXT
@@ -168,15 +118,14 @@ Columns:
   created_at      TIMESTAMPTZ
 
 --------------------------------------------------------------------
-SECTION 5 — ADDRESS MODEL
+SECTION 3 — ADDRESS MODEL
 --------------------------------------------------------------------
 
 Table: idem_addresses
 
 Columns:
   id            UUID (PK)
-  account_id    UUID (FK)
-  tenant_id     UUID (FK)
+  account_id    UUID (FK → idem_accounts.id)
   address_line1 TEXT
   address_line2 TEXT
   postal_code   TEXT
@@ -187,63 +136,67 @@ Columns:
   created_at    TIMESTAMPTZ
 
 --------------------------------------------------------------------
-SECTION 6 — OAUTH / OIDC CLIENTS
+SECTION 4 — OAUTH / OIDC CLIENTS
 --------------------------------------------------------------------
 
 Table: idem_oauth_clients
 
 Columns:
   id                         UUID (PK)
-  tenant_id                  UUID (FK)
-  client_id                  TEXT (unique per tenant)
+  client_slug                TEXT UNIQUE  -- OAuth client_id, kebab-case format
   client_name                TEXT
-  client_type                TEXT
   redirect_uris              TEXT[]
   post_logout_redirect_uris  TEXT[]
   grant_types                TEXT[]
   response_types             TEXT[]
   token_endpoint_auth_method TEXT
-  client_secret              TEXT  -- MUST be hashed with bcrypt, never plaintext
+  client_secret              TEXT  -- MUST be hashed with scrypt, never plaintext
   jwks_uri                   TEXT
-  jwks                       TEXT
+  jwks                       JSONB
   allowed_scopes             TEXT[]
   require_pkce               BOOLEAN
   created_at                 TIMESTAMPTZ
   updated_at                 TIMESTAMPTZ
 
 Indexes:
-  CREATE INDEX idx_oauth_clients_tenant ON idem_oauth_clients(tenant_id);
-  CREATE INDEX idx_oauth_clients_tenant_client_id ON idem_oauth_clients(tenant_id, client_id);
+  CREATE UNIQUE INDEX idx_oauth_clients_slug ON idem_oauth_clients(client_slug);
+
+Validation:
+  - Format: /^[a-z][a-z0-9-]{2,63}$/
+  - Must start with lowercase letter
+  - Only lowercase letters (a-z), digits (0-9), and hyphens (-)
+  - Length: 3-64 characters
+  - No consecutive hyphens (--)
+  - Must not end with hyphen
+  - Examples: eventuras-web, historia, converto-api
 
 Security Notes:
-  - client_secret MUST be hashed with bcrypt (cost factor 10+)
+  - All clients are confidential (no public clients)
+  - client_secret MUST be hashed with scrypt (OWASP recommended, built into Node.js)
+    - Parameters: N=16384 (2^14), r=8, p=1
+    - Use Node.js crypto.scrypt (no external dependencies)
   - Never log or return client_secret in API responses
 
 --------------------------------------------------------------------
-SECTION 7 — KEY MANAGEMENT (JWKS)
+SECTION 5 — KEY MANAGEMENT (JWKS)
 --------------------------------------------------------------------
 
 Table: idem_keys
 
 Columns:
   id            UUID (PK)
-  tenant_id     UUID (FK)
-  kid           TEXT
+  kid           TEXT UNIQUE
   alg           TEXT
   use           TEXT
   kty           TEXT
-  public_jwk    TEXT
+  public_jwk    JSONB
   private_jwk   TEXT  -- MUST be encrypted at application level (MVP) or KMS (prod)
   expires_at    TIMESTAMPTZ
   created_at    TIMESTAMPTZ
 
-Constraints:
-  Unique (tenant_id, kid)
-
 Indexes:
-  CREATE INDEX idx_keys_tenant ON idem_keys(tenant_id);
-  CREATE INDEX idx_keys_tenant_kid ON idem_keys(tenant_id, kid);
-  CREATE INDEX idx_keys_active ON idem_keys(tenant_id) WHERE expires_at > NOW();
+  CREATE INDEX idx_keys_kid ON idem_keys(kid);
+  CREATE INDEX idx_keys_active ON idem_keys(expires_at) WHERE expires_at > NOW();
 
 Security Notes:
   - private_jwk MUST be encrypted (application-level for MVP, migrate to KMS for production)
@@ -251,36 +204,40 @@ Security Notes:
   - Never log private keys
 
 --------------------------------------------------------------------
-SECTION 8 — IDP BROKER MODEL
+SECTION 6 — IDP BROKER MODEL
 --------------------------------------------------------------------
 
 Table: idem_idp_providers
 
 Columns:
   id                UUID (PK)
-  key               TEXT (unique)
+  key               TEXT UNIQUE
   display_name      TEXT
-  type              TEXT
+  type              TEXT  -- 'real' | 'mock'
   issuer            TEXT
   discovery_url     TEXT
   authorization_endpoint  TEXT
   token_endpoint          TEXT
   jwks_uri                TEXT
   userinfo_endpoint       TEXT
+  end_session_endpoint    TEXT
   default_scopes    TEXT[]
   enabled           BOOLEAN
   created_at        TIMESTAMPTZ
   updated_at        TIMESTAMPTZ
 
-Table: idem_idp_provider_tenants
+Notes:
+  - Mock providers (mock_vipps, mock_helseid) only available in development
+  - Real providers configured per environment (test vs prod URLs)
+
+Table: idem_idp_configs
 
 Columns:
   id              UUID (PK)
-  tenant_id       UUID (FK)
-  provider_id     UUID (FK)
+  provider_id     UUID (FK → idem_idp_providers.id)
   client_id       TEXT
-  client_secret   TEXT  -- MUST be encrypted (bcrypt or application-level encryption)
-  client_jwks     TEXT
+  client_secret   TEXT  -- MUST be encrypted (scrypt or application-level encryption)
+  client_jwks     JSONB
   redirect_uris   TEXT[]
   extra_scopes    TEXT[]
   enabled         BOOLEAN
@@ -292,13 +249,67 @@ Columns:
   updated_at      TIMESTAMPTZ
 
 Indexes:
-  CREATE INDEX idx_idp_provider_tenants_tenant ON idem_idp_provider_tenants(tenant_id);
-  CREATE INDEX idx_idp_provider_tenants_provider ON idem_idp_provider_tenants(provider_id);
-  CREATE INDEX idx_idp_provider_tenants_enabled ON idem_idp_provider_tenants(tenant_id, enabled);
+  CREATE INDEX idx_idp_configs_provider ON idem_idp_configs(provider_id);
+  CREATE INDEX idx_idp_configs_enabled ON idem_idp_configs(enabled);
+
+Notes:
+  - One config per provider (no per-tenant configs, single tenant architecture)
+  - Environment-specific: dev uses mock providers, staging/prod use real
 
 Security Notes:
   - client_secret MUST be encrypted (never store plaintext)
   - Monitor consecutive_errors for potential attacks
+
+--------------------------------------------------------------------
+SECTION 7 — IDP BROKER STATE MANAGEMENT
+--------------------------------------------------------------------
+
+Table: idem_idp_states
+
+Columns:
+  id              UUID (PK)
+  state           TEXT UNIQUE
+  provider_key    TEXT
+  account_id      UUID (FK → idem_accounts.id, nullable)
+  nonce           TEXT
+  code_verifier   TEXT
+  return_url      TEXT
+  ip              TEXT
+  user_agent      TEXT
+  created_at      TIMESTAMPTZ
+  expires_at      TIMESTAMPTZ
+  consumed        BOOLEAN
+  consumed_at     TIMESTAMPTZ
+
+Indexes:
+  CREATE INDEX idx_idp_states_state ON idem_idp_states(state) WHERE consumed = false;
+  CREATE INDEX idx_idp_states_expires ON idem_idp_states(expires_at) WHERE consumed = false;
+
+Notes:
+  - State stored in database (not cookies) for security (ADR 0016)
+  - Daily cleanup job removes expired/consumed states
+
+--------------------------------------------------------------------
+SECTION 8 — IDP TOKEN REPLAY PREVENTION
+--------------------------------------------------------------------
+
+Table: idem_used_id_tokens
+
+Columns:
+  id            UUID (PK)
+  token_hash    TEXT UNIQUE
+  provider_key  TEXT
+  subject       TEXT
+  created_at    TIMESTAMPTZ
+  expires_at    TIMESTAMPTZ
+
+Indexes:
+  CREATE INDEX idx_used_id_tokens_hash ON idem_used_id_tokens(token_hash);
+  CREATE INDEX idx_used_id_tokens_expires ON idem_used_id_tokens(expires_at);
+
+Notes:
+  - Prevents ID token replay attacks (ADR 0016)
+  - Daily cleanup job removes expired hashes
 
 --------------------------------------------------------------------
 SECTION 9 — OIDC STORE
@@ -309,9 +320,8 @@ Table: idem_oidc_store
 Columns:
   name              TEXT
   id                TEXT
-  tenant_id         UUID
   client_id         TEXT
-  account_id        UUID
+  account_id        UUID (FK → idem_accounts.id, nullable)
   grant_id          TEXT
   user_code         TEXT
   uid               TEXT
@@ -321,24 +331,48 @@ Columns:
   consumed_at       TIMESTAMPTZ
   payload           JSONB
 
-Indexes:
+Constraints:
   UNIQUE(name, id)
-  CREATE INDEX idx_oidc_store_tenant ON idem_oidc_store(tenant_id);
+
+Indexes:
+  CREATE UNIQUE INDEX idx_oidc_store_name_id ON idem_oidc_store(name, id);
   CREATE INDEX idx_oidc_store_grant ON idem_oidc_store(grant_id) WHERE grant_id IS NOT NULL;
   CREATE INDEX idx_oidc_store_session ON idem_oidc_store(session_id) WHERE session_id IS NOT NULL;
   CREATE INDEX idx_oidc_store_uid ON idem_oidc_store(uid) WHERE uid IS NOT NULL;
   CREATE INDEX idx_oidc_store_expires ON idem_oidc_store(expires_at) WHERE consumed_at IS NULL;
-  CREATE INDEX idx_oidc_store_cleanup ON idem_oidc_store(expires_at) WHERE expires_at < NOW();
+  CREATE INDEX idx_oidc_store_account ON idem_oidc_store(account_id) WHERE account_id IS NOT NULL;
+
+Notes:
+  - Consider partitioning when > 100K records (not 1M as in v1)
+  - Sanitize payload field - never log (contains tokens and sensitive data)
+  - Daily cleanup job removes expired/consumed tokens (ADR 0017)
 
 --------------------------------------------------------------------
-SECTION 10 — AUDIT LOG
+SECTION 10 — EXPRESS SESSIONS
+--------------------------------------------------------------------
+
+Table: idem_express_sessions
+
+Columns:
+  sid       VARCHAR PRIMARY KEY
+  sess      JSONB NOT NULL
+  expire    TIMESTAMPTZ NOT NULL
+
+Indexes:
+  CREATE INDEX idx_express_sessions_expire ON idem_express_sessions(expire);
+
+Notes:
+  - Used by express-session for session management (ADR 0015)
+  - Daily cleanup job removes expired sessions
+
+--------------------------------------------------------------------
+SECTION 11 — AUDIT LOG
 --------------------------------------------------------------------
 
 Table: idem_audit_log
 
 Columns:
   id            UUID (PK)
-  tenant_id     UUID (nullable)
   actor_sub     TEXT
   action        TEXT
   resource      TEXT
@@ -350,69 +384,146 @@ Columns:
   created_at    TIMESTAMPTZ
 
 Indexes:
-  CREATE INDEX idx_audit_log_tenant_created ON idem_audit_log(tenant_id, created_at DESC);
+  CREATE INDEX idx_audit_log_created ON idem_audit_log(created_at DESC);
   CREATE INDEX idx_audit_log_actor ON idem_audit_log(actor_sub);
   CREATE INDEX idx_audit_log_action ON idem_audit_log(action);
-  CREATE INDEX idx_audit_log_created ON idem_audit_log(created_at DESC);
 
 Notes:
-  - Consider partitioning by month when > 1M records
+  - Consider partitioning by month when > 100K records (not 1M as in v1)
   - Sanitize before/after JSONB to never log secrets, tokens, or sensitive PII
+  - No tenant_id column (single tenant architecture)
 
 --------------------------------------------------------------------
-SECTION 11 — ADMIN RBAC
+SECTION 12 — ADMIN RBAC
 --------------------------------------------------------------------
 
 Enum: admin_role
-  system_admin | org_admin | tenant_admin | org_reader | tenant_reader
+  system_admin | admin_reader
+
+Notes:
+  - Simplified from v1 (no org_admin, tenant_admin)
+  - Only global roles (system_admin, admin_reader)
+  - No tenant/org scoping needed (single tenant)
 
 Table: idem_admin_principals
 
 Columns:
-  id            UUID (PK)
-  tenant_id     UUID (FK)
-  account_id    UUID (FK, nullable)
-  client_id     TEXT (nullable)
-  created_at    TIMESTAMPTZ
+  id                  UUID (PK)
+  account_id          UUID (FK → idem_accounts.id, nullable)
+  client_slug         TEXT (nullable)  -- FK → idem_oauth_clients.client_slug
+  created_at          TIMESTAMPTZ
 
 Table: idem_admin_memberships
 
 Columns:
   id            UUID (PK)
-  principal_id  UUID (FK)
+  principal_id  UUID (FK → idem_admin_principals.id)
   role          admin_role
-  org_id        UUID (nullable)
-  tenant_id     UUID (nullable)
   created_at    TIMESTAMPTZ
-
-Constraints:
-  - system_admin → org_id NULL, tenant_id NULL
-  - org_admin    → org_id set, tenant_id NULL
-  - tenant_admin → tenant_id set
 
 Indexes:
   CREATE INDEX idx_admin_memberships_principal ON idem_admin_memberships(principal_id);
-  CREATE INDEX idx_admin_memberships_org ON idem_admin_memberships(org_id) WHERE org_id IS NOT NULL;
-  CREATE INDEX idx_admin_memberships_tenant ON idem_admin_memberships(tenant_id) WHERE tenant_id IS NOT NULL;
   CREATE INDEX idx_admin_memberships_role ON idem_admin_memberships(role);
 
+Notes:
+  - Much simpler than v1 (no org_id, tenant_id columns)
+  - All roles are global (no scoping)
+
 --------------------------------------------------------------------
-RELATIONSHIP OVERVIEW
+SECTION 13 — CLEANUP RUNS TRACKING
 --------------------------------------------------------------------
 
-Organizations
-  └── Tenants (dev / staging / prod)
-        ├── Accounts
-        │     ├── Identities
-        │     ├── Emails
-        │     ├── Profile
-        │     └── Addresses
-        ├── OAuth Clients
-        ├── Keys (JWKS)
-        ├── IdP Broker bindings
-        ├── OIDC Store (tokens, sessions, PAR)
-        ├── Audit Log
-        └── Admin RBAC
+Table: idem_cleanup_runs
+
+Columns:
+  id              UUID (PK)
+  job_name        TEXT
+  success         BOOLEAN
+  records_deleted INT
+  table_count     INT
+  duration_ms     INT
+  completed_at    TIMESTAMPTZ
+  error           TEXT
+  created_at      TIMESTAMPTZ
+
+Indexes:
+  CREATE INDEX idx_cleanup_runs_job ON idem_cleanup_runs(job_name, completed_at DESC);
+  CREATE INDEX idx_cleanup_runs_success ON idem_cleanup_runs(job_name, success);
+
+Notes:
+  - Tracks cleanup job runs for monitoring (ADR 0017)
+  - Used by health checks to verify cleanup job health
+
+--------------------------------------------------------------------
+RELATIONSHIP OVERVIEW (SIMPLIFIED)
+--------------------------------------------------------------------
+
+Accounts
+  ├── Identities (Vipps, HelseID, etc.)
+  ├── Emails
+  ├── Profile (Person + Facts)
+  └── Addresses
+
+Global Resources (No Account Association):
+  ├── OAuth Clients
+  ├── Keys (JWKS)
+  ├── IdP Providers
+  ├── IdP Configs (one per provider)
+  ├── IdP States (temporary, for OAuth flows)
+  ├── Used ID Tokens (replay prevention)
+  ├── OIDC Store (tokens, sessions, PAR)
+  ├── Express Sessions
+  ├── Audit Log
+  ├── Admin Principals & Memberships
+  └── Cleanup Runs
+
+REMOVED TABLES FROM V1:
+  - idem_organizations (no multi-org)
+  - idem_tenants (no multi-tenancy)
+  - idem_idp_provider_tenants (merged into idem_idp_configs)
+
+REMOVED COLUMNS FROM ALL TABLES:
+  - org_id (no organizations)
+  - tenant_id (no tenants)
+
+====================================================================
+COMPLEXITY REDUCTION vs V1
+====================================================================
+
+Tables: 15 total (down from 17 in v1)
+  - Removed: 2 tables (organizations, tenants)
+  - Added: 3 tables (idp_states, used_id_tokens, express_sessions)
+  - Renamed: 1 table (idp_provider_tenants → idp_configs)
+
+Columns: ~40% fewer FK columns (no org_id, tenant_id everywhere)
+
+Queries: No tenant filtering needed on any query
+  - Old: WHERE tenant_id = $1 (on every query)
+  - New: Direct queries (no filtering)
+
+Indexes: ~30% fewer indexes
+  - No tenant_id composite indexes needed
+  - Simpler, faster queries
+
+RBAC: Simplified from 5 roles to 2 roles
+  - Old: system_admin, org_admin, tenant_admin, org_reader, tenant_reader
+  - New: system_admin, admin_reader (global only)
+
+====================================================================
+MIGRATION NOTES (For Future Multi-Tenancy)
+====================================================================
+
+If multi-tenancy is needed later:
+1. Add idem_organizations table
+2. Add idem_tenants table
+3. Add tenant_id to: accounts, oauth_clients, keys, oidc_store, audit_log
+4. Add org_id to: accounts, identities, emails
+5. Split idem_idp_configs → idem_idp_provider_tenants (one config per tenant)
+6. Update all queries to filter by tenant_id
+7. Update RBAC to support tenant-scoped roles
+8. Implement tenant resolution logic (hostname-based)
+
+Estimated effort: 4-6 weeks
 
 ====================================================================
 END OF DOCUMENT

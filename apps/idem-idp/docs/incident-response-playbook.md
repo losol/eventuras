@@ -418,7 +418,7 @@ ORDER BY reads DESC;
 ```
 
 7. **Determine if Secrets Exposed:**
-- Client secrets (hashed with bcrypt - safe)
+- Client secrets (hashed with scrypt - safe)
 - Private keys (encrypted - depends on master key compromise)
 - IdP broker secrets (encrypted - depends on master key compromise)
 - Master encryption key (environment variable - check server access logs)

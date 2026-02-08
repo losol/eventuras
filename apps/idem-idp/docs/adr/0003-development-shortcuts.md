@@ -501,9 +501,13 @@ async function seed() {
 
   // Create test OAuth clients
   for (const client of testClients) {
+    const salt = randomBytes(32);
+    const derivedKey = await scryptAsync('dev_secret', salt, 64, { N: 16384, r: 8, p: 1 });
+    const hashedSecret = `${salt.toString('hex')}:${derivedKey.toString('hex')}`;
+    
     await db.insert(oauthClients).values({
       ...client,
-      client_secret: await bcrypt.hash('dev_secret', 10),
+      client_secret: hashedSecret,
     });
 
     console.log(`✓ Created client: ${client.client_id}`);

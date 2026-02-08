@@ -82,7 +82,7 @@
   - Cleanup runs tracking table (`idem_cleanup_runs`)
   - Basic monitoring (table size alerts)
   - Manual cleanup script
-- **Security**: Hash client secrets (bcrypt, never store plaintext)
+- **Security**: Hash client secrets (scrypt, never store plaintext)
 - **Security**: Encrypt private keys in database (application-level)
 
 **Simplified from v1**:
@@ -128,7 +128,7 @@
   - Federated logout (RP-initiated logout)
   - Back-channel logout endpoint
   - Upstream IdP session linking
-- **Security**: Encrypt IdP client secrets (bcrypt)
+- **Security**: Encrypt IdP client secrets (scrypt)
 - **Security**: State cleanup job (daily)
 
 **Simplified from v1**:

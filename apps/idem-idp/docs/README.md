@@ -19,8 +19,7 @@ ADRs are used to document *why* decisions were made, not just *what*.
 ### Core Documentation
 
 - [Architecture Overview](architecture-overview.md)
-- [Database Model v2 (Single-Tenant)](database-model-v2-single-tenant.txt) - Simplified schema with 15 tables (40% less complexity)
-- [Database Model v1 (Multi-Tenant)](database-model.txt) - Original schema (DEPRECATED)
+- [Database Model](database-model.txt) - Single-tenant schema with 15 tables
 - [Development Plan](development-plan.md) - 9-phase implementation roadmap
 - [Incident Response Playbook](incident-response-playbook.md) - Security incident procedures
 

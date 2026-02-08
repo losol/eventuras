@@ -19,7 +19,7 @@ As Idem evolves to support multiple OAuth clients with different access requirem
 
 Replace account-level `systemRole` with a per-client role assignment system where:
 
-- **Domain = OAuth client_id**: Each client can define its own roles
+- **Domain = OAuth client_slug**: Each client can define its own roles
 - **Role grants are explicit**: Users are granted roles for specific clients
 - **idem-admin is a regular client**: Seeded in the database with `systemadmin` and `admin_reader` roles
 - **Only systemadmin can assign roles**: Users with `systemadmin` role for the idem-admin client control all role assignments
@@ -36,12 +36,12 @@ Replace account-level `systemRole` with a per-client role assignment system wher
 -- Defines available roles for each OAuth client
 CREATE TABLE idem.client_roles (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  client_id UUID NOT NULL REFERENCES idem.oauth_clients(id) ON DELETE CASCADE,
+  oauth_client_id UUID NOT NULL REFERENCES idem.oauth_clients(id) ON DELETE CASCADE,
   role_name TEXT NOT NULL,
   description TEXT,
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
-  UNIQUE(client_id, role_name)
+  UNIQUE(oauth_client_id, role_name)
 );
 
 -- Maps users to roles for specific clients (Casbin's g = user, role, domain)
@@ -56,7 +56,7 @@ CREATE TABLE idem.role_grants (
 
 -- Indexes for common query patterns
 CREATE INDEX role_grants_account_idx ON idem.role_grants(account_id);
-CREATE INDEX client_roles_lookup_idx ON idem.client_roles(client_id, role_name);
+CREATE INDEX client_roles_lookup_idx ON idem.client_roles(oauth_client_id, role_name);
 ```
 
 ### Token Claims
@@ -333,24 +333,24 @@ The system requires a bootstrap mechanism to create the first `systemadmin`. Thi
 
 ```sql
 -- 1. Create the idem-admin OAuth client
-INSERT INTO idem.oauth_clients (id, client_id, client_name, redirect_uris)
+INSERT INTO idem.oauth_clients (id, client_slug, client_name, redirect_uris)
 VALUES (
   gen_random_uuid(),
   'idem-admin',
   'Idem Admin Console',
   ARRAY['http://localhost:3000/callback', 'https://admin.example.com/callback']
-) ON CONFLICT (client_id) DO NOTHING;
+) ON CONFLICT (client_slug) DO NOTHING;
 
 -- 2. Create the predefined roles for idem-admin
-INSERT INTO idem.client_roles (client_id, role_name, description)
+INSERT INTO idem.client_roles (oauth_client_id, role_name, description)
 SELECT id, 'systemadmin', 'Full administrative access'
-FROM idem.oauth_clients WHERE client_id = 'idem-admin'
-ON CONFLICT (client_id, role_name) DO NOTHING;
+FROM idem.oauth_clients WHERE client_slug = 'idem-admin'
+ON CONFLICT (oauth_client_id, role_name) DO NOTHING;
 
-INSERT INTO idem.client_roles (client_id, role_name, description)
+INSERT INTO idem.client_roles (oauth_client_id, role_name, description)
 SELECT id, 'admin_reader', 'Read-only admin access'
-FROM idem.oauth_clients WHERE client_id = 'idem-admin'
-ON CONFLICT (client_id, role_name) DO NOTHING;
+FROM idem.oauth_clients WHERE client_slug = 'idem-admin'
+ON CONFLICT (oauth_client_id, role_name) DO NOTHING;
 ```
 
 **Bootstrap endpoint:**

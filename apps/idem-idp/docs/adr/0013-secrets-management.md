@@ -15,24 +15,41 @@ Database breaches are a realistic threat, and plaintext secrets would compromise
 ## Decision
 
 ### Client Secrets (OAuth & IdP)
-**Use bcrypt hashing** - secrets are never stored in plaintext.
+**Use scrypt hashing** - secrets are never stored in plaintext.
 
 ```typescript
+import { scrypt, randomBytes, timingSafeEqual } from 'crypto';
+import { promisify } from 'util';
+
+const scryptAsync = promisify(scrypt);
+
 // Creating a client
-const hashedSecret = await bcrypt.hash(clientSecret, 10);
+const salt = randomBytes(32);
+const derivedKey = await scryptAsync(clientSecret, salt, 64, {
+  N: 16384,  // CPU/memory cost (2^14)
+  r: 8,      // Block size
+  p: 1,      // Parallelization
+});
+const hashedSecret = `${salt.toString('hex')}:${derivedKey.toString('hex')}`;
+
 await db.insert(oauthClients).values({
   client_id: clientId,
   client_secret: hashedSecret, // Never plaintext
 });
 
 // Verifying a client
-const match = await bcrypt.compare(providedSecret, storedHash);
+const [saltHex, hashHex] = storedHash.split(':');
+const derivedKey = await scryptAsync(providedSecret, Buffer.from(saltHex, 'hex'), 64, {
+  N: 16384, r: 8, p: 1,
+});
+const match = timingSafeEqual(derivedKey, Buffer.from(hashHex, 'hex'));
 ```
 
 **Rationale:**
 - Client secrets are credentials - same threat model as passwords
 - Hashing prevents secret leakage even if database is compromised
-- bcrypt with cost factor 10+ provides adequate protection
+- Built into Node.js crypto module - no external dependencies
+- Parameters: N=16384 provides ~100ms hashing time
 
 ### Private Signing Keys (JWKS)
 

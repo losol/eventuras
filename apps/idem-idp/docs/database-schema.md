@@ -112,10 +112,9 @@ erDiagram
     %% OAuth & OIDC
     oauth_clients {
         uuid id PK
-        text client_id UK
+        text client_slug UK
         text client_name
         text client_secret_hash
-        text client_type
         jsonb redirect_uris
         jsonb grant_types
         jsonb response_types
