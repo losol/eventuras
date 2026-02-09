@@ -19,8 +19,6 @@ export type OAuthClient = {
   requirePkce: boolean;
   active: boolean;
   createdAt: string;
-  logoUri?: string;
-  clientUri?: string;
 };
 
 export type GetClientsResult = {

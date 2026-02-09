@@ -1,23 +1,27 @@
 import type { FastifyPluginAsync } from 'fastify';
 import { db } from '../db/client';
 import { oauthClients } from '../db/schema/oauth';
+import { clientRoles, roleGrants } from '../db/schema/rbac';
+import { eq, and } from 'drizzle-orm';
+import { verifyAccessToken } from '../auth/verify';
 import { Logger } from '@eventuras/logger';
 
 const logger = Logger.create({ namespace: 'idem:routes:admin' });
 
 /**
- * Check if a user has one of the required roles for idem-admin (ADR 0018)
- *
- * @param roles - Array of roles from the token's 'roles' claim
- * @param requiredRoles - Roles that grant access (any match is sufficient)
- * @returns true if user has at least one required role
+ * Look up roles for an account on a specific client (ADR 0018)
  */
-function hasRequiredRole(
-  roles: string[] | undefined,
-  requiredRoles: string[]
-): boolean {
-  if (!roles || !Array.isArray(roles)) return false;
-  return roles.some((role) => requiredRoles.includes(role));
+async function getRolesForClient(accountId: string, clientId: string): Promise<string[]> {
+  const results = await db
+    .select({ roleName: clientRoles.roleName })
+    .from(roleGrants)
+    .innerJoin(clientRoles, eq(roleGrants.clientRoleId, clientRoles.id))
+    .innerJoin(oauthClients, eq(clientRoles.oauthClientId, oauthClients.id))
+    .where(
+      and(eq(roleGrants.accountId, accountId), eq(oauthClients.clientId, clientId))
+    );
+
+  return results.map((r) => r.roleName);
 }
 
 export const registerAdminRoutes: FastifyPluginAsync = async (fastify) => {
@@ -35,24 +39,28 @@ export const registerAdminRoutes: FastifyPluginAsync = async (fastify) => {
         return reply.code(401).send({ error: 'Unauthorized' });
       }
 
-      const accessToken = authHeader.substring(7); // Remove 'Bearer '
+      const token = authHeader.substring(7);
 
-      // Decode JWT (simple decode, not verification - OIDC provider already verified it)
-      const parts = accessToken.split('.');
-      if (parts.length !== 3) {
-        logger.warn('Invalid JWT format');
+      // Verify JWT signature against local JWKS
+      const verified = await verifyAccessToken(token);
+      if (!verified) {
         return reply.code(401).send({ error: 'Unauthorized' });
       }
 
-      const payload = JSON.parse(
-        Buffer.from(parts[1]!, 'base64url').toString()
-      );
-
-      // ADR 0018: Check if user has systemadmin or admin_reader role for idem-admin
-      const roles = payload.roles as string[] | undefined;
-      if (!hasRequiredRole(roles, ['systemadmin', 'admin_reader'])) {
+      // Ensure the token was issued for idem-admin
+      if (verified.clientId !== 'idem-admin') {
         logger.warn(
-          { user: payload.email, roles },
+          { clientId: verified.clientId, sub: verified.sub },
+          'Token not issued for idem-admin'
+        );
+        return reply.code(403).send({ error: 'Forbidden' });
+      }
+
+      // Look up roles from database (source of truth, not token claims)
+      const roles = await getRolesForClient(verified.sub, 'idem-admin');
+      if (!roles.some((r) => ['systemadmin', 'admin_reader'].includes(r))) {
+        logger.warn(
+          { sub: verified.sub, roles },
           'Unauthorized access attempt to admin API'
         );
         return reply.code(403).send({ error: 'Forbidden' });
@@ -62,7 +70,7 @@ export const registerAdminRoutes: FastifyPluginAsync = async (fastify) => {
       logger.debug('Fetching OAuth clients');
       const clients = await db.select().from(oauthClients);
 
-      logger.info({ count: clients.length, user: payload.email }, 'OAuth clients retrieved');
+      logger.info({ count: clients.length, sub: verified.sub }, 'OAuth clients retrieved');
 
       return reply.send({
         clients: clients.map((client) => ({
@@ -78,8 +86,6 @@ export const registerAdminRoutes: FastifyPluginAsync = async (fastify) => {
           requirePkce: client.requirePkce,
           active: client.active,
           createdAt: client.createdAt,
-          logoUri: client.logoUri,
-          clientUri: client.clientUri,
         })),
       });
     } catch (error) {

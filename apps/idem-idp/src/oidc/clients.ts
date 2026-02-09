@@ -57,15 +57,6 @@ function toOidcClient(client: any) {
       : 'none',
   };
 
-  // Add optional metadata (only if not null)
-  if (client.logoUri) oidcClient.logo_uri = client.logoUri;
-  if (client.clientUri) oidcClient.client_uri = client.clientUri;
-  if (client.policyUri) oidcClient.policy_uri = client.policyUri;
-  if (client.tosUri) oidcClient.tos_uri = client.tosUri;
-  if (client.contacts && Array.isArray(client.contacts)) {
-    oidcClient.contacts = client.contacts;
-  }
-
   return oidcClient;
 }
 
@@ -149,13 +140,6 @@ export async function findClient(clientId: string) {
 
       // Custom: client category (internal = skip consent, external = require consent)
       'urn:idem:client_category': client.clientCategory,
-
-      // Client metadata
-      logo_uri: client.logoUri,
-      client_uri: client.clientUri,
-      policy_uri: client.policyUri,
-      tos_uri: client.tosUri,
-      contacts: client.contacts,
     };
   } catch (error) {
     logger.error({ error, clientId }, 'Error looking up client');

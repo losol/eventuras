@@ -1,5 +1,4 @@
-import { text, timestamp, uuid, boolean, index, unique, pgSchema, date, check } from 'drizzle-orm/pg-core';
-import { sql } from 'drizzle-orm';
+import { text, timestamp, uuid, boolean, index, unique, pgSchema, date } from 'drizzle-orm/pg-core';
 
 /**
  * Idem PostgreSQL schema
@@ -33,9 +32,6 @@ export const accounts = idem.table(
     timezone: text('timezone').default('Europe/Oslo'),
     picture: text('picture'),
 
-    // System role (merged from admin_principals + admin_memberships)
-    systemRole: text('system_role'),
-
     // Timestamps
     createdAt: timestamp('created_at').notNull().defaultNow(),
     updatedAt: timestamp('updated_at').notNull().defaultNow(),
@@ -46,8 +42,6 @@ export const accounts = idem.table(
   (table) => [
     unique('idx_accounts_primary_email').on(table.primaryEmail),
     index('idx_accounts_active').on(table.active),
-    // CHECK constraint: systemRole can only be NULL, 'system_admin', or 'admin_reader'
-    check('valid_system_role', sql`system_role IS NULL OR system_role IN ('system_admin', 'admin_reader')`),
   ]
 );
 
@@ -68,7 +62,7 @@ export const identities = idem.table(
       .references(() => accounts.id, { onDelete: 'cascade' }),
 
     // Provider information
-    provider: text('provider').notNull(), // 'vipps', 'helseid', 'google', 'facebook', 'discord', 'github', 'email_otp'
+    provider: text('provider').notNull(), // 'vipps', 'idporten', 'google', 'email_otp', etc.
     providerSubject: text('provider_subject').notNull(), // Unique ID from provider
     providerIssuer: text('provider_issuer'), // Issuer URL (for OIDC providers)
 

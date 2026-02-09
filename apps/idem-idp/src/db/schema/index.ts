@@ -16,6 +16,9 @@ export * from './otp';
 // OAuth / OIDC
 export * from './oauth';
 
+// JWKS key management
+export * from './jwksKeys';
+
 // RBAC (ADR 0018: Per-Client Role-Based Access Control)
 export * from './rbac';
 
@@ -24,6 +27,9 @@ export * from './idp';
 
 // OIDC provider storage
 export * from './oidc';
+
+// HTTP session management
+export * from './sessions';
 
 // Operations and audit
 export * from './operations';
