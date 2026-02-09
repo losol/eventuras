@@ -1,7 +1,7 @@
 import type { Session as FastifySession } from 'fastify';
 import type { SessionStore } from '@fastify/session';
 import { db } from '../db/client';
-import { sessions } from '../db/schema/oidc';
+import { sessions } from '../db/schema/sessions';
 import { eq, lt } from 'drizzle-orm';
 import { Logger } from '@eventuras/logger';
 

@@ -13,12 +13,10 @@ CREATE TABLE "idem"."accounts" (
 	"locale" text DEFAULT 'nb-NO',
 	"timezone" text DEFAULT 'Europe/Oslo',
 	"picture" text,
-	"system_role" text,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp,
-	CONSTRAINT "idx_accounts_primary_email" UNIQUE("primary_email"),
-	CONSTRAINT "valid_system_role" CHECK (system_role IS NULL OR system_role IN ('system_admin', 'admin_reader'))
+	CONSTRAINT "idx_accounts_primary_email" UNIQUE("primary_email")
 );
 --> statement-breakpoint
 CREATE TABLE "idem"."emails" (
@@ -91,6 +89,28 @@ CREATE TABLE "idem"."otp_rate_limits" (
 	CONSTRAINT "idx_otp_ratelimit_recipient" UNIQUE("recipient","recipient_type")
 );
 --> statement-breakpoint
+CREATE TABLE "idem"."oauth_clients" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"client_id" text NOT NULL,
+	"client_name" text NOT NULL,
+	"client_secret_hash" text,
+	"client_type" text NOT NULL,
+	"client_category" text DEFAULT 'internal' NOT NULL,
+	"redirect_uris" text[] NOT NULL,
+	"grant_types" text[] NOT NULL,
+	"response_types" text[] NOT NULL,
+	"allowed_scopes" text[] NOT NULL,
+	"default_scopes" text[] NOT NULL,
+	"require_pkce" boolean DEFAULT true NOT NULL,
+	"access_token_lifetime" integer DEFAULT 60 NOT NULL,
+	"refresh_token_lifetime" integer DEFAULT 43200 NOT NULL,
+	"id_token_lifetime" integer DEFAULT 3600 NOT NULL,
+	"active" boolean DEFAULT true NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "oauth_clients_client_id_unique" UNIQUE("client_id")
+);
+--> statement-breakpoint
 CREATE TABLE "idem"."jwks_keys" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"kid" text NOT NULL,
@@ -108,30 +128,23 @@ CREATE TABLE "idem"."jwks_keys" (
 	CONSTRAINT "jwks_keys_kid_unique" UNIQUE("kid")
 );
 --> statement-breakpoint
-CREATE TABLE "idem"."oauth_clients" (
+CREATE TABLE "idem"."client_roles" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"client_id" text NOT NULL,
-	"client_name" text NOT NULL,
-	"client_secret_hash" text,
-	"client_type" text NOT NULL,
-	"redirect_uris" jsonb NOT NULL,
-	"grant_types" jsonb NOT NULL,
-	"response_types" jsonb NOT NULL,
-	"allowed_scopes" jsonb NOT NULL,
-	"default_scopes" jsonb NOT NULL,
-	"require_pkce" boolean DEFAULT true NOT NULL,
-	"access_token_lifetime" integer DEFAULT 3600 NOT NULL,
-	"refresh_token_lifetime" integer DEFAULT 2592000 NOT NULL,
-	"id_token_lifetime" integer DEFAULT 3600 NOT NULL,
-	"logo_uri" text,
-	"client_uri" text,
-	"policy_uri" text,
-	"tos_uri" text,
-	"contacts" jsonb,
-	"active" boolean DEFAULT true NOT NULL,
+	"oauth_client_id" uuid NOT NULL,
+	"role_name" text NOT NULL,
+	"description" text,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
-	CONSTRAINT "oauth_clients_client_id_unique" UNIQUE("client_id")
+	CONSTRAINT "idx_client_roles_unique" UNIQUE("oauth_client_id","role_name")
+);
+--> statement-breakpoint
+CREATE TABLE "idem"."role_grants" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"account_id" uuid NOT NULL,
+	"client_role_id" uuid NOT NULL,
+	"granted_at" timestamp DEFAULT now() NOT NULL,
+	"granted_by" uuid,
+	CONSTRAINT "idx_role_grants_unique" UNIQUE("account_id","client_role_id")
 );
 --> statement-breakpoint
 CREATE TABLE "idem"."idp_providers" (
@@ -189,12 +202,6 @@ CREATE TABLE "idem"."used_id_tokens" (
 	CONSTRAINT "idx_used_id_tokens_jti_provider" UNIQUE("jti","provider_id")
 );
 --> statement-breakpoint
-CREATE TABLE "idem"."express_sessions" (
-	"sid" text PRIMARY KEY NOT NULL,
-	"sess" jsonb NOT NULL,
-	"expire" timestamp NOT NULL
-);
---> statement-breakpoint
 CREATE TABLE "idem"."oidc_store" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" text NOT NULL,
@@ -208,7 +215,8 @@ CREATE TABLE "idem"."oidc_store" (
 	"payload" jsonb NOT NULL,
 	"expires_at" timestamp NOT NULL,
 	"consumed_at" timestamp,
-	"created_at" timestamp DEFAULT now() NOT NULL
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "idx_oidc_store_name_oidc_id_unique" UNIQUE("name","oidc_id")
 );
 --> statement-breakpoint
 CREATE TABLE "idem"."session_fingerprints" (
@@ -221,6 +229,12 @@ CREATE TABLE "idem"."session_fingerprints" (
 	"last_seen_at" timestamp DEFAULT now() NOT NULL,
 	"violation_count" integer DEFAULT 0 NOT NULL,
 	"last_violation_at" timestamp
+);
+--> statement-breakpoint
+CREATE TABLE "idem"."sessions" (
+	"sid" text PRIMARY KEY NOT NULL,
+	"sess" jsonb NOT NULL,
+	"expire" timestamp NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "idem"."audit_log" (
@@ -272,6 +286,10 @@ ALTER TABLE "idem"."emails" ADD CONSTRAINT "emails_account_id_accounts_id_fk" FO
 ALTER TABLE "idem"."identities" ADD CONSTRAINT "identities_account_id_accounts_id_fk" FOREIGN KEY ("account_id") REFERENCES "idem"."accounts"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "idem"."account_claims" ADD CONSTRAINT "account_claims_account_id_accounts_id_fk" FOREIGN KEY ("account_id") REFERENCES "idem"."accounts"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "idem"."otp_codes" ADD CONSTRAINT "otp_codes_account_id_accounts_id_fk" FOREIGN KEY ("account_id") REFERENCES "idem"."accounts"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "idem"."client_roles" ADD CONSTRAINT "client_roles_oauth_client_id_oauth_clients_id_fk" FOREIGN KEY ("oauth_client_id") REFERENCES "idem"."oauth_clients"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "idem"."role_grants" ADD CONSTRAINT "role_grants_account_id_accounts_id_fk" FOREIGN KEY ("account_id") REFERENCES "idem"."accounts"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "idem"."role_grants" ADD CONSTRAINT "role_grants_client_role_id_client_roles_id_fk" FOREIGN KEY ("client_role_id") REFERENCES "idem"."client_roles"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "idem"."role_grants" ADD CONSTRAINT "role_grants_granted_by_accounts_id_fk" FOREIGN KEY ("granted_by") REFERENCES "idem"."accounts"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "idem"."idp_states" ADD CONSTRAINT "idp_states_provider_id_idp_providers_id_fk" FOREIGN KEY ("provider_id") REFERENCES "idem"."idp_providers"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "idem"."used_id_tokens" ADD CONSTRAINT "used_id_tokens_provider_id_idp_providers_id_fk" FOREIGN KEY ("provider_id") REFERENCES "idem"."idp_providers"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "idem"."oidc_store" ADD CONSTRAINT "oidc_store_account_id_accounts_id_fk" FOREIGN KEY ("account_id") REFERENCES "idem"."accounts"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -290,17 +308,17 @@ CREATE INDEX "idx_otp_consumed" ON "idem"."otp_codes" USING btree ("consumed");-
 CREATE INDEX "idx_otp_session" ON "idem"."otp_codes" USING btree ("session_id");--> statement-breakpoint
 CREATE INDEX "idx_otp_ratelimit_window" ON "idem"."otp_rate_limits" USING btree ("window_end");--> statement-breakpoint
 CREATE INDEX "idx_otp_ratelimit_blocked" ON "idem"."otp_rate_limits" USING btree ("blocked","blocked_until");--> statement-breakpoint
+CREATE INDEX "idx_oauth_clients_active" ON "idem"."oauth_clients" USING btree ("active");--> statement-breakpoint
 CREATE INDEX "idx_jwks_keys_active" ON "idem"."jwks_keys" USING btree ("active");--> statement-breakpoint
 CREATE INDEX "idx_jwks_keys_primary" ON "idem"."jwks_keys" USING btree ("primary");--> statement-breakpoint
 CREATE INDEX "idx_jwks_keys_expires" ON "idem"."jwks_keys" USING btree ("expires_at");--> statement-breakpoint
-CREATE INDEX "idx_oauth_clients_active" ON "idem"."oauth_clients" USING btree ("active");--> statement-breakpoint
+CREATE INDEX "idx_client_roles_client" ON "idem"."client_roles" USING btree ("oauth_client_id");--> statement-breakpoint
+CREATE INDEX "idx_role_grants_account" ON "idem"."role_grants" USING btree ("account_id");--> statement-breakpoint
 CREATE INDEX "idx_idp_providers_enabled" ON "idem"."idp_providers" USING btree ("enabled");--> statement-breakpoint
 CREATE INDEX "idx_idp_states_provider" ON "idem"."idp_states" USING btree ("provider_id");--> statement-breakpoint
 CREATE INDEX "idx_idp_states_expires" ON "idem"."idp_states" USING btree ("expires_at");--> statement-breakpoint
 CREATE INDEX "idx_idp_states_consumed" ON "idem"."idp_states" USING btree ("consumed");--> statement-breakpoint
 CREATE INDEX "idx_used_id_tokens_expires" ON "idem"."used_id_tokens" USING btree ("expires_at");--> statement-breakpoint
-CREATE INDEX "idx_express_sessions_expire" ON "idem"."express_sessions" USING btree ("expire");--> statement-breakpoint
-CREATE INDEX "idx_oidc_store_name_oidc_id" ON "idem"."oidc_store" USING btree ("name","oidc_id");--> statement-breakpoint
 CREATE INDEX "idx_oidc_store_grant" ON "idem"."oidc_store" USING btree ("grant_id");--> statement-breakpoint
 CREATE INDEX "idx_oidc_store_session" ON "idem"."oidc_store" USING btree ("session_id");--> statement-breakpoint
 CREATE INDEX "idx_oidc_store_uid" ON "idem"."oidc_store" USING btree ("uid");--> statement-breakpoint
@@ -308,6 +326,7 @@ CREATE INDEX "idx_oidc_store_expires" ON "idem"."oidc_store" USING btree ("expir
 CREATE INDEX "idx_oidc_store_account" ON "idem"."oidc_store" USING btree ("account_id");--> statement-breakpoint
 CREATE INDEX "idx_session_fingerprints_session" ON "idem"."session_fingerprints" USING btree ("session_id");--> statement-breakpoint
 CREATE INDEX "idx_session_fingerprints_ip" ON "idem"."session_fingerprints" USING btree ("ip_address");--> statement-breakpoint
+CREATE INDEX "idx_sessions_expire" ON "idem"."sessions" USING btree ("expire");--> statement-breakpoint
 CREATE INDEX "idx_audit_log_event_type" ON "idem"."audit_log" USING btree ("event_type");--> statement-breakpoint
 CREATE INDEX "idx_audit_log_event_category" ON "idem"."audit_log" USING btree ("event_category");--> statement-breakpoint
 CREATE INDEX "idx_audit_log_actor" ON "idem"."audit_log" USING btree ("actor_id");--> statement-breakpoint

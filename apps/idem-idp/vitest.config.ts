@@ -22,8 +22,7 @@ export default defineConfig({
       exclude: [
         'src/**/*.test.ts',
         'src/**/*.spec.ts',
-        'src/db/seed.ts',
-        'src/db/migrate-*.ts',
+'src/db/migrate-*.ts',
       ],
     },
 

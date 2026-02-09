@@ -101,7 +101,7 @@ async function logTestAccounts() {
         );
       }
     } else {
-      logger.warn('No test accounts found. Run: pnpm db:seed');
+      logger.info('No accounts found. Use bootstrap endpoint to create the first admin.');
     }
   } catch (error) {
     logger.warn({ error }, 'Could not load test accounts');
