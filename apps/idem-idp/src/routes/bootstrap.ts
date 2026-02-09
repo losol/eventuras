@@ -6,7 +6,7 @@ import { oauthClients } from '../db/schema/oauth';
 import { clientRoles, roleGrants } from '../db/schema/rbac';
 import { eq, and } from 'drizzle-orm';
 import { config, compareBootstrapToken } from '../config';
-import { hashPassword } from '../crypto/hash';
+import { encrypt } from '../crypto/encrypt';
 import { Logger } from '@eventuras/logger';
 
 const logger = Logger.create({ namespace: 'idem:routes:bootstrap' });
@@ -134,20 +134,19 @@ async function ensureAdminClientSecret(): Promise<string | null> {
   }
 
   // Check if client already has a secret
-  if (client.clientSecretHash) {
+  if (client.clientSecretEncrypted) {
     logger.info('idem-admin client_secret already configured - skipping generation');
     return null;
   }
 
   // Generate a secure random secret (32 bytes = 64 hex chars)
   const clientSecret = randomBytes(32).toString('hex');
-  const secretHash = await hashPassword(clientSecret);
 
-  // Update the client with the hashed secret
+  // Encrypt the secret (reversible, so oidc-provider can use it)
   await db
     .update(oauthClients)
     .set({
-      clientSecretHash: secretHash,
+      clientSecretEncrypted: encrypt(clientSecret),
       updatedAt: new Date(),
     })
     .where(eq(oauthClients.id, client.id));

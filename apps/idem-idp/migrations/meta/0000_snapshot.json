@@ -1,5 +1,5 @@
 {
-  "id": "408b1a63-cc75-4dde-b0bb-1d319f422d0d",
+  "id": "ff29c817-bbf3-4867-8e2e-f4ccf7c7fc2d",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -866,8 +866,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "client_secret_hash": {
-          "name": "client_secret_hash",
+        "client_secret_encrypted": {
+          "name": "client_secret_encrypted",
           "type": "text",
           "primaryKey": false,
           "notNull": false

@@ -2,67 +2,36 @@ import { db } from '../db/client';
 import { oauthClients } from '../db/schema/oauth';
 import { eq } from 'drizzle-orm';
 import { Logger } from '@eventuras/logger';
-import { config } from '../config';
+import { decrypt } from '../crypto/encrypt';
 
 const logger = Logger.create({ namespace: 'idem:oidc-clients' });
 
 /**
- * Built-in clients that don't require database entries
- * These are hardcoded for critical functionality (admin console, etc.)
+ * Convert database client to oidc-provider format.
+ * Decrypts client_secret for confidential clients.
  */
-const idemAdminUrl = process.env.IDEM_ADMIN_URL ?? 'http://localhost:3210';
-
-// Get admin client secret - require env var in production
-function getAdminClientSecret(): string {
-  const secret = process.env.IDEM_ADMIN_CLIENT_SECRET;
-  if (secret) return secret;
-
-  if (config.nodeEnv === 'production') {
-    throw new Error('IDEM_ADMIN_CLIENT_SECRET must be set in production');
-  }
-
-  logger.warn('Using default client secret for idem-admin - DO NOT USE IN PRODUCTION');
-  return 'idem-admin-dev-secret';
-}
-
-const BUILT_IN_CLIENTS: Record<string, any> = {
-  'idem-admin': {
-    client_id: 'idem-admin',
-    client_secret: getAdminClientSecret(),
-    client_name: 'Idem Admin Console',
-    redirect_uris: [
-      `${idemAdminUrl}/api/callback`,
-      // Add production URL here: 'https://idem-admin.example.com/api/callback'
-    ],
-    grant_types: ['authorization_code', 'refresh_token'],
-    response_types: ['code'],
-    token_endpoint_auth_method: 'client_secret_post', // Confidential client
-  },
-};
-
-/**
- * Convert database client to oidc-provider format
- */
-function toOidcClient(client: any) {
-  const oidcClient: any = {
+function toOidcClient(client: typeof oauthClients.$inferSelect) {
+  const oidcClient: Record<string, unknown> = {
     client_id: client.clientId,
     client_name: client.clientName,
     redirect_uris: client.redirectUris,
     grant_types: client.grantTypes,
     response_types: client.responseTypes,
-
-    // PKCE configuration
     token_endpoint_auth_method: client.clientType === 'confidential'
       ? 'client_secret_post'
       : 'none',
+    'urn:idem:client_category': client.clientCategory,
   };
+
+  if (client.clientSecretEncrypted) {
+    oidcClient.client_secret = decrypt(client.clientSecretEncrypted);
+  }
 
   return oidcClient;
 }
 
 /**
  * Load all active clients for oidc-provider initialization
- * Includes both built-in clients and database clients
  */
 export async function loadAllClients() {
   logger.debug('Loading all active clients');
@@ -72,37 +41,21 @@ export async function loadAllClients() {
     .from(oauthClients)
     .where(eq(oauthClients.active, true));
 
-  const builtInClients = Object.values(BUILT_IN_CLIENTS);
-  const allClients = [...builtInClients, ...dbClients.map(toOidcClient)];
+  const clients = dbClients.map(toOidcClient);
 
-  logger.info(
-    {
-      total: allClients.length,
-      builtIn: builtInClients.length,
-      database: dbClients.length,
-    },
-    'Loaded active clients'
-  );
+  logger.info({ count: clients.length }, 'Loaded active clients');
 
-  return allClients;
+  return clients;
 }
 
 /**
  * Find OAuth client by client ID
  * Returns oidc-provider compatible client object
- * Checks built-in clients first, then database
  */
 export async function findClient(clientId: string) {
   try {
     logger.debug({ clientId }, 'Looking up client');
 
-    // Check built-in clients first
-    if (BUILT_IN_CLIENTS[clientId]) {
-      logger.info({ clientId, source: 'built-in' }, 'Client found');
-      return BUILT_IN_CLIENTS[clientId];
-    }
-
-    // Fall back to database lookup
     const [client] = await db
       .select()
       .from(oauthClients)
@@ -114,33 +67,30 @@ export async function findClient(clientId: string) {
       return undefined;
     }
 
-    logger.info({ clientId, clientName: client.clientName, source: 'database' }, 'Client found');
+    logger.info({ clientId, clientName: client.clientName }, 'Client found');
 
-    // Return oidc-provider compatible client object
-    return {
+    const oidcClient: Record<string, unknown> = {
       client_id: client.clientId,
       client_name: client.clientName,
       redirect_uris: client.redirectUris,
       grant_types: client.grantTypes,
       response_types: client.responseTypes,
       scope: client.allowedScopes.join(' '),
-
-      // PKCE configuration
       require_pkce: client.requirePkce,
-
-      // Token lifetimes
       access_token_ttl: client.accessTokenLifetime,
       refresh_token_ttl: client.refreshTokenLifetime,
       id_token_ttl: client.idTokenLifetime,
-
-      // Authentication method
       token_endpoint_auth_method: client.clientType === 'confidential'
         ? 'client_secret_post'
         : 'none',
-
-      // Custom: client category (internal = skip consent, external = require consent)
       'urn:idem:client_category': client.clientCategory,
     };
+
+    if (client.clientSecretEncrypted) {
+      oidcClient.client_secret = decrypt(client.clientSecretEncrypted);
+    }
+
+    return oidcClient;
   } catch (error) {
     logger.error({ error, clientId }, 'Error looking up client');
     return undefined;
