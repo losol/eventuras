@@ -147,6 +147,9 @@ export async function findClient(clientId: string) {
         ? 'client_secret_post'
         : 'none',
 
+      // Custom: client category (internal = skip consent, external = require consent)
+      'urn:idem:client_category': client.clientCategory,
+
       // Client metadata
       logo_uri: client.logoUri,
       client_uri: client.clientUri,

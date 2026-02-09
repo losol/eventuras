@@ -58,18 +58,19 @@ export async function createOidcProvider(): Promise<any> {
 
     claims: {
       openid: ['sub'],
-      profile: ['name', 'given_name', 'family_name', 'middle_name', 'picture', 'locale', 'system_role'],
+      // ADR 0018: 'roles' replaces 'system_role' - per-client role array
+      profile: ['name', 'given_name', 'family_name', 'middle_name', 'picture', 'locale', 'roles'],
       email: ['email', 'email_verified'],
     },
 
     ttl: {
-      AccessToken: 3600,        // 1 hour
-      AuthorizationCode: 600,   // 10 minutes
-      IdToken: 3600,            // 1 hour
-      RefreshToken: 2592000,    // 30 days
-      Grant: 2592000,           // 30 days
-      Interaction: 3600,        // 1 hour (login/consent session)
-      Session: 86400,           // 24 hours (user session)
+      AccessToken: 600,           // 10 minutes
+      AuthorizationCode: 60,      // 60 seconds (RFC 6749: single-use, immediate)
+      IdToken: 600,               // 10 minutes
+      RefreshToken: 1209600,      // 14 days (with rotation)
+      Grant: 31536000,            // 1 year (consent duration)
+      Interaction: 900,           // 15 minutes (login flow timeout)
+      Session: 86400,             // 24 hours (browser session)
     },
 
     cookies: {
@@ -94,6 +95,7 @@ export async function createOidcProvider(): Promise<any> {
     },
 
     // Skip consent in development/testing (auto-approve all prompts except login)
+    // Also skip consent for internal (first-party) clients
     async loadExistingGrant(ctx: any) {
       const grantId = (ctx.oidc.result
         && ctx.oidc.result.consent
@@ -102,8 +104,12 @@ export async function createOidcProvider(): Promise<any> {
       if (grantId) {
         return ctx.oidc.provider.Grant.find(grantId);
       } else {
-        // Auto-grant in development (skip consent prompt)
-        if (config.nodeEnv === 'development') {
+        // Check if client is internal (first-party) - skip consent
+        const clientCategory = ctx.oidc.client['urn:idem:client_category'];
+        const isInternalClient = clientCategory === 'internal';
+
+        // Auto-grant in development OR for internal clients (skip consent prompt)
+        if (config.nodeEnv === 'development' || isInternalClient) {
           const grant = new ctx.oidc.provider.Grant({
             clientId: ctx.oidc.client.clientId,
             accountId: ctx.oidc.session.accountId,
@@ -116,7 +122,8 @@ export async function createOidcProvider(): Promise<any> {
           // Add any requested claims
           grant.addOIDCClaims(['sub']);
           if (scopes.includes('profile')) {
-            grant.addOIDCClaims(['name', 'given_name', 'family_name', 'picture', 'locale', 'system_role']);
+            // ADR 0018: 'roles' replaces 'system_role'
+            grant.addOIDCClaims(['name', 'given_name', 'family_name', 'picture', 'locale', 'roles']);
           }
           if (scopes.includes('email')) {
             grant.addOIDCClaims(['email', 'email_verified']);

@@ -12,6 +12,7 @@ import { config } from './config';
 import { registerInteractionRoutes } from './routes/interaction';
 import { registerOtpRoutes } from './routes/otp';
 import { registerAdminRoutes } from './routes/admin';
+import { registerBootstrapRoutes } from './routes/bootstrap';
 import { FastifyDrizzleSessionStore } from './middleware/fastify-session-store';
 import { registerErrorHandler } from './middleware/error-handler';
 import type { Mailer } from '@eventuras/mailer';
@@ -119,6 +120,12 @@ export async function createServer(oidcProvider?: any, mailer?: Mailer): Promise
   // Admin API routes
   await app.register(registerAdminRoutes);
   logger.info('Admin API routes mounted');
+
+  // Bootstrap API routes (ADR 0018: systemadmin bootstrap)
+  if (config.bootstrap.enabled) {
+    await app.register(registerBootstrapRoutes);
+    logger.info('Bootstrap API routes mounted (IDEM_BOOTSTRAP_ENABLED=true)');
+  }
 
   // Helper function to serve the React SPA (uses cached index.html)
   const serveSpa = async (_request: FastifyRequest, reply: FastifyReply) => {

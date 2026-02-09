@@ -143,23 +143,45 @@ Table: idem_oauth_clients
 
 Columns:
   id                         UUID (PK)
-  client_slug                TEXT UNIQUE  -- OAuth client_id, kebab-case format
+  client_id                  TEXT UNIQUE  -- OAuth client_id, kebab-case format
   client_name                TEXT
-  redirect_uris              TEXT[]
+  client_type                TEXT         -- 'confidential' or 'public'
+  client_category            TEXT         -- 'internal' or 'external' (default: 'internal')
+  client_secret_hash         TEXT         -- MUST be hashed with scrypt, NULL for public clients
+  redirect_uris              TEXT[]       -- Array of redirect URIs
   post_logout_redirect_uris  TEXT[]
-  grant_types                TEXT[]
-  response_types             TEXT[]
-  token_endpoint_auth_method TEXT
-  client_secret              TEXT  -- MUST be hashed with scrypt, never plaintext
-  jwks_uri                   TEXT
-  jwks                       JSONB
-  allowed_scopes             TEXT[]
+  grant_types                TEXT[]       -- authorization_code, refresh_token, client_credentials
+  response_types             TEXT[]       -- code, id_token, token
+  allowed_scopes             TEXT[]       -- Array of allowed scopes
+  default_scopes             TEXT[]       -- Array of default scopes
   require_pkce               BOOLEAN
+  access_token_lifetime      INTEGER      -- In seconds (default: 3600)
+  refresh_token_lifetime     INTEGER      -- In seconds (default: 2592000)
+  id_token_lifetime          INTEGER      -- In seconds (default: 3600)
+  logo_uri                   TEXT
+  client_uri                 TEXT
+  policy_uri                 TEXT
+  tos_uri                    TEXT
+  contacts                   TEXT[]       -- Array of contact emails
+  active                     BOOLEAN      -- Default: true
   created_at                 TIMESTAMPTZ
   updated_at                 TIMESTAMPTZ
 
 Indexes:
-  CREATE UNIQUE INDEX idx_oauth_clients_slug ON idem_oauth_clients(client_slug);
+  CREATE UNIQUE INDEX idx_oauth_clients_client_id ON idem_oauth_clients(client_id);
+  CREATE INDEX idx_oauth_clients_active ON idem_oauth_clients(active);
+
+Constraints:
+  CHECK (client_type IN ('confidential', 'public'))
+  CHECK (client_category IN ('internal', 'external'))
+
+Client Categories:
+  - internal: First-party applications (eventuras-web, historia, idem-admin)
+    - No consent screen shown to users
+    - Automatically trusted by the IdP
+  - external: Third-party applications
+    - Consent screen required before granting access
+    - User must explicitly approve requested scopes
 
 Validation:
   - Format: /^[a-z][a-z0-9-]{2,63}$/
@@ -171,8 +193,7 @@ Validation:
   - Examples: eventuras-web, historia, converto-api
 
 Security Notes:
-  - All clients are confidential (no public clients)
-  - client_secret MUST be hashed with scrypt (OWASP recommended, built into Node.js)
+  - client_secret_hash MUST be hashed with scrypt (OWASP recommended, built into Node.js)
     - Parameters: N=16384 (2^14), r=8, p=1
     - Use Node.js crypto.scrypt (no external dependencies)
   - Never log or return client_secret in API responses
@@ -410,7 +431,7 @@ Table: idem_admin_principals
 Columns:
   id                  UUID (PK)
   account_id          UUID (FK → idem_accounts.id, nullable)
-  client_slug         TEXT (nullable)  -- FK → idem_oauth_clients.client_slug
+  client_id           TEXT (nullable)  -- FK → idem_oauth_clients.client_id
   created_at          TIMESTAMPTZ
 
 Table: idem_admin_memberships
