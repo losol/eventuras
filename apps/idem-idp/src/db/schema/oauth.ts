@@ -11,7 +11,7 @@ export const oauthClients = idem.table(
   {
     id: uuid('id').defaultRandom().primaryKey(),
 
-    // Client identification
+    // Client identification (the OAuth client_id, distinct from the UUID id)
     clientId: text('client_id').notNull().unique(),
     clientName: text('client_name').notNull(),
 
@@ -21,35 +21,29 @@ export const oauthClients = idem.table(
     // Client type
     clientType: text('client_type').notNull(), // 'confidential' or 'public'
 
-    // Redirect URIs (array stored as JSONB)
-    redirectUris: jsonb('redirect_uris').notNull().$type<string[]>(),
+    // Client category: 'internal' (first-party, no consent) or 'external' (third-party, consent required)
+    clientCategory: text('client_category').notNull().default('internal'),
 
-    // Grant types
-    grantTypes: jsonb('grant_types').notNull().$type<string[]>(),
-    // ['authorization_code', 'refresh_token', 'client_credentials']
+    // Redirect URIs
+    redirectUris: text('redirect_uris').array().notNull(),
 
-    // Response types
-    responseTypes: jsonb('response_types').notNull().$type<string[]>(),
-    // ['code', 'id_token', 'token']
+    // Grant types: authorization_code, refresh_token, client_credentials
+    grantTypes: text('grant_types').array().notNull(),
+
+    // Response types: code, id_token, token
+    responseTypes: text('response_types').array().notNull(),
 
     // Scopes
-    allowedScopes: jsonb('allowed_scopes').notNull().$type<string[]>(),
-    defaultScopes: jsonb('default_scopes').notNull().$type<string[]>(),
+    allowedScopes: text('allowed_scopes').array().notNull(),
+    defaultScopes: text('default_scopes').array().notNull(),
 
     // PKCE
     requirePkce: boolean('require_pkce').notNull().default(true),
 
     // Token settings (in seconds)
-    accessTokenLifetime: integer('access_token_lifetime').notNull().default(3600), // 1 hour
-    refreshTokenLifetime: integer('refresh_token_lifetime').notNull().default(2592000), // 30 days
+    accessTokenLifetime: integer('access_token_lifetime').notNull().default(60), // 1 minute
+    refreshTokenLifetime: integer('refresh_token_lifetime').notNull().default(43200), // 12 hours
     idTokenLifetime: integer('id_token_lifetime').notNull().default(3600), // 1 hour
-
-    // Metadata
-    logoUri: text('logo_uri'),
-    clientUri: text('client_uri'),
-    policyUri: text('policy_uri'),
-    tosUri: text('tos_uri'),
-    contacts: jsonb('contacts').$type<string[]>(),
 
     // Status
     active: boolean('active').notNull().default(true),

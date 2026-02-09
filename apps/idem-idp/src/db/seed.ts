@@ -37,7 +37,6 @@ async function seed() {
         givenName: 'Admin',
         familyName: 'User',
         displayName: 'Admin User',
-        systemRole: 'system_admin',
         active: true,
       })
       .returning();
@@ -98,14 +97,39 @@ async function seed() {
 
     console.log(`✓ Created 3 identities`);
 
-    // 3. Create test OAuth clients
+    // 3. Create OAuth clients (including idem-admin)
     console.log('Creating OAuth clients...');
+
+    // Create idem-admin client first (required for RBAC)
+    const [idemAdminClient] = await db
+      .insert(schema.oauthClients)
+      .values({
+        clientId: 'idem-admin',
+        clientName: 'Idem Admin Console',
+        clientType: 'confidential',
+        clientCategory: 'internal',
+        clientSecretHash, // Same dev secret as dev_api_client
+        redirectUris: [
+          'http://localhost:3200/admin/callback',
+          'http://localhost:3201/callback',
+          'https://admin.idem.local/callback',
+        ],
+        grantTypes: ['authorization_code', 'refresh_token'],
+        responseTypes: ['code'],
+        allowedScopes: ['openid', 'profile', 'email', 'offline_access'],
+        defaultScopes: ['openid', 'profile', 'email'],
+        requirePkce: true,
+        active: true,
+      })
+      .returning();
+    if (!idemAdminClient) throw new Error('Failed to create idem-admin client');
 
     await db.insert(schema.oauthClients).values([
       {
         clientId: 'dev_web_app',
         clientName: 'Development Web App',
         clientType: 'public',
+        clientCategory: 'internal',
         redirectUris: ['http://localhost:3000/callback', 'http://localhost:3000/auth/callback'],
         grantTypes: ['authorization_code', 'refresh_token'],
         responseTypes: ['code'],
@@ -118,6 +142,7 @@ async function seed() {
         clientId: 'dev_api_client',
         clientName: 'Development API Client',
         clientType: 'confidential',
+        clientCategory: 'internal',
         clientSecretHash, // Hashed 'dev_secret_DO_NOT_USE_IN_PRODUCTION'
         redirectUris: ['http://localhost:4000/callback'],
         grantTypes: ['authorization_code', 'refresh_token', 'client_credentials'],
@@ -129,9 +154,44 @@ async function seed() {
       },
     ]);
 
-    console.log(`✓ Created 2 OAuth clients`);
+    console.log(`✓ Created 3 OAuth clients (including idem-admin)`);
 
-    // 4. Create test IdP providers
+    // 4. Create RBAC roles for idem-admin (ADR 0018)
+    console.log('Creating RBAC roles...');
+
+    const [systemadminRole] = await db
+      .insert(schema.clientRoles)
+      .values({
+        oauthClientId: idemAdminClient.id,
+        roleName: 'systemadmin',
+        description: 'Full administrative access to Idem',
+      })
+      .returning();
+    if (!systemadminRole) throw new Error('Failed to create systemadmin role');
+
+    const [adminReaderRole] = await db
+      .insert(schema.clientRoles)
+      .values({
+        oauthClientId: idemAdminClient.id,
+        roleName: 'admin_reader',
+        description: 'Read-only access to Idem admin panel',
+      })
+      .returning();
+    if (!adminReaderRole) throw new Error('Failed to create admin_reader role');
+
+    console.log(`✓ Created 2 client roles for idem-admin`);
+
+    // 5. Grant systemadmin role to admin account
+    console.log('Granting roles...');
+
+    await db.insert(schema.roleGrants).values({
+      accountId: adminAccount.id,
+      clientRoleId: systemadminRole.id,
+    });
+
+    console.log(`✓ Granted systemadmin role to admin@eventuras.local`);
+
+    // 6. Create test IdP providers
     console.log('Creating IdP providers...');
 
     await db.insert(schema.idpProviders).values([
@@ -159,11 +219,12 @@ async function seed() {
     console.log('✅ Seeding complete!');
     console.log('');
     console.log('Test accounts:');
-    console.log('  - admin@eventuras.local (system_admin role)');
+    console.log('  - admin@eventuras.local (systemadmin role for idem-admin)');
     console.log('  - developer@eventuras.local');
     console.log('  - test@eventuras.local');
     console.log('');
     console.log('OAuth clients:');
+    console.log('  - idem-admin (Idem Admin Console)');
     console.log('  - dev_web_app (public, PKCE required)');
     console.log(`  - dev_api_client (confidential, secret: ${devClientSecret})`);
   } catch (error) {

@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted (Supersedes [ADR 0007](0007-admin-rbac.md))
+Implemented (Supersedes [ADR 0007](0007-admin-rbac.md))
 
 ## Context
 
@@ -19,7 +19,7 @@ As Idem evolves to support multiple OAuth clients with different access requirem
 
 Replace account-level `systemRole` with a per-client role assignment system where:
 
-- **Domain = OAuth client_slug**: Each client can define its own roles
+- **Domain = OAuth client_id**: Each client can define its own roles
 - **Role grants are explicit**: Users are granted roles for specific clients
 - **idem-admin is a regular client**: Seeded in the database with `systemadmin` and `admin_reader` roles
 - **Only systemadmin can assign roles**: Users with `systemadmin` role for the idem-admin client control all role assignments
@@ -332,40 +332,74 @@ The system requires a bootstrap mechanism to create the first `systemadmin`. Thi
 **Database seeding (runs on startup via migration):**
 
 ```sql
--- 1. Create the idem-admin OAuth client
-INSERT INTO idem.oauth_clients (id, client_slug, client_name, redirect_uris)
+-- 1. Create the idem-admin OAuth client (confidential, secret set via bootstrap)
+INSERT INTO idem.oauth_clients (id, client_id, client_name, client_type, redirect_uris)
 VALUES (
   gen_random_uuid(),
   'idem-admin',
   'Idem Admin Console',
-  ARRAY['http://localhost:3000/callback', 'https://admin.example.com/callback']
-) ON CONFLICT (client_slug) DO NOTHING;
+  'confidential',
+  '["http://localhost:3200/admin/callback"]'
+) ON CONFLICT (client_id) DO NOTHING;
 
 -- 2. Create the predefined roles for idem-admin
 INSERT INTO idem.client_roles (oauth_client_id, role_name, description)
 SELECT id, 'systemadmin', 'Full administrative access'
-FROM idem.oauth_clients WHERE client_slug = 'idem-admin'
+FROM idem.oauth_clients WHERE client_id = 'idem-admin'
 ON CONFLICT (oauth_client_id, role_name) DO NOTHING;
 
 INSERT INTO idem.client_roles (oauth_client_id, role_name, description)
 SELECT id, 'admin_reader', 'Read-only admin access'
-FROM idem.oauth_clients WHERE client_slug = 'idem-admin'
+FROM idem.oauth_clients WHERE client_id = 'idem-admin'
 ON CONFLICT (oauth_client_id, role_name) DO NOTHING;
 ```
 
 **Bootstrap endpoint:**
 
 ```
-POST /api/systemadmin/claim
+POST /api/system/init
 Authorization: Bearer <bootstrap_token>
 Content-Type: application/json
+```
 
+**Option 1: Create new account (recommended for fresh installs):**
+
+```json
 {
-  "account_id": "uuid-of-logged-in-user"
+  "email": "admin@example.com",
+  "name": "Admin Name"
 }
 ```
 
-The endpoint grants `systemadmin` role to the specified account. Only available when bootstrap mode is enabled.
+**Option 2: Use existing account:**
+
+```json
+{
+  "account_id": "uuid-of-existing-account"
+}
+```
+
+The endpoint:
+1. Creates a new account (if email provided) or uses existing account
+2. Grants `systemadmin` role to the account
+3. Generates and sets `client_secret` for idem-admin (if not already set)
+4. Returns the plaintext `client_secret` in the response (shown only once!)
+
+Only available when bootstrap mode is enabled.
+
+**Response:**
+
+```json
+{
+  "message": "Bootstrap successful",
+  "account_id": "uuid-of-the-account",
+  "email": "admin@example.com",
+  "role": "systemadmin",
+  "client_id": "idem-admin",
+  "client_secret": "64-hex-character-secret",
+  "note": "IMPORTANT: Save the client_secret now. This is the only time it will be shown..."
+}
+```
 
 **Configuration:**
 
@@ -373,24 +407,34 @@ The endpoint grants `systemadmin` role to the specified account. Only available 
 |---------------------|-------------|---------|
 | `IDEM_BOOTSTRAP_ENABLED` | Enable bootstrap endpoint | `true` |
 | `IDEM_BOOTSTRAP_TOKEN` | Secret token (min 32 chars) | `a1b2c3d4...` (cryptographically random) |
+| `IDEM_ADMIN_URL` | Admin console base URL (auto-adds callback to redirect_uris) | `https://admin.idem.example.com` |
 
 **Startup behavior:**
 
 | Environment | Bootstrap enabled | Systemadmin exists | Behavior |
 |-------------|-------------------|-------------------|----------|
-| Development | `true` | Yes | ⚠️ Log WARNING, endpoint disabled |
+| Development | `true` | Yes | ⚠️ Log WARNING, returns 409 Conflict |
 | Development | `true` | No | ✅ Endpoint available |
-| Production | `true` | Yes | ❌ Log ERROR, endpoint disabled |
+| Production | `true` | Yes | ❌ Log ERROR, returns 409 Conflict |
 | Production | `true` | No | ✅ Endpoint available |
-| Any | `false` | Any | ✅ Endpoint not registered |
+| Any | `false` | Any | ✅ Endpoint returns 404 (not registered) |
 
 **Workflow:**
 
 1. Set `IDEM_BOOTSTRAP_ENABLED=true` and `IDEM_BOOTSTRAP_TOKEN=<random-32-chars>`
 2. Deploy Idem
-3. Admin creates account (or logs in via IdP)
-4. Admin calls `POST /api/bootstrap` with the token
-5. Admin receives `systemadmin` role for `idem-admin` client
+3. Admin calls `POST /api/system/init` with token and email:
+   ```bash
+   curl -X POST https://idem.example.com/api/system/init \
+     -H "Authorization: Bearer $BOOTSTRAP_TOKEN" \
+     -H "Content-Type: application/json" \
+     -d '{"email": "admin@example.com", "name": "System Administrator"}'
+   ```
+4. Admin receives:
+   - `account_id` (newly created or existing)
+   - `systemadmin` role for `idem-admin` client
+   - `client_secret` for idem-admin (only shown once!)
+5. **Save the `client_secret`** - configure idem-admin with `IDEM_IDP_CLIENT_SECRET`
 6. Remove environment variables (or set `IDEM_BOOTSTRAP_ENABLED=false`)
 7. Redeploy
 
@@ -399,8 +443,8 @@ The endpoint grants `systemadmin` role to the specified account. Only available 
 - Token must be cryptographically random (use `openssl rand -hex 32`)
 - Token comparison uses constant-time algorithm to prevent timing attacks
 - All bootstrap attempts (success and failure) are logged to audit log
-- Rate limiting applies to the endpoint
-- First successful bootstrap wins; endpoint auto-disables after success
+- First successful bootstrap wins; subsequent attempts return 409 Conflict
+- Always disable bootstrap mode after setup to reduce attack surface
 
 ## Consequences
 

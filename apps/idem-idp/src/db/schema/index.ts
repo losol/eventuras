@@ -16,6 +16,9 @@ export * from './otp';
 // OAuth / OIDC
 export * from './oauth';
 
+// RBAC (ADR 0018: Per-Client Role-Based Access Control)
+export * from './rbac';
+
 // IdP brokering
 export * from './idp';
 

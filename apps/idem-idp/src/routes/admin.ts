@@ -5,11 +5,26 @@ import { Logger } from '@eventuras/logger';
 
 const logger = Logger.create({ namespace: 'idem:routes:admin' });
 
+/**
+ * Check if a user has one of the required roles for idem-admin (ADR 0018)
+ *
+ * @param roles - Array of roles from the token's 'roles' claim
+ * @param requiredRoles - Roles that grant access (any match is sufficient)
+ * @returns true if user has at least one required role
+ */
+function hasRequiredRole(
+  roles: string[] | undefined,
+  requiredRoles: string[]
+): boolean {
+  if (!roles || !Array.isArray(roles)) return false;
+  return roles.some((role) => requiredRoles.includes(role));
+}
+
 export const registerAdminRoutes: FastifyPluginAsync = async (fastify) => {
   /**
    * GET /api/admin/clients
    * Returns list of all OAuth clients
-   * Requires authentication with Bearer token
+   * Requires authentication with Bearer token and systemadmin or admin_reader role
    */
   fastify.get('/api/admin/clients', async (request, reply) => {
     try {
@@ -33,11 +48,11 @@ export const registerAdminRoutes: FastifyPluginAsync = async (fastify) => {
         Buffer.from(parts[1]!, 'base64url').toString()
       );
 
-      // Check if user has system_admin or admin_reader role
-      const systemRole = payload.system_role;
-      if (!systemRole || !['system_admin', 'admin_reader'].includes(systemRole)) {
+      // ADR 0018: Check if user has systemadmin or admin_reader role for idem-admin
+      const roles = payload.roles as string[] | undefined;
+      if (!hasRequiredRole(roles, ['systemadmin', 'admin_reader'])) {
         logger.warn(
-          { user: payload.email, systemRole },
+          { user: payload.email, roles },
           'Unauthorized access attempt to admin API'
         );
         return reply.code(403).send({ error: 'Forbidden' });
@@ -55,6 +70,7 @@ export const registerAdminRoutes: FastifyPluginAsync = async (fastify) => {
           clientId: client.clientId,
           clientName: client.clientName,
           clientType: client.clientType,
+          clientCategory: client.clientCategory,
           redirectUris: client.redirectUris,
           grantTypes: client.grantTypes,
           responseTypes: client.responseTypes,
