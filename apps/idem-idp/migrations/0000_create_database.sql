@@ -93,7 +93,7 @@ CREATE TABLE "idem"."oauth_clients" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"client_id" text NOT NULL,
 	"client_name" text NOT NULL,
-	"client_secret_hash" text,
+	"client_secret_encrypted" text,
 	"client_type" text NOT NULL,
 	"client_category" text DEFAULT 'internal' NOT NULL,
 	"redirect_uris" text[] NOT NULL,

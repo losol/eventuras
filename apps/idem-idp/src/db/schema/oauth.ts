@@ -15,8 +15,8 @@ export const oauthClients = idem.table(
     clientId: text('client_id').notNull().unique(),
     clientName: text('client_name').notNull(),
 
-    // Client secret (hashed with scrypt)
-    clientSecretHash: text('client_secret_hash'), // Null for public clients
+    // Client secret (encrypted with master key, null for public clients)
+    clientSecretEncrypted: text('client_secret_encrypted'),
 
     // Client type
     clientType: text('client_type').notNull(), // 'confidential' or 'public'
