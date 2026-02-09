@@ -64,11 +64,11 @@ async function grantSystemadmin(accountId: string): Promise<boolean> {
     return false;
   }
 
-  // Grant the role
+  // Grant the role 
   await db.insert(roleGrants).values({
     accountId,
     clientRoleId: role.id,
-  });
+  }).onConflictDoNothing();
 
   return true;
 }

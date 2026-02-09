@@ -124,11 +124,6 @@ erDiagram
         integer access_token_lifetime
         integer refresh_token_lifetime
         integer id_token_lifetime
-        text logo_uri
-        text client_uri
-        text policy_uri
-        text tos_uri
-        jsonb contacts
         boolean active
         timestamp created_at
         timestamp updated_at
