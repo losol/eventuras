@@ -5,29 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1769804635410,
-      "tag": "0000_curvy_stellaris",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1769809491310,
-      "tag": "0001_giant_cloak",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1769899082999,
-      "tag": "0002_rename-express-sessions-to-sessions",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1770710400000,
-      "tag": "0003_per-client-rbac",
+      "when": 1770674410792,
+      "tag": "0000_create_database",
       "breakpoints": true
     }
   ]

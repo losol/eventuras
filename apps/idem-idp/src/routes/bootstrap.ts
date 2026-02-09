@@ -32,23 +32,45 @@ async function hasExistingSystemadmin(): Promise<boolean> {
 }
 
 /**
- * Grant systemadmin role to an account (ADR 0018)
+ * Ensure the idem-admin client and systemadmin role exist, creating them if needed.
+ * Returns the systemadmin role ID, or null on failure.
  */
-async function grantSystemadmin(accountId: string): Promise<boolean> {
-  // Find the idem-admin client
-  const [client] = await db
+async function ensureIdemAdminSetup(): Promise<{ clientId: string; roleId: string } | null> {
+  // Find or create idem-admin client
+  let [client] = await db
     .select()
     .from(oauthClients)
     .where(eq(oauthClients.clientId, 'idem-admin'))
     .limit(1);
 
   if (!client) {
-    logger.error('idem-admin client not found - database may not be seeded');
-    return false;
+    logger.info('Creating idem-admin client');
+    const adminUrl = config.adminUrl || 'http://localhost:3210';
+    [client] = await db
+      .insert(oauthClients)
+      .values({
+        clientId: 'idem-admin',
+        clientName: 'Idem Admin Console',
+        clientType: 'confidential',
+        clientCategory: 'internal',
+        redirectUris: [`${adminUrl}/api/callback`],
+        grantTypes: ['authorization_code', 'refresh_token'],
+        responseTypes: ['code'],
+        allowedScopes: ['openid', 'profile', 'email', 'offline_access'],
+        defaultScopes: ['openid', 'profile', 'email'],
+        requirePkce: true,
+        active: true,
+      })
+      .returning();
+
+    if (!client) {
+      logger.error('Failed to create idem-admin client');
+      return null;
+    }
   }
 
-  // Find the systemadmin role for idem-admin
-  const [role] = await db
+  // Find or create systemadmin role
+  let [role] = await db
     .select()
     .from(clientRoles)
     .where(
@@ -60,14 +82,35 @@ async function grantSystemadmin(accountId: string): Promise<boolean> {
     .limit(1);
 
   if (!role) {
-    logger.error('systemadmin role not found for idem-admin - database may not be seeded');
-    return false;
+    logger.info('Creating systemadmin role for idem-admin');
+    [role] = await db
+      .insert(clientRoles)
+      .values({
+        oauthClientId: client.id,
+        roleName: 'systemadmin',
+        description: 'Full administrative access to Idem',
+      })
+      .returning();
+
+    if (!role) {
+      logger.error('Failed to create systemadmin role');
+      return null;
+    }
   }
 
-  // Grant the role 
+  return { clientId: client.id, roleId: role.id };
+}
+
+/**
+ * Grant systemadmin role to an account (ADR 0018)
+ */
+async function grantSystemadmin(accountId: string): Promise<boolean> {
+  const setup = await ensureIdemAdminSetup();
+  if (!setup) return false;
+
   await db.insert(roleGrants).values({
     accountId,
-    clientRoleId: role.id,
+    clientRoleId: setup.roleId,
   }).onConflictDoNothing();
 
   return true;
@@ -86,7 +129,7 @@ async function ensureAdminClientSecret(): Promise<string | null> {
     .limit(1);
 
   if (!client) {
-    logger.error('idem-admin client not found - database may not be seeded correctly');
+    logger.error('idem-admin client not found');
     return null;
   }
 

@@ -23,9 +23,6 @@ pnpm db:generate
 # Run migrations
 pnpm db:migrate
 
-# Seed development data
-pnpm db:seed
-
 # Start development server
 pnpm dev
 ```

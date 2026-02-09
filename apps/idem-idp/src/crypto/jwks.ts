@@ -1,6 +1,6 @@
 import { generateKeyPair, exportJWK } from 'jose';
 import { db } from '../db/client';
-import { jwksKeys } from '../db/schema/oauth';
+import { jwksKeys } from '../db/schema/jwksKeys';
 import crypto from 'crypto';
 import { config } from '../config';
 import { eq, and } from 'drizzle-orm';
