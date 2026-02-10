@@ -3,7 +3,6 @@
 import { cookies } from 'next/headers';
 
 import {
-  accessTokenExpires,
   getCurrentSession,
   refreshCurrentSession,
 } from '@eventuras/fides-auth-next';
@@ -42,7 +41,11 @@ export async function getAccessToken(): Promise<string | null> {
   }
 
   // Check if token is expired or about to expire (within 10 seconds)
-  const tokenExpiring = accessTokenExpires(session.tokens.accessToken, 10);
+  // Uses accessTokenExpiresAt from session (works with both opaque and JWT tokens)
+  const expiresAt = session.tokens.accessTokenExpiresAt;
+  const tokenExpiring = expiresAt
+    ? new Date(expiresAt).getTime() < Date.now() + 10_000
+    : false;
 
   if (tokenExpiring) {
     logger.info('Access token expired or expiring soon, attempting refresh');

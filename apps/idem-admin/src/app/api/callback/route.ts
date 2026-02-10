@@ -90,8 +90,9 @@ export async function GET(request: Request): Promise<Response> {
       'Creating session from tokens'
     );
 
-    // Extract system_role from idem-idp's claims
-    const systemRole = idToken.system_role as string | undefined;
+    // ADR 0018: Extract per-client roles array from idem-idp's claims
+    const roles = (idToken.roles as string[]) || [];
+    const systemRole = roles[0]; // Primary role for layout compatibility
 
     const jwt = await createSession(
       {
@@ -105,10 +106,9 @@ export async function GET(request: Request): Promise<Response> {
         user: {
           name: idToken.name as string,
           email: idToken.email as string,
-          roles: systemRole ? [systemRole] : [],
+          roles,
         },
-        // Store systemRole in data for custom claims
-        data: { systemRole },
+        data: { systemRole, roles },
       },
       { sessionDurationDays: 7 }
     );
@@ -137,11 +137,11 @@ export async function GET(request: Request): Promise<Response> {
     cookieStore2.delete('oauth_code_verifier');
     cookieStore2.delete('returnTo');
 
-    // Redirect back with login success indicator
-    const redirectUrl = new URL(returnTo, currentUrl.origin);
+    // Redirect back with login success indicator (use public appUrl, not internal origin)
+    const redirectUrl = new URL(returnTo, config.appUrl);
     redirectUrl.searchParams.set('login', 'success');
 
-    logger.info({ redirectUrl: redirectUrl.toString() }, 'Login successful, redirecting');
+    logger.info({ redirectUrl: redirectUrl.toString(), appUrl: config.appUrl, returnTo }, 'Login successful, redirecting');
 
     return new Response(null, {
       status: 302,
@@ -149,6 +149,13 @@ export async function GET(request: Request): Promise<Response> {
     });
   } catch (error) {
     logger.error({ error }, 'OAuth callback error');
+
+    // Clean up OAuth cookies so the user doesn't get stuck in a loop
+    const cookieStore = await cookies();
+    cookieStore.delete('oauth_state');
+    cookieStore.delete('oauth_code_verifier');
+    cookieStore.delete('session');
+
     return new Response(errorPage('Login failed', 'An unexpected error occurred during login.'), {
       status: 500,
       headers: { 'Content-Type': 'text/html' },

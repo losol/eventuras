@@ -9,7 +9,7 @@ import { AdminNavbar } from '@/components/AdminNavbar';
 
 export const dynamic = 'force-dynamic';
 
-const ADMIN_ROLES = ['system_admin', 'admin_reader'];
+const ADMIN_ROLES = ['systemadmin', 'admin_reader'];
 
 type SessionData = {
   systemRole?: string;
