@@ -128,7 +128,7 @@ describe('Public Endpoints', () => {
       expect(firstKey).not.toHaveProperty('q');
     });
 
-    it('should return keys compatible with RS256', async () => {
+    it('should return keys compatible with PS256', async () => {
       const response = await app.inject({
         method: 'GET',
         url: '/.well-known/jwks.json',
@@ -136,13 +136,14 @@ describe('Public Endpoints', () => {
 
       const jwks = response.json();
 
-      // Keys should be RSA type (kty: 'RSA') for RS256
+      // Keys should be RSA type (kty: 'RSA') for PS256
       const rsaKeys = jwks.keys.filter((key: any) => key.kty === 'RSA');
       expect(rsaKeys.length).toBeGreaterThan(0);
 
-      // Each RSA key should have use: 'sig' for signing
+      // Each RSA key should have use: 'sig' and alg: 'PS256'
       rsaKeys.forEach((key: any) => {
         expect(key.use).toBe('sig');
+        expect(key.alg).toBe('PS256');
       });
     });
   });

@@ -7,16 +7,18 @@ import { decrypt } from '../crypto/encrypt';
 const logger = Logger.create({ namespace: 'idem:oidc-clients' });
 
 /**
- * Convert database client to oidc-provider format.
+ * Convert a database client row to oidc-provider format.
  * Decrypts client_secret for confidential clients.
  */
-function toOidcClient(client: typeof oauthClients.$inferSelect) {
+async function toOidcClient(client: typeof oauthClients.$inferSelect) {
   const oidcClient: Record<string, unknown> = {
     client_id: client.clientId,
     client_name: client.clientName,
     redirect_uris: client.redirectUris,
     grant_types: client.grantTypes,
     response_types: client.responseTypes,
+    scope: client.allowedScopes.join(' '),
+    require_pkce: client.requirePkce,
     token_endpoint_auth_method: client.clientType === 'confidential'
       ? 'client_secret_post'
       : 'none',
@@ -24,33 +26,16 @@ function toOidcClient(client: typeof oauthClients.$inferSelect) {
   };
 
   if (client.clientSecretEncrypted) {
-    oidcClient.client_secret = decrypt(client.clientSecretEncrypted);
+    oidcClient.client_secret = await decrypt(client.clientSecretEncrypted);
   }
 
   return oidcClient;
 }
 
 /**
- * Load all active clients for oidc-provider initialization
- */
-export async function loadAllClients() {
-  logger.debug('Loading all active clients');
-
-  const dbClients = await db
-    .select()
-    .from(oauthClients)
-    .where(eq(oauthClients.active, true));
-
-  const clients = dbClients.map(toOidcClient);
-
-  logger.info({ count: clients.length }, 'Loaded active clients');
-
-  return clients;
-}
-
-/**
- * Find OAuth client by client ID
- * Returns oidc-provider compatible client object
+ * Find OAuth client by client_id.
+ * Returns oidc-provider compatible client object.
+ * Used by the adapter for dynamic client lookup.
  */
 export async function findClient(clientId: string) {
   try {
@@ -63,33 +48,12 @@ export async function findClient(clientId: string) {
       .limit(1);
 
     if (!client || !client.active) {
-      logger.warn({ clientId }, 'Client not found or inactive');
+      logger.debug({ clientId }, 'Client not found or inactive');
       return undefined;
     }
 
-    logger.info({ clientId, clientName: client.clientName }, 'Client found');
-
-    const oidcClient: Record<string, unknown> = {
-      client_id: client.clientId,
-      client_name: client.clientName,
-      redirect_uris: client.redirectUris,
-      grant_types: client.grantTypes,
-      response_types: client.responseTypes,
-      scope: client.allowedScopes.join(' '),
-      require_pkce: client.requirePkce,
-      access_token_ttl: client.accessTokenLifetime,
-      refresh_token_ttl: client.refreshTokenLifetime,
-      id_token_ttl: client.idTokenLifetime,
-      token_endpoint_auth_method: client.clientType === 'confidential'
-        ? 'client_secret_post'
-        : 'none',
-      'urn:idem:client_category': client.clientCategory,
-    };
-
-    if (client.clientSecretEncrypted) {
-      oidcClient.client_secret = decrypt(client.clientSecretEncrypted);
-    }
-
+    const oidcClient = await toOidcClient(client);
+    logger.debug({ clientId, clientName: client.clientName }, 'Client found');
     return oidcClient;
   } catch (error) {
     logger.error({ error, clientId }, 'Error looking up client');
