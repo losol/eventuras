@@ -2,7 +2,6 @@ import Provider from 'oidc-provider';
 import { config } from '../config';
 import { getKeyStore } from '../crypto/jwks';
 import { adapterFactory } from './adapter';
-import { loadAllClients } from './clients';
 import { findAccount } from './accounts';
 import { Logger } from '@eventuras/logger';
 
@@ -12,16 +11,9 @@ export async function createOidcProvider(): Promise<any> {
   logger.info('Creating OIDC Provider');
   const jwks = await getKeyStore();
 
-  // Load clients from database for oidc-provider v9
-  const clients = await loadAllClients();
-  logger.info({ clientCount: clients.length }, 'Loaded clients for provider');
-
   const provider = new Provider(config.issuer, {
     adapter: adapterFactory,
     jwks: { keys: jwks },
-
-    // Pre-configured clients (oidc-provider v9 requires this)
-    clients,
 
     // Trust proxy headers (CRITICAL when behind Cloudflare Tunnel or reverse proxy)
     // This ensures redirects use HTTPS even when receiving HTTP requests

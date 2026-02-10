@@ -3,6 +3,7 @@ import { db } from '../db/client';
 import { oidcStore } from '../db/schema/oidc';
 import { eq, and, lt } from 'drizzle-orm';
 import { Logger } from '@eventuras/logger';
+import { findClient } from './clients';
 
 const logger = Logger.create({ namespace: 'idem:oidc-adapter' });
 
@@ -95,6 +96,12 @@ export class DrizzleOidcAdapter implements Adapter {
    * proper error handling (e.g., code replay attack detection).
    */
   async find(id: string): Promise<AdapterPayload | undefined> {
+    // Client model: look up from oauthClients table (dynamic, no restart needed)
+    if (this.name === 'Client') {
+      const client = await findClient(id);
+      return client as AdapterPayload | undefined;
+    }
+
     const oidcId = `${this.name}:${id}`;
 
     logger.debug({ name: this.name, id, oidcId }, 'Looking up OIDC entity');

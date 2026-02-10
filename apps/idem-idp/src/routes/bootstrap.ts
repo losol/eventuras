@@ -146,7 +146,7 @@ async function ensureAdminClientSecret(): Promise<string | null> {
   await db
     .update(oauthClients)
     .set({
-      clientSecretEncrypted: encrypt(clientSecret),
+      clientSecretEncrypted: await encrypt(clientSecret),
       updatedAt: new Date(),
     })
     .where(eq(oauthClients.id, client.id));

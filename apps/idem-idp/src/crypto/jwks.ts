@@ -37,7 +37,7 @@ export async function bootstrapKeys(): Promise<void> {
     alg: 'PS256',
     kty: 'RSA',
     publicKey: publicJwk,
-    privateKeyEncrypted: encrypt(JSON.stringify(privateJwk)),
+    privateKeyEncrypted: await encrypt(JSON.stringify(privateJwk)),
     active: true,
     primary: true,
   });
@@ -56,5 +56,5 @@ export async function getPublicJWKS(): Promise<{ keys: object[] }> {
 export async function getKeyStore(): Promise<object[]> {
   const keys = await db.select().from(jwksKeys)
     .where(and(eq(jwksKeys.active, true), eq(jwksKeys.use, 'sig')));
-  return keys.map(k => JSON.parse(decrypt(k.privateKeyEncrypted)));
+  return Promise.all(keys.map(async k => JSON.parse(await decrypt(k.privateKeyEncrypted))));
 }
