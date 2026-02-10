@@ -20,12 +20,11 @@ function getClientSecret(): string {
   if (secret) {
     return secret;
   }
-  // In non-production environments, fall back to a development secret.
-  if (process.env.NODE_ENV !== 'production') {
-    return 'idem-admin-dev-secret';
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('IDEM_ADMIN_CLIENT_SECRET must be set in production environment.');
   }
-  // In production, require the secret (this will fail at runtime, not build time)
-  throw new Error('IDEM_ADMIN_CLIENT_SECRET must be set in production environment.');
+  console.warn('[idem-admin] IDEM_ADMIN_CLIENT_SECRET not set — OAuth login will fail. Set it in .env');
+  return '';
 }
 
 // Cached config - initialized lazily on first access

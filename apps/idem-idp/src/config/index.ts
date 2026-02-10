@@ -15,8 +15,8 @@ export const config = {
   }[process.env.NODE_ENV || 'development'],
 
   databaseUrl: process.env.IDEM_DATABASE_URL || 'postgresql://idem:idem@localhost:5432/idem',
-  sessionSecret: process.env.IDEM_SESSION_SECRET || 'dev-session-secret-DO-NOT-USE-IN-PROD',
-  masterKey: process.env.IDEM_MASTER_KEY || 'dev-master-key-DO-NOT-USE-IN-PROD', // For JWKS encryption
+  sessionSecret: process.env.IDEM_SESSION_SECRET ?? '', // Required — validated at startup
+  masterKey: process.env.IDEM_MASTER_KEY ?? '', // Required — validated at startup
   port: Number(process.env.PORT) || 3200,
 
   // Localization and branding
@@ -58,13 +58,11 @@ export function validateConfig() {
   if (!config.nodeEnv || !['development', 'staging', 'production'].includes(config.nodeEnv)) {
     throw new Error('NODE_ENV must be development, staging, or production');
   }
-  if (config.nodeEnv !== 'development') {
-    if (!config.sessionSecret || config.sessionSecret === 'dev-session-secret-DO-NOT-USE-IN-PROD') {
-      throw new Error('IDEM_SESSION_SECRET is required and must not use the development default in non-development environments');
-    }
-    if (!config.masterKey || config.masterKey === 'dev-master-key-DO-NOT-USE-IN-PROD') {
-      throw new Error('IDEM_MASTER_KEY is required and must not use the development default in non-development environments');
-    }
+  if (!config.masterKey) {
+    throw new Error('IDEM_MASTER_KEY is required. Generate with: openssl rand -hex 32');
+  }
+  if (!config.sessionSecret) {
+    throw new Error('IDEM_SESSION_SECRET is required. Generate with: openssl rand -hex 32');
   }
 
   // IDEM_BOOTSTRAP_TOKEN should be at least 32 characters for security (ADR 0018)

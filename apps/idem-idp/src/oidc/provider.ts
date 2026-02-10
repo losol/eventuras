@@ -31,6 +31,36 @@ export async function createOidcProvider(): Promise<any> {
       devInteractions: { enabled: false }, // Disabled - using custom interaction routes
       pushedAuthorizationRequests: { enabled: true }, // PAR (RFC 9126)
       rpInitiatedLogout: { enabled: true },
+
+      // Resource Indicators (RFC 8707) — required for JWT access tokens in v9
+      resourceIndicators: {
+        enabled: true,
+
+        // Default resource when client doesn't specify one
+        defaultResource(_ctx: any) {
+          return config.issuer;
+        },
+
+        // Validate and return resource server info
+        getResourceServerInfo(_ctx: any, resourceIndicator: string) {
+          // Accept the issuer as a valid resource
+          if (resourceIndicator === config.issuer) {
+            return {
+              scope: 'openid profile email offline_access',
+              audience: config.issuer,
+              accessTokenFormat: 'jwt',
+              jwt: { sign: { alg: 'PS256' } },
+            };
+          }
+
+          // Reject unknown resources
+          throw new Error('Invalid resource');
+        },
+
+        useGrantedResource(_ctx: any) {
+          return true;
+        },
+      },
     },
 
     // Include profile/email claims in ID token (not just userinfo endpoint)
