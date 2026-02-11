@@ -78,6 +78,12 @@ export async function createOidcProvider(): Promise<any> {
     responseTypes: ['code'],
     scopes: ['openid', 'profile', 'email', 'offline_access'],
 
+    // Register custom client metadata so oidc-provider retains it on client objects
+    // Without this, custom properties like 'urn:idem:client_category' are stripped
+    extraClientMetadata: {
+      properties: ['urn:idem:client_category'],
+    },
+
     claims: {
       openid: ['sub'],
       // ADR 0018: 'roles' replaces 'system_role' - per-client role array
@@ -124,37 +130,51 @@ export async function createOidcProvider(): Promise<any> {
         && ctx.oidc.result.consent.grantId) || ctx.oidc.session?.grantIdFor(ctx.oidc.client.clientId);
 
       if (grantId) {
-        return ctx.oidc.provider.Grant.find(grantId);
-      } else {
-        // Check if client is internal (first-party) - skip consent
-        const clientCategory = ctx.oidc.client['urn:idem:client_category'];
-        const isInternalClient = clientCategory === 'internal';
-
-        // Auto-grant in development OR for internal clients (skip consent prompt)
-        if (config.nodeEnv === 'development' || isInternalClient) {
-          const grant = new ctx.oidc.provider.Grant({
-            clientId: ctx.oidc.client.clientId,
-            accountId: ctx.oidc.session.accountId,
-          });
-
-          // Add the exact scopes from the authorization request
-          const scopes = ctx.oidc.params.scope.split(' ').filter(Boolean);
-          grant.addOIDCScope(scopes.filter((scope: string) => ['openid', 'profile', 'email', 'offline_access'].includes(scope)).join(' '));
-
-          // Add any requested claims
-          grant.addOIDCClaims(['sub']);
-          if (scopes.includes('profile')) {
-            // ADR 0018: 'roles' replaces 'system_role'
-            grant.addOIDCClaims(['name', 'given_name', 'family_name', 'picture', 'locale', 'roles']);
-          }
-          if (scopes.includes('email')) {
-            grant.addOIDCClaims(['email', 'email_verified']);
-          }
-
-          await grant.save();
-          return grant;
-        }
+        // Found an existing grant ID - load it
+        const grant = await ctx.oidc.provider.Grant.find(grantId);
+        return grant;
       }
+
+      logger.info({
+        clientId: ctx.oidc.client.clientId,
+        clientCategory: ctx.oidc.client['urn:idem:client_category'],
+      }, 'No existing grant - checking client category');
+
+      // No existing grant found
+      // Check if client is internal (first-party) - skip consent
+      const clientCategory = ctx.oidc.client['urn:idem:client_category'];
+      const isInternalClient = clientCategory === 'internal';
+
+      // Auto-grant ONLY for internal clients (NOT in development for external clients)
+      // This ensures consent flow works properly in development
+      if (isInternalClient) {
+        logger.info({ clientId: ctx.oidc.client.clientId }, 'Auto-granting for internal client');
+        const grant = new ctx.oidc.provider.Grant({
+          clientId: ctx.oidc.client.clientId,
+          accountId: ctx.oidc.session.accountId,
+        });
+
+        // Add the exact scopes from the authorization request
+        const scopes = ctx.oidc.params.scope.split(' ').filter(Boolean);
+        grant.addOIDCScope(scopes.filter((scope: string) => ['openid', 'profile', 'email', 'offline_access'].includes(scope)).join(' '));
+
+        // Add any requested claims
+        grant.addOIDCClaims(['sub']);
+        if (scopes.includes('profile')) {
+          // ADR 0018: 'roles' replaces 'system_role'
+          grant.addOIDCClaims(['name', 'given_name', 'family_name', 'picture', 'locale', 'roles']);
+        }
+        if (scopes.includes('email')) {
+          grant.addOIDCClaims(['email', 'email_verified']);
+        }
+
+        await grant.save();
+        return grant;
+      }
+
+      logger.info({ clientId: ctx.oidc.client.clientId }, 'No grant - will trigger consent');
+      // No grant found and not an internal client - will trigger consent prompt
+      return undefined;
     },
 
     // Error rendering (redirect to frontend error page)

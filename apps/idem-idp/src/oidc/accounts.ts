@@ -37,8 +37,6 @@ async function getRolesForClient(
  * Returns oidc-provider compatible account object
  */
 export async function findAccount(ctx: any, sub: string) {
-  logger.debug({ sub }, 'Looking up account');
-
   const [account] = await db
     .select()
     .from(accounts)
@@ -46,16 +44,11 @@ export async function findAccount(ctx: any, sub: string) {
     .limit(1);
 
   if (!account || !account.active || account.deletedAt) {
-    logger.warn({ sub }, 'Account not found or inactive');
+    logger.warn('Account not found or inactive');
     return undefined;
   }
 
-  logger.info(
-    {
-      sub,
-    },
-    'Account found for OIDC login'
-  );
+  logger.info('Account found for OIDC login');
 
   return {
     accountId: account.id,
@@ -86,27 +79,10 @@ export async function findAccount(ctx: any, sub: string) {
         if (clientId) {
           const roles = await getRolesForClient(account.id, clientId);
           claims.roles = roles;
-
-          logger.debug(
-            { sub, clientId, roles },
-            'Fetched roles for client'
-          );
         } else {
           claims.roles = [];
         }
       }
-
-      logger.info(
-        {
-          sub,
-          email: account.primaryEmail,
-          use,
-          scope,
-          roles: claims.roles,
-          claimsReturned: Object.keys(claims),
-        },
-        'Returning claims for account'
-      );
 
       // Email claims
       if (scope.includes('email')) {
