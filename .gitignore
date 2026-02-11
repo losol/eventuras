@@ -574,3 +574,6 @@ emails/
 
 *.tokenstore
 .vercel
+apps/idem-idp/dist-ui/**
+apps/idem-idp/ui-dist/index.html
+apps/idem-idp/ui-dist/assets/index-iNXqGn5x.js

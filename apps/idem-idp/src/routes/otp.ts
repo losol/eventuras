@@ -56,7 +56,7 @@ export const registerOtpRoutes: FastifyPluginAsync<OtpRoutesOptions> = async (fa
         });
       }
 
-      logger.info({ email }, 'OTP request received');
+      logger.info('OTP request received');
 
       // Find or create account
       const accountId = await findOrCreateAccountByEmail(email);
@@ -69,7 +69,7 @@ export const registerOtpRoutes: FastifyPluginAsync<OtpRoutesOptions> = async (fa
         sessionId: request.session.sessionId,
       });
 
-      logger.info({ email, otpId }, 'OTP code generated');
+      logger.info({ otpId }, 'OTP code generated');
 
       // Render email template
       const rendered = notitia.render('email', 'otp-login', {
@@ -87,7 +87,7 @@ export const registerOtpRoutes: FastifyPluginAsync<OtpRoutesOptions> = async (fa
         html: rendered.content,
       });
 
-      logger.info({ email, otpId }, 'OTP email sent');
+      logger.info({ otpId }, 'OTP email sent');
 
       // Return success (don't leak whether account exists)
       return reply.code(200).send({
@@ -143,7 +143,7 @@ export const registerOtpRoutes: FastifyPluginAsync<OtpRoutesOptions> = async (fa
         });
       }
 
-      logger.info({ email }, 'OTP verification requested');
+      logger.info('OTP verification requested');
 
       // Verify OTP
       const { otpId, accountId } = await verifyOtp({
@@ -152,7 +152,7 @@ export const registerOtpRoutes: FastifyPluginAsync<OtpRoutesOptions> = async (fa
         code,
       });
 
-      logger.info({ email, otpId, accountId }, 'OTP verified successfully');
+      logger.info({ otpId }, 'OTP verified successfully');
 
       // Store account ID in session
       request.session.set('accountId', accountId);
@@ -160,7 +160,7 @@ export const registerOtpRoutes: FastifyPluginAsync<OtpRoutesOptions> = async (fa
       request.session.set('authMethod', 'otp');
       await request.session.save();
 
-      logger.info({ email, accountId, sessionId: request.session.sessionId }, 'Session created');
+      logger.info('Session created');
 
       return reply.code(200).send({
         success: true,

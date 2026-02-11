@@ -3,6 +3,7 @@ import fastifyStatic from '@fastify/static';
 import fastifyHelmet from '@fastify/helmet';
 import fastifyCookie from '@fastify/cookie';
 import fastifySession from '@fastify/session';
+import fastifyFormBody from '@fastify/formbody';
 import middie from '@fastify/middie';
 import path from 'path';
 import fs from 'fs';
@@ -66,6 +67,9 @@ export async function createServer(oidcProvider?: any, mailer?: Mailer): Promise
 
   // Health probe (before everything else)
   app.get('/health', async () => ({ status: 'ok' }));
+
+  // Parse URL-encoded form bodies (for interaction form submissions)
+  await app.register(fastifyFormBody);
 
   // Serve static assets (JS, CSS, images) from built UI
   // In dev: __dirname is /path/to/apps/idem-idp/src → go up one level

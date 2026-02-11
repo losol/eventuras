@@ -3,8 +3,8 @@
 import { getCurrentSession } from '@eventuras/fides-auth-next/session';
 import { Logger } from '@eventuras/logger';
 
-import { getAccessToken } from '@/utils/getAccessToken';
 import { getOAuthConfig } from '@/utils/config';
+import { getAccessToken } from '@/utils/getAccessToken';
 
 const logger = Logger.create({ namespace: 'idem-admin:utils:getAuthStatus' });
 
@@ -45,7 +45,7 @@ export async function getAuthStatus(): Promise<AuthStatus> {
     const sessionData = session.data as SessionData | undefined;
     const systemRole = sessionData?.systemRole;
 
-    logger.info({ systemRole }, 'User authenticated');
+    logger.debug({ systemRole }, 'User authenticated');
 
     return {
       authenticated: true,

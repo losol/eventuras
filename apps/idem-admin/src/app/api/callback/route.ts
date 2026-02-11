@@ -79,10 +79,6 @@ export async function GET(request: Request): Promise<Response> {
     const idToken = decodeJwt(tokens.id_token ?? '');
     logger.debug(
       {
-        user: {
-          id: idToken.sub,
-          systemRole: idToken.system_role,
-        },
         hasAccessToken: !!tokens.access_token,
         hasRefreshToken: !!tokens.refresh_token,
         expiresIn: tokens.expires_in,

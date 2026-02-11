@@ -1,5 +1,10 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { Card } from '@eventuras/ratio-ui/core/Card';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Text } from '@eventuras/ratio-ui/core/Text';
+import { Button } from '@eventuras/ratio-ui/core/Button';
+import { Loading } from '@eventuras/ratio-ui/core/Loading';
 
 interface InteractionDetails {
   uid: string;
@@ -14,6 +19,24 @@ interface InteractionDetails {
   };
 }
 
+function ErrorAlert({ message }: { message: string }) {
+  return (
+    <div className="rounded-md bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 p-3 mb-4">
+      <Text className="text-red-700 dark:text-red-300 text-sm">{message}</Text>
+    </div>
+  );
+}
+
+function InteractionCard({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex items-center justify-center min-h-screen p-4">
+      <Card variant="default" className="w-full max-w-md" padding="p-8">
+        {children}
+      </Card>
+    </div>
+  );
+}
+
 export default function Interaction() {
   const { uid } = useParams<{ uid: string }>();
   const [details, setDetails] = useState<InteractionDetails | null>(null);
@@ -21,13 +44,24 @@ export default function Interaction() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!uid) return;
+    if (!uid) {
+      setError('No interaction ID provided');
+      setLoading(false);
+      return;
+    }
 
     fetch(`/interaction/${uid}/details`, {
       credentials: 'include',
     })
       .then((res) => {
-        if (!res.ok) throw new Error('Failed to fetch interaction details');
+        if (!res.ok) {
+          return res.json().then(data => {
+            throw new Error(data.error || data.details || 'Failed to fetch interaction details');
+          }).catch(jsonErr => {
+            // If response is not JSON, throw generic error
+            throw new Error(`HTTP ${res.status}: Failed to fetch interaction details`);
+          });
+        }
         return res.json();
       })
       .then((data) => {
@@ -42,18 +76,18 @@ export default function Interaction() {
 
   if (loading) {
     return (
-      <div style={{ padding: '2rem', textAlign: 'center' }}>
-        <p>Loading...</p>
-      </div>
+      <InteractionCard>
+        <Loading />
+      </InteractionCard>
     );
   }
 
   if (error || !details) {
     return (
-      <div style={{ padding: '2rem', textAlign: 'center' }}>
-        <h1>Error</h1>
-        <p>{error || 'Failed to load interaction details'}</p>
-      </div>
+      <InteractionCard>
+        <Heading as="h2">Error</Heading>
+        <Text>{error || 'Failed to load interaction details'}</Text>
+      </InteractionCard>
     );
   }
 
@@ -66,10 +100,10 @@ export default function Interaction() {
   }
 
   return (
-    <div style={{ padding: '2rem', textAlign: 'center' }}>
-      <h1>Unknown Prompt</h1>
-      <p>Prompt type: {details.prompt.name}</p>
-    </div>
+    <InteractionCard>
+      <Heading as="h2">Unknown Prompt</Heading>
+      <Text>Prompt type: {details.prompt.name}</Text>
+    </InteractionCard>
   );
 }
 
@@ -112,7 +146,6 @@ function LoginPrompt({ uid, details }: { uid: string; details: InteractionDetail
     setError(null);
 
     try {
-      // Verify OTP
       const verifyRes = await fetch('/api/otp/verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -127,21 +160,20 @@ function LoginPrompt({ uid, details }: { uid: string; details: InteractionDetail
 
       const { accountId: verifiedAccountId } = await verifyRes.json();
 
-      // Complete OIDC login with the verified account ID
-      const loginRes = await fetch(`/interaction/${uid}/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ accountId: verifiedAccountId }),
-      });
+      // Submit login - server will respond with 302 redirect
+      // We use a form submission to follow the redirect properly
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = `/interaction/${uid}/login`;
 
-      if (!loginRes.ok) {
-        throw new Error('Login failed');
-      }
+      const accountIdInput = document.createElement('input');
+      accountIdInput.type = 'hidden';
+      accountIdInput.name = 'accountId';
+      accountIdInput.value = verifiedAccountId;
+      form.appendChild(accountIdInput);
 
-      // Get redirect URL from response and navigate
-      const loginData = await loginRes.json() as { redirectTo: string };
-      window.location.href = loginData.redirectTo;
+      document.body.appendChild(form);
+      form.submit();
     } catch (err: any) {
       setError(err.message);
       setLoading(false);
@@ -149,38 +181,19 @@ function LoginPrompt({ uid, details }: { uid: string; details: InteractionDetail
   };
 
   return (
-    <div style={{
-      maxWidth: '400px',
-      margin: '4rem auto',
-      padding: '2rem',
-      background: 'white',
-      borderRadius: '8px',
-      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-    }}>
-      <h1 style={{ marginTop: 0, fontSize: '1.5rem', color: '#1e293b' }}>Sign In</h1>
+    <InteractionCard>
+      <Heading as="h2" margin="mb-2">Sign In</Heading>
 
-      <div style={{ marginBottom: '1.5rem' }}>
-        <p style={{ margin: '0.5rem 0', color: '#64748b' }}>
-          <strong>Application:</strong> {details.params.client_id}
-        </p>
-      </div>
+      <Text variant="muted" margin="mb-4">
+        <strong>{details.params.client_id}</strong>
+      </Text>
 
-      {error && (
-        <div style={{
-          padding: '0.75rem',
-          marginBottom: '1rem',
-          background: '#fee2e2',
-          color: '#dc2626',
-          borderRadius: '4px',
-        }}>
-          {error}
-        </div>
-      )}
+      {error && <ErrorAlert message={error} />}
 
       {step === 'email' ? (
         <form onSubmit={handleRequestOtp}>
-          <div style={{ marginBottom: '1rem' }}>
-            <label htmlFor="email" style={{ display: 'block', marginBottom: '0.5rem', color: '#475569' }}>
+          <div className="mb-4">
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Email
             </label>
             <input
@@ -192,42 +205,22 @@ function LoginPrompt({ uid, details }: { uid: string; details: InteractionDetail
               placeholder="you@example.com"
               required
               autoFocus
-              style={{
-                width: '100%',
-                padding: '0.5rem',
-                border: '1px solid #cbd5e1',
-                borderRadius: '4px',
-                fontSize: '1rem',
-                boxSizing: 'border-box',
-              }}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            style={{
-              width: '100%',
-              padding: '0.75rem',
-              background: loading ? '#93c5fd' : '#1976d2',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              fontSize: '1rem',
-              cursor: loading ? 'not-allowed' : 'pointer',
-            }}
-          >
+          <Button type="submit" block disabled={loading} loading={loading} margin="m-0">
             {loading ? 'Sending...' : 'Send Login Code'}
-          </button>
+          </Button>
         </form>
       ) : (
         <form onSubmit={handleVerifyOtp}>
-          <p style={{ color: '#64748b', marginBottom: '1rem' }}>
+          <Text variant="muted" margin="mb-4">
             We sent a code to <strong>{email}</strong>
-          </p>
+          </Text>
 
-          <div style={{ marginBottom: '1rem' }}>
-            <label htmlFor="otpCode" style={{ display: 'block', marginBottom: '0.5rem', color: '#475569' }}>
+          <div className="mb-4">
+            <label htmlFor="otpCode" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Login Code
             </label>
             <input
@@ -242,59 +235,29 @@ function LoginPrompt({ uid, details }: { uid: string; details: InteractionDetail
               required
               autoFocus
               autoComplete="one-time-code"
-              style={{
-                width: '100%',
-                padding: '0.5rem',
-                border: '1px solid #cbd5e1',
-                borderRadius: '4px',
-                fontSize: '1.25rem',
-                textAlign: 'center',
-                letterSpacing: '0.25em',
-                boxSizing: 'border-box',
-              }}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 text-xl text-center tracking-widest"
             />
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            style={{
-              width: '100%',
-              padding: '0.75rem',
-              background: loading ? '#93c5fd' : '#1976d2',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              fontSize: '1rem',
-              cursor: loading ? 'not-allowed' : 'pointer',
-            }}
-          >
+          <Button type="submit" block disabled={loading} loading={loading} margin="m-0">
             {loading ? 'Verifying...' : 'Sign In'}
-          </button>
+          </Button>
 
-          <button
-            type="button"
+          <Button
+            variant="text"
+            block
+            margin="mt-2"
             onClick={() => {
               setStep('email');
               setOtpCode('');
               setError(null);
             }}
-            style={{
-              width: '100%',
-              padding: '0.5rem',
-              marginTop: '0.5rem',
-              background: 'transparent',
-              color: '#64748b',
-              border: 'none',
-              fontSize: '0.875rem',
-              cursor: 'pointer',
-            }}
           >
             Use a different email
-          </button>
+          </Button>
         </form>
       )}
-    </div>
+    </InteractionCard>
   );
 }
 
@@ -306,28 +269,20 @@ function ConsentPrompt({ uid, details }: { uid: string; details: InteractionDeta
     setSubmitting(true);
     setError(null);
 
+    console.log('[Consent] Button clicked:', allow);
+
     try {
-      // If user denies, use the abort endpoint
-      const endpoint = allow ? `/interaction/${uid}/consent` : `/interaction/${uid}/abort`;
-      const body = allow
-        ? { rejectedScopes: [], rejectedClaims: [] }
-        : {};
+      // Create a form to submit the consent (server responds with 302 redirect)
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = allow ? `/interaction/${uid}/consent` : `/interaction/${uid}/abort`;
 
-      const res = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify(body),
-      });
+      console.log('[Consent] Submitting form to:', form.action);
 
-      if (!res.ok) {
-        throw new Error(allow ? 'Consent failed' : 'Failed to deny access');
-      }
-
-      // Get redirect URL from response and navigate
-      const data = await res.json() as { redirectTo: string };
-      window.location.href = data.redirectTo;
+      document.body.appendChild(form);
+      form.submit();
     } catch (err: any) {
+      console.error('[Consent] Error:', err);
       setError(err.message);
       setSubmitting(false);
     }
@@ -336,79 +291,45 @@ function ConsentPrompt({ uid, details }: { uid: string; details: InteractionDeta
   const scopes = details.params.scope.split(' ').filter(Boolean);
 
   return (
-    <div style={{
-      maxWidth: '400px',
-      margin: '4rem auto',
-      padding: '2rem',
-      background: 'white',
-      borderRadius: '8px',
-      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-    }}>
-      <h1 style={{ marginTop: 0, fontSize: '1.5rem', color: '#1e293b' }}>Grant Permissions</h1>
+    <InteractionCard>
+      <Heading as="h2" margin="mb-2">Grant Permissions</Heading>
 
-      <p style={{ color: '#64748b' }}>
+      <Text variant="muted">
         <strong>{details.params.client_id}</strong> is requesting access to your account.
-      </p>
+      </Text>
 
-      <div style={{ margin: '1.5rem 0' }}>
-        <p style={{ fontWeight: 'bold', marginBottom: '0.5rem', color: '#475569' }}>
-          Requested permissions:
-        </p>
-        <ul style={{ paddingLeft: '1.5rem', color: '#64748b' }}>
+      <div className="my-4">
+        <Text className="font-semibold text-sm mb-2">Requested permissions:</Text>
+        <ul className="list-disc pl-5 text-sm text-gray-600 dark:text-gray-400 space-y-1">
           {scopes.map((scope) => (
             <li key={scope}>{scope}</li>
           ))}
         </ul>
       </div>
 
-      {error && (
-        <div style={{
-          padding: '0.75rem',
-          marginBottom: '1rem',
-          background: '#fee2e2',
-          color: '#dc2626',
-          borderRadius: '4px',
-        }}>
-          {error}
-        </div>
-      )}
+      {error && <ErrorAlert message={error} />}
 
-      <div style={{ display: 'flex', gap: '0.5rem' }}>
-        <button
-          onClick={() => handleConsent(false)}
+      <div className="flex gap-2">
+        <Button
+          variant="secondary"
+          block
           disabled={submitting}
-          style={{
-            flex: 1,
-            padding: '0.75rem',
-            background: '#e5e7eb',
-            color: '#374151',
-            border: 'none',
-            borderRadius: '4px',
-            fontSize: '1rem',
-            cursor: submitting ? 'not-allowed' : 'pointer',
-            opacity: submitting ? 0.6 : 1,
-          }}
+          margin="m-0"
+          onClick={() => handleConsent(false)}
         >
           Deny
-        </button>
-        <button
-          onClick={() => handleConsent(true)}
+        </Button>
+        <Button
+          variant="primary"
+          block
           disabled={submitting}
-          style={{
-            flex: 1,
-            padding: '0.75rem',
-            background: '#1976d2',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            fontSize: '1rem',
-            cursor: submitting ? 'not-allowed' : 'pointer',
-            opacity: submitting ? 0.6 : 1,
-          }}
+          loading={submitting}
+          margin="m-0"
+          onClick={() => handleConsent(true)}
         >
           {submitting ? 'Processing...' : 'Allow Access'}
-        </button>
+        </Button>
       </div>
-    </div>
+    </InteractionCard>
   );
 }

@@ -41,7 +41,7 @@ export default defineConfig({
       },
       // Proxy interaction API endpoints (but not the page route)
       // Pattern matches: /interaction/:uid/details, /interaction/:uid/login, etc.
-      '^/interaction/[^/]+/(details|login|consent)': {
+      '^/interaction/[^/]+/(details|login|consent|abort)': {
         target: 'http://localhost:3200',
         changeOrigin: true,
       },
