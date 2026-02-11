@@ -1,0 +1,32 @@
+# ARC Controller values
+# Minimal config — the controller itself needs very few overrides
+
+gha-runner-scale-set-controller:
+  # Controller replicas (1 is fine for small clusters)
+  replicaCount: 1
+
+  # Resource limits for the controller pod
+  resources:
+    requests:
+      cpu: 250m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+  # Log level: debug, info, warn, error
+  logLevel: info
+
+  # Service account — created automatically
+  serviceAccount:
+    create: true
+
+  # Restrict controller to its own namespace (security best practice)
+  flags:
+    watchSingleNamespace: "arc-systems"
+
+  # Metrics (optional — enable for Prometheus scraping)
+  metrics:
+    controllerManagerAddr: ":8080"
+    listenerAddr: ":8080"
+    listenerEndpoint: "/metrics"

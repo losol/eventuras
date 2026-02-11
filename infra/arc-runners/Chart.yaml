@@ -1,0 +1,11 @@
+apiVersion: v2
+name: arc-runners
+description: Actions Runner Controller (ARC) v2 - Runner Scale Set for Eventuras
+type: application
+version: 0.1.0
+appVersion: "0.11.0"
+
+dependencies:
+  - name: gha-runner-scale-set
+    version: "0.11.0"
+    repository: oci://ghcr.io/actions/actions-runner-controller-charts

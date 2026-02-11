@@ -1,4 +1,4 @@
-name: idem-idp - docker build & push
+name: idem-admin - docker build & push
 
 on:
   push:
@@ -11,22 +11,24 @@ on:
       - "chore/**"
       - "release/**"
     paths:
-      - "apps/idem-idp/**"
-      - ".github/workflows/idem-idp-main.yml"
+      - "apps/idem-admin/**"
+      - "libs/**"
+      - ".github/workflows/idem-admin-main.yml"
   pull_request:
     branches: [main]
     paths:
-      - "apps/idem-idp/**"
-      - ".github/workflows/idem-idp-main.yml"
+      - "apps/idem-admin/**"
+      - "libs/**"
+      - ".github/workflows/idem-admin-main.yml"
 
 # avoid parallel runs fighting over tags
 concurrency:
-  group: idem-idp-docker-${{ github.ref }}
+  group: idem-admin-docker-${{ github.ref }}
   cancel-in-progress: false
 
 env:
   ORG: losolio
-  IMAGE_NAME: idem-idp
+  IMAGE_NAME: idem-admin
   # BuildKit endpoint (deployed in arc-systems namespace)
   BUILDKIT_HOST: tcp://buildkit.arc-systems.svc:1234
 
@@ -43,6 +45,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Read package version
+        id: ver
+        shell: bash
+        run: |
+          PKG="apps/idem-admin/package.json"
+          V="$(jq -r '.version' "$PKG" 2>/dev/null || echo '0.0.0')"
+          echo "version=$V" >> "$GITHUB_OUTPUT"
+          echo "sha=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+
       # Remote Buildx driver — offloads builds to the BuildKit StatefulSet
       - name: Set up Buildx (remote BuildKit)
         uses: docker/setup-buildx-action@v3
@@ -51,27 +62,12 @@ jobs:
           endpoint: ${{ env.BUILDKIT_HOST }}
 
       - name: Login to Docker Hub
-        if: ${{ github.event_name != 'pull_request' }}
+        if: github.event_name != 'pull_request'
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # read version from app package.json
-      - name: Read package version
-        id: ver
-        shell: bash
-        run: |
-          PKG="apps/idem-idp/package.json"
-          V="$(jq -r '.version' "$PKG" 2>/dev/null || echo '0.0.0')"
-          echo "version=$V" >> "$GITHUB_OUTPUT"
-          echo "sha=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
-
-      # generate tags/labels
-      # - canary: latest main branch build (for Argo CD staging)
-      # - main-<sha>: main branch with sha (for traceability)
-      # - edge: latest feature branch build (for Argo CD dev)
-      # - edge-<sha>: feature branch with sha (for traceability)
       - name: Docker metadata
         id: meta
         uses: docker/metadata-action@v5
@@ -94,11 +90,8 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: apps/idem-idp/Dockerfile
+          file: apps/idem-admin/Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
-          build-args: |
-            APP_VERSION=${{ steps.ver.outputs.version }}
-            GIT_SHA=${{ steps.ver.outputs.sha }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=registry,ref=${{ env.ORG }}/${{ env.IMAGE_NAME }}:buildcache

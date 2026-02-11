@@ -1,0 +1,37 @@
+# BuildKit remote builder
+# Used by docker/build-push-action via Buildx remote driver
+
+image:
+  repository: moby/buildkit
+  tag: "v0.18.2"
+  pullPolicy: IfNotPresent
+
+# Rootless mode for security (no privileged containers)
+rootless: true
+
+# Resource allocation — builds are CPU/memory intensive
+resources:
+  requests:
+    cpu: "1"
+    memory: 2Gi
+  limits:
+    cpu: "4"
+    memory: 8Gi
+
+# Persistent cache for build layers
+cache:
+  enabled: true
+  storageClassName: ""  # Use cluster default
+  size: 50Gi
+
+# Service configuration
+service:
+  port: 1234
+  type: ClusterIP
+
+# Number of replicas (1 is fine for small teams, scale up if builds queue)
+replicaCount: 1
+
+# Network policy — restrict BuildKit ingress to runner pods only
+networkPolicy:
+  enabled: true

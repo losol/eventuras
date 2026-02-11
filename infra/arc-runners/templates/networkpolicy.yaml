@@ -1,0 +1,13 @@
+{{- if .Values.networkPolicy.enabled }}
+# Deny all ingress to runner pods — runners should only make outbound connections
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-runner-ingress
+  namespace: {{ .Release.Namespace }}
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+  ingress: []
+{{- end }}

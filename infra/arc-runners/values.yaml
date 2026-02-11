@@ -1,0 +1,107 @@
+# ARC Runner Scale Set values
+# Configures a pool of self-hosted runners for the eventuras repo
+
+# Network policy — deny all ingress to runner pods
+networkPolicy:
+  enabled: true
+
+gha-runner-scale-set:
+  # ──────────────────────────────────────────────
+  # GitHub configuration
+  # ──────────────────────────────────────────────
+
+  # Repository-level runners (org-level also possible)
+  githubConfigUrl: "https://github.com/losol/eventuras"
+
+  # GitHub App authentication
+  # Secret must exist in namespace before deploy (see README)
+  githubConfigSecret: arc-github-app
+
+  # ──────────────────────────────────────────────
+  # Runner configuration
+  # ──────────────────────────────────────────────
+
+  # Label used in workflows: runs-on: arc-eventuras
+  runnerScaleSetName: "arc-eventuras"
+
+  # Scaling limits (2 concurrent jobs: idem-admin + idem-idp)
+  minRunners: 0
+  maxRunners: 2
+
+  # ──────────────────────────────────────────────
+  # Container mode: Kubernetes
+  # ──────────────────────────────────────────────
+  # Each workflow job runs in its own pod (no DinD needed).
+  # Docker builds use remote BuildKit (see infra/buildkit/).
+
+  containerMode:
+    type: "kubernetes"
+    kubernetesModeWorkVolumeClaim:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ""  # Use cluster default
+      resources:
+        requests:
+          storage: 10Gi
+
+  # ──────────────────────────────────────────────
+  # Listener metrics (Prometheus)
+  # ──────────────────────────────────────────────
+  listenerMetrics:
+    counters:
+      gha_started_jobs_total:
+        labels: ["repository", "organization", "job_name", "event_name"]
+      gha_completed_jobs_total:
+        labels: ["repository", "organization", "job_name", "event_name", "job_result"]
+    gauges:
+      gha_assigned_jobs:
+        labels: ["name", "namespace", "repository", "organization"]
+      gha_running_jobs:
+        labels: ["name", "namespace", "repository", "organization"]
+      gha_registered_runners:
+        labels: ["name", "namespace", "repository", "organization"]
+      gha_busy_runners:
+        labels: ["name", "namespace", "repository", "organization"]
+      gha_min_runners:
+        labels: ["name", "namespace", "repository", "organization"]
+      gha_max_runners:
+        labels: ["name", "namespace", "repository", "organization"]
+      gha_desired_runners:
+        labels: ["name", "namespace", "repository", "organization"]
+      gha_idle_runners:
+        labels: ["name", "namespace", "repository", "organization"]
+    histograms:
+      gha_job_startup_duration_seconds:
+        labels: ["repository", "organization", "job_name", "event_name"]
+        buckets: [0.5, 1, 2, 5, 10, 20, 30, 60, 120, 300, 600]
+      gha_job_execution_duration_seconds:
+        labels: ["repository", "organization", "job_name", "event_name", "job_result"]
+        buckets: [0.5, 1, 2, 5, 10, 20, 30, 60, 120, 300, 600, 1200, 1800, 3600]
+
+  # ──────────────────────────────────────────────
+  # Runner pod template
+  # ──────────────────────────────────────────────
+  template:
+    spec:
+      containers:
+        - name: runner
+          image: ghcr.io/actions/actions-runner:latest
+          command: ["/home/runner/run.sh"]
+          resources:
+            requests:
+              cpu: "2"
+              memory: 4Gi
+            limits:
+              cpu: "4"
+              memory: 8Gi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+
+  # ──────────────────────────────────────────────
+  # Controller reference
+  # ──────────────────────────────────────────────
+  controllerServiceAccount:
+    name: arc-controller-gha-runner-scale-set-controller
+    namespace: arc-systems

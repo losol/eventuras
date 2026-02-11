@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    app: {{ .Chart.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  serviceName: {{ .Chart.Name }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+    spec:
+      {{- if and .Values.rootless .Values.cache.enabled }}
+      initContainers:
+        - name: fix-permissions
+          image: busybox:1.37
+          command: ["sh", "-c", "chown -R 1000:1000 /home/user/.local/share/buildkit"]
+          volumeMounts:
+            - name: buildkit-cache
+              mountPath: /home/user/.local/share/buildkit
+          securityContext:
+            runAsUser: 0
+      {{- end }}
+      containers:
+        - name: buildkitd
+          {{- if .Values.rootless }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}-rootless"
+          {{- else }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          {{- end }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - --addr
+            - tcp://0.0.0.0:{{ .Values.service.port }}
+            {{- if .Values.rootless }}
+            - --oci-worker-no-process-sandbox
+            {{- end }}
+          ports:
+            - containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          {{- if .Values.rootless }}
+          securityContext:
+            seccompProfile:
+              type: Unconfined
+            runAsUser: 1000
+            runAsGroup: 1000
+          {{- else }}
+          securityContext:
+            privileged: true
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          readinessProbe:
+            exec:
+              command:
+                - buildctl
+                - debug
+                - workers
+            initialDelaySeconds: 5
+            periodSeconds: 30
+          {{- if .Values.cache.enabled }}
+          volumeMounts:
+            - name: buildkit-cache
+              mountPath: /home/user/.local/share/buildkit
+          {{- end }}
+  {{- if .Values.cache.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: buildkit-cache
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        {{- if .Values.cache.storageClassName }}
+        storageClassName: {{ .Values.cache.storageClassName | quote }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.cache.size }}
+  {{- end }}

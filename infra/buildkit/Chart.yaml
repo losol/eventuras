@@ -1,0 +1,6 @@
+apiVersion: v2
+name: buildkit
+description: Remote BuildKit daemon for container image builds
+type: application
+version: 0.1.0
+appVersion: "0.18.2"
