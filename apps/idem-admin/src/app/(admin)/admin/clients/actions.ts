@@ -2,8 +2,8 @@
 
 import { Logger } from '@eventuras/logger';
 
-import { getAccessToken } from '@/utils/getAccessToken';
 import { config } from '@/utils/config';
+import { getAccessToken } from '@/utils/getAccessToken';
 
 const logger = Logger.create({ namespace: 'idem-admin:clients:actions' });
 
@@ -11,6 +11,7 @@ export type OAuthClient = {
   id: string;
   clientId: string;
   clientName: string;
+  clientUri?: string;
   clientType: 'confidential' | 'public';
   redirectUris: string[];
   grantTypes: string[];

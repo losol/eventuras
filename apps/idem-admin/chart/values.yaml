@@ -1,0 +1,31 @@
+# Default values for idem-admin
+# Environment-specific values are set by Argo CD, not here
+
+replicaCount: 1
+
+image:
+  registry: ""      # Set by Argo: docker.io
+  repository: ""    # Set by Argo: losolio/idem-admin
+  tag: ""           # Set by Argo: sha-abc123, v1.2.3
+  pullPolicy: IfNotPresent
+
+dns:
+  domain: ""        # Set by Argo: idem.losol.no
+  prefix: ""        # Set by Argo: "admin-dev.", "admin-staging.", "admin."
+
+service:
+  port: 80
+  targetPort: 3000
+
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "100m"
+  limits:
+    memory: "512Mi"
+    cpu: "500m"
+
+env: {}
+# Set by Argo:
+#   NODE_ENV: production
+#   PORT: "3000"
