@@ -1,0 +1,22 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    app: {{ .Chart.Name }}
+spec:
+  parentRefs:
+    - name: traefik-gateway
+      namespace: traefik
+      sectionName: https-idem  # Uses *.idem.losol.no wildcard listener
+  hostnames:
+    # Builds: admin-dev.idem.losol.no, admin-staging.idem.losol.no, or admin.idem.losol.no
+    - {{ .Values.dns.prefix }}{{ .Values.dns.domain }}
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: {{ .Chart.Name }}
+          port: {{ .Values.service.port }}
