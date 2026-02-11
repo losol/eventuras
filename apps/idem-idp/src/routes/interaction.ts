@@ -123,7 +123,9 @@ export const registerInteractionRoutes: FastifyPluginAsync<InteractionRoutesOpti
       // No need to return anything - reply.raw is already sent
     } catch (err) {
       logger.error({ err, uid }, 'Login failed');
-      return reply.code(500).send({ error: 'Login failed' });
+      // Redirect to error page instead of returning JSON (form submission)
+      const errorMessage = err instanceof Error ? err.message : 'Login failed';
+      return reply.redirect(`/error?message=${encodeURIComponent(errorMessage)}`);
     }
   });
 
@@ -232,7 +234,9 @@ export const registerInteractionRoutes: FastifyPluginAsync<InteractionRoutesOpti
       // No need to return anything - reply.raw is already sent
     } catch (err) {
       logger.error({ err, uid }, 'Consent failed');
-      return reply.code(500).send({ error: 'Consent failed' });
+      // Redirect to error page instead of returning JSON (form submission)
+      const errorMessage = err instanceof Error ? err.message : 'Consent failed';
+      return reply.redirect(`/error?message=${encodeURIComponent(errorMessage)}`);
     }
   });
 
@@ -261,7 +265,9 @@ export const registerInteractionRoutes: FastifyPluginAsync<InteractionRoutesOpti
       // No need to return anything - reply.raw is already sent
     } catch (err) {
       logger.error({ err, uid }, 'Failed to abort interaction');
-      return reply.code(500).send({ error: 'Failed to abort interaction' });
+      // Redirect to error page instead of returning JSON (form submission)
+      const errorMessage = err instanceof Error ? err.message : 'Failed to abort interaction';
+      return reply.redirect(`/error?message=${encodeURIComponent(errorMessage)}`);
     }
   });
 };
