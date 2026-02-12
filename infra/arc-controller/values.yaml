@@ -21,9 +21,10 @@ gha-runner-scale-set-controller:
   serviceAccount:
     create: true
 
-  # Restrict controller to its own namespace (security best practice)
+  # Restrict controller to watch only the runners namespace (security best practice)
+  # Uses namespace-scoped Roles instead of ClusterRoles
   flags:
-    watchSingleNamespace: "arc-systems"
+    watchSingleNamespace: "arc-runners"
 
   # Metrics (optional — enable for Prometheus scraping)
   metrics:
