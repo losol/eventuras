@@ -14,6 +14,9 @@ spec:
       labels:
         app: {{ .Chart.Name }}
     spec:
+      # Security: Disable service account token automounting
+      # Next.js app doesn't need to call Kubernetes API
+      automountServiceAccountToken: false
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -31,15 +34,16 @@ spec:
                 optional: true
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: {{ .Values.service.targetPort }}
-            initialDelaySeconds: 10
-            periodSeconds: 30
-          readinessProbe:
-            httpGet:
-              path: /health
-              port: {{ .Values.service.targetPort }}
-            initialDelaySeconds: 5
-            periodSeconds: 10
+          # Health probes disabled until /api/health endpoint is implemented
+          # livenessProbe:
+          #   httpGet:
+          #     path: /api/health
+          #     port: {{ .Values.service.targetPort }}
+          #   initialDelaySeconds: 15
+          #   periodSeconds: 30
+          # readinessProbe:
+          #   httpGet:
+          #     path: /api/health
+          #     port: {{ .Values.service.targetPort }}
+          #   initialDelaySeconds: 5
+          #   periodSeconds: 10
