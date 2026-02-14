@@ -5,15 +5,6 @@
 networkPolicy:
   enabled: true
 
-# Fix missing RBAC verbs in the ARC chart's single-namespace-watch Role.
-# Grants the controller SA full CRUD on pods, secrets, serviceaccounts,
-# roles, and rolebindings in the runners namespace.
-# Remove when chart is fixed upstream (tracked in actions-runner-controller).
-controllerRbacPatch:
-  enabled: true
-  serviceAccountName: "arc-controller-gha-rs-controller"
-  controllerNamespace: "arc-systems"
-
 gha-runner-scale-set:
   # ──────────────────────────────────────────────
   # GitHub configuration
