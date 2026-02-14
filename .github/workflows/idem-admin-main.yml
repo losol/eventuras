@@ -1,4 +1,4 @@
-name: idem-admin - docker build & push
+name: idem-admin - CI/CD
 
 on:
   push:
@@ -21,10 +21,10 @@ on:
       - "libs/**"
       - ".github/workflows/idem-admin-main.yml"
 
-# avoid parallel runs fighting over tags
 concurrency:
-  group: idem-admin-docker-${{ github.ref }}
-  cancel-in-progress: false
+  group: idem-admin-${{ github.workflow }}-${{ github.ref }}
+  # Cancel in-progress for PRs to save resources, but not for main branch
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   ORG: losolio
@@ -33,6 +33,32 @@ env:
   BUILDKIT_HOST: tcp://buildkit.arc-systems.svc:1234
 
 jobs:
+  lint:
+    name: Build & Push Docker Image
+    runs-on: arc-eventuras
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --filter @eventuras/idem-admin... --frozen-lockfile
+
+      - name: Lint
+        run: pnpm --filter @eventuras/idem-admin lint
+
   docker:
     runs-on: arc-eventuras
     permissions:
@@ -92,8 +118,9 @@ jobs:
           context: .
           file: apps/idem-admin/Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          # GitHub Actions cache is faster than registry cache
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           cache-from: type=registry,ref=${{ env.ORG }}/${{ env.IMAGE_NAME }}:buildcache
           cache-to: ${{ github.event_name != 'pull_request' && format('type=registry,ref={0}/{1}:buildcache,mode=max', env.ORG, env.IMAGE_NAME) || '' }}
           provenance: false
