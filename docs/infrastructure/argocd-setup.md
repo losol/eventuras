@@ -142,3 +142,266 @@ See [Kubernetes Setup](./kubernetes-setup.md) for the infrastructure configurati
 1. **PR/branch push** → CI builds and pushes `edge` tag → dev auto-syncs
 2. **PR merged to main** → CI builds and pushes `canary` tag → staging auto-syncs
 3. **Release created** → CI builds and pushes `v1.2.3` tag → prod manual sync
+
+## Multi-Tenant Setup
+
+For managing multiple environments and customer tenants, use the following pattern:
+
+### Namespace Strategy
+
+**Internal Eventuras environments:**
+- `eventuras-api-dev` → dev.api.eventuras.dev (auto-sync)
+- `eventuras-api-staging` → staging.api.eventuras.dev (auto-sync)
+- `eventuras-api-prod` → api.eventuras.no (manual sync)
+
+**Customer tenants:**
+- `<customer>` → api.customer.com (manual sync, separate project)
+  - Example: `acme` namespace for ACME Corp customer
+
+### AppProject Pattern
+
+Create separate projects for isolation:
+
+**eventuras-internal project:**
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: eventuras-internal
+  namespace: argocd
+spec:
+  description: Eventuras internal applications (dev, staging, prod)
+  sourceRepos:
+    - https://github.com/losol/eventuras
+  destinations:
+    - namespace: 'eventuras-*'
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: ''
+      kind: Namespace
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
+```
+
+**Customer project (example):**
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: acme
+  namespace: argocd
+  labels:
+    eventuras.io/customer: acme
+spec:
+  description: ACME Corp customer applications
+  sourceRepos:
+    - https://github.com/losol/eventuras
+  destinations:
+    - namespace: acme
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: ''
+      kind: Namespace
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
+```
+
+### Application Examples
+
+**Development environment:**
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: eventuras-api-dev
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: eventuras-api
+    eventuras.io/environment: dev
+    eventuras.io/customer: internal
+spec:
+  project: eventuras-internal
+  source:
+    repoURL: https://github.com/losol/eventuras
+    targetRevision: main
+    path: apps/api/k8s/chart
+    helm:
+      parameters:
+        - name: image.registry
+          value: docker.io
+        - name: image.repository
+          value: losolio/eventuras-api
+        - name: image.tag
+          value: main-latest
+        - name: dns.domain
+          value: eventuras.dev
+        - name: dns.appName
+          value: api
+        - name: dns.prefix
+          value: dev.
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: eventuras-api-dev
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+```
+
+**Customer production:**
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: acme-api
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: eventuras-api
+    eventuras.io/environment: production
+    eventuras.io/customer: acme
+    eventuras.io/tenant: acme
+  annotations:
+    description: "ACME Corp Production API"
+spec:
+  project: acme
+  source:
+    repoURL: https://github.com/losol/eventuras
+    targetRevision: main
+    path: apps/api/k8s/chart
+    helm:
+      parameters:
+        - name: image.registry
+          value: docker.io
+        - name: image.repository
+          value: losolio/eventuras-api
+        - name: image.tag
+          value: v1.0.0  # Specific stable version
+        - name: dns.domain
+          value: acme.example.com
+        - name: dns.appName
+          value: api
+        - name: dns.prefix
+          value: ""
+        # Customer-specific resource overrides
+        - name: resources.requests.memory
+          value: 512Mi
+        - name: resources.limits.memory
+          value: 2Gi
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: acme
+  syncPolicy:
+    # Manual sync for customer production
+    syncOptions:
+      - CreateNamespace=true
+```
+
+### Identifying Customer Tenants in Argo CD
+
+Use labels for clear identification:
+
+```yaml
+labels:
+  eventuras.io/customer: acme           # Customer identifier
+  eventuras.io/tenant: acme             # Tenant (same as customer for single-tenant)
+  eventuras.io/environment: production  # Always production for customers
+```
+
+**Filter in Argo CD UI:**
+- Project: `acme`
+- Label: `eventuras.io/customer=acme`
+- Label: `eventuras.io/environment=production`
+
+### Customer-Specific Configuration
+
+**Separate Database:**
+Each customer should have their own database instance. Configure connection string in namespace secrets:
+
+```bash
+kubectl create secret generic eventuras-api-secrets -n acme \
+  --from-literal=ConnectionStrings__DefaultConnection="Host=acme-db;Database=acme;..."
+```
+
+**Resource Allocation:**
+Customer production typically needs more resources than dev/staging:
+- Memory: 512Mi - 2Gi (vs 256Mi - 1Gi for dev)
+- CPU: 200m - 1000m (vs 100m - 500m for dev)
+
+**Monitoring:**
+Configure customer-specific monitoring and alerts in the Application annotations:
+
+```yaml
+annotations:
+  notifications.argoproj.io/subscribe.on-sync-succeeded.slack: acme-deployments
+  notifications.argoproj.io/subscribe.on-sync-failed.slack: acme-alerts
+```
+
+## Best Practices
+
+### For Internal Environments (dev/staging)
+- ✅ Use auto-sync for rapid iteration
+- ✅ Use `main` branch as targetRevision
+- ✅ Lower resource limits to save costs
+- ✅ Shared infrastructure (databases, caches)
+
+### For Production (internal)
+- ⚠️ Manual sync to control deployments
+- ⚠️ Use specific version tags (`v1.2.3`)
+- ⚠️ Higher resource limits for stability
+- ⚠️ Production-grade infrastructure
+
+### For Customer Tenants
+- 🔒 Always manual sync - no auto-deploy
+- 🔒 Dedicated AppProject per customer
+- 🔒 Separate namespace: `<customer>`
+- 🔒 Separate database instance
+- 🔒 Specific stable version tags only
+- 🔒 Customer-specific monitoring/alerts
+- 🔒 Higher resource allocations
+- 🔒 Use labels: `eventuras.io/customer=<name>`
+
+### Sync Windows (Optional)
+
+For customer production, consider restricting sync times:
+
+```yaml
+spec:
+  syncWindows:
+    - kind: allow
+      schedule: '0 9-17 * * 1-5'  # Business hours only
+      duration: 8h
+      applications:
+        - '*'
+      manualSync: true
+```
+
+## Updating Customer Production
+
+```bash
+# Via Argo CD UI:
+# 1. Filter by project: acme
+# 2. Click "acme-api"
+# 3. Update image tag in parameters
+# 4. Click "Sync" and review changes
+# 5. Confirm
+
+# Via kubectl (update image tag):
+kubectl patch application acme-api -n argocd --type merge \
+  -p '{"spec":{"source":{"helm":{"parameters":[{"name":"image.tag","value":"v1.2.3"}]}}}}'
+
+# Then sync:
+argocd app sync acme-api --prune
+```
+
+## Adding New Customers
+
+1. Create AppProject: `kubectl apply -f customer-project.yaml`
+2. Create Application: `kubectl apply -f customer-app.yaml`
+3. Create namespace secrets: `kubectl create secret generic eventuras-api-secrets -n <customer>`
+4. Sync application: `argocd app sync <customer>-api`
+5. Verify: `kubectl get pods -n <customer>`
+3. **Release created** → CI builds and pushes `v1.2.3` tag → prod manual sync
