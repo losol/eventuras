@@ -14,6 +14,9 @@ spec:
       labels:
         app: {{ .Chart.Name }}
     spec:
+      # Security: Disable service account token automounting
+      # IDP doesn't need to call Kubernetes API
+      automountServiceAccountToken: false
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -21,8 +24,6 @@ spec:
           ports:
             - containerPort: {{ .Values.service.targetPort }}
           env:
-            - name: ASPNETCORE_URLS
-              value: "http://+:{{ .Values.service.targetPort }}"
             {{- range $key, $value := .Values.env }}
             - name: {{ $key }}
               value: {{ $value | quote }}
@@ -35,13 +36,13 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           livenessProbe:
             httpGet:
-              path: {{ .Values.healthCheck.path }}
+              path: /health
               port: {{ .Values.service.targetPort }}
-            initialDelaySeconds: {{ .Values.healthCheck.initialDelaySeconds }}
-            periodSeconds: {{ .Values.healthCheck.periodSeconds }}
+            initialDelaySeconds: 10
+            periodSeconds: 30
           readinessProbe:
             httpGet:
-              path: {{ .Values.healthCheck.path }}
+              path: /health
               port: {{ .Values.service.targetPort }}
             initialDelaySeconds: 5
             periodSeconds: 10

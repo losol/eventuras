@@ -68,7 +68,7 @@ After creation:
 3. **Source:**
    - **Repository URL:** `https://github.com/losol/eventuras`
    - **Revision:** `HEAD`
-   - **Path:** `apps/<app>/chart`
+   - **Path:** `apps/<app>/k8s/chart`
 
 4. **Destination:**
    - **Cluster URL:** `https://kubernetes.default.svc`
@@ -80,15 +80,21 @@ After creation:
 
 ### Application-specific Setup
 
-See each application's chart README for detailed setup instructions:
+See each application's Kubernetes deployment documentation for detailed setup instructions:
 
-- [idem-idp](../../apps/idem-idp/chart/README.md#argo-cd-application-setup)
+- [eventuras-api](../../apps/api/k8s/README.md)
+- [eventuras-web](../../apps/web/k8s/README.md)
+- [idem-idp](../../apps/idem-idp/k8s/README.md)
+- [idem-admin](../../apps/idem-admin/k8s/README.md)
 
 ## Secrets Setup
 
-Before syncing applications, create required secrets in each namespace. See each application's chart README for specific secret requirements:
+Before syncing applications, create required secrets in each namespace. See each application's k8s/README.md for specific secret requirements:
 
-- [idem-idp secrets](../../apps/idem-idp/chart/README.md#required-secrets)
+- [eventuras-api secrets](../../apps/api/k8s/README.md#2-create-kubernetes-secrets)
+- [eventuras-web secrets](../../apps/web/k8s/README.md#2-create-kubernetes-secrets)
+- [idem-idp secrets](../../apps/idem-idp/k8s/README.md#2-create-kubernetes-secrets)
+- [idem-admin secrets](../../apps/idem-admin/k8s/README.md#2-create-kubernetes-secrets)
 
 ### Generic Pattern
 

@@ -22,9 +22,11 @@ resources:
   requests:
     memory: "256Mi"
     cpu: "100m"
+    ephemeral-storage: "1Gi"
   limits:
     memory: "1Gi"
     cpu: "1000m"
+    ephemeral-storage: "2Gi"
 
 # Health check configuration
 healthCheck:

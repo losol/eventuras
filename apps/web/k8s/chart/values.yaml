@@ -1,0 +1,36 @@
+# Default values for eventuras-web
+# Environment-specific values are set by Argo CD, not here
+
+replicaCount: 1
+
+image:
+  registry: ""      # Set by Argo: docker.io
+  repository: ""    # Set by Argo: losolio/eventuras-web
+  tag: ""           # Set by Argo: sha-abc123, v1.2.3
+  pullPolicy: IfNotPresent
+
+dns:
+  domain: ""        # Set by Argo: eventuras.dev
+  appName: ""       # Set by Argo: app
+  prefix: ""        # Set by Argo: "dev.", "staging.", ""
+
+service:
+  port: 80
+  targetPort: 3000
+
+resources:
+  requests:
+    memory: "512Mi"
+    cpu: "200m"
+    ephemeral-storage: "1Gi"
+  limits:
+    memory: "1Gi"
+    cpu: "1000m"
+    ephemeral-storage: "2Gi"
+
+env: {}
+# Set by Argo:
+#   NODE_ENV: production
+#   PORT: "3000"
+#   NEXT_PUBLIC_API_URL: "https://dev.api.eventuras.dev"
+#   NEXT_PUBLIC_APP_URL: "https://dev.app.eventuras.dev"
