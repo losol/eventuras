@@ -14,6 +14,9 @@ spec:
       labels:
         app: {{ .Chart.Name }}
     spec:
+      # Security: Disable service account token automounting
+      # idem-admin doesn't need to call Kubernetes API
+      automountServiceAccountToken: false
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
