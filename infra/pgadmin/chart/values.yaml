@@ -5,7 +5,7 @@ replicaCount: 1
 
 image:
   repository: dpage/pgadmin4
-  tag: "latest"
+  tag: "9.12"  # Latest stable version (Feb 2026)
   pullPolicy: IfNotPresent
 
 # pgAdmin configuration
@@ -17,6 +17,14 @@ pgadmin:
   # Default admin password (required)
   # MUST be set via --set or a separate values file; do not commit real passwords here.
   defaultPassword: ""
+
+  # Use existing secret instead of creating one
+  # If set, defaultPassword is ignored
+  existingSecret:
+    enabled: false
+    name: ""  # e.g., pgadmin-credentials
+    emailKey: "email"  # Key in secret containing email
+    passwordKey: "password"  # Key in secret containing password
 
 service:
   type: ClusterIP  # No external access by default

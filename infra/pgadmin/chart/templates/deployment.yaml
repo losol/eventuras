@@ -40,12 +40,24 @@ spec:
           {{- end }}
           env:
             - name: PGADMIN_DEFAULT_EMAIL
+              {{- if .Values.pgadmin.existingSecret.enabled }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ required "pgadmin.existingSecret.name is required when existingSecret.enabled is true" .Values.pgadmin.existingSecret.name }}
+                  key: {{ .Values.pgadmin.existingSecret.emailKey }}
+              {{- else }}
               value: {{ .Values.pgadmin.defaultEmail | quote }}
+              {{- end }}
             - name: PGADMIN_DEFAULT_PASSWORD
               valueFrom:
                 secretKeyRef:
+                  {{- if .Values.pgadmin.existingSecret.enabled }}
+                  name: {{ .Values.pgadmin.existingSecret.name }}
+                  key: {{ .Values.pgadmin.existingSecret.passwordKey }}
+                  {{- else }}
                   name: {{ .Release.Name }}-secrets
                   key: password
+                  {{- end }}
             - name: PGADMIN_CONFIG_SERVER_MODE
               value: "True"
             - name: PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION

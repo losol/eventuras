@@ -1,0 +1,67 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: pgadmin
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/losol/eventuras
+    targetRevision: main
+    path: infra/pgadmin/chart
+    helm:
+      releaseName: pgadmin
+      valuesObject:
+        image:
+          repository: dpage/pgadmin4
+          tag: "9.12"
+          pullPolicy: IfNotPresent
+
+        pgadmin:
+          # Use existing Secret for credentials (must be created manually)
+          # kubectl create secret generic pgadmin-credentials -n pgadmin \
+          #   --from-literal=email=admin@eventuras.losol.no \
+          #   --from-literal=password=your-secure-password
+          existingSecret:
+            enabled: true
+            name: "pgadmin-credentials"
+            emailKey: "email"
+            passwordKey: "password"
+
+        persistence:
+          enabled: true
+          size: 1Gi
+
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+            ephemeral-storage: "100Mi"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+            ephemeral-storage: "500Mi"
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: pgadmin
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+
+  revisionHistoryLimit: 3
