@@ -15,7 +15,7 @@ helm install pgadmin ./chart \
 Access via port-forward:
 
 ```bash
-kubectl port-forward -n pgadmin svc/pgadmin 5050:80
+kubectl port-forward -n pgadmin svc/pgadmin 5050:5050
 open http://localhost:5050
 ```
 
