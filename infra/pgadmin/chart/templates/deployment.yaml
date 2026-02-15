@@ -24,11 +24,6 @@ spec:
         - name: pgadmin
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          securityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-                - ALL
           ports:
             - containerPort: {{ .Values.service.targetPort }}
               protocol: TCP
