@@ -29,7 +29,7 @@ pgadmin:
 service:
   type: ClusterIP  # No external access by default
   port: 80
-  targetPort: 80
+  targetPort: 5050
 
 # Persistence for pgAdmin data
 persistence:
