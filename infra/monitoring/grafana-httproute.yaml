@@ -1,0 +1,16 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: grafana
+  namespace: monitoring
+spec:
+  parentRefs:
+    - name: traefik-gateway
+      namespace: traefik
+      sectionName: https  # Uses wildcard listener
+  hostnames:
+    - ${GRAFANA_HOSTNAME}
+  rules:
+    - backendRefs:
+        - name: monitoring-grafana
+          port: 80

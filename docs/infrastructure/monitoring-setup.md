@@ -10,53 +10,66 @@ Prometheus and Grafana monitoring stack for the Kubernetes cluster.
 
 ## Installation
 
+### Prerequisites
+
+Add the required Helm repos (needed for `helm dependency update`):
+
 ```sh
-# 1. Add Prometheus community Helm repo
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo add grafana https://grafana.github.io/helm-charts
 helm repo update
+```
 
-# 2. Install kube-prometheus-stack
-# Replace <your-password> with a secure password
-helm install monitoring prometheus-community/kube-prometheus-stack \
+### Option A: Argo CD (recommended)
+
+Argo CD will keep the stack in sync with the repo automatically.
+
+```sh
+# 1. Create the Grafana admin password secret (one-time, manual step)
+kubectl create secret generic monitoring-grafana-admin \
+  -n monitoring \
+  --from-literal=admin-password=<your-password>
+
+# 2. Apply the ArgoCD Application
+kubectl apply -f infra/monitoring/argocd-application.yaml
+```
+
+Argo CD will then fetch the chart from the repo, run `helm dependency update`, and deploy.
+
+### Option B: Manual Helm
+
+```sh
+# 1. Create the Grafana admin password secret (one-time, manual step)
+kubectl create secret generic monitoring-grafana-admin \
+  -n monitoring \
+  --from-literal=admin-password=<your-password>
+
+# 2. Fetch chart dependencies
+helm dependency update infra/monitoring/chart
+
+# 3. Install (or upgrade) the full monitoring stack
+helm upgrade --install monitoring infra/monitoring/chart \
   -n monitoring --create-namespace \
-  --set grafana.adminPassword='<your-password>'
-
-# 3. Create HTTPRoute for Grafana (uses wildcard cert, no per-app certificate needed)
-kubectl apply -f - <<'EOF'
-apiVersion: gateway.networking.k8s.io/v1
-kind: HTTPRoute
-metadata:
-  name: grafana
-  namespace: monitoring
-spec:
-  parentRefs:
-    - name: traefik-gateway
-      namespace: traefik
-      sectionName: https  # Uses wildcard listener
-  hostnames:
-    - grafana.app.domain.no
-  rules:
-    - backendRefs:
-        - name: monitoring-grafana
-          port: 80
-EOF
+  -f infra/monitoring/chart/values.prod.yaml
 ```
 
 ## Access
 
-- **Grafana**: https://grafana.app.domain.no
+- **Grafana**: https://grafana.app.losol.no
   - Username: `admin`
   - Password: (set during installation)
 
 ## Included Components
 
-The kube-prometheus-stack includes:
+The chart installs:
 
 - **Prometheus**: Metrics collection and storage
 - **Grafana**: Visualization and dashboards
 - **Alertmanager**: Alert routing and notifications
 - **Node Exporter**: Host-level metrics
 - **kube-state-metrics**: Kubernetes object metrics
+- **Loki**: Log aggregation and storage
+- **Alloy**: Log/metrics/traces collection agent (forwards pod logs to Loki)
 
 ## Pre-configured Dashboards
 
@@ -68,6 +81,23 @@ Grafana comes with dashboards for:
 - Namespace resources
 - Persistent volumes
 - API server metrics
+
+## Logs (Loki)
+
+Logs from all pods are collected by Alloy and stored in Loki. Query them in Grafana under **Explore → Loki** using LogQL, e.g.:
+
+```logql
+{namespace="default"} |= "error"
+```
+
+### Useful Loki Dashboards
+
+Import from [Grafana.com](https://grafana.com/grafana/dashboards/):
+
+| Dashboard ID | Description |
+|---|---|
+| `15141` | Kubernetes / Logs / Namespaces |
+| `13639` | Loki stack – resource monitoring |
 
 ## Adding Custom Dashboards
 
