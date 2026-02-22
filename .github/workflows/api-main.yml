@@ -21,7 +21,7 @@ on:
 
 env:
   ORGANIZATION_NAME: losolio
-  IMAGE_NAME: eventuras
+  IMAGE_NAME: eventuras-api
 
 jobs:
   format:
@@ -121,6 +121,7 @@ jobs:
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
 
       - name: Login to Docker Hub
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -131,7 +132,7 @@ jobs:
         with:
           context: ./apps/api/
           platforms: linux/amd64,linux/arm64
-          push: ${{ github.event_name != 'pull_request' }}
+          push: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
