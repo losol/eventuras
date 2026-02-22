@@ -14,7 +14,7 @@ on:
 
 env:
   ORGANIZATION_NAME: losolio
-  IMAGE_NAME: eventuras
+  IMAGE_NAME: eventuras-api
 
 jobs:
   check-release:

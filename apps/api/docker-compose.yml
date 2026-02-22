@@ -2,7 +2,7 @@ version: "3"
 
 services:
   web:
-    image: losolio/eventuras
+    image: losolio/eventuras-api
     environment:
       ConnectionStrings__DefaultConnection: "Host=db;Database=eventuras;Username=eventuras;Password=Str0ng!Pasword"
     ports:

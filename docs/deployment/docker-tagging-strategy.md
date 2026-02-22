@@ -13,12 +13,12 @@ All applications follow a consistent tagging strategy optimized for:
 
 | Tag Pattern | Example | When Created | Purpose |
 |-------------|---------|--------------|---------|
-| `canary` | `losolio/eventuras:canary` | Every push | Latest build from any branch |
-| `main` | `losolio/eventuras:main` | Push to main | Latest stable build for staging |
-| `sha-<full-sha>` | `losolio/eventuras:sha-abc123...` | Push to main | Immutable reference for releases |
-| `main-YYYYMMDD-<sha>` | `losolio/eventuras:main-20260202-abc1234` | Push to main | Human-readable with date |
-| `dev-pr<n>-<sha>` | `losolio/eventuras:dev-pr42-abc1234` | Pull requests | PR testing (not pushed) |
-| `<version>` | `losolio/eventuras:2.27.1` | Release tag | Production releases || `latest` | `losolio/eventuras:latest` | Release tag | Latest stable release (demo/testing only) |
+| `edge` | `losolio/eventuras-api:edge` | Internal PR | Latest build from PR branch |
+| `edge-<sha>` | `losolio/eventuras-api:edge-abc1234` | Internal PR | Immutable PR build reference |
+| `canary` | `losolio/eventuras-api:canary` | Push to main | Latest build from main |
+| `main-<sha>` | `losolio/eventuras-api:main-abc1234` | Push to main | Immutable main build reference |
+| `v<version>` | `losolio/eventuras-api:v2.27.1` | Release tag | Production releases |
+| `latest` | `losolio/eventuras-api:latest` | Release tag | Latest stable release (demo/testing only) |
 ## Environment Mapping
 
 ```
@@ -62,17 +62,18 @@ image:
 
 ## Release Process
 
-1. **Push to feature branch** → Builds with `edge`, `edge-<sha>` tags
-2. **Merge to main** → Builds with `canary`, `main-<sha>` tags
-3. **Create release tag** (e.g., `@eventuras/api@2.27.1`)
-4. **Release workflow** → Builds with `v2.27.1` and `latest` tags
-5. **Update Argo CD** → Point production to new version tag
+1. **Open internal PR** → Builds and pushes with `edge`, `edge-<sha>` tags
+2. **Fork PR** → Builds only (no push, no secrets access)
+3. **Merge to main** → Builds with `canary`, `main-<sha>` tags
+4. **Create release tag** (e.g., `@eventuras/api@2.27.1`)
+5. **Release workflow** → Builds with `v2.27.1` and `latest` tags
+6. **Update Argo CD** → Point production to new version tag
 
 ## Applications Using This Strategy
 
 | Application | Image | Workflow |
 |-------------|-------|----------|
-| API | `losolio/eventuras` | `api-main.yml`, `api-release.yml` |
+| API | `losolio/eventuras-api` | `api-main.yml`, `api-release.yml` |
 | Web | `losolio/eventuras-web` | `web-main.yml`, `web-release.yml` |
 | Idem IDP | `losolio/idem-idp` | `idem-idp-main.yml` |
 
