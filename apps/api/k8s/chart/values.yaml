@@ -9,10 +9,15 @@ image:
   tag: ""           # Set by Argo: sha-abc123, v1.2.3
   pullPolicy: IfNotPresent
 
-dns:
-  domain: ""        # Set by Argo: app.domain.no
-  appName: ""       # Set by Argo: api
-  prefix: ""        # Set by Argo: "dev.", "staging.", ""
+# Hostname for the application
+hostname: ""        # Set by Argo: api-dev.eventuras.losol.no
+
+# HTTPRoute for Gateway API (requires gateway.networking.k8s.io CRDs)
+httpRoute:
+  enabled: true
+  gateway:
+    name: traefik-gateway
+    namespace: traefik
 
 service:
   port: 80
