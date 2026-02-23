@@ -21,6 +21,15 @@ config:
     pdfEndpointUrl: ""             # e.g. "http://converto/v1/pdf"
     tokenEndpointUrl: ""           # e.g. "http://converto/token"
 
+# Extra non-sensitive env vars for this tenant (beyond config: above)
+# Useful for app-specific settings like SMTP, Sentry, feature flags etc.
+# Sensitive values (passwords, tokens) belong in the eventuras-api-secrets k8s Secret.
+extraEnv: {}
+# e.g.
+#   Smtp__Host: smtp.office365.com
+#   Smtp__Port: "587"
+#   FeatureManagement__UseStripeInvoice: "false"
+
 # Environments – enable/disable and configure per tenant
 environments:
   dev:

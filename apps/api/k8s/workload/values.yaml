@@ -18,6 +18,7 @@ httpRoute:
   gateway:
     name: traefik-gateway
     namespace: traefik
+    sectionName: https  # Must match a listener in the Gateway – see infra/traefik-gateway/README.md
 
 service:
   port: 80
