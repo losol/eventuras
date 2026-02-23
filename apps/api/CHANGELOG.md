@@ -1,8 +1,15 @@
 # @eventuras/api
 
+## 2.27.10
+
+### Patch Changes
+
+- 65bcedb: ### 🧹 Maintenance
+  - chore(infra): adopt Kubernetes deployment via ArgoCD with Helm provisioner chart
 
 ## 2.27.1
- - Sync release versions across packages api, web, event-sdk
+
+- Sync release versions across packages api, web, event-sdk
 
 ## 0.9.1
 
@@ -16,7 +23,8 @@
 ### Patch Changes
 
 ### 📝 Documentation
-  - docs(api): spec file-based email template system (badb44c) [@eventuras/api]
+
+- docs(api): spec file-based email template system (badb44c) [@eventuras/api]
 
 ## 0.7.0
 
