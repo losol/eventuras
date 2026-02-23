@@ -20,6 +20,9 @@ spec:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: {{ .Chart.Name }}
+        - group: ""
+          kind: Service
+          name: {{ .Chart.Name }}
           port: {{ .Values.service.port }}
+          weight: 1
 {{- end }}
