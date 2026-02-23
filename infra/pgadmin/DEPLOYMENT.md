@@ -98,7 +98,7 @@ Enable in values:
 ```yaml
 traefik:
   enabled: true
-  hostname: "pgadmin.eventuras.losol.no"
+  hostname: "pgadmin.app.example.com"
   tls:
     certResolver: letsencrypt
   ipWhitelist:
@@ -107,7 +107,7 @@ traefik:
       - "YOUR.IP.ADDRESS/32"
 ```
 
-Then access via: https://pgadmin.eventuras.losol.no
+Then access via: https://pgadmin.app.example.com
 
 ## Configuration
 
@@ -184,7 +184,7 @@ If you see "secret not found" errors, create the Secret:
 
 ```bash
 kubectl create secret generic pgadmin-credentials -n pgadmin \
-  --from-literal=email=admin@eventuras.losol.no \
+  --from-literal=email=admin@example.com \
   --from-literal=password=your-password
 ```
 
