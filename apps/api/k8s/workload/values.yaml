@@ -40,10 +40,10 @@ healthCheck:
   periodSeconds: 30
 
 # Environment variables (non-sensitive)
-env: {}
-# Set by Argo:
+env:
+  ASPNETCORE_URLS: http://+:8080
+# Additional env vars set by provisioner:
 #   ASPNETCORE_ENVIRONMENT: Production
-#   ASPNETCORE_URLS: http://+:8080
 
 # Database configuration
 database:

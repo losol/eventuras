@@ -1,0 +1,36 @@
+{{- $tenant := required ".Values.tenant is required (e.g. --set tenant=acme)" .Values.tenant }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: {{ $tenant }}
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Eventuras API – tenant {{ $tenant }}
+
+  sourceRepos:
+    - https://github.com/losol/eventuras
+
+  destinations:
+    - server: https://kubernetes.default.svc
+      namespace: {{ $.Chart.Name }}-{{ $tenant }}-*
+
+  # Cluster-scoped resources this project may manage
+  clusterResourceWhitelist:
+    - group: ""
+      kind: Namespace
+
+  # Namespace-scoped resource kinds allowed
+  namespaceResourceWhitelist:
+    - group: ""
+      kind: ConfigMap
+    - group: ""
+      kind: Service
+    - group: ""
+      kind: ServiceAccount
+    - group: apps
+      kind: Deployment
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
