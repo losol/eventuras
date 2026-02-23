@@ -30,11 +30,12 @@ spec:
           from: All
 
     {{- range .Values.additionalDomains }}
-    # HTTPS listener for {{ .name }} (*.{{ .domain }})
+    {{- $hostname := .hostname | default (printf "*.%s" .domain) }}
+    # HTTPS listener for {{ .name }} ({{ $hostname }})
     - name: https-{{ .name }}
       port: {{ $.Values.gateway.httpsPort }}
       protocol: HTTPS
-      hostname: "*.{{ .domain }}"
+      hostname: {{ $hostname | quote }}
       tls:
         mode: Terminate
         certificateRefs:

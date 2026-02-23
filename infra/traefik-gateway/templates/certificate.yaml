@@ -14,6 +14,10 @@ spec:
     - "*.{{ .Values.domain }}"
     - {{ .Values.domain | quote }}
     {{- range .Values.additionalDomains }}
+    {{- if .domain }}
     - "*.{{ .domain }}"
     - {{ .domain | quote }}
+    {{- else if .hostname }}
+    - {{ .hostname | quote }}
+    {{- end }}
     {{- end }}
