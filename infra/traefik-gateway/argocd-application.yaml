@@ -1,0 +1,59 @@
+# ArgoCD Application for traefik-gateway.
+#
+# Usage:
+#   1. Copy this file to a private location (e.g. outside the repo)
+#   2. Fill in the valuesObject below with real values
+#   3. Apply once: kubectl apply -f traefik-gateway-app.yaml
+#   4. ArgoCD takes over from there – drift detection + auto-sync enabled
+#
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: traefik-gateway
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/losol/eventuras
+    targetRevision: main
+    path: infra/traefik-gateway
+    helm:
+      releaseName: traefik-gateway
+      valuesObject:
+        # --- Fill in before applying ---
+        domain: app.example.com
+        letsencrypt:
+          email: admin@example.com
+        cloudflare:
+          dnsZone: example.com
+        additionalDomains:
+          - name: idem                 # sectionName: https-idem
+            domain: idem.example.com
+          # - name: tenant1            # sectionName: https-tenant1
+          #   domain: tenant1.com      # NOTE: Cloudflare token needs access to this zone
+        # --------------------------------
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: traefik
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+      - adoptExistingResources=true    # Takes over resources from the existing Helm release
+    retry:
+      limit: 3
+      backoff:
+        duration: 10s
+        factor: 2
+        maxDuration: 2m
+
+  revisionHistoryLimit: 10

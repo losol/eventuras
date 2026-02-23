@@ -19,31 +19,46 @@ kubectl create secret generic cloudflare-api-token \
   --from-literal=api-token=<YOUR-CLOUDFLARE-API-TOKEN>
 ```
 
-### 2. Create values file for your environment
+Token needs: `Zone:DNS:Edit` + `Zone:Zone:Read` for every zone in `additionalDomains`.
 
-```yaml
-# values-prod.yaml
+### 2. Deploy — choose one approach below
+
+## ArgoCD Deployment (recommended)
+
+The chart is public, but domain names and email must not be committed to the repo.
+Fill in `argocd-application.yaml` with real values and apply it once — ArgoCD handles everything from there.
+
+```bash
+# Copy the template
+cp infra/traefik-gateway/argocd-application.yaml ~/traefik-gateway-app.yaml
+
+# Edit with real values (domain, email, additionalDomains)
+$EDITOR ~/traefik-gateway-app.yaml
+
+# Apply once – ArgoCD adopts existing resources and manages from here
+kubectl apply -f ~/traefik-gateway-app.yaml
+```
+
+## Manual Deployment (alternative)
+
+Create a private values file and upgrade manually:
+
+```bash
+# values-prod.yaml (keep outside repo)
 domain: app.example.com
-
+letsencrypt:
+  email: admin@example.com
+cloudflare:
+  dnsZone: example.com
 additionalDomains:
   - name: idem
     domain: idem.example.com
-
-letsencrypt:
-  email: admin@example.com
-
-cloudflare:
-  dnsZone: example.com
 ```
 
-### 3. Install the chart
-
 ```bash
-# From the infra directory
-helm install traefik-gateway ./traefik-gateway -f values-prod.yaml
-
-# Or upgrade existing
-helm upgrade traefik-gateway ./traefik-gateway -f values-prod.yaml
+helm upgrade --install traefik-gateway infra/traefik-gateway \
+  -n traefik --create-namespace \
+  -f ~/traefik-values.yaml
 ```
 
 ## Values
