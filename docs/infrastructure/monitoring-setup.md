@@ -57,7 +57,7 @@ helm upgrade --install monitoring infra/monitoring/chart \
 
 ## Access
 
-- **Grafana**: https://grafana.app.losol.no
+- **Grafana**: https://grafana.app.example.com  # Replace with actual hostname
   - Username: `admin`
   - Password: (set during installation)
 

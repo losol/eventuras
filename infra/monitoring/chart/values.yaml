@@ -1,9 +1,29 @@
-# Hostname for Grafana ingress – override per environment
-grafanaHostname: grafana.app.example.com
+# Hostname for Grafana ingress
+grafanaHostname: grafana.app.example.com  # Override with actual hostname
 
 kube-prometheus-stack:
   grafana:
-    adminPassword: ""  # Set via --set or values override
+    # Secret must be created manually before deploying:
+    # kubectl create secret generic monitoring-grafana-admin \
+    #   -n monitoring \
+    #   --from-literal=admin-user=admin \
+    #   --from-literal=admin-password=<your-password>
+    admin:
+      existingSecret: monitoring-grafana-admin
+      userKey: admin-user
+      passwordKey: admin-password
+
+  prometheus-node-exporter:
+    # Node-exporter defaults hostNetwork/hostPID to true; disable them
+    # to reduce the attack surface.
+    hostNetwork: false
+    hostPID: false
+
+  kube-state-metrics:
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop: [ALL]
 
 loki:
   deploymentMode: SingleBinary
@@ -35,6 +55,16 @@ loki:
     replicas: 0
 
 alloy:
+  # Alloy runs as a DaemonSet and mounts /var/log/pods (hostPath) to collect
+  # container logs – hostPath access is unavoidable for log collection.
+  # Restrict everything else we don't need.
+  alloy:
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop: [ALL]
+        add: [DAC_READ_SEARCH]  # Read pod log files owned by other users
+
   configMap:
     content: |
       logging {
