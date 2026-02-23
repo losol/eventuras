@@ -6,6 +6,8 @@ app:
   image:
     registry: docker.io
     repository: losol/eventuras-api
+  httpRoute:
+    sectionName: https   # Must match a listener in the Gateway (e.g. https-eventuras)
 
 # Non-sensitive application config – set per tenant
 config:
@@ -35,6 +37,7 @@ environments:
   dev:
     enabled: false
     hostname: ""         # e.g. "api-dev.app.example.com"
+    namespace: ""         # Override default ({{ .Chart.Name }}-{{ tenant }}-dev)
     tag: edge
     pullPolicy: Always
     aspnetEnvironment: Development
@@ -43,6 +46,7 @@ environments:
   staging:
     enabled: true
     hostname: ""         # e.g. "api-staging.acme.example.com"
+    namespace: ""         # Override default ({{ .Chart.Name }}-{{ tenant }}-staging)
     tag: canary
     pullPolicy: Always
     aspnetEnvironment: Staging
@@ -51,6 +55,7 @@ environments:
   prod:
     enabled: true
     hostname: ""         # e.g. "api.acme.example.com"
+    namespace: ""         # Override default ({{ .Chart.Name }}-{{ tenant }}-prod)
     tag: "0.0.0"         # Set by CI on release
     pullPolicy: IfNotPresent
     aspnetEnvironment: Production

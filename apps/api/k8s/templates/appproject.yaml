@@ -14,8 +14,13 @@ spec:
     - https://github.com/losol/eventuras
 
   destinations:
+    {{- range $env, $cfg := .Values.environments }}
+    {{- if $cfg.enabled }}
+    {{- $namespace := $cfg.namespace | default (printf "%s-%s-%s" $.Chart.Name $tenant $env) }}
     - server: https://kubernetes.default.svc
-      namespace: {{ $.Chart.Name }}-{{ $tenant }}-*
+      namespace: {{ $namespace }}
+    {{- end }}
+    {{- end }}
 
   # Cluster-scoped resources this project may manage
   clusterResourceWhitelist:

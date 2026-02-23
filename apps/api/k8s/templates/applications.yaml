@@ -2,6 +2,7 @@
 {{- range $env, $cfg := .Values.environments }}
 {{- if $cfg.enabled }}
 {{- if not $cfg.hostname }}{{- fail (printf "environments.%s.hostname is required when enabled" $env) }}{{- end }}
+{{- $namespace := $cfg.namespace | default (printf "%s-%s-%s" $.Chart.Name $tenant $env) }}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -26,6 +27,9 @@ spec:
           tag: {{ $cfg.tag | quote }}
           pullPolicy: {{ $cfg.pullPolicy | quote }}
         hostname: {{ $cfg.hostname | quote }}
+        httpRoute:
+          gateway:
+            sectionName: {{ $.Values.app.httpRoute.sectionName | quote }}
         env:
           ASPNETCORE_ENVIRONMENT: {{ $cfg.aspnetEnvironment | quote }}
           {{- include "eventuras-api.configEnv" $ | nindent 10 }}
@@ -35,7 +39,7 @@ spec:
 
   destination:
     server: https://kubernetes.default.svc
-    namespace: {{ $.Chart.Name }}-{{ $tenant }}-{{ $env }}
+    namespace: {{ $namespace }}
 
   syncPolicy:
     {{- if $cfg.autoSync }}
@@ -47,6 +51,7 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
+      - adoptExistingResources=true
     retry:
       limit: 3
       backoff:
