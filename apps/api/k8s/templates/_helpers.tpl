@@ -9,6 +9,10 @@ Auth__Audience: {{ .Values.config.auth.audience | quote }}
 Auth__ApiIdentifier: {{ .Values.config.auth.apiIdentifier | quote }}
 FeatureManagement__UseSentry: {{ .Values.config.features.useSentry | quote }}
 FeatureManagement__UsePowerOffice: {{ .Values.config.features.usePowerOffice | quote }}
+{{- if .Values.config.converto.pdfEndpointUrl }}
 Converto__PdfEndpointUrl: {{ .Values.config.converto.pdfEndpointUrl | quote }}
+{{- end }}
+{{- if .Values.config.converto.tokenEndpointUrl }}
 Converto__TokenEndpointUrl: {{ .Values.config.converto.tokenEndpointUrl | quote }}
+{{- end }}
 {{- end }}
