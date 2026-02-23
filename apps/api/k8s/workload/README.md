@@ -26,8 +26,6 @@ type: Opaque
 stringData:
   ConnectionStrings__DefaultConnection: "Host=db;Database=eventuras;Username=user;Password=pass"
   Auth__ClientSecret: "your-auth-client-secret"
-  Auth__Issuer: "https://your-idp.example.com"
-  Auth__Audience: "https://eventuras/api"
   Sentry__Dsn: "https://xxx@sentry.io/xxx"
   Twilio__Sid: "your-twilio-sid"
   Twilio__AuthToken: "your-twilio-auth-token"
@@ -42,9 +40,7 @@ stringData:
 | `image.repository` | Image repository | `""` |
 | `image.tag` | Image tag | `""` |
 | `image.pullPolicy` | Image pull policy | `IfNotPresent` |
-| `dns.domain` | Base domain | `""` |
-| `dns.appName` | Application name for DNS | `""` |
-| `dns.prefix` | DNS prefix (e.g., "dev.") | `""` |
+| `hostname` | Hostname for HTTPRoute | `""` |
 | `service.port` | Service port | `80` |
 | `service.targetPort` | Container port | `8080` |
 | `resources.requests.memory` | Memory request | `256Mi` |

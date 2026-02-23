@@ -40,10 +40,10 @@ healthCheck:
   periodSeconds: 30
 
 # Environment variables (non-sensitive)
-env:
-  ASPNETCORE_URLS: http://+:8080
+env: {}
 # Additional env vars set by provisioner:
 #   ASPNETCORE_ENVIRONMENT: Production
+# Note: ASPNETCORE_URLS is set automatically from service.targetPort in deployment.yaml
 
 # Database configuration
 database:

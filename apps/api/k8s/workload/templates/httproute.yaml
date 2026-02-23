@@ -9,6 +9,7 @@ spec:
   parentRefs:
     - name: {{ .Values.httpRoute.gateway.name }}
       namespace: {{ .Values.httpRoute.gateway.namespace }}
+      sectionName: https
   hostnames:
     - {{ .Values.hostname }}
   rules:

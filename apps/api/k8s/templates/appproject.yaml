@@ -27,6 +27,8 @@ spec:
     - group: ""
       kind: ConfigMap
     - group: ""
+      kind: Secret
+    - group: ""
       kind: Service
     - group: ""
       kind: ServiceAccount
