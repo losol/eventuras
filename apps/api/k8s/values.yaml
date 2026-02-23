@@ -1,0 +1,48 @@
+# Required
+tenant: ""  # Short identifier, e.g. "acme" – used in app/namespace names
+
+# Image defaults
+app:
+  image:
+    registry: docker.io
+    repository: losol/eventuras-api
+
+# Non-sensitive application config – set per tenant
+config:
+  allowedOrigins: ""               # e.g. "https://app.acme.example.com"
+  auth:
+    issuer: ""                     # e.g. "https://acme.eu.auth0.com"
+    audience: ""                   # e.g. "https://acme/api"
+    apiIdentifier: ""
+  features:
+    useSentry: false
+    usePowerOffice: false
+  converto:
+    pdfEndpointUrl: ""             # e.g. "http://converto/v1/pdf"
+    tokenEndpointUrl: ""           # e.g. "http://converto/token"
+
+# Environments – enable/disable and configure per tenant
+environments:
+  dev:
+    enabled: false
+    hostname: ""         # e.g. "api-dev.app.example.com"
+    tag: edge
+    pullPolicy: Always
+    aspnetEnvironment: Development
+    autoSync: true
+
+  staging:
+    enabled: true
+    hostname: ""         # e.g. "api-staging.acme.example.com"
+    tag: canary
+    pullPolicy: Always
+    aspnetEnvironment: Staging
+    autoSync: true
+
+  prod:
+    enabled: true
+    hostname: ""         # e.g. "api.acme.example.com"
+    tag: "0.0.0"         # Set by CI on release
+    pullPolicy: IfNotPresent
+    aspnetEnvironment: Production
+    autoSync: false
