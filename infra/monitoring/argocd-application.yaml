@@ -14,8 +14,6 @@ spec:
     path: infra/monitoring/chart
     helm:
       releaseName: monitoring
-      valueFiles:
-        - values.prod.yaml
 
   destination:
     server: https://kubernetes.default.svc
