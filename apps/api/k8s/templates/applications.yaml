@@ -29,6 +29,9 @@ spec:
         env:
           ASPNETCORE_ENVIRONMENT: {{ $cfg.aspnetEnvironment | quote }}
           {{- include "eventuras-api.configEnv" $ | nindent 10 }}
+          {{- with $.Values.extraEnv }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
 
   destination:
     server: https://kubernetes.default.svc

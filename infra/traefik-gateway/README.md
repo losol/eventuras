@@ -83,20 +83,43 @@ Each domain gets:
 - DNS names added to the certificate
 - A dedicated HTTPS listener named `https-<name>`
 
+## Ports and External Traffic
+
+The Gateway listeners run on ports `8000` (HTTP) and `8443` (HTTPS). Traefik's Service should map:
+- External `80` → `8000`
+- External `443` → `8443`
+
+If using a cloud LoadBalancer, verify these port mappings in the Traefik Service. If traffic is not reaching the gateway, check with:
+
+```bash
+kubectl get svc -n traefik
+kubectl get gateway traefik-gateway -n traefik
+```
+
 ## HTTPRoute Configuration
 
-Reference the listeners in your HTTPRoutes:
+Each app creates an HTTPRoute that references a listener by `sectionName`. The hostname in the route **must match the wildcard** for that listener.
 
 ```yaml
-# For *.app.example.com
+# For *.app.example.com → use sectionName: https
 parentRefs:
   - name: traefik-gateway
     namespace: traefik
     sectionName: https
 
-# For *.idem.example.com
+# For *.idem.example.com → use sectionName: https-idem
 parentRefs:
   - name: traefik-gateway
     namespace: traefik
     sectionName: https-idem
 ```
+
+### Adding a tenant on a custom domain
+
+If a tenant uses a domain not covered by existing listeners (e.g. `api.kursinord.no`), you must:
+
+1. Add the domain to `additionalDomains` in your traefik-gateway values file and upgrade the chart — this adds a new listener and extends the certificate.
+2. Create a DNS CNAME/A record pointing to the cluster LoadBalancer IP.
+3. Set the correct `sectionName` in the HTTPRoute (e.g. `https-kursinord`).
+
+The `apps/api/k8s/workload` chart defaults to `sectionName: https`. Override via `httpRoute.gateway.sectionName` if needed.
