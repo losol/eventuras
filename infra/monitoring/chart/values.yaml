@@ -7,6 +7,8 @@ kube-prometheus-stack:
 
 loki:
   deploymentMode: SingleBinary
+  gateway:
+    enabled: false
   loki:
     commonConfig:
       replication_factor: 1

@@ -28,6 +28,7 @@ Argo CD will keep the stack in sync with the repo automatically.
 # 1. Create the Grafana admin password secret (one-time, manual step)
 kubectl create secret generic monitoring-grafana-admin \
   -n monitoring \
+  --from-literal=admin-user=admin \
   --from-literal=admin-password=<your-password>
 
 # 2. Apply the ArgoCD Application
@@ -42,6 +43,7 @@ Argo CD will then fetch the chart from the repo, run `helm dependency update`, a
 # 1. Create the Grafana admin password secret (one-time, manual step)
 kubectl create secret generic monitoring-grafana-admin \
   -n monitoring \
+  --from-literal=admin-user=admin \
   --from-literal=admin-password=<your-password>
 
 # 2. Fetch chart dependencies

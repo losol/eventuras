@@ -4,7 +4,10 @@ kube-prometheus-stack:
   grafana:
     # Secret must be created manually before deploying:
     # kubectl create secret generic monitoring-grafana-admin \
-    #   -n monitoring --from-literal=admin-password=<your-password>
+    #   -n monitoring \
+    #   --from-literal=admin-user=admin \
+    #   --from-literal=admin-password=<your-password>
     admin:
       existingSecret: monitoring-grafana-admin
+      userKey: admin-user
       passwordKey: admin-password
