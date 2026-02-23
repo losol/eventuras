@@ -5,15 +5,18 @@ domain: example.com
 
 # Additional domains – each gets its own listener and cert DNS entry.
 # Use `domain:` for wildcard (*.domain), or `hostname:` for exact match.
+# Use `certSecret:` (+ `certNamespace:`) for certs managed outside this chart.
 # Actual values are supplied via a private values file at deploy time.
 additionalDomains: []
 # Examples:
-#   - name: idem            # → sectionName: https-idem, hostname: *.idem.example.com
-#     domain: idem.example.com
-#   - name: fhir            # → sectionName: https-fhir, hostname: fhir.example.com
-#     hostname: fhir.example.com
-#   - name: tenant1         # → sectionName: https-tenant1, hostname: *.tenant1.com
-#     domain: tenant1.com   # NOTE: Cloudflare token needs access to this zone
+#   - name: idem                 # → sectionName: https-idem, *.idem.example.com
+#     domain: idem.example.com   # cert dnsName added to this chart's Certificate
+#   - name: fhir                 # → sectionName: https-fhir, fhir.example.com
+#     hostname: fhir.example.com # cert dnsName added to this chart's Certificate
+#   - name: other                # → sectionName: https-other, other.example.com
+#     hostname: other.example.com
+#     certSecret: other-tls      # uses an EXISTING Secret – NOT added to this chart's cert
+#     certNamespace: other       # namespace of that Secret (omit if same as gateway namespace)
 
 # Let's Encrypt configuration
 letsencrypt:

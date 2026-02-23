@@ -14,10 +14,12 @@ spec:
     - "*.{{ .Values.domain }}"
     - {{ .Values.domain | quote }}
     {{- range .Values.additionalDomains }}
+    {{- if not .certSecret }}
     {{- if .domain }}
     - "*.{{ .domain }}"
     - {{ .domain | quote }}
     {{- else if .hostname }}
     - {{ .hostname | quote }}
+    {{- end }}
     {{- end }}
     {{- end }}

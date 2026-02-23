@@ -31,6 +31,7 @@ spec:
 
     {{- range .Values.additionalDomains }}
     {{- $hostname := .hostname | default (printf "*.%s" .domain) }}
+    {{- $certName := .certSecret | default (include "traefik-gateway.certSecretName" $) }}
     # HTTPS listener for {{ .name }} ({{ $hostname }})
     - name: https-{{ .name }}
       port: {{ $.Values.gateway.httpsPort }}
@@ -40,7 +41,10 @@ spec:
         mode: Terminate
         certificateRefs:
           - kind: Secret
-            name: {{ include "traefik-gateway.certSecretName" $ }}
+            name: {{ $certName }}
+            {{- if .certNamespace }}
+            namespace: {{ .certNamespace }}
+            {{- end }}
       allowedRoutes:
         namespaces:
           from: All

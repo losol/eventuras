@@ -30,10 +30,17 @@ spec:
         cloudflare:
           dnsZone: example.com
         additionalDomains:
-          - name: idem                 # sectionName: https-idem
+          # Wildcard domain – cert managed by this chart (dnsZone must cover it)
+          - name: idem                 # → sectionName: https-idem, *.idem.example.com
             domain: idem.example.com
-          # - name: tenant1            # sectionName: https-tenant1
-          #   domain: tenant1.com      # NOTE: Cloudflare token needs access to this zone
+          # Single hostname – cert managed by this chart
+          # - name: fhir               # → sectionName: https-fhir, fhir.example.com
+          #   hostname: fhir.example.com
+          # Single hostname – cert managed ELSEWHERE (different namespace)
+          # - name: other              # → sectionName: https-other
+          #   hostname: other.example.com
+          #   certSecret: other-tls    # existing Secret name (will not be added to this chart's Certificate)
+          #   certNamespace: other     # namespace of the Secret (if different from gateway namespace)
         # --------------------------------
 
   destination:
