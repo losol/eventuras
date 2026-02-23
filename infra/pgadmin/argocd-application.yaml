@@ -23,7 +23,7 @@ spec:
         pgadmin:
           # Use existing Secret for credentials (must be created manually)
           # kubectl create secret generic pgadmin-credentials -n pgadmin \
-          #   --from-literal=email=admin@eventuras.losol.no \
+          #   --from-literal=email=admin@example.com \
           #   --from-literal=password=your-secure-password
           existingSecret:
             enabled: true
