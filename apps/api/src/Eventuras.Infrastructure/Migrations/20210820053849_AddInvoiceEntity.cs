@@ -41,15 +41,15 @@ namespace Eventuras.Infrastructure.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             // add temporarily column to link orders to the new invoices
-            migrationBuilder.Sql(@"alter table ""Invoices"" add column ""OrderId"" int");
+            migrationBuilder.Sql(@"alter table ""Invoices"" add column ""OrderId"" int;");
 
             // insert data from order into invoices
-            migrationBuilder.Sql(@"insert into ""Invoices"" 
+            migrationBuilder.Sql(@"insert into ""Invoices""
 (""ExternalInvoiceId"", ""Paid"", ""OrderId"")
 select ""ExternalInvoiceId"", ""Paid"", ""OrderId""
-from ""Orders"" 
+from ""Orders""
 where ""Status"" = 2
-and ""ExternalInvoiceId"" is not null");
+and ""ExternalInvoiceId"" is not null;");
 
             // make a link between new invoices and old orders
             migrationBuilder.Sql(@"update ""Orders""
@@ -58,7 +58,7 @@ from ""Orders"" o
 join ""Invoices"" i
 on o.""OrderId"" = i.""OrderId""
 where o.""Status"" = 2
-and o.""ExternalInvoiceId"" is not null
+and o.""ExternalInvoiceId"" is not null;
 ");
         }
 
