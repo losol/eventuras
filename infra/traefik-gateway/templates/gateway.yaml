@@ -23,7 +23,8 @@ spec:
       tls:
         mode: Terminate
         certificateRefs:
-          - kind: Secret
+          - group: ""
+            kind: Secret
             name: {{ include "traefik-gateway.certSecretName" . }}
       allowedRoutes:
         namespaces:
@@ -40,7 +41,8 @@ spec:
       tls:
         mode: Terminate
         certificateRefs:
-          - kind: Secret
+          - group: ""
+            kind: Secret
             name: {{ $certName }}
             {{- if .certNamespace }}
             namespace: {{ .certNamespace }}
