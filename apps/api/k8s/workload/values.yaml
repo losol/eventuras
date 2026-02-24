@@ -39,6 +39,7 @@ healthCheck:
   path: /health
   initialDelaySeconds: 15
   periodSeconds: 30
+  timeoutSeconds: 10
 
 # Environment variables (non-sensitive)
 env: {}
