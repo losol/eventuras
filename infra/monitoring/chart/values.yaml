@@ -14,10 +14,10 @@ kube-prometheus-stack:
       passwordKey: admin-password
 
   prometheus-node-exporter:
-    # Node-exporter defaults hostNetwork/hostPID to true; disable them
-    # to reduce the attack surface.
-    hostNetwork: false
-    hostPID: false
+    # hostNetwork and hostPID are required for node-exporter to collect
+    # accurate host-level network and process metrics.
+    hostNetwork: true
+    hostPID: true
 
   kube-state-metrics:
     securityContext:
