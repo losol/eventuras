@@ -42,12 +42,14 @@ if (existsSync(envPath)) {
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
-const timeOut = 1000 * 60 * 10; //max 10 minutes for all
+const timeOut = 1000 * 60 * 5; // 5 minutes global max for entire suite
+const testTimeout = 1000 * 120; // 2 minute per test (registration flow has many steps)
+const actionTimeout = 1000 * 10; // 10 seconds per action/navigation
 const devicesToTest = devices['Desktop Chrome'];
 const SETUP_ADMIN = 'setup-admin';
 const SETUP_USER = 'setup-user';
 export default defineConfig({
-  timeout: timeOut,
+  timeout: testTimeout,
   globalTimeout: timeOut,
   testDir: './playwright-e2e',
   /* Run tests in files in parallel */
@@ -68,8 +70,8 @@ export default defineConfig({
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on',
     locale: 'en-GB',
-    actionTimeout: timeOut,
-    navigationTimeout: timeOut,
+    actionTimeout: actionTimeout,
+    navigationTimeout: actionTimeout,
 
     // Emulates the user timezone.
     timezoneId: 'Europe/Paris',
