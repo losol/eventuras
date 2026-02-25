@@ -16,8 +16,7 @@ import EventDetails from '@/app/(public)/events/EventDetails';
 import EventRegistrationButton from '@/app/(public)/events/EventRegistrationButton';
 import { appConfig } from '@/config.server';
 import { getPublicClient } from '@/lib/eventuras-public-client';
-import { EventInfoStatus, getV3Events, getV3EventsById } from '@/lib/eventuras-public-sdk';
-import { getOrganizationId } from '@/utils/organization';
+import { EventInfoStatus, getV3EventsById } from '@/lib/eventuras-public-sdk';
 
 import EventNotFound from '../../EventNotFound';
 
@@ -30,8 +29,7 @@ type EventDetailsPageProps = {
   }>;
 };
 
-export const revalidate = 300;
-export const dynamicParams = true;
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({ params }: EventDetailsPageProps): Promise<Metadata> {
   const { id } = await params;
@@ -70,40 +68,6 @@ export async function generateMetadata({ params }: EventDetailsPageProps): Promi
     return {
       title: 'Event',
     };
-  }
-}
-
-export async function generateStaticParams() {
-  const orgId = getOrganizationId();
-
-  logger.info(
-    { apiBaseUrl: appConfig.env.BACKEND_URL as string, orgId },
-    'Generating static params for events'
-  );
-
-  try {
-    const publicClient = getPublicClient();
-    const response = await getV3Events({
-      client: publicClient,
-      query: {
-        OrganizationId: orgId,
-      },
-    });
-
-    if (!response.data?.data) return [];
-
-    const staticParams = response.data.data
-      .filter(event => event.id !== undefined && event.slug !== undefined)
-      .map(eventInfo => ({
-        id: eventInfo.id!.toString(),
-        slug: eventInfo.slug!,
-      }));
-
-    logger.info({ staticParams }, 'Generated static params');
-    return staticParams;
-  } catch (error) {
-    logger.error({ error }, 'Error generating static params');
-    return [];
   }
 }
 

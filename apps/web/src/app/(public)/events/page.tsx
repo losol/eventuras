@@ -14,8 +14,8 @@ const logger = Logger.create({
   namespace: 'web:events-page',
   context: { page: 'EventsPage' },
 });
-// Incremental Static Regeneration - revalidate every 5 minutes
-export const revalidate = 300;
+// Always render server-side so ORGANIZATION_ID is read at request time, not build time
+export const dynamic = 'force-dynamic';
 export default async function EventsPage() {
   const ORGANIZATION_ID = getOrganizationId();
   const t = await getTranslations();

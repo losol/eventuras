@@ -17,8 +17,8 @@ import getSiteSettings from '@/utils/site/getSiteSettings';
 
 const logger = Logger.create({ namespace: 'web:frontpage' });
 
-// Incremental Static Regeneration - revalidate every 5 minutes
-export const revalidate = 300;
+// Always render server-side so ORGANIZATION_ID is read at request time, not build time
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = await getSiteSettings();
