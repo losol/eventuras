@@ -1,0 +1,58 @@
+# Example tenant override – copy to values.<tenant>.yaml and fill in real values.
+# Deploy with:
+#   helm install eventuras-web-<tenant> . -n argocd -f values.<tenant>.yaml
+# or upgrade:
+#   helm upgrade eventuras-web-<tenant> . -n argocd -f values.<tenant>.yaml
+#
+# NOTE: values.<tenant>.yaml files are in .gitignore – don't commit real values.
+
+# Short identifier used in ArgoCD app names and default namespace names.
+# Example: "internal", "oslo", "bergen"
+tenant: "internal"
+
+config:
+  DEFAULT_LOCALE: "nb-NO"
+  ORGANIZATION_ID: "1"
+  AUTH0_DOMAIN: "eventuras.eu.auth0.com"
+  SITE_SETTINGS_URL: ""
+  SENTRY_DSN: ""
+
+# Sensitive runtime vars go in a k8s Secret per namespace (see create-secrets.sh):
+#   AUTH0_CLIENT_ID, AUTH0_CLIENT_SECRET, AUTH0_API_AUDIENCE, SESSION_SECRET
+
+environments:
+  dev:
+    enabled: true
+    hostname: "web-dev.internal.example.com"
+    tag: edge
+    pullPolicy: Always
+    nodeEnv: development
+    autoSync: true
+    extraEnv:
+      BACKEND_URL: "https://api-dev.internal.example.com"
+      APPLICATION_URL: "https://web-dev.internal.example.com"
+      LOGOUT_URL_REDIRECT: "https://web-dev.internal.example.com"
+
+  staging:
+    enabled: true
+    hostname: "web-staging.internal.example.com"
+    tag: canary
+    pullPolicy: Always
+    nodeEnv: production
+    autoSync: true
+    extraEnv:
+      BACKEND_URL: "https://api-staging.internal.example.com"
+      APPLICATION_URL: "https://web-staging.internal.example.com"
+      LOGOUT_URL_REDIRECT: "https://web-staging.internal.example.com"
+
+  prod:
+    enabled: true
+    hostname: "web.internal.example.com"
+    tag: "0.0.0"   # Set to actual release tag, e.g. "1.2.3"
+    pullPolicy: IfNotPresent
+    nodeEnv: production
+    autoSync: false
+    extraEnv:
+      BACKEND_URL: "https://api.internal.example.com"
+      APPLICATION_URL: "https://web.internal.example.com"
+      LOGOUT_URL_REDIRECT: "https://web.internal.example.com"
