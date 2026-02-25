@@ -12,18 +12,14 @@ app:
       namespace: traefik       # Namespace where the Gateway lives
       sectionName: https       # Must match a listener in the Gateway (e.g. https-eventuras)
 
-# Non-sensitive env vars – names are 1-1 with what the app reads.
-# See apps/web/app.config.json for the full list and descriptions.
+# Non-sensitive env vars shared across all environments for this tenant.
+# Names are 1-1 with what the app reads (see apps/web/app.config.json).
 config:
-  NEXT_PUBLIC_BACKEND_URL: ""          # e.g. "https://api.internal.example.com"
-  NEXT_PUBLIC_APPLICATION_URL: ""      # e.g. "https://app.internal.example.com"
-  NEXT_PUBLIC_LOGOUT_URL_REDIRECT: "" # e.g. "https://app.internal.example.com"
-  NEXT_PUBLIC_DEFAULT_LOCALE: "nb-NO" # "nb-NO" or "en-US"
+  NEXT_PUBLIC_DEFAULT_LOCALE: "nb-NO"  # "nb-NO" or "en-US"
   NEXT_PUBLIC_ORGANIZATION_ID: ""      # e.g. "1"
   NEXT_PUBLIC_AUTH0_DOMAIN: ""         # e.g. "eventuras.eu.auth0.com"
   NEXT_PUBLIC_SITE_SETTINGS_URL: ""    # optional
   NEXT_PUBLIC_SENTRY_DSN: ""           # optional – safe to commit (public DSN)
-  NEXT_PUBLIC_POSTHOG_KEY: ""          # optional – safe to commit (public key)
 
 # Server-side secrets – NOT set here, belong in eventuras-web-secrets k8s Secret:
 #   AUTH0_CLIENT_ID, AUTH0_CLIENT_SECRET, AUTH0_API_AUDIENCE, SESSION_SECRET
@@ -35,27 +31,39 @@ extraEnv: {}
 environments:
   dev:
     enabled: false
-    hostname: ""         # e.g. "app-dev.internal.example.com"
+    hostname: ""         # e.g. "web-dev.internal.example.com"
     namespace: ""        # Override default (eventuras-web-{{ tenant }}-dev)
     tag: edge
     pullPolicy: Always
     nodeEnv: development
     autoSync: true
+    extraEnv:            # Per-environment URL overrides
+      NEXT_PUBLIC_BACKEND_URL: ""        # e.g. "https://api-dev.internal.example.com"
+      NEXT_PUBLIC_APPLICATION_URL: ""    # e.g. "https://web-dev.internal.example.com"
+      NEXT_PUBLIC_LOGOUT_URL_REDIRECT: "" # usually same as APPLICATION_URL
 
   staging:
     enabled: true
-    hostname: ""         # e.g. "app-staging.internal.example.com"
+    hostname: ""         # e.g. "web-staging.internal.example.com"
     namespace: ""        # Override default (eventuras-web-{{ tenant }}-staging)
     tag: canary
     pullPolicy: Always
     nodeEnv: production
     autoSync: true
+    extraEnv:            # Per-environment URL overrides
+      NEXT_PUBLIC_BACKEND_URL: ""        # e.g. "https://api-staging.internal.example.com"
+      NEXT_PUBLIC_APPLICATION_URL: ""    # e.g. "https://web-staging.internal.example.com"
+      NEXT_PUBLIC_LOGOUT_URL_REDIRECT: "" # usually same as APPLICATION_URL
 
   prod:
     enabled: true
-    hostname: ""         # e.g. "app.internal.example.com"
+    hostname: ""         # e.g. "web-prod.internal.example.com"
     namespace: ""        # Override default (eventuras-web-{{ tenant }}-prod)
     tag: "0.0.0"         # Set by CI on release
     pullPolicy: IfNotPresent
     nodeEnv: production
     autoSync: false
+    extraEnv:            # Per-environment URL overrides
+      NEXT_PUBLIC_BACKEND_URL: ""        # e.g. "https://api-prod.internal.example.com"
+      NEXT_PUBLIC_APPLICATION_URL: ""    # e.g. "https://web-prod.internal.example.com"
+      NEXT_PUBLIC_LOGOUT_URL_REDIRECT: "" # usually same as APPLICATION_URL

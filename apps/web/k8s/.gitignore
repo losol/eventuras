@@ -1,0 +1,2 @@
+# Tenant-specific values files – keep outside the repo
+values.*.yaml
