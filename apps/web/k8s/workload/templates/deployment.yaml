@@ -36,16 +36,17 @@ spec:
                 optional: true
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          # Health probes disabled until /api/health endpoint is implemented
-          # livenessProbe:
-          #   httpGet:
-          #     path: /api/health
-          #     port: {{ .Values.service.targetPort }}
-          #   initialDelaySeconds: 15
-          #   periodSeconds: 30
-          # readinessProbe:
-          #   httpGet:
-          #     path: /api/health
-          #     port: {{ .Values.service.targetPort }}
-          #   initialDelaySeconds: 5
-          #   periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/healthz
+              port: {{ .Values.service.targetPort }}
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /api/healthz
+              port: {{ .Values.service.targetPort }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
