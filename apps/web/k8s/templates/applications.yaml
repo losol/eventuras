@@ -37,6 +37,9 @@ spec:
           {{- with $.Values.config }}
           {{- toYaml . | nindent 10 }}
           {{- end }}
+          {{- with $cfg.extraEnv }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
           {{- with $.Values.extraEnv }}
           {{- toYaml . | nindent 10 }}
           {{- end }}
