@@ -51,14 +51,6 @@ importers:
 
   apps/api: {}
 
-  apps/api/src/Eventuras.WebApi: {}
-
-  apps/api/src/Eventuras.WebApi/bin/Debug/net10.0: {}
-
-  apps/api/src/Eventuras.WebApi/bin/Debug/net10.0/bin/Debug/net10.0: {}
-
-  apps/api/tests/Eventuras.WebApi.Tests/bin/Debug/net10.0: {}
-
   apps/conductor:
     dependencies:
       '@eventuras/logger':
