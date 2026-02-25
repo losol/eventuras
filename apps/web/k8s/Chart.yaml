@@ -1,0 +1,5 @@
+apiVersion: v2
+name: eventuras-web
+description: Provisions ArgoCD Applications for eventuras-web tenants (dev/staging/prod)
+type: application
+version: 0.1.0

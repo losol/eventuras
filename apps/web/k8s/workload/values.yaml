@@ -1,0 +1,44 @@
+# Default values for eventuras-web workload
+# Environment-specific values are set by Argo CD, not here
+
+replicaCount: 1
+
+image:
+  registry: ""      # Set by Argo: docker.io
+  repository: ""    # Set by Argo: losol/eventuras-web
+  tag: ""           # Set by Argo: sha-abc123, v1.2.3
+  pullPolicy: IfNotPresent
+
+# Hostname for the application
+hostname: ""        # Set by Argo: app-dev.eventuras.example.com
+
+# HTTPRoute for Gateway API (requires gateway.networking.k8s.io CRDs)
+httpRoute:
+  enabled: true
+  gateway:
+    name: traefik-gateway
+    namespace: traefik
+    sectionName: https  # Must match a listener in the Gateway – see infra/traefik-gateway/README.md
+
+service:
+  port: 80
+  targetPort: 3000
+
+resources:
+  requests:
+    memory: "512Mi"
+    cpu: "200m"
+    ephemeral-storage: "1Gi"
+  limits:
+    memory: "1Gi"
+    cpu: "1000m"
+    ephemeral-storage: "2Gi"
+
+# Environment variables (non-sensitive)
+env: {}
+# Additional env vars set by provisioner:
+#   NODE_ENV: production
+#   PORT: "3000"
+#   NEXT_PUBLIC_API_URL: "https://api-dev.eventuras.example.com"
+#   NEXT_PUBLIC_APP_URL: "https://app-dev.eventuras.example.com"
+# Sensitive values (tokens, secrets) belong in the eventuras-web-secrets k8s Secret.

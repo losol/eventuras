@@ -24,6 +24,8 @@ spec:
           ports:
             - containerPort: {{ .Values.service.targetPort }}
           env:
+            - name: PORT
+              value: {{ .Values.service.targetPort | quote }}
             {{- range $key, $value := .Values.env }}
             - name: {{ $key }}
               value: {{ $value | quote }}
