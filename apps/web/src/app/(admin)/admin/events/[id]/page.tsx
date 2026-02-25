@@ -6,7 +6,6 @@ import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 
-import { appConfig } from '@/config.server';
 import {
   getV3EventsByEventIdProducts,
   getV3EventsByEventIdStatistics,
@@ -15,6 +14,7 @@ import {
   getV3Registrations,
   NotificationDto,
 } from '@/lib/eventuras-sdk';
+import { getOrganizationId } from '@/utils/organization';
 
 import EventPageTabs from './EventPageTabs';
 
@@ -43,10 +43,7 @@ export default async function EventAdminPage({ params, searchParams }: Readonly<
   const isNewlyCreated = search.newlyCreated === 'true';
   const defaultTab = isNewlyCreated ? 'overview' : 'participants';
 
-  const organizationId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
-  if (!organizationId || typeof organizationId !== 'number') {
-    logger.error('NEXT_PUBLIC_ORGANIZATION_ID is not configured properly');
-  }
+  const organizationId = getOrganizationId();
 
   const [eventinfoRes, registrationsRes, eventProductsRes, statisticsRes, notificationsRes] =
     await Promise.all([
@@ -61,16 +58,14 @@ export default async function EventAdminPage({ params, searchParams }: Readonly<
       }),
       getV3EventsByEventIdProducts({ path: { eventId: id } }),
       getV3EventsByEventIdStatistics({ path: { eventId: id } }),
-      organizationId && typeof organizationId === 'number'
-        ? getV3Notifications({
-            headers: {
-              'Eventuras-Org-Id': organizationId,
-            },
-            query: {
-              EventId: id,
-            },
-          })
-        : Promise.resolve({ data: undefined, error: 'Organization ID not configured' }),
+      getV3Notifications({
+        headers: {
+          'Eventuras-Org-Id': organizationId,
+        },
+        query: {
+          EventId: id,
+        },
+      }),
     ]);
   const eventinfo = eventinfoRes?.data;
   if (!eventinfo) {
@@ -164,6 +159,7 @@ export default async function EventAdminPage({ params, searchParams }: Readonly<
             statistics={statisticsRes.data ?? {}}
             eventProducts={eventProductsRes.data ?? []}
             notifications={notifications}
+            organizationId={organizationId ?? 0}
             defaultTab={
               defaultTab as
                 | 'participants'

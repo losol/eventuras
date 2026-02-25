@@ -3,7 +3,7 @@
 import { actionError, actionSuccess, ServerActionResult } from '@eventuras/core-nextjs/actions';
 import { Logger } from '@eventuras/logger';
 
-import { publicEnv } from '@/config.client';
+import { appConfig } from '@/config.server';
 import { getAccessToken } from '@/utils/getAccesstoken';
 
 const logger = Logger.create({
@@ -30,7 +30,7 @@ export async function downloadRegistrationsExcel(
     }
 
     const response = await fetch(
-      `${publicEnv.NEXT_PUBLIC_BACKEND_URL}/v3/registrations?EventId=${eventId}`,
+      `${appConfig.env.BACKEND_URL}/v3/registrations?EventId=${eventId}`,
       {
         headers: {
           Accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',

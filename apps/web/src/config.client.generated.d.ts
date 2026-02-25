@@ -5,12 +5,6 @@
  * To regenerate, run: pnpm generate:config-types
  */
 
-export interface WebPublicEnv {
-  NEXT_PUBLIC_APPLICATION_URL: string;
-  NEXT_PUBLIC_LOGOUT_URL_REDIRECT: string;
-  NEXT_PUBLIC_DEFAULT_LOCALE: string;
-  NEXT_PUBLIC_AUTH0_DOMAIN: string;
-  NEXT_PUBLIC_ORGANIZATION_ID: number;
-  NEXT_PUBLIC_SITE_SETTINGS_URL?: string;
-  NEXT_PUBLIC_BACKEND_URL: string;
-}
+// All environment variables are now server-side only.
+// No NEXT_PUBLIC_* vars remain in apps/web.
+export interface WebPublicEnv {}

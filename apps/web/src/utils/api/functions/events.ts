@@ -10,11 +10,10 @@ import {
   RegistrationDto,
   RegistrationUpdateDto,
 } from '@/lib/eventuras-sdk';
+import { getOrganizationId } from '@/utils/organization';
+import { productMapToOrderLineModel } from '@/utils/registration-helpers';
 
 const logger = Logger.create({ namespace: 'web:utils:api', context: { module: 'events' } });
-
-import { publicEnv } from '@/config.client';
-import { productMapToOrderLineModel } from '@/utils/registration-helpers';
 
 // Re-export for backwards compatibility
 export { productMapToOrderLineModel };
@@ -24,7 +23,7 @@ export const createEventRegistration = async (
   selectedProducts?: Map<string, number>
 ): Promise<RegistrationDto | null> => {
   const products = productMapToOrderLineModel(selectedProducts);
-  const orgId = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
+  const orgId = getOrganizationId();
 
   if (!orgId || isNaN(orgId)) {
     logger.error('Organization ID is not configured or invalid');
@@ -60,12 +59,7 @@ export const updateEventRegistration = async (
   availableProducts: ProductDto[],
   selectedProducts?: Map<string, number>
 ): Promise<RegistrationDto | null> => {
-  const orgId = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
-
-  if (!orgId || isNaN(orgId)) {
-    logger.error('Organization ID is not configured or invalid');
-    throw new Error('Organization ID is required');
-  }
+  const orgId = getOrganizationId();
 
   /*
     we may have not selected any products, which would result in an empty map.
@@ -104,12 +98,7 @@ export const addProductsToRegistration = async (
   registrationId: string | number,
   products: OrderLineModel[]
 ): Promise<RegistrationDto | null> => {
-  const orgId = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
-
-  if (!orgId || isNaN(orgId)) {
-    logger.error('Organization ID is not configured or invalid');
-    throw new Error('Organization ID is required');
-  }
+  const orgId = getOrganizationId();
 
   const response = await postV3RegistrationsByIdProducts({
     path: { id: parseInt(registrationId.toString(), 10) },

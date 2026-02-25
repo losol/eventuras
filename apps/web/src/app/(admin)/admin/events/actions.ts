@@ -10,7 +10,6 @@ import {
 } from '@eventuras/core-nextjs/actions';
 import { Logger } from '@eventuras/logger';
 
-import { appConfig } from '@/config.server';
 import { client } from '@/lib/eventuras-client';
 import {
   EventFormDto,
@@ -18,25 +17,7 @@ import {
   postV3Events,
   putV3EventsById,
 } from '@/lib/eventuras-sdk';
-
-/**
- * Get the organization ID from the app configuration
- * @returns The organization ID as a number, or null if not configured
- */
-function getOrganizationId(): number | null {
-  const orgId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
-
-  if (typeof orgId === 'number') {
-    return orgId;
-  }
-
-  if (typeof orgId === 'string' && orgId.trim() !== '') {
-    const parsed = parseInt(orgId, 10);
-    return isNaN(parsed) ? null : parsed;
-  }
-
-  return null;
-}
+import { getOrganizationId } from '@/utils/organization';
 
 const logger = Logger.create({
   namespace: 'web:admin',

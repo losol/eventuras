@@ -5,6 +5,7 @@ import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 
 import FatalError from '@/components/FatalError';
+import { getOrganizationId } from '@/utils/organization';
 
 import { getCollections } from './actions';
 import CollectionCreator from './CollectionCreator';
@@ -19,6 +20,7 @@ export default async function AdminCollectionsPage({ searchParams }: PageProps) 
   const params = await searchParams;
   const page = params.page ? parseInt(params.page, 10) : 1;
   const pageSize = 100;
+  const organizationId = getOrganizationId();
   const response = await getCollections(page, pageSize);
   if (!response.ok || !response.data) {
     return (
@@ -35,7 +37,7 @@ export default async function AdminCollectionsPage({ searchParams }: PageProps) 
     <>
       <Container>
         <Heading as="h1">{t('common.collections.page.title')}</Heading>
-        <CollectionCreator />
+        <CollectionCreator organizationId={organizationId} />
       </Container>
       <Section>
         <Container>

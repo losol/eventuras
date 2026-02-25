@@ -6,10 +6,8 @@ import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Fieldset, Form, TextField } from '@eventuras/ratio-ui/forms';
 import { useToast } from '@eventuras/toast';
 
-import { publicEnv } from '@/config.client';
-
 import { createEvent } from './actions';
-export const CreateEventForm = () => {
+export const CreateEventForm = ({ organizationId }: { organizationId: number }) => {
   const t = useTranslations();
   const toast = useToast();
   const [state, formAction, isPending] = useActionState(createEvent, null);
@@ -24,11 +22,7 @@ export const CreateEventForm = () => {
   return (
     <Form action={formAction}>
       <Fieldset>
-        <TextField
-          name="organizationId"
-          type="hidden"
-          value={publicEnv.NEXT_PUBLIC_ORGANIZATION_ID?.toString() ?? ''}
-        />
+        <TextField name="organizationId" type="hidden" value={organizationId.toString()} />
         <TextField
           name="title"
           placeholder={t('admin.createEvent.form.titlePlaceholder')}

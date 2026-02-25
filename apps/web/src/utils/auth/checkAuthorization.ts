@@ -2,16 +2,16 @@
 
 import { Logger } from '@eventuras/logger';
 
-import { appConfig } from '@/config.server';
 import { client } from '@/lib/eventuras-client';
 import {
   getV3OrganizationsByOrganizationIdMembersByUserIdRoles,
   getV3UsersMe,
 } from '@/lib/eventuras-sdk';
+import { getOrganizationId } from '@/utils/organization';
 
 const logger = Logger.create({ namespace: 'web:admin', context: { module: 'checkAuthorization' } });
 
-const ORGANIZATION_ID: number = parseInt(appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID as string);
+const ORGANIZATION_ID: number = getOrganizationId();
 
 export interface AuthorizationResult {
   authorized: boolean;

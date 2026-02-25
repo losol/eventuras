@@ -9,7 +9,6 @@ import {
 } from '@eventuras/core-nextjs/actions';
 import { Logger } from '@eventuras/logger';
 
-import { appConfig } from '@/config.server';
 import { client } from '@/lib/eventuras-client';
 import {
   type EmailNotificationDto,
@@ -17,29 +16,12 @@ import {
   postV3NotificationsSms,
   type SmsNotificationDto,
 } from '@/lib/eventuras-sdk';
+import { getOrganizationId } from '@/utils/organization';
 
 const logger = Logger.create({
   namespace: 'web:actions',
   context: { module: 'NotificationActions' },
 });
-
-/**
- * Get organization ID from config
- */
-function getOrganizationId(): number | null {
-  const orgId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
-
-  if (typeof orgId === 'number') {
-    return orgId;
-  }
-
-  if (typeof orgId === 'string' && orgId.trim() !== '') {
-    const parsed = parseInt(orgId, 10);
-    return isNaN(parsed) ? null : parsed;
-  }
-
-  return null;
-}
 
 /**
  * Send email notification to event participants

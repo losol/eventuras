@@ -9,7 +9,6 @@ import {
 } from '@eventuras/core-nextjs/actions';
 import { Logger } from '@eventuras/logger';
 
-import { appConfig } from '@/config.server';
 import { client } from '@/lib/eventuras-client';
 import {
   NewRegistrationDto,
@@ -21,22 +20,13 @@ import {
   RegistrationDto,
   RegistrationUpdateDto,
 } from '@/lib/eventuras-sdk';
+import { getOrganizationId } from '@/utils/organization';
 import { productMapToOrderLineModel } from '@/utils/registration-helpers';
 
 const logger = Logger.create({
   namespace: 'web:user:events',
   context: { module: 'actions' },
 });
-
-/**
- * Get organization ID helper
- */
-function getOrganizationId(): number {
-  const orgId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
-  if (typeof orgId === 'number') return orgId;
-  if (typeof orgId === 'string') return parseInt(orgId, 10);
-  throw new Error('Organization ID not configured');
-}
 
 /**
  * Add products to a registration

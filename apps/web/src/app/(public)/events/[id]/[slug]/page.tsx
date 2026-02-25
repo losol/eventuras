@@ -17,6 +17,7 @@ import EventRegistrationButton from '@/app/(public)/events/EventRegistrationButt
 import { appConfig } from '@/config.server';
 import { getPublicClient } from '@/lib/eventuras-public-client';
 import { EventInfoStatus, getV3Events, getV3EventsById } from '@/lib/eventuras-public-sdk';
+import { getOrganizationId } from '@/utils/organization';
 
 import EventNotFound from '../../EventNotFound';
 
@@ -73,14 +74,10 @@ export async function generateMetadata({ params }: EventDetailsPageProps): Promi
 }
 
 export async function generateStaticParams() {
-  const organizationId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
-  const orgId =
-    typeof organizationId === 'number'
-      ? organizationId
-      : Number.parseInt(organizationId as string, 10);
+  const orgId = getOrganizationId();
 
   logger.info(
-    { apiBaseUrl: appConfig.env.NEXT_PUBLIC_BACKEND_URL as string, orgId },
+    { apiBaseUrl: appConfig.env.BACKEND_URL as string, orgId },
     'Generating static params for events'
   );
 
@@ -180,7 +177,7 @@ export default async function EventDetailsPage({ params }: Readonly<EventDetails
                 <Calendar className="h-5 w-5 mb-5 text-gray-600" />
                 <span>
                   {formatDateSpan(eventinfo.dateStart as string, eventinfo.dateEnd as string, {
-                    locale: appConfig.env.NEXT_PUBLIC_DEFAULT_LOCALE as string,
+                    locale: appConfig.env.DEFAULT_LOCALE as string,
                   })}
                 </span>
               </div>

@@ -35,7 +35,7 @@ const UserEventRegistrationCard = ({
       </Heading>
       <Text>
         {formatDateSpan(dateStart, dateEnd, {
-          locale: appConfig.env.NEXT_PUBLIC_DEFAULT_LOCALE as string,
+          locale: appConfig.env.DEFAULT_LOCALE as string,
         })}
       </Text>
       {products.length > 0 && (

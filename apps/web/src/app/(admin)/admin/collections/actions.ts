@@ -9,7 +9,6 @@ import {
 } from '@eventuras/core-nextjs/actions';
 import { Logger } from '@eventuras/logger';
 
-import { appConfig } from '@/config.server';
 import { client } from '@/lib/eventuras-client';
 import {
   deleteV3EventsByEventIdCollectionsByCollectionId,
@@ -21,6 +20,7 @@ import {
   putV3EventcollectionsById,
   putV3EventsByEventIdCollectionsByCollectionId,
 } from '@/lib/eventuras-sdk';
+import { getOrganizationId } from '@/utils/organization';
 import slugify from '@/utils/slugify';
 
 const logger = Logger.create({
@@ -30,15 +30,12 @@ const logger = Logger.create({
 
 export async function getCollections(page: number = 1, pageSize: number = 100) {
   try {
-    const organizationId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
+    const organizationId = getOrganizationId();
 
     const { data, error } = await getV3Eventcollections({
       client,
       headers: {
-        'Eventuras-Org-Id':
-          typeof organizationId === 'number'
-            ? organizationId
-            : parseInt(organizationId as string, 10),
+        'Eventuras-Org-Id': organizationId,
       },
       query: {
         Page: page,
@@ -80,10 +77,7 @@ export async function createCollection(
   logger.info('Creating collection...');
 
   try {
-    const organizationId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
-    if (!organizationId || typeof organizationId !== 'number') {
-      return actionError('Organization ID is not configured properly');
-    }
+    const organizationId = getOrganizationId();
 
     // Generate slug from name
     const slug = slugify(data.name);

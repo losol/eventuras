@@ -30,12 +30,12 @@ export function getPublicClient() {
 
   // Read directly from process.env for Next.js build-time inlining
   // This ensures the value is available during static generation
-  const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const baseUrl = process.env.BACKEND_URL;
 
   if (!baseUrl) {
     // During build time, create a dummy client
     // At runtime, this would be a problem but build should skip these pages
-    logger.warn('NEXT_PUBLIC_BACKEND_URL not set - creating placeholder client');
+    logger.warn('BACKEND_URL not set - creating placeholder client');
     // Return a dummy client that will fail gracefully if actually used
     publicClientInstance = createClient({ baseUrl: 'http://localhost:5000' });
     return publicClientInstance;

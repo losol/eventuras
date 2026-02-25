@@ -6,16 +6,15 @@ import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { List } from '@eventuras/ratio-ui/core/List';
 import { Text } from '@eventuras/ratio-ui/core/Text';
 
-import { publicEnv } from '@/config.client';
-import { appConfig } from '@/config.server';
 import { getPublicClient } from '@/lib/eventuras-public-client';
 import { getV3Events } from '@/lib/eventuras-public-sdk';
+import { getOrganizationId } from '@/utils/organization';
 
 const logger = Logger.create({
   namespace: 'web:events-page',
   context: { page: 'EventsPage' },
 });
-const ORGANIZATION_ID = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
+const ORGANIZATION_ID = getOrganizationId();
 // Incremental Static Regeneration - revalidate every 5 minutes
 export const revalidate = 300;
 export default async function EventsPage() {
@@ -55,7 +54,7 @@ export default async function EventsPage() {
       {
         error,
         organizationId: ORGANIZATION_ID,
-        backendUrl: appConfig.env.NEXT_PUBLIC_BACKEND_URL,
+        backendUrl: process.env.BACKEND_URL,
       },
       'Exception while fetching events - this is expected during build time if backend is not running'
     );

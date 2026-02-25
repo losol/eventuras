@@ -38,7 +38,7 @@ export default async function CertificateDetailPage({ params }: Readonly<Certifi
       <Section className="py-12">
         <Container>
           <Certificate certificate={response.data} />
-          <PDFCertificate certificateId={id} />
+          <PDFCertificate certificateId={id} backendUrl={process.env.BACKEND_URL ?? ''} />
         </Container>
       </Section>
     </>

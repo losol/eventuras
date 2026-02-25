@@ -7,32 +7,14 @@ import {
 } from '@eventuras/core-nextjs/actions';
 import { Logger } from '@eventuras/logger';
 
-import { appConfig } from '@/config.server';
 import type { RegistrationDto } from '@/lib/eventuras-sdk';
 import { client, getV3Registrations } from '@/lib/eventuras-sdk';
+import { getOrganizationId } from '@/utils/organization';
 
 const logger = Logger.create({
   namespace: 'web:actions',
   context: { module: 'RegistrationActions' },
 });
-
-/**
- * Get organization ID from config
- */
-function getOrganizationId(): number | null {
-  const orgId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
-
-  if (typeof orgId === 'number') {
-    return orgId;
-  }
-
-  if (typeof orgId === 'string' && orgId.trim() !== '') {
-    const parsed = parseInt(orgId, 10);
-    return isNaN(parsed) ? null : parsed;
-  }
-
-  return null;
-}
 
 /**
  * Fetch user registrations for a specific event
@@ -43,12 +25,6 @@ export async function fetchUserEventRegistrations(
   eventId: number
 ): Promise<ServerActionResult<RegistrationDto[]>> {
   const orgId = getOrganizationId();
-
-  if (!orgId) {
-    const errorMsg = 'Organization ID not configured';
-    logger.error({ orgId }, errorMsg);
-    return actionError(errorMsg, 'MISSING_ORG_ID');
-  }
 
   logger.info({ userId, eventId, organizationId: orgId }, 'Fetching user event registrations');
 

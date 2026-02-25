@@ -9,8 +9,8 @@ import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
-import { appConfig } from '@/config.server';
 import { getV3EventsById, getV3ProductsByProductIdSummary } from '@/lib/eventuras-sdk';
+import { getOrganizationId } from '@/utils/organization';
 
 import DeliverySummary from '../DeliverySummary';
 
@@ -31,8 +31,7 @@ const EventProducts: React.FC<EventProductsPage> = async props => {
   const t = await getTranslations();
 
   // Get organization ID
-  const orgIdStr = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
-  const organizationId = typeof orgIdStr === 'number' ? orgIdStr : parseInt(orgIdStr as string, 10);
+  const organizationId = getOrganizationId();
 
   logger.info({ productId, organizationId }, 'Fetching product summary');
 

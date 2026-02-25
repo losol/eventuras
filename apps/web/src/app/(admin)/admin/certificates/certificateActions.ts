@@ -3,7 +3,7 @@
 import { actionError, actionSuccess, ServerActionResult } from '@eventuras/core-nextjs/actions';
 import { Logger } from '@eventuras/logger';
 
-import { publicEnv } from '@/config.client';
+import { appConfig } from '@/config.server';
 import { getAccessToken } from '@/utils/getAccesstoken';
 
 const logger = Logger.create({
@@ -30,7 +30,7 @@ export async function downloadCertificatePdf(
     }
 
     const response = await fetch(
-      `${publicEnv.NEXT_PUBLIC_BACKEND_URL}/v3/certificates/${certificateId}?format=Pdf`,
+      `${appConfig.env.BACKEND_URL}/v3/certificates/${certificateId}?format=Pdf`,
       {
         headers: {
           Accept: 'application/pdf',
@@ -90,7 +90,7 @@ export async function sendCertificateToParticipant(
     }
 
     const response = await fetch(
-      `${publicEnv.NEXT_PUBLIC_BACKEND_URL}/v3/registrations/${registrationId}/certificate/send`,
+      `${appConfig.env.BACKEND_URL}/v3/registrations/${registrationId}/certificate/send`,
       {
         method: 'POST',
         headers: {

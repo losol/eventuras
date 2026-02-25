@@ -2,7 +2,7 @@
  * Server-side Configuration
  *
  * ONLY use this in server components, API routes, and server actions.
- * Do NOT import in client components - use '@/config' and publicEnv instead.
+ * Do NOT import in client components – all config is server-side only.
  *
  * @example
  * import { appConfig } from '@/config.server';

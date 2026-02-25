@@ -31,7 +31,7 @@ const EventCard: React.FC<EventCardProps> = ({ eventinfo }) => {
       )}
       <Text icon={<Calendar size={16} />} padding="pt-1">
         {formatDateSpan(eventinfo.dateStart as string, eventinfo.dateEnd as string, {
-          locale: appConfig.env.NEXT_PUBLIC_DEFAULT_LOCALE as string,
+          locale: appConfig.env.DEFAULT_LOCALE as string,
         })}
       </Text>
     </Card>
