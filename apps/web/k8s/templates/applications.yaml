@@ -1,0 +1,68 @@
+{{- $tenant := required ".Values.tenant is required (e.g. --set tenant=internal)" .Values.tenant }}
+{{- range $env, $cfg := .Values.environments }}
+{{- if $cfg.enabled }}
+{{- if not $cfg.hostname }}{{- fail (printf "environments.%s.hostname is required when enabled" $env) }}{{- end }}
+{{- $namespace := $cfg.namespace | default (printf "%s-%s-%s" $.Chart.Name $tenant $env) }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ $.Chart.Name }}-{{ $tenant }}-{{ $env }}
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: eventuras-web-{{ $tenant }}
+
+  source:
+    repoURL: https://github.com/losol/eventuras
+    targetRevision: main
+    path: apps/web/k8s/workload
+    helm:
+      releaseName: {{ $.Chart.Name }}-{{ $tenant }}-{{ $env }}
+      valuesObject:
+        image:
+          registry: {{ $.Values.app.image.registry | quote }}
+          repository: {{ $.Values.app.image.repository | quote }}
+          tag: {{ $cfg.tag | quote }}
+          pullPolicy: {{ $cfg.pullPolicy | quote }}
+        hostname: {{ $cfg.hostname | quote }}
+        httpRoute:
+          gateway:
+            name: {{ $.Values.app.httpRoute.gateway.name | quote }}
+            namespace: {{ $.Values.app.httpRoute.gateway.namespace | quote }}
+            sectionName: {{ $.Values.app.httpRoute.gateway.sectionName | quote }}
+        env:
+          NODE_ENV: {{ $cfg.nodeEnv | quote }}
+          {{- with $.Values.config }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
+          {{- with $.Values.extraEnv }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ $namespace }}
+
+  syncPolicy:
+    {{- if $cfg.autoSync }}
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    {{- end }}
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+      - adoptExistingResources=true
+    retry:
+      limit: 3
+      backoff:
+        duration: 10s
+        factor: 2
+        maxDuration: 2m
+
+  revisionHistoryLimit: 10
+{{- end }}
+{{- end }}
