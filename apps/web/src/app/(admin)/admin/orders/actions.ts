@@ -5,7 +5,6 @@ import { revalidatePath } from 'next/cache';
 import { actionError, actionSuccess, ServerActionResult } from '@eventuras/core-nextjs/actions';
 import { Logger } from '@eventuras/logger';
 
-import { appConfig } from '@/config.server';
 import { client } from '@/lib/eventuras-client';
 import {
   getV3Orders,
@@ -14,6 +13,7 @@ import {
   patchV3OrdersById,
   postV3Invoices,
 } from '@/lib/eventuras-sdk';
+import { getOrganizationId } from '@/utils/organization';
 
 const logger = Logger.create({
   namespace: 'web:admin:orders',
@@ -28,21 +28,15 @@ export interface GetOrdersResult {
 
 export async function getOrders(page: number = 1, pageSize: number = 50) {
   try {
-    const organizationId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
+    const organizationId = getOrganizationId();
 
     const { data, error } = await getV3Orders({
       client,
       headers: {
-        'Eventuras-Org-Id':
-          typeof organizationId === 'number'
-            ? organizationId
-            : Number.parseInt(organizationId as string, 10),
+        'Eventuras-Org-Id': organizationId,
       },
       query: {
-        OrganizationId:
-          typeof organizationId === 'number'
-            ? organizationId
-            : Number.parseInt(organizationId as string, 10),
+        OrganizationId: organizationId,
         IncludeUser: true,
         IncludeRegistration: true,
         Page: page,
@@ -81,16 +75,7 @@ export async function getOrders(page: number = 1, pageSize: number = 50) {
 export async function verifyOrderAction(orderId: number) {
   logger.info({ orderId }, 'Verifying order...');
 
-  const organizationId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
-  const orgId =
-    typeof organizationId === 'number'
-      ? organizationId
-      : Number.parseInt(organizationId as string, 10);
-
-  if (!orgId || Number.isNaN(orgId)) {
-    logger.error('Organization ID is required');
-    throw new Error('Organization ID is required');
-  }
+  const orgId = getOrganizationId();
 
   try {
     const response = await patchV3OrdersById({
@@ -123,16 +108,7 @@ export async function verifyOrderAction(orderId: number) {
 export async function invoiceOrderAction(orderId: number): Promise<ServerActionResult<void>> {
   logger.info({ orderId }, 'Creating invoice for order...');
 
-  const organizationId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
-  const orgId =
-    typeof organizationId === 'number'
-      ? organizationId
-      : Number.parseInt(organizationId as string, 10);
-
-  if (!orgId || Number.isNaN(orgId)) {
-    logger.error('Organization ID is required');
-    return actionError('Organization ID is required');
-  }
+  const orgId = getOrganizationId();
 
   try {
     const invoiceRequest: InvoiceRequestDto = {

@@ -11,8 +11,8 @@ import { Link } from '@eventuras/ratio-ui-next';
 
 import { EventGrid } from '@/components/event';
 import UserMenu from '@/components/eventuras/UserMenu';
-import { appConfig } from '@/config.server';
 import { getV3Events, publicClient } from '@/lib/eventuras-public-sdk';
+import { getOrganizationId } from '@/utils/organization';
 import getSiteSettings from '@/utils/site/getSiteSettings';
 
 const logger = Logger.create({ namespace: 'web:frontpage' });
@@ -32,15 +32,7 @@ export default async function Homepage() {
   const site = await getSiteSettings();
   const t = await getTranslations();
 
-  // Get organization ID - default to 1 for development/build if not set
-  const ORGANIZATION_ID = Number(appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID as string) || 1;
-
-  if (Number.isNaN(ORGANIZATION_ID)) {
-    logger.error(
-      { value: appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID },
-      'Invalid NEXT_PUBLIC_ORGANIZATION_ID'
-    );
-  }
+  const ORGANIZATION_ID = getOrganizationId();
 
   let response;
   try {

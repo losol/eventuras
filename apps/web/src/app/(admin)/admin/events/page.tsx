@@ -5,7 +5,7 @@ import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
-import { publicEnv } from '@/config.client';
+import { getOrganizationId } from '@/utils/organization';
 
 import AdminEventList from './AdminEventList';
 
@@ -17,6 +17,7 @@ const AdminPage = async ({ searchParams }: AdminPageProps) => {
   const t = await getTranslations();
   const params = await searchParams;
   const page = params.page ? Number.parseInt(params.page, 10) : 1;
+  const organizationId = getOrganizationId();
 
   return (
     <Container>
@@ -27,11 +28,7 @@ const AdminPage = async ({ searchParams }: AdminPageProps) => {
         </Link>
       </Section>
       <Heading as="h2">{t('common.events.sectiontitle')}</Heading>
-      <AdminEventList
-        organizationId={publicEnv.NEXT_PUBLIC_ORGANIZATION_ID}
-        includePastEvents
-        page={page}
-      />
+      <AdminEventList organizationId={organizationId} includePastEvents page={page} />
     </Container>
   );
 };

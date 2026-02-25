@@ -10,7 +10,6 @@ import { Tabs } from '@eventuras/ratio-ui/core/Tabs';
 import { Form, useFormContext } from '@eventuras/smartform';
 import { useToast } from '@eventuras/toast';
 
-import { publicEnv } from '@/config.client';
 import {
   EventDto,
   EventFormDto,
@@ -110,6 +109,7 @@ type EventPageTabsProps = {
   statistics: EventStatisticsDto;
   eventProducts: ProductDto[];
   notifications: NotificationDto[];
+  organizationId: number;
   defaultTab?:
     | 'participants'
     | 'overview'
@@ -128,6 +128,7 @@ export default function EventPageTabs({
   statistics,
   eventProducts,
   notifications,
+  organizationId,
   defaultTab = 'participants',
 }: EventPageTabsProps) {
   const searchParams = useSearchParams();
@@ -161,7 +162,7 @@ export default function EventPageTabs({
     async (data: EventFormDto) => {
       logger.info({ autoSave: true }, 'Auto-saving event...');
 
-      const orgId = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
+      const orgId = organizationId;
       if (!orgId || Number.isNaN(orgId)) {
         logger.error({ orgId }, 'Organization ID is not configured for auto-save');
         toast.error('Configuration error: Organization ID is missing');
@@ -229,7 +230,7 @@ export default function EventPageTabs({
         </Tabs.Item>
 
         <Tabs.Item id="overview" title={t('admin.events.tabs.overview')} testId="tab-overview">
-          <OverviewSection />
+          <OverviewSection organizationId={organizationId} />
           <SaveButton onSave={handleAutoSave} />
         </Tabs.Item>
 

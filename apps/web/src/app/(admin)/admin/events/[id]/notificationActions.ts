@@ -3,12 +3,12 @@
 import { actionError, actionSuccess, ServerActionResult } from '@eventuras/core-nextjs/actions';
 import { Logger } from '@eventuras/logger';
 
-import { appConfig } from '@/config.server';
 import {
   getV3Notifications,
   getV3NotificationsByIdRecipients,
   NotificationDto,
 } from '@/lib/eventuras-sdk';
+import { getOrganizationId } from '@/utils/organization';
 
 const logger = Logger.create({
   namespace: 'web:admin:events',
@@ -48,11 +48,7 @@ export async function fetchEventNotifications(
   try {
     logger.info({ eventId }, 'Fetching notifications for event');
 
-    const organizationId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
-    if (!organizationId || typeof organizationId !== 'number') {
-      logger.error({ eventId }, 'NEXT_PUBLIC_ORGANIZATION_ID is not configured properly');
-      return actionError('Configuration error');
-    }
+    const organizationId = getOrganizationId();
 
     const response = await getV3Notifications({
       headers: {

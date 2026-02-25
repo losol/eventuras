@@ -17,7 +17,7 @@ export async function GET() {
     if (!rateLimitOk) {
       logger.warn('Rate limit exceeded');
       return NextResponse.redirect(
-        new URL('/rate-limited', process.env.NEXT_PUBLIC_APPLICATION_URL)
+        new URL('/rate-limited', process.env.APPLICATION_URL)
       );
     }
 
@@ -40,7 +40,7 @@ export async function GET() {
           },
           'Valid session exists, redirecting to homepage'
         );
-        return NextResponse.redirect(new URL('/', process.env.NEXT_PUBLIC_APPLICATION_URL));
+        return NextResponse.redirect(new URL('/', process.env.APPLICATION_URL));
       } else {
         // Session exists but is invalid/expired - clear it
         logger.info('Session expired or invalid, clearing and proceeding to Auth0');
@@ -52,7 +52,7 @@ export async function GET() {
 
     // If no session exists, redirect to the Auth0 login page
     return NextResponse.redirect(
-      new URL('/api/login/auth0', process.env.NEXT_PUBLIC_APPLICATION_URL)
+      new URL('/api/login/auth0', process.env.APPLICATION_URL)
     );
   } catch (error) {
     logger.error({ error }, 'Error in login route');

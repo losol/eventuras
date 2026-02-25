@@ -7,17 +7,15 @@ import { Text } from '@eventuras/ratio-ui/core/Text';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
-import { appConfig } from '@/config.server';
 import { getPublicClient } from '@/lib/eventuras-public-client';
 import { getV3Eventcollections } from '@/lib/eventuras-public-sdk';
+import { getOrganizationId } from '@/utils/organization';
 // Incremental Static Regeneration - revalidate every 5 minutes
 export const revalidate = 300;
 const CollectionIndexPage: React.FC = async () => {
   const t = await getTranslations();
   // Get organization ID with proper type handling
-  const organizationId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
-  const orgId =
-    typeof organizationId === 'number' ? organizationId : parseInt(organizationId as string, 10);
+  const orgId = getOrganizationId();
   // Use public client for anonymous API access
   const publicClient = getPublicClient();
   const response = await getV3Eventcollections({

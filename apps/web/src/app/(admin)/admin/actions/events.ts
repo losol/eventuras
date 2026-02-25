@@ -7,32 +7,14 @@ import {
 } from '@eventuras/core-nextjs/actions';
 import { Logger } from '@eventuras/logger';
 
-import { appConfig } from '@/config.server';
 import type { EventDto } from '@/lib/eventuras-sdk';
 import { getV3Events } from '@/lib/eventuras-sdk';
+import { getOrganizationId } from '@/utils/organization';
 
 const logger = Logger.create({
   namespace: 'web:actions',
   context: { module: 'EventActions' },
 });
-
-/**
- * Get organization ID from config
- */
-function getOrganizationId(): number | null {
-  const orgId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
-
-  if (typeof orgId === 'number') {
-    return orgId;
-  }
-
-  if (typeof orgId === 'string' && orgId.trim() !== '') {
-    const parsed = parseInt(orgId, 10);
-    return isNaN(parsed) ? null : parsed;
-  }
-
-  return null;
-}
 
 /**
  * Fetch events for autocomplete/lookup

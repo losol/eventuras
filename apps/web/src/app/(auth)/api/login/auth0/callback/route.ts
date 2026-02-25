@@ -22,7 +22,7 @@ export async function GET(request: Request): Promise<Response> {
   try {
     // 2) Reconstruct the public callback URL
     const currentUrl = new URL(request.url);
-    const publicUrl = new URL(appConfig.env.NEXT_PUBLIC_APPLICATION_URL as string);
+    const publicUrl = new URL(appConfig.env.APPLICATION_URL as string);
     publicUrl.search = currentUrl.search;
     logger.debug(
       {

@@ -13,7 +13,6 @@ import {
   useFormContext,
 } from '@eventuras/smartform';
 
-import { publicEnv } from '@/config.client';
 import { EventDto } from '@/lib/eventuras-sdk';
 
 import { ExcelExportButton } from './ExcelExportButton';
@@ -21,12 +20,15 @@ import { AdminCertificatesActionsMenu } from '../AdminCertificatesActionsMenu';
 
 import '@eventuras/scribo/style.css';
 
-export const OverviewSection = ({ loading = false }: { loading?: boolean }) => (
+export const OverviewSection = ({
+  loading = false,
+  organizationId,
+}: {
+  loading?: boolean;
+  organizationId: number;
+}) => (
   <>
-    <HiddenInput
-      name="organizationId"
-      value={publicEnv.NEXT_PUBLIC_ORGANIZATION_ID?.toString() ?? ''}
-    />
+    <HiddenInput name="organizationId" value={organizationId.toString()} />
     <Fieldset label="Settings" disabled={loading}>
       <div className="flex flex-row">
         <div className="mr-4">

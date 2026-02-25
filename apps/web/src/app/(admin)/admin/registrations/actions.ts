@@ -5,7 +5,6 @@ import { revalidatePath } from 'next/cache';
 import { actionError, actionSuccess, ServerActionResult } from '@eventuras/core-nextjs/actions';
 import { Logger } from '@eventuras/logger';
 
-import { appConfig } from '@/config.server';
 import { client } from '@/lib/eventuras-client';
 import {
   getV3Registrations,
@@ -16,6 +15,7 @@ import {
   RegistrationDtoPageResponseDto,
   RegistrationStatus,
 } from '@/lib/eventuras-sdk';
+import { getOrganizationId } from '@/utils/organization';
 
 const logger = Logger.create({
   namespace: 'web:admin:registrations',
@@ -29,15 +29,12 @@ export default async function revalidateRegistrationCache() {
 
 export async function getRegistrations(page: number = 1, pageSize: number = 50) {
   try {
-    const organizationId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
+    const organizationId = getOrganizationId();
 
     const { data, error } = await getV3Registrations({
       client,
       headers: {
-        'Eventuras-Org-Id':
-          typeof organizationId === 'number'
-            ? organizationId
-            : parseInt(organizationId as string, 10),
+        'Eventuras-Org-Id': organizationId,
       },
       query: {
         IncludeUserInfo: true,
@@ -71,16 +68,6 @@ export async function getRegistrations(page: number = 1, pageSize: number = 50) 
       data: null,
     };
   }
-}
-
-/**
- * Get organization ID helper
- */
-function getOrganizationId(): number {
-  const orgId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
-  if (typeof orgId === 'number') return orgId;
-  if (typeof orgId === 'string') return parseInt(orgId, 10);
-  throw new Error('Organization ID not configured');
 }
 
 /**

@@ -3,18 +3,15 @@ import { getTranslations } from 'next-intl/server';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
 
-import { appConfig } from '@/config.server';
 import { UserDto } from '@/lib/eventuras-sdk';
 import { getV3Users } from '@/lib/eventuras-sdk';
+import { getOrganizationId } from '@/utils/organization';
 
 import UserList from './UserList';
 import UsersActionMenu from './UsersActionMenu';
 const AdminUserPage = async () => {
   const t = await getTranslations();
-  // Get organization ID with proper type handling
-  const organizationId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
-  const orgId =
-    typeof organizationId === 'number' ? organizationId : parseInt(organizationId as string, 10);
+  const orgId = getOrganizationId();
   const response = await getV3Users({
     headers: {
       'Eventuras-Org-Id': orgId,

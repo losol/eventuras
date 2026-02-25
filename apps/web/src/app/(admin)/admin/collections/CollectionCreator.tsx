@@ -7,15 +7,13 @@ import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Dialog } from '@eventuras/ratio-ui/layout/Dialog';
 import { Form, HiddenInput, TextField } from '@eventuras/smartform';
 
-import { publicEnv } from '@/config.client';
 import { EventCollectionCreateDto } from '@/lib/eventuras-sdk';
 
 import { createCollection } from './actions';
-const CollectionCreator: React.FC = () => {
+const CollectionCreator: React.FC<{ organizationId: number }> = ({ organizationId }) => {
   const t = useTranslations();
   const [modalOpen, setModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const organizationId = publicEnv.NEXT_PUBLIC_ORGANIZATION_ID;
   const router = useRouter();
   const handleCreateCollection = async (data: EventCollectionCreateDto) => {
     setIsSubmitting(true);

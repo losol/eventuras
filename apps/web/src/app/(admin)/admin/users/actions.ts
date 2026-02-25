@@ -87,7 +87,7 @@ export async function updateUser(
 export async function updateUserProfile(
   userData: UserFormDto
 ): Promise<ServerActionResult<UserDto>> {
-  const baseUrl = appConfig.env.NEXT_PUBLIC_BACKEND_URL as string;
+  const baseUrl = appConfig.env.BACKEND_URL as string;
   const clientConfig = client.getConfig();
 
   logger.info(

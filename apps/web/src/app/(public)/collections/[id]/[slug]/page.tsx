@@ -22,6 +22,7 @@ import {
   getV3EventcollectionsById,
   getV3Events,
 } from '@/lib/eventuras-public-sdk';
+import { getOrganizationId } from '@/utils/organization';
 type EventInfoProps = {
   params: Promise<{
     id: number;
@@ -33,11 +34,9 @@ export const revalidate = 300;
 // Allow generating new collection pages on-demand
 export const dynamicParams = true;
 export async function generateStaticParams() {
-  const organizationId = appConfig.env.NEXT_PUBLIC_ORGANIZATION_ID;
-  const orgId =
-    typeof organizationId === 'number' ? organizationId : parseInt(organizationId as string, 10);
+  const orgId = getOrganizationId();
   logger.info(
-    { apiBaseUrl: appConfig.env.NEXT_PUBLIC_BACKEND_URL as string, orgId },
+    { apiBaseUrl: appConfig.env.BACKEND_URL as string, orgId },
     'Generating static params for collections'
   );
   try {

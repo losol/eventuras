@@ -50,10 +50,10 @@ export interface SiteInfo {
  * @returns Site information or null if not configured or fetch fails
  */
 const getSiteSettings = async (): Promise<SiteInfo | null> => {
-  const siteSettingsUrl = process.env.NEXT_PUBLIC_SITE_SETTINGS_URL;
+  const siteSettingsUrl = process.env.SITE_SETTINGS_URL;
 
   if (!siteSettingsUrl) {
-    logger.debug('NEXT_PUBLIC_SITE_SETTINGS_URL not configured');
+    logger.debug('SITE_SETTINGS_URL not configured');
     return null;
   }
 

@@ -45,12 +45,12 @@ function ensureConfigured() {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { appConfig } = require('@/config.server');
 
-  const baseUrl = appConfig.env.NEXT_PUBLIC_BACKEND_URL as string;
+  const baseUrl = appConfig.env.BACKEND_URL as string;
 
   if (!baseUrl) {
     // During build time, this is acceptable - pages won't actually be pre-rendered
     // At runtime, this is a fatal error
-    logger.warn('NEXT_PUBLIC_BACKEND_URL not set - skipping client configuration');
+    logger.warn('BACKEND_URL not set - skipping client configuration');
     return; // Don't configure, don't throw
   }
 
