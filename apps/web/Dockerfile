@@ -31,7 +31,7 @@ COPY package.json turbo.json tsconfig.json pnpm-workspace.yaml pnpm-lock.yaml ./
 COPY apps/web ./apps/web
 COPY libs ./libs
 
-RUN pnpm dlx turbo prune --scope=@eventuras/web --docker
+RUN pnpm dlx turbo@2.8.1 prune --scope=@eventuras/web --docker
 
 ##########################
 # Install                #
@@ -66,7 +66,7 @@ COPY --from=install /app ./
 
 RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store \
   --mount=type=cache,id=turbo-cache,target=/app/.turbo \
-  pnpm dlx turbo run build --filter=@eventuras/web^...
+  pnpm exec turbo run build --filter=@eventuras/web^...
 
 WORKDIR /app/apps/web
 

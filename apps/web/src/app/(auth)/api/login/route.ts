@@ -5,6 +5,7 @@ import { accessTokenExpires, getCurrentSession } from '@eventuras/fides-auth-nex
 import { globalGETRateLimit } from '@eventuras/fides-auth-next/request';
 import { Logger } from '@eventuras/logger';
 
+import { appConfig } from '@/config.server';
 import { oauthConfig } from '@/utils/oauthConfig';
 
 const logger = Logger.create({ namespace: 'web:api:login' });
@@ -13,12 +14,11 @@ export async function GET() {
   logger.info('Starting login flow');
 
   try {
+    const applicationUrl = appConfig.env.APPLICATION_URL as string;
     const rateLimitOk = await globalGETRateLimit();
     if (!rateLimitOk) {
       logger.warn('Rate limit exceeded');
-      return NextResponse.redirect(
-        new URL('/rate-limited', process.env.APPLICATION_URL)
-      );
+      return NextResponse.redirect(new URL('/rate-limited', applicationUrl));
     }
 
     logger.debug('Checking for existing session');
@@ -40,7 +40,7 @@ export async function GET() {
           },
           'Valid session exists, redirecting to homepage'
         );
-        return NextResponse.redirect(new URL('/', process.env.APPLICATION_URL));
+        return NextResponse.redirect(new URL('/', applicationUrl));
       } else {
         // Session exists but is invalid/expired - clear it
         logger.info('Session expired or invalid, clearing and proceeding to Auth0');
@@ -51,9 +51,7 @@ export async function GET() {
     logger.info('No session found, redirecting to Auth0');
 
     // If no session exists, redirect to the Auth0 login page
-    return NextResponse.redirect(
-      new URL('/api/login/auth0', process.env.APPLICATION_URL)
-    );
+    return NextResponse.redirect(new URL('/api/login/auth0', applicationUrl));
   } catch (error) {
     logger.error({ error }, 'Error in login route');
     return new NextResponse('Internal Server Error', {

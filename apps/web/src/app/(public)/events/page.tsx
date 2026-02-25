@@ -14,10 +14,10 @@ const logger = Logger.create({
   namespace: 'web:events-page',
   context: { page: 'EventsPage' },
 });
-const ORGANIZATION_ID = getOrganizationId();
 // Incremental Static Regeneration - revalidate every 5 minutes
 export const revalidate = 300;
 export default async function EventsPage() {
+  const ORGANIZATION_ID = getOrganizationId();
   const t = await getTranslations();
   logger.info({ organizationId: ORGANIZATION_ID }, 'Fetching events for organization');
   let eventinfos;

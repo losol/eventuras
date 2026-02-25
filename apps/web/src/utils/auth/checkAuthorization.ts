@@ -11,8 +11,6 @@ import { getOrganizationId } from '@/utils/organization';
 
 const logger = Logger.create({ namespace: 'web:admin', context: { module: 'checkAuthorization' } });
 
-const ORGANIZATION_ID: number = getOrganizationId();
-
 export interface AuthorizationResult {
   authorized: boolean;
   userId?: string;
@@ -28,6 +26,7 @@ export interface AuthorizationResult {
  * @returns Authorization result with user info and roles
  */
 export async function checkAuthorization(requiredRole: string): Promise<AuthorizationResult> {
+  const ORGANIZATION_ID = getOrganizationId();
   try {
     // Get current user using configured client
     const userResult = await getV3UsersMe({ client });
