@@ -1,68 +1,25 @@
-import { Logger } from '@eventuras/logger';
+import { redirect } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
+
 import { MarkdownContent } from '@eventuras/markdown';
+import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Text } from '@eventuras/ratio-ui/core/Text';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
-const logger = Logger.create({
-  namespace: 'web:app:collections',
-  context: { page: 'CollectionPage' },
-});
-import { redirect } from 'next/navigation';
-import { getTranslations } from 'next-intl/server';
-
-import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
 import EventCard from '@/components/event/EventCard';
-import { appConfig } from '@/config.server';
 import { getPublicClient } from '@/lib/eventuras-public-client';
-import {
-  getV3Eventcollections,
-  getV3EventcollectionsById,
-  getV3Events,
-} from '@/lib/eventuras-public-sdk';
-import { getOrganizationId } from '@/utils/organization';
+import { getV3EventcollectionsById, getV3Events } from '@/lib/eventuras-public-sdk';
 type EventInfoProps = {
   params: Promise<{
     id: number;
     slug: string;
   }>;
 };
-// Incremental Static Regeneration - revalidate every 5 minutes
-export const revalidate = 300;
-// Allow generating new collection pages on-demand
-export const dynamicParams = true;
-export async function generateStaticParams() {
-  const orgId = getOrganizationId();
-  logger.info(
-    { apiBaseUrl: appConfig.env.BACKEND_URL as string, orgId },
-    'Generating static params for collections'
-  );
-  try {
-    // Use public client for anonymous API access during static generation
-    const publicClient = getPublicClient();
-    const response = await getV3Eventcollections({
-      client: publicClient,
-      headers: {
-        'Eventuras-Org-Id': orgId,
-      },
-    });
-    if (!response.data?.data) return [];
-    const staticParams = response.data.data.map(collection => ({
-      id: collection.id?.toString(),
-      slug: collection.slug,
-    }));
-    logger.info({ staticParams }, 'Generated static params');
-    return staticParams;
-  } catch (error) {
-    logger.warn(
-      { error },
-      'Error generating static params for collections - this is expected during build time if backend is not running'
-    );
-    return [];
-  }
-}
+// Always render server-side so ORGANIZATION_ID is read at request time, not build time
+export const dynamic = 'force-dynamic';
 const CollectionPage: React.FC<EventInfoProps> = async props => {
   const params = await props.params;
   const t = await getTranslations();
