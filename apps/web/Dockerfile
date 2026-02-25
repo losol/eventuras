@@ -90,17 +90,12 @@ ENV HOSTNAME="0.0.0.0"
 RUN addgroup --system --gid 1001 nodejs \
   && adduser --system --uid 1001 --gid 1001 nextjs
 
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=builder --chown=nextjs:nodejs --chmod=755 /app/apps/web/public ./public
+COPY --from=builder --chown=nextjs:nodejs --chmod=755 /app/apps/web/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs --chmod=755 /app/apps/web/.next/static ./apps/web/.next/static
 
 USER nextjs
 
 EXPOSE 3000
 
 CMD ["node", "apps/web/server.js"]
-
-EXPOSE 3000
-RUN node node_modules/.bin/next telemetry disable
-
-CMD ["node_modules/.bin/next", "start"]
