@@ -4,48 +4,48 @@
   "type": "app",
   "description": "Main web frontend for Eventuras - participant and organizer interface",
   "env": {
-    "NEXT_PUBLIC_APPLICATION_URL": {
+    "APPLICATION_URL": {
       "required": true,
-      "client": true,
+      "client": false,
       "type": "url",
-      "description": "Public URL where this application is hosted (e.g., http://localhost:3000)"
+      "description": "Public URL where this application is hosted (e.g., http://localhost:3000). Server-side only."
     },
-    "NEXT_PUBLIC_LOGOUT_URL_REDIRECT": {
+    "LOGOUT_URL_REDIRECT": {
       "required": true,
-      "client": true,
+      "client": false,
       "type": "url",
-      "description": "URL to redirect to after logout"
+      "description": "URL to redirect to after logout. Server-side only."
     },
-    "NEXT_PUBLIC_DEFAULT_LOCALE": {
+    "DEFAULT_LOCALE": {
       "required": true,
-      "client": true,
+      "client": false,
       "type": "string",
       "description": "Default locale for internationalization (e.g., en-US, nb-NO)",
       "enum": ["en-US", "nb-NO"]
     },
-    "NEXT_PUBLIC_AUTH0_DOMAIN": {
+    "AUTH0_DOMAIN": {
       "required": true,
-      "client": true,
+      "client": false,
       "type": "string",
-      "description": "Auth0 domain for authentication (e.g., eventuras.eu.auth0.com)"
+      "description": "Auth0 domain for authentication (e.g., eventuras.eu.auth0.com). Server-side only – used by server-side PKCE flow."
     },
-    "NEXT_PUBLIC_ORGANIZATION_ID": {
+    "ORGANIZATION_ID": {
       "required": true,
-      "client": true,
+      "client": false,
       "type": "int",
-      "description": "The unique organization ID used to scope frontend configuration and assets"
+      "description": "The unique organization ID used to scope API calls. Server-side only – passed as prop to client components."
     },
-    "NEXT_PUBLIC_SITE_SETTINGS_URL": {
+    "SITE_SETTINGS_URL": {
       "required": false,
-      "client": true,
+      "client": false,
       "type": "url",
-      "description": "Base URL for fetching public site settings and branding configuration"
+      "description": "Base URL for fetching public site settings and branding configuration. Server-side only."
     },
-    "NEXT_PUBLIC_BACKEND_URL": {
+    "BACKEND_URL": {
       "required": true,
-      "client": true,
+      "client": false,
       "type": "url",
-      "description": "Backend API base URL for server-side calls (may differ from NEXT_PUBLIC_API_BASE_URL)"
+      "description": "Backend API base URL. Server-side only – passed as prop to client components that need it."
     },
     "AUTH0_CLIENT_ID": {
       "required": true,

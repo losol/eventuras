@@ -4,19 +4,13 @@ env:
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-  NEXT_PUBLIC_BACKEND_URL: ${{ secrets.NEXT_PUBLIC_BACKEND_URL }}
-  NEXT_PUBLIC_DEFAULT_LOCALE: ${{ secrets.NEXT_PUBLIC_DEFAULT_LOCALE }}
-  NEXT_PUBLIC_API_BASE_URL: ${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
-  NEXT_PUBLIC_AUTH0_DOMAIN: ${{ secrets.NEXT_PUBLIC_AUTH0_DOMAIN }}
-  NEXT_PUBLIC_LOGOUT_URL_REDIRECT: ${{ secrets.NEXT_PUBLIC_LOGOUT_URL_REDIRECT }}
+  # All web config is server-side runtime – no NEXT_PUBLIC_* build-time vars needed.
   NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
-  NEXT_PUBLIC_APPLICATION_URL: ${{ secrets.NEXT_PUBLIC_APPLICATION_URL }}
   AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
   AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
   AUTH0_CLIENT_SECRET: ${{ secrets.AUTH0_CLIENT_SECRET }}
   AUTH0_API_AUDIENCE: ${{ secrets.AUTH0_API_AUDIENCE }}
   NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-  NEXT_PUBLIC_ORGANIZATION_ID: ${{ secrets.NEXT_PUBLIC_ORGANIZATION_ID }}
   SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
 
 on:
@@ -114,6 +108,72 @@ jobs:
       AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
       AUTH0_CLIENT_SECRET: ${{ secrets.AUTH0_CLIENT_SECRET }}
       SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+  docker:
+    name: Docker build
+    needs: build
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    env:
+      ORGANIZATION_NAME: losolio
+      IMAGE_NAME: eventuras-web
+    outputs:
+      docker_tags: ${{ steps.meta.outputs.tags }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Read package version
+        id: ver
+        run: |
+          V="$(jq -r '.version' apps/web/package.json 2>/dev/null || echo '0.0.0')"
+          echo "version=$V" >> "$GITHUB_OUTPUT"
+          echo "sha=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+
+      - name: Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.ORGANIZATION_NAME }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=canary,enable=${{ github.ref == 'refs/heads/main' }}
+            type=raw,value=main-${{ steps.ver.outputs.sha }},enable=${{ github.ref == 'refs/heads/main' }}
+            type=raw,value=edge,enable=${{ github.ref != 'refs/heads/main' }}
+            type=raw,value=edge-${{ steps.ver.outputs.sha }},enable=${{ github.ref != 'refs/heads/main' }}
+          labels: |
+            org.opencontainers.image.version=${{ steps.ver.outputs.version }}
+            org.opencontainers.image.revision=${{ steps.ver.outputs.sha }}
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: apps/web/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            TURBO_TOKEN=${{ secrets.TURBO_TOKEN }}
+            TURBO_TEAM=${{ secrets.TURBO_TEAM }}
+
+      - name: Output Docker tags
+        run: echo "Docker tags are ${{ steps.meta.outputs.tags }}"
+
   deploy-staging:
     name: Deploy Staging
     if: >

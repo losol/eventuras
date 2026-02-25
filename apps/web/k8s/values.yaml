@@ -15,11 +15,11 @@ app:
 # Non-sensitive env vars shared across all environments for this tenant.
 # Names are 1-1 with what the app reads (see apps/web/app.config.json).
 config:
-  NEXT_PUBLIC_DEFAULT_LOCALE: "nb-NO"  # "nb-NO" or "en-US"
-  NEXT_PUBLIC_ORGANIZATION_ID: ""      # e.g. "1"
-  NEXT_PUBLIC_AUTH0_DOMAIN: ""         # e.g. "eventuras.eu.auth0.com"
-  NEXT_PUBLIC_SITE_SETTINGS_URL: ""    # optional
-  NEXT_PUBLIC_SENTRY_DSN: ""           # optional – safe to commit (public DSN)
+  DEFAULT_LOCALE: "nb-NO"         # "nb-NO" or "en-US"
+  ORGANIZATION_ID: ""             # e.g. "1"
+  AUTH0_DOMAIN: ""               # e.g. "eventuras.eu.auth0.com"
+  SITE_SETTINGS_URL: ""           # optional
+  SENTRY_DSN: ""                  # optional – safe to commit (public DSN)
 
 # Server-side secrets – NOT set here, belong in eventuras-web-secrets k8s Secret:
 #   AUTH0_CLIENT_ID, AUTH0_CLIENT_SECRET, AUTH0_API_AUDIENCE, SESSION_SECRET
@@ -38,9 +38,9 @@ environments:
     nodeEnv: development
     autoSync: true
     extraEnv:            # Per-environment URL overrides
-      NEXT_PUBLIC_BACKEND_URL: ""        # e.g. "https://api-dev.internal.example.com"
-      NEXT_PUBLIC_APPLICATION_URL: ""    # e.g. "https://web-dev.internal.example.com"
-      NEXT_PUBLIC_LOGOUT_URL_REDIRECT: "" # usually same as APPLICATION_URL
+      BACKEND_URL: ""        # e.g. "https://api-dev.internal.example.com"
+      APPLICATION_URL: ""    # e.g. "https://web-dev.internal.example.com"
+      LOGOUT_URL_REDIRECT: "" # usually same as APPLICATION_URL
 
   staging:
     enabled: true
@@ -51,9 +51,9 @@ environments:
     nodeEnv: production
     autoSync: true
     extraEnv:            # Per-environment URL overrides
-      NEXT_PUBLIC_BACKEND_URL: ""        # e.g. "https://api-staging.internal.example.com"
-      NEXT_PUBLIC_APPLICATION_URL: ""    # e.g. "https://web-staging.internal.example.com"
-      NEXT_PUBLIC_LOGOUT_URL_REDIRECT: "" # usually same as APPLICATION_URL
+      BACKEND_URL: ""        # e.g. "https://api-staging.internal.example.com"
+      APPLICATION_URL: ""    # e.g. "https://web-staging.internal.example.com"
+      LOGOUT_URL_REDIRECT: "" # usually same as APPLICATION_URL
 
   prod:
     enabled: true
@@ -64,6 +64,6 @@ environments:
     nodeEnv: production
     autoSync: false
     extraEnv:            # Per-environment URL overrides
-      NEXT_PUBLIC_BACKEND_URL: ""        # e.g. "https://api-prod.internal.example.com"
-      NEXT_PUBLIC_APPLICATION_URL: ""    # e.g. "https://web-prod.internal.example.com"
-      NEXT_PUBLIC_LOGOUT_URL_REDIRECT: "" # usually same as APPLICATION_URL
+      BACKEND_URL: ""        # e.g. "https://api-prod.internal.example.com"
+      APPLICATION_URL: ""    # e.g. "https://web-prod.internal.example.com"
+      LOGOUT_URL_REDIRECT: "" # usually same as APPLICATION_URL
