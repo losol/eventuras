@@ -3,7 +3,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: {{ $tenant }}
+  name: eventuras-api-{{ $tenant }}
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io

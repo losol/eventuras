@@ -12,7 +12,7 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  project: {{ $tenant }}
+  project: eventuras-api-{{ $tenant }}
 
   source:
     repoURL: https://github.com/losol/eventuras
@@ -29,7 +29,9 @@ spec:
         hostname: {{ $cfg.hostname | quote }}
         httpRoute:
           gateway:
-            sectionName: {{ $.Values.app.httpRoute.sectionName | quote }}
+            name: {{ $.Values.app.httpRoute.gateway.name | quote }}
+            namespace: {{ $.Values.app.httpRoute.gateway.namespace | quote }}
+            sectionName: {{ $.Values.app.httpRoute.gateway.sectionName | quote }}
         env:
           ASPNETCORE_ENVIRONMENT: {{ $cfg.aspnetEnvironment | quote }}
           {{- include "eventuras-api.configEnv" $ | nindent 10 }}

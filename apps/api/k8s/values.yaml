@@ -7,7 +7,10 @@ app:
     registry: docker.io
     repository: losol/eventuras-api
   httpRoute:
-    sectionName: https   # Must match a listener in the Gateway (e.g. https-eventuras)
+    gateway:
+      name: traefik-gateway    # Name of the Gateway resource
+      namespace: traefik       # Namespace where the Gateway lives
+      sectionName: https       # Must match a listener in the Gateway (e.g. https-eventuras)
 
 # Non-sensitive application config – set per tenant
 config:
