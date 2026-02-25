@@ -33,7 +33,7 @@ test.describe('should be able to register as an anonymous user when hitting the 
     ///api/auth/signin?callbackUrl=%2Fuser%2Fevents%2F6%2Fregistration
     const url = `/user/events/${createdEvent.eventId}`;
     const location = `/api/auth/signin?callbackUrl=${encodeURIComponent(url)}`;
-    await page.waitForLoadState('networkidle');
+    await page.waitForURL(location, { timeout: 15000 });
     await expect(page).toHaveURL(location);
   });
 

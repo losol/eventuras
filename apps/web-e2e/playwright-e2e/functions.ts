@@ -76,8 +76,7 @@ export const authenticate = async (userName: string, authFile: string) => {
     await page.waitForURL('/');
 
     await page.goto('/user');
-    await page.waitForLoadState('networkidle');
-    debug('authenticate: expect username to be visible upon login and visiting /user');
+  await page.waitForLoadState('load');
 
     await expect(page.getByText(userName).first()).toBeVisible();
     await context.storageState({ path: authFile });
@@ -87,14 +86,14 @@ export const authenticate = async (userName: string, authFile: string) => {
 
 export const checkIfLoggedIn = async (page: Page) => {
   await page.goto('/user');
-  await page.waitForLoadState('networkidle');
+  await page.waitForLoadState('load');
   await expect(page.locator('[data-testid="logged-in-menu-button"]')).toBeVisible();
 };
 
 export const logout = async (page: Page) => {
   debug('Logging out user');
   await page.goto('/api/logout');
-  await page.waitForLoadState('networkidle');
+  await page.waitForLoadState('load');
   debug('User logged out, redirected to homepage');
 };
 
@@ -170,8 +169,8 @@ export const fillOutPaymentDetails = async (page: Page) => {
   await paymentSubmitButton.click();
   debug('✅ Payment form submitted');
 
-  // Wait for navigation to confirmation step
-  await page.waitForLoadState('networkidle');
+  // Wait for confirmation button to appear (indicates navigation to confirmation step)
+  await page.locator('[data-testid="registration-confirmation-button"]').waitFor({ state: 'visible', timeout: 15000 });
 };
 
 export const registerForEvent = async (
@@ -185,8 +184,18 @@ export const registerForEvent = async (
   await page.waitForURL(`/user/events/${eventId}`);
   debug('Registration page reached');
 
+  // Wait for either the account validation step OR the already-registered view
+  const givenNameInput = page.locator('[data-testid="accounteditor-form-givenname"]');
+  const registrationView = page.locator('[data-testid="registrationview-registration-tab"]');
+  await expect(givenNameInput.or(registrationView)).toBeVisible({ timeout: 15000 });
+
+  if (await registrationView.isVisible()) {
+    debug('✅ User is already registered for event %s, skipping registration flow', eventId);
+    return;
+  }
+
   debug('Confirm current account details');
-  await page.locator('[data-testid="accounteditor-form-givenname"]').fill('Test');
+  await givenNameInput.fill('Test');
   await page.locator('[data-testid="accounteditor-form-familyname"]').fill('Test');
 
   // Fill phone number
@@ -201,18 +210,13 @@ export const registerForEvent = async (
   await expect(updateButton).toBeVisible();
   await updateButton.click();
 
-  // Wait for the update to complete (server action)
-  debug('Waiting for account update to complete...');
-  await page.waitForLoadState('networkidle');
-  await page.waitForTimeout(1000); // Give server action time to complete
-  debug('✅ Account details updated');
+  // Wait for the account update to complete by waiting for the product section to appear
+  debug('Waiting for product selection step to appear...');
+  const productCheckbox = page.locator('input[type="checkbox"][id^="checkbox-product-"]');
+  await productCheckbox.first().waitFor({ state: 'visible', timeout: 15000 });
+  debug('✅ Account details updated, product selection ready');
 
   debug('Customize product for event: %s', eventId);
-  await page.waitForLoadState('networkidle');
-
-  // Select product checkboxes by looking for checkboxes with IDs starting with "checkbox-product-"
-  const productCheckbox = page.locator('input[type="checkbox"][id^="checkbox-product-"]');
-  await productCheckbox.first().waitFor({ state: 'visible', timeout: 10000 });
   await productCheckbox.first().click();
   debug('Product checkbox clicked');
 
@@ -226,8 +230,8 @@ export const registerForEvent = async (
   debug('Clicking registration confirmation button...');
   await page.locator('[data-testid="registration-confirmation-button"]').click();
 
-  // Wait for registration to complete (server action)
-  await page.waitForLoadState('networkidle');
+  // Wait for registration to complete by waiting for redirect to /user/events page
+  await page.waitForURL(`/user/events/${eventId}`, { timeout: 10000 });
   debug('✅ Registration submitted');
 };
 
@@ -260,7 +264,7 @@ export const editRegistrationOrders = async (page: Page, eventId: string) => {
   debug('Confirming registration edit...');
   await page.locator('[data-testid="registration-confirmation-button"]').click();
 
-  // Wait for update to complete (server action)
-  await page.waitForLoadState('networkidle');
+  // Wait for update to complete by waiting for redirect back to event page
+  await page.waitForURL(`/user/events/*`, { timeout: 30000 });
   debug('✅ Registration updated');
 };
