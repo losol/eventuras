@@ -12,18 +12,49 @@ kube-prometheus-stack:
       existingSecret: monitoring-grafana-admin
       userKey: admin-user
       passwordKey: admin-password
+    resources:
+      requests:
+        memory: 64Mi
+        cpu: 50m
+      limits:
+        memory: 128Mi
+        cpu: 200m
+
+  prometheus:
+    prometheusSpec:
+      resources:
+        requests:
+          memory: 128Mi
+          cpu: 100m
+        limits:
+          memory: 256Mi
+          cpu: 500m
 
   prometheus-node-exporter:
     # Node-exporter defaults hostNetwork/hostPID to true; disable them
     # to reduce the attack surface.
     hostNetwork: false
     hostPID: false
+    resources:
+      requests:
+        memory: 16Mi
+        cpu: 10m
+      limits:
+        memory: 32Mi
+        cpu: 100m
 
   kube-state-metrics:
     securityContext:
       allowPrivilegeEscalation: false
       capabilities:
         drop: [ALL]
+    resources:
+      requests:
+        memory: 32Mi
+        cpu: 10m
+      limits:
+        memory: 64Mi
+        cpu: 100m
 
 loki:
   deploymentMode: SingleBinary
@@ -47,6 +78,13 @@ loki:
             period: 24h
   singleBinary:
     replicas: 1
+    resources:
+      requests:
+        memory: 64Mi
+        cpu: 50m
+      limits:
+        memory: 128Mi
+        cpu: 200m
   backend:
     replicas: 0
   read:
@@ -64,6 +102,13 @@ alloy:
       capabilities:
         drop: [ALL]
         add: [DAC_READ_SEARCH]  # Read pod log files owned by other users
+    resources:
+      requests:
+        memory: 32Mi
+        cpu: 10m
+      limits:
+        memory: 64Mi
+        cpu: 100m
 
   configMap:
     content: |
