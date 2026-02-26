@@ -22,7 +22,7 @@ open http://localhost:5050
 Login:
 
 - **Email:** `admin@example.com`
-- **Password:** `kubectl get secret pgadmin-secrets -n pgadmin -o jsonpath='{.data.password}' | base64 -d`
+- **Password:** `kubectl get secret pgadmin-credentials -n pgadmin -o jsonpath='{.data.password}' | base64 -d`
 
 ## With Traefik + IP Whitelist + OIDC
 
