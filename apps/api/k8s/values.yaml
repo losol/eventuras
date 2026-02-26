@@ -5,7 +5,7 @@ tenant: ""  # Short identifier, e.g. "acme" – used in app/namespace names
 app:
   image:
     registry: docker.io
-    repository: losol/eventuras-api
+    repository: losolio/eventuras-api
   httpRoute:
     gateway:
       name: traefik-gateway    # Name of the Gateway resource
