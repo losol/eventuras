@@ -128,8 +128,22 @@ export async function GET(request: Request): Promise<Response> {
     cookieStore2.delete('oauth_code_verifier');
     cookieStore2.delete('returnTo');
 
-    // 8) Redirect back
-    const redirectUrl = new URL(returnTo, publicUrl.origin);
+    // 8) Redirect back – guard against open redirects.
+    // Build using publicUrl.origin as base so relative paths resolve correctly,
+    // then enforce the origin still matches (catches absolute URLs and //evil.com).
+    let redirectUrl: URL;
+    try {
+      redirectUrl = new URL(returnTo, publicUrl.origin);
+    } catch {
+      redirectUrl = new URL('/', publicUrl.origin);
+    }
+    if (redirectUrl.origin !== publicUrl.origin) {
+      logger.warn(
+        { returnTo, redirectUrl: redirectUrl.toString() },
+        'returnTo points outside application origin, falling back to /'
+      );
+      redirectUrl = new URL('/', publicUrl.origin);
+    }
     redirectUrl.searchParams.set('login', 'success');
 
     logger.debug({ redirectUrl: redirectUrl.toString() }, 'Redirecting after successful login');
