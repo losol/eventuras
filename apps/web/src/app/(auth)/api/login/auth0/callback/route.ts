@@ -129,7 +129,7 @@ export async function GET(request: Request): Promise<Response> {
     cookieStore2.delete('returnTo');
 
     // 8) Redirect back
-    const redirectUrl = new URL(returnTo, currentUrl.origin);
+    const redirectUrl = new URL(returnTo, publicUrl.origin);
     redirectUrl.searchParams.set('login', 'success');
 
     logger.debug({ redirectUrl: redirectUrl.toString() }, 'Redirecting after successful login');
