@@ -32,6 +32,10 @@ spec:
             name: {{ $.Values.app.httpRoute.gateway.name | quote }}
             namespace: {{ $.Values.app.httpRoute.gateway.namespace | quote }}
             sectionName: {{ $.Values.app.httpRoute.gateway.sectionName | quote }}
+        {{- with $cfg.podAnnotations }}
+        podAnnotations:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
         env:
           ASPNETCORE_ENVIRONMENT: {{ $cfg.aspnetEnvironment | quote }}
           {{- include "eventuras-api.configEnv" $ | nindent 10 }}

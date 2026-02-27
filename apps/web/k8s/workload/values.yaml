@@ -34,6 +34,12 @@ resources:
     cpu: "1000m"
     ephemeral-storage: "2Gi"
 
+# Pod annotations – merged onto template.metadata.annotations
+# Use this to trigger rollouts on secret changes (e.g. Infisical auto-reload)
+podAnnotations: {}
+# e.g.
+#   secrets.infisical.com/auto-reload: "true"
+
 # Environment variables (non-sensitive)
 env: {}
 # Additional env vars set by provisioner:

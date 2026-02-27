@@ -13,6 +13,10 @@ spec:
     metadata:
       labels:
         app: {{ .Chart.Name }}
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     spec:
       # Security: Disable service account token automounting
       # Next.js app doesn't need to call Kubernetes API
