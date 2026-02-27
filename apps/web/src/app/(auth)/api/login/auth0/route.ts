@@ -11,8 +11,10 @@ export async function GET(request: NextRequest) {
     return new NextResponse('Too many requests', { status: 429 });
   }
 
-  // 2) Grab our returnTo param (fallback to "/")
-  const returnTo = request.nextUrl.searchParams.get('returnTo');
+  // 2) Grab our returnTo param – only allow relative paths starting with a single /
+  // to prevent open redirects (absolute URLs and //evil.com are rejected).
+  const rawReturnTo = request.nextUrl.searchParams.get('returnTo');
+  const returnTo = rawReturnTo && /^\/(?!\/)/.test(rawReturnTo) ? rawReturnTo : null;
 
   // 3) Build PKCE & Auth0 URL
   const pkce = await buildPKCEOptions(oauthConfig);
