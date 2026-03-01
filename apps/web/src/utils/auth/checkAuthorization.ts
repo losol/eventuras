@@ -1,5 +1,6 @@
 'use server';
 
+import { getCurrentSession } from '@eventuras/fides-auth-next/session';
 import { Logger } from '@eventuras/logger';
 
 import { client } from '@/lib/eventuras-client';
@@ -7,9 +8,25 @@ import {
   getV3OrganizationsByOrganizationIdMembersByUserIdRoles,
   getV3UsersMe,
 } from '@/lib/eventuras-sdk';
+import { oauthConfig } from '@/utils/oauthConfig';
 import { getOrganizationId } from '@/utils/organization';
 
 const logger = Logger.create({ namespace: 'web:admin', context: { module: 'checkAuthorization' } });
+
+// Mirrors IsSystemAdmin() in the C# backend.
+// SystemAdmin has global access regardless of organization membership.
+const SYSTEM_ADMIN_ROLE = 'SystemAdmin';
+
+/**
+ * Returns true if the provided session roles include the system-wide admin role.
+ * Pass `session?.user?.roles` from an already-fetched session to avoid redundant
+ * network calls. For a standalone check, fetch the session yourself:
+ *   const session = await getCurrentSession(oauthConfig);
+ *   if (isSystemAdmin(session?.user?.roles ?? [])) { ... }
+ */
+export async function isSystemAdmin(sessionRoles: string[]): Promise<boolean> {
+  return sessionRoles.includes(SYSTEM_ADMIN_ROLE);
+}
 
 export interface AuthorizationResult {
   authorized: boolean;
@@ -26,7 +43,6 @@ export interface AuthorizationResult {
  * @returns Authorization result with user info and roles
  */
 export async function checkAuthorization(requiredRole: string): Promise<AuthorizationResult> {
-  const ORGANIZATION_ID = getOrganizationId();
   try {
     // Get current user using configured client
     const userResult = await getV3UsersMe({ client });
@@ -49,6 +65,23 @@ export async function checkAuthorization(requiredRole: string): Promise<Authoriz
         error: 'Invalid user data',
       };
     }
+
+    // SystemAdmin has global access – no org membership needed.
+    // Fetch session once here so it can be reused and we avoid double calls.
+    const session = await getCurrentSession(oauthConfig);
+    const sessionRoles = session?.user?.roles ?? [];
+
+    if (await isSystemAdmin(sessionRoles)) {
+      logger.info(
+        { userId, sessionRoles },
+        'SystemAdmin detected, granting access without org check'
+      );
+      return { authorized: true, userId, roles: sessionRoles };
+    }
+
+    // Only resolve org ID now — getOrganizationId() may throw on a fresh install
+    // with no organisations configured, so it must not run for SystemAdmins.
+    const ORGANIZATION_ID = getOrganizationId();
 
     // Get user's roles in the organization using configured client
     const rolesResult = await getV3OrganizationsByOrganizationIdMembersByUserIdRoles({
