@@ -52,5 +52,5 @@ spec:
               path: {{ .Values.healthCheck.path }}
               port: {{ .Values.service.targetPort }}
             initialDelaySeconds: 5
-            periodSeconds: 10
+            periodSeconds: {{ .Values.healthCheck.readinessPeriodSeconds | default 60 }}
             timeoutSeconds: {{ .Values.healthCheck.timeoutSeconds }}
