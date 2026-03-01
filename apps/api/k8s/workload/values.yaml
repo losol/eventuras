@@ -40,6 +40,7 @@ healthCheck:
   initialDelaySeconds: 15
   periodSeconds: 30
   timeoutSeconds: 10
+  readinessPeriodSeconds: 60  # How often Kubernetes checks if the pod is ready to serve traffic
 
 # Pod annotations – merged onto template.metadata.annotations
 # Use this to trigger rollouts on secret changes (e.g. Infisical auto-reload)

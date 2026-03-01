@@ -14,11 +14,13 @@ public static class ConvertoServicesExtensions
         services.TryAddSingleton<IConvertoClient, ConvertoClient>();
         services.TryAddTransient<IPdfRenderService, ConvertoPdfRenderService>();
 
+        // Registered with the "converto" tag so it is only exposed on /health/converto,
+        // not on the /health endpoint used by Kubernetes probes.
         services.Configure<HealthCheckServiceOptions>(options =>
         {
             options.Registrations.Add(new HealthCheckRegistration("pdf",
                 ActivatorUtilities.GetServiceOrCreateInstance<ConvertoHealthCheck>,
-                null, null));
+                null, new[] { "converto" }));
         });
 
         return services;

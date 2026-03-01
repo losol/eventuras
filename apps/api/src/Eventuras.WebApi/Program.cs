@@ -12,6 +12,7 @@ using Eventuras.Services.Notifications;
 using Eventuras.WebApi;
 using Eventuras.WebApi.Auth;
 using Eventuras.WebApi.Config;
+using Eventuras.WebApi.Constants;
 using Eventuras.WebApi.Extensions;
 using Eventuras.WebApi.Filters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -155,7 +156,19 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.MapHealthChecks("/health");
+
+// Kubernetes liveness/readiness probe – excludes external dependency checks.
+app.MapHealthChecks("/health", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+{
+    Predicate = check => !check.Tags.Contains("converto"),
+});
+
+// Manual diagnostics endpoint – call this to verify Converto is reachable.
+// Not used by Kubernetes probes. Requires AdministratorRole to prevent abuse.
+app.MapHealthChecks("/health/converto", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+{
+    Predicate = check => check.Tags.Contains("converto"),
+}).RequireAuthorization(Auth.AdministratorRole);
 
 // Seed database, run OnStartup builder.Services, etc.
 await PreStartupRoutine(app);
