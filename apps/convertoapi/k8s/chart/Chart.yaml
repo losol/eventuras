@@ -1,0 +1,6 @@
+apiVersion: v2
+name: converto
+description: ConvertoAPI - HTML to PDF conversion microservice (shared internal service)
+type: application
+version: 0.1.0
+appVersion: "0.4.4"

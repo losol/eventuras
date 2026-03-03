@@ -1,0 +1,42 @@
+# Default values for converto (HTML-to-PDF microservice)
+# This is a shared internal service – one instance per cluster.
+
+replicaCount: 1
+
+image:
+  registry: docker.io
+  repository: losolio/converto-api
+  tag: ""           # Set by CI/CD
+  pullPolicy: IfNotPresent
+
+service:
+  port: 80
+  targetPort: 3100
+
+# Resource limits – Playwright/Chromium is memory-intensive.
+# Each PDF generation launches a Chromium browser instance.
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "100m"
+    ephemeral-storage: "512Mi"
+  limits:
+    memory: "1Gi"
+    cpu: "1000m"
+    ephemeral-storage: "2Gi"
+
+# Health check configuration
+healthCheck:
+  path: /healthz
+  initialDelaySeconds: 10
+  periodSeconds: 30
+  timeoutSeconds: 5
+
+# Non-sensitive environment variables
+env:
+  HOST: "0.0.0.0"
+  PORT: "3100"
+  BASE_URL: "http://converto"
+
+# Pod annotations
+podAnnotations: {}
