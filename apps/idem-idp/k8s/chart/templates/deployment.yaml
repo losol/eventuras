@@ -13,13 +13,15 @@ spec:
     metadata:
       labels:
         app: {{ .Chart.Name }}
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     spec:
-      # Security: Disable service account token automounting
-      # IDP doesn't need to call Kubernetes API
       automountServiceAccountToken: false
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ required "image.tag is required" .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.service.targetPort }}
@@ -36,13 +38,17 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           livenessProbe:
             httpGet:
-              path: /health
+              path: {{ .Values.healthCheck.path }}
               port: {{ .Values.service.targetPort }}
-            initialDelaySeconds: 10
-            periodSeconds: 30
+            initialDelaySeconds: {{ .Values.healthCheck.initialDelaySeconds }}
+            periodSeconds: {{ .Values.healthCheck.periodSeconds }}
+            timeoutSeconds: {{ .Values.healthCheck.timeoutSeconds }}
+            failureThreshold: 3
           readinessProbe:
             httpGet:
-              path: /health
+              path: {{ .Values.healthCheck.path }}
               port: {{ .Values.service.targetPort }}
             initialDelaySeconds: 5
-            periodSeconds: 10
+            periodSeconds: {{ .Values.healthCheck.readinessPeriodSeconds | default 10 }}
+            timeoutSeconds: {{ .Values.healthCheck.timeoutSeconds }}
+            failureThreshold: 3
