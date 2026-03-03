@@ -1,6 +1,6 @@
 import { SwaggerOptions } from '@fastify/swagger';
 
-const url = process.env.base_url || 'http://localhost:3100';
+const url = process.env.BASE_URL || 'http://localhost:3100';
 
 export const swaggerOptions: SwaggerOptions = {
   openapi: {
