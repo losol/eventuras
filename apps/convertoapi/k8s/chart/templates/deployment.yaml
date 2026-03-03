@@ -43,6 +43,7 @@ spec:
             initialDelaySeconds: {{ .Values.healthCheck.initialDelaySeconds }}
             periodSeconds: {{ .Values.healthCheck.periodSeconds }}
             timeoutSeconds: {{ .Values.healthCheck.timeoutSeconds }}
+            failureThreshold: 3
           readinessProbe:
             httpGet:
               path: {{ .Values.healthCheck.path }}
@@ -50,3 +51,4 @@ spec:
             initialDelaySeconds: {{ .Values.healthCheck.initialDelaySeconds }}
             periodSeconds: {{ .Values.healthCheck.periodSeconds }}
             timeoutSeconds: {{ .Values.healthCheck.timeoutSeconds }}
+            failureThreshold: 3
