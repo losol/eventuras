@@ -23,7 +23,7 @@ spec:
       automountServiceAccountToken: false
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ required "image.tag is required" .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.service.targetPort }}
@@ -47,6 +47,7 @@ spec:
             initialDelaySeconds: {{ .Values.healthCheck.initialDelaySeconds }}
             periodSeconds: {{ .Values.healthCheck.periodSeconds }}
             timeoutSeconds: {{ .Values.healthCheck.timeoutSeconds }}
+            failureThreshold: 3
           readinessProbe:
             httpGet:
               path: {{ .Values.healthCheck.path }}
@@ -54,3 +55,4 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: {{ .Values.healthCheck.readinessPeriodSeconds | default 60 }}
             timeoutSeconds: {{ .Values.healthCheck.timeoutSeconds }}
+            failureThreshold: 3
