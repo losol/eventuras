@@ -4,15 +4,10 @@
 replicaCount: 1
 
 image:
-  registry: ""      # Set by Argo: docker.io
-  repository: ""    # Set by Argo: losolio/idem-idp
-  tag: ""           # Set by Argo: sha-abc123, v1.2.3
+  registry: docker.io
+  repository: losolio/idem-idp
+  tag: ""           # Set by ArgoCD
   pullPolicy: IfNotPresent
-
-dns:
-  domain: ""        # Set by Argo: app.domain.no
-  appName: ""       # Set by Argo: idem
-  prefix: ""        # Set by Argo: "dev.", "staging.", ""
 
 service:
   port: 80
@@ -28,8 +23,20 @@ resources:
     cpu: "500m"
     ephemeral-storage: "2Gi"
 
+# Health check configuration
+healthCheck:
+  path: /health
+  initialDelaySeconds: 10
+  periodSeconds: 30
+  timeoutSeconds: 5
+  readinessPeriodSeconds: 10
+
+# Pod annotations
+podAnnotations: {}
+
+# Environment variables (non-sensitive)
 env: {}
-# Set by Argo:
+# Set by ArgoCD:
 #   NODE_ENV: production
 #   PORT: "3001"
 #   LOG_LEVEL: info
