@@ -4,9 +4,9 @@
 replicaCount: 1
 
 image:
-  registry: ""      # Set by Argo: docker.io
-  repository: ""    # Set by Argo: losol/eventuras-web
-  tag: ""           # Set by Argo: sha-abc123, v1.2.3
+  registry: docker.io
+  repository: losolio/eventuras-web
+  tag: ""           # Set by ArgoCD
   pullPolicy: IfNotPresent
 
 service:
