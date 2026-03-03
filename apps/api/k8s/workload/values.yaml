@@ -43,7 +43,3 @@ env: {}
 #   ASPNETCORE_ENVIRONMENT: Production
 # Note: ASPNETCORE_URLS is set automatically from service.targetPort in deployment.yaml
 
-# Database configuration
-database:
-  enabled: true
-  # Connection string set via secrets, not here
