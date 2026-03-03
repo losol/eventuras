@@ -3,6 +3,7 @@ import { registerAuthPlugin } from './features/auth/index.js';
 import { registerPdfFeature } from './features/pdf/index.js';
 import { registerOpenapiPlugin } from './features/openapi/index.js';
 import { registerHomepagePlugin } from './features/homepage/index.js';
+import { registerHealthRoutes } from './features/health/index.js';
 import { registerRatelimitPlugin } from './features/ratelimit/index.js';
 import dotenv from 'dotenv';
 
@@ -15,6 +16,7 @@ const start = async () => {
   await registerOpenapiPlugin(fastify);
   await registerAuthPlugin(fastify);
   await registerPdfFeature(fastify);
+  await registerHealthRoutes(fastify);
   await registerHomepagePlugin(fastify);
 
   console.log('Fastify routes registered:', fastify.printRoutes());
