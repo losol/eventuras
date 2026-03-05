@@ -1,5 +1,6 @@
 apiVersion: v2
 name: eventuras-web
-description: Provisions ArgoCD Applications for eventuras-web tenants (dev/staging/prod)
+description: Eventuras Web – Next.js frontend for participants and organizers
 type: application
 version: 0.1.0
+appVersion: "0.0.0" # Actual version set by CI
