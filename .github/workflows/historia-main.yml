@@ -56,8 +56,6 @@ jobs:
     outputs:
       image-tag: ${{ steps.meta.outputs.tags }}
       image-digest: ${{ steps.build.outputs.digest }}
-      # Output the SHA-based tag for staging builds to enable release retagging
-      staging-sha-tag: ${{ steps.staging-tag.outputs.tag }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -71,12 +69,12 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Generate staging SHA tag
-        id: staging-tag
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      - name: Read package version
+        id: ver
         run: |
-          # Create a deterministic tag based on commit SHA for staging
-          echo "tag=${{ env.DOCKER_REPOSITORY }}:sha-${{ github.sha }}" >> $GITHUB_OUTPUT
+          V="$(jq -r '.version' apps/historia/package.json 2>/dev/null || echo '0.0.0')"
+          echo "version=$V" >> "$GITHUB_OUTPUT"
+          echo "sha=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
 
       - name: Generate Docker metadata
         id: meta
@@ -84,9 +82,16 @@ jobs:
         with:
           images: ${{ env.DOCKER_REPOSITORY }}
           tags: |
-            type=raw,value=dev-pr${{ github.event.pull_request.number }}-{{sha}},enable=${{ github.event_name == 'pull_request' }}
-            type=raw,value=staging-{{date 'YYYYMMDD'}}-{{sha}},enable=${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-            type=raw,value=sha-${{ github.sha }},enable=${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+            # Main branch: canary + main-<sha>
+            type=raw,value=canary,enable=${{ github.ref == 'refs/heads/main' }}
+            type=raw,value=main-${{ steps.ver.outputs.sha }},enable=${{ github.ref == 'refs/heads/main' }}
+            # Feature branches: edge + edge-<sha>
+            type=raw,value=edge,enable=${{ github.ref != 'refs/heads/main' }}
+            type=raw,value=edge-${{ steps.ver.outputs.sha }},enable=${{ github.ref != 'refs/heads/main' }}
+          labels: |
+            org.opencontainers.image.version=${{ steps.ver.outputs.version }}
+            org.opencontainers.image.revision=${{ steps.ver.outputs.sha }}
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
 
       - name: Build and push Docker image
         id: build
@@ -148,8 +153,9 @@ jobs:
       - name: Retag staging image for production
         id: tags
         run: |
-          # The staging image was tagged with the commit SHA
-          SOURCE_TAG="${{ env.DOCKER_REPOSITORY }}:sha-${{ github.sha }}"
+          # The staging image was tagged with the short commit SHA
+          SHORT_SHA="${GITHUB_SHA::7}"
+          SOURCE_TAG="${{ env.DOCKER_REPOSITORY }}:main-${SHORT_SHA}"
           VERSION_TAG="${{ env.DOCKER_REPOSITORY }}:v${{ steps.version.outputs.version }}"
           LATEST_TAG="${{ env.DOCKER_REPOSITORY }}:latest"
 
