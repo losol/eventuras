@@ -1,69 +1,51 @@
-# Required
-tenant: ""  # Short identifier, e.g. "internal" – used in app/namespace names
+# Default values for eventuras-web workload
+# Environment-specific values are set by Argo CD, not here
 
-# Image defaults
-app:
-  image:
-    registry: docker.io
-    repository: losolio/eventuras-web
-  httpRoute:
-    gateway:
-      name: traefik-gateway    # Name of the Gateway resource
-      namespace: traefik       # Namespace where the Gateway lives
-      sectionName: https       # Must match a listener in the Gateway (e.g. https-eventuras)
+replicaCount: 1
 
-# Non-sensitive env vars shared across all environments for this tenant.
-# Names are 1-1 with what the app reads (see apps/web/app.config.json).
-config:
-  DEFAULT_LOCALE: "nb-NO"         # "nb-NO" or "en-US"
-  ORGANIZATION_ID: ""             # e.g. "1"
-  AUTH0_DOMAIN: ""               # e.g. "eventuras.eu.auth0.com"
-  SITE_SETTINGS_URL: ""           # optional
-  SENTRY_DSN: ""                  # optional – safe to commit (public DSN)
+image:
+  registry: docker.io
+  repository: losolio/eventuras-web
+  tag: ""           # Set by ArgoCD
+  pullPolicy: IfNotPresent
 
-# Server-side secrets – NOT set here, belong in eventuras-web-secrets k8s Secret:
-#   AUTH0_CLIENT_ID, AUTH0_CLIENT_SECRET, AUTH0_API_AUDIENCE, SESSION_SECRET
+service:
+  port: 80
+  targetPort: 3000
 
-# Extra non-sensitive env vars not covered by config: above
-extraEnv: {}
+resources:
+  requests:
+    memory: "512Mi"
+    cpu: "200m"
+    ephemeral-storage: "1Gi"
+  limits:
+    memory: "1Gi"
+    cpu: "1000m"
+    ephemeral-storage: "2Gi"
 
-# Environments – enable/disable and configure per tenant
-environments:
-  dev:
-    enabled: false
-    hostname: ""         # e.g. "web-dev.internal.example.com"
-    namespace: ""        # Override default (eventuras-web-{{ tenant }}-dev)
-    tag: edge
-    pullPolicy: Always
-    nodeEnv: development
-    autoSync: true
-    extraEnv:            # Per-environment URL overrides
-      BACKEND_URL: ""        # e.g. "https://api-dev.internal.example.com"
-      APPLICATION_URL: ""    # e.g. "https://web-dev.internal.example.com"
-      LOGOUT_URL_REDIRECT: "" # usually same as APPLICATION_URL
+# Health check configuration
+healthCheck:
+  path: /api/healthz
+  # Startup probe – allows up to ~5 min for cold start before killing the pod
+  startupInitialDelaySeconds: 10
+  startupPeriodSeconds: 10
+  startupFailureThreshold: 30
+  # Liveness / readiness (only active after startup succeeds)
+  periodSeconds: 30
+  timeoutSeconds: 5
+  readinessPeriodSeconds: 10
 
-  staging:
-    enabled: true
-    hostname: ""         # e.g. "web-staging.internal.example.com"
-    namespace: ""        # Override default (eventuras-web-{{ tenant }}-staging)
-    tag: canary
-    pullPolicy: Always
-    nodeEnv: production
-    autoSync: true
-    extraEnv:            # Per-environment URL overrides
-      BACKEND_URL: ""        # e.g. "https://api-staging.internal.example.com"
-      APPLICATION_URL: ""    # e.g. "https://web-staging.internal.example.com"
-      LOGOUT_URL_REDIRECT: "" # usually same as APPLICATION_URL
+# Pod annotations – merged onto template.metadata.annotations
+# Use this to trigger rollouts on secret changes (e.g. Infisical auto-reload)
+podAnnotations: {}
+# e.g.
+#   secrets.infisical.com/auto-reload: "true"
 
-  prod:
-    enabled: true
-    hostname: ""         # e.g. "web-prod.internal.example.com"
-    namespace: ""        # Override default (eventuras-web-{{ tenant }}-prod)
-    tag: "0.0.0"         # Set by CI on release
-    pullPolicy: IfNotPresent
-    nodeEnv: production
-    autoSync: false
-    extraEnv:            # Per-environment URL overrides
-      BACKEND_URL: ""        # e.g. "https://api-prod.internal.example.com"
-      APPLICATION_URL: ""    # e.g. "https://web-prod.internal.example.com"
-      LOGOUT_URL_REDIRECT: "" # usually same as APPLICATION_URL
+# Environment variables (non-sensitive)
+env: {}
+# Additional env vars set by provisioner:
+#   NODE_ENV: production
+#   PORT: "3000"
+#   NEXT_PUBLIC_API_URL: "https://api-dev.eventuras.example.com"
+#   NEXT_PUBLIC_APP_URL: "https://app-dev.eventuras.example.com"
+# Sensitive values (tokens, secrets) belong in the eventuras-web-secrets k8s Secret.
