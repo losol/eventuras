@@ -1,0 +1,44 @@
+# Default values for historia workload
+# Environment-specific values are set by Argo CD, not here
+
+replicaCount: 1
+
+image:
+  registry: docker.io
+  repository: losolio/historia
+  tag: ""           # Set by ArgoCD
+  pullPolicy: IfNotPresent
+
+service:
+  port: 80
+  targetPort: 3000
+
+resources:
+  requests:
+    memory: "512Mi"
+    cpu: "200m"
+    ephemeral-storage: "1Gi"
+  limits:
+    memory: "1Gi"
+    cpu: "1000m"
+    ephemeral-storage: "2Gi"
+
+# Health check configuration
+healthCheck:
+  path: /api/health
+  # Startup probe – allows up to ~5 min for migrations before killing the pod
+  startupInitialDelaySeconds: 10
+  startupPeriodSeconds: 10
+  startupFailureThreshold: 30
+  # Liveness / readiness (only active after startup succeeds)
+  periodSeconds: 30
+  timeoutSeconds: 5
+  readinessPeriodSeconds: 10
+
+# Pod annotations – merged onto template.metadata.annotations
+# Use this to trigger rollouts on secret changes (e.g. Infisical auto-reload)
+podAnnotations: {}
+
+# Environment variables (non-sensitive)
+# All config goes via historia-secrets (Infisical)
+env: {}

@@ -1,0 +1,6 @@
+apiVersion: v2
+name: historia
+description: Historia CMS – Payload CMS headless content management
+type: application
+version: 0.1.0
+appVersion: "0.0.0" # Actual version set by CI

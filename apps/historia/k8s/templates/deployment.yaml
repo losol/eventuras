@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    app: {{ .Chart.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ required "image.tag is required" .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.targetPort }}
+          env:
+            - name: PORT
+              value: {{ .Values.service.targetPort | quote }}
+            - name: HOSTNAME
+              value: "0.0.0.0"
+            {{- range $key, $value := .Values.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+          envFrom:
+            - secretRef:
+                name: {{ .Chart.Name }}-secrets
+                optional: false
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          startupProbe:
+            httpGet:
+              path: {{ .Values.healthCheck.path }}
+              port: {{ .Values.service.targetPort }}
+            initialDelaySeconds: {{ .Values.healthCheck.startupInitialDelaySeconds | default 5 }}
+            periodSeconds: {{ .Values.healthCheck.startupPeriodSeconds | default 5 }}
+            timeoutSeconds: {{ .Values.healthCheck.timeoutSeconds }}
+            failureThreshold: {{ .Values.healthCheck.startupFailureThreshold | default 30 }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.healthCheck.path }}
+              port: {{ .Values.service.targetPort }}
+            periodSeconds: {{ .Values.healthCheck.periodSeconds }}
+            timeoutSeconds: {{ .Values.healthCheck.timeoutSeconds }}
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.healthCheck.path }}
+              port: {{ .Values.service.targetPort }}
+            initialDelaySeconds: 5
+            periodSeconds: {{ .Values.healthCheck.readinessPeriodSeconds | default 10 }}
+            timeoutSeconds: {{ .Values.healthCheck.timeoutSeconds }}
+            failureThreshold: 3
