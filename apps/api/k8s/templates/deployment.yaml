@@ -40,11 +40,18 @@ spec:
                 optional: true
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          startupProbe:
+            httpGet:
+              path: {{ .Values.healthCheck.path }}
+              port: {{ .Values.service.targetPort }}
+            initialDelaySeconds: {{ .Values.healthCheck.startupInitialDelaySeconds | default 10 }}
+            periodSeconds: {{ .Values.healthCheck.startupPeriodSeconds | default 10 }}
+            timeoutSeconds: {{ .Values.healthCheck.timeoutSeconds }}
+            failureThreshold: {{ .Values.healthCheck.startupFailureThreshold | default 30 }}
           livenessProbe:
             httpGet:
               path: {{ .Values.healthCheck.path }}
               port: {{ .Values.service.targetPort }}
-            initialDelaySeconds: {{ .Values.healthCheck.initialDelaySeconds }}
             periodSeconds: {{ .Values.healthCheck.periodSeconds }}
             timeoutSeconds: {{ .Values.healthCheck.timeoutSeconds }}
             failureThreshold: 3
