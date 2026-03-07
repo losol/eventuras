@@ -207,6 +207,9 @@ jobs:
     name: Ratio UI Deploy
     needs: [scope, ratio-ci]
     if: needs.scope.outputs.ratio-ui == 'true'
+    permissions:
+      contents: read
+      pull-requests: write
     uses: ./.github/workflows/ratio-deploy.yml
     secrets:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
