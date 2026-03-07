@@ -16,6 +16,7 @@ jobs:
     outputs:
       api: ${{ steps.check.outputs.api }}
       conductor: ${{ steps.check.outputs.conductor }}
+      convertoapi: ${{ steps.check.outputs.convertoapi }}
       historia: ${{ steps.check.outputs.historia }}
       idem-admin: ${{ steps.check.outputs.idem-admin }}
       idem-idp: ${{ steps.check.outputs.idem-idp }}
@@ -42,6 +43,7 @@ jobs:
 
           echo "api=$(echo "$CHANGED" | grep -q '^apps/api/' && echo true || echo false)" >> $GITHUB_OUTPUT
           echo "conductor=$(echo "$CHANGED" | grep -q '^apps/conductor/' && echo true || echo false)" >> $GITHUB_OUTPUT
+          echo "convertoapi=$(echo "$CHANGED" | grep -q '^apps/convertoapi/' && echo true || echo false)" >> $GITHUB_OUTPUT
           echo "historia=$(echo "$CHANGED" | grep -q '^apps/historia/' && echo true || echo false)" >> $GITHUB_OUTPUT
           echo "idem-admin=$(echo "$CHANGED" | grep -q '^apps/idem-admin/' && echo true || echo false)" >> $GITHUB_OUTPUT
           echo "idem-idp=$(echo "$CHANGED" | grep -q '^apps/idem-idp/' && echo true || echo false)" >> $GITHUB_OUTPUT
@@ -75,6 +77,21 @@ jobs:
     needs: [scope, conductor-ci]
     if: needs.scope.outputs.conductor == 'true' && github.event_name == 'push'
     uses: ./.github/workflows/conductor-docker.yml
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  convertoapi-ci:
+    name: ConvertoAPI CI
+    needs: scope
+    if: needs.scope.outputs.convertoapi == 'true'
+    uses: ./.github/workflows/convertoapi-ci.yml
+
+  convertoapi-docker:
+    name: ConvertoAPI Docker
+    needs: [scope, convertoapi-ci]
+    if: needs.scope.outputs.convertoapi == 'true' && github.event_name == 'push'
+    uses: ./.github/workflows/convertoapi-docker.yml
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
