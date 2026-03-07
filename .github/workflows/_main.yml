@@ -62,7 +62,6 @@ jobs:
           EVENT_NAME: ${{ github.event_name }}
           PR_HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
           REPOSITORY: ${{ github.repository }}
-          AUTHOR_ASSOCIATION: ${{ github.event.pull_request.author_association }}
         run: |
           if [ "$EVENT_NAME" = "push" ]; then
             echo "is-internal=true" >> $GITHUB_OUTPUT
@@ -70,11 +69,7 @@ jobs:
             echo "channel=main" >> $GITHUB_OUTPUT
           elif [ "$PR_HEAD_REPO" = "$REPOSITORY" ]; then
             echo "is-internal=true" >> $GITHUB_OUTPUT
-            if [ "$AUTHOR_ASSOCIATION" = "OWNER" ]; then
-              echo "push=true" >> $GITHUB_OUTPUT
-            else
-              echo "push=false" >> $GITHUB_OUTPUT
-            fi
+            echo "push=false" >> $GITHUB_OUTPUT
             echo "channel=edge" >> $GITHUB_OUTPUT
           else
             echo "is-internal=false" >> $GITHUB_OUTPUT
