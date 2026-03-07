@@ -25,7 +25,7 @@ const wellKnownGetHandler = async (request: FastifyRequest, reply: FastifyReply)
   reply.send({
     issuer: process.env.BASE_URL,
     token_endpoint: tokenEndpoint,
-    token_endpoint_auth_methods_supported: ['client_secret_post'],
+    token_endpoint_auth_methods_supported: ['client_secret_basic'],
   });
 };
 
