@@ -1,0 +1,63 @@
+name: Ratio UI Deploy
+
+on:
+  workflow_call:
+    secrets:
+      CLOUDFLARE_API_TOKEN:
+        required: true
+      CLOUDFLARE_ACCOUNT_ID:
+        required: true
+      CLOUDFLARE_PAGES_PROJECT:
+        required: true
+
+jobs:
+  deploy:
+    name: Deploy Storybook
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
+        with:
+          version: 10.28.2
+
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version: '24'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --filter @eventuras/ratio-ui... --frozen-lockfile
+
+      - name: Build Storybook
+        run: pnpm --filter @eventuras/ratio-ui storybook:build
+
+      - name: Deploy Ratio UI Storybook
+        if: github.event_name == 'push'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_PAGES_PROJECT: ${{ secrets.CLOUDFLARE_PAGES_PROJECT }}
+        run: npx wrangler pages deploy libs/ratio-ui/storybook-static --project-name="$CLOUDFLARE_PAGES_PROJECT" --branch=main --commit-dirty=true
+
+      - name: Deploy preview of Ratio UI Storybook
+        if: github.event_name == 'pull_request'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_PAGES_PROJECT: ${{ secrets.CLOUDFLARE_PAGES_PROJECT }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: npx wrangler pages deploy libs/ratio-ui/storybook-static --project-name="$CLOUDFLARE_PAGES_PROJECT" --branch=preview-${PR_NUMBER} --commit-dirty=true
+
+      - name: Comment preview URL
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PROJECT: ${{ secrets.CLOUDFLARE_PAGES_PROJECT }}
+        run: |
+          BODY="Storybook preview: https://preview-${PR_NUMBER}.${PROJECT}.pages.dev"
+          gh pr comment "$PR_NUMBER" --body "$BODY" --edit-last 2>/dev/null \
+            || gh pr comment "$PR_NUMBER" --body "$BODY"
