@@ -1,0 +1,47 @@
+name: Main CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  scope:
+    name: Scope
+    runs-on: ubuntu-latest
+    outputs:
+      web: ${{ steps.check.outputs.web }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Detect changes
+        id: check
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            CHANGED=$(git diff --name-only "origin/${BASE_REF}...HEAD")
+          else
+            CHANGED=$(git diff --name-only HEAD~1)
+          fi
+
+          echo "web=$(echo "$CHANGED" | grep -q '^apps/web/' && echo true || echo false)" >> $GITHUB_OUTPUT
+
+  web-ci:
+    name: Web CI
+    needs: scope
+    if: needs.scope.outputs.web == 'true'
+    uses: ./.github/workflows/web-ci.yml
+
+  web-deploy:
+    name: Web Deploy
+    needs: [scope, web-ci]
+    if: needs.scope.outputs.web == 'true'
+    uses: ./.github/workflows/web-deploy.yml
+    secrets: inherit
