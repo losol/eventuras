@@ -19,8 +19,6 @@ on:
         description: 'Release tag (e.g., @eventuras/idem-admin@1.0.0)'
         required: true
 
-permissions:
-  contents: read
 
 env:
   ORG: losolio

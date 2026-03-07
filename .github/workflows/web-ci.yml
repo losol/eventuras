@@ -3,8 +3,6 @@ name: Web CI
 on:
   workflow_call:
 
-permissions:
-  contents: read
 
 jobs:
   lint:
