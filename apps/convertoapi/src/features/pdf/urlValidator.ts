@@ -35,7 +35,8 @@ export async function validateUrl(url: string): Promise<string | null> {
     return 'Only http and https protocols are allowed';
   }
 
-  const hostname = parsed.hostname;
+  // Strip IPv6 brackets: URL.hostname returns "[::1]" for IPv6 addresses
+  const hostname = parsed.hostname.replace(/^\[|\]$/g, '');
 
   if (isPrivateIp(hostname)) {
     return 'URLs pointing to private/internal networks are not allowed';

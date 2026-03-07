@@ -20,7 +20,8 @@
     "build": "tsc && cp -R public dist",
     "dev": "pnpm dlx tsx src/app.ts",
     "start": "node dist/app.js",
-    "test": "echo \"Error: no test specified\" && exit 0"
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@fastify/jwt": "^10.0.0",
@@ -39,6 +40,7 @@
     "@types/node": "^24.0.3",
     "fastify-tsconfig": "^3.0.0",
     "tsx": "^4.21.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
   }
 }
