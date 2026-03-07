@@ -1,5 +1,6 @@
 import { FastifyInstance, FastifyRequest, FastifyReply, FastifySchema } from 'fastify';
 import { HTMLToPDFService } from './pdfService.js';
+import { validateUrl } from './urlValidator.js';
 
 const papersizes = [
   'Letter',
@@ -67,18 +68,24 @@ const pdfGenerateRequestSchema: FastifySchema = {
   },
 };
 
-// This function gives a proper error message when both 'html' and 'url' are provided
-async function validateHtmlRequest(
+async function validatePdfRequest(
   request: FastifyRequest<{ Body: PdfGenerateRequest }>,
   reply: FastifyReply
 ) {
   const { html, url } = request.body;
   if (html && url) {
-    reply
+    return reply
       .status(422)
       .send({ error: "Cannot specify both 'html' and 'url'. Please provide only one." });
-  } else if (!html && !url) {
-    reply.status(422).send({ error: "Must specify either 'html' or 'url'." });
+  }
+  if (!html && !url) {
+    return reply.status(422).send({ error: "Must specify either 'html' or 'url'." });
+  }
+  if (url) {
+    const urlError = await validateUrl(url);
+    if (urlError) {
+      return reply.status(422).send({ error: urlError });
+    }
   }
 }
 
@@ -121,7 +128,7 @@ export const pdfRoutes = async (fastify: FastifyInstance) => {
   fastify.route({
     method: 'POST',
     url: '/v1/pdf',
-    preValidation: [validateHtmlRequest],
+    preValidation: [validatePdfRequest],
     preHandler: [fastify.verifyJWT],
     handler: (request, reply) => pdfHandler(fastify, request, reply),
     schema: pdfGenerateRequestSchema,
