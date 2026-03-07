@@ -2,11 +2,6 @@ name: API CI
 
 on:
   workflow_call:
-    inputs:
-      dotnet-version:
-        required: false
-        default: "10.0"
-        type: string
 
 permissions:
   contents: read
@@ -20,7 +15,9 @@ jobs:
         working-directory: ./apps/api/
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: ./.github/actions/util-dotnet-install
+      - uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5.2.0
+        with:
+          dotnet-version: '10.x'
       - name: dotnet format
         run: dotnet format --verify-no-changes
 
@@ -32,7 +29,9 @@ jobs:
         working-directory: ./apps/api/
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: ./.github/actions/util-dotnet-install
+      - uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5.2.0
+        with:
+          dotnet-version: '10.x'
       - name: Restore dependencies
         run: dotnet restore
       - name: Build with dotnet
@@ -61,6 +60,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: ./.github/actions/util-dotnet-install
+      - uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5.2.0
+        with:
+          dotnet-version: '10.x'
       - name: Run tests
         run: dotnet test --project ${{ matrix.test_set.path }}
