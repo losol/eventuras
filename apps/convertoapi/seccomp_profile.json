@@ -1,8 +1,11 @@
 {
-  "comment": "Allow create user namespaces",
-  "names": ["clone", "setns", "unshare"],
-  "action": "SCMP_ACT_ALLOW",
-  "args": [],
-  "includes": {},
-  "excludes": {}
+  "defaultAction": "SCMP_ACT_ERRNO",
+  "comment": "Minimal seccomp profile for Chromium with user namespaces",
+  "syscalls": [
+    {
+      "names": ["clone", "setns", "unshare"],
+      "action": "SCMP_ACT_ALLOW",
+      "comment": "Required for Chromium user namespace sandbox"
+    }
+  ]
 }
