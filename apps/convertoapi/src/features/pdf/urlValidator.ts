@@ -1,4 +1,5 @@
-import { resolve as dnsResolve } from 'dns/promises';
+import { lookup } from 'dns/promises';
+import { isIP } from 'net';
 
 const ALLOWED_PROTOCOLS = ['http:', 'https:'];
 
@@ -12,7 +13,7 @@ const PRIVATE_IP_PATTERNS = [
   /^::1$/, // IPv6 loopback
   /^fc00:/i, // IPv6 unique local
   /^fe80:/i, // IPv6 link-local
-  /^fd/i, // IPv6 unique local
+  /^fd[0-9a-f]{2}:/i, // IPv6 unique local (fd00::/8)
 ];
 
 function isPrivateIp(ip: string): boolean {
@@ -38,15 +39,19 @@ export async function validateUrl(url: string): Promise<string | null> {
   // Strip IPv6 brackets: URL.hostname returns "[::1]" for IPv6 addresses
   const hostname = parsed.hostname.replace(/^\[|\]$/g, '');
 
-  if (isPrivateIp(hostname)) {
-    return 'URLs pointing to private/internal networks are not allowed';
+  // If hostname is an IP literal, check it directly without DNS
+  if (isIP(hostname)) {
+    if (isPrivateIp(hostname)) {
+      return 'URLs pointing to private/internal networks are not allowed';
+    }
+    return null;
   }
 
-  // Resolve hostname and check that resolved IPs are not private
+  // Resolve hostname (both A and AAAA records) and check resolved IPs
   try {
-    const addresses = await dnsResolve(hostname);
-    for (const addr of addresses) {
-      if (isPrivateIp(addr)) {
+    const addresses = await lookup(hostname, { all: true });
+    for (const { address } of addresses) {
+      if (isPrivateIp(address)) {
         return 'URL resolves to a private/internal IP address';
       }
     }

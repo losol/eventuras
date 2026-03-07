@@ -1,13 +1,13 @@
 import { describe, it, expect, vi } from 'vitest';
 import { validateUrl } from './urlValidator.js';
 
-// Mock DNS resolution
+// Mock DNS lookup (returns both A and AAAA records)
 vi.mock('dns/promises', () => ({
-  resolve: vi.fn(async (hostname: string) => {
-    const mockDns: Record<string, string[]> = {
-      'example.com': ['93.184.216.34'],
-      'internal.evil.com': ['10.0.0.1'],
-      'sneaky.com': ['192.168.1.1'],
+  lookup: vi.fn(async (hostname: string) => {
+    const mockDns: Record<string, Array<{ address: string; family: number }>> = {
+      'example.com': [{ address: '93.184.216.34', family: 4 }],
+      'internal.evil.com': [{ address: '10.0.0.1', family: 4 }],
+      'sneaky.com': [{ address: '192.168.1.1', family: 4 }],
     };
     const result = mockDns[hostname];
     if (!result) throw new Error(`ENOTFOUND ${hostname}`);
