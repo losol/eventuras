@@ -14,7 +14,6 @@ service:
   targetPort: 3100
 
 # Resource limits – Playwright/Chromium is memory-intensive.
-# Each PDF generation launches a Chromium browser instance.
 resources:
   requests:
     memory: "256Mi"
@@ -32,11 +31,28 @@ healthCheck:
   periodSeconds: 30
   timeoutSeconds: 5
 
+# Pod-level security context
+podSecurityContext:
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
+
+# Container-level security context
+# Chromium sandbox requires either SYS_ADMIN or --no-sandbox.
+# We use --no-sandbox (via PLAYWRIGHT_NOSANDBOX) and drop all capabilities instead,
+# relying on container isolation (non-root, seccomp, network policies) for security.
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+
 # Non-sensitive environment variables
 env:
   HOST: "0.0.0.0"
   PORT: "3100"
   BASE_URL: "http://converto"
+  PLAYWRIGHT_NOSANDBOX: "true"
 
 # Pod annotations
 podAnnotations: {}
