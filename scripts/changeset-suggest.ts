@@ -87,17 +87,30 @@ function getWorkspaces(): Pkg[] {
   return dirs.map(readPkg).filter(Boolean) as Pkg[]
 }
 
-/** Load aliases from scripts/scope-aliases.json */
+/** Load aliases from repo.json */
 function loadAliases(): Record<string, string> {
-  const SCOPE_ALIASES_PATH = './scripts/scope-aliases.json'
-  if (!existsSync(SCOPE_ALIASES_PATH)) {
-    console.info('Info: no scope alias file found at scripts/scope-aliases.json.')
+  const REPO_JSON_PATH = './repo.json'
+  if (!existsSync(REPO_JSON_PATH)) {
+    console.info('Info: no repo.json found.')
     return {}
   }
   try {
-    return JSON.parse(readFileSync(SCOPE_ALIASES_PATH, 'utf8'))
+    const repo = JSON.parse(readFileSync(REPO_JSON_PATH, 'utf8'))
+    const aliases: Record<string, string> = {}
+    for (const section of ['apps', 'libs']) {
+      const entries = repo[section] ?? {}
+      for (const [key, val] of Object.entries(entries) as [string, any][]) {
+        aliases[key] = val.package
+        if (val.aliases) {
+          for (const alias of val.aliases) {
+            aliases[alias] = val.package
+          }
+        }
+      }
+    }
+    return aliases
   } catch (err) {
-    console.warn(`⚠️  Failed to parse ${SCOPE_ALIASES_PATH}:`, err)
+    console.warn(`⚠️  Failed to parse ${REPO_JSON_PATH}:`, err)
     return {}
   }
 }

@@ -1,0 +1,100 @@
+{
+  "apps": {
+    "api": {
+      "path": "apps/api",
+      "package": "@eventuras/api"
+    },
+    "conductor": {
+      "path": "apps/conductor",
+      "package": "@eventuras/conductor"
+    },
+    "converto": {
+      "path": "apps/convertoapi",
+      "package": "@eventuras/convertoapi",
+      "aliases": ["converto-api", "convertoapi"]
+    },
+    "docsite": {
+      "path": "apps/docsite",
+      "package": "@eventuras/docsite"
+    },
+    "historia": {
+      "path": "apps/historia",
+      "package": "@eventuras/historia",
+      "aliases": ["cms", "historia-cms"]
+    },
+    "idem-admin": {
+      "path": "apps/idem-admin",
+      "package": "@eventuras/idem-admin"
+    },
+    "idem-idp": {
+      "path": "apps/idem-idp",
+      "package": "@eventuras/idem-idp",
+      "aliases": ["idem"]
+    },
+    "nuntius": {
+      "path": "apps/nuntius-homey-app",
+      "package": "no.losol.nuntius",
+      "aliases": ["nuntius-homey"]
+    },
+    "oxo": {
+      "path": "apps/oxo-cli",
+      "package": "@eventuras/oxo-cli"
+    },
+    "web": {
+      "path": "apps/web",
+      "package": "@eventuras/web",
+      "aliases": ["frontend", "web-e2e"]
+    }
+  },
+  "libs": {
+    "datatable": {
+      "package": "@eventuras/datatable"
+    },
+    "event-sdk": {
+      "package": "@eventuras/event-sdk",
+      "aliases": ["sdk"]
+    },
+    "fides-auth": {
+      "package": "@eventuras/fides-auth"
+    },
+    "google-api": {
+      "package": "@eventuras/google-api",
+      "aliases": ["google"]
+    },
+    "logger": {
+      "package": "@eventuras/logger"
+    },
+    "mailer": {
+      "package": "@eventuras/mailer"
+    },
+    "markdown": {
+      "package": "@eventuras/markdown"
+    },
+    "notitia-templates": {
+      "package": "@eventuras/notitia-templates",
+      "aliases": ["notitia"]
+    },
+    "ratio-ui": {
+      "package": "@eventuras/ratio-ui",
+      "aliases": ["ratio", "ui"]
+    },
+    "scribo": {
+      "package": "@eventuras/scribo"
+    },
+    "shipper": {
+      "package": "@eventuras/shipper"
+    },
+    "smartform": {
+      "package": "@eventuras/smartform"
+    },
+    "toast": {
+      "package": "@eventuras/toast",
+      "aliases": ["toaster"]
+    },
+    "vite-config": {
+      "package": "@eventuras/vite-config",
+      "aliases": ["vite"]
+    }
+  },
+  "scopes": ["infra", "release"]
+}
