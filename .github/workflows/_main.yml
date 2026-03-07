@@ -18,6 +18,7 @@ jobs:
       historia: ${{ steps.check.outputs.historia }}
       idem-admin: ${{ steps.check.outputs.idem-admin }}
       idem-idp: ${{ steps.check.outputs.idem-idp }}
+      ratio-ui: ${{ steps.check.outputs.ratio-ui }}
       web: ${{ steps.check.outputs.web }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -41,6 +42,7 @@ jobs:
           echo "historia=$(echo "$CHANGED" | grep -q '^apps/historia/' && echo true || echo false)" >> $GITHUB_OUTPUT
           echo "idem-admin=$(echo "$CHANGED" | grep -q '^apps/idem-admin/' && echo true || echo false)" >> $GITHUB_OUTPUT
           echo "idem-idp=$(echo "$CHANGED" | grep -q '^apps/idem-idp/' && echo true || echo false)" >> $GITHUB_OUTPUT
+          echo "ratio-ui=$(echo "$CHANGED" | grep -q '^libs/ratio-ui/' && echo true || echo false)" >> $GITHUB_OUTPUT
           echo "web=$(echo "$CHANGED" | grep -q '^apps/web/' && echo true || echo false)" >> $GITHUB_OUTPUT
 
   api-ci:
@@ -109,6 +111,22 @@ jobs:
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  ratio-ci:
+    name: Ratio UI CI
+    needs: scope
+    if: needs.scope.outputs.ratio-ui == 'true'
+    uses: ./.github/workflows/ratio-ci.yml
+
+  ratio-deploy:
+    name: Ratio UI Deploy
+    needs: [scope, ratio-ci]
+    if: needs.scope.outputs.ratio-ui == 'true'
+    uses: ./.github/workflows/ratio-deploy.yml
+    secrets:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      CLOUDFLARE_PAGES_PROJECT: ${{ secrets.CLOUDFLARE_PAGES_PROJECT }}
 
   web-ci:
     name: Web CI
