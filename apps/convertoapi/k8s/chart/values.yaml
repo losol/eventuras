@@ -5,7 +5,7 @@ replicaCount: 1
 
 image:
   registry: docker.io
-  repository: losolio/converto-api
+  repository: losolio/converto
   tag: ""           # Set by CI/CD
   pullPolicy: IfNotPresent
 
