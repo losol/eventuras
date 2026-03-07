@@ -28,7 +28,7 @@ on:
 
 env:
   ORGANIZATION_NAME: losolio
-  IMAGE_NAME: converto-api
+  IMAGE_NAME: converto
 
 jobs:
   # ── Staging: build & push Docker image (canary) ──────────────
