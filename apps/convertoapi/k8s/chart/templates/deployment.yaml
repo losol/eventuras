@@ -19,12 +19,24 @@ spec:
       {{- end }}
     spec:
       automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ required "image.tag is required" .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
           ports:
             - containerPort: {{ .Values.service.targetPort }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
           env:
             {{- range $key, $value := .Values.env }}
             - name: {{ $key }}
@@ -44,6 +56,12 @@ spec:
             periodSeconds: {{ .Values.healthCheck.periodSeconds }}
             timeoutSeconds: {{ .Values.healthCheck.timeoutSeconds }}
             failureThreshold: 3
+          startupProbe:
+            httpGet:
+              path: {{ .Values.healthCheck.path }}
+              port: {{ .Values.service.targetPort }}
+            failureThreshold: 10
+            periodSeconds: 5
           readinessProbe:
             httpGet:
               path: {{ .Values.healthCheck.path }}
@@ -52,3 +70,8 @@ spec:
             periodSeconds: {{ .Values.healthCheck.periodSeconds }}
             timeoutSeconds: {{ .Values.healthCheck.timeoutSeconds }}
             failureThreshold: 3
+      volumes:
+        - name: tmp
+          emptyDir:
+            medium: Memory
+            sizeLimit: 256Mi

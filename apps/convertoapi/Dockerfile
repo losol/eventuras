@@ -29,13 +29,22 @@ COPY apps/convertoapi ./apps/convertoapi
 WORKDIR /app/apps/convertoapi
 RUN pnpm run build
 
+# Remove devDependencies after build
+WORKDIR /app
+RUN pnpm prune --prod
+
 
 ##################################
 # Stage 2: Run from a fresh base #
 ##################################
 FROM mcr.microsoft.com/playwright:v1.57.0-noble
 
-# pwuser ist the standard non-root user
+# Install tini for proper signal handling (SIGTERM in k8s)
+RUN apt-get update -qq && \
+    apt-get install -y --no-install-recommends tini && \
+    rm -rf /var/lib/apt/lists/*
+
+# Switch to non-root user
 USER pwuser
 
 # Get generated files from the previous stage
@@ -45,5 +54,5 @@ COPY --chown=pwuser:pwuser --from=builder /app/node_modules /app/node_modules
 COPY --chown=pwuser:pwuser --from=builder /app/apps/convertoapi/package.json /app/package.json
 COPY --chown=pwuser:pwuser --from=builder /app/apps/convertoapi/dist /app/dist
 
-# Start the server
+ENTRYPOINT ["tini", "--"]
 CMD ["node", "dist/app.js"]
