@@ -17,6 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       api: ${{ steps.check.outputs.api }}
+      historia: ${{ steps.check.outputs.historia }}
       idem-admin: ${{ steps.check.outputs.idem-admin }}
       idem-idp: ${{ steps.check.outputs.idem-idp }}
       web: ${{ steps.check.outputs.web }}
@@ -39,6 +40,7 @@ jobs:
           fi
 
           echo "api=$(echo "$CHANGED" | grep -q '^apps/api/' && echo true || echo false)" >> $GITHUB_OUTPUT
+          echo "historia=$(echo "$CHANGED" | grep -q '^apps/historia/' && echo true || echo false)" >> $GITHUB_OUTPUT
           echo "idem-admin=$(echo "$CHANGED" | grep -q '^apps/idem-admin/' && echo true || echo false)" >> $GITHUB_OUTPUT
           echo "idem-idp=$(echo "$CHANGED" | grep -q '^apps/idem-idp/' && echo true || echo false)" >> $GITHUB_OUTPUT
           echo "web=$(echo "$CHANGED" | grep -q '^apps/web/' && echo true || echo false)" >> $GITHUB_OUTPUT
@@ -57,6 +59,28 @@ jobs:
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  historia-ci:
+    name: Historia CI
+    needs: scope
+    if: needs.scope.outputs.historia == 'true'
+    uses: ./.github/workflows/historia-ci.yml
+
+  historia-docker:
+    name: Historia Docker
+    needs: [scope, historia-ci]
+    if: needs.scope.outputs.historia == 'true' && github.event_name == 'push'
+    uses: ./.github/workflows/historia-docker.yml
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      CMS_SECRET: ${{ secrets.CMS_SECRET }}
+      CMS_SENTRY_AUTH_TOKEN: ${{ secrets.CMS_SENTRY_AUTH_TOKEN }}
+      NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
+      CMS_SENTRY_ORG: ${{ secrets.CMS_SENTRY_ORG }}
+      CMS_SENTRY_PROJECT: ${{ secrets.CMS_SENTRY_PROJECT }}
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
 
   idem-admin-ci:
     name: idem-admin CI
