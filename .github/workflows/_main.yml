@@ -24,11 +24,13 @@ jobs:
         env:
           EVENT_NAME: ${{ github.event_name }}
           BASE_REF: ${{ github.base_ref }}
+          PUSH_BEFORE: ${{ github.event.before }}
+          PUSH_AFTER: ${{ github.sha }}
         run: |
           if [ "$EVENT_NAME" = "pull_request" ]; then
             CHANGED=$(git diff --name-only "origin/${BASE_REF}...HEAD")
           else
-            CHANGED=$(git diff --name-only HEAD~1)
+            CHANGED=$(git diff --name-only "${PUSH_BEFORE}...${PUSH_AFTER}")
           fi
 
           echo "web=$(echo "$CHANGED" | grep -q '^apps/web/' && echo true || echo false)" >> $GITHUB_OUTPUT
