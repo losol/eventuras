@@ -190,7 +190,7 @@ jobs:
           images: ${{ env.DOCKER_REPOSITORY }}:edge
 
       - name: Comment on PR
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
         with:
           script: |
             const comment = `## 🚀 Historia Dev Deployment
@@ -246,7 +246,7 @@ jobs:
           images: ${{ needs.retag-for-release.outputs.image-tag }}
 
       - name: Comment on release
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
         with:
           script: |
             const comment = `## 🎉 Historia Production Deployment
