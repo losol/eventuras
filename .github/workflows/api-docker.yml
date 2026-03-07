@@ -3,11 +3,20 @@ name: API Docker
 on:
   # Called from _main.yml for staging builds
   workflow_call:
+    inputs:
+      push:
+        description: 'Push image to registry'
+        type: boolean
+        default: false
+      channel:
+        description: 'Tag channel: main (canary + main-sha) or edge (edge-sha)'
+        type: string
+        default: ''
     secrets:
       DOCKERHUB_USERNAME:
-        required: true
+        required: false
       DOCKERHUB_TOKEN:
-        required: true
+        required: false
 
   # Release: tag push or manual trigger
   push:
@@ -58,14 +67,16 @@ jobs:
         with:
           images: ${{ env.ORGANIZATION_NAME }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,value=canary
-            type=raw,value=main-${{ steps.ver.outputs.sha }}
+            type=raw,value=canary,enable=${{ inputs.channel == 'main' }}
+            type=raw,value=main-${{ steps.ver.outputs.sha }},enable=${{ inputs.channel == 'main' }}
+            type=raw,value=edge-${{ steps.ver.outputs.sha }},enable=${{ inputs.channel == 'edge' }}
           labels: |
             org.opencontainers.image.version=${{ steps.ver.outputs.version }}
             org.opencontainers.image.revision=${{ steps.ver.outputs.sha }}
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
 
       - name: Login to Docker Hub
+        if: inputs.push
         uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4.0.0
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -75,8 +86,8 @@ jobs:
         uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
         with:
           context: ./apps/api/
-          platforms: linux/amd64,linux/arm64
-          push: true
+          platforms: ${{ inputs.channel == 'main' && 'linux/amd64,linux/arm64' || 'linux/amd64' }}
+          push: ${{ inputs.push }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
@@ -151,9 +162,9 @@ jobs:
         run: |
           RESOLVED_SHA="$(git rev-list -n 1 "${RELEASE_TAG}")"
           SHORT_SHA="${RESOLVED_SHA::7}"
-          SOURCE_TAG="${{ env.ORGANIZATION_NAME }}/${{ env.IMAGE_NAME }}:main-${SHORT_SHA}"
-          VERSION_TAG="${{ env.ORGANIZATION_NAME }}/${{ env.IMAGE_NAME }}:v${VERSION}"
-          LATEST_TAG="${{ env.ORGANIZATION_NAME }}/${{ env.IMAGE_NAME }}:latest"
+          SOURCE_TAG="${ORGANIZATION_NAME}/${IMAGE_NAME}:main-${SHORT_SHA}"
+          VERSION_TAG="${ORGANIZATION_NAME}/${IMAGE_NAME}:v${VERSION}"
+          LATEST_TAG="${ORGANIZATION_NAME}/${IMAGE_NAME}:latest"
 
           echo "Pulling existing staging image: ${SOURCE_TAG}"
           docker pull "${SOURCE_TAG}"

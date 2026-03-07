@@ -7,6 +7,9 @@ on:
     branches: [main]
     types: [opened, synchronize]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 # Job order: scope → app jobs (alphabetical) → generic jobs (commitlint, etc.)
 jobs:
@@ -23,6 +26,9 @@ jobs:
       ratio-ui: ${{ steps.check.outputs.ratio-ui }}
       scribo: ${{ steps.check.outputs.scribo }}
       web: ${{ steps.check.outputs.web }}
+      is-internal: ${{ steps.docker.outputs.is-internal }}
+      docker-push: ${{ steps.docker.outputs.push }}
+      docker-channel: ${{ steps.docker.outputs.channel }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -50,6 +56,31 @@ jobs:
           echo "ratio-ui=$(echo "$CHANGED" | grep -q '^libs/ratio-ui/' && echo true || echo false)" >> $GITHUB_OUTPUT
           echo "scribo=$(echo "$CHANGED" | grep -q '^libs/scribo/' && echo true || echo false)" >> $GITHUB_OUTPUT
           echo "web=$(echo "$CHANGED" | grep -q '^apps/web/' && echo true || echo false)" >> $GITHUB_OUTPUT
+      - name: Docker policy
+        id: docker
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          REPOSITORY: ${{ github.repository }}
+          AUTHOR_ASSOCIATION: ${{ github.event.pull_request.author_association }}
+        run: |
+          if [ "$EVENT_NAME" = "push" ]; then
+            echo "is-internal=true" >> $GITHUB_OUTPUT
+            echo "push=true" >> $GITHUB_OUTPUT
+            echo "channel=main" >> $GITHUB_OUTPUT
+          elif [ "$PR_HEAD_REPO" = "$REPOSITORY" ]; then
+            echo "is-internal=true" >> $GITHUB_OUTPUT
+            if [ "$AUTHOR_ASSOCIATION" = "OWNER" ]; then
+              echo "push=true" >> $GITHUB_OUTPUT
+            else
+              echo "push=false" >> $GITHUB_OUTPUT
+            fi
+            echo "channel=edge" >> $GITHUB_OUTPUT
+          else
+            echo "is-internal=false" >> $GITHUB_OUTPUT
+            echo "push=false" >> $GITHUB_OUTPUT
+            echo "channel=" >> $GITHUB_OUTPUT
+          fi
 
   api-ci:
     name: API CI
@@ -60,8 +91,11 @@ jobs:
   api-docker:
     name: API Docker
     needs: [scope, api-ci]
-    if: needs.scope.outputs.api == 'true' && github.event_name == 'push'
+    if: needs.scope.outputs.api == 'true' && needs.scope.outputs.is-internal == 'true'
     uses: ./.github/workflows/api-docker.yml
+    with:
+      push: ${{ needs.scope.outputs.docker-push == 'true' }}
+      channel: ${{ needs.scope.outputs.docker-channel }}
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -75,8 +109,11 @@ jobs:
   conductor-docker:
     name: Conductor Docker
     needs: [scope, conductor-ci]
-    if: needs.scope.outputs.conductor == 'true' && github.event_name == 'push'
+    if: needs.scope.outputs.conductor == 'true' && needs.scope.outputs.is-internal == 'true'
     uses: ./.github/workflows/conductor-docker.yml
+    with:
+      push: ${{ needs.scope.outputs.docker-push == 'true' }}
+      channel: ${{ needs.scope.outputs.docker-channel }}
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -90,8 +127,11 @@ jobs:
   convertoapi-docker:
     name: ConvertoAPI Docker
     needs: [scope, convertoapi-ci]
-    if: needs.scope.outputs.convertoapi == 'true' && github.event_name == 'push'
+    if: needs.scope.outputs.convertoapi == 'true' && needs.scope.outputs.is-internal == 'true'
     uses: ./.github/workflows/convertoapi-docker.yml
+    with:
+      push: ${{ needs.scope.outputs.docker-push == 'true' }}
+      channel: ${{ needs.scope.outputs.docker-channel }}
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -105,8 +145,11 @@ jobs:
   historia-docker:
     name: Historia Docker
     needs: [scope, historia-ci]
-    if: needs.scope.outputs.historia == 'true' && github.event_name == 'push'
+    if: needs.scope.outputs.historia == 'true' && needs.scope.outputs.is-internal == 'true'
     uses: ./.github/workflows/historia-docker.yml
+    with:
+      push: ${{ needs.scope.outputs.docker-push == 'true' }}
+      channel: ${{ needs.scope.outputs.docker-channel }}
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -127,8 +170,11 @@ jobs:
   idem-admin-docker:
     name: idem-admin Docker
     needs: [scope, idem-admin-ci]
-    if: needs.scope.outputs.idem-admin == 'true' && github.event_name == 'push'
+    if: needs.scope.outputs.idem-admin == 'true' && needs.scope.outputs.is-internal == 'true'
     uses: ./.github/workflows/idem-admin-docker.yml
+    with:
+      push: ${{ needs.scope.outputs.docker-push == 'true' }}
+      channel: ${{ needs.scope.outputs.docker-channel }}
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -142,8 +188,11 @@ jobs:
   idem-idp-docker:
     name: idem-idp Docker
     needs: [scope, idem-idp-ci]
-    if: needs.scope.outputs.idem-idp == 'true' && github.event_name == 'push'
+    if: needs.scope.outputs.idem-idp == 'true' && needs.scope.outputs.is-internal == 'true'
     uses: ./.github/workflows/idem-idp-docker.yml
+    with:
+      push: ${{ needs.scope.outputs.docker-push == 'true' }}
+      channel: ${{ needs.scope.outputs.docker-channel }}
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -188,8 +237,11 @@ jobs:
   web-docker:
     name: Web Docker
     needs: [scope, web-ci]
-    if: needs.scope.outputs.web == 'true' && github.event_name == 'push'
+    if: needs.scope.outputs.web == 'true' && needs.scope.outputs.is-internal == 'true'
     uses: ./.github/workflows/web-docker.yml
+    with:
+      push: ${{ needs.scope.outputs.docker-push == 'true' }}
+      channel: ${{ needs.scope.outputs.docker-channel }}
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
