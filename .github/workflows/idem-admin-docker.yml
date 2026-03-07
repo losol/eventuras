@@ -3,11 +3,20 @@ name: idem-admin Docker
 on:
   # Called from _main.yml for staging builds
   workflow_call:
+    inputs:
+      push:
+        description: 'Push image to registry'
+        type: boolean
+        default: false
+      channel:
+        description: 'Tag channel: main (canary + main-sha) or edge (edge-sha)'
+        type: string
+        default: ''
     secrets:
       DOCKERHUB_USERNAME:
-        required: true
+        required: false
       DOCKERHUB_TOKEN:
-        required: true
+        required: false
 
   # Release: tag push or manual trigger
   push:
@@ -55,14 +64,16 @@ jobs:
         with:
           images: ${{ env.ORG }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,value=canary,enable=${{ github.ref == 'refs/heads/main' }}
-            type=raw,value=main-${{ steps.ver.outputs.sha }},enable=${{ github.ref == 'refs/heads/main' }}
+            type=raw,value=canary,enable=${{ inputs.channel == 'main' }}
+            type=raw,value=main-${{ steps.ver.outputs.sha }},enable=${{ inputs.channel == 'main' }}
+            type=raw,value=edge-${{ steps.ver.outputs.sha }},enable=${{ inputs.channel == 'edge' }}
           labels: |
             org.opencontainers.image.version=${{ steps.ver.outputs.version }}
             org.opencontainers.image.revision=${{ steps.ver.outputs.sha }}
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
 
       - name: Login to Docker Hub
+        if: inputs.push
         uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4.0.0
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -73,7 +84,7 @@ jobs:
         with:
           context: .
           file: apps/idem-admin/Dockerfile
-          push: true
+          push: ${{ inputs.push }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha

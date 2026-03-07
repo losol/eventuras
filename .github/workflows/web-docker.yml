@@ -2,11 +2,20 @@ name: Web Docker
 
 on:
   workflow_call:
+    inputs:
+      push:
+        description: 'Push image to registry'
+        type: boolean
+        default: false
+      channel:
+        description: 'Tag channel: main (canary + main-sha) or edge (edge-sha)'
+        type: string
+        default: ''
     secrets:
       DOCKERHUB_USERNAME:
-        required: true
+        required: false
       DOCKERHUB_TOKEN:
-        required: true
+        required: false
       TURBO_TOKEN:
         required: false
       TURBO_TEAM:
@@ -55,14 +64,16 @@ jobs:
         with:
           images: ${{ env.ORGANIZATION_NAME }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,value=canary
-            type=raw,value=main-${{ steps.ver.outputs.sha }}
+            type=raw,value=canary,enable=${{ inputs.channel == 'main' }}
+            type=raw,value=main-${{ steps.ver.outputs.sha }},enable=${{ inputs.channel == 'main' }}
+            type=raw,value=edge-${{ steps.ver.outputs.sha }},enable=${{ inputs.channel == 'edge' }}
           labels: |
             org.opencontainers.image.version=${{ steps.ver.outputs.version }}
             org.opencontainers.image.revision=${{ steps.ver.outputs.sha }}
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
 
       - name: Login to Docker Hub
+        if: inputs.push
         uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4.0.0
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -73,8 +84,8 @@ jobs:
         with:
           context: .
           file: apps/web/Dockerfile
-          platforms: linux/amd64,linux/arm64
-          push: true
+          platforms: ${{ inputs.channel == 'main' && 'linux/amd64,linux/arm64' || 'linux/amd64' }}
+          push: ${{ inputs.push }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
