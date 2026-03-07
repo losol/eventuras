@@ -19,8 +19,6 @@ on:
         description: 'Release tag (e.g., @eventuras/api@0.7.1)'
         required: true
 
-permissions:
-  contents: read
 
 env:
   ORGANIZATION_NAME: losolio

@@ -31,8 +31,6 @@ on:
         description: 'Release tag (e.g., @eventuras/historia@0.14.0)'
         required: true
 
-permissions:
-  contents: read
 
 env:
   ORGANIZATION_NAME: losolio
