@@ -19,6 +19,7 @@ jobs:
       idem-admin: ${{ steps.check.outputs.idem-admin }}
       idem-idp: ${{ steps.check.outputs.idem-idp }}
       ratio-ui: ${{ steps.check.outputs.ratio-ui }}
+      scribo: ${{ steps.check.outputs.scribo }}
       web: ${{ steps.check.outputs.web }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -43,6 +44,7 @@ jobs:
           echo "idem-admin=$(echo "$CHANGED" | grep -q '^apps/idem-admin/' && echo true || echo false)" >> $GITHUB_OUTPUT
           echo "idem-idp=$(echo "$CHANGED" | grep -q '^apps/idem-idp/' && echo true || echo false)" >> $GITHUB_OUTPUT
           echo "ratio-ui=$(echo "$CHANGED" | grep -q '^libs/ratio-ui/' && echo true || echo false)" >> $GITHUB_OUTPUT
+          echo "scribo=$(echo "$CHANGED" | grep -q '^libs/scribo/' && echo true || echo false)" >> $GITHUB_OUTPUT
           echo "web=$(echo "$CHANGED" | grep -q '^apps/web/' && echo true || echo false)" >> $GITHUB_OUTPUT
 
   api-ci:
@@ -127,6 +129,21 @@ jobs:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       CLOUDFLARE_PAGES_PROJECT: ${{ secrets.CLOUDFLARE_PAGES_PROJECT }}
+
+  scribo-ci:
+    name: Scribo CI
+    needs: scope
+    if: needs.scope.outputs.scribo == 'true'
+    uses: ./.github/workflows/scribo-ci.yml
+
+  scribo-deploy:
+    name: Scribo Deploy
+    needs: [scope, scribo-ci]
+    if: needs.scope.outputs.scribo == 'true' && github.event_name == 'push'
+    uses: ./.github/workflows/scribo-deploy.yml
+    secrets:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
   web-ci:
     name: Web CI
