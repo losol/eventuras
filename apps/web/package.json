@@ -1,6 +1,6 @@
 {
   "name": "@eventuras/web",
-  "version": "2.27.9",
+  "version": "2.28.0",
   "private": true,
   "type": "module",
   "scripts": {

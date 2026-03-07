@@ -1,5 +1,42 @@
 # @eventuras/convertoapi
 
+## 1.0.0
+
+First release of ConvertoAPI — a Fastify-based HTML-to-PDF microservice powered by Playwright/Chromium.
+
+### Highlights
+
+- **Enhanced security** — SSRF protection with DNS rebinding checks, hardened Docker image (read-only filesystem, non-root, tini), and Kubernetes security contexts (drop ALL capabilities, seccomp, no privilege escalation)
+- **Reliable PDF generation** — Singleton Playwright browser with per-request BrowserContext for resource efficiency, graceful shutdown via Fastify onClose hook
+- **Kubernetes-native** — Helm chart with startup/liveness/readiness probes, tmpfs /tmp, standard `app.kubernetes.io/*` labels
+- **Tested** — 24 tests (unit + integration) covering auth, SSRF, PDF generation, and API contracts
+
+### Security
+
+- Add SSRF protection for URL-to-PDF with private IP blocking and DNS rebinding checks (A+AAAA records)
+- Harden Dockerfile: read-only COPY (`--chmod=555`), tini for signal handling, non-root user
+- Add pod-level security context (runAsNonRoot, seccomp RuntimeDefault)
+- Add container-level security context (drop ALL capabilities, no privilege escalation)
+- Use `--no-sandbox` with Chromium instead of SYS_ADMIN capability
+
+### Features
+
+- Reuse singleton Playwright browser with per-request BrowserContext
+- Add graceful browser shutdown via Fastify onClose hook
+- Make rate limiting configurable via `RATE_LIMIT_MAX` environment variable
+- Add startup probe for Chromium cold-start tolerance
+
+### Fixes
+
+- Fix Docker Hub image name (`converto-api` → `converto`)
+- Fix well-known endpoint auth method (`client_secret_post` → `client_secret_basic`)
+
+### Infrastructure
+
+- Add Helm chart with standard Kubernetes labels (`app.kubernetes.io/*`)
+- Add Vitest unit and integration test suite (24 tests)
+- Clean up dependencies: remove unused packages, move typescript to devDependencies
+
 ## 0.4.4
 
 ### Patch Changes
