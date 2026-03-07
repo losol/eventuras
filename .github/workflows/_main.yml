@@ -15,6 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       api: ${{ steps.check.outputs.api }}
+      conductor: ${{ steps.check.outputs.conductor }}
       historia: ${{ steps.check.outputs.historia }}
       idem-admin: ${{ steps.check.outputs.idem-admin }}
       idem-idp: ${{ steps.check.outputs.idem-idp }}
@@ -40,6 +41,7 @@ jobs:
           fi
 
           echo "api=$(echo "$CHANGED" | grep -q '^apps/api/' && echo true || echo false)" >> $GITHUB_OUTPUT
+          echo "conductor=$(echo "$CHANGED" | grep -q '^apps/conductor/' && echo true || echo false)" >> $GITHUB_OUTPUT
           echo "historia=$(echo "$CHANGED" | grep -q '^apps/historia/' && echo true || echo false)" >> $GITHUB_OUTPUT
           echo "idem-admin=$(echo "$CHANGED" | grep -q '^apps/idem-admin/' && echo true || echo false)" >> $GITHUB_OUTPUT
           echo "idem-idp=$(echo "$CHANGED" | grep -q '^apps/idem-idp/' && echo true || echo false)" >> $GITHUB_OUTPUT
@@ -58,6 +60,21 @@ jobs:
     needs: [scope, api-ci]
     if: needs.scope.outputs.api == 'true' && github.event_name == 'push'
     uses: ./.github/workflows/api-docker.yml
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  conductor-ci:
+    name: Conductor CI
+    needs: scope
+    if: needs.scope.outputs.conductor == 'true'
+    uses: ./.github/workflows/conductor-ci.yml
+
+  conductor-docker:
+    name: Conductor Docker
+    needs: [scope, conductor-ci]
+    if: needs.scope.outputs.conductor == 'true' && github.event_name == 'push'
+    uses: ./.github/workflows/conductor-docker.yml
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
