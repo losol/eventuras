@@ -10,13 +10,16 @@ on:
 permissions:
   contents: read
 
+# Job order: scope → app jobs (alphabetical) → generic jobs (commitlint, etc.)
 jobs:
   scope:
     name: Scope
     runs-on: ubuntu-latest
     outputs:
-      web: ${{ steps.check.outputs.web }}
       api: ${{ steps.check.outputs.api }}
+      idem-admin: ${{ steps.check.outputs.idem-admin }}
+      idem-idp: ${{ steps.check.outputs.idem-idp }}
+      web: ${{ steps.check.outputs.web }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -35,25 +38,10 @@ jobs:
             CHANGED=$(git diff --name-only "${PUSH_BEFORE}...${PUSH_AFTER}")
           fi
 
-          echo "web=$(echo "$CHANGED" | grep -q '^apps/web/' && echo true || echo false)" >> $GITHUB_OUTPUT
           echo "api=$(echo "$CHANGED" | grep -q '^apps/api/' && echo true || echo false)" >> $GITHUB_OUTPUT
-
-  web-ci:
-    name: Web CI
-    needs: scope
-    if: needs.scope.outputs.web == 'true'
-    uses: ./.github/workflows/web-ci.yml
-
-  web-docker:
-    name: Web Docker
-    needs: [scope, web-ci]
-    if: needs.scope.outputs.web == 'true'
-    uses: ./.github/workflows/web-docker.yml
-    secrets:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+          echo "idem-admin=$(echo "$CHANGED" | grep -q '^apps/idem-admin/' && echo true || echo false)" >> $GITHUB_OUTPUT
+          echo "idem-idp=$(echo "$CHANGED" | grep -q '^apps/idem-idp/' && echo true || echo false)" >> $GITHUB_OUTPUT
+          echo "web=$(echo "$CHANGED" | grep -q '^apps/web/' && echo true || echo false)" >> $GITHUB_OUTPUT
 
   api-ci:
     name: API CI
@@ -64,12 +52,58 @@ jobs:
   api-docker:
     name: API Docker
     needs: [scope, api-ci]
-    if: needs.scope.outputs.api == 'true'
+    if: needs.scope.outputs.api == 'true' && github.event_name == 'push'
     uses: ./.github/workflows/api-docker.yml
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
+  idem-admin-ci:
+    name: idem-admin CI
+    needs: scope
+    if: needs.scope.outputs.idem-admin == 'true'
+    uses: ./.github/workflows/idem-admin-ci.yml
+
+  idem-admin-docker:
+    name: idem-admin Docker
+    needs: [scope, idem-admin-ci]
+    if: needs.scope.outputs.idem-admin == 'true' && github.event_name == 'push'
+    uses: ./.github/workflows/idem-admin-docker.yml
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  idem-idp-ci:
+    name: idem-idp CI
+    needs: scope
+    if: needs.scope.outputs.idem-idp == 'true'
+    uses: ./.github/workflows/idem-idp-ci.yml
+
+  idem-idp-docker:
+    name: idem-idp Docker
+    needs: [scope, idem-idp-ci]
+    if: needs.scope.outputs.idem-idp == 'true' && github.event_name == 'push'
+    uses: ./.github/workflows/idem-idp-docker.yml
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  web-ci:
+    name: Web CI
+    needs: scope
+    if: needs.scope.outputs.web == 'true'
+    uses: ./.github/workflows/web-ci.yml
+
+  web-docker:
+    name: Web Docker
+    needs: [scope, web-ci]
+    if: needs.scope.outputs.web == 'true' && github.event_name == 'push'
+    uses: ./.github/workflows/web-docker.yml
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
 
   commitlint:
     name: Commitlint
