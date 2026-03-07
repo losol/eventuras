@@ -127,3 +127,24 @@ jobs:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: pnpm exec commitlint --from "$BASE_SHA" --to "$HEAD_SHA" --verbose
+
+  changeset-check:
+    name: Changeset check
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Check for changesets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          if ls .changeset/*.md 2>/dev/null | grep -qv README; then
+            echo "Changesets found"
+          else
+            echo "::warning::No changeset found."
+            gh pr comment "$PR_NUMBER" --body "No changeset found. Consider running \`pnpm changeset\` or \`pnpm changeset:suggest\` locally."
+          fi
