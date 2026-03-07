@@ -1,0 +1,27 @@
+name: Scribo
+
+on:
+  push:
+    branches: [main]
+    paths: ['libs/scribo/**']
+  pull_request:
+    branches: [main]
+    paths: ['libs/scribo/**']
+
+concurrency:
+  group: scribo-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: CI
+    uses: ./.github/workflows/scribo-ci.yml
+
+  deploy:
+    name: Deploy
+    needs: ci
+    if: github.event_name == 'push'
+    uses: ./.github/workflows/scribo-deploy.yml
+    secrets:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

@@ -1,0 +1,30 @@
+name: Ratio UI
+
+on:
+  push:
+    branches: [main]
+    paths: ['libs/ratio-ui/**']
+  pull_request:
+    branches: [main]
+    paths: ['libs/ratio-ui/**']
+
+concurrency:
+  group: ratio-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: CI
+    uses: ./.github/workflows/ratio-ci.yml
+
+  deploy:
+    name: Deploy
+    needs: ci
+    permissions:
+      contents: read
+      pull-requests: write
+    uses: ./.github/workflows/ratio-deploy.yml
+    secrets:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      CLOUDFLARE_PAGES_PROJECT: ${{ secrets.CLOUDFLARE_PAGES_PROJECT }}

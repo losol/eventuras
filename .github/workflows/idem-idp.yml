@@ -1,0 +1,32 @@
+name: idem-idp
+
+on:
+  push:
+    branches: [main]
+    paths: ['apps/idem-idp/**']
+  pull_request:
+    branches: [main]
+    paths: ['apps/idem-idp/**']
+
+concurrency:
+  group: idem-idp-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: CI
+    uses: ./.github/workflows/idem-idp-ci.yml
+
+  docker:
+    name: Docker
+    needs: ci
+    if: >-
+      github.event_name == 'push' ||
+      github.event.pull_request.head.repo.full_name == github.repository
+    uses: ./.github/workflows/idem-idp-docker.yml
+    with:
+      push: ${{ github.event_name == 'push' }}
+      channel: ${{ github.event_name == 'push' && 'main' || 'edge' }}
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
