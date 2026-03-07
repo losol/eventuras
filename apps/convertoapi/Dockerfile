@@ -43,15 +43,15 @@ RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends tini && \
     rm -rf /var/lib/apt/lists/*
 
+# Get generated files from the previous stage (read-only for non-root user)
+WORKDIR /app
+COPY --chmod=555 --from=builder /app/deploy/node_modules /app/node_modules
+COPY --chmod=444 --from=builder /app/deploy/package.json /app/package.json
+COPY --chmod=555 --from=builder /app/apps/convertoapi/dist /app/dist
+COPY --chmod=555 --from=builder /app/apps/convertoapi/public /app/public
+
 # Switch to non-root user
 USER pwuser
-
-# Get generated files from the previous stage
-WORKDIR /app
-COPY --chown=pwuser:pwuser --from=builder /app/deploy/node_modules /app/node_modules
-COPY --chown=pwuser:pwuser --from=builder /app/deploy/package.json /app/package.json
-COPY --chown=pwuser:pwuser --from=builder /app/apps/convertoapi/dist /app/dist
-COPY --chown=pwuser:pwuser --from=builder /app/apps/convertoapi/public /app/public
 
 ENTRYPOINT ["tini", "--"]
 CMD ["node", "dist/app.js"]
