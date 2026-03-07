@@ -6,8 +6,8 @@ packages:
   - '!**/.next'
   - '!**/dist'
   - '!**/node_modules'
-  - '!**/bin'
-  - '!**/obj'
+  - '!**/bin/**'
+  - '!**/obj/**'
 
 onlyBuiltDependencies:
   - esbuild
