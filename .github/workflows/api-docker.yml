@@ -60,19 +60,14 @@ jobs:
         with:
           images: ${{ env.ORGANIZATION_NAME }}/${{ env.IMAGE_NAME }}
           tags: |
-            # Main branch: canary + main-<sha>
-            type=raw,value=canary,enable=${{ github.ref == 'refs/heads/main' }}
-            type=raw,value=main-${{ steps.ver.outputs.sha }},enable=${{ github.ref == 'refs/heads/main' }}
-            # Feature branches: edge + edge-<sha>
-            type=raw,value=edge,enable=${{ github.ref != 'refs/heads/main' }}
-            type=raw,value=edge-${{ steps.ver.outputs.sha }},enable=${{ github.ref != 'refs/heads/main' }}
+            type=raw,value=canary
+            type=raw,value=main-${{ steps.ver.outputs.sha }}
           labels: |
             org.opencontainers.image.version=${{ steps.ver.outputs.version }}
             org.opencontainers.image.revision=${{ steps.ver.outputs.sha }}
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
 
       - name: Login to Docker Hub
-        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
         uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4.0.0
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -83,7 +78,7 @@ jobs:
         with:
           context: ./apps/api/
           platforms: linux/amd64,linux/arm64
-          push: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
+          push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
