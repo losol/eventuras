@@ -146,5 +146,7 @@ jobs:
             echo "Changesets found"
           else
             echo "::warning::No changeset found."
-            gh pr comment "$PR_NUMBER" --body "No changeset found. Consider running \`pnpm changeset\` or \`pnpm changeset:suggest\` locally."
+            BODY="No changeset found. Consider running \`pnpm changeset\` or \`pnpm changeset:suggest\` locally."
+            gh pr comment "$PR_NUMBER" --body "$BODY" --edit-last 2>/dev/null \
+              || gh pr comment "$PR_NUMBER" --body "$BODY"
           fi
