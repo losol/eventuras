@@ -1,7 +1,28 @@
-name: Web CD
+name: Web Deploy
 
 on:
   workflow_call:
+    secrets:
+      DOCKERHUB_USERNAME:
+        required: true
+      DOCKERHUB_TOKEN:
+        required: true
+      TURBO_TOKEN:
+        required: false
+      TURBO_TEAM:
+        required: false
+      VERCEL_TOKEN:
+        required: true
+      VERCEL_ORG_ID:
+        required: true
+      VERCEL_PROJECT_ID:
+        required: true
+      AUTH0_CLIENT_ID:
+        required: false
+      AUTH0_CLIENT_SECRET:
+        required: false
+      SESSION_SECRET:
+        required: false
   push:
     tags:
       - '@eventuras/web@*'
