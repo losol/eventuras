@@ -6,7 +6,7 @@
 ##################
 # Stage 1: Build #
 ##################
-FROM mcr.microsoft.com/playwright:v1.57.0-noble AS builder
+FROM mcr.microsoft.com/playwright:v1.58.1-noble AS builder
 
 # Get the needed package files
 WORKDIR /app
@@ -29,15 +29,14 @@ COPY apps/convertoapi ./apps/convertoapi
 WORKDIR /app/apps/convertoapi
 RUN pnpm run build
 
-# Remove devDependencies after build
-WORKDIR /app
-RUN pnpm prune --prod
+# Deploy with production dependencies only
+RUN pnpm --filter @eventuras/convertoapi deploy --prod --legacy /app/deploy
 
 
 ##################################
 # Stage 2: Run from a fresh base #
 ##################################
-FROM mcr.microsoft.com/playwright:v1.57.0-noble
+FROM mcr.microsoft.com/playwright:v1.58.1-noble
 
 # Install tini for proper signal handling (SIGTERM in k8s)
 RUN apt-get update -qq && \
@@ -49,10 +48,10 @@ USER pwuser
 
 # Get generated files from the previous stage
 WORKDIR /app
-COPY --chown=pwuser:pwuser --from=builder /app/apps/convertoapi/public /app/public
-COPY --chown=pwuser:pwuser --from=builder /app/node_modules /app/node_modules
-COPY --chown=pwuser:pwuser --from=builder /app/apps/convertoapi/package.json /app/package.json
+COPY --chown=pwuser:pwuser --from=builder /app/deploy/node_modules /app/node_modules
+COPY --chown=pwuser:pwuser --from=builder /app/deploy/package.json /app/package.json
 COPY --chown=pwuser:pwuser --from=builder /app/apps/convertoapi/dist /app/dist
+COPY --chown=pwuser:pwuser --from=builder /app/apps/convertoapi/public /app/public
 
 ENTRYPOINT ["tini", "--"]
 CMD ["node", "dist/app.js"]
