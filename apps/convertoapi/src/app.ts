@@ -9,7 +9,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const start = async () => {
+export async function buildApp(): Promise<FastifyInstance> {
   const fastify: FastifyInstance = Fastify({ logger: true });
 
   await registerRatelimitPlugin(fastify);
@@ -18,6 +18,14 @@ const start = async () => {
   await registerPdfFeature(fastify);
   await registerHealthRoutes(fastify);
   await registerHomepagePlugin(fastify);
+
+  return fastify;
+}
+
+// Only start the server when run directly (not imported by tests)
+const isMainModule = process.argv[1]?.endsWith('app.js') || process.argv[1]?.endsWith('app.ts');
+if (isMainModule) {
+  const fastify = await buildApp();
 
   fastify.log.info('Fastify routes registered:\n' + fastify.printRoutes());
 
@@ -30,6 +38,4 @@ const start = async () => {
     fastify.log.error(err);
     process.exit(1);
   }
-};
-
-start();
+}

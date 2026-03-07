@@ -20,8 +20,9 @@
     "build": "tsc && cp -R public dist",
     "dev": "pnpm dlx tsx src/app.ts",
     "start": "node dist/app.js",
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "test": "vitest run --exclude src/integration.test.ts",
+    "test:integration": "vitest run src/integration.test.ts",
+    "test:watch": "vitest --exclude src/integration.test.ts"
   },
   "dependencies": {
     "@fastify/jwt": "^10.0.0",
