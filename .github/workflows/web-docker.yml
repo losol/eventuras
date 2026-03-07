@@ -1,4 +1,4 @@
-name: Web Deploy
+name: Web Docker
 
 on:
   workflow_call:

@@ -1,0 +1,66 @@
+name: API CI
+
+on:
+  workflow_call:
+    inputs:
+      dotnet-version:
+        required: false
+        default: "10.0"
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  format:
+    name: dotnet format
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./apps/api/
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/util-dotnet-install
+      - name: dotnet format
+        run: dotnet format --verify-no-changes
+
+  build:
+    name: Build project
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./apps/api/
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/util-dotnet-install
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build with dotnet
+        run: dotnet build --configuration Release --no-restore -o ./Release
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    defaults:
+      run:
+        working-directory: ./apps/api/
+    strategy:
+      matrix:
+        test_set:
+          - name: "Unit Tests"
+            path: "./tests/Eventuras.UnitTests/Eventuras.UnitTests.csproj"
+          - name: "Web API Integration Tests"
+            path: "./tests/Eventuras.WebApi.Tests/Eventuras.WebApi.Tests.csproj"
+          - name: "Services Integration Tests"
+            path: "./tests/Eventuras.Services.Tests/Eventuras.Services.Tests.csproj"
+          - name: "Converto Service Tests"
+            path: "./tests/Eventuras.Services.Converto.Tests/Eventuras.Services.Converto.Tests.csproj"
+          - name: "Email Communication Tests"
+            path: "./tests/Losol.Communication.Email.Tests/Losol.Communication.Email.Tests.csproj"
+    name: ${{ matrix.test_set.name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - uses: ./.github/actions/util-dotnet-install
+      - name: Run tests
+        run: dotnet test --project ${{ matrix.test_set.path }}
