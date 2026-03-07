@@ -35,6 +35,13 @@ const generatePdf = async (
   }
 };
 
+export async function closeBrowser(): Promise<void> {
+  if (browser?.isConnected()) {
+    await browser.close();
+  }
+  browser = null;
+}
+
 export const HTMLToPDFService = {
   url2pdf: async (url: string, scale = 1, format = 'A4') =>
     generatePdf(

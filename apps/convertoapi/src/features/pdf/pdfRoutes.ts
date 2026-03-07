@@ -1,5 +1,5 @@
 import { FastifyInstance, FastifyRequest, FastifyReply, FastifySchema } from 'fastify';
-import { HTMLToPDFService } from './pdfService.js';
+import { HTMLToPDFService, closeBrowser } from './pdfService.js';
 import { validateUrl } from './urlValidator.js';
 
 const papersizes = [
@@ -125,6 +125,10 @@ async function pdfHandler(
 }
 
 export const pdfRoutes = async (fastify: FastifyInstance) => {
+  fastify.addHook('onClose', async () => {
+    await closeBrowser();
+  });
+
   fastify.route({
     method: 'POST',
     url: '/v1/pdf',
