@@ -1,27 +1,37 @@
 import { chromium, Page, Browser } from 'playwright';
 
+let browser: Browser | null = null;
+
+async function getBrowser(): Promise<Browser> {
+  if (browser?.isConnected()) {
+    return browser;
+  }
+
+  browser = await chromium.launch({
+    headless: true,
+    args: [
+      process.env.PLAYWRIGHT_NOSANDBOX === 'true' ? '--no-sandbox' : '',
+      process.env.PLAYWRIGHT_DISABLE_SETUID_SANDBOX === 'true' ? '--disable-setuid-sandbox' : '',
+    ].filter(Boolean),
+  });
+
+  return browser;
+}
+
 const generatePdf = async (
   pageInit: (page: Page) => Promise<void>,
   format: string,
   scale: number
 ): Promise<Buffer> => {
-  let browser: Browser | null = null;
+  const instance = await getBrowser();
+  const context = await instance.newContext();
   try {
-    browser = await chromium.launch({
-      headless: true,
-      args: [
-        process.env.PLAYWRIGHT_NOSANDBOX === 'true' ? '--no-sandbox' : '',
-        process.env.PLAYWRIGHT_DISABLE_SETUID_SANDBOX === 'true' ? '--disable-setuid-sandbox' : '',
-      ].filter(Boolean),
-    });
-    const page = await browser.newPage();
+    const page = await context.newPage();
     await pageInit(page);
     const pdfBuffer = await page.pdf({ format, scale });
     return pdfBuffer;
   } finally {
-    if (browser) {
-      await browser.close();
-    }
+    await context.close();
   }
 };
 
