@@ -1,0 +1,35 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "schedule": ["after 11am and before 1pm on saturday"],
+  "timezone": "Europe/Oslo",
+  "labels": ["dependencies"],
+  "commitMessagePrefix": "chore(deps): ",
+  "packageRules": [
+    {
+      "description": "Lexical must match Payload CMS richtext-lexical version — update manually",
+      "matchPackagePatterns": ["^lexical$", "^@lexical/"],
+      "enabled": false
+    },
+    {
+      "description": "@types/node pinned to match engine requirements",
+      "matchPackageNames": ["@types/node"],
+      "enabled": false
+    },
+    {
+      "description": "Group ESLint packages",
+      "matchPackagePatterns": ["eslint"],
+      "groupName": "eslint"
+    },
+    {
+      "description": "Group Docker base images",
+      "matchDatasources": ["docker"],
+      "groupName": "docker"
+    },
+    {
+      "description": "Group GitHub Actions",
+      "matchManagers": ["github-actions"],
+      "groupName": "github-actions"
+    }
+  ]
+}
