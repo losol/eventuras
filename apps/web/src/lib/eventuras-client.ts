@@ -144,47 +144,22 @@ function ensureConfigured() {
         : `${baseUrl}${options.url || ''}`;
       const err = error as { cause?: { code?: string }; code?: string; message?: string };
       const resp = response as { status?: number; statusText?: string } | undefined;
-
-      // Authentication/Authorization errors (401/403)
-      if (resp?.status === 401 || resp?.status === 403) {
-        logger.warn(
-          {
-            request: { url: fullUrl, method: options.method || 'GET' },
-            response: { status: resp.status, statusText: resp.statusText },
-          },
-          `Authentication failed (${resp.status}) - Token may be invalid or expired`
-        );
-        return error;
-      }
+      const request = { url: fullUrl, method: options.method || 'GET' };
 
       // Connection errors (ECONNREFUSED, ETIMEDOUT, etc.)
       if (err?.cause?.code === 'ECONNREFUSED' || err?.code === 'ECONNREFUSED') {
         logger.error(
-          {
-            error: {
-              message: err.message,
-              code: err?.cause?.code || err?.code,
-            },
-            request: {
-              url: fullUrl,
-              method: options.method || 'GET',
-              baseUrl,
-            },
-            configuredBaseUrl: baseUrl,
-          },
-          'Connection refused - Backend unreachable. Check if backend is running on the configured baseUrl.'
+          { error: { message: err.message, code: err?.cause?.code || err?.code }, request },
+          'Connection refused - Backend unreachable'
         );
         return error;
       }
 
-      // Other HTTP errors (4xx, 5xx)
+      // HTTP errors — log the parsed error body from backend
       if (resp?.status && resp.status >= 400) {
         const logLevel = resp.status >= 500 ? 'error' : 'warn';
         logger[logLevel](
-          {
-            request: { url: fullUrl, method: options.method || 'GET' },
-            response: { status: resp.status, statusText: resp.statusText },
-          },
+          { request, response: { status: resp.status, statusText: resp.statusText }, error },
           `HTTP ${resp.status} ${resp.statusText || ''}`
         );
         return error;
@@ -192,13 +167,7 @@ function ensureConfigured() {
 
       // Generic errors
       logger.error(
-        {
-          error: {
-            message: err?.message,
-            code: err?.code,
-          },
-          request: { url: fullUrl, method: options.method || 'GET' },
-        },
+        { request, error: { message: err?.message, code: err?.code } },
         'HTTP request failed'
       );
 

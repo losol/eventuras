@@ -79,10 +79,19 @@ export async function createEvent(
       body: newEvent,
     });
 
+    if (response.error) {
+      const err = response.error as Record<string, unknown>;
+      const detail = (err?.message ?? err?.title ?? JSON.stringify(err)) as string;
+      logger.error({ organizationId, title, error: response.error }, 'Event creation failed');
+      return actionError(`Event creation failed: ${detail}`, 'API_ERROR');
+    }
+
     if (!response.data) {
-      const errorMsg = 'No data returned from event creation';
-      logger.error({ organizationId, title, response }, errorMsg);
-      return actionError(errorMsg, 'NO_DATA_RETURNED');
+      logger.error(
+        { organizationId, title, status: response.response?.status },
+        'No data returned from event creation'
+      );
+      return actionError('No data returned from event creation', 'NO_DATA_RETURNED');
     }
 
     const eventId = response.data.id;
