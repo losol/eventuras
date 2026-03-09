@@ -6,6 +6,10 @@ metadata:
     app: {{ .Chart.Name }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  {{- with .Values.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   selector:
     matchLabels:
       app: {{ .Chart.Name }}
@@ -21,6 +25,10 @@ spec:
       # Security: Disable service account token automounting
       # API doesn't need to call Kubernetes API
       automountServiceAccountToken: false
+      {{- with .Values.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ required "image.tag is required" .Values.image.tag }}"

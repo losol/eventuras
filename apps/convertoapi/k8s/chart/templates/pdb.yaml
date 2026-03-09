@@ -1,0 +1,13 @@
+{{- if and .Values.podDisruptionBudget.enabled (gt (.Values.replicaCount | int) 1) }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    {{- include "converto.labels" . | nindent 4 }}
+spec:
+  minAvailable: {{ .Values.podDisruptionBudget.minAvailable }}
+  selector:
+    matchLabels:
+      {{- include "converto.selectorLabels" . | nindent 6 }}
+{{- end }}

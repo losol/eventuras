@@ -52,6 +52,22 @@ config:
 
 The API also needs matching credentials (`Converto__ClientId`, `Converto__ClientSecret`).
 
+## High availability
+
+By default the chart runs a single replica with no HA settings, suitable for development or single-node clusters. For production, override via ArgoCD:
+
+```yaml
+replicaCount: 2
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 0
+    maxSurge: 1
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+```
+
 ## Resource considerations
 
 Playwright spawns a Chromium browser for each PDF render (~200-400 MB memory).

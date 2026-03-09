@@ -35,6 +35,26 @@ healthCheck:
   timeoutSeconds: 5
   readinessPeriodSeconds: 10
 
+# High-availability settings (disabled by default for single-node compatibility)
+# Override in environment-specific values for prod
+strategy: {}
+#   type: RollingUpdate
+#   rollingUpdate:
+#     maxUnavailable: 0
+#     maxSurge: 1
+
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1
+
+topologySpreadConstraints: []
+#   - maxSkew: 1
+#     topologyKey: kubernetes.io/hostname
+#     whenUnsatisfiable: ScheduleAnyway
+#     labelSelector:
+#       matchLabels:
+#         app: eventuras-web
+
 # Pod annotations – merged onto template.metadata.annotations
 # Use this to trigger rollouts on secret changes (e.g. Infisical auto-reload)
 podAnnotations: {}
