@@ -39,6 +39,10 @@ helm:
 | Value | Description | Example |
 |-------|-------------|---------|
 | `replicaCount` | Number of replicas | `1`, `2`, `3` |
+| `strategy` | Deployment strategy | `{}` |
+| `podDisruptionBudget.enabled` | Enable PodDisruptionBudget | `false` |
+| `podDisruptionBudget.minAvailable` | Min available pods during disruption | `1` |
+| `topologySpreadConstraints` | Spread pods across nodes | `[]` |
 | `image.registry` | Container registry | `docker.io` |
 | `image.repository` | Image repository | `losolio/idem-idp` |
 | `image.tag` | Image tag | `sha-abc123`, `v1.2.3` |

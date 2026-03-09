@@ -132,6 +132,22 @@ Environment-specific configuration is managed via Helm values:
 
 See [chart/README.md](chart/README.md#configuration) for all available parameters.
 
+### High availability
+
+By default the chart runs a single replica, suitable for development or single-node clusters. For production, override via ArgoCD:
+
+```yaml
+replicaCount: 2
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 0
+    maxSurge: 1
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+```
+
 ## Database Setup
 
 Idem IDP requires a PostgreSQL database. Make sure to:

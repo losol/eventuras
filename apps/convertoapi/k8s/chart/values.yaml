@@ -31,6 +31,27 @@ healthCheck:
   periodSeconds: 30
   timeoutSeconds: 5
 
+# High-availability settings (disabled by default for single-node compatibility)
+# Override in environment-specific values for prod
+strategy: {}
+#   type: RollingUpdate
+#   rollingUpdate:
+#     maxUnavailable: 0
+#     maxSurge: 1
+
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1
+
+topologySpreadConstraints: []
+#   - maxSkew: 1
+#     topologyKey: kubernetes.io/hostname
+#     whenUnsatisfiable: ScheduleAnyway
+#     labelSelector:
+#       matchLabels:
+#         app.kubernetes.io/name: converto
+#         app.kubernetes.io/instance: <release-name>
+
 # Pod-level security context
 podSecurityContext:
   runAsNonRoot: true

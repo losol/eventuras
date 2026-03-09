@@ -22,6 +22,26 @@ ArgoCD Application(Set) and routing are managed externally (e.g. eventuras-infra
 | `healthCheck.path` | Health check path | `/api/healthz` |
 | `podAnnotations` | Pod annotations (e.g. Infisical auto-reload) | `{}` |
 | `env` | Non-sensitive environment variables | `{}` |
+| `strategy` | Deployment strategy (e.g. RollingUpdate) | `{}` |
+| `podDisruptionBudget.enabled` | Enable PodDisruptionBudget | `false` |
+| `podDisruptionBudget.minAvailable` | Minimum available pods during disruption | `1` |
+| `topologySpreadConstraints` | Spread pods across nodes | `[]` |
+
+### High availability
+
+By default the chart runs a single replica with no HA settings, suitable for development or single-node clusters. For production, override via ArgoCD:
+
+```yaml
+replicaCount: 2
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 0
+    maxSurge: 1
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+```
 
 Sensitive values belong in `eventuras-web-secrets` (Kubernetes Secret / Infisical).
 
