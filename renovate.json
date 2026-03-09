@@ -19,6 +19,11 @@
       "enabled": false
     },
     {
+      "description": "Group Payload CMS packages",
+      "matchPackagePatterns": ["^payload$", "^@payloadcms/"],
+      "groupName": "payload"
+    },
+    {
       "description": "Group ESLint packages",
       "matchPackagePatterns": ["eslint"],
       "groupName": "eslint"
