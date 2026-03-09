@@ -23,6 +23,9 @@ export interface SelectProps {
   value?: string;
   defaultValue?: string;
   onSelectionChange?: (value: string) => void;
+  onBlur?: (e: React.FocusEvent) => void;
+  onFocus?: (e: React.FocusEvent) => void;
+  onFocusChange?: (isFocused: boolean) => void;
   disabled?: boolean;
   required?: boolean;
   className?: string;
@@ -68,9 +71,9 @@ const styles = {
       'outline-none',
       'transition-colors',
     ].join(' '),
-    hover: 'hover:bg-primary-100 dark:hover:bg-primary-900',
-    focused: 'focus:bg-primary-100 dark:focus:bg-primary-900',
-    selected: 'bg-primary-50 dark:bg-primary-950 font-medium',
+    hover: 'hover:bg-gray-100 dark:hover:bg-gray-700',
+    focused: 'bg-gray-100 dark:bg-gray-700',
+    selected: 'bg-primary-100 dark:bg-primary-500/50 font-medium',
     disabled: 'opacity-50 cursor-not-allowed',
   },
 };
@@ -101,6 +104,9 @@ export const Select: React.FC<SelectProps> = ({
   value,
   defaultValue,
   onSelectionChange,
+  onBlur,
+  onFocus,
+  onFocusChange,
   disabled,
   required,
   className,
@@ -111,9 +117,12 @@ export const Select: React.FC<SelectProps> = ({
   return (
     <AriaSelect
       className={className || styles.wrapper}
-      selectedKey={value}
-      defaultSelectedKey={defaultValue}
-      onSelectionChange={(key) => onSelectionChange?.(key as string)}
+      value={value}
+      defaultValue={defaultValue}
+      onChange={(key) => onSelectionChange?.(key as string)}
+      onBlur={onBlur}
+      onFocus={onFocus}
+      onFocusChange={onFocusChange}
       isDisabled={disabled}
       isRequired={required}
       aria-label={ariaLabel}

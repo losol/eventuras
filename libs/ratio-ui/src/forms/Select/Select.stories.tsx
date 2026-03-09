@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { expect, userEvent, within } from 'storybook/test';
 import React, { useState } from 'react';
 import { Select } from './Select';
 
@@ -19,6 +20,7 @@ const meta = {
     placeholder: { control: 'text' },
     disabled: { control: 'boolean' },
     required: { control: 'boolean' },
+    onSelectionChange: { action: 'selectionChanged' },
   },
   decorators: [
     (Story) => (
@@ -51,12 +53,28 @@ const countryOptions = [
   { value: 'dk', label: 'Denmark' },
 ];
 
-/** Basic usage with label */
+/** Basic usage with label - click to open, select an option, verify it shows */
 export const Basic: Story = {
   args: {
     label: 'Choose a fruit',
     placeholder: 'Select a fruit...',
     options: fruitOptions,
+    testId: 'fruit-select',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Should show placeholder initially
+    const trigger = canvas.getByTestId('fruit-select');
+    await expect(trigger).toHaveTextContent('Select a fruit...');
+
+    // Open dropdown and select "Orange"
+    await userEvent.click(trigger);
+    const option = within(document.body).getByRole('option', { name: 'Orange' });
+    await userEvent.click(option);
+
+    // Should now display the selected value
+    await expect(trigger).toHaveTextContent('Orange');
   },
 };
 
@@ -69,12 +87,27 @@ export const WithoutLabel: Story = {
   },
 };
 
-/** With default value */
+/** With default value - verifies pre-selected value shows and can be changed */
 export const WithDefaultValue: Story = {
   args: {
     label: 'Favorite fruit',
     defaultValue: 'banana',
     options: fruitOptions,
+    testId: 'default-select',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Should show the default value
+    const trigger = canvas.getByTestId('default-select');
+    await expect(trigger).toHaveTextContent('Banana');
+
+    // Change selection to Mango
+    await userEvent.click(trigger);
+    const option = within(document.body).getByRole('option', { name: 'Mango' });
+    await userEvent.click(option);
+
+    await expect(trigger).toHaveTextContent('Mango');
   },
 };
 
