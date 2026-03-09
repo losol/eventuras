@@ -5,6 +5,8 @@
   "timezone": "Europe/Oslo",
   "labels": ["dependencies"],
   "commitMessagePrefix": "chore(deps): ",
+  "commitMessageAction": "update",
+  "commitMessageSuffix": "",
   "packageRules": [
     {
       "description": "Lexical must match Payload CMS richtext-lexical version — update manually",

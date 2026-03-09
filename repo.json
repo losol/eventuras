@@ -96,5 +96,5 @@
       "aliases": ["vite"]
     }
   },
-  "scopes": ["infra", "release"]
+  "scopes": ["deps", "infra", "release"]
 }
