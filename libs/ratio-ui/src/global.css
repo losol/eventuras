@@ -112,7 +112,6 @@
 @layer base {
   body {
     @apply h-full m-0 flex flex-col min-h-screen antialiased;
-    position: relative;
     overflow-x: hidden;
   }
 
