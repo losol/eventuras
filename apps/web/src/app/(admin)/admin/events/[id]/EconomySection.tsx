@@ -7,9 +7,11 @@ import { useTranslations } from 'next-intl';
 
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Grid } from '@eventuras/ratio-ui/layout/Grid';
+import { Stack } from '@eventuras/ratio-ui/layout/Stack';
 import { NumberCard } from '@eventuras/ratio-ui/visuals/NumberCard';
 
-import { RegistrationDto } from '@/lib/eventuras-sdk';
+import { RegistrationDto, RegistrationStatus } from '@/lib/eventuras-sdk';
 
 import Registration from '../../registrations/Registration';
 
@@ -25,6 +27,20 @@ type OrderStatistics = {
   invoicedOrders: number;
   cancelledOrders: number;
 };
+
+// Define the order for status groups
+const STATUS_GROUP_CONFIG: {
+  status: RegistrationStatus;
+  translationKey: string;
+}[] = [
+  { status: 'Verified', translationKey: 'common.registrations.labels.verified' },
+  { status: 'Draft', translationKey: 'common.registrations.labels.draft' },
+  { status: 'Attended', translationKey: 'common.registrations.labels.attended' },
+  { status: 'Finished', translationKey: 'common.registrations.labels.finished' },
+  { status: 'WaitingList', translationKey: 'common.registrations.labels.waitingList' },
+  { status: 'NotAttended', translationKey: 'common.registrations.labels.notAttended' },
+  { status: 'Cancelled', translationKey: 'common.registrations.labels.cancelled' },
+];
 
 const EconomySection: React.FC<EconomySectionProps> = ({ participants }) => {
   const t = useTranslations();
@@ -79,65 +95,92 @@ const EconomySection: React.FC<EconomySectionProps> = ({ participants }) => {
     return stats;
   }, [participants]);
 
+  // Group participants by registration status
+  const groupedParticipants = useMemo(() => {
+    const groups = new Map<RegistrationStatus, RegistrationDto[]>();
+    for (const registration of participants) {
+      const status: RegistrationStatus = registration.status ?? 'Draft';
+      const existing = groups.get(status) || [];
+      existing.push(registration);
+      groups.set(status, existing);
+    }
+    return groups;
+  }, [participants]);
+
   if (participants.length === 0) {
     return (
-      <div className="py-8">
+      <Stack gap="xl" className="py-8">
         <p className="text-gray-500">{t('admin.economy.labels.noOrders')}</p>
-      </div>
+      </Stack>
     );
   }
 
   return (
-    <div className="space-y-8 py-8">
-      {/* Statistics */}
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
+    <Stack gap="xl" className="py-8">
+      {/* Summary */}
+      <Grid cols={{ sm: 2, md: 2 }}>
         <NumberCard
           number={statistics.totalOrders}
           label={t('admin.economy.statistics.totalOrders')}
+          variant="outline"
         />
         <NumberCard
           number={Number.parseFloat(statistics.totalRevenue.toFixed(2))}
           label={`${t('admin.economy.statistics.totalRevenue')} (kr)`}
-          backgroundColorClass="bg-green-50 dark:bg-green-900/20"
+          variant="outline"
         />
+      </Grid>
+
+      {/* Order status breakdown */}
+      <Grid cols={{ sm: 2, md: 4 }}>
         <NumberCard
           number={statistics.draftOrders}
           label={t('admin.economy.statistics.draftOrders')}
+          variant="outline"
         />
         <NumberCard
           number={statistics.verifiedOrders}
           label={t('admin.economy.statistics.verifiedOrders')}
-          backgroundColorClass="bg-green-50 dark:bg-green-900/20"
+          variant="outline"
         />
         <NumberCard
           number={statistics.invoicedOrders}
           label={t('admin.economy.statistics.invoicedOrders')}
-          backgroundColorClass="bg-blue-50 dark:bg-blue-900/20"
+          variant="outline"
         />
         <NumberCard
           number={statistics.cancelledOrders}
           label={t('admin.economy.statistics.cancelledOrders')}
-          backgroundColorClass="bg-red-50 dark:bg-red-900/20"
+          variant="outline"
         />
-      </div>
+      </Grid>
 
-      {/* Registrations List */}
-      <div className="space-y-6">
-        <Heading as="h2">{t('common.labels.registrations')}</Heading>
-        {participants.map(registration => (
-          <Card key={registration.registrationId} className="p-6">
-            <Registration
-              registration={registration}
-              adminMode={true}
-              showProducts={false}
-              showNotes={false}
-              editMode={false}
-              userNameHeading={true}
-            />
-          </Card>
-        ))}
-      </div>
-    </div>
+      {/* Registrations grouped by status */}
+      {STATUS_GROUP_CONFIG.map(({ status, translationKey }) => {
+        const group = groupedParticipants.get(status);
+        if (!group || group.length === 0) return null;
+
+        return (
+          <Stack key={status} gap="md">
+            <Heading as="h2">
+              {t(translationKey)} ({group.length})
+            </Heading>
+            {group.map(registration => (
+              <Card key={registration.registrationId} className="p-6">
+                <Registration
+                  registration={registration}
+                  adminMode={true}
+                  showProducts={false}
+                  showNotes={false}
+                  editMode={false}
+                  userNameHeading={true}
+                />
+              </Card>
+            ))}
+          </Stack>
+        );
+      })}
+    </Stack>
   );
 };
 
