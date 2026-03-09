@@ -7,8 +7,9 @@ on:
         required: true
       CLOUDFLARE_ACCOUNT_ID:
         required: true
-      CLOUDFLARE_PAGES_PROJECT:
-        required: true
+
+env:
+  CLOUDFLARE_PAGES_PROJECT: ratio-ui
 
 jobs:
   deploy:
@@ -39,7 +40,6 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          CLOUDFLARE_PAGES_PROJECT: ${{ secrets.CLOUDFLARE_PAGES_PROJECT }}
         run: npx wrangler pages deploy libs/ratio-ui/storybook-static --project-name="$CLOUDFLARE_PAGES_PROJECT" --branch=main --commit-dirty=true
 
       - name: Deploy preview of Ratio UI Storybook
@@ -47,7 +47,6 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          CLOUDFLARE_PAGES_PROJECT: ${{ secrets.CLOUDFLARE_PAGES_PROJECT }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: npx wrangler pages deploy libs/ratio-ui/storybook-static --project-name="$CLOUDFLARE_PAGES_PROJECT" --branch=preview-${PR_NUMBER} --commit-dirty=true
 
@@ -56,8 +55,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
-          PROJECT: ${{ secrets.CLOUDFLARE_PAGES_PROJECT }}
         run: |
-          BODY="Storybook preview: https://preview-${PR_NUMBER}.${PROJECT}.pages.dev"
+          BODY="Storybook preview: https://preview-${PR_NUMBER}.${CLOUDFLARE_PAGES_PROJECT}.pages.dev"
           gh pr comment "$PR_NUMBER" --body "$BODY" --edit-last 2>/dev/null \
             || gh pr comment "$PR_NUMBER" --body "$BODY"
