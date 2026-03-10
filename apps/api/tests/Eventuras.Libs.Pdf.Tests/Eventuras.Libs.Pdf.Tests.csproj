@@ -1,21 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net10.0</TargetFramework>
-        <OutputType>Exe</OutputType>
-        <IsPackable>false</IsPackable>
-        <PreserveCompilationContext>true</PreserveCompilationContext>
-        <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
-    </PropertyGroup>
+    <Import Project="..\TestProject.props" />
 
-    <ItemGroup>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.3.0" />
-        <PackageReference Include="xunit.v3.mtp-v2" Version="3.2.2" />
-        <PackageReference Include="coverlet.collector" Version="8.0.0">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-    </ItemGroup>
+    <PropertyGroup>
+        <PreserveCompilationContext>true</PreserveCompilationContext>
+    </PropertyGroup>
 
     <ItemGroup>
         <ProjectReference Include="../../src/Eventuras.Libs.Pdf/Eventuras.Libs.Pdf.csproj" />
