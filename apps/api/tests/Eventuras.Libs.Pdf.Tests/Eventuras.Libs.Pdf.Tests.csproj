@@ -6,7 +6,6 @@
         <IsPackable>false</IsPackable>
         <PreserveCompilationContext>true</PreserveCompilationContext>
         <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
-        <EnableMSTestRunner>true</EnableMSTestRunner>
     </PropertyGroup>
 
     <ItemGroup>

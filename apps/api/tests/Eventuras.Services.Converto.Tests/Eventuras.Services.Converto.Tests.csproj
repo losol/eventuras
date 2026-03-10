@@ -4,7 +4,6 @@
     <IsPackable>false</IsPackable>
     <OutputType>Exe</OutputType>
     <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
-    <EnableMSTestRunner>true</EnableMSTestRunner>
     <!-- All tests are conditionally skipped (require environment variables), treat exit code 8 as success -->
     <TestingPlatformCommandLineArguments>--ignore-exit-code 8</TestingPlatformCommandLineArguments>
   </PropertyGroup>
