@@ -2,9 +2,6 @@
 
   <Import Project="..\TestProject.props" />
 
-  <PropertyGroup>
-  </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\src\Losol.Communication.Email\Losol.Communication.Email.csproj" />
   </ItemGroup>
