@@ -44,6 +44,8 @@ jobs:
     strategy:
       matrix:
         test_set:
+          - name: "PDF Library Tests"
+            path: "./tests/Eventuras.Libs.Pdf.Tests/Eventuras.Libs.Pdf.Tests.csproj"
           - name: "Unit Tests"
             path: "./tests/Eventuras.UnitTests/Eventuras.UnitTests.csproj"
           - name: "Web API Integration Tests"

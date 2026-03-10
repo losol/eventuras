@@ -12,16 +12,8 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.3.0" />
     <PackageReference Include="xunit.v3.mtp-v2" Version="3.2.2" />
-    <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Eventuras.Domain\Eventuras.Domain.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="RegistrationTests\Verify_Should.cs" />
-    <Compile Remove="RegistrationTests\Create_Or_Update_Order_Should.cs" />
-    <Compile Remove="RegistrationTests\Create_Order_Should.cs" />
-    <Compile Remove="RegistrationTests\Has_Order_Should.cs" />
-    <Compile Remove="Helpers.cs" />
   </ItemGroup>
 </Project>
