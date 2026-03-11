@@ -117,7 +117,7 @@ public class RegistrationCertificateControllerTest : IClassFixture<CustomWebApiA
         response.CheckOk();
 
         // Wait for background worker to process the certificate delivery job
-        await Task.Delay(1000);
+        await emailExpectation.WaitForEmailSentAsync();
 
         emailExpectation.VerifyEmailSent();
     }
@@ -145,7 +145,7 @@ public class RegistrationCertificateControllerTest : IClassFixture<CustomWebApiA
         response.CheckOk();
 
         // Wait for background worker to process the certificate delivery job
-        await Task.Delay(1000);
+        await emailExpectation.WaitForEmailSentAsync();
 
         emailExpectation.VerifyEmailSent();
     }
@@ -171,7 +171,7 @@ public class RegistrationCertificateControllerTest : IClassFixture<CustomWebApiA
         response.CheckOk();
 
         // Wait for background worker to process the certificate delivery job
-        await Task.Delay(1000);
+        await emailExpectation.WaitForEmailSentAsync();
 
         emailExpectation.VerifyEmailSent();
     }

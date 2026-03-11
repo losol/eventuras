@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using Losol.Communication.Email;
 using Moq;
 
@@ -20,6 +21,8 @@ public class EmailExpectation
     private bool _shouldHaveAttachment;
     private bool _shouldNotHaveAttachment;
     private string _subject = Placeholder;
+
+    private int _invocationCountAtSetup;
 
     public EmailExpectation(Mock<IEmailSender> mock) => _mock = mock;
 
@@ -62,8 +65,28 @@ public class EmailExpectation
 
     public EmailExpectation Setup()
     {
+        _invocationCountAtSetup = _mock.Invocations.Count;
         _mock.Setup(s => s.SendEmailAsync(It.IsAny<EmailModel>(), It.IsAny<EmailOptions>()));
         return this;
+    }
+
+    /// <summary>
+    /// Waits for a new email invocation by polling the mock.
+    /// Compares against the invocation count captured at Setup() time
+    /// to avoid matching invocations from previous tests.
+    /// </summary>
+    public async Task WaitForEmailSentAsync(int timeoutMs = 5000, int pollIntervalMs = 50)
+    {
+        var sw = Stopwatch.StartNew();
+        while (sw.ElapsedMilliseconds < timeoutMs)
+        {
+            if (_mock.Invocations.Count > _invocationCountAtSetup)
+            {
+                return;
+            }
+
+            await Task.Delay(pollIntervalMs);
+        }
     }
 
     public void VerifyEmailSent(Times? times = null)
