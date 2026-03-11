@@ -1,0 +1,54 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Chart.Name }}-{{ now | date "20060102-150405" }}
+  labels:
+    app: {{ .Chart.Name }}
+  {{- if .Values.argocd.hook.enabled }}
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: {{ .Values.argocd.hook.deletePolicy | default "HookSucceeded" }}
+  {{- end }}
+spec:
+  backoffLimit: {{ .Values.job.backoffLimit }}
+  activeDeadlineSeconds: {{ .Values.job.activeDeadlineSeconds }}
+  ttlSecondsAfterFinished: {{ .Values.job.ttlSecondsAfterFinished }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+    spec:
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ required "image.tag is required" .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop:
+                - ALL
+          env:
+            - name: CI
+              value: "true"
+            {{- range $key, $value := .Values.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+            {{- if .Values.allure.enabled }}
+            - name: ALLURE_RESULTS_DIR
+              value: "/app/tests/e2e/allure-results"
+            {{- end }}
+          envFrom:
+            - secretRef:
+                name: {{ .Chart.Name }}-secrets
+                optional: false
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
