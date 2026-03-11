@@ -1,11 +1,16 @@
 import { EventDto } from '@eventuras/event-sdk';
 import { Debug } from '@eventuras/logger';
 import { chromium, expect, Page, test as setup } from '@playwright/test';
-
-const debug = Debug.create('e2e');
 import fs from 'fs';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
 
 import { cleanupOtpEmails, fetchLoginCode } from './utils';
+
+const debug = Debug.create('e2e');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const CREATED_EVENT_PATH = join(__dirname, 'createdEvent.json');
 
 // Get backend API URL from environment (required)
 const BACKEND_API_URL = process.env.EVENTURAS_TEST_EVENTS_API_BASE_URL;
@@ -37,7 +42,7 @@ type CreatedEvent = {
 export const readCreatedEvent = (): CreatedEvent => {
   let createdEvent: CreatedEvent = { eventId: '-1' };
   try {
-    createdEvent = JSON.parse(fs.readFileSync('./playwright-e2e/createdEvent.json', 'utf8'));
+    createdEvent = JSON.parse(fs.readFileSync(CREATED_EVENT_PATH, 'utf8'));
   } catch (e: any) {
     debug('readCreatedEvent: cant read createdEvent.json');
   }
@@ -46,7 +51,7 @@ export const readCreatedEvent = (): CreatedEvent => {
 
 export const writeCreatedEvent = (eventId: string) => {
   const eventToStore = JSON.stringify({ eventId });
-  fs.writeFileSync('./playwright-e2e/createdEvent.json', eventToStore);
+  fs.writeFileSync(CREATED_EVENT_PATH, eventToStore);
 };
 export const authenticate = async (userName: string, authFile: string) => {
   setup.use({

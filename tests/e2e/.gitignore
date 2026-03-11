@@ -4,5 +4,5 @@
 /blob-report/
 /playwright/.cache/
 /playwright-auth
-/playwright-e2e/createdEvent.json
-/playwright-e2e/local-tests.spec.ts
+/specs/shared/createdEvent.json
+/specs/**/local-tests.spec.ts

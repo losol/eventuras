@@ -2,8 +2,8 @@
 
 import { test } from '@playwright/test';
 
-import { addProductToEvent, checkIfAccessToAdmin, writeCreatedEvent } from './functions';
-import { createTestEvent } from '../utils';
+import { addProductToEvent, checkIfAccessToAdmin, writeCreatedEvent } from '../../shared/functions';
+import { createTestEvent } from '../../shared/eventCreation';
 
 test.describe.configure({ mode: 'serial' });
 const eventName = `This is a playwright event - ${Math.floor(Date.now() / 1000 / 10)}`;

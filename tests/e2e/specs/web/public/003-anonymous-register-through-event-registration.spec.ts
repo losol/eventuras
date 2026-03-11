@@ -7,8 +7,8 @@ import {
   registerForEvent,
   validateRegistration,
   visitAndClickEventRegistrationButton,
-} from './functions';
-import { cleanupOtpEmails, fetchLoginCode } from './utils';
+} from '../../shared/functions';
+import { cleanupOtpEmails, fetchLoginCode } from '../../shared/utils';
 
 test.describe.configure({ mode: 'serial' });
 

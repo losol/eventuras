@@ -59,7 +59,7 @@ const localWebServer = {
 const chromeDesktop = devices['Desktop Chrome'];
 
 export default defineConfig({
-  testDir: './playwright-e2e',
+  testDir: './specs',
   timeout: timeouts.test,
   globalTimeout: timeouts.global,
   fullyParallel: false,
@@ -80,23 +80,29 @@ export default defineConfig({
   webServer: isCI ? undefined : localWebServer,
 
   projects: [
-    { name: SETUP_ADMIN, testMatch: 'admin.auth.setup.ts' },
-    { name: SETUP_USER, testMatch: 'user.auth.setup.ts' },
+    { name: SETUP_ADMIN, testMatch: /setup\/admin\.auth\.setup\.ts/ },
+    { name: SETUP_USER, testMatch: /setup\/user\.auth\.setup\.ts/ },
     {
-      name: 'e2e admin tests',
-      testMatch: /admin-.{0,1000}\.spec\.ts/,
+      name: 'web:admin',
+      testMatch: /web\/admin\/.+\.spec\.ts/,
       use: { ...chromeDesktop },
       dependencies: [SETUP_ADMIN],
     },
     {
-      name: 'e2e user tests chromium',
-      testMatch: /user-.{0,1000}\.spec\.ts/,
+      name: 'web:user',
+      testMatch: /web\/user\/.+\.spec\.ts/,
       use: { ...chromeDesktop },
       dependencies: [SETUP_USER],
     },
     {
-      name: 'api tests',
-      testMatch: /\d{3}-api-.{0,1000}\.spec\.ts/,
+      name: 'web:public',
+      testMatch: /web\/public\/.+\.spec\.ts/,
+      use: { ...chromeDesktop },
+      dependencies: [SETUP_ADMIN, SETUP_USER],
+    },
+    {
+      name: 'api',
+      testMatch: /api\/.+\.spec\.ts/,
       use: { ...chromeDesktop },
       dependencies: [SETUP_ADMIN, SETUP_USER],
     },
