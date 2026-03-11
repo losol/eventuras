@@ -1,7 +1,7 @@
 #
 # Stage 0
 # Build the project
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0.200 AS build
 WORKDIR /app
 
 # Copy solution file and common props
@@ -24,6 +24,7 @@ COPY ./src/Losol.Communication.Email/*.csproj ./src/Losol.Communication.Email/
 COPY ./src/Losol.Communication.Sms/*.csproj ./src/Losol.Communication.Sms/
 
 # Copy test csproj files
+COPY ./tests/TestProject.props ./tests/TestProject.props
 COPY ./tests/Eventuras.Libs.Pdf.Tests/*.csproj ./tests/Eventuras.Libs.Pdf.Tests/
 COPY ./tests/Eventuras.Services.Converto.Tests/*.csproj ./tests/Eventuras.Services.Converto.Tests/
 COPY ./tests/Eventuras.Services.Tests/*.csproj ./tests/Eventuras.Services.Tests/
@@ -41,7 +42,7 @@ COPY ./global.json ./global.json
 
 # Publish
 WORKDIR /app/src/Eventuras.WebApi
-RUN dotnet publish -c Release -o /app/out --no-restore
+RUN dotnet publish -c Release -o /app/out
 
 #
 # Stage 1
