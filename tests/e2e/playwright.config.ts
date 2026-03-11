@@ -39,79 +39,65 @@ if (existsSync(envPath)) {
   console.log('⚠ .env file not found - using existing environment variables');
 }
 
-/**
- * See https://playwright.dev/docs/test-configuration.
- */
-const timeOut = 1000 * 60 * 5; // 5 minutes global max for entire suite
-const testTimeout = 1000 * 120; // 2 minute per test (registration flow has many steps)
-const actionTimeout = 1000 * 10; // 10 seconds per action/navigation
-const devicesToTest = devices['Desktop Chrome'];
+const isCI = !!process.env.CI;
 const SETUP_ADMIN = 'setup-admin';
 const SETUP_USER = 'setup-user';
-export default defineConfig({
-  timeout: testTimeout,
-  globalTimeout: timeOut,
-  testDir: './playwright-e2e',
-  /* Run tests in files in parallel */
-  fullyParallel: false,
-  /* Fail the build on CI if you accidentally left test.only in the source code. */
-  forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
-  retries: 0,
-  /* Opt out of parallel tests on CI. */
-  workers: 1,
-  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
-  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
-  use: {
-    /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: process.env.TEST_BASE_URL,
 
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
+const timeouts = {
+  global: 1000 * 60 * 5,
+  test: 1000 * 120,
+  action: 1000 * 10,
+};
+
+const localWebServer = {
+  command: 'cd ../../apps/web && pnpm dev',
+  url: 'http://localhost:3000',
+  reuseExistingServer: true,
+  timeout: 120 * 1000,
+};
+
+const chromeDesktop = devices['Desktop Chrome'];
+
+export default defineConfig({
+  testDir: './playwright-e2e',
+  timeout: timeouts.test,
+  globalTimeout: timeouts.global,
+  fullyParallel: false,
+  forbidOnly: isCI,
+  retries: 0,
+  workers: 1,
+  reporter: 'html',
+
+  use: {
+    baseURL: process.env.TEST_BASE_URL,
     trace: 'on',
     locale: 'en-GB',
-    actionTimeout: actionTimeout,
-    navigationTimeout: actionTimeout,
-
-    // Emulates the user timezone.
     timezoneId: 'Europe/Paris',
+    actionTimeout: timeouts.action,
+    navigationTimeout: timeouts.action,
   },
 
-  /* Configure web server to start automatically */
-  webServer: {
-    command: 'cd ../../apps/web && pnpm dev',
-    url: 'http://localhost:3000',
-    reuseExistingServer: !process.env.CI,
-    timeout: 120 * 1000, // 2 minutes to start
-  },
+  webServer: isCI ? undefined : localWebServer,
 
-  /* Configure projects for major browsers */
   projects: [
-    // Setup project
     { name: SETUP_ADMIN, testMatch: 'admin.auth.setup.ts' },
     { name: SETUP_USER, testMatch: 'user.auth.setup.ts' },
     {
       name: 'e2e admin tests',
       testMatch: /admin-.{0,1000}\.spec\.ts/,
-      use: {
-        ...devicesToTest,
-      },
+      use: { ...chromeDesktop },
       dependencies: [SETUP_ADMIN],
     },
     {
       name: 'e2e user tests chromium',
       testMatch: /user-.{0,1000}\.spec\.ts/,
-      use: {
-        ...devicesToTest,
-      },
+      use: { ...chromeDesktop },
       dependencies: [SETUP_USER],
     },
     {
       name: 'api tests',
       testMatch: /\d{3}-api-.{0,1000}\.spec\.ts/,
-      use: {
-        ...devicesToTest,
-      },
+      use: { ...chromeDesktop },
       dependencies: [SETUP_ADMIN, SETUP_USER],
     },
   ],
