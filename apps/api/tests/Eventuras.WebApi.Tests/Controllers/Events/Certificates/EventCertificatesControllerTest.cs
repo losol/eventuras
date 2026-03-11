@@ -409,8 +409,8 @@ public class EventCertificatesControllerTest : IClassFixture<CustomWebApiApplica
         var cert = await scope.Db.Certificates.AsNoTracking().SingleAsync();
         Assert.Equal(cert.RecipientUserId, u2.Entity.Id);
 
-        // Wait a bit for background processing to complete
-        await Task.Delay(1000);
+        // Wait for background worker to process the certificate delivery job
+        await emailExpectation.WaitForEmailSentAsync();
 
         emailExpectation.VerifyEmailSent();
     }
