@@ -2,7 +2,9 @@
 
 import { test } from '@playwright/test';
 
-import { checkIfLoggedIn, editRegistrationOrders, readCreatedEvent } from '../../shared/functions';
+import { checkIfLoggedIn } from '../helpers/auth';
+import { readCreatedEvent } from '../helpers/event';
+import { editRegistrationOrders } from '../helpers/registration';
 test.describe.configure({ mode: 'serial' });
 test.use({ storageState: 'playwright-auth/user.json' });
 

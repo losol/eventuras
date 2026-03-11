@@ -2,7 +2,8 @@
 
 import { test } from '@playwright/test';
 
-import { checkIfUnAuthorized, readCreatedEvent } from '../../shared/functions';
+import { readCreatedEvent } from '../helpers/event';
+import { checkIfUnAuthorized } from '../helpers/navigation';
 
 test.describe.configure({ mode: 'serial' });
 

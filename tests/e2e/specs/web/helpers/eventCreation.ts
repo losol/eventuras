@@ -1,8 +1,8 @@
 import { Page } from '@playwright/test';
 import { Debug } from '@eventuras/logger';
 
-import { getEventFromApi } from './functions';
-import { generateTestEventData, TestEventData } from './testEventData';
+import { getEventFromApi } from './event';
+import { generateTestEventData, TestEventData } from '../../shared/testEventData';
 
 const debug = Debug.create('e2e:event-creation');
 
