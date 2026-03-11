@@ -22,12 +22,12 @@ let gmailClient: gmail_v1.Gmail | null = null;
 /**
  * Read refresh token from file or environment variable.
  * Priority:
- * 1. EVENTURAS_TEST_GOOGLE_REFRESH_TOKEN env var
+ * 1. E2E_GMAIL_REFRESH_TOKEN env var
  * 2. test-results/.google-refresh-token file
  */
 const getRefreshToken = (): string | undefined => {
   // Try environment variable first
-  const envToken = process.env.EVENTURAS_TEST_GOOGLE_REFRESH_TOKEN;
+  const envToken = process.env.E2E_GMAIL_REFRESH_TOKEN;
   if (envToken) {
     debug('Using refresh token from environment variable');
     return envToken;
@@ -58,14 +58,14 @@ export const initializeGmailClient = async (): Promise<gmail_v1.Gmail> => {
     return gmailClient;
   }
 
-  const clientId = process.env.EVENTURAS_TEST_GOOGLE_CLIENT_ID;
-  const clientSecret = process.env.EVENTURAS_TEST_GOOGLE_CLIENT_SECRET;
-  const redirectUri = process.env.EVENTURAS_TEST_GOOGLE_REDIRECT_URI;
-  const authCode = process.env.EVENTURAS_TEST_GOOGLE_AUTH_CODE;
+  const clientId = process.env.E2E_GMAIL_CLIENT_ID;
+  const clientSecret = process.env.E2E_GMAIL_CLIENT_SECRET;
+  const redirectUri = process.env.E2E_GMAIL_REDIRECT_URI;
+  const authCode = process.env.E2E_GMAIL_AUTH_CODE;
 
   if (!clientId || !clientSecret || !redirectUri) {
     throw new Error(
-      'Missing required Google OAuth credentials. Please set EVENTURAS_TEST_GOOGLE_CLIENT_ID, EVENTURAS_TEST_GOOGLE_CLIENT_SECRET, and EVENTURAS_TEST_GOOGLE_REDIRECT_URI environment variables.'
+      'Missing required Google OAuth credentials. Please set E2E_GMAIL_CLIENT_ID, E2E_GMAIL_CLIENT_SECRET, and E2E_GMAIL_REDIRECT_URI environment variables.'
     );
   }
 
@@ -101,13 +101,13 @@ export const initializeGmailClient = async (): Promise<gmail_v1.Gmail> => {
     debug('Tokens obtained. Refresh token: %s', tokens.refresh_token ? 'present' : 'missing');
     if (tokens.refresh_token) {
       debug(
-        'IMPORTANT: Store this refresh token in EVENTURAS_TEST_GOOGLE_REFRESH_TOKEN env var or test-results/.google-refresh-token file: %s',
+        'IMPORTANT: Store this refresh token in E2E_GMAIL_REFRESH_TOKEN env var or test-results/.google-refresh-token file: %s',
         tokens.refresh_token
       );
     }
   } else {
     throw new Error(
-      'No EVENTURAS_TEST_GOOGLE_REFRESH_TOKEN (env var or test-results/.google-refresh-token file) or EVENTURAS_TEST_GOOGLE_AUTH_CODE provided. Please complete OAuth flow first.'
+      'No E2E_GMAIL_REFRESH_TOKEN (env var or test-results/.google-refresh-token file) or E2E_GMAIL_AUTH_CODE provided. Please complete OAuth flow first.'
     );
   }
 

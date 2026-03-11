@@ -2,9 +2,9 @@
 
 import { authenticate } from '../shared/functions';
 
-const baseEmail = process.env.EVENTURAS_TEST_BASE_EMAIL;
+const baseEmail = process.env.E2E_BASE_EMAIL;
 if (!baseEmail) {
-  throw new Error('EVENTURAS_TEST_BASE_EMAIL must be set');
+  throw new Error('E2E_BASE_EMAIL must be set');
 }
 
 const [localPart, domain] = baseEmail.split('@');
