@@ -1,0 +1,61 @@
+# syntax=docker/dockerfile:1.7
+# Build from monorepo root:
+#   docker build -f tests/e2e/Dockerfile -t eventuras-e2e:latest .
+
+##########################
+# Base                   #
+##########################
+FROM node:24-bookworm-slim AS base
+
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libc6 \
+    libstdc++6 \
+    ca-certificates \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/* \
+  && corepack enable \
+  && corepack prepare pnpm@10.28.2 --activate \
+  && pnpm config set store-dir /pnpm/store
+
+##########################
+# Install                #
+##########################
+FROM base AS install
+
+WORKDIR /app
+
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY tests/e2e ./tests/e2e
+COPY libs ./libs
+
+RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store \
+  pnpm install --frozen-lockfile --ignore-scripts --filter=@eventuras/e2e...
+
+##########################
+# Playwright browsers    #
+##########################
+FROM install AS browsers
+
+WORKDIR /app/tests/e2e
+
+RUN pnpm exec playwright install --with-deps chromium
+
+##########################
+# Runner                 #
+##########################
+FROM browsers AS runner
+
+WORKDIR /app/tests/e2e
+
+ENV CI=true
+ENV NODE_ENV=test
+
+# Test configuration (override via K8s env/secrets)
+# TEST_BASE_URL - URL of the web app to test
+# EVENTURAS_TEST_BASE_EMAIL - Gmail base address
+# EVENTURAS_TEST_GOOGLE_* - OAuth credentials
+
+CMD ["pnpm", "test:playwright"]
