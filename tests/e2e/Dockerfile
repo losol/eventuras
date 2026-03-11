@@ -50,6 +50,11 @@ FROM browsers AS runner
 
 WORKDIR /app/tests/e2e
 
+# Create non-root user for running tests
+RUN groupadd -r pwuser && useradd -r -g pwuser -G audio,video pwuser \
+  && mkdir -p /home/pwuser && chown -R pwuser:pwuser /home/pwuser \
+  && chown -R pwuser:pwuser /app
+
 ENV CI=true
 ENV NODE_ENV=test
 
@@ -57,5 +62,7 @@ ENV NODE_ENV=test
 # E2E_WEB_URL - URL of the web app to test
 # E2E_BASE_EMAIL - Gmail base address
 # E2E_GMAIL_* - OAuth credentials
+
+USER pwuser
 
 CMD ["pnpm", "test:playwright"]

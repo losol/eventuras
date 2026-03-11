@@ -75,6 +75,8 @@ export default defineConfig({
     timezoneId: 'Europe/Paris',
     actionTimeout: timeouts.action,
     navigationTimeout: timeouts.action,
+    // Disable Chromium sandbox in containers (K8s lacks kernel namespace support)
+    launchOptions: isCI ? { args: ['--no-sandbox', '--disable-setuid-sandbox'] } : undefined,
   },
 
   webServer: isCI ? undefined : localWebServer,

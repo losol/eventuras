@@ -1,0 +1,53 @@
+# Default values for eventuras-e2e test runner
+# Environment-specific values are set by ArgoCD or CI, not here
+
+image:
+  registry: docker.io
+  repository: losolio/eventuras-e2e
+  tag: ""           # Set by ArgoCD or CI
+  pullPolicy: IfNotPresent
+
+resources:
+  requests:
+    memory: "1Gi"
+    cpu: "500m"
+    ephemeral-storage: "2Gi"
+  limits:
+    memory: "2Gi"
+    cpu: "2000m"
+    ephemeral-storage: "4Gi"
+
+# Job configuration
+job:
+  # backoffLimit: number of retries before marking the Job as failed
+  backoffLimit: 0
+  # activeDeadlineSeconds: max time (seconds) the Job can run
+  activeDeadlineSeconds: 600
+  # ttlSecondsAfterFinished: auto-cleanup completed Jobs
+  ttlSecondsAfterFinished: 3600
+
+# ArgoCD PostSync hook (set to true when deploying via ArgoCD)
+argocd:
+  hook:
+    enabled: false
+    # delete-policy: HookSucceeded means successful runs are cleaned up automatically
+    deletePolicy: HookSucceeded
+
+# Allure reporting (optional)
+allure:
+  enabled: false
+  # URL of the Allure Docker Service
+  url: ""
+
+# Environment variables (non-sensitive)
+env: {}
+# E2E_WEB_URL: "https://app-staging.eventuras.example.com"
+# E2E_API_URL: "https://api-staging.eventuras.example.com"
+
+# Sensitive values belong in the eventuras-e2e-secrets k8s Secret:
+#   E2E_BASE_EMAIL
+#   E2E_SESSION_SECRET
+#   E2E_GMAIL_CLIENT_ID
+#   E2E_GMAIL_CLIENT_SECRET
+#   E2E_GMAIL_REDIRECT_URI
+#   E2E_GMAIL_REFRESH_TOKEN
