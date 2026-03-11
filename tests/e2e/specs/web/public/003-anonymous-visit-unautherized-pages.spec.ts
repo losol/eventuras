@@ -2,7 +2,7 @@
 
 import { test } from '@playwright/test';
 
-import { checkIfUnAuthorized, readCreatedEvent } from './functions';
+import { checkIfUnAuthorized, readCreatedEvent } from '../../shared/functions';
 
 test.describe.configure({ mode: 'serial' });
 

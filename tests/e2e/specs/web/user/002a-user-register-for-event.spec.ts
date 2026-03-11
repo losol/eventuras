@@ -10,7 +10,7 @@ import {
   readCreatedEvent,
   registerForEvent,
   validateRegistration,
-} from './functions';
+} from '../../shared/functions';
 test.describe.configure({ mode: 'serial' });
 test.use({ storageState: 'playwright-auth/user.json' });
 

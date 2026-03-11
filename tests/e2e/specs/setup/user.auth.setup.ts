@@ -1,6 +1,6 @@
 /* eslint no-process-env: 0 */
 
-import { authenticate } from './functions';
+import { authenticate } from '../shared/functions';
 
 const baseEmail = process.env.EVENTURAS_TEST_BASE_EMAIL;
 if (!baseEmail) {
@@ -8,7 +8,7 @@ if (!baseEmail) {
 }
 
 const [localPart, domain] = baseEmail.split('@');
-const userName = `${localPart}+admin@${domain}`;
-const authFile = 'playwright-auth/admin.json';
+const userName = `${localPart}+user@${domain}`;
+const authFile = 'playwright-auth/user.json';
 
 authenticate(userName, authFile);

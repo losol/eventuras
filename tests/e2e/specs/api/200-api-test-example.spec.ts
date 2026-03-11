@@ -14,7 +14,7 @@
 
 import { test, expect } from '@playwright/test';
 import { EventDto } from '@eventuras/event-sdk';
-import { adminApi, userApi, publicApiRequest } from './api-helpers';
+import { adminApi, userApi, publicApiRequest } from '../shared/api-helpers';
 
 /**
  * Paginated response from the backend API
