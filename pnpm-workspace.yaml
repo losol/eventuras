@@ -3,6 +3,7 @@ packages:
   - docs
   - libs/**
   - lab/**
+  - tests/**
   - '!**/.next'
   - '!**/dist'
   - '!**/node_modules'

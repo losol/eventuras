@@ -43,7 +43,14 @@
     "web": {
       "path": "apps/web",
       "package": "@eventuras/web",
-      "aliases": ["frontend", "web-e2e"]
+      "aliases": ["frontend"]
+    }
+  },
+  "tests": {
+    "e2e": {
+      "path": "tests/e2e",
+      "package": "@eventuras/e2e",
+      "aliases": ["e2e-tests", "playwright"]
     }
   },
   "libs": {

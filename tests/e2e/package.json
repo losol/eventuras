@@ -1,8 +1,8 @@
 {
-  "name": "@eventuras/web-e2e",
+  "name": "@eventuras/e2e",
   "version": "0.1.6",
   "private": "true",
-  "description": "End to end tests for the Eventuras frontend",
+  "description": "End to end tests for the Eventuras platform",
   "keywords": [
     "e2e",
     "playwright",

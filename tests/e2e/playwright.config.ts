@@ -79,7 +79,7 @@ export default defineConfig({
 
   /* Configure web server to start automatically */
   webServer: {
-    command: 'cd ../web && pnpm dev',
+    command: 'cd ../../apps/web && pnpm dev',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000, // 2 minutes to start
