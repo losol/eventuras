@@ -7,6 +7,7 @@
 # Ignore test source files but keep .csproj for restore
 tests/**/*
 !tests/**/*.csproj
+!tests/TestProject.props
 
 # Ignore IDE and editor files
 **/.vs/
