@@ -14,9 +14,9 @@ test.describe.configure({ mode: 'serial' });
 
 // Generate a unique test email using Gmail's plus addressing feature
 // This allows using a single Gmail account for multiple test identities
-const baseEmail = process.env.EVENTURAS_TEST_BASE_EMAIL;
+const baseEmail = process.env.E2E_BASE_EMAIL;
 if (!baseEmail) {
-  throw new Error('EVENTURAS_TEST_BASE_EMAIL must be set');
+  throw new Error('E2E_BASE_EMAIL must be set');
 }
 
 // Extract the local part and domain from the base email

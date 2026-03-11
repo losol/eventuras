@@ -5,15 +5,15 @@ import * as fs from 'fs';
 const debug = Debug.create('e2e:api');
 
 // Get backend API URL from environment (required)
-const BACKEND_API_URL = process.env.EVENTURAS_TEST_EVENTS_API_BASE_URL;
+const BACKEND_API_URL = process.env.E2E_API_URL;
 if (!BACKEND_API_URL) {
-  throw new Error('EVENTURAS_TEST_EVENTS_API_BASE_URL environment variable is required');
+  throw new Error('E2E_API_URL environment variable is required');
 }
 
 // Get session secret for decrypting JWE tokens (same as used by the application)
-const SESSION_SECRET = process.env.SESSION_SECRET;
-if (!SESSION_SECRET) {
-  throw new Error('SESSION_SECRET environment variable is required for decrypting session cookies');
+const E2E_SESSION_SECRET = process.env.E2E_SESSION_SECRET;
+if (!E2E_SESSION_SECRET) {
+  throw new Error('E2E_SESSION_SECRET environment variable is required for decrypting session cookies');
 }
 
 /**
@@ -40,13 +40,13 @@ function hexToUint8Array(hex: string): Uint8Array {
 async function decryptSessionToken(
   jweToken: string
 ): Promise<{ tokens?: { accessToken?: string } }> {
-  if (!SESSION_SECRET) {
-    throw new Error('SESSION_SECRET is required');
+  if (!E2E_SESSION_SECRET) {
+    throw new Error('E2E_SESSION_SECRET is required');
   }
 
   try {
     // Convert the hex session secret to Uint8Array (same as getSessionSecretUint8Array in fides-auth)
-    const secretKey = hexToUint8Array(SESSION_SECRET);
+    const secretKey = hexToUint8Array(E2E_SESSION_SECRET);
 
     // Decrypt the JWE token using jose library
     const { payload } = await jose.jwtDecrypt(jweToken, secretKey);

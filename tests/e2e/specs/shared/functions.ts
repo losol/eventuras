@@ -13,9 +13,9 @@ const __dirname = dirname(__filename);
 const CREATED_EVENT_PATH = join(__dirname, 'createdEvent.json');
 
 // Get backend API URL from environment (required)
-const BACKEND_API_URL = process.env.EVENTURAS_TEST_EVENTS_API_BASE_URL;
+const BACKEND_API_URL = process.env.E2E_API_URL;
 if (!BACKEND_API_URL) {
-  throw new Error('EVENTURAS_TEST_EVENTS_API_BASE_URL environment variable is required');
+  throw new Error('E2E_API_URL environment variable is required');
 }
 
 /**

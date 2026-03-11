@@ -69,7 +69,7 @@ export default defineConfig({
   reporter: 'html',
 
   use: {
-    baseURL: process.env.TEST_BASE_URL,
+    baseURL: process.env.E2E_WEB_URL,
     trace: 'on',
     locale: 'en-GB',
     timezoneId: 'Europe/Paris',

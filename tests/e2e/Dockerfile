@@ -54,8 +54,8 @@ ENV CI=true
 ENV NODE_ENV=test
 
 # Test configuration (override via K8s env/secrets)
-# TEST_BASE_URL - URL of the web app to test
-# EVENTURAS_TEST_BASE_EMAIL - Gmail base address
-# EVENTURAS_TEST_GOOGLE_* - OAuth credentials
+# E2E_WEB_URL - URL of the web app to test
+# E2E_BASE_EMAIL - Gmail base address
+# E2E_GMAIL_* - OAuth credentials
 
 CMD ["pnpm", "test:playwright"]

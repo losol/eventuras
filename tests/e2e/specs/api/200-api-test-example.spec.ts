@@ -7,8 +7,8 @@
  * - No data modification (read-only)
  *
  * Prerequisites:
- * - SESSION_SECRET environment variable must be set
- * - EVENTURAS_TEST_EVENTS_API_BASE_URL must point to the backend API
+ * - E2E_SESSION_SECRET environment variable must be set
+ * - E2E_API_URL must point to the backend API
  * - Auth storage files must exist (playwright-auth/admin.json, playwright-auth/user.json)
  */
 

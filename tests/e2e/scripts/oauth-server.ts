@@ -12,7 +12,7 @@
  * Prerequisites:
  *   1. Set up Google Cloud Console OAuth credentials
  *   2. Add http://localhost:3123/oauth/callback to Authorized redirect URIs
- *   3. Set EVENTURAS_TEST_GOOGLE_CLIENT_ID and EVENTURAS_TEST_GOOGLE_CLIENT_SECRET in .env
+ *   3. Set E2E_GMAIL_CLIENT_ID and E2E_GMAIL_CLIENT_SECRET in .env
  */
 
 import { createServer } from 'node:http';
@@ -51,18 +51,18 @@ const REDIRECT_URI = `http://localhost:${PORT}/oauth/callback`;
 
 // Validate required environment variables
 if (
-  !process.env.EVENTURAS_TEST_GOOGLE_CLIENT_ID ||
-  !process.env.EVENTURAS_TEST_GOOGLE_CLIENT_SECRET
+  !process.env.E2E_GMAIL_CLIENT_ID ||
+  !process.env.E2E_GMAIL_CLIENT_SECRET
 ) {
   console.error(
-    '❌ Error: EVENTURAS_TEST_GOOGLE_CLIENT_ID and EVENTURAS_TEST_GOOGLE_CLIENT_SECRET must be set in .env'
+    '❌ Error: E2E_GMAIL_CLIENT_ID and E2E_GMAIL_CLIENT_SECRET must be set in .env'
   );
   process.exit(1);
 }
 
 const oauth2Client = createOAuthClient({
-  clientId: process.env.EVENTURAS_TEST_GOOGLE_CLIENT_ID,
-  clientSecret: process.env.EVENTURAS_TEST_GOOGLE_CLIENT_SECRET,
+  clientId: process.env.E2E_GMAIL_CLIENT_ID,
+  clientSecret: process.env.E2E_GMAIL_CLIENT_SECRET,
   redirectUri: REDIRECT_URI,
 });
 
@@ -100,7 +100,7 @@ const server = createServer(async (req, res) => {
             <h1>Successfully obtained refresh token!</h1>
             <h2>Add this to your .env file:</h2>
             <pre style="background: #f4f4f4; padding: 15px; border-radius: 5px;">
-EVENTURAS_TEST_GOOGLE_REFRESH_TOKEN=${tokens.refresh_token}
+E2E_GMAIL_REFRESH_TOKEN=${tokens.refresh_token}
             </pre>
             <p><strong>Important:</strong> This token will only be shown once. Copy it now!</p>
             <p>You can close this window.</p>
@@ -110,7 +110,7 @@ EVENTURAS_TEST_GOOGLE_REFRESH_TOKEN=${tokens.refresh_token}
 
       console.log('\nSuccess! Refresh token obtained.');
       console.log('\nAdd this line to your .env file:');
-      console.log(`EVENTURAS_TEST_GOOGLE_REFRESH_TOKEN=${tokens.refresh_token}\n`);
+      console.log(`E2E_GMAIL_REFRESH_TOKEN=${tokens.refresh_token}\n`);
 
       // Close server after successful token exchange
       setTimeout(() => {
