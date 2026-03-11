@@ -11,8 +11,8 @@
 import { expect, test } from '@playwright/test';
 import { Debug } from '@eventuras/logger';
 
-import { createTestEvent } from '../../shared/eventCreation';
-import { writeCreatedEvent } from '../../shared/functions';
+import { createTestEvent } from '../helpers/eventCreation';
+import { writeCreatedEvent } from '../helpers/event';
 
 const debug = Debug.create('e2e:markdown-rendering');
 

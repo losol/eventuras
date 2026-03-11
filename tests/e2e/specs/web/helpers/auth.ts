@@ -1,0 +1,58 @@
+import { Debug } from '@eventuras/logger';
+import { chromium, expect, test as setup } from '@playwright/test';
+
+import { cleanupOtpEmails, fetchLoginCode } from '../../shared/utils';
+
+const debug = Debug.create('e2e:auth');
+const isCI = !!process.env.CI;
+
+export const authenticate = async (userName: string, authFile: string) => {
+  setup.use({
+    locale: 'en-GB',
+    timezoneId: 'Europe/Berlin',
+  });
+  setup('authenticate', async () => {
+    // Clean up any old OTP emails before starting authentication
+    debug('authenticate: cleaning up old OTP emails for %s', userName);
+    const cleanedCount = await cleanupOtpEmails(userName);
+    debug('authenticate: cleaned up %d old OTP emails', cleanedCount);
+
+    const browser = await chromium.launch(
+      isCI ? { args: ['--no-sandbox', '--disable-setuid-sandbox'] } : undefined
+    );
+    const context = await browser.newContext();
+    const page = await context.newPage();
+    await page.goto('/');
+    await page.waitForLoadState('load');
+    await page.locator('[data-testid="login-button"]').click();
+    await page.locator('[id="username"]').fill(userName);
+    await page.getByRole('button', { name: 'Continue', exact: true }).click();
+    debug('authenticate: attempting to fetch login code');
+    const loginCode = await fetchLoginCode(userName);
+    await page.locator('[id="code"]').fill(loginCode!);
+    await page.getByRole('button', { name: 'Continue', exact: true }).click();
+    debug('authenticate: filled and clicked continue, waiting for root url');
+
+    await page.waitForURL('/');
+
+    await page.goto('/user');
+    await page.waitForLoadState('load');
+
+    await expect(page.getByText(userName).first()).toBeVisible();
+    await context.storageState({ path: authFile });
+    debug('Auth Complete');
+  });
+};
+
+export const checkIfLoggedIn = async (page: import('@playwright/test').Page) => {
+  await page.goto('/user');
+  await page.waitForLoadState('load');
+  await expect(page.locator('[data-testid="logged-in-menu-button"]')).toBeVisible();
+};
+
+export const logout = async (page: import('@playwright/test').Page) => {
+  debug('Logging out user');
+  await page.goto('/api/logout');
+  await page.waitForLoadState('load');
+  debug('User logged out, redirected to homepage');
+};

@@ -1,6 +1,6 @@
 /* eslint no-process-env: 0 */
 
-import { authenticate } from '../shared/functions';
+import { authenticate } from '../web/helpers/auth';
 
 const baseEmail = process.env.E2E_BASE_EMAIL;
 if (!baseEmail) {

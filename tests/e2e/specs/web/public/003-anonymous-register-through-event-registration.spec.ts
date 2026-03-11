@@ -2,12 +2,12 @@
 
 import { expect, test } from '@playwright/test';
 
+import { readCreatedEvent } from '../helpers/event';
 import {
-  readCreatedEvent,
   registerForEvent,
   validateRegistration,
   visitAndClickEventRegistrationButton,
-} from '../../shared/functions';
+} from '../helpers/registration';
 import { cleanupOtpEmails, fetchLoginCode } from '../../shared/utils';
 
 test.describe.configure({ mode: 'serial' });

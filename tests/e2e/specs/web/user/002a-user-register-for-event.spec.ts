@@ -5,12 +5,9 @@ import { test } from '@playwright/test';
 
 const debug = Debug.create('e2e:test');
 
-import {
-  checkIfLoggedIn,
-  readCreatedEvent,
-  registerForEvent,
-  validateRegistration,
-} from '../../shared/functions';
+import { checkIfLoggedIn } from '../helpers/auth';
+import { readCreatedEvent } from '../helpers/event';
+import { registerForEvent, validateRegistration } from '../helpers/registration';
 test.describe.configure({ mode: 'serial' });
 test.use({ storageState: 'playwright-auth/user.json' });
 
