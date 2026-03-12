@@ -287,6 +287,7 @@ tools
 .dotnet
 Dockerfile
 
-# .env file contains default environment variables for docker
+# .env files contain secrets — never bake into images
 .env
+**/.env
 .git/

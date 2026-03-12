@@ -41,6 +41,7 @@ FROM install AS browsers
 
 WORKDIR /app/tests/e2e
 
+ENV PLAYWRIGHT_BROWSERS_PATH=/opt/playwright
 RUN pnpm exec playwright install --with-deps chromium
 
 ##########################
