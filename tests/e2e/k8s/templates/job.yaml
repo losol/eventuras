@@ -25,8 +25,13 @@ spec:
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
-      containers:
-        - name: {{ .Chart.Name }}
+      {{- if .Values.allure.enabled }}
+      volumes:
+        - name: allure-results
+          emptyDir: {}
+      {{- end }}
+      initContainers:
+        - name: e2e
           image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ required "image.tag is required" .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext:
@@ -42,13 +47,65 @@ spec:
             - name: {{ $key }}
               value: {{ $value | quote }}
             {{- end }}
-            {{- if .Values.allure.enabled }}
-            - name: ALLURE_RESULTS_DIR
-              value: "/app/tests/e2e/allure-results"
-            {{- end }}
           envFrom:
             - secretRef:
                 name: {{ .Chart.Name }}-secrets
                 optional: false
+          {{- if .Values.allure.enabled }}
+          volumeMounts:
+            - name: allure-results
+              mountPath: /app/tests/e2e/tmp/allure-results
+          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      containers:
+        {{- if .Values.allure.enabled }}
+        - name: allure-upload
+          image: curlimages/curl:8.13.0
+          command:
+            - sh
+            - -c
+            - |
+              ALLURE_URL="{{ .Values.allure.url }}"
+              PROJECT="{{ .Values.allure.projectId | default "eventuras-e2e" }}"
+              RESULTS_DIR="/allure-results"
+
+              if [ ! -d "$RESULTS_DIR" ] || [ -z "$(ls -A $RESULTS_DIR 2>/dev/null)" ]; then
+                echo "No Allure results found, skipping upload"
+                exit 0
+              fi
+
+              echo "Uploading $(ls $RESULTS_DIR | wc -l) result files to $ALLURE_URL"
+
+              # Send results to Allure Docker Service
+              curl -sf -X POST "$ALLURE_URL/allure-docker-service/send-results?project_id=$PROJECT" \
+                -H 'Content-Type: multipart/form-data' \
+                $(for f in $RESULTS_DIR/*; do echo "-F files[]=@$f"; done)
+
+              # Generate report
+              curl -sf -X GET "$ALLURE_URL/allure-docker-service/generate-report?project_id=$PROJECT"
+
+              echo "Allure report: $ALLURE_URL/allure-docker-service/projects/$PROJECT/reports/latest"
+          volumeMounts:
+            - name: allure-results
+              mountPath: /allure-results
+              readOnly: true
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "128Mi"
+              cpu: "100m"
+        {{- else }}
+        - name: done
+          image: busybox:1.37
+          command: ["true"]
+          resources:
+            requests:
+              memory: "8Mi"
+              cpu: "10m"
+            limits:
+              memory: "16Mi"
+              cpu: "50m"
+        {{- end }}

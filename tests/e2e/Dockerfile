@@ -66,4 +66,4 @@ ENV NODE_ENV=test
 
 USER pwuser
 
-CMD ["pnpm", "test:playwright"]
+CMD ["pnpm", "test"]

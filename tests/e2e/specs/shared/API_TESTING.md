@@ -143,7 +143,7 @@ Make sure `SESSION_SECRET` is set in your environment. This should be the same h
 The auth setup didn't run successfully. Make sure to run Playwright with proper dependencies:
 
 ```bash
-pnpm test:playwright
+pnpm test
 ```
 
 ### "Failed to decrypt session token"
@@ -159,7 +159,7 @@ The `SESSION_SECRET` might be incorrect or the session format changed. Verify th
 The access token might be expired. Playwright auth storage is saved for a limited time. Re-run the auth setup:
 
 ```bash
-pnpm test:playwright --project="admin.auth.setup"
+pnpm test --project="admin.auth.setup"
 ```
 
 ## Example Test File

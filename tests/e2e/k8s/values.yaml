@@ -2,8 +2,8 @@
 # Environment-specific values are set by ArgoCD or CI, not here
 
 image:
-  registry: docker.io
-  repository: losolio/eventuras-e2e
+  registry: ghcr.io
+  repository: losol/eventuras/e2e
   tag: ""           # Set by ArgoCD or CI
   pullPolicy: IfNotPresent
 
@@ -33,11 +33,12 @@ argocd:
     # delete-policy: HookSucceeded means successful runs are cleaned up automatically
     deletePolicy: HookSucceeded
 
-# Allure reporting (optional)
+# Allure Docker Service for test reporting
+# Deploy separately, then set the URL here
 allure:
   enabled: false
-  # URL of the Allure Docker Service
-  url: ""
+  # url: "http://allure-service:5050"
+  # projectId: "eventuras-e2e"
 
 # Environment variables (non-sensitive)
 env: {}
