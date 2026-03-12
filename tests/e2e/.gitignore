@@ -6,3 +6,4 @@
 /playwright-auth
 /specs/shared/createdEvent.json
 /specs/**/local-tests.spec.ts
+/specs/web/helpers/createdEvent.json
