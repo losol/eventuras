@@ -64,11 +64,13 @@ export default defineConfig({
   forbidOnly: isCI,
   retries: 0,
   workers: 1,
-  reporter: 'html',
+  reporter: [['html'], ['./error-context-reporter.ts']],
 
   use: {
     baseURL: process.env.E2E_WEB_URL,
     trace: 'on',
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
     locale: 'en-GB',
     timezoneId: 'Europe/Paris',
     actionTimeout: timeouts.action,
