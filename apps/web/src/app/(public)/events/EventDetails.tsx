@@ -21,7 +21,7 @@ const EventDetails: React.FC<EventProps> = ({ eventinfo }) => {
   if (!eventinfo) return <div>{t('common.events.event-not-found')}</div>;
   const sections = [
     {
-      id: 'information',
+      id: 'more-information',
       href: '#more-information',
       title: t('common.events.moreinformation'),
       content: eventinfo.moreInformation,

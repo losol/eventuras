@@ -28,13 +28,13 @@ const userName = `${localPart}+newuser-${timestamp}@${domain}`;
 
 test.describe('should be able to register as an anonymous user when hitting the event registration page', () => {
   const createdEvent = readCreatedEvent();
-  test('registration button should be visible for anonymous users', async ({ page }) => {
+  test('registration button should redirect anonymous users to login', async ({ page }) => {
     await visitAndClickEventRegistrationButton(page, createdEvent.eventId);
-    ///api/auth/signin?callbackUrl=%2Fuser%2Fevents%2F6%2Fregistration
-    const url = `/user/events/${createdEvent.eventId}`;
-    const location = `/api/auth/signin?callbackUrl=${encodeURIComponent(url)}`;
-    await page.waitForURL(location, { timeout: 15000 });
-    await expect(page).toHaveURL(location);
+    // Should be redirected away from the event page to the identity provider
+    const eventUrl = `/user/events/${createdEvent.eventId}`;
+    await page.waitForURL((url) => !url.pathname.startsWith(eventUrl), { timeout: 15000 });
+    // Verify we were redirected away (the exact URL depends on the IdP)
+    expect(page.url()).not.toContain(eventUrl);
   });
 
   test('should be able to register user through the even registration page', async ({ page }) => {
@@ -42,7 +42,7 @@ test.describe('should be able to register as an anonymous user when hitting the 
     await cleanupOtpEmails(userName);
 
     await visitAndClickEventRegistrationButton(page, createdEvent.eventId);
-    await page.locator('[type="submit"]').click();
+    // Wait for Auth0 login page to load
     await page.waitForLoadState();
     await page.getByRole('link', { name: 'Sign up' }).click();
     await page.waitForLoadState();

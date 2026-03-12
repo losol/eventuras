@@ -1,18 +1,22 @@
 /**
  * Test that validates markdown rendering and formatting on public event pages.
  *
- * This test creates an event with rich markdown content and verifies that:
+ * This test creates an event via the API with rich markdown content and verifies that:
  * - Headings are rendered correctly
  * - Lists (ordered and unordered) display properly
  * - Text formatting (bold, italic) works
  * - Links and other elements are visible
+ *
+ * Content is set via API (not the Lexical editor) to ensure reliable test data,
+ * since this test is about rendering, not the editor.
  */
 
 import { expect, test } from '@playwright/test';
 import { Debug } from '@eventuras/logger';
 
-import { createTestEvent } from '../helpers/eventCreation';
-import { writeCreatedEvent } from '../helpers/event';
+import { getEventFromApi, writeCreatedEvent } from '../helpers/event';
+import { adminApi } from '../../shared/api-helpers';
+import { generateTestEventData } from '../../shared/testEventData';
 
 const debug = Debug.create('e2e:markdown-rendering');
 
@@ -23,11 +27,38 @@ let eventId: string;
 test.use({ storageState: 'playwright-auth/admin.json' });
 
 test.describe('markdown rendering on public event page', () => {
-  test('create event with rich markdown content', async ({ page }) => {
-    debug('Creating event with rich markdown content...');
-    eventId = await createTestEvent(page, eventName, { useRichContent: true });
+  test('create event with rich markdown content via API', async () => {
+    const eventData = generateTestEventData(eventName);
+    debug('Creating event via API: %s', eventData.title);
+
+    // Create event via API
+    const slug = `md-test-${Math.floor(Date.now() / 1000)}`;
+    const created = await adminApi.post<{ id: number }>('/v3/events', {
+      title: eventData.title,
+      slug,
+      headline: eventData.headline,
+      category: eventData.category,
+      description: eventData.description,
+      program: eventData.program,
+      practicalInformation: eventData.practicalInformation,
+      moreInformation: eventData.moreInformation,
+      status: 'RegistrationsOpen',
+      maxParticipants: eventData.maxParticipants,
+      city: eventData.city,
+      location: eventData.location,
+      organizationId: 1,
+    });
+
+    eventId = created.id.toString();
     writeCreatedEvent(eventId);
-    debug('Event created: %s', eventId);
+    debug('Event created via API: %s', eventId);
+
+    // Verify content was saved
+    const event = await getEventFromApi(eventId);
+    expect(event.program).toBeTruthy();
+    expect(event.practicalInformation).toBeTruthy();
+    expect(event.moreInformation).toBeTruthy();
+    debug('Content verified in API response');
   });
 
   test('verify program section renders markdown correctly', async ({ page }) => {
@@ -38,9 +69,9 @@ test.describe('markdown rendering on public event page', () => {
     debug('Scrolling to program section...');
     await page.locator('#program').scrollIntoViewIfNeeded();
 
-    // Verify headings are rendered
-    debug('Checking for h2 headings in program...');
-    const programHeading = page.locator('#program h2').first();
+    // Verify headings are rendered (markdown uses ### which renders as h3)
+    debug('Checking for h3 headings in program...');
+    const programHeading = page.locator('#program h3').first();
     await expect(programHeading).toBeVisible();
     await expect(programHeading).toContainText('Day 1');
 
@@ -57,7 +88,7 @@ test.describe('markdown rendering on public event page', () => {
     const boldText = page.locator('#program strong').first();
     await expect(boldText).toBeVisible();
 
-    debug('✅ Program section markdown rendered correctly');
+    debug('Program section markdown rendered correctly');
   });
 
   test('verify practical information section renders markdown correctly', async ({ page }) => {
@@ -68,15 +99,15 @@ test.describe('markdown rendering on public event page', () => {
     debug('Scrolling to practical information section...');
     await page.locator('#practical-information').scrollIntoViewIfNeeded();
 
-    // Verify headings are rendered
-    debug('Checking for h2 headings in practical info...');
-    const practicalHeading = page.locator('#practical-information h2').first();
+    // Verify headings are rendered (markdown uses ### which renders as h3)
+    debug('Checking for h3 headings in practical info...');
+    const practicalHeading = page.locator('#practical-information h3').first();
     await expect(practicalHeading).toBeVisible();
     await expect(practicalHeading).toContainText('Getting There');
 
-    // Verify nested headings (h3) are rendered
-    debug('Checking for h3 headings...');
-    const subHeading = page.locator('#practical-information h3').first();
+    // Verify nested headings (h4) are rendered
+    debug('Checking for h4 headings...');
+    const subHeading = page.locator('#practical-information h4').first();
     await expect(subHeading).toBeVisible();
 
     // Verify lists with icons/emojis are visible
@@ -84,7 +115,7 @@ test.describe('markdown rendering on public event page', () => {
     const lists = page.locator('#practical-information ul');
     await expect(lists.first()).toBeVisible();
 
-    debug('✅ Practical information section markdown rendered correctly');
+    debug('Practical information section markdown rendered correctly');
   });
 
   test('verify more information section renders markdown correctly', async ({ page }) => {
@@ -95,9 +126,9 @@ test.describe('markdown rendering on public event page', () => {
     debug('Scrolling to more information section...');
     await page.locator('#more-information').scrollIntoViewIfNeeded();
 
-    // Verify headings are rendered
-    debug('Checking for h2 headings in more info...');
-    const moreInfoHeading = page.locator('#more-information h2').first();
+    // Verify headings are rendered (markdown uses ### which renders as h3)
+    debug('Checking for h3 headings in more info...');
+    const moreInfoHeading = page.locator('#more-information h3').first();
     await expect(moreInfoHeading).toBeVisible();
 
     // Verify links are rendered and safe
@@ -113,7 +144,7 @@ test.describe('markdown rendering on public event page', () => {
       expect(target).toBe('_blank');
       expect(rel).toContain('noopener');
       expect(rel).toContain('noreferrer');
-      debug('✅ Links have correct security attributes');
+      debug('Links have correct security attributes');
     }
 
     // Verify horizontal rules are rendered
@@ -121,10 +152,10 @@ test.describe('markdown rendering on public event page', () => {
     const hrs = page.locator('#more-information hr');
     if ((await hrs.count()) > 0) {
       await expect(hrs.first()).toBeVisible();
-      debug('✅ Horizontal rules rendered');
+      debug('Horizontal rules rendered');
     }
 
-    debug('✅ More information section markdown rendered correctly');
+    debug('More information section markdown rendered correctly');
   });
 
   test('verify formatting elements are styled correctly', async ({ page }) => {
@@ -143,7 +174,7 @@ test.describe('markdown rendering on public event page', () => {
         return globalThis.getComputedStyle(el).borderLeftWidth;
       });
       expect(borderStyle).not.toBe('0px');
-      debug('✅ Blockquote has border styling');
+      debug('Blockquote has border styling');
     }
 
     // Check list styling
@@ -153,8 +184,8 @@ test.describe('markdown rendering on public event page', () => {
       return globalThis.getComputedStyle(el).listStyleType;
     });
     expect(listStyle).toBe('disc');
-    debug('✅ Lists have correct list-style-type');
+    debug('Lists have correct list-style-type');
 
-    debug('✅ All formatting elements styled correctly');
+    debug('All formatting elements styled correctly');
   });
 });

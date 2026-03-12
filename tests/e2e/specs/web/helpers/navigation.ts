@@ -6,9 +6,11 @@ const debug = Debug.create('e2e:navigation');
 
 export const checkIfUnAuthorized = async (page: Page, url: string) => {
   await page.goto(url);
-  const location = `/api/auth/signin?callbackUrl=${encodeURIComponent(url)}`;
-  await page.waitForURL(location);
-  return expect(page).toHaveURL(location);
+  // Protected pages should redirect away to the identity provider
+  // The exact URL depends on the IdP (Auth0, idem-idp, etc.), so we just
+  // verify the user is no longer on the requested page
+  await page.waitForURL((currentUrl) => !currentUrl.pathname.startsWith(url), { timeout: 15000 });
+  debug('Redirected away from %s to %s', url, page.url());
 };
 
 export const checkIfAccessToAdmin = async (page: Page) => {
