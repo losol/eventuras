@@ -40,6 +40,7 @@ if (existsSync(envPath)) {
 }
 
 const isCI = !!process.env.CI;
+const HEALTHCHECK = 'healthcheck';
 const SETUP_ADMIN = 'setup-admin';
 const SETUP_USER = 'setup-user';
 
@@ -49,12 +50,9 @@ const timeouts = {
   action: 1000 * 10,
 };
 
-const localWebServer = {
-  command: 'cd ../../apps/web && pnpm dev',
-  url: 'http://localhost:3000',
-  reuseExistingServer: true,
-  timeout: 120 * 1000,
-};
+if (!process.env.E2E_WEB_URL) {
+  throw new Error('E2E_WEB_URL must be set (e.g. http://localhost:3000)');
+}
 
 const chromeDesktop = devices['Desktop Chrome'];
 
@@ -79,11 +77,10 @@ export default defineConfig({
     launchOptions: isCI ? { args: ['--no-sandbox', '--disable-setuid-sandbox'] } : undefined,
   },
 
-  webServer: isCI ? undefined : localWebServer,
-
   projects: [
-    { name: SETUP_ADMIN, testMatch: /setup\/admin\.auth\.setup\.ts/ },
-    { name: SETUP_USER, testMatch: /setup\/user\.auth\.setup\.ts/ },
+    { name: HEALTHCHECK, testMatch: /setup\/healthcheck\.setup\.ts/ },
+    { name: SETUP_ADMIN, testMatch: /setup\/admin\.auth\.setup\.ts/, dependencies: [HEALTHCHECK] },
+    { name: SETUP_USER, testMatch: /setup\/user\.auth\.setup\.ts/, dependencies: [HEALTHCHECK] },
     {
       name: 'web:admin',
       testMatch: /web\/admin\/.+\.spec\.ts/,
