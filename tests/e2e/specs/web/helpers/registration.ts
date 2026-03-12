@@ -90,7 +90,8 @@ export const registerForEvent = async (
   await page.locator('[data-testid="registration-confirmation-button"]').click();
 
   // Wait for registration to complete by waiting for redirect to /user/events page
-  await page.waitForURL(`/user/events/${eventId}`, { timeout: 10000 });
+  // Use a wildcard to allow query params like ?login=success
+  await page.waitForURL(`**/user/events/${eventId}**`, { timeout: 10000 });
   debug('✅ Registration submitted');
 };
 

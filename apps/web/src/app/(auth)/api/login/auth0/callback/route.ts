@@ -100,10 +100,11 @@ export async function GET(request: Request): Promise<Response> {
         user: {
           name: idToken.name as string,
           email: idToken.email as string,
-          roles:
-            Array.from(
-              idToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] as string[]
-            ) ?? [],
+          roles: Array.from(
+            (idToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] as
+              | string[]
+              | undefined) ?? []
+          ),
         },
       },
       { sessionDurationDays: 7 }
