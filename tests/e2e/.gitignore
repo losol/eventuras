@@ -1,9 +1,12 @@
+# All generated test artifacts (auth state, test results, reports, etc.)
+/tmp/
+
+# Legacy output dirs (in case Playwright defaults are used)
 /test-results/
-!/test-results/.google-refresh-token.template
 /playwright-report/
 /blob-report/
 /playwright/.cache/
-/playwright-auth
-/specs/shared/createdEvent.json
+/playwright-auth/
+
+# Local-only test files
 /specs/**/local-tests.spec.ts
-/specs/web/helpers/createdEvent.json

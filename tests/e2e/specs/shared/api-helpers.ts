@@ -61,7 +61,7 @@ async function decryptSessionToken(
 /**
  * Extract access token from Playwright auth storage state.
  * Decrypts the JWE session token to extract the access token.
- * @param authFile - Path to the auth storage state file (e.g., 'playwright-auth/admin.json')
+ * @param authFile - Path to the auth storage state file (e.g., 'tmp/auth/admin.json')
  * @returns The access token or null if not found
  */
 export const getAccessTokenFromAuthFile = async (authFile: string): Promise<string | null> => {
@@ -172,22 +172,22 @@ export const publicApiRequest = async <T = unknown>(
  */
 export const adminApi = {
   get: <T = unknown>(endpoint: string) =>
-    apiRequest<T>(endpoint, 'playwright-auth/admin.json', { method: 'GET' }),
+    apiRequest<T>(endpoint, 'tmp/auth/admin.json', { method: 'GET' }),
 
   post: <T = unknown>(endpoint: string, body: unknown) =>
-    apiRequest<T>(endpoint, 'playwright-auth/admin.json', {
+    apiRequest<T>(endpoint, 'tmp/auth/admin.json', {
       method: 'POST',
       body: JSON.stringify(body),
     }),
 
   put: <T = unknown>(endpoint: string, body: unknown) =>
-    apiRequest<T>(endpoint, 'playwright-auth/admin.json', {
+    apiRequest<T>(endpoint, 'tmp/auth/admin.json', {
       method: 'PUT',
       body: JSON.stringify(body),
     }),
 
   delete: <T = unknown>(endpoint: string) =>
-    apiRequest<T>(endpoint, 'playwright-auth/admin.json', { method: 'DELETE' }),
+    apiRequest<T>(endpoint, 'tmp/auth/admin.json', { method: 'DELETE' }),
 };
 
 /**
@@ -195,20 +195,20 @@ export const adminApi = {
  */
 export const userApi = {
   get: <T = unknown>(endpoint: string) =>
-    apiRequest<T>(endpoint, 'playwright-auth/user.json', { method: 'GET' }),
+    apiRequest<T>(endpoint, 'tmp/auth/user.json', { method: 'GET' }),
 
   post: <T = unknown>(endpoint: string, body: unknown) =>
-    apiRequest<T>(endpoint, 'playwright-auth/user.json', {
+    apiRequest<T>(endpoint, 'tmp/auth/user.json', {
       method: 'POST',
       body: JSON.stringify(body),
     }),
 
   put: <T = unknown>(endpoint: string, body: unknown) =>
-    apiRequest<T>(endpoint, 'playwright-auth/user.json', {
+    apiRequest<T>(endpoint, 'tmp/auth/user.json', {
       method: 'PUT',
       body: JSON.stringify(body),
     }),
 
   delete: <T = unknown>(endpoint: string) =>
-    apiRequest<T>(endpoint, 'playwright-auth/user.json', { method: 'DELETE' }),
+    apiRequest<T>(endpoint, 'tmp/auth/user.json', { method: 'DELETE' }),
 };

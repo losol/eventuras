@@ -9,7 +9,7 @@ import { checkIfLoggedIn } from '../helpers/auth';
 import { readCreatedEvent } from '../helpers/event';
 import { registerForEvent, validateRegistration } from '../helpers/registration';
 test.describe.configure({ mode: 'serial' });
-test.use({ storageState: 'playwright-auth/user.json' });
+test.use({ storageState: 'tmp/auth/user.json' });
 
 test.describe('register for event', () => {
   const createdEvent = readCreatedEvent();

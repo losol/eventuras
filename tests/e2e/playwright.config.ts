@@ -58,13 +58,14 @@ const chromeDesktop = devices['Desktop Chrome'];
 
 export default defineConfig({
   testDir: './specs',
+  outputDir: './tmp/results',
   timeout: timeouts.test,
   globalTimeout: timeouts.global,
   fullyParallel: false,
   forbidOnly: isCI,
   retries: 0,
   workers: 1,
-  reporter: [['html'], ['./error-context-reporter.ts']],
+  reporter: [['html', { outputFolder: './tmp/report' }], ['./error-context-reporter.ts']],
 
   use: {
     baseURL: process.env.E2E_WEB_URL,

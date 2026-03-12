@@ -28,8 +28,8 @@ SESSION_SECRET=your-hex-encoded-secret-key
 
 Playwright auth setup must have run successfully, creating:
 
-- `playwright-auth/admin.json` - Admin user session
-- `playwright-auth/user.json` - Regular user session
+- `tmp/auth/admin.json` - Admin user session
+- `tmp/auth/user.json` - Regular user session
 
 These files are created automatically by the auth setup projects defined in `playwright.config.ts`.
 
@@ -123,11 +123,11 @@ decryptSessionToken(jweToken)
   → { tokens: { accessToken, refreshToken }, user: { ... } }
 
 // Extract token from auth storage
-getAccessTokenFromAuthFile('playwright-auth/admin.json')
+getAccessTokenFromAuthFile('tmp/auth/admin.json')
   → 'eyJhbGci...' (JWT access token)
 
 // Make authenticated request
-apiRequest('/v3/events', 'playwright-auth/admin.json')
+apiRequest('/v3/events', 'tmp/auth/admin.json')
   → Adds 'Authorization: Bearer {token}' header
   → Returns parsed JSON response
 ```

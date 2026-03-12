@@ -6,7 +6,7 @@ import { checkIfLoggedIn } from '../helpers/auth';
 import { readCreatedEvent } from '../helpers/event';
 import { editRegistrationOrders } from '../helpers/registration';
 test.describe.configure({ mode: 'serial' });
-test.use({ storageState: 'playwright-auth/user.json' });
+test.use({ storageState: 'tmp/auth/user.json' });
 
 //TODO skip this one, as editing a registration is not currently possible
 

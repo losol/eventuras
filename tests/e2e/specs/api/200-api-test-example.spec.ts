@@ -9,7 +9,7 @@
  * Prerequisites:
  * - E2E_SESSION_SECRET environment variable must be set
  * - E2E_API_URL must point to the backend API
- * - Auth storage files must exist (playwright-auth/admin.json, playwright-auth/user.json)
+ * - Auth storage files must exist (tmp/auth/admin.json, tmp/auth/user.json)
  */
 
 import { test, expect } from '@playwright/test';
