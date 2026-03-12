@@ -1,5 +1,7 @@
 import { Debug } from '@eventuras/logger';
 import { chromium, expect, test as setup } from '@playwright/test';
+import { mkdirSync } from 'node:fs';
+import { dirname } from 'node:path';
 
 import { cleanupOtpEmails, fetchLoginCode } from '../../shared/utils';
 
@@ -30,15 +32,20 @@ export const authenticate = async (userName: string, authFile: string) => {
     debug('authenticate: attempting to fetch login code');
     const loginCode = await fetchLoginCode(userName);
     await page.locator('[id="code"]').fill(loginCode!);
-    await page.getByRole('button', { name: 'Continue', exact: true }).click();
-    debug('authenticate: filled and clicked continue, waiting for root url');
-
-    await page.waitForURL('/');
+    // Click Continue and wait for the full Auth0 redirect chain to complete.
+    // The callback route appends ?login=success, so wait for that.
+    // Use Promise.all to avoid the click timing out on the cross-domain redirect.
+    await Promise.all([
+      page.waitForURL('**?login=success**', { timeout: 30000 }),
+      page.getByRole('button', { name: 'Continue', exact: true }).click(),
+    ]);
+    debug('authenticate: login redirect completed');
 
     await page.goto('/user');
     await page.waitForLoadState('load');
 
     await expect(page.getByText(userName).first()).toBeVisible();
+    mkdirSync(dirname(authFile), { recursive: true });
     await context.storageState({ path: authFile });
     debug('Auth Complete');
   });

@@ -10,7 +10,7 @@ test.describe.configure({ mode: 'serial' });
 const eventName = `This is a playwright event - ${Math.floor(Date.now() / 1000 / 10)}`;
 let eventId: string;
 
-test.use({ storageState: 'playwright-auth/admin.json' });
+test.use({ storageState: 'tmp/auth/admin.json' });
 test.describe('create event and add products to it', () => {
   test('admin check', async ({ page }) => {
     await checkIfAccessToAdmin(page);

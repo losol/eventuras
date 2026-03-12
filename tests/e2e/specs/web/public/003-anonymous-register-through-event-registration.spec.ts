@@ -30,11 +30,11 @@ test.describe('should be able to register as an anonymous user when hitting the 
   const createdEvent = readCreatedEvent();
   test('registration button should redirect anonymous users to login', async ({ page }) => {
     await visitAndClickEventRegistrationButton(page, createdEvent.eventId);
-    // Should be redirected away from the event page to the identity provider
-    const eventUrl = `/user/events/${createdEvent.eventId}`;
-    await page.waitForURL((url) => !url.pathname.startsWith(eventUrl), { timeout: 15000 });
+    // Should be redirected away from the public event page to the identity provider
+    const publicEventUrl = `/events/${createdEvent.eventId}`;
+    await page.waitForURL((url) => !url.pathname.startsWith(publicEventUrl), { timeout: 15000 });
     // Verify we were redirected away (the exact URL depends on the IdP)
-    expect(page.url()).not.toContain(eventUrl);
+    expect(page.url()).not.toContain(publicEventUrl);
   });
 
   test('should be able to register user through the even registration page', async ({ page }) => {

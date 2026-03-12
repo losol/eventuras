@@ -9,6 +9,5 @@ if (!baseEmail) {
 
 const [localPart, domain] = baseEmail.split('@');
 const userName = `${localPart}+admin@${domain}`;
-const authFile = 'playwright-auth/admin.json';
 
-authenticate(userName, authFile);
+authenticate(userName, 'tmp/auth/admin.json');

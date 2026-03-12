@@ -105,11 +105,11 @@ Consider the execution order:
 
 ### Event Data Persistence
 
-Every time an event is created, `createdEvent.json` is updated with the event ID. This allows subsequent tests (user/anonymous) to work with a fresh event.
+Every time an event is created, `tmp/state/createdEvent.json` is updated with the event ID. This allows subsequent tests (user/anonymous) to work with a fresh event.
 
 ## Authentication
 
-Playwright stores browser state in the `playwright-auth/` folder with two states:
+Playwright stores browser state in the `tmp/auth/` folder with two states:
 
 - `admin.json` - Admin user session
 - `user.json` - Regular user session

@@ -2,14 +2,12 @@ import { EventDto } from '@eventuras/event-sdk';
 import { Debug } from '@eventuras/logger';
 import { expect } from '@playwright/test';
 import type { Page } from '@playwright/test';
-import fs from 'fs';
-import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
+import fs, { mkdirSync } from 'fs';
+import { join } from 'node:path';
 
 const debug = Debug.create('e2e:event');
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const CREATED_EVENT_PATH = join(__dirname, 'createdEvent.json');
+const STATE_DIR = 'tmp/state';
+const CREATED_EVENT_PATH = join(STATE_DIR, 'createdEvent.json');
 
 // Get backend API URL from environment (required)
 const BACKEND_API_URL = process.env.E2E_API_URL;
@@ -38,16 +36,18 @@ type CreatedEvent = {
 };
 
 export const readCreatedEvent = (): CreatedEvent => {
-  let createdEvent: CreatedEvent = { eventId: '-1' };
   try {
-    createdEvent = JSON.parse(fs.readFileSync(CREATED_EVENT_PATH, 'utf8'));
-  } catch (e: any) {
-    debug('readCreatedEvent: cant read createdEvent.json');
+    return JSON.parse(fs.readFileSync(CREATED_EVENT_PATH, 'utf8'));
+  } catch {
+    throw new Error(
+      `Cannot read ${CREATED_EVENT_PATH}. ` +
+        'Run the admin event creation test first (001-admin-event-create-registration).'
+    );
   }
-  return createdEvent;
 };
 
 export const writeCreatedEvent = (eventId: string) => {
+  mkdirSync(STATE_DIR, { recursive: true });
   const eventToStore = JSON.stringify({ eventId });
   fs.writeFileSync(CREATED_EVENT_PATH, eventToStore);
 };
@@ -83,5 +83,5 @@ export const addProductToEvent = async (page: Page, eventId: string) => {
   // Wait for the product to appear in the table
   debug('Waiting for product to appear in table...');
   await expect(page.locator('[data-testid="edit-product-button"]')).toBeVisible({ timeout: 10000 });
-  debug('✅ Product added successfully');
+  debug('Product added successfully');
 };

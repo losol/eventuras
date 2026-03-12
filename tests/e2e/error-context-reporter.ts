@@ -67,10 +67,11 @@ function sanitizeEnvVars(): Record<string, string> {
 }
 
 class ErrorContextReporter implements Reporter {
-  private outputDir = 'test-results';
+  private outputDir = 'tmp/results';
 
-  onBegin(_config: FullConfig, _suite: Suite): void {
-    // Ensure output directory exists
+  onBegin(config: FullConfig, _suite: Suite): void {
+    // Use Playwright's configured outputDir to stay in sync with playwright.config.ts
+    this.outputDir = config.projects[0]?.outputDir ?? this.outputDir;
     mkdirSync(this.outputDir, { recursive: true });
   }
 

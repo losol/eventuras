@@ -24,7 +24,7 @@ test.describe.configure({ mode: 'serial' });
 const eventName = `Markdown Test Event - ${Math.floor(Date.now() / 1000 / 10)}`;
 let eventId: string;
 
-test.use({ storageState: 'playwright-auth/admin.json' });
+test.use({ storageState: 'tmp/auth/admin.json' });
 
 test.describe('markdown rendering on public event page', () => {
   test('create event with rich markdown content via API', async () => {
