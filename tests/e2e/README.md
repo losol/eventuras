@@ -59,18 +59,18 @@ debug('Event: %j', eventObject);
 
 ```bash
 # Enable all e2e debug output
-DEBUG=e2e* pnpm test:playwright
+DEBUG=e2e* pnpm test
 
 # Enable specific namespaces
-DEBUG=e2e pnpm test:playwright        # Main test functions
-DEBUG=e2e:utils pnpm test:playwright   # Utility functions
-DEBUG=e2e:test pnpm test:playwright    # Test specs
+DEBUG=e2e pnpm test        # Main test functions
+DEBUG=e2e:utils pnpm test   # Utility functions
+DEBUG=e2e:test pnpm test    # Test specs
 
 # Multiple namespaces
-DEBUG=e2e,e2e:utils pnpm test:playwright
+DEBUG=e2e,e2e:utils pnpm test
 
 # Disable all (default)
-pnpm test:playwright
+pnpm test
 ```
 
 ## Creating New Tests
@@ -121,7 +121,7 @@ This avoids re-authentication between test runs.
 If the auth JSON files are still valid, skip login setup:
 
 ```bash
-pnpm test:playwright:skiplogin
+pnpm test:skiplogin
 ```
 
 ## OTP Fetching

@@ -1,6 +1,6 @@
 {
   "name": "@eventuras/e2e",
-  "version": "0.1.6",
+  "version": "0.2.0",
   "private": "true",
   "description": "End to end tests for the Eventuras platform",
   "keywords": [
@@ -14,10 +14,10 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix && prettier . --write",
     "oauth:setup": "tsx scripts/oauth-server.ts",
-    "test:playwright": "playwright test --workers=1",
-    "test:playwright:debug": "cross-env DEBUG=e2e:* playwright test --workers=1",
-    "test:playwright:ui": "playwright test --ui",
-    "test:playwright:ui:debug": "cross-env DEBUG=e2e:* playwright test --ui"
+    "test": "playwright test --workers=1",
+    "test:debug": "cross-env DEBUG=e2e:* playwright test --workers=1",
+    "test:ui": "playwright test --ui",
+    "test:ui:debug": "cross-env DEBUG=e2e:* playwright test --ui"
   },
   "dependencies": {
     "@eventuras/event-sdk": "workspace:*",
@@ -25,6 +25,7 @@
     "@eventuras/google-api": "workspace:*",
     "@eventuras/logger": "workspace:*",
     "@playwright/test": "1.58.1",
+    "allure-playwright": "^3.6.0",
     "jose": "6.1.3",
     "tsx": "^4.21.0"
   },

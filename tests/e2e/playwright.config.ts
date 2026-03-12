@@ -65,7 +65,11 @@ export default defineConfig({
   forbidOnly: isCI,
   retries: 0,
   workers: 1,
-  reporter: [['html', { outputFolder: './tmp/report' }], ['./error-context-reporter.ts']],
+  reporter: [
+    ['html', { outputFolder: './tmp/report' }],
+    ['./error-context-reporter.ts'],
+    ['allure-playwright', { outputFolder: './tmp/allure-results' }],
+  ],
 
   use: {
     baseURL: process.env.E2E_WEB_URL,
