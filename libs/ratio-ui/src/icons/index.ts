@@ -15,6 +15,9 @@ export {
   Pencil,
   CircleX,
 
+  // Search
+  Search,
+
   // Navigation
   ChevronDown,
   ChevronUp,
