@@ -37,7 +37,8 @@
     "dirname": "oxo",
     "plugins": [
       "@oclif/plugin-help",
-      "@oclif/plugin-plugins"
+      "@oclif/plugin-plugins",
+      "@eventuras/docs-framework"
     ],
     "topicSeparator": " ",
     "topics": {
@@ -47,6 +48,7 @@
     }
   },
   "dependencies": {
+    "@eventuras/docs-framework": "workspace:*",
     "@eventuras/shipper": "workspace:*",
     "@oclif/core": "^4",
     "@oclif/plugin-help": "^6",

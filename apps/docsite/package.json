@@ -7,16 +7,15 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "prebuild": "pnpm run sync:docs",
+    "prebuild": "oxo docs collect",
     "build": "next build",
     "postbuild": "pagefind --site .next/server/app --output-path public/_pagefind",
-    "predev": "pnpm run sync:docs",
+    "predev": "oxo docs collect",
     "dev": "next -p 3210",
-    "start": "next start",
-    "sync:docs": "tsx scripts/sync-docs.ts"
+    "start": "next start"
   },
   "dependencies": {
-    "@eventuras/docs": "workspace:*",
+    "@eventuras/docs-framework": "workspace:*",
     "@eventuras/typescript-config": "workspace:*",
     "next": "16.1.6",
     "nextra": "^4.6.1",
@@ -27,6 +26,7 @@
   },
   "devDependencies": {
     "@eventuras/eslint-config": "workspace:*",
+    "@eventuras/oxo-cli": "workspace:*",
     "@types/node": "^24.0.3",
     "@types/react": "^19",
     "@types/react-dom": "^19",
