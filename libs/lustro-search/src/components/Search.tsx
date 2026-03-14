@@ -2,6 +2,9 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
+import { Kbd } from '@eventuras/ratio-ui/core/Kbd';
+import { Search as SearchIcon } from '@eventuras/ratio-ui/icons';
+
 import type { SearchProvider, SearchResult } from '../types.js';
 
 interface SearchProps {
@@ -115,94 +118,94 @@ export function Search({ provider, placeholder = 'Search...', onNavigate }: Sear
     }
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-start justify-center pt-[20vh] bg-black/50"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) setIsOpen(false);
-      }}
-      onKeyDown={(e) => {
-        if (e.key === 'Escape') setIsOpen(false);
-      }}
-      role="presentation"
-    >
-      <div
-        ref={dialogRef}
+    <>
+      {/* Trigger button */}
+      <button
+        type="button"
+        onClick={() => setIsOpen(true)}
+        className="flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-1.5 text-sm text-gray-500 transition-colors hover:border-gray-300 hover:text-gray-700 dark:border-gray-700 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:text-gray-300"
         aria-label="Search"
-        aria-modal="true"
-        className="w-full max-w-lg rounded-xl bg-white shadow-2xl dark:bg-slate-800"
-        role="dialog"
       >
-        {/* Search input */}
-        <div className="flex items-center border-b border-gray-200 px-4 dark:border-slate-700">
-          <svg
-            aria-hidden="true"
-            className="mr-3 h-5 w-5 text-gray-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+        <SearchIcon aria-hidden="true" className="h-4 w-4" />
+        <span className="hidden sm:inline">{placeholder}</span>
+        <Kbd className="hidden sm:inline-flex">⌘K</Kbd>
+      </button>
+
+      {/* Search dialog */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-start justify-center pt-[20vh] bg-black/50"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setIsOpen(false);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') setIsOpen(false);
+          }}
+          role="presentation"
+        >
+          <div
+            ref={dialogRef}
+            aria-label="Search"
+            aria-modal="true"
+            className="w-full max-w-lg rounded-xl bg-white shadow-2xl dark:bg-gray-800"
+            role="dialog"
           >
-            <path
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-            />
-          </svg>
-          <input
-            ref={inputRef}
-            aria-autocomplete="list"
-            aria-controls="lustro-search-results"
-            aria-expanded={results.length > 0}
-            className="w-full bg-transparent py-4 text-base text-gray-900 outline-none placeholder:text-gray-400 dark:text-white dark:placeholder:text-slate-500"
-            onChange={(e) => handleChange(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder={placeholder}
-            role="combobox"
-            type="search"
-            value={query}
-          />
-          <kbd className="ml-2 rounded border border-gray-300 px-1.5 py-0.5 text-xs text-gray-400 dark:border-slate-600">
-            esc
-          </kbd>
-        </div>
+            {/* Search input */}
+            <div className="flex items-center border-b border-gray-200 px-4 dark:border-gray-700">
+              <SearchIcon aria-hidden="true" className="mr-3 h-5 w-5 text-gray-400" />
+              <input
+                ref={inputRef}
+                aria-autocomplete="list"
+                aria-controls="lustro-search-results"
+                aria-expanded={results.length > 0}
+                className="w-full bg-transparent py-4 text-base text-gray-900 outline-none placeholder:text-gray-400 dark:text-white dark:placeholder:text-gray-500"
+                onChange={(e) => handleChange(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder={placeholder}
+                role="combobox"
+                type="search"
+                value={query}
+              />
+              <Kbd className="ml-2">esc</Kbd>
+            </div>
 
-        {/* Results */}
-        {results.length > 0 && (
-          <ul className="max-h-80 overflow-y-auto p-2" id="lustro-search-results" role="listbox">
-            {results.map((result, i) => (
-              <li
-                key={result.url}
-                aria-selected={i === activeIndex}
-                className={`cursor-pointer rounded-lg px-4 py-3 ${
-                  i === activeIndex
-                    ? 'bg-blue-50 dark:bg-slate-700'
-                    : 'hover:bg-gray-50 dark:hover:bg-slate-700/50'
-                }`}
-                onClick={() => navigate(result.url)}
-                role="option"
-              >
-                <div className="text-sm font-medium text-gray-900 dark:text-white">
-                  {result.title}
-                </div>
-                <div
-                  className="mt-1 line-clamp-2 text-xs text-gray-500 dark:text-slate-400"
-                  dangerouslySetInnerHTML={{ __html: result.excerptHtml }}
-                />
-              </li>
-            ))}
-          </ul>
-        )}
+            {/* Results */}
+            {results.length > 0 && (
+              <ul className="max-h-80 overflow-y-auto p-2" id="lustro-search-results" role="listbox">
+                {results.map((result, i) => (
+                  <li
+                    key={result.url}
+                    aria-selected={i === activeIndex}
+                    className={`cursor-pointer rounded-lg px-4 py-3 ${
+                      i === activeIndex
+                        ? 'bg-primary-50 dark:bg-primary-900/30'
+                        : 'hover:bg-gray-50 dark:hover:bg-gray-700/50'
+                    }`}
+                    onClick={() => navigate(result.url)}
+                    role="option"
+                  >
+                    <div className="text-sm font-medium text-gray-900 dark:text-white">
+                      {result.title}
+                    </div>
+                    <div
+                      className="mt-1 line-clamp-2 text-xs text-gray-500 dark:text-gray-400"
+                      dangerouslySetInnerHTML={{ __html: result.excerptHtml }}
+                    />
+                  </li>
+                ))}
+              </ul>
+            )}
 
-        {/* Empty state */}
-        {query && results.length === 0 && (
-          <div className="px-4 py-8 text-center text-sm text-gray-500 dark:text-slate-400">
-            No results for &ldquo;{query}&rdquo;
+            {/* Empty state */}
+            {query && results.length === 0 && (
+              <div className="px-4 py-8 text-center text-sm text-gray-500 dark:text-gray-400">
+                No results for &ldquo;{query}&rdquo;
+              </div>
+            )}
           </div>
-        )}
-      </div>
-    </div>
+        </div>
+      )}
+    </>
   );
 }
