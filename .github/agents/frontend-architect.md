@@ -101,7 +101,7 @@ Always link between documentation types:
 - Keep library APIs stable and well-documented
 
 **Decision Framework - When to Extract to libs/:**
-- ✅ Code used in multiple apps (web, historia, docsite, etc.)
+- ✅ Code used in multiple apps (web, historia, dev-docs, etc.)
 - ✅ Generic utilities or components with no app-specific logic
 - ✅ Features that could benefit other future applications
 - ✅ Well-tested, stable code with clear boundaries

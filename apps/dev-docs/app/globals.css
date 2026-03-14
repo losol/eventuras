@@ -1,0 +1,140 @@
+@import '@eventuras/ratio-ui/ratio-ui.css';
+
+/* Prose styles for markdown content */
+.prose {
+  max-width: 65ch;
+  line-height: 1.75;
+}
+
+.prose h2 {
+  margin-top: 2em;
+  margin-bottom: 0.75em;
+  font-size: 1.5em;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.prose h3 {
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  font-size: 1.25em;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.prose p {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+.prose a {
+  color: var(--color-primary-600);
+  text-decoration: underline;
+}
+
+.prose code {
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+  background-color: var(--color-neutral-100);
+}
+
+:root[data-theme="dark"] .prose code {
+  background-color: var(--color-neutral-800);
+}
+
+.prose pre {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+  padding: 1em;
+  overflow-x: auto;
+  border-radius: 0.5rem;
+  font-size: 0.875em;
+  background-color: var(--color-neutral-100);
+}
+
+:root[data-theme="dark"] .prose pre {
+  background-color: var(--color-neutral-800);
+}
+
+.prose pre code {
+  padding: 0;
+  background-color: transparent;
+}
+
+.prose ul {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  padding-left: 1.5em;
+  list-style-type: disc;
+}
+
+.prose ol {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  padding-left: 1.5em;
+  list-style-type: decimal;
+}
+
+.prose li {
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+}
+
+.prose blockquote {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  padding-left: 1em;
+  border-left: 3px solid var(--color-neutral-300);
+  font-style: italic;
+}
+
+:root[data-theme="dark"] .prose blockquote {
+  border-left-color: var(--color-neutral-600);
+}
+
+.prose table {
+  width: 100%;
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+  border-collapse: collapse;
+}
+
+.prose th,
+.prose td {
+  padding: 0.5em 0.75em;
+  border: 1px solid var(--color-neutral-300);
+  text-align: left;
+}
+
+:root[data-theme="dark"] .prose th,
+:root[data-theme="dark"] .prose td {
+  border-color: var(--color-neutral-600);
+}
+
+.prose th {
+  font-weight: 600;
+  background-color: var(--color-neutral-50);
+}
+
+:root[data-theme="dark"] .prose th {
+  background-color: var(--color-neutral-800);
+}
+
+.prose img {
+  max-width: 100%;
+  height: auto;
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+  border-radius: 0.5rem;
+}
+
+.prose hr {
+  margin-top: 2em;
+  margin-bottom: 2em;
+  border-color: var(--color-neutral-200);
+}
+
+:root[data-theme="dark"] .prose hr {
+  border-color: var(--color-neutral-700);
+}

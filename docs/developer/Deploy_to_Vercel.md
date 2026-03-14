@@ -23,8 +23,6 @@ In the page Settings > General, you could find the setting `Root Directory`, set
 
 ![Vercel root directory setting](./vercel_root_directory.png)
 
-## Docsite project
+## Dev-docs project
 
-The docsite requires pre:build to run for the docs to be copied, so make sure to override the build command in the Vercel settings to `npm run build`.
-
-![Vercel custom build command](./vercel_custom_build.png)
+The dev-docs site requires pre:build to run for the docs to be copied, so make sure to override the build command in the deployment settings to `npm run build`.

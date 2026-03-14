@@ -24,7 +24,7 @@
   - Internationalization with next-intl
 - **`apps/historia`** — Upcoming knowledge focuses cms. 
 - **`apps/convertoapi`** — PDF generator - converts html to pdf
-- **`apps/docsite`** — Documentation website
+- **`apps/dev-docs`** — Developer documentation website
 
 ### 📚 **Libs: Reusable Libraries**
 

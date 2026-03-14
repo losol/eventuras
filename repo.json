@@ -17,9 +17,10 @@
       "path": "apps/docs-framework",
       "package": "@eventuras/docs-framework"
     },
-    "docsite": {
-      "path": "apps/docsite",
-      "package": "@eventuras/docsite"
+    "dev-docs": {
+      "path": "apps/dev-docs",
+      "package": "@eventuras/dev-docs",
+      "aliases": ["docsite"]
     },
     "historia": {
       "path": "apps/historia",

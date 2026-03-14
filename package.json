@@ -5,7 +5,7 @@
   "license": "GPL-2.0+",
   "workspaces": [
     "apps/api",
-    "apps/docsite",
+    "apps/dev-docs",
     "apps/historia",
     "apps/idem-idp",
     "apps/web",

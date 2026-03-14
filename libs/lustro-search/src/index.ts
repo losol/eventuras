@@ -10,4 +10,6 @@
 export type { SearchProvider, SearchResult } from './types.js';
 export { OramaProvider } from './orama-provider.js';
 export { DOCS_SCHEMA } from './schema.js';
-export { buildSearchIndex } from './build-index.js';
+
+// buildSearchIndex is available via the separate './build-index' entry point
+// to avoid pulling node:fs into browser bundles.
