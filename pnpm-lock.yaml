@@ -144,9 +144,9 @@ importers:
 
   apps/docsite:
     dependencies:
-      '@eventuras/docs':
+      '@eventuras/docs-framework':
         specifier: workspace:*
-        version: link:../../docs
+        version: link:../../libs/docs-framework
       '@eventuras/typescript-config':
         specifier: workspace:*
         version: link:../../libs/typescript-config
@@ -172,6 +172,9 @@ importers:
       '@eventuras/eslint-config':
         specifier: workspace:*
         version: link:../../libs/eslint-config
+      '@eventuras/oxo-cli':
+        specifier: workspace:*
+        version: link:../oxo-cli
       '@types/node':
         specifier: ^24.0.3
         version: 24.9.1
@@ -624,6 +627,9 @@ importers:
 
   apps/oxo-cli:
     dependencies:
+      '@eventuras/docs-framework':
+        specifier: workspace:*
+        version: link:../../libs/docs-framework
       '@eventuras/shipper':
         specifier: workspace:*
         version: link:../../libs/shipper
@@ -965,6 +971,22 @@ importers:
       vite:
         specifier: ^7.3.1
         version: 7.3.1(@types/node@24.10.7)(jiti@2.6.1)(lightningcss@1.31.1)(sass@1.77.4)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1)
+
+  libs/docs-framework:
+    dependencies:
+      '@oclif/core':
+        specifier: ^4
+        version: 4.7.2
+      fast-glob:
+        specifier: ^3.3.3
+        version: 3.3.3
+    devDependencies:
+      '@eventuras/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
 
   libs/eslint-config:
     devDependencies:

@@ -1,0 +1,31 @@
+{
+  "name": "@eventuras/docs-framework",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.js",
+    "./collect": "./dist/collect.js",
+    "./config": "./dist/config.js"
+  },
+  "scripts": {
+    "build": "tsc -b"
+  },
+  "oclif": {
+    "commands": "./dist/commands",
+    "topics": {
+      "docs": {
+        "description": "Documentation tools"
+      }
+    }
+  },
+  "dependencies": {
+    "@oclif/core": "^4",
+    "fast-glob": "^3.3.3"
+  },
+  "devDependencies": {
+    "@eventuras/typescript-config": "workspace:*",
+    "typescript": "^5.9.3"
+  }
+}
