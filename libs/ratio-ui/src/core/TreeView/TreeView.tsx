@@ -1,0 +1,178 @@
+'use client';
+
+import React, { useState, useCallback } from 'react';
+
+export interface TreeViewNode {
+  title: string;
+  href?: string;
+  children?: TreeViewNode[];
+}
+
+export interface TreeViewProps {
+  /** Hierarchical tree of navigation nodes */
+  tree: TreeViewNode[];
+  /** Currently active path — used to highlight the active item and auto-expand ancestors */
+  currentPath?: string;
+  /** Routing link component (e.g. Next.js Link, React Router Link) */
+  LinkComponent?: React.ComponentType<{
+    href: string;
+    children: React.ReactNode;
+    className?: string;
+  }>;
+  /** Accessible label for the nav element */
+  'aria-label'?: string;
+  className?: string;
+}
+
+/**
+ * Hierarchical tree navigation with collapsible sections and active-path highlighting.
+ *
+ * Pass a `LinkComponent` for SPA routers (e.g. Next.js `Link`).
+ * When no `currentPath` is provided, no item is highlighted.
+ */
+export function TreeView({
+  tree,
+  currentPath,
+  LinkComponent,
+  'aria-label': ariaLabel = 'Navigation',
+  className = '',
+}: TreeViewProps) {
+  return (
+    <nav aria-label={ariaLabel} className={`text-sm ${className}`}>
+      <ul className="space-y-1">
+        {tree.map((node) => (
+          <TreeViewItem
+            key={node.href ?? node.title}
+            node={node}
+            currentPath={currentPath}
+            LinkComponent={LinkComponent}
+            depth={0}
+          />
+        ))}
+      </ul>
+    </nav>
+  );
+}
+
+interface TreeViewItemProps {
+  node: TreeViewNode;
+  currentPath?: string;
+  LinkComponent?: TreeViewProps['LinkComponent'];
+  depth: number;
+}
+
+function isActive(href: string | undefined, currentPath: string | undefined): boolean {
+  if (!href || !currentPath) return false;
+  const a = href.replace(/\/$/, '') || '/';
+  const b = currentPath.replace(/\/$/, '') || '/';
+  return a === b;
+}
+
+function hasActiveChild(node: TreeViewNode, currentPath: string | undefined): boolean {
+  if (!currentPath) return false;
+  if (isActive(node.href, currentPath)) return true;
+  return node.children?.some((child) => hasActiveChild(child, currentPath)) ?? false;
+}
+
+function TreeViewItem({ node, currentPath, LinkComponent, depth }: TreeViewItemProps) {
+  const hasChildren = node.children && node.children.length > 0;
+  const active = isActive(node.href, currentPath);
+  const containsActive = hasActiveChild(node, currentPath);
+
+  const [isOpen, setIsOpen] = useState(containsActive || active);
+
+  const toggle = useCallback(() => setIsOpen((prev) => !prev), []);
+
+  const LinkTag = LinkComponent ?? ('a' as React.ElementType);
+  const paddingLeft = `${0.75 + depth * 0.75}rem`;
+
+  if (hasChildren) {
+    return (
+      <li>
+        <button
+          type="button"
+          onClick={toggle}
+          aria-expanded={isOpen}
+          className={`flex w-full items-center justify-between rounded-md px-3 py-1.5 text-left transition-colors
+            ${containsActive ? 'font-medium text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400'}
+            hover:bg-gray-100 dark:hover:bg-white/10`}
+          style={{ paddingLeft }}
+        >
+          <span>{node.title}</span>
+          <svg
+            aria-hidden="true"
+            className={`h-4 w-4 shrink-0 transition-transform ${isOpen ? 'rotate-90' : ''}`}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path d="M9 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} />
+          </svg>
+        </button>
+        {isOpen && (
+          <ul className="mt-1 space-y-1">
+            {node.href && (
+              <TreeViewLink
+                href={node.href}
+                title="Overview"
+                active={active}
+                LinkTag={LinkTag}
+                paddingLeft={`${0.75 + (depth + 1) * 0.75}rem`}
+              />
+            )}
+            {node.children!.map((child) => (
+              <TreeViewItem
+                key={child.href ?? child.title}
+                node={child}
+                currentPath={currentPath}
+                LinkComponent={LinkComponent}
+                depth={depth + 1}
+              />
+            ))}
+          </ul>
+        )}
+      </li>
+    );
+  }
+
+  return (
+    <TreeViewLink
+      href={node.href ?? '#'}
+      title={node.title}
+      active={active}
+      LinkTag={LinkTag}
+      paddingLeft={paddingLeft}
+    />
+  );
+}
+
+function TreeViewLink({
+  href,
+  title,
+  active,
+  LinkTag,
+  paddingLeft,
+}: {
+  href: string;
+  title: string;
+  active: boolean;
+  LinkTag: React.ElementType;
+  paddingLeft: string;
+}) {
+  return (
+    <li>
+      <LinkTag
+        href={href}
+        className={`block rounded-md px-3 py-1.5 transition-colors
+          ${active
+            ? 'bg-primary-50 font-medium text-primary-700 dark:bg-primary-900/30 dark:text-primary-400'
+            : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-white/10 dark:hover:text-white'
+          }`}
+        style={{ paddingLeft }}
+        aria-current={active ? 'page' : undefined}
+      >
+        {title}
+      </LinkTag>
+    </li>
+  );
+}
