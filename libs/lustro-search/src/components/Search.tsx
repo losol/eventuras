@@ -9,6 +9,8 @@ interface SearchProps {
   provider: SearchProvider;
   /** Placeholder text for the input */
   placeholder?: string;
+  /** Custom navigation handler for SPA routers (e.g. Next.js router.push) */
+  onNavigate?: (url: string) => void;
 }
 
 /**
@@ -17,13 +19,28 @@ interface SearchProps {
  * Uses a SearchProvider for the actual search so the underlying
  * engine can be swapped without changing consuming code.
  */
-export function Search({ provider, placeholder = 'Search...' }: SearchProps) {
+export function Search({ provider, placeholder = 'Search...', onNavigate }: SearchProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(null);
+  const searchIdRef = useRef(0);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
+
+  const navigate = useCallback(
+    (url: string) => {
+      if (onNavigate) {
+        onNavigate(url);
+      } else {
+        window.location.href = url;
+      }
+      setIsOpen(false);
+    },
+    [onNavigate],
+  );
 
   // Cmd+K / Ctrl+K to open
   useEffect(() => {
@@ -38,18 +55,20 @@ export function Search({ provider, placeholder = 'Search...' }: SearchProps) {
     return () => document.removeEventListener('keydown', handler);
   }, []);
 
-  // Focus input when dialog opens
+  // Focus management: trap focus in dialog, restore on close
   useEffect(() => {
     if (isOpen) {
+      previousFocusRef.current = document.activeElement as HTMLElement;
       requestAnimationFrame(() => inputRef.current?.focus());
     } else {
       setQuery('');
       setResults([]);
       setActiveIndex(0);
+      previousFocusRef.current?.focus();
     }
   }, [isOpen]);
 
-  // Debounced search
+  // Debounced search with stale-response protection
   const handleChange = useCallback(
     (value: string) => {
       setQuery(value);
@@ -62,9 +81,14 @@ export function Search({ provider, placeholder = 'Search...' }: SearchProps) {
         return;
       }
 
+      const requestId = ++searchIdRef.current;
+
       debounceRef.current = setTimeout(async () => {
         const hits = await provider.search(value);
-        setResults(hits);
+        // Ignore stale responses from earlier queries
+        if (requestId === searchIdRef.current) {
+          setResults(hits);
+        }
       }, 200);
     },
     [provider],
@@ -72,6 +96,11 @@ export function Search({ provider, placeholder = 'Search...' }: SearchProps) {
 
   // Keyboard navigation
   const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (results.length === 0) {
+      if (e.key === 'Escape') setIsOpen(false);
+      return;
+    }
+
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       setActiveIndex((i) => Math.min(i + 1, results.length - 1));
@@ -80,8 +109,7 @@ export function Search({ provider, placeholder = 'Search...' }: SearchProps) {
       setActiveIndex((i) => Math.max(i - 1, 0));
     } else if (e.key === 'Enter' && results[activeIndex]) {
       e.preventDefault();
-      window.location.href = results[activeIndex].url;
-      setIsOpen(false);
+      navigate(results[activeIndex].url);
     } else if (e.key === 'Escape') {
       setIsOpen(false);
     }
@@ -100,10 +128,17 @@ export function Search({ provider, placeholder = 'Search...' }: SearchProps) {
       }}
       role="presentation"
     >
-      <div className="w-full max-w-lg rounded-xl bg-white shadow-2xl dark:bg-slate-800">
+      <div
+        ref={dialogRef}
+        aria-label="Search"
+        aria-modal="true"
+        className="w-full max-w-lg rounded-xl bg-white shadow-2xl dark:bg-slate-800"
+        role="dialog"
+      >
         {/* Search input */}
         <div className="flex items-center border-b border-gray-200 px-4 dark:border-slate-700">
           <svg
+            aria-hidden="true"
             className="mr-3 h-5 w-5 text-gray-400"
             fill="none"
             stroke="currentColor"
@@ -118,10 +153,14 @@ export function Search({ provider, placeholder = 'Search...' }: SearchProps) {
           </svg>
           <input
             ref={inputRef}
+            aria-autocomplete="list"
+            aria-controls="lustro-search-results"
+            aria-expanded={results.length > 0}
             className="w-full bg-transparent py-4 text-base text-gray-900 outline-none placeholder:text-gray-400 dark:text-white dark:placeholder:text-slate-500"
             onChange={(e) => handleChange(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
+            role="combobox"
             type="search"
             value={query}
           />
@@ -132,26 +171,26 @@ export function Search({ provider, placeholder = 'Search...' }: SearchProps) {
 
         {/* Results */}
         {results.length > 0 && (
-          <ul className="max-h-80 overflow-y-auto p-2">
+          <ul className="max-h-80 overflow-y-auto p-2" id="lustro-search-results" role="listbox">
             {results.map((result, i) => (
-              <li key={result.url}>
-                <a
-                  className={`block rounded-lg px-4 py-3 ${
-                    i === activeIndex
-                      ? 'bg-blue-50 dark:bg-slate-700'
-                      : 'hover:bg-gray-50 dark:hover:bg-slate-700/50'
-                  }`}
-                  href={result.url}
-                  onClick={() => setIsOpen(false)}
-                >
-                  <div className="text-sm font-medium text-gray-900 dark:text-white">
-                    {result.title}
-                  </div>
-                  <div
-                    className="mt-1 line-clamp-2 text-xs text-gray-500 dark:text-slate-400"
-                    dangerouslySetInnerHTML={{ __html: result.excerpt }}
-                  />
-                </a>
+              <li
+                key={result.url}
+                aria-selected={i === activeIndex}
+                className={`cursor-pointer rounded-lg px-4 py-3 ${
+                  i === activeIndex
+                    ? 'bg-blue-50 dark:bg-slate-700'
+                    : 'hover:bg-gray-50 dark:hover:bg-slate-700/50'
+                }`}
+                onClick={() => navigate(result.url)}
+                role="option"
+              >
+                <div className="text-sm font-medium text-gray-900 dark:text-white">
+                  {result.title}
+                </div>
+                <div
+                  className="mt-1 line-clamp-2 text-xs text-gray-500 dark:text-slate-400"
+                  dangerouslySetInnerHTML={{ __html: result.excerptHtml }}
+                />
               </li>
             ))}
           </ul>

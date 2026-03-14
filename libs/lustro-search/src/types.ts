@@ -3,8 +3,8 @@ export interface SearchResult {
   url: string;
   /** Page title */
   title: string;
-  /** Highlighted excerpt with matching terms */
-  excerpt: string;
+  /** Highlighted excerpt as sanitized HTML (only <mark> tags for highlighting) */
+  excerptHtml: string;
 }
 
 export interface SearchProvider {

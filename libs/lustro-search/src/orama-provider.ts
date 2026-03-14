@@ -9,6 +9,7 @@ import type { SearchProvider, SearchResult } from './types.js';
 export class OramaProvider implements SearchProvider {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Orama's deep generics cause TS2589
   private db: any = null;
+  private initPromise: Promise<void> | null = null;
   private indexPath: string;
 
   /**
@@ -21,12 +22,21 @@ export class OramaProvider implements SearchProvider {
 
   async init(): Promise<void> {
     if (this.db) return;
+    if (this.initPromise) return this.initPromise;
 
+    this.initPromise = this.doInit();
+    return this.initPromise;
+  }
+
+  private async doInit(): Promise<void> {
     const { restore } = await import('@orama/plugin-data-persistence');
 
     const response = await fetch(this.indexPath);
-    const snapshot = await response.json();
+    if (!response.ok) {
+      throw new Error(`Failed to load search index from ${this.indexPath}: ${response.status} ${response.statusText}`);
+    }
 
+    const snapshot = await response.json();
     this.db = await restore('json', snapshot);
   }
 
@@ -44,13 +54,23 @@ export class OramaProvider implements SearchProvider {
     return response.hits.map((hit) => ({
       url: hit.document.url,
       title: hit.document.title,
-      excerpt: buildExcerpt(hit.document.content, query),
+      excerptHtml: buildExcerpt(hit.document.content, query),
     }));
   }
 }
 
+/** Escape HTML entities so indexed content can't inject markup */
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
 /**
  * Build a short excerpt from content, highlighting the area around the first match.
+ * Content is HTML-escaped before <mark> tags are inserted.
  */
 function buildExcerpt(content: string, query: string, contextChars = 120): string {
   const lower = content.toLowerCase();
@@ -63,7 +83,8 @@ function buildExcerpt(content: string, query: string, contextChars = 120): strin
   }
 
   if (matchIndex === -1) {
-    return content.slice(0, contextChars * 2) + (content.length > contextChars * 2 ? '...' : '');
+    const raw = content.slice(0, contextChars * 2);
+    return escapeHtml(raw) + (content.length > contextChars * 2 ? '...' : '');
   }
 
   const start = Math.max(0, matchIndex - contextChars);
@@ -73,9 +94,11 @@ function buildExcerpt(content: string, query: string, contextChars = 120): strin
   if (start > 0) excerpt = '...' + excerpt;
   if (end < content.length) excerpt = excerpt + '...';
 
-  // Wrap matching terms in <mark> for highlighting
+  // Escape HTML first, then wrap matching terms in <mark>
+  excerpt = escapeHtml(excerpt);
   for (const term of terms) {
-    const regex = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    const escaped = escapeHtml(term);
+    const regex = new RegExp(`(${escaped.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
     excerpt = excerpt.replace(regex, '<mark>$1</mark>');
   }
 
