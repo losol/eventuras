@@ -1,0 +1,50 @@
+{
+  "name": "@eventuras/lustro-search",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Full-text search abstraction powered by Orama — shared across docs, web, and other apps",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./react": {
+      "types": "./dist/react.d.ts",
+      "import": "./dist/react.js"
+    },
+    "./build-index": {
+      "types": "./dist/build-index.d.ts",
+      "import": "./dist/build-index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch"
+  },
+  "dependencies": {
+    "@orama/orama": "^3",
+    "@orama/plugin-data-persistence": "^3"
+  },
+  "devDependencies": {
+    "@eventuras/typescript-config": "workspace:*",
+    "@eventuras/vite-config": "workspace:*",
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "react": "^19",
+    "vite": "^7.3.1"
+  },
+  "peerDependencies": {
+    "react": "^18 || ^19"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  }
+}

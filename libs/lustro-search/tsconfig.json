@@ -1,0 +1,6 @@
+{
+  "extends": "@eventuras/typescript-config/react-library.json",
+  "compilerOptions": {
+    "types": ["react", "react-dom", "node"]
+  }
+}
