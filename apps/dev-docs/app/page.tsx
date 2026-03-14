@@ -1,20 +1,31 @@
-import Link from 'next/link';
-
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { ThreeColumnLayout } from '@eventuras/ratio-ui/pages/ThreeColumnLayout';
 
-export default function HomePage() {
+import { getDocBySlug, getSidebarTree } from '../lib/content';
+import { DocSidebarNav } from './sidebar-nav';
+import { MarkdownRenderer } from './markdown-renderer';
+
+export default function DocsIndexPage() {
+  const tree = getSidebarTree();
+  const doc = getDocBySlug([]);
+
   return (
-    <div className="flex min-h-[60vh] flex-col items-center justify-center text-center px-4">
-      <Heading as="h1">Eventuras Docs</Heading>
-      <p className="mt-4 text-lg text-gray-600 dark:text-gray-400">
-        Event and Course Management Solution
-      </p>
-      <Link
-        href="/docs"
-        className="mt-8 rounded-lg bg-blue-600 px-6 py-3 text-white hover:bg-blue-700"
-      >
-        Browse documentation
-      </Link>
-    </div>
+    <ThreeColumnLayout
+      left={<DocSidebarNav tree={tree} />}
+    >
+      <article>
+        <Heading as="h1">{doc?.frontmatter.title ?? 'Documentation'}</Heading>
+        {doc?.frontmatter.description && (
+          <p className="mt-2 text-lg text-gray-600 dark:text-gray-400">
+            {doc.frontmatter.description}
+          </p>
+        )}
+        {doc?.content && (
+          <div className="prose mt-8">
+            <MarkdownRenderer content={doc.content} />
+          </div>
+        )}
+      </article>
+    </ThreeColumnLayout>
   );
 }

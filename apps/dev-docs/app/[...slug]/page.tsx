@@ -5,10 +5,12 @@ import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { ThreeColumnLayout } from '@eventuras/ratio-ui/pages/ThreeColumnLayout';
 import { TableOfContents } from '@eventuras/ratio-ui/core/TableOfContents';
 
-import { getAllDocSlugs, getDocBySlug, getSidebarTree } from '../../../lib/content';
-import { DocSidebarNav } from './sidebar-nav';
-import { MarkdownRenderer } from './markdown-renderer';
-import { DocBreadcrumbs } from './doc-breadcrumbs';
+import { getAllDocSlugs, getDocBySlug, getSidebarTree } from '../../lib/content';
+import { DocSidebarNav } from '../sidebar-nav';
+import { MarkdownRenderer } from '../markdown-renderer';
+import { DocBreadcrumbs } from '../doc-breadcrumbs';
+
+export const dynamicParams = false;
 
 export async function generateStaticParams() {
   const slugs = getAllDocSlugs();
@@ -42,10 +44,10 @@ export default async function DocPage(
 
   // Build breadcrumb segments
   const segments = [
-    { label: 'Docs', href: '/docs' },
+    { label: 'Home', href: '/' },
     ...slug.slice(0, -1).map((segment, i) => ({
       label: segment.charAt(0).toUpperCase() + segment.slice(1).replace(/[-_]/g, ' '),
-      href: `/docs/${slug.slice(0, i + 1).join('/')}`,
+      href: `/${slug.slice(0, i + 1).join('/')}`,
     })),
     { label: doc.frontmatter.title },
   ];

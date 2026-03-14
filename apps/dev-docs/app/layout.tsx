@@ -28,7 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100">
         <ThemeProvider>
-          <Navbar title="Eventuras Docs" titleHref="/docs" sticky>
+          <Navbar title="Eventuras Docs" titleHref="/" sticky>
             <div className="flex items-center gap-2">
               <SearchButton />
               <DocsThemeToggle />
