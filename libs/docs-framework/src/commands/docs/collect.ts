@@ -4,7 +4,7 @@ import { pathToFileURL } from 'node:url';
 
 import { Command, Flags } from '@oclif/core';
 
-import { collect } from '../../collect.js';
+import { collect } from '../../collector/collect.js';
 
 const CONFIG_FILENAMES = ['docs.config.ts', 'docs.config.js', 'docs.config.mjs'];
 

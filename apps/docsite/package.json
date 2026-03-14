@@ -9,7 +9,7 @@
   "scripts": {
     "prebuild": "oxo docs collect",
     "build": "next build",
-    "postbuild": "pagefind --site .next/server/app --output-path public/_pagefind",
+    "postbuild": "oxo docs search-index",
     "predev": "oxo docs collect",
     "dev": "next -p 3210",
     "start": "next start"
@@ -30,7 +30,6 @@
     "@types/node": "^24.0.3",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "pagefind": "^1.4.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }

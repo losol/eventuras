@@ -13,6 +13,10 @@
       "package": "@eventuras/convertoapi",
       "aliases": ["converto-api", "convertoapi"]
     },
+    "docs-framework": {
+      "path": "apps/docs-framework",
+      "package": "@eventuras/docs-framework"
+    },
     "docsite": {
       "path": "apps/docsite",
       "package": "@eventuras/docsite"
