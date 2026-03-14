@@ -34,7 +34,10 @@ function parseFrontmatter(raw: string): { frontmatter: DocPage['frontmatter']; c
   const description = yaml.match(/^description:\s*(.+)$/m)?.[1]?.replace(/^["']|["']$/g, '');
   const source = yaml.match(/^source:\s*(.+)$/m)?.[1]?.replace(/^["']|["']$/g, '');
 
-  return { frontmatter: { title, description, source }, content };
+  // Strip leading h1 from content — it duplicates the frontmatter title
+  const body = content.replace(/^\s*#\s+.+\r?\n+/, '');
+
+  return { frontmatter: { title, description, source }, content: body };
 }
 
 /**
@@ -106,46 +109,49 @@ function filePathToSlug(filePath: string): string[] {
 }
 
 /**
+ * Build a map from lowercase slug key to actual file path.
+ * This ensures case-insensitive slug lookup works on case-sensitive
+ * filesystems (Linux CI) where `Email.md` won't match `email.md`.
+ */
+function buildSlugToFileMap(): Map<string, string> {
+  const files = findMarkdownFiles(CONTENT_DIR);
+  const map = new Map<string, string>();
+
+  for (const file of files) {
+    const slug = filePathToSlug(file);
+    const key = slug.join('/');
+    map.set(key, file);
+  }
+
+  return map;
+}
+
+/**
  * Get all doc page slugs for generateStaticParams.
  */
 export function getAllDocSlugs(): string[][] {
-  const files = findMarkdownFiles(CONTENT_DIR);
-  return files.map(filePathToSlug);
+  const map = buildSlugToFileMap();
+  return [...map.keys()]
+    .filter((key) => key.length > 0)
+    .map((key) => key.split('/'));
 }
 
 /**
  * Load a single doc page by slug.
  */
 export function getDocBySlug(slug: string[]): DocPage | null {
-  const slugPath = slug.join('/');
+  const key = slug.join('/');
+  const map = buildSlugToFileMap();
+  const file = map.get(key);
 
-  // Try direct file match first, then index file
-  const candidates = [
-    path.join(CONTENT_DIR, `${slugPath}.md`),
-    path.join(CONTENT_DIR, `${slugPath}.mdx`),
-    path.join(CONTENT_DIR, slugPath, 'index.md'),
-    path.join(CONTENT_DIR, slugPath, 'index.mdx'),
-  ];
+  if (!file) return null;
 
-  // For root path
-  if (slug.length === 0) {
-    candidates.unshift(
-      path.join(CONTENT_DIR, 'index.md'),
-      path.join(CONTENT_DIR, 'index.mdx'),
-    );
-  }
+  const filePath = path.join(CONTENT_DIR, file);
+  const raw = fs.readFileSync(filePath, 'utf-8');
+  const { frontmatter, content } = parseFrontmatter(raw);
+  const headings = extractHeadings(content);
 
-  for (const filePath of candidates) {
-    if (fs.existsSync(filePath)) {
-      const raw = fs.readFileSync(filePath, 'utf-8');
-      const { frontmatter, content } = parseFrontmatter(raw);
-      const headings = extractHeadings(content);
-
-      return { slug, frontmatter, content, headings };
-    }
-  }
-
-  return null;
+  return { slug, frontmatter, content, headings };
 }
 
 /**
@@ -162,7 +168,7 @@ export function getSidebarTree(): TreeViewNode[] {
     const slug = filePathToSlug(file);
     const raw = fs.readFileSync(path.join(CONTENT_DIR, file), 'utf-8');
     const { frontmatter } = parseFrontmatter(raw);
-    const href = slug.length === 0 ? '/docs' : `/docs/${slug.join('/')}`;
+    const href = slug.length === 0 ? '/' : `/${slug.join('/')}`;
     const title = frontmatter.title || slug[slug.length - 1] || 'Home';
 
     if (slug.length === 0) {

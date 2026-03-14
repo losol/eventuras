@@ -1,6 +1,7 @@
 # Synced documentation files from @eventuras/docs
 /content/
 /public/_pagefind
+/public/search-index.json
 
 # Next.js
 .next/
