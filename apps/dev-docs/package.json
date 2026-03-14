@@ -1,11 +1,10 @@
 {
-  "name": "@eventuras/docsite",
-  "version": "0.6.4",
-  "description": "",
+  "name": "@eventuras/dev-docs",
+  "version": "0.7.0",
+  "description": "Eventuras developer documentation site",
   "license": "GPL-2.0-or-later",
   "author": "Ole Kristian Losvik",
   "type": "module",
-  "main": "index.js",
   "scripts": {
     "prebuild": "oxo docs collect",
     "build": "next build",
@@ -16,17 +15,20 @@
   },
   "dependencies": {
     "@eventuras/docs-framework": "workspace:*",
+    "@eventuras/lustro-search": "workspace:*",
+    "@eventuras/ratio-ui": "workspace:*",
     "@eventuras/typescript-config": "workspace:*",
     "next": "16.1.6",
-    "nextra": "^4.6.1",
-    "nextra-theme-blog": "^4.6.1",
-    "nextra-theme-docs": "^4.6.1",
     "react": "^19.2.4",
-    "react-dom": "^19.2.4"
+    "react-dom": "^19.2.4",
+    "react-markdown": "^10.1.0",
+    "rehype-slug": "^6.0.0",
+    "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
     "@eventuras/eslint-config": "workspace:*",
     "@eventuras/oxo-cli": "workspace:*",
+    "@tailwindcss/postcss": "^4",
     "@types/node": "^24.0.3",
     "@types/react": "^19",
     "@types/react-dom": "^19",

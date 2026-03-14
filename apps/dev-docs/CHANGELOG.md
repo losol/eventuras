@@ -1,4 +1,4 @@
-# @eventuras/docsite
+# @eventuras/dev-docs
 
 ## 0.6.4
 
