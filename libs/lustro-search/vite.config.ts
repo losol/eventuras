@@ -9,6 +9,7 @@ export default defineReactLibConfig({
   external: [
     '@orama/orama',
     '@orama/plugin-data-persistence',
+    /^@eventuras\//,
     /^node:/,
   ],
 });
