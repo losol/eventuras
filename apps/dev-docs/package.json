@@ -6,10 +6,10 @@
   "author": "Ole Kristian Losvik",
   "type": "module",
   "scripts": {
-    "prebuild": "oxo docs collect",
+    "prebuild": "tsx scripts/collect.ts",
     "build": "next build",
-    "postbuild": "oxo docs search-index",
-    "predev": "oxo docs collect",
+    "postbuild": "tsx scripts/search-index.ts",
+    "predev": "tsx scripts/collect.ts",
     "dev": "next -p 3210",
     "start": "next start"
   },
@@ -27,7 +27,6 @@
   },
   "devDependencies": {
     "@eventuras/eslint-config": "workspace:*",
-    "@eventuras/oxo-cli": "workspace:*",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^24.0.3",
     "@types/react": "^19",

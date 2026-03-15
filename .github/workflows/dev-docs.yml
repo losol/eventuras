@@ -1,0 +1,40 @@
+name: Dev Docs
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/dev-docs*.yml'
+      - 'apps/dev-docs/**'
+      - 'docs/**'
+      - 'libs/ratio-ui/**'
+      - 'libs/lustro-search/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/dev-docs*.yml'
+      - 'apps/dev-docs/**'
+      - 'docs/**'
+      - 'libs/ratio-ui/**'
+      - 'libs/lustro-search/**'
+
+concurrency:
+  group: dev-docs-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: CI
+    uses: ./.github/workflows/dev-docs-ci.yml
+
+  deploy:
+    name: Deploy
+    needs: ci
+    if: github.event_name == 'push'
+    permissions:
+      contents: read
+      deployments: write
+    uses: ./.github/workflows/dev-docs-deploy.yml
+    secrets:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
