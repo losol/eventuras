@@ -25,6 +25,7 @@ db
 !apps/idem-idp/src/db/
 .vscode
 .next
+next-env.d.ts
 out
 .env.local
 
