@@ -26,8 +26,9 @@ export type MarkdownContentProps = {
   allowExternalLinks?: boolean;
   /** Strip HTML tags from input before processing. Useful for legacy content with HTML-wrapped markdown. Default: false */
   stripHtmlTags?: boolean;
-  /** Custom component overrides applied on top of defaults */
-  customComponents?: Partial<Components>;
+  /** Custom component overrides applied on top of defaults.
+   *  Accepts standard HTML tag overrides and custom element names from remark plugins. */
+  customComponents?: Partial<Components> & Record<string, React.ComponentType<any>>;
   /** Additional remark plugins to run (after remark-gfm) */
   remarkPlugins?: any[];
   /** Extend the sanitize schema to allow custom elements/attributes from plugins */
@@ -198,7 +199,7 @@ export const MarkdownContent = ({
     em: ({ node, ...props }) => <em className="italic" {...props} />,
   };
 
-  const finalComponents = customComponents
+  const finalComponents: any = customComponents
     ? { ...components, ...customComponents }
     : components;
 
