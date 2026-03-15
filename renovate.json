@@ -1,7 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended"],
-  "schedule": ["after 11am and before 1pm on saturday"],
+  "schedule": ["after 4am and before 6am every weekday", "after 6pm and before 8pm on saturday and sunday"],
   "timezone": "Europe/Oslo",
   "labels": ["dependencies"],
   "commitMessagePrefix": "chore(deps): ",
@@ -17,6 +17,54 @@
       "description": "@types/node pinned to match engine requirements",
       "matchPackageNames": ["@types/node"],
       "enabled": false
+    },
+    {
+      "description": "Group all non-major updates per monorepo app/lib",
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "matchFileNames": ["apps/web/**"],
+      "groupName": "web minor/patch"
+    },
+    {
+      "description": "Group all non-major updates for historia",
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "matchFileNames": ["apps/historia/**"],
+      "groupName": "historia minor/patch"
+    },
+    {
+      "description": "Group all non-major updates for idem-idp",
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "matchFileNames": ["apps/idem-idp/**"],
+      "groupName": "idem-idp minor/patch"
+    },
+    {
+      "description": "Group all non-major updates for idem-admin",
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "matchFileNames": ["apps/idem-admin/**"],
+      "groupName": "idem-admin minor/patch"
+    },
+    {
+      "description": "Group all non-major updates for conductor",
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "matchFileNames": ["apps/conductor/**"],
+      "groupName": "conductor minor/patch"
+    },
+    {
+      "description": "Group all non-major updates for convertoapi",
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "matchFileNames": ["apps/convertoapi/**"],
+      "groupName": "convertoapi minor/patch"
+    },
+    {
+      "description": "Group all non-major lib updates",
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "matchFileNames": ["libs/**"],
+      "groupName": "libs minor/patch"
+    },
+    {
+      "description": "Group all non-major test updates",
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "matchFileNames": ["tests/**"],
+      "groupName": "tests minor/patch"
     },
     {
       "description": "Group Payload CMS packages",
