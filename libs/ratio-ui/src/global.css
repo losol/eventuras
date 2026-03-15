@@ -68,38 +68,49 @@
   h1 {
     font-size: var(--font-size-6xl);
     margin-top: var(--space-2xl);
-    margin-bottom: var(--space-s);
+    margin-bottom: var(--space-xs);
   }
 
   h2 {
     font-size: var(--font-size-4xl);
     margin-top: var(--space-xl);
-    margin-bottom: var(--space-xs);
+    margin-bottom: var(--space-2xs);
   }
 
   h3 {
     font-size: var(--font-size-2xl);
-    margin-top: var(--space-lg);
-    margin-bottom: var(--space-xs);
+    margin-top: var(--space-md);
+    margin-bottom: var(--space-3xs)
   }
 
   h4 {
-    font-size: var(--font-size-xl);
-    margin-top: var(--space-m);
-    margin-bottom: var(--space-xs);
+    font-size: var(--font-size-base);
+    font-weight: 650;
+    margin-top: var(--space-s);
+    margin-bottom: 0;
   }
 
   h5 {
-    font-size: var(--font-size-lg);
-    margin-top: var(--space-m);
-    margin-bottom: var(--space-xs);
+    font-size: var(--font-size-base);
+    margin-top: var(--space-s);
+    margin-bottom: 0;
   }
 
   h6 {
     font-size: var(--font-size-base);
     margin-top: var(--space-s);
-    margin-bottom: var(--space-xs);
+    margin-bottom: 0;
     text-transform: none;
+  }
+
+  /* Reduce gap when headings stack (e.g. h2 immediately followed by h3) */
+  :is(h1, h2, h3, h4, h5, h6) + :is(h1, h2, h3, h4, h5, h6) {
+    margin-top: var(--space-xs);
+  }
+
+  /* Keep text tight against its heading */
+  :is(h1, h2, h3, h4, h5, h6) + p {
+    margin-top: 0;
   }
 
   p {
