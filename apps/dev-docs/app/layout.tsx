@@ -38,7 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             {children}
           </div>
           <footer className="border-t border-gray-200 py-8 text-center text-sm text-gray-500 dark:border-gray-800 dark:text-gray-400">
-            MIT {new Date().getFullYear()} © Eventuras
+            GPL-2.0-or-later {new Date().getFullYear()} © Eventuras
           </footer>
         </ThemeProvider>
       </body>
