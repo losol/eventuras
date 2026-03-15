@@ -50,24 +50,24 @@
   "dependencies": {
     "@eventuras/docs-framework": "workspace:*",
     "@eventuras/shipper": "workspace:*",
-    "@oclif/core": "^4",
-    "@oclif/plugin-help": "^6",
-    "@oclif/plugin-plugins": "^5"
+    "@oclif/core": "^4.9.0",
+    "@oclif/plugin-help": "^6.2.38",
+    "@oclif/plugin-plugins": "^5.4.58"
   },
   "devDependencies": {
-    "@eslint/compat": "^2",
+    "@eslint/compat": "^2.0.3",
     "@oclif/prettier-config": "^0.2.1",
-    "@oclif/test": "^4",
-    "@types/node": "^18",
-    "@vitest/ui": "^4.0.18",
-    "eslint": "^9",
-    "eslint-config-oclif": "^6",
-    "eslint-config-prettier": "^10",
-    "oclif": "^4",
+    "@oclif/test": "^4.1.16",
+    "@types/node": "^24.12.0",
+    "@vitest/ui": "^4.1.0",
+    "eslint": "^10.0.3",
+    "eslint-config-oclif": "^6.0.148",
+    "eslint-config-prettier": "^10.1.8",
+    "oclif": "^4.22.87",
     "shx": "^0.4.0",
-    "ts-node": "^10",
-    "typescript": "^5",
-    "vitest": "^4.0.18"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0"
   },
   "engines": {
     "node": ">=22.0.0 <25.0.0"

@@ -28,16 +28,16 @@
     "dev": "vite build --watch"
   },
   "dependencies": {
-    "@orama/orama": "^3",
-    "@orama/plugin-data-persistence": "^3"
+    "@orama/orama": "^3.1.18",
+    "@orama/plugin-data-persistence": "^3.1.18"
   },
   "devDependencies": {
     "@eventuras/typescript-config": "workspace:*",
     "@eventuras/vite-config": "workspace:*",
-    "@types/node": "^22",
-    "@types/react": "^19",
-    "react": "^19",
-    "vite": "^7.3.1"
+    "@types/node": "^24.12.0",
+    "@types/react": "^19.2.14",
+    "react": "^19.2.4",
+    "vite": "^8.0.0"
   },
   "peerDependencies": {
     "@eventuras/ratio-ui": "workspace:*",
