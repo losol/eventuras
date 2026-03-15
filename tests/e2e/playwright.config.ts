@@ -35,7 +35,7 @@ if (existsSync(envPath)) {
   });
   console.log(`✓ Loaded ${loadedCount} environment variables from .env`);
   console.log('Variables:', loadedVars.join(', '));
-} else {
+} else if (!process.env.CI) {
   console.log('⚠ .env file not found - using existing environment variables');
 }
 

@@ -14,8 +14,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix && prettier . --write",
     "oauth:setup": "tsx scripts/oauth-server.ts",
-    "test": "playwright test --workers=1",
-    "test:debug": "cross-env DEBUG=e2e:* playwright test --workers=1",
+    "test": "playwright test",
+    "test:debug": "cross-env DEBUG=e2e:* playwright test",
     "test:ui": "playwright test --ui",
     "test:ui:debug": "cross-env DEBUG=e2e:* playwright test --ui"
   },
