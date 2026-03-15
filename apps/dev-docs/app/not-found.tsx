@@ -9,8 +9,8 @@ export default function NotFound() {
         Page not found.
       </p>
       <Link
-        href="/docs"
-        className="mt-6 text-blue-600 underline hover:text-blue-800 dark:text-blue-400"
+        href="/"
+        className="mt-6 text-primary-600 underline hover:text-primary-800 dark:text-primary-400"
       >
         Back to docs
       </Link>
