@@ -27,7 +27,12 @@ const timestamp = Math.floor(Date.now() / 1000 / 10);
 const userName = `${localPart}+newuser-${timestamp}@${domain}`;
 
 test.describe('should be able to register as an anonymous user when hitting the event registration page', () => {
-  const createdEvent = readCreatedEvent();
+  let createdEvent: ReturnType<typeof readCreatedEvent>;
+
+  test.beforeAll(() => {
+    createdEvent = readCreatedEvent();
+  });
+
   test('registration button should redirect anonymous users to login', async ({ page }) => {
     await visitAndClickEventRegistrationButton(page, createdEvent.eventId);
     // Should be redirected away from the public event page to the identity provider

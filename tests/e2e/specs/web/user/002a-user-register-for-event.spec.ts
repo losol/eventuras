@@ -12,8 +12,10 @@ test.describe.configure({ mode: 'serial' });
 test.use({ storageState: 'tmp/auth/user.json' });
 
 test.describe('register for event', () => {
-  const createdEvent = readCreatedEvent();
+  let createdEvent: ReturnType<typeof readCreatedEvent>;
+
   test.beforeAll(() => {
+    createdEvent = readCreatedEvent();
     if (!createdEvent.eventId) {
       debug('No event was created previously, run admin-event-create-registration tests first');
     }
