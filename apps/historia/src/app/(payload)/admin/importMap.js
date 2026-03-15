@@ -23,15 +23,17 @@ import { PriceField as PriceField_07375945334b53a2da1ffe8b4244c331 } from '@/col
 import { TotalPriceField as TotalPriceField_70f8c825e5769517eb93cd56bc5b44b3 } from '@/collections/Products/TotalPriceField'
 import { UpdateDetailsButton as UpdateDetailsButton_4bb4f902e628615c8ea9c86fdc4e4860 } from '@/collections/Transactions/ui/UpdateDetailsButton'
 import { WatchTenantCollection as WatchTenantCollection_1d0591e3cf4f332c83a86da13a0de59a } from '@payloadcms/plugin-multi-tenant/client'
+import { FormatField as FormatField_cdf7e044479f899a31f804427d568b36 } from '@payloadcms/plugin-import-export/rsc'
+import { LimitField as LimitField_cdf7e044479f899a31f804427d568b36 } from '@payloadcms/plugin-import-export/rsc'
 import { Page as Page_cdf7e044479f899a31f804427d568b36 } from '@payloadcms/plugin-import-export/rsc'
 import { SortBy as SortBy_cdf7e044479f899a31f804427d568b36 } from '@payloadcms/plugin-import-export/rsc'
 import { SortOrder as SortOrder_cdf7e044479f899a31f804427d568b36 } from '@payloadcms/plugin-import-export/rsc'
+import { LocaleField as LocaleField_cdf7e044479f899a31f804427d568b36 } from '@payloadcms/plugin-import-export/rsc'
 import { SelectionToUseField as SelectionToUseField_cdf7e044479f899a31f804427d568b36 } from '@payloadcms/plugin-import-export/rsc'
 import { FieldsToExport as FieldsToExport_cdf7e044479f899a31f804427d568b36 } from '@payloadcms/plugin-import-export/rsc'
 import { CollectionField as CollectionField_cdf7e044479f899a31f804427d568b36 } from '@payloadcms/plugin-import-export/rsc'
 import { ExportPreview as ExportPreview_cdf7e044479f899a31f804427d568b36 } from '@payloadcms/plugin-import-export/rsc'
 import { ExportSaveButton as ExportSaveButton_cdf7e044479f899a31f804427d568b36 } from '@payloadcms/plugin-import-export/rsc'
-import { ImportCollectionField as ImportCollectionField_cdf7e044479f899a31f804427d568b36 } from '@payloadcms/plugin-import-export/rsc'
 import { ImportPreview as ImportPreview_cdf7e044479f899a31f804427d568b36 } from '@payloadcms/plugin-import-export/rsc'
 import { ImportSaveButton as ImportSaveButton_cdf7e044479f899a31f804427d568b36 } from '@payloadcms/plugin-import-export/rsc'
 import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
@@ -71,15 +73,17 @@ export const importMap = {
   "@/collections/Products/TotalPriceField#TotalPriceField": TotalPriceField_70f8c825e5769517eb93cd56bc5b44b3,
   "@/collections/Transactions/ui/UpdateDetailsButton#UpdateDetailsButton": UpdateDetailsButton_4bb4f902e628615c8ea9c86fdc4e4860,
   "@payloadcms/plugin-multi-tenant/client#WatchTenantCollection": WatchTenantCollection_1d0591e3cf4f332c83a86da13a0de59a,
+  "@payloadcms/plugin-import-export/rsc#FormatField": FormatField_cdf7e044479f899a31f804427d568b36,
+  "@payloadcms/plugin-import-export/rsc#LimitField": LimitField_cdf7e044479f899a31f804427d568b36,
   "@payloadcms/plugin-import-export/rsc#Page": Page_cdf7e044479f899a31f804427d568b36,
   "@payloadcms/plugin-import-export/rsc#SortBy": SortBy_cdf7e044479f899a31f804427d568b36,
   "@payloadcms/plugin-import-export/rsc#SortOrder": SortOrder_cdf7e044479f899a31f804427d568b36,
+  "@payloadcms/plugin-import-export/rsc#LocaleField": LocaleField_cdf7e044479f899a31f804427d568b36,
   "@payloadcms/plugin-import-export/rsc#SelectionToUseField": SelectionToUseField_cdf7e044479f899a31f804427d568b36,
   "@payloadcms/plugin-import-export/rsc#FieldsToExport": FieldsToExport_cdf7e044479f899a31f804427d568b36,
   "@payloadcms/plugin-import-export/rsc#CollectionField": CollectionField_cdf7e044479f899a31f804427d568b36,
   "@payloadcms/plugin-import-export/rsc#ExportPreview": ExportPreview_cdf7e044479f899a31f804427d568b36,
   "@payloadcms/plugin-import-export/rsc#ExportSaveButton": ExportSaveButton_cdf7e044479f899a31f804427d568b36,
-  "@payloadcms/plugin-import-export/rsc#ImportCollectionField": ImportCollectionField_cdf7e044479f899a31f804427d568b36,
   "@payloadcms/plugin-import-export/rsc#ImportPreview": ImportPreview_cdf7e044479f899a31f804427d568b36,
   "@payloadcms/plugin-import-export/rsc#ImportSaveButton": ImportSaveButton_cdf7e044479f899a31f804427d568b36,
   "@payloadcms/plugin-search/client#LinkToDoc": LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634,

@@ -28,20 +28,20 @@
     "@fastify/jwt": "^10.0.0",
     "@fastify/rate-limit": "^10.3.0",
     "@fastify/static": "^9.0.0",
-    "@fastify/swagger": "^9.6.1",
-    "@scalar/fastify-api-reference": "^1.44.6",
-    "dotenv": "^17.2.3",
-    "fastify": "^5.7.2",
+    "@fastify/swagger": "^9.7.0",
+    "@scalar/fastify-api-reference": "^1.48.7",
+    "dotenv": "^17.3.1",
+    "fastify": "^5.8.2",
     "fastify-plugin": "^5.1.0",
-    "playwright": "^1.58.1"
+    "playwright": "^1.58.2"
   },
   "devDependencies": {
     "@eventuras/eslint-config": "workspace:*",
     "@eventuras/typescript-config": "workspace:*",
-    "@types/node": "^24.0.3",
+    "@types/node": "^24.12.0",
     "fastify-tsconfig": "^3.0.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.18"
+    "vitest": "^4.1.0"
   }
 }

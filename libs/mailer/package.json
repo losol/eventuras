@@ -18,12 +18,12 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "nodemailer": "^7.0.13"
+    "nodemailer": "^8.0.2"
   },
   "devDependencies": {
-    "@types/nodemailer": "^7.0.9",
+    "@types/nodemailer": "^7.0.11",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.18"
+    "vitest": "^4.1.0"
   }
 }
