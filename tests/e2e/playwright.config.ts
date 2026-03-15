@@ -98,13 +98,13 @@ export default defineConfig({
       name: 'web:user',
       testMatch: /web\/user\/.+\.spec\.ts/,
       use: { ...chromeDesktop },
-      dependencies: [SETUP_USER],
+      dependencies: [SETUP_USER, 'web:admin'],
     },
     {
       name: 'web:public',
       testMatch: /web\/public\/.+\.spec\.ts/,
       use: { ...chromeDesktop },
-      dependencies: [SETUP_ADMIN, SETUP_USER],
+      dependencies: ['web:admin'],
     },
     {
       name: 'api',
