@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 
 export interface TreeViewNode {
   title: string;
@@ -80,6 +80,13 @@ function TreeViewItem({ node, currentPath, LinkComponent, depth }: TreeViewItemP
   const containsActive = hasActiveChild(node, currentPath);
 
   const [isOpen, setIsOpen] = useState(containsActive || active);
+
+  // Auto-expand when currentPath changes to match this node or its children
+  useEffect(() => {
+    if (containsActive || active) {
+      setIsOpen(true);
+    }
+  }, [containsActive, active]);
 
   const toggle = useCallback(() => setIsOpen((prev) => !prev), []);
 
