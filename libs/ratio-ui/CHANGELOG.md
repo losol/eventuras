@@ -1,5 +1,12 @@
 # @eventuras/ratio-ui
 
+## 0.12.0
+
+### Minor Changes
+
+- fce9a48: ### 🧱 Features
+  - feat(ratio-ui): add TreeView, TableOfContents, and ThreeColumnLayout components (897252d) [@eventuras/ratio-ui]
+
 ## 0.11.0
 
 ### Minor Changes

@@ -1,5 +1,31 @@
 # @eventuras/web
 
+## 2.29.0
+
+### Minor Changes
+
+- 10235ad: ### 🧱 Features
+  - feat(web): implement PDF certificate proxy (7375ef3) [@eventuras/web]
+
+  ### 🐞 Bug Fixes
+  - fix(web): improve error handling in createEvent function (89e8953) [@eventuras/web]
+
+- 867c9f3: ### 🧱 Features
+  - feat(web): enhance EconomySection with status grouping (821fc39) [@eventuras/web]
+
+### Patch Changes
+
+- Updated dependencies [10235ad]
+- Updated dependencies [867c9f3]
+- Updated dependencies [fce9a48]
+  - @eventuras/event-sdk@2.29.0
+  - @eventuras/ratio-ui@0.12.0
+  - @eventuras/datatable@0.5.8
+  - @eventuras/markdown@6.0.0
+  - @eventuras/ratio-ui-next@0.1.9
+  - @eventuras/smartform@0.3.1
+  - @eventuras/toast@0.2.8
+
 ## 2.28.0
 
 ### Minor Changes

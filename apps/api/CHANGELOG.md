@@ -1,5 +1,18 @@
 # @eventuras/api
 
+## 2.29.0
+
+### Minor Changes
+
+- 10235ad: ### 🧱 Features
+  - feat(web): implement PDF certificate proxy (7375ef3) [@eventuras/web]
+
+  ### 🐞 Bug Fixes
+  - fix(web): improve error handling in createEvent function (89e8953) [@eventuras/web]
+
+- 867c9f3: ### 🧱 Features
+  - feat(web): enhance EconomySection with status grouping (821fc39) [@eventuras/web]
+
 ## 2.27.10
 
 ### Patch Changes

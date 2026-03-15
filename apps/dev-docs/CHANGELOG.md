@@ -1,5 +1,19 @@
 # @eventuras/dev-docs
 
+## 0.8.0
+
+### Minor Changes
+
+- b2fa37f: ### 🧱 Features
+  - feat(dev-docs): replace Nextra with custom Next.js documentation site (fe6c622) [@eventuras/dev-docs]
+
+### Patch Changes
+
+- Updated dependencies [fce9a48]
+  - @eventuras/ratio-ui@0.12.0
+  - @eventuras/lustro-search@1.0.0
+  - @eventuras/docs-framework@0.1.1
+
 ## 0.6.4
 
 ### Patch Changes
