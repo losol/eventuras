@@ -54,6 +54,7 @@ export function CommandPalette({
   const [query, setQuery] = useState('');
   const [activeIndex, setActiveIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
 
   const open = useCallback(() => setIsOpen(true), []);
@@ -75,11 +76,37 @@ export function CommandPalette({
     return () => document.removeEventListener('keydown', handler);
   }, [shortcut]);
 
-  // Focus management
+  // Focus management + focus trap
   useEffect(() => {
     if (isOpen) {
       previousFocusRef.current = document.activeElement as HTMLElement;
       requestAnimationFrame(() => inputRef.current?.focus());
+
+      // Trap Tab key inside the dialog
+      const trapFocus = (e: KeyboardEvent) => {
+        if (e.key !== 'Tab') return;
+        const dialog = dialogRef.current;
+        if (!dialog) return;
+
+        const focusable = dialog.querySelectorAll<HTMLElement>(
+          'input, button, [tabindex]:not([tabindex="-1"])',
+        );
+        if (focusable.length === 0) return;
+
+        const first = focusable[0]!;
+        const last = focusable[focusable.length - 1]!;
+
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      };
+
+      document.addEventListener('keydown', trapFocus);
+      return () => document.removeEventListener('keydown', trapFocus);
     } else {
       setQuery('');
       setActiveIndex(0);
@@ -152,6 +179,7 @@ export function CommandPalette({
           role="presentation"
         >
           <div
+            ref={dialogRef}
             aria-label={placeholder}
             aria-modal="true"
             className="w-full max-w-lg rounded-xl bg-white shadow-2xl dark:bg-gray-800"
@@ -162,6 +190,7 @@ export function CommandPalette({
               <SearchIcon aria-hidden="true" className="mr-3 h-5 w-5 text-gray-400" />
               <input
                 ref={inputRef}
+                aria-activedescendant={items.length > 0 ? `command-palette-option-${activeIndex}` : undefined}
                 aria-autocomplete="list"
                 aria-controls="command-palette-results"
                 aria-expanded={items.length > 0}
@@ -186,6 +215,7 @@ export function CommandPalette({
                 {items.map((item, i) => (
                   <li
                     key={item.id}
+                    id={`command-palette-option-${i}`}
                     aria-selected={i === activeIndex}
                     className={`cursor-pointer rounded-lg px-4 py-3 ${
                       i === activeIndex
