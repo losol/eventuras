@@ -56,8 +56,10 @@ WORKDIR /app
 
 ARG TURBO_TOKEN
 ARG TURBO_TEAM
+ARG GIT_SHA="unknown"
 ENV TURBO_TOKEN=${TURBO_TOKEN}
 ENV TURBO_TEAM=${TURBO_TEAM}
+ENV GIT_SHA=${GIT_SHA}
 ENV NEXT_TELEMETRY_DISABLED=1
 
 # No NEXT_PUBLIC_* build args needed – all configuration is read server-side

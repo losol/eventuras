@@ -1,10 +1,19 @@
+import { readFileSync } from 'fs';
 import path from 'path';
 
 import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
 
+const pkg = JSON.parse(readFileSync(path.resolve(__dirname, 'package.json'), 'utf-8'));
+
 const nextConfig: NextConfig = {
   output: 'standalone',
+
+  env: {
+    BUILD_GIT_SHA: process.env.GIT_SHA ?? 'unknown',
+    BUILD_TIME: new Date().toISOString(),
+    BUILD_VERSION: pkg.version ?? 'unknown',
+  },
 
   turbopack: {
     // Explicitly set monorepo root to avoid Next.js picking up a stray lockfile
