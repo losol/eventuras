@@ -83,3 +83,4 @@ jobs:
           build-args: |
             TURBO_TOKEN=${{ secrets.TURBO_TOKEN }}
             TURBO_TEAM=${{ secrets.TURBO_TEAM }}
+            GIT_SHA=${{ steps.ver.outputs.sha }}
