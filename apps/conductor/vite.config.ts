@@ -14,6 +14,7 @@ export default defineConfig({
       external: [
         ...builtinModules,
         ...builtinModules.map((m) => `node:${m}`),
+        /^@eventuras\//,
         'express',
         'discord.js',
         'zod',
