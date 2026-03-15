@@ -34,6 +34,9 @@ COPY libs ./libs
 RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store \
   pnpm install --frozen-lockfile --ignore-scripts --filter=@eventuras/e2e...
 
+# Build workspace dependencies (e.g. @eventuras/logger) that were skipped by --ignore-scripts
+RUN pnpm --filter=@eventuras/e2e^... run build
+
 ##########################
 # Playwright browsers    #
 ##########################
