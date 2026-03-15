@@ -1,0 +1,50 @@
+{
+  "name": "@eventuras/markdown-plugin-happening",
+  "version": "0.1.0",
+  "description": "Markdown plugins for events and conferences — schedule detection, speaker cards, etc.",
+  "license": "MIT",
+  "sideEffects": false,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "pnpm run clean && vite build",
+    "clean": "rm -rf dist",
+    "test": "vitest",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "unist-util-visit": "^5.1.0"
+  },
+  "devDependencies": {
+    "@eventuras/ratio-ui": "workspace:*",
+    "@eventuras/typescript-config": "workspace:*",
+    "@eventuras/vite-config": "workspace:*",
+    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/mdast": "^4.0.4",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "jsdom": "28.1.0",
+    "remark-parse": "^11.0.0",
+    "typescript": "5.9.3",
+    "unified": "^11.0.5",
+    "vite": "8.0.0",
+    "vitest": "4.1.0"
+  },
+  "peerDependencies": {
+    "@eventuras/ratio-ui": "workspace:*",
+    "react": ">=18 <20",
+    "react-dom": ">=18 <20"
+  }
+}

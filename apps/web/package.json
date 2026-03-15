@@ -32,6 +32,7 @@
     "@eventuras/fides-auth-next": "workspace:*",
     "@eventuras/logger": "workspace:^",
     "@eventuras/markdown": "workspace:*",
+    "@eventuras/markdown-plugin-happening": "workspace:*",
     "@eventuras/ratio-ui": "workspace:*",
     "@eventuras/ratio-ui-next": "workspace:*",
     "@eventuras/scribo": "workspace:*",

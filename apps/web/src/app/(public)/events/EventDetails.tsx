@@ -2,12 +2,18 @@ import React from 'react';
 import { useTranslations } from 'next-intl';
 
 import { MarkdownContent } from '@eventuras/markdown';
+import {
+  remarkSchedule,
+  scheduleComponents,
+  scheduleSanitizeSchema,
+} from '@eventuras/markdown-plugin-happening';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { NavList } from '@eventuras/ratio-ui/core/NavList';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
 import { EventDto } from '@/lib/eventuras-public-sdk';
+
 type EventProps = {
   eventinfo: EventDto;
   bgClassNames?: string;
@@ -45,7 +51,13 @@ const EventDetails: React.FC<EventProps> = ({ eventinfo }) => {
       {sections.map(section => (
         <Section key={section.id} id={section.id} container>
           <Heading as="h2">{section.title}</Heading>
-          <MarkdownContent markdown={section.content!} allowExternalLinks={true} />
+          <MarkdownContent
+            markdown={section.content!}
+            allowExternalLinks={true}
+            remarkPlugins={[remarkSchedule]}
+            customComponents={scheduleComponents}
+            sanitizeSchemaExtension={scheduleSanitizeSchema}
+          />
         </Section>
       ))}
     </Section>
