@@ -2,7 +2,6 @@ import js from '@eslint/js';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import tseslint from 'typescript-eslint';
 import pluginReactHooks from 'eslint-plugin-react-hooks';
-import pluginReact from 'eslint-plugin-react';
 import globals from 'globals';
 import pluginNext from '@next/eslint-plugin-next';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
@@ -21,13 +20,12 @@ export const nextJsConfig = [
   eslintConfigPrettier,
   ...tseslint.configs.recommended,
   {
-    ...pluginReact.configs.flat.recommended,
     languageOptions: {
-      ...pluginReact.configs.flat.recommended.languageOptions,
       globals: {
         ...globals.serviceworker,
       },
     },
+    settings: { react: { version: 'detect' } },
   },
   {
     plugins: {
@@ -44,11 +42,8 @@ export const nextJsConfig = [
       'simple-import-sort': simpleImportSort,
       import: importPlugin,
     },
-    settings: { react: { version: 'detect' } },
     rules: {
       ...pluginReactHooks.configs.recommended.rules,
-      'react/react-in-jsx-scope': 'off',
-      '@next/next/no-duplicate-head': 'off',
 
       // Disable built-in sorter (a bit rigid)
       'sort-imports': 'off',

@@ -20,11 +20,11 @@
   },
   "devDependencies": {
     "@eventuras/vite-config": "workspace:*",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
     "next": "16.1.6",
     "react": "^19.2.4",
-    "vite": "^7.3.1"
+    "vite": "^8.0.0"
   },
   "peerDependencies": {
     "next": "^15.0.0 || ^16.0.0",
