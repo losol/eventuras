@@ -21,6 +21,7 @@
     "db:studio": "drizzle-kit studio",
     "dev": "tsx watch --env-file=.env src/main.ts",
     "dev:ui:watch": "vite build --watch",
+    "lint": "eslint .",
     "start": "node --enable-source-maps dist/main.js",
     "test": "sh -c 'export $(cat .env | xargs) && vitest run'",
     "test:coverage": "sh -c 'export $(cat .env | xargs) && vitest run --coverage'",
