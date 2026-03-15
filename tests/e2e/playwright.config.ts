@@ -66,6 +66,7 @@ export default defineConfig({
   retries: 0,
   workers: 1,
   reporter: [
+    ['list'],
     ['html', { outputFolder: './tmp/report' }],
     ['./error-context-reporter.ts'],
     ['allure-playwright', { outputFolder: './tmp/allure-results' }],
