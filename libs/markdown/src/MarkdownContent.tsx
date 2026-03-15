@@ -10,6 +10,11 @@ import { Link } from '@eventuras/ratio-ui/core/Link';
 import { List } from '@eventuras/ratio-ui/core/List';
 import { normalizeMarkdown } from './normalizeMarkdown';
 
+export type SanitizeSchemaExtension = {
+  tagNames?: string[];
+  attributes?: Record<string, string[]>;
+};
+
 export type MarkdownContentProps = {
   markdown?: string | null;
   heading?: string;
@@ -21,6 +26,12 @@ export type MarkdownContentProps = {
   allowExternalLinks?: boolean;
   /** Strip HTML tags from input before processing. Useful for legacy content with HTML-wrapped markdown. Default: false */
   stripHtmlTags?: boolean;
+  /** Custom component overrides applied on top of defaults */
+  customComponents?: Partial<Components>;
+  /** Additional remark plugins to run (after remark-gfm) */
+  remarkPlugins?: any[];
+  /** Extend the sanitize schema to allow custom elements/attributes from plugins */
+  sanitizeSchemaExtension?: SanitizeSchemaExtension;
 };
 
 export const MarkdownContent = ({
@@ -30,6 +41,9 @@ export const MarkdownContent = ({
   enableRawHtml = false,
   allowExternalLinks = false,
   stripHtmlTags = false,
+  customComponents,
+  remarkPlugins: extraRemarkPlugins,
+  sanitizeSchemaExtension,
 }: MarkdownContentProps) => {
   if (!markdown) return null;
 
@@ -59,10 +73,25 @@ export const MarkdownContent = ({
     }
   };
 
+  // Build sanitize schema, merging any extensions from plugins
+  const sanitizeSchema = sanitizeSchemaExtension
+    ? {
+        ...defaultSchema,
+        tagNames: [
+          ...(defaultSchema.tagNames ?? []),
+          ...(sanitizeSchemaExtension.tagNames ?? []),
+        ],
+        attributes: {
+          ...defaultSchema.attributes,
+          ...sanitizeSchemaExtension.attributes,
+        },
+      }
+    : defaultSchema;
+
   // Create rehype plugins list
   const rehypePlugins: any[] = [
     ...(enableRawHtml ? [rehypeRaw] : []),
-    [rehypeSanitize, defaultSchema],
+    [rehypeSanitize, sanitizeSchema],
   ];
 
   // Component overrides for custom rendering
@@ -169,13 +198,17 @@ export const MarkdownContent = ({
     em: ({ node, ...props }) => <em className="italic" {...props} />,
   };
 
+  const finalComponents = customComponents
+    ? { ...components, ...customComponents }
+    : components;
+
   return (
     <>
       {heading && <Heading as="h2">{heading}</Heading>}
       <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
+        remarkPlugins={[remarkGfm, ...(extraRemarkPlugins ?? [])]}
         rehypePlugins={rehypePlugins}
-        components={components}
+        components={finalComponents}
       >
         {source}
       </ReactMarkdown>
