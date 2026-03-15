@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import {
   CommandPalette,
@@ -56,6 +56,13 @@ export function Search({ provider, placeholder = 'Search...', onNavigate }: Sear
     },
     [provider],
   );
+
+  // Cleanup debounce on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, []);
 
   const handleSelect = useCallback(
     (item: CommandPaletteItem) => {
