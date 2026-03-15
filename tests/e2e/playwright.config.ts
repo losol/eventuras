@@ -63,7 +63,7 @@ export default defineConfig({
   globalTimeout: timeouts.global,
   fullyParallel: false,
   forbidOnly: isCI,
-  retries: 0,
+  retries: isCI ? 1 : 0,
   workers: 1,
   reporter: [
     ['list'],

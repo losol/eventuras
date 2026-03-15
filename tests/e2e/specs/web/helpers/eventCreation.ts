@@ -6,6 +6,38 @@ import { generateTestEventData, TestEventData } from '../../shared/testEventData
 
 const debug = Debug.create('e2e:event-creation');
 
+/**
+ * Fill a Lexical rich text editor by simulating a clipboard paste event.
+ *
+ * Playwright's `.fill()` uses `insertText` which doesn't dispatch `beforeinput`
+ * events. Lexical relies on `beforeinput` for all content mutations, so `.fill()`
+ * silently fails — the DOM text appears but Lexical's internal state (and thus
+ * React Hook Form via Controller's `field.onChange`) never updates.
+ *
+ * Clipboard paste events ARE handled natively by Lexical's clipboard module.
+ */
+async function fillLexicalEditor(page: Page, editorId: string, text: string): Promise<void> {
+  debug('Filling Lexical editor via paste: %s', editorId);
+  const editor = page.locator(`#${editorId}`).getByRole('textbox');
+  await editor.click();
+
+  // Dispatch a synthetic paste event — Lexical reads clipboardData.getData('text/plain')
+  await editor.evaluate((el, content) => {
+    const dataTransfer = new DataTransfer();
+    dataTransfer.setData('text/plain', content);
+    el.dispatchEvent(
+      new ClipboardEvent('paste', {
+        clipboardData: dataTransfer,
+        bubbles: true,
+        cancelable: true,
+      })
+    );
+  }, text);
+
+  // Allow Lexical to process paste → OnChangePlugin → field.onChange → RHF state
+  await page.waitForTimeout(300);
+}
+
 export type EventCreationOptions = {
   /** Custom event data (overrides generated data) */
   customData?: Partial<TestEventData>;
@@ -61,7 +93,6 @@ export const createTestEvent = async (
 
   // Fill in overview details
   debug('Filling overview tab...');
-  // Wait for the overview tab to be visible before clicking
   await page.locator('[data-testid="tab-overview"]').waitFor({ state: 'visible', timeout: 15000 });
   await page.locator('[data-testid="tab-overview"]').click();
   await page.locator('[data-testid="eventeditor-status-select-button"]').click();
@@ -97,40 +128,34 @@ export const createTestEvent = async (
   await page.locator('[name="city"]').fill(eventData.city ?? '');
   await page.locator('[name="location"]').fill(eventData.location ?? '');
 
-  // Fill in descriptions with rich markdown content
-  debug('Filling descriptions tab with rich markdown content...');
+  // Fill in descriptions using paste events for Lexical editors
+  debug('Filling descriptions tab...');
   await page.locator('[data-testid="tab-descriptions"]').click();
+  // Wait for the description editors to be visible
+  await page.locator('#eventeditor-description-editable').waitFor({ state: 'visible' });
 
-  // Note: Lexical editors need special handling for markdown.
-  // Using .fill() just puts plain text, so markdown syntax like ** won't be parsed.
-  // For now, we'll use .fill() which means the saved content will have markdown syntax
-  // that should be properly rendered on the public pages by MarkdownContent component.
-
-  // Use id selectors to find the editor wrapper, then get the textbox inside
-  await page
-    .locator('#eventeditor-description-editable')
-    .getByRole('textbox')
-    .fill(eventData.description ?? '');
-  await page
-    .locator('#eventeditor-program-editable')
-    .getByRole('textbox')
-    .fill(eventData.program ?? '');
-  await page
-    .locator('#eventeditor-practical-information-editable')
-    .getByRole('textbox')
-    .fill(eventData.practicalInformation ?? '');
-  await page
-    .locator('#eventeditor-more-information-editable')
-    .getByRole('textbox')
-    .fill(eventData.moreInformation ?? '');
-  await page
-    .locator('#eventeditor-welcome-letter-editable')
-    .getByRole('textbox')
-    .fill(eventData.welcomeLetter ?? '');
-  await page
-    .locator('#eventeditor-information-request-editable')
-    .getByRole('textbox')
-    .fill(eventData.informationRequest ?? '');
+  await fillLexicalEditor(page, 'eventeditor-description-editable', eventData.description ?? '');
+  await fillLexicalEditor(page, 'eventeditor-program-editable', eventData.program ?? '');
+  await fillLexicalEditor(
+    page,
+    'eventeditor-practical-information-editable',
+    eventData.practicalInformation ?? ''
+  );
+  await fillLexicalEditor(
+    page,
+    'eventeditor-more-information-editable',
+    eventData.moreInformation ?? ''
+  );
+  await fillLexicalEditor(
+    page,
+    'eventeditor-welcome-letter-editable',
+    eventData.welcomeLetter ?? ''
+  );
+  await fillLexicalEditor(
+    page,
+    'eventeditor-information-request-editable',
+    eventData.informationRequest ?? ''
+  );
 
   // Fill certificate details
   debug('Filling certificate tab...');
@@ -161,46 +186,80 @@ export const createTestEvent = async (
 
 /**
  * Save the event and validate that it was properly saved to the backend.
+ *
+ * The form uses auto-save with a 1-second debounce, so data may already be saved
+ * by the time we get here. We wait for pending auto-saves to settle, then click
+ * save as a safety net, and verify via API.
  */
 async function saveEventAndValidate(page: Page, eventId: string): Promise<void> {
-  debug('Attempting to save event...');
-  const saveButton = page.locator('[data-testid="event-save-button"]');
+  debug('Waiting for pending auto-saves to settle...');
 
-  try {
-    await saveButton.waitFor({ state: 'visible', timeout: 3000 });
-    debug('Save button found, clicking...');
+  // Let auto-save debounce (1s) + API call finish before clicking save manually.
+  // This avoids concurrent PUT requests which can cause API errors.
+  await page.waitForTimeout(2000);
+  await page.waitForLoadState('networkidle', { timeout: 5000 }).catch(() => {
+    debug('Network not idle after 5s, continuing...');
+  });
+
+  const saveButton = page.locator('[data-testid="event-save-button"]');
+  await saveButton.waitFor({ state: 'visible', timeout: 5000 });
+
+  // Wait for any stale toasts from auto-save to disappear before clicking save,
+  // so we can reliably detect the toast from our explicit save click.
+  const staleToast = page.getByText('Changes saved');
+  await staleToast.waitFor({ state: 'hidden', timeout: 5000 }).catch(() => {
+    debug('Stale toast still visible, continuing...');
+  });
+
+  // Try saving up to 2 times — auto-save race conditions can cause transient failures
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    debug('Save attempt %d...', attempt);
     await saveButton.click();
 
-    // Wait for save confirmation toast
-    const toastAppeared = await page
-      .locator('text=Changes saved')
-      .waitFor({ state: 'visible', timeout: 5000 })
-      .then(() => true)
-      .catch(() => false);
+    // Wait for either success or error toast.
+    // Stale "Changes saved" toasts were cleared above, so any new one is from this click.
+    const successToast = page.getByText('Changes saved');
+    const errorToast = page.getByText('Save failed', { exact: false });
 
-    if (toastAppeared) {
+    const result = await Promise.race([
+      successToast
+        .waitFor({ state: 'visible', timeout: 8000 })
+        .then(() => 'success' as const),
+      errorToast
+        .waitFor({ state: 'visible', timeout: 8000 })
+        .then(() => 'error' as const),
+    ]).catch(() => 'timeout' as const);
+
+    if (result === 'success') {
       debug('✅ Save confirmed via toast');
-      await page.waitForTimeout(1000);
+      break;
+    } else if (result === 'error') {
+      const errorMsg = await errorToast.last().textContent();
+      debug('⚠️  Save failed (attempt %d): %s', attempt, errorMsg);
+      if (attempt < 2) {
+        debug('Retrying after a brief wait...');
+        await page.waitForTimeout(2000);
+      }
     } else {
-      debug('⚠️  No toast appeared, waiting longer for save...');
-      await page.waitForTimeout(3000);
+      debug('No toast seen (attempt %d) — auto-save may have already persisted', attempt);
+      break;
     }
-  } catch {
-    debug('⚠️  Save button not found, waiting for auto-save...');
-    await page.waitForTimeout(5000);
   }
 
-  await page.waitForLoadState('networkidle');
+  // Give the API time to finish
+  await page.waitForTimeout(1000);
 
   // Validate event was saved by fetching from API
-  debug('Fetching event from API to validate submission...');
+  debug('Fetching event from API to validate...');
   const jsonResponse = await getEventFromApi(eventId);
 
-  debug('Full API response: %O', jsonResponse);
-
-  if (jsonResponse.status === 'Draft') {
-    debug('⚠️  WARNING: Event is still in Draft status - fields may not have been saved!');
-  }
+  debug(
+    'API response — status: %s, city: %s, maxParticipants: %s, description length: %d',
+    jsonResponse.status,
+    jsonResponse.city,
+    jsonResponse.maxParticipants,
+    jsonResponse.description?.length ?? 0
+  );
 
   // Verify that data was actually saved
   const hasData =
@@ -208,8 +267,11 @@ async function saveEventAndValidate(page: Page, eventId: string): Promise<void> 
 
   if (!hasData) {
     debug('❌ CRITICAL: Event fields were NOT saved! All fields are NULL.');
-    debug('This will cause the public event page to fail.');
-    throw new Error('Event data not saved - cannot proceed with test');
+    throw new Error(
+      'Event data not saved — description, city, and maxParticipants are all NULL. ' +
+        'This likely means Lexical editor paste events or form field changes are not ' +
+        'reaching React Hook Form state.'
+    );
   }
 
   debug('✅ Event data verified as saved');

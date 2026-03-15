@@ -110,21 +110,3 @@ export const validateRegistration = async (page: Page, eventId: string) => {
 
   await expect(page.locator('[data-testid="registration-registrationId"]')).toBeVisible();
 };
-
-export const editRegistrationOrders = async (page: Page, eventId: string) => {
-  await visitRegistrationPageForEvent(page, eventId);
-  await page.locator('[data-testid="edit-registration-button"]').click();
-
-  // Select product checkbox by ID pattern
-  await page.locator('input[type="checkbox"][id^="checkbox-product-"]').first().click();
-
-  await page.locator('[data-testid="registration-customize-submit-button"]').click();
-  await fillOutPaymentDetails(page);
-
-  debug('Confirming registration edit...');
-  await page.locator('[data-testid="registration-confirmation-button"]').click();
-
-  // Wait for update to complete by waiting for redirect back to event page
-  await page.waitForURL(`/user/events/*`, { timeout: 30000 });
-  debug('✅ Registration updated');
-};
