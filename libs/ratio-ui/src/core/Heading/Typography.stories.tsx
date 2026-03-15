@@ -40,7 +40,7 @@ export const HeadingScale: StoryObj = {
         noticeably smaller size, creating clear visual steps down from h2.
       </p>
 
-      <Heading as="h4">Heading 4 — Source Sans, lg</Heading>
+      <Heading as="h4">Heading 4 — Source Sans, base, 650</Heading>
       <p>
         Body text following an h4. From this level down the sans-serif body font takes over,
         keeping smaller headings clean and distinct from body text through weight alone.
