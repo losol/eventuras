@@ -1,3 +1,5 @@
+import { decodeJwt } from 'jose';
+
 import { Logger } from '@eventuras/logger';
 import * as openid from 'openid-client';
 
@@ -187,6 +189,140 @@ export type ClientCredentialsConfig = {
  * console.log(tokens.access_token);
  * ```
  */
+/**
+ * Exchanges an authorization code for tokens using OIDC discovery and PKCE.
+ *
+ * @param oauthConfig - OAuth configuration
+ * @param callbackUrl - The full callback URL with query parameters from the OIDC provider
+ * @param codeVerifier - The PKCE code verifier stored during login initiation
+ * @param expectedState - The state parameter stored during login initiation
+ * @returns Token response from the OIDC provider
+ */
+export async function exchangeAuthorizationCode(
+  oauthConfig: OAuthConfig,
+  callbackUrl: URL,
+  codeVerifier: string,
+  expectedState: string,
+): Promise<openid.TokenEndpointResponse> {
+  logger.debug(
+    { issuer: oauthConfig.issuer, clientId: oauthConfig.clientId },
+    'Exchanging authorization code for tokens',
+  );
+
+  const config = await openid.discovery(
+    new URL(oauthConfig.issuer),
+    oauthConfig.clientId,
+    oauthConfig.clientSecret,
+  );
+
+  const tokens = await openid.authorizationCodeGrant(
+    config,
+    callbackUrl,
+    {
+      pkceCodeVerifier: codeVerifier,
+      expectedState,
+    },
+    { redirect_uri: oauthConfig.redirect_uri },
+  );
+
+  logger.info(
+    {
+      hasAccessToken: !!tokens.access_token,
+      hasRefreshToken: !!tokens.refresh_token,
+      expiresIn: tokens.expires_in,
+    },
+    'Authorization code exchange successful',
+  );
+
+  return tokens;
+}
+
+/**
+ * Result of extracting user information from an OIDC token response.
+ */
+export interface OidcUserInfo {
+  sub: string;
+  name: string;
+  email: string;
+  roles: string[];
+}
+
+/**
+ * Extracts user information from an OIDC token response.
+ * Decodes the ID token and extracts standard claims plus roles from a configurable claim.
+ *
+ * @param tokens - Token response from the OIDC provider
+ * @param rolesClaim - Name of the claim containing user roles (default: 'roles')
+ * @returns Extracted user information
+ */
+export function extractUserFromTokens(
+  tokens: openid.TokenEndpointResponse,
+  rolesClaim: string = 'roles',
+): OidcUserInfo {
+  const idToken = decodeJwt(tokens.id_token ?? '');
+
+  const roles = Array.from(
+    (idToken[rolesClaim] as string[] | undefined) ?? [],
+  );
+
+  logger.debug({ sub: idToken.sub, rolesClaim, rolesCount: roles.length }, 'Extracted user from ID token');
+
+  return {
+    sub: idToken.sub ?? '',
+    name: idToken.name as string,
+    email: idToken.email as string,
+    roles,
+  };
+}
+
+/**
+ * Validates a return URL against open redirect attacks.
+ * Ensures the URL is same-origin and passes optional custom validation.
+ *
+ * @param returnTo - The raw returnTo path/URL to validate
+ * @param applicationOrigin - The application's origin URL (e.g., 'https://example.com')
+ * @param defaultPath - Fallback path if validation fails (default: '/')
+ * @param validate - Optional custom validation function for the pathname
+ * @returns A safe, validated URL
+ */
+export function validateReturnUrl(
+  returnTo: string | null | undefined,
+  applicationOrigin: string,
+  defaultPath: string = '/',
+  validate?: (pathname: string) => boolean,
+): URL {
+  const redirectPath = returnTo ?? defaultPath;
+  let redirectUrl: URL;
+
+  try {
+    redirectUrl = new URL(redirectPath, applicationOrigin);
+  } catch {
+    logger.warn({ returnTo: redirectPath }, 'Invalid returnTo URL, using default');
+    return new URL(defaultPath, applicationOrigin);
+  }
+
+  // Enforce same-origin — cross-origin returnTo is a potential open redirect attack
+  const originUrl = new URL(applicationOrigin);
+  if (redirectUrl.origin !== originUrl.origin) {
+    logger.error(
+      { returnTo: redirectPath, redirectOrigin: redirectUrl.origin, applicationOrigin: originUrl.origin },
+      'Possible open redirect attack: returnTo points outside application origin',
+    );
+    return new URL(defaultPath, applicationOrigin);
+  }
+
+  // Custom validation
+  if (validate && !validate(redirectUrl.pathname)) {
+    logger.warn(
+      { pathname: redirectUrl.pathname },
+      'returnTo failed custom validation, falling back to default',
+    );
+    return new URL(defaultPath, applicationOrigin);
+  }
+
+  return redirectUrl;
+}
+
 export async function clientCredentialsGrant(
   config: ClientCredentialsConfig
 ): Promise<openid.TokenEndpointResponse> {
