@@ -43,15 +43,15 @@ export async function GET() {
         return NextResponse.redirect(new URL('/', applicationUrl));
       } else {
         // Session exists but is invalid/expired - clear it
-        logger.info('Session expired or invalid, clearing and proceeding to Auth0');
+        logger.info('Session expired or invalid, clearing and proceeding to login');
         (await cookies()).delete('session');
       }
     }
 
-    logger.info('No session found, redirecting to Auth0');
+    logger.info('No session found, redirecting to OIDC provider');
 
-    // If no session exists, redirect to the Auth0 login page
-    return NextResponse.redirect(new URL('/api/login/auth0', applicationUrl));
+    // If no session exists, redirect to the OIDC login route
+    return NextResponse.redirect(new URL('/api/auth/login', applicationUrl));
   } catch (error) {
     logger.error({ error }, 'Error in login route');
     return new NextResponse('Internal Server Error', {

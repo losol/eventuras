@@ -26,7 +26,7 @@ export interface UserMenuProps {
 
 /**
  * Redirects to OAuth login endpoint
- * Uses window.location to avoid CORS preflight issues with Auth0
+ * Uses window.location to avoid CORS preflight issues with the OIDC provider
  */
 function redirectToLogin() {
   window.location.href = '/api/login';
@@ -92,7 +92,7 @@ function UserDropdownMenu({
     setIsLoggingOut(true);
     onLogout();
     // Redirect to logout endpoint which clears cookies
-    window.location.href = '/api/logout';
+    window.location.href = '/api/auth/logout';
   };
 
   // Add warning indicator to menu label if session is unstable

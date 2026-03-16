@@ -61,7 +61,7 @@ export function SessionWarningOverlay() {
 
     // Capture current URL to return after login
     const returnTo = globalThis.location.pathname + globalThis.location.search;
-    const loginUrl = `/api/login/auth0?returnTo=${encodeURIComponent(returnTo)}`;
+    const loginUrl = `/api/auth/login?returnTo=${encodeURIComponent(returnTo)}`;
 
     logger.info({ returnTo }, 'Redirecting to login with returnTo');
     globalThis.location.href = loginUrl;
