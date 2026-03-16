@@ -3,6 +3,8 @@ import { decodeJwt } from 'jose';
 import { Logger } from '@eventuras/logger';
 import * as openid from 'openid-client';
 
+import type { Session } from './types';
+
 const logger = Logger.create({ namespace: 'fides-auth:oauth' });
 
 // Re-export commonly used types from openid-client for convenience
@@ -272,6 +274,36 @@ export function extractUserFromTokens(
     name: idToken.name as string,
     email: idToken.email as string,
     roles,
+  };
+}
+
+/**
+ * Builds a Session object from an OIDC token response.
+ * Maps provider tokens and user claims into the internal Session format.
+ *
+ * @param tokens - Token response from the OIDC provider
+ * @param rolesClaim - Name of the claim containing user roles (default: 'roles')
+ * @returns A Session object ready to be encrypted and stored
+ */
+export function buildSessionFromTokens(
+  tokens: openid.TokenEndpointResponse,
+  rolesClaim: string = 'roles',
+): Session {
+  const userInfo = extractUserFromTokens(tokens, rolesClaim);
+
+  return {
+    tokens: {
+      accessToken: tokens.access_token!,
+      accessTokenExpiresAt: tokens.expires_in
+        ? new Date(Date.now() + tokens.expires_in * 1000)
+        : undefined,
+      refreshToken: tokens.refresh_token!,
+    },
+    user: {
+      name: userInfo.name,
+      email: userInfo.email,
+      roles: userInfo.roles,
+    },
   };
 }
 
