@@ -116,7 +116,7 @@ async function handleSessionRefresh(session: Session): Promise<NextResponse | nu
  * Redirects to login page with returnTo parameter.
  */
 function redirectToLogin(pathname: string, search: string, originUrl: string): NextResponse {
-  const loginUrl = new URL('/api/login/auth0', originUrl);
+  const loginUrl = new URL('/api/auth/login', originUrl);
   loginUrl.searchParams.set('returnTo', pathname + search);
 
   logger.info({ returnTo: pathname + search }, 'Redirecting to login');

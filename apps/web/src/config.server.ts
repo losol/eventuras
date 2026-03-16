@@ -6,7 +6,7 @@
  *
  * @example
  * import { appConfig } from '@/config.server';
- * const clientId = appConfig.env.AUTH0_CLIENT_ID;
+ * const clientId = appConfig.env.OIDC_CLIENT_ID;
  */
 
 import { createConfig } from '@eventuras/app-config';

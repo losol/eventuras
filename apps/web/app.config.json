@@ -23,11 +23,11 @@
       "description": "Default locale for internationalization (e.g., en-US, nb-NO)",
       "enum": ["en-US", "nb-NO"]
     },
-    "AUTH0_DOMAIN": {
+    "OIDC_ISSUER": {
       "required": true,
       "client": false,
-      "type": "string",
-      "description": "Auth0 domain for authentication (e.g., eventuras.eu.auth0.com). Server-side only – used by server-side PKCE flow."
+      "type": "url",
+      "description": "OIDC provider issuer URL (e.g., https://auth.example.com/application/o/app/). Server-side only – used by server-side PKCE flow."
     },
     "ORGANIZATION_ID": {
       "required": true,
@@ -47,23 +47,29 @@
       "type": "url",
       "description": "Backend API base URL. Server-side only – passed as prop to client components that need it."
     },
-    "AUTH0_CLIENT_ID": {
+    "OIDC_CLIENT_ID": {
       "required": true,
       "client": false,
       "type": "string",
-      "description": "Auth0 client identifier used by the backend authentication flow (server-side only)"
+      "description": "OIDC client identifier used by the backend authentication flow (server-side only)"
     },
-    "AUTH0_CLIENT_SECRET": {
+    "OIDC_CLIENT_SECRET": {
       "required": true,
       "client": false,
       "type": "string",
-      "description": "Auth0 client secret for server-side authentication (never expose to client)"
+      "description": "OIDC client secret for server-side authentication (never expose to client)"
     },
-    "AUTH0_API_AUDIENCE": {
-      "required": true,
+    "OIDC_API_AUDIENCE": {
+      "required": false,
       "client": false,
       "type": "string",
-      "description": "Auth0 API audience identifier for token validation"
+      "description": "OIDC API audience identifier for token validation"
+    },
+    "OIDC_ROLES_CLAIM": {
+      "required": false,
+      "client": false,
+      "type": "string",
+      "description": "Name of the claim in the ID token that contains user roles (default: roles)"
     },
     "NODE_ENV": {
       "required": true,

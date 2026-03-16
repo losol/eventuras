@@ -95,7 +95,7 @@ export default async function UserEventPage({ params }: Readonly<UserEventPagePr
 
     // Redirect to login with return URL to come back to this event
     const returnUrl = `/user/events/${id}`;
-    redirect(`/api/login/auth0?returnTo=${encodeURIComponent(returnUrl)}`);
+    redirect(`/api/auth/login?returnTo=${encodeURIComponent(returnUrl)}`);
   }
 
   // Handle event not found or fetch error
