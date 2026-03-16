@@ -39,13 +39,13 @@ const UserEventRegistrationCard = ({
         })}
       </Text>
       {products.length > 0 && (
-        <Text as="div">
+        <div>
           <ul>
             {products.map(product => (
               <li key={product.productId}>{product.product?.name}</li>
             ))}
           </ul>
-        </Text>
+        </div>
       )}
       <Text className="py-5">
         <Link
