@@ -1,7 +1,8 @@
 # All generated test artifacts (auth state, test results, reports, etc.)
 /tmp/
 
-# Legacy output dirs (in case Playwright defaults are used)
+# Output dirs
+allure-results
 /test-results/
 /playwright-report/
 /blob-report/
