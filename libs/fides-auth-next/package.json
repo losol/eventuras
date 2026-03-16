@@ -19,6 +19,10 @@
     "./store": {
       "types": "./dist/store/index.d.ts",
       "import": "./dist/store/index.js"
+    },
+    "./oidc-callback": {
+      "types": "./dist/oidc-callback.d.ts",
+      "import": "./dist/oidc-callback.js"
     }
   },
   "main": "./dist/index.js",
