@@ -23,6 +23,10 @@
     "./oidc-callback": {
       "types": "./dist/oidc-callback.d.ts",
       "import": "./dist/oidc-callback.js"
+    },
+    "./oidc-login": {
+      "types": "./dist/oidc-login.d.ts",
+      "import": "./dist/oidc-login.js"
     }
   },
   "main": "./dist/index.js",

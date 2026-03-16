@@ -355,6 +355,43 @@ export function validateReturnUrl(
   return redirectUrl;
 }
 
+/**
+ * Discovers the OIDC provider's end_session_endpoint and builds a logout URL.
+ * Returns null if the provider doesn't expose an end_session_endpoint.
+ *
+ * @param oauthConfig - OAuth configuration (issuer, clientId, clientSecret)
+ * @param postLogoutRedirectUri - URL to redirect to after provider logout
+ * @returns Logout URL or null if not supported
+ */
+export async function buildOidcLogoutUrl(
+  oauthConfig: OAuthConfig,
+  postLogoutRedirectUri: string,
+): Promise<URL | null> {
+  try {
+    const config = await openid.discovery(
+      new URL(oauthConfig.issuer),
+      oauthConfig.clientId,
+      oauthConfig.clientSecret,
+    );
+    const endSessionEndpoint = config.serverMetadata().end_session_endpoint;
+
+    if (!endSessionEndpoint) {
+      logger.info({ issuer: oauthConfig.issuer }, 'No end_session_endpoint found');
+      return null;
+    }
+
+    const logoutUrl = new URL(endSessionEndpoint);
+    logoutUrl.searchParams.set('client_id', oauthConfig.clientId);
+    logoutUrl.searchParams.set('post_logout_redirect_uri', postLogoutRedirectUri);
+
+    logger.debug({ logoutUrl: logoutUrl.toString() }, 'Built OIDC logout URL');
+    return logoutUrl;
+  } catch (error) {
+    logger.warn({ error, issuer: oauthConfig.issuer }, 'OIDC discovery failed for logout');
+    return null;
+  }
+}
+
 export async function clientCredentialsGrant(
   config: ClientCredentialsConfig
 ): Promise<openid.TokenEndpointResponse> {
