@@ -2,6 +2,34 @@
 
 End-to-end tests for the Eventuras web application using Playwright.
 
+## Quick Start
+
+```bash
+cd tests/e2e
+
+# 1. Install Playwright browsers
+npx playwright install
+
+# 2. Set up environment
+cp .env-template .env
+
+# 3. Set the required URLs in .env:
+#    E2E_WEB_URL=http://localhost:3000    (your running web app)
+#    E2E_API_URL=http://localhost:5000    (your running API)
+#    E2E_SESSION_SECRET=...               (must match the web app's SESSION_SECRET)
+#    + Gmail OAuth credentials (see below)
+
+# 4. Run all tests
+pnpm test
+
+# 5. Skip login if auth tokens are still valid
+pnpm test:skiplogin
+```
+
+> **Minimum required variables:** `E2E_WEB_URL` and `E2E_API_URL` must be set.
+> The web URL is used by Playwright as `baseURL` for navigation.
+> The API URL is used for direct API calls in test setup/teardown.
+
 ## Table of Contents
 
 - [Overview](#overview)
