@@ -30,7 +30,8 @@ export async function refreshAccessToken(
     const config = await openid.discovery(
       new URL(oAuthConfig.issuer),
       oAuthConfig.clientId,
-      oAuthConfig.clientSecret
+      oAuthConfig.clientSecret,
+      openid.ClientSecretPost(oAuthConfig.clientSecret),
     );
 
     const tokens = await openid.refreshTokenGrant(
@@ -215,6 +216,7 @@ export async function exchangeAuthorizationCode(
     new URL(oauthConfig.issuer),
     oauthConfig.clientId,
     oauthConfig.clientSecret,
+    openid.ClientSecretPost(oauthConfig.clientSecret),
   );
 
   const tokens = await openid.authorizationCodeGrant(
@@ -261,11 +263,19 @@ export function extractUserFromTokens(
   tokens: openid.TokenEndpointResponse,
   rolesClaim: string = 'roles',
 ): OidcUserInfo {
-  const idToken = decodeJwt(tokens.id_token ?? '');
+  if (!tokens.id_token) {
+    throw new Error('OIDC token response is missing id_token');
+  }
 
-  const roles = Array.from(
-    (idToken[rolesClaim] as string[] | undefined) ?? [],
-  );
+  const idToken = decodeJwt(tokens.id_token);
+
+  // Normalize roles: some providers send a single string instead of an array
+  const rawRoles = idToken[rolesClaim];
+  const roles = Array.isArray(rawRoles)
+    ? rawRoles
+    : typeof rawRoles === 'string'
+      ? [rawRoles]
+      : [];
 
   logger.debug({ sub: idToken.sub, rolesClaim, rolesCount: roles.length }, 'Extracted user from ID token');
 
@@ -289,15 +299,19 @@ export function buildSessionFromTokens(
   tokens: openid.TokenEndpointResponse,
   rolesClaim: string = 'roles',
 ): Session {
+  if (!tokens.access_token) {
+    throw new Error('OIDC token response is missing access_token');
+  }
+
   const userInfo = extractUserFromTokens(tokens, rolesClaim);
 
   return {
     tokens: {
-      accessToken: tokens.access_token!,
+      accessToken: tokens.access_token,
       accessTokenExpiresAt: tokens.expires_in
         ? new Date(Date.now() + tokens.expires_in * 1000)
         : undefined,
-      refreshToken: tokens.refresh_token!,
+      refreshToken: tokens.refresh_token,
     },
     user: {
       name: userInfo.name,
@@ -372,6 +386,7 @@ export async function buildOidcLogoutUrl(
       new URL(oauthConfig.issuer),
       oauthConfig.clientId,
       oauthConfig.clientSecret,
+      openid.ClientSecretPost(oauthConfig.clientSecret),
     );
     const endSessionEndpoint = config.serverMetadata().end_session_endpoint;
 
