@@ -47,7 +47,7 @@ const UserEventRegistrationCard = ({
           </ul>
         </div>
       )}
-      <Text className="py-5">
+      <Text padding="py-5">
         <Link
           href={`/user/events/${eventId}`}
           variant="button-primary"

@@ -67,7 +67,7 @@ const EventProductsEditor: React.FC<EventProductsEditorProps> = ({
           backgroundColorClass="bg-gray-50 dark:bg-gray-800/50"
           padding="py-12 px-6"
         >
-          <Text as="p" className="text-gray-500 dark:text-gray-400">
+          <Text variant="subtle">
             {t('admin.products.labels.noproducts', {
               defaultValue: 'No products configured yet. Add your first product to get started.',
             })}
