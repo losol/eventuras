@@ -34,11 +34,11 @@ export const ProductTable: React.FC<ProductTableProps> = ({ eventId, products, o
       cell: info => {
         const value = info.getValue();
         return value != null ? (
-          <Text as="span" className="font-medium tabular-nums">
+          <Text as="span" weight="medium" className="tabular-nums">
             {value}
           </Text>
         ) : (
-          <Text as="span" className="text-gray-400">
+          <Text as="span" variant="subtle">
             —
           </Text>
         );
@@ -50,7 +50,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({ eventId, products, o
         const visibility = info.getValue();
         if (!visibility) {
           return (
-            <Text as="span" className="text-gray-400">
+            <Text as="span" variant="subtle">
               —
             </Text>
           );
@@ -72,7 +72,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({ eventId, products, o
             {value}
           </Text>
         ) : (
-          <Text as="span" className="text-gray-400">
+          <Text as="span" variant="subtle">
             —
           </Text>
         );

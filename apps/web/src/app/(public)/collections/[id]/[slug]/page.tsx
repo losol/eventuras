@@ -33,7 +33,7 @@ const CollectionPage: React.FC<EventInfoProps> = async props => {
     return (
       <>
         <Heading>{t('common.events.detailspage.notfound.title')}</Heading>
-        <Text className="py-6">{t('common.events.detailspage.notfound.description')}</Text>
+        <Text padding="py-6">{t('common.events.detailspage.notfound.description')}</Text>
         <Link href="/" variant="button-primary">
           {t('common.events.detailspage.notfound.back')}
         </Link>
@@ -77,7 +77,7 @@ const CollectionPage: React.FC<EventInfoProps> = async props => {
           </Container>
         ) : (
           <Container>
-            <Text className="py-6">{t('common.labels.noevents')}</Text>
+            <Text padding="py-6">{t('common.labels.noevents')}</Text>
           </Container>
         )}
       </Section>

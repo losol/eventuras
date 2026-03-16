@@ -100,7 +100,7 @@ const EventProducts: React.FC<EventProductsPage> = async props => {
           >
             {t('admin.products.labels.editProducts')}
           </Link>
-          <Text className="py-3">
+          <Text padding="py-3">
             Active {totals.active} &mdash; Cancelled {totals.cancelled} &mdash; Waiting list{' '}
             {totals.waitingList}.
           </Text>

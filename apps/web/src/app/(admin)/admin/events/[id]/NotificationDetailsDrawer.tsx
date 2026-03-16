@@ -94,15 +94,21 @@ export default function NotificationDetailsDrawer({
           {/* Notification Overview */}
           <div className="space-y-3">
             <div>
-              <Text className="font-semibold text-sm text-gray-600">Type</Text>
+              <Text weight="semibold" size="sm" variant="muted">
+                Type
+              </Text>
               <Text>{notification.type || '-'}</Text>
             </div>
             <div>
-              <Text className="font-semibold text-sm text-gray-600">Status</Text>
+              <Text weight="semibold" size="sm" variant="muted">
+                Status
+              </Text>
               <Text>{notification.status || '-'}</Text>
             </div>
             <div>
-              <Text className="font-semibold text-sm text-gray-600">Created</Text>
+              <Text weight="semibold" size="sm" variant="muted">
+                Created
+              </Text>
               <Text>
                 {notification.created
                   ? formatDate(notification.created.toString(), { showTime: true })
@@ -110,7 +116,9 @@ export default function NotificationDetailsDrawer({
               </Text>
             </div>
             <div>
-              <Text className="font-semibold text-sm text-gray-600">Message</Text>
+              <Text weight="semibold" size="sm" variant="muted">
+                Message
+              </Text>
               <Text className="whitespace-pre-wrap">{notification.message || '-'}</Text>
             </div>
           </div>
@@ -118,23 +126,31 @@ export default function NotificationDetailsDrawer({
           {/* Statistics */}
           {notification.statistics && (
             <div className="border-t pt-4">
-              <Text className="font-semibold mb-3">Statistics</Text>
+              <Text weight="semibold" margin="mb-3">
+                Statistics
+              </Text>
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <Text className="text-sm text-gray-600">Recipients</Text>
-                  <Text className="text-2xl font-bold">
+                  <Text size="sm" variant="muted">
+                    Recipients
+                  </Text>
+                  <Text size="2xl" weight="bold">
                     {notification.statistics.recipients || 0}
                   </Text>
                 </div>
                 <div>
-                  <Text className="text-sm text-gray-600">Sent</Text>
-                  <Text className="text-2xl font-bold text-green-600">
+                  <Text size="sm" variant="muted">
+                    Sent
+                  </Text>
+                  <Text size="2xl" weight="bold" color="success">
                     {notification.statistics.sent || 0}
                   </Text>
                 </div>
                 <div>
-                  <Text className="text-sm text-gray-600">Errors</Text>
-                  <Text className="text-2xl font-bold text-red-600">
+                  <Text size="sm" variant="muted">
+                    Errors
+                  </Text>
+                  <Text size="2xl" weight="bold" color="error">
                     {notification.statistics.errors || 0}
                   </Text>
                 </div>
@@ -144,7 +160,9 @@ export default function NotificationDetailsDrawer({
 
           {/* Recipients List */}
           <div className="border-t pt-4">
-            <Text className="font-semibold mb-3">Recipients</Text>
+            <Text weight="semibold" margin="mb-3">
+              Recipients
+            </Text>
             {isLoading ? (
               <Loading />
             ) : recipients.length > 0 ? (
@@ -165,20 +183,20 @@ export default function NotificationDetailsDrawer({
                     <Card key={recipient.notificationRecipientId || index} padding="p-3">
                       <div className="flex justify-between items-start">
                         <div className="flex-1">
-                          <Text className="font-medium">
-                            {recipient.recipientName || 'Unknown'}
-                          </Text>
-                          <Text className="text-sm text-gray-600">
+                          <Text weight="medium">{recipient.recipientName || 'Unknown'}</Text>
+                          <Text size="sm" variant="muted">
                             {recipient.recipientEmail || recipient.recipientPhoneNumber || '-'}
                           </Text>
                         </div>
                         <Badge variant={badgeVariant}>{badgeLabel}</Badge>
                       </div>
                       {recipient.errors && (
-                        <Text className="text-xs text-red-600 mt-2">{recipient.errors}</Text>
+                        <Text size="xs" color="error" margin="mt-2">
+                          {recipient.errors}
+                        </Text>
                       )}
                       {recipient.sent && (
-                        <Text className="text-xs text-gray-500 mt-1">
+                        <Text size="xs" variant="subtle" margin="mt-1">
                           Sent: {formatDate(recipient.sent.toString(), { showTime: true })}
                         </Text>
                       )}
@@ -187,7 +205,7 @@ export default function NotificationDetailsDrawer({
                 })}
               </div>
             ) : (
-              <Text className="text-gray-500">No recipients data available</Text>
+              <Text variant="subtle">No recipients data available</Text>
             )}
           </div>
         </div>

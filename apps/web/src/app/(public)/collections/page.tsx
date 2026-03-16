@@ -28,7 +28,7 @@ const CollectionIndexPage: React.FC = async () => {
     return (
       <>
         <Heading>{t('common.events.detailspage.notfound.title')}</Heading>
-        <Text className="py-6">{t('common.events.detailspage.notfound.description')}</Text>
+        <Text padding="py-6">{t('common.events.detailspage.notfound.description')}</Text>
         <Link href="/" variant="button-primary">
           {t('common.events.detailspage.notfound.back')}
         </Link>
@@ -48,7 +48,7 @@ const CollectionIndexPage: React.FC = async () => {
           collections.data.map(collection => (
             <Card key={collection.id} className="my-4">
               <Heading as="h2">{collection.name}</Heading>
-              <Text className="pb-4">
+              <Text padding="pb-4">
                 <MarkdownContent markdown={collection.description} />
               </Text>
               <Link
