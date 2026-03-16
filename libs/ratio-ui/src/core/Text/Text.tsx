@@ -4,21 +4,73 @@ import {
   buildSpacingClasses,
 } from '../../layout/Box/Box';
 
+export type TextSize = 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl';
+export type TextWeight = 'light' | 'normal' | 'medium' | 'semibold' | 'bold';
+export type TextVariant = 'default' | 'muted' | 'subtle';
+export type TextColor =
+  | 'primary'
+  | 'secondary'
+  | 'accent'
+  | 'error'
+  | 'success'
+  | 'warning'
+  | 'info';
+
 export interface TextProps extends BoxSpacingProps {
   text?: string | null;
   children?: React.ReactNode;
-  as?: 'div' | 'span' | 'p';
-  variant?: 'default' | 'muted';
+  as?: 'p' | 'span';
+  size?: TextSize;
+  weight?: TextWeight;
+  variant?: TextVariant;
+  color?: TextColor;
   className?: string;
   icon?: React.ReactNode;
   testId?: string;
 }
 
+const sizeClasses: Record<TextSize, string> = {
+  xs: 'text-xs',
+  sm: 'text-sm',
+  base: 'text-base',
+  lg: 'text-lg',
+  xl: 'text-xl',
+  '2xl': 'text-2xl',
+  '3xl': 'text-3xl',
+};
+
+const weightClasses: Record<TextWeight, string> = {
+  light: 'font-light',
+  normal: 'font-normal',
+  medium: 'font-medium',
+  semibold: 'font-semibold',
+  bold: 'font-bold',
+};
+
+const variantClasses: Record<TextVariant, string> = {
+  default: '',
+  muted: 'text-text-muted',
+  subtle: 'text-text-subtle',
+};
+
+const colorClasses: Record<TextColor, string> = {
+  primary: 'text-primary',
+  secondary: 'text-secondary',
+  accent: 'text-accent',
+  error: 'text-error-text',
+  success: 'text-success-text',
+  warning: 'text-warning-text',
+  info: 'text-info-text',
+};
+
 export const Text: React.FC<TextProps> = ({
   text,
   children,
   as: Component = 'p',
+  size,
+  weight,
   variant = 'default',
+  color,
   className = '',
   icon,
   padding,
@@ -29,33 +81,27 @@ export const Text: React.FC<TextProps> = ({
   testId,
   ...restHtmlProps
 }) => {
-  // 1) Only one of text/children
   if (text != null && children != null) {
     throw new Error(
       "Text component cannot take both `text` and `children`. Please provide only one."
     );
   }
-  // 2) Nothing to render?
   if (text == null && children == null) {
     return null;
   }
   const content = text != null ? text : children;
 
-  // 3) Variant styles
-  const variantStyles = {
-    default: '',
-    muted: 'text-sm text-gray-600 dark:text-gray-400',
-  };
-
-  // 4) Compute spacing
-  const spacingCls = buildSpacingClasses({ padding, margin, border, width, height });
-
-  // 5) Final class list
-  const classes = [variantStyles[variant], spacingCls, className].filter(Boolean).join(' ');
+  const classes = [
+    color ? colorClasses[color] : variantClasses[variant],
+    size ? sizeClasses[size] : undefined,
+    weight ? weightClasses[weight] : undefined,
+    buildSpacingClasses({ padding, margin, border, width, height }),
+    className,
+  ].filter(Boolean).join(' ');
 
   return (
     <Component
-      className={classes}
+      className={classes || undefined}
       data-testid={testId}
       {...restHtmlProps}
     >

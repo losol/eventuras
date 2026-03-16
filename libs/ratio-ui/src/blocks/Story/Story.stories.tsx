@@ -206,7 +206,7 @@ export const BlogPost: StoryStory = {
     children: (
       <>
         <StoryHeader>
-          <Text variant="muted">
+          <Text variant="muted" size="sm">
             Technology • 12 min read
           </Text>
           <Heading as="h1">Building Accessible Web Applications</Heading>
@@ -342,7 +342,7 @@ export const BlogPost: StoryStory = {
         <StoryFooter>
           <div className="flex items-center gap-4">
             <Text>Written by Sarah Johnson</Text>
-            <Text variant="muted">•</Text>
+            <Text variant="muted" size="sm">•</Text>
             <Text>January 12, 2026</Text>
           </div>
         </StoryFooter>
@@ -406,7 +406,7 @@ export const NewsArticle: StoryStory = {
             The latest version introduces groundbreaking features that promise to
             change how developers build web applications.
           </Lead>
-          <Text variant="muted">
+          <Text variant="muted" size="sm">
             January 12, 2026 at 09:30 AM PST
           </Text>
         </StoryHeader>
