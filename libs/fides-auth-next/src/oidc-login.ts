@@ -11,6 +11,7 @@ import {
   discoverAndBuildAuthorizationUrl,
 } from '@eventuras/fides-auth/oauth';
 import { Logger } from '@eventuras/logger';
+import { cookies } from 'next/headers';
 
 import { defaultOAuthCookieOptions } from './cookies';
 import { globalGETRateLimit } from './request';
@@ -67,26 +68,19 @@ export async function handleOidcLogin(
 
   logger.info('Redirecting to OIDC provider for login');
 
-  // Build response with redirect + PKCE cookies
-  const headers = new Headers({ Location: authorizationUrl.toString() });
-  const cookieEntries = [
-    ['oauth_state', pkce.state],
-    ['oauth_code_verifier', pkce.code_verifier],
-    ...(returnTo ? [['returnTo', returnTo]] : []),
-  ];
+  // Persist PKCE state in cookies using Next.js cookies API
+  const cookieStore = await cookies();
+  const cookieOpts = defaultOAuthCookieOptions;
 
-  for (const [name, value] of cookieEntries) {
-    const opts = defaultOAuthCookieOptions;
-    const parts = [
-      `${name}=${value}`,
-      `Path=${opts.path}`,
-      `Max-Age=${opts.maxAge}`,
-      `SameSite=${opts.sameSite}`,
-      opts.httpOnly ? 'HttpOnly' : '',
-      opts.secure ? 'Secure' : '',
-    ].filter(Boolean);
-    headers.append('Set-Cookie', parts.join('; '));
+  cookieStore.set('oauth_state', pkce.state, cookieOpts);
+  cookieStore.set('oauth_code_verifier', pkce.code_verifier, cookieOpts);
+
+  if (returnTo) {
+    cookieStore.set('returnTo', returnTo, cookieOpts);
   }
 
-  return new Response(null, { status: 302, headers });
+  return new Response(null, {
+    status: 302,
+    headers: { Location: authorizationUrl.toString() },
+  });
 }
