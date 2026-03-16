@@ -75,4 +75,26 @@ describe('extractUserFromTokens', () => {
 
     expect(user.roles).toEqual([]);
   });
+
+  it('normalizes single string role to array', async () => {
+    const idToken = await createIdToken({
+      sub: 'user-single',
+      name: 'Single Role',
+      email: 'single@example.com',
+      roles: 'admin',
+    });
+
+    const user = extractUserFromTokens(makeTokenResponse(idToken));
+
+    expect(user.roles).toEqual(['admin']);
+  });
+
+  it('throws when id_token is missing', () => {
+    const tokens = {
+      access_token: 'access-token',
+      token_type: 'Bearer',
+    } as TokenEndpointResponse;
+
+    expect(() => extractUserFromTokens(tokens)).toThrow('missing id_token');
+  });
 });
