@@ -48,9 +48,7 @@ const CollectionIndexPage: React.FC = async () => {
           collections.data.map(collection => (
             <Card key={collection.id} className="my-4">
               <Heading as="h2">{collection.name}</Heading>
-              <Text padding="pb-4">
-                <MarkdownContent markdown={collection.description} />
-              </Text>
+              <MarkdownContent markdown={collection.description} />
               <Link
                 href={`/collections/${collection.id}/${collection.slug}`}
                 variant="button-primary"
