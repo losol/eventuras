@@ -1,5 +1,23 @@
 # @eventuras/event-sdk
 
+## 2.29.0
+
+### Minor Changes
+
+- 10235ad: ### 🧱 Features
+  - feat(web): implement PDF certificate proxy (7375ef3) [@eventuras/web]
+
+  ### 🐞 Bug Fixes
+  - fix(web): improve error handling in createEvent function (89e8953) [@eventuras/web]
+
+- 867c9f3: ### 🧱 Features
+  - feat(web): enhance EconomySection with status grouping (821fc39) [@eventuras/web]
+
+### Patch Changes
+
+- 21d0d6f: ### 🐞 Bug Fixes
+  - fix(event-sdk): refine type definitions and improve body serialization (d9ce91a) [@eventuras/event-sdk]
+
 ## 2.28.0
 
 ### Patch Changes
