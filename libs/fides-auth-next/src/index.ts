@@ -2,6 +2,7 @@
 export * from './request';
 export * from './session';
 export * from './cookies';
+export * from './oidc-callback';
 
 // Authentication Store (XState Store)
 export * from './store';
