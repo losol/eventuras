@@ -184,7 +184,7 @@ function LoginPrompt({ uid, details }: { uid: string; details: InteractionDetail
     <InteractionCard>
       <Heading as="h2" margin="mb-2">Sign In</Heading>
 
-      <Text variant="muted" margin="mb-4">
+      <Text variant="muted" size="sm" margin="mb-4">
         <strong>{details.params.client_id}</strong>
       </Text>
 
@@ -215,7 +215,7 @@ function LoginPrompt({ uid, details }: { uid: string; details: InteractionDetail
         </form>
       ) : (
         <form onSubmit={handleVerifyOtp}>
-          <Text variant="muted" margin="mb-4">
+          <Text variant="muted" size="sm" margin="mb-4">
             We sent a code to <strong>{email}</strong>
           </Text>
 
@@ -294,7 +294,7 @@ function ConsentPrompt({ uid, details }: { uid: string; details: InteractionDeta
     <InteractionCard>
       <Heading as="h2" margin="mb-2">Grant Permissions</Heading>
 
-      <Text variant="muted">
+      <Text variant="muted" size="sm">
         <strong>{details.params.client_id}</strong> is requesting access to your account.
       </Text>
 
