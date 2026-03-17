@@ -1,6 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import {
+  CORRELATION_ID_HEADER,
+  createCorrelationId,
+  readCorrelationIdFromResponse,
+} from '@/lib/correlation-id';
 import { getAccessToken } from '@/utils/getAccesstoken';
+
+function errorResponse(error: string, status: number, correlationId: string) {
+  return NextResponse.json(
+    { error, correlationId },
+    { status, headers: { [CORRELATION_ID_HEADER]: correlationId } }
+  );
+}
 
 /**
  * Proxies PDF certificate requests to the backend API,
@@ -9,20 +21,21 @@ import { getAccessToken } from '@/utils/getAccesstoken';
  */
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const correlationId = _request.headers.get(CORRELATION_ID_HEADER) ?? createCorrelationId();
 
   if (!/^\d+$/.test(id)) {
-    return NextResponse.json({ error: 'Invalid certificate ID' }, { status: 400 });
+    return errorResponse('Invalid certificate ID', 400, correlationId);
   }
 
   const backendUrl = process.env.BACKEND_URL;
 
   if (!backendUrl) {
-    return NextResponse.json({ error: 'Backend URL not configured' }, { status: 500 });
+    return errorResponse('Backend URL not configured', 500, correlationId);
   }
 
   const token = await getAccessToken();
   if (!token) {
-    return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+    return errorResponse('Authentication required', 401, correlationId);
   }
 
   let response: Response;
@@ -31,24 +44,21 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
       headers: {
         Accept: 'application/pdf',
         Authorization: `Bearer ${token}`,
+        [CORRELATION_ID_HEADER]: correlationId,
       },
     });
   } catch {
-    return NextResponse.json(
-      { error: 'Certificate service is currently unavailable' },
-      { status: 502 }
-    );
+    return errorResponse('Certificate service is currently unavailable', 502, correlationId);
   }
 
+  const backendCorrelationId = readCorrelationIdFromResponse(response) ?? correlationId;
+
   if (!response.ok) {
-    return NextResponse.json(
-      { error: 'Failed to fetch certificate PDF' },
-      { status: response.status }
-    );
+    return errorResponse('Failed to fetch certificate PDF', response.status, backendCorrelationId);
   }
 
   if (!response.body) {
-    return NextResponse.json({ error: 'Failed to read certificate PDF stream' }, { status: 502 });
+    return errorResponse('Failed to read certificate PDF stream', 502, backendCorrelationId);
   }
 
   return new NextResponse(response.body, {
@@ -57,6 +67,7 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
       'Content-Type': 'application/pdf',
       'Content-Disposition': `inline; filename="certificate-${id}.pdf"`,
       'Cache-Control': 'private, no-store',
+      [CORRELATION_ID_HEADER]: backendCorrelationId,
     },
   });
 }

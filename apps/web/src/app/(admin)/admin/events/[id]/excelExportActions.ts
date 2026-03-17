@@ -4,6 +4,11 @@ import { actionError, actionSuccess, ServerActionResult } from '@eventuras/core-
 import { Logger } from '@eventuras/logger';
 
 import { appConfig } from '@/config.server';
+import {
+  CORRELATION_ID_HEADER,
+  createCorrelationId,
+  readCorrelationIdFromResponse,
+} from '@/lib/correlation-id';
 import { getAccessToken } from '@/utils/getAccesstoken';
 
 const logger = Logger.create({
@@ -35,9 +40,11 @@ export async function downloadRegistrationsExcel(
         headers: {
           Accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
           Authorization: `Bearer ${token}`,
+          [CORRELATION_ID_HEADER]: createCorrelationId(),
         },
       }
     );
+    const correlationId = readCorrelationIdFromResponse(response);
 
     if (!response.ok) {
       logger.error(
@@ -45,10 +52,13 @@ export async function downloadRegistrationsExcel(
           eventId,
           status: response.status,
           statusText: response.statusText,
+          correlationId,
         },
         'Failed to download Excel file'
       );
-      return actionError(`Failed to download: ${response.status} ${response.statusText}`);
+      return actionError(
+        `Failed to download: ${response.status} ${response.statusText}${correlationId ? ` (ref: ${correlationId})` : ''}`
+      );
     }
 
     const blob = await response.blob();

@@ -90,7 +90,7 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(corsBuilder => corsBuilder
         .WithOrigins(origins)
         .AllowAnyHeader()
-        .WithExposedHeaders(Api.OrganizationHeader)
+        .WithExposedHeaders(Api.OrganizationHeader, Api.CorrelationIdHeader)
         .AllowCredentials()
         .AllowAnyMethod());
 });
@@ -133,7 +133,10 @@ builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
 // Finish configuring DI, logging and configuration
 var app = builder.Build();
 
-// Configure middleware pipeline
+// Configure middleware pipeline — correlation ID first so all requests get it
+app.UseMiddleware<CorrelationIdMiddleware>();
+app.UseSerilogRequestLogging();
+
 if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("IntegrationTests"))
 {
     var apiVersions = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
@@ -149,8 +152,6 @@ if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Integratio
         }
     });
 }
-
-app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
 app.UseHsts();
