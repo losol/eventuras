@@ -56,7 +56,7 @@ public class UserProfileController : Controller
 
         if (_authSettings.EnablePiiLogging)
         {
-            _logger.LogInformation("Getting user info for email: {EmailClaim}, phone: {PhoneClaim}.", emailClaim, phoneClaim);
+            _logger.LogDebug("Getting user info for current authenticated user.");
         }
 
         if (string.IsNullOrEmpty(emailClaim))
@@ -75,11 +75,11 @@ public class UserProfileController : Controller
         {
             if (_authSettings.EnablePiiLogging)
             {
-                _logger.LogInformation("No user found with email {EmailClaim}. Creating new user.", emailClaim);
+                _logger.LogDebug("No user found with email claim. Creating new user.");
             }
             else
             {
-                _logger.LogInformation("No user found with email. Creating new user.");
+                _logger.LogDebug("No user found with email. Creating new user.");
             }
 
             user = await _userManagementService.CreateNewUserAsync(

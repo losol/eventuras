@@ -54,8 +54,7 @@ public class PowerOfficeService : IInvoicingProvider
 
             var result = new InvoiceResult();
             var customer = await CreateCustomerIfNotExistsAsync(info, result);
-            _logger.LogInformation("* Bruker kunde med epost: {CustomerEmailAddress}, id {CustomerId}",
-                customer.EmailAddress, customer.Id);
+            _logger.LogDebug("Using customer id {CustomerId}", customer.Id);
 
             await CreateProductsIfNotExistsAsync(info);
 
@@ -121,8 +120,6 @@ public class PowerOfficeService : IInvoicingProvider
                 "Please configure POWER_OFFICE_APP_KEY and POWER_OFFICE_CLIENT_KEY in organization settings.");
         }
 
-        _logger.LogInformation("Using PowerOffice Client with applicationKey: {AppKey}", appKey);
-
         return _api ??= await Go.CreateAsync(new AuthorizationSettings
         {
             ApplicationKey = appKey,
@@ -140,7 +137,7 @@ public class PowerOfficeService : IInvoicingProvider
         var vatNumber = info.CustomerVatNumber != null
             ? new string(info.CustomerVatNumber.Where(char.IsDigit).ToArray())
             : null;
-        _logger.LogInformation("* VAT number: {VatNumber}", vatNumber);
+        _logger.LogDebug("Resolved VAT number");
 
         var existingCustomer = !string.IsNullOrWhiteSpace(vatNumber)
             ? api.Customer.Get()
@@ -148,7 +145,7 @@ public class PowerOfficeService : IInvoicingProvider
             : null;
 
         var customerEmail = info.CustomerEmail;
-        _logger.LogInformation("* Customer email: {CustomerEmail}", customerEmail);
+        _logger.LogDebug("Resolved customer email");
 
         // If no customer was found by VAT number, then search by email
         if (!string.IsNullOrWhiteSpace(customerEmail))
@@ -194,8 +191,7 @@ public class PowerOfficeService : IInvoicingProvider
             }
         };
 
-        // Log the initials of the customer
-        _logger.LogInformation("Customer name: {CustomerName}", customer.Name);
+        _logger.LogDebug("Creating customer record");
 
 
         if (info.PaymentMethod == PaymentProvider.PowerOfficeEHFInvoice && !string.IsNullOrWhiteSpace(vatNumber))
