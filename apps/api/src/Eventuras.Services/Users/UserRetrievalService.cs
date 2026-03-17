@@ -136,7 +136,7 @@ internal class UserRetrievalService : IUserRetrievalService
         var result = await Paging.CreateAsync(query, request, cancellationToken);
         var duration = DateTime.UtcNow - startTime;
 
-        _logger.LogInformation(
+        _logger.LogDebug(
             "User query executed. Results: {Count}, Duration: {Duration}ms",
             result.Data.Length,
             duration.TotalMilliseconds);

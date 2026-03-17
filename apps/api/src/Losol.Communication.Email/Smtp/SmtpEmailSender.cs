@@ -72,7 +72,7 @@ public class SmtpEmailSender : AbstractEmailSender
 
         try
         {
-            _logger.LogInformation(
+            _logger.LogDebug(
                 $"*** START SEND EMAIL BY SMTP - Smtp host: {_smtpConfig.Host} - Port: {_smtpConfig.Port}***");
 
             await emailClient.ConnectAsync(_smtpConfig.Host, _smtpConfig.Port, SecureSocketOptions.StartTls);
@@ -85,7 +85,7 @@ public class SmtpEmailSender : AbstractEmailSender
             await emailClient.SendAsync(mimeMessage);
             await emailClient.DisconnectAsync(true);
 
-            _logger.LogInformation("*** END SEND EMAIL ***");
+            _logger.LogDebug("*** END SEND EMAIL ***");
         }
         catch (Exception ex)
         {
