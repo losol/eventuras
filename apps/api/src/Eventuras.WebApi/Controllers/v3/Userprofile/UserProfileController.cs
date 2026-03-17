@@ -56,7 +56,7 @@ public class UserProfileController : Controller
 
         if (_authSettings.EnablePiiLogging)
         {
-            _logger.LogInformation($"Getting user info for email: {emailClaim}, phone: {phoneClaim} .");
+            _logger.LogInformation("Getting user info for email: {EmailClaim}, phone: {PhoneClaim}.", emailClaim, phoneClaim);
         }
 
         if (string.IsNullOrEmpty(emailClaim))
@@ -75,7 +75,7 @@ public class UserProfileController : Controller
         {
             if (_authSettings.EnablePiiLogging)
             {
-                _logger.LogInformation($"No user found with email {emailClaim}. Creating new user.");
+                _logger.LogInformation("No user found with email {EmailClaim}. Creating new user.", emailClaim);
             }
             else
             {

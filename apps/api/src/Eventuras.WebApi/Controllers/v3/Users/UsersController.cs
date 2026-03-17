@@ -78,7 +78,7 @@ public class UsersController : Controller
         {
             if (_authSettings.EnablePiiLogging)
             {
-                _logger.LogInformation($"No user found with email {emailClaim}. Creating new user.");
+                _logger.LogInformation("No user found with email {EmailClaim}. Creating new user.", emailClaim);
             }
             else
             {

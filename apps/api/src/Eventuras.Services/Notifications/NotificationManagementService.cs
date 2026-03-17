@@ -140,7 +140,7 @@ internal class NotificationManagementService : INotificationManagementService
         Registration.RegistrationStatus[] registrationStatuses,
         Registration.RegistrationType[] registrationTypes)
     {
-        _logger.LogInformation($"Starting to create an email notification for event {eventId}. Subject: {subject}");
+        _logger.LogInformation("Starting to create an email notification for event {EventId}. Subject: {Subject}", eventId, subject);
         CheckSubjectAndBody(subject, body);
 
         await CheckEventAccessAsync(eventId);
@@ -157,7 +157,7 @@ internal class NotificationManagementService : INotificationManagementService
         var currentUser = _httpContextAccessor.HttpContext.User;
 
         _logger.LogInformation(
-            $"Current organization: {currentOrg?.OrganizationId}. Current user id: {currentUser.GetUserId()}");
+            "Current organization: {OrganizationId}. Current user id: {UserId}", currentOrg?.OrganizationId, currentUser.GetUserId());
 
         return await _context
             .CreateAsync(
@@ -196,7 +196,7 @@ internal class NotificationManagementService : INotificationManagementService
         Registration.RegistrationStatus[] registrationStatuses = null,
         Registration.RegistrationType[] registrationTypes = null)
     {
-        _logger.LogInformation($"Starting to create an SMS notification for event {eventId}. Message: {message}");
+        _logger.LogInformation("Starting to create an SMS notification for event {EventId}. Message: {Message}", eventId, message);
         await CheckEventAccessAsync(eventId);
 
         var recipients = await GetRecipientsAsync(

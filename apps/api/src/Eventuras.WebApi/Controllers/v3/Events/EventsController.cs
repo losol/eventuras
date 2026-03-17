@@ -85,7 +85,7 @@ public class EventsController : ControllerBase
         // Log a warning if the event is not found or archived.
         if (eventInfo == null)
         {
-            _logger.LogWarning($"Event with ID {id} not found.");
+            _logger.LogWarning("Event with ID {Id} not found.", id);
             return NotFound();
         }
 
@@ -107,7 +107,7 @@ public class EventsController : ControllerBase
         dto.CopyTo(eventInfo);
         await _eventManagementService.CreateNewEventAsync(eventInfo);
 
-        _logger.LogInformation($"Successfully created a new event with ID {eventInfo.EventInfoId}.");
+        _logger.LogInformation("Successfully created a new event with ID {EventInfoId}.", eventInfo.EventInfoId);
         return new EventDto(eventInfo);
     }
 
@@ -121,25 +121,25 @@ public class EventsController : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<ActionResult<EventDto>> Put(int id, [FromBody] EventFormDto dto)
     {
-        _logger.LogInformation($"Received a request to update the event with ID {id}.");
+        _logger.LogInformation("Received a request to update the event with ID {Id}.", id);
 
         if (dto.Id.HasValue && id != dto.Id.Value)
         {
-            _logger.LogWarning($"Event ID {id} does not match the ID in the request body.");
+            _logger.LogWarning("Event ID {Id} does not match the ID in the request body.", id);
             return BadRequest($"Event ID {id} does not match the ID in the request body.");
         }
 
         var eventInfo = await _eventInfoService.GetEventInfoByIdAsync(id);
         if (eventInfo.Archived)
         {
-            _logger.LogWarning($"Event with ID {id} is archived and cannot be updated.");
+            _logger.LogWarning("Event with ID {Id} is archived and cannot be updated.", id);
             return NotFound();
         }
 
         dto.CopyTo(eventInfo);
         await _eventManagementService.UpdateEventAsync(eventInfo);
 
-        _logger.LogInformation($"Successfully updated the event with ID {id}.");
+        _logger.LogInformation("Successfully updated the event with ID {Id}.", id);
         return Ok(new EventDto(eventInfo));
     }
 
@@ -199,11 +199,11 @@ public class EventsController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task Delete(int id)
     {
-        _logger.LogInformation($"Received a request to delete the event with ID {id}.");
+        _logger.LogInformation("Received a request to delete the event with ID {Id}.", id);
 
 
         await _eventManagementService.DeleteEventAsync(id);
 
-        _logger.LogInformation($"Successfully deleted the event with ID {id}.");
+        _logger.LogInformation("Successfully deleted the event with ID {Id}.", id);
     }
 }

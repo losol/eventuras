@@ -95,7 +95,7 @@ internal class RegistrationManagementService : IRegistrationManagementService
         }
 
         await _context.CreateAsync(registration, true, cancellationToken);
-        _logger.LogInformation($"Successfully created registration for EventId: {eventId}, UserId: {userId}");
+        _logger.LogInformation("Successfully created registration for EventId: {EventId}, UserId: {UserId}", eventId, userId);
 
         options ??= new RegistrationOptions();
 

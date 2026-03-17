@@ -99,7 +99,7 @@ public class UserManagementService : IUserManagementService
         if (await _context.Users.AnyAsync(u => !u.Archived && u.NormalizedEmail == normalizedEmail && u.Id != user.Id,
                 cancellationToken))
         {
-            _logger.LogWarning($"User with email {user.Email} already exists.");
+            _logger.LogWarning("User with email {Email} already exists.", user.Email);
             throw new DuplicateException($"User with email {user.Email} already exists.");
         }
 
