@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using Eventuras.Services.Constants;
 using Eventuras.Services.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -44,6 +45,12 @@ public class HttpResponseExceptionFilter : IExceptionFilter
         }
         else
         {
+            if (result is ObjectResult objectResult && objectResult.Value is ProblemDetails problemDetails)
+            {
+                problemDetails.Extensions["correlationId"] = context.HttpContext.TraceIdentifier;
+            }
+
+            context.HttpContext.Response.Headers[Api.CorrelationIdHeader] = context.HttpContext.TraceIdentifier;
             context.ExceptionHandled = true;
             context.Result = result;
             _logger.LogWarning("Exception of type {ExceptionType} was handled, resulted in: {@Result}", ex.GetType(),

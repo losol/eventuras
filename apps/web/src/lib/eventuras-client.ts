@@ -14,6 +14,11 @@
 import { client, type RequestOptions } from '@eventuras/event-sdk';
 import { Logger } from '@eventuras/logger';
 
+import {
+  CORRELATION_ID_HEADER,
+  createCorrelationId,
+  readCorrelationIdFromResponse,
+} from '@/lib/correlation-id';
 import { getAccessToken } from '@/utils/getAccesstoken';
 
 const logger = Logger.create({
@@ -59,43 +64,32 @@ function ensureConfigured() {
   // Configure base URL
   client.setConfig({ baseUrl });
 
-  // Inject auth token on every request (server-side only)
+  // Inject correlation ID and auth token on every request (server-side only)
   client.interceptors.request.use(async (options: RequestOptions) => {
+    // Always set correlation ID — even if auth fails
+    const correlationId = createCorrelationId();
+    if (!options.headers) options.headers = new Headers();
+    if (options.headers instanceof Headers) {
+      options.headers.set(CORRELATION_ID_HEADER, correlationId);
+    } else if (Array.isArray(options.headers)) {
+      options.headers.push([CORRELATION_ID_HEADER, correlationId]);
+    } else {
+      (options.headers as Record<string, string>)[CORRELATION_ID_HEADER] = correlationId;
+    }
+
     try {
       const token = await getAccessToken();
 
-      // Log request details
       const fullUrl = options.url?.startsWith('http')
         ? options.url
         : `${baseUrl}${options.url || ''}`;
 
-      logger.info(
-        {
-          request: {
-            url: fullUrl,
-            method: options.method || 'GET',
-            baseUrl,
-          },
-        },
-        'API request interceptor - about to make request'
-      );
-
       if (!token) {
-        // Log warning but allow request to proceed for public endpoints
         logger.warn(
-          {
-            url: fullUrl,
-            method: options.method || 'GET',
-          },
+          { url: fullUrl, method: options.method || 'GET' },
           'No valid access token available for API request'
         );
-
-        // Don't set Authorization header if no token
-        // Public endpoints will work, authenticated ones will return 401
       } else {
-        // Set the token
-        if (!options.headers) options.headers = new Headers();
-
         if (options.headers instanceof Headers) {
           options.headers.set('Authorization', `Bearer ${token}`);
         } else if (Array.isArray(options.headers)) {
@@ -105,30 +99,25 @@ function ensureConfigured() {
         }
 
         logger.debug(
-          {
-            request: {
-              url: fullUrl,
-              method: options.method || 'GET',
-              hasAuth: true,
-            },
-          },
+          { request: { url: fullUrl, method: options.method || 'GET', hasAuth: true } },
           'HTTP request with authentication'
         );
       }
     } catch (error) {
       logger.error({ error, url: options.url }, 'Failed to get access token for API request');
-      // Let request proceed without auth - API will return 401 if needed
     }
   });
 
   // Log successful responses (debug level)
   client.interceptors.response.use(async (response: Response) => {
+    const correlationId = readCorrelationIdFromResponse(response);
     logger.debug(
       {
         response: {
           url: response.url,
           status: response.status,
           statusText: response.statusText,
+          correlationId,
         },
       },
       'HTTP response'
@@ -145,6 +134,8 @@ function ensureConfigured() {
       const err = error as { cause?: { code?: string }; code?: string; message?: string };
       const resp = response as { status?: number; statusText?: string } | undefined;
       const request = { url: fullUrl, method: options.method || 'GET' };
+      const correlationId =
+        response instanceof Response ? readCorrelationIdFromResponse(response) : undefined;
 
       // Connection errors (ECONNREFUSED, ETIMEDOUT, etc.)
       if (err?.cause?.code === 'ECONNREFUSED' || err?.code === 'ECONNREFUSED') {
@@ -159,7 +150,11 @@ function ensureConfigured() {
       if (resp?.status && resp.status >= 400) {
         const logLevel = resp.status >= 500 ? 'error' : 'warn';
         logger[logLevel](
-          { request, response: { status: resp.status, statusText: resp.statusText }, error },
+          {
+            request,
+            response: { status: resp.status, statusText: resp.statusText, correlationId },
+            error,
+          },
           `HTTP ${resp.status} ${resp.statusText || ''}`
         );
         return error;

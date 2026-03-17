@@ -4,6 +4,11 @@ import { actionError, actionSuccess, ServerActionResult } from '@eventuras/core-
 import { Logger } from '@eventuras/logger';
 
 import { appConfig } from '@/config.server';
+import {
+  CORRELATION_ID_HEADER,
+  createCorrelationId,
+  readCorrelationIdFromResponse,
+} from '@/lib/correlation-id';
 import { getAccessToken } from '@/utils/getAccesstoken';
 
 const logger = Logger.create({
@@ -35,9 +40,11 @@ export async function downloadCertificatePdf(
         headers: {
           Accept: 'application/pdf',
           Authorization: `Bearer ${token}`,
+          [CORRELATION_ID_HEADER]: createCorrelationId(),
         },
       }
     );
+    const correlationId = readCorrelationIdFromResponse(response);
 
     if (!response.ok) {
       logger.error(
@@ -45,10 +52,13 @@ export async function downloadCertificatePdf(
           certificateId,
           status: response.status,
           statusText: response.statusText,
+          correlationId,
         },
         'Failed to download certificate PDF'
       );
-      return actionError(`Failed to download: ${response.status} ${response.statusText}`);
+      return actionError(
+        `Failed to download: ${response.status} ${response.statusText}${correlationId ? ` (ref: ${correlationId})` : ''}`
+      );
     }
 
     const blob = await response.blob();
@@ -95,9 +105,11 @@ export async function sendCertificateToParticipant(
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
+          [CORRELATION_ID_HEADER]: createCorrelationId(),
         },
       }
     );
+    const correlationId = readCorrelationIdFromResponse(response);
 
     if (!response.ok) {
       logger.error(
@@ -105,10 +117,13 @@ export async function sendCertificateToParticipant(
           registrationId,
           status: response.status,
           statusText: response.statusText,
+          correlationId,
         },
         'Failed to send certificate'
       );
-      return actionError(`Failed to send: ${response.status} ${response.statusText}`);
+      return actionError(
+        `Failed to send: ${response.status} ${response.statusText}${correlationId ? ` (ref: ${correlationId})` : ''}`
+      );
     }
 
     logger.info({ registrationId }, 'Certificate sent successfully');

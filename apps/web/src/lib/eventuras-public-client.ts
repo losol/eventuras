@@ -8,8 +8,10 @@
  * contexts where cookies/session are not available (e.g., build time).
  */
 
-import { createClient } from '@eventuras/event-sdk';
+import { createClient, type RequestOptions } from '@eventuras/event-sdk';
 import { Logger } from '@eventuras/logger';
+
+import { CORRELATION_ID_HEADER, createCorrelationId } from '@/lib/correlation-id';
 
 const logger = Logger.create({
   namespace: 'web:api-client',
@@ -44,6 +46,20 @@ export function getPublicClient() {
   logger.debug({ baseUrl }, 'Creating public API client');
 
   publicClientInstance = createClient({ baseUrl });
+  publicClientInstance.interceptors.request.use(async (options: RequestOptions) => {
+    const correlationId = createCorrelationId();
+    if (!options.headers) {
+      options.headers = new Headers();
+    }
+
+    if (options.headers instanceof Headers) {
+      options.headers.set(CORRELATION_ID_HEADER, correlationId);
+    } else if (Array.isArray(options.headers)) {
+      options.headers.push([CORRELATION_ID_HEADER, correlationId]);
+    } else {
+      (options.headers as Record<string, string>)[CORRELATION_ID_HEADER] = correlationId;
+    }
+  });
 
   return publicClientInstance;
 }

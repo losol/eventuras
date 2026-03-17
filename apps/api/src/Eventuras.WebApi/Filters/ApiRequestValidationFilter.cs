@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Eventuras.Services.Constants;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -37,6 +38,8 @@ public class ValidationFilter : IAsyncActionFilter
             );
 
             problemDetails.Extensions["errors"] = errors;
+            problemDetails.Extensions["correlationId"] = context.HttpContext.TraceIdentifier;
+            context.HttpContext.Response.Headers[Api.CorrelationIdHeader] = context.HttpContext.TraceIdentifier;
 
             _logger.LogWarning("Validation errors occurred: {Errors}", errors);
 
