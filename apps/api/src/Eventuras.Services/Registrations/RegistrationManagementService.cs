@@ -53,10 +53,6 @@ internal class RegistrationManagementService : IRegistrationManagementService
         RegistrationOptions? options = null,
         CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation(
-            "RegistrationManagementService: Attempting to create registration for EventId: {EventId}, UserId: {UserId}",
-            eventId, userId);
-
         var existingRegistration = await _context.Registrations
             .FirstOrDefaultAsync(m => m.EventInfoId == eventId
                                       && m.UserId == userId,
@@ -72,9 +68,6 @@ internal class RegistrationManagementService : IRegistrationManagementService
         var eventInfo = await _eventInfoRetrievalService.GetEventInfoByIdAsync(eventId,
             new EventInfoRetrievalOptions { ForUpdate = true, LoadRegistrations = true, LoadProducts = true },
             cancellationToken);
-        _logger.LogInformation(
-            $"Retrieved event info for EventInfoId {eventInfo.EventInfoId}, Status {eventInfo.Status}");
-
         var user = await _userRetrievalService.GetUserByIdAsync(userId, null, cancellationToken);
 
         var registration = new Registration { EventInfoId = eventId, UserId = userId, ParticipantName = user.Name };
@@ -85,8 +78,6 @@ internal class RegistrationManagementService : IRegistrationManagementService
             registration.Status = Registration.RegistrationStatus.Verified;
         }
 
-        _logger.LogInformation(
-            $"Checking create access for registration: UserId {registration.UserId}, EventInfoId {registration.EventInfoId}");
         await _registrationAccessControlService.CheckRegistrationCreateAccessAsync(registration, cancellationToken);
 
         if (eventInfo.Status == EventInfo.EventInfoStatus.WaitingList)
@@ -95,16 +86,10 @@ internal class RegistrationManagementService : IRegistrationManagementService
         }
 
         await _context.CreateAsync(registration, true, cancellationToken);
-        _logger.LogInformation("Successfully created registration for EventId: {EventId}, UserId: {UserId}", eventId, userId);
-
         options ??= new RegistrationOptions();
 
         if (options.CreateOrder && registration.Status != Registration.RegistrationStatus.WaitingList)
         {
-            _logger.LogInformation(
-                "Creating order for registration: RegistrationId {RegistrationId}, EventInfoId {EventInfoId}",
-                registration.RegistrationId, registration.EventInfoId);
-
             var mandatoryItems = eventInfo.Products
                 .Where(p => p.IsMandatory)
                 .Select(p => new OrderLineModel(p.ProductId, null, p.MinimumQuantity))
@@ -134,21 +119,19 @@ internal class RegistrationManagementService : IRegistrationManagementService
 
         if (options.SendWelcomeLetter && registration.Status != Registration.RegistrationStatus.WaitingList)
         {
-            _logger.LogInformation(
-                "Sending welcome letter for registration: RegistrationId {RegistrationId}, EventInfoId {EventInfoId}",
-                registration.RegistrationId, registration.EventInfoId);
             if (eventInfo.WelcomeLetter != null)
             {
                 await SendWelcomeLetterAsync(registration, cancellationToken);
             }
             else
             {
-                _logger.LogInformation("No welcome letter found for EventInfoId {EventInfoId}", eventInfo.EventInfoId);
+                _logger.LogDebug("No welcome letter found for EventInfoId {EventInfoId}", eventInfo.EventInfoId);
             }
         }
 
-        _logger.LogInformation("Successfully created registration for EventId: {EventId}, UserId: {UserId}", eventId,
-            userId);
+        _logger.LogInformation(
+            "Created registration {RegistrationId} for EventId {EventId}, UserId {UserId}, Status {Status}",
+            registration.RegistrationId, eventId, userId, registration.Status);
         return registration;
     }
 

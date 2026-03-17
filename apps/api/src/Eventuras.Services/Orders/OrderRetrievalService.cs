@@ -71,8 +71,7 @@ public class OrderRetrievalService : IOrderRetrievalService
 
         await _orderAccessControlService.CheckOrderReadAccessAsync(order, cancellationToken);
 
-        // log the complete order
-        _logger.LogInformation("Order retrieved: {@Order}", order);
+        _logger.LogDebug("Order retrieved: {OrderId}", order.OrderId);
 
         return order;
     }
