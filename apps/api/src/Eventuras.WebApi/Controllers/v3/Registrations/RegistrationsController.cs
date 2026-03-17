@@ -83,7 +83,7 @@ public class RegistrationsController : ControllerBase
         // Check for Excel export based on Accept header
         if (Request.Headers.TryGetValue("Accept", out var accept) && accept.Contains(MimeType))
         {
-            _logger.LogInformation("GetRegistrations called with Excel export request: {query}", query);
+            _logger.LogDebug("GetRegistrations called with Excel export request.");
 
             // Only admins can export to Excel
             if (!User.IsAdmin())
@@ -128,8 +128,6 @@ public class RegistrationsController : ControllerBase
     public async Task<ActionResult<RegistrationDto>> GetRegistrationById(int id,
         [FromQuery] RegistrationsQueryDto query, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("GetRegistrationById called with ID: {id}, and query: {query}", id, query);
-
         var registration =
             await _registrationRetrievalService.GetRegistrationByIdAsync(id, RetrievalOptions(query),
                 cancellationToken);
@@ -151,11 +149,6 @@ public class RegistrationsController : ControllerBase
         [FromBody] NewRegistrationDto dto,
         CancellationToken cancellationToken)
     {
-        var requestingUserId = User.GetUserId();
-        _logger.LogInformation(
-            $"CreateNewRegistration called by user Id {requestingUserId} with EventId: {dto.EventId}, UserId: {dto.UserId}, CreateOrder: {dto.CreateOrder}, SendWelcomeLetter: {dto.SendWelcomeLetter}, Empty: {dto.Empty}");
-
-
         var registration = await _registrationManagementService.CreateRegistrationAsync(dto.EventId, dto.UserId,
             new RegistrationOptions
             {
@@ -181,9 +174,6 @@ public class RegistrationsController : ControllerBase
     public async Task<ActionResult<RegistrationDto>> RegisterSelf(
         int eventId, [FromQuery(Name = "createOrder")] bool createOrder)
     {
-        _logger.LogInformation("RegisterSelf called with EventId: {eventId}, CreateOrder: {createOrder}", eventId,
-            createOrder);
-
         if (!ModelState.IsValid)
         {
             _logger.LogWarning("RegisterSelf called with invalid eventId: {eventId}", eventId);
@@ -202,8 +192,6 @@ public class RegistrationsController : ControllerBase
         [FromBody] RegistrationUpdateDto dto,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("UpdateRegistration called with ID: {id}", id);
-
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
@@ -237,9 +225,6 @@ public class RegistrationsController : ControllerBase
         [FromBody] RegistrationPatchDto patchDto,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("PatchRegistration called with ID: {id}, Status: {status}, Type: {type}",
-            id, patchDto.Status, patchDto.Type);
-
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
@@ -263,8 +248,6 @@ public class RegistrationsController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> CancelRegistration(int id, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("CancelRegistration called with ID: {id}", id);
-
         if (!ModelState.IsValid)
         {
             _logger.LogWarning("CancelRegistration called with invalid registration ID: {id}", id);

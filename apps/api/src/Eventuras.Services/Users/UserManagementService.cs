@@ -36,7 +36,7 @@ public class UserManagementService : IUserManagementService
         string phoneNumber = null,
         CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation("CreateNewUserAsync started.");
+        _logger.LogDebug("CreateNewUserAsync started.");
 
         if (string.IsNullOrEmpty(email))
         {
@@ -65,7 +65,7 @@ public class UserManagementService : IUserManagementService
 
 
         var create = await _userManager.CreateAsync(user);
-        _logger.LogInformation("CreateNewUserAsync finished.");
+        _logger.LogDebug("CreateNewUserAsync finished.");
         if (!create.Succeeded)
         {
             var errorMessageBuilder = new StringBuilder();

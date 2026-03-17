@@ -46,9 +46,9 @@ public class InvoicesController : ControllerBase
             var orders =
                 await _orderRetrievalService.GetOrdersPopulatedByRegistrationAsync(request.OrderIds, cancellationToken);
 
-            _logger.LogInformation("Creating invoice for orders {Orders}", orders);
+            _logger.LogInformation("Creating invoice for {OrderCount} orders", orders.Count);
             var invoiceInfo = InvoiceInfo.CreateFromOrderList(orders);
-            _logger.LogInformation("Invoice info {InvoiceInfo}", invoiceInfo);
+            _logger.LogDebug("Invoice info generated for {OrderCount} orders", orders.Count);
 
             var invoice = await _invoicingService.CreateInvoiceAsync(orders.ToArray(), invoiceInfo);
 

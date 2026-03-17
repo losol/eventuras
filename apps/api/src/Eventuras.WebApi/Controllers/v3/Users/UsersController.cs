@@ -53,13 +53,11 @@ public class UsersController : Controller
     public async Task<UserDto> Me(CancellationToken cancellationToken)
     {
         var emailClaim = HttpContext.User.GetEmail();
-        var nameClaim = HttpContext.User.GetName();
         var phoneClaim = HttpContext.User.GetMobilePhone();
 
         if (_authSettings.EnablePiiLogging)
         {
-            _logger.LogInformation(
-                $"Getting user info for email: {emailClaim}, name: {nameClaim}, phone: {phoneClaim} .");
+            _logger.LogDebug("Getting user info for current authenticated user.");
         }
 
         if (string.IsNullOrEmpty(emailClaim))
@@ -78,11 +76,11 @@ public class UsersController : Controller
         {
             if (_authSettings.EnablePiiLogging)
             {
-                _logger.LogInformation("No user found with email {EmailClaim}. Creating new user.", emailClaim);
+                _logger.LogDebug("No user found with email claim. Creating new user.");
             }
             else
             {
-                _logger.LogInformation("No user found with email. Creating new user.");
+                _logger.LogDebug("No user found with email. Creating new user.");
             }
 
             user = await _userManagementService.CreateNewUserAsync(
@@ -121,7 +119,7 @@ public class UsersController : Controller
         var principal = HttpContext.User;
         var userId = principal.GetUserId();
 
-        _logger.LogInformation(
+        _logger.LogDebug(
             "User search initiated by {UserId}. QueryLength: {QueryLength}, Limit: {Limit}, Offset: {Offset}",
             userId,
             request.Query?.Length ?? 0,
@@ -161,7 +159,7 @@ public class UsersController : Controller
 
         var duration = DateTime.UtcNow - startTime;
 
-        _logger.LogInformation(
+        _logger.LogDebug(
             "User search completed for {UserId}. Results: {Count}/{Total}, Duration: {Duration}ms",
             userId,
             paging.Data.Length,
@@ -183,11 +181,11 @@ public class UsersController : Controller
             throw new BadHttpRequestException($"Invalid request body. {ModelState.FormatErrors()}");
         }
 
-        _logger.LogInformation("Creating new user with email {email}.", dto.Email);
+        _logger.LogDebug("Creating new user.");
         var user = await _userManagementService
             .CreateNewUserAsync(dto.Email, dto.PhoneNumber, cancellationToken);
 
-        _logger.LogInformation("Update user with additional information.");
+        _logger.LogDebug("Updating user with additional information.");
         dto.CopyTo(user);
         await _userManagementService.UpdateUserAsync(user, cancellationToken);
 
