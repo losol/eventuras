@@ -71,7 +71,13 @@ public class CustomWebApiApplicationFactory<TStartup> : WebApplicationFactory<TS
             .UseEnvironment("IntegrationTests")
             .ConfigureAppConfiguration(app => app.AddInMemoryCollection(new Dictionary<string, string>
             {
-                { "AppSettings:UsePowerOffice", "false" }, { "AppSettings:UseStripeInvoice", "false" }
+                { "FeatureManagement:UsePowerOffice", "false" },
+                { "FeatureManagement:UseStripeInvoice", "false" },
+                { "Urls", "http://localhost:5002" },
+                { "Files:FilePath", "tmp/emails" },
+                { "HealthChecks:BaseUri", "http://localhost:5002" },
+                // Use plain console output instead of JSON for readable test logs
+                { "Serilog:WriteTo:0:Name", "Console" },
             }))
             .ConfigureServices(services =>
             {
