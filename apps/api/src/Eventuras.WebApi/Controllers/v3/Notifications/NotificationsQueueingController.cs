@@ -185,10 +185,10 @@ public class NotificationsQueueingController : ControllerBase
 
         if (eventFilterSet)
         {
-            _logger.LogInformation("Event filter is set, validating it.");
+            _logger.LogDebug("Event filter is set, validating it.");
             if (eventFilter.ProductId.HasValue)
             {
-                _logger.LogInformation("Product filter is set, validating it. ProductId: {ProductId}", eventFilter.ProductId);
+                _logger.LogDebug("Product filter is set, validating it. ProductId: {ProductId}", eventFilter.ProductId);
                 var product =
                     await _productRetrievalService
                         .GetProductByIdAsync(eventFilter.ProductId.Value,
