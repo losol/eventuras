@@ -30,7 +30,7 @@ internal class UserAccessControlService : IUserAccessControlService
         var requestingUser = _httpContextAccessor.HttpContext.User;
 
         // Log information about the access check
-        _logger.LogInformation(
+        _logger.LogDebug(
             $"Checking owner or admin access for user {requestingUser.GetUserId} for editing user {user.Id}");
 
         if (requestingUser.IsAnonymous())
@@ -41,7 +41,7 @@ internal class UserAccessControlService : IUserAccessControlService
         // Check if the requesting user is the owner
         if (user.Id == requestingUser.GetUserId())
         {
-            _logger.LogInformation("Owner access granted.");
+            _logger.LogDebug("Owner access granted.");
             return Task.CompletedTask;
         }
 
@@ -50,7 +50,7 @@ internal class UserAccessControlService : IUserAccessControlService
 
         if (isAdmin)
         {
-            _logger.LogInformation("Admin access granted.");
+            _logger.LogDebug("Admin access granted.");
             return Task.CompletedTask;
         }
 

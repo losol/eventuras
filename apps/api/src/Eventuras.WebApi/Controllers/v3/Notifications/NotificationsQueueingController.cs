@@ -1,7 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Asp.Versioning;
@@ -54,7 +53,6 @@ public class NotificationsQueueingController : ControllerBase
     {
         _logger.LogInformation(
             $"Starting to process email notification. Subject: {dto.Subject}, Number of Recipients: {dto.Recipients?.Length ?? 0}");
-        _logger.LogInformation(JsonSerializer.Serialize(dto));
 
         var orgId = Request.Headers.TryGetValue(Api.OrganizationHeader, out var headerOrgId)
                     && int.TryParse(headerOrgId, out var parsedOrgId)

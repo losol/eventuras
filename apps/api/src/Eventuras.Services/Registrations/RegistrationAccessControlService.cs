@@ -58,7 +58,7 @@ internal class RegistrationAccessControlService : IRegistrationAccessControlServ
         var contextUser = _httpContextAccessor.HttpContext.User;
         var requestingUserId = contextUser.GetUserId();
 
-        _logger.LogInformation(
+        _logger.LogDebug(
             "CheckRegistrationCreateAccess. Context user id '{UserId}', registration.UserId {RegistrationUserId}, registration.EventInfoId {RegistrationEventInfoId}",
             contextUser.GetUserId(),
             registration.UserId,
@@ -96,14 +96,14 @@ internal class RegistrationAccessControlService : IRegistrationAccessControlServ
                 $"User {contextUser.GetUserId()} cannot create registration for event {registration.EventInfoId} and user {registration.UserId}");
         }
 
-        _logger.LogInformation(
+        _logger.LogDebug(
             $"Create access granted for UserId {registration.UserId}, EventInfoId {registration.EventInfoId}");
     }
 
     public async Task CheckRegistrationUpdateAccessAsync(Registration registration,
         CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation(
+        _logger.LogDebug(
             $"Checking update access for registration: RegistrationId {registration.RegistrationId}, EventInfoId {registration.EventInfoId}");
 
         var user = _httpContextAccessor.HttpContext!.User;
@@ -112,7 +112,7 @@ internal class RegistrationAccessControlService : IRegistrationAccessControlServ
         var isAdmin = await CheckAdminAccessAsync(user, registration, cancellationToken);
         if (isAdmin)
         {
-            _logger.LogInformation("Admin was granted access to update RegistrationId {RegistrationId}", registration.RegistrationId);
+            _logger.LogDebug("Admin was granted access to update RegistrationId {RegistrationId}", registration.RegistrationId);
             return;
         }
 
@@ -130,7 +130,7 @@ internal class RegistrationAccessControlService : IRegistrationAccessControlServ
         // Get the registration policy for the event
         var eventInfo =
             await _eventInfoRetrievalService.GetEventInfoByIdAsync(registration.EventInfoId, cancellationToken);
-        _logger.LogInformation(
+        _logger.LogDebug(
             $"Retrieved event info for EventInfoId {eventInfo.EventInfoId}. Checking registration policy.");
         var registrationPolicy = eventInfo.Options.RegistrationPolicy;
 
@@ -147,7 +147,7 @@ internal class RegistrationAccessControlService : IRegistrationAccessControlServ
 
             if (now < lastRegistrationDateInstant)
             {
-                _logger.LogInformation(
+                _logger.LogDebug(
                     "LastRegistrationDate is set and the event is not closed for registration updates. Access granted.");
                 return;
             }
@@ -167,7 +167,7 @@ internal class RegistrationAccessControlService : IRegistrationAccessControlServ
                 throw new NotAccessibleException("Registration is too old to be updated.");
             }
 
-            _logger.LogInformation("Registration is within AllowedRegistrationEditHours. Access granted.");
+            _logger.LogDebug("Registration is within AllowedRegistrationEditHours. Access granted.");
             return;
         }
 
@@ -181,7 +181,7 @@ internal class RegistrationAccessControlService : IRegistrationAccessControlServ
 
             if (now < eventClosedForRegistrationUpdatesInstant)
             {
-                _logger.LogInformation(
+                _logger.LogDebug(
                     "AllowModificationsAfterLastCancellationDate is set and the event is not closed for registration updates. Access granted.");
                 return;
             }

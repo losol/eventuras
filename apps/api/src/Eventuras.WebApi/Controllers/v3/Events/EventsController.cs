@@ -1,5 +1,4 @@
 using System;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Asp.Versioning;
@@ -52,9 +51,6 @@ public class EventsController : ControllerBase
             return BadRequest("Invalid query parameters.");
         }
 
-        // Log the starting point of the request.
-        _logger.LogInformation("Starting to retrieve events list. Query: {query}", JsonSerializer.Serialize(query));
-
         var events = await _eventInfoService.ListEventsAsync(
             new EventListRequest(query.Offset, query.Limit)
             {
@@ -62,9 +58,6 @@ public class EventsController : ControllerBase
                 Ordering = query.Ordering
             },
             cancellationToken: cancellationToken);
-
-        // Log the successful end point of the request.
-        _logger.LogInformation("Successfully retrieved the events list.");
 
         return PageResponseDto<EventDto>.FromPaging(query, events, e => new EventDto(e));
     }
@@ -101,13 +94,9 @@ public class EventsController : ControllerBase
     [HttpPost]
     public async Task<EventDto> Post([FromBody] EventFormDto dto)
     {
-        _logger.LogInformation("Received a request to create a new event.");
-
         var eventInfo = new EventInfo();
         dto.CopyTo(eventInfo);
         await _eventManagementService.CreateNewEventAsync(eventInfo);
-
-        _logger.LogInformation("Successfully created a new event with ID {EventInfoId}.", eventInfo.EventInfoId);
         return new EventDto(eventInfo);
     }
 
@@ -121,8 +110,6 @@ public class EventsController : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<ActionResult<EventDto>> Put(int id, [FromBody] EventFormDto dto)
     {
-        _logger.LogInformation("Received a request to update the event with ID {Id}.", id);
-
         if (dto.Id.HasValue && id != dto.Id.Value)
         {
             _logger.LogWarning("Event ID {Id} does not match the ID in the request body.", id);
@@ -138,8 +125,6 @@ public class EventsController : ControllerBase
 
         dto.CopyTo(eventInfo);
         await _eventManagementService.UpdateEventAsync(eventInfo);
-
-        _logger.LogInformation("Successfully updated the event with ID {Id}.", id);
         return Ok(new EventDto(eventInfo));
     }
 
@@ -165,8 +150,6 @@ public class EventsController : ControllerBase
         [FromBody] EventPatchDto patchDto,
         CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation("Starting PATCH operation for event with ID {id}.", id);
-
         if (!ModelState.IsValid)
         {
             _logger.LogWarning("Invalid model state during PATCH operation.");
@@ -185,8 +168,6 @@ public class EventsController : ControllerBase
 
         await _eventManagementService.UpdateEventAsync(entity);
 
-        _logger.LogInformation("Successfully completed PATCH operation for event with ID {id}.", id);
-
         return Ok(new EventDto(entity));
     }
 
@@ -199,11 +180,6 @@ public class EventsController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task Delete(int id)
     {
-        _logger.LogInformation("Received a request to delete the event with ID {Id}.", id);
-
-
         await _eventManagementService.DeleteEventAsync(id);
-
-        _logger.LogInformation("Successfully deleted the event with ID {Id}.", id);
     }
 }

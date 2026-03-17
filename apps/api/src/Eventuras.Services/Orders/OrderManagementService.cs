@@ -119,7 +119,7 @@ public class OrderManagementService : IOrderManagementService
         _context.Update(order);
 
         var isAdmin = await _orderAccessControlService.HasAdminAccessAsync(order, cancellationToken);
-        _logger.LogInformation("User is admin: {isAdmin}", isAdmin);
+        _logger.LogDebug("User is admin: {IsAdmin}", isAdmin);
 
         // validate minimum quantity for products if it is not an admin user
         if (!isAdmin)
@@ -135,10 +135,7 @@ public class OrderManagementService : IOrderManagementService
         ICollection<OrderLineModel>? orderLines = null,
         CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation("Starting order creation for RegistrationId {RegistrationId}", registrationId);
-
         var registration = await GetRegistrationForUpdate(registrationId, cancellationToken);
-        _logger.LogInformation("Retrieved registration for update: RegistrationId {RegistrationId}", registrationId);
 
         orderLines ??= Array.Empty<OrderLineModel>();
         List<OrderLine> orderLinesMapped = new();
@@ -148,8 +145,6 @@ public class OrderManagementService : IOrderManagementService
             var orderLine = await CreateOrderLine(registration.EventInfo, line, cancellationToken);
             orderLinesMapped.Add(orderLine);
         }
-
-        _logger.LogInformation("Mapped {OrderLineCount} order lines for RegistrationId {RegistrationId}", orderLinesMapped.Count, registrationId);
 
         var order = new Order
         {
@@ -163,16 +158,17 @@ public class OrderManagementService : IOrderManagementService
             OrderLines = orderLinesMapped
         };
         order.AddLog();
-        _logger.LogInformation("Created new order object for RegistrationId {RegistrationId}", registrationId);
 
         await _context.AddAsync(order, cancellationToken);
-        _logger.LogInformation("Added new order to context for RegistrationId {RegistrationId}", registrationId);
 
         await ValidateMinimumQuantityForProducts(registration, cancellationToken);
-        _logger.LogInformation("Validated minimum quantity for products for RegistrationId {RegistrationId}", registrationId);
 
         await _context.SaveChangesAsync(cancellationToken);
-        _logger.LogInformation("Saved changes to context for RegistrationId {RegistrationId}", registrationId);
+        _logger.LogInformation(
+            "Created order {OrderId} for RegistrationId {RegistrationId} with {OrderLineCount} lines",
+            order.OrderId,
+            registrationId,
+            orderLinesMapped.Count);
 
         return order;
     }
@@ -183,15 +179,11 @@ public class OrderManagementService : IOrderManagementService
         IEnumerable<OrderLineModel> expectedOrderLines,
         CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation("OrderManagementService.AutoCreateOrUpdateOrder: RegistrationId {RegistrationId}", registrationId);
-
         var expectedOrderLinesSanitized = SanitizeOrderLines(expectedOrderLines);
         _logger.LogDebug("Sanitized expected order lines.");
 
         // Get order lines in registration
         var registration = await GetRegistrationForUpdate(registrationId, cancellationToken);
-        _logger.LogInformation(
-            "AutoCreateOrUpdateOrder: Retrieved registration for update: RegistrationId {RegistrationId}", registrationId);
 
         var registrationOrderLines = registration.Orders
             .SelectMany(o => o.OrderLines)
@@ -203,7 +195,9 @@ public class OrderManagementService : IOrderManagementService
         var diff = GetDifferenceInOrderLines(expectedOrderLinesSanitized, registrationOrderLinesSanitized);
         if (diff.Count == 0)
         {
-            _logger.LogInformation("AutoCreateOrUpdateOrder: No difference in order lines found. Exiting early.");
+            _logger.LogInformation(
+                "AutoCreateOrUpdateOrder completed for RegistrationId {RegistrationId}: no order changes required",
+                registrationId);
             return null;
         }
 
@@ -213,22 +207,25 @@ public class OrderManagementService : IOrderManagementService
         var order = registration.Orders.Where(o => o.CanEdit).MaxBy(o => o.OrderTime);
         if (order != null)
         {
-            _logger.LogInformation("AutoCreateOrUpdateOrder: Found existing order viable for updating.");
-
             var existingOrderLines = order.OrderLines.Select(OrderLineModel.FromOrderLineDomainModel);
             var combinedDiffAndOrder = SanitizeOrderLines(diff.Concat(existingOrderLines));
 
-            _logger.LogInformation(
-                $"AutoCreateOrUpdateOrder: Sanitized combined diff and order lines. {combinedDiffAndOrder.ToArray()}");
             await UpdateOrderLinesAsync(order, combinedDiffAndOrder.ToArray(), cancellationToken);
 
-            _logger.LogInformation("Updated existing order lines.");
+            _logger.LogInformation(
+                "AutoCreateOrUpdateOrder completed for RegistrationId {RegistrationId}: updated OrderId {OrderId} with {OrderLineCount} lines",
+                registrationId,
+                order.OrderId,
+                combinedDiffAndOrder.Count);
             return order;
         }
 
         // if no order found for update - create a new order
-        _logger.LogInformation("AutoCreateOrUpdateOrder: No existing order viable for update. Creating a new order.");
         order = await CreateOrderForRegistrationAsync(registrationId, diff, cancellationToken);
+        _logger.LogInformation(
+            "AutoCreateOrUpdateOrder completed for RegistrationId {RegistrationId}: created OrderId {OrderId}",
+            registrationId,
+            order.OrderId);
         return order;
 
         static ICollection<OrderLineModel> GetDifferenceInOrderLines(
