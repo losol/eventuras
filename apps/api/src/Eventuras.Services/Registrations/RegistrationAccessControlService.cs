@@ -112,7 +112,7 @@ internal class RegistrationAccessControlService : IRegistrationAccessControlServ
         var isAdmin = await CheckAdminAccessAsync(user, registration, cancellationToken);
         if (isAdmin)
         {
-            _logger.LogInformation($"Admin was granted access to update RegistrationId {registration.RegistrationId}");
+            _logger.LogInformation("Admin was granted access to update RegistrationId {RegistrationId}", registration.RegistrationId);
             return;
         }
 

@@ -135,10 +135,10 @@ public class OrderManagementService : IOrderManagementService
         ICollection<OrderLineModel>? orderLines = null,
         CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation($"Starting order creation for RegistrationId {registrationId}");
+        _logger.LogInformation("Starting order creation for RegistrationId {RegistrationId}", registrationId);
 
         var registration = await GetRegistrationForUpdate(registrationId, cancellationToken);
-        _logger.LogInformation($"Retrieved registration for update: RegistrationId {registrationId}");
+        _logger.LogInformation("Retrieved registration for update: RegistrationId {RegistrationId}", registrationId);
 
         orderLines ??= Array.Empty<OrderLineModel>();
         List<OrderLine> orderLinesMapped = new();
@@ -149,7 +149,7 @@ public class OrderManagementService : IOrderManagementService
             orderLinesMapped.Add(orderLine);
         }
 
-        _logger.LogInformation($"Mapped {orderLinesMapped.Count} order lines for RegistrationId {registrationId}");
+        _logger.LogInformation("Mapped {OrderLineCount} order lines for RegistrationId {RegistrationId}", orderLinesMapped.Count, registrationId);
 
         var order = new Order
         {
@@ -163,16 +163,16 @@ public class OrderManagementService : IOrderManagementService
             OrderLines = orderLinesMapped
         };
         order.AddLog();
-        _logger.LogInformation($"Created new order object for RegistrationId {registrationId}");
+        _logger.LogInformation("Created new order object for RegistrationId {RegistrationId}", registrationId);
 
         await _context.AddAsync(order, cancellationToken);
-        _logger.LogInformation($"Added new order to context for RegistrationId {registrationId}");
+        _logger.LogInformation("Added new order to context for RegistrationId {RegistrationId}", registrationId);
 
         await ValidateMinimumQuantityForProducts(registration, cancellationToken);
-        _logger.LogInformation($"Validated minimum quantity for products for RegistrationId {registrationId}");
+        _logger.LogInformation("Validated minimum quantity for products for RegistrationId {RegistrationId}", registrationId);
 
         await _context.SaveChangesAsync(cancellationToken);
-        _logger.LogInformation($"Saved changes to context for RegistrationId {registrationId}");
+        _logger.LogInformation("Saved changes to context for RegistrationId {RegistrationId}", registrationId);
 
         return order;
     }
@@ -183,7 +183,7 @@ public class OrderManagementService : IOrderManagementService
         IEnumerable<OrderLineModel> expectedOrderLines,
         CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation($"OrderManagementService.AutoCreateOrUpdateOrder: RegistrationId {registrationId}");
+        _logger.LogInformation("OrderManagementService.AutoCreateOrUpdateOrder: RegistrationId {RegistrationId}", registrationId);
 
         var expectedOrderLinesSanitized = SanitizeOrderLines(expectedOrderLines);
         _logger.LogDebug("Sanitized expected order lines.");
@@ -191,7 +191,7 @@ public class OrderManagementService : IOrderManagementService
         // Get order lines in registration
         var registration = await GetRegistrationForUpdate(registrationId, cancellationToken);
         _logger.LogInformation(
-            $"AutoCreateOrUpdateOrder: Retrieved registration for update: RegistrationId {registrationId}");
+            "AutoCreateOrUpdateOrder: Retrieved registration for update: RegistrationId {RegistrationId}", registrationId);
 
         var registrationOrderLines = registration.Orders
             .SelectMany(o => o.OrderLines)
@@ -207,7 +207,7 @@ public class OrderManagementService : IOrderManagementService
             return null;
         }
 
-        _logger.LogDebug($"AutoCreateOrUpdateOrder: Found differences in order lines: {diff.Count} differences");
+        _logger.LogDebug("AutoCreateOrUpdateOrder: Found differences in order lines: {DiffCount} differences", diff.Count);
 
         // Find newest order viable to be updated
         var order = registration.Orders.Where(o => o.CanEdit).MaxBy(o => o.OrderTime);

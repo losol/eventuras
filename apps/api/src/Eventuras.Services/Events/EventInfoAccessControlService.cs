@@ -85,7 +85,7 @@ public class EventInfoAccessControlService : IEventInfoAccessControlService
 
         if (org.Members.All(m => m.UserId != user.GetUserId() || !m.HasRole(Roles.Admin)))
         {
-            _logger.LogWarning($"User {user.GetUserId()} is not admin of organization {org.OrganizationId}");
+            _logger.LogWarning("User {UserId} is not admin of organization {OrganizationId}", user.GetUserId(), org.OrganizationId);
             throw new NotAccessibleException(
                 $"Event {eventInfo.EventInfoId} is not accessible for update by user {user.GetUserId()}");
         }

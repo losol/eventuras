@@ -103,7 +103,7 @@ internal class EventManagementService : IEventManagementService
 
         try
         {
-            _logger.LogInformation($"Updating event with ID {info.EventInfoId}");
+            _logger.LogInformation("Updating event with ID {EventInfoId}", info.EventInfoId);
             await _context.UpdateAsync(info);
         }
         catch (DbUpdateException e) when (e.IsUniqueKeyViolation())
@@ -118,7 +118,7 @@ internal class EventManagementService : IEventManagementService
         var eventInfo = await _context.EventInfos.FindAsync(id);
         if (eventInfo != null)
         {
-            _logger.LogInformation($"Archiving event with ID {id}");
+            _logger.LogInformation("Archiving event with ID {Id}", id);
             eventInfo.Archived = true;
             await _context.UpdateAsync(eventInfo);
         }
