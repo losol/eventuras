@@ -26,15 +26,20 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.FeatureManagement;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configure Serilog (reads from appsettings.json "Serilog" section)
+builder.Host.UseSerilog((context, config) =>
+    config.ReadFrom.Configuration(context.Configuration));
+
+// Configure Sentry (activates automatically when Sentry:Dsn is set)
+builder.WebHost.UseSentry();
 
 // Get configuration
 var features = GetFeatureManagement(builder.Configuration);
 var appSettings = GetAppSettings(builder.Configuration);
-
-// Configure Sentry
-if (features.UseSentry) { builder.WebHost.UseSentry(); }
 
 // Configure dependency injection container
 builder.Services.AddControllers(options =>
@@ -144,6 +149,8 @@ if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Integratio
         }
     });
 }
+
+app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
 app.UseHsts();
