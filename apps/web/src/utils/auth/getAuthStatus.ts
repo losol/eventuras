@@ -3,7 +3,6 @@
 import { getCurrentSession } from '@eventuras/fides-auth-next/session';
 import { Logger } from '@eventuras/logger';
 
-import { getAccessToken } from '@/utils/getAccesstoken';
 import { oauthConfig } from '@/utils/oauthConfig';
 
 const logger = Logger.create({ namespace: 'web:utils:getAuthStatus' });
@@ -24,21 +23,13 @@ export type AuthStatus = {
  */
 export async function getAuthStatus(): Promise<AuthStatus> {
   try {
-    const token = await getAccessToken();
-
-    if (!token) {
-      return { authenticated: false };
-    }
-
-    // Get session to retrieve user info
     const session = await getCurrentSession(oauthConfig);
 
-    if (!session?.user) {
-      // If we have a token but no user session, treat as unauthenticated
+    if (!session?.user || !session?.tokens?.accessToken) {
       return { authenticated: false };
     }
 
-    logger.info({ roles: session.user.roles }, 'User authenticated');
+    logger.debug({ roles: session.user.roles }, 'User authenticated');
 
     return {
       authenticated: true,
@@ -49,7 +40,7 @@ export async function getAuthStatus(): Promise<AuthStatus> {
       },
     };
   } catch (error) {
-    logger.error({ error }, 'Failed to get auth status');
+    logger.debug({ error }, 'No active session');
     return { authenticated: false };
   }
 }
