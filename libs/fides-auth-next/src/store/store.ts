@@ -234,11 +234,8 @@ export async function initializeAuth(
       store.send({ type: 'authFailed' });
     }
   } catch (error) {
-    logger.error({ error }, 'Failed to check auth status');
-    store.send({
-      type: 'authFailed',
-      error: error instanceof Error ? error.message : 'Unknown error',
-    });
+    logger.debug({ error }, 'Auth check returned no session');
+    store.send({ type: 'authFailed' });
   }
 }
 
