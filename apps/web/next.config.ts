@@ -30,6 +30,10 @@ const nextConfig: NextConfig = {
     '@xstate/store',
   ],
 
+  allowedDevOrigins: process.env.APPLICATION_URL
+    ? [new URL(process.env.APPLICATION_URL).hostname]
+    : [],
+
   reactStrictMode: true,
 
   images: {

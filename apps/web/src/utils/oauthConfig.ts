@@ -1,8 +1,12 @@
+import { joinUrl } from '@eventuras/core/url';
 import type { OAuthConfig } from '@eventuras/fides-auth-next';
 
 import { appConfig } from '@/config.server';
 
-export const redirect_uri = (appConfig.env.APPLICATION_URL ?? '') + '/api/auth/callback/oidc';
+export const redirect_uri = joinUrl(
+  String(appConfig.env.APPLICATION_URL ?? ''),
+  '/api/auth/callback/oidc'
+);
 
 export const oauthConfig: OAuthConfig = {
   issuer: String(appConfig.env.OIDC_ISSUER ?? ''),
