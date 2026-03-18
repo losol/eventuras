@@ -16,6 +16,10 @@
     "./currency": {
       "types": "./dist/currency/index.d.ts",
       "import": "./dist/currency/index.js"
+    },
+    "./url": {
+      "types": "./dist/url/index.d.ts",
+      "import": "./dist/url/index.js"
     }
   },
   "files": [
