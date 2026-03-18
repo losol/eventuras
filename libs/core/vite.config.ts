@@ -5,5 +5,6 @@ export default defineVanillaLibConfig({
     'regex/index': 'src/regex/index.ts',
     'datetime/index': 'src/datetime/index.ts',
     'currency/index': 'src/currency/index.ts',
+    'url/index': 'src/url/index.ts',
   },
 });
