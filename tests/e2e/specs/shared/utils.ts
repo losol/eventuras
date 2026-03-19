@@ -10,12 +10,12 @@ import {
   trashMessage,
   waitForMessage,
 } from '@eventuras/google-api';
-import { Debug } from '@eventuras/logger';
+import { Logger } from '@eventuras/logger';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { gmail_v1 } from 'googleapis';
 
-const debug = Debug.create('e2e:utils');
+const logger = Logger.create({ namespace: 'e2e:utils' });
 
 let gmailClient: gmail_v1.Gmail | null = null;
 
@@ -29,7 +29,7 @@ const getRefreshToken = (): string | undefined => {
   // Try environment variable first
   const envToken = process.env.E2E_GMAIL_REFRESH_TOKEN;
   if (envToken) {
-    debug('Using refresh token from environment variable');
+    logger.debug('Using refresh token from environment variable');
     return envToken;
   }
 
@@ -38,12 +38,12 @@ const getRefreshToken = (): string | undefined => {
     const tokenPath = join(process.cwd(), 'test-results', '.google-refresh-token');
     const fileToken = readFileSync(tokenPath, 'utf-8').trim();
     if (fileToken) {
-      debug('Using refresh token from file: %s', tokenPath);
+      logger.debug({ tokenPath }, 'Using refresh token from file');
       return fileToken;
     }
   } catch {
     // File doesn't exist or can't be read - this is normal if using env var
-    debug('No refresh token file found (this is normal if using env var)');
+    logger.debug('No refresh token file found (this is normal if using env var)');
   }
 
   return undefined;
@@ -69,7 +69,7 @@ export const initializeGmailClient = async (): Promise<gmail_v1.Gmail> => {
     );
   }
 
-  debug('Initializing Gmail OAuth client...');
+  logger.debug('Initializing Gmail OAuth client...');
   const oauth2Client = createOAuthClient({
     clientId,
     clientSecret,
@@ -79,30 +79,29 @@ export const initializeGmailClient = async (): Promise<gmail_v1.Gmail> => {
   // If we have a refresh token stored, use it
   const refreshToken = getRefreshToken();
   if (refreshToken) {
-    debug('Using stored refresh token (first 20 chars): %s...', refreshToken.substring(0, 20));
+    logger.debug({ tokenPrefix: refreshToken.substring(0, 20) }, 'Using stored refresh token');
     oauth2Client.setCredentials({ refresh_token: refreshToken });
 
     // Log the scopes associated with this token
     try {
       const tokenInfo = await oauth2Client.getAccessToken();
-      debug('Access token obtained: %s', tokenInfo.token ? 'yes' : 'no');
+      logger.debug({ hasToken: tokenInfo.token ? 'yes' : 'no' }, 'Access token obtained');
 
       // Get token info to see scopes
       const credentials = oauth2Client.credentials;
-      debug('OAuth credentials - scope: %s', credentials.scope || 'not specified');
-      debug('OAuth credentials - token_type: %s', credentials.token_type || 'not specified');
+      logger.debug({ scope: credentials.scope || 'not specified' }, 'OAuth credentials - scope');
+      logger.debug({ tokenType: credentials.token_type || 'not specified' }, 'OAuth credentials - token_type');
     } catch (error) {
-      debug('Warning: Could not get token info: %s', error);
+      logger.debug({ error }, 'Warning: Could not get token info');
     }
   } else if (authCode) {
     // Exchange authorization code for tokens (first-time setup)
-    debug('Exchanging authorization code for tokens...');
+    logger.debug('Exchanging authorization code for tokens...');
     const tokens = await exchangeCodeForTokens(oauth2Client, authCode);
-    debug('Tokens obtained. Refresh token: %s', tokens.refresh_token ? 'present' : 'missing');
+    logger.debug({ refreshToken: tokens.refresh_token ? 'present' : 'missing' }, 'Tokens obtained');
     if (tokens.refresh_token) {
-      debug(
-        'IMPORTANT: Store this refresh token in E2E_GMAIL_REFRESH_TOKEN env var or test-results/.google-refresh-token file: %s',
-        tokens.refresh_token
+      logger.info(
+        'IMPORTANT: Store the refresh token in E2E_GMAIL_REFRESH_TOKEN env var or test-results/.google-refresh-token file'
       );
     }
   } else {
@@ -112,7 +111,7 @@ export const initializeGmailClient = async (): Promise<gmail_v1.Gmail> => {
   }
 
   gmailClient = createGmailClient(oauth2Client);
-  debug('Gmail client initialized successfully');
+  logger.debug('Gmail client initialized successfully');
   return gmailClient;
 };
 
@@ -127,7 +126,7 @@ export const fetchLoginCode = async (
   maxRetries = 20,
   intervalMs = 3000
 ): Promise<string> => {
-  debug('Fetching login code for user: %s', userEmail);
+  logger.debug({ userEmail }, 'Fetching login code for user');
 
   const gmail = await initializeGmailClient();
 
@@ -136,8 +135,8 @@ export const fetchLoginCode = async (
   // is:unread ensures we only get new emails and avoid reading old verification codes
   // Search in subject OR body for "verification code" phrase
   const searchQuery = `to:${userEmail} is:unread (subject:"verification code" OR "verification code") newer_than:5m`;
-  debug('Gmail search query: %s', searchQuery);
-  debug('Waiting for message with maxAttempts=%d, intervalMs=%d', maxRetries, intervalMs);
+  logger.debug({ searchQuery }, 'Gmail search query');
+  logger.debug({ maxAttempts: maxRetries, intervalMs }, 'Waiting for message');
 
   const message = await waitForMessage(gmail, {
     query: searchQuery,
@@ -146,19 +145,19 @@ export const fetchLoginCode = async (
   });
 
   if (!message?.id) {
-    debug('No message found after %d attempts', maxRetries);
+    logger.debug({ maxRetries }, 'No message found after attempts');
     throw new Error(
       `No verification emails received for ${userEmail} after ${maxRetries} attempts`
     );
   }
 
-  debug('✅ Found message with ID: %s', message.id);
+  logger.debug({ messageId: message.id }, 'Found message');
 
   // Log message metadata
-  if (message.threadId) debug('   Thread ID: %s', message.threadId);
-  if (message.labelIds) debug('   Labels: %s', message.labelIds.join(', '));
+  if (message.threadId) logger.debug({ threadId: message.threadId }, 'Thread ID');
+  if (message.labelIds) logger.debug({ labels: message.labelIds.join(', ') }, 'Labels');
 
-  debug('Fetching full message details...');
+  logger.debug('Fetching full message details...');
   const fullMessage = await getMessage(gmail, { id: message.id });
 
   if (!fullMessage) {
@@ -171,21 +170,22 @@ export const fetchLoginCode = async (
   const subjectHeader = headers.find(h => h.name?.toLowerCase() === 'subject');
   const dateHeader = headers.find(h => h.name?.toLowerCase() === 'date');
 
-  debug('Email details:');
-  debug('   From: %s', fromHeader?.value || 'unknown');
-  debug('   Subject: %s', subjectHeader?.value || 'unknown');
-  debug('   Date: %s', dateHeader?.value || 'unknown');
-  debug('   Internal Date: %s', fullMessage.internalDate || 'unknown');
+  logger.debug({
+    from: fromHeader?.value || 'unknown',
+    subject: subjectHeader?.value || 'unknown',
+    date: dateHeader?.value || 'unknown',
+    internalDate: fullMessage.internalDate || 'unknown',
+  }, 'Email details');
 
   const emailBody = getPlainTextBody(fullMessage);
   if (!emailBody) {
     throw new Error('Email body not found or could not be decoded');
   }
 
-  debug('Email body retrieved. Extracting verification code...');
+  logger.debug('Email body retrieved. Extracting verification code...');
 
   // Log the email body for debugging (first 300 chars)
-  debug('Email body preview: %s', emailBody.substring(0, 300));
+  logger.debug({ bodyPreview: emailBody.substring(0, 300) }, 'Email body preview');
 
   // Extract the login code using multiple regex patterns
   // Pattern 1: "Your verification code is: 123456"
@@ -202,30 +202,29 @@ export const fetchLoginCode = async (
     const match = pattern.exec(emailBody);
     if (match?.[1]) {
       loginCode = match[1];
-      debug('Matched verification code with pattern: %s', pattern.source);
+      logger.debug({ pattern: pattern.source }, 'Matched verification code with pattern');
       break;
     }
   }
 
   if (!loginCode) {
-    debug('Failed to match verification code in email body');
-    debug('Full email body: %s', emailBody);
+    logger.debug('Failed to match verification code in email body');
     throw new Error('No verification code found in email body');
   }
 
-  debug('✅ Login code extracted successfully: %s', loginCode);
+  logger.debug('Login code extracted successfully');
 
   // Trash the email after extracting the code to avoid reusing old codes
-  debug('Attempting to trash email %s...', message.id);
+  logger.debug({ messageId: message.id }, 'Attempting to trash email...');
   if (message.id) {
     try {
       await trashMessage(gmail, message.id);
-      debug('✅ Successfully trashed email to prevent reuse');
+      logger.debug('Successfully trashed email to prevent reuse');
     } catch (error) {
-      debug('⚠️ Warning: Failed to trash email: %s', error);
-      debug('   This may be due to insufficient Gmail API permissions.');
-      debug('   Required scope: gmail.modify (current scope may be gmail.readonly)');
-      debug('   Re-run: pnpm oauth:setup to get a new token with correct scope');
+      logger.debug({ error }, 'Warning: Failed to trash email');
+      logger.debug('This may be due to insufficient Gmail API permissions.');
+      logger.debug('Required scope: gmail.modify (current scope may be gmail.readonly)');
+      logger.debug('Re-run: pnpm oauth:setup to get a new token with correct scope');
     }
   }
 
@@ -240,13 +239,13 @@ export const fetchLoginCode = async (
  * @returns Number of emails trashed
  */
 export const cleanupOtpEmails = async (userEmail: string): Promise<number> => {
-  debug('🧹 Cleaning up all OTP emails for: %s', userEmail);
+  logger.debug({ userEmail }, 'Cleaning up all OTP emails');
 
   const gmail = await initializeGmailClient();
 
   // Search for all verification code emails (not just unread, not just recent)
   const searchQuery = `to:${userEmail} (subject:"verification code" OR "verification code")`;
-  debug('Search query: %s', searchQuery);
+  logger.debug({ searchQuery }, 'Search query');
 
   const result = await searchMessages(gmail, {
     query: searchQuery,
@@ -255,11 +254,11 @@ export const cleanupOtpEmails = async (userEmail: string): Promise<number> => {
 
   const messageCount = result.messages.length;
   if (messageCount === 0) {
-    debug('✅ No OTP emails found to clean up');
+    logger.debug('No OTP emails found to clean up');
     return 0;
   }
 
-  debug('Found %d OTP emails to trash:', messageCount);
+  logger.debug({ messageCount }, 'Found OTP emails to trash');
 
   // Trash all found messages
   let trashedCount = 0;
@@ -270,19 +269,14 @@ export const cleanupOtpEmails = async (userEmail: string): Promise<number> => {
       try {
         await trashMessage(gmail, message.id);
         trashedCount++;
-        debug('   ✅ Trashed message %d/%d (ID: %s)', trashedCount, messageCount, message.id);
+        logger.debug({ trashedCount, messageCount, messageId: message.id }, 'Trashed message');
       } catch (error) {
         failedCount++;
-        debug('   ⚠️ Failed to trash message ID %s: %s', message.id, error);
+        logger.debug({ error, messageId: message.id }, 'Failed to trash message');
       }
     }
   }
 
-  debug(
-    '✅ Successfully trashed %d/%d OTP emails (%d failed)',
-    trashedCount,
-    messageCount,
-    failedCount
-  );
+  logger.debug({ trashedCount, messageCount, failedCount }, 'OTP email cleanup complete');
   return trashedCount;
 };

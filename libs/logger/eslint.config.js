@@ -1,4 +1,3 @@
-/** @type {import("eslint").Linter.Config} */
-module.exports = {
-  extends: ['@eventuras/eslint-config/base.js'],
-};
+import { config as baseConfig } from '@eventuras/eslint-config/base';
+
+export default [...baseConfig];

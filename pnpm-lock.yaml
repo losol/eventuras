@@ -1156,9 +1156,6 @@ importers:
       '@opentelemetry/sdk-logs':
         specifier: ^0.213.0
         version: 0.213.0(@opentelemetry/api@1.9.0)
-      debug:
-        specifier: ^4.4.3
-        version: 4.4.3(supports-color@8.1.1)
       pino:
         specifier: ^10.3.1
         version: 10.3.1
@@ -1166,9 +1163,6 @@ importers:
       '@eventuras/vite-config':
         specifier: workspace:*
         version: link:../vite-config
-      '@types/debug':
-        specifier: ^4.1.12
-        version: 4.1.12
       vite:
         specifier: ^8.0.0
         version: 8.0.0(@types/node@25.5.0)(esbuild@0.27.4)(jiti@2.6.1)(sass@1.77.4)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.2)
@@ -1851,10 +1845,6 @@ importers:
       tsx:
         specifier: ^4.21.0
         version: 4.21.0
-    devDependencies:
-      cross-env:
-        specifier: ^10.1.0
-        version: 10.1.0
 
 packages:
 

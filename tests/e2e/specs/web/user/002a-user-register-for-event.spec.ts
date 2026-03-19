@@ -1,9 +1,9 @@
 /* eslint no-process-env: 0 */
 
-import { Debug } from '@eventuras/logger';
+import { Logger } from '@eventuras/logger';
 import { test } from '@playwright/test';
 
-const debug = Debug.create('e2e:test');
+const logger = Logger.create({ namespace: 'e2e:test' });
 
 import { checkIfLoggedIn } from '../helpers/auth';
 import { readCreatedEvent } from '../helpers/event';
@@ -17,7 +17,7 @@ test.describe('register for event', () => {
   test.beforeAll(() => {
     createdEvent = readCreatedEvent();
     if (!createdEvent.eventId) {
-      debug('No event was created previously, run admin-event-create-registration tests first');
+      logger.debug('No event was created previously, run admin-event-create-registration tests first');
     }
   });
 

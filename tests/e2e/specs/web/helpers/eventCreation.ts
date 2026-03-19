@@ -1,10 +1,10 @@
+import { Logger } from '@eventuras/logger';
 import { Page } from '@playwright/test';
-import { Debug } from '@eventuras/logger';
 
 import { getEventFromApi } from './event';
 import { generateTestEventData, TestEventData } from '../../shared/testEventData';
 
-const debug = Debug.create('e2e:event-creation');
+const logger = Logger.create({ namespace: 'e2e:event-creation' });
 
 /**
  * Fill a Lexical rich text editor by simulating a clipboard paste event.
@@ -17,7 +17,7 @@ const debug = Debug.create('e2e:event-creation');
  * Clipboard paste events ARE handled natively by Lexical's clipboard module.
  */
 async function fillLexicalEditor(page: Page, editorId: string, text: string): Promise<void> {
-  debug('Filling Lexical editor via paste: %s', editorId);
+  logger.debug({ editorId }, 'Filling Lexical editor via paste');
   const editor = page.locator(`#${editorId}`).getByRole('textbox');
   await editor.click();
 
@@ -66,18 +66,18 @@ export const createTestEvent = async (
 ): Promise<string> => {
   const { customData = {}, waitForSave = true } = options;
 
-  debug('Creating test event: %s', eventName);
+  logger.debug({ eventName }, 'Creating test event');
 
   // Generate event data with rich content
   const baseData = generateTestEventData(eventName);
   const eventData = { ...baseData, ...customData };
 
-  debug('Navigating to admin panel...');
+  logger.debug('Navigating to admin panel...');
   await page.goto('/admin');
   await page.waitForLoadState('load');
 
   // Create event with only title before being forwarded to the edit page
-  debug('Creating event with title: %s', eventData.title);
+  logger.debug({ title: eventData.title }, 'Creating event with title');
   await page.locator('[data-testid="add-event-button"]').click();
   await page.locator('[data-testid="event-title-input"]').click();
   await page.locator('[data-testid="event-title-input"]').fill(eventData.title);
@@ -85,14 +85,14 @@ export const createTestEvent = async (
   await page.waitForURL('**/admin/events/**');
 
   // Wait for the page to be fully loaded and interactive
-  debug('Waiting for page to load after navigation...');
+  logger.debug('Waiting for page to load after navigation...');
   await page.waitForLoadState('domcontentloaded');
   await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {
-    debug('Network not idle, continuing anyway...');
+    logger.debug('Network not idle, continuing anyway...');
   });
 
   // Fill in overview details
-  debug('Filling overview tab...');
+  logger.debug('Filling overview tab...');
   await page.locator('[data-testid="tab-overview"]').waitFor({ state: 'visible', timeout: 15000 });
   await page.locator('[data-testid="tab-overview"]').click();
   await page.locator('[data-testid="eventeditor-status-select-button"]').click();
@@ -104,7 +104,7 @@ export const createTestEvent = async (
   await page.locator('[name="featuredImageCaption"]').fill(eventData.featuredImageCaption ?? '');
 
   // Fill in dates and location
-  debug('Filling dates and location tab...');
+  logger.debug('Filling dates and location tab...');
   await page.locator('[data-testid="tab-dates"]').click();
 
   const oneWeek = 1000 * 60 * 60 * 24 * 7;
@@ -129,7 +129,7 @@ export const createTestEvent = async (
   await page.locator('[name="location"]').fill(eventData.location ?? '');
 
   // Fill in descriptions using paste events for Lexical editors
-  debug('Filling descriptions tab...');
+  logger.debug('Filling descriptions tab...');
   await page.locator('[data-testid="tab-descriptions"]').click();
   // Wait for the description editors to be visible
   await page.locator('#eventeditor-description-editable').waitFor({ state: 'visible' });
@@ -158,7 +158,7 @@ export const createTestEvent = async (
   );
 
   // Fill certificate details
-  debug('Filling certificate tab...');
+  logger.debug('Filling certificate tab...');
   await page.locator('[data-testid="tab-certificate"]').click();
   await page.locator('[name="certificateTitle"]').fill(eventData.certificateTitle ?? '');
   await page
@@ -166,21 +166,21 @@ export const createTestEvent = async (
     .fill(eventData.certificateDescription ?? '');
 
   // Navigate to advanced tab to get event ID
-  debug('Navigating to advanced tab to get event ID...');
+  logger.debug('Navigating to advanced tab to get event ID...');
   await page.locator('[data-testid="tab-advanced"]').click();
   await page.waitForLoadState('networkidle');
 
   const eventId = await page.locator('[data-testid="eventeditor-form-eventid"]').inputValue();
-  debug('Event ID: %s', eventId);
+  logger.debug({ eventId }, 'Event ID');
 
   if (waitForSave) {
     await saveEventAndValidate(page, eventId);
   } else {
-    debug('Skipping save validation (waitForSave: false)');
+    logger.debug('Skipping save validation (waitForSave: false)');
     await page.waitForTimeout(3000); // Give auto-save time
   }
 
-  debug('✅ Event created successfully: %s', eventId);
+  logger.debug({ eventId }, 'Event created successfully');
   return eventId;
 };
 
@@ -192,13 +192,13 @@ export const createTestEvent = async (
  * save as a safety net, and verify via API.
  */
 async function saveEventAndValidate(page: Page, eventId: string): Promise<void> {
-  debug('Waiting for pending auto-saves to settle...');
+  logger.debug('Waiting for pending auto-saves to settle...');
 
   // Let auto-save debounce (1s) + API call finish before clicking save manually.
   // This avoids concurrent PUT requests which can cause API errors.
   await page.waitForTimeout(2000);
   await page.waitForLoadState('networkidle', { timeout: 5000 }).catch(() => {
-    debug('Network not idle after 5s, continuing...');
+    logger.debug('Network not idle after 5s, continuing...');
   });
 
   const saveButton = page.locator('[data-testid="event-save-button"]');
@@ -208,12 +208,12 @@ async function saveEventAndValidate(page: Page, eventId: string): Promise<void> 
   // so we can reliably detect the toast from our explicit save click.
   const staleToast = page.getByText('Changes saved');
   await staleToast.waitFor({ state: 'hidden', timeout: 5000 }).catch(() => {
-    debug('Stale toast still visible, continuing...');
+    logger.debug('Stale toast still visible, continuing...');
   });
 
   // Try saving up to 2 times — auto-save race conditions can cause transient failures
   for (let attempt = 1; attempt <= 2; attempt++) {
-    debug('Save attempt %d...', attempt);
+    logger.debug({ attempt }, 'Save attempt...');
     await saveButton.click();
 
     // Wait for either success or error toast.
@@ -231,17 +231,17 @@ async function saveEventAndValidate(page: Page, eventId: string): Promise<void> 
     ]).catch(() => 'timeout' as const);
 
     if (result === 'success') {
-      debug('✅ Save confirmed via toast');
+      logger.debug('Save confirmed via toast');
       break;
     } else if (result === 'error') {
       const errorMsg = await errorToast.last().textContent();
-      debug('⚠️  Save failed (attempt %d): %s', attempt, errorMsg);
+      logger.debug({ attempt, errorMsg }, 'Save failed');
       if (attempt < 2) {
-        debug('Retrying after a brief wait...');
+        logger.debug('Retrying after a brief wait...');
         await page.waitForTimeout(2000);
       }
     } else {
-      debug('No toast seen (attempt %d) — auto-save may have already persisted', attempt);
+      logger.debug({ attempt }, 'No toast seen — auto-save may have already persisted');
       break;
     }
   }
@@ -250,23 +250,22 @@ async function saveEventAndValidate(page: Page, eventId: string): Promise<void> 
   await page.waitForTimeout(1000);
 
   // Validate event was saved by fetching from API
-  debug('Fetching event from API to validate...');
+  logger.debug('Fetching event from API to validate...');
   const jsonResponse = await getEventFromApi(eventId);
 
-  debug(
-    'API response — status: %s, city: %s, maxParticipants: %s, description length: %d',
-    jsonResponse.status,
-    jsonResponse.city,
-    jsonResponse.maxParticipants,
-    jsonResponse.description?.length ?? 0
-  );
+  logger.debug({
+    status: jsonResponse.status,
+    city: jsonResponse.city,
+    maxParticipants: jsonResponse.maxParticipants,
+    descriptionLength: jsonResponse.description?.length ?? 0,
+  }, 'API response');
 
   // Verify that data was actually saved
   const hasData =
     jsonResponse.description || jsonResponse.city || (jsonResponse.maxParticipants ?? 0) > 0;
 
   if (!hasData) {
-    debug('❌ CRITICAL: Event fields were NOT saved! All fields are NULL.');
+    logger.debug('CRITICAL: Event fields were NOT saved! All fields are NULL.');
     throw new Error(
       'Event data not saved — description, city, and maxParticipants are all NULL. ' +
         'This likely means Lexical editor paste events or form field changes are not ' +
@@ -274,5 +273,5 @@ async function saveEventAndValidate(page: Page, eventId: string): Promise<void> 
     );
   }
 
-  debug('✅ Event data verified as saved');
+  logger.debug('Event data verified as saved');
 }

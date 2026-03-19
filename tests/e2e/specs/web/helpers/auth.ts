@@ -1,11 +1,11 @@
-import { Debug } from '@eventuras/logger';
+import { Logger } from '@eventuras/logger';
 import { chromium, expect, test as setup } from '@playwright/test';
 import { mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 
 import { cleanupOtpEmails, fetchLoginCode } from '../../shared/utils';
 
-const debug = Debug.create('e2e:auth');
+const logger = Logger.create({ namespace: 'e2e:auth' });
 const isCI = !!process.env.CI;
 
 export const authenticate = async (userName: string, authFile: string) => {
@@ -15,9 +15,9 @@ export const authenticate = async (userName: string, authFile: string) => {
   });
   setup('authenticate', async () => {
     // Clean up any old OTP emails before starting authentication
-    debug('authenticate: cleaning up old OTP emails for %s', userName);
+    logger.debug({ userName }, 'authenticate: cleaning up old OTP emails');
     const cleanedCount = await cleanupOtpEmails(userName);
-    debug('authenticate: cleaned up %d old OTP emails', cleanedCount);
+    logger.debug({ cleanedCount }, 'authenticate: cleaned up old OTP emails');
 
     const browser = await chromium.launch(
       isCI ? { args: ['--no-sandbox', '--disable-setuid-sandbox'] } : undefined
@@ -29,7 +29,7 @@ export const authenticate = async (userName: string, authFile: string) => {
     await page.locator('[data-testid="login-button"]').click();
     await page.locator('[id="username"]').fill(userName);
     await page.getByRole('button', { name: 'Continue', exact: true }).click();
-    debug('authenticate: attempting to fetch login code');
+    logger.debug('authenticate: attempting to fetch login code');
     const loginCode = await fetchLoginCode(userName);
     await page.locator('[id="code"]').fill(loginCode!);
     // Click Continue and wait for the full Auth0 redirect chain to complete.
@@ -39,7 +39,7 @@ export const authenticate = async (userName: string, authFile: string) => {
       page.waitForURL('**?login=success**', { timeout: 30000 }),
       page.getByRole('button', { name: 'Continue', exact: true }).click(),
     ]);
-    debug('authenticate: login redirect completed');
+    logger.debug('authenticate: login redirect completed');
 
     await page.goto('/user');
     await page.waitForLoadState('load');
@@ -47,7 +47,7 @@ export const authenticate = async (userName: string, authFile: string) => {
     await expect(page.getByText(userName).first()).toBeVisible();
     mkdirSync(dirname(authFile), { recursive: true });
     await context.storageState({ path: authFile });
-    debug('Auth Complete');
+    logger.debug('Auth Complete');
   });
 };
 
@@ -58,8 +58,8 @@ export const checkIfLoggedIn = async (page: import('@playwright/test').Page) => 
 };
 
 export const logout = async (page: import('@playwright/test').Page) => {
-  debug('Logging out user');
+  logger.debug('Logging out user');
   await page.goto('/api/logout');
   await page.waitForLoadState('load');
-  debug('User logged out, redirected to homepage');
+  logger.debug('User logged out, redirected to homepage');
 };
