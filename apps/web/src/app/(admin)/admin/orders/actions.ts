@@ -27,8 +27,10 @@ export interface GetOrdersResult {
 }
 
 export async function getOrders(page: number = 1, pageSize: number = 50) {
+  let organizationId: number | undefined;
+
   try {
-    const organizationId = getOrganizationId();
+    organizationId = getOrganizationId();
 
     const { data, error } = await getV3Orders({
       client,
@@ -46,7 +48,15 @@ export async function getOrders(page: number = 1, pageSize: number = 50) {
     });
 
     if (error) {
-      console.error('Failed to fetch orders:', error);
+      logger.error(
+        {
+          error,
+          organizationId,
+          page,
+          pageSize,
+        },
+        'Failed to fetch orders'
+      );
       return {
         ok: false as const,
         error: String(error),
@@ -63,7 +73,15 @@ export async function getOrders(page: number = 1, pageSize: number = 50) {
       error: null,
     };
   } catch (error) {
-    console.error('Error fetching orders:', error);
+    logger.error(
+      {
+        error,
+        organizationId,
+        page,
+        pageSize,
+      },
+      'Unexpected error fetching orders'
+    );
     return {
       ok: false as const,
       error: error instanceof Error ? error.message : 'Unknown error',

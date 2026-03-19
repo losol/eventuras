@@ -6,6 +6,12 @@ import { EventDto, ProductDto, RegistrationDto, UserDto } from '@/lib/eventuras-
 import { PaymentFormValues } from '@/types';
 import { mapToNewRegistration, mapToUpdatedRegistration } from '@/utils/api/mappers';
 
+type EventFlowMachineInput = {
+  eventInfo: EventDto;
+  user: UserDto;
+  availableProducts: ProductDto[];
+};
+
 export type EventFlowMachineContext = {
   eventInfo: EventDto;
   user: UserDto;
@@ -14,9 +20,49 @@ export type EventFlowMachineContext = {
   availableProducts: ProductDto[];
   selectedProducts: Map<string, number>;
   paymentFormValues: PaymentFormValues;
-  result: RegistrationDto;
-  error: Error;
+  result: RegistrationDto | null;
+  error: Error | null;
 };
+
+function getSelectedProductsMap(registration?: RegistrationDto | null): Map<string, number> {
+  const selectedProducts = new Map<string, number>();
+
+  registration?.products?.forEach(product => {
+    if (product.productId == null) {
+      return;
+    }
+
+    selectedProducts.set(product.productId.toString(), product.quantity ?? 0);
+  });
+
+  return selectedProducts;
+}
+
+function toFlowError(error: unknown): Error {
+  if (error instanceof Error) {
+    return error;
+  }
+
+  if (typeof error === 'string' && error.trim()) {
+    return new Error(error);
+  }
+
+  return new Error('Unknown event registration flow error');
+}
+
+function getInitialPaymentFormValues(user: UserDto): PaymentFormValues {
+  return {
+    username: user.name ?? '',
+    email: user.email ?? '',
+    phoneNumber: user.phoneNumber ?? '',
+    city: '',
+    zip: '',
+    country: 'Norway',
+    vatNumber: '',
+    invoiceReference: '',
+    paymentMethod: 'PowerOfficeEmailInvoice',
+  };
+}
 
 export enum States {
   CHECK_REGISTRATION_STATUS = 'checkRegistrationStatus',
@@ -51,9 +97,17 @@ const EventFlowMachine = createMachine({
     context: EventFlowMachineContext;
   },
   context: init => {
-    const input = init.input as EventFlowMachineContext;
+    const input = init.input as EventFlowMachineInput;
     return {
-      ...input,
+      eventInfo: input.eventInfo,
+      user: input.user,
+      inEditMode: false,
+      registrations: [],
+      availableProducts: input.availableProducts ?? [],
+      selectedProducts: new Map<string, number>(),
+      paymentFormValues: getInitialPaymentFormValues(input.user),
+      result: null,
+      error: null,
     };
   },
 
@@ -78,11 +132,16 @@ const EventFlowMachine = createMachine({
           actions: assign({
             inEditMode: ({ event }) => event.output.length > 0,
             registrations: ({ event }) => event.output,
+            selectedProducts: ({ event }) => getSelectedProductsMap(event.output[0]),
+            error: () => null,
           }),
         },
 
         onError: {
           target: States.ERROR,
+          actions: assign({
+            error: ({ event }) => toFlowError(event.error),
+          }),
         },
       },
     },
@@ -110,6 +169,12 @@ const EventFlowMachine = createMachine({
             context.eventInfo.status !== 'RegistrationsOpen' &&
             context.eventInfo.status !== 'WaitingList',
           target: States.ERROR,
+          actions: assign({
+            error: ({ context }) =>
+              new Error(
+                `Registration unavailable because event status is ${context.eventInfo.status}`
+              ),
+          }),
         },
       ],
     },
@@ -235,9 +300,16 @@ const EventFlowMachine = createMachine({
         input: ({ context }) => ({ ...context }),
         onDone: {
           target: States.CHECK_REGISTRATION_STATUS,
+          actions: assign({
+            result: ({ event }) => event.output,
+            error: () => null,
+          }),
         },
         onError: {
           target: States.ERROR,
+          actions: assign({
+            error: ({ event }) => toFlowError(event.error),
+          }),
         },
       },
     },

@@ -28,16 +28,50 @@ const logger = Logger.create({
   context: { module: 'actions' },
 });
 
+type ApiResponseWithError = {
+  error?: unknown;
+  response?: unknown;
+};
+
+function getApiErrorDetails(response: ApiResponseWithError) {
+  const apiResponse = response.response as { status?: number; statusText?: string } | undefined;
+
+  return {
+    responseStatus: apiResponse?.status,
+    responseStatusText: apiResponse?.statusText,
+    error: response.error,
+  };
+}
+
+function getSelectedProductSummary(selectedProducts?: Map<string, number>) {
+  return {
+    selectedProductCount: selectedProducts?.size ?? 0,
+  };
+}
+
 /**
  * Add products to a registration
  */
 async function addProductsToRegistration(
   registrationId: number,
-  products: OrderLineModel[]
+  products: OrderLineModel[],
+  context?: {
+    eventId?: number;
+    userId?: string;
+    source?: 'create' | 'update' | 'edit-existing';
+  }
 ): Promise<RegistrationDto | null> {
   const orgId = getOrganizationId();
 
-  logger.info({ registrationId, productCount: products.length }, 'Adding products to registration');
+  logger.debug(
+    {
+      registrationId,
+      organizationId: orgId,
+      productCount: products.length,
+      ...context,
+    },
+    'Adding products to registration'
+  );
 
   const response = await postV3RegistrationsByIdProducts({
     client,
@@ -48,13 +82,27 @@ async function addProductsToRegistration(
 
   if (!response.data) {
     logger.error(
-      { error: response.error, registrationId },
+      {
+        registrationId,
+        organizationId: orgId,
+        productCount: products.length,
+        ...context,
+        ...getApiErrorDetails(response),
+      },
       'Failed to add products to registration'
     );
     return null;
   }
 
-  logger.info({ registrationId }, 'Products added successfully');
+  logger.debug(
+    {
+      registrationId,
+      organizationId: orgId,
+      productCount: products.length,
+      ...context,
+    },
+    'Products added successfully'
+  );
   return response.data;
 }
 
@@ -68,8 +116,15 @@ export async function createEventRegistration(
   const orgId = getOrganizationId();
   const products = productMapToOrderLineModel(selectedProducts);
 
-  logger.info(
-    { userId: newRegistration.userId, eventId: newRegistration.eventId },
+  logger.debug(
+    {
+      organizationId: orgId,
+      userId: newRegistration.userId,
+      eventId: newRegistration.eventId,
+      paymentMethod: newRegistration.paymentMethod,
+      productCount: products.length,
+      ...getSelectedProductSummary(selectedProducts),
+    },
     'Creating event registration'
   );
 
@@ -82,14 +137,27 @@ export async function createEventRegistration(
 
     if (!registrationResponse.data) {
       logger.error(
-        { error: registrationResponse.error, userId: newRegistration.userId },
+        {
+          organizationId: orgId,
+          userId: newRegistration.userId,
+          eventId: newRegistration.eventId,
+          paymentMethod: newRegistration.paymentMethod,
+          productCount: products.length,
+          ...getSelectedProductSummary(selectedProducts),
+          ...getApiErrorDetails(registrationResponse),
+        },
         'Failed to create registration'
       );
       return actionError('Failed to create registration');
     }
 
-    logger.info(
-      { registrationId: registrationResponse.data.registrationId },
+    logger.debug(
+      {
+        organizationId: orgId,
+        registrationId: registrationResponse.data.registrationId,
+        eventId: newRegistration.eventId,
+        userId: newRegistration.userId,
+      },
       'Registration created successfully'
     );
 
@@ -102,10 +170,23 @@ export async function createEventRegistration(
 
     // Add products to the registration
     const registrationId = registrationResponse.data.registrationId!;
-    const registrationWithProducts = await addProductsToRegistration(registrationId, products);
+    const registrationWithProducts = await addProductsToRegistration(registrationId, products, {
+      eventId: newRegistration.eventId,
+      userId: newRegistration.userId,
+      source: 'create',
+    });
 
     if (!registrationWithProducts) {
-      logger.error({ registrationId }, 'Failed to add products to registration');
+      logger.error(
+        {
+          organizationId: orgId,
+          registrationId,
+          eventId: newRegistration.eventId,
+          userId: newRegistration.userId,
+          productCount: products.length,
+        },
+        'Registration created but failed while adding products'
+      );
       return actionError('Registration created but failed to add products');
     }
 
@@ -114,7 +195,15 @@ export async function createEventRegistration(
     return actionSuccess(registrationWithProducts, 'Registration created successfully!');
   } catch (error) {
     logger.error(
-      { error, userId: newRegistration.userId },
+      {
+        error,
+        organizationId: orgId,
+        userId: newRegistration.userId,
+        eventId: newRegistration.eventId,
+        paymentMethod: newRegistration.paymentMethod,
+        productCount: products.length,
+        ...getSelectedProductSummary(selectedProducts),
+      },
       'Unexpected error creating registration'
     );
     return actionError('An unexpected error occurred');
@@ -132,7 +221,18 @@ export async function updateEventRegistration(
 ): Promise<ServerActionResult<RegistrationDto>> {
   const orgId = getOrganizationId();
 
-  logger.info({ registrationId: id }, 'Updating event registration');
+  logger.debug(
+    {
+      organizationId: orgId,
+      registrationId: id,
+      paymentMethod: updatedRegistration.paymentMethod,
+      availableProductCount: availableProducts.length,
+      ...getSelectedProductSummary(selectedProducts),
+    },
+    'Updating event registration'
+  );
+
+  let products: OrderLineModel[] = [];
 
   try {
     /*
@@ -142,12 +242,25 @@ export async function updateEventRegistration(
       set it to 0
     */
     availableProducts.forEach((product: ProductDto) => {
-      const stringyProductId = product.productId!.toString();
+      if (product.productId == null) {
+        logger.warn(
+          {
+            organizationId: orgId,
+            registrationId: id,
+            product,
+          },
+          'Skipping product without productId while updating registration'
+        );
+        return;
+      }
+
+      const stringyProductId = product.productId.toString();
       if (!selectedProducts?.has(stringyProductId)) {
         selectedProducts?.set(stringyProductId, 0);
       }
     });
-    const products = productMapToOrderLineModel(selectedProducts);
+
+    products = productMapToOrderLineModel(selectedProducts);
 
     const registrationResponse = await putV3RegistrationsById({
       client,
@@ -158,13 +271,24 @@ export async function updateEventRegistration(
 
     if (!registrationResponse.data) {
       logger.error(
-        { error: registrationResponse.error, registrationId: id },
+        {
+          organizationId: orgId,
+          registrationId: id,
+          paymentMethod: updatedRegistration.paymentMethod,
+          productCount: products.length,
+          availableProductCount: availableProducts.length,
+          ...getSelectedProductSummary(selectedProducts),
+          ...getApiErrorDetails(registrationResponse),
+        },
         'Failed to update registration'
       );
       return actionError('Failed to update registration');
     }
 
-    logger.info({ registrationId: id }, 'Registration updated successfully');
+    logger.debug(
+      { organizationId: orgId, registrationId: id },
+      'Registration updated successfully'
+    );
 
     // If no products, return the registration
     if (!products.length) {
@@ -174,17 +298,41 @@ export async function updateEventRegistration(
 
     // Update products for the registration
     const registrationId = registrationResponse.data.registrationId!;
-    const registrationWithProducts = await addProductsToRegistration(registrationId, products);
+    const registrationWithProducts = await addProductsToRegistration(registrationId, products, {
+      eventId: registrationResponse.data.eventId,
+      userId: registrationResponse.data.userId ?? undefined,
+      source: 'update',
+    });
 
     if (!registrationWithProducts) {
-      logger.error({ registrationId }, 'Failed to update products for registration');
+      logger.error(
+        {
+          organizationId: orgId,
+          registrationId,
+          eventId: registrationResponse.data.eventId,
+          userId: registrationResponse.data.userId ?? undefined,
+          productCount: products.length,
+        },
+        'Registration updated but failed while updating products'
+      );
       return actionError('Registration updated but failed to update products');
     }
 
     revalidatePath(`/user/events`);
     return actionSuccess(registrationWithProducts, 'Registration updated successfully!');
   } catch (error) {
-    logger.error({ error, registrationId: id }, 'Unexpected error updating registration');
+    logger.error(
+      {
+        error,
+        organizationId: orgId,
+        registrationId: id,
+        paymentMethod: updatedRegistration.paymentMethod,
+        productCount: products.length,
+        availableProductCount: availableProducts.length,
+        ...getSelectedProductSummary(selectedProducts),
+      },
+      'Unexpected error updating registration'
+    );
     return actionError('An unexpected error occurred');
   }
 }
@@ -196,7 +344,10 @@ export async function addProductsToExistingRegistration(
   registrationId: number,
   selectedProducts: Map<string, number>
 ): Promise<ServerActionResult<RegistrationDto>> {
-  logger.info({ registrationId }, 'Adding products to existing registration');
+  logger.debug(
+    { registrationId, ...getSelectedProductSummary(selectedProducts) },
+    'Adding products to existing registration'
+  );
 
   try {
     const products = productMapToOrderLineModel(selectedProducts);
@@ -206,10 +357,19 @@ export async function addProductsToExistingRegistration(
       return actionError('No products selected');
     }
 
-    const registrationWithProducts = await addProductsToRegistration(registrationId, products);
+    const registrationWithProducts = await addProductsToRegistration(registrationId, products, {
+      source: 'edit-existing',
+    });
 
     if (!registrationWithProducts) {
-      logger.error({ registrationId }, 'Failed to add products to registration');
+      logger.error(
+        {
+          registrationId,
+          productCount: products.length,
+          ...getSelectedProductSummary(selectedProducts),
+        },
+        'Failed to add products to existing registration'
+      );
       return actionError('Failed to add products to registration');
     }
 
@@ -223,7 +383,14 @@ export async function addProductsToExistingRegistration(
 
     return actionSuccess(registrationWithProducts, 'Products added successfully!');
   } catch (error) {
-    logger.error({ error, registrationId }, 'Unexpected error adding products');
+    logger.error(
+      {
+        error,
+        registrationId,
+        ...getSelectedProductSummary(selectedProducts),
+      },
+      'Unexpected error adding products to existing registration'
+    );
     return actionError('An unexpected error occurred');
   }
 }

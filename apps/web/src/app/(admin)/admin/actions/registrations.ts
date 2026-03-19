@@ -16,6 +16,21 @@ const logger = Logger.create({
   context: { module: 'RegistrationActions' },
 });
 
+type ApiResponseWithError = {
+  error?: unknown;
+  response?: unknown;
+};
+
+function getApiErrorDetails(response: ApiResponseWithError) {
+  const apiResponse = response.response as { status?: number; statusText?: string } | undefined;
+
+  return {
+    responseStatus: apiResponse?.status,
+    responseStatusText: apiResponse?.statusText,
+    error: response.error,
+  };
+}
+
 /**
  * Fetch user registrations for a specific event
  * Used by the event registration flow to check if user is already registered
@@ -26,7 +41,7 @@ export async function fetchUserEventRegistrations(
 ): Promise<ServerActionResult<RegistrationDto[]>> {
   const orgId = getOrganizationId();
 
-  logger.info({ userId, eventId, organizationId: orgId }, 'Fetching user event registrations');
+  logger.debug({ userId, eventId, organizationId: orgId }, 'Fetching user event registrations');
 
   try {
     const response = await getV3Registrations({
@@ -50,14 +65,14 @@ export async function fetchUserEventRegistrations(
           userId,
           eventId,
           organizationId: orgId,
-          error: response.error,
+          ...getApiErrorDetails(response),
         },
         'Failed to fetch user event registrations'
       );
       return actionError('Failed to fetch registrations');
     }
 
-    logger.info(
+    logger.debug(
       {
         userId,
         eventId,
