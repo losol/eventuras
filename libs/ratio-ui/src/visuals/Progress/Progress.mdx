@@ -1,0 +1,81 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as ProgressRingStories from './ProgressRing.stories';
+import * as ProgressBarStories from './ProgressBar.stories';
+
+<Meta title="Visuals/Progress" />
+
+# Progress
+
+Animated progress components for displaying scores, completion, or other values relative to a maximum.
+
+## ProgressRing
+
+Circular gauge with content centered inside the ring. Best suited as a focal element — a single key metric in a dashboard or card.
+
+<Canvas of={ProgressRingStories.Default} />
+
+<Controls of={ProgressRingStories.Default} />
+
+### Custom score
+
+<Canvas of={ProgressRingStories.CustomScore} />
+
+### Small
+
+<Canvas of={ProgressRingStories.Small} />
+
+---
+
+## ProgressBar
+
+Horizontal bar with optional label and value display. Works well in lists, tables, or denser layouts where vertical space is limited.
+
+<Canvas of={ProgressBarStories.Default} />
+
+<Controls of={ProgressBarStories.Default} />
+
+### Tall bar
+
+<Canvas of={ProgressBarStories.Tall} />
+
+### Without label
+
+<Canvas of={ProgressBarStories.NoLabel} />
+
+---
+
+## Which one should you use?
+
+| | ProgressRing | ProgressBar |
+|---|---|---|
+| **Best for** | Hero metrics, dashboards, cards | Lists, tables, dense layouts |
+| **Visual weight** | High — draws attention | Low — blends into content |
+| **Custom content** | Yes — via `children` slot | Label + value only |
+
+They pair well together: a ring as the hero element at the top, with bars for the breakdown below.
+
+## Color usage
+
+Both components accept a `color` prop. Use design system CSS variables for consistency:
+
+```tsx
+// Semantic colors
+color="var(--color-success-600)"   // green — complete, good result
+color="var(--color-warning-500)"   // yellow — partial, needs attention
+color="var(--color-error-600)"     // red — low, critical
+
+// Primary color (default)
+color="var(--color-primary-700)"
+```
+
+Avoid hardcoding hex values unless the color is outside the design system (e.g. external branding).
+
+## Accessibility
+
+- **ProgressRing** uses `role="meter"` with `aria-valuenow`, `aria-valuemin`, and `aria-valuemax`.
+- **ProgressBar** uses `role="progressbar"` with the same aria attributes.
+- Ring content (`children`) is visible to screen readers — make sure it reads well as plain text.
+
+## Animation
+
+Both components animate from 0 to the actual value on mount via a shared `useProgressAnimation` hook. The hook uses `requestAnimationFrame` to flip a flag after first paint, which triggers the CSS transition.
