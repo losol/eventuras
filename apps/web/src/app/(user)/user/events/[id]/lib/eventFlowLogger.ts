@@ -15,7 +15,7 @@ type LogContext = Record<string, string | number | boolean | undefined | null>;
  * Log step entry with context
  */
 export function logStepEntry(step: number | string, stepName: string, context?: LogContext) {
-  eventFlowLogger.info(
+  eventFlowLogger.debug(
     {
       step,
       stepName,
@@ -29,7 +29,7 @@ export function logStepEntry(step: number | string, stepName: string, context?: 
  * Log step completion with context
  */
 export function logStepComplete(step: number | string, stepName: string, context?: LogContext) {
-  eventFlowLogger.info(
+  eventFlowLogger.debug(
     {
       step,
       stepName,
@@ -63,7 +63,7 @@ export function logStepError(
  * Log state machine transition
  */
 export function logStateTransition(from: string, to: string, event?: string, context?: LogContext) {
-  eventFlowLogger.info(
+  eventFlowLogger.debug(
     {
       from,
       to,
@@ -78,7 +78,7 @@ export function logStateTransition(from: string, to: string, event?: string, con
  * Log user action
  */
 export function logUserAction(action: string, context?: LogContext) {
-  eventFlowLogger.info(
+  eventFlowLogger.debug(
     {
       action,
       ...context,

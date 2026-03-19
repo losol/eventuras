@@ -1,9 +1,16 @@
 'use client';
 import { useState } from 'react';
 
+import { Logger } from '@eventuras/logger';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Input } from '@eventuras/ratio-ui/forms';
 import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
+
+const logger = Logger.create({
+  namespace: 'web:admin:organizations',
+  context: { component: 'AddMemberDrawer' },
+});
+
 interface AddMemberDrawerProps {
   isOpen: boolean;
   onClose: () => void;
@@ -33,7 +40,15 @@ const AddMemberDrawer: React.FC<AddMemberDrawerProps> = ({
       handleClose();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to add member. Please try again.');
-      console.error('Error adding member:', err);
+      logger.error(
+        {
+          error: err,
+          organizationId,
+          organizationName,
+          userId: userId.trim(),
+        },
+        'Failed to add organization member'
+      );
     } finally {
       setIsLoading(false);
     }

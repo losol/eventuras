@@ -29,8 +29,10 @@ const logger = Logger.create({
 });
 
 export async function getCollections(page: number = 1, pageSize: number = 100) {
+  let organizationId: number | undefined;
+
   try {
-    const organizationId = getOrganizationId();
+    organizationId = getOrganizationId();
 
     const { data, error } = await getV3Eventcollections({
       client,
@@ -44,7 +46,15 @@ export async function getCollections(page: number = 1, pageSize: number = 100) {
     });
 
     if (error) {
-      console.error('Failed to fetch collections:', error);
+      logger.error(
+        {
+          error,
+          organizationId,
+          page,
+          pageSize,
+        },
+        'Failed to fetch collections'
+      );
       return {
         ok: false as const,
         error: String(error),
@@ -59,7 +69,15 @@ export async function getCollections(page: number = 1, pageSize: number = 100) {
       error: null,
     };
   } catch (error) {
-    console.error('Error fetching collections:', error);
+    logger.error(
+      {
+        error,
+        organizationId,
+        page,
+        pageSize,
+      },
+      'Unexpected error fetching collections'
+    );
     return {
       ok: false as const,
       error: error instanceof Error ? error.message : 'Unknown error',

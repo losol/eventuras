@@ -3,15 +3,24 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
+import { Logger } from '@eventuras/logger';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Dialog } from '@eventuras/ratio-ui/layout/Dialog';
 import { Form, HiddenInput, TextField } from '@eventuras/smartform';
+import { useToast } from '@eventuras/toast';
 
 import { EventCollectionCreateDto } from '@/lib/eventuras-sdk';
 
 import { createCollection } from './actions';
+
+const logger = Logger.create({
+  namespace: 'web:admin:collections',
+  context: { component: 'CollectionCreator' },
+});
+
 const CollectionCreator: React.FC<{ organizationId: number }> = ({ organizationId }) => {
   const t = useTranslations();
+  const toast = useToast();
   const [modalOpen, setModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
@@ -24,9 +33,26 @@ const CollectionCreator: React.FC<{ organizationId: number }> = ({ organizationI
         router.push(`/admin/collections/${result.data.collectionId}`);
         router.refresh();
       } else if (!result.success) {
-        // Handle error - you might want to show a toast here
-        console.error('Failed to create collection:', result.error.message);
+        logger.error(
+          {
+            organizationId,
+            error: result.error,
+            name: data.name,
+          },
+          'Failed to create collection'
+        );
+        toast.error(result.error.message);
       }
+    } catch (error) {
+      logger.error(
+        {
+          organizationId,
+          error,
+          name: data.name,
+        },
+        'Unexpected error creating collection'
+      );
+      toast.error('Failed to create collection');
     } finally {
       setIsSubmitting(false);
     }

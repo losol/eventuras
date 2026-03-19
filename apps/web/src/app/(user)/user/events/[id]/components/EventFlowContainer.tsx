@@ -19,7 +19,6 @@ import Step04RegistrationConfirmation from './steps/04_RegistrationConfirmation'
 import Step05RegistrationView from './steps/05_RegistrationView';
 import Step06RegistrationCancellation from './steps/06_RegistrationCancellation';
 import { useEventFlowMachine } from '../hooks/useEventFlowMachine';
-import { eventFlowLogger } from '../lib/eventFlowLogger';
 export interface EventFlowContainerProps {
   eventInfo: EventDto;
   user: UserDto;
@@ -93,7 +92,6 @@ const EventFlowContainer: React.FC<EventFlowContainerProps> = ({
   // Show error toast when state machine enters error state
   useEffect(() => {
     if (isError && context.error) {
-      eventFlowLogger.error({ error: context.error }, 'Event flow entered error state');
       toast.error(t('common.errors.fatalError.description'));
     }
   }, [isError, context.error, toast, t]);

@@ -22,6 +22,14 @@ const logger = Logger.create({
   context: { page: 'UserEventPage' },
 });
 
+function getResponseStatus(error: unknown) {
+  if (error && typeof error === 'object' && 'status' in error) {
+    return (error as { status?: number }).status;
+  }
+
+  return undefined;
+}
+
 type UserEventPageProps = {
   params: Promise<{
     id: number;
@@ -50,18 +58,22 @@ export default async function UserEventPage({ params }: Readonly<UserEventPagePr
 
     // Try to refresh the session in case the token expired
     const currentSession = await getCurrentSession();
+    let retryUserError: unknown;
     if (currentSession?.tokens?.refreshToken) {
-      logger.info('Attempting to refresh session for event registration');
+      logger.debug({ eventId: id }, 'Attempting to refresh session for event registration');
       const refreshedSession = await refreshCurrentSession(oauthConfig);
 
       if (refreshedSession) {
-        logger.info('Session refreshed successfully - retrying user profile fetch');
+        logger.debug(
+          { eventId: id },
+          'Session refreshed successfully - retrying user profile fetch'
+        );
 
         // Retry the user profile fetch with refreshed token
         const retryUserResponse = await getV3Userprofile();
 
         if (retryUserResponse.data) {
-          logger.info('User profile fetch successful after session refresh');
+          logger.debug({ eventId: id }, 'User profile fetch successful after session refresh');
           // Continue with the rest of the page using retryUserResponse
           return (
             <section className="mt-16">
@@ -84,12 +96,19 @@ export default async function UserEventPage({ params }: Readonly<UserEventPagePr
             </section>
           );
         }
+
+        retryUserError = retryUserResponse.error;
       }
     }
 
     // Session refresh failed or didn't help - redirect to login
     logger.error(
-      { error: userResponse.error, eventId: id },
+      {
+        error: userResponse.error,
+        eventId: id,
+        hasRefreshToken: !!currentSession?.tokens?.refreshToken,
+        retryError: retryUserError,
+      },
       'Failed to fetch user profile even after session refresh - redirecting to login'
     );
 
@@ -104,12 +123,7 @@ export default async function UserEventPage({ params }: Readonly<UserEventPagePr
       {
         eventId: id,
         error: eventInfoResponse.error,
-        statusCode:
-          eventInfoResponse.error &&
-          typeof eventInfoResponse.error === 'object' &&
-          'status' in eventInfoResponse.error
-            ? (eventInfoResponse.error as { status?: number }).status
-            : undefined,
+        statusCode: getResponseStatus(eventInfoResponse.error),
       },
       'Event fetch failed - data is null'
     );
@@ -120,12 +134,24 @@ export default async function UserEventPage({ params }: Readonly<UserEventPagePr
     notFound();
   }
 
-  logger.info(
+  if (!availableProductsResponse.data && availableProductsResponse.error) {
+    logger.error(
+      {
+        eventId: id,
+        error: availableProductsResponse.error,
+        statusCode: getResponseStatus(availableProductsResponse.error),
+      },
+      'Failed to load registration products for event page'
+    );
+  }
+
+  logger.debug(
     {
       eventId: id,
       hasTitle: !!eventInfoResponse.data.title,
       status: eventInfoResponse.data.status,
       hasDescription: !!eventInfoResponse.data.description,
+      availableProductCount: availableProductsResponse.data?.length ?? 0,
     },
     'Event data loaded for registration'
   );

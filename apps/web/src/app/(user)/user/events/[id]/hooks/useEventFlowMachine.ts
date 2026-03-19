@@ -55,6 +55,10 @@ export function useEventFlowMachine({
       logStepError('ERROR', 'EventFlow', state.context.error, {
         eventId: eventInfo.id,
         userId: user.id,
+        currentState: String(state.value),
+        inEditMode: state.context.inEditMode,
+        registrationCount: state.context.registrations.length,
+        selectedProductCount: state.context.selectedProducts.size,
       });
     }
   }, [state, eventInfo.id, user.id]);
