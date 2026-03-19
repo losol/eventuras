@@ -5,5 +5,3 @@ export type { LoggerOptions, ErrorLoggerOptions, LoggerConfig, LogLevel } from '
 // HTTP logging utility - header redaction
 export { redactHeaders } from './httpLogger';
 
-// Debug is for development debugging (debug-js)
-export { Debug } from './Debug';

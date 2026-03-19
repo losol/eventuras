@@ -15,9 +15,7 @@
     "lint:fix": "eslint . --fix && prettier . --write",
     "oauth:setup": "tsx scripts/oauth-server.ts",
     "test": "playwright test",
-    "test:debug": "cross-env DEBUG=e2e:* playwright test",
-    "test:ui": "playwright test --ui",
-    "test:ui:debug": "cross-env DEBUG=e2e:* playwright test --ui"
+    "test:ui": "playwright test --ui"
   },
   "dependencies": {
     "@eventuras/event-sdk": "workspace:*",
@@ -29,8 +27,6 @@
     "jose": "6.2.1",
     "tsx": "^4.21.0"
   },
-  "devDependencies": {
-    "cross-env": "^10.1.0"
-  },
+  "devDependencies": {},
   "readme": "README.md"
 }

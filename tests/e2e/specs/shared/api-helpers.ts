@@ -1,8 +1,8 @@
-import { Debug } from '@eventuras/logger';
+import { Logger } from '@eventuras/logger';
 import * as jose from 'jose';
 import * as fs from 'fs';
 
-const debug = Debug.create('e2e:api');
+const logger = Logger.create({ namespace: 'e2e:api' });
 
 // Get backend API URL from environment (required)
 const BACKEND_API_URL = process.env.E2E_API_URL;
@@ -53,7 +53,7 @@ async function decryptSessionToken(
 
     return payload as { tokens?: { accessToken?: string } };
   } catch (error) {
-    debug('Error decrypting session token: %s', error);
+    logger.error({ error }, 'Error decrypting session token');
     throw new Error(`Failed to decrypt session token: ${error}`);
   }
 }
@@ -74,24 +74,24 @@ export const getAccessTokenFromAuthFile = async (authFile: string): Promise<stri
     );
 
     if (!sessionCookie) {
-      debug('No session cookie found in auth file: %s', authFile);
+      logger.debug({ authFile }, 'No session cookie found in auth file');
       return null;
     }
 
     // Decrypt the JWE token to get the session data
-    debug('Decrypting session token from: %s', authFile);
+    logger.debug({ authFile }, 'Decrypting session token');
     const session = await decryptSessionToken(sessionCookie.value);
 
     const accessToken = session.tokens?.accessToken;
     if (!accessToken) {
-      debug('No access token found in decrypted session');
+      logger.debug('No access token found in decrypted session');
       return null;
     }
 
-    debug('Successfully extracted access token');
+    logger.debug('Successfully extracted access token');
     return accessToken;
   } catch (error) {
-    debug('Error reading auth file %s: %s', authFile, error);
+    logger.error({ authFile, error }, 'Error reading auth file');
     return null;
   }
 };
@@ -115,7 +115,7 @@ export const apiRequest = async <T = unknown>(
   }
 
   const url = `${BACKEND_API_URL}${endpoint}`;
-  debug('Making authenticated API request to: %s', url);
+  logger.debug({ url }, 'Making authenticated API request');
 
   const headers: Record<string, string> = {
     ...(options.headers as Record<string, string>),
@@ -147,7 +147,7 @@ export const publicApiRequest = async <T = unknown>(
   options: RequestInit = {}
 ): Promise<T> => {
   const url = `${BACKEND_API_URL}${endpoint}`;
-  debug('Making unauthenticated API request to: %s', url);
+  logger.debug({ url }, 'Making unauthenticated API request');
 
   const headers: Record<string, string> = {
     ...(options.headers as Record<string, string>),
