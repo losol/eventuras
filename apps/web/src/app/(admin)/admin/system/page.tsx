@@ -6,6 +6,8 @@ import { Section } from '@eventuras/ratio-ui/layout/Section';
 
 import { getV3OrganizationsByOrganizationIdSettings } from '@/lib/eventuras-sdk';
 
+import { ErrorTestButton } from './ErrorTestButton';
+
 const AdminSystemPage = async () => {
   const t = await getTranslations();
   const settings = await getV3OrganizationsByOrganizationIdSettings({
@@ -24,6 +26,12 @@ const AdminSystemPage = async () => {
       <Section>
         <Container>
           <p>POWER_OFFICE_APP_KEY = {powerOfficeSetting?.value ?? 'Not found'}</p>
+        </Container>
+      </Section>
+      <Section>
+        <Container>
+          <Heading as="h2">Diagnostics</Heading>
+          <ErrorTestButton />
         </Container>
       </Section>
     </>
