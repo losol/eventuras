@@ -1,7 +1,7 @@
 #
 # Stage 0
 # Build the project
-FROM mcr.microsoft.com/dotnet/sdk:10.0.200 AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0.201 AS build
 WORKDIR /app
 
 # Copy solution file and common props
