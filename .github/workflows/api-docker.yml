@@ -12,6 +12,10 @@ on:
         description: 'Tag channel: main (canary + main-sha) or edge (edge-sha)'
         type: string
         default: ''
+    outputs:
+      image_tag:
+        description: 'Primary image tag (e.g. main-abc1234)'
+        value: ${{ jobs.docker.outputs.image_tag }}
     secrets:
       DOCKERHUB_USERNAME:
         required: false
@@ -44,6 +48,7 @@ jobs:
         working-directory: ./apps/api/
     outputs:
       docker_tags: ${{ steps.meta.outputs.tags }}
+      image_tag: ${{ steps.ver.outputs.image_tag }}
 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -60,6 +65,7 @@ jobs:
           V="$(jq -r '.version' package.json 2>/dev/null || echo '0.0.0')"
           echo "version=$V" >> "$GITHUB_OUTPUT"
           echo "sha=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+          echo "image_tag=${{ inputs.channel }}-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
 
       - name: Docker metadata
         id: meta
