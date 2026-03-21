@@ -96,6 +96,9 @@ jobs:
           push: ${{ inputs.push }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            BUILD_VERSION=${{ steps.ver.outputs.version }}
+            BUILD_SHA=${{ steps.ver.outputs.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
