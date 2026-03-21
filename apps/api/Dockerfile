@@ -49,6 +49,12 @@ RUN dotnet publish -c Release -o /app/out
 # Copy the built files over
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS publish
 
+ARG BUILD_VERSION="0.0.0"
+ARG BUILD_SHA="unknown"
+
+ENV BUILD_VERSION=${BUILD_VERSION}
+ENV BUILD_SHA=${BUILD_SHA}
+
 # Copy files over from the build stage
 WORKDIR /app
 COPY --from=build /app/out .
