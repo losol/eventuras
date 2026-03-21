@@ -33,6 +33,6 @@
   },
   "devDependencies": {
     "@eventuras/vite-config": "workspace:*",
-    "vite": "^8.0.0"
+    "vite": "^8.0.1"
   }
 }
