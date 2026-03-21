@@ -1,6 +1,6 @@
 {
   "name": "@eventuras/smartform",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

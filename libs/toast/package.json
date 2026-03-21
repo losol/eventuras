@@ -1,6 +1,6 @@
 {
   "name": "@eventuras/toast",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
