@@ -18,7 +18,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "nodemailer": "^8.0.2"
+    "nodemailer": "^8.0.3"
   },
   "devDependencies": {
     "@types/nodemailer": "^7.0.11",

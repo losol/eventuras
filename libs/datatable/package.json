@@ -30,7 +30,7 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "lucide-react": "^0.577.0",
-    "vite": "^8.0.0"
+    "vite": "^8.0.1"
   },
   "peerDependencies": {
     "@tanstack/match-sorter-utils": "^8.19.4",

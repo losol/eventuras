@@ -39,12 +39,12 @@
     "@eventuras/smartform": "workspace:*",
     "@eventuras/toast": "workspace:^",
     "@react-stately/data": "^3.15.2",
-    "@tailwindcss/postcss": "^4.2.1",
-    "@types/debug": "^4.1.12",
+    "@tailwindcss/postcss": "^4.2.2",
+    "@types/debug": "^4.1.13",
     "@xstate/react": "^6.1.0",
-    "jose": "6.2.1",
+    "jose": "6.2.2",
     "lucide-react": "^0.577.0",
-    "next": "16.1.6",
+    "next": "16.2.1",
     "next-intl": "^4.8.3",
     "openid-client": "^6.8.2",
     "pino": "^10.3.1",
@@ -58,20 +58,20 @@
   },
   "devDependencies": {
     "@eventuras/eslint-config": "workspace:*",
-    "@next/bundle-analyzer": "16.1.6",
+    "@next/bundle-analyzer": "16.2.1",
     "@types/node": "25.5.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "@typescript-eslint/eslint-plugin": "^8.57.0",
-    "@typescript-eslint/parser": "^8.57.0",
+    "@typescript-eslint/eslint-plugin": "^8.57.1",
+    "@typescript-eslint/parser": "^8.57.1",
     "autoprefixer": "^10.4.27",
     "postcss": "^8.5.8",
     "prettier": "^3.8.1",
-    "tailwindcss": "^4.2.1",
+    "tailwindcss": "^4.2.2",
     "typescript": "5.9.3"
   },
   "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "4.59.0"
+    "@rollup/rollup-linux-x64-gnu": "4.59.1"
   },
   "engines": {
     "node": ">=22.0.0 <25.0.0",

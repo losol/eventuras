@@ -60,12 +60,12 @@
   "dependencies": {
     "@eventuras/logger": "workspace:*",
     "@eventuras/typescript-config": "workspace:*",
-    "jose": "6.2.1",
+    "jose": "6.2.2",
     "openid-client": "^6.8.2"
   },
   "devDependencies": {
     "@eventuras/vite-config": "workspace:*",
-    "vite": "^8.0.0",
+    "vite": "^8.0.1",
     "vitest": "^4.1.0"
   }
 }

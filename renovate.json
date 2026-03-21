@@ -7,6 +7,7 @@
   "commitMessagePrefix": "chore(deps): ",
   "commitMessageAction": "update",
   "commitMessageSuffix": "",
+  "rebaseWhen": "conflicted",
   "packageRules": [
     {
       "description": "Lexical must match Payload CMS richtext-lexical version — update manually",
@@ -17,6 +18,12 @@
       "description": "@types/node pinned to match engine requirements",
       "matchPackageNames": ["@types/node"],
       "enabled": false
+    },
+    {
+      "description": "Group all non-major updates for api",
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "matchFileNames": ["apps/api/**"],
+      "groupName": "api minor/patch"
     },
     {
       "description": "Group all non-major updates per monorepo app/lib",

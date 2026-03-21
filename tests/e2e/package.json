@@ -24,9 +24,8 @@
     "@eventuras/logger": "workspace:*",
     "@playwright/test": "1.58.2",
     "allure-playwright": "^3.6.0",
-    "jose": "6.2.1",
+    "jose": "6.2.2",
     "tsx": "^4.21.0"
   },
-  "devDependencies": {},
   "readme": "README.md"
 }
