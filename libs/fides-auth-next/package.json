@@ -54,8 +54,8 @@
   "peerDependencies": {
     "@xstate/react": "^5.0.0 || ^6.0.0",
     "@xstate/store": "^3.11.0",
-    "next": "16.1.5",
-    "react": "^19.2.4",
+    "next": "^16.0.0",
+    "react": "^19.0.0",
     "xstate": "^5.0.0"
   }
 }

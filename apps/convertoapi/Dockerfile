@@ -6,7 +6,7 @@
 ##################
 # Stage 1: Build #
 ##################
-FROM mcr.microsoft.com/playwright:v1.58.1-noble AS builder
+FROM mcr.microsoft.com/playwright:v1.58.2-noble AS builder
 
 # Get the needed package files
 WORKDIR /app
@@ -36,7 +36,7 @@ RUN pnpm --filter @eventuras/convertoapi deploy --prod --legacy /app/deploy
 ##################################
 # Stage 2: Run from a fresh base #
 ##################################
-FROM mcr.microsoft.com/playwright:v1.58.1-noble
+FROM mcr.microsoft.com/playwright:v1.58.2-noble
 
 # Install tini for proper signal handling (SIGTERM in k8s)
 RUN apt-get update -qq && \
