@@ -1,5 +1,26 @@
 # @eventuras/api
 
+## 2.30.0
+
+### Minor Changes
+
+- 949d8b6: ### 🧱 Features
+  - feat(api,web): implement correlation ID handling across API requests and responses (8055dac) [@eventuras/api]
+
+### Patch Changes
+
+- d752b18: ### 🐞 Bug Fixes
+  - fix(web): sync turbo.json env vars with app.config.json (28c8deb) [@eventuras/web]
+
+  ♻️ Refactoring
+  - refactor(web): replace Auth0 with generic OIDC auth routes (574acae) [@eventuras/web]
+
+- 2bdf1aa: ### 🧹 Maintenance
+  - chore(api): update test project references (14f1ede) [@eventuras/api]
+  - chore(api): update package references to latest versions (5d4b656) [@eventuras/api]
+  - chore(api): remove unused featured disabled exception (0d9d2fd) [@eventuras/api]
+  - chore(api): remove Feature Management package references (83940b0) [@eventuras/api]
+
 ## 2.29.0
 
 ### Minor Changes

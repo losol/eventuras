@@ -1,6 +1,6 @@
 {
   "name": "@eventuras/markdown-plugin-happening",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Markdown plugins for events and conferences — schedule detection, speaker cards, etc.",
   "license": "MIT",
   "sideEffects": false,

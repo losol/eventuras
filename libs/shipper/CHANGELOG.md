@@ -1,5 +1,12 @@
 # @eventuras/shipper
 
+## 0.2.1
+
+### Patch Changes
+
+- Updated dependencies [d752b18]
+  - @eventuras/fides-auth@0.3.0
+
 ## 0.2.0
 
 ### Minor Changes

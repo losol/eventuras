@@ -1,5 +1,11 @@
 # @eventuras/ratio-ui
 
+## 0.13.0
+
+### Minor Changes
+
+- 0b4b869: feat(ratio-ui): Add ProgressRing and ProgressBar components with shared animation hook, semantic color tokens, Storybook stories, and MDX documentation.
+
 ## 0.12.0
 
 ### Minor Changes
