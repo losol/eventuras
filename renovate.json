@@ -1,12 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended"
-  ],
-  "schedule": [
-    "after 4am and before 6am every weekday",
-    "after 6pm and before 8pm on saturday and sunday"
-  ],
+  "extends": ["config:recommended"],
   "timezone": "Europe/Oslo",
   "labels": [
     "dependencies"
