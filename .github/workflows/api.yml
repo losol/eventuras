@@ -30,3 +30,17 @@ jobs:
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  cd:
+    name: Deliver to CD
+    needs: docker
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch to infra repo
+        env:
+          GH_TOKEN: ${{ secrets.INFRA_DISPATCH_TOKEN }}
+        run: |
+          gh api repos/${{ secrets.INFRA_REPO }}/dispatches \
+            -f event_type=deploy-api \
+            -f "client_payload[image_tag]=${{ needs.docker.outputs.image_tag }}"
