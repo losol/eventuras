@@ -37,9 +37,9 @@ const MarkdownInput = (props: MarkdownInputProps) => {
       props.onChange(markdown);
     }
 
-    // Validate maxLength if provided
-    if (props.maxLength && plainText.length >= props.maxLength) {
-      setError(`Maximum ${props.maxLength} characters allowed`);
+    // Validate maxLength against markdown content (what gets stored)
+    if (props.maxLength && markdown.length > props.maxLength) {
+      setError(`Maximum ${props.maxLength} characters allowed (currently ${markdown.length})`);
     } else {
       setError(null);
     }
