@@ -13,6 +13,7 @@ import { Logger } from '@eventuras/logger';
 import { client } from '@/lib/eventuras-client';
 import {
   EventFormDto,
+  getV3EventByIdCertificatesPreview,
   postV3EventByIdCertificatesIssue,
   postV3Events,
   putV3EventsById,
@@ -344,5 +345,52 @@ export async function issueCertificates(eventId: number): Promise<ServerActionRe
       'ISSUE_CERTIFICATES_FAILED',
       error instanceof Error ? { name: error.name, message: error.message } : error
     );
+  }
+}
+
+const previewLogger = Logger.create({
+  namespace: 'web:admin',
+  context: { module: 'action:previewCertificate' },
+});
+
+/**
+ * Preview the certificate template for an event with dummy data
+ */
+export async function previewCertificate(eventId: number): Promise<ServerActionResult<string>> {
+  previewLogger.info({ eventId }, 'Previewing certificate for event');
+
+  try {
+    if (!eventId || isNaN(eventId)) {
+      return actionError('Invalid event ID', 'INVALID_EVENT_ID');
+    }
+
+    const organizationId = getOrganizationId();
+    if (!organizationId) {
+      return actionError('Organization ID not configured', 'MISSING_ORG_ID');
+    }
+
+    const response = await getV3EventByIdCertificatesPreview({
+      client,
+      path: { id: eventId },
+      headers: {
+        'Eventuras-Org-Id': organizationId,
+      },
+    });
+
+    if (response.error) {
+      previewLogger.error({ eventId, error: response.error }, 'Failed to preview certificate');
+      return actionError('Failed to preview certificate', 'API_ERROR');
+    }
+
+    if (typeof response.data !== 'string') {
+      previewLogger.error({ eventId }, 'Invalid certificate preview response');
+      return actionError('Invalid certificate preview response', 'INVALID_PREVIEW_PAYLOAD');
+    }
+
+    return actionSuccess(response.data);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    previewLogger.error({ eventId, error }, 'Failed to preview certificate');
+    return actionError(`Failed to preview certificate: ${errorMessage}`, 'PREVIEW_FAILED');
   }
 }

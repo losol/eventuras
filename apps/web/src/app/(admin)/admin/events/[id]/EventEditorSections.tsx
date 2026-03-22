@@ -13,10 +13,7 @@ import {
   useFormContext,
 } from '@eventuras/smartform';
 
-import { EventDto } from '@/lib/eventuras-sdk';
-
 import { ExcelExportButton } from './ExcelExportButton';
-import { AdminCertificatesActionsMenu } from '../AdminCertificatesActionsMenu';
 
 import '@eventuras/scribo/style.css';
 
@@ -211,26 +208,17 @@ export const DescriptionsSection = () => {
   );
 };
 
-export const CertificateSection = ({ eventinfo }: { eventinfo: EventDto }) => (
-  <>
-    <Fieldset label="Certificate info">
-      <TextField
-        name="certificateTitle"
-        label="Certificate Title"
-        placeholder="Certificate Title"
-      />
-      <TextField
-        name="certificateDescription"
-        label="Certificate Description"
-        placeholder="Certificate Description"
-        multiline
-        rows={5}
-      />
-    </Fieldset>
-    <div className="mt-6">
-      <AdminCertificatesActionsMenu eventinfo={eventinfo} />
-    </div>
-  </>
+export const CertificateSection = () => (
+  <Fieldset label="Certificate info">
+    <TextField name="certificateTitle" label="Certificate Title" placeholder="Certificate Title" />
+    <TextField
+      name="certificateDescription"
+      label="Certificate Description"
+      placeholder="Certificate Description"
+      multiline
+      rows={5}
+    />
+  </Fieldset>
 );
 
 export const AdvancedSection = ({

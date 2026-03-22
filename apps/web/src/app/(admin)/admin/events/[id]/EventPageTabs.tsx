@@ -1,12 +1,13 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
 import { Logger } from '@eventuras/logger';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Tabs } from '@eventuras/ratio-ui/core/Tabs';
+import { ActionBar } from '@eventuras/ratio-ui/layout/ActionBar';
 import { Form, useFormContext } from '@eventuras/smartform';
 import { useToast } from '@eventuras/toast';
 
@@ -32,6 +33,7 @@ import {
 import ParticipantsSection from './ParticipantsSection';
 import EventProductsEditor from './products/EventProductsEditor';
 import { updateEvent } from '../actions';
+import { AdminCertificatesActionsMenu } from '../AdminCertificatesActionsMenu';
 
 // Auto-save wrapper component that watches form changes
 const AutoSaveHandler = ({ onAutoSave }: { onAutoSave: (data: EventFormDto) => void }) => {
@@ -75,8 +77,14 @@ const AutoSaveHandler = ({ onAutoSave }: { onAutoSave: (data: EventFormDto) => v
   return null;
 };
 
-// Save button component that has access to form context
-const SaveButton = ({ onSave }: { onSave: (data: EventFormDto) => Promise<void> }) => {
+// Action bar with save button, optionally with extra actions on the left
+const SaveActionBar = ({
+  onSave,
+  children,
+}: {
+  onSave: (data: EventFormDto) => Promise<void>;
+  children?: ReactNode;
+}) => {
   const formContext = useFormContext<EventFormDto>();
   const [isSaving, setIsSaving] = useState(false);
   const t = useTranslations();
@@ -95,11 +103,13 @@ const SaveButton = ({ onSave }: { onSave: (data: EventFormDto) => Promise<void> 
   };
 
   return (
-    <div className="mt-6 flex justify-end">
+    <ActionBar>
+      {children}
+      <ActionBar.Spacer />
       <Button onClick={handleSave} loading={isSaving} testId="event-save-button" variant="primary">
         {t('common.buttons.save')}
       </Button>
-    </div>
+    </ActionBar>
   );
 };
 
@@ -231,12 +241,12 @@ export default function EventPageTabs({
 
         <Tabs.Item id="overview" title={t('admin.events.tabs.overview')} testId="tab-overview">
           <OverviewSection organizationId={organizationId} />
-          <SaveButton onSave={handleAutoSave} />
+          <SaveActionBar onSave={handleAutoSave} />
         </Tabs.Item>
 
         <Tabs.Item id="dates" title={t('admin.events.tabs.dates')} testId="tab-dates">
           <DatesLocationSection />
-          <SaveButton onSave={handleAutoSave} />
+          <SaveActionBar onSave={handleAutoSave} />
         </Tabs.Item>
 
         <Tabs.Item
@@ -245,7 +255,7 @@ export default function EventPageTabs({
           testId="tab-descriptions"
         >
           <DescriptionsSection />
-          <SaveButton onSave={handleAutoSave} />
+          <SaveActionBar onSave={handleAutoSave} />
         </Tabs.Item>
 
         <Tabs.Item
@@ -253,8 +263,10 @@ export default function EventPageTabs({
           title={t('admin.events.tabs.certificate')}
           testId="tab-certificate"
         >
-          <CertificateSection eventinfo={eventinfo} />
-          <SaveButton onSave={handleAutoSave} />
+          <CertificateSection />
+          <SaveActionBar onSave={handleAutoSave}>
+            <AdminCertificatesActionsMenu eventinfo={eventinfo} />
+          </SaveActionBar>
         </Tabs.Item>
 
         <Tabs.Item
@@ -271,7 +283,7 @@ export default function EventPageTabs({
 
         <Tabs.Item id="advanced" title={t('admin.events.tabs.advanced')} testId="tab-advanced">
           <AdvancedSection eventId={eventinfo.id} />
-          <SaveButton onSave={handleAutoSave} />
+          <SaveActionBar onSave={handleAutoSave} />
         </Tabs.Item>
 
         <Tabs.Item id="economy" title={t('admin.events.tabs.economy')} testId="tab-economy">
