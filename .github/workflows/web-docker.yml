@@ -184,3 +184,19 @@ jobs:
           echo "Retagging to latest: ${LATEST_TAG}"
           docker tag "${SOURCE_TAG}" "${LATEST_TAG}"
           docker push "${LATEST_TAG}"
+
+  # ── Release: notify infra repo to deploy to Kursinord ────────────
+  dispatch-release:
+    name: Dispatch release to infra
+    needs: [check-release, retag-for-release]
+    if: needs.check-release.outputs.is_web_release == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger release
+        env:
+          GH_TOKEN: ${{ secrets.INFRA_DISPATCH_TOKEN }}
+          INFRA_REPO: ${{ secrets.INFRA_REPO }}
+        run: |
+          gh api "repos/${INFRA_REPO}/dispatches" \
+            -f event_type=release-web \
+            -f "client_payload[image_tag]=v${{ needs.check-release.outputs.version }}"
