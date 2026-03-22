@@ -12,7 +12,6 @@
     "docs/eventuras-v3.json"
   ],
   "scripts": {
-    "openapi:update": "./scripts/update-openapi.sh",
-    "openapi:update:prod": "./scripts/update-openapi.sh https://api.eventuras.com"
+    "openapi:update": "./scripts/update-openapi.sh"
   }
 }

@@ -43,10 +43,24 @@
         opacity: 1;
       }
     }
+
   </style>
 </head>
 <body>
 <div class="circle"></div>
 <h1>Eventuras is running...</h1>
+<script>
+  fetch('/docs', { method: 'HEAD' }).then(r => {
+    if (r.ok) {
+      const a = document.createElement('a');
+      a.href = '/docs';
+      a.textContent = 'API Documentation';
+      a.style.color = '#4da6ff';
+      a.style.display = 'block';
+      a.style.marginTop = '20px';
+      document.body.appendChild(a);
+    }
+  }).catch(() => {});
+</script>
 </body>
 </html>

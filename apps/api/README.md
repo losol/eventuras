@@ -15,18 +15,18 @@ This API serves as the core backend service for the Eventuras platform, providin
 
 ## Tech Stack
 
-- **Language**: C# (.NET 8+) - intends to be at the latest .NET LTS version within 3 months of a new stable LTS version.
+- **Language**: C# (.NET 10)
 - **Framework**: ASP.NET Core
 - **Database**: PostgreSQL
-- **ORM**: Npsql / EF Core 
-- **Authentication**: OAuth 2.0 / OpenID Connect (configured with Auth0, but any OIDC provider can be used)
-- **API Documentation**: Swagger/OpenAPI
+- **ORM**: Npgsql / EF Core
+- **Authentication**: OAuth 2.0 / OpenID Connect
+- **API Documentation**: Scalar / OpenAPI
 
 ## Prerequisites
 
 Before you can run the API locally, ensure you have the following installed:
 
-- [.NET 8 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) 
+- [.NET 10 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/10.0)
 - [PostgreSQL](https://www.postgresql.org/download/) (version 12 or later recommended)
 - An Identity Provider (IdP) that supports OAuth 2.0 / OpenID Connect
   - The project is configured to use [Auth0](https://auth0.com/) by default
@@ -92,7 +92,7 @@ dotnet run --project src/Eventuras.WebApi
 The API will be available at:
 - **HTTP**: `http://localhost:5000`
 - **HTTPS**: `https://localhost:5001`
-- **Swagger UI**: `http://localhost:5000/swagger` - only available if ASPNETCORE_ENVIRONMENT=Development
+- **API Docs**: `http://localhost:5000/docs` (enabled in Development, or via `FeatureManagement:EnableApiDocs`)
 - **Integration tests**: `https://localhost:5002`
 
 
@@ -124,8 +124,10 @@ dotnet ef database update PreviousMigrationName
 ### API Documentation
 
 Once the application is running, you can explore the API documentation at:
-- Swagger UI: `https://localhost:5001/swagger`
-- OpenAPI JSON: `https://localhost:5001/swagger/v3/swagger.json`
+- API Docs: `https://localhost:5001/docs`
+- OpenAPI JSON: `https://localhost:5001/openapi/v3.json`
+
+API docs are enabled by default in Development. In other environments, set `FeatureManagement:EnableApiDocs` to `true`.
 
 ## Project Structure
 

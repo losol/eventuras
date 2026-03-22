@@ -5,9 +5,9 @@ using Asp.Versioning;
 using Eventuras.Services;
 using Eventuras.Services.Registrations;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Swashbuckle.AspNetCore.Annotations;
 
 namespace Eventuras.WebApi.Controllers.v3.Events.Statistics;
 
@@ -32,10 +32,8 @@ public class EventStatisticsController : ControllerBase
 
     [HttpGet("statistics")]
     [ProducesResponseType(typeof(EventStatisticsDto), 200)]
-    [SwaggerOperation(
-        Summary = "Event statistics",
-        Description = "Returns a summary of the registrations for the event."
-    )]
+    [EndpointSummary("Event statistics")]
+    [EndpointDescription("Returns a summary of the registrations for the event.")]
     public async Task<ActionResult<EventStatisticsDto>> GetEventStatistics(int eventId,
         CancellationToken cancellationToken)
     {

@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Swashbuckle.AspNetCore.Annotations;
 
 namespace Eventuras.WebApi.Controllers.v3.Registrations;
 
@@ -49,10 +48,8 @@ public class RegistrationsController : ControllerBase
 
 
     [HttpGet]
-    [SwaggerOperation(
-        Summary = "Get registrations with optional Excel export",
-        Description = "Retrieves registrations with optional export to Excel based on the Accept header."
-    )]
+    [EndpointSummary("Get registrations with optional Excel export")]
+    [EndpointDescription("Retrieves registrations with optional export to Excel based on the Accept header.")]
     [ProducesResponseType(typeof(PageResponseDto<RegistrationDto>), 200)]
     [ProducesResponseType(400)]
     public async Task<IActionResult> GetRegistrations(
@@ -213,10 +210,8 @@ public class RegistrationsController : ControllerBase
 
 
     [HttpPatch("{id}")]
-    [SwaggerOperation(
-        Summary = "Partially update a registration",
-        Description = "Updates specific fields of a registration. Only Status, Type, and Notes can be modified."
-    )]
+    [EndpointSummary("Partially update a registration")]
+    [EndpointDescription("Updates specific fields of a registration. Only Status, Type, and Notes can be modified.")]
     [ProducesResponseType(typeof(RegistrationDto), 200)]
     [ProducesResponseType(400)]
     [ProducesResponseType(404)]
