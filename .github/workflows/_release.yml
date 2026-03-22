@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: release
     permissions:
+      actions: write
       contents: write
     steps:
       - name: Checkout code
@@ -58,4 +59,26 @@ jobs:
               --title "$TITLE" \
               --generate-notes \
               || echo "Failed to create release for ${TAG}"
+          done
+
+      - name: Trigger Docker retag for released packages
+        if: steps.changesets.outputs.published == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PUBLISHED: ${{ steps.changesets.outputs.publishedPackages }}
+        run: |
+          echo "$PUBLISHED" | jq -c '.[]' | while read -r pkg; do
+            NAME=$(echo "$pkg" | jq -r '.name')
+            TAG="${NAME}@$(echo "$pkg" | jq -r '.version')"
+
+            case "$NAME" in
+              @eventuras/api)
+                echo "Triggering Docker retag for API: ${TAG}"
+                gh workflow run api-docker.yml -f "tag=${TAG}"
+                ;;
+              @eventuras/web)
+                echo "Triggering Docker retag for Web: ${TAG}"
+                gh workflow run web-docker.yml -f "tag=${TAG}"
+                ;;
+            esac
           done
