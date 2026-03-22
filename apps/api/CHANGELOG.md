@@ -1,5 +1,12 @@
 # @eventuras/api
 
+## 2.30.2
+
+### Patch Changes
+
+- 59bfb7c: ### 🐛 Fix
+  - fix(api): switch to standard JSON log formatter for Grafana/Loki compatibility
+
 ## 2.30.1
 
 ### Patch Changes
