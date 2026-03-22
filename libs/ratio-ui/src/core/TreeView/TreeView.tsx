@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useCallback, useEffect } from 'react';
+import { ChevronRight } from '../../icons';
 
 export interface TreeViewNode {
   title: string;
@@ -106,15 +107,10 @@ function TreeViewItem({ node, currentPath, LinkComponent, depth }: TreeViewItemP
           style={{ paddingLeft }}
         >
           <span>{node.title}</span>
-          <svg
+          <ChevronRight
             aria-hidden="true"
             className={`h-4 w-4 shrink-0 transition-transform ${isOpen ? 'rotate-90' : ''}`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path d="M9 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} />
-          </svg>
+          />
         </button>
         {isOpen && (
           <ul className="mt-1 space-y-1">

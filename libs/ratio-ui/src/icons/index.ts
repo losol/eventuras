@@ -56,6 +56,7 @@ export {
   Download,
 
   // Communication
+  Mail,
   Send,
 
   // Add/Create

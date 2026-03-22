@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { Mail } from '../../icons';
 
 export interface ObfuscatedEmailProps {
   email: string;
@@ -47,20 +48,7 @@ export const ObfuscatedEmail = ({
     return (
       <span className={className}>
         <span className="inline-flex items-center gap-1">
-          <svg
-            className="h-4 w-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            aria-hidden="true"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-            />
-          </svg>
+          <Mail className="h-4 w-4" aria-hidden="true" />
           <span className="text-gray-500 dark:text-gray-400">Email loading...</span>
         </span>
       </span>
