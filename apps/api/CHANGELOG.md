@@ -1,5 +1,13 @@
 # @eventuras/api
 
+## 2.30.1
+
+### Patch Changes
+
+- 7f89ee6: ♻️ Refactoring
+  - refactor(api): update API documentation and endpoints to use Scalar (8c62852) [@eventuras/api]
+  - refactor(api): integrate Scalar API reference (6ea6ac2) [@eventuras/api]
+
 ## 2.30.0
 
 ### Minor Changes
