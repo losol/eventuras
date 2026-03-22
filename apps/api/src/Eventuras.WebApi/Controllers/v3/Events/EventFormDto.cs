@@ -24,7 +24,7 @@ public class EventFormDto : IValidatableObject
     public string Headline { get; set; }
     public string MoreInformation { get; set; }
     public string Category { get; set; }
-    public string Description { get; set; }
+    [StringLength(300)] public string Description { get; set; }
     public bool ManageRegistrations { get; set; }
     public bool OnDemand { get; set; }
     public bool Featured { get; set; }
