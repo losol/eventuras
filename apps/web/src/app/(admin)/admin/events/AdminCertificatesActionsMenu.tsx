@@ -11,7 +11,7 @@ import { useToast } from '@eventuras/toast';
 
 import { EventDto } from '@/lib/eventuras-sdk';
 
-import { issueCertificates } from './actions';
+import { issueCertificates, previewCertificate } from './actions';
 const logger = Logger.create({
   namespace: 'web:admin:certificates',
   context: { component: 'AdminCertificatesActionsMenu' },
@@ -26,6 +26,7 @@ export const AdminCertificatesActionsMenu: React.FC<AdminCertificatesActionsMenu
 }) => {
   const [certificateDrawerOpen, setCertificateDrawerOpen] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isPreviewing, setIsPreviewing] = useState<boolean>(false);
   const t = useTranslations();
   const toast = useToast();
   const onClose = () => {
@@ -60,11 +61,51 @@ export const AdminCertificatesActionsMenu: React.FC<AdminCertificatesActionsMenu
       setIsSubmitting(false);
     }
   };
+  const onPreview = async () => {
+    if (!eventinfo.id) {
+      toast.error('Invalid event');
+      return;
+    }
+
+    // Open window synchronously to avoid popup blockers
+    const previewWindow = window.open('about:blank', '_blank', 'noopener');
+    if (!previewWindow) {
+      toast.error('Could not open preview window. Check your popup blocker.');
+      return;
+    }
+
+    setIsPreviewing(true);
+    try {
+      const result = await previewCertificate(eventinfo.id);
+      if (!result.success) {
+        toast.error(result.error.message);
+        previewWindow.close();
+        return;
+      }
+      previewWindow.document.open();
+      previewWindow.document.write(result.data);
+      previewWindow.document.close();
+    } catch {
+      toast.error('An unexpected error occurred');
+      previewWindow.close();
+    } finally {
+      setIsPreviewing(false);
+    }
+  };
+
   return (
     <>
-      <Button onClick={() => setCertificateDrawerOpen(!certificateDrawerOpen)} variant="outline">
-        {t('admin.labels.sendCertificates')}
-      </Button>
+      <div className="flex gap-2">
+        <Button onClick={onPreview} variant="secondary" loading={isPreviewing}>
+          {t('admin.labels.previewCertificate')}
+        </Button>
+        <Button
+          onClick={() => setCertificateDrawerOpen(!certificateDrawerOpen)}
+          variant="secondary"
+        >
+          {t('admin.labels.sendCertificates')}
+        </Button>
+      </div>
       <Drawer isOpen={certificateDrawerOpen} onCancel={() => onClose()}>
         <Drawer.Header>
           <Heading as="h2">Certificate details</Heading>

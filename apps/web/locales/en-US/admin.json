@@ -108,6 +108,7 @@
     "invoice": "Invoice",
     "orders": "Orders",
     "registrations": "Registrations",
+    "previewCertificate": "Preview certificate",
     "sendCertificates": "Send certificates",
     "users": "Users"
   },
