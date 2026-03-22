@@ -158,6 +158,8 @@
     "loading": "Laster...",
     "login": "Logg inn",
     "logout": "Logg av",
+    "lightTheme": "Slå på lyset",
+    "darkTheme": "Slå av lyset",
     "menu": "Meny",
     "message": "Melding",
     "messagelog": "Meldingslogg",

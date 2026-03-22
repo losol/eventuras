@@ -7,15 +7,18 @@ import {
   MenuTrigger,
   Popover,
 } from 'react-aria-components';
+import { Sun, Moon } from '../../icons';
 
 const styles = {
   menuWrapper: 'top-16 w-56 text-right',
   menu: 'relative inline-block text-left',
   menuTrigger: 'inline-flex justify-center w-full px-4 py-2 text-sm',
+  popover:
+    'w-56 origin-top-right shadow-lg border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden',
   menuItemsList:
-    'w-56 origin-top-right divide-y divide-gray-400 bg-white dark:bg-slate-900 shadow-lg ring-1 ring-black/5 focus:outline-hidden',
+    'bg-white dark:bg-slate-900 focus:outline-hidden',
   menuItem:
-    'cursor-pointer group flex w-full items-center px-2 py-3 hover:bg-primary-100 dark:hover:bg-primary-900 text-gray-900 dark:text-gray-100',
+    'cursor-pointer group flex w-full items-center px-2 py-3 border-b border-gray-200 dark:border-gray-700 last:border-b-0 hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-900 dark:text-gray-100',
 };
 
 const ChevronIcon = () => (
@@ -75,6 +78,32 @@ const MenuButton = (props: MenuButtonProps & MenuItemProps) => {
   );
 };
 
+export type MenuThemeToggleProps = {
+  theme?: 'light' | 'dark' | null;
+  onThemeChange: (theme: 'light' | 'dark') => void;
+  lightLabel?: string;
+  darkLabel?: string;
+};
+
+const MenuThemeToggle = ({
+  theme,
+  onThemeChange,
+  lightLabel = 'Light theme',
+  darkLabel = 'Dark theme',
+}: MenuThemeToggleProps) => {
+  const isDark = theme === 'dark';
+  functionMap.set('theme-toggle', () => onThemeChange(isDark ? 'light' : 'dark'));
+
+  return (
+    <MenuItem id="theme-toggle" className={styles.menuItem}>
+      <span className="flex items-center gap-2">
+        {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+        {isDark ? lightLabel : darkLabel}
+      </span>
+    </MenuItem>
+  );
+};
+
 const Menu = (props: MenuProps) => {
   return (
     <MenuTrigger>
@@ -85,7 +114,7 @@ const Menu = (props: MenuProps) => {
         {props.menuLabel}
         <ChevronIcon />
       </AriaButton>
-      <Popover>
+      <Popover className={styles.popover}>
         <AriaMenu
           className={styles.menuItemsList}
           onAction={key => {
@@ -99,6 +128,8 @@ const Menu = (props: MenuProps) => {
     </MenuTrigger>
   );
 };
-Menu.Link = MenuLink;
-Menu.Button = MenuButton;
-export default Menu;
+export default Object.assign(Menu, {
+  Link: MenuLink,
+  Button: MenuButton,
+  ThemeToggle: MenuThemeToggle,
+});

@@ -6,18 +6,19 @@ import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Menu } from '@eventuras/ratio-ui/core/Menu';
 
 import { useAuthActions, useAuthStore } from '@/auth/authStore';
+import { useTheme } from '@/providers/theme';
 
 /**
  * Translation strings for the user menu
  */
 export type UserMenuTranslations = {
-  // Logged out state
   loginLabel: string;
-
-  // Logged in state
   userLabel: string;
   accountLabel: string;
   adminLabel: string;
+  logoutLabel: string;
+  lightThemeLabel: string;
+  darkThemeLabel: string;
 };
 
 export interface UserMenuProps {
@@ -83,9 +84,10 @@ function UserDropdownMenu({
   userName: string;
   isAdmin: boolean;
   hasWarning: boolean;
-  translations: Pick<UserMenuTranslations, 'userLabel' | 'accountLabel' | 'adminLabel'>;
+  translations: Pick<UserMenuTranslations, 'userLabel' | 'accountLabel' | 'adminLabel' | 'logoutLabel' | 'lightThemeLabel' | 'darkThemeLabel'>;
   onLogout: () => void;
 }) {
+  const { theme, setTheme } = useTheme();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleLogout = () => {
@@ -105,8 +107,14 @@ function UserDropdownMenu({
       </Menu.Link>
       <Menu.Link href="/user/account">{translations.accountLabel}</Menu.Link>
       {isAdmin && <Menu.Link href="/admin">{translations.adminLabel}</Menu.Link>}
+      <Menu.ThemeToggle
+        theme={theme}
+        onThemeChange={setTheme}
+        lightLabel={translations.lightThemeLabel}
+        darkLabel={translations.darkThemeLabel}
+      />
       <Menu.Button id="logout-button" onClick={handleLogout} isDisabled={isLoggingOut}>
-        {isLoggingOut ? 'Logging out...' : 'Logg ut'}
+        {isLoggingOut ? '...' : translations.logoutLabel}
       </Menu.Button>
     </Menu>
   );
