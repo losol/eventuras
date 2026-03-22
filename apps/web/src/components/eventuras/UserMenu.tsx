@@ -17,6 +17,7 @@ export type UserMenuTranslations = {
   accountLabel: string;
   adminLabel: string;
   logoutLabel: string;
+  loggingOutLabel: string;
   lightThemeLabel: string;
   darkThemeLabel: string;
 };
@@ -84,7 +85,7 @@ function UserDropdownMenu({
   userName: string;
   isAdmin: boolean;
   hasWarning: boolean;
-  translations: Pick<UserMenuTranslations, 'userLabel' | 'accountLabel' | 'adminLabel' | 'logoutLabel' | 'lightThemeLabel' | 'darkThemeLabel'>;
+  translations: Pick<UserMenuTranslations, 'userLabel' | 'accountLabel' | 'adminLabel' | 'logoutLabel' | 'loggingOutLabel' | 'lightThemeLabel' | 'darkThemeLabel'>;
   onLogout: () => void;
 }) {
   const { theme, setTheme } = useTheme();
@@ -114,7 +115,7 @@ function UserDropdownMenu({
         darkLabel={translations.darkThemeLabel}
       />
       <Menu.Button id="logout-button" onClick={handleLogout} isDisabled={isLoggingOut}>
-        {isLoggingOut ? '...' : translations.logoutLabel}
+        {isLoggingOut ? translations.loggingOutLabel : translations.logoutLabel}
       </Menu.Button>
     </Menu>
   );
