@@ -61,11 +61,18 @@ jobs:
 
       - name: Read package version
         id: ver
+        env:
+          CHANNEL: ${{ inputs.channel }}
         run: |
           V="$(jq -r '.version' package.json 2>/dev/null || echo '0.0.0')"
           echo "version=$V" >> "$GITHUB_OUTPUT"
           echo "sha=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
-          echo "image_tag=${{ inputs.channel }}-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+          IMAGE_TAG="${CHANNEL}-${GITHUB_SHA::7}"
+          if [[ ! "$IMAGE_TAG" =~ ^(main|release|edge)-[0-9a-f]{7}$ ]]; then
+            echo "::error::Invalid image tag '${IMAGE_TAG}'"
+            exit 1
+          fi
+          echo "image_tag=${IMAGE_TAG}" >> "$GITHUB_OUTPUT"
 
       - name: Docker metadata
         id: meta

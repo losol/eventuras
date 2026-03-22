@@ -32,3 +32,19 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+
+  cd:
+    name: Deliver to CD
+    needs: docker
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch to infra repo
+        env:
+          GH_TOKEN: ${{ secrets.INFRA_DISPATCH_TOKEN }}
+          INFRA_REPO: ${{ secrets.INFRA_REPO }}
+          IMAGE_TAG: ${{ needs.docker.outputs.image_tag }}
+        run: |
+          gh api "repos/${INFRA_REPO}/dispatches" \
+            -f event_type=deploy-web \
+            -f "client_payload[image_tag]=${IMAGE_TAG}"
