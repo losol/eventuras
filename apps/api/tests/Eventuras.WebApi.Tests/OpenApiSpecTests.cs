@@ -85,10 +85,10 @@ public class OpenApiSpecTests : IClassFixture<CustomWebApiApplicationFactory<Pro
         using var document = JsonDocument.Parse(jsonContent);
         var root = document.RootElement;
 
-        // Assert - check for required OpenAPI 3.0 fields
+        // Assert - check for required OpenAPI 3.x fields
         Assert.True(root.TryGetProperty("openapi", out var openApiVersion),
             "OpenAPI spec must contain 'openapi' version field");
-        Assert.StartsWith("3.0", openApiVersion.GetString());
+        Assert.StartsWith("3.", openApiVersion.GetString());
 
         Assert.True(root.TryGetProperty("info", out _),
             "OpenAPI spec must contain 'info' section");
@@ -124,10 +124,10 @@ public class OpenApiSpecTests : IClassFixture<CustomWebApiApplicationFactory<Pro
 
         // Act - Get the OpenAPI spec from the running API
         var client = _factory.CreateClient();
-        var response = await client.GetAsync("/swagger/v3/swagger.json");
+        var response = await client.GetAsync("/openapi/v3.json");
 
         Assert.True(response.IsSuccessStatusCode,
-            "Failed to fetch OpenAPI spec from running API at /swagger/v3/swagger.json");
+            "Failed to fetch OpenAPI spec from running API at /openapi/v3.json");
 
         var generatedSpec = await response.Content.ReadAsStringAsync();
         var committedSpec = await File.ReadAllTextAsync(openApiSpecPath);

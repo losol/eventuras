@@ -126,8 +126,12 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddSingleton<IAuthorizationHandler, RequireScopeHandler>();
 
-builder.Services.AddSwaggerGen();
-builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
+builder.Services.AddOpenApi("v3", options =>
+{
+    options.AddDocumentTransformer<AddSecuritySchemeTransformer>();
+    options.AddOperationTransformer<AddOrganizationHeaderTransformer>();
+    options.AddOperationTransformer<RemoveJsonPatchContentTypeTransformer>();
+});
 
 // Finish configuring DI, logging and configuration
 var app = builder.Build();
@@ -142,14 +146,15 @@ if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Integratio
 }
 
 // OpenAPI spec is always available (needed for SDK generation in CI)
-app.UseSwagger();
+app.MapOpenApi();
 
 // API docs UI is opt-in via configuration
 if (features.EnableApiDocs || app.Environment.IsDevelopment())
 {
-    app.MapScalarApiReference(options =>
+    app.MapScalarApiReference("docs", options =>
     {
         options.Title = "Eventuras API";
+        options.OpenApiRoutePattern = "/openapi/v3.json";
     });
 }
 

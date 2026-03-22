@@ -6,9 +6,9 @@ using Eventuras.Domain;
 using Eventuras.Services.Events;
 using Eventuras.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Swashbuckle.AspNetCore.Annotations;
 
 namespace Eventuras.WebApi.Controllers.v3.Events;
 
@@ -137,11 +137,8 @@ public class EventsController : ControllerBase
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>The updated event.</returns>
     [HttpPatch("{id:int}")]
-    [SwaggerOperation(
-        Summary = "Partially update an event",
-        Description =
-            "Updates specific fields of an event. For comprehensive updates with all fields, use PUT endpoint with EventFormDto instead."
-    )]
+    [EndpointSummary("Partially update an event")]
+    [EndpointDescription("Updates specific fields of an event. For comprehensive updates with all fields, use PUT endpoint with EventFormDto instead.")]
     [ProducesResponseType(typeof(EventDto), 200)]
     [ProducesResponseType(400)]
     [ProducesResponseType(404)]

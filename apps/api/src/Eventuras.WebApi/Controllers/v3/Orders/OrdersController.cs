@@ -5,8 +5,8 @@ using Asp.Versioning;
 using Eventuras.Services.Orders;
 using Eventuras.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.AspNetCore.Annotations;
 
 namespace Eventuras.WebApi.Controllers.v3.Orders;
 
@@ -89,10 +89,8 @@ public class OrdersController : ControllerBase
     }
 
     [HttpPatch("{id:int}")]
-    [SwaggerOperation(
-        Summary = "Partially update an order",
-        Description = "Updates specific fields of an order. Only Status, Comments, and PaymentMethod can be modified."
-    )]
+    [EndpointSummary("Partially update an order")]
+    [EndpointDescription("Updates specific fields of an order. Only Status, Comments, and PaymentMethod can be modified.")]
     [ProducesResponseType(typeof(OrderDto), 200)]
     [ProducesResponseType(400)]
     [ProducesResponseType(404)]
