@@ -45,6 +45,9 @@ export default async function AdminLayout({ children }: { children: ReactNode })
             accountLabel: t('common.labels.account'),
             adminLabel: t('common.labels.admin'),
             userLabel: t('common.labels.user'),
+            logoutLabel: t('common.labels.logout'),
+            lightThemeLabel: t('common.labels.lightTheme'),
+            darkThemeLabel: t('common.labels.darkTheme'),
           }}
         />
       </Navbar>

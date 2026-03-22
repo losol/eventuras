@@ -69,6 +69,9 @@ export default async function Homepage() {
             userLabel: t('common.user.profile'),
             accountLabel: t('common.labels.account'),
             adminLabel: t('common.labels.admin'),
+            logoutLabel: t('common.labels.logout'),
+            lightThemeLabel: t('common.labels.lightTheme'),
+            darkThemeLabel: t('common.labels.darkTheme'),
           }}
         />
       </Navbar>

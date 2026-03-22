@@ -45,6 +45,10 @@ export {
   Info,
   ShieldX,
 
+  // Theme
+  Sun,
+  Moon,
+
   // Loading
   LoaderCircle,
 

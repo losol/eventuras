@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Meta, StoryFn } from '@storybook/react-vite';
 import Menu, { MenuProps } from './Menu';
 import { fn } from 'storybook/test';
@@ -76,3 +77,17 @@ export const AdminMenu: MenuStory = () => (
     <Menu.Link href="/admin/settings">System Settings</Menu.Link>
   </Menu>
 );
+
+export const WithThemeToggle: MenuStory = () => {
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  return (
+    <Menu menuLabel="user@example.com">
+      <Menu.Link href="/profile">My Profile</Menu.Link>
+      <Menu.Link href="/account">Account</Menu.Link>
+      <Menu.ThemeToggle theme={theme} onThemeChange={setTheme} />
+      <Menu.Button id="logout" onClick={() => console.log('Logout')}>
+        Log out
+      </Menu.Button>
+    </Menu>
+  );
+};
