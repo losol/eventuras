@@ -1,5 +1,46 @@
 # @eventuras/web
 
+## 2.31.0
+
+### Minor Changes
+
+- bbb9111: ### ratio-ui
+  - Add `ActionBar` layout component for grouping page-level actions
+
+  ### Web
+  - Add "Preview certificate" button that opens certificate HTML preview in a new tab
+  - Refactor event editor tabs to use `ActionBar` for save and certificate actions
+
+- 0e1796e: ### Menu
+  - Rounded corners, softer dividers, and stable border on dropdown menu
+  - Add `Menu.ThemeToggle` compound component with Sun/Moon icons from lucide-react
+  - Export `Sun` and `Moon` icons from ratio-ui
+
+  ### Web
+  - Add dark/light theme toggle to user menu
+  - Use translated strings for logout label (was hardcoded)
+  - Add `lightTheme` / `darkTheme` translation keys (nb-NO, en-US)
+
+### Patch Changes
+
+- e6d002d: ### Fix: Event description 300 character limit validation (#690)
+  - Validate markdown length (not plain text) in MarkdownInput, since markdown is what gets stored
+  - Block form submission via react-hook-form when description exceeds 300 characters
+  - Add `[StringLength(300)]` to API EventFormDto for a clear 400 response instead of 500
+  - Migrate scribo eslint config to flat config format
+
+- Updated dependencies [bbb9111]
+- Updated dependencies [e6d002d]
+- Updated dependencies [0e1796e]
+  - @eventuras/ratio-ui@0.14.0
+  - @eventuras/scribo@0.8.4
+  - @eventuras/datatable@0.5.10
+  - @eventuras/markdown@8.0.0
+  - @eventuras/markdown-plugin-happening@3.0.0
+  - @eventuras/ratio-ui-next@0.1.11
+  - @eventuras/smartform@0.3.3
+  - @eventuras/toast@0.2.10
+
 ## 2.30.0
 
 ### Minor Changes
