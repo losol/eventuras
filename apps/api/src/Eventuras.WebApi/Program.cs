@@ -25,6 +25,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
+using Scalar.AspNetCore;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -137,17 +138,18 @@ app.UseSerilogRequestLogging();
 
 if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("IntegrationTests"))
 {
-    var apiVersions = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
-
     app.UseDeveloperExceptionPage();
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
+}
+
+// OpenAPI spec is always available (needed for SDK generation in CI)
+app.UseSwagger();
+
+// API docs UI is opt-in via configuration
+if (features.EnableApiDocs || app.Environment.IsDevelopment())
+{
+    app.MapScalarApiReference(options =>
     {
-        foreach (var description in apiVersions.ApiVersionDescriptions)
-        {
-            c.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json",
-                description.GroupName.ToLowerInvariant());
-        }
+        options.Title = "Eventuras API";
     });
 }
 
