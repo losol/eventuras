@@ -36,6 +36,7 @@ export default async function UserLayout({ children }: { children: ReactNode }) 
             adminLabel: t('common.labels.admin'),
             userLabel: t('common.labels.user'),
             logoutLabel: t('common.labels.logout'),
+            loggingOutLabel: t('common.labels.loggingOut'),
             lightThemeLabel: t('common.labels.lightTheme'),
             darkThemeLabel: t('common.labels.darkTheme'),
           }}
