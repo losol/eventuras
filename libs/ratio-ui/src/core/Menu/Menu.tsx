@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useContext, useRef, useCallback } from 'react';
+import { ReactNode, createContext, useContext, useEffect, useId, useRef } from 'react';
 import {
   Button as AriaButton,
   Menu as AriaMenu,
@@ -17,8 +17,14 @@ const styles = {
     'cursor-pointer group flex w-full items-center px-2 py-3 border-b border-gray-200 dark:border-gray-700 last:border-b-0 hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-900 dark:text-gray-100',
 };
 
-type RegisterAction = (id: string, fn: () => void) => void;
-const MenuActionsContext = createContext<RegisterAction>(() => {});
+type MenuActionsApi = {
+  register: (id: string, fn: () => void) => void;
+  unregister: (id: string) => void;
+};
+const MenuActionsContext = createContext<MenuActionsApi>({
+  register: () => {},
+  unregister: () => {},
+});
 
 export type MenuLinkProps = {
   href: string;
@@ -54,9 +60,10 @@ export type MenuThemeToggleProps = {
 const Menu = (props: MenuProps) => {
   const actionsRef = useRef(new Map<string, () => void>());
 
-  const registerAction: RegisterAction = useCallback((id, fn) => {
-    actionsRef.current.set(id, fn);
-  }, []);
+  const api = useRef<MenuActionsApi>({
+    register: (id, fn) => actionsRef.current.set(id, fn),
+    unregister: (id) => actionsRef.current.delete(id),
+  }).current;
 
   return (
     <MenuTrigger>
@@ -68,7 +75,7 @@ const Menu = (props: MenuProps) => {
         <ChevronDown className="ml-1 h-5 w-5" />
       </AriaButton>
       <Popover className={styles.popover}>
-        <MenuActionsContext.Provider value={registerAction}>
+        <MenuActionsContext.Provider value={api}>
           <AriaMenu
             className={styles.menuItemsList}
             onAction={key => {
@@ -85,8 +92,12 @@ const Menu = (props: MenuProps) => {
 };
 
 const MenuButton = (props: MenuButtonProps & MenuItemProps) => {
-  const register = useContext(MenuActionsContext);
-  register(props.id, props.onClick);
+  const { register, unregister } = useContext(MenuActionsContext);
+
+  useEffect(() => {
+    register(props.id, props.onClick);
+    return () => unregister(props.id);
+  }, [props.id, props.onClick, register, unregister]);
 
   return (
     <MenuItem {...props} className={styles.menuItem} data-testid={props.testId}>
@@ -102,13 +113,23 @@ const MenuThemeToggle = ({
   darkLabel = 'Dark theme',
 }: MenuThemeToggleProps) => {
   const isDark = theme === 'dark';
-  const register = useContext(MenuActionsContext);
-  register('theme-toggle', () => onThemeChange(isDark ? 'light' : 'dark'));
+  const id = useId();
+  const { register, unregister } = useContext(MenuActionsContext);
+
+  const handlerRef = useRef(onThemeChange);
+  handlerRef.current = onThemeChange;
+  const themeRef = useRef(isDark);
+  themeRef.current = isDark;
+
+  useEffect(() => {
+    register(id, () => handlerRef.current(themeRef.current ? 'light' : 'dark'));
+    return () => unregister(id);
+  }, [id, register, unregister]);
 
   return (
-    <MenuItem id="theme-toggle" className={styles.menuItem}>
+    <MenuItem id={id} className={styles.menuItem}>
       <span className="flex items-center gap-2">
-        {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+        {isDark ? <Sun className="w-5 h-5" aria-hidden="true" /> : <Moon className="w-5 h-5" aria-hidden="true" />}
         {isDark ? lightLabel : darkLabel}
       </span>
     </MenuItem>
