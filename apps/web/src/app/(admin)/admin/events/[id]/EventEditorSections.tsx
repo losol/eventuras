@@ -118,6 +118,7 @@ export const DescriptionsSection = () => {
       <Controller
         name="description"
         control={control}
+        rules={{ validate: v => !v || v.length <= 300 || 'Description exceeds 300 characters' }}
         render={({ field }) => (
           <MarkdownInput
             label="Description (max 300 characters)"
