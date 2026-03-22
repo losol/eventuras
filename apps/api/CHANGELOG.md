@@ -1,5 +1,18 @@
 # @eventuras/api
 
+## 2.30.3
+
+### Patch Changes
+
+- 0cc8937: ### ⚙️ CI/CD
+  - ci(api): add short SHA output and dispatch release to infra (02e2d56) [@eventuras/api]
+
+- e6d002d: ### Fix: Event description 300 character limit validation (#690)
+  - Validate markdown length (not plain text) in MarkdownInput, since markdown is what gets stored
+  - Block form submission via react-hook-form when description exceeds 300 characters
+  - Add `[StringLength(300)]` to API EventFormDto for a clear 400 response instead of 500
+  - Migrate scribo eslint config to flat config format
+
 ## 2.30.2
 
 ### Patch Changes

@@ -1,5 +1,26 @@
 # @eventuras/ratio-ui
 
+## 0.14.0
+
+### Minor Changes
+
+- bbb9111: ### ratio-ui
+  - Add `ActionBar` layout component for grouping page-level actions
+
+  ### Web
+  - Add "Preview certificate" button that opens certificate HTML preview in a new tab
+  - Refactor event editor tabs to use `ActionBar` for save and certificate actions
+
+- 0e1796e: ### Menu
+  - Rounded corners, softer dividers, and stable border on dropdown menu
+  - Add `Menu.ThemeToggle` compound component with Sun/Moon icons from lucide-react
+  - Export `Sun` and `Moon` icons from ratio-ui
+
+  ### Web
+  - Add dark/light theme toggle to user menu
+  - Use translated strings for logout label (was hardcoded)
+  - Add `lightTheme` / `darkTheme` translation keys (nb-NO, en-US)
+
 ## 0.13.0
 
 ### Minor Changes
