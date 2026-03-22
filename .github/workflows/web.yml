@@ -7,6 +7,12 @@ on:
   pull_request:
     branches: [main]
     paths: ['apps/web/**']
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: 'Deploy after build'
+        type: boolean
+        default: true
 
 concurrency:
   group: web-${{ github.ref }}
@@ -22,11 +28,12 @@ jobs:
     needs: ci
     if: >-
       github.event_name == 'push' ||
+      github.event_name == 'workflow_dispatch' ||
       github.event.pull_request.head.repo.full_name == github.repository
     uses: ./.github/workflows/web-docker.yml
     with:
-      push: ${{ github.event_name == 'push' }}
-      channel: ${{ github.event_name == 'push' && 'main' || 'edge' }}
+      push: ${{ github.event_name != 'pull_request' }}
+      channel: ${{ github.event_name != 'pull_request' && 'main' || 'edge' }}
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -36,7 +43,9 @@ jobs:
   cd:
     name: Deliver to CD
     needs: docker
-    if: github.event_name == 'push'
+    if: >-
+      github.event_name == 'push' ||
+      (github.event_name == 'workflow_dispatch' && inputs.deploy)
     runs-on: ubuntu-latest
     steps:
       - name: Dispatch to infra repo
