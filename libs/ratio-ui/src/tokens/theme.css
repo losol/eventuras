@@ -181,11 +181,6 @@
   --color-error-text: var(--error-text);
   --color-error-on: var(--error-on-solid);
 
-  /* Alpha */
-  --alpha-1: var(--alpha-1);
-  --alpha-2: var(--alpha-2);
-  --alpha-3: var(--alpha-3);
-
   /* Shadow */
   --shadow-focus: 0 0 0 4px var(--focus-ring);
 }

@@ -159,9 +159,7 @@ const AllColors = () => (
 
 const meta: Meta = {
   title: 'Tokens/Colors',
-  parameters: {
-    tags: ['autodocs'],
-  },
+  tags: ['autodocs'],
 };
 
 export default meta;
