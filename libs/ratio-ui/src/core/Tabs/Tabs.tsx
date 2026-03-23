@@ -23,15 +23,15 @@ export interface TabsComponent extends React.FC<TabsProps> {
 
 const styles = {
   tabList:
-    'flex space-x-1 list-none overflow-x-auto border-b border-gray-200 dark:border-gray-700',
+    'flex space-x-1 list-none overflow-x-auto border-b-2 border-gray-300 dark:border-gray-600',
   tab: {
     base: 'font-medium py-2 px-5 cursor-pointer focus:outline-none transition-colors rounded-t-lg whitespace-nowrap',
     selected:
-      'text-primary-600 dark:text-primary-400 bg-transparent dark:bg-white/10 border-b-2 border-primary-600 dark:border-primary-400 font-semibold',
+      'text-primary-900 dark:text-primary-200 bg-primary-200 dark:bg-primary-800 border-b-2 border-primary-500 dark:border-primary-400 font-semibold',
     notSelected:
-      'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 bg-transparent hover:bg-gray-100/50 dark:hover:bg-white/5',
+      'text-gray-900 dark:text-gray-200 bg-primary-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700',
   },
-  panel: 'p-3 bg-white/10 dark:bg-white/10',
+  panel: 'p-3 rounded-b-lg border border-t-0 border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900',
 };
 
 export const Tabs: TabsComponent = ({
