@@ -62,6 +62,7 @@ import DropDown, { DropDownItem } from "../ui/DropDown";
 import { IS_APPLE } from "../utils/environment";
 import { getSelectedNode } from "../utils/getSelectedNode";
 import { sanitizeUrl } from "../utils/url";
+import type { ScriboToolbarButton } from "../types";
 
 const blockTypeToBlockName = {
   paragraph: "Normal",
@@ -253,8 +254,10 @@ function Divider(): JSX.Element {
 
 export default function ToolbarPlugin({
   setIsLinkEditMode,
+  toolbarButtons = [],
 }: {
   setIsLinkEditMode: Dispatch<boolean>;
+  toolbarButtons?: ScriboToolbarButton[];
 }): JSX.Element {
   const [editor] = useLexicalComposerContext();
   const [activeEditor, setActiveEditor] = useState(editor);
@@ -521,6 +524,23 @@ export default function ToolbarPlugin({
           >
             <i className="format link" />
           </button>
+        </>
+      )}
+      {toolbarButtons.length > 0 && (
+        <>
+          <Divider />
+          {toolbarButtons.map((btn) => (
+            <button
+              type="button"
+              key={btn.key}
+              onClick={() => btn.onSelect(activeEditor)}
+              className="toolbar-item"
+              title={btn.label}
+              aria-label={btn.label}
+            >
+              <i className={`icon ${btn.iconClass ?? 'bullet-list'}`} />
+            </button>
+          ))}
         </>
       )}
     </div>

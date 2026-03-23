@@ -2,6 +2,7 @@
 
 import { Fieldset } from '@eventuras/ratio-ui/forms';
 import { MarkdownInput } from '@eventuras/scribo';
+import { schedulePlugin } from '@eventuras/scribo/plugins/schedule';
 import {
   CheckboxInput,
   CheckboxLabel,
@@ -136,6 +137,7 @@ export const DescriptionsSection = () => {
           <MarkdownInput
             label="Program"
             placeholder="An Event Program here (markdown supported)"
+            plugins={[schedulePlugin]}
             data-testid="eventeditor-markdownfield-program"
             id="eventeditor-program"
             name="program"

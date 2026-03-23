@@ -1,0 +1,132 @@
+/* Schedule item wrapper */
+.schedule-item-wrapper + .schedule-item-wrapper {
+  margin-top: 0;
+}
+
+/* Main editor row */
+.schedule-item-editor {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.375rem 0.5rem;
+  border-radius: 0.375rem;
+  background: rgba(74, 142, 161, 0.06);
+  border: 1px solid rgba(74, 142, 161, 0.15);
+  transition: border-color 0.15s, opacity 0.15s;
+}
+
+.schedule-item-editor--selected {
+  border-color: rgba(74, 142, 161, 0.4);
+}
+
+.schedule-item-editor--dragging {
+  opacity: 0.4;
+}
+
+/* Drag handle */
+.schedule-item-drag {
+  cursor: grab;
+  border: none;
+  background: transparent;
+  padding: 0.125rem;
+  color: rgba(0, 0, 0, 0.25);
+  font-size: 0.875rem;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.schedule-item-drag:hover {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.schedule-item-drag:active {
+  cursor: grabbing;
+}
+
+/* Input fields */
+.schedule-item-editor input {
+  border: none;
+  background: transparent;
+  font: inherit;
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  outline: none;
+  min-width: 0;
+}
+
+.schedule-item-editor input:focus {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.schedule-item-time {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  width: 8rem;
+  flex-shrink: 0;
+}
+
+.schedule-item-title {
+  font-weight: 600;
+  flex: 2;
+}
+
+.schedule-item-speaker {
+  flex: 1;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.schedule-item-description {
+  flex: 2;
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 0.9em;
+}
+
+.schedule-item-editor input::placeholder {
+  color: rgba(0, 0, 0, 0.25);
+}
+
+/* Remove button */
+.schedule-item-remove {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  background: rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 1rem;
+  line-height: 1;
+  flex-shrink: 0;
+  border-radius: 0.25rem;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+}
+
+.schedule-item-remove:hover {
+  color: #b91c1c;
+  background: rgba(185, 28, 28, 0.1);
+  border-color: rgba(185, 28, 28, 0.3);
+}
+
+/* Add button — only on last item */
+.schedule-item-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 0.375rem;
+  padding: 0.375rem;
+  border: 1px dashed rgba(74, 142, 161, 0.35);
+  border-radius: 0.375rem;
+  background: rgba(74, 142, 161, 0.06);
+  cursor: pointer;
+  color: #3a7287;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.schedule-item-add:hover {
+  border-color: rgba(74, 142, 161, 0.6);
+  color: #2f5f6d;
+  background: rgba(74, 142, 161, 0.12);
+}
