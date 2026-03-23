@@ -1,5 +1,17 @@
 # @eventuras/web
 
+## 2.32.0
+
+### Minor Changes
+
+- e981f9d: ### Event editor
+  - Enable schedule plugin in the program field for structured schedule editing
+
+### Patch Changes
+
+- Updated dependencies [e981f9d]
+  - @eventuras/scribo@0.9.0
+
 ## 2.31.0
 
 ### Minor Changes
