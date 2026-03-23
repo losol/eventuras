@@ -68,7 +68,7 @@ const Drawer: DrawerComponent = (props: DrawerProps) => {
 
   const styles = {
     drawer: {
-      base: 'flex flex-col p-6 fixed top-0 right-0 w-11/12 md:w-7/12 h-full bg-gray-100 dark:bg-slate-950 overflow-auto z-30',
+      base: `flex flex-col p-6 fixed top-0 right-0 w-11/12 md:w-10/12 lg:w-7/12 2xl:w-8/12 h-full bg-gray-100 dark:bg-slate-950 overflow-auto z-30`,
       open: 'transition-opacity opacity-100 duration-2',
       closed: 'transition-all delay-500 opacity-0',
     },
