@@ -5,7 +5,10 @@ import { defineReactLibConfig } from '@eventuras/vite-config/react-lib';
  * For the demo site, see vite.config.site.ts
  */
 export default defineReactLibConfig({
-  entry: 'src/main.tsx',
+  entry: {
+    main: 'src/main.tsx',
+    schedule: 'src/nodes/schedule/index.ts',
+  },
   useSWC: false,
   external: [
     // Externalize all Lexical packages to avoid bundling them

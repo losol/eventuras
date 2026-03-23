@@ -9,7 +9,7 @@ import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { EditorState } from "lexical";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 
 import EditorNodes from "./nodes/EditorNodes";
 import ToolbarPlugin from "./plugins/ToolbarPlugin";
@@ -22,6 +22,7 @@ import LinkPlugin from "./plugins/LinkPlugin";
 import FloatingLinkEditorPlugin from "./plugins/FloatingLinkEditorPlugin";
 import AutoLinkPlugin from "./plugins/AutoLinkPlugin";
 import { useSharedHistoryContext } from './context/SharedHistoryContext';
+import type { ScriboPlugin } from './types';
 
 export type onChangeMisc = {
   plainText: string;
@@ -29,6 +30,7 @@ export type onChangeMisc = {
 export interface MarkdownEditorProps {
   initialMarkdown?: string;
   className?: string;
+  plugins?: ScriboPlugin[];
   onChange?: (markdown: string, misc: onChangeMisc) => void;
   onBlur?: () => void;
   placeholder?: string;
@@ -49,9 +51,26 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
     }
   };
 
+  // Collect nodes and transformers from plugins
+  const pluginNodes = useMemo(
+    () => (props.plugins ?? []).flatMap((p) => p.nodes ?? []),
+    [props.plugins]
+  );
+  const allTransformers = useMemo(
+    () => [
+      ...(props.plugins ?? []).flatMap((p) => p.transformers ?? []),
+      ...TRANSFORMERS,
+    ],
+    [props.plugins]
+  );
+  const toolbarButtons = useMemo(
+    () => (props.plugins ?? []).flatMap((p) => p.toolbarButtons ?? []),
+    [props.plugins]
+  );
+
   const internalOnChange = (editorState: EditorState) => {
     editorState.read(() => {
-      const markdown = $convertToMarkdownString(TRANSFORMERS);
+      const markdown = $convertToMarkdownString(allTransformers);
       const plainText = $getRoot().getTextContent();
       props.onChange && props.onChange(markdown, { plainText });
     });
@@ -59,7 +78,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
 
   const initialConfig = {
     namespace: "ScriboMarkdown",
-    nodes: [...EditorNodes],
+    nodes: [...EditorNodes, ...pluginNodes],
     onError: (error: Error) => {
       throw error;
     },
@@ -68,7 +87,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
       ? () => {
           // Unescape backslash-escaped markdown characters
           const unescapedMarkdown = props.initialMarkdown!.replace(/\\([*_`\[\]()#+-])/g, '$1');
-          $convertFromMarkdownString(unescapedMarkdown, TRANSFORMERS);
+          $convertFromMarkdownString(unescapedMarkdown, allTransformers);
         }
       : undefined,
   };
@@ -77,10 +96,10 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
     <div className={props.className}>
       <LexicalComposer initialConfig={initialConfig}>
         <div className="editor-shell" onBlur={props.onBlur} data-testid={props['data-testid']} id={props.id}>
-          <ToolbarPlugin setIsLinkEditMode={setIsLinkEditMode} />
+          <ToolbarPlugin setIsLinkEditMode={setIsLinkEditMode} toolbarButtons={toolbarButtons} />
           <div className="editor-container rich-text">
             <HistoryPlugin externalHistoryState={historyState} />
-            <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
+            <MarkdownShortcutPlugin transformers={allTransformers} />
             <AutoLinkPlugin />
             <LinkPlugin />
             <FloatingLinkEditorPlugin

@@ -1,11 +1,13 @@
 'use client';
 import MarkdownEditor from './MarkdownEditor';
 import { useRef, useState } from 'react';
+import type { ScriboPlugin } from './types';
 
 export type MarkdownInputProps = {
   id?: string;
   name: string;
   maxLength?: number;
+  plugins?: ScriboPlugin[];
   label?: string;
   placeholder?: string;
   defaultValue?: string;
@@ -61,6 +63,7 @@ const MarkdownInput = (props: MarkdownInputProps) => {
       <MarkdownEditor
         onChange={handleChange}
         className={props.editorClassName}
+        plugins={props.plugins}
         initialMarkdown={props.defaultValue}
         placeholder={props.placeholder}
         data-testid={props['data-testid']}
