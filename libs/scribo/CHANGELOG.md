@@ -1,5 +1,23 @@
 # @eventuras/scribo
 
+## 0.10.0
+
+### Minor Changes
+
+- ed973fc: ### Callout plugin
+  - Add `@eventuras/scribo/plugins/callout` — callout blocks with rich text content (NOTE, TIP, IMPORTANT, WARNING, CAUTION)
+  - CalloutNode is an ElementNode — supports full rich text editing (bold, italic, links, lists) inside the callout
+  - Type selector and remove button rendered directly in callout DOM
+  - Serializes to GitHub-flavored alert syntax: `> [!NOTE]\n> content`
+  - Add `editorPlugins` to `ScriboPlugin` interface for React plugin components
+  - Add `exportDOM`/`importDOM` for copy/paste support
+
+### Patch Changes
+
+- ed973fc: ### Bug fixes
+  - Fix `JSX.Element` → `ReactElement` in DecoratorNode types for valid TypeScript declarations
+  - Add `importDOM` to `ScheduleItemNode` for copy/paste support
+
 ## 0.9.0
 
 ### Minor Changes

@@ -1,5 +1,15 @@
 # @eventuras/web
 
+## 2.32.1
+
+### Patch Changes
+
+- Updated dependencies [ed973fc]
+- Updated dependencies [ed973fc]
+- Updated dependencies [ed973fc]
+  - @eventuras/scribo@0.10.0
+  - @eventuras/markdown@8.1.0
+
 ## 2.32.0
 
 ### Minor Changes
