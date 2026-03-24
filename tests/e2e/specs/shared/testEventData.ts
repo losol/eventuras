@@ -269,7 +269,13 @@ This event will cover the latest trends and best practices, with hands-on worksh
 - 🍽️ Lunch included both days
 - 🥐 Morning pastries available
 - 🌱 Vegetarian/vegan options available
-- ⚠️ Please inform us of allergies during registration`,
+- ⚠️ Please inform us of allergies during registration
+
+> [!IMPORTANT]
+> Please bring a valid photo ID for registration at the venue.
+
+> [!TIP]
+> Download the event app before arriving for real-time schedule updates.`,
 
     moreInformation: `### About This Event
 
@@ -302,6 +308,12 @@ Our team includes industry veterans, published authors, and practitioners with y
 #### Code of Conduct
 
 We are committed to providing a welcoming and inclusive environment. Please review our [Code of Conduct](https://example.com) before attending.
+
+> [!NOTE]
+> All sessions will be recorded and made available to registered participants after the event.
+
+> [!WARNING]
+> Registration closes 48 hours before the event. Late registrations cannot be accommodated.
 
 ---
 
