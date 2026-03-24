@@ -1,5 +1,13 @@
 # @eventuras/web
 
+## 2.33.0
+
+### Minor Changes
+
+- 0d4bc2d: ### Event editor
+  - Enable callout plugin on program, practical information, and more information fields
+  - Enable callout rendering on public event details page via remarkCallout
+
 ## 2.32.1
 
 ### Patch Changes
