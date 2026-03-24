@@ -1,5 +1,14 @@
 # @eventuras/markdown
 
+## 8.1.0
+
+### Minor Changes
+
+- ed973fc: ### Callout rendering
+  - Add `remarkCallout` remark plugin — detects `> [!TYPE]` in blockquotes
+  - Add `calloutComponents` using ratio-ui `Panel` component
+  - Add `calloutSanitizeSchema` — sanitization whitelist for callout elements
+
 ## 8.0.0
 
 ### Patch Changes
