@@ -5,6 +5,7 @@ import {
   calloutComponents,
   calloutSanitizeSchema,
   MarkdownContent,
+  mergeSanitizeSchemas,
   remarkCallout,
 } from '@eventuras/markdown';
 import {
@@ -61,16 +62,10 @@ const EventDetails: React.FC<EventProps> = ({ eventinfo }) => {
             allowExternalLinks={true}
             remarkPlugins={[remarkSchedule, remarkCallout]}
             customComponents={{ ...scheduleComponents, ...calloutComponents }}
-            sanitizeSchemaExtension={{
-              tagNames: [
-                ...(scheduleSanitizeSchema.tagNames ?? []),
-                ...(calloutSanitizeSchema.tagNames ?? []),
-              ],
-              attributes: {
-                ...scheduleSanitizeSchema.attributes,
-                ...calloutSanitizeSchema.attributes,
-              },
-            }}
+            sanitizeSchemaExtension={mergeSanitizeSchemas(
+              scheduleSanitizeSchema,
+              calloutSanitizeSchema
+            )}
           />
         </Section>
       ))}
