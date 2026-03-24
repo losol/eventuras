@@ -16,6 +16,10 @@
       "types": "./dist/nodes/schedule/index.d.ts",
       "default": "./src/nodes/schedule/index.ts"
     },
+    "./plugins/callout": {
+      "types": "./dist/nodes/callout/index.d.ts",
+      "default": "./src/nodes/callout/index.ts"
+    },
     "./style.css": "./dist/scribo.css"
   },
   "main": "src/main.tsx",

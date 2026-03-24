@@ -1,3 +1,4 @@
+import type { ComponentType } from 'react';
 import type { Transformer } from '@lexical/markdown';
 import type { Klass, LexicalNode } from 'lexical';
 
@@ -21,4 +22,6 @@ export interface ScriboPlugin {
   transformers?: Transformer[];
   /** Buttons to add to the toolbar */
   toolbarButtons?: ScriboToolbarButton[];
+  /** React components to render inside the LexicalComposer (must accept no props) */
+  editorPlugins?: ComponentType<object>[];
 }

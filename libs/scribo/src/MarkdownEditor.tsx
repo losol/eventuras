@@ -67,6 +67,10 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
     () => (props.plugins ?? []).flatMap((p) => p.toolbarButtons ?? []),
     [props.plugins]
   );
+  const editorPlugins = useMemo(
+    () => (props.plugins ?? []).flatMap((p) => p.editorPlugins ?? []),
+    [props.plugins]
+  );
 
   const internalOnChange = (editorState: EditorState) => {
     editorState.read(() => {
@@ -120,6 +124,9 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
             />
           </div>
           {props.onChange && <OnChangePlugin onChange={internalOnChange} />}
+          {editorPlugins.map((Plugin) => (
+            <Plugin key={Plugin.displayName ?? Plugin.name} />
+          ))}
         </div>
       </LexicalComposer>
     </div>

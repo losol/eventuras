@@ -8,6 +8,7 @@ export default defineReactLibConfig({
   entry: {
     main: 'src/main.tsx',
     schedule: 'src/nodes/schedule/index.ts',
+    callout: 'src/nodes/callout/index.ts',
   },
   useSWC: false,
   external: [

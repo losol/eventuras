@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import MarkdownEditor from './MarkdownEditor'
+import { schedulePlugin } from './nodes/schedule'
+import { calloutPlugin } from './nodes/callout'
 
 interface Props {
   /** Initial markdown string */
@@ -28,6 +30,7 @@ export function App({ initialMarkdown }: Readonly<Props>) {
           <MarkdownEditor
             initialMarkdown={markdown}
             onChange={onChange}
+            plugins={[schedulePlugin, calloutPlugin]}
           />
         </div>
 
