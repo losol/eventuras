@@ -37,12 +37,16 @@
     "test:watch": "vitest --watch",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
+  "dependencies": {
+    "unist-util-visit": "^5.1.0"
+  },
   "devDependencies": {
     "@eventuras/ratio-ui": "workspace:*",
     "@eventuras/typescript-config": "workspace:*",
     "@eventuras/vite-config": "workspace:*",
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/react": "^16.3.2",
+    "@types/mdast": "^4.0.4",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "jsdom": "29.0.1",

@@ -1,13 +1,14 @@
 import {
   $applyNodeReplacement,
   DecoratorNode,
+  DOMConversionMap,
   DOMExportOutput,
   LexicalNode,
   NodeKey,
   SerializedLexicalNode,
   Spread,
 } from 'lexical';
-import { createElement } from 'react';
+import { createElement, type ReactElement } from 'react';
 
 import { ScheduleItemComponent } from './ScheduleItemComponent';
 
@@ -23,7 +24,7 @@ export type SerializedScheduleItemNode = Spread<
   SerializedLexicalNode
 >;
 
-export class ScheduleItemNode extends DecoratorNode<JSX.Element> {
+export class ScheduleItemNode extends DecoratorNode<ReactElement> {
   __data: ScheduleItemData;
 
   static getType(): string {
@@ -58,6 +59,26 @@ export class ScheduleItemNode extends DecoratorNode<JSX.Element> {
 
   updateDOM(): boolean {
     return false;
+  }
+
+  static importDOM(): DOMConversionMap | null {
+    return {
+      div: (node: HTMLElement) => {
+        if (!node.classList.contains('schedule-item')) return null;
+        return {
+          conversion: () => {
+            const data = {
+              time: node.dataset.time ?? '',
+              title: node.dataset.title ?? '',
+              speaker: node.dataset.speaker || undefined,
+              description: node.dataset.description || undefined,
+            };
+            return { node: $createScheduleItemNode(data) };
+          },
+          priority: 1,
+        };
+      },
+    };
   }
 
   exportDOM(): DOMExportOutput {
@@ -98,7 +119,7 @@ export class ScheduleItemNode extends DecoratorNode<JSX.Element> {
 
   // --- Decorator (React rendering is handled by the component) ---
 
-  decorate(): JSX.Element {
+  decorate(): ReactElement {
     return createElement(ScheduleItemComponent, {
       nodeKey: this.__key,
       data: this.__data,

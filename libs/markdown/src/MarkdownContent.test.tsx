@@ -161,4 +161,61 @@ describe('MarkdownContent', () => {
     expect(strong).toBeInTheDocument()
     expect(strong).toHaveTextContent('Amazing Event')
   })
+
+  describe('remarkCallout', () => {
+    // Lazy import to avoid hoisting issues with vi.mock
+    const setup = async () => {
+      const { remarkCallout } = await import('./remarkCallout');
+      const { calloutComponents } = await import('./calloutComponents');
+      const { calloutSanitizeSchema } = await import('./calloutSanitizeSchema');
+      return { remarkCallout, calloutComponents, calloutSanitizeSchema };
+    };
+
+    it('renders a NOTE callout', async () => {
+      const { remarkCallout, calloutComponents, calloutSanitizeSchema } = await setup();
+      const md = '> [!NOTE]\n> This is a note.';
+      const { container } = render(
+        <MarkdownContent
+          markdown={md}
+          remarkPlugins={[remarkCallout]}
+          customComponents={calloutComponents}
+          sanitizeSchemaExtension={calloutSanitizeSchema}
+        />
+      );
+      expect(container.querySelector('callout')).toBeInTheDocument();
+      expect(container).toHaveTextContent('Note');
+      expect(container).toHaveTextContent('This is a note.');
+    });
+
+    it('renders a WARNING callout', async () => {
+      const { remarkCallout, calloutComponents, calloutSanitizeSchema } = await setup();
+      const md = '> [!WARNING]\n> Be careful here.';
+      const { container } = render(
+        <MarkdownContent
+          markdown={md}
+          remarkPlugins={[remarkCallout]}
+          customComponents={calloutComponents}
+          sanitizeSchemaExtension={calloutSanitizeSchema}
+        />
+      );
+      expect(container.querySelector('callout')).toBeInTheDocument();
+      expect(container).toHaveTextContent('Warning');
+      expect(container).toHaveTextContent('Be careful here.');
+    });
+
+    it('leaves regular blockquotes unchanged', async () => {
+      const { remarkCallout, calloutComponents, calloutSanitizeSchema } = await setup();
+      const md = '> Just a regular quote.';
+      const { container } = render(
+        <MarkdownContent
+          markdown={md}
+          remarkPlugins={[remarkCallout]}
+          customComponents={calloutComponents}
+          sanitizeSchemaExtension={calloutSanitizeSchema}
+        />
+      );
+      expect(container.querySelector('callout')).not.toBeInTheDocument();
+      expect(container.querySelector('blockquote')).toBeInTheDocument();
+    });
+  });
 })
