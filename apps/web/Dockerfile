@@ -54,11 +54,7 @@ FROM base AS builder
 
 WORKDIR /app
 
-ARG TURBO_TOKEN
-ARG TURBO_TEAM
 ARG GIT_SHA="unknown"
-ENV TURBO_TOKEN=${TURBO_TOKEN}
-ENV TURBO_TEAM=${TURBO_TEAM}
 ENV GIT_SHA=${GIT_SHA}
 ENV NEXT_TELEMETRY_DISABLED=1
 
@@ -68,6 +64,10 @@ COPY --from=install /app ./
 
 RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store \
   --mount=type=cache,id=turbo-cache,target=/app/.turbo \
+  --mount=type=secret,id=TURBO_TOKEN,required=false \
+  --mount=type=secret,id=TURBO_TEAM,required=false \
+  TURBO_TOKEN="$(cat /run/secrets/TURBO_TOKEN 2>/dev/null || true)" \
+  TURBO_TEAM="$(cat /run/secrets/TURBO_TEAM 2>/dev/null || true)" \
   pnpm exec turbo run build --filter=@eventuras/web^...
 
 WORKDIR /app/apps/web
