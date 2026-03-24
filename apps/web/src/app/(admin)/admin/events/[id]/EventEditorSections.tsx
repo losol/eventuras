@@ -2,6 +2,7 @@
 
 import { Fieldset } from '@eventuras/ratio-ui/forms';
 import { MarkdownInput } from '@eventuras/scribo';
+import { calloutPlugin } from '@eventuras/scribo/plugins/callout';
 import { schedulePlugin } from '@eventuras/scribo/plugins/schedule';
 import {
   CheckboxInput,
@@ -137,7 +138,7 @@ export const DescriptionsSection = () => {
           <MarkdownInput
             label="Program"
             placeholder="An Event Program here (markdown supported)"
-            plugins={[schedulePlugin]}
+            plugins={[schedulePlugin, calloutPlugin]}
             data-testid="eventeditor-markdownfield-program"
             id="eventeditor-program"
             name="program"
@@ -153,6 +154,7 @@ export const DescriptionsSection = () => {
           <MarkdownInput
             label="Practical Information"
             placeholder="Practical Information here (markdown supported)"
+            plugins={[calloutPlugin]}
             data-testid="eventeditor-markdownfield-practical-information"
             id="eventeditor-practical-information"
             name="practicalInformation"
@@ -168,6 +170,7 @@ export const DescriptionsSection = () => {
           <MarkdownInput
             label="More Information"
             placeholder="More Information here (markdown supported)"
+            plugins={[calloutPlugin]}
             data-testid="eventeditor-markdownfield-more-information"
             id="eventeditor-more-information"
             name="moreInformation"

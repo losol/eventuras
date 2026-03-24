@@ -1,7 +1,12 @@
 import React from 'react';
 import { useTranslations } from 'next-intl';
 
-import { MarkdownContent } from '@eventuras/markdown';
+import {
+  calloutComponents,
+  calloutSanitizeSchema,
+  MarkdownContent,
+  remarkCallout,
+} from '@eventuras/markdown';
 import {
   remarkSchedule,
   scheduleComponents,
@@ -54,9 +59,18 @@ const EventDetails: React.FC<EventProps> = ({ eventinfo }) => {
           <MarkdownContent
             markdown={section.content!}
             allowExternalLinks={true}
-            remarkPlugins={[remarkSchedule]}
-            customComponents={scheduleComponents}
-            sanitizeSchemaExtension={scheduleSanitizeSchema}
+            remarkPlugins={[remarkSchedule, remarkCallout]}
+            customComponents={{ ...scheduleComponents, ...calloutComponents }}
+            sanitizeSchemaExtension={{
+              tagNames: [
+                ...(scheduleSanitizeSchema.tagNames ?? []),
+                ...(calloutSanitizeSchema.tagNames ?? []),
+              ],
+              attributes: {
+                ...scheduleSanitizeSchema.attributes,
+                ...calloutSanitizeSchema.attributes,
+              },
+            }}
           />
         </Section>
       ))}
