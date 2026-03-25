@@ -1,174 +1,60 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
+  "extends": ["config:recommended", "helpers:pinGitHubActionDigestsToSemver"],
   "timezone": "Europe/Oslo",
-  "labels": [
-    "dependencies"
-  ],
+  "labels": ["dependencies"],
   "commitMessagePrefix": "chore(deps): ",
   "commitMessageAction": "update",
   "commitMessageSuffix": "",
   "rebaseWhen": "conflicted",
+  "pruneStaleBranches": true,
+  "minimumReleaseAge": "3 days",
+  "prConcurrentLimit": 5,
+  "branchConcurrentLimit": 5,
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 6am on monday"]
+  },
   "packageRules": [
     {
-      "description": "Lexical must match Payload CMS richtext-lexical version — update manually",
+      "description": "Lexical must match Payload CMS richtext-lexical — update manually",
       "enabled": false,
-      "matchPackageNames": [
-        "/^lexical$/",
-        "/^@lexical//"
-      ]
+      "matchPackageNames": ["/^lexical$/", "/^@lexical//"]
     },
     {
       "description": "@types/node pinned to match engine requirements",
-      "matchPackageNames": [
-        "@types/node"
-      ],
-      "enabled": false
+      "enabled": false,
+      "matchPackageNames": ["@types/node"]
     },
     {
-      "description": "Group all non-major updates for api",
-      "matchUpdateTypes": [
-        "minor",
-        "patch",
-        "pin",
-        "digest"
-      ],
-      "matchFileNames": [
-        "apps/api/**"
-      ],
-      "groupName": "api minor/patch"
-    },
-    {
-      "description": "Group all non-major updates per monorepo app/lib",
-      "matchUpdateTypes": [
-        "minor",
-        "patch",
-        "pin",
-        "digest"
-      ],
-      "matchFileNames": [
-        "apps/web/**"
-      ],
-      "groupName": "web minor/patch"
-    },
-    {
-      "description": "Group all non-major updates for historia",
-      "matchUpdateTypes": [
-        "minor",
-        "patch",
-        "pin",
-        "digest"
-      ],
-      "matchFileNames": [
-        "apps/historia/**"
-      ],
-      "groupName": "historia minor/patch"
-    },
-    {
-      "description": "Group all non-major updates for idem-idp",
-      "matchUpdateTypes": [
-        "minor",
-        "patch",
-        "pin",
-        "digest"
-      ],
-      "matchFileNames": [
-        "apps/idem-idp/**"
-      ],
-      "groupName": "idem-idp minor/patch"
-    },
-    {
-      "description": "Group all non-major updates for idem-admin",
-      "matchUpdateTypes": [
-        "minor",
-        "patch",
-        "pin",
-        "digest"
-      ],
-      "matchFileNames": [
-        "apps/idem-admin/**"
-      ],
-      "groupName": "idem-admin minor/patch"
-    },
-    {
-      "description": "Group all non-major updates for conductor",
-      "matchUpdateTypes": [
-        "minor",
-        "patch",
-        "pin",
-        "digest"
-      ],
-      "matchFileNames": [
-        "apps/conductor/**"
-      ],
-      "groupName": "conductor minor/patch"
-    },
-    {
-      "description": "Group all non-major updates for convertoapi",
-      "matchUpdateTypes": [
-        "minor",
-        "patch",
-        "pin",
-        "digest"
-      ],
-      "matchFileNames": [
-        "apps/convertoapi/**"
-      ],
-      "groupName": "convertoapi minor/patch"
-    },
-    {
-      "description": "Group all non-major lib updates",
-      "matchUpdateTypes": [
-        "minor",
-        "patch",
-        "pin",
-        "digest"
-      ],
-      "matchFileNames": [
-        "libs/**"
-      ],
-      "groupName": "libs minor/patch"
-    },
-    {
-      "description": "Group all non-major test updates",
-      "matchUpdateTypes": [
-        "minor",
-        "patch",
-        "pin",
-        "digest"
-      ],
-      "matchFileNames": [
-        "tests/**"
-      ],
-      "groupName": "tests minor/patch"
+      "description": "Group ALL non-major npm updates into one PR",
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "matchManagers": ["npm"],
+      "groupName": "npm minor/patch"
     },
     {
       "description": "Group Payload CMS packages",
       "groupName": "payload",
-      "matchPackageNames": [
-        "/^payload$/",
-        "/^@payloadcms//"
-      ]
+      "matchPackageNames": ["/^payload$/", "/^@payloadcms//"]
+    },
+    {
+      "description": "Group Storybook packages",
+      "groupName": "storybook",
+      "matchPackageNames": ["/^storybook$/", "/^@storybook//"]
     },
     {
       "description": "Group ESLint packages",
       "groupName": "eslint",
-      "matchPackageNames": [
-        "/eslint/"
-      ]
+      "matchPackageNames": ["/eslint/"]
     },
     {
       "description": "Group Docker base images",
-      "matchDatasources": [
-        "docker"
-      ],
+      "matchDatasources": ["docker"],
       "groupName": "docker"
     },
     {
       "description": "Group GitHub Actions",
-      "matchManagers": [
-        "github-actions"
-      ],
+      "matchManagers": ["github-actions"],
       "groupName": "github-actions"
     }
   ]
