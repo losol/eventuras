@@ -1,5 +1,14 @@
 # @eventuras/api
 
+## 2.31.0
+
+### Minor Changes
+
+- 8db0d59: Add Featured and IncludePastCollections filters to event collections API
+  - Featured filter to query only featured collections
+  - IncludePastCollections filter (default false) to hide collections where all events have passed
+  - Computed dateStart/dateEnd on EventCollectionDto based on contained events
+
 ## 2.30.3
 
 ### Patch Changes
