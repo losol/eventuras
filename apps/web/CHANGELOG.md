@@ -1,5 +1,21 @@
 # @eventuras/web
 
+## 2.34.0
+
+### Minor Changes
+
+- 8db0d59: Featured event collections with category grouping
+  - Frontpage shows featured collections at the top with events grouped by category
+  - Collection detail page groups events by category with section headings
+  - Fix: EventLookup popover crash (missing triggerRef)
+  - Fix: InitTheme script warning (next/script → inline script)
+  - Fix: CollectionEditor server-only import error (moved to server action)
+
+### Patch Changes
+
+- Updated dependencies [8db0d59]
+  - @eventuras/event-sdk@2.31.0
+
 ## 2.33.0
 
 ### Minor Changes
