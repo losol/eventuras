@@ -1,4 +1,5 @@
 ---
+"@eventuras/api": minor
 "@eventuras/event-sdk": minor
 ---
 
