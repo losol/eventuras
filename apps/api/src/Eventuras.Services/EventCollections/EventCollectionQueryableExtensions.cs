@@ -1,7 +1,9 @@
 using System;
 using System.Linq;
 using Eventuras.Domain;
+using Eventuras.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using NodaTime;
 
 namespace Eventuras.Services.EventCollections;
 
@@ -42,6 +44,20 @@ internal static class EventCollectionQueryableExtensions
         {
             query = query.Where(c => c.EventMappings
                 .Any(m => m.EventId == filter.EventInfoId));
+        }
+
+        if (filter.FeaturedOnly == true)
+        {
+            query = query.Where(c => c.Featured);
+        }
+
+        if (!filter.IncludePastCollections)
+        {
+            var today = SystemClock.Instance.Today();
+            query = query.Where(c =>
+                c.EventMappings.Any(m =>
+                    m.Event.DateEnd >= today ||
+                    (!m.Event.DateEnd.HasValue && m.Event.DateStart >= today)));
         }
 
         return query;

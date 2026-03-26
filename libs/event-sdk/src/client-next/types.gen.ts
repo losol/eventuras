@@ -83,6 +83,8 @@ export type EventCollectionDto = {
     featured?: boolean;
     featuredImageUrl?: string | null;
     featuredImageCaption?: string | null;
+    dateStart?: string | null;
+    dateEnd?: string | null;
 };
 
 export type EventCollectionDtoPageResponseDto = {
@@ -1046,6 +1048,8 @@ export type GetV3EventcollectionsData = {
     };
     path?: never;
     query?: {
+        Featured?: boolean | null;
+        IncludePastCollections?: boolean;
         Page?: number;
         Count?: number;
         Limit?: number;

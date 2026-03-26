@@ -48,7 +48,13 @@ public class EventCollectionController : ControllerBase
         }
 
         var collections = await _eventCollectionRetrievalService
-            .ListCollectionsAsync(cancellationToken: cancellationToken);
+            .ListCollectionsAsync(
+                new EventCollectionListRequest(query.Offset, query.Limit)
+                {
+                    Filter = query.ToFilter()
+                },
+                new EventCollectionRetrievalOptions { LoadEvents = true },
+                cancellationToken: cancellationToken);
 
         return PageResponseDto<EventCollectionDto>.FromPaging(query, collections, c => new EventCollectionDto(c));
     }
@@ -58,7 +64,9 @@ public class EventCollectionController : ControllerBase
     public async Task<ActionResult<EventCollectionDto>> Get(int id, CancellationToken cancellationToken)
     {
         var c = await _eventCollectionRetrievalService
-            .GetCollectionByIdAsync(id, cancellationToken: cancellationToken);
+            .GetCollectionByIdAsync(id,
+                new EventCollectionRetrievalOptions { LoadEvents = true },
+                cancellationToken: cancellationToken);
 
         return Ok(new EventCollectionDto(c));
     }

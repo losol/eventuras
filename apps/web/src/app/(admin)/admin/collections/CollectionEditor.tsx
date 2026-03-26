@@ -12,9 +12,14 @@ import { CheckboxInput, CheckboxLabel, Form, TextField } from '@eventuras/smartf
 import { useToast } from '@eventuras/toast';
 
 import EventLookup from '@/components/event/EventLookup';
-import { EventCollectionDto, EventDto, getV3Events } from '@/lib/eventuras-sdk';
+import { EventCollectionDto, EventDto } from '@/lib/eventuras-sdk';
 
-import { addEventToCollection, removeEventFromCollection, updateCollection } from './actions';
+import {
+  addEventToCollection,
+  getCollectionEvents,
+  removeEventFromCollection,
+  updateCollection,
+} from './actions';
 
 import '@eventuras/scribo/style.css';
 export type CollectionEditorProps = {
@@ -34,18 +39,8 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
   const [removingEventId, setRemovingEventId] = useState(-1);
   const router = useRouter();
   useEffect(() => {
-    const fetchEventInfos = async () => {
-      const response = await getV3Events({
-        query: {
-          CollectionId: eventCollection.id!,
-        },
-      });
-      if (response.data?.data) {
-        setEventInfos(response.data.data);
-      }
-    };
     if (eventCollection?.id) {
-      fetchEventInfos();
+      getCollectionEvents(eventCollection.id).then(setEventInfos);
     }
   }, [eventCollection.id, eventListUpdateTrigger]);
   const onSubmitForm = async (data: EventCollectionDto) => {

@@ -260,6 +260,21 @@
         ],
         "parameters": [
           {
+            "name": "Featured",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            }
+          },
+          {
+            "name": "IncludePastCollections",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
             "name": "Page",
             "in": "query",
             "schema": {
@@ -4781,6 +4796,16 @@
           },
           "featuredImageCaption": {
             "type": "string",
+            "nullable": true
+          },
+          "dateStart": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "dateEnd": {
+            "type": "string",
+            "format": "date",
             "nullable": true
           }
         },

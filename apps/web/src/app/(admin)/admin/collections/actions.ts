@@ -15,7 +15,9 @@ import {
   EventCollectionCreateDto,
   EventCollectionDto,
   EventCollectionDtoPageResponseDto,
+  EventDto,
   getV3Eventcollections,
+  getV3Events,
   postV3Eventcollections,
   putV3EventcollectionsById,
   putV3EventsByEventIdCollectionsByCollectionId,
@@ -191,6 +193,24 @@ export async function addEventToCollection(
   } catch (error) {
     logger.error({ error }, 'Error adding event to collection');
     return actionError('An unexpected error occurred while adding the event');
+  }
+}
+
+/**
+ * Get events in a collection
+ */
+export async function getCollectionEvents(collectionId: number): Promise<EventDto[]> {
+  try {
+    const response = await getV3Events({
+      client,
+      query: {
+        CollectionId: collectionId,
+      },
+    });
+    return response.data?.data ?? [];
+  } catch (error) {
+    logger.error({ error, collectionId }, 'Failed to fetch collection events');
+    return [];
   }
 }
 
