@@ -9,9 +9,15 @@ import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 import { Link } from '@eventuras/ratio-ui-next';
 
-import { EventGrid } from '@/components/event';
+import { EventGrid, FeaturedCollectionSection } from '@/components/event';
 import UserMenu from '@/components/eventuras/UserMenu';
-import { getV3Events, publicClient } from '@/lib/eventuras-public-sdk';
+import {
+  type EventCollectionDto,
+  type EventDto,
+  getV3Eventcollections,
+  getV3Events,
+  publicClient,
+} from '@/lib/eventuras-public-sdk';
 import { getOrganizationId } from '@/utils/organization';
 import getSiteSettings from '@/utils/site/getSiteSettings';
 
@@ -34,30 +40,68 @@ export default async function Homepage() {
 
   const ORGANIZATION_ID = getOrganizationId();
 
-  let response;
+  let featuredCollections: (EventCollectionDto & { events: EventDto[] })[] = [];
+  let events: EventDto[] = [];
+  let hasError = false;
+
   try {
-    // Use public client for anonymous API access (ISR-safe)
-    response = await getV3Events({
+    // Fetch featured collections and their events
+    const collectionsResponse = await getV3Eventcollections({
       client: publicClient,
-      query: { OrganizationId: ORGANIZATION_ID },
+      query: { Featured: true },
+      headers: { 'Eventuras-Org-Id': ORGANIZATION_ID },
     });
+
+    const collections = collectionsResponse.data?.data ?? [];
+
+    // Fetch events for each featured collection (sorted by category)
+    const results = await Promise.allSettled(
+      collections.map(async collection => {
+        const eventsResponse = await getV3Events({
+          client: publicClient,
+          query: {
+            CollectionId: collection.id!,
+            Ordering: ['Category', 'DateStart', 'Title'],
+          },
+        });
+        return {
+          ...collection,
+          events: eventsResponse.data?.data ?? [],
+        };
+      })
+    );
+
+    featuredCollections = results
+      .filter(
+        (r): r is PromiseFulfilledResult<EventCollectionDto & { events: EventDto[] }> =>
+          r.status === 'fulfilled'
+      )
+      .map(r => r.value);
+
+    // Fetch all events (including those in featured collections)
+    const eventsResponse = await getV3Events({
+      client: publicClient,
+      query: {
+        OrganizationId: ORGANIZATION_ID,
+      },
+    });
+
+    events = eventsResponse.data?.data ?? [];
 
     logger.info(
       {
-        hasData: !!response.data,
-        dataLength: response.data?.data?.length,
-        hasError: !!response.error,
-        error: response.error,
+        featuredCollections: featuredCollections.length,
+        events: events.length,
       },
-      'Frontpage events response'
+      'Frontpage data loaded'
     );
   } catch (error) {
     logger.error({ error }, 'Failed to fetch events');
-    response = { error: 'Failed to fetch events' };
+    hasError = true;
   }
 
-  const hasEvents = response.data?.data && response.data.data.length > 0;
-  const hasError = !!response.error;
+  const hasEvents = events.length > 0;
+  const hasFeatured = featuredCollections.length > 0;
 
   return (
     <>
@@ -90,7 +134,7 @@ export default async function Homepage() {
         </Container>
       </Section>
 
-      {/* Events section */}
+      {/* Error section */}
       {hasError && (
         <Section backgroundColorClass="bg-red-50 dark:bg-red-950" padding="py-8" container>
           <Heading as="h2" padding="pb-6">
@@ -99,15 +143,27 @@ export default async function Homepage() {
           <Text>{t('common.errors.tryRefresh')}</Text>
         </Section>
       )}
+
+      {/* Featured collections — shown at the top */}
+      {hasFeatured &&
+        featuredCollections.map(collection => (
+          <FeaturedCollectionSection
+            key={collection.id}
+            collection={collection}
+            events={collection.events}
+          />
+        ))}
+
+      {/* Regular events */}
       {hasEvents && (
         <Section padding="py-8" container>
           <Heading as="h2" padding="pb-6">
             {t('common.events.sectiontitle')}
           </Heading>
-          <EventGrid eventinfos={response.data!.data!} />
+          <EventGrid eventinfos={events} />
         </Section>
       )}
-      {!hasError && !hasEvents && (
+      {!hasError && !hasEvents && !hasFeatured && (
         <Section backgroundColorClass="bg-gray-50 dark:bg-slate-950" padding="py-8" container>
           <Heading as="h2" padding="pb-6">
             {t('common.events.sectiontitle')}

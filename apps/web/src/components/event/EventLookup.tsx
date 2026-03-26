@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Input, Label, Popover } from 'react-aria-components';
 import { useAsyncList } from 'react-stately';
 
@@ -26,6 +26,7 @@ export type EventLookupProps = {
 };
 
 const EventLookup = (props: EventLookupProps) => {
+  const triggerRef = useRef<HTMLDivElement>(null);
   const [selectedLabel, setSelectedLabel] = useState<string | null>(null);
   const list = useAsyncList<EventDto>({
     async load({ signal, filterText }) {
@@ -83,7 +84,7 @@ const EventLookup = (props: EventLookupProps) => {
       }}
       isLoading={list.isLoading}
     >
-      <SearchField className="flex flex-col gap-1">
+      <SearchField ref={triggerRef} className="flex flex-col gap-1">
         <Label className="text-sm font-medium">Event</Label>
         <Input
           id={props.id}
@@ -92,6 +93,7 @@ const EventLookup = (props: EventLookupProps) => {
         />
       </SearchField>
       <Popover
+        triggerRef={triggerRef}
         isOpen={shouldShowList}
         className="w-[--trigger-width] mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto entering:animate-in entering:fade-in exiting:animate-out exiting:fade-out"
       >

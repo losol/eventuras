@@ -1,6 +1,8 @@
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Text.Json.Serialization;
 using Eventuras.Domain;
+using NodaTime;
 
 namespace Eventuras.WebApi.Controllers.v3.Events.Collections;
 
@@ -20,6 +22,16 @@ public class EventCollectionDto
         Featured = collection.Featured;
         FeaturedImageUrl = collection.FeaturedImageUrl;
         FeaturedImageCaption = collection.FeaturedImageCaption;
+
+        if (collection.Events?.Any() == true)
+        {
+            var eventsWithDates = collection.Events.Where(e => e.DateStart.HasValue).ToList();
+            if (eventsWithDates.Count > 0)
+            {
+                DateStart = eventsWithDates.Min(e => e.DateStart);
+                DateEnd = eventsWithDates.Max(e => e.DateEnd ?? e.DateStart);
+            }
+        }
     }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
@@ -38,6 +50,12 @@ public class EventCollectionDto
     public string FeaturedImageUrl { get; set; }
 
     public string FeaturedImageCaption { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public LocalDate? DateStart { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public LocalDate? DateEnd { get; set; }
 
     public void CopyTo(EventCollection collection)
     {

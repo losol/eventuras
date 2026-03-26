@@ -9,7 +9,7 @@ import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
-import EventCard from '@/components/event/EventCard';
+import { CategoryGroupedEvents } from '@/components/event/CategoryGroupedEvents';
 import { getPublicClient } from '@/lib/eventuras-public-client';
 import { getV3EventcollectionsById, getV3Events } from '@/lib/eventuras-public-sdk';
 type EventInfoProps = {
@@ -47,6 +47,7 @@ const CollectionPage: React.FC<EventInfoProps> = async props => {
     client: publicClient,
     query: {
       CollectionId: collection.id!,
+      Ordering: ['Category', 'DateStart', 'Title'],
     },
   });
   return (
@@ -71,9 +72,7 @@ const CollectionPage: React.FC<EventInfoProps> = async props => {
             <Heading as="h2" padding="pt-6 pb-3">
               {t('common.collections.detailspage.eventstitle')}
             </Heading>
-            {eventsResponse.data.data.map(eventinfo => (
-              <EventCard key={eventinfo.id} eventinfo={eventinfo} />
-            ))}
+            <CategoryGroupedEvents events={eventsResponse.data.data} />
           </Container>
         ) : (
           <Container>
