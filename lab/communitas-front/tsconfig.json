@@ -9,10 +9,9 @@
     }
   },
   "include": [
-    "../../libs/typescript-config/next-env.d.ts",
-    "../../libs/typescript-config/**/*.ts",
-    "../../libs/typescript-config/**/*.tsx",
-    "../../libs/typescript-config/.next/types/**/*.ts",
+    "next-env.d.ts",
+    "src/**/*.ts",
+    "src/**/*.tsx",
     ".next/types/**/*.ts"
   ]
 }
