@@ -51,7 +51,7 @@ public class ApplicationUser : IdentityUser
 
     // Log property and method
     [Obsolete(
-        "Use BusinessEventLog entity for tracking user events. This property will be removed in a future version.")]
+        "Use BusinessEvent entity for tracking user events. This property will be removed in a future version.")]
     [Column(TypeName = "jsonb")]
     public string Log { get; set; } = "[]";
 
@@ -60,7 +60,7 @@ public class ApplicationUser : IdentityUser
 
     public ICollection<OrganizationMember> OrganizationMembership { get; set; } = null!;
 
-    [Obsolete("Use BusinessEventLog entity for tracking user events. This method will be removed in a future version.")]
+    [Obsolete("Use BusinessEvent entity for tracking user events. This method will be removed in a future version.")]
     public void AddLog(string message, string? userId = null, LogLevel level = LogLevel.Information)
     {
         var logEntry = new
