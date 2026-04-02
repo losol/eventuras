@@ -43,35 +43,35 @@
     "@types/debug": "^4.1.13",
     "@xstate/react": "^6.1.0",
     "jose": "6.2.2",
-    "lucide-react": "^0.577.0",
-    "next": "16.2.1",
-    "next-intl": "^4.8.3",
+    "lucide-react": "^1.7.0",
+    "next": "16.2.2",
+    "next-intl": "^4.9.0",
     "openid-client": "^6.8.2",
     "pino": "^10.3.1",
     "react": "^19.2.4",
     "react-aria-components": "^1.16.0",
     "react-dom": "^19.2.4",
-    "react-hook-form": "^7.71.2",
+    "react-hook-form": "^7.72.0",
     "react-stately": "^3.45.0",
     "tailwindcss-react-aria-components": "^2.0.1",
-    "xstate": "^5.28.0"
+    "xstate": "^5.30.0"
   },
   "devDependencies": {
     "@eventuras/eslint-config": "workspace:*",
-    "@next/bundle-analyzer": "16.2.1",
+    "@next/bundle-analyzer": "16.2.2",
     "@types/node": "25.5.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "@typescript-eslint/eslint-plugin": "^8.57.1",
-    "@typescript-eslint/parser": "^8.57.1",
+    "@typescript-eslint/eslint-plugin": "^8.58.0",
+    "@typescript-eslint/parser": "^8.58.0",
     "autoprefixer": "^10.4.27",
     "postcss": "^8.5.8",
     "prettier": "^3.8.1",
     "tailwindcss": "^4.2.2",
-    "typescript": "5.9.3"
+    "typescript": "6.0.2"
   },
   "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "4.59.1"
+    "@rollup/rollup-linux-x64-gnu": "4.60.1"
   },
   "engines": {
     "node": ">=22.0.0 <25.0.0",

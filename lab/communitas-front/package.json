@@ -10,8 +10,8 @@
     "start": "next start"
   },
   "dependencies": {
-    "next": "16.2.1",
-    "playwright": "^1.58.2",
+    "next": "16.2.2",
+    "playwright": "^1.59.1",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
   },
@@ -25,9 +25,9 @@
     "@types/react-dom": "^19.2.3",
     "commander": "^14.0.3",
     "eslint": "^10.1.0",
-    "eslint-config-next": "16.2.1",
+    "eslint-config-next": "16.2.2",
     "tailwindcss": "^4.2.2",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.2"
   }
 }

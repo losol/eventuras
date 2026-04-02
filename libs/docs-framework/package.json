@@ -22,11 +22,11 @@
   },
   "dependencies": {
     "@eventuras/lustro-search": "workspace:*",
-    "@oclif/core": "^4.10.2",
+    "@oclif/core": "^4.10.3",
     "fast-glob": "^3.3.3"
   },
   "devDependencies": {
     "@eventuras/typescript-config": "workspace:*",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.2"
   }
 }
