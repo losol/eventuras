@@ -7,10 +7,10 @@ jobs:
     name: Publish Homey App
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
       - name: Publish Homey App
-        uses: athombv/github-action-homey-app-publish@master
+        uses: athombv/github-action-homey-app-publish@0642b483f1eb66fbceb0c91b73df35d45fd2f3db # master
         id: publish
         with:
           personal_access_token: ${{ secrets.HOMEY_PAT }}
