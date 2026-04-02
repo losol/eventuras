@@ -27,11 +27,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<OrganizationHostname> OrganizationHostnames { get; set; }
     public DbSet<Certificate> Certificates { get; set; }
 
-#pragma warning disable CS0618 // Type or member is obsolete
-    [Obsolete("MessageLog is obsolete. Use NotificationLog instead. This DbSet will be removed in v3.")]
-    public DbSet<MessageLog> MessageLogs { get; set; }
-#pragma warning restore CS0618 // Type or member is obsolete
-
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<NotificationRecipient> NotificationRecipients { get; set; }
     public DbSet<EmailNotification> EmailNotifications { get; set; }

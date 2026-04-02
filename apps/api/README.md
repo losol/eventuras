@@ -121,6 +121,14 @@ Rollback to a specific migration:
 dotnet ef database update PreviousMigrationName
 ```
 
+Generate idempotent SQL script (for manual or CI/CD deployments):
+```bash
+cd src/Eventuras.Infrastructure
+dotnet ef migrations script --idempotent \
+  -o sqlscript/database-migrations.sql \
+  --startup-project ../Eventuras.WebApi
+```
+
 ### API Documentation
 
 Once the application is running, you can explore the API documentation at:
