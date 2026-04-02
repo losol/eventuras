@@ -26,10 +26,10 @@
     "openapi:update": "cp ../../apps/api/docs/eventuras-v3.json ./eventuras-v3.json"
   },
   "dependencies": {
-    "@hey-api/openapi-ts": "0.94.4"
+    "@hey-api/openapi-ts": "0.95.0"
   },
   "devDependencies": {
     "@eventuras/typescript-config": "workspace:*",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.2"
   }
 }

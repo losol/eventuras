@@ -5,7 +5,6 @@ import pluginReactHooks from 'eslint-plugin-react-hooks';
 import globals from 'globals';
 import pluginNext from '@next/eslint-plugin-next';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
-import importPlugin from 'eslint-plugin-import';
 import { config as baseConfig } from './base.js';
 import { builtinModules } from 'module';
 
@@ -40,7 +39,6 @@ export const nextJsConfig = [
     plugins: {
       'react-hooks': pluginReactHooks,
       'simple-import-sort': simpleImportSort,
-      import: importPlugin,
     },
     rules: {
       ...pluginReactHooks.configs.recommended.rules,
