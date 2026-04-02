@@ -35,7 +35,7 @@ RUN corepack enable && corepack prepare pnpm@10.28.2 --activate && \
     pnpm deploy --filter=@eventuras/idem-idp --prod --legacy /srv/deploy
 
 # ---- 2) RUNTIME ----
-FROM node:22-alpine AS runtime
+FROM node:24-alpine AS runtime
 WORKDIR /srv
 
 # Build args propagated as labels/env
