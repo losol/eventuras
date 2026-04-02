@@ -1,3 +1,5 @@
+import { getTranslations } from 'next-intl/server';
+
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Grid } from '@eventuras/ratio-ui/layout/Grid';
 
@@ -22,7 +24,7 @@ function groupByCategory(events: EventDto[]): Map<string, EventDto[]> {
   return groups;
 }
 
-export const CategoryGroupedEvents: React.FC<CategoryGroupedEventsProps> = ({ events }) => {
+export const CategoryGroupedEvents = async ({ events }: CategoryGroupedEventsProps) => {
   const groups = groupByCategory(events);
   const hasCategories = groups.size > 1 || (groups.size === 1 && !groups.has(''));
 
@@ -36,15 +38,15 @@ export const CategoryGroupedEvents: React.FC<CategoryGroupedEventsProps> = ({ ev
     );
   }
 
+  const t = await getTranslations();
+
   return (
     <div className="space-y-8">
       {Array.from(groups.entries()).map(([category, categoryEvents]) => (
         <div key={category || '__uncategorized'}>
-          {category && (
-            <Heading as="h3" padding="pb-3">
-              {category}
-            </Heading>
-          )}
+          <Heading as="h3" padding="pb-3">
+            {category || t('common.events.otherCategory')}
+          </Heading>
           <Grid>
             {categoryEvents.map(eventinfo => (
               <EventCard key={eventinfo.id} eventinfo={eventinfo} />
