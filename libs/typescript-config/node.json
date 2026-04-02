@@ -4,7 +4,6 @@
   "extends": "./base.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "baseUrl": ".",
     "noEmit": false,
     "lib": [
       "ES2022"
