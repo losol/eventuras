@@ -115,7 +115,7 @@ importers:
         version: 17.3.1
       fastify:
         specifier: ^5.8.2
-        version: 5.8.2
+        version: 5.8.3
       fastify-plugin:
         specifier: ^5.1.0
         version: 5.1.0
@@ -528,7 +528,7 @@ importers:
         version: 0.45.1(@libsql/client@0.14.0)(@opentelemetry/api@1.9.0)(@types/pg@8.15.6)(gel@2.2.0)(pg@8.16.3)(postgres@3.4.8)
       fastify:
         specifier: ^5.8.2
-        version: 5.8.2
+        version: 5.8.3
       i18next:
         specifier: ^25.10.2
         version: 25.10.2(typescript@5.9.3)
@@ -9567,8 +9567,8 @@ packages:
     resolution: {integrity: sha512-TxFM9+MUUM2Ub6chZbP5sPNUFaPWA86kHU0VRd4o9OP6PBP92cj9c4/IEsnLoVHcLgrgXf2GUXWUzkJAO9iKFQ==}
     engines: {node: '>=20.0.0'}
 
-  fastify@5.8.2:
-    resolution: {integrity: sha512-lZmt3navvZG915IE+f7/TIVamxIwmBd+OMB+O9WBzcpIwOo6F0LTh0sluoMFk5VkrKTvvrwIaoJPkir4Z+jtAg==}
+  fastify@5.8.3:
+    resolution: {integrity: sha512-XJXpRQ41+rsJ/GLeP9vyDC+fBXilcTlEXokMSexkdEkla4uf7ZQNaI5xl3el+kW5TZQulqYxLr659ey/KX7XmQ==}
 
   fastparallel@2.4.1:
     resolution: {integrity: sha512-qUmhxPgNHmvRjZKBFUNI0oZuuH9OlSIOXmJ98lhKPxMZZ7zS/Fi0wRHOihDSz0R1YiIOjxzOY4bq65YTcdBi2Q==}
@@ -23666,7 +23666,7 @@ snapshots:
 
   fastify-tsconfig@3.0.0: {}
 
-  fastify@5.8.2:
+  fastify@5.8.3:
     dependencies:
       '@fastify/ajv-compiler': 4.0.5
       '@fastify/error': 4.2.0
