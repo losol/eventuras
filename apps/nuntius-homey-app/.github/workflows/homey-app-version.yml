@@ -25,10 +25,10 @@ jobs:
     name: Update Homey App Version
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
       - name: Update Homey App Version
-        uses: athombv/github-action-homey-app-version@master
+        uses: athombv/github-action-homey-app-version@3342f092b437550e78074797b52fac6467a456e1 # master
         id: update_app_version
         with:
           version: ${{ inputs.version }}
