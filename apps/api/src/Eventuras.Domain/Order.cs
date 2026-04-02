@@ -108,7 +108,7 @@ public class Order
 
     // Log is information from the system. Ie registration time and user.
     [Obsolete(
-        "Use BusinessEventLog entity for tracking order events. This property will be removed in a future version.")]
+        "Use BusinessEvent entity for tracking order events. This property will be removed in a future version.")]
     public string Log { get; set; }
 
     // Navigational properties
@@ -125,7 +125,7 @@ public class Order
         OrderLines.Sum(l => l.LineTotal);
 
     [Obsolete(
-        "Use BusinessEventLog entity for tracking order events. This method will be removed in a future version.")]
+        "Use BusinessEvent entity for tracking order events. This method will be removed in a future version.")]
     public void AddLog(string text = null)
     {
 #pragma warning disable CS0618 // Type or member is obsolete
