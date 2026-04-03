@@ -47,7 +47,7 @@ public class NotificationRecipient
     /// <summary>
     ///     Optional reference to the recipient application user.
     /// </summary>
-    public string RecipientUserId { get; set; }
+    public Guid? RecipientUserId { get; set; }
 
     /// <summary>
     ///     Optional event registration reference.

@@ -113,7 +113,7 @@ public class EventInfo
 
 
     public bool Archived { get; set; }
-    public string OrganizerUserId { get; set; }
+    public Guid? OrganizerUserId { get; set; }
     public bool HasFeaturedImage => !string.IsNullOrWhiteSpace(FeaturedImageUrl);
     public bool HasExternalInfoPage => !string.IsNullOrWhiteSpace(ExternalInfoPageUrl);
     public bool HasExternalRegistrationPage => !string.IsNullOrWhiteSpace(ExternalRegistrationsUrl);

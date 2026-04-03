@@ -1,3 +1,4 @@
+using System;
 using Eventuras.Domain;
 using NodaTime;
 
@@ -70,7 +71,7 @@ public class EventDto
     public string CertificateTitle { get; set; }
     public string CertificateDescription { get; set; }
     public string ProjectCode { get; set; }
-    public string OrganizerUserId { get; set; }
+    public Guid? OrganizerUserId { get; set; }
     public int? MaxParticipants { get; set; }
     public string ExternalInfoPageUrl { get; set; }
 }

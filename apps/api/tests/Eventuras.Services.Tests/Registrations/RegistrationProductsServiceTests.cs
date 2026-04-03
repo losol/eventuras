@@ -715,7 +715,7 @@ public class RegistrationProductsServiceTests : IDisposable
             new RegistrationRetrievalOptions { LoadOrders = true, LoadProducts = true }, CancellationToken.None);
 
     private Registration CreateRegistration() =>
-        new() { EventInfoId = 1, UserId = "user1", Status = Registration.RegistrationStatus.Draft };
+        new() { EventInfoId = 1, UserId = Guid.NewGuid(), Status = Registration.RegistrationStatus.Draft };
 
     private Order CreateOrder(Registration registration) =>
         new() { Registration = registration, UserId = registration.UserId, OrderLines = new List<OrderLine>() };

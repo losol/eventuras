@@ -40,7 +40,7 @@ public static class JsonElementExtensions
 
     public static void CheckUser(this JsonElement token, ApplicationUser user)
     {
-        Assert.Equal(user.Id, token.GetValue<string>("id"));
+        Assert.Equal(user.Id.ToString(), token.GetValue<string>("id"));
         Assert.Equal(user.Name, token.GetValue<string>("name"));
         Assert.Equal(user.Email, token.GetValue<string>("email"));
         Assert.Equal(user.PhoneNumber, token.GetValue<string>("phoneNumber"));
@@ -52,7 +52,7 @@ public static class JsonElementExtensions
     {
         Assert.Equal(registration.RegistrationId, token.GetValue<int>("registrationId"));
         Assert.Equal(registration.EventInfoId, token.GetValue<int>("eventId"));
-        Assert.Equal(registration.UserId, token.GetValue<string>("userId"));
+        Assert.Equal(registration.UserId.ToString(), token.GetValue<string>("userId"));
         Assert.Equal(registration.Status.ToString(), token.GetValue<string>("status"));
         Assert.Equal(registration.Type.ToString(), token.GetValue<string>("type"));
         Assert.Equal(registration.Notes, token.GetValue<string>("notes"));
@@ -135,7 +135,7 @@ public static class JsonElementExtensions
         Assert.NotNull(statusStr);
         Assert.Equal(order.Status, Enum.Parse<Order.OrderStatus>(statusStr));
         Assert.Equal(order.OrderTime.ToDateTimeUtc(), token.ReadAsDateTimeOffset("time"));
-        Assert.Equal(order.UserId, token.GetValue<string>("userId"));
+        Assert.Equal(order.UserId.ToString(), token.GetValue<string>("userId"));
         Assert.Equal(order.RegistrationId, token.GetValue<int>("registrationId"));
 
         var userToken = token.GetValue<JsonElement>("user");
@@ -179,7 +179,7 @@ public static class JsonElementExtensions
     {
         Assert.Equal(registration.RegistrationId, token.GetValue<int>("registrationId"));
         Assert.Equal(registration.EventInfoId, token.GetValue<int>("eventId"));
-        Assert.Equal(registration.UserId, token.GetValue<string>("userId"));
+        Assert.Equal(registration.UserId.ToString(), token.GetValue<string>("userId"));
         Assert.Equal(registration.Status.ToString(), token.GetValue<string>("status"));
         Assert.Equal(registration.Type.ToString(), token.GetValue<string>("type"));
         Assert.Equal(registration.Notes, token.GetValue<string>("notes"));
@@ -283,7 +283,7 @@ public static class JsonElementExtensions
         Assert.NotEqual(JsonValueKind.Null, token.ValueKind);
         Assert.Equal(recipient.RecipientId, token.GetValue<int>("recipientId"));
         Assert.Equal(recipient.NotificationId, token.GetValue<int>("notificationId"));
-        Assert.Equal(recipient.RecipientUserId, token.GetValue<string>("recipientUserId"));
+        Assert.Equal(recipient.RecipientUserId?.ToString(), token.GetValue<string>("recipientUserId"));
         Assert.Equal(recipient.RegistrationId, token.GetValue<int?>("registrationId"));
         Assert.Equal(recipient.RecipientName, token.GetValue<string>("recipientName"));
         Assert.Equal(recipient.RecipientIdentifier, token.GetValue<string>("recipientIdentifier"));

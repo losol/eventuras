@@ -13,7 +13,7 @@ namespace Eventuras.WebApi.Controllers.v3.Orders;
 public class OrderDto
 {
     [Obsolete("For JSON deserialization only, do not use manually", true)]
-    public OrderDto() => UserId = null!;
+    public OrderDto() { }
 
     public OrderDto(Order order)
     {
@@ -47,7 +47,7 @@ public class OrderDto
 
     public DateTimeOffset Time { get; set; }
 
-    public string UserId { get; set; }
+    public Guid UserId { get; set; }
 
     public int RegistrationId { get; set; }
     public PaymentProvider? PaymentMethod { get; set; }

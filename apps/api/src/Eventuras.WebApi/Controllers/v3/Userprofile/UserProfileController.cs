@@ -11,7 +11,6 @@ using Eventuras.WebApi.Controllers.v3.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -24,7 +23,6 @@ namespace Eventuras.WebApi.Controllers.v3.Userprofile;
 public class UserProfileController : Controller
 {
     private readonly AuthSettings _authSettings;
-    private readonly IMemoryCache _cache;
     private readonly ILogger<UserProfileController> _logger;
     private readonly IUserManagementService _userManagementService;
     private readonly IUserRetrievalService _userRetrievalService;
@@ -32,14 +30,12 @@ public class UserProfileController : Controller
     public UserProfileController(
         IUserRetrievalService userRetrievalService,
         IUserManagementService userManagementService,
-        IMemoryCache cache,
         ILogger<UserProfileController> logger,
         IOptions<AuthSettings> authSettingsOptions)
     {
         _userRetrievalService = userRetrievalService ?? throw new ArgumentNullException(nameof(userRetrievalService));
         _userManagementService =
             userManagementService ?? throw new ArgumentNullException(nameof(userManagementService));
-        _cache = cache ?? throw new ArgumentNullException(nameof(cache));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _authSettings = authSettingsOptions.Value;
     }
@@ -87,8 +83,6 @@ public class UserProfileController : Controller
                 phoneClaim,
                 cancellationToken);
 
-            // Invalidate user cache for this email to ensure new identity is added
-            _cache.Remove(DbUserClaimTransformation.GetMemoryCacheKey(emailClaim));
         }
 
         return new UserDto(user);
@@ -105,12 +99,12 @@ public class UserProfileController : Controller
         }
 
         var userId = HttpContext.User.GetUserId();
-        if (string.IsNullOrEmpty(userId))
+        if (userId is null)
         {
             throw new NotAccessibleException("User ID not found in authentication context.");
         }
 
-        var user = await _userRetrievalService.GetUserByIdAsync(userId, null, cancellationToken);
+        var user = await _userRetrievalService.GetUserByIdAsync(userId.Value, null, cancellationToken);
         dto.CopyTo(user);
 
         await _userManagementService.UpdateUserAsync(user, cancellationToken);

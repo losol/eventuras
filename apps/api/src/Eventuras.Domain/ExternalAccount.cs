@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -19,7 +20,7 @@ public class ExternalAccount
 
     public int? RegistrationId { get; set; }
 
-    public string UserId { get; set; }
+    public Guid UserId { get; set; }
 
     [ForeignKey(nameof(RegistrationId))] public Registration Registration { get; set; }
 

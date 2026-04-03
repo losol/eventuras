@@ -52,9 +52,9 @@ internal static class RegistrationsQueryableExtensions
                           filter.ProductIds.Contains(l.ProductId.Value))));
         }
 
-        if (!string.IsNullOrEmpty(filter.UserId))
+        if (filter.UserId.HasValue)
         {
-            query = query.Where(r => r.UserId == filter.UserId);
+            query = query.Where(r => r.UserId == filter.UserId.Value);
         }
 
         if (filter.HavingStatuses.Any())

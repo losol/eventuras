@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Asp.Versioning;
 using Eventuras.Domain;
 using Eventuras.Services.Auth;
+using Eventuras.Services.Exceptions;
 using Eventuras.Services.Registrations;
 using Eventuras.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -146,7 +147,7 @@ public class RegistrationsController : ControllerBase
         [FromBody] NewRegistrationDto dto,
         CancellationToken cancellationToken)
     {
-        var registration = await _registrationManagementService.CreateRegistrationAsync(dto.EventId, dto.UserId,
+        var registration = await _registrationManagementService.CreateRegistrationAsync(dto.EventId, dto.UserId!.Value,
             new RegistrationOptions
             {
                 CreateOrder = dto.CreateOrder,
@@ -178,7 +179,7 @@ public class RegistrationsController : ControllerBase
         }
 
 
-        var registration = await _registrationManagementService.CreateRegistrationAsync(eventId, User.GetUserId(),
+        var registration = await _registrationManagementService.CreateRegistrationAsync(eventId, User.GetUserId() ?? throw new NotAccessibleException("User ID not found."),
             new RegistrationOptions { CreateOrder = createOrder });
 
         return new RegistrationDto(registration);

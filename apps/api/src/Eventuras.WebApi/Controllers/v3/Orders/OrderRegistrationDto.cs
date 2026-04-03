@@ -23,7 +23,7 @@ public class OrderRegistrationDto
 
     public int RegistrationId { get; set; }
     public int EventId { get; set; }
-    public string? UserId { get; set; }
+    public Guid? UserId { get; set; }
     public Registration.RegistrationStatus Status { get; set; }
     public Registration.RegistrationType Type { get; set; }
     public int? CertificateId { get; set; }

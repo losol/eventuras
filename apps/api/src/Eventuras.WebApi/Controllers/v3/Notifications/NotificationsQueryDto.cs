@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using Eventuras.Domain;
 using Eventuras.Services.Notifications;
@@ -15,7 +16,7 @@ public class NotificationsQueryDto : PageQueryDto
 
     public NotificationType? Type { get; set; }
 
-    public string RecipientUserId { get; set; }
+    public Guid? RecipientUserId { get; set; }
 
     public NotificationListOrder Order { get; set; } = NotificationListOrder.Created;
 

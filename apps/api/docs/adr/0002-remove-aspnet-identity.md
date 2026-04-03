@@ -2,7 +2,7 @@
 
 ## Status
 
-Draft
+Accepted
 
 ## Context
 
@@ -85,22 +85,53 @@ Remove the ASP.NET Identity dependency. Replace with direct EF Core user managem
 - Need to handle existing `AspNetUserRoles` data during migration
 - `UserManager` convenience methods must be replaced (minor)
 
-## Migration strategy
+## Upgrade guide
 
-1. Add `Uuid` and `IdpSubjectId` to `ApplicationUser` (keep `IdentityUser` inheritance temporarily)
-2. Configure Idp groups for Admin/SuperAdmin/SystemAdmin roles
-3. Rewrite claims transformation to read global roles from JWT
-4. Replace `UserManager`/`RoleManager` usages with direct EF queries
-5. Remove `IdentityUser` inheritance, switch to plain `DbContext`
-6. Archive unused Identity tables
-7. Remove Identity NuGet packages
+### Prerequisites (must be done BEFORE deploying this migration)
+
+1. **Verify IdP role assignments** — All admin users MUST have their global roles (`Admin`, `SystemAdmin`) assigned as groups/roles in Authentik. After this migration, the application trusts JWT claims exclusively for global roles. Run this query against prod to find current role assignments:
+
+   ```sql
+   SELECT u."Email", r."Name" as "Role"
+   FROM "AspNetUserRoles" ur
+   JOIN "AspNetUsers" u ON ur."UserId" = u."Id"
+   JOIN "AspNetRoles" r ON ur."RoleId" = r."Id"
+   ORDER BY u."Email";
+   ```
+
+   Every row returned must have a corresponding group membership in Authentik.
+
+2. **Take a database backup** — `pg_dump` the full database before running the migration.
+
+### What the migration does
+
+The `RemoveAspNetIdentity` migration performs these changes:
+
+| Action | Details |
+| --- | --- |
+| **Drops 6 Identity tables** | `AspNetRoles`, `AspNetUserRoles`, `AspNetRoleClaims`, `AspNetUserClaims`, `AspNetUserLogins`, `AspNetUserTokens` |
+| **Drops 7 unused columns** from Users | `PasswordHash`, `SecurityStamp`, `ConcurrencyStamp`, `LockoutEnd`, `LockoutEnabled`, `AccessFailedCount`, `TwoFactorEnabled` |
+| **Renames table** | `AspNetUsers` → `Users` |
+| **Converts all user IDs** | `text` → `uuid` (PK + all FKs) |
+| **Makes Email NOT NULL** | `Email` and `NormalizedEmail` are now required |
+| **Cleans orphaned rows** | Deletes rows with NULL `UserId` in `Registrations`, `OrganizationMembers`, `Orders`, `ExternalAccounts` |
+
+### Breaking changes
+
+- **API user IDs** are now `uuid` type in JSON responses (previously `string`). The format is identical (`"550e8400-e29b-41d4-a716-446655440000"`), but clients using strict type checking may need updates.
+- **Global roles are no longer stored in the database.** They must come from the IdP JWT token.
+- The `SuperAdmin` role still exists in code but should be phased out in favor of `SystemAdmin`.
+
+### Rollback
+
+The migration has a `Down` method that recreates all dropped tables and reverts column types. However, **role assignment data will be lost** — the `Down` method recreates empty `AspNetRoles` and `AspNetUserRoles` tables.
 
 ---
 
 ## Appendix A: Current Identity coupling
 
 | Component | Identity dependency | Replacement |
-|---|---|---|
+| --- | --- | --- |
 | `ApplicationUser : IdentityUser` | Base class | Standalone entity with own fields |
 | `ApplicationDbContext : IdentityDbContext` | Base class | Plain `DbContext` |
 | `UserManager.FindByEmailAsync` | Service | `dbContext.Users.FirstOrDefaultAsync(u => u.Email == email)` |

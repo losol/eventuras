@@ -25,7 +25,7 @@ public class RegistrationAccessControlServiceTests
     public async Task CheckRegistrationUpdateAccessAsync_DefaultEventInfoOptions_PassesForOwner()
     {
         // Arrange
-        var userId = Guid.NewGuid().ToString();
+        var userId = Guid.NewGuid();
         var user = GetUser(userId);
         HttpContextAccessor.HttpContext = new DefaultHttpContext { User = user };
 
@@ -55,10 +55,10 @@ public class RegistrationAccessControlServiceTests
     public async Task CheckRegistrationUpdateAccessAsync_DefaultEventInfoOptions_ThrowsForNonOwner()
     {
         // Arrange
-        var userId = Guid.NewGuid().ToString();
+        var userId = Guid.NewGuid();
         var user = GetUser(userId);
         HttpContextAccessor.HttpContext = new DefaultHttpContext { User = user };
-        var otherUserId = Guid.NewGuid().ToString();
+        var otherUserId = Guid.NewGuid();
 
         var ei = new EventInfo();
         var reg = new Registration { UserId = otherUserId, EventInfoId = ei.EventInfoId, EventInfo = ei };
@@ -83,10 +83,10 @@ public class RegistrationAccessControlServiceTests
     public async Task CheckRegistrationUpdateAccessAsync_DefaultEventInfoOptions_PassesForAdmin()
     {
         // Arrange
-        var userId = Guid.NewGuid().ToString();
+        var userId = Guid.NewGuid();
         var user = GetUser(userId, Roles.SuperAdmin);
         HttpContextAccessor.HttpContext = new DefaultHttpContext { User = user };
-        var otherUserId = Guid.NewGuid().ToString();
+        var otherUserId = Guid.NewGuid();
 
         var ei = new EventInfo();
         var reg = new Registration { UserId = otherUserId, EventInfoId = ei.EventInfoId, EventInfo = ei };
@@ -110,7 +110,7 @@ public class RegistrationAccessControlServiceTests
     public async Task CheckRegistrationUpdateAccessAsync_WithAllowedRegistrationEditHours_PassesBeforeDue()
     {
         // Arrange
-        var userId = Guid.NewGuid().ToString();
+        var userId = Guid.NewGuid();
         var user = GetUser(userId);
         HttpContextAccessor.HttpContext = new DefaultHttpContext { User = user };
 
@@ -141,7 +141,7 @@ public class RegistrationAccessControlServiceTests
     public async Task CheckRegistrationUpdateAccessAsync_WithAllowedRegistrationEditHours_ThrowsAfterDue()
     {
         // Arrange
-        var userId = Guid.NewGuid().ToString();
+        var userId = Guid.NewGuid();
         var user = GetUser(userId);
         HttpContextAccessor.HttpContext = new DefaultHttpContext { User = user };
 
@@ -181,7 +181,7 @@ public class RegistrationAccessControlServiceTests
     public async Task Allow_RegistrationUpdate_Before_Last_reg_date()
     {
         // Arrange
-        var userId = Guid.NewGuid().ToString();
+        var userId = Guid.NewGuid();
         var user = GetUser(userId);
         HttpContextAccessor.HttpContext = new DefaultHttpContext { User = user };
 
@@ -216,7 +216,7 @@ public class RegistrationAccessControlServiceTests
     public async Task Deny_RegistrationUpdate_After_Last_reg_date()
     {
         // Arrange
-        var userId = Guid.NewGuid().ToString();
+        var userId = Guid.NewGuid();
         var user = GetUser(userId);
         HttpContextAccessor.HttpContext = new DefaultHttpContext { User = user };
 
@@ -248,7 +248,7 @@ public class RegistrationAccessControlServiceTests
     public async Task Deny_RegistrationUpdate_After_Last_cancellation_date()
     {
         // Arrange
-        var userId = Guid.NewGuid().ToString();
+        var userId = Guid.NewGuid();
         var user = GetUser(userId);
         HttpContextAccessor.HttpContext = new DefaultHttpContext { User = user };
 
@@ -286,7 +286,7 @@ public class RegistrationAccessControlServiceTests
     public async Task CheckRegistrationUpdateAccessAsync_WithLastCancellationDateLimit_ThrowsAfterDue()
     {
         // Arrange
-        var userId = Guid.NewGuid().ToString();
+        var userId = Guid.NewGuid();
         var user = GetUser(userId);
         HttpContextAccessor.HttpContext = new DefaultHttpContext { User = user };
 
@@ -327,7 +327,7 @@ public class RegistrationAccessControlServiceTests
     public async Task CheckRegistrationUpdateAccessAsync_WithoutLastCancellationDateLimit_PassesBeforeDue()
     {
         // Arrange
-        var userId = Guid.NewGuid().ToString();
+        var userId = Guid.NewGuid();
         var user = GetUser(userId);
         HttpContextAccessor.HttpContext = new DefaultHttpContext { User = user };
 
@@ -364,7 +364,7 @@ public class RegistrationAccessControlServiceTests
     public async Task CheckRegistrationUpdateAccessAsync_WithoutLastCancellationDateLimit_PassesAfterDue()
     {
         // Arrange
-        var userId = Guid.NewGuid().ToString();
+        var userId = Guid.NewGuid();
         var user = GetUser(userId);
         HttpContextAccessor.HttpContext = new DefaultHttpContext { User = user };
 

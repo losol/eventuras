@@ -13,7 +13,7 @@ public class RegistrationFilter
 
     public int[] ProductIds { get; set; } = Array.Empty<int>();
 
-    public string? UserId { get; set; }
+    public Guid? UserId { get; set; }
 
     public bool VerifiedOnly { get; set; }
 

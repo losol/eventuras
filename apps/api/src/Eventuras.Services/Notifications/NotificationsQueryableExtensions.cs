@@ -30,15 +30,15 @@ internal static class NotificationsQueryableExtensions
             query = query.Where(n => filter.Types.Contains(n.Type));
         }
 
-        if (filter.SenderUserId != null)
+        if (filter.SenderUserId.HasValue)
         {
-            query = query.Where(n => n.CreatedByUserId == filter.SenderUserId);
+            query = query.Where(n => n.CreatedByUserId == filter.SenderUserId.Value);
         }
 
-        if (filter.RecipientUserId != null)
+        if (filter.RecipientUserId.HasValue)
         {
             query = query.Where(n => n.Recipients
-                .Any(r => r.RecipientUserId == filter.RecipientUserId));
+                .Any(r => r.RecipientUserId == filter.RecipientUserId.Value));
         }
 
         return query;

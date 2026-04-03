@@ -1,11 +1,9 @@
 using System;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Eventuras.Services.Exceptions;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -16,16 +14,13 @@ public class UserManagementService : IUserManagementService
     private readonly ApplicationDbContext _context;
     private readonly ILogger<UserManagementService> _logger;
     private readonly IUserAccessControlService _userAccessControlService;
-    private readonly UserManager<ApplicationUser> _userManager;
 
     public UserManagementService(
         ApplicationDbContext context,
         ILogger<UserManagementService> logger,
-        UserManager<ApplicationUser> userManager,
         IUserAccessControlService userAccessControlService)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
-        _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
         _userAccessControlService = userAccessControlService ??
                                     throw new ArgumentNullException(nameof(userAccessControlService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -44,11 +39,13 @@ public class UserManagementService : IUserManagementService
             throw new ArgumentException("User should have an email.", nameof(email));
         }
 
-        var finduser = await _userManager.FindByEmailAsync(email);
+        var normalizedEmail = email.ToUpperInvariant();
+        var existingUser = await _context.Users
+            .FirstOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail, cancellationToken);
 
-        if (finduser != null)
+        if (existingUser != null)
         {
-            if (finduser.Archived)
+            if (existingUser.Archived)
             {
                 _logger.LogWarning("Found archived user with email {email}. Contact admin to unarchive the user.",
                     email);
@@ -56,31 +53,23 @@ public class UserManagementService : IUserManagementService
                     $"An archived user with email {email} already exists. Contact admin to unarchive the user.");
             }
 
-            _logger.LogWarning("Found archived user with email {email}.", email);
+            _logger.LogWarning("Found existing user with email {email}.", email);
             throw new DuplicateException($"An user with email {email} already exists.");
         }
 
-
-        var user = new ApplicationUser { UserName = email, Email = email, PhoneNumber = phoneNumber };
-
-
-        var create = await _userManager.CreateAsync(user);
-        _logger.LogDebug("CreateNewUserAsync finished.");
-        if (!create.Succeeded)
+        var user = new ApplicationUser
         {
-            var errorMessageBuilder = new StringBuilder();
-            foreach (var error in create.Errors)
-            {
-                errorMessageBuilder.AppendLine($"CODE: {error.Code}. DESCRIPTION: {error.Description}");
-            }
+            UserName = email,
+            NormalizedUserName = normalizedEmail,
+            Email = email,
+            NormalizedEmail = normalizedEmail,
+            PhoneNumber = phoneNumber
+        };
 
-            var errorMessage = errorMessageBuilder.ToString();
-            _logger.LogError("Trouble with creating user with email {email}. Error: {errorMessage}", email,
-                errorMessage);
-            throw new Exception($"Trouble with creating user with email {email}. Error: {errorMessage}");
-        }
+        _context.Users.Add(user);
+        await _context.SaveChangesAsync(cancellationToken);
 
-
+        _logger.LogDebug("CreateNewUserAsync finished.");
         return user;
     }
 
@@ -95,13 +84,16 @@ public class UserManagementService : IUserManagementService
         // Allow users to update their own information, and admins to update any user
         await _userAccessControlService.CheckOwnerOrAdminAccessAsync(user, cancellationToken);
 
-        var normalizedEmail = _userManager.NormalizeEmail(user.Email);
+        var normalizedEmail = user.Email?.ToUpperInvariant();
         if (await _context.Users.AnyAsync(u => !u.Archived && u.NormalizedEmail == normalizedEmail && u.Id != user.Id,
                 cancellationToken))
         {
             _logger.LogWarning("User with email {Email} already exists.", user.Email);
             throw new DuplicateException($"User with email {user.Email} already exists.");
         }
+
+        user.NormalizedEmail = normalizedEmail;
+        user.NormalizedUserName = normalizedEmail;
 
         await _context.UpdateAsync(user, cancellationToken);
     }

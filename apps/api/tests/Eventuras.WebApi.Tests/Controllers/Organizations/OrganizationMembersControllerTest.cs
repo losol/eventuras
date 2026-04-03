@@ -53,7 +53,7 @@ public class OrganizationMembersControllerTest : IClassFixture<CustomWebApiAppli
         using var scope = _factory.Services.NewTestScope();
         using var org = await scope.CreateOrganizationAsync();
         var response =
-            await client.PutAsync($"/v3/organizations/{org.Entity.OrganizationId}/members/any", new { });
+            await client.PutAsync($"/v3/organizations/{org.Entity.OrganizationId}/members/{Guid.NewGuid()}", new { });
         response.CheckNotFound();
     }
 
@@ -145,7 +145,7 @@ public class OrganizationMembersControllerTest : IClassFixture<CustomWebApiAppli
         using var scope = _factory.Services.NewTestScope();
         using var org = await scope.CreateOrganizationAsync();
         var response =
-            await client.DeleteAsync($"/v3/organizations/{org.Entity.OrganizationId}/members/any");
+            await client.DeleteAsync($"/v3/organizations/{org.Entity.OrganizationId}/members/{Guid.NewGuid()}");
         response.CheckNotFound();
     }
 

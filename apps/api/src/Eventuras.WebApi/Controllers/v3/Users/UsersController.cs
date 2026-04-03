@@ -11,7 +11,6 @@ using Eventuras.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -24,7 +23,6 @@ namespace Eventuras.WebApi.Controllers.v3.Users;
 public class UsersController : Controller
 {
     private readonly AuthSettings _authSettings;
-    private readonly IMemoryCache _cache;
     private readonly ILogger<UsersController> _logger;
     private readonly IUserManagementService _userManagementService;
     private readonly IUserRetrievalService _userRetrievalService;
@@ -32,14 +30,12 @@ public class UsersController : Controller
     public UsersController(
         IUserRetrievalService userRetrievalService,
         IUserManagementService userManagementService,
-        IMemoryCache cache,
         ILogger<UsersController> logger,
         IOptions<AuthSettings> authSettingsOptions)
     {
         _userRetrievalService = userRetrievalService ?? throw new ArgumentNullException(nameof(userRetrievalService));
         _userManagementService =
             userManagementService ?? throw new ArgumentNullException(nameof(userManagementService));
-        _cache = cache ?? throw new ArgumentNullException(nameof(cache));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _authSettings = authSettingsOptions.Value;
     }
@@ -88,8 +84,6 @@ public class UsersController : Controller
                 phoneClaim,
                 cancellationToken);
 
-            // Invalidate user cache for this email to ensure new identity is added
-            _cache.Remove(DbUserClaimTransformation.GetMemoryCacheKey(emailClaim));
         }
 
         return new UserDto(user);
@@ -97,7 +91,7 @@ public class UsersController : Controller
 
     // GET: /v3/users/{id}
     [HttpGet("{id}")]
-    public async Task<UserDto> Get(string id, CancellationToken cancellationToken)
+    public async Task<UserDto> Get(Guid id, CancellationToken cancellationToken)
     {
         var principal = HttpContext.User;
         if (!principal.IsAdmin() && id != principal.GetUserId())
@@ -195,7 +189,7 @@ public class UsersController : Controller
     // PUT /v3/users/{id}
     [HttpPut("{id}")]
     [Authorize(Policy = Constants.Auth.AdministratorRole)]
-    public async Task<UserDto> UpdateUser(string id, [FromBody] UserFormDto dto,
+    public async Task<UserDto> UpdateUser(Guid id, [FromBody] UserFormDto dto,
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)

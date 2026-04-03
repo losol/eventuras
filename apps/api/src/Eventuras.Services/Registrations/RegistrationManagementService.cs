@@ -49,7 +49,7 @@ internal class RegistrationManagementService : IRegistrationManagementService
 
     public async Task<Registration> CreateRegistrationAsync(
         int eventId,
-        string userId,
+        Guid userId,
         RegistrationOptions? options = null,
         CancellationToken cancellationToken = default)
     {

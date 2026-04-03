@@ -48,7 +48,7 @@ public class EventFormDto : IValidatableObject
     public string FeaturedImageUrl { get; set; }
     public string FeaturedImageCaption { get; set; }
     public string ProjectCode { get; set; }
-    public string OrganizerUserId { get; set; }
+    public Guid? OrganizerUserId { get; set; }
     public EventInfoOptionsDto Options { get; set; } = new(new EventInfoOptionsDto.EventInfoRegistrationPolicyDto());
 
     /// <summary>

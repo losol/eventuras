@@ -28,7 +28,7 @@ public class NotificationRecipientDto
 
     public int NotificationId { get; }
 
-    public string RecipientUserId { get; }
+    public Guid? RecipientUserId { get; }
 
     public int? RegistrationId { get; }
 

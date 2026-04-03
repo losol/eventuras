@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Domain;
@@ -8,7 +9,7 @@ public interface IUserRetrievalService
 {
     /// <exception cref="Exceptions.NotFoundException">User not found.</exception>
     Task<ApplicationUser> GetUserByIdAsync(
-        string userId,
+        Guid userId,
         UserRetrievalOptions options = null,
         CancellationToken cancellationToken = default);
 

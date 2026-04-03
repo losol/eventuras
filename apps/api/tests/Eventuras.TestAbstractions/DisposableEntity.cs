@@ -4,7 +4,6 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Eventuras.Domain;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Eventuras.TestAbstractions;
@@ -118,16 +117,5 @@ public class DisposableEntity<T> : IDisposableEntity<T> where T : class
 
 public class DisposableUser : DisposableEntity<ApplicationUser>
 {
-    private readonly UserManager<ApplicationUser> _userManager;
-
-    public DisposableUser(ApplicationUser entity, UserManager<ApplicationUser> userManager) : base(entity, null!) =>
-        _userManager = userManager;
-
-    public override Task SaveAsync() => Task.CompletedTask;
-
-    public override void Save() { }
-
-    public override Task DeleteAsync() => _userManager.DeleteAsync(Entity);
-
-    public override void Delete() => _userManager.DeleteAsync(Entity).Wait();
+    public DisposableUser(ApplicationUser entity, DbContext context) : base(entity, context) { }
 }

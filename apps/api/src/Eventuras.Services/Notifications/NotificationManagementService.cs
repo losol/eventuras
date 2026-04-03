@@ -76,7 +76,7 @@ internal class NotificationManagementService : INotificationManagementService
         return await _context
             .CreateAsync(new EmailNotification(subject, body)
             {
-                CreatedByUserId = currentUser.GetUserId(),
+                CreatedByUserId = currentUser.GetUserId() ?? throw new NotAccessibleException("Current user ID is required to create a notification."),
                 OrganizationId = org.OrganizationId,
                 Recipients = recipients
                     .Select(NotificationRecipient.Email)
@@ -109,7 +109,7 @@ internal class NotificationManagementService : INotificationManagementService
             return await _context.CreateAsync(
                 new EmailNotification(subject, body)
                 {
-                    CreatedByUserId = currentUser.GetUserId(),
+                    CreatedByUserId = currentUser.GetUserId() ?? throw new NotAccessibleException("Current user ID is required to create a notification."),
                     EventInfoId = registration.EventInfoId,
                     OrganizationId = organization?.OrganizationId,
                     Recipients = new List<NotificationRecipient> { recipient }
@@ -147,7 +147,7 @@ internal class NotificationManagementService : INotificationManagementService
             .CreateAsync(
                 new EmailNotification(subject, body)
                 {
-                    CreatedByUserId = currentUser.GetUserId(),
+                    CreatedByUserId = currentUser.GetUserId() ?? throw new NotAccessibleException("Current user ID is required to create a notification."),
                     OrganizationId = currentOrg?.OrganizationId,
                     EventInfoId = eventId,
                     Recipients = recipients
@@ -166,7 +166,7 @@ internal class NotificationManagementService : INotificationManagementService
         return await _context
             .CreateAsync(new SmsNotification(message)
             {
-                CreatedByUserId = currentUser.GetUserId(),
+                CreatedByUserId = currentUser.GetUserId() ?? throw new NotAccessibleException("Current user ID is required to create a notification."),
                 OrganizationId = currentOrg?.OrganizationId,
                 Recipients = recipients
                     .Select(NotificationRecipient.Sms)
@@ -197,7 +197,7 @@ internal class NotificationManagementService : INotificationManagementService
             .CreateAsync(
                 new SmsNotification(message)
                 {
-                    CreatedByUserId = currentUser.GetUserId(),
+                    CreatedByUserId = currentUser.GetUserId() ?? throw new NotAccessibleException("Current user ID is required to create a notification."),
                     OrganizationId = currentOrg?.OrganizationId,
                     EventInfoId = eventId,
                     Recipients = recipients

@@ -56,9 +56,9 @@ public static class OrdersQueryableExtensions
         this IQueryable<Order> query,
         OrderListFilter filter)
     {
-        if (!string.IsNullOrEmpty(filter.UserId))
+        if (filter.UserId.HasValue)
         {
-            query = query.Where(o => o.UserId == filter.UserId);
+            query = query.Where(o => o.UserId == filter.UserId.Value);
         }
 
         if (filter.RegistrationId.HasValue)

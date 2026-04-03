@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Domain;
@@ -17,7 +18,7 @@ public interface IRegistrationManagementService
     /// <exception cref="Exceptions.DuplicateException">Already registered.</exception>
     Task<Registration> CreateRegistrationAsync(
         int eventId,
-        string userId,
+        Guid userId,
         RegistrationOptions? options = null,
         CancellationToken cancellationToken = default);
 
