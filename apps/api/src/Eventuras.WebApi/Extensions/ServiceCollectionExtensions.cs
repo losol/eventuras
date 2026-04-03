@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Eventuras.Services;
 using Eventuras.Services.Converto;
@@ -15,7 +14,6 @@ using Eventuras.Services.Twilio;
 using Eventuras.WebApi.Auth;
 using Eventuras.WebApi.Config;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
@@ -120,7 +118,6 @@ public static class ServiceCollectionExtensions
 
         // for cert PDF rendering
         services.AddHttpContextAccessor();
-        services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
         services.AddHttpClient();
         services.AddConvertoServices(configuration.GetSection("Converto"));
     }
