@@ -71,7 +71,7 @@ if (!builder.Environment.IsEnvironment("IntegrationTests"))
     builder.Services.ConfigureEf();
 }
 
-builder.Services.ConfigureDbInitializationStrategy(builder.Configuration);
+builder.Services.ConfigureDbInitializationStrategy();
 builder.Services.ConfigureAuthorizationPolicies(builder.Configuration);
 builder.Services.AddEmailServices();
 builder.Services.AddSmsServices();

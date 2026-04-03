@@ -18,7 +18,7 @@ public class DbInitializer : IDbInitializer
         _db = db;
     }
 
-    public virtual async Task SeedAsync(bool createSuperUser, bool runMigrations)
+    public virtual async Task SeedAsync(bool runMigrations)
     {
         if (runMigrations && _db.Database.IsRelational())
         {
