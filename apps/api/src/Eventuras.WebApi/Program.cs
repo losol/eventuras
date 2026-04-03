@@ -107,8 +107,6 @@ apiVersioningBuilder.AddApiExplorer(o =>
 });
 
 
-builder.Services.ConfigureIdentity();
-
 // Register background job queue and workers
 builder.Services.AddSingleton<IBackgroundJobQueue, BackgroundJobQueue>();
 builder.Services.AddHostedService<NotificationBackgroundWorker>();

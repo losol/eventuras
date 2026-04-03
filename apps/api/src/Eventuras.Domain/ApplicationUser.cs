@@ -2,17 +2,37 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using NodaTime;
 
 namespace Eventuras.Domain;
 
-public class ApplicationUser : IdentityUser
+public class ApplicationUser
 {
+    public Guid Id { get; set; } = Guid.CreateVersion7();
+
+    [MaxLength(256)]
+    public string? UserName { get; set; }
+
+    [MaxLength(256)]
+    public string? NormalizedUserName { get; set; }
+
+    [MaxLength(256)]
+    public required string Email { get; set; }
+
+    [MaxLength(256)]
+    public string NormalizedEmail { get; set; } = null!;
+
+    public bool EmailConfirmed { get; set; }
+
+    public string? PhoneNumber { get; set; }
+
+    public bool PhoneNumberConfirmed { get; set; }
+
     public string Name =>
         $"{GivenName} {(string.IsNullOrEmpty(MiddleName) ? "" : MiddleName + " ")}{FamilyName}".Trim();
 

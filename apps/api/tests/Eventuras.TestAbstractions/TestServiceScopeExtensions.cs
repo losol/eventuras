@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Eventuras.Domain;
-using Microsoft.AspNetCore.Identity;
 using NodaTime;
 
 namespace Eventuras.TestAbstractions;
@@ -15,15 +14,12 @@ public static class TestServiceScopeExtensions
         string givenName = TestingConstants.Placeholder,
         string familyName = TestingConstants.Placeholder,
         string email = TestingConstants.Placeholder,
-        string password = TestingConstants.Placeholder,
         string phone = TestingConstants.Placeholder,
         string[] roles = null,
         string role = null,
         Organization organization = null,
         bool archived = false)
     {
-        var userManager = scope.GetService<UserManager<ApplicationUser>>();
-
         if (email == TestingConstants.Placeholder)
         {
             email = $"{Guid.NewGuid()}@email.com";
@@ -39,11 +35,6 @@ public static class TestServiceScopeExtensions
             familyName = "User";
         }
 
-        if (password == TestingConstants.Placeholder)
-        {
-            password = TestingConstants.DefaultPassword;
-        }
-
         if (phone == TestingConstants.Placeholder)
         {
             phone = $"+{DateTimeOffset.Now.ToUnixTimeMilliseconds():####}";
@@ -54,31 +45,30 @@ public static class TestServiceScopeExtensions
             roles = new[] { role };
         }
 
+        var normalizedEmail = email.ToUpperInvariant();
         var user = new ApplicationUser
         {
             GivenName = givenName,
             FamilyName = familyName,
             UserName = email,
+            NormalizedUserName = normalizedEmail,
             Email = email,
+            NormalizedEmail = normalizedEmail,
             EmailConfirmed = true,
             PhoneNumber = phone,
             PhoneNumberConfirmed = !string.IsNullOrEmpty(phone),
             Archived = archived
         };
 
-        await userManager.CreateAsync(user, password);
-
-        if (roles?.Length > 0)
-        {
-            await userManager.AddToRolesAsync(user, roles);
-        }
+        scope.Db.Users.Add(user);
+        await scope.Db.SaveChangesAsync();
 
         if (organization != null)
         {
             await scope.CreateOrganizationMemberAsync(user, organization, role: role, roles: roles);
         }
 
-        return new DisposableUser(user, userManager);
+        return new DisposableUser(user, scope.Db);
     }
 
     public static async Task<IDisposableEntity<EventCollection>> CreateEventCollectionAsync(
@@ -322,7 +312,7 @@ public static class TestServiceScopeExtensions
         ProductVariant[] variants = null,
         int[] quantities = null,
         ApplicationUser user = null,
-        string userId = null,
+        Guid? userId = null,
         Order.OrderStatus status = Order.OrderStatus.Verified,
         PaymentMethod.PaymentProvider paymentProvider = PaymentMethod.PaymentProvider.EmailInvoice,
         Instant? time = null)
@@ -377,7 +367,7 @@ public static class TestServiceScopeExtensions
         int quantity = 1,
         Order.OrderStatus status = Order.OrderStatus.Verified,
         ApplicationUser user = null,
-        string userId = null,
+        Guid? userId = null,
         PaymentMethod.PaymentProvider paymentProvider = PaymentMethod.PaymentProvider.EmailInvoice) =>
         await scope.CreateOrderAsync(registration,
             new[] { product },

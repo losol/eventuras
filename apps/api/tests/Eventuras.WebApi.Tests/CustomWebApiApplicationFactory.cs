@@ -13,7 +13,6 @@ using Losol.Communication.Email;
 using Losol.Communication.Sms;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
@@ -46,23 +45,8 @@ public class CustomWebApiApplicationFactory<TStartup> : WebApplicationFactory<TS
 
     private class TestDbInitializer : IDbInitializer
     {
-        private readonly RoleManager<IdentityRole> _roleManager;
-
-        public TestDbInitializer(RoleManager<IdentityRole> roleManager)
-        {
-            _roleManager = roleManager;
-        }
-
-        public async Task SeedAsync(bool createSuperAdmin = true, bool runMigrations = false)
-        {
-            foreach (var role in Roles.All)
-            {
-                if (!await _roleManager.RoleExistsAsync(role))
-                {
-                    await _roleManager.CreateAsync(new IdentityRole(role));
-                }
-            }
-        }
+        public Task SeedAsync(bool createSuperAdmin = true, bool runMigrations = false) =>
+            Task.CompletedTask;
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)

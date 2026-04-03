@@ -35,16 +35,16 @@ internal class UserRetrievalService : IUserRetrievalService
     }
 
     public async Task<ApplicationUser> GetUserByIdAsync(
-        string userId,
+        Guid userId,
         UserRetrievalOptions options,
         CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(userId))
+        if (userId == Guid.Empty)
         {
             throw new ArgumentException("User id argument must not be empty", nameof(userId));
         }
 
-        var user = await _context.ApplicationUsers
+        var user = await _context.Users
             .AsNoTracking()
             .UseOptions(options ?? UserRetrievalOptions.Default)
             .SingleOrDefaultAsync(u => u.Id == userId, cancellationToken);
@@ -67,7 +67,7 @@ internal class UserRetrievalService : IUserRetrievalService
             throw new ArgumentException("User email argument must not be empty", nameof(email));
         }
 
-        var user = await _context.ApplicationUsers
+        var user = await _context.Users
             .AsNoTracking()
             .UseOptions(options ?? UserRetrievalOptions.Default)
             .SingleOrDefaultAsync(u => u.NormalizedEmail == email.ToUpper(), cancellationToken);

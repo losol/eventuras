@@ -28,7 +28,7 @@ public class Certificate
     // The recipient of the certificate
     public string RecipientName { get; set; }
     public string RecipientEmail { get; set; }
-    public string RecipientUserId { get; set; }
+    public Guid? RecipientUserId { get; set; }
     public ApplicationUser RecipientUser { get; set; }
 
     // Evidence for the certificate
@@ -40,7 +40,7 @@ public class Certificate
     public Organization IssuingOrganization { get; set; }
 
     public string IssuedByName { get; set; }
-    public string IssuingUserId { get; set; }
+    public Guid? IssuingUserId { get; set; }
     public ApplicationUser IssuingUser { get; set; }
 
     public string IssuedInCity { get; set; }

@@ -171,7 +171,7 @@ public class RegistrationDomainTests
             EventInfo = new EventInfo { EventInfoId = 1, Title = "Test Event" },
             User = new ApplicationUser
             {
-                Id = "user1",
+                Id = Guid.NewGuid(),
                 GivenName = "Test",
                 FamilyName = "User",
                 Email = "test@example.com"
@@ -197,7 +197,7 @@ public class RegistrationDomainTests
             RegistrationId = 1,
             Certificate = new Certificate(),
             EventInfo = new EventInfo(),
-            User = new ApplicationUser()
+            User = new ApplicationUser { Email = "test@test.com" }
         };
 
         // Act & Assert
@@ -218,7 +218,7 @@ public class RegistrationDomainTests
             EventInfo = new EventInfo { EventInfoId = 1, Title = "Test Event" },
             User = new ApplicationUser
             {
-                Id = "user123",
+                Id = Guid.NewGuid(),
                 GivenName = "John",
                 FamilyName = "Doe",
                 Email = "john@example.com"
@@ -232,7 +232,7 @@ public class RegistrationDomainTests
         // Assert
         Assert.Equal("John Doe", certificate.RecipientName);
         Assert.Equal("john@example.com", certificate.RecipientEmail);
-        Assert.Equal("user123", certificate.RecipientUserId);
+        Assert.Equal(registration.User.Id, certificate.RecipientUserId);
         Assert.Equal("Excellent work", certificate.Comment);
     }
 
@@ -262,7 +262,7 @@ public class RegistrationDomainTests
         {
             Certificate = new Certificate(),
             EventInfo = null,
-            User = new ApplicationUser()
+            User = new ApplicationUser { Email = "test@test.com" }
         };
 
         // Act & Assert
@@ -301,7 +301,7 @@ public class RegistrationDomainTests
             EventInfo = new EventInfo { EventInfoId = 1, Title = "Updated Event" },
             User = new ApplicationUser
             {
-                Id = "user456",
+                Id = Guid.NewGuid(),
                 GivenName = "Jane",
                 FamilyName = "Smith",
                 Email = "jane@example.com"
@@ -316,7 +316,7 @@ public class RegistrationDomainTests
         Assert.NotNull(result);
         Assert.Equal("Jane Smith", result.RecipientName);
         Assert.Equal("jane@example.com", result.RecipientEmail);
-        Assert.Equal("user456", result.RecipientUserId);
+        Assert.Equal(registration.User.Id, result.RecipientUserId);
         Assert.Equal("Updated comment", result.Comment);
     }
 

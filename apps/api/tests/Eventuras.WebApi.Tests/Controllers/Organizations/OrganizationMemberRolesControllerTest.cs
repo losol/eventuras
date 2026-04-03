@@ -52,7 +52,7 @@ public class OrganizationMemberRolesControllerTest : IClassFixture<CustomWebApiA
             .AuthenticatedAsSystemAdmin();
         using var scope = _factory.Services.NewTestScope();
         using var org = await scope.CreateOrganizationAsync();
-        var response = await client.GetAsync($"/v3/organizations/{org.Entity.OrganizationId}/members/any/roles");
+        var response = await client.GetAsync($"/v3/organizations/{org.Entity.OrganizationId}/members/{Guid.NewGuid()}/roles");
         response.CheckNotFound();
     }
 
@@ -180,7 +180,7 @@ public class OrganizationMemberRolesControllerTest : IClassFixture<CustomWebApiA
             .AuthenticatedAsSystemAdmin();
         using var scope = _factory.Services.NewTestScope();
         using var org = await scope.CreateOrganizationAsync();
-        var response = await client.PostAsync($"/v3/organizations/{org.Entity.OrganizationId}/members/any/roles",
+        var response = await client.PostAsync($"/v3/organizations/{org.Entity.OrganizationId}/members/{Guid.NewGuid()}/roles",
             new { role = Roles.Admin });
         response.CheckNotFound();
     }
@@ -303,7 +303,7 @@ public class OrganizationMemberRolesControllerTest : IClassFixture<CustomWebApiA
             .AuthenticatedAsSystemAdmin();
         using var scope = _factory.Services.NewTestScope();
         using var org = await scope.CreateOrganizationAsync();
-        var response = await client.DeleteAsync($"/v3/organizations/{org.Entity.OrganizationId}/members/any/roles",
+        var response = await client.DeleteAsync($"/v3/organizations/{org.Entity.OrganizationId}/members/{Guid.NewGuid()}/roles",
             new { role = Roles.Admin });
         response.CheckNotFound();
     }

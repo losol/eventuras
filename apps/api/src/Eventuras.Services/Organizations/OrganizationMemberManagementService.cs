@@ -150,7 +150,7 @@ internal class OrganizationMemberManagementService : IOrganizationMemberManageme
         var principal = _httpContextAccessor.HttpContext.User;
 
         var userId = principal.GetUserId();
-        if (string.IsNullOrWhiteSpace(userId))
+        if (!userId.HasValue)
         {
             throw new NotAccessibleException("Not authenticated.");
         }
@@ -162,7 +162,7 @@ internal class OrganizationMemberManagementService : IOrganizationMemberManageme
 
         if (!principal.IsPowerAdmin() &&
             !await _context.OrganizationMembers
-                .AnyAsync(m => m.UserId == userId &&
+                .AnyAsync(m => m.UserId == userId.Value &&
                                m.OrganizationId == organization.OrganizationId))
         {
             throw new NotAccessibleException($"Cannot access organization {organization.OrganizationId}.");

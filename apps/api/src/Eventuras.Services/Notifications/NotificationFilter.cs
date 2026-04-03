@@ -1,3 +1,4 @@
+using System;
 using Eventuras.Domain;
 
 namespace Eventuras.Services.Notifications;
@@ -10,9 +11,9 @@ public class NotificationFilter
 
     public int? ProductId { get; set; }
 
-    public string SenderUserId { get; set; }
+    public Guid? SenderUserId { get; set; }
 
-    public string RecipientUserId { get; set; }
+    public Guid? RecipientUserId { get; set; }
 
     public NotificationStatus[] Statuses { get; set; }
 

@@ -1,18 +1,17 @@
 using System;
 using System.Linq;
 using Eventuras.Domain;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Eventuras.Infrastructure;
 
-public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+public class ApplicationDbContext : DbContext
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
     }
 
-    public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+    public DbSet<ApplicationUser> Users { get; set; }
     public DbSet<EventInfo> EventInfos { get; set; }
     public DbSet<Registration> Registrations { get; set; }
     public DbSet<PaymentMethod> PaymentMethods { get; set; }
@@ -43,6 +42,14 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+
+        builder.Entity<ApplicationUser>(entity =>
+        {
+            entity.ToTable("Users");
+            entity.HasKey(u => u.Id);
+            entity.HasIndex(u => u.NormalizedEmail).HasDatabaseName("EmailIndex");
+            entity.HasIndex(u => u.NormalizedUserName).IsUnique().HasDatabaseName("UserNameIndex");
+        });
 
         builder.Entity<ExternalEvent>()
             .HasIndex(c => new { c.EventInfoId, c.ExternalServiceName, c.ExternalEventId })

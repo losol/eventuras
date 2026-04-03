@@ -17,20 +17,20 @@ public class EventSynchronizationResult
 
     public string ProviderName { get; }
 
-    public List<string> CreatedUserIds { get; } = new();
+    public List<Guid> CreatedUserIds { get; } = new();
 
-    public List<string> ExistingUserIds { get; } = new();
+    public List<Guid> ExistingUserIds { get; } = new();
 
-    public List<string> PreviouslyRegisteredUserIds { get; } = new();
+    public List<Guid> PreviouslyRegisteredUserIds { get; } = new();
 
-    public List<string> NewRegisteredUserIds { get; } = new();
+    public List<Guid> NewRegisteredUserIds { get; } = new();
 
-    public List<string> TotalRegisteredUserIds { get; } = new();
+    public List<Guid> TotalRegisteredUserIds { get; } = new();
 
 
     public List<Exception> GenericErrors { get; } = new();
 
-    public IDictionary<string, Exception> UserExportErrors { get; } = new Dictionary<string, Exception>();
+    public IDictionary<Guid, Exception> UserExportErrors { get; } = new Dictionary<Guid, Exception>();
 
     public EventSynchronizationResult AddGenericError(Exception e)
     {
@@ -43,11 +43,11 @@ public class EventSynchronizationResult
         return this;
     }
 
-    public EventSynchronizationResult AddErrorForUser(string userId, Exception e)
+    public EventSynchronizationResult AddErrorForUser(Guid userId, Exception e)
     {
-        if (string.IsNullOrEmpty(userId))
+        if (userId == Guid.Empty)
         {
-            throw new ArgumentException(nameof(userId));
+            throw new ArgumentException("User id must not be empty.", nameof(userId));
         }
 
         if (e == null)

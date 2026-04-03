@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -8,11 +9,11 @@ namespace Eventuras.Services.Auth;
 
 public static class ClaimsPrincipalExtensions
 {
-    public static string? GetUserId(this ClaimsPrincipal user)
+    public static Guid? GetUserId(this ClaimsPrincipal user)
     {
-        // For the local user the AuthenticationType is Identity.Application
-        var applicationIdentity = user.Identities.FirstOrDefault(i => i.AuthenticationType == "Identity.Application");
-        return applicationIdentity?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var dbIdentity = user.Identities.FirstOrDefault(i => i.AuthenticationType == "Eventuras.Database");
+        var value = dbIdentity?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        return value != null && Guid.TryParse(value, out var id) ? id : null;
     }
 
     public static string? GetEmail(this ClaimsPrincipal user) => user.FindFirstValue(ClaimTypes.Email);

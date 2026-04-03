@@ -39,7 +39,7 @@ public class OrganizationMemberRolesController : ControllerBase
 
     [HttpGet]
     [Authorize(Roles = Roles.SystemAdmin)]
-    public async Task<string[]> List(int organizationId, string userId, CancellationToken token)
+    public async Task<string[]> List(int organizationId, Guid userId, CancellationToken token)
     {
         var user = await _userRetrievalService.GetUserByIdAsync(userId,
             new UserRetrievalOptions { IncludeOrgMembership = true }, token);
@@ -57,7 +57,7 @@ public class OrganizationMemberRolesController : ControllerBase
 
     [HttpPost]
     [Authorize(Roles = Roles.SystemAdmin)]
-    public async Task<string[]> Add(int organizationId, string userId, [FromBody] RoleRequestDto dto) =>
+    public async Task<string[]> Add(int organizationId, Guid userId, [FromBody] RoleRequestDto dto) =>
         await ManipulateRolesAsync(organizationId, userId, dto.Role, (roles, r) =>
         {
             if (roles.Contains(r))
@@ -71,7 +71,7 @@ public class OrganizationMemberRolesController : ControllerBase
 
     [HttpDelete]
     [Authorize(Roles = Roles.SystemAdmin)]
-    public async Task<string[]> Remove(int organizationId, string userId, [FromBody] RoleRequestDto dto) =>
+    public async Task<string[]> Remove(int organizationId, Guid userId, [FromBody] RoleRequestDto dto) =>
         await ManipulateRolesAsync(organizationId, userId, dto.Role, (roles, r) =>
         {
             if (!roles.Contains(r))
@@ -85,7 +85,7 @@ public class OrganizationMemberRolesController : ControllerBase
 
     private async Task<string[]> ManipulateRolesAsync(
         int organizationId,
-        string userId,
+        Guid userId,
         string role,
         Func<ICollection<string>, string, bool> f)
     {

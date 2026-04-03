@@ -36,7 +36,7 @@ public abstract class Notification
 
     public int? ProductId { get; set; }
 
-    [Required] public string CreatedByUserId { get; set; }
+    [Required] public Guid CreatedByUserId { get; set; }
 
     /// <summary>
     ///     Full message body.

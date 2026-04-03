@@ -537,7 +537,7 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
 
     [Theory]
     [MemberData(nameof(GetRegInfoWithAdditionalInfoFilled))]
-    public async Task Should_Allow_Admin_To_Provide_Extra_Info_When_Creating_New_Reg(Func<string, int, object> f,
+    public async Task Should_Allow_Admin_To_Provide_Extra_Info_When_Creating_New_Reg(Func<Guid, int, object> f,
         Action<Registration> check)
     {
         using var scope = factory.Services.NewTestScope();
@@ -581,7 +581,7 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
 
     [Theory]
     [MemberData(nameof(GetRegInfoWithAdditionalInfoFilled))]
-    public async Task Should_Allow_System_Admin_To_Provide_Extra_Info(Func<string, int, object> f,
+    public async Task Should_Allow_System_Admin_To_Provide_Extra_Info(Func<Guid, int, object> f,
         Action<Registration> check)
     {
         using var scope = factory.Services.NewTestScope();
@@ -855,17 +855,17 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
         {
             new object[]
             {
-                new Func<string, int, object>((userId, eventId) => new { userId, eventId, notes = "test" }),
+                new Func<Guid, int, object>((userId, eventId) => new { userId, eventId, notes = "test" }),
                 new Action<Registration>(reg => Assert.Equal("test", reg.Notes))
             },
             new object[]
             {
-                new Func<string, int, object>((userId, eventId) => new { userId, eventId, type = 1 }),
+                new Func<Guid, int, object>((userId, eventId) => new { userId, eventId, type = 1 }),
                 new Action<Registration>(reg => Assert.Equal(Registration.RegistrationType.Student, reg.Type))
             },
             new object[]
             {
-                new Func<string, int, object>((userId, eventId) =>
+                new Func<Guid, int, object>((userId, eventId) =>
                     new { userId, eventId, customer = new { name = "test" } }),
                 new Action<Registration>(reg => Assert.Equal("test", reg.CustomerName))
             }

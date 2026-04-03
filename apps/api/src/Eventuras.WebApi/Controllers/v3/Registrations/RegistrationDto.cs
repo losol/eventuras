@@ -15,7 +15,7 @@ namespace Eventuras.WebApi.Controllers.v3.Registrations;
 public class RegistrationDto
 {
     [Obsolete("For JSON deserialization only, do not use manually", true)]
-    public RegistrationDto() => UserId = null!;
+    public RegistrationDto() { }
 
     public RegistrationDto(
         Registration registration,
@@ -65,7 +65,7 @@ public class RegistrationDto
 
     public int RegistrationId { get; init; }
     public int EventId { get; init; }
-    public string UserId { get; init; }
+    public Guid UserId { get; init; }
     public Registration.RegistrationStatus Status { get; init; }
     public Registration.RegistrationType Type { get; init; }
     public int? CertificateId { get; init; }

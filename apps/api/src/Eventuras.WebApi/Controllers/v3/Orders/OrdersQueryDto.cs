@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using Eventuras.Domain;
 using Eventuras.WebApi.Models;
 
@@ -7,7 +8,7 @@ namespace Eventuras.WebApi.Controllers.v3.Orders;
 
 public class OrdersQueryDto : PageQueryDto
 {
-    public string? UserId { get; set; }
+    public Guid? UserId { get; set; }
 
     public int? EventId { get; set; }
 

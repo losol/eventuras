@@ -15,7 +15,6 @@ using Eventuras.Services.Twilio;
 using Eventuras.WebApi.Auth;
 using Eventuras.WebApi.Config;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -54,14 +53,6 @@ public static class ServiceCollectionExtensions
                     }
                 });
         });
-
-    public static void ConfigureIdentity(
-        this IServiceCollection services) =>
-        services.AddIdentity<ApplicationUser, IdentityRole>(config =>
-            {
-                config.User.RequireUniqueEmail = true;
-            }).AddEntityFrameworkStores<ApplicationDbContext>()
-            .AddDefaultTokenProviders();
 
     public static void ConfigureAuthorizationPolicies(
         this IServiceCollection services,
