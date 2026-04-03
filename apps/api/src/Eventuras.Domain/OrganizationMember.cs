@@ -12,6 +12,7 @@ public class OrganizationMember
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
+    public Guid Uuid { get; set; } = Guid.CreateVersion7();
 
     public Guid UserId { get; set; }
 

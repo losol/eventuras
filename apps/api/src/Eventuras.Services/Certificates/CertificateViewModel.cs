@@ -10,7 +10,7 @@ public class CertificateViewModel
     {
         RecipientName = "Gerhard Henrik Armauer Hansen",
         Comment = "Eventuell tekst som er skrevet som kommentar på deltakers registrering kommer her",
-        CertificateGuid = Guid.NewGuid(),
+        Uuid = Guid.CreateVersion7(),
         IssuedDate = SystemClock.Instance.Today()
     }))
     {
@@ -23,7 +23,7 @@ public class CertificateViewModel
             throw new ArgumentNullException(nameof(certificate));
         }
 
-        CertificateGuid = certificate.CertificateGuid;
+        Uuid = certificate.Uuid;
 
         Title = certificate.Title;
         Description = certificate.Description;
@@ -41,7 +41,7 @@ public class CertificateViewModel
         IssuerPersonSignatureImageBase64 = certificate.IssuingUser?.SignatureImageBase64;
     }
 
-    public Guid CertificateGuid { get; }
+    public Guid Uuid { get; }
 
     public string Title { get; }
     public string Description { get; }

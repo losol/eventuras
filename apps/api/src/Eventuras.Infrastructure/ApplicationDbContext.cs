@@ -107,11 +107,59 @@ public class ApplicationDbContext : DbContext
             .HasIndex(s => s.NotificationId)
             .IsUnique();
 
+        builder.Entity<NotificationStatistics>()
+            .HasIndex(s => s.Uuid)
+            .IsUnique();
+
+        builder.Entity<EventInfo>()
+            .HasIndex(x => x.Uuid)
+            .IsUnique();
+
+        builder.Entity<Organization>()
+            .HasIndex(x => x.Uuid)
+            .IsUnique();
+
+        builder.Entity<OrganizationMember>()
+            .HasIndex(x => x.Uuid)
+            .IsUnique();
+
+        builder.Entity<Product>()
+            .HasIndex(x => x.Uuid)
+            .IsUnique();
+
+        builder.Entity<ProductVariant>()
+            .HasIndex(x => x.Uuid)
+            .IsUnique();
+
         builder.Entity<Order>()
             .HasIndex(x => x.Uuid)
             .IsUnique();
 
+        builder.Entity<OrderLine>()
+            .HasIndex(x => x.Uuid)
+            .IsUnique();
+
+        builder.Entity<Invoice>()
+            .HasIndex(x => x.Uuid)
+            .IsUnique();
+
         builder.Entity<Registration>()
+            .HasIndex(x => x.Uuid)
+            .IsUnique();
+
+        builder.Entity<Certificate>()
+            .HasIndex(x => x.Uuid)
+            .IsUnique();
+
+        builder.Entity<Notification>()
+            .HasIndex(x => x.Uuid)
+            .IsUnique();
+
+        builder.Entity<NotificationRecipient>()
+            .HasIndex(x => x.Uuid)
+            .IsUnique();
+
+        builder.Entity<EventCollection>()
             .HasIndex(x => x.Uuid)
             .IsUnique();
 

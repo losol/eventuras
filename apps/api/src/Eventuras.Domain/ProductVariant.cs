@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -6,6 +7,7 @@ namespace Eventuras.Domain;
 public class ProductVariant
 {
     public int ProductVariantId { get; set; }
+    public Guid Uuid { get; set; } = Guid.CreateVersion7();
     public string Name { get; set; }
 
     [StringLength(300)] public string Description { get; set; }

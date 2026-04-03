@@ -14,7 +14,7 @@ public class CertificateDto
         }
 
         CertificateId = certificate.CertificateId;
-        CertificateGuid = certificate.CertificateGuid;
+        CertificateGuid = certificate.Uuid;
         Title = certificate.Title;
         Description = certificate.Description;
         Comment = certificate.Comment;

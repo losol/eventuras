@@ -9,8 +9,9 @@ This guide covers the breaking database migrations in v3.
 | `RemoveMessageLog` | Archives deprecated `MessageLogs` table, removes `RegistrationBy` and `VerificationCode` columns from `Registrations` |
 | `RemoveAspNetIdentity` | Removes ASP.NET Identity, renames `AspNetUsers` → `Users`, converts user IDs to `uuid` |
 | `CleanupDeprecatedFields` | Removes deprecated columns, migrates Log data to `BusinessEvents`, archives ExternalSync tables |
+| `AddUuidToAllEntities` | Adds `Uuid` column to all entities, renames `Certificate.CertificateGuid` → `Uuid`, drops `Certificate.Auth` |
 
-For background, see [ADR-0002](adr/0002-remove-aspnet-identity.md) and [ADR-0003](adr/0003-v3-domain-cleanup.md).
+For background, see [ADR-0002](adr/0002-remove-aspnet-identity.md), [ADR-0003](adr/0003-v3-domain-cleanup.md), and [ADR-0004](adr/0004-add-uuid-to-all-entities.md).
 
 ## Prerequisites (BEFORE deploying)
 
