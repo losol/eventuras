@@ -63,7 +63,11 @@ internal class CertificateRetrievalService : ICertificateRetrievalService
             .AddFilter(request.Filter, _context)
             .AddOrder(request.ListOrder, request.Descending);
 
-        // TODO: add accessibility filter!
+        if (request.AccessibleOnly)
+        {
+            query = await _certificateAccessControlService
+                .AddAccessFilterAsync(query, cancellationToken);
+        }
 
         return await Paging.CreateAsync(query, request, cancellationToken);
     }

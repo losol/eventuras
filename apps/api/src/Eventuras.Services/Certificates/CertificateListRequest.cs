@@ -7,4 +7,6 @@ public class CertificateListRequest : PagingRequest
     public CertificateListOrder ListOrder { get; set; } = CertificateListOrder.Issued;
 
     public bool Descending { get; set; }
+
+    public bool AccessibleOnly { get; set; }
 }
