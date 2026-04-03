@@ -24,7 +24,6 @@ public class OrderDto
         RegistrationId = order.RegistrationId;
         PaymentMethod = order.PaymentMethod;
         Comments = order.Comments;
-        Log = order.Log;
 
         if (order.Registration != null)
         {

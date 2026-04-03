@@ -35,11 +35,6 @@ public class Order
     public Guid UserId { get; set; }
     public int RegistrationId { get; set; }
 
-    [Obsolete("Use Invoice.ExternalInvoiceId")]
-    public string ExternalInvoiceId { get; set; }
-
-    [Obsolete("Use Invoice.Paid")] public bool Paid { get; set; }
-
     public int? InvoiceId { get; set; }
 
     public OrderStatus Status
@@ -107,11 +102,6 @@ public class Order
     // Comments are from the user registered
     public string Comments { get; set; }
 
-    // Log is information from the system. Ie registration time and user.
-    [Obsolete(
-        "Use BusinessEvent entity for tracking order events. This property will be removed in a future version.")]
-    public string Log { get; set; }
-
     // Navigational properties
     public Registration Registration { get; set; }
     public ApplicationUser User { get; set; }
@@ -125,56 +115,4 @@ public class Order
     public decimal TotalAmount =>
         OrderLines.Sum(l => l.LineTotal);
 
-    [Obsolete(
-        "Use BusinessEvent entity for tracking order events. This method will be removed in a future version.")]
-    public void AddLog(string text = null)
-    {
-#pragma warning disable CS0618 // Type or member is obsolete
-        var logText = $"{DateTime.UtcNow.ToString("u")}: ";
-        if (!string.IsNullOrWhiteSpace(text))
-        {
-            logText += $"{text}";
-        }
-        else
-        {
-            logText += $"{Status}";
-        }
-
-        Log += logText + "\n";
-#pragma warning restore CS0618 // Type or member is obsolete
-    }
-
-    public void SetStatus(OrderStatus newStatus)
-    {
-        Status = newStatus;
-#pragma warning disable CS0618 // Type or member is obsolete
-        AddLog();
-#pragma warning restore CS0618 // Type or member is obsolete
-    }
-
-
-    [Obsolete("Use service layer.")]
-    public Order CreateRefundOrder()
-    {
-        if (Status != OrderStatus.Invoiced)
-        {
-            throw new InvalidOperationException("Only invoiced orders can be refunded.");
-        }
-
-        var refund = new Order
-        {
-            CustomerEmail = CustomerEmail,
-            CustomerName = CustomerName,
-            CustomerVatNumber = CustomerVatNumber,
-            RegistrationId = RegistrationId,
-            UserId = UserId,
-            OrderLines = new List<OrderLine>()
-        };
-        foreach (var line in OrderLines)
-        {
-            refund.OrderLines.Add(line.CreateRefundOrderLine());
-        }
-
-        return refund;
-    }
 }

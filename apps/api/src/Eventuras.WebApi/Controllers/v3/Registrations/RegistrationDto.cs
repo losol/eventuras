@@ -28,7 +28,6 @@ public class RegistrationDto
         Status = registration.Status;
         Type = registration.Type;
         Notes = registration.Notes;
-        Log = registration.Log;
 
         if (includeOrders && registration.Orders != null)
         {

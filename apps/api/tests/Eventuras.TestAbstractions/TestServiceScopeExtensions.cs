@@ -376,33 +376,6 @@ public static class TestServiceScopeExtensions
             user, userId,
             status, paymentProvider);
 
-    public static async Task<IDisposableEntity<ExternalEvent>> CreateExternalEventAsync(
-        this TestServiceScope scope,
-        EventInfo eventInfo,
-        string externalServiceName = TestingConstants.Placeholder,
-        string externalEventId = TestingConstants.Placeholder)
-    {
-        if (externalServiceName == TestingConstants.Placeholder)
-        {
-            externalServiceName = "Test";
-        }
-
-        if (externalEventId == TestingConstants.Placeholder)
-        {
-            externalEventId = Guid.NewGuid().ToString();
-        }
-
-        var externalEvent = new ExternalEvent
-        {
-            EventInfo = eventInfo,
-            ExternalServiceName = externalServiceName,
-            ExternalEventId = externalEventId
-        };
-        await scope.Db.ExternalEvents.AddAsync(externalEvent);
-        await scope.Db.SaveChangesAsync();
-        return new DisposableEntity<ExternalEvent>(externalEvent, scope.Db);
-    }
-
     public static async Task<IDisposableEntity<Organization>> CreateOrganizationAsync(
         this TestServiceScope scope,
         string name = TestingConstants.Placeholder,

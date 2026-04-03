@@ -87,25 +87,4 @@ public class OrderTests
         }
     }
 
-    public class CreateRefundOrder_Should
-    {
-        [Fact]
-        public void ThrowExceptionIfNotInvoiced()
-        {
-            var order = new Order();
-            Assert.Throws<InvalidOperationException>(() => order.CreateRefundOrder());
-        }
-
-        [Fact]
-        public void Succeed()
-        {
-            var order = getOrderWithStatus(OrderStatus.Invoiced);
-            order.OrderLines = new List<OrderLine>
-            {
-                new() { ProductId = 1, Quantity = 1, Price = 10 }, new() { ProductId = 2, Quantity = 1, Price = 10 }
-            };
-            var refund = order.CreateRefundOrder();
-            Assert.Equal(-order.TotalAmount, refund.TotalAmount);
-        }
-    }
 }

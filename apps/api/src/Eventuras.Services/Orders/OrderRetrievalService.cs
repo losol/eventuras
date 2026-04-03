@@ -222,7 +222,6 @@ public class OrderRetrievalService : IOrderRetrievalService
             order.CustomerInvoiceReference = ValidationHelper.GetValueIfEmpty(order.CustomerInvoiceReference,
                 registration.CustomerInvoiceReference);
             order.PaymentMethod = ValidationHelper.GetValueIfDefault(order.PaymentMethod, registration.PaymentMethod);
-            order.Log = ValidationHelper.GetValueIfEmpty(order.Log, registration.Log);
         }
         else
         {
