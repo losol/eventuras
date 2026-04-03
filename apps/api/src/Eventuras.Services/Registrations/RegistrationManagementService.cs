@@ -72,6 +72,14 @@ internal class RegistrationManagementService : IRegistrationManagementService
 
         var registration = new Registration { EventInfoId = eventId, UserId = userId, ParticipantName = user.Name };
 
+        // Use the active default payment method from the database if available
+        var defaultPaymentMethod = await _context.PaymentMethods
+            .FirstOrDefaultAsync(pm => pm.IsDefault && pm.Active, cancellationToken);
+        if (defaultPaymentMethod != null)
+        {
+            registration.PaymentMethod = defaultPaymentMethod.Provider;
+        }
+
         // Check if the registration should be verified, and only set it if it's a draft
         if (options?.Verified == true && registration.Status == Registration.RegistrationStatus.Draft)
         {

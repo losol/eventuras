@@ -60,9 +60,7 @@ public class Registration
 
     public Instant? RegistrationTime { get; set; } = SystemClock.Instance.Now();
 
-    public PaymentProvider PaymentMethod { get; set; } =
-        PaymentProvider
-            .PowerOfficeEmailInvoice; // FIXME: This ignores the actual default paymentmethod set in the database
+    public PaymentProvider PaymentMethod { get; set; } = PaymentProvider.EmailInvoice; // Fallback default; the service layer resolves this from the database at registration time
 
     public int? CertificateId { get; set; }
 
