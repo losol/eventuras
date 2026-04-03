@@ -8,8 +8,9 @@ This guide covers the breaking database migrations in v3.
 | --- | --- |
 | `RemoveMessageLog` | Archives deprecated `MessageLogs` table, removes `RegistrationBy` and `VerificationCode` columns from `Registrations` |
 | `RemoveAspNetIdentity` | Removes ASP.NET Identity, renames `AspNetUsers` → `Users`, converts user IDs to `uuid` |
+| `CleanupDeprecatedFields` | Removes deprecated columns, migrates Log data to `BusinessEvents`, archives ExternalSync tables |
 
-For background on the Identity removal, see [ADR-0002](adr/0002-remove-aspnet-identity.md).
+For background, see [ADR-0002](adr/0002-remove-aspnet-identity.md) and [ADR-0003](adr/0003-v3-domain-cleanup.md).
 
 ## Prerequisites (BEFORE deploying)
 
@@ -45,6 +46,9 @@ pg_dump -Fc eventuras > eventuras-pre-v3-$(date +%Y%m%d).dump
 | **Converts all user IDs** | `text` → `uuid` (PK and all FKs) |
 | **Makes Email NOT NULL** | `Email` and `NormalizedEmail` are now required |
 | **Cleans orphaned rows** | Deletes rows with NULL `UserId` in `Registrations`, `OrganizationMembers`, `Orders`, `ExternalAccounts` |
+| **Migrates legacy logs** | Converts `ApplicationUser.Log`, `Registration.Log`, and `Order.Log` JSON entries into `BusinessEvents` rows with `EventType = 'legacy.log'` |
+| **Drops deprecated columns** | `Registration`: `ParticipantJobTitle`, `ParticipantEmployer`, `ParticipantCity`, `Verified`, `Log`. `Order`: `ExternalInvoiceId`, `Paid`, `Log`. `Users`: `Log`. `EventInfos`: `ManageRegistrations`, `ExternalRegistrationsUrl` |
+| **Archives ExternalSync tables** | `ExternalAccounts` → `Archived_ExternalAccounts`, `ExternalEvents` → `Archived_ExternalEvents`, `ExternalRegistrations` → `Archived_ExternalRegistrations` |
 
 ## Breaking changes
 

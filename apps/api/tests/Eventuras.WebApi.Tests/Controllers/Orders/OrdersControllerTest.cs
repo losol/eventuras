@@ -1344,31 +1344,5 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
         Assert.Equal(PaymentMethod.PaymentProvider.EmailInvoice, updatedOrder.PaymentMethod);
     }
 
-    [Fact]
-    public async Task Patch_Should_Not_Update_Unchanged_Fields()
-    {
-        using var scope = _factory.Services.NewTestScope();
-        using var user = await scope.CreateUserAsync();
-        using var evt = await scope.CreateEventAsync();
-        using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
-        using var order = await scope.CreateOrderAsync(reg.Entity, status: Order.OrderStatus.Verified);
-
-        var originalLog = order.Entity.Log;
-
-        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
-
-        // Patch with same status - should not add a log entry
-        var response = await client.PatchAsync($"/v3/orders/{order.Entity.OrderId}",
-            new { status = "verified" });
-        response.CheckOk();
-
-        var updatedOrder = await scope.Db.Orders
-            .AsNoTracking()
-            .SingleAsync(o => o.OrderId == order.Entity.OrderId);
-
-        // Log should not have been updated since status didn't actually change
-        Assert.Equal(originalLog, updatedOrder.Log);
-    }
-
     #endregion
 }

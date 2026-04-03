@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
+using Eventuras.Services.BusinessEvents;
 using Eventuras.Services.Orders;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -13,6 +14,7 @@ namespace Eventuras.Services.Invoicing;
 
 internal class InvoicingService : IInvoicingService
 {
+    private readonly IBusinessEventService _businessEventService;
     private readonly IInvoicingProvider[] _components;
     private readonly ApplicationDbContext _db;
     private readonly ILogger<InvoicingService> _logger;
@@ -21,12 +23,14 @@ internal class InvoicingService : IInvoicingService
     public InvoicingService(
         IEnumerable<IInvoicingProvider> components,
         IOrderAccessControlService orderAccessControlService,
+        IBusinessEventService businessEventService,
         ILogger<InvoicingService> logger,
         ApplicationDbContext db)
     {
         _components = components?.ToArray() ?? throw new ArgumentNullException(nameof(components));
         _orderAccessControlService = orderAccessControlService ??
                                      throw new ArgumentNullException(nameof(orderAccessControlService));
+        _businessEventService = businessEventService ?? throw new ArgumentNullException(nameof(businessEventService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _db = db ?? throw new ArgumentNullException(nameof(db));
     }
@@ -56,29 +60,24 @@ internal class InvoicingService : IInvoicingService
             var message = $"No invoicing provider found for payment method {info.PaymentMethod}";
             _logger.LogWarning(message);
 
-            foreach (var order in orders)
-            {
-                order.AddLog(message);
-            }
+            // No-op: provider not found is logged above via _logger
         }
         else
         {
             var result = await provider.CreateInvoiceAsync(info);
             invoice.ExternalInvoiceId = result.InvoiceId;
 
-            foreach (var logEntry in result.LogEntries)
-            {
-                foreach (var order in orders)
-                {
-                    order.AddLog(logEntry);
-                }
-            }
+            // Invoice log entries are tracked via the result object
         }
 
         foreach (var order in orders)
         {
             order.Invoice = invoice;
-            order.SetStatus(Order.OrderStatus.Invoiced);
+            order.Status = Order.OrderStatus.Invoiced;
+            _businessEventService.AddEvent(
+                BusinessEventSubjects.ForOrder(order.Uuid),
+                "order.status.changed",
+                $"Status changed to {Order.OrderStatus.Invoiced} (invoiced)");
             _db.Orders.Update(order);
         }
 

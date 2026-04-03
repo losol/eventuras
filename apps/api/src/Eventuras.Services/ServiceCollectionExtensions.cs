@@ -3,7 +3,6 @@ using Eventuras.Services.BusinessEvents;
 using Eventuras.Services.Certificates;
 using Eventuras.Services.EventCollections;
 using Eventuras.Services.Events;
-using Eventuras.Services.ExternalSync;
 using Eventuras.Services.Invoicing;
 using Eventuras.Services.Notifications;
 using Eventuras.Services.Orders;
@@ -32,7 +31,6 @@ public static class ServiceCollectionExtensions
         services.AddEventCollectionServices();
         services.AddOrderServices();
         services.AddInvoicingServices();
-        services.AddExternalSyncServices();
         services.AddBusinessEventServices();
         services.AddViewServices();
         return services;

@@ -3,10 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json;
 using System.Text.Json.Serialization;
-using Microsoft.Extensions.Logging;
 using NodaTime;
 
 namespace Eventuras.Domain;
@@ -69,30 +66,8 @@ public class ApplicationUser
     public string? SignatureImageBase64 { get; set; }
     public bool Archived { get; set; }
 
-    // Log property and method
-    [Obsolete(
-        "Use BusinessEvent entity for tracking user events. This property will be removed in a future version.")]
-    [Column(TypeName = "jsonb")]
-    public string Log { get; set; } = "[]";
-
     // Relationships
     [JsonIgnore] public ICollection<Registration> Registrations { get; set; } = null!;
 
     public ICollection<OrganizationMember> OrganizationMembership { get; set; } = null!;
-
-    [Obsolete("Use BusinessEvent entity for tracking user events. This method will be removed in a future version.")]
-    public void AddLog(string message, string? userId = null, LogLevel level = LogLevel.Information)
-    {
-        var logEntry = new
-        {
-            Timestamp = DateTime.UtcNow.ToString("u"),
-            Message = message,
-            UserId = userId, // Keep userId as null if it's not provided
-            Level = level.ToString()
-        };
-
-        var logList = JsonSerializer.Deserialize<List<object>>(Log) ?? new List<object>();
-        logList.Add(logEntry);
-        Log = JsonSerializer.Serialize(logList);
-    }
 }

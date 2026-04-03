@@ -31,9 +31,6 @@ public class ApplicationDbContext : DbContext
     public DbSet<EmailNotification> EmailNotifications { get; set; }
     public DbSet<SmsNotification> SmsNotifications { get; set; }
     public DbSet<NotificationStatistics> NotificationStatistics { get; set; }
-    public DbSet<ExternalAccount> ExternalAccounts { get; set; }
-    public DbSet<ExternalEvent> ExternalEvents { get; set; }
-    public DbSet<ExternalRegistration> ExternalRegistrations { get; set; }
     public DbSet<EventCollection> EventCollections { get; set; }
     public DbSet<EventCollectionMapping> EventCollectionMappings { get; set; }
     public DbSet<OrganizationSetting> OrganizationSettings { get; set; }
@@ -50,18 +47,6 @@ public class ApplicationDbContext : DbContext
             entity.HasIndex(u => u.NormalizedEmail).HasDatabaseName("EmailIndex");
             entity.HasIndex(u => u.NormalizedUserName).IsUnique().HasDatabaseName("UserNameIndex");
         });
-
-        builder.Entity<ExternalEvent>()
-            .HasIndex(c => new { c.EventInfoId, c.ExternalServiceName, c.ExternalEventId })
-            .IsUnique();
-
-        builder.Entity<ExternalAccount>()
-            .HasIndex(a => new { a.ExternalServiceName, a.ExternalAccountId })
-            .IsUnique();
-
-        builder.Entity<ExternalRegistration>()
-            .HasIndex(e => new { e.ExternalAccountId, e.ExternalEventId })
-            .IsUnique();
 
         builder.Entity<OrganizationHostname>()
             .HasKey(o => new { o.OrganizationId, o.Hostname });

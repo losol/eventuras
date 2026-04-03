@@ -36,7 +36,6 @@ public class OrderPatchDto
         if (Status.HasValue && Status.Value != order.Status)
         {
             order.Status = Status.Value;
-            order.AddLog($"Status updated to {Status.Value}");
         }
 
         if (Comments != null)
@@ -47,7 +46,6 @@ public class OrderPatchDto
         if (PaymentMethod.HasValue && PaymentMethod.Value != order.PaymentMethod)
         {
             order.PaymentMethod = PaymentMethod.Value;
-            order.AddLog($"Payment method updated to {PaymentMethod.Value}");
         }
     }
 }

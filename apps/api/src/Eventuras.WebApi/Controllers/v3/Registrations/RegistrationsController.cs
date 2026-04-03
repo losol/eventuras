@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Asp.Versioning;
 using Eventuras.Domain;
 using Eventuras.Services.Auth;
+using Eventuras.Services.BusinessEvents;
 using Eventuras.Services.Exceptions;
 using Eventuras.Services.Registrations;
 using Eventuras.WebApi.Models;
@@ -24,6 +25,7 @@ public class RegistrationsController : ControllerBase
 {
     private const string MimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
+    private readonly IBusinessEventService _businessEventService;
     private readonly ILogger<RegistrationsController> _logger;
     private readonly IRegistrationExportService _registrationExportService;
     private readonly IRegistrationManagementService _registrationManagementService;
@@ -33,6 +35,7 @@ public class RegistrationsController : ControllerBase
         IRegistrationRetrievalService registrationRetrievalService,
         IRegistrationManagementService registrationManagementService,
         IRegistrationExportService registrationExportService,
+        IBusinessEventService businessEventService,
         ILogger<RegistrationsController> logger)
     {
         _registrationRetrievalService = registrationRetrievalService ?? throw
@@ -43,6 +46,9 @@ public class RegistrationsController : ControllerBase
 
         _registrationExportService = registrationExportService ?? throw
             new ArgumentNullException(nameof(registrationExportService));
+
+        _businessEventService = businessEventService ?? throw
+            new ArgumentNullException(nameof(businessEventService));
 
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
@@ -232,7 +238,26 @@ public class RegistrationsController : ControllerBase
             return NotFound("Registration not found.");
         }
 
+        var oldStatus = registration.Status;
+        var oldType = registration.Type;
+
         patchDto.ApplyTo(registration);
+
+        if (registration.Status != oldStatus)
+        {
+            _businessEventService.AddEvent(
+                BusinessEventSubjects.ForRegistration(registration.Uuid),
+                "registration.status.changed",
+                $"Status changed from {oldStatus} to {registration.Status}");
+        }
+
+        if (registration.Type != oldType)
+        {
+            _businessEventService.AddEvent(
+                BusinessEventSubjects.ForRegistration(registration.Uuid),
+                "registration.type.changed",
+                $"Type changed from {oldType} to {registration.Type}");
+        }
 
         await _registrationManagementService.UpdateRegistrationAsync(registration, cancellationToken);
 
@@ -259,7 +284,11 @@ public class RegistrationsController : ControllerBase
         }
 
         registration.Status = Registration.RegistrationStatus.Cancelled;
-        registration.AddLog("Registration cancelled");
+
+        _businessEventService.AddEvent(
+            BusinessEventSubjects.ForRegistration(registration.Uuid),
+            "registration.status.changed",
+            "Registration cancelled");
 
         await _registrationManagementService.UpdateRegistrationAsync(registration, cancellationToken);
 

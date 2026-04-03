@@ -35,13 +35,11 @@ public class RegistrationPatchDto
         if (Status.HasValue)
         {
             registration.Status = Status.Value;
-            registration.AddLog($"Status updated to {Status.Value}");
         }
 
         if (Type.HasValue)
         {
             registration.Type = Type.Value;
-            registration.AddLog($"Type updated to {Type.Value}");
         }
 
         if (Notes != null)

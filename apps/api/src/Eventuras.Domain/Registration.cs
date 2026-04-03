@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
 using System.Text.Json.Serialization;
 using NodaTime;
 using static Eventuras.Domain.PaymentMethod;
@@ -48,29 +46,6 @@ public class Registration
     // The participant - Consider removing, at least the name
     public string ParticipantName { get; set; }
 
-    [Obsolete] public string ParticipantJobTitle { get; set; }
-
-    [Obsolete] public string ParticipantEmployer { get; set; }
-
-    [Obsolete] public string ParticipantCity { get; set; }
-
-    [Obsolete][NotMapped] private IEnumerable<string> NameParts => ParticipantName?.Split(" ")?.Select(p => p.Trim());
-
-    [Obsolete]
-    [NotMapped]
-    public string ParticipantFirstName
-    {
-        get
-        {
-            var parts = NameParts?.ToArray();
-            return parts == null ? null
-                : parts.Length == 1 ? parts[0]
-                : string.Join(" ", parts.Take(parts.Length - 1));
-        }
-    }
-
-    [Obsolete][NotMapped] public string ParticipantLastName => NameParts?.LastOrDefault();
-
     // Who pays for it?
     public string CustomerName { get; set; }
     public string CustomerEmail { get; set; }
@@ -83,17 +58,11 @@ public class Registration
 
     public string Notes { get; set; }
 
-    [Obsolete(
-        "Use BusinessEvent entity for tracking registration events. This property will be removed in a future version.")]
-    public string Log { get; set; }
-
     public Instant? RegistrationTime { get; set; } = SystemClock.Instance.Now();
 
     public PaymentProvider PaymentMethod { get; set; } =
         PaymentProvider
             .PowerOfficeEmailInvoice; // FIXME: This ignores the actual default paymentmethod set in the database
-
-    [Obsolete] public bool Verified { get; set; } = false;
 
     public int? CertificateId { get; set; }
 
@@ -105,10 +74,6 @@ public class Registration
     [JsonIgnore] public Certificate Certificate { get; set; }
 
     public ApplicationUser User { get; set; }
-
-    public List<ExternalAccount> ExternalAccounts { get; set; }
-
-    public List<ExternalRegistration> ExternalRegistrations { get; set; }
 
     public List<Order> Orders { get; set; }
 
@@ -153,22 +118,4 @@ public class Registration
         return Certificate;
     }
 
-    [Obsolete(
-        "Use BusinessEvent entity for tracking registration events. This method will be removed in a future version.")]
-    public void AddLog(string text = null)
-    {
-#pragma warning disable CS0618 // Type or member is obsolete
-        var logText = $"{DateTime.UtcNow.ToString("u")}: ";
-        if (!string.IsNullOrWhiteSpace(text))
-        {
-            logText += $"{text}";
-        }
-        else
-        {
-            logText += $"{Status}";
-        }
-
-        Log += logText + "\n";
-#pragma warning restore CS0618 // Type or member is obsolete
-    }
 }

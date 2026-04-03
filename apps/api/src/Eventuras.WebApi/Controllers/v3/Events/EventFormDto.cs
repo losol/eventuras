@@ -25,7 +25,7 @@ public class EventFormDto : IValidatableObject
     public string MoreInformation { get; set; }
     public string Category { get; set; }
     [StringLength(300)] public string Description { get; set; }
-    public bool ManageRegistrations { get; set; }
+    public bool ManageRegistrations { get; set; } = true;
     public bool OnDemand { get; set; }
     public bool Featured { get; set; }
     public string Program { get; set; }
@@ -38,7 +38,7 @@ public class EventFormDto : IValidatableObject
     public string WelcomeLetter { get; set; }
     public bool Published { get; set; }
     public string ExternalInfoPageUrl { get; set; }
-    public string ExternalRegistrationsUrl { get; set; }
+    public string ExternalRegistrationsUrl { get; set; } = string.Empty;
     public string InformationRequest { get; set; }
     public LocalDate? LastRegistrationDate { get; set; }
     public LocalDate? LastCancellationDate { get; set; }
@@ -83,7 +83,6 @@ public class EventFormDto : IValidatableObject
         eventInfo.OrganizationId = OrganizationId;
         eventInfo.Category = Category;
         eventInfo.Description = Description;
-        eventInfo.ManageRegistrations = ManageRegistrations;
         eventInfo.OnDemand = OnDemand;
         eventInfo.Featured = Featured;
         eventInfo.Program = Program;
@@ -97,7 +96,6 @@ public class EventFormDto : IValidatableObject
         eventInfo.WelcomeLetter = WelcomeLetter;
         eventInfo.Published = Published;
         eventInfo.ExternalInfoPageUrl = ExternalInfoPageUrl;
-        eventInfo.ExternalRegistrationsUrl = ExternalRegistrationsUrl;
         eventInfo.InformationRequest = InformationRequest;
         eventInfo.LastRegistrationDate = LastRegistrationDate;
         eventInfo.LastCancellationDate = LastCancellationDate;
@@ -127,7 +125,7 @@ public class EventFormDto : IValidatableObject
             OrganizationId = entity.OrganizationId,
             Category = entity.Category,
             Description = entity.Description,
-            ManageRegistrations = entity.ManageRegistrations,
+            ManageRegistrations = true,
             OnDemand = entity.OnDemand,
             Featured = entity.Featured,
             Program = entity.Program,
@@ -140,7 +138,7 @@ public class EventFormDto : IValidatableObject
             WelcomeLetter = entity.WelcomeLetter,
             Published = entity.Published,
             ExternalInfoPageUrl = entity.ExternalInfoPageUrl,
-            ExternalRegistrationsUrl = entity.ExternalRegistrationsUrl,
+            ExternalRegistrationsUrl = string.Empty,
             InformationRequest = entity.InformationRequest,
             LastRegistrationDate = entity.LastRegistrationDate,
             LastCancellationDate = entity.LastCancellationDate,

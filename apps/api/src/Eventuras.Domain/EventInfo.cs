@@ -54,12 +54,7 @@ public class EventInfo
 
     public bool Published { get; set; } = false;
 
-    [Obsolete] public bool ManageRegistrations { get; set; } = false;
-
-
     public string ExternalInfoPageUrl { get; set; }
-
-    [Obsolete] public string ExternalRegistrationsUrl { get; set; }
 
     public string InformationRequest { get; set; }
 
@@ -116,7 +111,6 @@ public class EventInfo
     public Guid? OrganizerUserId { get; set; }
     public bool HasFeaturedImage => !string.IsNullOrWhiteSpace(FeaturedImageUrl);
     public bool HasExternalInfoPage => !string.IsNullOrWhiteSpace(ExternalInfoPageUrl);
-    public bool HasExternalRegistrationPage => !string.IsNullOrWhiteSpace(ExternalRegistrationsUrl);
 
     public bool OnDemand { get; set; } = false;
     // Consider removing end
@@ -146,7 +140,6 @@ public class EventInfo
 
     public List<Registration> Registrations { get; set; }
     public List<Product> Products { get; set; }
-    public List<ExternalEvent> ExternalEvents { get; set; }
     public virtual ICollection<EventCollection> Collections { get; set; }
     public virtual List<EventCollectionMapping> CollectionMappings { get; set; }
 

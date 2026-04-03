@@ -2,6 +2,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asp.Versioning;
+using Eventuras.Domain;
+using Eventuras.Services.BusinessEvents;
 using Eventuras.Services.Orders;
 using Eventuras.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -16,15 +18,18 @@ namespace Eventuras.WebApi.Controllers.v3.Orders;
 [ApiController]
 public class OrdersController : ControllerBase
 {
+    private readonly IBusinessEventService _businessEventService;
     private readonly IOrderManagementService _orderManagementService;
     private readonly IOrderRetrievalService _orderRetrievalService;
 
     public OrdersController(
         IOrderRetrievalService orderRetrievalService,
-        IOrderManagementService orderManagementService)
+        IOrderManagementService orderManagementService,
+        IBusinessEventService businessEventService)
     {
-        _orderRetrievalService = orderRetrievalService;
-        _orderManagementService = orderManagementService;
+        _orderRetrievalService = orderRetrievalService ?? throw new ArgumentNullException(nameof(orderRetrievalService));
+        _orderManagementService = orderManagementService ?? throw new ArgumentNullException(nameof(orderManagementService));
+        _businessEventService = businessEventService ?? throw new ArgumentNullException(nameof(businessEventService));
     }
 
     [HttpGet("{id:int}")]
@@ -113,6 +118,8 @@ public class OrdersController : ControllerBase
             return BadRequest(ModelState);
         }
 
+        var oldStatus = order.Status;
+
         try
         {
             patchDto.ApplyTo(order);
@@ -120,6 +127,14 @@ public class OrdersController : ControllerBase
         catch (InvalidOperationException ex)
         {
             return BadRequest(ex.Message);
+        }
+
+        if (order.Status != oldStatus)
+        {
+            _businessEventService.AddEvent(
+                BusinessEventSubjects.ForOrder(order.Uuid),
+                "order.status.changed",
+                $"Status changed from {oldStatus} to {order.Status}");
         }
 
         await _orderManagementService.UpdateOrderAsync(order, cancellationToken);

@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
+using Eventuras.Services.BusinessEvents;
 using Eventuras.Services.Events.Products;
 using Eventuras.Services.Exceptions;
 using Eventuras.Services.Registrations;
@@ -17,6 +18,7 @@ namespace Eventuras.Services.Orders;
 
 public class OrderManagementService : IOrderManagementService
 {
+    private readonly IBusinessEventService _businessEventService;
     private readonly ApplicationDbContext _context;
     private readonly ILogger<OrderManagementService> _logger;
     private readonly IOrderAccessControlService _orderAccessControlService;
@@ -29,10 +31,12 @@ public class OrderManagementService : IOrderManagementService
         IRegistrationRetrievalService registrationRetrievalService,
         IRegistrationAccessControlService registrationAccessControlService,
         IProductRetrievalService productRetrievalService,
+        IBusinessEventService businessEventService,
         ApplicationDbContext context,
         ILogger<OrderManagementService> logger)
     {
         _orderAccessControlService = orderAccessControlService;
+        _businessEventService = businessEventService;
         _context = context;
         _registrationRetrievalService = registrationRetrievalService;
         _registrationAccessControlService = registrationAccessControlService;
@@ -68,7 +72,12 @@ public class OrderManagementService : IOrderManagementService
 
         await _orderAccessControlService.CheckOrderUpdateAccessAsync(order, cancellationToken);
 
-        order.SetStatus(Order.OrderStatus.Cancelled);
+        order.Status = Order.OrderStatus.Cancelled;
+
+        _businessEventService.AddEvent(
+            BusinessEventSubjects.ForOrder(order.Uuid),
+            "order.status.changed",
+            "Order cancelled");
 
         await _context.UpdateAsync(order, cancellationToken);
     }
@@ -157,7 +166,7 @@ public class OrderManagementService : IOrderManagementService
             PaymentMethod = registration.PaymentMethod,
             OrderLines = orderLinesMapped
         };
-        order.AddLog();
+        // Order creation is tracked at persistence level
 
         await _context.AddAsync(order, cancellationToken);
 
