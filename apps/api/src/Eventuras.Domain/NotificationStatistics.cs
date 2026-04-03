@@ -17,6 +17,7 @@ public class NotificationStatistics
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int NotificationStatisticsId { get; private set; }
+    public Guid Uuid { get; set; } = Guid.CreateVersion7();
 
     public int NotificationId { get; private set; }
 

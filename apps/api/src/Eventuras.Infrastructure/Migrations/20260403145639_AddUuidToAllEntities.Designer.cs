@@ -3,6 +3,7 @@ using System;
 using Eventuras.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NodaTime;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Eventuras.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260403145639_AddUuidToAllEntities")]
+    partial class AddUuidToAllEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -72,6 +75,10 @@ namespace Eventuras.Infrastructure.Migrations
 
                     b.Property<string>("JobRole")
                         .HasColumnType("text");
+
+                    b.Property<string>("Log")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
 
                     b.Property<string>("MiddleName")
                         .HasColumnType("text");
@@ -342,6 +349,9 @@ namespace Eventuras.Infrastructure.Migrations
                     b.Property<string>("ExternalInfoPageUrl")
                         .HasColumnType("text");
 
+                    b.Property<string>("ExternalRegistrationsUrl")
+                        .HasColumnType("text");
+
                     b.Property<bool>("Featured")
                         .HasColumnType("boolean");
 
@@ -365,6 +375,9 @@ namespace Eventuras.Infrastructure.Migrations
 
                     b.Property<string>("Location")
                         .HasColumnType("text");
+
+                    b.Property<bool>("ManageRegistrations")
+                        .HasColumnType("boolean");
 
                     b.Property<int>("MaxParticipants")
                         .HasColumnType("integer");
@@ -422,6 +435,103 @@ namespace Eventuras.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("EventInfos");
+                });
+
+            modelBuilder.Entity("Eventuras.Domain.ExternalAccount", b =>
+                {
+                    b.Property<int>("LocalId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("LocalId"));
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ExternalAccountId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ExternalServiceName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("RegistrationId")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("LocalId");
+
+                    b.HasIndex("RegistrationId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("ExternalServiceName", "ExternalAccountId")
+                        .IsUnique();
+
+                    b.ToTable("ExternalAccounts");
+                });
+
+            modelBuilder.Entity("Eventuras.Domain.ExternalEvent", b =>
+                {
+                    b.Property<int>("LocalId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("LocalId"));
+
+                    b.Property<int>("EventInfoId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ExternalEventId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ExternalServiceName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("LocalId");
+
+                    b.HasIndex("EventInfoId", "ExternalServiceName", "ExternalEventId")
+                        .IsUnique();
+
+                    b.ToTable("ExternalEvents");
+                });
+
+            modelBuilder.Entity("Eventuras.Domain.ExternalRegistration", b =>
+                {
+                    b.Property<int>("LocalId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("LocalId"));
+
+                    b.Property<int>("ExternalAccountId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ExternalEventId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ExternalRegistrationId")
+                        .HasColumnType("text");
+
+                    b.Property<int>("RegistrationId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("LocalId");
+
+                    b.HasIndex("ExternalEventId");
+
+                    b.HasIndex("RegistrationId");
+
+                    b.HasIndex("ExternalAccountId", "ExternalEventId")
+                        .IsUnique();
+
+                    b.ToTable("ExternalRegistrations");
                 });
 
             modelBuilder.Entity("Eventuras.Domain.Invoice", b =>
@@ -615,11 +725,20 @@ namespace Eventuras.Infrastructure.Migrations
                     b.Property<string>("CustomerVatNumber")
                         .HasColumnType("text");
 
+                    b.Property<string>("ExternalInvoiceId")
+                        .HasColumnType("text");
+
                     b.Property<int?>("InvoiceId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("Log")
+                        .HasColumnType("text");
+
                     b.Property<Instant>("OrderTime")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("Paid")
+                        .HasColumnType("boolean");
 
                     b.Property<int>("PaymentMethod")
                         .HasColumnType("integer");
@@ -1039,7 +1158,19 @@ namespace Eventuras.Infrastructure.Migrations
                     b.Property<bool>("FreeRegistration")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("Log")
+                        .HasColumnType("text");
+
                     b.Property<string>("Notes")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ParticipantCity")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ParticipantEmployer")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ParticipantJobTitle")
                         .HasColumnType("text");
 
                     b.Property<string>("ParticipantName")
@@ -1062,6 +1193,9 @@ namespace Eventuras.Infrastructure.Migrations
 
                     b.Property<Guid>("Uuid")
                         .HasColumnType("uuid");
+
+                    b.Property<bool>("Verified")
+                        .HasColumnType("boolean");
 
                     b.HasKey("RegistrationId");
 
@@ -1199,6 +1333,61 @@ namespace Eventuras.Infrastructure.Migrations
                     b.Navigation("Organization");
 
                     b.Navigation("OrganizerUser");
+                });
+
+            modelBuilder.Entity("Eventuras.Domain.ExternalAccount", b =>
+                {
+                    b.HasOne("Eventuras.Domain.Registration", "Registration")
+                        .WithMany("ExternalAccounts")
+                        .HasForeignKey("RegistrationId");
+
+                    b.HasOne("Eventuras.Domain.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Registration");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Eventuras.Domain.ExternalEvent", b =>
+                {
+                    b.HasOne("Eventuras.Domain.EventInfo", "EventInfo")
+                        .WithMany("ExternalEvents")
+                        .HasForeignKey("EventInfoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("EventInfo");
+                });
+
+            modelBuilder.Entity("Eventuras.Domain.ExternalRegistration", b =>
+                {
+                    b.HasOne("Eventuras.Domain.ExternalAccount", "ExternalAccount")
+                        .WithMany("ExternalRegistrations")
+                        .HasForeignKey("ExternalAccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Eventuras.Domain.ExternalEvent", "ExternalEvent")
+                        .WithMany("Registrations")
+                        .HasForeignKey("ExternalEventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Eventuras.Domain.Registration", "Registration")
+                        .WithMany("ExternalRegistrations")
+                        .HasForeignKey("RegistrationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ExternalAccount");
+
+                    b.Navigation("ExternalEvent");
+
+                    b.Navigation("Registration");
                 });
 
             modelBuilder.Entity("Eventuras.Domain.Notification", b =>
@@ -1439,8 +1628,20 @@ namespace Eventuras.Infrastructure.Migrations
                 {
                     b.Navigation("CollectionMappings");
 
+                    b.Navigation("ExternalEvents");
+
                     b.Navigation("Products");
 
+                    b.Navigation("Registrations");
+                });
+
+            modelBuilder.Entity("Eventuras.Domain.ExternalAccount", b =>
+                {
+                    b.Navigation("ExternalRegistrations");
+                });
+
+            modelBuilder.Entity("Eventuras.Domain.ExternalEvent", b =>
+                {
                     b.Navigation("Registrations");
                 });
 
@@ -1489,6 +1690,10 @@ namespace Eventuras.Infrastructure.Migrations
 
             modelBuilder.Entity("Eventuras.Domain.Registration", b =>
                 {
+                    b.Navigation("ExternalAccounts");
+
+                    b.Navigation("ExternalRegistrations");
+
                     b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618

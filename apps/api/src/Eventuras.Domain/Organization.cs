@@ -9,6 +9,7 @@ namespace Eventuras.Domain;
 public class Organization
 {
     public int OrganizationId { get; set; }
+    public Guid Uuid { get; set; } = Guid.CreateVersion7();
 
     [Required] public string Name { get; set; }
 

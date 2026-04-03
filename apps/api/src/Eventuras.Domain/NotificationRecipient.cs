@@ -41,6 +41,7 @@ public class NotificationRecipient
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int RecipientId { get; set; }
+    public Guid Uuid { get; set; } = Guid.CreateVersion7();
 
     public int NotificationId { get; set; }
 

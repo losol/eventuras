@@ -45,6 +45,7 @@ public class OrderLine
     }
 
     [Required] public int OrderLineId { get; set; }
+    public Guid Uuid { get; set; } = Guid.CreateVersion7();
 
     [Required][ForeignKey("Order")] public int OrderId { get; set; }
 

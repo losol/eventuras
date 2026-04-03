@@ -29,6 +29,7 @@ public abstract class Notification
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int NotificationId { get; set; }
+    public Guid Uuid { get; set; } = Guid.CreateVersion7();
 
     public int? OrganizationId { get; set; }
 

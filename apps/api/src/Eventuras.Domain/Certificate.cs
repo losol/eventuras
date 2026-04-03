@@ -15,8 +15,7 @@ public class Certificate
 
     [Key] public int CertificateId { get; set; }
 
-    public Guid CertificateGuid { get; set; } = Guid.CreateVersion7();
-    public Guid Auth { get; set; } = Guid.CreateVersion7();
+    public Guid Uuid { get; set; } = Guid.CreateVersion7();
     public CertificateStatus Status { get; set; } = CertificateStatus.Issued;
     public string StatusComment { get; set; }
 

@@ -71,7 +71,7 @@ public static class JsonElementExtensions
     public static void CheckCertificate(this JsonElement token, Certificate certificate)
     {
         Assert.Equal(certificate.CertificateId, token.GetValue<int>("certificateId"));
-        Assert.Equal(certificate.CertificateGuid.ToString(), token.GetValue<string>("certificateGuid"));
+        Assert.Equal(certificate.Uuid.ToString(), token.GetValue<string>("certificateGuid"));
         Assert.Equal(certificate.Title, token.GetValue<string>("title"));
         Assert.Equal(certificate.Description, token.GetValue<string>("description"));
         Assert.Equal(certificate.Comment, token.GetValue<string>("comment"));

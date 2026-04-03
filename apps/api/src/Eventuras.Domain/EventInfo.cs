@@ -30,6 +30,7 @@ public class EventInfo
     }
 
     public int EventInfoId { get; set; }
+    public Guid Uuid { get; set; } = Guid.CreateVersion7();
     public EventInfoStatus Status { get; set; } = EventInfoStatus.Draft;
     public EventInfoType Type { get; set; } = EventInfoType.Course;
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -10,6 +11,7 @@ public class EventCollection
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int CollectionId { get; set; }
+    public Guid Uuid { get; set; } = Guid.CreateVersion7();
 
     public int OrganizationId { get; set; }
 
