@@ -92,26 +92,6 @@ public class OrderLine
     public Product Product { get; set; }
     public ProductVariant ProductVariant { get; set; }
 
-    public OrderLine CreateRefundOrderLine()
-    {
-        if (IsRefund)
-        {
-            throw new InvalidOperationException("Cannot create a refund orderline for a refund orderline.");
-        }
-
-        return new OrderLine
-        {
-            OrderId = OrderId,
-            RefundOrderId = OrderId,
-            RefundOrderLineId = OrderLineId,
-            ProductName = $"Korreksjon for {ProductName} (Order #{OrderId})",
-            Price = Price,
-            Quantity = -Quantity,
-            VatPercent = VatPercent,
-            ProductId = ProductId,
-            ProductVariantId = ProductVariantId
-        };
-    }
 
     public override string ToString() => $"{ItemCode}×{Quantity}";
 }
