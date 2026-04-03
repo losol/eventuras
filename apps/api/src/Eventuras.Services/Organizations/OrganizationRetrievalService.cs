@@ -46,7 +46,7 @@ internal class OrganizationRetrievalService : IOrganizationRetrievalService
         }
 
         var query = _context.Organizations.AsNoTracking();
-        if (!user.IsPowerAdmin()) // Power admin can see all orgs.
+        if (!user.IsSystemAdmin()) // System admin can see all orgs.
         {
             query = query.HasOrganizationMember(user);
         }

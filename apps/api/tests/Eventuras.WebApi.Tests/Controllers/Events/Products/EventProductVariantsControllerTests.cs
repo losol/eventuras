@@ -80,7 +80,6 @@ public class EventProductVariantsControllerTests : IClassFixture<CustomWebApiApp
     [Theory]
     [InlineData(null)]
     [InlineData(Roles.Admin)]
-    [InlineData(Roles.SuperAdmin)]
     [InlineData(Roles.SystemAdmin)]
     public async Task Should_Allow_Authenticated_User_To_List_Product_Variants(string role)
     {
@@ -226,7 +225,6 @@ public class EventProductVariantsControllerTests : IClassFixture<CustomWebApiApp
     }
 
     [Theory]
-    [InlineData(Roles.SuperAdmin)]
     [InlineData(Roles.SystemAdmin)]
     public async Task Add_Should_Be_Available_For_Power_Users(string role)
     {
@@ -413,7 +411,6 @@ public class EventProductVariantsControllerTests : IClassFixture<CustomWebApiApp
     }
 
     [Theory]
-    [InlineData(Roles.SuperAdmin)]
     [InlineData(Roles.SystemAdmin)]
     public async Task Archive_Should_Be_Available_For_Power_Admin(string role)
     {

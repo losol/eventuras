@@ -24,7 +24,7 @@ public class RegistrationCertificateControllerTest : IClassFixture<CustomWebApiA
     public async Task Should_Return_NotFound_When_Sending_Non_Existing_Certificate()
     {
         var response = await _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin()
+            .AuthenticatedAsSystemAdmin()
             .PostAsync("/v3/registrations/1001/certificate/send");
         response.CheckNotFound();
     }
@@ -39,7 +39,7 @@ public class RegistrationCertificateControllerTest : IClassFixture<CustomWebApiA
         using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
 
         var response = await _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin()
+            .AuthenticatedAsSystemAdmin()
             .PostAsync($"/v3/registrations/{reg.Entity.RegistrationId}/certificate/send");
         response.CheckNotFound();
     }
@@ -151,7 +151,6 @@ public class RegistrationCertificateControllerTest : IClassFixture<CustomWebApiA
     }
 
     [Theory]
-    [InlineData(Roles.SuperAdmin)]
     [InlineData(Roles.SystemAdmin)]
     public async Task Should_Allow_Power_Admin_To_Send_Certificate(string role)
     {

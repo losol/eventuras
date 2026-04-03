@@ -99,7 +99,6 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
     }
 
     [Theory]
-    [InlineData(Roles.SuperAdmin)]
     [InlineData(Roles.SystemAdmin)]
     public async Task List_Should_Not_Limit_Orders_For_Power_Admin(string role)
     {
@@ -157,7 +156,7 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
         using var o1 = await scope.CreateOrderAsync(r1.Entity, user: user.Entity);
         using var o2 = await scope.CreateOrderAsync(r2.Entity, user: otherUser.Entity);
 
-        var client = _factory.CreateClient().AuthenticatedAsSuperAdmin();
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
         var response = await client.GetAsync($"/v3/orders?userId={user.Entity.Id}");
         var json = await response.CheckOk().AsTokenAsync();
         json.CheckPaging((t, o) => t.CheckOrder(o), o1.Entity);
@@ -179,7 +178,7 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
         using var o1 = await scope.CreateOrderAsync(r1.Entity);
         using var o2 = await scope.CreateOrderAsync(r2.Entity);
 
-        var client = _factory.CreateClient().AuthenticatedAsSuperAdmin();
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
         var response = await client.GetAsync($"/v3/orders?eventId={evt.Entity.EventInfoId}");
         var json = await response.CheckOk().AsTokenAsync();
         json.CheckPaging((t, o) => t.CheckOrder(o), o1.Entity);
@@ -201,7 +200,7 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
         using var o1 = await scope.CreateOrderAsync(r1.Entity, user: user.Entity);
         using var o2 = await scope.CreateOrderAsync(r2.Entity, user: otherUser.Entity);
 
-        var client = _factory.CreateClient().AuthenticatedAsSuperAdmin();
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
         var response = await client.GetAsync($"/v3/orders?registrationId={r1.Entity.RegistrationId}");
         var json = await response.CheckOk().AsTokenAsync();
         json.CheckPaging((t, o) => t.CheckOrder(o), o1.Entity);
@@ -223,7 +222,7 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
         using var o1 = await scope.CreateOrderAsync(r1.Entity, status: Order.OrderStatus.Verified);
         using var o2 = await scope.CreateOrderAsync(r2.Entity, status: Order.OrderStatus.Cancelled);
 
-        var client = _factory.CreateClient().AuthenticatedAsSuperAdmin();
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
         var response = await client.GetAsync("/v3/orders?status=verified");
         var json = await response.CheckOk().AsTokenAsync();
         json.CheckPaging((t, o) => t.CheckOrder(o), o1.Entity);
@@ -249,7 +248,7 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
         using var r2 = await scope.CreateRegistrationAsync(e2.Entity, u.Entity);
         using var o2 = await scope.CreateOrderAsync(r2.Entity);
 
-        var client = _factory.CreateClient().AuthenticatedAsSuperAdmin();
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
 
         var response = await client.GetAsync($"/v3/orders?organizationId={org1.Entity.OrganizationId}");
         var content = await response.CheckOkAndGetContentAsync<PageResponseDto<OrderDto>>();
@@ -268,7 +267,7 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
         using var r = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
         using var order = await scope.CreateOrderAsync(r.Entity, user: user.Entity);
 
-        var client = _factory.CreateClient().AuthenticatedAsSuperAdmin();
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
         var response = await client.GetAsync("/v3/orders");
         var json = await response.CheckOk().AsTokenAsync();
         json.CheckPaging((t, o) => t.CheckOrder(o, checkUserNull: true), order.Entity);
@@ -292,7 +291,7 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
         using var r = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
         using var order = await scope.CreateOrderAsync(r.Entity, user: user.Entity);
 
-        var client = _factory.CreateClient().AuthenticatedAsSuperAdmin();
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
         var response = await client.GetAsync("/v3/orders");
         var json = await response.CheckOk().AsTokenAsync();
         json.CheckPaging((t, o) => t.CheckOrder(o, checkRegistrationNull: true), order.Entity);
@@ -319,7 +318,7 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
         using var order = await scope.CreateOrderAsync(r.Entity, user: user.Entity,
             product: p.Entity, variant: v.Entity);
 
-        var client = _factory.CreateClient().AuthenticatedAsSuperAdmin();
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
         var response = await client.GetAsync("/v3/orders?includeUser=true&includeRegistration=true");
         var json = await response.CheckOk().AsTokenAsync();
         json.CheckPaging((t, o) => t.CheckOrder(o,
@@ -424,7 +423,6 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
     }
 
     [Theory]
-    [InlineData(Roles.SuperAdmin)]
     [InlineData(Roles.SystemAdmin)]
     public async Task Should_Allow_To_Cancel_Any_Order_For_Power_Admin(string role)
     {
@@ -529,7 +527,6 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
     }
 
     [Theory]
-    [InlineData(Roles.SuperAdmin)]
     [InlineData(Roles.SystemAdmin)]
     public async Task Should_Return_Any_Order_For_Power_Admin(string role)
     {
@@ -877,7 +874,6 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
     }
 
     [Theory]
-    [InlineData(Roles.SuperAdmin)]
     [InlineData(Roles.SystemAdmin)]
     public async Task Should_Allow_Power_Admin_To_Create_Any_Order(string role)
     {
@@ -1064,7 +1060,6 @@ public class OrdersControllerTest : IClassFixture<CustomWebApiApplicationFactory
     }
 
     [Theory]
-    [InlineData(Roles.SuperAdmin)]
     [InlineData(Roles.SystemAdmin)]
     public async Task Should_Allow_Power_Admin_To_Update_Any_Order(string role)
     {

@@ -117,7 +117,7 @@ internal class UserRetrievalService : IUserRetrievalService
                 return Paging.Empty<ApplicationUser>();
             }
 
-            if (!user.IsSuperAdmin())
+            if (!user.IsSystemAdmin())
             {
                 var organization =
                     await _currentOrganizationAccessorService.RequireCurrentOrganizationAsync(

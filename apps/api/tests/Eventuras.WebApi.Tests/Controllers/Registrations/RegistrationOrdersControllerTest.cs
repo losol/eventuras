@@ -194,7 +194,6 @@ public class RegistrationOrdersControllerTest : IClassFixture<CustomWebApiApplic
     }
 
     [Theory]
-    [InlineData(Roles.SuperAdmin)]
     [InlineData(Roles.SystemAdmin)]
     public async Task Should_Allow_Power_Admin_To_Create_Order_For_Any_Reg(string role)
     {
@@ -350,7 +349,6 @@ public class RegistrationOrdersControllerTest : IClassFixture<CustomWebApiApplic
     }
 
     [Theory]
-    [InlineData(Roles.SuperAdmin)]
     [InlineData(Roles.SystemAdmin)]
     public async Task Should_Allow_Power_Admin_To_List_Orders_For_Any_Reg(string role)
     {

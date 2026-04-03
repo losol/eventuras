@@ -128,7 +128,6 @@ public class NotificationsControllerTest : IClassFixture<CustomWebApiApplication
 
     [Theory]
     [InlineData(Roles.SystemAdmin)]
-    [InlineData(Roles.SuperAdmin)]
     public async Task Should_Allow_To_Get_Any_Notification_For_Power_Admin(string role)
     {
         using var scope = _factory.Services.NewTestScope();
@@ -189,7 +188,6 @@ public class NotificationsControllerTest : IClassFixture<CustomWebApiApplication
     }
 
     [Theory]
-    [InlineData(Roles.SuperAdmin)]
     [InlineData(Roles.SystemAdmin)]
     public async Task List_Should_Not_Limit_Output_For_Power_Admin(string role)
     {
@@ -268,7 +266,7 @@ public class NotificationsControllerTest : IClassFixture<CustomWebApiApplication
         using var n2 = await scope.CreateEmailNotificationAsync(eventInfo: e2.Entity);
         using var n3 = await scope.CreateEmailNotificationAsync();
 
-        var client = _factory.CreateClient().AuthenticatedAsSuperAdmin();
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
         var response = await client.GetAsync($"/v3/notifications?eventId={e1.Entity.EventInfoId}");
         var token = await response.CheckOk().AsTokenAsync();
         token.CheckPaging((t, n) => t.CheckNotification(n), n1.Entity);
@@ -289,7 +287,7 @@ public class NotificationsControllerTest : IClassFixture<CustomWebApiApplication
         using var n2 = await scope.CreateEmailNotificationAsync(product: p2.Entity);
         using var n3 = await scope.CreateEmailNotificationAsync();
 
-        var client = _factory.CreateClient().AuthenticatedAsSuperAdmin();
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
         var response = await client.GetAsync($"/v3/notifications?productId={p1.Entity.ProductId}");
         var token = await response.CheckOk().AsTokenAsync();
         token.CheckPaging((t, n) => t.CheckNotification(n), n1.Entity);
@@ -307,7 +305,7 @@ public class NotificationsControllerTest : IClassFixture<CustomWebApiApplication
         using var n2 = await scope.CreateEmailNotificationAsync(status: NotificationStatus.Cancelled);
         using var n3 = await scope.CreateEmailNotificationAsync();
 
-        var client = _factory.CreateClient().AuthenticatedAsSuperAdmin();
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
         var response = await client.GetAsync("/v3/notifications?status=sent");
         var token = await response.CheckOk().AsTokenAsync();
         token.CheckPaging((t, n) => t.CheckNotification(n), n1.Entity);
@@ -325,7 +323,7 @@ public class NotificationsControllerTest : IClassFixture<CustomWebApiApplication
         using var n1 = await scope.CreateEmailNotificationAsync(eventInfo: evt.Entity);
         using var n2 = await scope.CreateSmsNotificationAsync(eventInfo: evt.Entity);
 
-        var client = _factory.CreateClient().AuthenticatedAsSuperAdmin();
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
         var response = await client.GetAsync($"/v3/notifications?eventId={evt.Entity.EventInfoId}&type=email");
         var token = await response.CheckOk().AsTokenAsync();
         token.CheckPaging((t, n) => t.CheckNotification(n), n1.Entity);
@@ -345,7 +343,7 @@ public class NotificationsControllerTest : IClassFixture<CustomWebApiApplication
         using var n2 = await scope.CreateEmailNotificationAsync(recipientUsers: new[] { u2.Entity });
         using var n3 = await scope.CreateEmailNotificationAsync();
 
-        var client = _factory.CreateClient().AuthenticatedAsSuperAdmin();
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
         var response = await client.GetAsync($"/v3/notifications?recipientUserId={u1.Entity.Id}");
         var token = await response.CheckOk().AsTokenAsync();
         token.CheckPaging((t, n) => t.CheckNotification(n), n1.Entity);
@@ -364,7 +362,7 @@ public class NotificationsControllerTest : IClassFixture<CustomWebApiApplication
         using var n2 = await scope.CreateEmailNotificationAsync(eventInfo: evt.Entity);
         using var n3 = await scope.CreateEmailNotificationAsync(eventInfo: evt.Entity);
 
-        var client = _factory.CreateClient().AuthenticatedAsSuperAdmin();
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
         var response = await client.GetAsync($"/v3/notifications?eventId={evt.Entity.EventInfoId}&page=1&count=2");
         var token = await response.CheckOk().AsTokenAsync();
         token.CheckPaging(1, 3, (t, n) => t.CheckNotification(n),
@@ -393,7 +391,7 @@ public class NotificationsControllerTest : IClassFixture<CustomWebApiApplication
         n1.Entity.Status = NotificationStatus.Sent;
         await scope.Db.UpdateAsync(n1.Entity);
 
-        var client = _factory.CreateClient().AuthenticatedAsSuperAdmin();
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
         var response = await client.GetAsync($"/v3/notifications?eventId={evt.Entity.EventInfoId}&order=created");
         var token = await response.CheckOk().AsTokenAsync();
         token.CheckPaging((t, n) => t.CheckNotification(n),

@@ -18,7 +18,7 @@ public interface IEventInfoRetrievalService
         CancellationToken cancellationToken = default);
 
     /// <summary>
-    ///     List all accessible events. <see cref="Roles.SuperAdmin" /> can see all events. Others may only see
+    ///     List all accessible events. <see cref="Roles.SystemAdmin" /> can see all events. Others may only see
     ///     events related to the current org, or events without org.
     /// </summary>
     Task<Paging<EventInfo>> ListEventsAsync(

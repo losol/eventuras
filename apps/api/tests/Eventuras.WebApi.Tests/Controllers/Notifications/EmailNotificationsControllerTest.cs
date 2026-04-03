@@ -54,7 +54,7 @@ public class EmailNotificationsControllerTest : IClassFixture<CustomWebApiApplic
     [MemberData(nameof(GetInvalidBodyParams))]
     public async Task Should_Return_BadRequest_For_Invalid_Email_Body(object body)
     {
-        var client = _factory.CreateClient().AuthenticatedAsSuperAdmin();
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
         var response = await client.PostAsync("/v3/notifications/email", body);
         response.CheckBadRequest();
     }

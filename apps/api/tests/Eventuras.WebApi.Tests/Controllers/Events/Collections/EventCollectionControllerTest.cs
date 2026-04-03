@@ -120,7 +120,6 @@ public class EventCollectionControllerTest : IClassFixture<CustomWebApiApplicati
     }
 
     [Theory]
-    [InlineData(Roles.SuperAdmin)]
     [InlineData(Roles.SystemAdmin)]
     public async Task Should_Allow_To_Create_New_Collection_To_Power_Admin(string role)
     {
@@ -299,7 +298,6 @@ public class EventCollectionControllerTest : IClassFixture<CustomWebApiApplicati
     }
 
     [Theory]
-    [InlineData(Roles.SuperAdmin)]
     [InlineData(Roles.SystemAdmin)]
     public async Task Should_Allow_To_Update_Collection_To_Power_Admin(string role)
     {
@@ -466,7 +464,6 @@ public class EventCollectionControllerTest : IClassFixture<CustomWebApiApplicati
     }
 
     [Theory]
-    [InlineData(Roles.SuperAdmin)]
     [InlineData(Roles.SystemAdmin)]
     public async Task Should_Allow_To_Delete_Collection_To_Power_Admin(string role)
     {

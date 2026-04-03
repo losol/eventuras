@@ -117,7 +117,7 @@ internal class EventCollectionMappingService : IEventCollectionMappingService
             return false;
         }
 
-        if (principal.IsPowerAdmin())
+        if (principal.IsSystemAdmin())
         {
             return true;
         }

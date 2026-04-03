@@ -76,7 +76,6 @@ public class OrganizationSettingsControllerTest : IClassFixture<CustomWebApiAppl
     }
 
     [Theory]
-    [InlineData(Roles.SuperAdmin)]
     [InlineData(Roles.SystemAdmin)]
     public async Task List_Should_Return_Settings_For_Power_Admin(string role)
     {
@@ -169,7 +168,7 @@ public class OrganizationSettingsControllerTest : IClassFixture<CustomWebApiAppl
         using var scope = _factory.Services.NewTestScope();
         using var org = await scope.CreateOrganizationAsync();
         var response = await _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin()
+            .AuthenticatedAsSystemAdmin()
             .PutAsync($"/v3/organizations/{org.Entity.OrganizationId}/settings");
         response.CheckBadRequest();
     }
@@ -191,7 +190,7 @@ public class OrganizationSettingsControllerTest : IClassFixture<CustomWebApiAppl
     {
         using var scope = _factory.Services.NewTestScope();
         var response = await _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin()
+            .AuthenticatedAsSystemAdmin()
             .PutAsync("/v3/organizations/1111/settings",
                 new { name = "any" });
         response.CheckNotFound();
@@ -303,7 +302,6 @@ public class OrganizationSettingsControllerTest : IClassFixture<CustomWebApiAppl
 
     [Theory]
     [InlineData(Roles.SystemAdmin)]
-    [InlineData(Roles.SuperAdmin)]
     public async Task Update_Should_Be_Available_To_Power_Admin(string role)
     {
         using var scope = _factory.Services.NewTestScope();
@@ -331,7 +329,7 @@ public class OrganizationSettingsControllerTest : IClassFixture<CustomWebApiAppl
         Assert.False(await scope.Db.OrganizationSettings.AnyAsync());
 
         var client = _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin();
+            .AuthenticatedAsSystemAdmin();
 
         await client.CheckSettingReturnedAsync(org,
             OrgSettingsTestRegistryComponent.StringKey, null);
@@ -367,7 +365,7 @@ public class OrganizationSettingsControllerTest : IClassFixture<CustomWebApiAppl
                 "initial");
 
         var client = _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin();
+            .AuthenticatedAsSystemAdmin();
 
         await client.CheckSettingReturnedAsync(org,
             OrgSettingsTestRegistryComponent.StringKey, "initial"); // cache current value
@@ -409,7 +407,7 @@ public class OrganizationSettingsControllerTest : IClassFixture<CustomWebApiAppl
         await scope.Db.SaveChangesAsync();
 
         var client = _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin();
+            .AuthenticatedAsSystemAdmin();
 
         await client.CheckSettingReturnedAsync(org,
             OrgSettingsTestRegistryComponent.StringKey, "initial"); // cache current value
@@ -442,7 +440,7 @@ public class OrganizationSettingsControllerTest : IClassFixture<CustomWebApiAppl
         await scope.Db.SaveChangesAsync();
 
         var client = _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin();
+            .AuthenticatedAsSystemAdmin();
 
         var response = await client
             .PutAsync($"/v3/organizations/{org.Entity.OrganizationId}/settings",
@@ -478,7 +476,7 @@ public class OrganizationSettingsControllerTest : IClassFixture<CustomWebApiAppl
         using var scope = _factory.Services.NewTestScope();
         using var org = await scope.CreateOrganizationAsync();
         var response = await _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin()
+            .AuthenticatedAsSystemAdmin()
             .PostAsync($"/v3/organizations/{org.Entity.OrganizationId}/settings");
         response.CheckBadRequest();
     }
@@ -489,7 +487,7 @@ public class OrganizationSettingsControllerTest : IClassFixture<CustomWebApiAppl
         using var scope = _factory.Services.NewTestScope();
         using var org = await scope.CreateOrganizationAsync();
         var response = await _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin()
+            .AuthenticatedAsSystemAdmin()
             .PostAsync($"/v3/organizations/{org.Entity.OrganizationId}/settings",
                 Array.Empty<object>());
         response.CheckBadRequest();
@@ -512,7 +510,7 @@ public class OrganizationSettingsControllerTest : IClassFixture<CustomWebApiAppl
     {
         using var scope = _factory.Services.NewTestScope();
         var response = await _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin()
+            .AuthenticatedAsSystemAdmin()
             .PostAsync("/v3/organizations/1111/settings",
                 new[] { new { name = "any" } });
         response.CheckNotFound();
@@ -596,7 +594,6 @@ public class OrganizationSettingsControllerTest : IClassFixture<CustomWebApiAppl
 
     [Theory]
     [InlineData(Roles.SystemAdmin)]
-    [InlineData(Roles.SuperAdmin)]
     public async Task Batch_Update_Should_Be_Available_To_Power_Admin(string role)
     {
         using var scope = _factory.Services.NewTestScope();

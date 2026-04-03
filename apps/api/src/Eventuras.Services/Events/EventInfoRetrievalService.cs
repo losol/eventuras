@@ -75,7 +75,7 @@ internal class EventInfoRetrievalService : IEventInfoRetrievalService
                 : query.HavingOrganization(organization);
         }
 
-        if (!principal.IsPowerAdmin())
+        if (!principal.IsSystemAdmin())
         {
             var organization = await _currentOrganizationAccessorService
                 .GetCurrentOrganizationAsync(null, cancellationToken);

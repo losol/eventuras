@@ -24,8 +24,6 @@ internal static class HttpClientExtensions
     public static HttpClient AuthenticatedAsSystemAdmin(this HttpClient httpClient) =>
         httpClient.Authenticated(role: Roles.SystemAdmin);
 
-    public static HttpClient AuthenticatedAsSuperAdmin(this HttpClient httpClient) =>
-        httpClient.Authenticated(role: Roles.SuperAdmin);
 
     public static HttpClient AuthenticatedAs(this HttpClient httpClient, ApplicationUser user,
         params string[] roles) =>

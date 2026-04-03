@@ -41,7 +41,7 @@ public class EventCollectionAccessControlService : IEventCollectionAccessControl
             throw new NotAccessibleException("Event collection may be updated by admin only.");
         }
 
-        if (principal.IsPowerAdmin())
+        if (principal.IsSystemAdmin())
         {
             return;
         }
@@ -61,7 +61,7 @@ public class EventCollectionAccessControlService : IEventCollectionAccessControl
         CancellationToken cancellationToken = default)
     {
         var principal = _httpContextAccessor.HttpContext.User;
-        if (principal.IsPowerAdmin() || principal.IsAnonymous())
+        if (principal.IsSystemAdmin() || principal.IsAnonymous())
         {
             return query;
         }

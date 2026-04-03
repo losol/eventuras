@@ -57,9 +57,9 @@ internal class NotificationAccessControlService(
     {
         var user = GetContextUser();
 
-        if (user.IsPowerAdmin())
+        if (user.IsSystemAdmin())
         {
-            return query; // power admin can see all notifications
+            return query; // system admin can see all notifications
         }
 
         var userId = user.GetUserId();
