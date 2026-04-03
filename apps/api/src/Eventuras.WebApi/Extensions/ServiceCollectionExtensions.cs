@@ -79,10 +79,8 @@ public static class ServiceCollectionExtensions
         });
     }
 
-    public static void ConfigureDbInitializationStrategy(this IServiceCollection services,
-        IConfiguration config)
+    public static void ConfigureDbInitializationStrategy(this IServiceCollection services)
     {
-        services.Configure<DbInitializerOptions>(config);
         services.AddScoped<IDbInitializer, DbInitializer>();
     }
 
