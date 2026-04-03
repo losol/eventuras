@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.22
+# syntax=docker/dockerfile:1.23
 # Dockerfile for idem-admin (Eventuras Identity Admin)
 #
 # Build from monorepo root:
