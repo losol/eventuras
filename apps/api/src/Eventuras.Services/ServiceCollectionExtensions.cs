@@ -1,4 +1,5 @@
 using Eventuras.Services.Auth;
+using Eventuras.Services.BusinessEvents;
 using Eventuras.Services.Certificates;
 using Eventuras.Services.EventCollections;
 using Eventuras.Services.Events;
@@ -32,6 +33,7 @@ public static class ServiceCollectionExtensions
         services.AddOrderServices();
         services.AddInvoicingServices();
         services.AddExternalSyncServices();
+        services.AddBusinessEventServices();
         services.AddViewServices();
         return services;
     }

@@ -31,6 +31,7 @@ public class Registration
     }
 
     public int RegistrationId { get; set; }
+    public Guid Uuid { get; set; } = Guid.CreateVersion7();
     public int EventInfoId { get; set; }
     public string UserId { get; set; }
 

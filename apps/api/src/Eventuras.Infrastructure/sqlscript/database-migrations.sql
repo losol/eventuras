@@ -1624,3 +1624,112 @@ BEGIN
 END $EF$;
 COMMIT;
 
+START TRANSACTION;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260402233733_AddBusinessEvent') THEN
+    CREATE TABLE "BusinessEvents" (
+        "Uuid" uuid NOT NULL,
+        "CreatedAt" timestamp with time zone NOT NULL,
+        "EventType" text NOT NULL,
+        "SubjectType" text NOT NULL,
+        "SubjectUuid" uuid NOT NULL,
+        "ActorUserUuid" uuid,
+        "Message" text NOT NULL,
+        "MetadataJson" text,
+        CONSTRAINT "PK_BusinessEvents" PRIMARY KEY ("Uuid")
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260402233733_AddBusinessEvent') THEN
+    CREATE INDEX "IX_BusinessEvents_ActorUserUuid" ON "BusinessEvents" ("ActorUserUuid");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260402233733_AddBusinessEvent') THEN
+    CREATE INDEX "IX_BusinessEvents_CreatedAt" ON "BusinessEvents" ("CreatedAt");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260402233733_AddBusinessEvent') THEN
+    CREATE INDEX "IX_BusinessEvents_EventType" ON "BusinessEvents" ("EventType");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260402233733_AddBusinessEvent') THEN
+    CREATE INDEX "IX_BusinessEvents_SubjectType_SubjectUuid" ON "BusinessEvents" ("SubjectType", "SubjectUuid");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260402233733_AddBusinessEvent') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20260402233733_AddBusinessEvent', '10.0.5');
+    END IF;
+END $EF$;
+COMMIT;
+
+START TRANSACTION;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260402235944_AddUuidToOrderAndRegistration') THEN
+    ALTER TABLE "Registrations" ADD "Uuid" uuid NOT NULL DEFAULT (uuidv7());
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260402235944_AddUuidToOrderAndRegistration') THEN
+    ALTER TABLE "Orders" ADD "Uuid" uuid NOT NULL DEFAULT (uuidv7());
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260402235944_AddUuidToOrderAndRegistration') THEN
+    UPDATE "Registrations" SET "Uuid" = uuidv7();
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260402235944_AddUuidToOrderAndRegistration') THEN
+    UPDATE "Orders" SET "Uuid" = uuidv7();
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260402235944_AddUuidToOrderAndRegistration') THEN
+    CREATE UNIQUE INDEX "IX_Registrations_Uuid" ON "Registrations" ("Uuid");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260402235944_AddUuidToOrderAndRegistration') THEN
+    CREATE UNIQUE INDEX "IX_Orders_Uuid" ON "Orders" ("Uuid");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260402235944_AddUuidToOrderAndRegistration') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20260402235944_AddUuidToOrderAndRegistration', '10.0.5');
+    END IF;
+END $EF$;
+COMMIT;
+

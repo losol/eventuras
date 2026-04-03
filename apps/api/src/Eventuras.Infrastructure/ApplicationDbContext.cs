@@ -38,6 +38,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<EventCollection> EventCollections { get; set; }
     public DbSet<EventCollectionMapping> EventCollectionMappings { get; set; }
     public DbSet<OrganizationSetting> OrganizationSettings { get; set; }
+    public DbSet<BusinessEvent> BusinessEvents { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -113,6 +114,22 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         builder.Entity<NotificationStatistics>()
             .HasIndex(s => s.NotificationId)
             .IsUnique();
+
+        builder.Entity<Order>()
+            .HasIndex(x => x.Uuid)
+            .IsUnique();
+
+        builder.Entity<Registration>()
+            .HasIndex(x => x.Uuid)
+            .IsUnique();
+
+        builder.Entity<BusinessEvent>(entity =>
+        {
+            entity.HasIndex(x => x.CreatedAt);
+            entity.HasIndex(x => new { x.SubjectType, x.SubjectUuid });
+            entity.HasIndex(x => x.EventType);
+            entity.HasIndex(x => x.ActorUserUuid);
+        });
     }
 
     public void DetachAllEntities()
