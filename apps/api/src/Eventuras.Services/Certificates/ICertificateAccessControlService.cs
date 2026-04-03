@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Domain;
@@ -14,5 +15,13 @@ public interface ICertificateAccessControlService
     /// <exception cref="Exceptions.NotAccessibleException">Certificate is not accessible for update.</exception>
     Task CheckCertificateUpdateAccessAsync(
         Certificate certificate,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     Filters the given query to only return certificates accessible by the current user.
+    /// </summary>
+    /// <exception cref="Exceptions.NotAccessibleException">Anonymous access is not permitted.</exception>
+    Task<IQueryable<Certificate>> AddAccessFilterAsync(
+        IQueryable<Certificate> query,
         CancellationToken cancellationToken = default);
 }
