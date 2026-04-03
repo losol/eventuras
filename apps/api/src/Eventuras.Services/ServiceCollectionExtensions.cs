@@ -19,7 +19,6 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddCoreServices(this IServiceCollection services)
     {
         services.AddScoped<IUserAccessControlService, UserAccessControlService>();
-        services.AddScoped<IPaymentMethodService, PaymentMethodService>();
         services.AddScoped<IProductsService, ProductsService>();
         services.AddRegistrationServices();
         services.AddNotificationServices();
