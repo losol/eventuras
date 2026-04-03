@@ -37,9 +37,9 @@ Requires minor refactoring:
 
 - `Log` — migrate existing entries to `BusinessEvents` table, then drop column. Remove from `OrderDto`. Remove copy logic in `OrderRetrievalService`.
 
-Deferred (separate PR):
+Kept (not deprecated):
 
-- `CustomerName`, `CustomerEmail`, `CustomerVatNumber`, `CustomerInvoiceReference` — heavily used in the invoicing pipeline (InvoiceInfo, PowerOffice, Stripe). Removing requires refactoring invoicing services to read from Registration instead. Too much risk to change in this batch.
+- `CustomerName`, `CustomerEmail`, `CustomerVatNumber`, `CustomerInvoiceReference` — intentional denormalization. These snapshot the customer details at order creation time and are used by the invoicing pipeline.
 
 ### Remove deprecated ApplicationUser fields
 
@@ -86,7 +86,6 @@ The v3 API preserves all existing DTO fields to avoid breaking clients:
 
 ### Negative
 
-- Order customer fields deferred — still have `[Obsolete]` properties
 - DTO shims for Log/ManageRegistrations/ExternalRegistrationsUrl add minor complexity until v4
 
 ## Migration
