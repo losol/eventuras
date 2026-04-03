@@ -45,7 +45,7 @@ public class CustomWebApiApplicationFactory<TStartup> : WebApplicationFactory<TS
 
     private class TestDbInitializer : IDbInitializer
     {
-        public Task SeedAsync(bool createSuperAdmin = true, bool runMigrations = false) =>
+        public Task SeedAsync(bool runMigrations = false) =>
             Task.CompletedTask;
     }
 
