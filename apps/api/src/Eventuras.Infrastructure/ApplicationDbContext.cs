@@ -66,12 +66,6 @@ public class ApplicationDbContext : DbContext
         builder.Entity<OrganizationSetting>()
             .HasKey(s => new { s.OrganizationId, s.Name });
 
-        // TODO: uncomment sometimes after db cleanup
-        // builder.Entity<EventInfo>()
-        //     .HasIndex(o => o.Code)
-        //     .HasFilter($@"""{nameof(EventInfo.Archived)}"" = false")
-        //     .IsUnique();
-
         var eventInfo = builder.Entity<EventInfo>();
         eventInfo.OwnsOne(e => e.Options,
             b1 =>
