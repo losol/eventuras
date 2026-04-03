@@ -3,6 +3,7 @@ using System;
 using Eventuras.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NodaTime;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Eventuras.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260402233733_AddBusinessEvent")]
+    partial class AddBusinessEvent
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -733,9 +736,6 @@ namespace Eventuras.Infrastructure.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("Uuid")
-                        .HasColumnType("uuid");
-
                     b.HasKey("OrderId");
 
                     b.HasIndex("InvoiceId");
@@ -743,9 +743,6 @@ namespace Eventuras.Infrastructure.Migrations
                     b.HasIndex("RegistrationId");
 
                     b.HasIndex("UserId");
-
-                    b.HasIndex("Uuid")
-                        .IsUnique();
 
                     b.ToTable("Orders");
                 });
@@ -1142,9 +1139,6 @@ namespace Eventuras.Infrastructure.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("Uuid")
-                        .HasColumnType("uuid");
-
                     b.Property<bool>("Verified")
                         .HasColumnType("boolean");
 
@@ -1155,9 +1149,6 @@ namespace Eventuras.Infrastructure.Migrations
                     b.HasIndex("EventInfoId");
 
                     b.HasIndex("UserId");
-
-                    b.HasIndex("Uuid")
-                        .IsUnique();
 
                     b.ToTable("Registrations");
                 });

@@ -71,14 +71,14 @@ public class BusinessEvent
 {
     public Guid Uuid { get; set; } = Guid.CreateVersion7();
 
-    public Instant Timestamp { get; set; } = SystemClock.Instance.GetCurrentInstant();
+    public Instant CreatedAt { get; set; } = SystemClock.Instance.GetCurrentInstant();
 
     public string EventType { get; set; } = string.Empty;
     
     public string SubjectType { get; set; } = string.Empty;
     public Guid SubjectUuid { get; set; }
 
-    public string? ActorUserId { get; set; }
+    public Guid? ActorUserUuid { get; set; }
 
     public string Message { get; set; } = string.Empty;
     
@@ -115,13 +115,12 @@ public static class BusinessEventSubjects
 ```csharp
 public interface IBusinessEventService
 {
-    Task AddEventAsync(
+    void AddEvent(
         BusinessEventSubject subject,
         string eventType,
         string message,
-        string? actorUserId = null,
-        object? metadata = null,
-        CancellationToken cancellationToken = default);
+        Guid? actorUserUuid = null,
+        object? metadata = null);
 }
 ```
 
@@ -130,20 +129,19 @@ public interface IBusinessEventService
 ```csharp
 public class BusinessEventService : IBusinessEventService
 {
-    private readonly EventurasDbContext _dbContext;
+    private readonly ApplicationDbContext _dbContext;
 
-    public BusinessEventService(EventurasDbContext dbContext)
+    public BusinessEventService(ApplicationDbContext dbContext)
     {
         _dbContext = dbContext;
     }
 
-    public async Task AddEventAsync(
+    public void AddEvent(
         BusinessEventSubject subject,
         string eventType,
         string message,
-        string? actorUserId = null,
-        object? metadata = null,
-        CancellationToken cancellationToken = default)
+        Guid? actorUserUuid = null,
+        object? metadata = null)
     {
         var entity = new BusinessEvent
         {
@@ -151,14 +149,13 @@ public class BusinessEventService : IBusinessEventService
             Message = message,
             SubjectType = subject.Type,
             SubjectUuid = subject.Uuid,
-            ActorUserId = actorUserId,
+            ActorUserUuid = actorUserUuid,
             MetadataJson = metadata is null
                 ? null
                 : JsonSerializer.Serialize(metadata)
         };
 
         _dbContext.BusinessEvents.Add(entity);
-        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 }
 ```
@@ -166,12 +163,14 @@ public class BusinessEventService : IBusinessEventService
 # Appendix E: Example usage
 
 ```csharp
-await businessEventService.AddEventAsync(
+// Calling service owns SaveChangesAsync — event is persisted in the same transaction
+businessEventService.AddEvent(
     BusinessEventSubjects.ForOrder(order.OrderUuid),
     "order.verified",
     "Order was verified",
-    actorUserId: currentUserId,
-    cancellationToken: cancellationToken);
+    actorUserUuid: currentUserUuid);
+
+await _dbContext.SaveChangesAsync(cancellationToken);
 ```
 
 # Appendix F: Indexing strategy (EF Core)
@@ -179,7 +178,7 @@ await businessEventService.AddEventAsync(
 ```csharp
 modelBuilder.Entity<BusinessEvent>(entity =>
 {
-    entity.HasIndex(x => x.Timestamp);
+    entity.HasIndex(x => x.CreatedAt);
 
     entity.HasIndex(x => new
     {
@@ -189,13 +188,13 @@ modelBuilder.Entity<BusinessEvent>(entity =>
 
     entity.HasIndex(x => x.EventType);
 
-    entity.HasIndex(x => x.ActorUserId);
+    entity.HasIndex(x => x.ActorUserUuid);
 });
 ```
 
 # Appendix G: Notes
 
-- `Timestamp` uses NodaTime (`Instant`)
+- `CreatedAt` uses NodaTime (`Instant`)
 - `MetadataJson` is optional and should be versioned if needed
 - Keep initial implementation minimal
 - Avoid over-engineering event taxonomy early

@@ -31,6 +31,7 @@ public class Order
 
 
     [Required] public int OrderId { get; set; }
+    public Guid Uuid { get; set; } = Guid.CreateVersion7();
     public string UserId { get; set; }
     public int RegistrationId { get; set; }
 
