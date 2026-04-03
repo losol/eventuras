@@ -83,16 +83,10 @@ public class Order
         }
     }
 
-    [Obsolete("Use Registration Participant details")]
+    // Snapshot of customer details at order creation time
     public string CustomerName { get; set; }
-
-    [Obsolete("Use Registration Participant details")]
     public string CustomerEmail { get; set; }
-
-    [Obsolete("Use Registration Participant details")]
     public string CustomerVatNumber { get; set; }
-
-    [Obsolete("Use Registration Participant details")]
     public string CustomerInvoiceReference { get; set; }
 
     public PaymentProvider PaymentMethod { get; set; }
