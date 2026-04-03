@@ -22,8 +22,7 @@ Properties with no usage outside the domain entity:
 
 Properties still referenced in services/controllers (requires minor refactoring):
 
-- `Log` (jsonb) — rename column to `Archived_RegistrationLog`. Remove `AddLog()` method. Remove from `RegistrationDto`. Remove `AddLog` calls in `RegistrationPatchDto` and `RegistrationsController`.
-- `AddLog()` — delete
+- `Log` — migrate existing entries to `BusinessEvents` table, then drop column. Remove `AddLog()` method. Remove from `RegistrationDto`. Remove `AddLog` calls in `RegistrationPatchDto` and `RegistrationsController`.
 
 ### Remove deprecated Order fields
 
@@ -36,7 +35,7 @@ Safe to remove (no service usage):
 
 Requires minor refactoring:
 
-- `Log` (jsonb) — rename column to `Archived_OrderLog`. Remove from `OrderDto`. Remove copy logic in `OrderRetrievalService`.
+- `Log` — migrate existing entries to `BusinessEvents` table, then drop column. Remove from `OrderDto`. Remove copy logic in `OrderRetrievalService`.
 
 Deferred (separate PR):
 
@@ -44,7 +43,7 @@ Deferred (separate PR):
 
 ### Remove deprecated ApplicationUser fields
 
-- `Log` (jsonb) — rename column to `Archived_UserLog`. Remove `AddLog()` method.
+- `Log` (jsonb) — migrate existing entries to `BusinessEvents` table, then drop column. Remove `AddLog()` method.
 
 ### Remove deprecated EventInfo fields
 
@@ -65,6 +64,15 @@ The ExternalSync feature (`ExternalAccount`, `ExternalEvent`, `ExternalRegistrat
 
 Change `Certificate.CertificateGuid` and `Certificate.Auth` from `Guid.NewGuid()` to `Guid.CreateVersion7()` for consistency.
 
+### API backwards compatibility
+
+The v3 API preserves all existing DTO fields to avoid breaking clients:
+
+- `RegistrationDto.Log` — populated from `BusinessEvents` where `SubjectType = 'Registration'` (read-only, will be removed in v4)
+- `OrderDto.Log` — populated from `BusinessEvents` where `SubjectType = 'Order'` (read-only, will be removed in v4)
+- `EventFormDto.ManageRegistrations` — hardcoded to `true` in responses, ignored on input
+- `EventFormDto.ExternalRegistrationsUrl` — hardcoded to `""` in responses, ignored on input
+
 ## Consequences
 
 ### Positive
@@ -73,20 +81,71 @@ Change `Certificate.CertificateGuid` and `Certificate.Auth` from `Guid.NewGuid()
 - 3 unused tables archived
 - Dead ExternalSync service layer removed (~8 files)
 - Cleaner domain model with no `[Obsolete]` noise
-- Log data preserved via `Archived_*` column renames
+- Legacy log data migrated to `BusinessEvents` — queryable and structured
+- No breaking API changes for v3 clients
 
 ### Negative
 
-- Breaking API changes (fields removed from DTOs)
 - Order customer fields deferred — still have `[Obsolete]` properties
+- DTO shims for Log/ManageRegistrations/ExternalRegistrationsUrl add minor complexity until v4
 
 ## Migration
 
 One EF migration that:
 
-1. Drops columns for removed properties
-2. Renames jsonb Log columns to `Archived_*` (preserving data)
-3. Renames ExternalSync tables to `Archived_*`
+1. Migrates legacy Log data to `BusinessEvents` table (see below)
+2. Drops Log columns after migration
+3. Drops columns for other removed properties
+4. Renames ExternalSync tables to `Archived_*`
+
+### Log data migration SQL
+
+The migration converts JSON log arrays from three entities into structured `BusinessEvents` rows. Each log entry becomes one `BusinessEvent` with `EventType = 'legacy.log'`.
+
+**ApplicationUser.Log** (jsonb, array of objects with Timestamp/Message/UserId/Level):
+
+```sql
+INSERT INTO "BusinessEvents" ("Uuid", "CreatedAt", "EventType", "SubjectType", "SubjectUuid", "ActorUserUuid", "Message", "MetadataJson")
+SELECT gen_random_uuid(),
+       COALESCE((elem->>'Timestamp')::timestamptz, NOW()) AT TIME ZONE 'UTC',
+       'legacy.log',
+       'User',
+       "Id",
+       CASE WHEN elem->>'UserId' IS NOT NULL AND elem->>'UserId' != ''
+            THEN (elem->>'UserId')::uuid ELSE NULL END,
+       COALESCE(elem->>'Message', ''),
+       jsonb_build_object('level', elem->>'Level', 'source', 'ApplicationUser.Log')
+FROM "Users", jsonb_array_elements("Log") AS elem
+WHERE "Log" IS NOT NULL AND "Log" != '[]';
+```
+
+**Registration.Log** and **Order.Log** (text columns containing JSON arrays):
+
+```sql
+INSERT INTO "BusinessEvents" ("Uuid", "CreatedAt", "EventType", "SubjectType", "SubjectUuid", "Message", "MetadataJson")
+SELECT gen_random_uuid(),
+       COALESCE((elem->>'Timestamp')::timestamptz, NOW()) AT TIME ZONE 'UTC',
+       'legacy.log',
+       'Registration',
+       "Uuid",
+       COALESCE(elem->>'Text', elem->>'Message', ''),
+       jsonb_build_object('source', 'Registration.Log')
+FROM "Registrations", jsonb_array_elements("Log"::jsonb) AS elem
+WHERE "Log" IS NOT NULL AND "Log" != '' AND "Log" != '[]';
+
+INSERT INTO "BusinessEvents" ("Uuid", "CreatedAt", "EventType", "SubjectType", "SubjectUuid", "Message", "MetadataJson")
+SELECT gen_random_uuid(),
+       COALESCE((elem->>'Timestamp')::timestamptz, NOW()) AT TIME ZONE 'UTC',
+       'legacy.log',
+       'Order',
+       "Uuid",
+       COALESCE(elem->>'Text', elem->>'Message', ''),
+       jsonb_build_object('source', 'Order.Log')
+FROM "Orders", jsonb_array_elements("Log"::jsonb) AS elem
+WHERE "Log" IS NOT NULL AND "Log" != '' AND "Log" != '[]';
+```
+
+After the inserts succeed, the Log columns are dropped.
 
 ## Files to modify
 
