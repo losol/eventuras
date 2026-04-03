@@ -2,9 +2,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
-using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
 
 namespace Eventuras.Services;
 
@@ -24,11 +22,6 @@ public static class MvcServiceCollectionExtensions
         {
             partManager.ApplicationParts.Add(applicationPart);
         }
-
-        services.Configure<MvcRazorRuntimeCompilationOptions>(options =>
-        {
-            options.FileProviders.Add(new EmbeddedFileProvider(assembly));
-        });
 
         return services;
     }
