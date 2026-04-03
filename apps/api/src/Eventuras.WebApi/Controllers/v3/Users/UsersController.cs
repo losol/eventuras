@@ -2,17 +2,14 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asp.Versioning;
-using Eventuras.Domain;
 using Eventuras.Services.Auth;
 using Eventuras.Services.Exceptions;
 using Eventuras.Services.Users;
-using Eventuras.WebApi.Config;
 using Eventuras.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace Eventuras.WebApi.Controllers.v3.Users;
 
@@ -22,7 +19,6 @@ namespace Eventuras.WebApi.Controllers.v3.Users;
 [Authorize]
 public class UsersController : Controller
 {
-    private readonly AuthSettings _authSettings;
     private readonly ILogger<UsersController> _logger;
     private readonly IUserManagementService _userManagementService;
     private readonly IUserRetrievalService _userRetrievalService;
@@ -30,63 +26,12 @@ public class UsersController : Controller
     public UsersController(
         IUserRetrievalService userRetrievalService,
         IUserManagementService userManagementService,
-        ILogger<UsersController> logger,
-        IOptions<AuthSettings> authSettingsOptions)
+        ILogger<UsersController> logger)
     {
         _userRetrievalService = userRetrievalService ?? throw new ArgumentNullException(nameof(userRetrievalService));
         _userManagementService =
             userManagementService ?? throw new ArgumentNullException(nameof(userManagementService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _authSettings = authSettingsOptions.Value;
-    }
-
-    // GET: /v3/users/me
-    /// <summary>
-    ///     Gets information about the current user. Creates a new user if no user with the email exists.
-    /// </summary>
-    [Obsolete("use /v3/userprofile instead")]
-    [HttpGet("me")]
-    public async Task<UserDto> Me(CancellationToken cancellationToken)
-    {
-        var emailClaim = HttpContext.User.GetEmail();
-        var phoneClaim = HttpContext.User.GetMobilePhone();
-
-        if (_authSettings.EnablePiiLogging)
-        {
-            _logger.LogDebug("Getting user info for current authenticated user.");
-        }
-
-        if (string.IsNullOrEmpty(emailClaim))
-        {
-            _logger.LogWarning("No email provided for user to in this request.");
-            throw new BadHttpRequestException("No email provided for user to in this request.");
-        }
-
-        ApplicationUser user;
-
-        try
-        {
-            user = await _userRetrievalService.GetUserByEmailAsync(emailClaim, null, cancellationToken);
-        }
-        catch (NotFoundException)
-        {
-            if (_authSettings.EnablePiiLogging)
-            {
-                _logger.LogDebug("No user found with email claim. Creating new user.");
-            }
-            else
-            {
-                _logger.LogDebug("No user found with email. Creating new user.");
-            }
-
-            user = await _userManagementService.CreateNewUserAsync(
-                emailClaim,
-                phoneClaim,
-                cancellationToken);
-
-        }
-
-        return new UserDto(user);
     }
 
     // GET: /v3/users/{id}

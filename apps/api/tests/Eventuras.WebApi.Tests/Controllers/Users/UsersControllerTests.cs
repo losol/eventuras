@@ -34,7 +34,7 @@ public class UsersControllerTests : IClassFixture<CustomWebApiApplicationFactory
     {
         var client = _factory.CreateClient();
 
-        var response = await client.GetAsync("/v3/users/me");
+        var response = await client.GetAsync("/v3/userprofile");
         response.CheckUnauthorized();
     }
 
@@ -47,7 +47,7 @@ public class UsersControllerTests : IClassFixture<CustomWebApiApplicationFactory
         var client = _factory.CreateClient()
             .AuthenticatedAs(user.Entity);
 
-        var response = await client.GetAsync("/v3/users/me");
+        var response = await client.GetAsync("/v3/userprofile");
         response.CheckOk();
 
         var json = await response.Content.ReadAsStringAsync();
@@ -85,7 +85,7 @@ public class UsersControllerTests : IClassFixture<CustomWebApiApplicationFactory
         var client = _factory.CreateClient()
             .AuthenticatedAs(user.Entity);
 
-        var response = await client.GetAsync("/v3/users/me");
+        var response = await client.GetAsync("/v3/userprofile");
         response.CheckOk();
 
         var json = await response.Content.ReadAsStringAsync();
