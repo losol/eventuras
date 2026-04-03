@@ -29,7 +29,7 @@ public class OrganizationAccessControlService : IOrganizationAccessControlServic
     private async Task CheckAdminRoleAsync(int organizationId)
     {
         var user = _httpContextAccessor.HttpContext.User;
-        if (user.IsPowerAdmin())
+        if (user.IsSystemAdmin())
         {
             return;
         }

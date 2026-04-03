@@ -126,7 +126,6 @@ public class NotificationRecipientsControllerTest : IClassFixture<CustomWebApiAp
     }
 
     [Theory]
-    [InlineData(Roles.SuperAdmin)]
     [InlineData(Roles.SystemAdmin)]
     public async Task Should_Not_Limit_Recipients_For_Power_Admin(string role)
     {
@@ -161,7 +160,7 @@ public class NotificationRecipientsControllerTest : IClassFixture<CustomWebApiAp
 
         var recipients = notification.Entity.Recipients.ToArray();
 
-        var client = _factory.CreateClient().AuthenticatedAsSuperAdmin();
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
         var response = await client.GetAsync(
             $"/v3/notifications/{notification.Entity.NotificationId}/recipients?page=1&count=2");
 
@@ -197,7 +196,7 @@ public class NotificationRecipientsControllerTest : IClassFixture<CustomWebApiAp
         await scope.Db.SaveChangesAsync();
 
         var client = _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin();
+            .AuthenticatedAsSystemAdmin();
 
         var response = await client.GetAsync(
             $"/v3/notifications/{notification.Entity.NotificationId}/recipients");
@@ -262,7 +261,7 @@ public class NotificationRecipientsControllerTest : IClassFixture<CustomWebApiAp
 
         var recipients = notification.Entity.Recipients.ToArray();
 
-        var client = _factory.CreateClient().AuthenticatedAsSuperAdmin();
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
         var response = await client.GetAsync(
             $"/v3/notifications/{notification.Entity.NotificationId}/recipients", new { query = "first" });
 
@@ -303,7 +302,7 @@ public class NotificationRecipientsControllerTest : IClassFixture<CustomWebApiAp
         await scope.Db.SaveChangesAsync();
 
         var client = _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin();
+            .AuthenticatedAsSystemAdmin();
 
         var response = await client.GetAsync(
             $"/v3/notifications/{notification.Entity.NotificationId}/recipients?sentOnly=true");
@@ -327,7 +326,7 @@ public class NotificationRecipientsControllerTest : IClassFixture<CustomWebApiAp
         await scope.Db.SaveChangesAsync();
 
         var client = _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin();
+            .AuthenticatedAsSystemAdmin();
 
         var response = await client.GetAsync(
             $"/v3/notifications/{notification.Entity.NotificationId}/recipients?errorsOnly=true");

@@ -78,7 +78,7 @@ public class OrderAccessControlService : IOrderAccessControlService
             throw new NotAccessibleException("Anonymous users are never admins.");
         }
 
-        if (user.IsPowerAdmin())
+        if (user.IsSystemAdmin())
         {
             return true;
         }
@@ -110,7 +110,7 @@ public class OrderAccessControlService : IOrderAccessControlService
             throw new NotAccessibleException("Anonymous users are not permitted to list any orders.");
         }
 
-        if (user.IsPowerAdmin())
+        if (user.IsSystemAdmin())
         {
             return query;
         }

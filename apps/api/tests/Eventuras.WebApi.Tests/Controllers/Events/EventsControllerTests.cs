@@ -802,7 +802,6 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
 
     [Theory]
     [InlineData(Roles.Admin)]
-    [InlineData(Roles.SuperAdmin)]
     [InlineData(Roles.SystemAdmin)]
     public async Task Should_Create_Event_With_Max_Data(string role)
     {
@@ -1018,7 +1017,6 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
     [Theory]
     [InlineData(Roles.Admin)]
     [InlineData(Roles.SystemAdmin)]
-    [InlineData(Roles.SuperAdmin)]
     public async Task Should_Soft_Delete_Event(string role)
     {
         using var scope = _factory.Services.NewTestScope();

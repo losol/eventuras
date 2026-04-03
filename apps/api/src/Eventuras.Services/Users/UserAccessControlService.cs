@@ -65,7 +65,7 @@ internal class UserAccessControlService : IUserAccessControlService
             return true;
         }
 
-        if (user.IsPowerAdmin())
+        if (user.IsSystemAdmin())
         {
             return true;
         }

@@ -62,7 +62,7 @@ pg_dump -Fc eventuras > eventuras-pre-v3-$(date +%Y%m%d).dump
 
 - **Global roles** (`Admin`, `SystemAdmin`) are no longer read from the database. They must be present in the IdP JWT token as role claims.
 - **Organization-specific roles** continue to work as before — they are stored in the `OrganizationMemberRole` table and enriched via `DbUserClaimTransformation`.
-- The `SuperAdmin` role still exists in code but should be phased out in favor of `SystemAdmin`.
+- **`SuperAdmin` role is removed.** Any IdP tokens or organization member roles with `SuperAdmin` must be migrated to `SystemAdmin` before deploy. The `CleanupDeprecatedFields` migration handles the database side automatically. Ensure the IdP (Authentik) has no groups named `SuperAdmin` — rename them to `SystemAdmin`.
 
 ### Database
 

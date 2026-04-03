@@ -25,7 +25,6 @@ public class OrganizationMembersControllerTest : IClassFixture<CustomWebApiAppli
     [Theory]
     [InlineData(null)]
     [InlineData(Roles.Admin)]
-    [InlineData(Roles.SuperAdmin)]
     public async Task Should_Not_Allow_To_Add_Member_To_Org_To_Anyone_Except_System_Admin(string role)
     {
         var client = _factory.CreateClient()
@@ -117,7 +116,6 @@ public class OrganizationMembersControllerTest : IClassFixture<CustomWebApiAppli
     [Theory]
     [InlineData(null)]
     [InlineData(Roles.Admin)]
-    [InlineData(Roles.SuperAdmin)]
     public async Task Should_Not_Allow_To_Remove_Org_Member_To_Anyone_Except_System_Admin(string role)
     {
         var client = _factory.CreateClient()

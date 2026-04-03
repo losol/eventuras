@@ -160,7 +160,7 @@ internal class OrganizationMemberManagementService : IOrganizationMemberManageme
             throw new NotAccessibleException($"Should have at least {Roles.Admin} role to manage org membership.");
         }
 
-        if (!principal.IsPowerAdmin() &&
+        if (!principal.IsSystemAdmin() &&
             !await _context.OrganizationMembers
                 .AnyAsync(m => m.UserId == userId.Value &&
                                m.OrganizationId == organization.OrganizationId))

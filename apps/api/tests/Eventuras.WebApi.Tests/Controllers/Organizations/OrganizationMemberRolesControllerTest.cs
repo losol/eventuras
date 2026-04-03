@@ -25,7 +25,6 @@ public class OrganizationMemberRolesControllerTest : IClassFixture<CustomWebApiA
 
     [Theory]
     [InlineData(Roles.Admin)]
-    [InlineData(Roles.SuperAdmin)]
     public async Task Should_Require_System_Admin_Role_To_List_Roles(string role)
     {
         var client = _factory.CreateClient()
@@ -104,7 +103,7 @@ public class OrganizationMemberRolesControllerTest : IClassFixture<CustomWebApiA
         using var user = await scope.CreateUserAsync();
         using var member = await scope.CreateOrganizationMemberAsync(
             user.Entity, org.Entity,
-            roles: new[] { Roles.Admin, Roles.SuperAdmin });
+            roles: new[] { Roles.Admin, Roles.SystemAdmin });
         using var anotherMember = await scope.CreateOrganizationMemberAsync(user.Entity, anotherOrg.Entity,
             roles: new[] { Roles.SystemAdmin });
 
@@ -114,7 +113,7 @@ public class OrganizationMemberRolesControllerTest : IClassFixture<CustomWebApiA
 
         var json = await response.AsArrayAsync();
         json.CheckArray((token, role) => Assert.Equal(role, token.ToString()),
-            Roles.Admin, Roles.SuperAdmin);
+            Roles.Admin, Roles.SystemAdmin);
 
         response =
             await client.GetAsync(
@@ -136,7 +135,6 @@ public class OrganizationMemberRolesControllerTest : IClassFixture<CustomWebApiA
 
     [Theory]
     [InlineData(Roles.Admin)]
-    [InlineData(Roles.SuperAdmin)]
     public async Task Should_Require_System_Admin_Role_To_Add_Role(string role)
     {
         var client = _factory.CreateClient()
@@ -275,7 +273,6 @@ public class OrganizationMemberRolesControllerTest : IClassFixture<CustomWebApiA
 
     [Theory]
     [InlineData(Roles.Admin)]
-    [InlineData(Roles.SuperAdmin)]
     public async Task Should_Require_System_Admin_Role_To_Remove_Role(string role)
     {
         var client = _factory.CreateClient()

@@ -84,7 +84,7 @@ public class RegistrationAccessControlServiceTests
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var user = GetUser(userId, Roles.SuperAdmin);
+        var user = GetUser(userId, Roles.SystemAdmin);
         HttpContextAccessor.HttpContext = new DefaultHttpContext { User = user };
         var otherUserId = Guid.NewGuid();
 

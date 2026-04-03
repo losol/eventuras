@@ -832,7 +832,7 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
         using var registration =
             await scope.CreateRegistrationAsync(e.Entity, user.Entity, Registration.RegistrationStatus.Cancelled);
 
-        var client = factory.CreateClient().AuthenticatedAsSuperAdmin();
+        var client = factory.CreateClient().AuthenticatedAsSystemAdmin();
         var response = await client.DeleteAsync($"/v3/registrations/{registration.Entity.RegistrationId}");
         response.CheckOk();
 

@@ -76,7 +76,7 @@ public class UsersControllerTests : IClassFixture<CustomWebApiApplicationFactory
 
     [Theory]
     [InlineData(Roles.Admin)]
-    [InlineData(Roles.SuperAdmin)]
+    [InlineData(Roles.SystemAdmin)]
     public async Task Profile_Endpoint_Should_Return_Information_For_The_Currently_Signed_In_User(string role)
     {
         using var scope = _factory.Services.NewTestScope();
@@ -134,7 +134,6 @@ public class UsersControllerTests : IClassFixture<CustomWebApiApplicationFactory
 
     [Theory]
     [InlineData(Roles.Admin)]
-    [InlineData(Roles.SuperAdmin)]
     [InlineData(Roles.SystemAdmin)]
     public async Task Get_Endpoint_Should_Return_Data_For_Admin(string role)
     {
@@ -179,7 +178,7 @@ public class UsersControllerTests : IClassFixture<CustomWebApiApplicationFactory
         using var scope = _factory.Services.NewTestScope();
 
         var client = _factory.CreateClient()
-            .Authenticated(role: Roles.SuperAdmin);
+            .Authenticated(role: Roles.SystemAdmin);
 
         var response = await client.GetAsync("/v3/users");
         response.CheckOk();
@@ -337,7 +336,7 @@ public class UsersControllerTests : IClassFixture<CustomWebApiApplicationFactory
         using var user = await scope.CreateUserAsync(email: "test@email.com");
 
         var client = _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin();
+            .AuthenticatedAsSystemAdmin();
 
         var response = await client.PostAsync("/v3/users", new { email = "test@email.com" });
 
@@ -351,7 +350,7 @@ public class UsersControllerTests : IClassFixture<CustomWebApiApplicationFactory
         using var user = await scope.CreateUserAsync(email: "test@email.com", archived: true);
 
         var client = _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin();
+            .AuthenticatedAsSystemAdmin();
 
         var response = await client.PostAsync("/v3/users", new { email = "test@email.com" });
 
@@ -362,7 +361,7 @@ public class UsersControllerTests : IClassFixture<CustomWebApiApplicationFactory
     public async Task Should_Create_New_User()
     {
         var client = _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin();
+            .AuthenticatedAsSystemAdmin();
 
         var response = await client.PostAsync("/v3/users", new { name = "John Doe", email = "test@email.com" });
 
@@ -379,7 +378,7 @@ public class UsersControllerTests : IClassFixture<CustomWebApiApplicationFactory
     public async Task Should_Create_New_User_With_Max_Data()
     {
         var client = _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin();
+            .AuthenticatedAsSystemAdmin();
 
         var response = await client.PostAsync("/v3/users",
             new { givenName = "John", familyName = "Doe", email = "test@email.com", phoneNumber = "+11111111111" });
@@ -399,7 +398,6 @@ public class UsersControllerTests : IClassFixture<CustomWebApiApplicationFactory
 
     [Theory]
     [InlineData(Roles.Admin)]
-    [InlineData(Roles.SuperAdmin)]
     [InlineData(Roles.SystemAdmin)]
     public async Task Admin_Should_Be_Able_To_Create_New_User(string role)
     {
@@ -447,7 +445,7 @@ public class UsersControllerTests : IClassFixture<CustomWebApiApplicationFactory
         using var otherUser = await scope.CreateUserAsync(email: "another@email.com");
 
         var client = _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin();
+            .AuthenticatedAsSystemAdmin();
 
         var response = await client.PutAsync($"/v3/users/{user.Entity.Id}",
             new { name = user.Entity.Name, email = otherUser.Entity.Email });
@@ -463,7 +461,7 @@ public class UsersControllerTests : IClassFixture<CustomWebApiApplicationFactory
         using var otherUser = await scope.CreateUserAsync(email: "another@email.com", archived: true);
 
         var client = _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin();
+            .AuthenticatedAsSystemAdmin();
 
         var response = await client.PutAsync($"/v3/users/{user.Entity.Id}",
             new { givenName = user.Entity.Name, email = otherUser.Entity.Email });
@@ -489,7 +487,7 @@ public class UsersControllerTests : IClassFixture<CustomWebApiApplicationFactory
         using var user = await scope.CreateUserAsync(phone: null);
 
         var client = _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin();
+            .AuthenticatedAsSystemAdmin();
 
         var response = await client.PutAsync($"/v3/users/{user.Entity.Id}",
             new { givenName = "John", familyName = "Doe", email = "another@email.com", phoneNumber = "+1234567890" });
@@ -512,7 +510,6 @@ public class UsersControllerTests : IClassFixture<CustomWebApiApplicationFactory
 
     [Theory]
     [InlineData(Roles.Admin)]
-    [InlineData(Roles.SuperAdmin)]
     [InlineData(Roles.SystemAdmin)]
     public async Task Admin_Should_Be_Able_To_Update_User(string role)
     {

@@ -26,14 +26,9 @@ public static class ClaimsPrincipalExtensions
         user.FindAll(ClaimTypes.Role).Select(c => c.Value);
 
     public static bool IsAdmin(this ClaimsPrincipal user) =>
-        new[] { Roles.Admin, Roles.SystemAdmin, Roles.SuperAdmin }.Any(user.IsInRole);
-
-    public static bool IsSuperAdmin(this ClaimsPrincipal user) => user.IsInRole(Roles.SuperAdmin);
+        new[] { Roles.Admin, Roles.SystemAdmin }.Any(user.IsInRole);
 
     public static bool IsSystemAdmin(this ClaimsPrincipal user) => user.IsInRole(Roles.SystemAdmin);
 
     public static bool IsAnonymous(this ClaimsPrincipal user) => user.Identity?.IsAuthenticated != true;
-
-    /// <returns>Whether the principal is a super admin or system admin.</returns>
-    public static bool IsPowerAdmin(this ClaimsPrincipal user) => user.IsSuperAdmin() || user.IsSystemAdmin();
 }

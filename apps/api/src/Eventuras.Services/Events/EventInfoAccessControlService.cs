@@ -57,9 +57,9 @@ public class EventInfoAccessControlService : IEventInfoAccessControlService
         }
 
         var user = _httpContextAccessor.HttpContext.User;
-        if (user.IsPowerAdmin())
+        if (user.IsSystemAdmin())
         {
-            _logger.LogDebug("Power admin {UserId} can manage any event", user.GetUserId());
+            _logger.LogDebug("System admin {UserId} can manage any event", user.GetUserId());
             return;
         }
 

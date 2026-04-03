@@ -201,9 +201,9 @@ internal class RegistrationAccessControlService : IRegistrationAccessControlServ
             throw new NotAccessibleException("Anonymous users are not permitted to list any registrations.");
         }
 
-        if (user.IsPowerAdmin())
+        if (user.IsSystemAdmin())
         {
-            return query; // super admins can ready any reg
+            return query; // system admins can read any reg
         }
 
         if (!user.IsAdmin())
@@ -222,7 +222,7 @@ internal class RegistrationAccessControlService : IRegistrationAccessControlServ
     private async Task<bool> CheckAdminAccessAsync(ClaimsPrincipal user, Registration registration,
         CancellationToken cancellationToken = default)
     {
-        if (user.IsPowerAdmin())
+        if (user.IsSystemAdmin())
         {
             return true;
         }

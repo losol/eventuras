@@ -25,7 +25,7 @@ public class CertificatesControllerTest : IClassFixture<CustomWebApiApplicationF
     {
         const int nonExistingId = 10000;
         var response = await _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin()
+            .AuthenticatedAsSystemAdmin()
             .GetAsync($"/v3/certificates/{nonExistingId}");
         response.CheckNotFound();
     }
@@ -105,7 +105,6 @@ public class CertificatesControllerTest : IClassFixture<CustomWebApiApplicationF
     }
 
     [Theory]
-    [InlineData(Roles.SuperAdmin)]
     [InlineData(Roles.SystemAdmin)]
     public async Task Should_Allow_To_Get_Certificate_To_Power_Admin(string role)
     {
@@ -133,7 +132,7 @@ public class CertificatesControllerTest : IClassFixture<CustomWebApiApplicationF
         using var cert = await scope.CreateCertificateAsync(reg.Entity);
 
         var response = await _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin()
+            .AuthenticatedAsSystemAdmin()
             .WithAcceptHeader(MediaTypeNames.Application.Json)
             .GetAsync($"/v3/certificates/{cert.Entity.CertificateId}");
 
@@ -151,7 +150,7 @@ public class CertificatesControllerTest : IClassFixture<CustomWebApiApplicationF
         using var cert = await scope.CreateCertificateAsync(reg.Entity);
 
         var response = await _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin()
+            .AuthenticatedAsSystemAdmin()
             .GetAsync($"/v3/certificates/{cert.Entity.CertificateId}?format=html");
 
         var html = await response.CheckOk().Content.ReadAsStringAsync();
@@ -171,7 +170,7 @@ public class CertificatesControllerTest : IClassFixture<CustomWebApiApplicationF
         using var cert = await scope.CreateCertificateAsync(reg.Entity);
 
         var response = await _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin()
+            .AuthenticatedAsSystemAdmin()
             .WithAcceptHeader(MediaTypeNames.Text.Html)
             .GetAsync($"/v3/certificates/{cert.Entity.CertificateId}");
 
@@ -192,7 +191,7 @@ public class CertificatesControllerTest : IClassFixture<CustomWebApiApplicationF
         using var cert = await scope.CreateCertificateAsync(reg.Entity);
 
         var response = await _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin()
+            .AuthenticatedAsSystemAdmin()
             .GetAsync($"/v3/certificates/{cert.Entity.CertificateId}?format=pdf");
 
         var text = await response.CheckOk().Content.ReadAsPdfStringAsync();
@@ -210,7 +209,7 @@ public class CertificatesControllerTest : IClassFixture<CustomWebApiApplicationF
         using var cert = await scope.CreateCertificateAsync(reg.Entity);
 
         var response = await _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin()
+            .AuthenticatedAsSystemAdmin()
             .WithAcceptHeader(MediaTypeNames.Application.Pdf)
             .GetAsync($"/v3/certificates/{cert.Entity.CertificateId}");
 

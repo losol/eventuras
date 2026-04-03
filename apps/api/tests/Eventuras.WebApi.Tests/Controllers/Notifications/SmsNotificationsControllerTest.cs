@@ -50,7 +50,7 @@ public class SmsNotificationsControllerTest : IClassFixture<CustomWebApiApplicat
     [MemberData(nameof(GetInvalidBodyParams))]
     public async Task Should_Return_BadRequest_For_Invalid_Sms_Body(object body)
     {
-        var client = _factory.CreateClient().AuthenticatedAsSuperAdmin();
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
         var response = await client.PostAsync("/v3/notifications/sms", body);
         response.CheckBadRequest();
     }

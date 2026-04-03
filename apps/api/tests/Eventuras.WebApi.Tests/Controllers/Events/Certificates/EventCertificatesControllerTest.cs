@@ -54,7 +54,7 @@ public class EventCertificatesControllerTest : IClassFixture<CustomWebApiApplica
     public async Task List_Should_Return_Not_Found_For_Non_Existing_Event()
     {
         var response = await _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin()
+            .AuthenticatedAsSystemAdmin()
             .GetAsync("/v3/event/1001/certificates");
         response.CheckNotFound();
     }
@@ -93,7 +93,6 @@ public class EventCertificatesControllerTest : IClassFixture<CustomWebApiApplica
     }
 
     [Theory]
-    [InlineData(Roles.SuperAdmin)]
     [InlineData(Roles.SystemAdmin)]
     public async Task List_Should_Be_Available_For_Power_Admin(string role)
     {
@@ -114,7 +113,7 @@ public class EventCertificatesControllerTest : IClassFixture<CustomWebApiApplica
         using var evt = await scope.CreateEventAsync();
 
         var response = await _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin()
+            .AuthenticatedAsSystemAdmin()
             .GetAsync($"/v3/event/{evt.Entity.EventInfoId}/certificates");
 
         var json = await response.CheckOk().AsTokenAsync();
@@ -132,7 +131,7 @@ public class EventCertificatesControllerTest : IClassFixture<CustomWebApiApplica
         using var e2 = await scope.CreateEventAsync();
 
         var response = await _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin()
+            .AuthenticatedAsSystemAdmin()
             .GetAsync($"/v3/event/{e2.Entity.EventInfoId}/certificates");
 
         var json = await response.CheckOk().AsTokenAsync();
@@ -155,7 +154,7 @@ public class EventCertificatesControllerTest : IClassFixture<CustomWebApiApplica
         using var evt = await scope.CreateEventAsync();
 
         var response = await _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin()
+            .AuthenticatedAsSystemAdmin()
             .GetAsync($"/v3/event/{evt.Entity.EventInfoId}/certificates", queryParams);
 
         response.CheckBadRequest();
@@ -177,7 +176,7 @@ public class EventCertificatesControllerTest : IClassFixture<CustomWebApiApplica
         using var c3 = await scope.CreateCertificateAsync(r3.Entity);
 
         var response = await _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin()
+            .AuthenticatedAsSystemAdmin()
             .GetAsync($"/v3/event/{evt.Entity.EventInfoId}/certificates?page=1&count=2");
 
         var json = await response.CheckOk().AsTokenAsync();
@@ -186,7 +185,7 @@ public class EventCertificatesControllerTest : IClassFixture<CustomWebApiApplica
             c1.Entity, c2.Entity);
 
         response = await _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin()
+            .AuthenticatedAsSystemAdmin()
             .GetAsync($"/v3/event/{evt.Entity.EventInfoId}/certificates?page=2&count=2");
 
         json = await response.CheckOk().AsTokenAsync();
@@ -211,7 +210,7 @@ public class EventCertificatesControllerTest : IClassFixture<CustomWebApiApplica
     public async Task Should_Return_Not_Found_When_Previewing_Non_Existing_Event_Certificate()
     {
         var response = await _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin()
+            .AuthenticatedAsSystemAdmin()
             .GetAsync("/v3/event/1001/certificates/preview");
         response.CheckNotFound();
     }
@@ -262,7 +261,6 @@ public class EventCertificatesControllerTest : IClassFixture<CustomWebApiApplica
 
     [Theory]
     [InlineData(Roles.SystemAdmin)]
-    [InlineData(Roles.SuperAdmin)]
     public async Task Should_Allow_Power_Admin_To_Preview_Event_Certificate(string role)
     {
         using var scope = _factory.Services.NewTestScope();
@@ -294,7 +292,7 @@ public class EventCertificatesControllerTest : IClassFixture<CustomWebApiApplica
     public async Task Should_Return_Not_Found_When_Issuing_Non_Existing_Event_Certificate()
     {
         var response = await _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin()
+            .AuthenticatedAsSystemAdmin()
             .PostAsync("/v3/event/1001/certificates/issue");
         response.CheckNotFound();
     }
@@ -347,7 +345,6 @@ public class EventCertificatesControllerTest : IClassFixture<CustomWebApiApplica
 
     [Theory]
     [InlineData(Roles.SystemAdmin)]
-    [InlineData(Roles.SuperAdmin)]
     public async Task Should_Allow_Power_Admin_To_Issue_Event_Certificate(string role)
     {
         using var scope = _factory.Services.NewTestScope();
@@ -369,7 +366,7 @@ public class EventCertificatesControllerTest : IClassFixture<CustomWebApiApplica
         using var evt = await scope.CreateEventAsync(organization: org.Entity);
 
         var response = await _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin()
+            .AuthenticatedAsSystemAdmin()
             .PostAsync($"/v3/event/{evt.Entity.EventInfoId}/certificates/issue");
 
         var json = await response.CheckOk().AsTokenAsync();
@@ -427,7 +424,7 @@ public class EventCertificatesControllerTest : IClassFixture<CustomWebApiApplica
         using var cert = await scope.CreateCertificateAsync(reg.Entity);
 
         var response = await _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin()
+            .AuthenticatedAsSystemAdmin()
             .PostAsync($"/v3/event/{evt.Entity.EventInfoId}/certificates/issue");
 
         var json = await response.CheckOk().AsTokenAsync();
@@ -445,7 +442,7 @@ public class EventCertificatesControllerTest : IClassFixture<CustomWebApiApplica
             await scope.CreateRegistrationAsync(evt.Entity, user.Entity, Registration.RegistrationStatus.Finished);
 
         var response = await _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin()
+            .AuthenticatedAsSystemAdmin()
             .PostAsync($"/v3/event/{evt.Entity.EventInfoId}/certificates/issue?send=false");
 
         var json = await response.CheckOk().AsTokenAsync();
@@ -471,7 +468,7 @@ public class EventCertificatesControllerTest : IClassFixture<CustomWebApiApplica
     public async Task Should_Return_Not_Found_When_Updating_Non_Existing_Event_Certificate()
     {
         var response = await _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin()
+            .AuthenticatedAsSystemAdmin()
             .PostAsync("/v3/event/1001/certificates/update");
         response.CheckNotFound();
     }
@@ -524,7 +521,6 @@ public class EventCertificatesControllerTest : IClassFixture<CustomWebApiApplica
 
     [Theory]
     [InlineData(Roles.SystemAdmin)]
-    [InlineData(Roles.SuperAdmin)]
     public async Task Should_Allow_Power_Admin_To_Update_Event_Certificate(string role)
     {
         using var scope = _factory.Services.NewTestScope();
@@ -546,7 +542,7 @@ public class EventCertificatesControllerTest : IClassFixture<CustomWebApiApplica
         using var evt = await scope.CreateEventAsync(organization: org.Entity);
 
         var response = await _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin()
+            .AuthenticatedAsSystemAdmin()
             .PostAsync($"/v3/event/{evt.Entity.EventInfoId}/certificates/update");
 
         var json = await response.CheckOk().AsTokenAsync();
@@ -565,7 +561,7 @@ public class EventCertificatesControllerTest : IClassFixture<CustomWebApiApplica
             evt.Entity, user.Entity, Registration.RegistrationStatus.Finished);
 
         var response = await _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin()
+            .AuthenticatedAsSystemAdmin()
             .PostAsync($"/v3/event/{evt.Entity.EventInfoId}/certificates/update");
 
         var json = await response.CheckOk().AsTokenAsync();
@@ -588,7 +584,7 @@ public class EventCertificatesControllerTest : IClassFixture<CustomWebApiApplica
         await scope.Db.SaveChangesAsync();
 
         var response = await _factory.CreateClient()
-            .AuthenticatedAsSuperAdmin()
+            .AuthenticatedAsSystemAdmin()
             .PostAsync($"/v3/event/{evt.Entity.EventInfoId}/certificates/update");
 
         var json = await response.CheckOk().AsTokenAsync();

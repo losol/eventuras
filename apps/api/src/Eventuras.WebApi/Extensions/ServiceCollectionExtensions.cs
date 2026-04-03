@@ -66,7 +66,7 @@ public static class ServiceCollectionExtensions
                 .Select(s => s.Value)
                 .ToArray();
 
-            var adminRoles = new[] { Roles.Admin, Roles.SuperAdmin, Roles.SystemAdmin };
+            var adminRoles = new[] { Roles.Admin, Roles.SystemAdmin };
             options.AddPolicy(Constants.Auth.AdministratorRole, policy => policy.RequireRole(adminRoles));
 
             Array.ForEach(apiScopes, apiScope =>

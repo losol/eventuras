@@ -78,7 +78,6 @@ public class EventProductsControllerTests : IClassFixture<CustomWebApiApplicatio
 
     [Theory]
     [InlineData(Roles.Admin)]
-    [InlineData(Roles.SuperAdmin)]
     [InlineData(Roles.SystemAdmin)]
     public async Task List_Should_Be_Available_For_Any_Logged_In_User(string role)
     {
@@ -311,7 +310,6 @@ public class EventProductsControllerTests : IClassFixture<CustomWebApiApplicatio
     }
 
     [Theory]
-    [InlineData(Roles.SuperAdmin)]
     [InlineData(Roles.SystemAdmin)]
     public async Task Add_Should_Be_Available_For_Power_Admin(string role)
     {
@@ -492,7 +490,6 @@ public class EventProductsControllerTests : IClassFixture<CustomWebApiApplicatio
     }
 
     [Theory]
-    [InlineData(Roles.SuperAdmin)]
     [InlineData(Roles.SystemAdmin)]
     public async Task Update_Should_Allow_Power_Admin_To_Change_Product_Published_Status_And_Visibility(string role)
     {
@@ -641,7 +638,6 @@ public class EventProductsControllerTests : IClassFixture<CustomWebApiApplicatio
     }
 
     [Theory]
-    [InlineData(Roles.SuperAdmin)]
     [InlineData(Roles.SystemAdmin)]
     public async Task Should_Allow_Power_Admin_To_Archive_Product(string role)
     {

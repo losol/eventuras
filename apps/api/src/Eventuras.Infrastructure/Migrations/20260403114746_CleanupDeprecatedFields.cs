@@ -72,6 +72,23 @@ namespace Eventuras.Infrastructure.Migrations
                   AND NOT ("Log"::text ~ '^\s*\[');
                 """);
 
+            // Migrate SuperAdmin organization roles to SystemAdmin.
+            // Delete SuperAdmin rows where SystemAdmin already exists to avoid
+            // duplicate composite key (OrganizationMemberId + Role).
+            migrationBuilder.Sql("""
+                DELETE FROM "OrganizationMemberRoles" sa
+                WHERE sa."Role" = 'SuperAdmin'
+                  AND EXISTS (
+                    SELECT 1 FROM "OrganizationMemberRoles" sys
+                    WHERE sys."OrganizationMemberId" = sa."OrganizationMemberId"
+                      AND sys."Role" = 'SystemAdmin'
+                  );
+
+                UPDATE "OrganizationMemberRoles"
+                SET "Role" = 'SystemAdmin'
+                WHERE "Role" = 'SuperAdmin';
+                """);
+
             // Archive ExternalSync tables (rename instead of drop)
             migrationBuilder.RenameTable(name: "ExternalRegistrations", newName: "Archived_ExternalRegistrations");
             migrationBuilder.RenameTable(name: "ExternalAccounts", newName: "Archived_ExternalAccounts");
