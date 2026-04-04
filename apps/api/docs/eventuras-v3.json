@@ -10,47 +10,6 @@
     }
   ],
   "paths": {
-    "/v3/users/me": {
-      "get": {
-        "tags": [
-          "Users"
-        ],
-        "summary": "Gets information about the current user. Creates a new user if no user with the email exists.",
-        "parameters": [
-          {
-            "name": "Eventuras-Org-Id",
-            "in": "header",
-            "description": "Optional organization Id. Will be required in API version 4.",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserDto"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserDto"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/v3/users/{id}": {
       "get": {
         "tags": [
@@ -62,7 +21,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           },
           {
@@ -108,7 +68,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           },
           {
@@ -464,6 +425,29 @@
         }
       }
     },
+    "/v3/system/database": {
+      "get": {
+        "tags": [
+          "Database"
+        ],
+        "parameters": [
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/v3/registrations/{id}/certificate/send": {
       "post": {
         "tags": [
@@ -689,7 +673,8 @@
             "name": "UserId",
             "in": "query",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           },
           {
@@ -931,7 +916,8 @@
             "name": "UserId",
             "in": "query",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           },
           {
@@ -1408,7 +1394,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           },
           {
@@ -1473,7 +1460,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           },
           {
@@ -1558,7 +1546,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           },
           {
@@ -1645,7 +1634,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           },
           {
@@ -1684,7 +1674,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           },
           {
@@ -2408,7 +2399,8 @@
             "name": "UserId",
             "in": "query",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           },
           {
@@ -2817,7 +2809,8 @@
             "name": "RecipientUserId",
             "in": "query",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           },
           {
@@ -4406,6 +4399,20 @@
         ],
         "parameters": [
           {
+            "name": "Featured",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "IncludePastCollections",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
             "name": "Page",
             "in": "query",
             "schema": {
@@ -5333,6 +5340,26 @@
               "null",
               "string"
             ]
+          },
+          "dateStart": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/LocalDate"
+              }
+            ]
+          },
+          "dateEnd": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/LocalDate"
+              }
+            ]
           }
         }
       },
@@ -5508,7 +5535,8 @@
             "type": [
               "null",
               "string"
-            ]
+            ],
+            "format": "uuid"
           },
           "maxParticipants": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
@@ -5588,6 +5616,8 @@
             ]
           },
           "description": {
+            "maxLength": 300,
+            "minLength": 0,
             "type": [
               "null",
               "string"
@@ -5736,7 +5766,8 @@
             "type": [
               "null",
               "string"
-            ]
+            ],
+            "format": "uuid"
           },
           "options": {
             "$ref": "#/components/schemas/EventInfoOptionsDto"
@@ -6218,7 +6249,8 @@
             "type": [
               "null",
               "string"
-            ]
+            ],
+            "format": "uuid"
           },
           "eventId": {
             "maximum": 2147483647,
@@ -6458,7 +6490,8 @@
             "format": "date-time"
           },
           "userId": {
-            "type": "string"
+            "type": "string",
+            "format": "uuid"
           },
           "registrationId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
@@ -6756,10 +6789,8 @@
             "format": "int32"
           },
           "userId": {
-            "type": [
-              "null",
-              "string"
-            ]
+            "type": "string",
+            "format": "uuid"
           },
           "organizationId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
@@ -7534,7 +7565,8 @@
             "format": "int32"
           },
           "userId": {
-            "type": "string"
+            "type": "string",
+            "format": "uuid"
           },
           "status": {
             "$ref": "#/components/schemas/RegistrationStatus"
@@ -7742,10 +7774,8 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": [
-              "null",
-              "string"
-            ]
+            "type": "string",
+            "format": "uuid"
           },
           "name": {
             "type": [
@@ -8027,10 +8057,8 @@
         "type": "object",
         "properties": {
           "userId": {
-            "type": [
-              "null",
-              "string"
-            ]
+            "type": "string",
+            "format": "uuid"
           },
           "name": {
             "type": [
@@ -8070,6 +8098,9 @@
     },
     {
       "name": "UserProfile"
+    },
+    {
+      "name": "Database"
     },
     {
       "name": "RegistrationCertificate"
