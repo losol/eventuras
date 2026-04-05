@@ -1,5 +1,16 @@
 # @eventuras/event-sdk
 
+## 3.0.0
+
+### Major Changes
+
+- d9b5b55: Regenerate SDK from v3 API OpenAPI specification.
+  - `SuperAdmin` role removed from API — only `Admin` and `SystemAdmin` remain
+  - Deprecated fields removed from response types: `Registration.log`, `Order.log`, `Order.externalInvoiceId`, `Order.paid`
+  - `EventFormDto.manageRegistrations` and `EventFormDto.externalRegistrationsUrl` still present but ignored by API
+  - `Certificate.certificateGuid` field preserved (renamed from `CertificateGuid` internally)
+  - New `uuid` field added to most entity response types
+
 ## 2.31.0
 
 ### Minor Changes

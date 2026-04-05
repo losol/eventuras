@@ -1,5 +1,13 @@
 # @eventuras/web
 
+## 2.34.1
+
+### Patch Changes
+
+- b1d298f: Add "Other" heading for uncategorized events in category-grouped collections
+- Updated dependencies [d9b5b55]
+  - @eventuras/event-sdk@3.0.0
+
 ## 2.34.0
 
 ### Minor Changes
