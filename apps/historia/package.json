@@ -86,7 +86,7 @@
     "typescript": "^6.0.2"
   },
   "optionalDependencies": {
-    "@esbuild/linux-x64": "0.27.7",
+    "@esbuild/linux-x64": "0.28.0",
     "@libsql/linux-x64-gnu": "0.5.29",
     "libsql": "^0.5.29",
     "sharp": "^0.34.5"
