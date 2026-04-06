@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using System.IO;
 using Eventuras.Infrastructure;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,14 @@ namespace Eventuras.WebApi.Tests;
 
 public class MigrationsScriptTests
 {
+    private const string RegenerateHint =
+        "database-migrations.sql is out of date with the EF Core migrations. " +
+        "Regenerate it by running:\n" +
+        "  cd apps/api/src/Eventuras.Infrastructure && \\\n" +
+        "  dotnet ef migrations script --idempotent \\\n" +
+        "    -o sqlscript/database-migrations.sql \\\n" +
+        "    --startup-project ../Eventuras.WebApi";
+
     private static string? GetMigrationsScriptPath()
     {
         var directory = new DirectoryInfo(Directory.GetCurrentDirectory());
@@ -56,16 +65,17 @@ public class MigrationsScriptTests
             options: MigrationsSqlGenerationOptions.Idempotent);
 
         var committedScript = File.ReadAllText(scriptPath!);
+        var expected = Normalize(committedScript);
+        var actual = Normalize(generatedScript);
 
-        if (Normalize(committedScript) != Normalize(generatedScript))
+        // Print the regenerate hint before asserting so it is visible in the
+        // failure output alongside xUnit's string diff, which pinpoints the
+        // exact position where the committed script diverges.
+        if (expected != actual)
         {
-            Assert.Fail(
-                "database-migrations.sql is out of date with the EF Core migrations. " +
-                "Regenerate it by running:\n" +
-                "  cd apps/api/src/Eventuras.Infrastructure && \\\n" +
-                "  dotnet ef migrations script --idempotent \\\n" +
-                "    -o sqlscript/database-migrations.sql \\\n" +
-                "    --startup-project ../Eventuras.WebApi");
+            Console.WriteLine(RegenerateHint);
         }
+
+        Assert.Equal(expected, actual);
     }
 }

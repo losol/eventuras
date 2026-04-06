@@ -22,7 +22,7 @@ jobs:
     # PostgreSQL service for backend tests
     services:
       postgres:
-        image: postgres:15
+        image: postgres:18
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
