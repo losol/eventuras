@@ -19,8 +19,8 @@ export const buttonStyles = {
     `dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700 dark:hover:border-gray-500 ` +
     `rounded-full ${ANIMATION_CLASSES}`,
   light: `bg-primary-100 text-gray-800 hover:bg-primary-200 dark:bg-primary-800 dark:text-white ` +
-         `dark:hover:bg-primary-700 rounded-full ${ANIMATION_CLASSES}`,
-  text:  `bg-transparent hover:bg-primary-200 hover:bg-opacity-20 rounded-full ${ANIMATION_CLASSES}`,
+    `dark:hover:bg-primary-700 rounded-full ${ANIMATION_CLASSES}`,
+  text: `bg-transparent hover:bg-primary-200 hover:bg-opacity-20 rounded-full ${ANIMATION_CLASSES}`,
   outline:
     `border border-gray-700 hover:border-primary-500 hover:bg-primary-100/10 dark:hover:bg-primary-900 ` +
     `dark:text-white rounded-full ${ANIMATION_CLASSES}`,
@@ -34,7 +34,7 @@ export const buttonSizes = {
 
 export interface ButtonProps
   extends Omit<BoxSpacingProps, 'padding'>,
-          Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'className' | 'style'> {
+  Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'className' | 'style'> {
   ariaLabel?: string;
   icon?: React.ReactNode;
   loading?: boolean;
@@ -64,7 +64,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
     onClick,
     // spacing props:
     padding,
-    margin = 'm-1',
+    margin,
     border,
     width,
     height,
@@ -81,7 +81,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
   // Get font size from size preset
   const sizeClass = buttonSizes[size].split(' ').find(c => c.startsWith('text-')) ?? '';
 
-  const displayClass    = block ? 'w-full' : '';
+  const displayClass = block ? 'w-full' : '';
   const variantClass = buttonStyles[variant];
 
   const isTransparent = variant === 'text' || variant === 'outline';
