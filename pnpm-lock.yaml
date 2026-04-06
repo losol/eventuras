@@ -60,7 +60,7 @@ importers:
         version: link:../../libs/logger
       discord.js:
         specifier: ^14.26.0
-        version: 14.26.0
+        version: 14.26.1
       dotenv:
         specifier: ^17.4.0
         version: 17.4.0
@@ -109,7 +109,7 @@ importers:
         version: 9.7.0
       '@scalar/fastify-api-reference':
         specifier: ^1.49.8
-        version: 1.49.8
+        version: 1.50.0
       dotenv:
         specifier: ^17.4.0
         version: 17.4.0
@@ -6501,36 +6501,36 @@ packages:
     resolution: {integrity: sha512-xzvBr1Q1c4lCe7i6sRnrofxeO1QTP/LKQ6A6qy0iB4x5yfiSfARMEQEghojzTNALDTcv8En04qYNIco9/K9eZQ==}
     engines: {node: '>=v14.0.0', npm: '>=7.0.0'}
 
-  '@scalar/core@0.4.5':
-    resolution: {integrity: sha512-W+GN4oInzUWJzS2uwTQpRWl4uCOcnyXyu2zS05jApWUO5Pn7VSh9JSlqDz0nKVMaizWyjblJqocirlGo71pDPA==}
+  '@scalar/core@0.4.6':
+    resolution: {integrity: sha512-lIlCUx0O18ei63j7Z7QTAVAuh66sdms9zoDPhpDOzHTVObnb7n0f3J306sT3H9KQsoWKQrEsnKx4LcZLw/TlPw==}
     engines: {node: '>=22'}
 
-  '@scalar/fastify-api-reference@1.49.8':
-    resolution: {integrity: sha512-RMHWq4T5zTODU9G94KQRvixlRhgUCkg/eMJueA5iJvLupMEBlvBcSEc7Y0HgnCXKlbW4ajR25xV//QCAsMRM3g==}
+  '@scalar/fastify-api-reference@1.50.0':
+    resolution: {integrity: sha512-Y5cNAjM9B1f5QmIpPSCfaznZUuKtbD8ekyJ26zDcHArMDURX4O6D1JpchuSgOYsclpdXg1g7OOj7GCrZZX9wJw==}
     engines: {node: '>=22'}
 
-  '@scalar/helpers@0.4.2':
-    resolution: {integrity: sha512-IrgrGVSahCfYDNWITazz4Q1BOndp5eEzlimRkfxiYn++KqeWyLfALyym1omqcdKGYtiSx1KIbKaUJL9vkjaN7w==}
+  '@scalar/helpers@0.4.3':
+    resolution: {integrity: sha512-Gv2V7SFreLx3DltzF2lKXdaJSH5cP1LOyt9PxON1cSWGxkrs3sg93c1taEJsW24E9ckfYXkL5hjCAVLfAN3wQw==}
     engines: {node: '>=22'}
 
-  '@scalar/json-magic@0.12.4':
-    resolution: {integrity: sha512-ZsJM+y9SOVjRL+g9Tr/jFEodcYPfHSt5ZRrpbeGDK71yTvSZw41A3UJ7Bg+RXM8JJWRYcJkYVkzrmbb/ig7qlA==}
+  '@scalar/json-magic@0.12.5':
+    resolution: {integrity: sha512-MkGOjodEeQ7V7M78W6Oq+t3q1LaUR+SRLZLqFbU6s26Gc+12T+v89JXcHvd+3ug0xFVMg/kdczZ3O6miBhyNsA==}
     engines: {node: '>=22'}
 
-  '@scalar/openapi-parser@0.25.7':
-    resolution: {integrity: sha512-Zfagv2wEprukR3Y2zKS2qcepX1n4u1uan1jpnj3tROrWG4bFAT6TULo0cobuiPgs6YROd5sIhN64wTboA2llcg==}
+  '@scalar/openapi-parser@0.25.8':
+    resolution: {integrity: sha512-09yGXQSMYVlxJkLIn9Nz2q7Du7/olHKhR4oU0/JgkOdcKBiixSeLmhcAm7Hmj2Z82xOYpF+ZJUTCzsh8DQv5Fg==}
     engines: {node: '>=22'}
 
-  '@scalar/openapi-types@0.6.1':
-    resolution: {integrity: sha512-P1RvyTFN0vRSL136OqWjlZfSFjY9JoJfuD6LM1mIjoocfwmqX3WuzsFEFX6hAeeDlTh6gjbiy+OdhSee8GFfSA==}
+  '@scalar/openapi-types@0.7.0':
+    resolution: {integrity: sha512-kN0PwlJW0de4bwQ4ib+mBHzKJUvBCyR/gwU4zLEq6SCbj+GfgYUh+2a0/yl1WYVUiSkkwFsHjfmQ8KjhR3HK0Q==}
     engines: {node: '>=22'}
 
-  '@scalar/openapi-upgrader@0.2.3':
-    resolution: {integrity: sha512-h8Orhztvd4hivrxoj809nTw3TOKY0al8cB0wXWHR6fZvI9UtsQchkDgXw1FfGMZstgKcDD6W3PHg98frwpFezg==}
+  '@scalar/openapi-upgrader@0.2.4':
+    resolution: {integrity: sha512-AcrF7BMxKCTHnT82SHbHun6dJO4XC9tS5gD7EJsr/7YwFkx9JtbtZCryJXtqWJ5c7i1v1KH4PRRjDga/hCULTQ==}
     engines: {node: '>=22'}
 
-  '@scalar/types@0.7.5':
-    resolution: {integrity: sha512-LUR/+nNpHfMbGCqTnrzyRlgRTC4FMyyqwCYCFYVs57gkEWzmXnrx+r3+igrWtuZoK/Hsr+ffFMzbBvmxnTFH7g==}
+  '@scalar/types@0.7.6':
+    resolution: {integrity: sha512-n5d7neeGTY/yS36AwAv3FAyCnJbbLjMPwyuEXBLgxHcb5i8DXnNfwy1nzz8jx/EJ88i1zmQ8BuMs+207saHgNA==}
     engines: {node: '>=22'}
 
   '@schummar/icu-type-parser@1.21.5':
@@ -8852,8 +8852,8 @@ packages:
   discord-api-types@0.38.44:
     resolution: {integrity: sha512-q91MgBzP/gRaCLIbQTaOrOhbD8uVIaPKxpgX2sfFB2nZ9nSiTYM9P3NFQ7cbO6NCxctI6ODttc67MI+YhIfILg==}
 
-  discord.js@14.26.0:
-    resolution: {integrity: sha512-I+5dmdg7WnjIOEXspX6mJ4jLgblhZV6QpQcC3U2JjrFWnHCKDpoLkhV46SBP8k9QePs3YWJOvndVutUARRO0AQ==}
+  discord.js@14.26.1:
+    resolution: {integrity: sha512-yF+/myEVweJg2lENRt+b1SmsovmEKxPoaY5DILBfnIb5dnhw+J6RvdmvUPxUH32jmPB34gnPnymLji8w75bwVA==}
     engines: {node: '>=18'}
 
   doctrine@2.1.0:
@@ -20174,32 +20174,32 @@ snapshots:
 
   '@sapphire/snowflake@3.5.5': {}
 
-  '@scalar/core@0.4.5':
+  '@scalar/core@0.4.6':
     dependencies:
-      '@scalar/types': 0.7.5
+      '@scalar/types': 0.7.6
 
-  '@scalar/fastify-api-reference@1.49.8':
+  '@scalar/fastify-api-reference@1.50.0':
     dependencies:
-      '@scalar/core': 0.4.5
-      '@scalar/openapi-parser': 0.25.7
-      '@scalar/openapi-types': 0.6.1
+      '@scalar/core': 0.4.6
+      '@scalar/openapi-parser': 0.25.8
+      '@scalar/openapi-types': 0.7.0
       fastify-plugin: 4.5.1
       github-slugger: 2.0.0
 
-  '@scalar/helpers@0.4.2': {}
+  '@scalar/helpers@0.4.3': {}
 
-  '@scalar/json-magic@0.12.4':
+  '@scalar/json-magic@0.12.5':
     dependencies:
-      '@scalar/helpers': 0.4.2
+      '@scalar/helpers': 0.4.3
       pathe: 2.0.3
       yaml: 2.8.3
 
-  '@scalar/openapi-parser@0.25.7':
+  '@scalar/openapi-parser@0.25.8':
     dependencies:
-      '@scalar/helpers': 0.4.2
-      '@scalar/json-magic': 0.12.4
-      '@scalar/openapi-types': 0.6.1
-      '@scalar/openapi-upgrader': 0.2.3
+      '@scalar/helpers': 0.4.3
+      '@scalar/json-magic': 0.12.5
+      '@scalar/openapi-types': 0.7.0
+      '@scalar/openapi-upgrader': 0.2.4
       ajv: 8.18.0
       ajv-draft-04: 1.0.0(ajv@8.18.0)
       ajv-formats: 3.0.1(ajv@8.18.0)
@@ -20207,17 +20207,15 @@ snapshots:
       leven: 4.1.0
       yaml: 2.8.3
 
-  '@scalar/openapi-types@0.6.1':
-    dependencies:
-      zod: 4.3.6
+  '@scalar/openapi-types@0.7.0': {}
 
-  '@scalar/openapi-upgrader@0.2.3':
+  '@scalar/openapi-upgrader@0.2.4':
     dependencies:
-      '@scalar/openapi-types': 0.6.1
+      '@scalar/openapi-types': 0.7.0
 
-  '@scalar/types@0.7.5':
+  '@scalar/types@0.7.6':
     dependencies:
-      '@scalar/helpers': 0.4.2
+      '@scalar/helpers': 0.4.3
       nanoid: 5.1.7
       type-fest: 5.5.0
       zod: 4.3.6
@@ -22823,7 +22821,7 @@ snapshots:
 
   discord-api-types@0.38.44: {}
 
-  discord.js@14.26.0:
+  discord.js@14.26.1:
     dependencies:
       '@discordjs/builders': 1.14.1
       '@discordjs/collection': 1.5.3
