@@ -51,4 +51,4 @@ jobs:
       - name: Publish to npm
         run: |
           cd libs/ratio-ui
-          npm publish --access public
+          npm publish --access public --provenance
