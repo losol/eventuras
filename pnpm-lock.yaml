@@ -60,7 +60,7 @@ importers:
         version: link:../../libs/logger
       discord.js:
         specifier: ^14.26.0
-        version: 14.26.1
+        version: 14.26.2
       dotenv:
         specifier: ^17.4.0
         version: 17.4.0
@@ -8832,8 +8832,8 @@ packages:
   discord-api-types@0.38.44:
     resolution: {integrity: sha512-q91MgBzP/gRaCLIbQTaOrOhbD8uVIaPKxpgX2sfFB2nZ9nSiTYM9P3NFQ7cbO6NCxctI6ODttc67MI+YhIfILg==}
 
-  discord.js@14.26.1:
-    resolution: {integrity: sha512-yF+/myEVweJg2lENRt+b1SmsovmEKxPoaY5DILBfnIb5dnhw+J6RvdmvUPxUH32jmPB34gnPnymLji8w75bwVA==}
+  discord.js@14.26.2:
+    resolution: {integrity: sha512-feShi+gULJ6R2MAA4/KkCFnkJcuVrROJrKk4czplzq8gE1oqhqgOy9K0Scu44B8oGeWKe04egquzf+ia6VtXAw==}
     engines: {node: '>=18'}
 
   doctrine@2.1.0:
@@ -22712,7 +22712,7 @@ snapshots:
 
   discord-api-types@0.38.44: {}
 
-  discord.js@14.26.1:
+  discord.js@14.26.2:
     dependencies:
       '@discordjs/builders': 1.14.1
       '@discordjs/collection': 1.5.3
