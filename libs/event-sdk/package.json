@@ -22,10 +22,10 @@
     "dist"
   ],
   "scripts": {
-    "build": "openapi-ts && tsc",
-    "openapi:update": "cp ../../apps/api/docs/eventuras-v3.json ./eventuras-v3.json"
+    "build": "openapi-ts && tsc"
   },
   "dependencies": {
+    "@eventuras/api": "workspace:*",
     "@hey-api/openapi-ts": "0.95.0"
   },
   "devDependencies": {
