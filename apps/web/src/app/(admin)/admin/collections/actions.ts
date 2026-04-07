@@ -14,10 +14,10 @@ import {
   deleteV3EventsByEventIdCollectionsByCollectionId,
   EventCollectionCreateDto,
   EventCollectionDto,
-  EventCollectionDtoPageResponseDto,
   EventDto,
   getV3Eventcollections,
   getV3Events,
+  PageResponseDtoOfEventCollectionDto,
   postV3Eventcollections,
   putV3EventcollectionsById,
   putV3EventsByEventIdCollectionsByCollectionId,
@@ -64,10 +64,10 @@ export async function getCollections(page: number = 1, pageSize: number = 100) {
       };
     }
 
-    // The data is already typed as EventCollectionDtoPageResponseDto
+    // The data is already typed as PageResponseDtoOfEventCollectionDto
     return {
       ok: true as const,
-      data: data as EventCollectionDtoPageResponseDto,
+      data: data as PageResponseDtoOfEventCollectionDto,
       error: null,
     };
   } catch (error) {
@@ -98,6 +98,10 @@ export async function createCollection(
 
   try {
     const organizationId = getOrganizationId();
+
+    if (!data.name) {
+      return actionError('Collection name is required');
+    }
 
     // Generate slug from name
     const slug = slugify(data.name);

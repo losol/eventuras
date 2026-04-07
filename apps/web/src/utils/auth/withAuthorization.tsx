@@ -9,7 +9,7 @@ import { checkAuthorization } from './checkAuthorization';
  * Uses event-sdk via server action to verify user has required role.
  *
  * @param WrappedComponent - The Next.js page component to protect
- * @param role - The required role name (e.g., 'Admin', 'SuperAdmin')
+ * @param role - The required role name (e.g., 'Admin', 'SystemAdmin')
  * @returns A new page component that checks authorization before rendering
  *
  * @example

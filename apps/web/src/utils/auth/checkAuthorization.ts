@@ -6,7 +6,7 @@ import { Logger } from '@eventuras/logger';
 import { client } from '@/lib/eventuras-client';
 import {
   getV3OrganizationsByOrganizationIdMembersByUserIdRoles,
-  getV3UsersMe,
+  getV3Userprofile,
 } from '@/lib/eventuras-sdk';
 import { oauthConfig } from '@/utils/oauthConfig';
 import { getOrganizationId } from '@/utils/organization';
@@ -39,13 +39,13 @@ export interface AuthorizationResult {
  * Server action to check if the current user has a specific role in the organization.
  * Uses event-sdk directly with authentication from cookies.
  *
- * @param requiredRole - The role name required (e.g., 'Admin', 'SuperAdmin')
+ * @param requiredRole - The role name required (e.g., 'Admin', 'SystemAdmin')
  * @returns Authorization result with user info and roles
  */
 export async function checkAuthorization(requiredRole: string): Promise<AuthorizationResult> {
   try {
     // Get current user using configured client
-    const userResult = await getV3UsersMe({ client });
+    const userResult = await getV3Userprofile({ client });
 
     if (userResult.error || !userResult.data) {
       logger.warn({ error: userResult.error }, 'Failed to get current user');

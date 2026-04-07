@@ -8,11 +8,11 @@ import { Logger } from '@eventuras/logger';
 import { client } from '@/lib/eventuras-client';
 import {
   getV3Registrations,
+  PageResponseDtoOfRegistrationDto,
   patchV3RegistrationsById,
   postV3RegistrationsByIdCertificateSend,
   putV3RegistrationsById,
   RegistrationDto,
-  RegistrationDtoPageResponseDto,
   RegistrationStatus,
 } from '@/lib/eventuras-sdk';
 import { getOrganizationId } from '@/utils/organization';
@@ -64,10 +64,10 @@ export async function getRegistrations(page: number = 1, pageSize: number = 50) 
       };
     }
 
-    // The data is already typed as RegistrationDtoPageResponseDto
+    // The data is already typed as PageResponseDtoOfRegistrationDto
     return {
       ok: true as const,
-      data: data as RegistrationDtoPageResponseDto,
+      data: data as PageResponseDtoOfRegistrationDto,
       error: null,
     };
   } catch (error) {
