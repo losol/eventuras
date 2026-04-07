@@ -3,7 +3,8 @@ import { getTranslations } from 'next-intl/server';
 import { Badge } from '@eventuras/ratio-ui/core/Badge';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
-import { EventDto, EventInfoStatus } from '@/lib/eventuras-public-sdk';
+import { EventDto } from '@/lib/eventuras-public-sdk';
+import { EventInfoStatus } from '@/lib/eventuras-types';
 export type EventRegistrationButtonProps = {
   event: EventDto;
 };

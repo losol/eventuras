@@ -3,6 +3,7 @@ import { assign, createMachine, fromPromise } from 'xstate';
 import { fetchUserEventRegistrations } from '@/app/(admin)/admin/actions/registrations';
 import { createEventRegistration, updateEventRegistration } from '@/app/(user)/user/events/actions';
 import { EventDto, ProductDto, RegistrationDto, UserDto } from '@/lib/eventuras-sdk';
+import { EventInfoStatus } from '@/lib/eventuras-types';
 import { PaymentFormValues } from '@/types';
 import { mapToNewRegistration, mapToUpdatedRegistration } from '@/utils/api/mappers';
 
@@ -32,7 +33,7 @@ function getSelectedProductsMap(registration?: RegistrationDto | null): Map<stri
       return;
     }
 
-    selectedProducts.set(product.productId.toString(), product.quantity ?? 0);
+    selectedProducts.set(product.productId.toString(), Number(product.quantity ?? 0));
   });
 
   return selectedProducts;
@@ -158,16 +159,16 @@ const EventFlowMachine = createMachine({
           // No existing registration, but event registration status allows creating new
           guard: ({ context }) =>
             !context.inEditMode &&
-            (context.eventInfo.status === 'RegistrationsOpen' ||
-              context.eventInfo.status === 'WaitingList'),
+            (context.eventInfo.status === EventInfoStatus.REGISTRATIONS_OPEN ||
+              context.eventInfo.status === EventInfoStatus.WAITING_LIST),
           target: States.VALIDATE_ACCOUNT_DETAILS,
         },
         {
           // Needs an better error message
           guard: ({ context }) =>
             !context.inEditMode &&
-            context.eventInfo.status !== 'RegistrationsOpen' &&
-            context.eventInfo.status !== 'WaitingList',
+            context.eventInfo.status !== EventInfoStatus.REGISTRATIONS_OPEN &&
+            context.eventInfo.status !== EventInfoStatus.WAITING_LIST,
           target: States.ERROR,
           actions: assign({
             error: ({ context }) =>

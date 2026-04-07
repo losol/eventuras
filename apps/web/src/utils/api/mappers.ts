@@ -7,8 +7,19 @@ import {
   RegistrationType as RegistrationTypeType,
   RegistrationUpdateDto,
 } from '@/lib/eventuras-sdk';
-import { RegistrationStatus, RegistrationType } from '@/lib/eventuras-types';
+import { PaymentProvider, RegistrationStatus, RegistrationType } from '@/lib/eventuras-types';
 import { ParticipationTypes, PaymentFormValues, RegistrationProduct } from '@/types';
+
+/** Maps payment method name strings (from form radio buttons) to API numeric values. */
+const paymentMethodToNumber: Record<string, number> = {
+  EmailInvoice: PaymentProvider.EMAIL_INVOICE,
+  PowerOfficeEmailInvoice: PaymentProvider.POWER_OFFICE_EMAIL_INVOICE,
+  PowerOfficeEHFInvoice: PaymentProvider.POWER_OFFICE_EHF_INVOICE,
+  StripeInvoice: PaymentProvider.STRIPE_INVOICE,
+  StripeDirect: PaymentProvider.STRIPE_DIRECT,
+  VippsInvoice: PaymentProvider.VIPPS_INVOICE,
+  VippsDirect: PaymentProvider.VIPPS_DIRECT,
+};
 
 /**
  * Contains mappers which map Dto's from the API to whatever the view consumes.
@@ -67,7 +78,7 @@ export const mapToNewRegistration = (
     customer,
     type,
     createOrder: true,
-    paymentMethod: paymentDetails.paymentMethod,
+    paymentMethod: paymentMethodToNumber[paymentDetails.paymentMethod],
   };
 
   return newRegistration;
@@ -80,7 +91,7 @@ export const mapToUpdatedRegistration = (
   const updatedRegistration: RegistrationUpdateDto = {
     customer: customerFromPaymentForm(paymentDetails),
     type: registration.type,
-    paymentMethod: paymentDetails.paymentMethod,
+    paymentMethod: paymentMethodToNumber[paymentDetails.paymentMethod],
   };
   return updatedRegistration;
 };

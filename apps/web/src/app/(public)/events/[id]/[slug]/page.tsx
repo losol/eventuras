@@ -16,7 +16,8 @@ import EventDetails from '@/app/(public)/events/EventDetails';
 import EventRegistrationButton from '@/app/(public)/events/EventRegistrationButton';
 import { appConfig } from '@/config.server';
 import { getPublicClient } from '@/lib/eventuras-public-client';
-import { EventInfoStatus, getV3EventsById } from '@/lib/eventuras-public-sdk';
+import { getV3EventsById } from '@/lib/eventuras-public-sdk';
+import { EventInfoStatus } from '@/lib/eventuras-types';
 
 import EventNotFound from '../../EventNotFound';
 
