@@ -32,14 +32,6 @@ export type ByType = {
     artist?: number | string;
 };
 
-export type CalendarSystem = {
-    id?: null | string;
-    name?: null | string;
-    minYear?: number | string;
-    maxYear?: number | string;
-    eras?: null | Array<Era>;
-};
-
 export type CertificateDto = {
     certificateId?: number | string;
     certificateGuid?: string;
@@ -56,7 +48,13 @@ export type CertificateDto = {
     issuerPersonSignatureImageBase64?: null | string;
 };
 
-export type CertificateFormat = number;
+export const CertificateFormat = {
+    JSON: 'Json',
+    HTML: 'Html',
+    PDF: 'Pdf'
+} as const;
+
+export type CertificateFormat = typeof CertificateFormat[keyof typeof CertificateFormat];
 
 export type EmailNotificationDto = {
     subject: null | string;
@@ -64,10 +62,6 @@ export type EmailNotificationDto = {
     recipients?: null | Array<string>;
     eventParticipants?: EventParticipantsFilterDto;
     registrationId?: null | number | string;
-};
-
-export type Era = {
-    name?: null | string;
 };
 
 export type EventCollectionCreateDto = {
@@ -176,9 +170,28 @@ export type EventInfoRegistrationPolicyDto = {
     allowModificationsAfterCancellationDue?: boolean;
 };
 
-export type EventInfoStatus = number;
+export const EventInfoStatus = {
+    DRAFT: 'Draft',
+    PLANNED: 'Planned',
+    REGISTRATIONS_OPEN: 'RegistrationsOpen',
+    WAITING_LIST: 'WaitingList',
+    REGISTRATIONS_CLOSED: 'RegistrationsClosed',
+    FINISHED: 'Finished',
+    ARCHIVED: 'Archived',
+    CANCELLED: 'Cancelled'
+} as const;
 
-export type EventInfoType = number;
+export type EventInfoStatus = typeof EventInfoStatus[keyof typeof EventInfoStatus];
+
+export const EventInfoType = {
+    COURSE: 'Course',
+    CONFERENCE: 'Conference',
+    ONLINE_COURSE: 'OnlineCourse',
+    SOCIAL: 'Social',
+    OTHER: 'Other'
+} as const;
+
+export type EventInfoType = typeof EventInfoType[keyof typeof EventInfoType];
 
 export type EventParticipantsFilterDto = {
     eventId?: null | number | string;
@@ -251,9 +264,7 @@ export type EventStatisticsDto = {
     byType?: ByType;
 };
 
-export type Instant = {
-    [key: string]: unknown;
-};
+export type Instant = string;
 
 export type InvoiceDto = {
     invoiceId?: number | string;
@@ -266,18 +277,7 @@ export type InvoiceRequestDto = {
     orderIds?: Array<number | string>;
 };
 
-export type IsoDayOfWeek = number;
-
-export type LocalDate = {
-    calendar?: CalendarSystem;
-    year?: number | string;
-    month?: number | string;
-    day?: number | string;
-    dayOfWeek?: IsoDayOfWeek;
-    yearOfEra?: number | string;
-    era?: Era;
-    dayOfYear?: number | string;
-};
+export type LocalDate = string;
 
 export type NewOrderRequestDto = {
     registrationId: number | string;
@@ -331,9 +331,18 @@ export type NotificationDto = {
     statistics?: NotificationStatisticsDto;
 };
 
-export type NotificationListOrder = number;
+export const NotificationListOrder = { CREATED: 'Created', STATUS_UPDATED: 'StatusUpdated' } as const;
 
-export type NotificationRecipientListOrder = number;
+export type NotificationListOrder = typeof NotificationListOrder[keyof typeof NotificationListOrder];
+
+export const NotificationRecipientListOrder = {
+    CREATED: 'Created',
+    SENT: 'Sent',
+    NAME: 'Name',
+    IDENTIFIER: 'Identifier'
+} as const;
+
+export type NotificationRecipientListOrder = typeof NotificationRecipientListOrder[keyof typeof NotificationRecipientListOrder];
 
 export type NotificationStatisticsDto = {
     sent?: number | string;
@@ -341,9 +350,20 @@ export type NotificationStatisticsDto = {
     recipients?: number | string;
 };
 
-export type NotificationStatus = number;
+export const NotificationStatus = {
+    NEW: 'New',
+    QUEUED: 'Queued',
+    STARTED: 'Started',
+    CANCELLED: 'Cancelled',
+    FAILED: 'Failed',
+    SENT: 'Sent'
+} as const;
 
-export type NotificationType = number;
+export type NotificationStatus = typeof NotificationStatus[keyof typeof NotificationStatus];
+
+export const NotificationType = { EMAIL: 'Email', SMS: 'Sms' } as const;
+
+export type NotificationType = typeof NotificationType[keyof typeof NotificationType];
 
 export type OnlineCourseDto = {
     id?: number | string;
@@ -394,7 +414,15 @@ export type OrderPatchDto = {
     paymentMethod?: null | PaymentProvider;
 };
 
-export type OrderStatus = number;
+export const OrderStatus = {
+    DRAFT: 'Draft',
+    VERIFIED: 'Verified',
+    INVOICED: 'Invoiced',
+    CANCELLED: 'Cancelled',
+    REFUNDED: 'Refunded'
+} as const;
+
+export type OrderStatus = typeof OrderStatus[keyof typeof OrderStatus];
 
 export type OrderUpdateRequestDto = {
     lines: null | Array<OrderLineModel>;
@@ -441,7 +469,15 @@ export type OrganizationSettingDto = {
     value?: null | string;
 };
 
-export type OrganizationSettingType = number;
+export const OrganizationSettingType = {
+    STRING: 'String',
+    NUMBER: 'Number',
+    URL: 'Url',
+    EMAIL: 'Email',
+    BOOLEAN: 'Boolean'
+} as const;
+
+export type OrganizationSettingType = typeof OrganizationSettingType[keyof typeof OrganizationSettingType];
 
 export type OrganizationSettingValueDto = {
     name: null | string;
@@ -480,9 +516,25 @@ export type PageResponseDtoOfUserDto = {
     data?: null | Array<UserDto>;
 };
 
-export type PaymentProvider = number;
+export const PaymentProvider = {
+    EMAIL_INVOICE: 'EmailInvoice',
+    POWER_OFFICE_EMAIL_INVOICE: 'PowerOfficeEmailInvoice',
+    POWER_OFFICE_EHF_INVOICE: 'PowerOfficeEHFInvoice',
+    STRIPE_INVOICE: 'StripeInvoice',
+    STRIPE_DIRECT: 'StripeDirect',
+    VIPPS_INVOICE: 'VippsInvoice',
+    VIPPS_DIRECT: 'VippsDirect'
+} as const;
 
-export type PeriodMatchingKind = number;
+export type PaymentProvider = typeof PaymentProvider[keyof typeof PaymentProvider];
+
+export const PeriodMatchingKind = {
+    MATCH: 'Match',
+    INTERSECT: 'Intersect',
+    CONTAIN: 'Contain'
+} as const;
+
+export type PeriodMatchingKind = typeof PeriodMatchingKind[keyof typeof PeriodMatchingKind];
 
 export type ProblemDetails = {
     type?: null | string;
@@ -567,7 +619,9 @@ export type ProductVariantDto = {
     vatPercent?: number | string;
 };
 
-export type ProductVisibility = number;
+export const ProductVisibility = { EVENT: 'Event', COLLECTION: 'Collection' } as const;
+
+export type ProductVisibility = typeof ProductVisibility[keyof typeof ProductVisibility];
 
 export type RegistrationCustomerInfoDto = {
     vatNumber?: null | string;
@@ -607,9 +661,27 @@ export type RegistrationPatchDto = {
     notes?: null | string;
 };
 
-export type RegistrationStatus = number;
+export const RegistrationStatus = {
+    DRAFT: 'Draft',
+    CANCELLED: 'Cancelled',
+    VERIFIED: 'Verified',
+    NOT_ATTENDED: 'NotAttended',
+    ATTENDED: 'Attended',
+    FINISHED: 'Finished',
+    WAITING_LIST: 'WaitingList'
+} as const;
 
-export type RegistrationType = number;
+export type RegistrationStatus = typeof RegistrationStatus[keyof typeof RegistrationStatus];
+
+export const RegistrationType = {
+    PARTICIPANT: 'Participant',
+    STUDENT: 'Student',
+    STAFF: 'Staff',
+    LECTURER: 'Lecturer',
+    ARTIST: 'Artist'
+} as const;
+
+export type RegistrationType = typeof RegistrationType[keyof typeof RegistrationType];
 
 export type RegistrationUpdateDto = {
     status?: null | RegistrationStatus;
@@ -683,7 +755,14 @@ export type UserFormDto = {
     archived?: boolean;
 };
 
-export type UserListOrder = number;
+export const UserListOrder = {
+    GIVEN_NAME: 'GivenName',
+    FAMILY_NAME: 'FamilyName',
+    EMAIL: 'Email',
+    PHONE: 'Phone'
+} as const;
+
+export type UserListOrder = typeof UserListOrder[keyof typeof UserListOrder];
 
 export type UserSummaryDto = {
     userId?: string;

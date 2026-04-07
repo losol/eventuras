@@ -41,19 +41,29 @@ builder.WebHost.UseSentry();
 var features = GetFeatureManagement(builder.Configuration);
 var appSettings = GetAppSettings(builder.Configuration);
 
+// Configure JSON serializer options shared by MVC and the OpenAPI schema generator.
+// Microsoft.AspNetCore.OpenApi reads the Minimal API JSON options (ConfigureHttpJsonOptions),
+// not MVC's. Mirroring the converters in both keeps runtime serialization and the
+// generated OpenAPI spec in sync — without this, the spec would emit enums as
+// { "type": "integer" } even though the API serialises them as strings.
+// See https://github.com/dotnet/aspnetcore/issues/61303
+static void ConfigureJsonSerializer(System.Text.Json.JsonSerializerOptions options)
+{
+    options.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    options.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
+    options.Converters.Add(new LocalDateConverter());
+    options.Converters.Add(new JsonStringEnumConverter());
+}
+
 // Configure dependency injection container
 builder.Services.AddControllers(options =>
     {
         options.Filters.Add<ValidationFilter>();
         options.Filters.Add<HttpResponseExceptionFilter>();
     })
-    .AddJsonOptions(j =>
-    {
-        j.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-        j.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
-        j.JsonSerializerOptions.Converters.Add(new LocalDateConverter());
-        j.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    });
+    .AddJsonOptions(j => ConfigureJsonSerializer(j.JsonSerializerOptions));
+
+builder.Services.ConfigureHttpJsonOptions(j => ConfigureJsonSerializer(j.SerializerOptions));
 
 // Configure data protection if folder is set
 if (!string.IsNullOrEmpty(appSettings.DataProtectionKeysFolder))
@@ -129,6 +139,7 @@ builder.Services.AddOpenApi("v3", options =>
     options.AddDocumentTransformer<AddSecuritySchemeTransformer>();
     options.AddOperationTransformer<AddOrganizationHeaderTransformer>();
     options.AddOperationTransformer<RemoveJsonPatchContentTypeTransformer>();
+    options.AddSchemaTransformer<NodaTimeSchemaTransformer>();
 });
 
 // Finish configuring DI, logging and configuration

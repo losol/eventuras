@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Eventuras.Services.Constants;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi;
+using NodaTime;
 
 namespace Eventuras.WebApi.Extensions;
 
@@ -51,6 +52,44 @@ public class AddOrganizationHeaderTransformer : IOpenApiOperationTransformer
             Description = "Optional organization Id. Will be required in API version 4."
         });
 
+        return Task.CompletedTask;
+    }
+}
+
+/// <summary>
+/// Schema transformer that emits ISO 8601 string schemas for NodaTime types.
+///
+/// Microsoft.AspNetCore.OpenApi only sees the underlying NodaTime structs and
+/// emits empty schemas, which the SDK generator turns into <c>unknown</c>.
+/// In reality the JSON converters (LocalDateConverter and the NodaTime ones from
+/// ConfigureForNodaTime) serialise these as plain ISO strings, so we rewrite the
+/// schemas to match.
+/// </summary>
+public class NodaTimeSchemaTransformer : IOpenApiSchemaTransformer
+{
+    public Task TransformAsync(OpenApiSchema schema, OpenApiSchemaTransformerContext context,
+        CancellationToken cancellationToken)
+    {
+        var type = System.Nullable.GetUnderlyingType(context.JsonTypeInfo.Type)
+                   ?? context.JsonTypeInfo.Type;
+
+        string format;
+        if (type == typeof(LocalDate))
+        {
+            format = "date";
+        }
+        else if (type == typeof(Instant))
+        {
+            format = "date-time";
+        }
+        else
+        {
+            return Task.CompletedTask;
+        }
+
+        schema.Type = JsonSchemaType.String;
+        schema.Format = format;
+        schema.Properties?.Clear();
         return Task.CompletedTask;
     }
 }
