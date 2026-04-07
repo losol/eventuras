@@ -77,8 +77,8 @@ export async function fetchEvents({
 
     const result = {
       data: response.data.data ?? [],
-      pages: response.data.pages ?? 0,
-      count: response.data.count ?? 0,
+      pages: Number(response.data.pages ?? 0),
+      count: Number(response.data.count ?? 0),
     };
 
     logger.debug(

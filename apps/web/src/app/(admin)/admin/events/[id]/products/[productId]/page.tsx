@@ -56,14 +56,14 @@ const EventProducts: React.FC<EventProductsPage> = async props => {
   const byRegistrationStatus = productSummary.statistics?.byRegistrationStatus;
   const totals = {
     active:
-      (byRegistrationStatus?.draft ?? 0) +
-      (byRegistrationStatus?.verified ?? 0) +
-      (byRegistrationStatus?.waitingList ?? 0) +
-      (byRegistrationStatus?.attended ?? 0) +
-      (byRegistrationStatus?.notAttended ?? 0) +
-      (byRegistrationStatus?.finished ?? 0),
-    cancelled: byRegistrationStatus?.cancelled ?? 0,
-    waitingList: byRegistrationStatus?.waitingList ?? 0,
+      Number(byRegistrationStatus?.draft ?? 0) +
+      Number(byRegistrationStatus?.verified ?? 0) +
+      Number(byRegistrationStatus?.waitingList ?? 0) +
+      Number(byRegistrationStatus?.attended ?? 0) +
+      Number(byRegistrationStatus?.notAttended ?? 0) +
+      Number(byRegistrationStatus?.finished ?? 0),
+    cancelled: Number(byRegistrationStatus?.cancelled ?? 0),
+    waitingList: Number(byRegistrationStatus?.waitingList ?? 0),
   };
   return (
     <>

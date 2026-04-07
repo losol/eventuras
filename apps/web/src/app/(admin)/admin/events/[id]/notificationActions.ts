@@ -82,7 +82,7 @@ export async function fetchEventNotifications(
  * @returns List of recipients or error
  */
 export async function fetchNotificationRecipients(
-  notificationId: number
+  notificationId: number | string
 ): Promise<ServerActionResult<RecipientDto[]>> {
   try {
     logger.info({ notificationId }, 'Fetching recipients for notification');

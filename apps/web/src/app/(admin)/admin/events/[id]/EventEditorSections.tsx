@@ -231,7 +231,7 @@ export const AdvancedSection = ({
   eventId,
 }: {
   loading?: boolean;
-  eventId?: number;
+  eventId?: number | string;
 }) => (
   <>
     <Fieldset label="Additional Fields" disabled={loading}>

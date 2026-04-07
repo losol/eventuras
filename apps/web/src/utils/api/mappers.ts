@@ -3,23 +3,11 @@ import {
   ProductDto,
   RegistrationCustomerInfoDto,
   RegistrationDto,
-  RegistrationStatus as RegistrationStatusType,
-  RegistrationType as RegistrationTypeType,
+  RegistrationStatus,
+  RegistrationType,
   RegistrationUpdateDto,
 } from '@/lib/eventuras-sdk';
-import { PaymentProvider, RegistrationStatus, RegistrationType } from '@/lib/eventuras-types';
 import { ParticipationTypes, PaymentFormValues, RegistrationProduct } from '@/types';
-
-/** Maps payment method name strings (from form radio buttons) to API numeric values. */
-const paymentMethodToNumber: Record<string, number> = {
-  EmailInvoice: PaymentProvider.EMAIL_INVOICE,
-  PowerOfficeEmailInvoice: PaymentProvider.POWER_OFFICE_EMAIL_INVOICE,
-  PowerOfficeEHFInvoice: PaymentProvider.POWER_OFFICE_EHF_INVOICE,
-  StripeInvoice: PaymentProvider.STRIPE_INVOICE,
-  StripeDirect: PaymentProvider.STRIPE_DIRECT,
-  VippsInvoice: PaymentProvider.VIPPS_INVOICE,
-  VippsDirect: PaymentProvider.VIPPS_DIRECT,
-};
 
 /**
  * Contains mappers which map Dto's from the API to whatever the view consumes.
@@ -33,7 +21,7 @@ export const mapEventProductsToView = (eventProducts: ProductDto[]): Registratio
     .map((product: ProductDto) => {
       let minimumQuantity = 0;
       if (product.enableQuantity) {
-        minimumQuantity = product.minimumQuantity ?? 0;
+        minimumQuantity = Number(product.minimumQuantity ?? 0);
       }
       return {
         id: product.productId!.toString(),
@@ -71,14 +59,13 @@ export const mapToNewRegistration = (
   paymentDetails: PaymentFormValues
 ) => {
   const customer = customerFromPaymentForm(paymentDetails);
-  const type: RegistrationTypeType = RegistrationType.PARTICIPANT;
   const newRegistration: NewRegistrationDto = {
     userId,
     eventId,
     customer,
-    type,
+    type: RegistrationType.PARTICIPANT,
     createOrder: true,
-    paymentMethod: paymentMethodToNumber[paymentDetails.paymentMethod],
+    paymentMethod: paymentDetails.paymentMethod,
   };
 
   return newRegistration;
@@ -91,7 +78,7 @@ export const mapToUpdatedRegistration = (
   const updatedRegistration: RegistrationUpdateDto = {
     customer: customerFromPaymentForm(paymentDetails),
     type: registration.type,
-    paymentMethod: paymentMethodToNumber[paymentDetails.paymentMethod],
+    paymentMethod: paymentDetails.paymentMethod,
   };
   return updatedRegistration;
 };
@@ -135,7 +122,7 @@ export const participationMap = {
     RegistrationStatus.FINISHED,
     RegistrationStatus.NOT_ATTENDED,
     RegistrationStatus.VERIFIED,
-  ] as RegistrationStatusType[],
-  [ParticipationTypes.waitingList]: [RegistrationStatus.WAITING_LIST] as RegistrationStatusType[],
-  [ParticipationTypes.cancelled]: [RegistrationStatus.CANCELLED] as RegistrationStatusType[],
+  ] as RegistrationStatus[],
+  [ParticipationTypes.waitingList]: [RegistrationStatus.WAITING_LIST] as RegistrationStatus[],
+  [ParticipationTypes.cancelled]: [RegistrationStatus.CANCELLED] as RegistrationStatus[],
 };

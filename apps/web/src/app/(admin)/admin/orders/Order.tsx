@@ -67,7 +67,9 @@ const Order: React.FC<OrderProps> = ({ admin, order }) => {
                 <Table.Cell>{item.productVariant?.name}</Table.Cell>
                 <Table.Cell>{item.quantity}</Table.Cell>
                 <Table.Cell>{item.product?.price}</Table.Cell>
-                <Table.Cell>{(item.quantity ?? 0) * (item.product?.price ?? 0)}</Table.Cell>
+                <Table.Cell>
+                  {Number(item.quantity ?? 0) * Number(item.product?.price ?? 0)}
+                </Table.Cell>
               </Table.Row>
             ))}
           </Table.Body>

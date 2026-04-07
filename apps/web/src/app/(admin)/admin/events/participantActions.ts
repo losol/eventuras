@@ -9,7 +9,7 @@ const logger = Logger.create({
   context: { module: 'participantActions' },
 });
 
-export async function getRegistrationDetails(registrationId: number) {
+export async function getRegistrationDetails(registrationId: number | string) {
   logger.info({ registrationId }, 'Loading registration details');
 
   try {
@@ -35,7 +35,7 @@ export async function getRegistrationDetails(registrationId: number) {
   }
 }
 
-export async function getEventRegistrations(eventId: number) {
+export async function getEventRegistrations(eventId: number | string) {
   logger.info({ eventId }, 'Loading event registrations');
 
   try {

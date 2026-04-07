@@ -10,13 +10,12 @@ import { Form, Select } from '@eventuras/smartform';
 
 import { CertificateActionsButton } from '@/components/eventuras/CertificateActionsButton';
 import {
-  PaymentProvider as PaymentProviderType,
+  PaymentProvider,
   RegistrationCustomerInfoDto,
   RegistrationDto,
-  RegistrationStatus as RegistrationStatusType,
-  RegistrationType as RegistrationTypeType,
+  RegistrationStatus,
+  RegistrationType,
 } from '@/lib/eventuras-sdk';
-import { RegistrationStatus, RegistrationType } from '@/lib/eventuras-types';
 
 import Order from '../orders/Order';
 interface RegistrationProps {
@@ -29,11 +28,11 @@ interface RegistrationProps {
 }
 // Replace with the real type from the SDK when it's available
 export type RegistrationUpdateDto = {
-  status?: RegistrationStatusType;
-  type?: RegistrationTypeType;
+  status?: RegistrationStatus;
+  type?: RegistrationType;
   notes?: string | null;
   customer?: RegistrationCustomerInfoDto;
-  paymentMethod?: PaymentProviderType;
+  paymentMethod?: PaymentProvider;
 };
 type TranslationFunction = (
   key: string,
@@ -69,7 +68,7 @@ export const getTypeLabels = (t: TranslationFunction) => [
 /**
  * Gets the appropriate badge variant for registration status
  */
-export const getStatusBadgeVariant = (status: RegistrationStatusType | undefined) => {
+export const getStatusBadgeVariant = (status: RegistrationStatus | undefined) => {
   switch (status) {
     case RegistrationStatus.CANCELLED:
       return 'negative';

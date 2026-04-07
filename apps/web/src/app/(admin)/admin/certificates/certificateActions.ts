@@ -22,7 +22,7 @@ const logger = Logger.create({
  * @returns PDF file as base64-encoded string or error
  */
 export async function downloadCertificatePdf(
-  certificateId: number
+  certificateId: number | string
 ): Promise<ServerActionResult<string>> {
   try {
     logger.info({ certificateId }, 'Downloading certificate PDF');
@@ -87,7 +87,7 @@ export async function downloadCertificatePdf(
  * @returns Success or error
  */
 export async function sendCertificateToParticipant(
-  registrationId: number
+  registrationId: number | string
 ): Promise<ServerActionResult<void>> {
   try {
     logger.info({ registrationId }, 'Sending certificate to participant');

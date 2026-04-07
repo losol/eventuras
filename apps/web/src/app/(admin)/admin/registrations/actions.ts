@@ -125,7 +125,7 @@ export async function updateRegistration(
  * Update registration status using PATCH endpoint
  */
 export async function updateRegistrationStatus(
-  registrationId: number,
+  registrationId: number | string,
   status: RegistrationStatus
 ): Promise<ServerActionResult<RegistrationDto>> {
   const orgId = getOrganizationId();
@@ -164,7 +164,7 @@ export async function updateRegistrationStatus(
  * Send certificate email for a registration
  */
 export async function sendCertificateEmail(
-  registrationId: number
+  registrationId: number | string
 ): Promise<ServerActionResult<void>> {
   const orgId = getOrganizationId();
 

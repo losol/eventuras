@@ -182,7 +182,7 @@ export default function EventPageTabs({
       data.organizationId = orgId;
 
       // Set slug
-      const year = data.dateStart ? new Date(data.dateStart).getFullYear() : undefined;
+      const year = data.dateStart?.year ? Number(data.dateStart.year) : undefined;
       const newSlug = slugify([data.title, data.city, year, data.id].filter(Boolean).join('-'));
       data.slug = newSlug;
 

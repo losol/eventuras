@@ -12,8 +12,8 @@ import {
 } from '@/app/(admin)/admin/certificates/certificateActions';
 
 export interface CertificateActionsButtonProps {
-  certificateId: number;
-  registrationId: number;
+  certificateId: number | string;
+  registrationId: number | string;
   size?: 'sm' | 'md' | 'lg';
 }
 

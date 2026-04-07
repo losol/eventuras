@@ -22,7 +22,7 @@ const logger = Logger.create({
  * @returns Excel file as base64-encoded string or error
  */
 export async function downloadRegistrationsExcel(
-  eventId: number
+  eventId: number | string
 ): Promise<ServerActionResult<string>> {
   try {
     logger.info({ eventId }, 'Downloading registrations Excel file');

@@ -1,4 +1,4 @@
-import { ProductOrderDto } from '@/lib/eventuras-sdk';
+import { PaymentProvider, ProductOrderDto } from '@/lib/eventuras-sdk';
 
 export type LocalesType = {
   component: {
@@ -9,19 +9,6 @@ export type LocalesType = {
   };
 };
 
-/**
- * Payment method names as used in UI forms (string keys matching the C# enum names).
- * These are converted to numeric PaymentProvider values when calling the API.
- */
-export type PaymentMethodName =
-  | 'EmailInvoice'
-  | 'PowerOfficeEmailInvoice'
-  | 'PowerOfficeEHFInvoice'
-  | 'StripeInvoice'
-  | 'StripeDirect'
-  | 'VippsInvoice'
-  | 'VippsDirect';
-
 export type PaymentFormValues = {
   username: string;
   email: string;
@@ -31,7 +18,7 @@ export type PaymentFormValues = {
   country: string;
   vatNumber: string;
   invoiceReference: string;
-  paymentMethod: PaymentMethodName;
+  paymentMethod: PaymentProvider;
 };
 
 export type RegistrationProduct = {

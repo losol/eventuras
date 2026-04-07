@@ -44,7 +44,7 @@ export default async function AdminCollectionsPage({ searchParams }: PageProps) 
           <CollectionsTable
             collections={response.data.data ?? []}
             currentPage={page}
-            totalPages={response.data.pages ?? 0}
+            totalPages={Number(response.data.pages ?? 0)}
           />
         </Container>
       </Section>

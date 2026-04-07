@@ -23,13 +23,13 @@ const EventStatistics: React.FC<EventStatisticsProps> = ({
 
   const counts = {
     [ParticipationTypes.active]:
-      (byStatus?.draft ?? 0) +
-      (byStatus?.verified ?? 0) +
-      (byStatus?.attended ?? 0) +
-      (byStatus?.finished ?? 0) +
-      (byStatus?.notAttended ?? 0),
-    [ParticipationTypes.waitingList]: byStatus?.waitingList ?? 0,
-    [ParticipationTypes.cancelled]: byStatus?.cancelled ?? 0,
+      Number(byStatus?.draft ?? 0) +
+      Number(byStatus?.verified ?? 0) +
+      Number(byStatus?.attended ?? 0) +
+      Number(byStatus?.finished ?? 0) +
+      Number(byStatus?.notAttended ?? 0),
+    [ParticipationTypes.waitingList]: Number(byStatus?.waitingList ?? 0),
+    [ParticipationTypes.cancelled]: Number(byStatus?.cancelled ?? 0),
   };
 
   const options: ToggleButtonOption[] = Object.keys(ParticipationTypes).map((key: string) => {

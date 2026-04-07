@@ -12,7 +12,7 @@ import { ProductOrderDto } from '@/lib/eventuras-sdk';
 
 export type UserEventRegistrationCardProps = {
   eventId: string;
-  registrationId: number;
+  registrationId: number | string;
   eventTitle: string;
   eventDescription: string;
   dateStart: any;

@@ -33,10 +33,10 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
   });
   const [eventListUpdateTrigger, setEventListUpdateTrigger] = useState(0);
   const [eventInfos, setEventInfos] = useState<EventDto[]>([]);
-  const [addEventId, setAddEventId] = useState<number | null>(null);
+  const [addEventId, setAddEventId] = useState<number | string | null>(null);
   const [formSubmitting, setFormSubmitting] = useState(false);
   const [addingEvent, setAddingEvent] = useState(false);
-  const [removingEventId, setRemovingEventId] = useState(-1);
+  const [removingEventId, setRemovingEventId] = useState<number | string>(-1);
   const router = useRouter();
   useEffect(() => {
     if (eventCollection?.id) {
@@ -58,7 +58,7 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
       setFormSubmitting(false);
     }
   };
-  const handleRemoveEvent = async (eventId: number) => {
+  const handleRemoveEvent = async (eventId: number | string) => {
     logger.info(`Removing event ${eventId} from collection`);
     setRemovingEventId(eventId);
     const result = await removeEventFromCollection(eventId, eventCollection.id!);
@@ -71,7 +71,7 @@ const CollectionEditor = ({ eventCollection }: CollectionEditorProps) => {
       setRemovingEventId(-1);
     }
   };
-  const handleAddEvent = async (eventId: number) => {
+  const handleAddEvent = async (eventId: number | string) => {
     logger.info(`Adding event ${eventId} to collection`);
     setAddingEvent(true);
     const result = await addEventToCollection(eventId, eventCollection.id!);

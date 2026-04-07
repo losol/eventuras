@@ -20,7 +20,7 @@ function renderProducts(registration: RegistrationDto) {
   }
   return registration.products
     .map(product => {
-      const displayQuantity = product.product!.enableQuantity && product.quantity! > 1;
+      const displayQuantity = product.product!.enableQuantity && Number(product.quantity!) > 1;
       return displayQuantity
         ? `${product.quantity} x ${product.product!.name}`
         : product.product!.name;

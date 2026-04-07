@@ -100,7 +100,7 @@ export async function createCollection(
     const organizationId = getOrganizationId();
 
     // Generate slug from name
-    const slug = slugify(data.name);
+    const slug = slugify(data.name ?? '');
     data.slug = slug;
 
     const response = await postV3Eventcollections({
@@ -168,8 +168,8 @@ export async function updateCollection(
  * Add an event to a collection
  */
 export async function addEventToCollection(
-  eventId: number,
-  collectionId: number
+  eventId: number | string,
+  collectionId: number | string
 ): Promise<ServerActionResult<void>> {
   logger.info({ eventId, collectionId }, 'Adding event to collection...');
 
@@ -199,7 +199,7 @@ export async function addEventToCollection(
 /**
  * Get events in a collection
  */
-export async function getCollectionEvents(collectionId: number): Promise<EventDto[]> {
+export async function getCollectionEvents(collectionId: number | string): Promise<EventDto[]> {
   try {
     const response = await getV3Events({
       client,
@@ -218,8 +218,8 @@ export async function getCollectionEvents(collectionId: number): Promise<EventDt
  * Remove an event from a collection
  */
 export async function removeEventFromCollection(
-  eventId: number,
-  collectionId: number
+  eventId: number | string,
+  collectionId: number | string
 ): Promise<ServerActionResult<void>> {
   logger.info({ eventId, collectionId }, 'Removing event from collection...');
 

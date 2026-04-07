@@ -22,7 +22,7 @@ const UserPage = async () => {
     <Container>
       <Heading>{t('user.page.heading')}</Heading>
       <UserProfileCard profile={profileResponse.data} />
-      {registrationsResponse.data && registrationsResponse.data.count! > 0 && (
+      {registrationsResponse.data && Number(registrationsResponse.data.count!) > 0 && (
         <UserEventRegistrations registrations={registrationsResponse.data.data!} />
       )}
     </Container>

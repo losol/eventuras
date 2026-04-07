@@ -12,7 +12,7 @@ const logger = Logger.create({
   context: { component: 'ExcelExportButton' },
 });
 
-export const ExcelExportButton = (props: { EventinfoId: number }) => {
+export const ExcelExportButton = (props: { EventinfoId: number | string }) => {
   const [loading, setLoading] = useState(false);
   const toast = useToast();
 

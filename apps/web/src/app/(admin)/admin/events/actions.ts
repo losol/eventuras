@@ -153,14 +153,14 @@ const updateLogger = Logger.create({
 });
 
 export async function updateEvent(
-  eventId: number,
+  eventId: number | string,
   eventData: EventFormDto
 ): Promise<ServerActionResult<{ eventId: number }>> {
   updateLogger.info({ eventId }, 'Starting event update');
 
   try {
     // Validate event ID
-    if (!eventId || isNaN(eventId)) {
+    if (!eventId || isNaN(Number(eventId))) {
       const errorMsg = 'Invalid event ID';
       updateLogger.error({ eventId }, errorMsg);
       return actionError(errorMsg, 'INVALID_EVENT_ID');
@@ -191,7 +191,7 @@ export async function updateEvent(
     const response = await putV3EventsById({
       client,
       path: {
-        id: eventId,
+        id: Number(eventId),
       },
       body: eventData,
     });
@@ -270,12 +270,14 @@ const certificateLogger = Logger.create({
 /**
  * Issue and send certificates for an event
  */
-export async function issueCertificates(eventId: number): Promise<ServerActionResult<void>> {
+export async function issueCertificates(
+  eventId: number | string
+): Promise<ServerActionResult<void>> {
   certificateLogger.info({ eventId }, 'Issuing certificates for event');
 
   try {
     // Validate event ID
-    if (!eventId || isNaN(eventId)) {
+    if (!eventId || isNaN(Number(eventId))) {
       const errorMsg = 'Invalid event ID';
       certificateLogger.error({ eventId }, errorMsg);
       return actionError(errorMsg, 'INVALID_EVENT_ID');
@@ -356,11 +358,13 @@ const previewLogger = Logger.create({
 /**
  * Preview the certificate template for an event with dummy data
  */
-export async function previewCertificate(eventId: number): Promise<ServerActionResult<string>> {
+export async function previewCertificate(
+  eventId: number | string
+): Promise<ServerActionResult<string>> {
   previewLogger.info({ eventId }, 'Previewing certificate for event');
 
   try {
-    if (!eventId || isNaN(eventId)) {
+    if (!eventId || isNaN(Number(eventId))) {
       return actionError('Invalid event ID', 'INVALID_EVENT_ID');
     }
 

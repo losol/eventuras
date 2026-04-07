@@ -25,7 +25,7 @@ const logger = Logger.create({
  * Fetch all products for an event
  */
 export async function fetchEventProducts(
-  eventId: number
+  eventId: number | string
 ): Promise<ServerActionResult<ProductDto[]>> {
   logger.info({ eventId }, 'Fetching products for event');
 
@@ -57,7 +57,7 @@ export async function fetchEventProducts(
  * Create a new product for an event
  */
 export async function createProduct(
-  eventId: number,
+  eventId: number | string,
   data: NewProductDto
 ): Promise<ServerActionResult<ProductDto>> {
   logger.info({ eventId, productName: data.name }, 'Creating product');
@@ -102,8 +102,8 @@ export async function createProduct(
  * Update an existing product
  */
 export async function updateProduct(
-  eventId: number,
-  productId: number,
+  eventId: number | string,
+  productId: number | string,
   data: ProductDto
 ): Promise<ServerActionResult<ProductDto>> {
   logger.info({ eventId, productId, productName: data.name }, 'Updating product');

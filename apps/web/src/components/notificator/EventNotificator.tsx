@@ -27,7 +27,7 @@ type EventFormValues = {
 
 export type EventNotificatorProps = {
   eventTitle: string;
-  eventId: number;
+  eventId: number | string;
   notificationType: NotificationType;
   onClose: () => void;
 };

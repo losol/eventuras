@@ -3,7 +3,7 @@ import { assign, createMachine, fromPromise } from 'xstate';
 import { fetchUserEventRegistrations } from '@/app/(admin)/admin/actions/registrations';
 import { createEventRegistration, updateEventRegistration } from '@/app/(user)/user/events/actions';
 import { EventDto, ProductDto, RegistrationDto, UserDto } from '@/lib/eventuras-sdk';
-import { EventInfoStatus } from '@/lib/eventuras-types';
+import { EventInfoStatus, PaymentProvider } from '@/lib/eventuras-types';
 import { PaymentFormValues } from '@/types';
 import { mapToNewRegistration, mapToUpdatedRegistration } from '@/utils/api/mappers';
 
@@ -61,7 +61,7 @@ function getInitialPaymentFormValues(user: UserDto): PaymentFormValues {
     country: 'Norway',
     vatNumber: '',
     invoiceReference: '',
-    paymentMethod: 'PowerOfficeEmailInvoice',
+    paymentMethod: PaymentProvider.POWER_OFFICE_EMAIL_INVOICE,
   };
 }
 

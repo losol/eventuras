@@ -10,6 +10,7 @@ import {
   getV3Orders,
   InvoiceRequestDto,
   OrderDto,
+  OrderStatus,
   patchV3OrdersById,
   postV3Invoices,
 } from '@/lib/eventuras-sdk';
@@ -90,7 +91,7 @@ export async function getOrders(page: number = 1, pageSize: number = 50) {
   }
 }
 
-export async function verifyOrderAction(orderId: number) {
+export async function verifyOrderAction(orderId: number | string) {
   logger.info({ orderId }, 'Verifying order...');
 
   const orgId = getOrganizationId();
@@ -102,10 +103,10 @@ export async function verifyOrderAction(orderId: number) {
         'Eventuras-Org-Id': orgId,
       },
       path: {
-        id: orderId,
+        id: Number(orderId),
       },
       body: {
-        status: 'Verified',
+        status: OrderStatus.VERIFIED,
       },
     });
 
@@ -123,7 +124,9 @@ export async function verifyOrderAction(orderId: number) {
   }
 }
 
-export async function invoiceOrderAction(orderId: number): Promise<ServerActionResult<void>> {
+export async function invoiceOrderAction(
+  orderId: number | string
+): Promise<ServerActionResult<void>> {
   logger.info({ orderId }, 'Creating invoice for order...');
 
   const orgId = getOrganizationId();

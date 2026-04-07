@@ -22,7 +22,7 @@ interface ProductModalProps {
   onSubmit: (values: ProductDto) => void;
   onClose: () => void;
   product?: ProductDto;
-  eventId: number;
+  eventId: number | string;
 }
 const ProductModal: React.FC<ProductModalProps> = ({
   isOpen,

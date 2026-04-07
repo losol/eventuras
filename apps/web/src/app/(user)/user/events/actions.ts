@@ -53,10 +53,10 @@ function getSelectedProductSummary(selectedProducts?: Map<string, number>) {
  * Add products to a registration
  */
 async function addProductsToRegistration(
-  registrationId: number,
+  registrationId: number | string,
   products: OrderLineModel[],
   context?: {
-    eventId?: number;
+    eventId?: number | string;
     userId?: string;
     source?: 'create' | 'update' | 'edit-existing';
   }
@@ -75,7 +75,7 @@ async function addProductsToRegistration(
 
   const response = await postV3RegistrationsByIdProducts({
     client,
-    path: { id: registrationId },
+    path: { id: Number(registrationId) },
     headers: { 'Eventuras-Org-Id': orgId },
     body: { lines: products },
   });
@@ -172,7 +172,7 @@ export async function createEventRegistration(
     const registrationId = registrationResponse.data.registrationId!;
     const registrationWithProducts = await addProductsToRegistration(registrationId, products, {
       eventId: newRegistration.eventId,
-      userId: newRegistration.userId,
+      userId: newRegistration.userId ?? undefined,
       source: 'create',
     });
 
@@ -214,7 +214,7 @@ export async function createEventRegistration(
  * Update an existing event registration with optional products
  */
 export async function updateEventRegistration(
-  id: number,
+  id: number | string,
   updatedRegistration: RegistrationUpdateDto,
   availableProducts: ProductDto[],
   selectedProducts?: Map<string, number>
@@ -341,7 +341,7 @@ export async function updateEventRegistration(
  * Add products to an existing registration (for editing orders)
  */
 export async function addProductsToExistingRegistration(
-  registrationId: number,
+  registrationId: number | string,
   selectedProducts: Map<string, number>
 ): Promise<ServerActionResult<RegistrationDto>> {
   logger.debug(

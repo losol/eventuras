@@ -18,7 +18,7 @@ const logger = Logger.create({
 });
 import { useToast } from '@eventuras/toast';
 export interface OrganizationMembershipsProps {
-  organizationId: number;
+  organizationId: number | string;
   organizationName: string;
   members: UserDto[] | null;
 }
@@ -50,7 +50,7 @@ export default function OrganizationMemberships({
     }
     try {
       logger.debug({ organizationId, trimmedUserId }, '[client] invoking action');
-      const res = await addMember(organizationId, trimmedUserId);
+      const res = await addMember(Number(organizationId), trimmedUserId);
       logger.info(
         { organizationId, userId: trimmedUserId, result: res },
         '[client] member added successfully'
@@ -84,7 +84,7 @@ export default function OrganizationMemberships({
     );
     try {
       logger.debug({ organizationId, userId, makeAdmin }, '[client] toggling admin status');
-      await setAdmin(organizationId, userId, makeAdmin);
+      await setAdmin(Number(organizationId), userId, makeAdmin);
       logger.info({ organizationId, userId, makeAdmin }, '[client] admin status updated');
       toast.success(
         makeAdmin ? `${userName} is now an admin!` : `Admin privileges removed from ${userName}`
@@ -125,7 +125,7 @@ export default function OrganizationMemberships({
           <MemberProfile
             key={(user as any).id}
             user={user}
-            organizationId={organizationId}
+            organizationId={Number(organizationId)}
             onToggleAdmin={handleToggleAdmin}
           />
         ))}
@@ -135,7 +135,7 @@ export default function OrganizationMemberships({
         isOpen={isDrawerOpen}
         onClose={handleCloseDrawer}
         onAddMember={handleAddMember}
-        organizationId={organizationId}
+        organizationId={Number(organizationId)}
         organizationName={organizationName}
       />
     </Section>

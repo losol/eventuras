@@ -11,7 +11,7 @@ import { Grid } from '@eventuras/ratio-ui/layout/Grid';
 import { Stack } from '@eventuras/ratio-ui/layout/Stack';
 import { NumberCard } from '@eventuras/ratio-ui/visuals/NumberCard';
 
-import { RegistrationDto, RegistrationStatus as RegistrationStatusType } from '@/lib/eventuras-sdk';
+import { RegistrationDto } from '@/lib/eventuras-sdk';
 import { OrderStatus, RegistrationStatus } from '@/lib/eventuras-types';
 
 import Registration from '../../registrations/Registration';
@@ -31,7 +31,7 @@ type OrderStatistics = {
 
 // Define the order for status groups
 const STATUS_GROUP_CONFIG: {
-  status: RegistrationStatusType;
+  status: string;
   translationKey: string;
 }[] = [
   { status: RegistrationStatus.VERIFIED, translationKey: 'common.registrations.labels.verified' },
@@ -107,9 +107,9 @@ const EconomySection: React.FC<EconomySectionProps> = ({ participants }) => {
 
   // Group participants by registration status
   const groupedParticipants = useMemo(() => {
-    const groups = new Map<RegistrationStatusType, RegistrationDto[]>();
+    const groups = new Map<string, RegistrationDto[]>();
     for (const registration of participants) {
-      const status: RegistrationStatusType = registration.status ?? RegistrationStatus.DRAFT;
+      const status = registration.status ?? RegistrationStatus.DRAFT;
       const existing = groups.get(status) || [];
       existing.push(registration);
       groups.set(status, existing);

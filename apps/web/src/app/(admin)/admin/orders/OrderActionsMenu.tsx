@@ -10,7 +10,7 @@ import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
 import { useToast } from '@eventuras/toast';
 
-import { OrderDto, PaymentProvider } from '@/lib/eventuras-sdk';
+import { OrderDto, OrderStatus, PaymentProvider } from '@/lib/eventuras-sdk';
 
 import { invoiceOrderAction, verifyOrderAction } from './actions';
 
@@ -28,10 +28,10 @@ export const OrderActionsMenu = ({ order }: OrderActionsMenuProps) => {
   const router = useRouter();
   logger.info({ order: order, registration: order.registration }, 'Order details');
   const invoicablePaymentMethods: PaymentProvider[] = [
-    'PowerOfficeEmailInvoice',
-    'PowerOfficeEHFInvoice',
+    PaymentProvider.POWER_OFFICE_EMAIL_INVOICE,
+    PaymentProvider.POWER_OFFICE_EHF_INVOICE,
   ];
-  const isOrderVerified = order.status === 'Verified';
+  const isOrderVerified = order.status === OrderStatus.VERIFIED;
   const hasInvoicablePaymentMethod =
     order.paymentMethod != null && invoicablePaymentMethods.includes(order.paymentMethod);
   const shouldShowInvoiceButton = isOrderVerified && hasInvoicablePaymentMethod;
@@ -77,12 +77,12 @@ export const OrderActionsMenu = ({ order }: OrderActionsMenuProps) => {
   };
   return (
     <>
-      {order.status === 'Draft' && (
+      {order.status === OrderStatus.DRAFT && (
         <Button variant="primary" onClick={handleVerifyOrder}>
           Verify
         </Button>
       )}
-      {order.status !== 'Draft' && (
+      {order.status !== OrderStatus.DRAFT && (
         <Button variant="primary" onClick={() => setInvoiceDrawerOpen(!invoiceDrawerOpen)}>
           {t('admin.labels.invoice')}
         </Button>
@@ -106,7 +106,7 @@ export const OrderActionsMenu = ({ order }: OrderActionsMenuProps) => {
         {shouldShowInvoiceButton && (
           <Button onClick={handleInvoiceOrder}>
             Send to accounting system (
-            {order.paymentMethod === 'PowerOfficeEmailInvoice' ? 'email' : 'ehf'})
+            {order.paymentMethod === PaymentProvider.POWER_OFFICE_EMAIL_INVOICE ? 'email' : 'ehf'})
           </Button>
         )}
       </Drawer>
