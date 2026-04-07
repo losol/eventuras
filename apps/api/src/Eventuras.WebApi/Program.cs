@@ -140,6 +140,7 @@ builder.Services.AddOpenApi("v3", options =>
     options.AddOperationTransformer<AddOrganizationHeaderTransformer>();
     options.AddOperationTransformer<RemoveJsonPatchContentTypeTransformer>();
     options.AddSchemaTransformer<NodaTimeSchemaTransformer>();
+    options.AddSchemaTransformer<NumericSchemaTransformer>();
 });
 
 // Finish configuring DI, logging and configuration

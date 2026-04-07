@@ -57,6 +57,52 @@ public class AddOrganizationHeaderTransformer : IOpenApiOperationTransformer
 }
 
 /// <summary>
+/// Schema transformer that narrows numeric schemas back to a single JSON type.
+///
+/// Microsoft.AspNetCore.OpenApi emits int/long/decimal/double properties as a
+/// union of <c>["integer", "string"]</c> (or <c>["number", "string"]</c>) because
+/// .NET model binding can parse strings into numeric types via TypeConverter.
+/// That theoretical capability leaks into the generated SDK as
+/// <c>number | string</c>, which forces every consumer into <c>Number(...)</c> casts.
+///
+/// We always serialise responses as numeric JSON, so the spec should reflect that.
+/// This transformer strips the <c>"string"</c> alternative (and the now-meaningless
+/// pattern) from any schema whose underlying CLR type is numeric, while preserving
+/// nullability for nullable numeric types (e.g. <c>int?</c>).
+/// </summary>
+public class NumericSchemaTransformer : IOpenApiSchemaTransformer
+{
+    public Task TransformAsync(OpenApiSchema schema, OpenApiSchemaTransformerContext context,
+        CancellationToken cancellationToken)
+    {
+        if (!schema.Type.HasValue || !schema.Type.Value.HasFlag(JsonSchemaType.String))
+        {
+            return Task.CompletedTask;
+        }
+
+        var type = System.Nullable.GetUnderlyingType(context.JsonTypeInfo.Type)
+                   ?? context.JsonTypeInfo.Type;
+
+        if (!IsNumeric(type))
+        {
+            return Task.CompletedTask;
+        }
+
+        // Drop the "string" alternative, keep any other flags (like Null).
+        schema.Type = schema.Type.Value & ~JsonSchemaType.String;
+        // Pattern was the integer-as-string validation regex; meaningless now.
+        schema.Pattern = null;
+        return Task.CompletedTask;
+    }
+
+    private static bool IsNumeric(System.Type type) =>
+        type == typeof(int) || type == typeof(long) || type == typeof(short) ||
+        type == typeof(uint) || type == typeof(ulong) || type == typeof(ushort) ||
+        type == typeof(byte) || type == typeof(sbyte) ||
+        type == typeof(double) || type == typeof(float) || type == typeof(decimal);
+}
+
+/// <summary>
 /// Schema transformer that emits ISO 8601 string schemas for NodaTime types.
 ///
 /// Microsoft.AspNetCore.OpenApi only sees the underlying NodaTime structs and
