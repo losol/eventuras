@@ -3,10 +3,11 @@ import {
   ProductDto,
   RegistrationCustomerInfoDto,
   RegistrationDto,
-  RegistrationStatus,
-  RegistrationType,
+  RegistrationStatus as RegistrationStatusType,
+  RegistrationType as RegistrationTypeType,
   RegistrationUpdateDto,
 } from '@/lib/eventuras-sdk';
+import { RegistrationStatus, RegistrationType } from '@/lib/eventuras-types';
 import { ParticipationTypes, PaymentFormValues, RegistrationProduct } from '@/types';
 
 /**
@@ -55,11 +56,11 @@ const customerFromPaymentForm = (
 
 export const mapToNewRegistration = (
   userId: string,
-  eventId: number,
+  eventId: number | string,
   paymentDetails: PaymentFormValues
 ) => {
   const customer = customerFromPaymentForm(paymentDetails);
-  const type: RegistrationType = 'Participant';
+  const type: RegistrationTypeType = RegistrationType.PARTICIPANT;
   const newRegistration: NewRegistrationDto = {
     userId,
     eventId,
@@ -118,12 +119,12 @@ export const mapSelectedProductsToQuantity = (
 
 export const participationMap = {
   [ParticipationTypes.active]: [
-    'Draft',
-    'Attended',
-    'Finished',
-    'NotAttended',
-    'Verified',
-  ] as RegistrationStatus[],
-  [ParticipationTypes.waitingList]: ['WaitingList'] as RegistrationStatus[],
-  [ParticipationTypes.cancelled]: ['Cancelled'] as RegistrationStatus[],
+    RegistrationStatus.DRAFT,
+    RegistrationStatus.ATTENDED,
+    RegistrationStatus.FINISHED,
+    RegistrationStatus.NOT_ATTENDED,
+    RegistrationStatus.VERIFIED,
+  ] as RegistrationStatusType[],
+  [ParticipationTypes.waitingList]: [RegistrationStatus.WAITING_LIST] as RegistrationStatusType[],
+  [ParticipationTypes.cancelled]: [RegistrationStatus.CANCELLED] as RegistrationStatusType[],
 };

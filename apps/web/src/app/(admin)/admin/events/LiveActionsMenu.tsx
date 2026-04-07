@@ -7,7 +7,8 @@ import { CircleX } from '@eventuras/ratio-ui/icons';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 import { useToast } from '@eventuras/toast';
 
-import { RegistrationDto, RegistrationStatus } from '@/lib/eventuras-sdk';
+import { RegistrationDto } from '@/lib/eventuras-sdk';
+import { RegistrationStatus } from '@/lib/eventuras-types';
 
 import { sendCertificateEmail, updateRegistrationStatus } from '../registrations/actions';
 interface LiveActionsMenuProps {
@@ -51,7 +52,7 @@ const LiveActionsMenu = ({ registration, onStatusUpdate }: LiveActionsMenuProps)
       onStatusUpdate(result.data);
     }
   };
-  const handleEmailCertificate = async (registrationId: number) => {
+  const handleEmailCertificate = async (registrationId: number | string) => {
     setEmailLoading(true);
     setEmailError(null);
     setEmailSuccess(false);
@@ -72,12 +73,16 @@ const LiveActionsMenu = ({ registration, onStatusUpdate }: LiveActionsMenuProps)
   };
   function renderButtonBasedOnStatus() {
     switch (registration.status) {
-      case 'Draft':
-        return <Button onClick={() => handleStatusUpdate('Verified')}>Verify</Button>;
-      case 'Verified':
-      case 'NotAttended':
-        return <Button onClick={() => handleStatusUpdate('Attended')}>Checkin</Button>;
-      case 'Cancelled':
+      case RegistrationStatus.DRAFT:
+        return (
+          <Button onClick={() => handleStatusUpdate(RegistrationStatus.VERIFIED)}>Verify</Button>
+        );
+      case RegistrationStatus.VERIFIED:
+      case RegistrationStatus.NOT_ATTENDED:
+        return (
+          <Button onClick={() => handleStatusUpdate(RegistrationStatus.ATTENDED)}>Checkin</Button>
+        );
+      case RegistrationStatus.CANCELLED:
         return <CircleX />;
       default:
         if (registration.certificateId) {
@@ -102,7 +107,9 @@ const LiveActionsMenu = ({ registration, onStatusUpdate }: LiveActionsMenuProps)
             </div>
           );
         }
-        return <Button onClick={() => handleStatusUpdate('Finished')}>Finish</Button>;
+        return (
+          <Button onClick={() => handleStatusUpdate(RegistrationStatus.FINISHED)}>Finish</Button>
+        );
     }
   }
   return <>{renderButtonBasedOnStatus()}</>;

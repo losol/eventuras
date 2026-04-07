@@ -4,7 +4,10 @@ import { Logger } from '@eventuras/logger';
 import { Select } from '@eventuras/ratio-ui/forms';
 import { useToast } from '@eventuras/toast';
 
-import type { RegistrationDto } from '@/lib/eventuras-types';
+import type {
+  RegistrationDto,
+  RegistrationStatus as RegistrationStatusType,
+} from '@/lib/eventuras-types';
 import { RegistrationStatus } from '@/lib/eventuras-types';
 
 import { updateRegistrationStatus } from '../registrations/actions';
@@ -15,13 +18,13 @@ interface RegistrationStatusSelectProps {
 }
 
 const statusOptions = [
-  { value: 'Draft', label: 'Draft' },
-  { value: 'Verified', label: 'Verified' },
-  { value: 'Attended', label: 'Attended' },
-  { value: 'NotAttended', label: 'Not Attended' },
-  { value: 'Finished', label: 'Finished' },
-  { value: 'WaitingList', label: 'Waiting List' },
-  { value: 'Cancelled', label: 'Cancelled' },
+  { value: String(RegistrationStatus.DRAFT), label: 'Draft' },
+  { value: String(RegistrationStatus.VERIFIED), label: 'Verified' },
+  { value: String(RegistrationStatus.ATTENDED), label: 'Attended' },
+  { value: String(RegistrationStatus.NOT_ATTENDED), label: 'Not Attended' },
+  { value: String(RegistrationStatus.FINISHED), label: 'Finished' },
+  { value: String(RegistrationStatus.WAITING_LIST), label: 'Waiting List' },
+  { value: String(RegistrationStatus.CANCELLED), label: 'Cancelled' },
 ];
 
 const RegistrationStatusSelect = ({
@@ -34,16 +37,14 @@ const RegistrationStatusSelect = ({
     context: { component: 'RegistrationStatusSelect' },
   });
 
-  const handleStatusChange = async (newStatus: string) => {
+  const handleStatusChange = async (newStatusStr: string) => {
+    const newStatus = Number(newStatusStr) as RegistrationStatusType;
     logger.info(
       { registrationId: registration.registrationId, newStatus },
       'Updating registration status'
     );
 
-    const result = await updateRegistrationStatus(
-      registration.registrationId!,
-      newStatus as RegistrationStatus
-    );
+    const result = await updateRegistrationStatus(registration.registrationId!, newStatus);
 
     if (!result.success) {
       toast.error(result.error.message);
@@ -70,7 +71,7 @@ const RegistrationStatusSelect = ({
       aria-label="Registration status"
       placeholder="Select status..."
       options={statusOptions}
-      value={registration.status}
+      value={registration.status !== undefined ? String(registration.status) : undefined}
       onSelectionChange={handleStatusChange}
     />
   );

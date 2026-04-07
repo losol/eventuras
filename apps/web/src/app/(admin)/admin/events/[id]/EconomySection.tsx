@@ -11,7 +11,8 @@ import { Grid } from '@eventuras/ratio-ui/layout/Grid';
 import { Stack } from '@eventuras/ratio-ui/layout/Stack';
 import { NumberCard } from '@eventuras/ratio-ui/visuals/NumberCard';
 
-import { RegistrationDto, RegistrationStatus } from '@/lib/eventuras-sdk';
+import { RegistrationDto, RegistrationStatus as RegistrationStatusType } from '@/lib/eventuras-sdk';
+import { OrderStatus, RegistrationStatus } from '@/lib/eventuras-types';
 
 import Registration from '../../registrations/Registration';
 
@@ -30,16 +31,25 @@ type OrderStatistics = {
 
 // Define the order for status groups
 const STATUS_GROUP_CONFIG: {
-  status: RegistrationStatus;
+  status: RegistrationStatusType;
   translationKey: string;
 }[] = [
-  { status: 'Verified', translationKey: 'common.registrations.labels.verified' },
-  { status: 'Draft', translationKey: 'common.registrations.labels.draft' },
-  { status: 'Attended', translationKey: 'common.registrations.labels.attended' },
-  { status: 'Finished', translationKey: 'common.registrations.labels.finished' },
-  { status: 'WaitingList', translationKey: 'common.registrations.labels.waitingList' },
-  { status: 'NotAttended', translationKey: 'common.registrations.labels.notAttended' },
-  { status: 'Cancelled', translationKey: 'common.registrations.labels.cancelled' },
+  { status: RegistrationStatus.VERIFIED, translationKey: 'common.registrations.labels.verified' },
+  { status: RegistrationStatus.DRAFT, translationKey: 'common.registrations.labels.draft' },
+  { status: RegistrationStatus.ATTENDED, translationKey: 'common.registrations.labels.attended' },
+  { status: RegistrationStatus.FINISHED, translationKey: 'common.registrations.labels.finished' },
+  {
+    status: RegistrationStatus.WAITING_LIST,
+    translationKey: 'common.registrations.labels.waitingList',
+  },
+  {
+    status: RegistrationStatus.NOT_ATTENDED,
+    translationKey: 'common.registrations.labels.notAttended',
+  },
+  {
+    status: RegistrationStatus.CANCELLED,
+    translationKey: 'common.registrations.labels.cancelled',
+  },
 ];
 
 const EconomySection: React.FC<EconomySectionProps> = ({ participants }) => {
@@ -58,7 +68,7 @@ const EconomySection: React.FC<EconomySectionProps> = ({ participants }) => {
 
     for (const registration of participants) {
       const orders = registration.orders || [];
-      const isRegistrationCancelled = registration.status === 'Cancelled';
+      const isRegistrationCancelled = registration.status === RegistrationStatus.CANCELLED;
 
       for (const order of orders) {
         stats.totalOrders++;
@@ -66,26 +76,26 @@ const EconomySection: React.FC<EconomySectionProps> = ({ participants }) => {
         // Only count revenue from non-cancelled registrations
         if (!isRegistrationCancelled) {
           const orderTotal =
-            order.items?.reduce(
-              (sum: number, item: { quantity?: number; product?: { price?: number } }) =>
-                sum + (item.quantity ?? 0) * (item.product?.price ?? 0),
-              0
-            ) ?? 0;
+            order.items?.reduce((sum: number, item) => {
+              const qty = Number(item.quantity ?? 0);
+              const price = Number(item.product?.price ?? 0);
+              return sum + qty * price;
+            }, 0) ?? 0;
           stats.totalRevenue += orderTotal;
         }
 
         // Count by status
         switch (order.status) {
-          case 'Draft':
+          case OrderStatus.DRAFT:
             stats.draftOrders++;
             break;
-          case 'Verified':
+          case OrderStatus.VERIFIED:
             stats.verifiedOrders++;
             break;
-          case 'Invoiced':
+          case OrderStatus.INVOICED:
             stats.invoicedOrders++;
             break;
-          case 'Cancelled':
+          case OrderStatus.CANCELLED:
             stats.cancelledOrders++;
             break;
         }
@@ -97,9 +107,9 @@ const EconomySection: React.FC<EconomySectionProps> = ({ participants }) => {
 
   // Group participants by registration status
   const groupedParticipants = useMemo(() => {
-    const groups = new Map<RegistrationStatus, RegistrationDto[]>();
+    const groups = new Map<RegistrationStatusType, RegistrationDto[]>();
     for (const registration of participants) {
-      const status: RegistrationStatus = registration.status ?? 'Draft';
+      const status: RegistrationStatusType = registration.status ?? RegistrationStatus.DRAFT;
       const existing = groups.get(status) || [];
       existing.push(registration);
       groups.set(status, existing);

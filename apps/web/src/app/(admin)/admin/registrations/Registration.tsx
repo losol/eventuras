@@ -10,12 +10,13 @@ import { Form, Select } from '@eventuras/smartform';
 
 import { CertificateActionsButton } from '@/components/eventuras/CertificateActionsButton';
 import {
-  PaymentProvider,
+  PaymentProvider as PaymentProviderType,
   RegistrationCustomerInfoDto,
   RegistrationDto,
-  RegistrationStatus,
-  RegistrationType,
+  RegistrationStatus as RegistrationStatusType,
+  RegistrationType as RegistrationTypeType,
 } from '@/lib/eventuras-sdk';
+import { RegistrationStatus, RegistrationType } from '@/lib/eventuras-types';
 
 import Order from '../orders/Order';
 interface RegistrationProps {
@@ -28,11 +29,11 @@ interface RegistrationProps {
 }
 // Replace with the real type from the SDK when it's available
 export type RegistrationUpdateDto = {
-  status?: RegistrationStatus;
-  type?: RegistrationType;
+  status?: RegistrationStatusType;
+  type?: RegistrationTypeType;
   notes?: string | null;
   customer?: RegistrationCustomerInfoDto;
-  paymentMethod?: PaymentProvider;
+  paymentMethod?: PaymentProviderType;
 };
 type TranslationFunction = (
   key: string,
@@ -44,19 +45,13 @@ type TranslationFunction = (
  * @returns {Array<Object>} An array of objects containing value and label pairs for statuses.
  */
 export const getStatusLabels = (t: TranslationFunction) => [
-  { value: 'Draft' as RegistrationStatus, label: t('common.registrations.labels.draft') },
-  { value: 'Cancelled' as RegistrationStatus, label: t('common.registrations.labels.cancelled') },
-  { value: 'Verified' as RegistrationStatus, label: t('common.registrations.labels.verified') },
-  {
-    value: 'NotAttended' as RegistrationStatus,
-    label: t('common.registrations.labels.notAttended'),
-  },
-  { value: 'Attended' as RegistrationStatus, label: t('common.registrations.labels.attended') },
-  { value: 'Finished' as RegistrationStatus, label: t('common.registrations.labels.finished') },
-  {
-    value: 'WaitingList' as RegistrationStatus,
-    label: t('common.registrations.labels.waitingList'),
-  },
+  { value: RegistrationStatus.DRAFT, label: t('common.registrations.labels.draft') },
+  { value: RegistrationStatus.CANCELLED, label: t('common.registrations.labels.cancelled') },
+  { value: RegistrationStatus.VERIFIED, label: t('common.registrations.labels.verified') },
+  { value: RegistrationStatus.NOT_ATTENDED, label: t('common.registrations.labels.notAttended') },
+  { value: RegistrationStatus.ATTENDED, label: t('common.registrations.labels.attended') },
+  { value: RegistrationStatus.FINISHED, label: t('common.registrations.labels.finished') },
+  { value: RegistrationStatus.WAITING_LIST, label: t('common.registrations.labels.waitingList') },
 ];
 /**
  * Retrieves type labels translated based on the current language.
@@ -64,27 +59,27 @@ export const getStatusLabels = (t: TranslationFunction) => [
  * @returns {Array<Object>} An array of objects containing value and label pairs for types.
  */
 export const getTypeLabels = (t: TranslationFunction) => [
-  { value: 'Participant' as RegistrationType, label: t('common.registrations.labels.participant') },
-  { value: 'Student' as RegistrationType, label: t('common.registrations.labels.student') },
-  { value: 'Lecturer' as RegistrationType, label: t('common.registrations.labels.lecturer') },
-  { value: 'Staff' as RegistrationType, label: t('common.registrations.labels.staff') },
-  { value: 'Artist' as RegistrationType, label: t('common.registrations.labels.artist') },
+  { value: RegistrationType.PARTICIPANT, label: t('common.registrations.labels.participant') },
+  { value: RegistrationType.STUDENT, label: t('common.registrations.labels.student') },
+  { value: RegistrationType.LECTURER, label: t('common.registrations.labels.lecturer') },
+  { value: RegistrationType.STAFF, label: t('common.registrations.labels.staff') },
+  { value: RegistrationType.ARTIST, label: t('common.registrations.labels.artist') },
 ];
 
 /**
  * Gets the appropriate badge variant for registration status
  */
-export const getStatusBadgeVariant = (status: string) => {
+export const getStatusBadgeVariant = (status: RegistrationStatusType | undefined) => {
   switch (status) {
-    case 'Cancelled':
+    case RegistrationStatus.CANCELLED:
       return 'negative';
-    case 'Verified':
-    case 'Attended':
-    case 'Finished':
+    case RegistrationStatus.VERIFIED:
+    case RegistrationStatus.ATTENDED:
+    case RegistrationStatus.FINISHED:
       return 'positive';
-    case 'Draft':
+    case RegistrationStatus.DRAFT:
       return 'neutral';
-    case 'WaitingList':
+    case RegistrationStatus.WAITING_LIST:
       return 'info';
     default:
       return 'neutral';
@@ -171,9 +166,7 @@ const Registration = ({
             <Item>
               <Term>{t('common.registrations.labels.status')}</Term>
               <Definition>
-                <Badge variant={getStatusBadgeVariant(registration.status || '')}>
-                  {statusLabel}
-                </Badge>
+                <Badge variant={getStatusBadgeVariant(registration.status)}>{statusLabel}</Badge>
               </Definition>
             </Item>
             <Item>
@@ -194,8 +187,16 @@ const Registration = ({
             onSubmit={handleUpdateRegistration}
             className=""
           >
-            <Select name="type" options={getTypeLabels(t)} label="Type" />
-            <Select name="status" options={getStatusLabels(t)} label="Status" />
+            <Select
+              name="type"
+              options={getTypeLabels(t).map(o => ({ value: String(o.value), label: o.label }))}
+              label="Type"
+            />
+            <Select
+              name="status"
+              options={getStatusLabels(t).map(o => ({ value: String(o.value), label: o.label }))}
+              label="Status"
+            />
             <Button type="submit">{t('common.labels.save')}</Button>
           </Form>
         )}
