@@ -27,7 +27,7 @@ This API serves as the core backend service for the Eventuras platform, providin
 Before you can run the API locally, ensure you have the following installed:
 
 - [.NET 10 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/10.0)
-- [PostgreSQL](https://www.postgresql.org/download/) (version 12 or later recommended)
+- [PostgreSQL 18 or later](https://www.postgresql.org/download/) — required because migrations use the built-in `uuidv7()` function added in PostgreSQL 18
 - An Identity Provider (IdP) that supports OAuth 2.0 / OpenID Connect
   - The project is configured to use [Auth0](https://auth0.com/) by default
   - Any OIDC-compliant provider can be used (e.g., Azure AD, Keycloak, IdentityServer)

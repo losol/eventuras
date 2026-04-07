@@ -1604,6 +1604,13 @@ END $EF$;
 DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260402194432_RemoveMessageLog') THEN
+    ALTER TABLE "Archived_MessageLog" RENAME CONSTRAINT "PK_MessageLogs" TO "PK_Archived_MessageLog";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260402194432_RemoveMessageLog') THEN
     ALTER TABLE "Registrations" DROP COLUMN "RegistrationBy";
     END IF;
 END $EF$;
@@ -1729,6 +1736,710 @@ BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260402235944_AddUuidToOrderAndRegistration') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
     VALUES ('20260402235944_AddUuidToOrderAndRegistration', '10.0.5');
+    END IF;
+END $EF$;
+COMMIT;
+
+START TRANSACTION;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
+    ALTER TABLE "Certificates" DROP CONSTRAINT "FK_Certificates_AspNetUsers_IssuingUserId";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
+    ALTER TABLE "Certificates" DROP CONSTRAINT "FK_Certificates_AspNetUsers_RecipientUserId";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
+    ALTER TABLE "EventInfos" DROP CONSTRAINT "FK_EventInfos_AspNetUsers_OrganizerUserId";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
+    ALTER TABLE "ExternalAccounts" DROP CONSTRAINT "FK_ExternalAccounts_AspNetUsers_UserId";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
+    ALTER TABLE "NotificationRecipients" DROP CONSTRAINT "FK_NotificationRecipients_AspNetUsers_RecipientUserId";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
+    ALTER TABLE "Notifications" DROP CONSTRAINT "FK_Notifications_AspNetUsers_CreatedByUserId";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
+    ALTER TABLE "Orders" DROP CONSTRAINT "FK_Orders_AspNetUsers_UserId";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
+    ALTER TABLE "OrganizationMembers" DROP CONSTRAINT "FK_OrganizationMembers_AspNetUsers_UserId";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
+    ALTER TABLE "Registrations" DROP CONSTRAINT "FK_Registrations_AspNetUsers_UserId";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
+    DROP TABLE "AspNetRoleClaims";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
+    DROP TABLE "AspNetUserClaims";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
+    DROP TABLE "AspNetUserLogins";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
+    DROP TABLE "AspNetUserRoles";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
+    DROP TABLE "AspNetUserTokens";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
+    DROP TABLE "AspNetRoles";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
+    ALTER TABLE "AspNetUsers" DROP CONSTRAINT "PK_AspNetUsers";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
+    ALTER TABLE "AspNetUsers" DROP COLUMN "AccessFailedCount";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
+    ALTER TABLE "AspNetUsers" DROP COLUMN "ConcurrencyStamp";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
+    ALTER TABLE "AspNetUsers" DROP COLUMN "LockoutEnabled";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
+    ALTER TABLE "AspNetUsers" DROP COLUMN "LockoutEnd";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
+    ALTER TABLE "AspNetUsers" DROP COLUMN "PasswordHash";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
+    ALTER TABLE "AspNetUsers" DROP COLUMN "SecurityStamp";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
+    ALTER TABLE "AspNetUsers" DROP COLUMN "TwoFactorEnabled";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
+    ALTER TABLE "AspNetUsers" RENAME TO "Users";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
+    DELETE FROM "Registrations" WHERE "UserId" IS NULL;
+    DELETE FROM "OrganizationMembers" WHERE "UserId" IS NULL;
+    DELETE FROM "Orders" WHERE "UserId" IS NULL;
+    DELETE FROM "ExternalAccounts" WHERE "UserId" IS NULL;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
+    ALTER TABLE "Registrations" ALTER COLUMN "UserId" SET NOT NULL;
+    ALTER TABLE "Registrations" ALTER COLUMN "UserId" TYPE uuid USING "UserId"::uuid;
+
+    ALTER TABLE "OrganizationMembers" ALTER COLUMN "UserId" SET NOT NULL;
+    ALTER TABLE "OrganizationMembers" ALTER COLUMN "UserId" TYPE uuid USING "UserId"::uuid;
+
+    ALTER TABLE "Orders" ALTER COLUMN "UserId" SET NOT NULL;
+    ALTER TABLE "Orders" ALTER COLUMN "UserId" TYPE uuid USING "UserId"::uuid;
+
+    ALTER TABLE "Notifications" ALTER COLUMN "CreatedByUserId" TYPE uuid USING "CreatedByUserId"::uuid;
+
+    ALTER TABLE "NotificationRecipients" ALTER COLUMN "RecipientUserId" TYPE uuid USING "RecipientUserId"::uuid;
+
+    ALTER TABLE "ExternalAccounts" ALTER COLUMN "UserId" SET NOT NULL;
+    ALTER TABLE "ExternalAccounts" ALTER COLUMN "UserId" TYPE uuid USING "UserId"::uuid;
+
+    ALTER TABLE "EventInfos" ALTER COLUMN "OrganizerUserId" TYPE uuid USING "OrganizerUserId"::uuid;
+
+    ALTER TABLE "Certificates" ALTER COLUMN "RecipientUserId" TYPE uuid USING "RecipientUserId"::uuid;
+    ALTER TABLE "Certificates" ALTER COLUMN "IssuingUserId" TYPE uuid USING "IssuingUserId"::uuid;
+
+    ALTER TABLE "Users" ALTER COLUMN "Email" SET NOT NULL;
+    ALTER TABLE "Users" ALTER COLUMN "NormalizedEmail" SET NOT NULL;
+    ALTER TABLE "Users" ALTER COLUMN "Id" TYPE uuid USING "Id"::uuid;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
+    ALTER TABLE "Users" ADD CONSTRAINT "PK_Users" PRIMARY KEY ("Id");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
+    ALTER TABLE "Certificates" ADD CONSTRAINT "FK_Certificates_Users_IssuingUserId" FOREIGN KEY ("IssuingUserId") REFERENCES "Users" ("Id");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
+    ALTER TABLE "Certificates" ADD CONSTRAINT "FK_Certificates_Users_RecipientUserId" FOREIGN KEY ("RecipientUserId") REFERENCES "Users" ("Id");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
+    ALTER TABLE "EventInfos" ADD CONSTRAINT "FK_EventInfos_Users_OrganizerUserId" FOREIGN KEY ("OrganizerUserId") REFERENCES "Users" ("Id");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
+    ALTER TABLE "ExternalAccounts" ADD CONSTRAINT "FK_ExternalAccounts_Users_UserId" FOREIGN KEY ("UserId") REFERENCES "Users" ("Id") ON DELETE CASCADE;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
+    ALTER TABLE "NotificationRecipients" ADD CONSTRAINT "FK_NotificationRecipients_Users_RecipientUserId" FOREIGN KEY ("RecipientUserId") REFERENCES "Users" ("Id");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
+    ALTER TABLE "Notifications" ADD CONSTRAINT "FK_Notifications_Users_CreatedByUserId" FOREIGN KEY ("CreatedByUserId") REFERENCES "Users" ("Id") ON DELETE CASCADE;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
+    ALTER TABLE "Orders" ADD CONSTRAINT "FK_Orders_Users_UserId" FOREIGN KEY ("UserId") REFERENCES "Users" ("Id") ON DELETE CASCADE;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
+    ALTER TABLE "OrganizationMembers" ADD CONSTRAINT "FK_OrganizationMembers_Users_UserId" FOREIGN KEY ("UserId") REFERENCES "Users" ("Id") ON DELETE CASCADE;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
+    ALTER TABLE "Registrations" ADD CONSTRAINT "FK_Registrations_Users_UserId" FOREIGN KEY ("UserId") REFERENCES "Users" ("Id") ON DELETE CASCADE;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20260403095822_RemoveAspNetIdentity', '10.0.5');
+    END IF;
+END $EF$;
+COMMIT;
+
+START TRANSACTION;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403114746_CleanupDeprecatedFields') THEN
+    INSERT INTO "BusinessEvents" ("Uuid", "CreatedAt", "EventType", "SubjectType", "SubjectUuid", "ActorUserUuid", "Message", "MetadataJson")
+    SELECT uuidv7(),
+           COALESCE((elem->>'Timestamp')::timestamptz, NOW()),
+           'legacy.log', 'user', "Id",
+           CASE WHEN elem->>'UserId' IS NOT NULL AND elem->>'UserId' != ''
+                THEN (elem->>'UserId')::uuid ELSE NULL END,
+           COALESCE(elem->>'Message', ''),
+           jsonb_build_object('level', elem->>'Level', 'source', 'ApplicationUser.Log')
+    FROM "Users", jsonb_array_elements("Log") AS elem
+    WHERE "Log" IS NOT NULL AND "Log" != '[]';
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403114746_CleanupDeprecatedFields') THEN
+    INSERT INTO "BusinessEvents" ("Uuid", "CreatedAt", "EventType", "SubjectType", "SubjectUuid", "Message", "MetadataJson")
+    SELECT uuidv7(),
+           COALESCE((elem->>'Timestamp')::timestamptz, NOW()),
+           'legacy.log', 'registration', "Uuid",
+           COALESCE(elem->>'Text', elem->>'Message', ''),
+           jsonb_build_object('source', 'Registration.Log')
+    FROM "Registrations", jsonb_array_elements("Log"::jsonb) AS elem
+    WHERE "Log" IS NOT NULL AND "Log" != '' AND "Log" != '[]'
+      AND "Log"::text ~ '^\s*\[';
+
+    INSERT INTO "BusinessEvents" ("Uuid", "CreatedAt", "EventType", "SubjectType", "SubjectUuid", "Message", "MetadataJson")
+    SELECT uuidv7(), NOW(),
+           'legacy.log', 'registration', "Uuid",
+           "Log",
+           jsonb_build_object('source', 'Registration.Log', 'format', 'raw')
+    FROM "Registrations"
+    WHERE "Log" IS NOT NULL AND "Log" != ''
+      AND NOT ("Log"::text ~ '^\s*\[');
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403114746_CleanupDeprecatedFields') THEN
+    INSERT INTO "BusinessEvents" ("Uuid", "CreatedAt", "EventType", "SubjectType", "SubjectUuid", "Message", "MetadataJson")
+    SELECT uuidv7(),
+           COALESCE((elem->>'Timestamp')::timestamptz, NOW()),
+           'legacy.log', 'order', "Uuid",
+           COALESCE(elem->>'Text', elem->>'Message', ''),
+           jsonb_build_object('source', 'Order.Log')
+    FROM "Orders", jsonb_array_elements("Log"::jsonb) AS elem
+    WHERE "Log" IS NOT NULL AND "Log" != '' AND "Log" != '[]'
+      AND "Log"::text ~ '^\s*\[';
+
+    INSERT INTO "BusinessEvents" ("Uuid", "CreatedAt", "EventType", "SubjectType", "SubjectUuid", "Message", "MetadataJson")
+    SELECT uuidv7(), NOW(),
+           'legacy.log', 'order', "Uuid",
+           "Log",
+           jsonb_build_object('source', 'Order.Log', 'format', 'raw')
+    FROM "Orders"
+    WHERE "Log" IS NOT NULL AND "Log" != ''
+      AND NOT ("Log"::text ~ '^\s*\[');
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403114746_CleanupDeprecatedFields') THEN
+    DELETE FROM "OrganizationMemberRoles" sa
+    WHERE sa."Role" = 'SuperAdmin'
+      AND EXISTS (
+        SELECT 1 FROM "OrganizationMemberRoles" sys
+        WHERE sys."OrganizationMemberId" = sa."OrganizationMemberId"
+          AND sys."Role" = 'SystemAdmin'
+      );
+
+    UPDATE "OrganizationMemberRoles"
+    SET "Role" = 'SystemAdmin'
+    WHERE "Role" = 'SuperAdmin';
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403114746_CleanupDeprecatedFields') THEN
+    ALTER TABLE "ExternalRegistrations" RENAME TO "Archived_ExternalRegistrations";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403114746_CleanupDeprecatedFields') THEN
+    ALTER TABLE "ExternalAccounts" RENAME TO "Archived_ExternalAccounts";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403114746_CleanupDeprecatedFields') THEN
+    ALTER TABLE "ExternalEvents" RENAME TO "Archived_ExternalEvents";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403114746_CleanupDeprecatedFields') THEN
+    ALTER TABLE "Users" DROP COLUMN "Log";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403114746_CleanupDeprecatedFields') THEN
+    ALTER TABLE "Registrations" DROP COLUMN "Log";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403114746_CleanupDeprecatedFields') THEN
+    ALTER TABLE "Registrations" DROP COLUMN "ParticipantCity";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403114746_CleanupDeprecatedFields') THEN
+    ALTER TABLE "Registrations" DROP COLUMN "ParticipantEmployer";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403114746_CleanupDeprecatedFields') THEN
+    ALTER TABLE "Registrations" DROP COLUMN "ParticipantJobTitle";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403114746_CleanupDeprecatedFields') THEN
+    ALTER TABLE "Registrations" DROP COLUMN "Verified";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403114746_CleanupDeprecatedFields') THEN
+    ALTER TABLE "Orders" DROP COLUMN "ExternalInvoiceId";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403114746_CleanupDeprecatedFields') THEN
+    ALTER TABLE "Orders" DROP COLUMN "Log";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403114746_CleanupDeprecatedFields') THEN
+    ALTER TABLE "Orders" DROP COLUMN "Paid";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403114746_CleanupDeprecatedFields') THEN
+    ALTER TABLE "EventInfos" DROP COLUMN "ExternalRegistrationsUrl";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403114746_CleanupDeprecatedFields') THEN
+    ALTER TABLE "EventInfos" DROP COLUMN "ManageRegistrations";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403114746_CleanupDeprecatedFields') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20260403114746_CleanupDeprecatedFields', '10.0.5');
+    END IF;
+END $EF$;
+COMMIT;
+
+START TRANSACTION;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403145639_AddUuidToAllEntities') THEN
+    ALTER TABLE "Certificates" DROP COLUMN "Auth";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403145639_AddUuidToAllEntities') THEN
+    ALTER TABLE "Certificates" RENAME COLUMN "CertificateGuid" TO "Uuid";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403145639_AddUuidToAllEntities') THEN
+    ALTER TABLE "ProductVariants" ADD "Uuid" uuid;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403145639_AddUuidToAllEntities') THEN
+    ALTER TABLE "Products" ADD "Uuid" uuid;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403145639_AddUuidToAllEntities') THEN
+    ALTER TABLE "Organizations" ADD "Uuid" uuid;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403145639_AddUuidToAllEntities') THEN
+    ALTER TABLE "OrganizationMembers" ADD "Uuid" uuid;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403145639_AddUuidToAllEntities') THEN
+    ALTER TABLE "OrderLines" ADD "Uuid" uuid;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403145639_AddUuidToAllEntities') THEN
+    ALTER TABLE "NotificationStatistics" ADD "Uuid" uuid;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403145639_AddUuidToAllEntities') THEN
+    ALTER TABLE "Notifications" ADD "Uuid" uuid;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403145639_AddUuidToAllEntities') THEN
+    ALTER TABLE "NotificationRecipients" ADD "Uuid" uuid;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403145639_AddUuidToAllEntities') THEN
+    ALTER TABLE "Invoices" ADD "Uuid" uuid;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403145639_AddUuidToAllEntities') THEN
+    ALTER TABLE "EventInfos" ADD "Uuid" uuid;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403145639_AddUuidToAllEntities') THEN
+    ALTER TABLE "EventCollections" ADD "Uuid" uuid;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403145639_AddUuidToAllEntities') THEN
+    UPDATE "ProductVariants" SET "Uuid" = uuidv7() WHERE "Uuid" IS NULL;
+    ALTER TABLE "ProductVariants" ALTER COLUMN "Uuid" SET DEFAULT uuidv7();
+    ALTER TABLE "ProductVariants" ALTER COLUMN "Uuid" SET NOT NULL;
+    UPDATE "Products" SET "Uuid" = uuidv7() WHERE "Uuid" IS NULL;
+    ALTER TABLE "Products" ALTER COLUMN "Uuid" SET DEFAULT uuidv7();
+    ALTER TABLE "Products" ALTER COLUMN "Uuid" SET NOT NULL;
+    UPDATE "Organizations" SET "Uuid" = uuidv7() WHERE "Uuid" IS NULL;
+    ALTER TABLE "Organizations" ALTER COLUMN "Uuid" SET DEFAULT uuidv7();
+    ALTER TABLE "Organizations" ALTER COLUMN "Uuid" SET NOT NULL;
+    UPDATE "OrganizationMembers" SET "Uuid" = uuidv7() WHERE "Uuid" IS NULL;
+    ALTER TABLE "OrganizationMembers" ALTER COLUMN "Uuid" SET DEFAULT uuidv7();
+    ALTER TABLE "OrganizationMembers" ALTER COLUMN "Uuid" SET NOT NULL;
+    UPDATE "OrderLines" SET "Uuid" = uuidv7() WHERE "Uuid" IS NULL;
+    ALTER TABLE "OrderLines" ALTER COLUMN "Uuid" SET DEFAULT uuidv7();
+    ALTER TABLE "OrderLines" ALTER COLUMN "Uuid" SET NOT NULL;
+    UPDATE "NotificationStatistics" SET "Uuid" = uuidv7() WHERE "Uuid" IS NULL;
+    ALTER TABLE "NotificationStatistics" ALTER COLUMN "Uuid" SET DEFAULT uuidv7();
+    ALTER TABLE "NotificationStatistics" ALTER COLUMN "Uuid" SET NOT NULL;
+    UPDATE "Notifications" SET "Uuid" = uuidv7() WHERE "Uuid" IS NULL;
+    ALTER TABLE "Notifications" ALTER COLUMN "Uuid" SET DEFAULT uuidv7();
+    ALTER TABLE "Notifications" ALTER COLUMN "Uuid" SET NOT NULL;
+    UPDATE "NotificationRecipients" SET "Uuid" = uuidv7() WHERE "Uuid" IS NULL;
+    ALTER TABLE "NotificationRecipients" ALTER COLUMN "Uuid" SET DEFAULT uuidv7();
+    ALTER TABLE "NotificationRecipients" ALTER COLUMN "Uuid" SET NOT NULL;
+    UPDATE "Invoices" SET "Uuid" = uuidv7() WHERE "Uuid" IS NULL;
+    ALTER TABLE "Invoices" ALTER COLUMN "Uuid" SET DEFAULT uuidv7();
+    ALTER TABLE "Invoices" ALTER COLUMN "Uuid" SET NOT NULL;
+    UPDATE "EventInfos" SET "Uuid" = uuidv7() WHERE "Uuid" IS NULL;
+    ALTER TABLE "EventInfos" ALTER COLUMN "Uuid" SET DEFAULT uuidv7();
+    ALTER TABLE "EventInfos" ALTER COLUMN "Uuid" SET NOT NULL;
+    UPDATE "EventCollections" SET "Uuid" = uuidv7() WHERE "Uuid" IS NULL;
+    ALTER TABLE "EventCollections" ALTER COLUMN "Uuid" SET DEFAULT uuidv7();
+    ALTER TABLE "EventCollections" ALTER COLUMN "Uuid" SET NOT NULL;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403145639_AddUuidToAllEntities') THEN
+    CREATE UNIQUE INDEX "IX_ProductVariants_Uuid" ON "ProductVariants" ("Uuid");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403145639_AddUuidToAllEntities') THEN
+    CREATE UNIQUE INDEX "IX_Products_Uuid" ON "Products" ("Uuid");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403145639_AddUuidToAllEntities') THEN
+    CREATE UNIQUE INDEX "IX_Organizations_Uuid" ON "Organizations" ("Uuid");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403145639_AddUuidToAllEntities') THEN
+    CREATE UNIQUE INDEX "IX_OrganizationMembers_Uuid" ON "OrganizationMembers" ("Uuid");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403145639_AddUuidToAllEntities') THEN
+    CREATE UNIQUE INDEX "IX_OrderLines_Uuid" ON "OrderLines" ("Uuid");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403145639_AddUuidToAllEntities') THEN
+    CREATE UNIQUE INDEX "IX_NotificationStatistics_Uuid" ON "NotificationStatistics" ("Uuid");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403145639_AddUuidToAllEntities') THEN
+    CREATE UNIQUE INDEX "IX_Notifications_Uuid" ON "Notifications" ("Uuid");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403145639_AddUuidToAllEntities') THEN
+    CREATE UNIQUE INDEX "IX_NotificationRecipients_Uuid" ON "NotificationRecipients" ("Uuid");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403145639_AddUuidToAllEntities') THEN
+    CREATE UNIQUE INDEX "IX_Invoices_Uuid" ON "Invoices" ("Uuid");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403145639_AddUuidToAllEntities') THEN
+    CREATE UNIQUE INDEX "IX_EventInfos_Uuid" ON "EventInfos" ("Uuid");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403145639_AddUuidToAllEntities') THEN
+    CREATE UNIQUE INDEX "IX_EventCollections_Uuid" ON "EventCollections" ("Uuid");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403145639_AddUuidToAllEntities') THEN
+    CREATE UNIQUE INDEX "IX_Certificates_Uuid" ON "Certificates" ("Uuid");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403145639_AddUuidToAllEntities') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20260403145639_AddUuidToAllEntities', '10.0.5');
     END IF;
 END $EF$;
 COMMIT;
