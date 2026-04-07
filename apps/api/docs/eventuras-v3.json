@@ -5050,48 +5050,6 @@
           }
         }
       },
-      "CalendarSystem": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "name": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "minYear": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
-            "format": "int32"
-          },
-          "maxYear": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
-            "format": "int32"
-          },
-          "eras": {
-            "type": [
-              "null",
-              "array"
-            ],
-            "items": {
-              "$ref": "#/components/schemas/Era"
-            }
-          }
-        }
-      },
       "CertificateDto": {
         "type": "object",
         "properties": {
@@ -5173,7 +5131,12 @@
         }
       },
       "CertificateFormat": {
-        "type": "integer"
+        "enum": [
+          "Json",
+          "Html",
+          "Pdf",
+          null
+        ]
       },
       "EmailNotificationDto": {
         "required": [
@@ -5216,17 +5179,6 @@
               "string"
             ],
             "format": "int32"
-          }
-        }
-      },
-      "Era": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": [
-              "null",
-              "string"
-            ]
           }
         }
       },
@@ -5806,10 +5758,25 @@
         }
       },
       "EventInfoStatus": {
-        "type": "integer"
+        "enum": [
+          "Draft",
+          "Planned",
+          "RegistrationsOpen",
+          "WaitingList",
+          "RegistrationsClosed",
+          "Finished",
+          "Archived",
+          "Cancelled"
+        ]
       },
       "EventInfoType": {
-        "type": "integer"
+        "enum": [
+          "Course",
+          "Conference",
+          "OnlineCourse",
+          "Social",
+          "Other"
+        ]
       },
       "EventParticipantsFilterDto": {
         "type": "object",
@@ -6023,7 +5990,8 @@
         }
       },
       "Instant": {
-        "type": "object"
+        "type": "string",
+        "format": "date-time"
       },
       "InvoiceDto": {
         "type": "object",
@@ -6071,62 +6039,9 @@
           }
         }
       },
-      "IsoDayOfWeek": {
-        "type": "integer"
-      },
       "LocalDate": {
-        "type": "object",
-        "properties": {
-          "calendar": {
-            "$ref": "#/components/schemas/CalendarSystem"
-          },
-          "year": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
-            "format": "int32"
-          },
-          "month": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
-            "format": "int32"
-          },
-          "day": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
-            "format": "int32"
-          },
-          "dayOfWeek": {
-            "$ref": "#/components/schemas/IsoDayOfWeek"
-          },
-          "yearOfEra": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
-            "format": "int32"
-          },
-          "era": {
-            "$ref": "#/components/schemas/Era"
-          },
-          "dayOfYear": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
-            "format": "int32"
-          }
-        }
+        "type": "string",
+        "format": "date"
       },
       "NewOrderRequestDto": {
         "required": [
@@ -6394,10 +6309,18 @@
         }
       },
       "NotificationListOrder": {
-        "type": "integer"
+        "enum": [
+          "Created",
+          "StatusUpdated"
+        ]
       },
       "NotificationRecipientListOrder": {
-        "type": "integer"
+        "enum": [
+          "Created",
+          "Sent",
+          "Name",
+          "Identifier"
+        ]
       },
       "NotificationStatisticsDto": {
         "type": "object",
@@ -6429,10 +6352,22 @@
         }
       },
       "NotificationStatus": {
-        "type": "integer"
+        "enum": [
+          "New",
+          "Queued",
+          "Started",
+          "Cancelled",
+          "Failed",
+          "Sent",
+          null
+        ]
       },
       "NotificationType": {
-        "type": "integer"
+        "enum": [
+          "Email",
+          "Sms",
+          null
+        ]
       },
       "OnlineCourseDto": {
         "type": "object",
@@ -6653,7 +6588,13 @@
         "description": "DTO for partial updates to an order.\nOnly allows updating Status, Comments, and PaymentMethod fields."
       },
       "OrderStatus": {
-        "type": "integer"
+        "enum": [
+          "Draft",
+          "Verified",
+          "Invoiced",
+          "Cancelled",
+          "Refunded"
+        ]
       },
       "OrderUpdateRequestDto": {
         "required": [
@@ -6863,7 +6804,13 @@
         }
       },
       "OrganizationSettingType": {
-        "type": "integer"
+        "enum": [
+          "String",
+          "Number",
+          "Url",
+          "Email",
+          "Boolean"
+        ]
       },
       "OrganizationSettingValueDto": {
         "required": [
@@ -7070,10 +7017,23 @@
         }
       },
       "PaymentProvider": {
-        "type": "integer"
+        "enum": [
+          "EmailInvoice",
+          "PowerOfficeEmailInvoice",
+          "PowerOfficeEHFInvoice",
+          "StripeInvoice",
+          "StripeDirect",
+          "VippsInvoice",
+          "VippsDirect",
+          null
+        ]
       },
       "PeriodMatchingKind": {
-        "type": "integer"
+        "enum": [
+          "Match",
+          "Intersect",
+          "Contain"
+        ]
       },
       "ProblemDetails": {
         "type": "object",
@@ -7496,7 +7456,10 @@
         }
       },
       "ProductVisibility": {
-        "type": "integer"
+        "enum": [
+          "Event",
+          "Collection"
+        ]
       },
       "RegistrationCustomerInfoDto": {
         "type": "object",
@@ -7671,10 +7634,24 @@
         "description": "DTO for partial updates to a registration.\nOnly allows updating Status, Type, and Notes fields."
       },
       "RegistrationStatus": {
-        "type": "integer"
+        "enum": [
+          "Draft",
+          "Cancelled",
+          "Verified",
+          "NotAttended",
+          "Attended",
+          "Finished",
+          "WaitingList"
+        ]
       },
       "RegistrationType": {
-        "type": "integer"
+        "enum": [
+          "Participant",
+          "Student",
+          "Staff",
+          "Lecturer",
+          "Artist"
+        ]
       },
       "RegistrationUpdateDto": {
         "type": "object",
@@ -8051,7 +8028,12 @@
         }
       },
       "UserListOrder": {
-        "type": "integer"
+        "enum": [
+          "GivenName",
+          "FamilyName",
+          "Email",
+          "Phone"
+        ]
       },
       "UserSummaryDto": {
         "type": "object",

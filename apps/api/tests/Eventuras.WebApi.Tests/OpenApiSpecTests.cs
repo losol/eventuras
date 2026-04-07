@@ -59,6 +59,41 @@ public class OpenApiSpecTests : IClassFixture<CustomWebApiApplicationFactory<Pro
     }
 
     [Fact]
+    public async Task OpenApiSpec_EnumsShouldBeSerializedAsNamedStrings()
+    {
+        // Microsoft.AspNetCore.OpenApi reads the Minimal API JSON options
+        // (ConfigureHttpJsonOptions in Program.cs), not the MVC ones. If those
+        // options are missing the JsonStringEnumConverter, enums end up as
+        // { "type": "integer" } and the generated SDK loses named member access
+        // (RegistrationStatus becomes a bare number). This test guards against
+        // that regression.
+        // See https://github.com/dotnet/aspnetcore/issues/61303
+        var client = _factory.CreateClient();
+        var response = await client.GetAsync("/openapi/v3.json");
+        Assert.True(response.IsSuccessStatusCode);
+
+        var content = await response.Content.ReadAsStringAsync();
+        using var document = JsonDocument.Parse(content);
+        var schemas = document.RootElement.GetProperty("components").GetProperty("schemas");
+
+        Assert.True(schemas.TryGetProperty("RegistrationStatus", out var registrationStatus),
+            "RegistrationStatus schema must be present");
+        Assert.True(registrationStatus.TryGetProperty("enum", out var enumValues),
+            "RegistrationStatus must carry named enum values, not be emitted as a bare integer");
+
+        var values = enumValues.EnumerateArray().Select(v => v.GetString()).ToList();
+        Assert.Contains("Draft", values);
+        Assert.Contains("Verified", values);
+
+        // Schema must NOT be { "type": "integer" } — that means the converter
+        // is not being seen by the schema generator.
+        if (registrationStatus.TryGetProperty("type", out var typeProp))
+        {
+            Assert.NotEqual("integer", typeProp.GetString());
+        }
+    }
+
+    [Fact]
     public async Task OpenApiSpec_DiffCheck()
     {
         var specPath = GetOpenApiSpecPath();
