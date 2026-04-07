@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Services.Constants;
@@ -80,6 +82,43 @@ public class RemoveJsonPatchContentTypeTransformer : IOpenApiOperationTransforme
                     response.Value.Content.Remove(contentType);
                 }
             }
+        }
+
+        return Task.CompletedTask;
+    }
+}
+
+/// <summary>
+/// Schema transformer that emits string enum schemas for any C# enum type that is serialised
+/// with <see cref="System.Text.Json.Serialization.JsonStringEnumConverter"/>.
+///
+/// Without this transformer, <c>Microsoft.AspNetCore.OpenApi</c> falls back to emitting
+/// <c>{ "type": "integer" }</c> for enum properties, which means the generated SDK loses
+/// named member access (e.g. <c>RegistrationStatus.Draft</c>).  With the transformer the
+/// spec carries <c>{ "type": "string", "enum": ["Draft", "Verified", ...] }</c>, and the
+/// SDK generator produces a proper JavaScript const object.
+/// </summary>
+public class StringEnumSchemaTransformer : IOpenApiSchemaTransformer
+{
+    public Task TransformAsync(OpenApiSchema schema, OpenApiSchemaTransformerContext context,
+        CancellationToken cancellationToken)
+    {
+        // Resolve nullable wrapper (e.g. RegistrationStatus?)
+        var type = Nullable.GetUnderlyingType(context.JsonTypeInfo.Type) ?? context.JsonTypeInfo.Type;
+
+        if (!type.IsEnum)
+        {
+            return Task.CompletedTask;
+        }
+
+        schema.Type = JsonSchemaType.String;
+        schema.Format = null;
+
+        var names = Enum.GetNames(type);
+        schema.Enum = new List<JsonNode>(names.Length);
+        foreach (var name in names)
+        {
+            schema.Enum.Add(JsonNode.Parse($"\"{name}\"")!);
         }
 
         return Task.CompletedTask;

@@ -129,6 +129,7 @@ builder.Services.AddOpenApi("v3", options =>
     options.AddDocumentTransformer<AddSecuritySchemeTransformer>();
     options.AddOperationTransformer<AddOrganizationHeaderTransformer>();
     options.AddOperationTransformer<RemoveJsonPatchContentTypeTransformer>();
+    options.AddSchemaTransformer<StringEnumSchemaTransformer>();
 });
 
 // Finish configuring DI, logging and configuration
