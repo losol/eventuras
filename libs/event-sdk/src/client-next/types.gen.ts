@@ -5,35 +5,35 @@ export type ClientOptions = {
 };
 
 export type ByRegistrationStatus = {
-    draft?: number | string;
-    cancelled?: number | string;
-    verified?: number | string;
-    notAttended?: number | string;
-    attended?: number | string;
-    finished?: number | string;
-    waitingList?: number | string;
+    draft?: number;
+    cancelled?: number;
+    verified?: number;
+    notAttended?: number;
+    attended?: number;
+    finished?: number;
+    waitingList?: number;
 };
 
 export type ByStatus = {
-    draft?: number | string;
-    cancelled?: number | string;
-    verified?: number | string;
-    notAttended?: number | string;
-    attended?: number | string;
-    finished?: number | string;
-    waitingList?: number | string;
+    draft?: number;
+    cancelled?: number;
+    verified?: number;
+    notAttended?: number;
+    attended?: number;
+    finished?: number;
+    waitingList?: number;
 };
 
 export type ByType = {
-    participant?: number | string;
-    student?: number | string;
-    staff?: number | string;
-    lecturer?: number | string;
-    artist?: number | string;
+    participant?: number;
+    student?: number;
+    staff?: number;
+    lecturer?: number;
+    artist?: number;
 };
 
 export type CertificateDto = {
-    certificateId?: number | string;
+    certificateId?: number;
     certificateGuid?: string;
     title?: null | string;
     description?: null | string;
@@ -61,11 +61,11 @@ export type EmailNotificationDto = {
     bodyMarkdown: null | string;
     recipients?: null | Array<string>;
     eventParticipants?: EventParticipantsFilterDto;
-    registrationId?: null | number | string;
+    registrationId?: null | number;
 };
 
 export type EventCollectionCreateDto = {
-    organizationId: number | string;
+    organizationId: number;
     name: null | string;
     slug?: null | string;
     description?: null | string;
@@ -75,8 +75,8 @@ export type EventCollectionCreateDto = {
 };
 
 export type EventCollectionDto = {
-    id?: null | number | string;
-    organizationId: number | string;
+    id?: null | number;
+    organizationId: number;
     name: null | string;
     slug?: null | string;
     description?: null | string;
@@ -88,7 +88,7 @@ export type EventCollectionDto = {
 };
 
 export type EventDto = {
-    id?: number | string;
+    id?: number;
     type?: EventInfoType;
     status?: EventInfoStatus;
     title?: null | string;
@@ -116,7 +116,7 @@ export type EventDto = {
     certificateDescription?: null | string;
     projectCode?: null | string;
     organizerUserId?: null | string;
-    maxParticipants?: null | number | string;
+    maxParticipants?: null | number;
     externalInfoPageUrl?: null | string;
 };
 
@@ -127,10 +127,10 @@ export type EventDto = {
 export type EventFormDto = {
     title: null | string;
     slug: null | string;
-    id?: null | number | string;
+    id?: null | number;
     type?: EventInfoType;
     status?: EventInfoStatus;
-    organizationId?: number | string;
+    organizationId?: number;
     headline?: null | string;
     moreInformation?: null | string;
     category?: null | string;
@@ -151,7 +151,7 @@ export type EventFormDto = {
     informationRequest?: null | string;
     lastRegistrationDate?: null | LocalDate;
     lastCancellationDate?: null | LocalDate;
-    maxParticipants?: null | number | string;
+    maxParticipants?: null | number;
     certificateTitle?: null | string;
     certificateDescription?: null | string;
     featuredImageUrl?: null | string;
@@ -166,7 +166,7 @@ export type EventInfoOptionsDto = {
 };
 
 export type EventInfoRegistrationPolicyDto = {
-    allowedRegistrationEditHours?: null | number | string;
+    allowedRegistrationEditHours?: null | number;
     allowModificationsAfterCancellationDue?: boolean;
 };
 
@@ -194,8 +194,8 @@ export const EventInfoType = {
 export type EventInfoType = typeof EventInfoType[keyof typeof EventInfoType];
 
 export type EventParticipantsFilterDto = {
-    eventId?: null | number | string;
-    productId?: null | number | string;
+    eventId?: null | number;
+    productId?: null | number;
     registrationStatuses?: null | Array<RegistrationStatus>;
     registrationTypes?: null | Array<RegistrationType>;
     isDefined?: boolean;
@@ -240,7 +240,7 @@ export type EventPatchDto = {
     /**
      * Maximum number of participants (0 for unlimited).
      */
-    maxParticipants?: null | number | string;
+    maxParticipants?: null | number;
     /**
      * Event location/venue.
      */
@@ -267,20 +267,20 @@ export type EventStatisticsDto = {
 export type Instant = string;
 
 export type InvoiceDto = {
-    invoiceId?: number | string;
+    invoiceId?: number;
     externalInvoiceId?: string;
     paid?: boolean;
-    orderIds?: Array<number | string>;
+    orderIds?: Array<number>;
 };
 
 export type InvoiceRequestDto = {
-    orderIds?: Array<number | string>;
+    orderIds?: Array<number>;
 };
 
 export type LocalDate = string;
 
 export type NewOrderRequestDto = {
-    registrationId: number | string;
+    registrationId: number;
     lines: null | Array<OrderLineModel>;
 };
 
@@ -288,21 +288,21 @@ export type NewProductDto = {
     name: null | string;
     description?: null | string;
     more?: null | string;
-    price?: number | string;
-    vatPercent?: number | string;
+    price?: number;
+    vatPercent?: number;
     visibility?: ProductVisibility;
 };
 
 export type NewProductVariantDto = {
     name?: null | string;
     description?: null | string;
-    price?: number | string;
-    vatPercent?: number | string;
+    price?: number;
+    vatPercent?: number;
 };
 
 export type NewRegistrationDto = {
     userId: null | string;
-    eventId: number | string;
+    eventId: number;
     createOrder?: boolean;
     sendWelcomeLetter?: boolean;
     customer?: RegistrationCustomerInfoDto;
@@ -318,11 +318,11 @@ export type NewRegistrationOrderDto = {
 };
 
 export type NotificationDto = {
-    notificationId?: number | string;
-    organizationId?: null | number | string;
-    eventId?: null | number | string;
-    productId?: null | number | string;
-    registrationId?: null | number | string;
+    notificationId?: number;
+    organizationId?: null | number;
+    eventId?: null | number;
+    productId?: null | number;
+    registrationId?: null | number;
     message?: null | string;
     created?: Instant;
     statusUpdated?: Instant;
@@ -345,9 +345,9 @@ export const NotificationRecipientListOrder = {
 export type NotificationRecipientListOrder = typeof NotificationRecipientListOrder[keyof typeof NotificationRecipientListOrder];
 
 export type NotificationStatisticsDto = {
-    sent?: number | string;
-    errors?: number | string;
-    recipients?: number | string;
+    sent?: number;
+    errors?: number;
+    recipients?: number;
 };
 
 export const NotificationStatus = {
@@ -366,7 +366,7 @@ export const NotificationType = { EMAIL: 'Email', SMS: 'Sms' } as const;
 export type NotificationType = typeof NotificationType[keyof typeof NotificationType];
 
 export type OnlineCourseDto = {
-    id?: number | string;
+    id?: number;
     name?: null | string;
     description?: null | string;
     slug?: null | string;
@@ -375,11 +375,11 @@ export type OnlineCourseDto = {
 };
 
 export type OrderDto = {
-    orderId?: number | string;
+    orderId?: number;
     status?: OrderStatus;
     time?: string;
     userId?: string;
-    registrationId?: number | string;
+    registrationId?: number;
     paymentMethod?: null | PaymentProvider;
     comments?: string;
     log?: string;
@@ -389,16 +389,16 @@ export type OrderDto = {
 };
 
 export type OrderLineDto = {
-    orderLineId?: number | string;
+    orderLineId?: number;
     product?: ProductDto;
     productVariant?: null | ProductVariantDto;
-    quantity?: number | string;
+    quantity?: number;
 };
 
 export type OrderLineModel = {
-    productId: number | string;
-    productVariantId: null | number | string;
-    quantity: number | string;
+    productId: number;
+    productVariantId: null | number;
+    quantity: number;
 };
 
 /**
@@ -429,7 +429,7 @@ export type OrderUpdateRequestDto = {
 };
 
 export type OrganizationDto = {
-    organizationId?: number | string;
+    organizationId?: number;
     name?: null | string;
     description?: null | string;
     url?: null | string;
@@ -450,14 +450,14 @@ export type OrganizationFormDto = {
 };
 
 export type OrganizationMemberDto = {
-    id?: number | string;
+    id?: number;
     userId?: string;
-    organizationId?: number | string;
+    organizationId?: number;
     roles?: null | Array<OrganizationMemberRoleDto>;
 };
 
 export type OrganizationMemberRoleDto = {
-    organizationMemberId?: number | string;
+    organizationMemberId?: number;
     role?: null | string;
 };
 
@@ -485,34 +485,34 @@ export type OrganizationSettingValueDto = {
 };
 
 export type PageResponseDtoOfEventCollectionDto = {
-    page?: number | string;
-    count?: number | string;
-    total?: number | string;
-    pages?: number | string;
+    page?: number;
+    count?: number;
+    total?: number;
+    pages?: number;
     data?: null | Array<EventCollectionDto>;
 };
 
 export type PageResponseDtoOfEventDto = {
-    page?: number | string;
-    count?: number | string;
-    total?: number | string;
-    pages?: number | string;
+    page?: number;
+    count?: number;
+    total?: number;
+    pages?: number;
     data?: null | Array<EventDto>;
 };
 
 export type PageResponseDtoOfRegistrationDto = {
-    page?: number | string;
-    count?: number | string;
-    total?: number | string;
-    pages?: number | string;
+    page?: number;
+    count?: number;
+    total?: number;
+    pages?: number;
     data?: null | Array<RegistrationDto>;
 };
 
 export type PageResponseDtoOfUserDto = {
-    page?: number | string;
-    count?: number | string;
-    total?: number | string;
-    pages?: number | string;
+    page?: number;
+    count?: number;
+    total?: number;
+    pages?: number;
     data?: null | Array<UserDto>;
 };
 
@@ -539,7 +539,7 @@ export type PeriodMatchingKind = typeof PeriodMatchingKind[keyof typeof PeriodMa
 export type ProblemDetails = {
     type?: null | string;
     title?: null | string;
-    status?: null | number | string;
+    status?: null | number;
     detail?: null | string;
     instance?: null | string;
 };
@@ -551,16 +551,16 @@ export type ProductDeliverySummaryDto = {
 };
 
 export type ProductDto = {
-    productId?: number | string;
+    productId?: number;
     name?: string;
     description?: null | string;
-    price?: number | string;
-    vatPercent?: number | string;
+    price?: number;
+    vatPercent?: number;
     visibility?: ProductVisibility;
-    inventory?: null | number | string;
+    inventory?: null | number;
     published?: null | boolean;
     variants?: Array<ProductVariantDto>;
-    minimumQuantity?: number | string;
+    minimumQuantity?: number;
     isMandatory?: boolean;
     enableQuantity?: boolean;
 };
@@ -568,29 +568,29 @@ export type ProductDto = {
 export type ProductFormDto = {
     name?: null | string;
     description?: null | string;
-    price?: number | string;
-    vatPercent?: number | string;
+    price?: number;
+    vatPercent?: number;
     enableQuantity?: boolean;
-    minimumQuantity?: number | string;
-    inventory?: null | number | string;
+    minimumQuantity?: number;
+    inventory?: null | number;
     published?: null | boolean;
     visibility?: null | ProductVisibility;
 };
 
 export type ProductOrderDto = {
-    productId: number | string;
-    productVariantId: null | number | string;
+    productId: number;
+    productVariantId: null | number;
     product: ProductDto;
     productVariant: null | ProductVariantDto;
-    quantity: number | string;
+    quantity: number;
 };
 
 export type ProductOrdersSummaryDto = {
-    registrationId?: number | string;
+    registrationId?: number;
     registrationStatus?: RegistrationStatus;
     user?: UserSummaryDto;
-    orderIds?: null | Array<number | string>;
-    sumQuantity?: number | string;
+    orderIds?: null | Array<number>;
+    sumQuantity?: number;
 };
 
 export type ProductStatisticsDto = {
@@ -598,25 +598,25 @@ export type ProductStatisticsDto = {
 };
 
 export type ProductSummaryDto = {
-    productId?: null | number | string;
-    eventId?: null | number | string;
+    productId?: null | number;
+    eventId?: null | number;
     name?: null | string;
     description?: null | string;
     more?: null | string;
-    price?: number | string;
-    vatPercent?: number | string;
+    price?: number;
+    vatPercent?: number;
     visibility?: ProductVisibility;
-    minimumQuantity?: number | string;
+    minimumQuantity?: number;
     isMandatory?: null | boolean;
     enableQuantity?: boolean;
 };
 
 export type ProductVariantDto = {
-    productVariantId?: number | string;
+    productVariantId?: number;
     name?: null | string;
     description?: null | string;
-    price?: number | string;
-    vatPercent?: number | string;
+    price?: number;
+    vatPercent?: number;
 };
 
 export const ProductVisibility = { EVENT: 'Event', COLLECTION: 'Collection' } as const;
@@ -634,12 +634,12 @@ export type RegistrationCustomerInfoDto = {
 };
 
 export type RegistrationDto = {
-    registrationId?: number | string;
-    eventId?: number | string;
+    registrationId?: number;
+    eventId?: number;
     userId?: string;
     status?: RegistrationStatus;
     type?: RegistrationType;
-    certificateId?: null | number | string;
+    certificateId?: null | number;
     notes?: null | string;
     log?: null | string;
     user?: null | UserDto;
@@ -699,7 +699,7 @@ export type SmsNotificationDto = {
     message: null | string;
     recipients?: null | Array<string>;
     eventParticipants?: EventParticipantsFilterDto;
-    registrationId?: null | number | string;
+    registrationId?: null | number;
 };
 
 export type UserDto = {
@@ -830,14 +830,14 @@ export type GetV3UsersData = {
     path?: never;
     query?: {
         Query?: string;
-        OrganizationId?: number | string;
+        OrganizationId?: number;
         IncludeOrgMembership?: boolean;
         Order?: UserListOrder;
         Descending?: boolean;
-        Page?: number | string;
-        Count?: number | string;
-        Limit?: number | string;
-        Offset?: number | string;
+        Page?: number;
+        Count?: number;
+        Limit?: number;
+        Offset?: number;
         Ordering?: Array<string>;
     };
     url: '/v3/users';
@@ -947,7 +947,7 @@ export type PostV3RegistrationsByIdCertificateSendData = {
         'Eventuras-Org-Id'?: number;
     };
     path: {
-        id: number | string;
+        id: number;
     };
     query?: never;
     url: '/v3/registrations/{id}/certificate/send';
@@ -1038,16 +1038,16 @@ export type GetV3RegistrationsData = {
     };
     path?: never;
     query?: {
-        EventId?: number | string;
+        EventId?: number;
         UserId?: string;
         IncludeEventInfo?: boolean;
         IncludeUserInfo?: boolean;
         IncludeProducts?: boolean;
         IncludeOrders?: boolean;
-        Page?: number | string;
-        Count?: number | string;
-        Limit?: number | string;
-        Offset?: number | string;
+        Page?: number;
+        Count?: number;
+        Limit?: number;
+        Offset?: number;
         Ordering?: Array<string>;
     };
     url: '/v3/registrations';
@@ -1102,7 +1102,7 @@ export type DeleteV3RegistrationsByIdData = {
         'Eventuras-Org-Id'?: number;
     };
     path: {
-        id: number | string;
+        id: number;
     };
     query?: never;
     url: '/v3/registrations/{id}';
@@ -1124,19 +1124,19 @@ export type GetV3RegistrationsByIdData = {
         'Eventuras-Org-Id'?: number;
     };
     path: {
-        id: number | string;
+        id: number;
     };
     query?: {
-        EventId?: number | string;
+        EventId?: number;
         UserId?: string;
         IncludeEventInfo?: boolean;
         IncludeUserInfo?: boolean;
         IncludeProducts?: boolean;
         IncludeOrders?: boolean;
-        Page?: number | string;
-        Count?: number | string;
-        Limit?: number | string;
-        Offset?: number | string;
+        Page?: number;
+        Count?: number;
+        Limit?: number;
+        Offset?: number;
         Ordering?: Array<string>;
     };
     url: '/v3/registrations/{id}';
@@ -1160,7 +1160,7 @@ export type PatchV3RegistrationsByIdData = {
         'Eventuras-Org-Id'?: number;
     };
     path: {
-        id: number | string;
+        id: number;
     };
     query?: never;
     url: '/v3/registrations/{id}';
@@ -1197,7 +1197,7 @@ export type PutV3RegistrationsByIdData = {
         'Eventuras-Org-Id'?: number;
     };
     path: {
-        id: number | string;
+        id: number;
     };
     query?: never;
     url: '/v3/registrations/{id}';
@@ -1221,7 +1221,7 @@ export type PostV3RegistrationsMeByEventIdData = {
         'Eventuras-Org-Id'?: number;
     };
     path: {
-        eventId: number | string;
+        eventId: number;
     };
     query?: {
         createOrder?: boolean;
@@ -1436,7 +1436,7 @@ export type DeleteV3OrganizationsByOrganizationIdData = {
         'Eventuras-Org-Id'?: number;
     };
     path: {
-        organizationId: number | string;
+        organizationId: number;
     };
     query?: never;
     url: '/v3/organizations/{organizationId}';
@@ -1458,7 +1458,7 @@ export type GetV3OrganizationsByOrganizationIdData = {
         'Eventuras-Org-Id'?: number;
     };
     path: {
-        organizationId: number | string;
+        organizationId: number;
     };
     query?: never;
     url: '/v3/organizations/{organizationId}';
@@ -1482,7 +1482,7 @@ export type PutV3OrganizationsByOrganizationIdData = {
         'Eventuras-Org-Id'?: number;
     };
     path: {
-        organizationId: number | string;
+        organizationId: number;
     };
     query?: never;
     url: '/v3/organizations/{organizationId}';
@@ -1684,16 +1684,16 @@ export type GetV3OrdersData = {
     path?: never;
     query?: {
         UserId?: string;
-        EventId?: number | string;
-        RegistrationId?: number | string;
+        EventId?: number;
+        RegistrationId?: number;
         Status?: OrderStatus;
         IncludeUser?: boolean;
         IncludeRegistration?: boolean;
-        OrganizationId?: number | string;
-        Page?: number | string;
-        Count?: number | string;
-        Limit?: number | string;
-        Offset?: number | string;
+        OrganizationId?: number;
+        Page?: number;
+        Count?: number;
+        Limit?: number;
+        Offset?: number;
         Ordering?: Array<string>;
     };
     url: '/v3/orders';
@@ -1735,7 +1735,7 @@ export type GetV3NotificationsByIdRecipientsData = {
         'Eventuras-Org-Id'?: number;
     };
     path: {
-        id: number | string;
+        id: number;
     };
     query?: {
         Query?: string;
@@ -1743,10 +1743,10 @@ export type GetV3NotificationsByIdRecipientsData = {
         ErrorsOnly?: boolean;
         Order?: NotificationRecipientListOrder;
         Desc?: boolean;
-        Page?: number | string;
-        Count?: number | string;
-        Limit?: number | string;
-        Offset?: number | string;
+        Page?: number;
+        Count?: number;
+        Limit?: number;
+        Offset?: number;
         Ordering?: Array<string>;
     };
     url: '/v3/notifications/{id}/recipients';
@@ -1768,7 +1768,7 @@ export type GetV3NotificationsByIdData = {
         'Eventuras-Org-Id'?: number;
     };
     path: {
-        id: number | string;
+        id: number;
     };
     query?: {
         includeStatistics?: boolean;
@@ -1793,8 +1793,8 @@ export type GetV3NotificationsData = {
     };
     path?: never;
     query?: {
-        EventId?: number | string;
-        ProductId?: number | string;
+        EventId?: number;
+        ProductId?: number;
         Status?: NotificationStatus;
         Type?: NotificationType;
         RecipientUserId?: string;
@@ -1804,10 +1804,10 @@ export type GetV3NotificationsData = {
          * Whether to include delivery statistics into response.
          */
         IncludeStatistics?: boolean;
-        Page?: number | string;
-        Count?: number | string;
-        Limit?: number | string;
-        Offset?: number | string;
+        Page?: number;
+        Count?: number;
+        Limit?: number;
+        Offset?: number;
         Ordering?: Array<string>;
     };
     url: '/v3/notifications';
@@ -1926,12 +1926,12 @@ export type GetV3EventsData = {
         Period?: PeriodMatchingKind;
         IncludePastEvents?: boolean;
         IncludeDraftEvents?: boolean;
-        OrganizationId?: number | string;
-        CollectionId?: number | string;
-        Page?: number | string;
-        Count?: number | string;
-        Limit?: number | string;
-        Offset?: number | string;
+        OrganizationId?: number;
+        CollectionId?: number;
+        Page?: number;
+        Count?: number;
+        Limit?: number;
+        Offset?: number;
         Ordering?: Array<string>;
     };
     url: '/v3/events';
@@ -2127,7 +2127,7 @@ export type GetV3OnlinecoursesByIdData = {
         'Eventuras-Org-Id'?: number;
     };
     path: {
-        id: number | string;
+        id: number;
     };
     query?: never;
     url: '/v3/onlinecourses/{id}';
@@ -2151,7 +2151,7 @@ export type GetV3EventsByEventIdStatisticsData = {
         'Eventuras-Org-Id'?: number;
     };
     path: {
-        eventId: number | string;
+        eventId: number;
     };
     query?: never;
     url: '/v3/events/{eventId}/statistics';
@@ -2175,7 +2175,7 @@ export type GetV3EventsByEventIdProductsData = {
         'Eventuras-Org-Id'?: number;
     };
     path: {
-        eventId: number | string;
+        eventId: number;
     };
     query?: {
         Visibility?: ProductVisibility;
@@ -2201,7 +2201,7 @@ export type PostV3EventsByEventIdProductsData = {
         'Eventuras-Org-Id'?: number;
     };
     path: {
-        eventId: number | string;
+        eventId: number;
     };
     query?: never;
     url: '/v3/events/{eventId}/products';
@@ -2223,8 +2223,8 @@ export type DeleteV3EventsByEventIdProductsByProductIdData = {
         'Eventuras-Org-Id'?: number;
     };
     path: {
-        eventId: number | string;
-        productId: number | string;
+        eventId: number;
+        productId: number;
     };
     query?: never;
     url: '/v3/events/{eventId}/products/{productId}';
@@ -2246,8 +2246,8 @@ export type PutV3EventsByEventIdProductsByProductIdData = {
         'Eventuras-Org-Id'?: number;
     };
     path: {
-        eventId: number | string;
-        productId: number | string;
+        eventId: number;
+        productId: number;
     };
     query?: never;
     url: '/v3/events/{eventId}/products/{productId}';
@@ -2269,8 +2269,8 @@ export type GetV3EventsByEventIdProductsByProductIdVariantsData = {
         'Eventuras-Org-Id'?: number;
     };
     path: {
-        eventId: number | string;
-        productId: number | string;
+        eventId: number;
+        productId: number;
     };
     query?: never;
     url: '/v3/events/{eventId}/products/{productId}/variants';
@@ -2294,8 +2294,8 @@ export type PostV3EventsByEventIdProductsByProductIdVariantsData = {
         'Eventuras-Org-Id'?: number;
     };
     path: {
-        eventId: number | string;
-        productId: number | string;
+        eventId: number;
+        productId: number;
     };
     query?: never;
     url: '/v3/events/{eventId}/products/{productId}/variants';
@@ -2317,9 +2317,9 @@ export type DeleteV3EventsByEventIdProductsByProductIdVariantsByIdData = {
         'Eventuras-Org-Id'?: number;
     };
     path: {
-        eventId: number | string;
-        productId: number | string;
-        id: number | string;
+        eventId: number;
+        productId: number;
+        id: number;
     };
     query?: never;
     url: '/v3/events/{eventId}/products/{productId}/variants/{id}';
@@ -2341,13 +2341,13 @@ export type GetV3EventByIdCertificatesData = {
         'Eventuras-Org-Id'?: number;
     };
     path: {
-        id: number | string;
+        id: number;
     };
     query?: {
-        Page?: number | string;
-        Count?: number | string;
-        Limit?: number | string;
-        Offset?: number | string;
+        Page?: number;
+        Count?: number;
+        Limit?: number;
+        Offset?: number;
         Ordering?: Array<string>;
     };
     url: '/v3/event/{id}/certificates';
@@ -2369,7 +2369,7 @@ export type GetV3EventByIdCertificatesPreviewData = {
         'Eventuras-Org-Id'?: number;
     };
     path: {
-        id: number | string;
+        id: number;
     };
     query?: never;
     url: '/v3/event/{id}/certificates/preview';
@@ -2391,7 +2391,7 @@ export type PostV3EventByIdCertificatesIssueData = {
         'Eventuras-Org-Id'?: number;
     };
     path: {
-        id: number | string;
+        id: number;
     };
     query?: {
         send?: boolean;
@@ -2415,7 +2415,7 @@ export type PostV3EventByIdCertificatesUpdateData = {
         'Eventuras-Org-Id'?: number;
     };
     path: {
-        id: number | string;
+        id: number;
     };
     query?: never;
     url: '/v3/event/{id}/certificates/update';
@@ -2440,10 +2440,10 @@ export type GetV3EventcollectionsData = {
     query?: {
         Featured?: boolean;
         IncludePastCollections?: boolean;
-        Page?: number | string;
-        Count?: number | string;
-        Limit?: number | string;
-        Offset?: number | string;
+        Page?: number;
+        Count?: number;
+        Limit?: number;
+        Offset?: number;
         Ordering?: Array<string>;
     };
     url: '/v3/eventcollections';
@@ -2489,7 +2489,7 @@ export type DeleteV3EventcollectionsByIdData = {
         'Eventuras-Org-Id'?: number;
     };
     path: {
-        id: number | string;
+        id: number;
     };
     query?: never;
     url: '/v3/eventcollections/{id}';
@@ -2511,7 +2511,7 @@ export type GetV3EventcollectionsByIdData = {
         'Eventuras-Org-Id'?: number;
     };
     path: {
-        id: number | string;
+        id: number;
     };
     query?: never;
     url: '/v3/eventcollections/{id}';
@@ -2535,7 +2535,7 @@ export type PutV3EventcollectionsByIdData = {
         'Eventuras-Org-Id'?: number;
     };
     path: {
-        id: number | string;
+        id: number;
     };
     query?: never;
     url: '/v3/eventcollections/{id}';
@@ -2559,8 +2559,8 @@ export type DeleteV3EventsByEventIdCollectionsByCollectionIdData = {
         'Eventuras-Org-Id'?: number;
     };
     path: {
-        eventId: number | string;
-        collectionId: number | string;
+        eventId: number;
+        collectionId: number;
     };
     query?: never;
     url: '/v3/events/{eventId}/collections/{collectionId}';
@@ -2582,8 +2582,8 @@ export type PutV3EventsByEventIdCollectionsByCollectionIdData = {
         'Eventuras-Org-Id'?: number;
     };
     path: {
-        eventId: number | string;
-        collectionId: number | string;
+        eventId: number;
+        collectionId: number;
     };
     query?: never;
     url: '/v3/events/{eventId}/collections/{collectionId}';
@@ -2605,7 +2605,7 @@ export type GetV3CertificatesByIdData = {
         'Eventuras-Org-Id'?: number;
     };
     path: {
-        id: number | string;
+        id: number;
     };
     query?: {
         format?: CertificateFormat;
