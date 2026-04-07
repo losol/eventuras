@@ -13,7 +13,9 @@ namespace Eventuras.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             // Migrate legacy Log data to BusinessEvents before dropping columns.
-            // ApplicationUser.Log is jsonb and always a valid JSON array.
+            // ApplicationUser.Log is jsonb but defaults to '{}' (empty object) on
+            // rows that never had a log entry, so we must filter to actual arrays
+            // before calling jsonb_array_elements (which errors on objects).
             // SubjectType values are lowercase to match BusinessEventSubjects factory methods.
             migrationBuilder.Sql("""
                 INSERT INTO "BusinessEvents" ("Uuid", "CreatedAt", "EventType", "SubjectType", "SubjectUuid", "ActorUserUuid", "Message", "MetadataJson")
@@ -25,7 +27,7 @@ namespace Eventuras.Infrastructure.Migrations
                        COALESCE(elem->>'Message', ''),
                        jsonb_build_object('level', elem->>'Level', 'source', 'ApplicationUser.Log')
                 FROM "Users", jsonb_array_elements("Log") AS elem
-                WHERE "Log" IS NOT NULL AND "Log" != '[]';
+                WHERE "Log" IS NOT NULL AND jsonb_typeof("Log") = 'array' AND "Log" != '[]';
                 """);
 
             // Registration.Log and Order.Log were historically appended as free-text lines,

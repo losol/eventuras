@@ -2043,7 +2043,7 @@ BEGIN
            COALESCE(elem->>'Message', ''),
            jsonb_build_object('level', elem->>'Level', 'source', 'ApplicationUser.Log')
     FROM "Users", jsonb_array_elements("Log") AS elem
-    WHERE "Log" IS NOT NULL AND "Log" != '[]';
+    WHERE "Log" IS NOT NULL AND jsonb_typeof("Log") = 'array' AND "Log" != '[]';
     END IF;
 END $EF$;
 
