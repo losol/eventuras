@@ -1,9 +1,14 @@
 import { defineConfig } from '@hey-api/openapi-ts';
-import { resolve } from 'node:path';
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
 
 export default defineConfig({
   input: {
-    path: resolve(import.meta.dirname, '../../apps/api/docs/eventuras-v3.json'),
+    // Resolve via the @eventuras/api workspace package's exports map so that
+    // Docker builds (which use turbo prune) automatically include the spec
+    // file as part of the workspace dependency graph.
+    path: require.resolve('@eventuras/api/openapi'),
   },
   output: 'src/client-next',
   plugins: [

@@ -29,6 +29,12 @@ WORKDIR /app
 
 COPY package.json turbo.json tsconfig.json pnpm-workspace.yaml pnpm-lock.yaml ./
 COPY apps/web ./apps/web
+# apps/api is needed because @eventuras/event-sdk depends on @eventuras/api
+# (workspace:*) to resolve the OpenAPI spec via the package exports map.
+# We only copy the package.json and the docs folder (which contains the spec),
+# not the C# source code.
+COPY apps/api/package.json ./apps/api/package.json
+COPY apps/api/docs ./apps/api/docs
 COPY libs ./libs
 
 RUN pnpm dlx turbo@2.8.1 prune --scope=@eventuras/web --docker

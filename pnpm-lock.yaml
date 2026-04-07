@@ -1041,6 +1041,9 @@ importers:
 
   libs/event-sdk:
     dependencies:
+      '@eventuras/api':
+        specifier: workspace:*
+        version: link:../../apps/api
       '@hey-api/openapi-ts':
         specifier: 0.95.0
         version: 0.95.0(magicast@0.5.2)(typescript@6.0.2)
@@ -24739,7 +24742,7 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 25.5.0
+      '@types/node': 24.12.0
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
