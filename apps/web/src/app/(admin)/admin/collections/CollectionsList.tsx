@@ -8,14 +8,14 @@ import { Pagination } from '@eventuras/ratio-ui/core/Pagination';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
 import FatalError from '@/components/FatalError';
-import { EventCollectionDto, EventCollectionDtoPageResponseDto } from '@/lib/eventuras-sdk';
+import { EventCollectionDto, PageResponseDtoOfEventCollectionDto } from '@/lib/eventuras-sdk';
 
 import { getCollections } from './actions';
 const columnHelper = createColumnHelper<EventCollectionDto>();
 const CollectionsList: React.FC = () => {
   const t = useTranslations();
   const [page, setPage] = useState(1);
-  const [result, setResult] = useState<EventCollectionDtoPageResponseDto | null>(null);
+  const [result, setResult] = useState<PageResponseDtoOfEventCollectionDto | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const pageSize = 100;

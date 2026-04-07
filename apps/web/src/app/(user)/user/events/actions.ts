@@ -172,7 +172,7 @@ export async function createEventRegistration(
     const registrationId = registrationResponse.data.registrationId!;
     const registrationWithProducts = await addProductsToRegistration(registrationId, products, {
       eventId: newRegistration.eventId,
-      userId: newRegistration.userId,
+      userId: newRegistration.userId ?? undefined,
       source: 'create',
     });
 

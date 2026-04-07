@@ -4,12 +4,12 @@ import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
 
 import UserEditor from '@/app/(admin)/admin/users/UserEditor';
-import { getV3UsersMe } from '@/lib/eventuras-sdk';
+import { getV3Userprofile } from '@/lib/eventuras-sdk';
 
 const UserAccountPage = async () => {
   const t = await getTranslations();
   // Fetch user profile - this uses the authenticated client
-  const response = await getV3UsersMe();
+  const response = await getV3Userprofile();
   if (!response.data) {
     return <div>{t('user.page.profileNotFound')}</div>;
   }

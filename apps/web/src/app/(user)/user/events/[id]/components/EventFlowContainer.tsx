@@ -49,7 +49,7 @@ const EventFlowContainer: React.FC<EventFlowContainerProps> = ({
     if (stateSelected) {
       return [...stateSelected.keys()].map((key: string) => ({
         productId: parseInt(key, 10),
-        quantity: stateSelected.get(key),
+        quantity: stateSelected.get(key) ?? 0,
       }));
     }
     if (inEditMode) {

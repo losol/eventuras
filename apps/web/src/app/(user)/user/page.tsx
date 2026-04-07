@@ -5,11 +5,11 @@ import { Container } from '@eventuras/ratio-ui/layout/Container';
 
 import UserEventRegistrations from '@/components/user/UserEventRegistrations';
 import UserProfileCard from '@/components/user/UserProfileCard';
-import { getV3Registrations, getV3UsersMe } from '@/lib/eventuras-sdk';
+import { getV3Registrations, getV3Userprofile } from '@/lib/eventuras-sdk';
 
 const UserPage = async () => {
   const t = await getTranslations();
-  const profileResponse = await getV3UsersMe();
+  const profileResponse = await getV3Userprofile();
   if (!profileResponse.data) return <>{t('user.page.profileNotFound')}</>;
   const registrationsResponse = await getV3Registrations({
     query: {
