@@ -66,9 +66,25 @@ namespace Eventuras.Infrastructure.Migrations
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
-            migrationBuilder.DropPrimaryKey(
-                name: "PK_AspNetUsers",
-                table: "AspNetUsers");
+            // Drop PK by looking up the actual constraint name. Production
+            // databases created with older EF Core versions may have a
+            // different PK name (e.g. "AspNetUsers_pkey") than the current
+            // "PK_AspNetUsers" convention.
+            migrationBuilder.Sql(@"
+DO $$
+DECLARE
+    pk_name text;
+BEGIN
+    SELECT conname INTO pk_name
+    FROM pg_constraint
+    WHERE conrelid = '""AspNetUsers""'::regclass
+      AND contype = 'p';
+
+    IF pk_name IS NOT NULL THEN
+        EXECUTE format('ALTER TABLE ""AspNetUsers"" DROP CONSTRAINT %I', pk_name);
+    END IF;
+END $$;
+");
 
             migrationBuilder.DropColumn(
                 name: "AccessFailedCount",
@@ -252,9 +268,21 @@ namespace Eventuras.Infrastructure.Migrations
                 name: "FK_Registrations_Users_UserId",
                 table: "Registrations");
 
-            migrationBuilder.DropPrimaryKey(
-                name: "PK_Users",
-                table: "Users");
+            migrationBuilder.Sql(@"
+DO $$
+DECLARE
+    pk_name text;
+BEGIN
+    SELECT conname INTO pk_name
+    FROM pg_constraint
+    WHERE conrelid = '""Users""'::regclass
+      AND contype = 'p';
+
+    IF pk_name IS NOT NULL THEN
+        EXECUTE format('ALTER TABLE ""Users"" DROP CONSTRAINT %I', pk_name);
+    END IF;
+END $$;
+");
 
             migrationBuilder.RenameTable(
                 name: "Users",

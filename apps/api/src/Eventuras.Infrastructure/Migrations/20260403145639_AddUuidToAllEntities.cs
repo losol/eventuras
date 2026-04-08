@@ -21,6 +21,19 @@ namespace Eventuras.Infrastructure.Migrations
                 table: "Certificates",
                 newName: "Uuid");
 
+            // Deduplicate Certificates.Uuid. Production data contains
+            // multiple rows with the zero UUID (and possibly other
+            // duplicates) from before CertificateGuid was treated as unique.
+            // Regenerate every row that shares its Uuid with another row so
+            // the upcoming unique index can be created.
+            migrationBuilder.Sql(@"
+                UPDATE ""Certificates"" SET ""Uuid"" = uuidv7()
+                WHERE ""Uuid"" IN (
+                    SELECT ""Uuid"" FROM ""Certificates""
+                    GROUP BY ""Uuid"" HAVING COUNT(*) > 1
+                );
+            ");
+
             // Add Uuid columns as nullable first, then backfill, then set NOT NULL.
             // This avoids the PostgreSQL "fast default" optimization which could
             // assign the same default value to all existing rows.

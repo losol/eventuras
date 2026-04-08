@@ -1864,7 +1864,21 @@ END $EF$;
 DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
-    ALTER TABLE "AspNetUsers" DROP CONSTRAINT "PK_AspNetUsers";
+
+    DO $$
+    DECLARE
+        pk_name text;
+    BEGIN
+        SELECT conname INTO pk_name
+        FROM pg_constraint
+        WHERE conrelid = '"AspNetUsers"'::regclass
+          AND contype = 'p';
+
+        IF pk_name IS NOT NULL THEN
+            EXECUTE format('ALTER TABLE "AspNetUsers" DROP CONSTRAINT %I', pk_name);
+        END IF;
+    END $$;
+
     END IF;
 END $EF$;
 
@@ -2246,6 +2260,19 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403145639_AddUuidToAllEntities') THEN
     ALTER TABLE "Certificates" RENAME COLUMN "CertificateGuid" TO "Uuid";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403145639_AddUuidToAllEntities') THEN
+
+                    UPDATE "Certificates" SET "Uuid" = uuidv7()
+                    WHERE "Uuid" IN (
+                        SELECT "Uuid" FROM "Certificates"
+                        GROUP BY "Uuid" HAVING COUNT(*) > 1
+                    );
+                
     END IF;
 END $EF$;
 
