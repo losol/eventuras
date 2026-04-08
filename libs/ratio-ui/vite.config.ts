@@ -6,6 +6,7 @@ export default defineReactLibConfig({
   preserveUseClientDirectives: true,
   external: [
     'react-aria-components',
+    'react-stately',
     /^@react-aria\//,
     /^@react-stately\//,
     /^@internationalized\//,
