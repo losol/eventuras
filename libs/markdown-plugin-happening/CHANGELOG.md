@@ -1,5 +1,12 @@
 # @eventuras/markdown-plugin-happening
 
+## 3.0.1
+
+### Patch Changes
+
+- Updated dependencies [d5634da]
+  - @eventuras/ratio-ui@0.14.1
+
 ## 3.0.0
 
 ### Patch Changes

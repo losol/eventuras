@@ -1,5 +1,23 @@
 # @eventuras/event-sdk
 
+## 3.0.0
+
+### Major Changes
+
+- d9b5b55: Regenerate SDK from v3 API OpenAPI specification.
+  - `SuperAdmin` role removed from API — only `Admin` and `SystemAdmin` remain
+  - Deprecated fields removed from response types: `Registration.log`, `Order.log`, `Order.externalInvoiceId`, `Order.paid`
+  - `EventFormDto.manageRegistrations` and `EventFormDto.externalRegistrationsUrl` still present but ignored by API
+  - `Certificate.certificateGuid` field preserved (renamed from `CertificateGuid` internally)
+  - New `uuid` field added to most entity response types
+
+### Patch Changes
+
+- fb617bd: Resolve the OpenAPI spec via the `@eventuras/api/openapi` package export instead of a relative path. This restores the Docker build, which uses `turbo prune --docker` and was excluding `apps/api/docs/eventuras-v3.json` because it lived outside the SDK's dependency graph.
+- Updated dependencies [558cab2]
+- Updated dependencies [4dfcb2f]
+  - @eventuras/api@3.0.0
+
 ## 2.31.0
 
 ### Minor Changes

@@ -1,5 +1,51 @@
 # @eventuras/web
 
+## 3.0.0
+
+### Major Changes
+
+- 24e71c6: ### v3.0 — Port to API project v3 and event-sdk v3
+
+  #### Identity and user IDs
+  - User IDs are now UUIDs (`string`) instead of `number`. Every signature,
+    comparison, mapper, and React prop that previously treated `userId` as
+    numeric has been updated. Affects registration flows, admin participant
+    lists, event editor, and API mappers.
+  - `getV3UsersMe` replaced with `getV3Userprofile` (renamed in API v3).
+
+  #### SDK type and export changes
+  - `*DtoPageResponseDto` types renamed to `PageResponseDtoOf*` to match the
+    regenerated SDK.
+  - `RegistrationType` and `RegistrationStatus` are now type-only exports;
+    runtime enum-style usage replaced with string literals.
+  - Nullable fields now arrive as `string | null` instead of `string | undefined`;
+    call sites updated accordingly.
+  - `isolatedModules`-safe re-exports (`export type`) where the SDK types flow
+    through `lib/eventuras-types.ts`.
+
+  #### Removed fields
+  - `order.log` removed — the field is no longer part of the `Order` DTO. The
+    admin order actions menu no longer renders log history (superseded by the
+    new `BusinessEvents` stream).
+  - `externalRegistrationsUrl` form field removed from the event editor. The
+    API now hardcodes this to an empty string and ignores any input, so the
+    corresponding `TextField` has been dropped.
+
+### Patch Changes
+
+- b1d298f: Add "Other" heading for uncategorized events in category-grouped collections
+- Updated dependencies [d5634da]
+- Updated dependencies [fb617bd]
+- Updated dependencies [d9b5b55]
+  - @eventuras/ratio-ui@0.14.1
+  - @eventuras/event-sdk@3.0.0
+  - @eventuras/datatable@0.5.11
+  - @eventuras/markdown@8.1.1
+  - @eventuras/markdown-plugin-happening@3.0.1
+  - @eventuras/ratio-ui-next@0.1.12
+  - @eventuras/smartform@0.3.4
+  - @eventuras/toast@0.2.11
+
 ## 2.34.0
 
 ### Minor Changes
