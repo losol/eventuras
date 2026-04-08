@@ -24,9 +24,25 @@ namespace Eventuras.Infrastructure.Migrations
                 name: "MessageLogs",
                 newName: "Archived_MessageLog");
 
-            // Rename PK to match archived table name
-            migrationBuilder.Sql(
-                "ALTER TABLE \"Archived_MessageLog\" RENAME CONSTRAINT \"PK_MessageLogs\" TO \"PK_Archived_MessageLog\";");
+            // Rename PK to match archived table name. Look up the actual
+            // constraint name dynamically: production databases may have been
+            // created with a different PK name (e.g. from an older EF Core
+            // naming convention), so we can't assume it is "PK_MessageLogs".
+            migrationBuilder.Sql(@"
+DO $$
+DECLARE
+    pk_name text;
+BEGIN
+    SELECT conname INTO pk_name
+    FROM pg_constraint
+    WHERE conrelid = '""Archived_MessageLog""'::regclass
+      AND contype = 'p';
+
+    IF pk_name IS NOT NULL AND pk_name <> 'PK_Archived_MessageLog' THEN
+        EXECUTE format('ALTER TABLE ""Archived_MessageLog"" RENAME CONSTRAINT %I TO ""PK_Archived_MessageLog""', pk_name);
+    END IF;
+END $$;
+");
 
             migrationBuilder.DropColumn(
                 name: "RegistrationBy",
@@ -56,8 +72,21 @@ namespace Eventuras.Infrastructure.Migrations
                 name: "Archived_MessageLog",
                 newName: "MessageLogs");
 
-            migrationBuilder.Sql(
-                "ALTER TABLE \"MessageLogs\" RENAME CONSTRAINT \"PK_Archived_MessageLog\" TO \"PK_MessageLogs\";");
+            migrationBuilder.Sql(@"
+DO $$
+DECLARE
+    pk_name text;
+BEGIN
+    SELECT conname INTO pk_name
+    FROM pg_constraint
+    WHERE conrelid = '""MessageLogs""'::regclass
+      AND contype = 'p';
+
+    IF pk_name IS NOT NULL AND pk_name <> 'PK_MessageLogs' THEN
+        EXECUTE format('ALTER TABLE ""MessageLogs"" RENAME CONSTRAINT %I TO ""PK_MessageLogs""', pk_name);
+    END IF;
+END $$;
+");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MessageLogs_EventInfoId",

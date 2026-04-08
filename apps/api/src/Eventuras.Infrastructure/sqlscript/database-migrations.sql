@@ -1604,7 +1604,21 @@ END $EF$;
 DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260402194432_RemoveMessageLog') THEN
-    ALTER TABLE "Archived_MessageLog" RENAME CONSTRAINT "PK_MessageLogs" TO "PK_Archived_MessageLog";
+
+    DO $$
+    DECLARE
+        pk_name text;
+    BEGIN
+        SELECT conname INTO pk_name
+        FROM pg_constraint
+        WHERE conrelid = '"Archived_MessageLog"'::regclass
+          AND contype = 'p';
+
+        IF pk_name IS NOT NULL AND pk_name <> 'PK_Archived_MessageLog' THEN
+            EXECUTE format('ALTER TABLE "Archived_MessageLog" RENAME CONSTRAINT %I TO "PK_Archived_MessageLog"', pk_name);
+        END IF;
+    END $$;
+
     END IF;
 END $EF$;
 
