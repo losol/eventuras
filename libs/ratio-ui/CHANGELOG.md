@@ -1,5 +1,11 @@
 # @eventuras/ratio-ui
 
+## 0.14.1
+
+### Patch Changes
+
+- d5634da: Remove default `margin="m-1"` from Button component to follow spacing principle where parents control spacing between children.
+
 ## 0.14.0
 
 ### Minor Changes

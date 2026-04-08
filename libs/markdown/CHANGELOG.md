@@ -1,5 +1,12 @@
 # @eventuras/markdown
 
+## 8.1.1
+
+### Patch Changes
+
+- Updated dependencies [d5634da]
+  - @eventuras/ratio-ui@0.14.1
+
 ## 8.1.0
 
 ### Minor Changes
