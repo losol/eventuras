@@ -2,6 +2,32 @@
 
 A composable autocomplete component built on React Aria's Autocomplete primitive.
 
+> **Looking for a higher-level wrapper?** Most lookup-style flows (search a user,
+> pick an event, etc.) are better served by [`Lookup`](../../core/Lookup), which
+> wraps `AutoComplete` + `useAsyncList` and handles min-char thresholds, the
+> "just selected" state, and ListBox visibility for you. Reach for `AutoComplete`
+> directly only when you need full control over the composition.
+
+## Important: gate the ListBox on input
+
+`AutoComplete` does **not** hide its child `ListBox` automatically. If you mount
+`<ListBox>` unconditionally, react-aria will render its `renderEmptyState` even
+before the user has typed anything — the dropdown appears immediately on focus.
+
+Always wrap the `<ListBox>` in a guard so it only renders when there is
+something to show:
+
+```tsx
+<AutoComplete inputValue={value} onInputChange={setValue}>
+  <SearchField label="Search" />
+  {value && (
+    <ListBox items={items} renderEmptyState={() => 'No results'}>
+      {item => <ListBoxItem>{item.name}</ListBoxItem>}
+    </ListBox>
+  )}
+</AutoComplete>
+```
+
 ## Installation
 
 ```tsx
