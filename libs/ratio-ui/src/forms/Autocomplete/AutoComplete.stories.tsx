@@ -275,8 +275,8 @@ const mockEvents: Event[] = [
 // Mock API for async examples
 const mockSearchAPI = async (query: string, delay = 500): Promise<Country[]> => {
   await new Promise(resolve => setTimeout(resolve, delay));
-  const regex = new RegExp(query, 'gi');
-  return countries.filter(c => regex.test(c.name));
+  const normalizedQuery = query.toLowerCase();
+  return countries.filter(c => c.name.toLowerCase().includes(normalizedQuery));
 };
 
 /**
@@ -307,32 +307,34 @@ const ClientSideFilteringExample = () => {
           <Label>Country</Label>
           <Input placeholder="Search countries..." />
         </SearchField>
-        <ListBox
-          items={countries}
-          selectionMode="single"
-          onSelectionChange={(keys) => {
-            const countryId = Array.from(keys)[0] as number;
-            const country = countries.find(c => c.id === countryId);
-            if (country) {
-              setSelected(country.name);
-              setInputValue(country.name);
-            }
-          }}
-          renderEmptyState={() => (
-            <div className="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">
-              {inputValue ? 'No countries found' : 'Start typing to search'}
-            </div>
-          )}
-        >
-          {item => {
-            const country = item as Country;
-            return (
-              <ListBoxItem textValue={country.name}>
-                {country.name} ({country.code})
-              </ListBoxItem>
-            );
-          }}
-        </ListBox>
+        {inputValue && inputValue !== selected && (
+          <ListBox
+            items={countries}
+            selectionMode="single"
+            onSelectionChange={(keys) => {
+              const countryId = Array.from(keys)[0] as number;
+              const country = countries.find(c => c.id === countryId);
+              if (country) {
+                setSelected(country.name);
+                setInputValue(country.name);
+              }
+            }}
+            renderEmptyState={() => (
+              <div className="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">
+                No countries found
+              </div>
+            )}
+          >
+            {item => {
+              const country = item as Country;
+              return (
+                <ListBoxItem textValue={country.name}>
+                  {country.name} ({country.code})
+                </ListBoxItem>
+              );
+            }}
+          </ListBox>
+        )}
       </AutoComplete>
     </div>
   );
@@ -389,6 +391,7 @@ const AsyncSearchExample = () => {
             )}
           </div>
         </SearchField>
+        {list.filterText.length > 0 && list.filterText !== selected && (
         <ListBox
           items={list.items}
           selectionMode="single"
@@ -422,6 +425,7 @@ const AsyncSearchExample = () => {
             );
           }}
         </ListBox>
+        )}
       </AutoComplete>
     </div>
   );
@@ -452,41 +456,43 @@ const CustomRenderingExample = () => {
             <Label>Search Users</Label>
             <Input placeholder="Search by name, email, or department..." />
           </SearchField>
-          <ListBox
-            items={mockUsers}
-            renderEmptyState={() => (
-              <div className="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">
-                {inputValue ? 'No users found' : 'Start typing to search'}
-              </div>
-            )}
-          >
-            {item => {
-              const user = item as User;
-              return (
-              <ListBoxItem textValue={`${user.name} ${user.email} ${user.department}`}>
-                  <div className="flex items-center gap-3">
-                    <div className="text-2xl">{user.avatar}</div>
-                    <div className="flex-1 min-w-0">
-                      <div className="font-medium truncate">{user.name}</div>
-                      <div className="text-sm text-gray-600 truncate">{user.email}</div>
-                      <div className="text-xs text-gray-500">{user.department}</div>
-                    </div>
-                    {(user.role === 'Admin' || user.role === 'Manager') && (
-                      <div
-                        className={`px-2 py-1 text-xs font-medium rounded ${
-                          user.role === 'Admin'
-                            ? 'bg-purple-100 text-purple-800'
-                            : 'bg-blue-100 text-blue-800'
-                        }`}
-                      >
-                        {user.role}
+          {inputValue && (
+            <ListBox
+              items={mockUsers}
+              renderEmptyState={() => (
+                <div className="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">
+                  No users found
+                </div>
+              )}
+            >
+              {item => {
+                const user = item as User;
+                return (
+                  <ListBoxItem textValue={`${user.name} ${user.email} ${user.department}`}>
+                    <div className="flex items-center gap-3">
+                      <div className="text-2xl">{user.avatar}</div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium truncate">{user.name}</div>
+                        <div className="text-sm text-gray-600 truncate">{user.email}</div>
+                        <div className="text-xs text-gray-500">{user.department}</div>
                       </div>
-                    )}
-                  </div>
-                </ListBoxItem>
-              );
+                      {(user.role === 'Admin' || user.role === 'Manager') && (
+                        <div
+                          className={`px-2 py-1 text-xs font-medium rounded ${
+                            user.role === 'Admin'
+                              ? 'bg-purple-100 text-purple-800'
+                              : 'bg-blue-100 text-blue-800'
+                          }`}
+                        >
+                          {user.role}
+                        </div>
+                      )}
+                    </div>
+                  </ListBoxItem>
+                );
               }}
             </ListBox>
+          )}
         </AutoComplete>
       </div>
   );
@@ -529,25 +535,27 @@ const WithSelectionHandlerExample = () => {
             <Label>Select Country</Label>
             <Input placeholder="Type to search..." />
           </SearchField>
-          <ListBox
-            items={countries}
-            selectionMode="single"
-            onSelectionChange={handleSelectionChange}
-            renderEmptyState={() => (
-              <div className="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">
-                {inputValue ? 'No countries found' : 'Start typing to search'}
-              </div>
-            )}
-          >
-            {item => {
-              const country = item as Country;
-              return (
-                <ListBoxItem textValue={country.name}>
-                  {country.name}
-                </ListBoxItem>
-              );
-            }}
-          </ListBox>
+          {inputValue && inputValue !== selected && (
+            <ListBox
+              items={countries}
+              selectionMode="single"
+              onSelectionChange={handleSelectionChange}
+              renderEmptyState={() => (
+                <div className="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">
+                  No countries found
+                </div>
+              )}
+            >
+              {item => {
+                const country = item as Country;
+                return (
+                  <ListBoxItem textValue={country.name}>
+                    {country.name}
+                  </ListBoxItem>
+                );
+              }}
+            </ListBox>
+          )}
         </AutoComplete>
 
         {selected && (
@@ -597,32 +605,34 @@ const MinimalExample = () => {
               <Label>Search Countries</Label>
               <Input placeholder="Type to search..." />
             </SearchField>
-            <ListBox
-              items={countries}
-              selectionMode="single"
-              onSelectionChange={(keys) => {
-                const countryId = Array.from(keys)[0] as number;
-                const country = countries.find(c => c.id === countryId);
-                if (country) {
-                  setSelected(country.name);
-                  setInputValue(country.name);
-                }
-              }}
-              renderEmptyState={() => (
-                <div className="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">
-                  {inputValue ? 'No countries found' : 'Start typing to search'}
-                </div>
-              )}
-            >
-              {item => {
-                const country = item as Country;
-                return (
-                  <ListBoxItem textValue={country.name}>
-                    {country.name}
-                  </ListBoxItem>
-                );
-              }}
-            </ListBox>
+            {inputValue && inputValue !== selected && (
+              <ListBox
+                items={countries}
+                selectionMode="single"
+                onSelectionChange={(keys) => {
+                  const countryId = Array.from(keys)[0] as number;
+                  const country = countries.find(c => c.id === countryId);
+                  if (country) {
+                    setSelected(country.name);
+                    setInputValue(country.name);
+                  }
+                }}
+                renderEmptyState={() => (
+                  <div className="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">
+                    No countries found
+                  </div>
+                )}
+              >
+                {item => {
+                  const country = item as Country;
+                  return (
+                    <ListBoxItem textValue={country.name}>
+                      {country.name}
+                    </ListBoxItem>
+                  );
+                }}
+              </ListBox>
+            )}
           </AutoComplete>
           <p className="text-xs text-gray-500 mt-2">
             Current input: "{inputValue}"
@@ -657,48 +667,50 @@ const EventSearchExample = () => {
             <Label>Search Events</Label>
             <Input placeholder="Search by title, location, or category..." />
           </SearchField>
-          <ListBox
-            className="max-h-72"
-            items={mockEvents}
-            renderEmptyState={() => (
-              <div className="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">
-                {inputValue ? 'No events found' : 'Start typing to search'}
-              </div>
-            )}
-          >
-            {item => {
-              const event = item as Event;
-              return (
-                <ListBoxItem
-                  textValue={`${event.title} ${event.location} ${event.category}`}
-                  className="px-3 py-3 border-b border-gray-100 dark:border-gray-700 last:border-0"
-                >
-                  <div className="space-y-1">
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="font-medium text-gray-900">{event.title}</div>
-                      <div className="px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-700 rounded">
-                        {event.category}
+          {inputValue && (
+            <ListBox
+              className="max-h-72"
+              items={mockEvents}
+              renderEmptyState={() => (
+                <div className="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">
+                  No events found
+                </div>
+              )}
+            >
+              {item => {
+                const event = item as Event;
+                return (
+                  <ListBoxItem
+                    textValue={`${event.title} ${event.location} ${event.category}`}
+                    className="px-3 py-3 border-b border-gray-100 dark:border-gray-700 last:border-0"
+                  >
+                    <div className="space-y-1">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="font-medium text-gray-900">{event.title}</div>
+                        <div className="px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-700 rounded">
+                          {event.category}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-4 text-sm text-gray-600">
+                        <div className="flex items-center gap-1">
+                          <span>📍</span>
+                          <span>{event.location}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <span>📅</span>
+                          <span>{event.date}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <span>👥</span>
+                          <span>{event.attendees.toLocaleString()} attendees</span>
+                        </div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-4 text-sm text-gray-600">
-                      <div className="flex items-center gap-1">
-                        <span>📍</span>
-                        <span>{event.location}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <span>📅</span>
-                        <span>{event.date}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <span>👥</span>
-                        <span>{event.attendees.toLocaleString()} attendees</span>
-                      </div>
-                    </div>
-                  </div>
-                </ListBoxItem>
-              );
-            }}
+                  </ListBoxItem>
+                );
+              }}
             </ListBox>
+          )}
         </AutoComplete>
       </div>
   );
