@@ -27,7 +27,7 @@ export const Dialog = (props: DialogProps) => {
   );
 };
 
-export interface DialogModalProps {
+interface DialogModalProps {
   children: React.ReactNode;
   isOpen: boolean;
   onClickOutside?: () => void;
