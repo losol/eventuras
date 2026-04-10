@@ -23,7 +23,10 @@ const meta: Meta<typeof Card> = {
       options: ['none', 'xs', 'sm', 'md', 'lg', 'xl'],
     },
     hoverEffect: { control: 'boolean' },
-    backgroundColorClass: { control: 'text' },
+    color: {
+      control: 'select',
+      options: [undefined, 'neutral', 'primary', 'secondary', 'accent', 'success', 'warning', 'error', 'info'],
+    },
     backgroundImageUrl: { control: 'text' },
     padding: { control: 'select', options: ['none', 'xs', 'sm', 'md', 'lg', 'xl'] },
     margin: { control: 'select', options: ['none', 'xs', 'sm', 'md', 'lg', 'xl'] },

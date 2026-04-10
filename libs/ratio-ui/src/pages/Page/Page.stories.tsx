@@ -28,8 +28,7 @@ const PageDemo: React.FC<{ title: string }> = ({ title }) => (
     <main className="flex-1">
       <Section
         paddingY="xl"
-        backgroundColorClass="bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950"
-        className="border-b"
+        className="bg-linear-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950 border-b"
       >
         <Container>
           <h1 className="text-3xl md:text-4xl font-bold mb-4">Find knowledge. Fast.</h1>
@@ -52,7 +51,7 @@ const PageDemo: React.FC<{ title: string }> = ({ title }) => (
         </Container>
       </Section>
 
-      <Section paddingY="lg" backgroundColorClass="bg-gray-50 dark:bg-gray-900">
+      <Section paddingY="lg" color="neutral">
         <Container>
           <div className="grid md:grid-cols-3 gap-6">
             <div className="p-5 rounded border">

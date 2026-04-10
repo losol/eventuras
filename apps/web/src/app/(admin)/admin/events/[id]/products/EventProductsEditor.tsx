@@ -63,8 +63,7 @@ const EventProductsEditor: React.FC<EventProductsEditorProps> = ({
         <ProductTable eventId={eventInfo.id!} products={products} onEdit={openProductModal} />
       ) : (
         <Card
-          className="text-center border border-dashed border-gray-300 dark:border-gray-700"
-          backgroundColorClass="bg-gray-50 dark:bg-gray-800/50"
+          className="text-center border border-dashed border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50"
           paddingY="xl"
           paddingX="md"
         >
