@@ -1,6 +1,8 @@
 import React, { ReactNode } from 'react';
 import type { SpacingProps } from '../../tokens/spacing';
 import type { BorderProps } from '../../tokens/borders';
+import type { Color } from '../../tokens/colors';
+import { surfaceBgClasses } from '../../tokens/colors';
 import { buildSpacingClasses } from '../../tokens/spacing';
 import { buildBorderClasses } from '../../tokens/borders';
 import { buildCoverImageStyle } from '../../utils/buildCoverImageStyle';
@@ -12,11 +14,11 @@ export interface CardProps extends SpacingProps, BorderProps {
   as?: React.ElementType;
   className?: string;
   style?: React.CSSProperties;
+  color?: Color;
   container?: boolean;
   variant?: 'default' | 'wide' | 'outline' | 'transparent';
   hoverEffect?: boolean;
   grid?: boolean;
-  backgroundColorClass?: string;
   backgroundImageUrl?: string;
 }
 
@@ -26,9 +28,9 @@ export const Card: React.FC<CardProps> = ({
   hoverEffect = false,
   grid = false,
   gap = 'sm',
+  color,
   children,
   as: Component = 'div',
-  backgroundColorClass,
   backgroundImageUrl,
   className,
   style,
@@ -36,7 +38,6 @@ export const Card: React.FC<CardProps> = ({
 }) => {
   const baseClasses = 'p-4 relative rounded-lg';
   const transitionClasses = hoverEffect ? 'transform transition duration-300 ease-in-out' : '';
-
   const hoverClasses = hoverEffect ? 'hover:bg-card-hover transition-colors duration-200' : '';
 
   const variantStyles = {
@@ -46,10 +47,9 @@ export const Card: React.FC<CardProps> = ({
     transparent: 'bg-transparent',
   };
 
-  const bgClasses = backgroundColorClass ?? variantStyles[variant];
+  const bgClasses = color ? surfaceBgClasses[color] : variantStyles[variant];
   const gridClasses = grid ? 'grid grid-cols-1 md:grid-cols-2' : '';
 
-  // Separate spacing and border props
   const {
     padding, paddingX, paddingY, paddingTop, paddingBottom,
     margin, marginX, marginY, marginTop, marginBottom,

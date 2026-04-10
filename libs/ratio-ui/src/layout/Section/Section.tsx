@@ -1,20 +1,22 @@
 import React from 'react';
 import type { SpacingProps } from '../../tokens/spacing';
+import type { Color } from '../../tokens/colors';
+import { surfaceBgClasses } from '../../tokens/colors';
 import { buildSpacingClasses, extractSpacingProps } from '../../tokens/spacing';
 import { buildCoverImageStyle } from '../../utils/buildCoverImageStyle';
 import { cn } from '../../utils/cn';
 
 export interface SectionProps
   extends SpacingProps,
-    Omit<React.ComponentPropsWithoutRef<'section'>, keyof SpacingProps> {
-  backgroundColorClass?: string;
+    Omit<React.ComponentPropsWithoutRef<'section'>, keyof SpacingProps | 'color'> {
+  color?: Color;
   backgroundImageUrl?: string;
   backgroundImageOverlay?: boolean;
 }
 
 export const Section: React.FC<SectionProps> = (props) => {
   const [spacing, {
-    backgroundColorClass,
+    color,
     backgroundImageUrl,
     backgroundImageOverlay = false,
     className,
@@ -29,7 +31,7 @@ export const Section: React.FC<SectionProps> = (props) => {
     <section
       className={cn(
         buildSpacingClasses(spacing),
-        backgroundColorClass,
+        color && surfaceBgClasses[color],
         className,
       )}
       style={coverStyle}

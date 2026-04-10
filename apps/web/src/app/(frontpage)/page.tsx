@@ -136,7 +136,7 @@ export default async function Homepage() {
 
       {/* Error section */}
       {hasError && (
-        <Section backgroundColorClass="bg-red-50 dark:bg-red-950" paddingY="lg">
+        <Section color="error" paddingY="lg">
           <Container>
             <Heading as="h2" paddingBottom="sm">
               {t('common.errors.failedToLoadEvents')}
@@ -168,7 +168,7 @@ export default async function Homepage() {
         </Section>
       )}
       {!hasError && !hasEvents && !hasFeatured && (
-        <Section backgroundColorClass="bg-gray-50 dark:bg-slate-950" paddingY="lg">
+        <Section color="neutral" paddingY="lg">
           <Container>
             <Heading as="h2" paddingBottom="sm">
               {t('common.events.sectiontitle')}

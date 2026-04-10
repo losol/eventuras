@@ -11,7 +11,10 @@ const meta: Meta<typeof Section> = {
   component: Section,
   tags: ['autodocs'],
   argTypes: {
-    backgroundColorClass: { control: 'text' },
+    color: {
+      control: 'select',
+      options: [undefined, 'neutral', 'primary', 'secondary', 'accent', 'success', 'warning', 'error', 'info'],
+    },
     backgroundImageUrl: { control: 'text' },
     padding: { control: 'select', options: ['none', 'xs', 'sm', 'md', 'lg', 'xl'] },
     paddingX: { control: 'select', options: ['none', 'xs', 'sm', 'md', 'lg', 'xl'] },
@@ -39,11 +42,11 @@ export const WithContainer: Story = {
   ),
 };
 
-export const WithBackgroundColor: Story = {
+export const WithColor: Story = {
   args: {
-    backgroundColorClass: 'bg-gray-100',
+    color: 'primary',
     paddingY: 'xl',
-    children: 'Section with background color and vertical padding.',
+    children: 'Section with semantic color.',
   },
 };
 
@@ -55,44 +58,14 @@ export const WithBackgroundImage: Story = {
   },
 };
 
-export const CustomSpacing: Story = {
-  args: {
-    paddingY: 'xl',
-    paddingX: 'xl',
-    marginY: 'lg',
-    children: 'Section with custom padding and margin.',
-  },
-};
-
-export const FullWidthColored: Story = {
-  render: () => (
-    <Section backgroundColorClass="bg-primary-100" paddingY="xl">
-      <Container>Full-width colored section with centered content container.</Container>
-    </Section>
-  ),
-};
-
-export const MultipleSections: Story = {
+export const AllColors: Story = {
   render: () => (
     <>
-      <Section className="bg-gray-50 dark:bg-gray-900" paddingY="lg">
-        <Container>
-          <h2 className="text-2xl font-bold mb-4">First Section</h2>
-          <p>Content for the first section.</p>
-        </Container>
-      </Section>
-      <Section className="bg-white dark:bg-gray-800" paddingY="lg">
-        <Container>
-          <h2 className="text-2xl font-bold mb-4">Second Section</h2>
-          <p>Content for the second section.</p>
-        </Container>
-      </Section>
-      <Section className="bg-gray-50 dark:bg-gray-900" paddingY="lg">
-        <Container>
-          <h2 className="text-2xl font-bold mb-4">Third Section</h2>
-          <p>Content for the third section.</p>
-        </Container>
-      </Section>
+      {(['neutral', 'primary', 'secondary', 'accent', 'success', 'warning', 'error', 'info'] as const).map(c => (
+        <Section key={c} color={c} paddingY="sm">
+          <Container>{c}</Container>
+        </Section>
+      ))}
     </>
   ),
 };
@@ -100,7 +73,7 @@ export const MultipleSections: Story = {
 export const FullWidthHero: Story = {
   render: () => (
     <Section
-      className="bg-gradient-to-r from-blue-600 to-purple-600 text-white"
+      className="bg-linear-to-r from-blue-600 to-purple-600 text-white"
       paddingY="xl"
     >
       <div className="container mx-auto px-4 text-center">
@@ -123,7 +96,7 @@ export const GridLayout: Story = {
       </Box>
       <Box>
         <p className="text-gray-600 dark:text-gray-400">
-          On mobile, the columns stack vertically. On desktop, they appear side by side.
+          On mobile, the columns stack. On desktop, side by side.
         </p>
       </Box>
     </Section>
