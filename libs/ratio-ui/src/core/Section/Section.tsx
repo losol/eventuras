@@ -2,7 +2,6 @@ import React from 'react';
 import { Box } from '../../layout/Box/Box';
 import type { BoxProps } from '../../layout/Box/Box';
 import Container from '../../layout/Container/Container';
-import { getGridClasses } from '../../tokens';
 
 interface SectionSpecificProps {
   container?: boolean;
@@ -10,6 +9,8 @@ interface SectionSpecificProps {
 }
 
 export interface SectionProps extends BoxProps, SectionSpecificProps {}
+
+const gridBase = 'grid grid-cols-1 md:grid-cols-2';
 
 const Section: React.FC<SectionProps> = ({
   container = true,
@@ -19,14 +20,12 @@ const Section: React.FC<SectionProps> = ({
   className,
   ...boxProps
 }) => {
-  const gridClasses = grid ? getGridClasses('6') : '';
-
-  const combinedClassName = [gridClasses, className].filter(Boolean).join(' ');
+  const combinedClassName = [grid ? gridBase : '', className].filter(Boolean).join(' ');
 
   if (grid && container) {
     return (
       <Box as={boxProps.as ?? 'section'} {...boxProps}>
-        <Container className={combinedClassName}>{children}</Container>
+        <Container className={combinedClassName} gap={gap}>{children}</Container>
       </Box>
     );
   }

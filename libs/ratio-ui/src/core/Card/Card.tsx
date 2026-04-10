@@ -5,7 +5,6 @@ import { buildSpacingClasses } from '../../tokens/spacing';
 import { buildBorderClasses } from '../../tokens/borders';
 import { getBackgroundStyle } from '../../layout/Box/Box';
 import Container from '../../layout/Container/Container';
-import { getGridClasses } from '../../tokens';
 import { cn } from '../../utils/cn';
 import './Card.css';
 
@@ -51,7 +50,7 @@ export const Card: React.FC<CardProps> = ({
   };
 
   const bgClasses = backgroundColorClass ?? variantStyles[variant];
-  const gridClasses = grid ? getGridClasses('6') : '';
+  const gridClasses = grid ? 'grid grid-cols-1 md:grid-cols-2' : '';
 
   // Separate spacing and border props
   const {

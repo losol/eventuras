@@ -49,6 +49,27 @@ const spaceValue: Record<Space, string> = {
   xl: 'xl',
 };
 
+const spacingKeys: readonly (keyof SpacingProps)[] = [
+  'padding', 'paddingX', 'paddingY', 'paddingTop', 'paddingBottom',
+  'margin', 'marginX', 'marginY', 'marginTop', 'marginBottom',
+  'gap',
+];
+
+/** Split SpacingProps from remaining props. Useful for forwarding HTML attrs without leaking spacing keys to the DOM. */
+export function extractSpacingProps<T extends SpacingProps>(
+  props: T,
+): [SpacingProps, Omit<T, keyof SpacingProps>] {
+  const spacing: Partial<SpacingProps> = {};
+  const rest = { ...props };
+  for (const key of spacingKeys) {
+    if (key in rest) {
+      (spacing as any)[key] = rest[key];
+      delete (rest as any)[key];
+    }
+  }
+  return [spacing as SpacingProps, rest as Omit<T, keyof SpacingProps>];
+}
+
 export function buildSpacingClasses(props: SpacingProps): string {
   const classes: string[] = [];
 

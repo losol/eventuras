@@ -30,13 +30,13 @@ export default async function ClientsPage() {
       </div>
 
       {!result.success && (
-        <Panel variant="alert" intent="error">
+        <Panel variant="alert" status="error">
           {result.error}
         </Panel>
       )}
 
       {result.success && result.clients && result.clients.length === 0 && (
-        <Panel variant="callout" intent="info">
+        <Panel variant="callout" status="info">
           No OAuth clients found.
         </Panel>
       )}

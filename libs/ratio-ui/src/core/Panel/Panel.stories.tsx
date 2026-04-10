@@ -14,7 +14,7 @@ const meta = {
       control: 'select',
       options: ['alert', 'callout', 'notice'],
     },
-    intent: {
+    status: {
       control: 'select',
       options: ['info', 'success', 'warning', 'error', 'neutral'],
     },
@@ -28,7 +28,7 @@ type Story = StoryObj<typeof meta>;
 export const AlertInfo: Story = {
   args: {
     variant: 'alert',
-    intent: 'info',
+    status: 'info',
     children: 'This is an informational message. Your session will expire in 5 minutes.',
   },
 };
@@ -36,7 +36,7 @@ export const AlertInfo: Story = {
 export const AlertSuccess: Story = {
   args: {
     variant: 'alert',
-    intent: 'success',
+    status: 'success',
     children: 'Success! Your account has been created successfully.',
   },
 };
@@ -44,7 +44,7 @@ export const AlertSuccess: Story = {
 export const AlertWarning: Story = {
   args: {
     variant: 'alert',
-    intent: 'warning',
+    status: 'warning',
     children: 'Warning: Your password will expire soon. Please update it.',
   },
 };
@@ -52,7 +52,7 @@ export const AlertWarning: Story = {
 export const AlertError: Story = {
   args: {
     variant: 'alert',
-    intent: 'error',
+    status: 'error',
     children: 'Error: Invalid credentials. Please try again.',
   },
 };
@@ -61,16 +61,16 @@ export const AlertError: Story = {
 export const CalloutInfo: Story = {
   args: {
     variant: 'callout',
-    intent: 'info',
-    children: '💡 Pro tip: Use keyboard shortcuts to navigate faster',
+    status: 'info',
+    children: 'Pro tip: Use keyboard shortcuts to navigate faster',
   },
 };
 
 export const CalloutSuccess: Story = {
   args: {
     variant: 'callout',
-    intent: 'success',
-    children: '✓ All systems operational',
+    status: 'success',
+    children: 'All systems operational',
   },
 };
 
@@ -78,15 +78,15 @@ export const CalloutSuccess: Story = {
 export const NoticeWarning: Story = {
   args: {
     variant: 'notice',
-    intent: 'warning',
-    children: '⚠️ System maintenance scheduled for tonight at 2 AM',
+    status: 'warning',
+    children: 'System maintenance scheduled for tonight at 2 AM',
   },
 };
 
 export const NoticeNeutral: Story = {
   args: {
     variant: 'notice',
-    intent: 'neutral',
+    status: 'neutral',
     children: 'This is a neutral notice for general information',
   },
 };
@@ -95,34 +95,34 @@ export const NoticeNeutral: Story = {
 export const AllVariants = {
   render: () => (
     <Stack gap="lg">
-      <Panel variant="alert" intent="info">
-        Alert variant with info intent
+      <Panel variant="alert" status="info">
+        Alert variant with info status
       </Panel>
-      <Panel variant="alert" intent="success">
-        Alert variant with success intent
+      <Panel variant="alert" status="success">
+        Alert variant with success status
       </Panel>
-      <Panel variant="alert" intent="warning">
-        Alert variant with warning intent
+      <Panel variant="alert" status="warning">
+        Alert variant with warning status
       </Panel>
-      <Panel variant="alert" intent="error">
-        Alert variant with error intent
+      <Panel variant="alert" status="error">
+        Alert variant with error status
       </Panel>
-      <Panel variant="alert" intent="neutral">
-        Alert variant with neutral intent
-      </Panel>
-
-      <Panel variant="callout" intent="info">
-        Callout variant with info intent
-      </Panel>
-      <Panel variant="callout" intent="success">
-        Callout variant with success intent
+      <Panel variant="alert" status="neutral">
+        Alert variant with neutral status
       </Panel>
 
-      <Panel variant="notice" intent="warning">
-        Notice variant with warning intent
+      <Panel variant="callout" status="info">
+        Callout variant with info status
       </Panel>
-      <Panel variant="notice" intent="neutral">
-        Notice variant with neutral intent
+      <Panel variant="callout" status="success">
+        Callout variant with success status
+      </Panel>
+
+      <Panel variant="notice" status="warning">
+        Notice variant with warning status
+      </Panel>
+      <Panel variant="notice" status="neutral">
+        Notice variant with neutral status
       </Panel>
     </Stack>
   ),
@@ -131,7 +131,7 @@ export const AllVariants = {
 export const LongMessage: Story = {
   args: {
     variant: 'alert',
-    intent: 'info',
+    status: 'info',
     children: 'This is a longer message that demonstrates how the Panel component handles multiple lines of text. It should wrap nicely and maintain proper spacing throughout the message. You can use this for detailed explanations or instructions.',
   },
 };
