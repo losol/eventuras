@@ -1,5 +1,6 @@
 import React from 'react';
 import { ToggleButton as AriaToggleButton, ToggleButtonProps as AriaToggleButtonProps } from 'react-aria-components';
+import { cn } from '../../utils/cn';
 
 export interface ToggleButtonProps extends Omit<AriaToggleButtonProps, 'className'> {
   /**
@@ -96,7 +97,7 @@ export const ToggleButton: React.FC<ToggleButtonProps> = ({
           className,
         ];
 
-        return classes.filter(Boolean).join(' ');
+        return cn(...classes);
       }}
     >
       {children}

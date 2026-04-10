@@ -2,6 +2,7 @@ import React from 'react';
 import type { SpacingProps } from '../../tokens/spacing';
 import { buildSpacingClasses } from '../../tokens/spacing';
 import type { Color } from '../../tokens/colors';
+import { cn } from '../../utils/cn';
 
 export type TextSize = 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl';
 export type TextWeight = 'light' | 'normal' | 'medium' | 'semibold' | 'bold';
@@ -75,13 +76,13 @@ export const Text: React.FC<TextProps> = ({
   const renderable = text ?? children;
   if (renderable == null) return null;
 
-  const classes = [
+  const classes = cn(
     color ? colorClasses[color] : variantClasses[variant],
-    size ? sizeClasses[size] : undefined,
-    weight ? weightClasses[weight] : undefined,
+    size && sizeClasses[size],
+    weight && weightClasses[weight],
     buildSpacingClasses({ padding, paddingX, paddingY, paddingTop, paddingBottom, margin, marginX, marginY, marginTop, marginBottom, gap }),
     className,
-  ].filter(Boolean).join(' ');
+  );
 
   return (
     <Component

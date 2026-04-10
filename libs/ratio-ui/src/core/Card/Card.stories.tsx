@@ -12,12 +12,10 @@ const meta: Meta<typeof Card> = {
   component: Card,
   tags: ['autodocs'],
   argTypes: {
-    container: { control: 'boolean' },
     variant: {
       control: 'select',
       options: ['default', 'wide', 'outline', 'transparent'],
     },
-    grid: { control: 'boolean' },
     gap: {
       control: 'select',
       options: ['none', 'xs', 'sm', 'md', 'lg', 'xl'],
@@ -97,7 +95,7 @@ export const WithHoverEffect: Story = {
 
 export const GridWithImage: Story = {
   args: {
-    grid: true,
+    className: 'grid grid-cols-1 md:grid-cols-2',
     children: (
       <>
         <Image
@@ -118,7 +116,7 @@ export const GridWithImage: Story = {
 export const GridOutline: Story = {
   args: {
     variant: 'outline',
-    grid: true,
+    className: 'grid grid-cols-1 md:grid-cols-2',
     children: (
       <>
         <Image
@@ -138,7 +136,7 @@ export const GridOutline: Story = {
 
 export const GridWithLargeGap: Story = {
   args: {
-    grid: true,
+    className: 'grid grid-cols-1 md:grid-cols-2',
     gap: 'lg',
     children: (
       <>
@@ -159,7 +157,7 @@ export const GridWithLargeGap: Story = {
 
 export const GridWithSmallGap: Story = {
   args: {
-    grid: true,
+    className: 'grid grid-cols-1 md:grid-cols-2',
     gap: 'sm',
     variant: 'outline',
     children: (
@@ -190,13 +188,13 @@ export const Dark: Story = {
   },
 };
 
-export const WithContainer: Story = {
+export const WithCustomSpacing: Story = {
   args: {
-    container: true,
+    padding: 'xl',
     children: (
       <Box>
-        <Heading as="h3" marginBottom="xs">With Container</Heading>
-        <p>This card wraps its children in a Container component.</p>
+        <Heading as="h3" marginBottom="xs">Custom Spacing</Heading>
+        <p>This card uses extra-large padding.</p>
       </Box>
     ),
   },
