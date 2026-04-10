@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 
 import { Logger } from '@eventuras/logger';
 import { Button } from '@eventuras/ratio-ui/core/Button';
-import { Definition, DescriptionList, Term } from '@eventuras/ratio-ui/core/DescriptionList';
+import { DescriptionList } from '@eventuras/ratio-ui/core/DescriptionList';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
 import { useToast } from '@eventuras/toast';
@@ -95,12 +95,12 @@ export const OrderActionsMenu = ({ order }: OrderActionsMenuProps) => {
         <Heading as="h2">Invoice</Heading>
         <div>
           <DescriptionList>
-            <Term>Order</Term>
-            <Definition>{order.orderId}</Definition>
-            <Term>PaymentMethod</Term>
-            <Definition>{order.paymentMethod}</Definition>
-            <Term>Log</Term>
-            <Definition>{order.log}</Definition>
+            <DescriptionList.Term>Order</DescriptionList.Term>
+            <DescriptionList.Definition>{order.orderId}</DescriptionList.Definition>
+            <DescriptionList.Term>PaymentMethod</DescriptionList.Term>
+            <DescriptionList.Definition>{order.paymentMethod}</DescriptionList.Definition>
+            <DescriptionList.Term>Log</DescriptionList.Term>
+            <DescriptionList.Definition>{order.log}</DescriptionList.Definition>
           </DescriptionList>
         </div>
         {shouldShowInvoiceButton && (

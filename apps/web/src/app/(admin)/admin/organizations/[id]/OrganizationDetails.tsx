@@ -1,4 +1,4 @@
-import { Definition, DescriptionList, Item, Term } from '@eventuras/ratio-ui/core/DescriptionList';
+import { DescriptionList } from '@eventuras/ratio-ui/core/DescriptionList';
 
 import { OrganizationDto } from '@/lib/eventuras-sdk';
 
@@ -9,52 +9,54 @@ export const OrganizationDetails: React.FC<{ org: OrganizationDto }> = ({ org })
   return (
     <DescriptionList>
       {/* Name */}
-      <Item>
-        <Term>Name</Term>
-        <Definition data-testid="org-name">{org.name}</Definition>
-      </Item>
+      <DescriptionList.Item>
+        <DescriptionList.Term>Name</DescriptionList.Term>
+        <DescriptionList.Definition testId="org-name">{org.name}</DescriptionList.Definition>
+      </DescriptionList.Item>
       {/* Description */}
       {has(org.description) && (
-        <Item>
-          <Term>Description</Term>
-          <Definition data-testid="org-description">{org.description}</Definition>
-        </Item>
+        <DescriptionList.Item>
+          <DescriptionList.Term>Description</DescriptionList.Term>
+          <DescriptionList.Definition testId="org-description">
+            {org.description}
+          </DescriptionList.Definition>
+        </DescriptionList.Item>
       )}
       {/* URL */}
       {has(org.url) && (
-        <Item>
-          <Term>Website</Term>
-          <Definition data-testid="org-url">
+        <DescriptionList.Item>
+          <DescriptionList.Term>Website</DescriptionList.Term>
+          <DescriptionList.Definition testId="org-url">
             <a href={org.url!} target="_blank" rel="noopener noreferrer" className="underline">
               {org.url}
             </a>
-          </Definition>
-        </Item>
+          </DescriptionList.Definition>
+        </DescriptionList.Item>
       )}
       {/* Phone */}
       {has(org.phone) && (
-        <Item>
-          <Term>Phone</Term>
-          <Definition data-testid="org-phone">{org.phone}</Definition>
-        </Item>
+        <DescriptionList.Item>
+          <DescriptionList.Term>Phone</DescriptionList.Term>
+          <DescriptionList.Definition testId="org-phone">{org.phone}</DescriptionList.Definition>
+        </DescriptionList.Item>
       )}
       {/* Email */}
       {has(org.email) && (
-        <Item>
-          <Term>Email</Term>
-          <Definition data-testid="org-email">{org.email}</Definition>
-        </Item>
+        <DescriptionList.Item>
+          <DescriptionList.Term>Email</DescriptionList.Term>
+          <DescriptionList.Definition testId="org-email">{org.email}</DescriptionList.Definition>
+        </DescriptionList.Item>
       )}
       {/* Logo URL */}
       {has(org.logoUrl) && (
-        <Item>
-          <Term>Logo URL</Term>
-          <Definition data-testid="org-logourl">
+        <DescriptionList.Item>
+          <DescriptionList.Term>Logo URL</DescriptionList.Term>
+          <DescriptionList.Definition testId="org-logourl">
             <a href={org.logoUrl!} target="_blank" rel="noopener noreferrer" className="underline">
               {org.logoUrl}
             </a>
-          </Definition>
-        </Item>
+          </DescriptionList.Definition>
+        </DescriptionList.Item>
       )}
     </DescriptionList>
   );

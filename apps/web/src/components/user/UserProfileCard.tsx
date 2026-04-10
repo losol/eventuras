@@ -2,7 +2,7 @@
 import { useTranslations } from 'next-intl';
 
 import { Card } from '@eventuras/ratio-ui/core/Card';
-import { Definition, DescriptionList, Item, Term } from '@eventuras/ratio-ui/core/DescriptionList';
+import { DescriptionList } from '@eventuras/ratio-ui/core/DescriptionList';
 import { Text } from '@eventuras/ratio-ui/core/Text';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
@@ -16,22 +16,22 @@ const UserProfileCard = ({ profile }: UserProfileCardProps) => {
     <Card>
       <DescriptionList>
         {profile.name && (
-          <Item>
-            <Term>{t('common.labels.name')}</Term>
-            <Definition>{profile.name}</Definition>
-          </Item>
+          <DescriptionList.Item>
+            <DescriptionList.Term>{t('common.labels.name')}</DescriptionList.Term>
+            <DescriptionList.Definition>{profile.name}</DescriptionList.Definition>
+          </DescriptionList.Item>
         )}
         {profile.email && (
-          <Item>
-            <Term>{t('common.labels.email')}</Term>
-            <Definition>{profile.email}</Definition>
-          </Item>
+          <DescriptionList.Item>
+            <DescriptionList.Term>{t('common.labels.email')}</DescriptionList.Term>
+            <DescriptionList.Definition>{profile.email}</DescriptionList.Definition>
+          </DescriptionList.Item>
         )}
         {profile.phoneNumber && (
-          <Item>
-            <Term>{t('common.labels.phoneNumber')}</Term>
-            <Definition>{profile.phoneNumber}</Definition>
-          </Item>
+          <DescriptionList.Item>
+            <DescriptionList.Term>{t('common.labels.phoneNumber')}</DescriptionList.Term>
+            <DescriptionList.Definition>{profile.phoneNumber}</DescriptionList.Definition>
+          </DescriptionList.Item>
         )}
       </DescriptionList>
       <Text marginY="xs">

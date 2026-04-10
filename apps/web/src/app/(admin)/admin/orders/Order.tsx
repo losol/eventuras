@@ -3,7 +3,7 @@ import { useTranslations } from 'next-intl';
 import { formatDateSpan } from '@eventuras/core/datetime';
 import { Badge } from '@eventuras/ratio-ui/core/Badge';
 import { Card } from '@eventuras/ratio-ui/core/Card';
-import { Definition, DescriptionList, Item, Term } from '@eventuras/ratio-ui/core/DescriptionList';
+import { DescriptionList } from '@eventuras/ratio-ui/core/DescriptionList';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Table } from '@eventuras/ratio-ui/core/Table';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
@@ -27,24 +27,24 @@ const Order: React.FC<OrderProps> = ({ admin, order }) => {
   return (
     <Card>
       <DescriptionList>
-        <Item>
-          <Term>{t('common.order.labels.id')}</Term>
-          <Definition>{order.orderId}</Definition>
-        </Item>
-        <Item>
-          <Term>{t('common.order.labels.status')}</Term>
-          <Definition>
+        <DescriptionList.Item>
+          <DescriptionList.Term>{t('common.order.labels.id')}</DescriptionList.Term>
+          <DescriptionList.Definition>{order.orderId}</DescriptionList.Definition>
+        </DescriptionList.Item>
+        <DescriptionList.Item>
+          <DescriptionList.Term>{t('common.order.labels.status')}</DescriptionList.Term>
+          <DescriptionList.Definition>
             <Badge>
               {order.status
                 ? statusDescriptions[order.status]
                 : t('common.order.status.labels.unknown')}
             </Badge>
-          </Definition>
-        </Item>
-        <Item>
-          <Term>{t('common.order.labels.date')}</Term>
-          <Definition>{formatDateSpan(order.time!)}</Definition>
-        </Item>
+          </DescriptionList.Definition>
+        </DescriptionList.Item>
+        <DescriptionList.Item>
+          <DescriptionList.Term>{t('common.order.labels.date')}</DescriptionList.Term>
+          <DescriptionList.Definition>{formatDateSpan(order.time!)}</DescriptionList.Definition>
+        </DescriptionList.Item>
       </DescriptionList>
       <div>
         <Heading as="h4">{t('common.order.labels.items')}</Heading>
