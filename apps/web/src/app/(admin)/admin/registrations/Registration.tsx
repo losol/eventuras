@@ -74,14 +74,14 @@ export const getTypeLabels = (t: TranslationFunction) => [
 /**
  * Gets the appropriate badge variant for registration status
  */
-export const getStatusBadgeVariant = (status: string) => {
+export const getStatusBadgeStatus = (status: string): 'neutral' | 'info' | 'success' | 'error' => {
   switch (status) {
     case 'Cancelled':
-      return 'negative';
+      return 'error';
     case 'Verified':
     case 'Attended':
     case 'Finished':
-      return 'positive';
+      return 'success';
     case 'Draft':
       return 'neutral';
     case 'WaitingList':
@@ -171,7 +171,7 @@ const Registration = ({
             <Item>
               <Term>{t('common.registrations.labels.status')}</Term>
               <Definition>
-                <Badge variant={getStatusBadgeVariant(registration.status || '')}>
+                <Badge status={getStatusBadgeStatus(registration.status || '')}>
                   {statusLabel}
                 </Badge>
               </Definition>

@@ -57,7 +57,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({ eventId, products, o
         }
         const isEvent = visibility === 'Event';
         return (
-          <Badge variant={isEvent ? 'positive' : 'neutral'} className="!py-1 !px-2 !text-xs">
+          <Badge status={isEvent ? 'success' : 'neutral'} className="!py-1 !px-2 !text-xs">
             {visibility}
           </Badge>
         );

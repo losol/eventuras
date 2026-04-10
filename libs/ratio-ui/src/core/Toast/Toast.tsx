@@ -1,15 +1,11 @@
+import type { Status } from '../../tokens/colors';
 import { Portal } from '../../layout/Portal';
-
-export enum ToastType {
-  SUCCESS = 'success',
-  ERROR = 'error',
-  INFO = 'info',
-}
+import { cn } from '../../utils/cn';
 
 export interface Toast {
   id: string;
   message: string;
-  type?: ToastType;
+  status?: Status;
   expiresAfter?: number;
 }
 
@@ -17,19 +13,12 @@ interface ToastProps {
   toasts?: Toast[];
 }
 
-const getToastClassName = (type: ToastType) => {
-  let colorClass = '';
-  switch (type) {
-    case ToastType.SUCCESS:
-      colorClass = 'bg-green-500 text-white';
-      break;
-    case ToastType.ERROR:
-      colorClass = 'bg-red-500 text-white';
-      break;
-    default:
-      colorClass = 'bg-blue-500 text-white';
-  }
-  return `m-2 p-4 rounded-xs shadow-lg ${colorClass}`;
+const statusClasses: Record<Status, string> = {
+  neutral: 'bg-neutral-700 text-white',
+  info: 'bg-info text-white',
+  success: 'bg-success text-white',
+  warning: 'bg-warning text-white',
+  error: 'bg-error text-white',
 };
 
 export const Toast: React.FC<ToastProps> = ({ toasts = [] }) => {
@@ -37,20 +26,19 @@ export const Toast: React.FC<ToastProps> = ({ toasts = [] }) => {
     <div>
       <Portal isOpen={toasts.length > 0}>
         <div className="fixed bottom-0 right-0 z-50 p-4">
-        {toasts
-          .filter((toast) => toast != null)
-          .map(({ id, message, type = ToastType.INFO }) => (
-            <div
-              key={id}
-              data-testid={type === ToastType.SUCCESS ? 'toast-success' : 'toast-error'}
-              className={getToastClassName(type)}
-            >
-              {message}
-            </div>
-          ))}
+          {toasts
+            .filter((toast) => toast != null)
+            .map(({ id, message, status = 'info' }) => (
+              <div
+                key={id}
+                data-testid={`toast-${status}`}
+                className={cn('m-2 p-4 rounded-xs shadow-lg', statusClasses[status])}
+              >
+                {message}
+              </div>
+            ))}
         </div>
       </Portal>
     </div>
   );
 };
-

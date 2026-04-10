@@ -168,10 +168,10 @@ export default function NotificationDetailsDrawer({
             ) : recipients.length > 0 ? (
               <div className="space-y-2 max-h-96 overflow-y-auto">
                 {recipients.map((recipient, index) => {
-                  const badgeVariant = recipient.sent
-                    ? 'positive'
+                  const badgeStatus: 'success' | 'error' | 'neutral' = recipient.sent
+                    ? 'success'
                     : recipient.errors
-                      ? 'negative'
+                      ? 'error'
                       : 'neutral';
                   const badgeLabel = recipient.sent
                     ? 'Sent'
@@ -188,7 +188,7 @@ export default function NotificationDetailsDrawer({
                             {recipient.recipientEmail || recipient.recipientPhoneNumber || '-'}
                           </Text>
                         </div>
-                        <Badge variant={badgeVariant}>{badgeLabel}</Badge>
+                        <Badge status={badgeStatus}>{badgeLabel}</Badge>
                       </div>
                       {recipient.errors && (
                         <Text size="xs" color="error" marginTop="xs">
