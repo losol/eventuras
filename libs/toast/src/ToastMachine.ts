@@ -1,4 +1,4 @@
-import { Toast } from '@eventuras/ratio-ui/core/Toast';
+import type { ToastData as Toast } from '@eventuras/ratio-ui/core/Toast';
 import { createActorContext } from '@xstate/react';
 import { assign, setup, sendTo } from 'xstate';
 import { v4 as uuidv4 } from 'uuid';
