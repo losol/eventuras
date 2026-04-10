@@ -1,7 +1,7 @@
 import React from 'react';
 import type { SpacingProps } from '../../tokens/spacing';
 import { buildSpacingClasses } from '../../tokens/spacing';
-import { getBackgroundStyle } from '../Box/Box';
+import { buildCoverImageStyle } from '../../utils/buildCoverImageStyle';
 import Container from '../Container/Container';
 import { cn } from '../../utils/cn';
 
@@ -38,7 +38,7 @@ export const Section: React.FC<SectionProps> = ({
     margin, marginX, marginY, marginTop, marginBottom,
     gap,
   });
-  const style = getBackgroundStyle(backgroundImageUrl, undefined, backgroundImageOverlay);
+  const style = buildCoverImageStyle(backgroundImageUrl, undefined, backgroundImageOverlay);
 
   return (
     <section
