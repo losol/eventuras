@@ -3,8 +3,8 @@
 import React, { useEffect } from 'react';
 
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
-import { Section } from '@eventuras/ratio-ui/core/Section';
 import { Box } from '@eventuras/ratio-ui/layout/Box';
+import { Section } from '@eventuras/ratio-ui/layout/Section';
 import { Image as UIImage } from '@eventuras/ratio-ui-next/Image';
 
 import { Contributors as ContributersComponent } from '@/components/Contributors';
@@ -19,7 +19,7 @@ interface HeroProps {
   image?: Image | null;
   contributors?: Contributors;
   publishedAt?: string | null;
-  topics?: { title?: string }[];
+  topics?: { title?: string; }[];
 }
 
 export const Hero: React.FC<HeroProps> = ({
@@ -38,7 +38,7 @@ export const Hero: React.FC<HeroProps> = ({
   const imageProps = getImageProps(image, 'landscape');
 
   return (
-    <Section grid={!!imageProps.url} container={false} gap="lg">
+    <Section gap="lg" className={imageProps.url ? 'grid grid-cols-1 md:grid-cols-2' : undefined}>
       {imageProps.url && (
         <Box>
           <UIImage

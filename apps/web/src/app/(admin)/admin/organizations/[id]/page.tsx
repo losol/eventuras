@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 
 import { getV3OrganizationsByOrganizationId, getV3Users } from '@/lib/eventuras-sdk';
@@ -44,21 +45,27 @@ const OrganizationDetailPage: React.FC<EventInfoProps> = async props => {
   // render
   return (
     <>
-      <Section container>
-        <Heading as="h1">{organization.data?.name}</Heading>
+      <Section>
+        <Container>
+          <Heading as="h1">{organization.data?.name}</Heading>
+        </Container>
       </Section>
-      <Section className="py-12" container>
-        <OrganizationDetails org={organization.data as Organization} />
+      <Section className="py-12">
+        <Container>
+          <OrganizationDetails org={organization.data as Organization} />
+        </Container>
       </Section>
-      <Section container>
-        <Heading as="h2" paddingY="xs">
-          Organization members
-        </Heading>
-        <OrganizationMemberships
-          organizationId={organization.data?.organizationId!}
-          organizationName={organization.data?.name ?? ''}
-          members={members.data?.data ?? []}
-        />
+      <Section>
+        <Container>
+          <Heading as="h2" paddingY="xs">
+            Organization members
+          </Heading>
+          <OrganizationMemberships
+            organizationId={organization.data?.organizationId!}
+            organizationName={organization.data?.name ?? ''}
+            members={members.data?.data ?? []}
+          />
+        </Container>
       </Section>
     </>
   );

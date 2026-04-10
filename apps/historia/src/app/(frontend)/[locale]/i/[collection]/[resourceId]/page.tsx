@@ -8,8 +8,8 @@ import { CollectionSlug, getPayload } from 'payload';
 import { Story, StoryBody, StoryHeader } from '@eventuras/ratio-ui/blocks/Story';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Lead } from '@eventuras/ratio-ui/core/Lead';
-import { Section } from '@eventuras/ratio-ui/core/Section';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
+import { Section } from '@eventuras/ratio-ui/layout/Section';
 
 import { LivePreviewListener } from '@/components/LivePreviewListener';
 import RichText from '@/components/RichText';

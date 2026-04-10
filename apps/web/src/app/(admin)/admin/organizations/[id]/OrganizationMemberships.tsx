@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Logger } from '@eventuras/logger';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 
 import { UserDto } from '@/lib/eventuras-sdk';
@@ -103,41 +104,43 @@ export default function OrganizationMemberships({
     }
   };
   return (
-    <Section container>
-      {/* header */}
-      <Heading as="h2" paddingY="xs">
-        Organization members
-      </Heading>
-      {/* open drawer */}
-      <div className="mb-6">
-        <Button
-          onClick={() => {
-            setIsDrawerOpen(true);
-            toast.info('Add a new member to the organization');
-          }}
-        >
-          Add Member
-        </Button>
-      </div>
-      {/* list members - much cleaner now! */}
-      <div className="space-y-4">
-        {members?.map(user => (
-          <MemberProfile
-            key={(user as any).id}
-            user={user}
-            organizationId={organizationId}
-            onToggleAdmin={handleToggleAdmin}
-          />
-        ))}
-      </div>
-      {/* add member drawer */}
-      <AddMemberDrawer
-        isOpen={isDrawerOpen}
-        onClose={handleCloseDrawer}
-        onAddMember={handleAddMember}
-        organizationId={organizationId}
-        organizationName={organizationName}
-      />
+    <Section>
+      <Container>
+        {/* header */}
+        <Heading as="h2" paddingY="xs">
+          Organization members
+        </Heading>
+        {/* open drawer */}
+        <div className="mb-6">
+          <Button
+            onClick={() => {
+              setIsDrawerOpen(true);
+              toast.info('Add a new member to the organization');
+            }}
+          >
+            Add Member
+          </Button>
+        </div>
+        {/* list members - much cleaner now! */}
+        <div className="space-y-4">
+          {members?.map(user => (
+            <MemberProfile
+              key={(user as any).id}
+              user={user}
+              organizationId={organizationId}
+              onToggleAdmin={handleToggleAdmin}
+            />
+          ))}
+        </div>
+        {/* add member drawer */}
+        <AddMemberDrawer
+          isOpen={isDrawerOpen}
+          onClose={handleCloseDrawer}
+          onAddMember={handleAddMember}
+          organizationId={organizationId}
+          organizationName={organizationName}
+        />
+      </Container>
     </Section>
   );
 }
