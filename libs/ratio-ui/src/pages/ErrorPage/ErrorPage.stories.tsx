@@ -7,12 +7,11 @@ const meta: Meta<typeof ErrorPage> = {
   title: 'Pages/ErrorPage',
   component: ErrorPage,
   argTypes: {
-    tone: { control: 'inline-radio', options: ['fatal', 'warning', 'info', 'success'] },
+    status: { control: 'inline-radio', options: ['neutral', 'info', 'success', 'warning', 'error'] },
     fullScreen: { control: 'boolean' },
     className: { control: 'text' },
   },
-  // ➜ Safe default for Storybook canvas
-  args: { tone: 'fatal', fullScreen: false },
+  args: { status: 'error', fullScreen: false },
 };
 export default meta;
 
@@ -38,7 +37,7 @@ export const Playground: Story = {
 
 export const Fatal: Story = {
   render: () => (
-    <ErrorPage tone="fatal">
+    <ErrorPage status="error">
       <ErrorPage.Title>Critical failure</ErrorPage.Title>
       <ErrorPage.Description>An unexpected system error occurred.</ErrorPage.Description>
       <ErrorPage.Action>
@@ -51,7 +50,7 @@ export const Fatal: Story = {
 /** ➜ Warning tone */
 export const Warning: Story = {
   render: () => (
-    <ErrorPage tone="warning">
+    <ErrorPage status="warning">
       <ErrorPage.Title>Heads up</ErrorPage.Title>
       <ErrorPage.Description>Some features may not work as expected.</ErrorPage.Description>
       <ErrorPage.Action>
@@ -64,7 +63,7 @@ export const Warning: Story = {
 /** ➜ Info tone */
 export const Info: Story = {
   render: () => (
-    <ErrorPage tone="info">
+    <ErrorPage status="info">
       <ErrorPage.Title>Maintenance mode</ErrorPage.Title>
       <ErrorPage.Description>We’re performing scheduled updates.</ErrorPage.Description>
       <ErrorPage.Extra>Estimated time: ~15 minutes.</ErrorPage.Extra>
@@ -75,7 +74,7 @@ export const Info: Story = {
 /** ➜ Success tone (e.g., recovery state) */
 export const Success: Story = {
   render: () => (
-    <ErrorPage tone="success">
+    <ErrorPage status="success">
       <ErrorPage.Title>Recovered</ErrorPage.Title>
       <ErrorPage.Description>The system is back online.</ErrorPage.Description>
       <ErrorPage.Action>
@@ -90,22 +89,22 @@ export const Gallery: Story = {
   render: () => (
     <div className="grid gap-6">
       {/* Fatal */}
-      <ErrorPage tone="fatal" fullScreen={false}>
+      <ErrorPage status="error" fullScreen={false}>
         <ErrorPage.Title>Critical failure</ErrorPage.Title>
         <ErrorPage.Description>Unexpected error.</ErrorPage.Description>
       </ErrorPage>
       {/* Warning */}
-      <ErrorPage tone="warning" fullScreen={false}>
+      <ErrorPage status="warning" fullScreen={false}>
         <ErrorPage.Title>Degraded performance</ErrorPage.Title>
         <ErrorPage.Description>Some features limited.</ErrorPage.Description>
       </ErrorPage>
       {/* Info */}
-      <ErrorPage tone="info" fullScreen={false}>
+      <ErrorPage status="info" fullScreen={false}>
         <ErrorPage.Title>Maintenance</ErrorPage.Title>
         <ErrorPage.Description>Back soon.</ErrorPage.Description>
       </ErrorPage>
       {/* Success */}
-      <ErrorPage tone="success" fullScreen={false}>
+      <ErrorPage status="success" fullScreen={false}>
         <ErrorPage.Title>Recovered</ErrorPage.Title>
         <ErrorPage.Description>All good now.</ErrorPage.Description>
       </ErrorPage>
@@ -116,7 +115,7 @@ export const Gallery: Story = {
 /** ➜ Fullscreen demo (may cover canvas) */
 export const FullScreen: Story = {
   render: () => (
-    <ErrorPage tone="fatal" fullScreen>
+    <ErrorPage status="error" fullScreen>
       <ErrorPage.Title>Critical failure</ErrorPage.Title>
       <ErrorPage.Description>Please reload the page.</ErrorPage.Description>
       <ErrorPage.Action>
