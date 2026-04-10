@@ -7,6 +7,7 @@ import { Navbar } from '@eventuras/ratio-ui/core/Navbar';
 import { Text } from '@eventuras/ratio-ui/core/Text';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
+import { buildCoverImageStyle } from '@eventuras/ratio-ui/utils';
 import { Link } from '@eventuras/ratio-ui-next';
 
 import { EventGrid, FeaturedCollectionSection } from '@/components/event';
@@ -123,8 +124,7 @@ export default async function Homepage() {
 
       {/* Hero section with background image */}
       <Section
-        backgroundImageUrl="/assets/images/mountains.jpg"
-        backgroundImageOverlay
+        style={buildCoverImageStyle('/assets/images/mountains.jpg')}
         className="min-h-[30vh] flex items-center"
       >
         <Container>

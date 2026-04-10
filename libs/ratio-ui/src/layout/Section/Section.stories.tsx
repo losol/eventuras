@@ -5,6 +5,7 @@ import { Box } from '../Box';
 import { Container } from '../Container';
 import { Heading } from '../../core/Heading';
 import { Button } from '../../core/Button';
+import { buildCoverImageStyle } from '../../utils/buildCoverImageStyle';
 
 const meta: Meta<typeof Section> = {
   title: 'Layout/Section',
@@ -15,7 +16,6 @@ const meta: Meta<typeof Section> = {
       control: 'select',
       options: [undefined, 'neutral', 'primary', 'secondary', 'accent', 'success', 'warning', 'error', 'info'],
     },
-    backgroundImageUrl: { control: 'text' },
     padding: { control: 'select', options: ['none', 'xs', 'sm', 'md', 'lg', 'xl'] },
     paddingX: { control: 'select', options: ['none', 'xs', 'sm', 'md', 'lg', 'xl'] },
     paddingY: { control: 'select', options: ['none', 'xs', 'sm', 'md', 'lg', 'xl'] },
@@ -51,11 +51,15 @@ export const WithColor: Story = {
 };
 
 export const WithBackgroundImage: Story = {
-  args: {
-    backgroundImageUrl: 'https://via.placeholder.com/1200x400',
-    paddingY: 'xl',
-    children: 'Section with a background image.',
-  },
+  render: () => (
+    <Section
+      style={buildCoverImageStyle('https://via.placeholder.com/1200x400')}
+      paddingY="xl"
+      className="text-white"
+    >
+      Section with a background image.
+    </Section>
+  ),
 };
 
 export const AllColors: Story = {

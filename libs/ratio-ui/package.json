@@ -51,6 +51,10 @@
       "types": "./dist/tokens/index.d.ts",
       "import": "./dist/tokens/index.js"
     },
+    "./utils": {
+      "types": "./dist/utils/index.d.ts",
+      "import": "./dist/utils/index.js"
+    },
     "./ratio-ui.css": "./dist/ratio-ui.css",
     "./global.css": "./dist/global.css"
   },
