@@ -94,4 +94,4 @@ Checkbox.displayName = 'Checkbox';
 Checkbox.Label = CheckBoxLabel;
 Checkbox.Description = CheckBoxDescription;
 
-export default Checkbox;
+export { Checkbox };

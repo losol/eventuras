@@ -41,5 +41,3 @@ export function ToggleButtonGroup({
   );
 }
 
-export default ToggleButtonGroup;
-

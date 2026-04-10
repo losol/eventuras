@@ -1,5 +1,5 @@
 import { Meta, StoryFn } from '@storybook/react-vite';
-import NumberCard from './NumberCard';
+import { NumberCard } from './NumberCard';
 
 const meta: Meta<typeof NumberCard> = {
   component: NumberCard,

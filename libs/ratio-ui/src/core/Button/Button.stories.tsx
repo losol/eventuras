@@ -2,7 +2,7 @@ import { Meta, StoryFn } from '@storybook/react-vite';
 import { Home } from '../../icons';
 import { expect, fn, userEvent, within } from 'storybook/test';
 
-import Button, { ButtonProps } from './Button';
+import { Button, type ButtonProps } from './Button';
 
 const meta: Meta<typeof Button> = {
   component: Button,

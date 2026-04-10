@@ -1,7 +1,7 @@
 import { ChevronsLeft, ChevronsRight } from '../../icons';
 
-import Button from '../Button/Button';
-import Text from '../Text/Text';
+import { Button } from '../Button/Button';
+import { Text } from '../Text/Text';
 
 export type PaginationProps = {
   onPreviousPageClick: () => void;
@@ -10,7 +10,7 @@ export type PaginationProps = {
   totalPages: number;
 };
 
-const Pagination: React.FC<PaginationProps> = ({
+export const Pagination: React.FC<PaginationProps> = ({
   onPreviousPageClick,
   onNextPageClick,
   currentPage,
@@ -30,5 +30,3 @@ const Pagination: React.FC<PaginationProps> = ({
     </div>
   );
 };
-
-export default Pagination;

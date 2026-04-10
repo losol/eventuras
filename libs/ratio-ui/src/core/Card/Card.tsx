@@ -6,7 +6,7 @@ import { surfaceBgClasses } from '../../tokens/colors';
 import { buildSpacingClasses } from '../../tokens/spacing';
 import { buildBorderClasses } from '../../tokens/borders';
 import { buildCoverImageStyle } from '../../utils/buildCoverImageStyle';
-import Container from '../../layout/Container/Container';
+import { Container } from '../../layout/Container/Container';
 import { cn } from '../../utils/cn';
 
 export interface CardProps extends SpacingProps, BorderProps {

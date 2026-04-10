@@ -1,7 +1,7 @@
 import { Meta } from '@storybook/react-vite';
 import React, { useState } from 'react';
 
-import Drawer from './Drawer';
+import { Drawer } from './Drawer';
 
 const getRandomHipsterIpsum = () => {
   const hipsterIpsums = [

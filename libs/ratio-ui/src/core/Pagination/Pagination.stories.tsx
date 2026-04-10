@@ -1,5 +1,5 @@
 import { Meta, StoryFn } from '@storybook/react-vite';
-import Pagination, { PaginationProps } from './Pagination';
+import { Pagination, type PaginationProps } from './Pagination';
 import { fn } from 'storybook/test';
 import { useState } from 'react';
 

@@ -13,7 +13,7 @@ export interface ButtonGroupProps
   wrap?: boolean;
 }
 
-const ButtonGroup: React.FC<ButtonGroupProps> = (props) => {
+export const ButtonGroup: React.FC<ButtonGroupProps> = (props) => {
   const [spacing, { wrap = false, className, children, ...rest }] = extractSpacingProps(props);
   const { gap = 'xs', ...otherSpacing } = spacing;
 
@@ -31,5 +31,3 @@ const ButtonGroup: React.FC<ButtonGroupProps> = (props) => {
     </div>
   );
 };
-
-export default ButtonGroup;

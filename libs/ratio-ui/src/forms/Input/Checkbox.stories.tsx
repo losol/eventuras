@@ -1,7 +1,7 @@
 import { Meta } from '@storybook/react-vite';
 import React from 'react';
 
-import Checkbox, { CheckboxProps } from './Checkbox';
+import { Checkbox, type CheckboxProps } from './Checkbox';
 
 const meta: Meta<typeof Checkbox> = {
   title: 'Forms/Checkbox',

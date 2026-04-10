@@ -5,7 +5,7 @@ import { Blockquote } from '../Blockquote/Blockquote';
 import { Lead } from '../Lead/Lead';
 import { List, ListItem } from '../List/List';
 
-import Heading from './Heading';
+import { Heading } from './Heading';
 
 /**
  * Shows all heading levels and body text elements together to verify

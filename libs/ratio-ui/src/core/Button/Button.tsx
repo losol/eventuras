@@ -44,7 +44,7 @@ export interface ButtonProps
   testId?: string;
 }
 
-const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
   {
     variant = 'primary',
     size = 'md',
@@ -116,4 +116,3 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
 });
 
 Button.displayName = 'Button';
-export default Button;

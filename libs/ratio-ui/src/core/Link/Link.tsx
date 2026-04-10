@@ -91,4 +91,3 @@ export const Link = React.forwardRef<HTMLElement, LinkProps>(
 );
 
 Link.displayName = 'Link';
-export default Link;

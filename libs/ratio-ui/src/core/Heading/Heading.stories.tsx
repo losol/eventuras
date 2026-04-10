@@ -1,7 +1,7 @@
 import { Meta } from '@storybook/react-vite';
 import React from 'react';
 
-import Heading, { HeadingProps } from './Heading';
+import { Heading, type HeadingProps } from './Heading';
 
 const meta: Meta<typeof Heading> = {
   component: Heading,
