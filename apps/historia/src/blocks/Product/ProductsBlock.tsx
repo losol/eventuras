@@ -99,7 +99,7 @@ export const ProductsBlock: React.FC<ProductBlockProps> = (props) => {
         const isAdding = addingProductId === product.id;
 
         return (
-          <Card key={product.id} grid={showImage} gap="md">
+          <Card key={product.id} gap="md" className={showImage ? 'grid grid-cols-1 md:grid-cols-2' : undefined}>
             {showImage && (
               <Image src={imageUrl} alt={product.title || 'Product image'} />
             )}

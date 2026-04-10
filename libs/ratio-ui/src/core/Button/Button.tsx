@@ -1,5 +1,6 @@
 import React, { forwardRef } from 'react';
 import { LoaderCircle } from '../../icons';
+import { cn } from '../../utils/cn';
 
 // Animation constants
 const ANIMATION_CLASSES = [
@@ -78,15 +79,14 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
 
   const disabledClasses = (disabled || loading) ? 'opacity-75 cursor-not-allowed' : '';
 
-  // combine everything
-  const classes = [
+  const classes = cn(
     sizeClasses,
     displayClass,
     variantClass,
     textColorClass,
     disabledClasses,
     className,
-  ].filter(Boolean).join(' ');
+  );
 
   return (
     <button

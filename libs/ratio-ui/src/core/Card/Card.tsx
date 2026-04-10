@@ -6,7 +6,6 @@ import { surfaceBgClasses } from '../../tokens/colors';
 import { buildSpacingClasses } from '../../tokens/spacing';
 import { buildBorderClasses } from '../../tokens/borders';
 import { buildCoverImageStyle } from '../../utils/buildCoverImageStyle';
-import { Container } from '../../layout/Container/Container';
 import { cn } from '../../utils/cn';
 
 export interface CardProps extends SpacingProps, BorderProps {
@@ -15,18 +14,14 @@ export interface CardProps extends SpacingProps, BorderProps {
   className?: string;
   style?: React.CSSProperties;
   color?: Color;
-  container?: boolean;
   variant?: 'default' | 'wide' | 'outline' | 'transparent';
   hoverEffect?: boolean;
-  grid?: boolean;
   backgroundImageUrl?: string;
 }
 
 export const Card: React.FC<CardProps> = ({
-  container = false,
   variant = 'default',
   hoverEffect = false,
-  grid = false,
   gap = 'sm',
   color,
   children,
@@ -48,7 +43,6 @@ export const Card: React.FC<CardProps> = ({
   };
 
   const bgClasses = color ? surfaceBgClasses[color] : variantStyles[variant];
-  const gridClasses = grid ? 'grid grid-cols-1 md:grid-cols-2' : '';
 
   const {
     padding, paddingX, paddingY, paddingTop, paddingBottom,
@@ -68,11 +62,11 @@ export const Card: React.FC<CardProps> = ({
 
   return (
     <Component
-      className={cn(baseClasses, transitionClasses, hoverClasses, bgClasses, spacingClasses, borderClasses, gridClasses, className)}
+      className={cn(baseClasses, transitionClasses, hoverClasses, bgClasses, spacingClasses, borderClasses, className)}
       style={combinedStyle}
       {...rest}
     >
-      {container ? <Container>{children}</Container> : children}
+      {children}
     </Component>
   );
 };
