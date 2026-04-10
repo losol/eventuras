@@ -1,6 +1,5 @@
 /**
  * Shared color and status types
- * @see docs/adr/0001-spacing-borders-colors.md
  */
 
 /** Full semantic color palette */

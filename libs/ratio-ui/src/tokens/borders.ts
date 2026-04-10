@@ -1,6 +1,5 @@
 /**
  * Border types and class builder
- * @see docs/adr/0001-spacing-borders-colors.md
  */
 
 import type { Color } from './colors';

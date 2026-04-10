@@ -69,7 +69,7 @@ export const Overview: Story = {
 };
 
 /* ------------------------------------------------------------------ */
-/*  ADR-0001: BorderProps API                                         */
+/*  BorderProps API                                                   */
 /* ------------------------------------------------------------------ */
 
 const BorderBox = ({ label, props }: { label: string; props: BorderProps }) => (

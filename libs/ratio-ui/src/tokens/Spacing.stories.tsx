@@ -65,7 +65,7 @@ export const Overview: Story = {
 };
 
 /* ------------------------------------------------------------------ */
-/*  ADR-0001: Semantic spacing scale (Space type)                     */
+/*  Semantic spacing scale (Space type)                               */
 /* ------------------------------------------------------------------ */
 
 const semanticSteps: { value: Space; css: string; tailwind: string }[] = [
