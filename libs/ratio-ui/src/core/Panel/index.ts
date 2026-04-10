@@ -1,2 +1,2 @@
 export { Panel } from './Panel';
-export type { PanelProps, PanelVariant, PanelIntent } from './Panel';
+export type { PanelProps, PanelVariant } from './Panel';

@@ -1,14 +1,15 @@
 import React from 'react';
-import { Panel, type PanelIntent } from '@eventuras/ratio-ui/core/Panel';
+import { Panel } from '@eventuras/ratio-ui/core/Panel';
+import type { Status } from '@eventuras/ratio-ui/tokens';
 
-const DEFAULT_CONFIG = { intent: 'info' as PanelIntent, icon: 'ℹ️', label: 'Note' };
+const DEFAULT_CONFIG = { status: 'info' as Status, icon: 'ℹ️', label: 'Note' };
 
-const CALLOUT_MAP: Record<string, { intent: PanelIntent; icon: string; label: string }> = {
+const CALLOUT_MAP: Record<string, { status: Status; icon: string; label: string }> = {
   NOTE: DEFAULT_CONFIG,
-  TIP: { intent: 'success', icon: '💡', label: 'Tip' },
-  IMPORTANT: { intent: 'info', icon: '❗', label: 'Important' },
-  WARNING: { intent: 'warning', icon: '⚠️', label: 'Warning' },
-  CAUTION: { intent: 'error', icon: '🔴', label: 'Caution' },
+  TIP: { status: 'success', icon: '💡', label: 'Tip' },
+  IMPORTANT: { status: 'info', icon: '❗', label: 'Important' },
+  WARNING: { status: 'warning', icon: '⚠️', label: 'Warning' },
+  CAUTION: { status: 'error', icon: '🔴', label: 'Caution' },
 };
 
 /**
@@ -27,7 +28,7 @@ export const calloutComponents = {
     const config = CALLOUT_MAP[calloutType] ?? DEFAULT_CONFIG;
 
     return (
-      <Panel variant="callout" intent={config.intent}>
+      <Panel variant="callout" status={config.status}>
         <p className="font-semibold mb-1">
           <span className="mr-1">{config.icon}</span>
           {config.label}
