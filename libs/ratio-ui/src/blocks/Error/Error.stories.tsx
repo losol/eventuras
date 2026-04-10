@@ -15,7 +15,7 @@ type Story = StoryObj<typeof Error>;
 
 export const ServerError: Story = {
   render: () => (
-    <Error type="server-error" tone="error">
+    <Error type="server-error" status="error">
       <Error.Title>Server Error</Error.Title>
       <Error.Description>
         The server encountered an error and could not complete your request.
@@ -37,7 +37,7 @@ export const ServerError: Story = {
 
 export const NetworkError: Story = {
   render: () => (
-    <Error type="network-error" tone="error">
+    <Error type="network-error" status="error">
       <Error.Title>Connection Error</Error.Title>
       <Error.Description>
         Unable to connect to the server. Please check your internet connection.
@@ -56,7 +56,7 @@ export const NetworkError: Story = {
 
 export const Forbidden: Story = {
   render: () => (
-    <Error type="forbidden" tone="warning">
+    <Error type="forbidden" status="warning">
       <Error.Title>Access Denied</Error.Title>
       <Error.Description>
         You don't have permission to access this resource.
@@ -75,7 +75,7 @@ export const Forbidden: Story = {
 
 export const NotFound: Story = {
   render: () => (
-    <Error type="not-found" tone="info">
+    <Error type="not-found" status="info">
       <Error.Title>Not Found</Error.Title>
       <Error.Description>
         The resource you're looking for doesn't exist or has been moved.
@@ -94,7 +94,7 @@ export const NotFound: Story = {
 
 export const GenericError: Story = {
   render: () => (
-    <Error type="generic" tone="error">
+    <Error type="generic" status="error">
       <Error.Title>Something Went Wrong</Error.Title>
       <Error.Description>
         An unexpected error occurred. Please try again.
@@ -110,7 +110,7 @@ export const GenericError: Story = {
 
 export const MinimalError: Story = {
   render: () => (
-    <Error type="generic" tone="error">
+    <Error type="generic" status="error">
       <Error.Title>Error</Error.Title>
       <Error.Description>
         Something went wrong.

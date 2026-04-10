@@ -1,8 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
-
-/** Error severity/tone for visual styling */
-export type ErrorTone = 'error' | 'warning' | 'info';
+import type { Status } from '../../tokens/colors';
 
 /** Error type for semantic meaning */
 export type ErrorType =
@@ -14,8 +12,8 @@ export type ErrorType =
 
 /** Props for {@link Error} */
 export interface ErrorProps {
-  /** Visual severity/tone */
-  tone?: ErrorTone;
+  /** Visual severity */
+  status?: Status;
   /** Semantic error type (affects icon) */
   type?: ErrorType;
   /** Custom className for the container */
@@ -24,16 +22,18 @@ export interface ErrorProps {
   children: React.ReactNode;
 }
 
-/** Map tone → colors */
-const toneStyles: Record<ErrorTone, string> = {
-  error: 'text-red-600 dark:text-red-400',
-  warning: 'text-yellow-600 dark:text-yellow-400',
-  info: 'text-blue-600 dark:text-blue-400',
+/** Map status → colors */
+const statusStyles: Record<Status, string> = {
+  neutral: 'text-neutral-600 dark:text-neutral-400',
+  info: 'text-info-text',
+  success: 'text-success-text',
+  warning: 'text-warning-text',
+  error: 'text-error-text',
 };
 
 /** Icon for each error type */
-function ErrorIcon({ type = 'generic', tone = 'error' }: { type: ErrorType; tone: ErrorTone }) {
-  const colorClass = toneStyles[tone];
+function ErrorIcon({ type = 'generic', status = 'error' }: { type: ErrorType; status: Status }) {
+  const colorClass = statusStyles[status];
   const baseClass = 'w-12 h-12 mb-4';
 
   if (type === 'not-found') {
@@ -133,7 +133,7 @@ function ErrorIcon({ type = 'generic', tone = 'error' }: { type: ErrorType; tone
 
 /** Root component for error display */
 function Root({
-  tone = 'error',
+  status = 'error',
   type = 'generic',
   className,
   children
@@ -145,7 +145,7 @@ function Root({
       aria-live="polite"
     >
       <div className="flex flex-col items-center">
-        <ErrorIcon type={type} tone={tone} />
+        <ErrorIcon type={type} status={status} />
         {children}
       </div>
     </div>

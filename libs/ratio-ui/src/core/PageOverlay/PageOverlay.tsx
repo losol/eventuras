@@ -1,10 +1,11 @@
 import React from 'react';
-import clsx from 'clsx';
+import type { Status } from '../../tokens/colors';
+import { cn } from '../../utils/cn';
 
 /** Props for {@link PageOverlay} */
 export interface PageOverlayProps {
-  /** Visual variant affecting overlay styling */
-  variant?: 'default' | 'error' | 'info' | 'warning';
+  /** Status affecting overlay tint */
+  status?: Status;
   /** Whether to render as fullscreen overlay (default: true) */
   fullScreen?: boolean;
   /** Custom className for the overlay container */
@@ -13,62 +14,51 @@ export interface PageOverlayProps {
   children: React.ReactNode;
 }
 
+const statusOverlayClasses: Record<Status, string> = {
+  neutral: 'bg-black/90',
+  info: 'bg-info-950/95 dark:bg-info-950/95',
+  success: 'bg-success-950/95 dark:bg-success-950/95',
+  warning: 'bg-warning-950/95 dark:bg-warning-950/95',
+  error: 'bg-error-950/95 dark:bg-error-950/95',
+};
+
 /**
  * Generic fullscreen page overlay component.
  *
  * Use this for critical content that should block the UI, such as:
- * - Fatal errors (variant="error")
+ * - Fatal errors (status="error")
  * - Loading states
  * - Important messages
  * - Maintenance notices
  *
  * @example
  * ```tsx
- * import { PageOverlay } from '@eventuras/ratio-ui/core/PageOverlay';
- * import { Error } from '@eventuras/ratio-ui/blocks/Error';
- *
- * // Error overlay
- * <PageOverlay variant="error">
- *   <Error type="server-error" tone="error">
+ * <PageOverlay status="error">
+ *   <Error type="server-error" status="error">
  *     <Error.Title>Fatal Error</Error.Title>
- *     <Error.Description>
- *       The application encountered a critical error.
- *     </Error.Description>
+ *     <Error.Description>The application encountered a critical error.</Error.Description>
  *   </Error>
- * </PageOverlay>
- *
- * // Generic overlay
- * <PageOverlay>
- *   <div>Custom content</div>
  * </PageOverlay>
  * ```
  */
 export function PageOverlay({
-  variant = 'default',
+  status = 'neutral',
   fullScreen = true,
   className,
-  children
+  children,
 }: PageOverlayProps) {
-  // Container styles - fullscreen with dark overlay
-  const container = fullScreen ? 'fixed inset-0 z-50' : 'relative';
-
-  // Variant-specific overlay colors
-  const variantStyles = {
-    default: 'bg-black/90',
-    error: 'bg-red-950/95',
-    warning: 'bg-amber-950/95',
-    info: 'bg-blue-950/95',
-  };
-
-  const overlay = clsx(
-    container,
-    variantStyles[variant],
-    'flex items-center justify-center p-4 sm:p-10',
-    className
-  );
-
   return (
-    <div className={overlay} role="dialog" aria-modal="true" aria-live="assertive">
+    <div
+      className={cn(
+        fullScreen ? 'fixed inset-0 z-50' : 'relative',
+        statusOverlayClasses[status],
+        'flex items-center justify-center p-4 sm:p-10',
+        className,
+      )}
+      role="dialog"
+      aria-modal="true"
+      aria-live="assertive"
+    >
       <div className="w-full max-w-2xl bg-white dark:bg-gray-900 rounded-lg shadow-2xl p-6 sm:p-8">
         {children}
       </div>

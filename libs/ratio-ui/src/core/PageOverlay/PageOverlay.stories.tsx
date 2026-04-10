@@ -10,10 +10,10 @@ const meta: Meta<typeof PageOverlay> = {
   },
   tags: ['autodocs'],
   argTypes: {
-    variant: {
+    status: {
       control: 'select',
-      options: ['default', 'error', 'info', 'warning'],
-      description: 'Visual style variant of the overlay',
+      options: ['neutral', 'error', 'info', 'warning'],
+      description: 'Visual status of the overlay',
     },
     fullScreen: {
       control: 'boolean',
@@ -28,7 +28,7 @@ type Story = StoryObj<typeof PageOverlay>;
 export const Default: Story = {
   args: {
     fullScreen: true,
-    variant: 'default',
+    status: 'neutral',
     children: (
       <div className="text-center text-white">
         <h1 className="text-4xl font-bold mb-4">Default Overlay</h1>
@@ -41,9 +41,9 @@ export const Default: Story = {
 export const ErrorVariant: Story = {
   args: {
     fullScreen: true,
-    variant: 'error',
+    status: 'error',
     children: (
-      <Error type="server-error" tone="error">
+      <Error type="server-error" status="error">
         <Error.Title>Server Error</Error.Title>
         <Error.Description>
           The server encountered an unexpected error. Please try again later.
@@ -61,9 +61,9 @@ export const ErrorVariant: Story = {
 export const InfoVariant: Story = {
   args: {
     fullScreen: true,
-    variant: 'info',
+    status: 'info',
     children: (
-      <Error type="not-found" tone="info">
+      <Error type="not-found" status="info">
         <Error.Title>Page Not Found</Error.Title>
         <Error.Description>
           The page you&apos;re looking for doesn&apos;t exist or has been moved.
@@ -81,9 +81,9 @@ export const InfoVariant: Story = {
 export const WarningVariant: Story = {
   args: {
     fullScreen: true,
-    variant: 'warning',
+    status: 'warning',
     children: (
-      <Error type="generic" tone="warning">
+      <Error type="generic" status="warning">
         <Error.Title>Maintenance Mode</Error.Title>
         <Error.Description>
           The system is currently undergoing maintenance. Please check back soon.
@@ -104,7 +104,7 @@ export const WarningVariant: Story = {
 export const WithCustomContent: Story = {
   args: {
     fullScreen: true,
-    variant: 'default',
+    status: 'neutral',
     children: (
       <div className="max-w-md text-center text-white space-y-6">
         <div>
@@ -130,7 +130,7 @@ export const WithCustomContent: Story = {
 export const NonFullScreen: Story = {
   args: {
     fullScreen: false,
-    variant: 'info',
+    status: 'info',
     children: (
       <div className="text-center text-white p-12">
         <h2 className="text-2xl font-bold mb-4">Modal Overlay</h2>
@@ -146,9 +146,9 @@ export const NonFullScreen: Story = {
 export const ErrorWithContactInfo: Story = {
   args: {
     fullScreen: true,
-    variant: 'error',
+    status: 'error',
     children: (
-      <Error type="server-error" tone="error">
+      <Error type="server-error" status="error">
         <Error.Title>Critical Error</Error.Title>
         <Error.Description>
           A critical error occurred. Our team has been notified and is working on it.

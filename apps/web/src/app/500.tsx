@@ -11,8 +11,8 @@ import { Link } from '@eventuras/ratio-ui-next/Link';
  */
 export default function InternalServerError() {
   return (
-    <PageOverlay variant="error" fullScreen>
-      <Error type="server-error" tone="error">
+    <PageOverlay status="error" fullScreen>
+      <Error type="server-error" status="error">
         <Error.Title>Internal Server Error</Error.Title>
         <Error.Description>
           The server encountered an unexpected error and could not complete your request. Please try

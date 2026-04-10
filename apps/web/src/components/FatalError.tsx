@@ -25,8 +25,8 @@ const FatalError: React.FC<FatalErrorProps> = ({
   contactUsText,
 }) => {
   return (
-    <PageOverlay variant="error" fullScreen>
-      <Error type="server-error" tone="error">
+    <PageOverlay status="error" fullScreen>
+      <Error type="server-error" status="error">
         <Error.Title>{title}</Error.Title>
         <Error.Description>
           {description ||

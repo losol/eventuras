@@ -37,8 +37,8 @@ export default function ErrorBoundary({
   }, [error]);
 
   return (
-    <PageOverlay variant="error" fullScreen>
-      <Error type="server-error" tone="error">
+    <PageOverlay status="error" fullScreen>
+      <Error type="server-error" status="error">
         <Error.Title>Something Went Wrong</Error.Title>
         <Error.Description>
           An unexpected error occurred. Please try again or contact support if the problem persists.

@@ -34,7 +34,7 @@ export const NotFound: React.FC<NotFoundProps> = ({
   className,
 }) => {
   return (
-    <Error type="not-found" tone="info" className={className}>
+    <Error type="not-found" status="info" className={className}>
       <Error.Title>{title}</Error.Title>
       <Error.Description>{message}</Error.Description>
       {details && <Error.Details>{details}</Error.Details>}

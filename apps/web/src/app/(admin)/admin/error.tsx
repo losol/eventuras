@@ -34,8 +34,8 @@ export default function AdminErrorBoundary({
   }, [error]);
 
   return (
-    <PageOverlay variant="error" fullScreen>
-      <Error type="server-error" tone="error">
+    <PageOverlay status="error" fullScreen>
+      <Error type="server-error" status="error">
         <Error.Title>Admin Error</Error.Title>
         <Error.Description>
           An error occurred in the admin section. This has been logged for investigation.

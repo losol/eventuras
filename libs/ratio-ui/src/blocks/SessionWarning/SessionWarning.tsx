@@ -67,7 +67,7 @@ export function SessionWarning({
   if (!isOpen) return null;
 
   return (
-    <PageOverlay variant="warning" fullScreen>
+    <PageOverlay status="warning" fullScreen>
       <div className="space-y-4">
         <h1 className="text-2xl font-bold">{messages.title}</h1>
         <p className="text-lg">{messages.description}</p>
