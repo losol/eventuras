@@ -237,7 +237,7 @@ export default function VippsCheckoutPage() {
   // Validate reference on mount
   if (!reference) {
     return (
-      <Container padding="px-4 py-16">
+      <Container paddingX="sm" paddingY="xl">
         <div className="mx-auto max-w-2xl">
           <Card>
             <Error tone="error" type="generic">
@@ -258,7 +258,7 @@ export default function VippsCheckoutPage() {
   }
 
   return (
-    <Container padding="px-4 py-16">
+    <Container paddingX="sm" paddingY="xl">
       <div className="mx-auto max-w-2xl">
         <Card>
           {/* WAITING STATE - Waiting for payment confirmation */}

@@ -46,9 +46,9 @@ const EventProductsEditor: React.FC<EventProductsEditorProps> = ({
     setProductModalOpen(false);
   };
   return (
-    <Box gap="6" className="flex flex-col">
+    <Box gap="md" className="flex flex-col">
       {/* Header with action */}
-      <Box className="flex flex-col sm:flex-row sm:items-center sm:justify-between" gap="4">
+      <Box className="flex flex-col sm:flex-row sm:items-center sm:justify-between" gap="sm">
         <Button
           testId="add-product-button"
           onClick={() => openProductModal()}
@@ -65,7 +65,8 @@ const EventProductsEditor: React.FC<EventProductsEditorProps> = ({
         <Card
           className="text-center border border-dashed border-gray-300 dark:border-gray-700"
           backgroundColorClass="bg-gray-50 dark:bg-gray-800/50"
-          padding="py-12 px-6"
+          paddingY="xl"
+          paddingX="md"
         >
           <Text variant="subtle">
             {t('admin.products.labels.noproducts', {

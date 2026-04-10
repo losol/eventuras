@@ -43,7 +43,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       {...cardProps}
       hoverEffect
       className="flex flex-col overflow-hidden"
-      padding="p-0"
+      padding="none"
       data-testid={testId}
     >
       {/* Product Image (if provided) */}

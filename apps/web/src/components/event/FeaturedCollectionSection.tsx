@@ -18,7 +18,7 @@ export const FeaturedCollectionSection: React.FC<FeaturedCollectionSectionProps>
   events,
 }) => {
   return (
-    <Section padding="py-8">
+    <Section paddingY="lg">
       {collection.featuredImageUrl && (
         <Card variant="wide" backgroundImageUrl={collection.featuredImageUrl} />
       )}

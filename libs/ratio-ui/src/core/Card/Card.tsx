@@ -1,74 +1,48 @@
 import React, { ReactNode } from 'react';
-import { Box, BoxProps, getBackgroundStyle } from '../../layout/Box/Box';
+import type { SpacingProps } from '../../tokens/spacing';
+import type { BorderProps } from '../../tokens/borders';
+import { buildSpacingClasses } from '../../tokens/spacing';
+import { buildBorderClasses } from '../../tokens/borders';
+import { getBackgroundStyle } from '../../layout/Box/Box';
 import Container from '../../layout/Container/Container';
 import { getGridClasses } from '../../tokens';
+import { cn } from '../../utils/cn';
 import './Card.css';
 
-// Card-specific props that should not be passed to Box
-interface CardSpecificProps {
+export interface CardProps extends SpacingProps, BorderProps {
+  children?: ReactNode;
+  as?: React.ElementType;
+  className?: string;
+  style?: React.CSSProperties;
   dark?: boolean;
   container?: boolean;
   variant?: 'default' | 'wide' | 'outline' | 'transparent';
   hoverEffect?: boolean;
   grid?: boolean;
+  backgroundColorClass?: string;
+  backgroundImageUrl?: string;
 }
 
-export interface CardProps extends BoxProps, CardSpecificProps {
-  children?: ReactNode;
-}
-
-/**
- * Card - Flexible card component with support for variants, grid layout, and composition
- *
- * @example
- * ```tsx
- * // Simple card
- * <Card>
- *   <Box>
- *     <Heading>Title</Heading>
- *     <Text>Description</Text>
- *   </Box>
- * </Card>
- *
- * // Card with grid layout and image
- * import NextImage from 'next/image';
- *
- * <Card variant="outline" grid>
- *   <Image src="/image.jpg" alt="Product" renderer={NextImage} />
- *   <Box>
- *     <Heading>Product Title</Heading>
- *     <Text>Product description</Text>
- *   </Box>
- * </Card>
- *
- * // Custom grid gap
- * <Card grid gap="8">
- *   <Image src="/image.jpg" alt="Hero" />
- *   <Box padding="p-6">
- *     <Heading>Hero Title</Heading>
- *   </Box>
- * </Card>
- * ```
- */
 export const Card: React.FC<CardProps> = ({
   dark = false,
   container = false,
   variant = 'default',
   hoverEffect = false,
   grid = false,
-  gap = '6',
+  gap = 'sm',
   children,
-  // and these from BoxProps
-  padding, margin, backgroundColorClass, backgroundImageUrl, className, style, ...rest
-},) => {
-
-  const baseClasses = "p-4 relative rounded-lg";
-  const transitionClasses = hoverEffect ? "transform transition duration-300 ease-in-out" : "";
+  as: Component = 'div',
+  backgroundColorClass,
+  backgroundImageUrl,
+  className,
+  style,
+  ...spacingAndBorder
+}) => {
+  const baseClasses = 'p-4 relative rounded-lg';
+  const transitionClasses = hoverEffect ? 'transform transition duration-300 ease-in-out' : '';
 
   const variantStyles = {
-    default: hoverEffect
-      ? 'bg-card bg-overlay-hover text'
-      : 'bg-card text',
+    default: hoverEffect ? 'bg-card bg-overlay-hover text' : 'bg-card text',
     wide: hoverEffect
       ? 'bg-card bg-overlay-hover text mx-auto min-h-[33vh]'
       : 'bg-card text mx-auto min-h-[33vh]',
@@ -76,28 +50,33 @@ export const Card: React.FC<CardProps> = ({
     transparent: 'bg-transparent text',
   };
 
-  const backgroundColorClasses = backgroundColorClass ?? variantStyles[variant];
+  const bgClasses = backgroundColorClass ?? variantStyles[variant];
+  const gridClasses = grid ? getGridClasses('6') : '';
 
-  const gridClasses = grid ? getGridClasses(gap as '4' | '6' | '8') : '';
+  // Separate spacing and border props
+  const {
+    padding, paddingX, paddingY, paddingTop, paddingBottom,
+    margin, marginX, marginY, marginTop, marginBottom,
+    border, borderColor, radius,
+    ...rest
+  } = spacingAndBorder;
 
-  const cardClasses = [baseClasses, transitionClasses, backgroundColorClasses, gridClasses, className];
+  const spacingClasses = buildSpacingClasses({
+    padding, paddingX, paddingY, paddingTop, paddingBottom,
+    margin, marginX, marginY, marginTop, marginBottom,
+    gap,
+  });
+  const borderClasses = buildBorderClasses({ border, borderColor, radius });
 
   const combinedStyle = getBackgroundStyle(backgroundImageUrl) || style;
 
-  // Extract only BoxProps to pass to Box component
-  const boxProps: BoxProps = {
-    as: rest.as,
-    padding,
-    margin,
-    backgroundColorClass,
-    backgroundImageUrl,
-    className: cardClasses.join(' '),
-    style: combinedStyle,
-  };
-
   return (
-    <Box {...boxProps}>
+    <Component
+      className={cn(baseClasses, transitionClasses, bgClasses, spacingClasses, borderClasses, gridClasses, className)}
+      style={combinedStyle}
+      {...rest}
+    >
       {container ? <Container>{children}</Container> : children}
-    </Box>
+    </Component>
   );
 };

@@ -14,10 +14,9 @@ const meta: Meta<typeof Story> = {
   component: Story,
   tags: ['autodocs'],
   argTypes: {
-    padding: { control: 'text' },
-    margin: { control: 'text' },
-    gap: { control: 'text' },
-    backgroundColorClass: { control: 'text' },
+    padding: { control: 'select', options: ['none', 'xs', 'sm', 'md', 'lg', 'xl'] },
+    margin: { control: 'select', options: ['none', 'xs', 'sm', 'md', 'lg', 'xl'] },
+    gap: { control: 'select', options: ['none', 'xs', 'sm', 'md', 'lg', 'xl'] },
   },
 };
 
@@ -466,8 +465,8 @@ export const MinimalStory: StoryStory = {
 
 export const CustomSpacing: StoryStory = {
   args: {
-    padding: '8',
-    gap: '8',
+    padding: 'lg',
+    gap: 'lg',
     children: (
       <>
         <StoryHeader>
@@ -477,7 +476,7 @@ export const CustomSpacing: StoryStory = {
             create different layouts.
           </Lead>
         </StoryHeader>
-        <StoryBody gap="6">
+        <StoryBody gap="md">
           <Text>
             The Story component accepts BoxProps, which means you can control
             padding, margin, gap, and other spacing properties.

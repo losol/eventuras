@@ -1,57 +1,27 @@
 import React from 'react';
-import { BoxProps, buildSpacingClasses } from '../../layout/Box/Box';
+import type { SpacingProps } from '../../tokens/spacing';
+import { buildSpacingClasses } from '../../tokens/spacing';
+import { cn } from '../../utils/cn';
 
-export interface StoryBodyProps extends BoxProps {
-  /**
-   * Content of the story body
-   */
+export interface StoryBodyProps extends SpacingProps {
   children: React.ReactNode;
+  className?: string;
+  style?: React.CSSProperties;
 }
 
-/**
- * StoryBody component for displaying main story content
- *
- * @example
- * ```tsx
- * <StoryBody>
- *   <Text>Main content goes here...</Text>
- * </StoryBody>
- * ```
- */
 export function StoryBody({
   children,
   className,
-  padding,
-  margin,
-  border,
-  width,
-  height,
-  gap = '4',
-  backgroundColorClass,
-  backgroundImageUrl,
-  as: Component = 'section',
+  gap = 'sm',
   style,
-  ...props
+  ...spacingProps
 }: StoryBodyProps) {
-  const spacingClasses = buildSpacingClasses({ padding, margin, border, width, height, gap });
-
-  const bodyClasses = [
-    'story-body',
-    spacingClasses,
-    backgroundColorClass,
-    className,
-  ]
-    .filter(Boolean)
-    .join(' ');
-
-  const combinedStyle: React.CSSProperties = {
-    ...style,
-    ...(backgroundImageUrl ? { backgroundImage: `url(${backgroundImageUrl})` } : {}),
-  };
-
   return (
-    <Component className={bodyClasses} style={combinedStyle} {...props}>
+    <section
+      className={cn('story-body', buildSpacingClasses({ ...spacingProps, gap }), className)}
+      style={style}
+    >
       {children}
-    </Component>
+    </section>
   );
 }

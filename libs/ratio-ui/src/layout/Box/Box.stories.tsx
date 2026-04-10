@@ -13,9 +13,9 @@ export default meta;
 
 export const Default = () => <Box>Default Box</Box>;
 
-export const WithPadding = () => <Box padding="20px">Box with Padding</Box>;
+export const WithPadding = () => <Box padding="md">Box with Padding</Box>;
 
-export const WithMargin = () => <Box margin="20px">Box with Margin</Box>;
+export const WithMargin = () => <Box margin="md">Box with Margin</Box>;
 
 export const CustomElement = () => (
   <Box as="section">
@@ -26,8 +26,8 @@ export const CustomElement = () => (
 export const Combined = () => (
   <>
     <Box>Default Box</Box>
-    <Box padding="20px">Box with Padding</Box>
-    <Box margin="20px">Box with Margin</Box>
+    <Box padding="md">Box with Padding</Box>
+    <Box margin="md">Box with Margin</Box>
     <Box as="section">
       Box as a <section></section>
     </Box>

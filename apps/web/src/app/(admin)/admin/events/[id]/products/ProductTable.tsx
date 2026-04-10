@@ -81,7 +81,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({ eventId, products, o
     columnHelper.accessor('productId', {
       header: t('common.labels.actions').toString(),
       cell: info => (
-        <Box className="flex justify-end items-center" gap="1">
+        <Box className="flex justify-end items-center" gap="xs">
           <Link
             href={`/admin/events/${eventId}/products/${info.row.original.productId}`}
             variant="button-outline"

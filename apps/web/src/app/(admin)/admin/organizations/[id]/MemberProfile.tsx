@@ -48,7 +48,7 @@ export const MemberProfile: React.FC<MemberProfileProps> = ({
     }
   };
   return (
-    <Card margin="my-1">
+    <Card marginY="xs">
       <Heading as="h2" paddingY="xs">
         {user.name ?? 'Member'}
         {archivedBadge}

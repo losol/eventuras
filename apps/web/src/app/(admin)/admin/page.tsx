@@ -22,7 +22,7 @@ const AdminPage = async (props: AdminPageProps) => {
     <Container>
       <Heading as="h1">{t('admin.title')}</Heading>
       <Section className="py-10">
-        <ButtonGroup wrap gap="3">
+        <ButtonGroup wrap gap="xs">
           <Link href={`/admin/events/create`} variant="button-primary" testId="add-event-button">
             {t('admin.events.labes.create')}
           </Link>
@@ -40,9 +40,9 @@ const AdminPage = async (props: AdminPageProps) => {
           </Link>
         </ButtonGroup>
       </Section>
-      <Section padding="py-10">
+      <Section paddingY="xl">
         <Heading as="h2">{t('common.events.sectiontitle')}</Heading>
-        <Box margin="py-2">
+        <Box marginY="xs">
           <Link href={`/admin/events`} variant="button-secondary" marginY="sm">
             {t('common.labels.allEvents')}
           </Link>

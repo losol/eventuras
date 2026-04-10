@@ -16,7 +16,7 @@ const meta: Meta<typeof Section> = {
     grid: { control: 'boolean' },
     gap: {
       control: 'select',
-      options: ['4', '6', '8'],
+      options: ['none', 'xs', 'sm', 'md', 'lg', 'xl'],
     },
   },
 };
@@ -51,14 +51,14 @@ export const WithoutContainer: SectionStory = () => (
 );
 
 export const WithPadding: SectionStory = () => (
-  <Section padding="p-8">
+  <Section padding="xl">
     <h2 className="text-2xl font-bold mb-4">Section with Padding</h2>
     <p>This section has custom padding applied.</p>
   </Section>
 );
 
 export const WithBackground: SectionStory = () => (
-  <Section className="bg-blue-600 text-white" padding="py-12">
+  <Section className="bg-blue-600 text-white" paddingY="xl">
     <h2 className="text-3xl font-bold mb-4">Hero Section</h2>
     <p className="text-lg">This section has a custom background color.</p>
   </Section>
@@ -66,15 +66,15 @@ export const WithBackground: SectionStory = () => (
 
 export const MultipleSections: SectionStory = () => (
   <>
-    <Section className="bg-gray-50 dark:bg-gray-900" padding="py-8">
+    <Section className="bg-gray-50 dark:bg-gray-900" paddingY="lg">
       <h2 className="text-2xl font-bold mb-4">First Section</h2>
       <p>Content for the first section.</p>
     </Section>
-    <Section className="bg-white dark:bg-gray-800" padding="py-8">
+    <Section className="bg-white dark:bg-gray-800" paddingY="lg">
       <h2 className="text-2xl font-bold mb-4">Second Section</h2>
       <p>Content for the second section.</p>
     </Section>
-    <Section className="bg-gray-50 dark:bg-gray-900" padding="py-8">
+    <Section className="bg-gray-50 dark:bg-gray-900" paddingY="lg">
       <h2 className="text-2xl font-bold mb-4">Third Section</h2>
       <p>Content for the third section.</p>
     </Section>
@@ -85,7 +85,7 @@ export const FullWidthHero: SectionStory = () => (
   <Section
     container={false}
     className="bg-gradient-to-r from-blue-600 to-purple-600 text-white"
-    padding="py-20"
+    paddingY="xl"
   >
     <div className="container mx-auto px-4 text-center">
       <h1 className="text-4xl md:text-6xl font-bold mb-4">Welcome to Eventuras</h1>
@@ -96,7 +96,7 @@ export const FullWidthHero: SectionStory = () => (
 );
 
 export const ContentSection: SectionStory = () => (
-  <Section padding="py-12">
+  <Section paddingY="xl">
     <Heading as="h2" marginBottom="sm">Features</Heading>
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       <div className="bg-gray-100 dark:bg-gray-800 p-6 rounded-lg">
@@ -117,7 +117,7 @@ export const ContentSection: SectionStory = () => (
 
 // New grid-based stories
 export const GridWithImage: SectionStory = () => (
-  <Section grid padding="py-12">
+  <Section grid paddingY="xl">
     <Image
       src="https://picsum.photos/800/600"
       alt="Hero image"
@@ -140,7 +140,8 @@ export const GridFullWidthWithColor: SectionStory = () => (
     grid
     container={false}
     className="bg-gradient-to-r from-blue-600 to-purple-600 text-white"
-    padding="py-16 px-8"
+    paddingY="xl"
+    paddingX="xl"
   >
     <Image
       src="https://picsum.photos/800/600?random=1"
@@ -160,7 +161,7 @@ export const GridFullWidthWithColor: SectionStory = () => (
 );
 
 export const GridContainerWithLargeGap: SectionStory = () => (
-  <Section grid gap="8" padding="py-12">
+  <Section grid gap="lg" paddingY="xl">
     <Image
       src="https://picsum.photos/800/600?random=2"
       alt="Feature image"
@@ -180,7 +181,7 @@ export const GridContainerWithLargeGap: SectionStory = () => (
 );
 
 export const GridSmallGap: SectionStory = () => (
-  <Section grid gap="4" className="bg-gray-50 dark:bg-gray-900" padding="py-12">
+  <Section grid gap="sm" className="bg-gray-50 dark:bg-gray-900" paddingY="xl">
     <Image
       src="https://picsum.photos/800/600?random=3"
       alt="Compact layout"
@@ -199,7 +200,7 @@ export const GridSmallGap: SectionStory = () => (
 );
 
 export const GridReverseLayout: SectionStory = () => (
-  <Section grid padding="py-12">
+  <Section grid paddingY="xl">
     <Box className="order-2 md:order-1">
       <Heading as="h2" marginBottom="sm">Content First on Desktop</Heading>
       <p className="text-lg mb-4">

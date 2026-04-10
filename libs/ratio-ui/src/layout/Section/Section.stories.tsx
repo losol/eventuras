@@ -10,8 +10,12 @@ const meta: Meta<typeof Section> = {
     container: { control: 'boolean' },
     backgroundColorClass: { control: 'text' },
     backgroundImageUrl: { control: 'text' },
-    padding: { control: 'text' },
-    margin: { control: 'text' },
+    padding: { control: 'select', options: ['none', 'xs', 'sm', 'md', 'lg', 'xl'] },
+    paddingX: { control: 'select', options: ['none', 'xs', 'sm', 'md', 'lg', 'xl'] },
+    paddingY: { control: 'select', options: ['none', 'xs', 'sm', 'md', 'lg', 'xl'] },
+    margin: { control: 'select', options: ['none', 'xs', 'sm', 'md', 'lg', 'xl'] },
+    marginY: { control: 'select', options: ['none', 'xs', 'sm', 'md', 'lg', 'xl'] },
+    gap: { control: 'select', options: ['none', 'xs', 'sm', 'md', 'lg', 'xl'] },
   },
 };
 
@@ -34,7 +38,7 @@ export const WithContainer: Story = {
 export const WithBackgroundColor: Story = {
   args: {
     backgroundColorClass: 'bg-gray-100',
-    padding: 'py-12',
+    paddingY: 'xl',
     children: 'Section with background color and vertical padding.',
   },
 };
@@ -49,15 +53,16 @@ export const WithBottomPadding: Story = {
 export const WithBackgroundImage: Story = {
   args: {
     backgroundImageUrl: 'https://via.placeholder.com/1200x400',
-    padding: 'py-24',
+    paddingY: 'xl',
     children: 'Section with a background image.',
   },
 };
 
 export const CustomSpacing: Story = {
   args: {
-    padding: 'py-16 px-8',
-    margin: 'my-8',
+    paddingY: 'xl',
+    paddingX: 'xl',
+    marginY: 'lg',
     children: 'Section with custom padding and margin.',
   },
 };
@@ -65,7 +70,7 @@ export const CustomSpacing: Story = {
 export const FullWidthColored: Story = {
   args: {
     backgroundColorClass: 'bg-primary-100',
-    padding: 'py-20',
+    paddingY: 'xl',
     container: true,
     children: 'Full-width colored section with centered content container.',
   },

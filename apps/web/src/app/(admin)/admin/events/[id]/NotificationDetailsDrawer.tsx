@@ -180,7 +180,7 @@ export default function NotificationDetailsDrawer({
                       : 'Pending';
 
                   return (
-                    <Card key={recipient.notificationRecipientId || index} padding="p-3">
+                    <Card key={recipient.notificationRecipientId || index} padding="xs">
                       <div className="flex justify-between items-start">
                         <div className="flex-1">
                           <Text weight="medium">{recipient.recipientName || 'Unknown'}</Text>

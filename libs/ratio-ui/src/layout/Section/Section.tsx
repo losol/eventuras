@@ -1,53 +1,48 @@
 import React from 'react';
-import {
-  BoxSpacingProps,
-  BoxBackgroundProps,
-  buildSpacingClasses,
-  getBackgroundStyle,
-} from '../Box/Box';
+import type { SpacingProps } from '../../tokens/spacing';
+import { buildSpacingClasses } from '../../tokens/spacing';
+import { getBackgroundStyle } from '../Box/Box';
 import Container from '../Container/Container';
+import { cn } from '../../utils/cn';
 
-export interface SectionProps
-  extends BoxSpacingProps,
-          BoxBackgroundProps {
-  container?: boolean;
+export interface SectionProps extends SpacingProps {
   className?: string;
-  /** Add dark overlay to background image (default: false) */
+  children?: React.ReactNode;
+  /** @deprecated Use Container component inside Section instead */
+  container?: boolean;
+  backgroundColorClass?: string;
+  backgroundImageUrl?: string;
   backgroundImageOverlay?: boolean;
-  /** Any other <section> attrs (e.g. id) */
   [key: string]: any;
 }
 
 export const Section: React.FC<SectionProps> = ({
   children,
-  className = '',
-  // spacing props
-  padding,
-  margin,
-  border,
-  width,
-  height,
-  // background props
+  className,
+  container = false,
   backgroundColorClass,
   backgroundImageUrl,
   backgroundImageOverlay = false,
-  // section‑specific
-  // deprecated; use Container component inside Section instead
-  // @deprecated
-  container = false,
-  ...rest
+  ...spacingAndRest
 }) => {
+  // Separate SpacingProps keys from rest HTML attrs
+  const {
+    padding, paddingX, paddingY, paddingTop, paddingBottom,
+    margin, marginX, marginY, marginTop, marginBottom,
+    gap,
+    ...rest
+  } = spacingAndRest;
 
-  const spacingClasses = buildSpacingClasses({ padding, margin, border, width, height });
+  const spacingClasses = buildSpacingClasses({
+    padding, paddingX, paddingY, paddingTop, paddingBottom,
+    margin, marginX, marginY, marginTop, marginBottom,
+    gap,
+  });
   const style = getBackgroundStyle(backgroundImageUrl, undefined, backgroundImageOverlay);
-
-  const classes = [spacingClasses, backgroundColorClass, className]
-    .filter(Boolean)
-    .join(' ');
 
   return (
     <section
-      className={classes}
+      className={cn(spacingClasses, backgroundColorClass, className)}
       style={style}
       {...rest}
     >

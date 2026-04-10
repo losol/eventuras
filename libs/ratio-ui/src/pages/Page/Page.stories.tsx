@@ -52,7 +52,7 @@ const PageDemo: React.FC<PageDemoProps> = ({
         <Section
           id="search"
           container={containerFlag}
-          padding="py-16 md:py-24"
+          paddingY="xl"
           backgroundColorClass="bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950"
           className="border-b"
         >

@@ -1,54 +1,18 @@
 import React, { ReactNode, ElementType, CSSProperties } from 'react';
+import type { SpacingProps } from '../../tokens/spacing';
+import type { BorderProps } from '../../tokens/borders';
+import { buildSpacingClasses } from '../../tokens/spacing';
+import { buildBorderClasses } from '../../tokens/borders';
+import { cn } from '../../utils/cn';
 
-export interface BoxSpacingProps {
-  padding?: string;      // e.g. 'px-4 py-2'
-  margin?: string;       // e.g. 'm-1'
-  border?: string;       // e.g. 'border border-gray-200'
-  width?: string;        // e.g. 'w-full'
-  height?: string;       // e.g. 'h-64'
-  gap?: '0' | '1' | '2' | '3' | '4' | '5' | '6' | '8'; // Tailwind spacing scale for flex/grid gap
-}
-
-export interface BoxContentProps {
-  as?: ElementType;      // e.g. 'div' | 'section' | 'button'
-  id?: string;
-  className?: string;
-  style?: CSSProperties;
-  children?: ReactNode;
-}
-
-export interface BoxBackgroundProps {
-  backgroundColorClass?: string; // e.g. 'bg-white dark:bg-gray-800'
-  backgroundImageUrl?: string; // e.g. '/foo.jpg'
-}
-
-export type BoxProps =
-  & BoxSpacingProps
-  & BoxContentProps
-  & BoxBackgroundProps;
-
-/** Helper to build the spacing/size/border classes */
-export function buildSpacingClasses({
-  padding,
-  margin,
-  border,
-  width,
-  height,
-  gap,
-}: BoxSpacingProps) {
-  const gapClass = gap ? `gap-${gap}` : undefined;
-  
-  return [
-    padding,
-    margin,
-    border,
-    width,
-    height,
-    gapClass,
-  ]
-    .filter(Boolean)
-    .join(' ');
-}
+export type BoxProps = SpacingProps &
+  BorderProps & {
+    as?: ElementType;
+    id?: string;
+    className?: string;
+    style?: CSSProperties;
+    children?: ReactNode;
+  };
 
 /**
  * Build the inline style object for a background image,
@@ -57,7 +21,7 @@ export function buildSpacingClasses({
 export function getBackgroundStyle(
   backgroundImage?: string,
   existingStyle?: CSSProperties,
-  backgroundImageOverlay: boolean = true
+  backgroundImageOverlay: boolean = true,
 ): CSSProperties | undefined {
   if (!backgroundImage) return existingStyle;
 
@@ -66,8 +30,8 @@ export function getBackgroundStyle(
     : `url(${backgroundImage})`;
 
   return {
-    backgroundImage:    imageValue,
-    backgroundSize:     'cover',
+    backgroundImage: imageValue,
+    backgroundSize: 'cover',
     backgroundPosition: 'center',
     ...existingStyle,
   };
@@ -75,35 +39,30 @@ export function getBackgroundStyle(
 
 export const Box: React.FC<BoxProps> = ({
   as: Component = 'div',
-  padding, margin, border, width, height, gap,
-  backgroundColorClass, backgroundImageUrl,
-  id, className = '', style, children,
+  id,
+  className,
+  style,
+  children,
+  // Spacing
+  padding, paddingX, paddingY, paddingTop, paddingBottom,
+  margin, marginX, marginY, marginTop, marginBottom,
+  gap,
+  // Borders
+  border, borderColor, radius,
   ...rest
 }) => {
-  const spacingClasses = buildSpacingClasses({ padding, margin, border, width, height, gap });
-
-  const bgStyle = backgroundImageUrl
-    ? {
-        backgroundImage:    `url(${backgroundImageUrl})`,
-        backgroundSize:     'cover',
-        backgroundPosition: 'center',
-        ...style,
-      }
-    : style;
-
-  const finalClassName = [
-    spacingClasses,
-    backgroundColorClass,
-    className,
-  ]
-    .filter(Boolean)
-    .join(' ');
+  const spacingClasses = buildSpacingClasses({
+    padding, paddingX, paddingY, paddingTop, paddingBottom,
+    margin, marginX, marginY, marginTop, marginBottom,
+    gap,
+  });
+  const borderClasses = buildBorderClasses({ border, borderColor, radius });
 
   return (
     <Component
       id={id}
-      className={finalClassName}
-      style={bgStyle}
+      className={cn(spacingClasses, borderClasses, className)}
+      style={style}
       {...rest}
     >
       {children}

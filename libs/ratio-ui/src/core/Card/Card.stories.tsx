@@ -21,13 +21,13 @@ const meta: Meta<typeof Card> = {
     grid: { control: 'boolean' },
     gap: {
       control: 'select',
-      options: ['4', '6', '8'],
+      options: ['none', 'xs', 'sm', 'md', 'lg', 'xl'],
     },
     hoverEffect: { control: 'boolean' },
     backgroundColorClass: { control: 'text' },
     backgroundImageUrl: { control: 'text' },
-    padding: { control: 'text' },
-    margin: { control: 'text' },
+    padding: { control: 'select', options: ['none', 'xs', 'sm', 'md', 'lg', 'xl'] },
+    margin: { control: 'select', options: ['none', 'xs', 'sm', 'md', 'lg', 'xl'] },
   },
 };
 
@@ -137,7 +137,7 @@ export const GridOutline: Story = {
 export const GridWithLargeGap: Story = {
   args: {
     grid: true,
-    gap: '8',
+    gap: 'lg',
     children: (
       <>
         <Image
@@ -145,7 +145,7 @@ export const GridWithLargeGap: Story = {
           alt="Hero image"
           imgClassName="w-full h-auto object-cover rounded-lg"
         />
-        <Box padding="p-8">
+        <Box padding="xl">
           <Heading as="h2" marginBottom="sm">Large Gap</Heading>
           <p>This grid uses a large gap between columns.</p>
           <p className="mt-2 text-sm text-gray-600">gap="lg" provides more breathing room.</p>
@@ -158,7 +158,7 @@ export const GridWithLargeGap: Story = {
 export const GridWithSmallGap: Story = {
   args: {
     grid: true,
-    gap: '4',
+    gap: 'sm',
     variant: 'outline',
     children: (
       <>
@@ -214,8 +214,8 @@ export const WithBackgroundImage: Story = {
 
 export const CustomPaddingAndMargin: Story = {
   args: {
-    padding: '8',
-    margin: '4',
+    padding: 'lg',
+    margin: 'sm',
     children: (
       <Box>
         <Heading as="h3" marginBottom="xs">Custom Spacing</Heading>

@@ -1,57 +1,27 @@
 import React from 'react';
-import { BoxProps, buildSpacingClasses } from '../../layout/Box/Box';
+import type { SpacingProps } from '../../tokens/spacing';
+import { buildSpacingClasses } from '../../tokens/spacing';
+import { cn } from '../../utils/cn';
 
-export interface StoryFooterProps extends BoxProps {
-  /**
-   * Content of the story footer
-   */
+export interface StoryFooterProps extends SpacingProps {
   children: React.ReactNode;
+  className?: string;
+  style?: React.CSSProperties;
 }
 
-/**
- * StoryFooter component for displaying story metadata or related content
- *
- * @example
- * ```tsx
- * <StoryFooter>
- *   <Text className="text-sm">Published: January 1, 2024</Text>
- * </StoryFooter>
- * ```
- */
 export function StoryFooter({
   children,
   className,
-  padding,
-  margin,
-  border,
-  width,
-  height,
-  gap = '2',
-  backgroundColorClass,
-  backgroundImageUrl,
-  as: Component = 'footer',
+  gap = 'xs',
   style,
-  ...props
+  ...spacingProps
 }: StoryFooterProps) {
-  const spacingClasses = buildSpacingClasses({ padding, margin, border, width, height, gap });
-
-  const footerClasses = [
-    'story-footer',
-    spacingClasses,
-    backgroundColorClass,
-    className,
-  ]
-    .filter(Boolean)
-    .join(' ');
-
-  const combinedStyle: React.CSSProperties = {
-    ...style,
-    ...(backgroundImageUrl ? { backgroundImage: `url(${backgroundImageUrl})` } : {}),
-  };
-
   return (
-    <Component className={footerClasses} style={combinedStyle} {...props}>
+    <footer
+      className={cn('story-footer', buildSpacingClasses({ ...spacingProps, gap }), className)}
+      style={style}
+    >
       {children}
-    </Component>
+    </footer>
   );
 }

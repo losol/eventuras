@@ -1,22 +1,22 @@
 import React from 'react';
-import { Box, BoxProps } from '../Box/Box';
+import type { SpacingProps } from '../../tokens/spacing';
+import { buildSpacingClasses } from '../../tokens/spacing';
+import { cn } from '../../utils/cn';
 
-export type ContainerProps = Omit<BoxProps, 'as'>;
+export interface ContainerProps extends SpacingProps {
+  className?: string;
+  children?: React.ReactNode;
+}
 
 const Container: React.FC<ContainerProps> = ({
-  className = 'container',
-  margin = 'mx-auto',
-  padding = 'px-3 pb-18',
-  ...rest
+  className,
+  children,
+  ...spacingProps
 }) => {
   return (
-    <Box
-      as="div"
-      className={`${className}`}
-      margin={margin}
-      padding={padding}
-      {...rest}
-    />
+    <div className={cn('container mx-auto px-3 pb-18', buildSpacingClasses(spacingProps), className)}>
+      {children}
+    </div>
   );
 };
 

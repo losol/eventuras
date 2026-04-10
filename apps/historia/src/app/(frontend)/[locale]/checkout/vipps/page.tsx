@@ -43,7 +43,7 @@ export default async function VippsCheckoutPageWrapper({
   if (!reference) {
     logger.warn('No payment reference in URL');
     return (
-      <Container padding="px-4 py-16">
+      <Container paddingX="sm" paddingY="xl">
         <div className="mx-auto max-w-2xl">
           <Card>
             <Error tone="error" type="generic">
@@ -77,7 +77,7 @@ export default async function VippsCheckoutPageWrapper({
       );
 
       return (
-        <Container padding="px-4 py-16">
+        <Container paddingX="sm" paddingY="xl">
           <div className="mx-auto max-w-2xl">
             <Card>
               <Heading as="h1" marginBottom="xs">
@@ -117,7 +117,7 @@ export default async function VippsCheckoutPageWrapper({
       );
 
       return (
-        <Container padding="px-4 py-16">
+        <Container paddingX="sm" paddingY="xl">
           <div className="mx-auto max-w-2xl">
             <Card>
               <Heading as="h1" marginBottom="xs">
@@ -164,7 +164,7 @@ export default async function VippsCheckoutPageWrapper({
   return (
     <Suspense
       fallback={
-        <Container padding="px-4 py-16">
+        <Container paddingX="sm" paddingY="xl">
           <div className="mx-auto max-w-2xl">
             <Card>
               <div className="flex justify-center py-12">
