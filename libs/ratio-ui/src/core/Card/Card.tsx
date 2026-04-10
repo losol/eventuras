@@ -12,7 +12,6 @@ export interface CardProps extends SpacingProps, BorderProps {
   as?: React.ElementType;
   className?: string;
   style?: React.CSSProperties;
-  dark?: boolean;
   container?: boolean;
   variant?: 'default' | 'wide' | 'outline' | 'transparent';
   hoverEffect?: boolean;
@@ -22,7 +21,6 @@ export interface CardProps extends SpacingProps, BorderProps {
 }
 
 export const Card: React.FC<CardProps> = ({
-  dark = false,
   container = false,
   variant = 'default',
   hoverEffect = false,
