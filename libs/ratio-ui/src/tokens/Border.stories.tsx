@@ -1,4 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react-vite';
+import type { BorderProps } from './types';
+import { buildBorderClasses } from './classBuilders';
 
 const radii = [
   { name: 'sm', token: '--radius-sm' },
@@ -64,4 +66,64 @@ type Story = StoryObj;
 
 export const Overview: Story = {
   render: () => <AllBorders />,
+};
+
+/* ------------------------------------------------------------------ */
+/*  ADR-0001: BorderProps API                                         */
+/* ------------------------------------------------------------------ */
+
+const BorderBox = ({ label, props }: { label: string; props: BorderProps }) => (
+  <div className="flex flex-col items-center gap-2">
+    <div className={`h-20 w-32 bg-neutral-50 dark:bg-neutral-900 ${buildBorderClasses(props)}`} />
+    <span className="text-xs font-mono text-text-subtle text-center">{label}</span>
+  </div>
+);
+
+const BorderPropsDemo = () => (
+  <div className="p-6 max-w-5xl">
+    <h2 className="text-lg font-bold mb-1">BorderProps API</h2>
+    <p className="text-sm text-text-muted mb-6">
+      Typed border props: <code className="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">border</code>,{' '}
+      <code className="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">borderColor</code>,{' '}
+      <code className="bg-neutral-100 dark:bg-neutral-800 px-1 rounded">radius</code>.
+    </p>
+
+    {/* Border variants */}
+    <h3 className="text-sm font-semibold mb-3">Variants</h3>
+    <div className="flex gap-6 mb-8 flex-wrap">
+      <BorderBox label='border={true}' props={{ border: true, radius: 'md' }} />
+      <BorderBox label='border="default"' props={{ border: 'default', radius: 'md' }} />
+      <BorderBox label='border="strong"' props={{ border: 'strong', radius: 'md' }} />
+      <BorderBox label='border="subtle"' props={{ border: 'subtle', radius: 'md' }} />
+    </div>
+
+    {/* Border colors */}
+    <h3 className="text-sm font-semibold mb-3">Colors</h3>
+    <div className="flex gap-4 mb-8 flex-wrap">
+      {(['default', 'subtle', 'strong', 'primary', 'success', 'warning', 'error', 'info'] as const).map(color => (
+        <BorderBox
+          key={color}
+          label={`borderColor="${color}"`}
+          props={{ border: true, borderColor: color, radius: 'md' }}
+        />
+      ))}
+    </div>
+
+    {/* Radius scale */}
+    <h3 className="text-sm font-semibold mb-3">Radius</h3>
+    <div className="flex gap-6 flex-wrap">
+      {(['none', 'sm', 'md', 'lg', 'xl', 'full'] as const).map(r => (
+        <BorderBox
+          key={r}
+          label={`radius="${r}"`}
+          props={{ border: true, radius: r }}
+        />
+      ))}
+    </div>
+  </div>
+);
+
+export const PropAPI: Story = {
+  name: 'BorderProps API',
+  render: () => <BorderPropsDemo />,
 };
