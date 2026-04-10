@@ -1,41 +1,17 @@
 /**
- * Typed class-name builders for the unified prop APIs.
+ * Border types and class builder
  * @see docs/adr/0001-spacing-borders-colors.md
  */
 
-import type { Space, SpacingProps, BorderProps } from './types';
+import type { Color } from './colors';
 
-// ---------------------------------------------------------------------------
-// Spacing
-// ---------------------------------------------------------------------------
+export type BorderVariant = 'default' | 'strong' | 'subtle';
 
-/** Maps a Space token to the Tailwind suffix (matches --spacing-* keys) */
-const spaceValue: Record<Space, string> = {
-  none: '0',
-  xs: 'xs',
-  sm: 'sm',
-  md: 'md',
-  lg: 'lg',
-  xl: 'xl',
-};
-
-export function buildSpacingClasses(props: SpacingProps): string {
-  const classes: string[] = [];
-
-  if (props.padding) classes.push(`p-${spaceValue[props.padding]}`);
-  if (props.paddingX) classes.push(`px-${spaceValue[props.paddingX]}`);
-  if (props.paddingY) classes.push(`py-${spaceValue[props.paddingY]}`);
-  if (props.margin) classes.push(`m-${spaceValue[props.margin]}`);
-  if (props.marginX) classes.push(`mx-${spaceValue[props.marginX]}`);
-  if (props.marginY) classes.push(`my-${spaceValue[props.marginY]}`);
-  if (props.gap) classes.push(`gap-${spaceValue[props.gap]}`);
-
-  return classes.join(' ');
+export interface BorderProps {
+  border?: boolean | BorderVariant;
+  borderColor?: 'default' | 'subtle' | 'strong' | Color;
+  radius?: 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'full';
 }
-
-// ---------------------------------------------------------------------------
-// Borders
-// ---------------------------------------------------------------------------
 
 const radiusMap: Record<NonNullable<BorderProps['radius']>, string> = {
   none: 'rounded-none',

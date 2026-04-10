@@ -17,3 +17,44 @@ export type GapSize = keyof typeof gridGapClasses;
 export const getGridClasses = (gap: GapSize = '6'): string => {
   return `grid grid-cols-1 md:grid-cols-2 ${gridGapClasses[gap]}`;
 };
+
+// ---------------------------------------------------------------------------
+// ADR-0001: Semantic spacing scale
+// ---------------------------------------------------------------------------
+
+/** 6-step semantic spacing scale backed by fluid CSS tokens */
+export type Space = 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+
+export interface SpacingProps {
+  padding?: Space;
+  paddingX?: Space;
+  paddingY?: Space;
+  margin?: Space;
+  marginX?: Space;
+  marginY?: Space;
+  gap?: Space;
+}
+
+/** Maps a Space token to the Tailwind suffix (matches --spacing-* keys) */
+const spaceValue: Record<Space, string> = {
+  none: '0',
+  xs: 'xs',
+  sm: 'sm',
+  md: 'md',
+  lg: 'lg',
+  xl: 'xl',
+};
+
+export function buildSpacingClasses(props: SpacingProps): string {
+  const classes: string[] = [];
+
+  if (props.padding) classes.push(`p-${spaceValue[props.padding]}`);
+  if (props.paddingX) classes.push(`px-${spaceValue[props.paddingX]}`);
+  if (props.paddingY) classes.push(`py-${spaceValue[props.paddingY]}`);
+  if (props.margin) classes.push(`m-${spaceValue[props.margin]}`);
+  if (props.marginX) classes.push(`mx-${spaceValue[props.marginX]}`);
+  if (props.marginY) classes.push(`my-${spaceValue[props.marginY]}`);
+  if (props.gap) classes.push(`gap-${spaceValue[props.gap]}`);
+
+  return classes.join(' ');
+}
