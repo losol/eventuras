@@ -68,7 +68,7 @@ const Step03PaymentConfiguration = ({
 
   return (
     <>
-      <Heading as="h2" className="mb-6">
+      <Heading as="h2" marginBottom="sm">
         {t('user.registration.steps.payment.title')}
       </Heading>
       <Form onSubmit={handleSubmit(onSubmitForm)} className="space-y-6">

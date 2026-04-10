@@ -18,7 +18,7 @@ export const Dialog = (props: DialogProps) => {
       onClickOutside={props.onClose}
     >
       <AriaDialog className="relative z-10">
-        <Heading as="h3" padding="pt-0 pb-3">
+        <Heading as="h3" paddingBottom="xs">
           {props.title}
         </Heading>
         {props.children}

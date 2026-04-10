@@ -131,7 +131,7 @@ export const MarkdownContent = ({
         />
       );
     },
-    p: ({ node, ...props }) => <Text as="p" className="pb-3" {...props} />,
+    p: ({ node, ...props }) => <Text as="p" paddingBottom="xs" {...props} />,
     h1: ({ node, children, ...props }) => (
       <Heading as="h1" {...props}>
         {children}

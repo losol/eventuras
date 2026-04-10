@@ -1,6 +1,5 @@
 import React, { forwardRef } from 'react';
 import { LoaderCircle } from '../../icons';
-import { BoxSpacingProps, buildSpacingClasses } from '../../layout/Box/Box';
 
 // Animation constants
 const ANIMATION_CLASSES = [
@@ -33,8 +32,7 @@ export const buttonSizes = {
 };
 
 export interface ButtonProps
-  extends Omit<BoxSpacingProps, 'padding'>,
-  Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'className' | 'style'> {
+  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'className' | 'style'> {
   ariaLabel?: string;
   icon?: React.ReactNode;
   loading?: boolean;
@@ -44,8 +42,6 @@ export interface ButtonProps
   block?: boolean;
   className?: string;
   testId?: string;
-  /** Custom padding - overrides size padding if provided */
-  padding?: string;
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
@@ -62,25 +58,13 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
     className = '',
     type = 'button',
     onClick,
-    // spacing props:
-    padding,
-    margin,
-    border,
-    width,
-    height,
     testId,
     // all other native button props (e.g. id, name, value)
     ...rest
   },
   ref
 ) {
-  // Use custom padding if provided, otherwise use size-based padding
-  const effectivePadding = padding ?? buttonSizes[size];
-  const spacingClasses = buildSpacingClasses({ padding: effectivePadding, margin, border, width, height });
-
-  // Get font size from size preset
-  const sizeClass = buttonSizes[size].split(' ').find(c => c.startsWith('text-')) ?? '';
-
+  const sizeClasses = buttonSizes[size];
   const displayClass = block ? 'w-full' : '';
   const variantClass = buttonStyles[variant];
 
@@ -96,8 +80,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
 
   // combine everything
   const classes = [
-    spacingClasses,
-    sizeClass,
+    sizeClasses,
     displayClass,
     variantClass,
     textColorClass,

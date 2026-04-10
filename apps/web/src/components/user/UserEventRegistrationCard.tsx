@@ -30,7 +30,7 @@ const UserEventRegistrationCard = ({
   const t = useTranslations();
   return (
     <Card hoverEffect>
-      <Heading as="h3" padding="pt-2">
+      <Heading as="h3" paddingTop="xs">
         {eventTitle}
       </Heading>
       <Text>
@@ -47,7 +47,7 @@ const UserEventRegistrationCard = ({
           </ul>
         </div>
       )}
-      <Text padding="py-5">
+      <Text paddingY="sm">
         <Link
           href={`/user/events/${eventId}`}
           variant="button-primary"

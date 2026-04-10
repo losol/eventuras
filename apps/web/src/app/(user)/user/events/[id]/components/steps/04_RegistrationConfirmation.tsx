@@ -45,7 +45,7 @@ const Step04RegistrationConfirmation: React.FC<Step04RegistrationConfirmationPro
   };
   return (
     <div className="max-w-2xl mx-auto">
-      <Heading as="h2" className="mb-6">
+      <Heading as="h2" marginBottom="sm">
         {t('user.registration.steps.confirmation.title')}
       </Heading>
       <p className="mb-6 text-gray-600 dark:text-gray-400">
@@ -53,7 +53,7 @@ const Step04RegistrationConfirmation: React.FC<Step04RegistrationConfirmationPro
       </p>
       {products.length > 0 && (
         <div className="mb-8">
-          <Heading as="h3" className="mb-4">
+          <Heading as="h3" marginBottom="sm">
             {t('common.labels.products')}
           </Heading>
           <ul className="space-y-2 bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
@@ -72,7 +72,7 @@ const Step04RegistrationConfirmation: React.FC<Step04RegistrationConfirmationPro
         </div>
       )}
       <div className="mb-8">
-        <Heading as="h3" className="mb-4">
+        <Heading as="h3" marginBottom="sm">
           {t('user.registration.labels.paymentDetails')}
         </Heading>
         <dl className="space-y-2 bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">

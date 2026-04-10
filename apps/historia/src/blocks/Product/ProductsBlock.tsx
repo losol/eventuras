@@ -104,11 +104,11 @@ export const ProductsBlock: React.FC<ProductBlockProps> = (props) => {
               <Image src={imageUrl} alt={product.title || 'Product image'} />
             )}
             <div>
-              <Heading as="h3" padding="py-0 pt-0">
+              <Heading as="h3">
                 {product.title}
               </Heading>
 
-              {product.lead && <Text className="mt-2">{product.lead}</Text>}
+              {product.lead && <Text marginTop="xs">{product.lead}</Text>}
 
               {product.description && (
                 <div className="mt-4">

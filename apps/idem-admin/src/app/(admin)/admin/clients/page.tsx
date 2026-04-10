@@ -1,10 +1,10 @@
 import { ArrowLeft, Check, X } from 'lucide-react';
 
-import { Heading } from '@eventuras/ratio-ui/core/Heading';
-import { Text } from '@eventuras/ratio-ui/core/Text';
 import { Badge } from '@eventuras/ratio-ui/core/Badge';
-import { Table } from '@eventuras/ratio-ui/core/Table';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Panel } from '@eventuras/ratio-ui/core/Panel';
+import { Table } from '@eventuras/ratio-ui/core/Table';
+import { Text } from '@eventuras/ratio-ui/core/Text';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
 import { getClients } from './actions';
@@ -19,12 +19,12 @@ export default async function ClientsPage() {
   return (
     <div>
       <div className="mb-6">
-        <Link href="/admin" className="flex items-center gap-1 text-sm text-muted hover:text-primary-600 mb-4">
+        <Link href="/admin" marginBottom="sm" className="flex items-center gap-1 text-sm text-muted hover:text-primary-600">
           <ArrowLeft className="h-4 w-4" />
           Back to Dashboard
         </Link>
         <Heading as="h1">OAuth Clients</Heading>
-        <Text className="text-muted mt-2">
+        <Text marginTop="xs" className="text-muted">
           Manage registered OAuth applications.
         </Text>
       </div>

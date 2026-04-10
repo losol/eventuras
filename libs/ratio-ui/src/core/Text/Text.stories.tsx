@@ -141,6 +141,6 @@ WithIcon.args = {
 export const WithPadding = Template.bind({});
 WithPadding.args = {
   text: 'Text with padding',
-  padding: 'p-4',
+  padding: 'md',
   className: 'bg-gray-100',
 };

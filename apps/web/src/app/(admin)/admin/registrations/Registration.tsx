@@ -116,7 +116,7 @@ const Registration = ({
     return (
       <>
         {userNameHeading && registration.user?.name && (
-          <Heading as="h3" className="mb-4">
+          <Heading as="h3" marginBottom="sm">
             {registration.user.name}
           </Heading>
         )}
@@ -133,7 +133,7 @@ const Registration = ({
         </dl>
         {registration.orders && registration.orders.length > 0 && (
           <Section>
-            <Heading as="h4" className="mb-2">
+            <Heading as="h4" marginBottom="xs">
               {t('common.registrations.labels.orders')}
             </Heading>
             <ul className="space-y-2">
@@ -150,7 +150,7 @@ const Registration = ({
   return (
     <>
       {userNameHeading && registration.user?.name && (
-        <Heading as="h3" className="mb-4">
+        <Heading as="h3" marginBottom="sm">
           {registration.user.name}
         </Heading>
       )}

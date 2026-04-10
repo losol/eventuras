@@ -1,5 +1,5 @@
-import Link from 'next/link';
 import { LucideIcon } from 'lucide-react';
+import Link from 'next/link';
 
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
@@ -34,7 +34,7 @@ export function DashboardCard({
           <Heading as="h3" className="text-lg font-semibold">
             {title}
           </Heading>
-          <Text className="text-sm text-muted mt-1">{description}</Text>
+          <Text marginTop="xs" className="text-sm text-muted">{description}</Text>
         </div>
       </div>
     </Card>

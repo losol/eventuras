@@ -43,7 +43,7 @@ const AdminPage = async (props: AdminPageProps) => {
       <Section padding="py-10">
         <Heading as="h2">{t('common.events.sectiontitle')}</Heading>
         <Box margin="py-2">
-          <Link href={`/admin/events`} variant="button-secondary" padding="my-4">
+          <Link href={`/admin/events`} variant="button-secondary" marginY="sm">
             {t('common.labels.allEvents')}
           </Link>
         </Box>

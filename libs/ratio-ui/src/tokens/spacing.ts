@@ -29,9 +29,13 @@ export interface SpacingProps {
   padding?: Space;
   paddingX?: Space;
   paddingY?: Space;
+  paddingTop?: Space;
+  paddingBottom?: Space;
   margin?: Space;
   marginX?: Space;
   marginY?: Space;
+  marginTop?: Space;
+  marginBottom?: Space;
   gap?: Space;
 }
 
@@ -51,9 +55,13 @@ export function buildSpacingClasses(props: SpacingProps): string {
   if (props.padding) classes.push(`p-${spaceValue[props.padding]}`);
   if (props.paddingX) classes.push(`px-${spaceValue[props.paddingX]}`);
   if (props.paddingY) classes.push(`py-${spaceValue[props.paddingY]}`);
+  if (props.paddingTop) classes.push(`pt-${spaceValue[props.paddingTop]}`);
+  if (props.paddingBottom) classes.push(`pb-${spaceValue[props.paddingBottom]}`);
   if (props.margin) classes.push(`m-${spaceValue[props.margin]}`);
   if (props.marginX) classes.push(`mx-${spaceValue[props.marginX]}`);
   if (props.marginY) classes.push(`my-${spaceValue[props.marginY]}`);
+  if (props.marginTop) classes.push(`mt-${spaceValue[props.marginTop]}`);
+  if (props.marginBottom) classes.push(`mb-${spaceValue[props.marginBottom]}`);
   if (props.gap) classes.push(`gap-${spaceValue[props.gap]}`);
 
   return classes.join(' ');

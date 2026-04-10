@@ -49,7 +49,7 @@ export const MemberProfile: React.FC<MemberProfileProps> = ({
   };
   return (
     <Card margin="my-1">
-      <Heading as="h2" padding="py-3">
+      <Heading as="h2" paddingY="xs">
         {user.name ?? 'Member'}
         {archivedBadge}
       </Heading>

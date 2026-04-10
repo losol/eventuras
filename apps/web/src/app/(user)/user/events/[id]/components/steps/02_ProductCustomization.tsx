@@ -49,7 +49,7 @@ const Step02ProductCustomization = ({
   };
   return (
     <>
-      <Heading as="h2" className="mb-6">
+      <Heading as="h2" marginBottom="sm">
         {t('user.registration.steps.products.title')}
       </Heading>
       <form

@@ -1,22 +1,14 @@
 import React from 'react';
-import {
-  BoxSpacingProps,
-  buildSpacingClasses,
-} from '../../layout/Box/Box';
+import type { SpacingProps } from '../../tokens/spacing';
+import { buildSpacingClasses } from '../../tokens/spacing';
+import type { Color } from '../../tokens/colors';
 
 export type TextSize = 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl';
 export type TextWeight = 'light' | 'normal' | 'medium' | 'semibold' | 'bold';
 export type TextVariant = 'default' | 'muted' | 'subtle';
-export type TextColor =
-  | 'primary'
-  | 'secondary'
-  | 'accent'
-  | 'error'
-  | 'success'
-  | 'warning'
-  | 'info';
+export type TextColor = Exclude<Color, 'neutral'>;
 
-export interface TextProps extends BoxSpacingProps {
+export interface TextProps extends SpacingProps {
   text?: string | null;
   children?: React.ReactNode;
   as?: 'p' | 'span';
@@ -73,11 +65,9 @@ export const Text: React.FC<TextProps> = ({
   color,
   className = '',
   icon,
-  padding,
-  margin,
-  border,
-  width,
-  height,
+  padding, paddingX, paddingY, paddingTop, paddingBottom,
+  margin, marginX, marginY, marginTop, marginBottom,
+  gap,
   testId,
   ...restHtmlProps
 }) => {
@@ -95,7 +85,7 @@ export const Text: React.FC<TextProps> = ({
     color ? colorClasses[color] : variantClasses[variant],
     size ? sizeClasses[size] : undefined,
     weight ? weightClasses[weight] : undefined,
-    buildSpacingClasses({ padding, margin, border, width, height }),
+    buildSpacingClasses({ padding, paddingX, paddingY, paddingTop, paddingBottom, margin, marginX, marginY, marginTop, marginBottom, gap }),
     className,
   ].filter(Boolean).join(' ');
 

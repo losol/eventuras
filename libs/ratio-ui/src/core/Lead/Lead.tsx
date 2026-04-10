@@ -1,7 +1,8 @@
 import React from 'react';
-import { BoxSpacingProps, buildSpacingClasses } from '../../layout/Box/Box';
+import type { SpacingProps } from '../../tokens/spacing';
+import { buildSpacingClasses } from '../../tokens/spacing';
 
-export interface LeadProps extends BoxSpacingProps {
+export interface LeadProps extends SpacingProps {
   text?: string | null;
   children?: React.ReactNode;
   as?: 'p' | 'div';
@@ -25,11 +26,9 @@ export const Lead: React.FC<LeadProps> = ({
   children,
   as: Component = 'p',
   className = '',
-  padding,
-  margin,
-  border,
-  width,
-  height,
+  padding, paddingX, paddingY, paddingTop, paddingBottom,
+  margin, marginX, marginY, marginTop, marginBottom,
+  gap,
   testId,
   ...restHtmlProps
 }) => {
@@ -48,7 +47,7 @@ export const Lead: React.FC<LeadProps> = ({
   const content = text != null ? text : children;
 
   // Compute spacing
-  const spacingCls = buildSpacingClasses({ padding, margin, border, width, height });
+  const spacingCls = buildSpacingClasses({ padding, paddingX, paddingY, paddingTop, paddingBottom, margin, marginX, marginY, marginTop, marginBottom, gap });
 
   // Default lead styling - larger text, medium weight
   const leadClasses = ['text-lg font-medium leading-relaxed', spacingCls, className]

@@ -44,7 +44,7 @@ export const CategoryGroupedEvents = async ({ events }: CategoryGroupedEventsPro
     <div className="space-y-8">
       {Array.from(groups.entries()).map(([category, categoryEvents]) => (
         <div key={category || '__uncategorized'}>
-          <Heading as="h3" padding="pb-3">
+          <Heading as="h3" paddingBottom="xs">
             {category || t('common.events.otherCategory')}
           </Heading>
           <Grid>

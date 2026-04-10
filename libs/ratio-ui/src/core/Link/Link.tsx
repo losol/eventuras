@@ -1,10 +1,11 @@
 // core/Link.tsx
 import React from 'react';
-import { BoxSpacingProps, buildSpacingClasses } from '../../layout/Box/Box';
+import type { SpacingProps } from '../../tokens/spacing';
+import { buildSpacingClasses } from '../../tokens/spacing';
 import { buttonStyles } from '../Button/Button';
 import './Link.css';
 
-export interface LinkProps extends BoxSpacingProps {
+export interface LinkProps extends SpacingProps {
   href: string;
   children?: React.ReactNode;
   className?: string;
@@ -29,13 +30,15 @@ export const Link = React.forwardRef<HTMLElement, LinkProps>(
       block = false,
       variant,
       linkOverlay = false,
-      padding, margin, border, width, height,
+      padding, paddingX, paddingY, paddingTop, paddingBottom,
+      margin, marginX, marginY, marginTop, marginBottom,
+      gap,
       testId,
       ...rest
     },
     ref
   ) => {
-    const spacingClasses = buildSpacingClasses({ padding, margin, border, width, height });
+    const spacingClasses = buildSpacingClasses({ padding, paddingX, paddingY, paddingTop, paddingBottom, margin, marginX, marginY, marginTop, marginBottom, gap });
 
     // Default link styling (when no variant or custom className is set)
     const defaultLinkClasses = !variant && !className

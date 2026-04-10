@@ -10,7 +10,7 @@ export default function EventNotFound() {
   return (
     <>
       <Heading>{t('common.events.detailspage.notfound.title')}</Heading>
-      <Text padding="py-6">{t('common.events.detailspage.notfound.description')}</Text>
+      <Text paddingY="sm">{t('common.events.detailspage.notfound.description')}</Text>
       <Link href="/" variant="button-primary">
         {t('common.events.detailspage.notfound.back')}
       </Link>

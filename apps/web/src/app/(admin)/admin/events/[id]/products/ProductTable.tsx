@@ -94,8 +94,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({ eventId, products, o
           <Button
             variant="outline"
             size="sm"
-            padding="p-2"
-            margin="m-0"
+            className="p-2"
             onClick={() => onEdit(info.row.original)}
             ariaLabel={t('common.labels.edit')}
             testId="edit-product-button"

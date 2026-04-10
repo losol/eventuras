@@ -34,8 +34,8 @@ const UserProfileCard = ({ profile }: UserProfileCardProps) => {
           </Item>
         )}
       </DescriptionList>
-      <Text margin="my-2">
-        <Link href="/user/account" variant="button-outline" margin="my-3">
+      <Text marginY="xs">
+        <Link href="/user/account" variant="button-outline" marginY="xs">
           {t('common.labels.editProfile')}
         </Link>
       </Text>

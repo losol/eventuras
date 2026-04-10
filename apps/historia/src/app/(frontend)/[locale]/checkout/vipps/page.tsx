@@ -80,7 +80,7 @@ export default async function VippsCheckoutPageWrapper({
         <Container padding="px-4 py-16">
           <div className="mx-auto max-w-2xl">
             <Card>
-              <Heading as="h1" className="mb-2">
+              <Heading as="h1" marginBottom="xs">
                 Takk for din bestilling!
               </Heading>
 
@@ -120,7 +120,7 @@ export default async function VippsCheckoutPageWrapper({
         <Container padding="px-4 py-16">
           <div className="mx-auto max-w-2xl">
             <Card>
-              <Heading as="h1" className="mb-2">
+              <Heading as="h1" marginBottom="xs">
                 Takk for din bestilling!
               </Heading>
 
