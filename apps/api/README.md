@@ -34,9 +34,29 @@ Before you can run the API locally, ensure you have the following installed:
 
 ## Getting Started
 
-### Set Up PostgreSQL Database
+### Quick Start with Aspire (recommended)
 
-The easiest way would be to use an docker compose file, for example from the `losol/dockers` [repo](https://github.com/losol/dockers/tree/master/postgres).
+The fastest way to get started is with .NET Aspire, which orchestrates PostgreSQL and the API with a single command:
+
+```bash
+dotnet run --project src/Eventuras.AppHost
+```
+
+This will:
+
+- Start a PostgreSQL container with a pre-configured `eventuras` database
+- Start the API with the connection string automatically injected
+- Open the **Aspire Dashboard** where you can inspect logs, traces, and metrics in real time
+
+You still need to configure an identity provider (see below), but the database setup is handled for you.
+
+### Manual Setup
+
+If you prefer to manage PostgreSQL yourself, follow the steps below.
+
+#### Set Up PostgreSQL Database
+
+The easiest way would be to use a docker compose file, for example from the `losol/dockers` [repo](https://github.com/losol/dockers/tree/master/postgres).
 
 Create a new PostgreSQL database for the project, and assign a user with permissions to use the database.
 
@@ -54,9 +74,25 @@ dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Server=SERVER_NAM
 
 Remember to open the necessary firewall rules to allow your local machine to connect to the Azure PostgreSQL instance.
 
+#### Apply Database Migrations
+
+Run Entity Framework migrations to set up the database schema:
+
+```bash
+dotnet ef database update --project src/Eventuras.WebApi
+```
+
+#### Run the API
+
+Start the development server:
+
+```bash
+dotnet run --project src/Eventuras.WebApi
+```
+
 ### Set up identity provider
 
-Set Environment variables for identy provider detais, or set user-secrets for local development. You should at least set  the following: `Auth:ClientId`, `Auth:ClientSecret`, `Auth:Issuer`, and `Auth:ApiIdentifier`.
+Set environment variables for identity provider details, or set user-secrets for local development. You should at least set the following: `Auth:ClientId`, `Auth:ClientSecret`, `Auth:Issuer`, and `Auth:ApiIdentifier`.
 
 Example using dotnet user-secrets:
 
@@ -67,33 +103,18 @@ dotnet user-secrets set "Auth:Issuer" "https://your-tenant.auth0.com/" --project
 dotnet user-secrets set "Auth:ApiIdentifier" "your-api-id" --project src/Eventuras.WebApi
 ```
 
-
-### Apply Database Migrations
-
-Run Entity Framework migrations to set up the database schema:
-
-```bash
-dotnet ef database update --project src/Eventuras.WebApi
-```
-
-### Optional: Use ConvertoAPI for pdf generation
+### Optional: Use ConvertoAPI for PDF generation
 
 If you want to use ConvertoAPI for PDF generation, set `Converto:ClientId`, `Converto:ClientSecret`, `Converto:PdfEndpointUrl`, and `Converto:TokenEndpointUrl`.
 
-
-### Run the API
-
-Start the development server:
-
-```bash
-dotnet run --project src/Eventuras.WebApi
-```
+### Endpoints
 
 The API will be available at:
 - **HTTP**: `http://localhost:5000`
 - **HTTPS**: `https://localhost:5001`
 - **API Docs**: `http://localhost:5000/docs` (enabled in Development, or via `FeatureManagement:EnableApiDocs`)
 - **Integration tests**: `https://localhost:5002`
+- **Aspire Dashboard**: Shown in terminal output when running via AppHost
 
 
 ## Development
@@ -136,6 +157,41 @@ Once the application is running, you can explore the API documentation at:
 - OpenAPI JSON: `https://localhost:5001/openapi/v3.json`
 
 API docs are enabled by default in Development. In other environments, set `FeatureManagement:EnableApiDocs` to `true`.
+
+## Observability
+
+The API uses OpenTelemetry (via the ServiceDefaults project) to emit traces, metrics, and structured logs. During local development these are visible in the Aspire Dashboard. In production you can export the same telemetry to your Grafana stack.
+
+### Exporting to Grafana (Prometheus / Loki / Tempo)
+
+Set the `OTEL_EXPORTER_OTLP_ENDPOINT` environment variable to point at an OpenTelemetry Collector or Grafana Alloy instance:
+
+```bash
+OTEL_EXPORTER_OTLP_ENDPOINT=http://alloy.internal:4317
+```
+
+The collector/Alloy then forwards:
+
+- **Metrics** to Prometheus (for Grafana dashboards)
+- **Traces** to Tempo (for distributed tracing)
+- **Logs** to Loki (for log aggregation)
+
+Example Alloy receiver config:
+
+```alloy
+otelcol.receiver.otlp "default" {
+  grpc { endpoint = "0.0.0.0:4317" }
+  http { endpoint = "0.0.0.0:4318" }
+
+  output {
+    metrics = [otelcol.exporter.prometheus.default.input]
+    traces  = [otelcol.exporter.otlp.tempo.input]
+    logs    = [otelcol.exporter.loki.default.input]
+  }
+}
+```
+
+When running via the AppHost locally, `OTEL_EXPORTER_OTLP_ENDPOINT` is set automatically to point at the Aspire Dashboard. No extra config is needed for local development.
 
 ## Project Structure
 
