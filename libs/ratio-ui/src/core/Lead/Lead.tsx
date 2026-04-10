@@ -2,13 +2,14 @@ import React from 'react';
 import type { SpacingProps } from '../../tokens/spacing';
 import { buildSpacingClasses } from '../../tokens/spacing';
 
-export interface LeadProps extends SpacingProps {
-  text?: string | null;
-  children?: React.ReactNode;
+interface LeadBaseProps extends SpacingProps {
   as?: 'p' | 'div';
   className?: string;
   testId?: string;
 }
+
+export type LeadProps = LeadBaseProps &
+  ({ children: React.ReactNode; text?: never } | { text: string | null; children?: never });
 
 /**
  * Lead component for displaying introduction or lead text
@@ -22,41 +23,27 @@ export interface LeadProps extends SpacingProps {
  * ```
  */
 export const Lead: React.FC<LeadProps> = ({
-  text,
   children,
+  text,
   as: Component = 'p',
   className = '',
   padding, paddingX, paddingY, paddingTop, paddingBottom,
   margin, marginX, marginY, marginTop, marginBottom,
   gap,
   testId,
-  ...restHtmlProps
-}) => {
-  // Only one of text/children
-  if (text != null && children != null) {
-    throw new Error(
-      'Lead component cannot take both `text` and `children`. Please provide only one.',
-    );
-  }
+}: LeadProps) => {
+  const renderable = text ?? children;
+  if (renderable == null) return null;
 
-  // Nothing to render?
-  if (text == null && children == null) {
-    return null;
-  }
-
-  const content = text != null ? text : children;
-
-  // Compute spacing
   const spacingCls = buildSpacingClasses({ padding, paddingX, paddingY, paddingTop, paddingBottom, margin, marginX, marginY, marginTop, marginBottom, gap });
 
-  // Default lead styling - larger text, medium weight
   const leadClasses = ['text-lg font-medium leading-relaxed', spacingCls, className]
     .filter(Boolean)
     .join(' ');
 
   return (
-    <Component className={leadClasses} data-testid={testId} {...restHtmlProps}>
-      {content}
+    <Component className={leadClasses} data-testid={testId}>
+      {renderable}
     </Component>
   );
 };

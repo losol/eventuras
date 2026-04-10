@@ -5,7 +5,6 @@ const meta: Meta<typeof Text> = {
   component: Text,
   tags: ['autodocs'],
   argTypes: {
-    text: { control: 'text' },
     as: {
       control: { type: 'select' },
       options: ['p', 'span'],
@@ -38,7 +37,7 @@ const Template: TextStory = args => <Text {...args} />;
 
 export const Playground = Template.bind({});
 Playground.args = {
-  text: 'This is a text component',
+  children: 'This is a text component',
 };
 
 export const WithChildren = Template.bind({});
@@ -100,47 +99,47 @@ export const Colors: TextStory = () => (
 
 export const MutedSmall = Template.bind({});
 MutedSmall.args = {
-  text: 'Small muted helper text',
+  children: 'Small muted helper text',
   size: 'sm',
   variant: 'muted',
 };
 
 export const LargeBold = Template.bind({});
 LargeBold.args = {
-  text: 'Large bold text',
+  children: 'Large bold text',
   size: 'lg',
   weight: 'bold',
 };
 
 export const ErrorMessage = Template.bind({});
 ErrorMessage.args = {
-  text: 'Something went wrong. Please try again.',
+  children: 'Something went wrong. Please try again.',
   size: 'sm',
   color: 'error',
 };
 
 export const PriceDisplay = Template.bind({});
 PriceDisplay.args = {
-  text: '1 250 kr',
+  children: '1 250 kr',
   size: '2xl',
   weight: 'bold',
 };
 
 export const AsSpan = Template.bind({});
 AsSpan.args = {
-  text: 'This is a span element',
+  children: 'This is a span element',
   as: 'span',
 };
 
 export const WithIcon = Template.bind({});
 WithIcon.args = {
-  text: 'Text with an icon',
+  children: 'Text with an icon',
   icon: <span>📍</span>,
 };
 
 export const WithPadding = Template.bind({});
 WithPadding.args = {
-  text: 'Text with padding',
+  children: 'Text with padding',
   padding: 'md',
   className: 'bg-gray-100',
 };
