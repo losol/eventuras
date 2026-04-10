@@ -15,6 +15,7 @@ import {
 } from '@eventuras/markdown-plugin-happening';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { NavList } from '@eventuras/ratio-ui/core/NavList';
+import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
@@ -55,18 +56,20 @@ const EventDetails: React.FC<EventProps> = ({ eventinfo }) => {
     <Section className="pb-24">
       <NavList items={sections} LinkComponent={Link} sticky />
       {sections.map(section => (
-        <Section key={section.id} id={section.id} container>
-          <Heading as="h2">{section.title}</Heading>
-          <MarkdownContent
-            markdown={section.content!}
-            allowExternalLinks={true}
-            remarkPlugins={[remarkSchedule, remarkCallout]}
-            customComponents={{ ...scheduleComponents, ...calloutComponents }}
-            sanitizeSchemaExtension={mergeSanitizeSchemas(
-              scheduleSanitizeSchema,
-              calloutSanitizeSchema
-            )}
-          />
+        <Section key={section.id} id={section.id}>
+          <Container>
+            <Heading as="h2">{section.title}</Heading>
+            <MarkdownContent
+              markdown={section.content!}
+              allowExternalLinks={true}
+              remarkPlugins={[remarkSchedule, remarkCallout]}
+              customComponents={{ ...scheduleComponents, ...calloutComponents }}
+              sanitizeSchemaExtension={mergeSanitizeSchemas(
+                scheduleSanitizeSchema,
+                calloutSanitizeSchema
+              )}
+            />
+          </Container>
         </Section>
       ))}
     </Section>

@@ -136,11 +136,13 @@ export default async function Homepage() {
 
       {/* Error section */}
       {hasError && (
-        <Section backgroundColorClass="bg-red-50 dark:bg-red-950" paddingY="lg" container>
-          <Heading as="h2" paddingBottom="sm">
-            {t('common.errors.failedToLoadEvents')}
-          </Heading>
-          <Text>{t('common.errors.tryRefresh')}</Text>
+        <Section backgroundColorClass="bg-red-50 dark:bg-red-950" paddingY="lg">
+          <Container>
+            <Heading as="h2" paddingBottom="sm">
+              {t('common.errors.failedToLoadEvents')}
+            </Heading>
+            <Text>{t('common.errors.tryRefresh')}</Text>
+          </Container>
         </Section>
       )}
 
@@ -156,19 +158,23 @@ export default async function Homepage() {
 
       {/* Regular events */}
       {hasEvents && (
-        <Section paddingY="lg" container>
-          <Heading as="h2" paddingBottom="sm">
-            {t('common.events.sectiontitle')}
-          </Heading>
-          <EventGrid eventinfos={events} />
+        <Section paddingY="lg">
+          <Container>
+            <Heading as="h2" paddingBottom="sm">
+              {t('common.events.sectiontitle')}
+            </Heading>
+            <EventGrid eventinfos={events} />
+          </Container>
         </Section>
       )}
       {!hasError && !hasEvents && !hasFeatured && (
-        <Section backgroundColorClass="bg-gray-50 dark:bg-slate-950" paddingY="lg" container>
-          <Heading as="h2" paddingBottom="sm">
-            {t('common.events.sectiontitle')}
-          </Heading>
-          <Text>{t('common.events.noEventsAvailable')}</Text>
+        <Section backgroundColorClass="bg-gray-50 dark:bg-slate-950" paddingY="lg">
+          <Container>
+            <Heading as="h2" paddingBottom="sm">
+              {t('common.events.sectiontitle')}
+            </Heading>
+            <Text>{t('common.events.noEventsAvailable')}</Text>
+          </Container>
         </Section>
       )}
     </>
