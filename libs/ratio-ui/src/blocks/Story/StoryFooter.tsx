@@ -5,15 +5,18 @@ import { cn } from '../../utils/cn';
 
 export interface StoryFooterProps
   extends SpacingProps,
-    Omit<React.ComponentPropsWithoutRef<'footer'>, keyof SpacingProps> {}
+    Omit<React.ComponentPropsWithoutRef<'footer'>, keyof SpacingProps> {
+  testId?: string;
+}
 
 export function StoryFooter(props: StoryFooterProps) {
-  const [spacing, { className, children, ...rest }] = extractSpacingProps(props);
+  const [spacing, { className, children, testId, ...rest }] = extractSpacingProps(props);
   const { gap = 'xs', ...otherSpacing } = spacing;
 
   return (
     <footer
       className={cn('story-footer', buildSpacingClasses({ ...otherSpacing, gap }), className)}
+      data-testid={testId}
       {...rest}
     >
       {children}

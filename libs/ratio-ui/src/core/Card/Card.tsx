@@ -17,6 +17,7 @@ export interface CardProps extends SpacingProps, BorderProps {
   variant?: 'default' | 'wide' | 'outline' | 'transparent';
   hoverEffect?: boolean;
   backgroundImageUrl?: string;
+  testId?: string;
 }
 
 export const Card: React.FC<CardProps> = ({
@@ -29,6 +30,7 @@ export const Card: React.FC<CardProps> = ({
   backgroundImageUrl,
   className,
   style,
+  testId,
   ...spacingAndBorder
 }) => {
   const baseClasses = 'p-4 relative rounded-lg';
@@ -64,6 +66,7 @@ export const Card: React.FC<CardProps> = ({
     <Component
       className={cn(baseClasses, transitionClasses, hoverClasses, bgClasses, spacingClasses, borderClasses, className)}
       style={combinedStyle}
+      data-testid={testId}
       {...rest}
     >
       {children}

@@ -5,13 +5,19 @@ import { cn } from '../../utils/cn';
 
 export interface ContainerProps
   extends SpacingProps,
-    Omit<React.ComponentPropsWithoutRef<'div'>, keyof SpacingProps> {}
+    Omit<React.ComponentPropsWithoutRef<'div'>, keyof SpacingProps> {
+  testId?: string;
+}
 
 export const Container: React.FC<ContainerProps> = (props) => {
-  const [spacingProps, { className, children, ...rest }] = extractSpacingProps(props);
+  const [spacingProps, { className, children, testId, ...rest }] = extractSpacingProps(props);
 
   return (
-    <div className={cn('container mx-auto px-3 pb-18', buildSpacingClasses(spacingProps), className)} {...rest}>
+    <div
+      className={cn('container mx-auto px-3 pb-18', buildSpacingClasses(spacingProps), className)}
+      data-testid={testId}
+      {...rest}
+    >
       {children}
     </div>
   );
