@@ -19,6 +19,8 @@ COPY ./src/Eventuras.Services.SendGrid/*.csproj ./src/Eventuras.Services.SendGri
 COPY ./src/Eventuras.Services.Smtp/*.csproj ./src/Eventuras.Services.Smtp/
 COPY ./src/Eventuras.Services.Stripe/*.csproj ./src/Eventuras.Services.Stripe/
 COPY ./src/Eventuras.Services.Twilio/*.csproj ./src/Eventuras.Services.Twilio/
+COPY ./src/Eventuras.AppHost/*.csproj ./src/Eventuras.AppHost/
+COPY ./src/Eventuras.ServiceDefaults/*.csproj ./src/Eventuras.ServiceDefaults/
 COPY ./src/Eventuras.WebApi/*.csproj ./src/Eventuras.WebApi/
 COPY ./src/Losol.Communication.Email/*.csproj ./src/Losol.Communication.Email/
 COPY ./src/Losol.Communication.Sms/*.csproj ./src/Losol.Communication.Sms/

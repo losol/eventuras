@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
+using Eventuras.ServiceDefaults;
 using Eventuras.Services;
 using Eventuras.Services.BackgroundJobs;
 using Eventuras.Services.Constants;
@@ -30,9 +31,11 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
+
 // Configure Serilog (reads from appsettings.json "Serilog" section)
 builder.Host.UseSerilog((context, config) =>
-    config.ReadFrom.Configuration(context.Configuration));
+    config.ReadFrom.Configuration(context.Configuration), writeToProviders: true);
 
 // Configure Sentry (activates automatically when Sentry:Dsn is set)
 builder.WebHost.UseSentry();
@@ -88,7 +91,6 @@ builder.Services.AddSmsServices();
 builder.Services.AddInvoicingServices(builder.Configuration, features);
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddMemoryCache();
-builder.Services.AddHealthChecks();
 builder.Services.Configure<AuthSettings>(builder.Configuration.GetSection("Auth"));
 
 builder.Services.AddCors(options =>
@@ -179,6 +181,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapDefaultEndpoints();
 
 // Kubernetes liveness/readiness probe – excludes external dependency checks.
 app.MapHealthChecks("/health", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions

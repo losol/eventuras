@@ -43,8 +43,9 @@ This project uses specialized agents for different contexts:
 
 - **Scope**: `apps/api/`
 - **File**: `.github/agents/backend-developer.md`
-- **Tech**: C# .NET, ASP.NET Core, Entity Framework Core, PostgreSQL
+- **Tech**: C# .NET, ASP.NET Core, Entity Framework Core, PostgreSQL, .NET Aspire
 - **Focus**: API development, business logic, database migrations, external integrations
+- **Run locally**: `dotnet run --project src/Eventuras.AppHost` (starts PostgreSQL + API + Aspire Dashboard)
 
 ### Frontend Agent
 
@@ -428,5 +429,27 @@ const variants = {
 - Should be explicitly documented with a comment explaining why
 
 ## Development Environment Tips
+
+### Running the API with Aspire
+
+The API project uses .NET Aspire for local development orchestration. Run the AppHost to start everything:
+
+```bash
+cd apps/api
+dotnet run --project src/Eventuras.AppHost
+```
+
+This automatically starts PostgreSQL in a Docker container and the API with the correct connection string. The Aspire Dashboard URL is printed to the terminal and provides real-time logs, traces, and metrics.
+
+The key Aspire projects:
+
+- `src/Eventuras.AppHost` — Orchestrator that defines the application model (PostgreSQL + API)
+- `src/Eventuras.ServiceDefaults` — Shared OpenTelemetry, health checks, service discovery, and HTTP resilience
+
+To run the API without Aspire (e.g., when you manage PostgreSQL separately):
+
+```bash
+dotnet run --project src/Eventuras.WebApi
+```
 
 ### Monorepo Navigation
