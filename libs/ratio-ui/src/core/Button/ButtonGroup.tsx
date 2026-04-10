@@ -11,10 +11,11 @@ export interface ButtonGroupProps
    * @default false
    */
   wrap?: boolean;
+  testId?: string;
 }
 
 export const ButtonGroup: React.FC<ButtonGroupProps> = (props) => {
-  const [spacing, { wrap = false, className, children, ...rest }] = extractSpacingProps(props);
+  const [spacing, { wrap = false, className, children, testId, ...rest }] = extractSpacingProps(props);
   const { gap = 'xs', ...otherSpacing } = spacing;
 
   return (
@@ -25,6 +26,7 @@ export const ButtonGroup: React.FC<ButtonGroupProps> = (props) => {
         className,
       )}
       role="group"
+      data-testid={testId}
       {...rest}
     >
       {children}

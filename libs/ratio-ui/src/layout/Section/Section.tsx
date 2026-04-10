@@ -9,6 +9,7 @@ export interface SectionProps
   extends SpacingProps,
     Omit<React.ComponentPropsWithoutRef<'section'>, keyof SpacingProps | 'color'> {
   color?: Color;
+  testId?: string;
 }
 
 export const Section: React.FC<SectionProps> = (props) => {
@@ -16,6 +17,7 @@ export const Section: React.FC<SectionProps> = (props) => {
     color,
     className,
     children,
+    testId,
     ...rest
   }] = extractSpacingProps(props);
 
@@ -26,6 +28,7 @@ export const Section: React.FC<SectionProps> = (props) => {
         color && surfaceBgClasses[color],
         className,
       )}
+      data-testid={testId}
       {...rest}
     >
       {children}

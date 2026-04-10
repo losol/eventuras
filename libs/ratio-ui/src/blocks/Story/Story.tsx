@@ -7,14 +7,19 @@ export interface StoryProps
   extends SpacingProps,
     Omit<React.ComponentPropsWithoutRef<'div'>, keyof SpacingProps> {
   as?: 'div' | 'article' | 'section';
+  testId?: string;
 }
 
 export function Story(props: StoryProps) {
-  const [spacingProps, { as: Component = 'div', className, children, ...rest }] =
+  const [spacingProps, { as: Component = 'div', className, children, testId, ...rest }] =
     extractSpacingProps(props);
 
   return (
-    <Component className={cn('story', buildSpacingClasses(spacingProps), className)} {...rest}>
+    <Component
+      className={cn('story', buildSpacingClasses(spacingProps), className)}
+      data-testid={testId}
+      {...rest}
+    >
       {children}
     </Component>
   );

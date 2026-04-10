@@ -7,6 +7,7 @@ export interface HeadingProps extends SpacingProps {
   children: React.ReactNode;
   className?: string;
   onDark?: boolean;
+  testId?: string;
 }
 
 /**
@@ -19,12 +20,16 @@ export const Heading = ({
   children,
   className,
   onDark = false,
+  testId,
   ...spacingProps
 }: HeadingProps) => {
   const textColor = onDark ? 'text-gray-200' : 'text-gray-800 dark:text-gray-200';
 
   return (
-    <HeadingComponent className={cn(textColor, buildSpacingClasses(spacingProps), className)}>
+    <HeadingComponent
+      className={cn(textColor, buildSpacingClasses(spacingProps), className)}
+      data-testid={testId}
+    >
       {children}
     </HeadingComponent>
   );
