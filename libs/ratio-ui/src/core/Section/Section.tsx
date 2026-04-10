@@ -1,9 +1,9 @@
 import React from 'react';
-import { Box, BoxProps } from '../../layout/Box/Box';
+import { Box } from '../../layout/Box/Box';
+import type { BoxProps } from '../../layout/Box/Box';
 import Container from '../../layout/Container/Container';
 import { getGridClasses } from '../../tokens';
 
-// Section-specific props that should not be passed to Box
 interface SectionSpecificProps {
   container?: boolean;
   grid?: boolean;
@@ -14,41 +14,25 @@ export interface SectionProps extends BoxProps, SectionSpecificProps {}
 const Section: React.FC<SectionProps> = ({
   container = true,
   grid = false,
-  gap = '6',
+  gap = 'sm',
   children,
   className,
   ...boxProps
 }) => {
-  const gridClasses = grid ? getGridClasses(gap as '4' | '6' | '8') : '';
+  const gridClasses = grid ? getGridClasses('6') : '';
 
-  // Build clean BoxProps without Section-specific properties
-  const cleanBoxProps: BoxProps = {
-    as: boxProps.as ?? 'section',
-    padding: boxProps.padding,
-    margin: boxProps.margin,
-    border: boxProps.border,
-    width: boxProps.width,
-    height: boxProps.height,
-    gap,
-    backgroundColorClass: boxProps.backgroundColorClass,
-    backgroundImageUrl: boxProps.backgroundImageUrl,
-    id: boxProps.id,
-    style: boxProps.style,
-  };
+  const combinedClassName = [gridClasses, className].filter(Boolean).join(' ');
 
-  // When using grid, apply grid classes to the container itself, not the wrapper
   if (grid && container) {
-    const combinedClassName = [gridClasses, className].filter(Boolean).join(' ');
     return (
-      <Box {...cleanBoxProps}>
+      <Box as={boxProps.as ?? 'section'} {...boxProps}>
         <Container className={combinedClassName}>{children}</Container>
       </Box>
     );
   }
 
-  const combinedClassName = [gridClasses, className].filter(Boolean).join(' ');
   return (
-    <Box {...cleanBoxProps} className={combinedClassName}>
+    <Box as={boxProps.as ?? 'section'} {...boxProps} gap={gap} className={combinedClassName}>
       {container ? <Container>{children}</Container> : children}
     </Box>
   );

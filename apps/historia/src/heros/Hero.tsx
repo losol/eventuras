@@ -38,7 +38,7 @@ export const Hero: React.FC<HeroProps> = ({
   const imageProps = getImageProps(image, 'landscape');
 
   return (
-    <Section grid={!!imageProps.url} container={false} gap="8">
+    <Section grid={!!imageProps.url} container={false} gap="lg">
       {imageProps.url && (
         <Box>
           <UIImage

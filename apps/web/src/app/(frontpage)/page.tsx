@@ -136,7 +136,7 @@ export default async function Homepage() {
 
       {/* Error section */}
       {hasError && (
-        <Section backgroundColorClass="bg-red-50 dark:bg-red-950" padding="py-8" container>
+        <Section backgroundColorClass="bg-red-50 dark:bg-red-950" paddingY="lg" container>
           <Heading as="h2" paddingBottom="sm">
             {t('common.errors.failedToLoadEvents')}
           </Heading>
@@ -156,7 +156,7 @@ export default async function Homepage() {
 
       {/* Regular events */}
       {hasEvents && (
-        <Section padding="py-8" container>
+        <Section paddingY="lg" container>
           <Heading as="h2" paddingBottom="sm">
             {t('common.events.sectiontitle')}
           </Heading>
@@ -164,7 +164,7 @@ export default async function Homepage() {
         </Section>
       )}
       {!hasError && !hasEvents && !hasFeatured && (
-        <Section backgroundColorClass="bg-gray-50 dark:bg-slate-950" padding="py-8" container>
+        <Section backgroundColorClass="bg-gray-50 dark:bg-slate-950" paddingY="lg" container>
           <Heading as="h2" paddingBottom="sm">
             {t('common.events.sectiontitle')}
           </Heading>

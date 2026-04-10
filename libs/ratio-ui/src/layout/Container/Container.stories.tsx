@@ -29,7 +29,7 @@ export const Default: ContainerStory = () => (
 );
 
 export const CustomPadding: ContainerStory = () => (
-  <Container padding="p-8">
+  <Container padding="xl">
     <div className="bg-green-100 dark:bg-green-900 p-4 rounded">
       <h2 className="text-2xl font-bold mb-2">Custom Padding</h2>
       <p>This container has custom padding (p-8).</p>
@@ -38,7 +38,7 @@ export const CustomPadding: ContainerStory = () => (
 );
 
 export const NoPadding: ContainerStory = () => (
-  <Container padding="p-0">
+  <Container padding="none">
     <div className="bg-purple-100 dark:bg-purple-900 p-4 rounded">
       <h2 className="text-2xl font-bold mb-2">No Padding</h2>
       <p>This container has no padding.</p>
@@ -47,7 +47,7 @@ export const NoPadding: ContainerStory = () => (
 );
 
 export const WithBorder: ContainerStory = () => (
-  <Container border="border-2 border-blue-500 rounded-lg">
+  <Container className="border-2 border-blue-500 rounded-lg">
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-2">With Border</h2>
       <p>This container has a custom border.</p>
@@ -56,7 +56,7 @@ export const WithBorder: ContainerStory = () => (
 );
 
 export const FullWidth: ContainerStory = () => (
-  <Container width="w-full" margin="m-0">
+  <Container className="w-full" margin="none">
     <div className="bg-yellow-100 dark:bg-yellow-900 p-4 rounded">
       <h2 className="text-2xl font-bold mb-2">Full Width Container</h2>
       <p>This container spans the full width with no margin.</p>

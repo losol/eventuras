@@ -246,7 +246,7 @@ export default function EventNotificator({
         )}
       </div>
       {/* Actions */}
-      <ButtonGroup margin="my-4">
+      <ButtonGroup marginY="sm">
         <Button type="submit" variant="primary" disabled={isSubmitting}>
           {isSubmitting ? 'Sending...' : t('common.buttons.send')}
         </Button>

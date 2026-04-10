@@ -1,65 +1,24 @@
 import React from 'react';
-import { BoxProps, buildSpacingClasses } from '../../layout/Box/Box';
+import type { SpacingProps } from '../../tokens/spacing';
+import { buildSpacingClasses } from '../../tokens/spacing';
+import { cn } from '../../utils/cn';
 
-export interface StoryProps extends BoxProps {
-  /**
-   * Content of the story
-   */
+export interface StoryProps extends SpacingProps {
   children: React.ReactNode;
-  /**
-   * HTML element to render as
-   * @default 'div'
-   */
   as?: 'div' | 'article' | 'section';
+  className?: string;
+  style?: React.CSSProperties;
 }
 
-/**
- * Story component for displaying structured content
- *
- * A simple wrapper for composing story content with Heading, Lead, Text, and other components.
- *
- * @example
- * ```tsx
- * <Story>
- *   <Heading>Welcome to our blog</Heading>
- *   <Lead>This is the introduction</Lead>
- *   <Text>This is the main content...</Text>
- * </Story>
- * ```
- */
 export function Story({
   children,
   className,
-  padding,
-  margin,
-  border,
-  width,
-  height,
-  gap,
-  backgroundColorClass,
-  backgroundImageUrl,
   as: Component = 'div',
   style,
-  ...props
+  ...spacingProps
 }: StoryProps) {
-  const spacingClasses = buildSpacingClasses({ padding, margin, border, width, height, gap });
-
-  const storyClasses = [
-    'story',
-    spacingClasses,
-    backgroundColorClass,
-    className,
-  ]
-    .filter(Boolean)
-    .join(' ');
-
-  const combinedStyle: React.CSSProperties = {
-    ...style,
-    ...(backgroundImageUrl ? { backgroundImage: `url(${backgroundImageUrl})` } : {}),
-  };
-
   return (
-    <Component className={storyClasses} style={combinedStyle} {...props}>
+    <Component className={cn('story', buildSpacingClasses(spacingProps), className)} style={style}>
       {children}
     </Component>
   );

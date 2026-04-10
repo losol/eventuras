@@ -99,7 +99,7 @@ export const ProductsBlock: React.FC<ProductBlockProps> = (props) => {
         const isAdding = addingProductId === product.id;
 
         return (
-          <Card key={product.id} grid={showImage} gap="6">
+          <Card key={product.id} grid={showImage} gap="md">
             {showImage && (
               <Image src={imageUrl} alt={product.title || 'Product image'} />
             )}
@@ -143,7 +143,7 @@ export const ProductsBlock: React.FC<ProductBlockProps> = (props) => {
                   disabled={isAdding}
                   variant="primary"
                   block
-                  padding="px-6 py-3"
+                  className="px-6 py-3"
                 >
                   {isAdding ? 'Legger til...' : 'Bestill'}
                 </Button>

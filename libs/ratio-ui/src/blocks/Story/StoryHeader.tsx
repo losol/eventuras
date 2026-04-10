@@ -1,58 +1,29 @@
 import React from 'react';
-import { BoxProps, buildSpacingClasses } from '../../layout/Box/Box';
+import type { SpacingProps } from '../../tokens/spacing';
+import { buildSpacingClasses } from '../../tokens/spacing';
+import { cn } from '../../utils/cn';
 
-export interface StoryHeaderProps extends BoxProps {
-  /**
-   * Content of the story header
-   */
+export interface StoryHeaderProps extends SpacingProps {
   children: React.ReactNode;
+  className?: string;
+  style?: React.CSSProperties;
 }
 
-/**
- * StoryHeader component for displaying story heading and lead content
- *
- * @example
- * ```tsx
- * <StoryHeader>
- *   <Heading>Welcome to our blog</Heading>
- *   <Lead>This is the introduction</Lead>
- * </StoryHeader>
- * ```
- */
 export function StoryHeader({
   children,
   className,
-  padding = 'py-3',
-  margin = 'mb-6',
-  border,
-  width,
-  height,
-  gap = '4',
-  backgroundColorClass,
-  backgroundImageUrl,
-  as: Component = 'header',
+  paddingY = 'xs',
+  marginBottom = 'sm',
+  gap = 'sm',
   style,
-  ...props
+  ...spacingProps
 }: StoryHeaderProps) {
-  const spacingClasses = buildSpacingClasses({ padding, margin, border, width, height, gap });
-
-  const headerClasses = [
-    'story-header',
-    spacingClasses,
-    backgroundColorClass,
-    className,
-  ]
-    .filter(Boolean)
-    .join(' ');
-
-  const combinedStyle: React.CSSProperties = {
-    ...style,
-    ...(backgroundImageUrl ? { backgroundImage: `url(${backgroundImageUrl})` } : {}),
-  };
-
   return (
-    <Component className={headerClasses} style={combinedStyle} {...props}>
+    <header
+      className={cn('story-header', buildSpacingClasses({ ...spacingProps, paddingY, marginBottom, gap }), className)}
+      style={style}
+    >
       {children}
-    </Component>
+    </header>
   );
 }

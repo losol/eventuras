@@ -1,38 +1,34 @@
 import React from 'react';
+import type { SpacingProps } from '../../tokens/spacing';
+import { buildSpacingClasses } from '../../tokens/spacing';
+import { cn } from '../../utils/cn';
 
-import {
-  BoxProps,
-  BoxSpacingProps,
-  BoxContentProps,
-  BoxBackgroundProps,
-  buildSpacingClasses,
-} from '../../layout/Box/Box';
-
-export interface ButtonGroupProps {
+export interface ButtonGroupProps extends SpacingProps {
   children: React.ReactNode;
   /**
    * Whether buttons should wrap to multiple lines when space is limited
    * @default false
    */
   wrap?: boolean;
+  className?: string;
 }
 
-const ButtonGroup: React.FC<
-  ButtonGroupProps & BoxSpacingProps & BoxContentProps & BoxBackgroundProps
-> = ({ children, wrap = false, gap = '2', className: additionalClassName, ...spacingProps }) => {
-  const baseClassName = wrap ? 'flex' : 'inline-flex';
-  const wrapClassName = wrap ? 'flex-wrap' : '';
-  const className = [
-    baseClassName,
-    wrapClassName,
-    buildSpacingClasses({ ...spacingProps, gap }),
-    additionalClassName,
-  ]
-    .filter(Boolean)
-    .join(' ');
-
+const ButtonGroup: React.FC<ButtonGroupProps> = ({
+  children,
+  wrap = false,
+  gap = 'xs',
+  className,
+  ...spacingProps
+}) => {
   return (
-    <div className={className} role="group">
+    <div
+      className={cn(
+        wrap ? 'flex flex-wrap' : 'inline-flex',
+        buildSpacingClasses({ ...spacingProps, gap }),
+        className,
+      )}
+      role="group"
+    >
       {children}
     </div>
   );
