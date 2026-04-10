@@ -151,6 +151,10 @@
   --color-border-1: var(--border-1);
   --color-border-2: var(--border-2);
 
+  /* Surfaces */
+  --color-card: var(--card);
+  --color-card-hover: var(--card-hover);
+
   /* Overlays */
   --color-overlay-hover: var(--overlay-hover);
   --color-overlay-press: var(--overlay-press);
@@ -215,6 +219,9 @@
   --overlay-press: rgba(var(--overlay-ink), var(--alpha-2));
   --overlay-drag: rgba(var(--overlay-ink), var(--alpha-3));
 
+  --card: rgb(255 255 255 / 0.5);
+  --card-hover: rgb(255 255 255 / 0.65);
+
   --focus-ring: rgba(74, 142, 161, 0.45);
 
   /* Status */
@@ -272,6 +279,9 @@
   --overlay-hover: rgba(var(--overlay-ink), var(--alpha-1));
   --overlay-press: rgba(var(--overlay-ink), var(--alpha-2));
   --overlay-drag: rgba(var(--overlay-ink), var(--alpha-3));
+
+  --card: rgb(0 0 0 / 0.5);
+  --card-hover: rgb(0 0 0 / 0.65);
 
   --focus-ring: rgba(91, 163, 181, 0.55);
 

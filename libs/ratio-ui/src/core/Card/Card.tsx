@@ -6,7 +6,6 @@ import { buildBorderClasses } from '../../tokens/borders';
 import { buildCoverImageStyle } from '../../utils/buildCoverImageStyle';
 import Container from '../../layout/Container/Container';
 import { cn } from '../../utils/cn';
-import './Card.css';
 
 export interface CardProps extends SpacingProps, BorderProps {
   children?: ReactNode;
@@ -40,13 +39,13 @@ export const Card: React.FC<CardProps> = ({
   const baseClasses = 'p-4 relative rounded-lg';
   const transitionClasses = hoverEffect ? 'transform transition duration-300 ease-in-out' : '';
 
+  const hoverClasses = hoverEffect ? 'hover:bg-card-hover transition-colors duration-200' : '';
+
   const variantStyles = {
-    default: hoverEffect ? 'bg-card bg-overlay-hover text' : 'bg-card text',
-    wide: hoverEffect
-      ? 'bg-card bg-overlay-hover text mx-auto min-h-[33vh]'
-      : 'bg-card text mx-auto min-h-[33vh]',
-    outline: 'border border-border-1 bg-transparent text',
-    transparent: 'bg-transparent text',
+    default: 'bg-card',
+    wide: 'bg-card mx-auto min-h-[33vh]',
+    outline: 'border border-border-1 bg-transparent',
+    transparent: 'bg-transparent',
   };
 
   const bgClasses = backgroundColorClass ?? variantStyles[variant];
@@ -71,7 +70,7 @@ export const Card: React.FC<CardProps> = ({
 
   return (
     <Component
-      className={cn(baseClasses, transitionClasses, bgClasses, spacingClasses, borderClasses, gridClasses, className)}
+      className={cn(baseClasses, transitionClasses, hoverClasses, bgClasses, spacingClasses, borderClasses, gridClasses, className)}
       style={combinedStyle}
       {...rest}
     >
