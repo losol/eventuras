@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react-vite';
-import type { BorderProps } from './types';
-import { buildBorderClasses } from './classBuilders';
+import type { BorderProps } from './borders';
+import { buildBorderClasses } from './borders';
 
 const radii = [
   { name: 'sm', token: '--radius-sm' },

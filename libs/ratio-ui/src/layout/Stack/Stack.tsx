@@ -1,4 +1,5 @@
 import React from 'react';
+import type { Space } from '../../tokens/spacing';
 
 export interface StackProps {
   /**
@@ -10,7 +11,7 @@ export interface StackProps {
    * Spacing between items
    * @default 'md'
    */
-  gap?: 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+  gap?: Space;
   /**
    * Alignment of items along the cross axis
    */
@@ -44,14 +45,13 @@ export interface StackProps {
   children: React.ReactNode;
 }
 
-const gapClasses = {
+const gapClasses: Record<Space, string> = {
   none: 'gap-0',
-  xs: 'gap-1',
-  sm: 'gap-2',
-  md: 'gap-4',
-  lg: 'gap-6',
-  xl: 'gap-8',
-  '2xl': 'gap-12',
+  xs: 'gap-xs',
+  sm: 'gap-sm',
+  md: 'gap-md',
+  lg: 'gap-lg',
+  xl: 'gap-xl',
 };
 
 const alignClasses = {

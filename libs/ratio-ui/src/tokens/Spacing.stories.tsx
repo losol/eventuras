@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react-vite';
-import type { Space } from './types';
-import { buildSpacingClasses } from './classBuilders';
+import type { Space } from './spacing';
+import { buildSpacingClasses } from './spacing';
 
 const spacingSteps = [
   { name: '3xs', label: '3XS' },
