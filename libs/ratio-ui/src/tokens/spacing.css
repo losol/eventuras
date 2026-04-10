@@ -9,4 +9,11 @@
   --space-xl: clamp(3.375rem, 3.2216rem + 0.6818vw, 3.75rem);
   --space-2xl: clamp(4.5rem, 4.2955rem + 0.9091vw, 5rem);
   --space-3xl: clamp(6.75rem, 6.4432rem + 1.3636vw, 7.5rem);
+
+  /* Semantic spacing scale for Tailwind utilities (p-xs, gap-md, m-lg, etc.) */
+  --spacing-xs: var(--space-xs);
+  --spacing-sm: var(--space-s);
+  --spacing-md: var(--space-m);
+  --spacing-lg: var(--space-l);
+  --spacing-xl: var(--space-xl);
 }
