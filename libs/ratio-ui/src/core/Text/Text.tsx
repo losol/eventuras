@@ -8,9 +8,7 @@ export type TextWeight = 'light' | 'normal' | 'medium' | 'semibold' | 'bold';
 export type TextVariant = 'default' | 'muted' | 'subtle';
 export type TextColor = Exclude<Color, 'neutral'>;
 
-export interface TextProps extends SpacingProps {
-  text?: string | null;
-  children?: React.ReactNode;
+interface TextBaseProps extends SpacingProps {
   as?: 'p' | 'span';
   size?: TextSize;
   weight?: TextWeight;
@@ -20,6 +18,9 @@ export interface TextProps extends SpacingProps {
   icon?: React.ReactNode;
   testId?: string;
 }
+
+export type TextProps = TextBaseProps &
+  ({ children: React.ReactNode; text?: never } | { text: string | null; children?: never });
 
 const sizeClasses: Record<TextSize, string> = {
   xs: 'text-xs',
@@ -56,8 +57,8 @@ const colorClasses: Record<TextColor, string> = {
 };
 
 export const Text: React.FC<TextProps> = ({
-  text,
   children,
+  text,
   as: Component = 'p',
   size,
   weight,
@@ -70,16 +71,9 @@ export const Text: React.FC<TextProps> = ({
   gap,
   testId,
   ...restHtmlProps
-}) => {
-  if (text != null && children != null) {
-    throw new Error(
-      "Text component cannot take both `text` and `children`. Please provide only one."
-    );
-  }
-  if (text == null && children == null) {
-    return null;
-  }
-  const content = text != null ? text : children;
+}: TextProps) => {
+  const renderable = text ?? children;
+  if (renderable == null) return null;
 
   const classes = [
     color ? colorClasses[color] : variantClasses[variant],
@@ -96,7 +90,7 @@ export const Text: React.FC<TextProps> = ({
       {...restHtmlProps}
     >
       {icon && <span className="mr-2 inline-flex items-center">{icon}</span>}
-      {content}
+      {renderable}
     </Component>
   );
 };
