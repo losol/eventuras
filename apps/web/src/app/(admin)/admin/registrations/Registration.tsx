@@ -3,7 +3,7 @@ import { useTranslations } from 'next-intl';
 
 import { Badge } from '@eventuras/ratio-ui/core/Badge';
 import { Button } from '@eventuras/ratio-ui/core/Button';
-import { Definition, DescriptionList, Item, Term } from '@eventuras/ratio-ui/core/DescriptionList';
+import { DescriptionList } from '@eventuras/ratio-ui/core/DescriptionList';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 import { Form, Select } from '@eventuras/smartform';
@@ -155,33 +155,33 @@ const Registration = ({
         </Heading>
       )}
       <DescriptionList>
-        <Item>
-          <Term>{t('common.registrations.labels.id')}</Term>
-          <Definition testId="registration-registrationId">
+        <DescriptionList.Item>
+          <DescriptionList.Term>{t('common.registrations.labels.id')}</DescriptionList.Term>
+          <DescriptionList.Definition testId="registration-registrationId">
             {registration.registrationId}
-          </Definition>
-        </Item>
-        <Item>
-          <Term>{t('common.registrations.labels.userName')}</Term>
-          <Definition>{registration.user?.name}</Definition>
-        </Item>
+          </DescriptionList.Definition>
+        </DescriptionList.Item>
+        <DescriptionList.Item>
+          <DescriptionList.Term>{t('common.registrations.labels.userName')}</DescriptionList.Term>
+          <DescriptionList.Definition>{registration.user?.name}</DescriptionList.Definition>
+        </DescriptionList.Item>
         {/* Show status and type as badges when not in edit mode, or when not in admin mode */}
         {(!editMode || !adminMode) && (
           <>
-            <Item>
-              <Term>{t('common.registrations.labels.status')}</Term>
-              <Definition>
+            <DescriptionList.Item>
+              <DescriptionList.Term>{t('common.registrations.labels.status')}</DescriptionList.Term>
+              <DescriptionList.Definition>
                 <Badge status={getStatusBadgeStatus(registration.status || '')}>
                   {statusLabel}
                 </Badge>
-              </Definition>
-            </Item>
-            <Item>
-              <Term>{t('common.registrations.labels.type')}</Term>
-              <Definition>
+              </DescriptionList.Definition>
+            </DescriptionList.Item>
+            <DescriptionList.Item>
+              <DescriptionList.Term>{t('common.registrations.labels.type')}</DescriptionList.Term>
+              <DescriptionList.Definition>
                 <Badge status="neutral">{typeLabel}</Badge>
-              </Definition>
-            </Item>
+              </DescriptionList.Definition>
+            </DescriptionList.Item>
           </>
         )}
         {/* Show editable forms when in edit mode and admin mode */}

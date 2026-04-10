@@ -7,45 +7,70 @@ const styles = {
   definition: 'mt-1 text-sm leading-6 break-words md:col-span-3',
 };
 
-// DescriptionList component
-interface DescriptionListProps {
+export interface DescriptionListProps {
   children: React.ReactNode;
 }
 
-const DescriptionList: React.FC<DescriptionListProps> = ({ children }) => {
-  return <dl className={styles.descriptionList}>{children}</dl>;
-};
-
-// Item component
-interface ItemProps {
+export interface DescriptionListItemProps {
   children: React.ReactNode;
 }
 
-const Item: React.FC<ItemProps> = ({ children }) => {
-  return <div className={styles.item}>{children}</div>;
-};
-
-// Term component
-interface TermProps {
+export interface DescriptionListTermProps {
   children: React.ReactNode;
 }
 
-const Term: React.FC<TermProps> = ({ children }) => {
-  return <dt className={styles.term}>{children}</dt>;
-};
-
-// Definition component
-interface DefinitionProps {
+export interface DescriptionListDefinitionProps {
   children: React.ReactNode;
   testId?: string;
 }
 
-const Definition: React.FC<DefinitionProps> = (props) => {
-  return (
-    <dd className={styles.definition} data-testid={props.testId}>
-      {props.children}
-    </dd>
-  );
-};
+export interface DescriptionProps {
+  term: React.ReactNode;
+  children: React.ReactNode;
+  testId?: string;
+}
 
-export { Definition, DescriptionList, Item, Term };
+const Root: React.FC<DescriptionListProps> = ({ children }) => (
+  <dl className={styles.descriptionList}>{children}</dl>
+);
+
+const Item: React.FC<DescriptionListItemProps> = ({ children }) => (
+  <div className={styles.item}>{children}</div>
+);
+
+const Term: React.FC<DescriptionListTermProps> = ({ children }) => (
+  <dt className={styles.term}>{children}</dt>
+);
+
+const Definition: React.FC<DescriptionListDefinitionProps> = ({ children, testId }) => (
+  <dd className={styles.definition} data-testid={testId}>
+    {children}
+  </dd>
+);
+
+/**
+ * Shortcut combining Item, Term, and Definition. Use this when you have
+ * a simple term/value pair. For complex layouts, compose Item/Term/Definition
+ * directly.
+ *
+ * @example
+ * <DescriptionList>
+ *   <DescriptionList.Description term="Name">Ada Lovelace</DescriptionList.Description>
+ *   <DescriptionList.Description term="Email">ada@example.com</DescriptionList.Description>
+ * </DescriptionList>
+ */
+const Description: React.FC<DescriptionProps> = ({ term, children, testId }) => (
+  <div className={styles.item}>
+    <dt className={styles.term}>{term}</dt>
+    <dd className={styles.definition} data-testid={testId}>
+      {children}
+    </dd>
+  </div>
+);
+
+export const DescriptionList = Object.assign(Root, {
+  Item,
+  Term,
+  Definition,
+  Description,
+});

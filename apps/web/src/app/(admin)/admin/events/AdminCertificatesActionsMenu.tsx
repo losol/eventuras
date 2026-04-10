@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl';
 
 import { Logger } from '@eventuras/logger';
 import { Button } from '@eventuras/ratio-ui/core/Button';
-import { Definition, DescriptionList, Term } from '@eventuras/ratio-ui/core/DescriptionList';
+import { DescriptionList } from '@eventuras/ratio-ui/core/DescriptionList';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
 import { FileDrawer } from '@eventuras/ratio-ui/layout/FileDrawer';
@@ -121,10 +121,12 @@ export const AdminCertificatesActionsMenu: React.FC<AdminCertificatesActionsMenu
         </Drawer.Header>
         <Drawer.Body>
           <DescriptionList>
-            <Term>Certificate title:</Term>
-            <Definition>{eventinfo.certificateTitle}</Definition>
-            <Term>Certificate description:</Term>
-            <Definition>{eventinfo.certificateDescription}</Definition>
+            <DescriptionList.Term>Certificate title:</DescriptionList.Term>
+            <DescriptionList.Definition>{eventinfo.certificateTitle}</DescriptionList.Definition>
+            <DescriptionList.Term>Certificate description:</DescriptionList.Term>
+            <DescriptionList.Definition>
+              {eventinfo.certificateDescription}
+            </DescriptionList.Definition>
           </DescriptionList>
         </Drawer.Body>
         <Drawer.Footer>

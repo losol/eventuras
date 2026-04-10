@@ -3,7 +3,7 @@ import React from 'react';
 
 import { Badge } from '@eventuras/ratio-ui/core/Badge';
 import { Card } from '@eventuras/ratio-ui/core/Card';
-import { Definition, DescriptionList, Item, Term } from '@eventuras/ratio-ui/core/DescriptionList';
+import { DescriptionList } from '@eventuras/ratio-ui/core/DescriptionList';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
@@ -56,18 +56,20 @@ export const MemberProfile: React.FC<MemberProfileProps> = ({
       {/* Identity */}
       <DescriptionList>
         {/* Name */}
-        <Item>
-          <Term>Name</Term>
-          <Definition>{has(user.name) ? user.name : '—'}</Definition>
-        </Item>
-        <Item>
-          <Term>Id</Term>
-          <Definition>{has(user.id) ? user.id : '—'}</Definition>
-        </Item>
+        <DescriptionList.Item>
+          <DescriptionList.Term>Name</DescriptionList.Term>
+          <DescriptionList.Definition>
+            {has(user.name) ? user.name : '—'}
+          </DescriptionList.Definition>
+        </DescriptionList.Item>
+        <DescriptionList.Item>
+          <DescriptionList.Term>Id</DescriptionList.Term>
+          <DescriptionList.Definition>{has(user.id) ? user.id : '—'}</DescriptionList.Definition>
+        </DescriptionList.Item>
         {/* Contact */}
-        <Item>
-          <Term>Email</Term>
-          <Definition>
+        <DescriptionList.Item>
+          <DescriptionList.Term>Email</DescriptionList.Term>
+          <DescriptionList.Definition>
             {has(user.email) ? (
               <a href={`mailto:${user.email}`} className="underline">
                 {user.email}
@@ -75,24 +77,26 @@ export const MemberProfile: React.FC<MemberProfileProps> = ({
             ) : (
               '—'
             )}
-          </Definition>
-        </Item>
-        <Item>
-          <Term>Phone</Term>
-          <Definition>{has(user.phoneNumber) ? user.phoneNumber : '—'}</Definition>
-        </Item>
+          </DescriptionList.Definition>
+        </DescriptionList.Item>
+        <DescriptionList.Item>
+          <DescriptionList.Term>Phone</DescriptionList.Term>
+          <DescriptionList.Definition>
+            {has(user.phoneNumber) ? user.phoneNumber : '—'}
+          </DescriptionList.Definition>
+        </DescriptionList.Item>
         {/* Notes */}
         {has(user.supplementaryInformation) && (
-          <Item>
-            <Term>Notes</Term>
-            <Definition>{user.supplementaryInformation}</Definition>
-          </Item>
+          <DescriptionList.Item>
+            <DescriptionList.Term>Notes</DescriptionList.Term>
+            <DescriptionList.Definition>{user.supplementaryInformation}</DescriptionList.Definition>
+          </DescriptionList.Item>
         )}
         {/* Memberships */}
         {user.organizationMembership && user.organizationMembership.length > 0 && (
-          <Item>
-            <Term>Roles</Term>
-            <Definition>
+          <DescriptionList.Item>
+            <DescriptionList.Term>Roles</DescriptionList.Term>
+            <DescriptionList.Definition>
               {/* Admin toggle - only show if we have the required props */}
               {organizationId && onToggleAdmin && (
                 <label className="inline-flex items-center gap-2 ml-4">
@@ -105,8 +109,8 @@ export const MemberProfile: React.FC<MemberProfileProps> = ({
                   <span className="text-sm font-medium">Admin</span>
                 </label>
               )}
-            </Definition>
-          </Item>
+            </DescriptionList.Definition>
+          </DescriptionList.Item>
         )}
       </DescriptionList>
     </Card>
