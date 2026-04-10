@@ -12,7 +12,6 @@ const meta: Meta<typeof Card> = {
   component: Card,
   tags: ['autodocs'],
   argTypes: {
-    dark: { control: 'boolean' },
     container: { control: 'boolean' },
     variant: {
       control: 'select',
@@ -178,7 +177,7 @@ export const GridWithSmallGap: Story = {
 
 export const Dark: Story = {
   args: {
-    dark: true,
+    className: 'bg-neutral-900 text-white',
     children: (
       <Box>
         <Heading as="h3" marginBottom="xs">Dark Card</Heading>
