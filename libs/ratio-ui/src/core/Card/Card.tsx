@@ -3,7 +3,7 @@ import type { SpacingProps } from '../../tokens/spacing';
 import type { BorderProps } from '../../tokens/borders';
 import { buildSpacingClasses } from '../../tokens/spacing';
 import { buildBorderClasses } from '../../tokens/borders';
-import { getBackgroundStyle } from '../../layout/Box/Box';
+import { buildCoverImageStyle } from '../../utils/buildCoverImageStyle';
 import Container from '../../layout/Container/Container';
 import { cn } from '../../utils/cn';
 import './Card.css';
@@ -67,7 +67,7 @@ export const Card: React.FC<CardProps> = ({
   });
   const borderClasses = buildBorderClasses({ border, borderColor, radius });
 
-  const combinedStyle = getBackgroundStyle(backgroundImageUrl) || style;
+  const combinedStyle = buildCoverImageStyle(backgroundImageUrl) || style;
 
   return (
     <Component

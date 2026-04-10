@@ -14,29 +14,6 @@ export type BoxProps = SpacingProps &
     children?: ReactNode;
   };
 
-/**
- * Build the inline style object for a background image,
- * merging in any existing `style` passed by the consumer.
- */
-export function getBackgroundStyle(
-  backgroundImage?: string,
-  existingStyle?: CSSProperties,
-  backgroundImageOverlay: boolean = true,
-): CSSProperties | undefined {
-  if (!backgroundImage) return existingStyle;
-
-  const imageValue = backgroundImageOverlay
-    ? `linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.3)), url(${backgroundImage})`
-    : `url(${backgroundImage})`;
-
-  return {
-    backgroundImage: imageValue,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    ...existingStyle,
-  };
-}
-
 export const Box: React.FC<BoxProps> = ({
   as: Component = 'div',
   id,
