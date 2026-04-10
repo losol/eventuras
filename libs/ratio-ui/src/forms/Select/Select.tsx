@@ -167,5 +167,3 @@ export const Select: React.FC<SelectProps> = ({
     </AriaSelect>
   );
 };
-
-export default Select;

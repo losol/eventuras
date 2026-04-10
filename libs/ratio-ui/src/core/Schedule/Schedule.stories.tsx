@@ -1,7 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react-vite';
 import React from 'react';
 
-import Heading from '../Heading/Heading';
+import { Heading } from '../Heading/Heading';
 
 import { Schedule, ScheduleItem } from './Schedule';
 

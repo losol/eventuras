@@ -8,7 +8,7 @@ export interface PortalProps {
   children: React.ReactNode;
 }
 
-const Portal: React.FC<PortalProps> = ({ isOpen, children, target, clickOutside }) => {
+export const Portal: React.FC<PortalProps> = ({ isOpen, children, target, clickOutside }) => {
   if (!isOpen) return null;
 
   const portalRoot = target ? document.getElementById(target) : document.body;
@@ -23,5 +23,3 @@ const Portal: React.FC<PortalProps> = ({ isOpen, children, target, clickOutside 
 
   return ReactDOM.createPortal(children, portalRoot);
 };
-
-export default Portal;

@@ -7,7 +7,7 @@ export interface ContainerProps
   extends SpacingProps,
     Omit<React.ComponentPropsWithoutRef<'div'>, keyof SpacingProps> {}
 
-const Container: React.FC<ContainerProps> = (props) => {
+export const Container: React.FC<ContainerProps> = (props) => {
   const [spacingProps, { className, children, ...rest }] = extractSpacingProps(props);
 
   return (
@@ -18,5 +18,3 @@ const Container: React.FC<ContainerProps> = (props) => {
 };
 
 Container.displayName = 'Container';
-
-export default Container;

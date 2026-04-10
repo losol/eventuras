@@ -21,7 +21,7 @@ const getGridCols = (cols?: GridProps['cols']) => {
   ].join(' ');
 };
 
-const Grid: React.FC<GridProps> = ({
+export const Grid: React.FC<GridProps> = ({
   cols = { md: 2, lg: 3 },
   paddingClassName,
   wrapperClassName,
@@ -40,5 +40,3 @@ const Grid: React.FC<GridProps> = ({
 
   return wrapperClassName ? <div className={wrapperClassName}>{content}</div> : content;
 };
-
-export default Grid;

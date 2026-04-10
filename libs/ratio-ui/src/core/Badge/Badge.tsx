@@ -9,7 +9,7 @@ type BadgeProps = {
   label?: string;
 };
 
-const Badge: React.FC<BadgeProps> = ({
+export const Badge: React.FC<BadgeProps> = ({
   children,
   className = '',
   variant = 'neutral',
@@ -62,5 +62,3 @@ const Badge: React.FC<BadgeProps> = ({
 
   return <span className={allClasses}>{children}</span>;
 };
-
-export default Badge;

@@ -110,5 +110,3 @@ export function SplitButton({
     </div>
   );
 }
-
-export default SplitButton;

@@ -14,7 +14,7 @@ export interface HeadingProps extends SpacingProps {
  * Styling comes from CSS tokens in typography.css
  * Use className or spacing props to customize
  */
-const Heading = ({
+export const Heading = ({
   as: HeadingComponent = 'h1',
   children,
   className,
@@ -29,5 +29,3 @@ const Heading = ({
     </HeadingComponent>
   );
 };
-
-export default Heading;

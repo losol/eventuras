@@ -185,5 +185,3 @@ export function NumberField({
     </AriaNumberField>
   );
 }
-
-export default NumberField;

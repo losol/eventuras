@@ -81,5 +81,3 @@ export const ObfuscatedEmail = ({
     </span>
   );
 };
-
-export default ObfuscatedEmail;

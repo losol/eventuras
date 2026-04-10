@@ -5,7 +5,7 @@ import { Navbar } from '../../core/Navbar/Navbar';
 import { Footer } from '../../core/Footer/Footer';
 import { List } from '../../core/List/List';
 import { Section } from '../../layout/Section/Section';
-import Container from '../../layout/Container/Container';
+import { Container } from '../../layout/Container';
 import { Button } from '../../core/Button';
 
 const AnchorLink = ({

@@ -103,5 +103,3 @@ export const ToggleButton: React.FC<ToggleButtonProps> = ({
     </AriaToggleButton>
   );
 };
-
-export default ToggleButton;

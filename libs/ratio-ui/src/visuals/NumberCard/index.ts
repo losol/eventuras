@@ -1,1 +1,1 @@
-export { default as NumberCard } from './NumberCard';
+export { NumberCard } from './NumberCard';

@@ -1,5 +1,5 @@
 import { Meta, StoryFn } from '@storybook/react-vite';
-import Container, { ContainerProps } from './Container';
+import { Container, type ContainerProps } from './Container';
 
 const meta: Meta<typeof Container> = {
   component: Container,

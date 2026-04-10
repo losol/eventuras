@@ -6,7 +6,7 @@ interface NumberCardProps extends Omit<CardProps, 'children'> {
   label: string;
 }
 
-const NumberCard: React.FC<NumberCardProps> = ({
+export const NumberCard: React.FC<NumberCardProps> = ({
   number,
   label,
   className = '',
@@ -30,5 +30,3 @@ const NumberCard: React.FC<NumberCardProps> = ({
     </Card>
   );
 };
-
-export default NumberCard;

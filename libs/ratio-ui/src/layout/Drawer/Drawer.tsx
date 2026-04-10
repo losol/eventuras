@@ -131,4 +131,4 @@ Drawer.Header = Header;
 Drawer.Body = Body;
 Drawer.Footer = Footer;
 
-export default Drawer;
+export { Drawer };

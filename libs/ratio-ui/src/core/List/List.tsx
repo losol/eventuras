@@ -120,5 +120,3 @@ export const List: React.FC<ListProps> & { Item: typeof ListItem } = ({
 };
 
 List.Item = ListItem;
-
-export default List;

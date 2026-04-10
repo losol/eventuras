@@ -67,5 +67,3 @@ export const Panel: React.FC<PanelProps> = ({
     </div>
   );
 };
-
-export default Panel;

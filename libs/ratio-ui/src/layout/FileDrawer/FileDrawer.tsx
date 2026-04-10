@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo } from 'react';
 
 import { Button } from '../../core/Button';
 import { Heading } from '../../core/Heading';
-import Drawer from '../Drawer/Drawer';
+import { Drawer } from '../Drawer/Drawer';
 
 export interface FileDrawerProps {
   isOpen: boolean;
