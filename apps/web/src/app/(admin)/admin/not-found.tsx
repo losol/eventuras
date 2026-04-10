@@ -8,8 +8,8 @@ import { Link } from '@eventuras/ratio-ui-next/Link';
  */
 export default function AdminNotFound() {
   return (
-    <PageOverlay variant="info" fullScreen>
-      <Error type="not-found" tone="info">
+    <PageOverlay status="info" fullScreen>
+      <Error type="not-found" status="info">
         <Error.Title>Admin Resource Not Found</Error.Title>
         <Error.Description>
           The admin page or resource you are looking for does not exist or has been moved.

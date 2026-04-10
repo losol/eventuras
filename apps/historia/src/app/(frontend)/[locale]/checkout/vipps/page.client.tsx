@@ -240,7 +240,7 @@ export default function VippsCheckoutPage() {
       <Container paddingX="sm" paddingY="xl">
         <div className="mx-auto max-w-2xl">
           <Card>
-            <Error tone="error" type="generic">
+            <Error status="error" type="generic">
               <Error.Title>Ugyldig betalingsreferanse</Error.Title>
               <Error.Description>
                 Betalingsreferansen mangler eller er ugyldig.
@@ -331,7 +331,7 @@ export default function VippsCheckoutPage() {
 
           {/* ERROR STATE */}
           {state === 'error' && (
-            <Error tone="error" type="generic">
+            <Error status="error" type="generic">
               <Error.Title>Betaling feilet</Error.Title>
               <Error.Description>{message}</Error.Description>
               <Error.Actions>

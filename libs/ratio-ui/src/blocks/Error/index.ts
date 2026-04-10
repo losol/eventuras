@@ -1,2 +1,2 @@
 export { Error } from './Error';
-export type { ErrorProps, ErrorTone, ErrorType } from './Error';
+export type { ErrorProps, ErrorType } from './Error';

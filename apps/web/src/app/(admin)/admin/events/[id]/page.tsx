@@ -130,7 +130,7 @@ export default async function EventAdminPage({ params, searchParams }: Readonly<
           <Heading as="h1">{eventinfo.title}</Heading>
           {hasPartialErrors && (
             <div className="mt-4">
-              <Error type="generic" tone="warning">
+              <Error type="generic" status="warning">
                 <Error.Title>Some Data Could Not Be Loaded</Error.Title>
                 <Error.Description>
                   The event information loaded successfully, but some additional data is temporarily

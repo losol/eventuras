@@ -27,8 +27,8 @@ export default function GlobalError({
   return (
     <html lang="en">
       <body>
-        <PageOverlay variant="error" fullScreen>
-          <Error type="server-error" tone="error">
+        <PageOverlay status="error" fullScreen>
+          <Error type="server-error" status="error">
             <Error.Title>Critical Error</Error.Title>
             <Error.Description>
               A critical error occurred. Please refresh the page or contact support.

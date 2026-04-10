@@ -10,8 +10,8 @@ import { Link } from '@eventuras/ratio-ui-next/Link';
  */
 export default function NotFound() {
   return (
-    <PageOverlay variant="info" fullScreen>
-      <Error type="not-found" tone="info">
+    <PageOverlay status="info" fullScreen>
+      <Error type="not-found" status="info">
         <Error.Title>Page Not Found</Error.Title>
         <Error.Description>
           The page you&apos;re looking for doesn&apos;t exist or has been moved.
