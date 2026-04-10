@@ -6,9 +6,9 @@ const meta: Meta<typeof Badge> = {
   component: Badge,
   tags: ['autodocs'],
   argTypes: {
-    variant: {
-      control: { type: 'select' },
-      options: ['neutral', 'info', 'positive', 'negative'],
+    status: {
+      control: 'select',
+      options: ['neutral', 'info', 'success', 'warning', 'error'],
     },
     block: { control: 'boolean' },
   },
@@ -19,47 +19,56 @@ type Story = StoryObj<typeof Badge>;
 
 export const Neutral: Story = {
   args: {
-    children: 'Neutral badge',
-    variant: 'neutral',
+    children: 'Neutral',
+    status: 'neutral',
   },
 };
 
 export const Info: Story = {
   args: {
-    children: 'Info badge',
-    variant: 'info',
+    children: 'Info',
+    status: 'info',
   },
 };
 
-export const Positive: Story = {
+export const Success: Story = {
   args: {
-    children: 'Success!',
-    variant: 'positive',
+    children: 'Success',
+    status: 'success',
   },
 };
 
-export const Negative: Story = {
+export const Warning: Story = {
+  args: {
+    children: 'Warning',
+    status: 'warning',
+  },
+};
+
+export const Error: Story = {
   args: {
     children: 'Error',
-    variant: 'negative',
+    status: 'error',
   },
 };
 
-export const Block: Story = {
-  args: {
-    children: 'Block badge',
-    variant: 'info',
-    block: true,
-  },
-};
-
-export const AllVariants: Story = {
+export const AllStatuses: Story = {
   render: () => (
     <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-      <Badge variant="neutral">Neutral badge</Badge>
-      <Badge variant="info">Info badge</Badge>
-      <Badge variant="positive">Success!</Badge>
-      <Badge variant="negative">Error badge</Badge>
+      <Badge status="neutral">Neutral</Badge>
+      <Badge status="info">Info</Badge>
+      <Badge status="success">Success</Badge>
+      <Badge status="warning">Warning</Badge>
+      <Badge status="error">Error</Badge>
     </div>
   ),
+};
+
+export const Definition: Story = {
+  args: {
+    children: 'REG-001',
+    definition: true,
+    label: 'ID',
+    status: 'neutral',
+  },
 };

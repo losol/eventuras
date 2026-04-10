@@ -121,13 +121,13 @@ const Registration = ({
           </Heading>
         )}
         <dl className="flex flex-wrap gap-2 mb-4">
-          <Badge definition label={t('common.registrations.labels.id')} variant="neutral">
+          <Badge definition label={t('common.registrations.labels.id')} status="neutral">
             {registration.registrationId}
           </Badge>
           <Badge definition label={t('common.registrations.labels.status')}>
             {statusLabel}
           </Badge>
-          <Badge definition label={t('common.registrations.labels.type')} variant="neutral">
+          <Badge definition label={t('common.registrations.labels.type')} status="neutral">
             {typeLabel}
           </Badge>
         </dl>
@@ -179,7 +179,7 @@ const Registration = ({
             <Item>
               <Term>{t('common.registrations.labels.type')}</Term>
               <Definition>
-                <Badge variant="neutral">{typeLabel}</Badge>
+                <Badge status="neutral">{typeLabel}</Badge>
               </Definition>
             </Item>
           </>

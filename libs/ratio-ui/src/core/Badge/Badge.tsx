@@ -1,47 +1,41 @@
 import React from 'react';
+import type { Status } from '../../tokens/colors';
+import { cn } from '../../utils/cn';
 
-type BadgeProps = {
+export type BadgeProps = {
   children: React.ReactNode;
   className?: string;
-  variant?: 'neutral' | 'info' | 'positive' | 'negative';
+  status?: Status;
   block?: boolean;
   definition?: boolean;
   label?: string;
 };
 
+const statusClasses: Record<Status, string> = {
+  neutral: 'bg-neutral-700 dark:bg-neutral-800',
+  info: 'bg-info dark:bg-info',
+  success: 'bg-success dark:bg-success',
+  warning: 'bg-warning dark:bg-warning',
+  error: 'bg-error dark:bg-error',
+};
+
 export const Badge: React.FC<BadgeProps> = ({
   children,
-  className = '',
-  variant = 'neutral',
+  className,
+  status = 'neutral',
   block = false,
   definition = false,
   label,
 }) => {
-  let variantClass = '';
-
-  if (variant === 'neutral') {
-    variantClass = 'bg-gray-700 dark:bg-gray-800';
-  } else if (variant === 'info') {
-    variantClass = 'bg-blue-600 dark:bg-blue-800';
-  } else if (variant === 'positive') {
-    variantClass = 'bg-green-700 dark:bg-green-800';
-  } else if (variant === 'negative') {
-    variantClass = 'bg-red-600 dark:bg-red-800 text-white';
-  }
-
-  const blockClass = block ? 'block' : '';
+  const base = cn(
+    block && 'block',
+    statusClasses[status],
+    'text-xs leading-none text-white rounded',
+  );
 
   if (definition && label) {
-    // Definition mode: semantic definition list structure
-    const allClasses = `
-      ${blockClass}
-      ${variantClass}
-      flex overflow-hidden rounded text-xs leading-none text-white
-      ${className}
-    `.trim();
-
     return (
-      <span className={allClasses}>
+      <span className={cn(base, 'flex overflow-hidden', className)}>
         <dt className="bg-black/20 px-2 py-2 font-medium uppercase tracking-wide">
           {label}
         </dt>
@@ -52,13 +46,5 @@ export const Badge: React.FC<BadgeProps> = ({
     );
   }
 
-  // Regular badge mode
-  const allClasses = `
-    ${blockClass}
-    ${variantClass}
-    p-2 text-xs leading-none text-white rounded
-    ${className}
-  `.trim();
-
-  return <span className={allClasses}>{children}</span>;
+  return <span className={cn(base, 'p-2', className)}>{children}</span>;
 };
