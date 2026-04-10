@@ -90,17 +90,17 @@ const EventProducts: React.FC<EventProductsPage> = async props => {
             <span className="text-gray-600">{productSummary.product?.name}</span>
           </nav>
 
-          <Heading as="h1" padding="pt-6 mb-3">
+          <Heading as="h1" paddingTop="sm" marginBottom="xs">
             {productSummary.product?.name}
           </Heading>
           <Link
             href={`/admin/events/${eventId}/products/edit`}
             variant="button-primary"
-            margin="my-5"
+            marginY="sm"
           >
             {t('admin.products.labels.editProducts')}
           </Link>
-          <Text padding="py-3">
+          <Text paddingY="xs">
             Active {totals.active} &mdash; Cancelled {totals.cancelled} &mdash; Waiting list{' '}
             {totals.waitingList}.
           </Text>

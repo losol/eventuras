@@ -122,12 +122,12 @@ export default async function EventDetailsPage({ params }: Readonly<EventDetails
               <Card variant="wide" backgroundImageUrl={eventinfo.featuredImageUrl} />
             )}
 
-            <Heading as="h1" padding="pt-3 pb-3">
+            <Heading as="h1" paddingY="xs">
               {eventinfo.title ?? 'Mysterious Event'}
             </Heading>
 
             {eventinfo.headline && (
-              <Heading as="h2" className="text-xl font-semibold text-gray-700" padding="py-3">
+              <Heading as="h2" paddingY="xs" className="text-xl font-semibold text-gray-700">
                 &mdash; {eventinfo.headline}
               </Heading>
             )}

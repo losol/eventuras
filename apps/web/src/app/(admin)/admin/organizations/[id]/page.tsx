@@ -51,7 +51,7 @@ const OrganizationDetailPage: React.FC<EventInfoProps> = async props => {
         <OrganizationDetails org={organization.data as Organization} />
       </Section>
       <Section container>
-        <Heading as="h2" padding="py-3">
+        <Heading as="h2" paddingY="xs">
           Organization members
         </Heading>
         <OrganizationMemberships

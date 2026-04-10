@@ -1,4 +1,4 @@
-import { KeyRound, Users, Shield, Key } from 'lucide-react';
+import { Key,KeyRound, Shield, Users } from 'lucide-react';
 
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Text } from '@eventuras/ratio-ui/core/Text';
@@ -14,7 +14,7 @@ export default function DashboardPage() {
     <div>
       <div className="mb-8">
         <Heading as="h1">Dashboard</Heading>
-        <Text className="text-muted mt-2">
+        <Text marginTop="xs" className="text-muted">
           Manage your identity provider settings and OAuth clients.
         </Text>
       </div>

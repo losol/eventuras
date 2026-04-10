@@ -128,7 +128,7 @@ export default async function Homepage() {
         className="min-h-[30vh] flex items-center"
       >
         <Container>
-          <Heading as="h1" padding="pb-4" onDark className="text-3xl md:text-4xl lg:text-5xl">
+          <Heading as="h1" onDark paddingBottom="sm" className="text-3xl md:text-4xl lg:text-5xl">
             {site?.frontpage.introduction ?? 'Eventuras for your life!'}
           </Heading>
         </Container>
@@ -137,7 +137,7 @@ export default async function Homepage() {
       {/* Error section */}
       {hasError && (
         <Section backgroundColorClass="bg-red-50 dark:bg-red-950" padding="py-8" container>
-          <Heading as="h2" padding="pb-6">
+          <Heading as="h2" paddingBottom="sm">
             {t('common.errors.failedToLoadEvents')}
           </Heading>
           <Text>{t('common.errors.tryRefresh')}</Text>
@@ -157,7 +157,7 @@ export default async function Homepage() {
       {/* Regular events */}
       {hasEvents && (
         <Section padding="py-8" container>
-          <Heading as="h2" padding="pb-6">
+          <Heading as="h2" paddingBottom="sm">
             {t('common.events.sectiontitle')}
           </Heading>
           <EventGrid eventinfos={events} />
@@ -165,7 +165,7 @@ export default async function Homepage() {
       )}
       {!hasError && !hasEvents && !hasFeatured && (
         <Section backgroundColorClass="bg-gray-50 dark:bg-slate-950" padding="py-8" container>
-          <Heading as="h2" padding="pb-6">
+          <Heading as="h2" paddingBottom="sm">
             {t('common.events.sectiontitle')}
           </Heading>
           <Text>{t('common.events.noEventsAvailable')}</Text>

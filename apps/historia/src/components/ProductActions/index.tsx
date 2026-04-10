@@ -64,12 +64,12 @@ export function ProductActions({ product, locale }: ProductActionsProps) {
             aria-label="Antall"
             id={`productactions-quantity-${product.id}`}
           />
-          <Button onClick={handleGoToCheckout} variant="primary" className="flex-1" padding="px-6 py-3">
+          <Button onClick={handleGoToCheckout} variant="primary" className="flex-1 px-6 py-3">
             Gå til handlekurv
           </Button>
         </div>
       ) : (
-        <Button onClick={handleAddToCart} variant="primary" block padding="px-6 py-3">
+        <Button onClick={handleAddToCart} variant="primary" block className="px-6 py-3">
           Legg i handlekurv
         </Button>
       )}

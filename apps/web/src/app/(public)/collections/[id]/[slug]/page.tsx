@@ -33,7 +33,7 @@ const CollectionPage: React.FC<EventInfoProps> = async props => {
     return (
       <>
         <Heading>{t('common.events.detailspage.notfound.title')}</Heading>
-        <Text padding="py-6">{t('common.events.detailspage.notfound.description')}</Text>
+        <Text paddingY="sm">{t('common.events.detailspage.notfound.description')}</Text>
         <Link href="/" variant="button-primary">
           {t('common.events.detailspage.notfound.back')}
         </Link>
@@ -60,7 +60,7 @@ const CollectionPage: React.FC<EventInfoProps> = async props => {
       )}
       <Section className="py-16">
         <Container>
-          <Heading as="h1" padding="pt-6 pb-3">
+          <Heading as="h1" paddingTop="sm" paddingBottom="xs">
             {collection?.name ?? 'Mysterious Collection'}
           </Heading>
           <MarkdownContent markdown={collection.description} />
@@ -69,14 +69,14 @@ const CollectionPage: React.FC<EventInfoProps> = async props => {
       <Section>
         {eventsResponse.data?.data && eventsResponse.data.data.length > 0 ? (
           <Container>
-            <Heading as="h2" padding="pt-6 pb-3">
+            <Heading as="h2" paddingTop="sm" paddingBottom="xs">
               {t('common.collections.detailspage.eventstitle')}
             </Heading>
             <CategoryGroupedEvents events={eventsResponse.data.data} />
           </Container>
         ) : (
           <Container>
-            <Text padding="py-6">{t('common.labels.noevents')}</Text>
+            <Text paddingY="sm">{t('common.labels.noevents')}</Text>
           </Container>
         )}
       </Section>

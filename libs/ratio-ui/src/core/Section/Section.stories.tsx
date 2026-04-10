@@ -97,7 +97,7 @@ export const FullWidthHero: SectionStory = () => (
 
 export const ContentSection: SectionStory = () => (
   <Section padding="py-12">
-    <Heading as="h2" className="mb-6">Features</Heading>
+    <Heading as="h2" marginBottom="sm">Features</Heading>
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       <div className="bg-gray-100 dark:bg-gray-800 p-6 rounded-lg">
         <Heading as="h3">Feature 1</Heading>
@@ -124,7 +124,7 @@ export const GridWithImage: SectionStory = () => (
       imgClassName="w-full h-auto object-cover rounded-lg"
     />
     <Box>
-      <Heading as="h2" className="mb-4">Hero Section with Grid</Heading>
+      <Heading as="h2" marginBottom="sm">Hero Section with Grid</Heading>
       <p className="text-lg mb-4">
         This section uses the grid layout to display an image alongside content.
       </p>
@@ -148,7 +148,7 @@ export const GridFullWidthWithColor: SectionStory = () => (
       imgClassName="w-full h-auto object-cover rounded-lg"
     />
     <Box className="flex flex-col justify-center">
-      <Heading as="h2" className="mb-4">Full Width Hero</Heading>
+      <Heading as="h2" marginBottom="sm">Full Width Hero</Heading>
       <p className="text-xl mb-6">
         No container, full width background with grid layout.
       </p>
@@ -167,7 +167,7 @@ export const GridContainerWithLargeGap: SectionStory = () => (
       imgClassName="w-full h-auto object-cover rounded-lg"
     />
     <Box>
-      <Heading as="h2" className="mb-4">Large Gap Grid</Heading>
+      <Heading as="h2" marginBottom="sm">Large Gap Grid</Heading>
       <p className="text-lg mb-4">
         Container-based section with large gap between grid columns.
       </p>
@@ -187,7 +187,7 @@ export const GridSmallGap: SectionStory = () => (
       imgClassName="w-full h-auto object-cover rounded-lg"
     />
     <Box>
-      <Heading as="h3" className="mb-3">Small Gap - Compact Layout</Heading>
+      <Heading as="h3" marginBottom="xs">Small Gap - Compact Layout</Heading>
       <p className="mb-3">
         This grid uses a small gap for a more compact appearance.
       </p>
@@ -201,7 +201,7 @@ export const GridSmallGap: SectionStory = () => (
 export const GridReverseLayout: SectionStory = () => (
   <Section grid padding="py-12">
     <Box className="order-2 md:order-1">
-      <Heading as="h2" className="mb-4">Content First on Desktop</Heading>
+      <Heading as="h2" marginBottom="sm">Content First on Desktop</Heading>
       <p className="text-lg mb-4">
         Using Tailwind's order utilities, you can reverse the grid layout on different screen sizes.
       </p>

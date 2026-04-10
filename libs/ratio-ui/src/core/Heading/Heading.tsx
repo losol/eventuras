@@ -1,6 +1,8 @@
-import { BoxSpacingProps, buildSpacingClasses } from '../../layout/Box/Box';
+import type { SpacingProps } from '../../tokens/spacing';
+import { buildSpacingClasses } from '../../tokens/spacing';
+import { cn } from '../../utils/cn';
 
-export interface HeadingProps extends BoxSpacingProps {
+export interface HeadingProps extends SpacingProps {
   as?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
   children: React.ReactNode;
   className?: string;
@@ -15,19 +17,17 @@ export interface HeadingProps extends BoxSpacingProps {
 const Heading = ({
   as: HeadingComponent = 'h1',
   children,
-  className = '',
+  className,
   onDark = false,
-  padding,
-  margin,
-  border,
-  width,
-  height,
+  ...spacingProps
 }: HeadingProps) => {
-  const spacingClasses = buildSpacingClasses({ padding, margin, border, width, height });
   const textColor = onDark ? 'text-gray-200' : 'text-gray-800 dark:text-gray-200';
-  const headingClassName = [spacingClasses, textColor, className].filter(Boolean).join(' ');
 
-  return <HeadingComponent className={headingClassName}>{children}</HeadingComponent>;
+  return (
+    <HeadingComponent className={cn(textColor, buildSpacingClasses(spacingProps), className)}>
+      {children}
+    </HeadingComponent>
+  );
 };
 
 export default Heading;

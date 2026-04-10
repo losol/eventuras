@@ -58,7 +58,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
 }) => {
   return (
     <>
-      <Heading as="h2" padding="pb-4">
+      <Heading as="h2" paddingBottom="sm">
         {title}
       </Heading>
 

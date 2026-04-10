@@ -82,7 +82,7 @@ export default async function UserEventPage({ params }: Readonly<UserEventPagePr
                   <p className="text-sm text-gray-600 dark:text-gray-400">
                     {t('user.events.registration.titleLabel')}
                   </p>
-                  <Heading as="h1" padding="pt-0 my-5">
+                  <Heading as="h1" marginY="sm">
                     {eventInfoResponse.data.title}
                   </Heading>
                 </>

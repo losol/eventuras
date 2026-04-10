@@ -264,11 +264,11 @@ export default function VippsCheckoutPage() {
           {/* WAITING STATE - Waiting for payment confirmation */}
           {state === 'waiting' && (
             <div className="text-center py-8">
-              <Heading as="h1" className="mb-4">
+              <Heading as="h1" marginBottom="sm">
                 Venter på bekreftelse
               </Heading>
 
-              <Text className="mb-6 text-gray-600 dark:text-gray-400">
+              <Text marginBottom="sm" className="text-gray-600 dark:text-gray-400">
                 Vi venter på bekreftelse fra Vipps. Dette tar vanligvis bare noen sekunder.
               </Text>
 
@@ -291,7 +291,7 @@ export default function VippsCheckoutPage() {
               <div className="mx-auto mb-4 flex justify-center">
                 <Loading />
               </div>
-              <Heading as="h1" className="mb-2 text-2xl font-bold">
+              <Heading as="h1" marginBottom="xs" className="text-2xl font-bold">
                 Oppretter ordre
               </Heading>
               <Text className="text-gray-600 dark:text-gray-400">{message}</Text>
@@ -303,7 +303,7 @@ export default function VippsCheckoutPage() {
             <>
 
 
-              <Heading as="h1" className="mb-2">
+              <Heading as="h1" marginBottom="xs">
                 Takk for din bestilling!
               </Heading>
 

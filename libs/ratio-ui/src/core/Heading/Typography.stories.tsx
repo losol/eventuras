@@ -157,7 +157,7 @@ export const HeadingComparison: StoryObj = {
       {([1, 2, 3, 4, 5, 6] as const).map(level => (
         <div key={level} className="flex items-baseline gap-6 border-b border-gray-200 dark:border-gray-700 pb-4">
           <span className="text-xs font-mono text-gray-400 w-6 shrink-0">h{level}</span>
-          <Heading as={`h${level}`} className="mt-0 mb-0">
+          <Heading as={`h${level}`} marginTop="none" marginBottom="none">
             Overskrift nivå {level}
           </Heading>
         </div>

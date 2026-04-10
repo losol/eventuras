@@ -62,7 +62,7 @@ export default async function EventsPage() {
   }
   return (
     <>
-      <Heading as="h1" padding="pb-4">
+      <Heading as="h1" paddingBottom="sm">
         {t('common.events.sectiontitle')}
       </Heading>
       {/* Show error message if fetch failed */}

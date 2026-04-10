@@ -27,7 +27,7 @@ const Step06RegistrationCancellation: React.FC<Step06RegistrationCancellationPro
   };
   return (
     <div className="max-w-2xl mx-auto">
-      <Heading as="h2" className="mb-6 text-red-600 dark:text-red-400">
+      <Heading as="h2" marginBottom="sm" className="text-red-600 dark:text-red-400">
         {t('user.events.cancellationpage.title')}
       </Heading>
       <p className="mb-6 text-gray-600 dark:text-gray-400">

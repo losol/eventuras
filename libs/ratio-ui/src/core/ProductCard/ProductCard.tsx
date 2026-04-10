@@ -82,7 +82,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             onClick={onAddToCart}
             variant="primary"
             block
-            padding="px-4 py-2"
           >
             {finalButtonText}
           </Button>

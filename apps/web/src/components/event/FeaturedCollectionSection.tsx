@@ -23,7 +23,7 @@ export const FeaturedCollectionSection: React.FC<FeaturedCollectionSectionProps>
         <Card variant="wide" backgroundImageUrl={collection.featuredImageUrl} />
       )}
       <Container>
-        <Heading as="h2" padding="pt-6 pb-3">
+        <Heading as="h2" paddingTop="sm" paddingBottom="xs">
           <Link href={`/collections/${collection.id}/${collection.slug}`}>{collection.name}</Link>
         </Heading>
         {collection.description && <MarkdownContent markdown={collection.description} />}

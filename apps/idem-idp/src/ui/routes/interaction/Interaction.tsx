@@ -182,9 +182,9 @@ function LoginPrompt({ uid, details }: { uid: string; details: InteractionDetail
 
   return (
     <InteractionCard>
-      <Heading as="h2" margin="mb-2">Sign In</Heading>
+      <Heading as="h2" marginBottom="xs">Sign In</Heading>
 
-      <Text variant="muted" size="sm" margin="mb-4">
+      <Text variant="muted" size="sm" marginBottom="sm">
         <strong>{details.params.client_id}</strong>
       </Text>
 
@@ -209,13 +209,13 @@ function LoginPrompt({ uid, details }: { uid: string; details: InteractionDetail
             />
           </div>
 
-          <Button type="submit" block disabled={loading} loading={loading} margin="m-0">
+          <Button type="submit" block disabled={loading} loading={loading}>
             {loading ? 'Sending...' : 'Send Login Code'}
           </Button>
         </form>
       ) : (
         <form onSubmit={handleVerifyOtp}>
-          <Text variant="muted" size="sm" margin="mb-4">
+          <Text variant="muted" size="sm" marginBottom="sm">
             We sent a code to <strong>{email}</strong>
           </Text>
 
@@ -239,7 +239,7 @@ function LoginPrompt({ uid, details }: { uid: string; details: InteractionDetail
             />
           </div>
 
-          <Button type="submit" block disabled={loading} loading={loading} margin="m-0">
+          <Button type="submit" block disabled={loading} loading={loading}>
             {loading ? 'Verifying...' : 'Sign In'}
           </Button>
 
@@ -292,14 +292,14 @@ function ConsentPrompt({ uid, details }: { uid: string; details: InteractionDeta
 
   return (
     <InteractionCard>
-      <Heading as="h2" margin="mb-2">Grant Permissions</Heading>
+      <Heading as="h2" marginBottom="xs">Grant Permissions</Heading>
 
       <Text variant="muted" size="sm">
         <strong>{details.params.client_id}</strong> is requesting access to your account.
       </Text>
 
       <div className="my-4">
-        <Text className="font-semibold text-sm mb-2">Requested permissions:</Text>
+        <Text marginBottom="xs" className="font-semibold text-sm">Requested permissions:</Text>
         <ul className="list-disc pl-5 text-sm text-gray-600 dark:text-gray-400 space-y-1">
           {scopes.map((scope) => (
             <li key={scope}>{scope}</li>

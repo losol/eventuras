@@ -126,7 +126,7 @@ export default function NotificationDetailsDrawer({
           {/* Statistics */}
           {notification.statistics && (
             <div className="border-t pt-4">
-              <Text weight="semibold" margin="mb-3">
+              <Text weight="semibold" marginBottom="xs">
                 Statistics
               </Text>
               <div className="grid grid-cols-3 gap-4">
@@ -160,7 +160,7 @@ export default function NotificationDetailsDrawer({
 
           {/* Recipients List */}
           <div className="border-t pt-4">
-            <Text weight="semibold" margin="mb-3">
+            <Text weight="semibold" marginBottom="xs">
               Recipients
             </Text>
             {isLoading ? (
@@ -191,12 +191,12 @@ export default function NotificationDetailsDrawer({
                         <Badge variant={badgeVariant}>{badgeLabel}</Badge>
                       </div>
                       {recipient.errors && (
-                        <Text size="xs" color="error" margin="mt-2">
+                        <Text size="xs" color="error" marginTop="xs">
                           {recipient.errors}
                         </Text>
                       )}
                       {recipient.sent && (
-                        <Text size="xs" variant="subtle" margin="mt-1">
+                        <Text size="xs" variant="subtle" marginTop="xs">
                           Sent: {formatDate(recipient.sent.toString(), { showTime: true })}
                         </Text>
                       )}
