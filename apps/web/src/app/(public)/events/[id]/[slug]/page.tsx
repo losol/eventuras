@@ -7,7 +7,6 @@ import { Logger } from '@eventuras/logger';
 import { MarkdownContent } from '@eventuras/markdown';
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
-import { Text } from '@eventuras/ratio-ui/core/Text';
 import { Calendar, MapPin } from '@eventuras/ratio-ui/icons';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';

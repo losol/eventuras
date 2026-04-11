@@ -2,7 +2,7 @@ import { createColumnHelper } from '@eventuras/datatable';
 import { Badge } from '@eventuras/ratio-ui/core/Badge';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Loading } from '@eventuras/ratio-ui/core/Loading';
-import { ChevronDown, ChevronRight, FileText, Pencil, User } from '@eventuras/ratio-ui/icons';
+import { ChevronDown, ChevronRight, Pencil, User } from '@eventuras/ratio-ui/icons';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
 import { CertificateActionsButton } from '@/components/eventuras/CertificateActionsButton';
