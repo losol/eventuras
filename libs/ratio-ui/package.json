@@ -76,7 +76,8 @@
     "dev": "pnpm run storybook",
     "storybook": "storybook dev -p 6006 --no-open",
     "storybook:build": "storybook build",
-    "test": "vitest"
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "overrides": {
     "storybook": "$storybook",

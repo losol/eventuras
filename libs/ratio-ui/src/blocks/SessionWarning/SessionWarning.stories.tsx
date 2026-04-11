@@ -3,6 +3,14 @@ import { SessionWarning, SessionWarningProps } from './SessionWarning';
 import { fn } from 'storybook/test';
 import { useState } from 'react';
 
+const defaultMessages = {
+  title: 'Session Expired',
+  description: 'Your session has expired. Please log in again to continue.',
+  tip: 'Make sure to save your work before logging in.',
+  loginButton: 'Log In Now',
+  dismissButton: 'Dismiss',
+};
+
 const meta: Meta<typeof SessionWarning> = {
   component: SessionWarning,
   tags: ['autodocs'],
@@ -11,20 +19,13 @@ const meta: Meta<typeof SessionWarning> = {
     onLoginNow: fn(),
     onDismiss: fn(),
     isLoading: false,
+    messages: defaultMessages,
   },
 };
 
 export default meta;
 
 type SessionWarningStory = StoryFn<SessionWarningProps>;
-
-const defaultMessages = {
-  title: 'Session Expired',
-  description: 'Your session has expired. Please log in again to continue.',
-  tip: 'Make sure to save your work before logging in.',
-  loginButton: 'Log In Now',
-  dismissButton: 'Dismiss',
-};
 
 export const Playground: SessionWarningStory = args => <SessionWarning {...args} />;
 
