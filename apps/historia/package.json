@@ -26,7 +26,6 @@
     "@eventuras/payload-vipps-auth": "workspace:*",
     "@eventuras/ratio-ui": "workspace:*",
     "@eventuras/ratio-ui-next": "workspace:*",
-    "@eventuras/toast": "workspace:*",
     "@eventuras/vipps": "workspace:*",
     "@opentelemetry/api": "^1.9.1",
     "@opentelemetry/exporter-logs-otlp-http": "^0.214.0",

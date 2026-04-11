@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl';
 
 import { SplitButton } from '@eventuras/ratio-ui/core/SplitButton';
 import { Download, Send } from '@eventuras/ratio-ui/icons';
-import { useToast } from '@eventuras/toast';
+import { useToast } from '@eventuras/ratio-ui/toast';
 
 import {
   downloadCertificatePdf,

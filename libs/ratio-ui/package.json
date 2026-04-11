@@ -47,6 +47,10 @@
       "types": "./dist/commerce/*/index.d.ts",
       "import": "./dist/commerce/*/index.js"
     },
+    "./toast": {
+      "types": "./dist/toast/index.d.ts",
+      "import": "./dist/toast/index.js"
+    },
     "./tokens": {
       "types": "./dist/tokens/index.d.ts",
       "import": "./dist/tokens/index.js"

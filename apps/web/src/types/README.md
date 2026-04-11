@@ -97,7 +97,7 @@ export async function createEvent(
 
 import { useState } from 'react';
 import { Logger } from '@eventuras/logger';
-import { useToast } from '@eventuras/toast';
+import { useToast } from '@eventuras/ratio-ui/toast';
 import { useTranslations } from 'next-intl';
 
 import { createEvent } from './actions';

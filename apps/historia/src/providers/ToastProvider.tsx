@@ -1,12 +1,12 @@
 'use client';
 
-import { ToastRenderer, ToastsContext } from '@eventuras/toast';
+import { ToastRenderer } from '@eventuras/ratio-ui/toast';
 
 export function ToastProvider({ children }: { children: React.ReactNode }) {
   return (
-    <ToastsContext.Provider>
+    <>
       <ToastRenderer />
       {children}
-    </ToastsContext.Provider>
+    </>
   );
 }

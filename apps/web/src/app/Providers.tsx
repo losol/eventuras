@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 
 import { initializeAuth, startSessionMonitor } from '@eventuras/fides-auth-next/store';
 import { Logger } from '@eventuras/logger';
-import { ToastRenderer, ToastsContext } from '@eventuras/toast';
+import { ToastRenderer } from '@eventuras/ratio-ui/toast';
 
 import { authStore } from '@/auth/authStore';
 import { LoginSuccessHandler } from '@/components/auth/LoginSuccessHandler';
@@ -59,12 +59,10 @@ export default function Providers({ children }: ProvidersProps) {
 
   return (
     <ThemeProvider>
-      <ToastsContext.Provider>
-        <ToastRenderer />
-        <LoginSuccessHandler />
-        <SessionWarningOverlay />
-        {children}
-      </ToastsContext.Provider>
+      <ToastRenderer />
+      <LoginSuccessHandler />
+      <SessionWarningOverlay />
+      {children}
     </ThemeProvider>
   );
 }

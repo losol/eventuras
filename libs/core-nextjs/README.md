@@ -36,7 +36,7 @@ export async function createEvent(
 ```typescript
 'use client';
 
-import { useToast } from '@eventuras/toast';
+import { useToast } from '@eventuras/ratio-ui/toast';
 import { createEvent } from './actions';
 
 export function EventForm() {

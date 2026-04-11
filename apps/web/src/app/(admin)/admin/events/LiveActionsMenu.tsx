@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { Logger } from '@eventuras/logger';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { CircleX } from '@eventuras/ratio-ui/icons';
+import { useToast } from '@eventuras/ratio-ui/toast';
 import { Link } from '@eventuras/ratio-ui-next/Link';
-import { useToast } from '@eventuras/toast';
 
 import { RegistrationDto, RegistrationStatus } from '@/lib/eventuras-sdk';
 

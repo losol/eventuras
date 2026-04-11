@@ -11,7 +11,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { Dialog } from '@eventuras/ratio-ui/layout/Dialog';
-import { useToast } from '@eventuras/toast';
+import { useToast } from '@eventuras/ratio-ui/toast';
 
 import RegistrationProductsCustomize from '@/app/(admin)/admin/events/RegistrationProductsCustomize';
 import { addProductsToExistingRegistration } from '@/app/(user)/user/events/actions';

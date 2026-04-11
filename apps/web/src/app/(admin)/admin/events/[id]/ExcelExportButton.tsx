@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import { Logger } from '@eventuras/logger';
 import { Button } from '@eventuras/ratio-ui/core/Button';
-import { useToast } from '@eventuras/toast';
+import { useToast } from '@eventuras/ratio-ui/toast';
 
 import { downloadRegistrationsExcel } from './excelExportActions';
 

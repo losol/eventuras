@@ -169,12 +169,12 @@ export async function updateCollection(data: EventCollectionDto) {
 
 ## User Feedback with Toast Notifications
 
-### Use `@eventuras/toast` for User Feedback
+### Use `@eventuras/ratio-ui/toast` for User Feedback
 
-Always provide user feedback for actions using the toast notification system from `@eventuras/toast`.
+Always provide user feedback for actions using the toast notification system from `@eventuras/ratio-ui/toast`.
 
 ```typescript
-import { useToast } from "@eventuras/toast";
+import { useToast } from "@eventuras/ratio-ui/toast";
 
 const Component = () => {
   const toast = useToast();
@@ -216,7 +216,7 @@ const Component = () => {
 ```typescript
 'use client';
 
-import { useToast } from '@eventuras/toast';
+import { useToast } from '@eventuras/ratio-ui/toast';
 import { createProduct } from './actions';
 
 export function ProductForm() {
@@ -322,7 +322,7 @@ export async function downloadRegistrationsExcel(
 ```typescript
 'use client';
 
-import { useToast } from '@eventuras/toast';
+import { useToast } from '@eventuras/ratio-ui/toast';
 import { downloadRegistrationsExcel } from './excelExportActions';
 
 export function ExcelExportButton({ eventId }: { eventId: number }) {

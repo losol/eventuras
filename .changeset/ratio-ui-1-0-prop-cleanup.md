@@ -1,6 +1,5 @@
 ---
 "@eventuras/ratio-ui": major
-"@eventuras/toast": major
 ---
 
 ### Unified spacing, border, color, and status APIs (ADR-0001)
@@ -64,8 +63,10 @@ Component props migrated from raw Tailwind strings to the new typed APIs:
   `Panel.css` removed; classes mapped via Tailwind Records using design tokens.
 - **Badge** — `variant` renamed to `status`. `'positive'`/`'negative'` removed
   in favor of `'success'`/`'error'`. `'warning'` added. Uses shared `Status`.
-- **Toast** — `ToastType` enum removed. `type` field renamed to `status`,
-  uses shared `Status`. New `warning` variant.
+- **Toast** — old `core/Toast` component removed. See the separate toast
+  changeset: the toast system is rewritten on top of React Aria and now lives
+  at `@eventuras/ratio-ui/toast` (replacing the standalone `@eventuras/toast`
+  package).
 - **PageOverlay** — `variant` renamed to `status`. `'default'` becomes
   `'neutral'`. Uses shared `Status`.
 - **Error block** — `tone` renamed to `status`. Uses shared `Status`.

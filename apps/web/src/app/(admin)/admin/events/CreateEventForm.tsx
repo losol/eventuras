@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl';
 
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Fieldset, Form, TextField } from '@eventuras/ratio-ui/forms';
-import { useToast } from '@eventuras/toast';
+import { useToast } from '@eventuras/ratio-ui/toast';
 
 import { createEvent } from './actions';
 export const CreateEventForm = ({ organizationId }: { organizationId: number }) => {

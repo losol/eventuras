@@ -8,7 +8,7 @@ import { Button } from '@eventuras/ratio-ui/core/Button';
 import { DescriptionList } from '@eventuras/ratio-ui/core/DescriptionList';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
-import { useToast } from '@eventuras/toast';
+import { useToast } from '@eventuras/ratio-ui/toast';
 
 import { OrderDto, PaymentProvider } from '@/lib/eventuras-sdk';
 

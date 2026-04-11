@@ -70,7 +70,6 @@ jobs:
           pnpm --filter "@eventuras/core-nextjs" build
           pnpm --filter "@eventuras/event-sdk" build
           pnpm --filter "@eventuras/logger" build
-          pnpm --filter "@eventuras/toast" build
           pnpm --filter "@eventuras/ratio-ui" build
           pnpm --filter "@eventuras/ratio-ui-next" build
 

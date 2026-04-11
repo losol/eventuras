@@ -17,7 +17,7 @@ const logger = Logger.create({
   namespace: 'web:admin:organizations',
   context: { component: 'OrganizationMemberships' },
 });
-import { useToast } from '@eventuras/toast';
+import { useToast } from '@eventuras/ratio-ui/toast';
 export interface OrganizationMembershipsProps {
   organizationId: number;
   organizationName: string;

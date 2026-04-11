@@ -87,7 +87,7 @@ Historia uses shared libraries from `libs/`:
 - `@eventuras/payload-vipps-auth` - Vipps authentication plugin
 - `@eventuras/ratio-ui` / `@eventuras/ratio-ui-next` - UI components
 - `@eventuras/logger` - Structured logging
-- `@eventuras/toast` - Toast notifications
+- `@eventuras/ratio-ui/toast` - Toast notifications
 - `@eventuras/core-nextjs` - Server actions utilities
 - `@eventuras/vipps` - Vipps API client
 
@@ -319,7 +319,7 @@ Plan integrations with these monorepo libraries:
 
 ### Backend Utilities
 - `@eventuras/logger` - Structured logging (use instead of console.log)
-- `@eventuras/toast` - Toast notification system
+- `@eventuras/ratio-ui/toast` - Toast notification system
 - `@eventuras/core-nextjs` - Server actions utilities (ServerActionResult pattern)
 - `@eventuras/vipps` - Vipps API client
 

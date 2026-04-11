@@ -8,8 +8,8 @@ import { Logger } from '@eventuras/logger';
 import { Button, ButtonGroup } from '@eventuras/ratio-ui/core/Button';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Checkbox, CheckBoxLabel, Form, TextField } from '@eventuras/ratio-ui/forms';
+import { useToast } from '@eventuras/ratio-ui/toast';
 import { MarkdownInput } from '@eventuras/scribo';
-import { useToast } from '@eventuras/toast';
 
 import '@eventuras/scribo/style.css';
 

@@ -168,7 +168,7 @@ Use these established libraries in your implementations:
 
 - Use `@eventuras/logger` for structured logging (never `console.log`)
 - Concise logging for success cases, extensive for errors
-- Use `@eventuras/toast` for user feedback
+- Use `@eventuras/ratio-ui/toast` for user feedback
 - Provide clear, actionable error messages
 
 ### Server Actions

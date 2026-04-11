@@ -7,9 +7,9 @@ import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Loading } from '@eventuras/ratio-ui/core/Loading';
 import { Trash2 } from '@eventuras/ratio-ui/icons';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
+import { useToast } from '@eventuras/ratio-ui/toast';
 import { MarkdownInput } from '@eventuras/scribo';
 import { CheckboxInput, CheckboxLabel, Controller, Form, TextField } from '@eventuras/smartform';
-import { useToast } from '@eventuras/toast';
 
 import EventLookup from '@/components/event/EventLookup';
 import { EventCollectionDto, EventDto } from '@/lib/eventuras-sdk';

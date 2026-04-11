@@ -11,7 +11,7 @@ import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Loading } from '@eventuras/ratio-ui/core/Loading';
 import { Text } from '@eventuras/ratio-ui/core/Text';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
-import { useToast } from '@eventuras/toast';
+import { useToast } from '@eventuras/ratio-ui/toast';
 
 import { PaymentStatusSSE } from '@/components/payment/PaymentStatusSSE';
 import { useSessionCart } from '@/lib/cart/use-session-cart';

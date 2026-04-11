@@ -12,7 +12,7 @@ import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Loading } from '@eventuras/ratio-ui/core/Loading';
 import { NumberField } from '@eventuras/ratio-ui/forms';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
-import { useToast } from '@eventuras/toast';
+import { useToast } from '@eventuras/ratio-ui/toast';
 import type { PaymentDetails } from '@eventuras/vipps/epayment-v1';
 
 import { useCart } from '@/lib/cart';

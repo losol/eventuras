@@ -6,8 +6,8 @@ import { useTranslations } from 'next-intl';
 import { Logger } from '@eventuras/logger';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Dialog } from '@eventuras/ratio-ui/layout/Dialog';
+import { useToast } from '@eventuras/ratio-ui/toast';
 import { Form, HiddenInput, TextField } from '@eventuras/smartform';
-import { useToast } from '@eventuras/toast';
 
 import { EventCollectionCreateDto } from '@/lib/eventuras-sdk';
 

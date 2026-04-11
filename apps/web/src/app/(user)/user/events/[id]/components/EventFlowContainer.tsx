@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import { Loading } from '@eventuras/ratio-ui/core/Loading';
 import type { Step } from '@eventuras/ratio-ui/core/Stepper';
 import { Stepper } from '@eventuras/ratio-ui/core/Stepper';
-import { useToast } from '@eventuras/toast';
+import { useToast } from '@eventuras/ratio-ui/toast';
 
 import FatalError from '@/components/FatalError';
 import { EventDto, ProductDto, UserDto } from '@/lib/eventuras-sdk';

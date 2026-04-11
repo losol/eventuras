@@ -11,8 +11,8 @@ import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Image } from '@eventuras/ratio-ui/core/Image';
 import { Text } from '@eventuras/ratio-ui/core/Text';
 import { Stack } from '@eventuras/ratio-ui/layout/Stack';
+import { useToast } from '@eventuras/ratio-ui/toast';
 import { Link } from '@eventuras/ratio-ui-next';
-import { useToast } from '@eventuras/toast';
 
 import RichText from '@/components/RichText';
 import { useLocale } from '@/hooks/useLocale';

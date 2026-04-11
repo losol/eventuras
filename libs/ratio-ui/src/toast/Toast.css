@@ -1,0 +1,22 @@
+::view-transition-new(.toast):only-child {
+  animation: toast-slide-in 300ms ease-out;
+}
+
+::view-transition-old(.toast):only-child {
+  animation: toast-slide-out 300ms ease-in forwards;
+}
+
+@keyframes toast-slide-in {
+  from {
+    translate: 100% 0;
+    opacity: 0;
+  }
+}
+
+@keyframes toast-slide-out {
+  to {
+    translate: 100% 0;
+    opacity: 0;
+    visibility: hidden;
+  }
+}

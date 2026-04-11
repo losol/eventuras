@@ -8,8 +8,8 @@ import { Logger } from '@eventuras/logger';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Tabs } from '@eventuras/ratio-ui/core/Tabs';
 import { ActionBar } from '@eventuras/ratio-ui/layout/ActionBar';
+import { useToast } from '@eventuras/ratio-ui/toast';
 import { Form, useFormContext } from '@eventuras/smartform';
-import { useToast } from '@eventuras/toast';
 
 import {
   EventDto,

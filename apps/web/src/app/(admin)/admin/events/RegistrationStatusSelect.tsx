@@ -2,7 +2,7 @@
 
 import { Logger } from '@eventuras/logger';
 import { Select } from '@eventuras/ratio-ui/forms';
-import { useToast } from '@eventuras/toast';
+import { useToast } from '@eventuras/ratio-ui/toast';
 
 import type { RegistrationDto } from '@/lib/eventuras-types';
 import { RegistrationStatus } from '@/lib/eventuras-types';

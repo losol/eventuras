@@ -6,8 +6,8 @@ import * as regex from '@eventuras/core/regex';
 import { Logger } from '@eventuras/logger';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Fieldset } from '@eventuras/ratio-ui/forms';
+import { useToast } from '@eventuras/ratio-ui/toast';
 import { Form, PhoneInput, TextField } from '@eventuras/smartform';
-import { useToast } from '@eventuras/toast';
 
 import { UserDto, UserFormDto } from '@/lib/eventuras-sdk';
 

@@ -103,10 +103,6 @@
     "smartform": {
       "package": "@eventuras/smartform"
     },
-    "toast": {
-      "package": "@eventuras/toast",
-      "aliases": ["toaster"]
-    },
     "vite-config": {
       "package": "@eventuras/vite-config",
       "aliases": ["vite"]

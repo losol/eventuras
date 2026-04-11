@@ -19,7 +19,7 @@ import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Checkbox } from '@eventuras/ratio-ui/forms';
 import { Check } from '@eventuras/ratio-ui/icons';
 import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
-import { useToast } from '@eventuras/toast';
+import { useToast } from '@eventuras/ratio-ui/toast';
 
 import { createEventRegistration } from '@/app/(user)/user/events/actions';
 import ProductSelection from '@/components/eventuras/ProductSelection';

@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { Logger } from '@eventuras/logger';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Loading } from '@eventuras/ratio-ui/core/Loading';
-import { useToast } from '@eventuras/toast';
+import { useToast } from '@eventuras/ratio-ui/toast';
 
 import type { RegistrationDto } from '@/lib/eventuras-types';
 import { RegistrationStatus } from '@/lib/eventuras-types';
