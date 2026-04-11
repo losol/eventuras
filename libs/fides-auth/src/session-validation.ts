@@ -8,10 +8,15 @@ import { Session } from './types';
 
 const logger = createLogger({ namespace: 'fides-auth:session-validation' });
 
+/** Result of validating an encrypted session JWT. */
 export interface SessionValidationResult {
+  /** The decoded session, if valid. */
   session?: Session;
+  /** Validation status: VALID, INVALID (decryption/format error), or EXPIRED. */
   status: 'VALID' | 'INVALID' | 'EXPIRED';
+  /** Seconds until the access token expires (negative means already expired). */
   accessTokenExpiresIn?: number;
+  /** Human-readable reason when status is not VALID. */
   reason?: string;
 }
 
@@ -64,6 +69,7 @@ export async function validateSessionJwt(
 }
 
 
+/** Type guard that checks whether an unknown value conforms to the {@link Session} shape. */
 export function isSession(object: unknown): object is Session {
   if (typeof object !== 'object' || object === null) {
     return false;

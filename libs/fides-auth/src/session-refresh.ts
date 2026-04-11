@@ -4,6 +4,15 @@ import { CreateSessionOptions, Session } from "./types";
 
 const logger = createLogger({ namespace: 'fides-auth:session-refresh' });
 
+/**
+ * Refreshes an existing session by exchanging its refresh token for new tokens.
+ *
+ * @param current_session - The current session containing a refresh token
+ * @param config - OAuth configuration for the identity provider
+ * @param options - Optional session creation options
+ * @returns The updated session with new tokens, or throws on failure
+ * @throws Error if no refresh token is available or the token exchange fails
+ */
 export const refreshSession = async (
   current_session: Session,
   config: OAuthConfig,
