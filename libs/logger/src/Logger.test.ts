@@ -89,6 +89,30 @@ describe('Logger', () => {
       expect(mockTransport.calls[0]!.level).toBe('trace');
     });
 
+    it('Logger.info() accepts a plain string message', () => {
+      Logger.info('simple message');
+
+      expect(mockTransport.calls).toHaveLength(1);
+      expect(mockTransport.calls[0]!.level).toBe('info');
+      expect(mockTransport.calls[0]!.data.msg).toEqual(['simple message']);
+    });
+
+    it('Logger.error() accepts a plain string message', () => {
+      Logger.error('something broke');
+
+      expect(mockTransport.calls).toHaveLength(1);
+      expect(mockTransport.calls[0]!.level).toBe('error');
+      expect(mockTransport.calls[0]!.data.msg).toEqual(['something broke']);
+    });
+
+    it('Logger.warn() accepts string with extra arguments', () => {
+      Logger.warn('warning:', 'extra info', 42);
+
+      expect(mockTransport.calls).toHaveLength(1);
+      expect(mockTransport.calls[0]!.level).toBe('warn');
+      expect(mockTransport.calls[0]!.data.msg).toEqual(['warning:', 'extra info', 42]);
+    });
+
     it('includes correlationId in log data', () => {
       Logger.info({ correlationId: 'abc-123' }, 'correlated');
 

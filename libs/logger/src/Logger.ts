@@ -124,6 +124,20 @@ export class Logger {
 
   // --- Static convenience methods ---
 
+  /**
+   * Normalize arguments for static log methods.
+   * Supports both `Logger.info('msg')` and `Logger.info({ namespace: 'x' }, 'msg')`.
+   */
+  private static normalizeArgs(
+    optionsOrMsg: LoggerOptions | string,
+    rest: unknown[],
+  ): [LoggerOptions, unknown[]] {
+    if (typeof optionsOrMsg === 'string') {
+      return [{}, [optionsOrMsg, ...rest]];
+    }
+    return [optionsOrMsg, rest];
+  }
+
   private static isDevelopment(): boolean {
     return getEnv('NODE_ENV') === 'development';
   }
@@ -164,23 +178,58 @@ export class Logger {
     Logger.transport.log(level, { ...data, msg });
   }
 
-  static info(options: LoggerOptions, ...msg: unknown[]): void {
-    Logger.staticLog('info', options, ...msg);
+  /** Log at info level with options and message(s). */
+  static info(options: LoggerOptions, ...msg: unknown[]): void;
+  /** Log at info level with just a message string. */
+  static info(msg: string, ...args: unknown[]): void;
+  static info(optionsOrMsg: LoggerOptions | string, ...msg: unknown[]): void {
+    const [options, messages] = Logger.normalizeArgs(optionsOrMsg, msg);
+    Logger.staticLog('info', options, ...messages);
   }
-  static debug(options: LoggerOptions, ...msg: unknown[]): void {
-    Logger.staticLog('debug', options, ...msg);
+
+  /** Log at debug level with options and message(s). */
+  static debug(options: LoggerOptions, ...msg: unknown[]): void;
+  /** Log at debug level with just a message string. */
+  static debug(msg: string, ...args: unknown[]): void;
+  static debug(optionsOrMsg: LoggerOptions | string, ...msg: unknown[]): void {
+    const [options, messages] = Logger.normalizeArgs(optionsOrMsg, msg);
+    Logger.staticLog('debug', options, ...messages);
   }
-  static trace(options: LoggerOptions, ...msg: unknown[]): void {
-    Logger.staticLog('trace', options, ...msg);
+
+  /** Log at trace level with options and message(s). */
+  static trace(options: LoggerOptions, ...msg: unknown[]): void;
+  /** Log at trace level with just a message string. */
+  static trace(msg: string, ...args: unknown[]): void;
+  static trace(optionsOrMsg: LoggerOptions | string, ...msg: unknown[]): void {
+    const [options, messages] = Logger.normalizeArgs(optionsOrMsg, msg);
+    Logger.staticLog('trace', options, ...messages);
   }
-  static warn(options: LoggerOptions, ...msg: unknown[]): void {
-    Logger.staticLog('warn', options, ...msg);
+
+  /** Log at warn level with options and message(s). */
+  static warn(options: LoggerOptions, ...msg: unknown[]): void;
+  /** Log at warn level with just a message string. */
+  static warn(msg: string, ...args: unknown[]): void;
+  static warn(optionsOrMsg: LoggerOptions | string, ...msg: unknown[]): void {
+    const [options, messages] = Logger.normalizeArgs(optionsOrMsg, msg);
+    Logger.staticLog('warn', options, ...messages);
   }
-  static error(options: ErrorLoggerOptions, ...msg: unknown[]): void {
-    Logger.staticErrorLog('error', options, ...msg);
+
+  /** Log at error level with options and message(s). */
+  static error(options: ErrorLoggerOptions, ...msg: unknown[]): void;
+  /** Log at error level with just a message string. */
+  static error(msg: string, ...args: unknown[]): void;
+  static error(optionsOrMsg: ErrorLoggerOptions | string, ...msg: unknown[]): void {
+    const [options, messages] = Logger.normalizeArgs(optionsOrMsg, msg);
+    Logger.staticErrorLog('error', options, ...messages);
   }
-  static fatal(options: ErrorLoggerOptions, ...msg: unknown[]): void {
-    Logger.staticErrorLog('fatal', options, ...msg);
+
+  /** Log at fatal level with options and message(s). */
+  static fatal(options: ErrorLoggerOptions, ...msg: unknown[]): void;
+  /** Log at fatal level with just a message string. */
+  static fatal(msg: string, ...args: unknown[]): void;
+  static fatal(optionsOrMsg: ErrorLoggerOptions | string, ...msg: unknown[]): void {
+    const [options, messages] = Logger.normalizeArgs(optionsOrMsg, msg);
+    Logger.staticErrorLog('fatal', options, ...messages);
   }
 
   private static rebindStaticMethods(): void {
