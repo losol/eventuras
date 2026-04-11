@@ -53,7 +53,7 @@ export async function encrypt(text: string): Promise<string> {
   }
 
   // Convert the secret hex string to a Uint8Array.
-  const keyData = Uint8Array.from(secret.match(/.{1,2}/g)!.map(byte => parseInt(byte, 16)));
+  const keyData = hexToUint8Array(secret);
 
   // Import the key for AES-GCM encryption.
   const key = await crypto.subtle.importKey(
@@ -85,13 +85,6 @@ export async function encrypt(text: string): Promise<string> {
   const ciphertext = encryptedArray.slice(0, encryptedArray.length - tagLength);
   const authTag = encryptedArray.slice(encryptedArray.length - tagLength);
 
-  // Helper function to convert a Uint8Array to a hex string.
-  const toHex = (buffer: Uint8Array): string =>
-    Array.from(buffer)
-      .map(byte => byte.toString(16).padStart(2, '0'))
-      .join('');
-
-  // Format the output as "iv:authTag:ciphertext"
   return [toHex(iv), toHex(authTag), toHex(ciphertext)].join(':');
 }
 
@@ -154,17 +147,6 @@ export async function decrypt(data: string): Promise<string> {
 }
 
 /**
- * Helper function to convert an ArrayBuffer to a hexadecimal string.
- * @param buffer - The ArrayBuffer to convert.
- * @returns A hex string.
- */
-function bufferToHex(buffer: ArrayBuffer): string {
-  return Array.from(new Uint8Array(buffer))
-    .map(byte => byte.toString(16).padStart(2, '0'))
-    .join('');
-}
-
-/**
  * Converts input data (string or Uint8Array) to a Uint8Array backed by a plain ArrayBuffer.
  * @param data - The input data.
  * @returns A Uint8Array representing the input data.
@@ -184,7 +166,7 @@ function toUint8Array(data: string | Uint8Array): Uint8Array {
 export async function sha256(data: string | Uint8Array): Promise<string> {
   const buffer = toUint8Array(data);
   const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
-  return bufferToHex(hashBuffer);
+  return toHex(new Uint8Array(hashBuffer));
 }
 
 /**
@@ -195,7 +177,7 @@ export async function sha256(data: string | Uint8Array): Promise<string> {
 export async function sha512(data: string | Uint8Array): Promise<string> {
   const buffer = toUint8Array(data);
   const hashBuffer = await crypto.subtle.digest('SHA-512', buffer);
-  return bufferToHex(hashBuffer);
+  return toHex(new Uint8Array(hashBuffer));
 }
 
 /**
