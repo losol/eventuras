@@ -224,7 +224,7 @@ export async function handleVippsCallback(
 
     // Create encrypted session cookie with Vipps user data for the strategy to pick up
     // The strategy will decrypt this, find the user by email, and Payload handles the JWT session
-    const { createEncryptedJWT } = await import('@eventuras/fides-auth/utils');
+    const { createEncryptedJWT, getSessionSecret } = await import('@eventuras/fides-auth/utils');
     const sessionToken = await createEncryptedJWT({
       user: {
         email: user.email,
@@ -237,7 +237,7 @@ export async function handleVippsCallback(
           family_name: vippsUser.family_name,
         },
       },
-    });
+    }, getSessionSecret());
 
     // Set encrypted session cookie (60 second TTL, just for the OAuth handshake)
     const vippsSessionCookie = `${VIPPS_SESSION_PENDING_COOKIE}=${sessionToken}; Path=/; HttpOnly; SameSite=Lax; Max-Age=60${isSecure ? '; Secure' : ''}`;

@@ -86,7 +86,8 @@ export function createVippsAuthStrategy(collection = 'users'): AuthStrategy {
       let vippsEmail: string;
       try {
         const { validateSessionJwt } = await import('@eventuras/fides-auth/session-validation');
-        const { status, session } = await validateSessionJwt(sessionToken);
+        const { getSessionSecret } = await import('@eventuras/fides-auth/utils');
+        const { status, session } = await validateSessionJwt(sessionToken, getSessionSecret());
 
         if (status !== 'VALID' || !session?.user?.email) {
           logger.warn({ status }, 'Invalid Vipps pending session');
