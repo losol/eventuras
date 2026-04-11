@@ -1,6 +1,6 @@
 'use server';
 
-import crypto from 'crypto';
+import crypto from 'node:crypto';
 
 import configPromise from '@payload-config';
 import { getPayload } from 'payload';
@@ -36,7 +36,7 @@ function normalizePhoneNumber(phoneNumber: string | undefined): string | undefin
   if (!phoneNumber) return undefined;
 
   // Remove any whitespace
-  const cleaned = phoneNumber.replace(/\s/g, '');
+  const cleaned = phoneNumber.replaceAll(/\s/g, '');
 
   // If already has +, return as is
   if (cleaned.startsWith('+')) {

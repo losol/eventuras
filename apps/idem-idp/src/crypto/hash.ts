@@ -1,5 +1,5 @@
-import { scrypt, randomBytes, timingSafeEqual } from 'crypto';
-import { promisify } from 'util';
+import { scrypt, randomBytes, timingSafeEqual } from 'node:crypto';
+import { promisify } from 'node:util';
 import { Logger } from '@eventuras/logger';
 
 const logger = Logger.create({ namespace: 'idem:crypto-hash' });

@@ -1,6 +1,6 @@
 import { Logger } from '@eventuras/logger';
 import * as jose from 'jose';
-import * as fs from 'fs';
+import * as fs from 'node:fs';
 
 const logger = Logger.create({ namespace: 'e2e:api' });
 

@@ -1,4 +1,4 @@
-import { randomBytes } from 'crypto';
+import { randomBytes } from 'node:crypto';
 import { uuidv7 } from 'uuidv7';
 import type {
   TenantsConfig,
@@ -17,7 +17,7 @@ export function generateDefaultTenantsConfig(): TenantsConfig {
     {
       id: tenantId,
       name: 'Default Tenant',
-      authKeyEnvVar: `TENANT_${tenantId.toUpperCase().replace(/-/g, '_')}_AUTHKEY`,
+      authKeyEnvVar: `TENANT_${tenantId.toUpperCase().replaceAll('-', '_')}_AUTHKEY`,
     },
   ];
 }
@@ -30,7 +30,7 @@ export function generateDefaultChannelsConfig(
   tenantId: string,
 ): ChannelsConfig {
   const channelId = uuidv7();
-  const tenantPrefix = tenantId.toUpperCase().replace(/-/g, '_');
+  const tenantPrefix = tenantId.toUpperCase().replaceAll('-', '_');
 
   return [
     {

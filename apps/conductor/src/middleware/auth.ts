@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { readFileSync, existsSync, watchFile } from 'fs';
-import { join } from 'path';
-import { timingSafeEqual } from 'crypto';
+import { readFileSync, existsSync, watchFile } from 'node:fs';
+import { join } from 'node:path';
+import { timingSafeEqual } from 'node:crypto';
 import type { TenantsConfig } from '../config/schemas.js';
 
 const CONFIG_DIR = join(process.cwd(), 'data', 'config');

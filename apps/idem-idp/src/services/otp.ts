@@ -1,4 +1,4 @@
-import { randomInt } from 'crypto';
+import { randomInt } from 'node:crypto';
 import { db } from '../db/client';
 import { otpCodes, otpRateLimits } from '../db/schema/otp';
 import { accounts } from '../db/schema/account';

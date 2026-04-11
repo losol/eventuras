@@ -3,8 +3,8 @@
  * Generate TypeScript types from app.config.json for the web app
  */
 
-import path from 'path';
-import { fileURLToPath } from 'url';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import { generateTypes } from '@eventuras/app-config/generator';
 

@@ -1,6 +1,6 @@
 import { FastifyInstance, FastifyPluginAsync, FastifyRequest, FastifyReply } from 'fastify';
 import fp from 'fastify-plugin';
-import { Buffer } from 'buffer';
+import { Buffer } from 'node:buffer';
 
 const tokenRoutes: FastifyPluginAsync = async (fastify: FastifyInstance) => {
   const tokenSchema = {

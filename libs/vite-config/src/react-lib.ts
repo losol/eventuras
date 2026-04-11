@@ -2,9 +2,9 @@ import { defineConfig, type UserConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import dts from 'vite-plugin-dts';
-import { resolve } from 'path';
+import { resolve } from 'node:path';
 import { glob } from 'glob';
-import fs from 'fs';
+import fs from 'node:fs';
 
 /**
  * Plugin to preserve 'use client' directives in React Server Components.

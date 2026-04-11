@@ -1,6 +1,6 @@
 import { defineConfig } from 'vitest/config';
 import { loadEnv } from 'vite';
-import { resolve } from 'path';
+import { resolve } from 'node:path';
 
 export default defineConfig(({ mode }) => ({
   test: {

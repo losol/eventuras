@@ -1,6 +1,6 @@
 'use server';
 
-import crypto from 'crypto';
+import crypto from 'node:crypto';
 
 import { getCurrentSession } from '@eventuras/fides-auth-next';
 import { Logger } from '@eventuras/logger';

@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import type { FastifyInstance } from 'fastify';
 import { createServer } from '../server';
 import { createOidcProvider } from './provider';
-import crypto from 'crypto';
+import crypto from 'node:crypto';
 
 describe('PAR (Pushed Authorization Request) - RFC 9126', () => {
   let app: FastifyInstance;

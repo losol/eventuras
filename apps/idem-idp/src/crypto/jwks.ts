@@ -1,7 +1,7 @@
 import { generateKeyPair, exportJWK } from 'jose';
 import { db } from '../db/client';
 import { jwksKeys } from '../db/schema/jwksKeys';
-import crypto from 'crypto';
+import crypto from 'node:crypto';
 import { eq, and } from 'drizzle-orm';
 import { Logger } from '@eventuras/logger';
 import { encrypt, decrypt } from './encrypt';

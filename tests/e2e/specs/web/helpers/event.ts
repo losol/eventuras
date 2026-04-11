@@ -2,7 +2,7 @@ import { EventDto } from '@eventuras/event-sdk';
 import { Logger } from '@eventuras/logger';
 import { expect } from '@playwright/test';
 import type { Page } from '@playwright/test';
-import fs, { mkdirSync } from 'fs';
+import fs, { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 const logger = Logger.create({ namespace: 'e2e:event' });
