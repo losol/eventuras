@@ -45,11 +45,10 @@ function getEnv(key: string): string | undefined {
 }
 
 function createDefaultTransport(config: LoggerConfig): LogTransport {
-  const isDev = getEnv('NODE_ENV') === 'development';
   return new PinoTransport({
     level: config.level ?? (getEnv('LOG_LEVEL') as LogLevel | undefined) ?? 'info',
     redact: config.redact ?? DEFAULT_REDACT,
-    prettyPrint: config.prettyPrint ?? isDev,
+    prettyPrint: config.prettyPrint ?? getEnv('NODE_ENV') === 'development',
     destination: config.destination,
   });
 }

@@ -6,6 +6,7 @@
  */
 import pino, { type Logger as PinoLogger, type LoggerOptions as PinoLoggerOptions } from 'pino';
 import type { LogLevel, LogTransport } from '../types';
+import { createPrettyStream } from './pretty';
 
 /** Options for creating a PinoTransport. */
 export type PinoTransportOptions = {
@@ -31,15 +32,16 @@ export class PinoTransport implements LogTransport {
       ...(options.redact && {
         redact: { paths: options.redact, censor: '[REDACTED]' },
       }),
-      ...(options.prettyPrint && {
-        transport: { target: 'pino-pretty', options: { colorize: true } },
-      }),
       ...options.pinoOptions,
     };
 
-    this.pino = options.destination
-      ? pino(pinoOpts, pino.destination(options.destination))
-      : pino(pinoOpts);
+    if (options.prettyPrint) {
+      this.pino = pino(pinoOpts, createPrettyStream());
+    } else if (options.destination) {
+      this.pino = pino(pinoOpts, pino.destination(options.destination));
+    } else {
+      this.pino = pino(pinoOpts);
+    }
   }
 
   log(level: LogLevel, data: Record<string, unknown>, msg?: string): void {
