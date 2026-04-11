@@ -62,10 +62,10 @@ export class OramaProvider implements SearchProvider {
 /** Escape HTML entities so indexed content can't inject markup */
 function escapeHtml(str: string): string {
   return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;');
 }
 
 /**
@@ -98,7 +98,7 @@ function buildExcerpt(content: string, query: string, contextChars = 120): strin
   excerpt = escapeHtml(excerpt);
   for (const term of terms) {
     const escaped = escapeHtml(term);
-    const regex = new RegExp(`(${escaped.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    const regex = new RegExp(`(${escaped.replaceAll(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
     excerpt = excerpt.replace(regex, '<mark>$1</mark>');
   }
 

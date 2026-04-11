@@ -49,7 +49,7 @@ function parseListItem(item: ListItem): ParsedScheduleItem | null {
   const timeText = textContent(first.children).trim();
   if (!TIME_RE.test(timeText)) return null;
 
-  const time = timeText.replace(/\./g, ':');
+  const time = timeText.replaceAll('.', ':');
 
   // Remaining inline children form the pipe-separated text
   const restText = textContent(para.children.slice(1)).trim();

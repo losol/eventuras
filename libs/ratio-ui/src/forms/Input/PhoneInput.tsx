@@ -144,7 +144,7 @@ export function PhoneInput({
   // Change handlers
   const handleNumberChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const cleaned = e.target.value.replace(/\D/g, '');
+      const cleaned = e.target.value.replaceAll(/\D/g, '');
       setLocalNumber(cleaned);
       setLocalError(null);
       emitChange(country, cleaned);
@@ -191,7 +191,7 @@ export function PhoneInput({
       // Parse stable ID format: "code:country_name"
       const keyStr = String(key);
       const [code, encodedName] = keyStr.split(':');
-      const name = encodedName?.replace(/_/g, ' ');
+      const name = encodedName?.replaceAll('_', ' ');
       const selectedCountry = countries.find((c) => c.code === code && c.name === name) || null;
 
       if (selectedCountry) {
@@ -261,13 +261,13 @@ export function PhoneInput({
 
   // Stable selected key for ComboBox
   const selectedKey = useMemo(() => {
-    return country.code && country.name ? `${country.code}:${country.name.replace(/\s+/g, '_')}` : null;
+    return country.code && country.name ? `${country.code}:${country.name.replaceAll(/\s+/g, '_')}` : null;
   }, [country.code, country.name]);
 
   // Render countries
   const renderedCountries = useMemo(() => {
     return filteredCountries.map((countryItem) => {
-      const stableId = `${countryItem.code}:${countryItem.name.replace(/\s+/g, '_')}`;
+      const stableId = `${countryItem.code}:${countryItem.name.replaceAll(/\s+/g, '_')}`;
       return <CountryItem key={stableId} country={countryItem} stableId={stableId} />;
     });
   }, [filteredCountries]);

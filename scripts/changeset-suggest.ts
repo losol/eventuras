@@ -181,7 +181,7 @@ function commitTitle(c: Commit) {
 function describeCommit(c: Commit): string {
   // grab raw subject and body
   const subject = c.subject.trim()
-  const bodyRaw = (c.body ?? '').replace(/\r\n/g, '\n')
+  const bodyRaw = (c.body ?? '').replaceAll('\r\n', '\n')
 
   // clean and split body lines
   const bodyLines = bodyRaw.split('\n').map(l => l.replace(/\s+$/, ''))
@@ -214,7 +214,7 @@ function describeCommit(c: Commit): string {
 
 /** Safe slug */
 function slug(s: string) {
-  return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+  return s.toLowerCase().replaceAll(/[^a-z0-9]+/g, '-').replaceAll(/(^-|-$)/g, '')
 }
 
 /** Build per-package changeset */

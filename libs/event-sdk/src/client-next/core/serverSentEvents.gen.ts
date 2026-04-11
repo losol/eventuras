@@ -156,7 +156,7 @@ export const createSseClient = <TData = unknown>({
             if (done) break;
             buffer += value;
             // Normalize line endings: CRLF -> LF, then CR -> LF
-            buffer = buffer.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+            buffer = buffer.replaceAll('\r\n', '\n').replaceAll('\r', '\n');
 
             const chunks = buffer.split('\n\n');
             buffer = chunks.pop() ?? '';

@@ -88,11 +88,11 @@ export const formatOrderDate = (
 export const escapeHtml = (text: string | null | undefined): string => {
   if (!text) return '';
   return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
 };
 
 /**
@@ -102,6 +102,6 @@ export const escapeHtml = (text: string | null | undefined): string => {
 export const sanitizeForHtml = (text: string | null | undefined): string => {
   if (!text) return '';
   // First strip any HTML tags, then escape special characters
-  const stripped = text.replace(/<[^>]*>/g, '');
+  const stripped = text.replaceAll(/<[^>]*>/g, '');
   return escapeHtml(stripped);
 };
