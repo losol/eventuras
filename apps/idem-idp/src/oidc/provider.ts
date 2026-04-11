@@ -125,9 +125,7 @@ export async function createOidcProvider(): Promise<any> {
     // Skip consent in development/testing (auto-approve all prompts except login)
     // Also skip consent for internal (first-party) clients
     async loadExistingGrant(ctx: any) {
-      const grantId = (ctx.oidc.result
-        && ctx.oidc.result.consent
-        && ctx.oidc.result.consent.grantId) || ctx.oidc.session?.grantIdFor(ctx.oidc.client.clientId);
+      const grantId = ctx.oidc.result?.consent?.grantId || ctx.oidc.session?.grantIdFor(ctx.oidc.client.clientId);
 
       if (grantId) {
         // Found an existing grant ID - load it

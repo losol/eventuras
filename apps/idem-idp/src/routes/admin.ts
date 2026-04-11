@@ -34,7 +34,7 @@ export const registerAdminRoutes: FastifyPluginAsync = async (fastify) => {
     try {
       // Get access token from Authorization header
       const authHeader = request.headers.authorization;
-      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      if (!authHeader?.startsWith('Bearer ')) {
         logger.warn('Missing or invalid Authorization header');
         return reply.code(401).send({ error: 'Unauthorized' });
       }

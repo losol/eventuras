@@ -192,7 +192,7 @@ export const registerBootstrapRoutes: FastifyPluginAsync = async (fastify) => {
 
     // Validate Authorization header
     const authHeader = request.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    if (!authHeader?.startsWith('Bearer ')) {
       logger.warn({ clientIp }, 'Bootstrap attempt without valid auth header');
       return reply.code(401).send({ error: 'Unauthorized' });
     }
@@ -310,7 +310,7 @@ export const registerBootstrapRoutes: FastifyPluginAsync = async (fastify) => {
     }
 
     // Verify account is active
-    if (!account || !account.active || account.deletedAt) {
+    if (!account?.active || account.deletedAt) {
       logger.warn(
         { clientIp, accountId: account?.id },
         'Bootstrap attempt for inactive/deleted account'
