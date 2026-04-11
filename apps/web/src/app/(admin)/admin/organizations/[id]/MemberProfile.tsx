@@ -17,7 +17,7 @@ export interface MemberProfileProps {
   onToggleAdmin?: (userId: string, makeAdmin: boolean) => void;
 }
 /** Simple value guard */
-const has = (v?: string | null) => !!(v && v.trim().length);
+const has = (v?: string | null) => !!(v?.trim().length);
 /** Yes/No label */
 const yesno = (b?: boolean) => (b ? 'Yes' : 'No');
 /**

@@ -21,9 +21,7 @@ const AdminOrganizationsPage = async () => {
       <Section>
         <Container>
           <List>
-            {organizations &&
-              organizations.data &&
-              organizations.data.map(org => (
+            {organizations?.data?.map(org => (
                 <List.Item key={org.organizationId}>
                   <Link href={`/admin/organizations/${org.organizationId}`}>{org.name}</Link>
                 </List.Item>

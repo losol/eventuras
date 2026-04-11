@@ -5,7 +5,7 @@ import { OrganizationDto } from '@/lib/eventuras-sdk';
 /** Renders org fields with DescriptionList */
 export const OrganizationDetails: React.FC<{ org: OrganizationDto }> = ({ org }) => {
   // guard against empty strings
-  const has = (v?: string | null) => !!(v && v.trim().length);
+  const has = (v?: string | null) => !!(v?.trim().length);
   return (
     <DescriptionList>
       {/* Name */}

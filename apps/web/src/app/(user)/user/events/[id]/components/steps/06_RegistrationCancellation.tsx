@@ -33,7 +33,7 @@ const Step06RegistrationCancellation: React.FC<Step06RegistrationCancellationPro
       <p className="mb-6 text-gray-600 dark:text-gray-400">
         {t('user.events.cancellationpage.description')}
       </p>
-      {siteInfo && siteInfo.contactInformation && (
+      {siteInfo?.contactInformation && (
         <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
           <p className="font-semibold">{t('common.labels.contactInfo')}</p>
           <p>
