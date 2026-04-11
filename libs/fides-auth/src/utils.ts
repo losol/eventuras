@@ -13,7 +13,10 @@ const logger = createLogger({ namespace: 'fides-auth:utils' });
  */
 export function hexToUint8Array(hex: string): Uint8Array {
   if (hex.length % 2 !== 0) {
-    throw new Error('Invalid hex string');
+    throw new Error('Invalid hex string: odd length');
+  }
+  if (hex.length > 0 && !/^[0-9a-fA-F]+$/.test(hex)) {
+    throw new Error('Invalid hex string: contains non-hex characters');
   }
   const arr = new Uint8Array(hex.length / 2);
   for (let i = 0; i < arr.length; i++) {

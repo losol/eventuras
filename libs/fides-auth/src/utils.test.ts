@@ -57,7 +57,17 @@ describe('hexToUint8Array', () => {
   });
 
   it('throws on odd-length hex string', () => {
-    expect(() => hexToUint8Array('abc')).toThrow('Invalid hex string');
+    expect(() => hexToUint8Array('abc')).toThrow('odd length');
+  });
+
+  it('throws on non-hex characters', () => {
+    expect(() => hexToUint8Array('ZZZZ')).toThrow('non-hex characters');
+    expect(() => hexToUint8Array('gg')).toThrow('non-hex characters');
+    expect(() => hexToUint8Array('0x1a')).toThrow('non-hex characters');
+  });
+
+  it('accepts valid uppercase hex', () => {
+    expect(hexToUint8Array('AABBCC')).toEqual(new Uint8Array([0xaa, 0xbb, 0xcc]));
   });
 });
 
