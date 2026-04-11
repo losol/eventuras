@@ -43,12 +43,12 @@ function UserMenuButton({
   onClick,
   loading = false,
   testId,
-}: {
+}: Readonly<{
   label: string;
   onClick: () => void;
   loading?: boolean;
   testId?: string;
-}) {
+}>) {
   return (
     <Button onClick={onClick} variant="primary" loading={loading} testId={testId}>
       {label}
@@ -59,7 +59,7 @@ function UserMenuButton({
 /**
  * Login button displayed when user is not authenticated
  */
-function LoginButton({ label }: { label: string }) {
+function LoginButton({ label }: Readonly<{ label: string }>) {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleClick = () => {
@@ -81,13 +81,13 @@ function UserDropdownMenu({
   hasWarning,
   translations,
   onLogout,
-}: {
+}: Readonly<{
   userName: string;
   isAdmin: boolean;
   hasWarning: boolean;
   translations: Pick<UserMenuTranslations, 'userLabel' | 'accountLabel' | 'adminLabel' | 'logoutLabel' | 'loggingOutLabel' | 'lightThemeLabel' | 'darkThemeLabel'>;
   onLogout: () => void;
-}) {
+}>) {
   const { theme, setTheme } = useTheme();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
@@ -125,7 +125,7 @@ function UserDropdownMenu({
  * User menu component that displays login button or user menu based on auth status
  * Now powered by XState Store for simplified state management
  */
-export default function UserMenu({ translations }: UserMenuProps) {
+export default function UserMenu({ translations }: Readonly<UserMenuProps>) {
   const auth = useAuthStore();
   const { isAuthenticated, isAdmin, user, isInitializing } = auth;
   const { logout } = useAuthActions();

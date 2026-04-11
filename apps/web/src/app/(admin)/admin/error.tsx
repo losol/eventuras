@@ -16,10 +16,10 @@ const logger = Logger.create({ namespace: 'web:admin:error', context: { section:
 export default function AdminErrorBoundary({
   error,
   reset,
-}: {
+}: Readonly<{
   error: Error & { digest?: string };
   reset: () => void;
-}) {
+}>) {
   useEffect(() => {
     logger.error(
       {

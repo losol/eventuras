@@ -18,10 +18,10 @@ const logger = Logger.create({ namespace: 'web:error' });
 export default function ErrorBoundary({
   error,
   reset,
-}: {
+}: Readonly<{
   error: Error & { digest?: string };
   reset: () => void;
-}) {
+}>) {
   useEffect(() => {
     // Log the error to monitoring service
     logger.error(

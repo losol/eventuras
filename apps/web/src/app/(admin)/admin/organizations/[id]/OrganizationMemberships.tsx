@@ -30,7 +30,7 @@ export default function OrganizationMemberships({
   organizationId,
   organizationName,
   members,
-}: OrganizationMembershipsProps) {
+}: Readonly<OrganizationMembershipsProps>) {
   // drawer visible state
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const router = useRouter();

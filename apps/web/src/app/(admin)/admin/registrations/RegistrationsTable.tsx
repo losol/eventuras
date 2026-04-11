@@ -17,7 +17,7 @@ export default function RegistrationsTable({
   registrations,
   currentPage,
   totalPages,
-}: RegistrationsTableProps) {
+}: Readonly<RegistrationsTableProps>) {
   const t = useTranslations();
   const router = useRouter();
   const searchParams = useSearchParams();

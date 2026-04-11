@@ -10,6 +10,6 @@ interface UserMenuWithTranslationsProps {
  * Client wrapper for UserMenu that accepts translations from server component.
  * This allows the parent layout to fetch translations once and pass them down.
  */
-export default function UserMenuWithTranslations({ translations }: UserMenuWithTranslationsProps) {
+export default function UserMenuWithTranslations({ translations }: Readonly<UserMenuWithTranslationsProps>) {
   return <UserMenu translations={translations} />;
 }

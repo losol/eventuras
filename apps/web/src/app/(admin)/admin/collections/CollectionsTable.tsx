@@ -17,7 +17,7 @@ export default function CollectionsTable({
   collections,
   currentPage,
   totalPages,
-}: CollectionsTableProps) {
+}: Readonly<CollectionsTableProps>) {
   const t = useTranslations();
   const router = useRouter();
   const searchParams = useSearchParams();

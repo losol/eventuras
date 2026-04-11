@@ -15,10 +15,10 @@ import { PageOverlay } from '@eventuras/ratio-ui/core/PageOverlay';
 export default function GlobalError({
   error,
   reset,
-}: {
+}: Readonly<{
   error: Error & { digest?: string };
   reset: () => void;
-}) {
+}>) {
   useEffect(() => {
     // Log the error - avoid using custom logger here to prevent circular errors
     console.error('Global error:', error);

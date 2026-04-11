@@ -140,7 +140,7 @@ export default function EventPageTabs({
   notifications,
   organizationId,
   defaultTab = 'participants',
-}: EventPageTabsProps) {
+}: Readonly<EventPageTabsProps>) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();

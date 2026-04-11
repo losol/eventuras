@@ -12,7 +12,7 @@ import getSiteSettings from '@/utils/site/getSiteSettings';
  * No navbar - Hero component has integrated user menu
  * Full-width content for hero section
  */
-export default async function FrontpageLayout({ children }: { children: ReactNode }) {
+export default async function FrontpageLayout({ children }: Readonly<{ children: ReactNode }>) {
   const site = await getSiteSettings();
 
   return (

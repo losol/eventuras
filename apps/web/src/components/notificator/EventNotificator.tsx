@@ -42,7 +42,7 @@ export default function EventNotificator({
   eventId,
   notificationType,
   onClose,
-}: EventNotificatorProps) {
+}: Readonly<EventNotificatorProps>) {
   const t = useTranslations();
 
   // Build filter groups for event participants

@@ -53,7 +53,7 @@ export default function Notificator<T = unknown>({
   transformFormData,
   sendNotification,
   onClose,
-}: NotificatorProps<T>) {
+}: Readonly<NotificatorProps<T>>) {
   const t = useTranslations();
   const toast = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
