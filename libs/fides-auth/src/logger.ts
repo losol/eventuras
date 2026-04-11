@@ -123,25 +123,50 @@ const defaultFactory: FidesLoggerFactory = {
 };
 
 let currentFactory: FidesLoggerFactory = defaultFactory;
+let factoryVersion = 0;
 
 /**
  * Configure a custom logger factory for fides-auth.
  *
- * Call this once at application startup, before any auth operations.
+ * Can be called at any time — even after modules have already created loggers.
+ * Existing loggers will pick up the new factory on their next log call.
+ *
  * If not called, fides-auth uses a console-based logger.
  *
  * @param factory - A factory that creates logger instances
  */
 export function configureLogger(factory: FidesLoggerFactory): void {
   currentFactory = factory;
+  factoryVersion++;
 }
 
 /**
  * Create a logger instance using the configured factory.
  *
+ * Returns a lazy proxy: the underlying logger is created (or re-created)
+ * on first use and whenever the factory is changed via `configureLogger()`.
+ * This means module-scope loggers work correctly even when `configureLogger()`
+ * is called after module imports.
+ *
  * @param options - Logger options including namespace and optional context
  * @returns A logger instance
  */
 export function createLogger(options: FidesLoggerOptions): FidesLogger {
-  return currentFactory.create(options);
+  let cached: FidesLogger | null = null;
+  let cachedVersion = -1;
+
+  function resolve(): FidesLogger {
+    if (cached === null || cachedVersion !== factoryVersion) {
+      cached = currentFactory.create(options);
+      cachedVersion = factoryVersion;
+    }
+    return cached;
+  }
+
+  return {
+    debug(data?, msg?) { resolve().debug(data, msg); },
+    info(data?, msg?) { resolve().info(data, msg); },
+    warn(data?, msg?) { resolve().warn(data, msg); },
+    error(data?, msg?) { resolve().error(data, msg); },
+  };
 }

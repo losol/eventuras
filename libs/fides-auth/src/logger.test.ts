@@ -145,7 +145,9 @@ describe('configureLogger — custom logger integration', () => {
       },
     });
 
-    createLogger({ namespace: 'auth:vipps', context: { provider: 'vipps' } });
+    const logger = createLogger({ namespace: 'auth:vipps', context: { provider: 'vipps' } });
+    // Trigger lazy initialization
+    logger.debug('init');
 
     expect(receivedOptions).toEqual({
       namespace: 'auth:vipps',
@@ -179,6 +181,67 @@ describe('configureLogger — custom logger integration', () => {
     expect(logs[0]).toContain('Starting token refresh');
     expect(logs[1]).toContain('ERROR');
     expect(logs[1]).toContain('Something went wrong');
+  });
+});
+
+// ────────────────────────────────────────────
+// Lazy proxy — configureLogger after createLogger
+// ────────────────────────────────────────────
+
+describe('lazy proxy — configureLogger after createLogger', () => {
+  afterEach(() => {
+    configureLogger({
+      create({ namespace, context }) {
+        return createDefaultConsoleLogger(namespace, context);
+      },
+    });
+  });
+
+  it('picks up a factory configured AFTER the logger was created', () => {
+    // Simulate module-scope: logger created before configureLogger
+    const logger = createLogger({ namespace: 'early-module' });
+
+    const messages: Array<{ level: string; data?: unknown; msg?: string }> = [];
+    configureLogger({
+      create() {
+        return {
+          debug: (data, msg) => messages.push({ level: 'debug', data, msg }),
+          info: (data, msg) => messages.push({ level: 'info', data, msg }),
+          warn: (data, msg) => messages.push({ level: 'warn', data, msg }),
+          error: (data, msg) => messages.push({ level: 'error', data, msg }),
+        };
+      },
+    });
+
+    logger.info({ action: 'test' }, 'should use custom factory');
+
+    expect(messages).toHaveLength(1);
+    expect(messages[0]!.msg).toBe('should use custom factory');
+  });
+
+  it('switches factory mid-session when configureLogger is called again', () => {
+    const logger = createLogger({ namespace: 'switch-test' });
+
+    const spy = vi.spyOn(console, 'info').mockImplementation(() => {});
+    logger.info('uses default console');
+    expect(spy).toHaveBeenCalled();
+    spy.mockRestore();
+
+    const custom: Array<{ data?: unknown; msg?: string }> = [];
+    configureLogger({
+      create() {
+        return {
+          debug: () => {},
+          info: (data, msg) => custom.push({ data, msg }),
+          warn: () => {},
+          error: () => {},
+        };
+      },
+    });
+
+    logger.info({ step: 2 }, 'now uses custom');
+    expect(custom).toHaveLength(1);
+    expect(custom[0]!.msg).toBe('now uses custom');
   });
 });
 
