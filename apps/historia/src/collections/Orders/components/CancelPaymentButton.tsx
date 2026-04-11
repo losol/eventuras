@@ -26,7 +26,7 @@ export function CancelPaymentButton({ orderId, orderStatus }: CancelPaymentButto
   }
 
   const handleCancel = async () => {
-    if (!user || !user.id) {
+    if (!user?.id) {
       toast.error('You must be logged in to cancel a payment.');
       return;
     }

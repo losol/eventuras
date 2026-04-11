@@ -26,7 +26,7 @@ export function RefundPaymentButton({ orderId, orderStatus }: RefundPaymentButto
   }
 
   const handleRefund = async () => {
-    if (!user || !user.id) {
+    if (!user?.id) {
       toast.error('You must be logged in to refund a payment.');
       return;
     }

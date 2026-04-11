@@ -267,7 +267,7 @@ export async function createOrderFromPayment({
       if (cartResults.docs && cartResults.docs.length > 0) {
         const recoveredCart = cartResults.docs[0] as any;
 
-        if (recoveredCart && recoveredCart.items && recoveredCart.items.length > 0) {
+        if (recoveredCart?.items?.length > 0) {
           cart = {
             items: recoveredCart.items.map((item: any) => ({
               productId: item.productId,
@@ -305,7 +305,7 @@ export async function createOrderFromPayment({
   }
 
   try {
-    if (!cart || !cart.items || cart.items.length === 0) {
+    if (!cart?.items || cart.items.length === 0) {
       logger.error(
         {
           ...sessionContext,
@@ -763,7 +763,7 @@ export async function createOrderFromPayment({
       id: effectiveUserId!,
     });
 
-    if (!user || !user.email) {
+    if (!user?.email) {
       logger.error(
         {
           paymentReference,
