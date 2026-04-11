@@ -18,15 +18,15 @@ const slugify = (str: string): string => {
 
   str = str.toLowerCase();
 
-  // Nordic character conversions
+  // Nordic character conversions: source characters → target replacement
   const conversions: Record<string, string> = {
     e: 'æ|ä',
     o: 'ø|ö',
     a: 'å',
   };
 
-  for (const [replacement, pattern] of Object.entries(conversions)) {
-    str = str.replace(new RegExp(pattern, 'g'), replacement);
+  for (const [target, sources] of Object.entries(conversions)) {
+    str = str.replace(new RegExp(sources, 'g'), target);
   }
 
   return str
@@ -35,7 +35,8 @@ const slugify = (str: string): string => {
     .replace(/[^a-z0-9 -]/g, '') // Remove invalid characters
     .replace(/\s+/g, '-') // Replace spaces with hyphens
     .replace(/-+/g, '-') // Collapse multiple hyphens
-    .replace(/^-|-$/g, ''); // Trim leading/trailing hyphens
+    .replace(/^-|-$/g, '') // Trim leading/trailing hyphens
+    .toLowerCase(); // Ensure lowercase
 };
 
 export { slugify };
