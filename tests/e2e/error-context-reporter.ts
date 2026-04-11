@@ -18,15 +18,15 @@ import { join, dirname } from 'node:path';
 
 /** Patterns that indicate sensitive values to redact */
 const SENSITIVE_PATTERNS = [
-  /Bearer\s+[A-Za-z0-9\-_.]+/gi,
+  /Bearer\s+[a-z0-9\-_.]+/gi,
   /eyJ[A-Za-z0-9\-_]+\.eyJ[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_]+/g, // JWTs
-  /session=[A-Za-z0-9\-_.%]+/gi,
-  /token[=:]\s*["']?[A-Za-z0-9\-_.]+["']?/gi,
-  /secret[=:]\s*["']?[A-Za-z0-9\-_.]+["']?/gi,
+  /session=[a-z0-9\-_.%]+/gi,
+  /token[=:]\s*["']?[a-z0-9\-_.]+["']?/gi,
+  /secret[=:]\s*["']?[a-z0-9\-_.]+["']?/gi,
   /password[=:]\s*["']?[^\s"']+["']?/gi,
   /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, // email addresses
-  /refresh_token[=:]\s*["']?[A-Za-z0-9\-_.]+["']?/gi,
-  /code_verifier[=:]\s*["']?[A-Za-z0-9\-_.]+["']?/gi,
+  /refresh_token[=:]\s*["']?[a-z0-9\-_.]+["']?/gi,
+  /code_verifier[=:]\s*["']?[a-z0-9\-_.]+["']?/gi,
 ];
 
 function redact(text: string): string {
