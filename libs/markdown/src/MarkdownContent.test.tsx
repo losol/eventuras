@@ -3,9 +3,6 @@
 import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { Heading } from '@eventuras/ratio-ui/core/Heading';
-import { Text } from '@eventuras/ratio-ui/core/Text';
-
 // mock ratio-ui primitives to avoid style deps
 vi.mock('@eventuras/ratio-ui/core/Heading', () => ({
   Heading: (p: any) => <h2 {...p} />,

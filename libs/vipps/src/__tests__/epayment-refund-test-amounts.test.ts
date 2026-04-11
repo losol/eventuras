@@ -15,8 +15,8 @@
  */
 
 import { describe, it, expect, beforeAll } from 'vitest';
-import { createPayment, capturePayment, refundPayment } from '../epayment-v1/client';
-import type { CreatePaymentRequest, CapturePaymentRequest, RefundPaymentRequest } from '../epayment-v1/types';
+import { createPayment } from '../epayment-v1/client';
+import type { CreatePaymentRequest } from '../epayment-v1/types';
 import { hasTestConfig, getTestConfig, generateTestReference, getTestPhoneNumber } from './test-utils';
 
 const runTests = hasTestConfig();

@@ -7,7 +7,7 @@
  */
 import { EncryptJWT, SignJWT } from 'jose';
 
-import { validateSessionJwt, isSession, type SessionValidationResult } from './session-validation';
+import { validateSessionJwt, isSession } from './session-validation';
 import { createEncryptedJWT, hexToUint8Array } from './utils';
 import type { Session } from './types';
 
