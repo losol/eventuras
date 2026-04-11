@@ -17,7 +17,7 @@ export interface ThreeColumnLayoutProps {
  * On smaller screens the side columns are hidden and only
  * the main content is shown.
  */
-export function ThreeColumnLayout({ left, right, children, className = '' }: ThreeColumnLayoutProps) {
+export function ThreeColumnLayout({ left, right, children, className = '' }: Readonly<ThreeColumnLayoutProps>) {
   return (
     <div className={`mx-auto max-w-8xl px-4 sm:px-6 lg:px-8 ${className}`}>
       <div className="lg:grid lg:grid-cols-[16rem_1fr_14rem] lg:gap-8">

@@ -3,7 +3,7 @@ type UnauthorizedProps = {
   variant?: 'small' | 'large';
 };
 
-export function Unauthorized({ homeUrl = '/', variant = 'large' }: UnauthorizedProps) {
+export function Unauthorized({ homeUrl = '/', variant = 'large' }: Readonly<UnauthorizedProps>) {
   const isSmall = variant === 'small';
 
   return (

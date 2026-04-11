@@ -10,7 +10,7 @@ export interface StoryProps
   testId?: string;
 }
 
-export function Story(props: StoryProps) {
+export function Story(props: Readonly<StoryProps>) {
   const [spacingProps, { as: Component = 'div', className, children, testId, ...rest }] =
     extractSpacingProps(props);
 

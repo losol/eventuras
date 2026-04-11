@@ -49,7 +49,7 @@ export function CommandPalette({
   shortcutHint = '⌘K',
   emptyMessage = 'No results for \u201c{query}\u201d',
   className = '',
-}: CommandPaletteProps) {
+}: Readonly<CommandPaletteProps>) {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [activeIndex, setActiveIndex] = useState(0);

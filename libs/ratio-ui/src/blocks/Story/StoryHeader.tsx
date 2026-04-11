@@ -9,7 +9,7 @@ export interface StoryHeaderProps
   testId?: string;
 }
 
-export function StoryHeader(props: StoryHeaderProps) {
+export function StoryHeader(props: Readonly<StoryHeaderProps>) {
   const [spacing, { className, children, testId, ...rest }] = extractSpacingProps(props);
   const { paddingY = 'xs', marginBottom = 'sm', gap = 'sm', ...otherSpacing } = spacing;
 

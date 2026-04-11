@@ -19,7 +19,7 @@ export interface TableOfContentsProps {
  * Highlights the heading currently visible in the viewport
  * using an IntersectionObserver.
  */
-export function TableOfContents({ headings, className = '' }: TableOfContentsProps) {
+export function TableOfContents({ headings, className = '' }: Readonly<TableOfContentsProps>) {
   const [activeId, setActiveId] = useState<string>('');
   const observerRef = useRef<IntersectionObserver | null>(null);
 

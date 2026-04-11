@@ -22,7 +22,7 @@ const statusCls: Record<Status, string> = {
   error:   'bg-error-bg border-error-border text-error-text',
 };
 
-function StatusIcon({ status }: { status: Status }) {
+function StatusIcon({ status }: Readonly<{ status: Status }>) {
   return (
     <svg aria-hidden viewBox="0 0 24 24" className="h-7 w-7 mr-2">
       {(status === 'error' || status === 'neutral') && (
@@ -45,7 +45,7 @@ function StatusIcon({ status }: { status: Status }) {
   );
 }
 
-function Root({ status = 'error', fullScreen = true, className, children }: ErrorPageProps) {
+function Root({ status = 'error', fullScreen = true, className, children }: Readonly<ErrorPageProps>) {
   return (
     <div className={cn(fullScreen ? 'fixed inset-0' : 'relative', 'bg-black/90 flex p-10')}>
       <div
@@ -62,19 +62,19 @@ function Root({ status = 'error', fullScreen = true, className, children }: Erro
   );
 }
 
-function Title({ children }: { children: React.ReactNode }) {
+function Title({ children }: Readonly<{ children: React.ReactNode }>) {
   return <h1 className="text-2xl font-bold">{children}</h1>;
 }
 
-function Description({ children }: { children: React.ReactNode }) {
+function Description({ children }: Readonly<{ children: React.ReactNode }>) {
   return <p className="mt-2">{children}</p>;
 }
 
-function Extra({ children }: { children: React.ReactNode }) {
+function Extra({ children }: Readonly<{ children: React.ReactNode }>) {
   return <div className="mt-4">{children}</div>;
 }
 
-function Action({ children }: { children: React.ReactNode }) {
+function Action({ children }: Readonly<{ children: React.ReactNode }>) {
   return <div className="mt-6">{children}</div>;
 }
 

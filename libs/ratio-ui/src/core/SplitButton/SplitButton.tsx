@@ -53,7 +53,7 @@ export function SplitButton({
   disabled = false,
   icon,
   testId,
-}: SplitButtonProps) {
+}: Readonly<SplitButtonProps>) {
   const isDisabled = disabled || loading;
   const sizeClasses = buttonSizes[size];
   const variantClasses = buttonStyles[variant];

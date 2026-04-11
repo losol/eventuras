@@ -100,11 +100,11 @@ function BlockFormatDropDown({
   editor,
   blockType,
   disabled = false,
-}: {
+}: Readonly<{
   blockType: keyof typeof blockTypeToBlockName;
   editor: LexicalEditor;
   disabled?: boolean;
-}): JSX.Element {
+}>): JSX.Element {
     const formatParagraph = () => {
   editor.update(() => {
     const selection = $getSelection();
@@ -255,10 +255,10 @@ function Divider(): JSX.Element {
 export default function ToolbarPlugin({
   setIsLinkEditMode,
   toolbarButtons = [],
-}: {
+}: Readonly<{
   setIsLinkEditMode: Dispatch<boolean>;
   toolbarButtons?: ScriboToolbarButton[];
-}): JSX.Element {
+}>): JSX.Element {
   const [editor] = useLexicalComposerContext();
   const [activeEditor, setActiveEditor] = useState(editor);
   const [blockType, setBlockType] =

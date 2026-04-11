@@ -46,7 +46,7 @@ export function PageOverlay({
   fullScreen = true,
   className,
   children,
-}: PageOverlayProps) {
+}: Readonly<PageOverlayProps>) {
   return (
     <div
       className={cn(

@@ -119,7 +119,7 @@ export function NumberField({
   className,
   testId,
   ...props
-}: NumberFieldProps) {
+}: Readonly<NumberFieldProps>) {
   const groupClassName =
     variant === 'segmented' ? styles.segmentedGroup : styles.separatedGroup;
   const buttonClassName =

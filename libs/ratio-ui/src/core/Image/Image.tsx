@@ -47,7 +47,7 @@ export interface ImageProps {
  * @see ImageProps
  * @see ImageRendererProps
  */
-export function Image(props: ImageProps) {
+export function Image(props: Readonly<ImageProps>) {
   // pick renderer or native <img>
   const Img: ComponentType<ImageRendererProps> =
     props.renderer ??

@@ -83,7 +83,7 @@ const columns = [
   }),
 ];
 
-export default function MunicipalityDoctorsTable({ data }: Props) {
+export default function MunicipalityDoctorsTable({ data }: Readonly<Props>) {
   console.log('MunicipalityDoctorsData', data);
   if (!data.length) {
     return <p>No practitioners to show.</p>;

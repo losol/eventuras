@@ -45,7 +45,7 @@ export interface BreadcrumbProps extends Omit<AriaBreadcrumbProps, 'className'> 
  * </Breadcrumbs>
  * ```
  */
-export function Breadcrumbs({ className = '', LinkComponent, children, ...props }: BreadcrumbsProps) {
+export function Breadcrumbs({ className = '', LinkComponent, children, ...props }: Readonly<BreadcrumbsProps>) {
   return (
     <LinkContext.Provider value={LinkComponent}>
       <AriaBreadcrumbs
@@ -61,7 +61,7 @@ export function Breadcrumbs({ className = '', LinkComponent, children, ...props 
 /**
  * Individual breadcrumb item
  */
-export function Breadcrumb({ href, className = '', children, ...props }: BreadcrumbProps) {
+export function Breadcrumb({ href, className = '', children, ...props }: Readonly<BreadcrumbProps>) {
   const LinkComponent = useContext(LinkContext);
 
   return (

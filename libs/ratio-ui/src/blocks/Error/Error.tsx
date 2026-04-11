@@ -32,7 +32,7 @@ const statusStyles: Record<Status, string> = {
 };
 
 /** Icon for each error type */
-function ErrorIcon({ type = 'generic', status = 'error' }: { type: ErrorType; status: Status }) {
+function ErrorIcon({ type = 'generic', status = 'error' }: Readonly<{ type: ErrorType; status: Status }>) {
   const colorClass = statusStyles[status];
   const baseClass = 'w-12 h-12 mb-4';
 
@@ -137,7 +137,7 @@ function Root({
   type = 'generic',
   className,
   children
-}: ErrorProps) {
+}: Readonly<ErrorProps>) {
   return (
     <div
       className={clsx('py-12 text-center', className)}
@@ -156,10 +156,10 @@ function Root({
 function Title({
   children,
   className
-}: {
+}: Readonly<{
   children: React.ReactNode;
   className?: string;
-}) {
+}>) {
   return (
     <h1 className={clsx('text-2xl font-bold mb-4', className)}>
       {children}
@@ -171,10 +171,10 @@ function Title({
 function Description({
   children,
   className
-}: {
+}: Readonly<{
   children: React.ReactNode;
   className?: string;
-}) {
+}>) {
   return (
     <p className={clsx('text-base mb-2 max-w-2xl', className)}>
       {children}
@@ -186,10 +186,10 @@ function Description({
 function Details({
   children,
   className
-}: {
+}: Readonly<{
   children: React.ReactNode;
   className?: string;
-}) {
+}>) {
   return (
     <div className={clsx('text-sm text-gray-600 dark:text-gray-400 mb-6 max-w-2xl', className)}>
       {children}
@@ -201,10 +201,10 @@ function Details({
 function Actions({
   children,
   className
-}: {
+}: Readonly<{
   children: React.ReactNode;
   className?: string;
-}) {
+}>) {
   return (
     <div className={clsx('flex flex-wrap gap-4 justify-center mt-6', className)}>
       {children}

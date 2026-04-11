@@ -9,7 +9,7 @@ export interface StoryBodyProps
   testId?: string;
 }
 
-export function StoryBody(props: StoryBodyProps) {
+export function StoryBody(props: Readonly<StoryBodyProps>) {
   const [spacing, { className, children, testId, ...rest }] = extractSpacingProps(props);
   const { gap = 'sm', ...otherSpacing } = spacing;
 
