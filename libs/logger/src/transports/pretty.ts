@@ -41,7 +41,7 @@ const LEVEL_BY_NAME: Record<string, { label: string; color: string; }> = {
 
 /** Keys excluded from the "extra data" output. */
 const INTERNAL_KEYS = new Set([
-  'level', 'time', 'pid', 'hostname', 'msg', 'name', 'ns',
+  'level', 'time', 'pid', 'hostname', 'msg', 'name', 'ns', 'namespace',
 ]);
 
 function formatTime(time: unknown): string {
@@ -93,7 +93,7 @@ export function formatLogLine(line: string): string {
     : LEVEL_BY_NUMBER[level as number] ?? { label: `L${level}`, color: ANSI.gray };
   const time = formatTime(obj.time);
   const msg = (obj.msg as string) ?? '';
-  const ns = (obj.ns as string) || (obj.name as string) || '';
+  const ns = (obj.namespace as string) || (obj.ns as string) || (obj.name as string) || '';
 
   const nsTag = ns ? ` ${ANSI.magenta}(${ns})${ANSI.reset}` : '';
   const arrow = `${ANSI.dim}→${ANSI.reset}`;

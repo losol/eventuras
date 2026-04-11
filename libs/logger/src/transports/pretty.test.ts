@@ -44,6 +44,14 @@ describe('formatLogLine', () => {
     expect(result).toContain('(web:auth)');
   });
 
+  it('includes namespace from Logger-style "namespace" field', () => {
+    const json = JSON.stringify({ level: 'info', time: '2026-04-11T19:00:00.000Z', msg: 'test', namespace: 'web:admin:events' });
+    const result = formatLogLine(json);
+    expect(result).toContain('(web:admin:events)');
+    // namespace should not appear in extra data
+    expect(result).not.toContain('"namespace"');
+  });
+
   it('includes extra data fields', () => {
     const json = JSON.stringify({ level: 'info', time: '2026-04-11T19:00:00.000Z', msg: 'req', userId: 42, path: '/api' });
     const result = formatLogLine(json);
