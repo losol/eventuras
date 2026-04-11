@@ -1,4 +1,4 @@
-import type { Blockquote, Paragraph, Root, Text } from 'mdast';
+import type { Blockquote, Root, Text } from 'mdast';
 import { visit } from 'unist-util-visit';
 
 export const CALLOUT_TYPES = ['NOTE', 'TIP', 'IMPORTANT', 'WARNING', 'CAUTION'] as const;

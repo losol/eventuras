@@ -1,7 +1,7 @@
 import type { Locale, Template, TemplateRegistry } from '../types';
 import { defaultEmailTemplates } from './email';
 import { defaultSmsTemplates } from './sms';
-import { localeTemplates, getTemplatesForLocale } from './locales';
+import { getTemplatesForLocale } from './locales';
 
 /**
  * Combined default templates (en-US for backward compatibility)

@@ -1,4 +1,4 @@
-import { defineConfig, type UserConfig } from 'vite';
+import type { UserConfig } from 'vite';
 import { defineReactLibConfig, type ReactLibConfig } from './react-lib.ts';
 
 export interface NextLibConfig extends Omit<ReactLibConfig, 'external'> {
