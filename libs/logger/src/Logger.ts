@@ -1,141 +1,130 @@
 /**
- * Production logger using Pino.
+ * Structured logger with pluggable transports.
  *
- * This logger is optimized for production use with structured logging, context fields,
- * correlation IDs, auto-redaction, and configurable log levels.
+ * Uses a `LogTransport` abstraction so the logging backend can be swapped
+ * without changing application code. Ships with PinoTransport (default,
+ * production-grade) and ConsoleTransport (browser/testing).
  *
- * For external integrations (e.g., Sentry), use the @eventuras/logger-sentry package.
- * For development debugging, use the Debug utility instead.
- *
- * Standard log levels (Pino):
- * fatal: 60
- * error: 50
- * warn: 40
- * info: 30
- * debug: 20
- * trace: 10
+ * Standard log levels:
+ * fatal: 60 | error: 50 | warn: 40 | info: 30 | debug: 20 | trace: 10
  *
  * @example
- * // Static usage for one-off logs
+ * // Scoped logger (recommended pattern)
+ * const logger = Logger.create({
+ *   namespace: 'CollectionEditor',
+ *   context: { collectionId: 123 },
+ * });
+ * logger.info('Event added', { eventId: 456 });
+ *
+ * @example
+ * // Static one-off logs
  * Logger.info('Simple message');
  * Logger.error({ error: err }, 'Something failed');
  *
  * @example
- * // Scoped logger with context
- * const logger = Logger.create({
- *   namespace: 'CollectionEditor',
- *   context: { collectionId: 123 }
- * });
- * logger.info('Event added', { eventId: 456 });
- * // Logs: { namespace: 'CollectionEditor', collectionId: 123, eventId: 456, msg: 'Event added' }
+ * // Custom transport
+ * import { ConsoleTransport } from '@eventuras/logger';
+ * Logger.configure({ transport: new ConsoleTransport() });
  */
-import pino, { type Logger as PinoLogger } from 'pino';
+import type {
+  ErrorLoggerOptions,
+  LoggerConfig,
+  LoggerOptions,
+  LogLevel,
+  LogTransport,
+} from './types';
+import { PinoTransport } from './transports/pino';
 
-export type LogLevel = 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'fatal';
+const DEFAULT_REDACT = ['password', 'token', 'apiKey', 'authorization', 'secret'];
 
-export type LoggerOptions = {
-  /** If true, only logs in development mode */
-  developerOnly?: boolean;
-  /** Namespace for filtering logs (e.g., 'CollectionEditor') */
-  namespace?: string;
-  /** Minimum log level for this logger instance */
-  level?: LogLevel;
-  /** Persistent context fields to include in all logs */
-  context?: Record<string, unknown>;
-  /** Correlation ID for request tracking */
-  correlationId?: string;
-};
+function getEnv(key: string): string | undefined {
+  if (typeof globalThis !== 'undefined' && typeof (globalThis as Record<string, unknown>).process === 'object') {
+    return (globalThis as unknown as { process: { env: Record<string, string | undefined>; }; }).process.env[key];
+  }
+  return undefined;
+}
 
-export type ErrorLoggerOptions = LoggerOptions & {
-  error?: unknown;
-};
-
-export type LoggerConfig = {
-  /** Global minimum log level */
-  level?: LogLevel;
-  /** Paths to redact from logs (e.g., ['password', 'token']) */
-  redact?: string[];
-  /** Optional file path for log output */
-  destination?: string;
-};
+function createDefaultTransport(config: LoggerConfig): LogTransport {
+  return new PinoTransport({
+    level: config.level ?? (getEnv('LOG_LEVEL') as LogLevel | undefined) ?? 'info',
+    redact: config.redact ?? DEFAULT_REDACT,
+    destination: config.destination,
+  });
+}
 
 export class Logger {
-  private static pinoLogger: PinoLogger;
-  private static config: LoggerConfig = {
-    level: (process.env.LOG_LEVEL as LogLevel) || 'info',
-    redact: ['password', 'token', 'apiKey', 'authorization', 'secret'],
-  };
+  private static transport: LogTransport;
+  private static config: LoggerConfig = {};
 
   // Instance properties for scoped logger
   private options: LoggerOptions;
-  private childLogger?: PinoLogger;
+  private childTransport?: LogTransport;
 
   static {
-    // Initialize Pino logger with configuration
-    Logger.pinoLogger = Logger.createPinoInstance();
+    Logger.transport = createDefaultTransport(Logger.config);
   }
 
   private constructor(options: LoggerOptions = {}) {
     this.options = options;
 
-    // Create child logger with context if provided
     if (options.context || options.correlationId || options.namespace) {
       const bindings: Record<string, unknown> = {
         ...(options.namespace && { namespace: options.namespace }),
         ...(options.correlationId && { correlationId: options.correlationId }),
         ...(options.context || {}),
       };
-      this.childLogger = Logger.pinoLogger.child(bindings);
-
-      // Set level if specified
-      if (options.level) {
-        this.childLogger.level = options.level;
-      }
+      this.childTransport = Logger.transport.child(bindings);
     }
-  }
-
-  private static createPinoInstance(): PinoLogger {
-    const options: pino.LoggerOptions = {
-      level: Logger.config.level || 'info',
-      redact: {
-        paths: Logger.config.redact || [],
-        censor: '[REDACTED]',
-      },
-    };
-
-    // File destination if specified
-    if (Logger.config.destination) {
-      return pino(options, pino.destination(Logger.config.destination));
-    }
-
-    // Use standard JSON logging - works well with all log aggregation services
-    return pino(options);
   }
 
   /**
-   * Configure global logger settings. Call this once at application startup.
+   * Configure global logger settings. Call once at application startup.
+   *
+   * Supply a custom `transport` to replace the default Pino backend,
+   * or omit it to keep PinoTransport with the provided options.
    *
    * @example
-   * Logger.configure({
-   *   level: 'debug',
-   *   redact: ['password', 'apiKey'],
-   * });
+   * Logger.configure({ level: 'debug', redact: ['password', 'apiKey'] });
+   *
+   * @example
+   * import { ConsoleTransport } from '@eventuras/logger';
+   * Logger.configure({ transport: new ConsoleTransport() });
    */
   static configure(config: Partial<LoggerConfig>): void {
     Logger.config = { ...Logger.config, ...config };
-    Logger.pinoLogger = Logger.createPinoInstance();
+    Logger.transport = config.transport ?? createDefaultTransport(Logger.config);
+    // Re-bind static convenience methods to the new transport
+    Logger.rebindStaticMethods();
   }
 
   /**
-   * Get the internal Pino instance for advanced use cases or external integrations.
-   * For example, @eventuras/logger-sentry uses this to connect Sentry transport.
+   * Get the active transport for advanced integrations.
    *
-   * @example
-   * import { initializeSentryLogger } from '@eventuras/logger-sentry';
-   * initializeSentryLogger(); // Uses Logger.getPinoInstance() internally
+   * If you need access to the underlying Pino instance (e.g. for OTel
+   * instrumentation), check `transport instanceof PinoTransport` and
+   * access `.pino` on it.
    */
-  static getPinoInstance(): PinoLogger {
-    return Logger.pinoLogger;
+  static getTransport(): LogTransport {
+    return Logger.transport;
+  }
+
+  /**
+   * @deprecated Use `Logger.getTransport()` instead. If you need the raw
+   * Pino instance, cast the transport: `(Logger.getTransport() as PinoTransport).pino`
+   */
+  static getPinoInstance(): import('pino').Logger {
+    if (Logger.transport instanceof PinoTransport) {
+      return Logger.transport.pino;
+    }
+    throw new Error(
+      'getPinoInstance() requires PinoTransport. Use Logger.getTransport() for the active transport.',
+    );
+  }
+
+  // --- Static convenience methods ---
+
+  private static isDevelopment(): boolean {
+    return getEnv('NODE_ENV') === 'development';
   }
 
   private static formatError(error: unknown): string {
@@ -145,226 +134,130 @@ export class Logger {
     return String(error);
   }
 
-  private static wrapLogger(pinoFunction: (obj: any, msg?: string | undefined) => void) {
-    return (
-      options: LoggerOptions = { developerOnly: false, namespace: '' },
-      ...msg: any | any[]
-    ) => {
-      if (options.developerOnly && process.env.NODE_ENV !== 'development') {
-        return;
-      }
-
-      const logData: Record<string, unknown> = {
-        ...(options.namespace && { namespace: options.namespace }),
-        ...(options.correlationId && { correlationId: options.correlationId }),
-        ...(options.context || {}),
-      };
-
-      pinoFunction({ ...logData, msg: msg });
+  private static buildLogData(options: LoggerOptions): Record<string, unknown> {
+    return {
+      ...(options.namespace && { namespace: options.namespace }),
+      ...(options.correlationId && { correlationId: options.correlationId }),
+      ...(options.context || {}),
     };
   }
 
-  private static wrapErrorLogger(pinoFunction: (obj: any, msg?: string | undefined) => void) {
-    return (
-      options: ErrorLoggerOptions = { developerOnly: false, namespace: '' },
-      ...msg: any | any[]
-    ) => {
-      if (options.developerOnly && process.env.NODE_ENV !== 'development') {
-        return;
-      }
-
-      const errorInfo = options.error ? { error: Logger.formatError(options.error) } : {};
-
-      const logData: Record<string, unknown> = {
-        ...(options.namespace && { namespace: options.namespace }),
-        ...(options.correlationId && { correlationId: options.correlationId }),
-        ...(options.context || {}),
-        ...errorInfo,
-      };
-
-      pinoFunction({ ...logData, msg: msg });
-    };
+  private static staticLog(
+    level: LogLevel,
+    options: LoggerOptions,
+    ...msg: unknown[]
+  ): void {
+    if (options.developerOnly && !Logger.isDevelopment()) return;
+    const data = Logger.buildLogData(options);
+    Logger.transport.log(level, { ...data, msg });
   }
 
-  static info = Logger.wrapLogger(
-    Logger.pinoLogger.info.bind(Logger.pinoLogger),
-  ).bind(Logger);
+  private static staticErrorLog(
+    level: LogLevel,
+    options: ErrorLoggerOptions,
+    ...msg: unknown[]
+  ): void {
+    if (options.developerOnly && !Logger.isDevelopment()) return;
+    const errorInfo = options.error ? { error: Logger.formatError(options.error) } : {};
+    const data = { ...Logger.buildLogData(options), ...errorInfo };
+    Logger.transport.log(level, { ...data, msg });
+  }
 
-  static debug = Logger.wrapLogger(
-    Logger.pinoLogger.debug.bind(Logger.pinoLogger),
-  ).bind(Logger);
+  static info(options: LoggerOptions, ...msg: unknown[]): void {
+    Logger.staticLog('info', options, ...msg);
+  }
+  static debug(options: LoggerOptions, ...msg: unknown[]): void {
+    Logger.staticLog('debug', options, ...msg);
+  }
+  static trace(options: LoggerOptions, ...msg: unknown[]): void {
+    Logger.staticLog('trace', options, ...msg);
+  }
+  static warn(options: LoggerOptions, ...msg: unknown[]): void {
+    Logger.staticLog('warn', options, ...msg);
+  }
+  static error(options: ErrorLoggerOptions, ...msg: unknown[]): void {
+    Logger.staticErrorLog('error', options, ...msg);
+  }
+  static fatal(options: ErrorLoggerOptions, ...msg: unknown[]): void {
+    Logger.staticErrorLog('fatal', options, ...msg);
+  }
 
-  static trace = Logger.wrapLogger(
-    Logger.pinoLogger.trace.bind(Logger.pinoLogger),
-  ).bind(Logger);
-
-  static warn = Logger.wrapLogger(
-    Logger.pinoLogger.warn.bind(Logger.pinoLogger),
-  ).bind(Logger);
-
-  static error = Logger.wrapErrorLogger(
-    Logger.pinoLogger.error.bind(Logger.pinoLogger),
-  ).bind(Logger);
-
-  static fatal = Logger.wrapErrorLogger(
-    Logger.pinoLogger.fatal.bind(Logger.pinoLogger),
-  ).bind(Logger);
+  private static rebindStaticMethods(): void {
+    // No-op — static methods now delegate through Logger.transport directly
+    // so rebinding is not needed. Kept for API compatibility.
+  }
 
   /**
    * Create a scoped logger instance with predefined options.
-   * Use this when you have multiple log calls in the same component/module.
    *
    * @example
-   * // Basic scoped logger
    * const logger = Logger.create({ namespace: 'CollectionEditor' });
    * logger.info('Something happened');
    *
    * @example
-   * // With context fields
    * const logger = Logger.create({
    *   namespace: 'API',
-   *   context: { userId: 123, collectionId: 456 },
-   *   correlationId: req.headers['x-correlation-id']
+   *   context: { userId: 123 },
+   *   correlationId: req.headers['x-correlation-id'],
    * });
-   * logger.info('Event added', { eventId: 789 });
-   * // Logs: { namespace: 'API', userId: 123, collectionId: 456, correlationId: 'abc', eventId: 789, msg: 'Event added' }
-   *
-   * @example
-   * // With custom log level
-   * const logger = Logger.create({
-   *   namespace: 'Eventuras:ConvertoApi',
-   *   level: 'debug'
-   * });
+   * logger.info({ eventId: 789 }, 'Event added');
    */
   static create(options: LoggerOptions = {}): Logger {
     return new Logger(options);
   }
 
-  // Instance methods that merge instance options with call-time options
+  // --- Instance methods ---
 
-  /**
-   * Log at trace level (most verbose)
-   */
+  private logInstance(level: LogLevel, data?: Record<string, unknown> | string, msg?: string): void {
+    const transport = this.childTransport ?? Logger.transport;
+    if (typeof data === 'string') {
+      transport.log(level, {}, data);
+    } else if (msg) {
+      transport.log(level, data ?? {}, msg);
+    } else {
+      transport.log(level, data ?? {});
+    }
+  }
+
   trace(data?: Record<string, unknown> | string, msg?: string): void {
-    if (this.childLogger) {
-      if (typeof data === 'string') {
-        this.childLogger.trace(data);
-      } else if (msg) {
-        this.childLogger.trace(data, msg);
-      } else {
-        this.childLogger.trace(data);
-      }
-    } else {
-      Logger.trace(this.options, data, msg);
-    }
+    this.logInstance('trace', data, msg);
   }
 
-  /**
-   * Log at debug level
-   */
   debug(data?: Record<string, unknown> | string, msg?: string): void {
-    if (this.childLogger) {
-      if (typeof data === 'string') {
-        this.childLogger.debug(data);
-      } else if (msg) {
-        this.childLogger.debug(data, msg);
-      } else {
-        this.childLogger.debug(data);
-      }
-    } else {
-      Logger.debug(this.options, data, msg);
-    }
+    this.logInstance('debug', data, msg);
   }
 
-  /**
-   * Log at info level
-   */
   info(data?: Record<string, unknown> | string, msg?: string): void {
-    if (this.childLogger) {
-      if (typeof data === 'string') {
-        this.childLogger.info(data);
-      } else if (msg) {
-        this.childLogger.info(data, msg);
-      } else {
-        this.childLogger.info(data);
-      }
-    } else {
-      Logger.info(this.options, data, msg);
-    }
+    this.logInstance('info', data, msg);
   }
 
-  /**
-   * Log at warn level
-   */
   warn(data?: Record<string, unknown> | string, msg?: string): void {
-    if (this.childLogger) {
-      if (typeof data === 'string') {
-        this.childLogger.warn(data);
-      } else if (msg) {
-        this.childLogger.warn(data, msg);
-      } else {
-        this.childLogger.warn(data);
-      }
-    } else {
-      Logger.warn(this.options, data, msg);
-    }
+    this.logInstance('warn', data, msg);
   }
 
-  /**
-   * Log at error level
-   */
   error(errorOrData?: unknown, msg?: string): void {
-    if (this.childLogger) {
-      // Support: logger.error('message') and logger.error({ error }, 'message')
-      if (typeof errorOrData === 'string') {
-        this.childLogger.error(errorOrData);
-      } else if (errorOrData instanceof Error) {
-        if (msg) {
-          this.childLogger.error({ error: errorOrData }, msg);
-        } else {
-          this.childLogger.error({ error: errorOrData });
-        }
-      } else if (msg) {
-        this.childLogger.error(errorOrData, msg);
-      } else {
-        this.childLogger.error(errorOrData);
-      }
+    const transport = this.childTransport ?? Logger.transport;
+    if (typeof errorOrData === 'string') {
+      transport.log('error', {}, errorOrData);
+    } else if (errorOrData instanceof Error) {
+      transport.log('error', { error: errorOrData }, msg);
+    } else if (msg) {
+      transport.log('error', (errorOrData as Record<string, unknown>) ?? {}, msg);
     } else {
-      // Fallback to static method
-      if (typeof errorOrData === 'object' && errorOrData !== null && 'error' in errorOrData) {
-        Logger.error({ ...this.options, ...(errorOrData as ErrorLoggerOptions) }, msg);
-      } else {
-        Logger.error(this.options, errorOrData, msg);
-      }
+      transport.log('error', (errorOrData as Record<string, unknown>) ?? {});
     }
   }
 
-  /**
-   * Log at fatal level (highest severity)
-   */
   fatal(errorOrData?: unknown, msg?: string): void {
-    if (this.childLogger) {
-      // Support: logger.fatal('message') and logger.fatal({ error }, 'message')
-      if (typeof errorOrData === 'string') {
-        this.childLogger.fatal(errorOrData);
-      } else if (errorOrData instanceof Error) {
-        if (msg) {
-          this.childLogger.fatal({ error: errorOrData }, msg);
-        } else {
-          this.childLogger.fatal({ error: errorOrData });
-        }
-      } else if (msg) {
-        this.childLogger.fatal(errorOrData, msg);
-      } else {
-        this.childLogger.fatal(errorOrData);
-      }
+    const transport = this.childTransport ?? Logger.transport;
+    if (typeof errorOrData === 'string') {
+      transport.log('fatal', {}, errorOrData);
+    } else if (errorOrData instanceof Error) {
+      transport.log('fatal', { error: errorOrData }, msg);
+    } else if (msg) {
+      transport.log('fatal', (errorOrData as Record<string, unknown>) ?? {}, msg);
     } else {
-      // Fallback to static method
-      if (typeof errorOrData === 'object' && errorOrData !== null && 'error' in errorOrData) {
-        Logger.fatal({ ...this.options, ...(errorOrData as ErrorLoggerOptions) }, msg);
-      } else {
-        Logger.fatal(this.options, errorOrData, msg);
-      }
+      transport.log('fatal', (errorOrData as Record<string, unknown>) ?? {});
     }
   }
 }
