@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import {
   SearchField as AriaSearchField,
   Input,
-  Button,
 } from 'react-aria-components';
 import { Search } from '../../icons';
 import { formStyles } from '../styles/formStyles';
