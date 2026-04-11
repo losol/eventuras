@@ -139,9 +139,7 @@ export const FormBlock: React.FC<
           {!hasSubmitted && (
             <form id={formID} onSubmit={handleSubmit(onSubmit)}>
               <div className="mb-4 last:mb-0">
-              {formFromProps &&
-              formFromProps.fields &&
-              formFromProps.fields?.map((field, index) => {
+              {formFromProps?.fields?.map((field, index) => {
                 const blockType = field.blockType as keyof typeof fields;
 
                 if (!fields[blockType]) {

@@ -24,7 +24,7 @@ export const Card: React.FC<{
   // the first part of the pathname is the locale
   const locale = usePathname().split('/')[1]
 
-  if (!doc || !doc?.slug) {
+  if (!doc?.slug) {
     return null
   }
 
