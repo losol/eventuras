@@ -3,8 +3,8 @@
  * This module provides functions to generate type definitions from configuration files
  */
 
-import fs from 'fs/promises';
-import path from 'path';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 
 type EnvVarType = 'string' | 'url' | 'int' | 'bool' | 'json';
 

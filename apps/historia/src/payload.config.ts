@@ -1,6 +1,6 @@
-import { randomBytes } from 'crypto';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { randomBytes } from 'node:crypto';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import { postgresAdapter } from '@payloadcms/db-postgres';
 import { sqliteAdapter } from '@payloadcms/db-sqlite';

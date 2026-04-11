@@ -7,7 +7,7 @@
  * @see https://developer.vippsmobilepay.com/docs/APIs/webhooks-api/request-authentication/
  */
 
-import { createHmac, createHash } from 'crypto';
+import { createHmac, createHash } from 'node:crypto';
 import type { WebhookPayload } from './types';
 
 /**

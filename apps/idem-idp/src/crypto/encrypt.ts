@@ -1,5 +1,5 @@
-import crypto from 'crypto';
-import { promisify } from 'util';
+import crypto from 'node:crypto';
+import { promisify } from 'node:util';
 import { config } from '../config';
 
 const scrypt = promisify(crypto.scrypt) as (

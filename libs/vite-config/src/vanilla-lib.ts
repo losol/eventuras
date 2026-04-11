@@ -1,6 +1,6 @@
 import { defineConfig, type UserConfig } from 'vite';
 import dts from 'vite-plugin-dts';
-import { resolve } from 'path';
+import { resolve } from 'node:path';
 
 export interface VanillaLibConfig {
   /**

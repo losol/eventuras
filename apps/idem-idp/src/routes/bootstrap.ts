@@ -1,5 +1,5 @@
 import type { FastifyPluginAsync } from 'fastify';
-import { randomBytes } from 'crypto';
+import { randomBytes } from 'node:crypto';
 import { db } from '../db/client';
 import { accounts } from '../db/schema/account';
 import { oauthClients } from '../db/schema/oauth';

@@ -1,5 +1,5 @@
 import { Logger } from '@eventuras/logger';
-import { timingSafeEqual } from 'crypto';
+import { timingSafeEqual } from 'node:crypto';
 
 const logger = Logger.create({ namespace: 'idem:config' });
 

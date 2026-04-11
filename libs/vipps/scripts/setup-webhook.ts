@@ -20,7 +20,7 @@
  *   - Events to subscribe to
  */
 
-import * as readline from 'readline';
+import * as readline from 'node:readline';
 
 import { registerWebhook } from '../src/webhooks-v1/client';
 import type { WebhookEventType } from '../src/webhooks-v1/types';

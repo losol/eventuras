@@ -1,5 +1,5 @@
-import { existsSync, mkdirSync, writeFileSync, readFileSync } from 'fs';
-import { join } from 'path';
+import { existsSync, mkdirSync, writeFileSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import {
   generateDefaultTenantsConfig,
   generateDefaultChannelsConfig,
@@ -116,7 +116,7 @@ export function logInitializationResults(results: {
       );
       console.log('   Set the following environment variable for production:\n');
       console.log(
-        `   TENANT_${results.defaultTenantId.toUpperCase().replace(/-/g, '_')}_AUTHKEY=${results.defaultApiKey}\n`,
+        `   TENANT_${results.defaultTenantId.toUpperCase().replaceAll('-', '_')}_AUTHKEY=${results.defaultApiKey}\n`,
       );
       console.log('   CHANGE THIS IN PRODUCTION!\n');
     }
