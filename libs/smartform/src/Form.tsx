@@ -21,7 +21,7 @@ function Form<T extends Record<string, unknown> = Record<string, unknown>>({
   testId,
   onFormReady,
   ...formOptions
-}: FormProps<T>) {
+}: Readonly<FormProps<T>>) {
   const methods = useForm<T>(formOptions);
 
   // Expose methods to parent if callback provided

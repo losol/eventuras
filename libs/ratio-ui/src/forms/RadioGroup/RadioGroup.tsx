@@ -51,7 +51,7 @@ export function RadioGroup<T extends string = string>({
   error,
   className = '',
   disabled = false,
-}: RadioGroupProps<T>) {
+}: Readonly<RadioGroupProps<T>>) {
   return (
     <div className={className}>
       {label && (

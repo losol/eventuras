@@ -63,7 +63,7 @@ export function SessionWarning({
   onDismiss,
   isLoading = false,
   messages,
-}: SessionWarningProps) {
+}: Readonly<SessionWarningProps>) {
   if (!isOpen) return null;
 
   return (

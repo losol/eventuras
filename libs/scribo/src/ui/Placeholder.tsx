@@ -13,9 +13,9 @@ import { ReactNode } from "react";
 export default function Placeholder({
   children,
   className,
-}: {
+}: Readonly<{
   children: ReactNode;
   className?: string;
-}): JSX.Element {
+}>): JSX.Element {
   return <div className={className || "Placeholder__root"}>{children}</div>;
 }

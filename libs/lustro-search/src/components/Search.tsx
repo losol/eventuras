@@ -31,7 +31,7 @@ function toItems(results: SearchResult[]): CommandPaletteItem[] {
  *
  * Handles debounced async search with stale-response protection.
  */
-export function Search({ provider, placeholder = 'Search...', onNavigate }: SearchProps) {
+export function Search({ provider, placeholder = 'Search...', onNavigate }: Readonly<SearchProps>) {
   const [items, setItems] = useState<CommandPaletteItem[]>([]);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(null);
   const searchIdRef = useRef(0);

@@ -71,11 +71,11 @@ function DropDownItems({
   children,
   dropDownRef,
   onClose,
-}: {
+}: Readonly<{
   children: React.ReactNode;
   dropDownRef: React.Ref<HTMLDivElement>;
   onClose: () => void;
-}) {
+}>) {
   const [items, setItems] = useState<React.RefObject<HTMLButtonElement>[]>();
   const [highlightedItem, setHighlightedItem] =
     useState<React.RefObject<HTMLButtonElement>>();

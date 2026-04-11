@@ -13,9 +13,9 @@ import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 export default function LexicalContentEditable({
   className,
   id,
-}: {
+}: Readonly<{
   className?: string;
   id?: string;
-}): JSX.Element {
+}>): JSX.Element {
   return <ContentEditable className={className || "ContentEditable__root"} id={id} />;
 }

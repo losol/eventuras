@@ -37,7 +37,7 @@ export function TreeView({
   LinkComponent,
   'aria-label': ariaLabel = 'Navigation',
   className = '',
-}: TreeViewProps) {
+}: Readonly<TreeViewProps>) {
   return (
     <nav aria-label={ariaLabel} className={`text-sm ${className}`}>
       <ul className="space-y-1">
@@ -75,7 +75,7 @@ function hasActiveChild(node: TreeViewNode, currentPath: string | undefined): bo
   return node.children?.some((child) => hasActiveChild(child, currentPath)) ?? false;
 }
 
-function TreeViewItem({ node, currentPath, LinkComponent, depth }: TreeViewItemProps) {
+function TreeViewItem({ node, currentPath, LinkComponent, depth }: Readonly<TreeViewItemProps>) {
   const hasChildren = node.children && node.children.length > 0;
   const active = isActive(node.href, currentPath);
   const containsActive = hasActiveChild(node, currentPath);
@@ -155,13 +155,13 @@ function TreeViewLink({
   active,
   LinkTag,
   paddingLeft,
-}: {
+}: Readonly<{
   href: string;
   title: string;
   active: boolean;
   LinkTag: React.ElementType;
   paddingLeft: string;
-}) {
+}>) {
   return (
     <li>
       <LinkTag

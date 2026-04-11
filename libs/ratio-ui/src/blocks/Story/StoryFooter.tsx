@@ -9,7 +9,7 @@ export interface StoryFooterProps
   testId?: string;
 }
 
-export function StoryFooter(props: StoryFooterProps) {
+export function StoryFooter(props: Readonly<StoryFooterProps>) {
   const [spacing, { className, children, testId, ...rest }] = extractSpacingProps(props);
   const { gap = 'xs', ...otherSpacing } = spacing;
 
