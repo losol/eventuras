@@ -1,5 +1,3 @@
-import { getTranslations } from 'next-intl/server';
-
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
@@ -27,8 +25,6 @@ interface Organization {
 const OrganizationDetailPage: React.FC<EventInfoProps> = async props => {
   // read route params
   const params = await props.params;
-  // i18n
-  const t = await getTranslations();
   // fetch org
   const organization = await getV3OrganizationsByOrganizationId({
     path: {

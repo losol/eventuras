@@ -15,7 +15,7 @@ function preserveUseClient() {
     name: 'preserve-use-client',
     enforce: 'post' as const,
     generateBundle(_options: any, bundle: any) {
-      for (const [fileName, chunk] of Object.entries(bundle)) {
+      for (const [_fileName, chunk] of Object.entries(bundle)) {
         if ((chunk as any).type === 'chunk') {
           const chunkData = chunk as any;
           // Check if any source module had 'use client'

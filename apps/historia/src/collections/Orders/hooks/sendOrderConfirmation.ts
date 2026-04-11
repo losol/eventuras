@@ -67,7 +67,6 @@ export const sendOrderConfirmation: CollectionAfterChangeHook<Order> = async ({
 
     // Fetch the customer to get their name and phone
     let customerName = 'Kunde'; // Default fallback
-    let customerPhone: string | undefined;
     if (doc.customer) {
       const customerId = typeof doc.customer === 'string' ? doc.customer : doc.customer.id;
       const customer = (await payload.findByID({
@@ -78,7 +77,6 @@ export const sendOrderConfirmation: CollectionAfterChangeHook<Order> = async ({
       const firstName = customer.given_name || '';
       const lastName = customer.family_name || '';
       customerName = `${firstName} ${lastName}`.trim() || customerName;
-      customerPhone = customer.phone_number || undefined;
     }
 
     // Fetch the tenant/website for organization name

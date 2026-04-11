@@ -266,7 +266,7 @@ export default function ToolbarPlugin({
   const [selectedElementKey, setSelectedElementKey] = useState<NodeKey | null>(
     null,
   );
-  const [isCode, setIsCode] = useState(false);
+  const [_isCode, setIsCode] = useState(false);
   const [isLink, setIsLink] = useState(false);
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);

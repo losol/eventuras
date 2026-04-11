@@ -34,7 +34,7 @@ import { isOrderEditableByCommerce } from './orderStatusRules';
  * ```
  */
 export const ordersUpdateAccess: Access = (args) => {
-  const { req, data } = args;
+  const { req } = args;
   const doc = (args as { doc?: unknown }).doc;
   if (!req.user || !('email' in req.user)) return false;
 

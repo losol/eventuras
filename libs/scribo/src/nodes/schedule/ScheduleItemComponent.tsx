@@ -17,7 +17,7 @@ interface ScheduleItemComponentProps {
 
 export const ScheduleItemComponent = ({ nodeKey, data }: ScheduleItemComponentProps) => {
   const [editor] = useLexicalComposerContext();
-  const [isSelected, setSelected, clearSelection] = useLexicalNodeSelection(nodeKey);
+  const [isSelected, _setSelected, _clearSelection] = useLexicalNodeSelection(nodeKey);
   const [localData, setLocalData] = useState(data);
   const [isDragging, setIsDragging] = useState(false);
   const [isLast, setIsLast] = useState(false);
