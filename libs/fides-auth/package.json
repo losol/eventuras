@@ -1,8 +1,30 @@
 {
   "name": "@eventuras/fides-auth",
   "version": "0.3.0",
-  "private": "true",
-  "description": "auth library eventuras",
+  "description": "Framework-agnostic OAuth/OIDC authentication library with PKCE, session management, and pluggable logging",
+  "keywords": [
+    "oauth",
+    "oidc",
+    "openid-connect",
+    "authentication",
+    "pkce",
+    "session",
+    "jwt",
+    "identity",
+    "vipps"
+  ],
+  "homepage": "https://github.com/losol/eventuras/tree/main/libs/fides-auth#readme",
+  "bugs": {
+    "url": "https://github.com/losol/eventuras/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/losol/eventuras.git",
+    "directory": "libs/fides-auth"
+  },
+  "license": "MIT",
+  "author": "losol <losol@users.noreply.github.com>",
+  "sideEffects": false,
   "type": "module",
   "exports": {
     ".": {
@@ -50,10 +72,12 @@
       "import": "./dist/providers/vipps/index.js"
     }
   },
-  "main": "./dist/session-refresh.js",
-  "types": "./dist/session-refresh.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "LICENSE",
+    "README.md"
   ],
   "scripts": {
     "build": "vite build",
@@ -69,5 +93,8 @@
     "@eventuras/vite-config": "workspace:*",
     "vite": "^8.0.3",
     "vitest": "^4.1.2"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }
