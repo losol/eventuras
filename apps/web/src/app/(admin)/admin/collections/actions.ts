@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 
+import { slugify } from '@eventuras/core/string';
 import {
   actionError,
   actionSuccess,
@@ -23,7 +24,6 @@ import {
   putV3EventsByEventIdCollectionsByCollectionId,
 } from '@/lib/eventuras-sdk';
 import { getOrganizationId } from '@/utils/organization';
-import slugify from '@/utils/slugify';
 
 const logger = Logger.create({
   namespace: 'web:admin:collections',

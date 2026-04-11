@@ -7,4 +7,5 @@
  * - @eventuras/core/datetime
  * - @eventuras/core/currency
  * - @eventuras/core/dom
+ * - @eventuras/core/string
  */

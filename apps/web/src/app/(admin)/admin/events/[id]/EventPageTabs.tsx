@@ -4,6 +4,7 @@ import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
+import { slugify } from '@eventuras/core/string';
 import { Logger } from '@eventuras/logger';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Tabs } from '@eventuras/ratio-ui/core/Tabs';
@@ -19,7 +20,6 @@ import {
   ProductDto,
   RegistrationDto,
 } from '@/lib/eventuras-sdk';
-import slugify from '@/utils/slugify';
 
 import CommunicationSection from './CommunicationSection';
 import EconomySection from './EconomySection';

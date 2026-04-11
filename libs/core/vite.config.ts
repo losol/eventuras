@@ -7,5 +7,6 @@ export default defineVanillaLibConfig({
     'currency/index': 'src/currency/index.ts',
     'url/index': 'src/url/index.ts',
     'dom/index': 'src/dom/index.ts',
+    'string/index': 'src/string/index.ts',
   },
 });
