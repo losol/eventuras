@@ -30,6 +30,7 @@
  * ```
  */
 
+/** Configuration for browser-side OAuth / OIDC flows (no client secret). */
 export interface OAuthConfig {
   issuer: string;
   clientId: string;
@@ -37,6 +38,7 @@ export interface OAuthConfig {
   scope: string;
 }
 
+/** PKCE parameters for a browser-initiated authorization request. */
 export interface PKCEParams {
   code_verifier: string;
   code_challenge: string;

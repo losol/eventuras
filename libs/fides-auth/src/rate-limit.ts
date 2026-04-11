@@ -1,3 +1,20 @@
+/**
+ * Token bucket rate limiter for protecting against brute-force attacks.
+ *
+ * Each key (e.g. IP address, user ID) gets its own bucket. Tokens refill
+ * over time at a fixed interval. When a bucket is empty, requests are denied.
+ *
+ * @typeParam _Key - The type of key used to identify rate-limited entities
+ *
+ * @example
+ * ```typescript
+ * const limiter = new TokenBucket<string>(10, 60); // 10 tokens, refill 1/min
+ *
+ * if (!limiter.consume(ipAddress, 1)) {
+ *   throw new Error('Rate limit exceeded');
+ * }
+ * ```
+ */
 export class TokenBucket<_Key> {
   public max: number;
   public refillIntervalSeconds: number;
@@ -9,6 +26,7 @@ export class TokenBucket<_Key> {
 
   private readonly storage = new Map<_Key, Bucket>();
 
+  /** Check whether the bucket has enough tokens without consuming any. */
   public check(key: _Key, cost: number): boolean {
     const bucket = this.storage.get(key) ?? null;
     if (bucket === null) {
@@ -22,6 +40,7 @@ export class TokenBucket<_Key> {
     return bucket.count >= cost;
   }
 
+  /** Consume tokens from the bucket. Returns `true` if allowed, `false` if rate-limited. */
   public consume(key: _Key, cost: number): boolean {
     let bucket = this.storage.get(key) ?? null;
     const now = Date.now();

@@ -10,8 +10,10 @@ const logger = createLogger({ namespace: 'fides-auth:oauth' });
 // Re-export commonly used types from openid-client for convenience
 export type { Configuration, TokenEndpointResponse } from 'openid-client';
 
+/** Default OIDC scope requesting user identity, profile, email, and offline access. */
 export const defaultScope = 'openid profile email offline_access';
 
+/** Configuration for server-side OAuth / OIDC flows. */
 export type OAuthConfig = {
   issuer: string;
   clientId: string;
@@ -20,6 +22,13 @@ export type OAuthConfig = {
   scope: string;
 };
 
+/**
+ * Refreshes an access token using a refresh token grant.
+ *
+ * @param oAuthConfig - OAuth configuration for the identity provider
+ * @param refreshToken - The refresh token to exchange
+ * @returns Token endpoint response containing new access and refresh tokens
+ */
 export async function refreshAccessToken(
   oAuthConfig: OAuthConfig,
   refreshToken: string,
@@ -70,6 +79,7 @@ export async function refreshAccessToken(
   }
 }
 
+/** PKCE parameters generated for an authorization request. */
 export interface PKCEOptions {
   code_verifier: string;
   code_challenge: string;
@@ -172,26 +182,6 @@ export type ClientCredentialsConfig = {
   scope?: string;
 };
 
-/**
- * Performs OAuth 2.0 client credentials grant flow for machine-to-machine authentication.
- * This is used when an application needs to access an API on its own behalf (not on behalf of a user).
- *
- * @param config - Client credentials configuration including token endpoint, client ID, and secret
- * @returns A Promise that resolves to the token response from the OAuth provider
- * @throws Error if the token request fails
- *
- * @example
- * ```typescript
- * const tokens = await clientCredentialsGrant({
- *   tokenEndpoint: 'https://api.example.com/oauth2/token',
- *   clientId: 'my-client-id',
- *   clientSecret: 'my-client-secret',
- *   scope: 'api:read api:write',
- * });
- *
- * console.log(tokens.access_token);
- * ```
- */
 /**
  * Exchanges an authorization code for tokens using OIDC discovery and PKCE.
  *
@@ -407,6 +397,23 @@ export async function buildOidcLogoutUrl(
   }
 }
 
+/**
+ * Performs OAuth 2.0 client credentials grant flow for machine-to-machine authentication.
+ *
+ * @param config - Client credentials configuration including token endpoint, client ID, and secret
+ * @returns Token response from the OAuth provider
+ * @throws Error if the token request fails
+ *
+ * @example
+ * ```typescript
+ * const tokens = await clientCredentialsGrant({
+ *   tokenEndpoint: 'https://api.example.com/oauth2/token',
+ *   clientId: 'my-client-id',
+ *   clientSecret: 'my-client-secret',
+ *   scope: 'api:read api:write',
+ * });
+ * ```
+ */
 export async function clientCredentialsGrant(
   config: ClientCredentialsConfig
 ): Promise<openid.TokenEndpointResponse> {
