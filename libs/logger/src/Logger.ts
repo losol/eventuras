@@ -34,6 +34,7 @@ import type {
   LogTransport,
 } from './types';
 import { PinoTransport } from './transports/pino';
+import { ConsoleTransport } from './transports/console';
 
 const DEFAULT_REDACT = ['password', 'token', 'apiKey', 'authorization', 'secret'];
 
@@ -44,7 +45,21 @@ function getEnv(key: string): string | undefined {
   return undefined;
 }
 
+/** Detect Node.js runtime (vs browser / edge). */
+function isNodeRuntime(): boolean {
+  try {
+    return typeof process !== 'undefined' && typeof process.versions?.node === 'string';
+  } catch {
+    return false;
+  }
+}
+
 function createDefaultTransport(config: LoggerConfig): LogTransport {
+  // In non-Node environments (browser, edge), fall back to ConsoleTransport
+  if (!isNodeRuntime()) {
+    return new ConsoleTransport();
+  }
+
   return new PinoTransport({
     level: config.level ?? (getEnv('LOG_LEVEL') as LogLevel | undefined) ?? 'info',
     redact: config.redact ?? DEFAULT_REDACT,
