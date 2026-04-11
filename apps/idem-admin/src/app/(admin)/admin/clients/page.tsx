@@ -78,7 +78,7 @@ export default async function ClientsPage() {
                   </Table.Cell>
                   <Table.Cell>
                     <Badge
-                      variant={client.clientType === 'confidential' ? 'info' : 'neutral'}
+                      status={client.clientType === 'confidential' ? 'info' : 'neutral'}
                     >
                       {client.clientType}
                     </Badge>
@@ -91,7 +91,7 @@ export default async function ClientsPage() {
                     )}
                   </Table.Cell>
                   <Table.Cell>
-                    <Badge variant={client.active ? 'positive' : 'negative'}>
+                    <Badge status={client.active ? 'success' : 'error'}>
                       {client.active ? 'Active' : 'Inactive'}
                     </Badge>
                   </Table.Cell>
