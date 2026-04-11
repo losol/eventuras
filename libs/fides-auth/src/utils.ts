@@ -23,18 +23,31 @@ export function hexToUint8Array(hex: string): Uint8Array {
 }
 
 /**
+ * Normalizes a secret to a Uint8Array.
+ * Accepts either a hex-encoded string or an existing Uint8Array.
+ */
+function normalizeSecret(secret: string | Uint8Array): Uint8Array {
+  if (typeof secret === 'string') {
+    return hexToUint8Array(secret);
+  }
+  return secret;
+}
+
+/**
  * Encrypts a payload into a JWT using the specified secret.
  *
  * @param payload - The payload to encrypt (can be any JSON-serializable value)
+ * @param secret - The encryption key as a hex string or Uint8Array (32 bytes for A256GCM)
  * @returns A promise that resolves to the encrypted JWT as a string.
  */
 export async function createEncryptedJWT(
   payload: unknown,
+  secret: string | Uint8Array,
 ): Promise<string> {
   return new jose.EncryptJWT(payload as jose.JWTPayload)
     .setProtectedHeader({ alg: 'dir', enc: 'A256GCM' })
     .setIssuedAt()
-    .encrypt(getSessionSecretUint8Array());
+    .encrypt(normalizeSecret(secret));
 }
 
 
@@ -43,17 +56,11 @@ export async function createEncryptedJWT(
  * Returns a string in the format: iv:authTag:ciphertext, all in hex.
  *
  * @param text - The plaintext to encrypt.
+ * @param secret - The encryption key as a hex string or Uint8Array (32 bytes for AES-256).
  * @returns A promise that resolves to the encrypted string.
  */
-export async function encrypt(text: string): Promise<string> {
-  // Get the secret as a hex string.
-  const secret = process.env.SESSION_SECRET;
-  if (!secret) {
-    throw new Error('SESSION_SECRET is not defined');
-  }
-
-  // Convert the secret hex string to a Uint8Array.
-  const keyData = hexToUint8Array(secret);
+export async function encrypt(text: string, secret: string | Uint8Array): Promise<string> {
+  const keyData = normalizeSecret(secret);
 
   // Import the key for AES-GCM encryption.
   const key = await crypto.subtle.importKey(
@@ -93,14 +100,10 @@ export async function encrypt(text: string): Promise<string> {
  * The input is expected to be in the format: iv:authTag:ciphertext (all hex-encoded).
  *
  * @param data - The encrypted data string.
+ * @param secret - The decryption key as a hex string or Uint8Array (32 bytes for AES-256).
  * @returns A promise that resolves to the decrypted plaintext.
  */
-export async function decrypt(data: string): Promise<string> {
-  // Get the session secret (hex string)
-  const secret = process.env.SESSION_SECRET;
-  if (!secret) {
-    throw new Error('SESSION_SECRET is not defined');
-  }
+export async function decrypt(data: string, secret: string | Uint8Array): Promise<string> {
 
   // Split the incoming data. We expect exactly three parts.
   const [ivHex, tagHex, ciphertextHex] = data.split(':');
@@ -118,8 +121,8 @@ export async function decrypt(data: string): Promise<string> {
   combined.set(ciphertext);
   combined.set(tag, ciphertext.length);
 
-  // Convert the secret into a Uint8Array and import it as a CryptoKey for AES-GCM decryption.
-  const keyData = hexToUint8Array(secret);
+  // Convert the secret and import it as a CryptoKey for AES-GCM decryption.
+  const keyData = normalizeSecret(secret);
   // Ensure keyData is backed by a real ArrayBuffer (not SharedArrayBuffer)
   const keyDataArrayBuffer = new Uint8Array([...keyData]);
 

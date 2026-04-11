@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import {
   accessTokenExpires,
   createSession,
+  getSessionSecret,
   refreshCurrentSession,
   type Session,
   setSessionCookie,
@@ -62,7 +63,7 @@ function validateCorsHeaders(request: NextRequest): NextResponse | null {
  * Validates the session and returns session status.
  */
 async function validateSession(sessionCookie: string) {
-  const { status, session } = await validateSessionJwt(sessionCookie);
+  const { status, session } = await validateSessionJwt(sessionCookie, getSessionSecret());
 
   logger.debug({ status }, 'Session validation result');
 

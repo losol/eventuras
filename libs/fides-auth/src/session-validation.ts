@@ -3,7 +3,7 @@
 import { jwtDecrypt } from 'jose';
 
 import { createLogger } from './logger';
-import { getSessionSecretUint8Array } from './utils';
+import { hexToUint8Array } from './utils';
 import { Session } from './types';
 
 const logger = createLogger({ namespace: 'fides-auth:session-validation' });
@@ -19,17 +19,23 @@ export interface SessionValidationResult {
  * Validates an encrypted JWT and checks for expiration.
  *
  * @param encryptedJwt The encrypted JWT string to validate
+ * @param secret The decryption key as a hex string or Uint8Array (32 bytes for A256GCM)
  * @returns Session and SessionValidationResult indicating whether it's valid or not,
  *          plus accessTokenExpiresIn if valid
  */
 export async function validateSessionJwt(
   encryptedJwt: string,
+  secret: string | Uint8Array,
 ): Promise<SessionValidationResult> {
   logger.debug('Starting session JWT validation');
 
+  const secretBytes = typeof secret === 'string'
+    ? hexToUint8Array(secret)
+    : secret;
+
   let payload: unknown;
   try {
-    ({ payload } = await jwtDecrypt(encryptedJwt, getSessionSecretUint8Array()));
+    ({ payload } = await jwtDecrypt(encryptedJwt, secretBytes));
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Failed decrypting JWT';
     logger.warn({ reason: errorMessage }, 'Session JWT decryption failed');

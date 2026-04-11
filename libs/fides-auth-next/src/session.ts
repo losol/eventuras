@@ -1,4 +1,4 @@
-import { createEncryptedJWT } from '@eventuras/fides-auth/utils';
+import { createEncryptedJWT, getSessionSecret } from '@eventuras/fides-auth/utils';
 import { validateSessionJwt } from '@eventuras/fides-auth/session-validation';
 import { refreshSession as refreshSessionCore } from '@eventuras/fides-auth/session-refresh';
 import type { Session, CreateSessionOptions } from '@eventuras/fides-auth/types';
@@ -40,7 +40,7 @@ export async function createSession<TData = Record<string, unknown>>(
 
   try {
     // Build the JWT payload and encrypt
-    const jwt = await createEncryptedJWT({ ...session });
+    const jwt = await createEncryptedJWT({ ...session }, getSessionSecret());
 
     logger.info({ sessionDurationDays }, 'Session created successfully');
     return jwt;
@@ -84,7 +84,7 @@ export const getCurrentSession = cache(async (config?: OAuthConfig): Promise<Ses
       return null;
     }
 
-    const { status, session } = await validateSessionJwt(sessionCookie);
+    const { status, session } = await validateSessionJwt(sessionCookie, getSessionSecret());
 
     if (status !== 'VALID') {
       logger.warn({ status }, 'Session validation failed');
