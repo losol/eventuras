@@ -1135,6 +1135,13 @@ importers:
 
   libs/logger:
     dependencies:
+      pino:
+        specifier: ^10.3.1
+        version: 10.3.1
+    devDependencies:
+      '@eventuras/vite-config':
+        specifier: workspace:*
+        version: link:../vite-config
       '@opentelemetry/api':
         specifier: ^1.9.1
         version: 1.9.1
@@ -1147,13 +1154,6 @@ importers:
       '@opentelemetry/sdk-logs':
         specifier: ^0.214.0
         version: 0.214.0(@opentelemetry/api@1.9.1)
-      pino:
-        specifier: ^10.3.1
-        version: 10.3.1
-    devDependencies:
-      '@eventuras/vite-config':
-        specifier: workspace:*
-        version: link:../vite-config
       vite:
         specifier: ^8.0.3
         version: 8.0.5(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@types/node@25.5.0)(esbuild@0.27.7)(jiti@2.6.1)(sass@1.77.4)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
