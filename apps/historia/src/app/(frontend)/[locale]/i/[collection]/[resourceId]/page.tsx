@@ -85,7 +85,7 @@ type Args = {
   }>;
 };
 
-export default async function ItemPage({ params: paramsPromise }: Args) {
+export default async function ItemPage({ params: paramsPromise }: Readonly<Args>) {
   const { locale, collection: urlCollection, resourceId } = await paramsPromise;
   const { isEnabled: draft } = await draftMode();
 
@@ -132,7 +132,7 @@ export default async function ItemPage({ params: paramsPromise }: Args) {
   );
 }
 
-function QuotePage({ quote }: { quote: Quote }) {
+function QuotePage({ quote }: Readonly<{ quote: Quote }>) {
   const author =
     typeof quote.author === 'object' && quote.author !== null ? quote.author : undefined;
   const authorName = author && 'name' in author ? author.name : quote.attributionText || 'Unknown';
@@ -187,7 +187,7 @@ function QuotePage({ quote }: { quote: Quote }) {
   );
 }
 
-function SourcePage({ source, locale }: { source: Source; locale: string }) {
+function SourcePage({ source, locale }: Readonly<{ source: Source; locale: string }>) {
   const contributors =
     Array.isArray(source.contributors) && source.contributors.length > 0
       ? source.contributors

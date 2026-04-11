@@ -6,7 +6,7 @@ interface CheckoutPageProps {
   }>;
 }
 
-export default async function CheckoutPage({ params }: CheckoutPageProps) {
+export default async function CheckoutPage({ params }: Readonly<CheckoutPageProps>) {
   const { locale } = await params;
 
   return <CheckoutPageClient locale={locale} />;

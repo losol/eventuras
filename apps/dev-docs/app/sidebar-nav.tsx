@@ -12,7 +12,7 @@ interface DocSidebarNavProps {
 /**
  * Wrapper that provides the current pathname and Next.js Link to TreeView.
  */
-export function DocSidebarNav({ tree }: DocSidebarNavProps) {
+export function DocSidebarNav({ tree }: Readonly<DocSidebarNavProps>) {
   const pathname = usePathname();
 
   return (

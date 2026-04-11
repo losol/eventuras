@@ -22,7 +22,7 @@ type UserWithRole = {
   systemRole?: string;
 };
 
-export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+export default async function AdminLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const session = await getCurrentSession(getOAuthConfig());
 
   // Not logged in - redirect to login

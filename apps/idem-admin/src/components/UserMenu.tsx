@@ -14,7 +14,7 @@ type UserMenuProps = {
   user?: User;
 };
 
-export function UserMenu({ user }: UserMenuProps) {
+export function UserMenu({ user }: Readonly<UserMenuProps>) {
   if (!user) {
     return (
       <a href="/api/login">

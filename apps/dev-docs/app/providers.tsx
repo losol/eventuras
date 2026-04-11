@@ -20,7 +20,7 @@ export function useTheme() {
 
 const STORAGE_KEY = 'eventuras-docs-theme';
 
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
+export function ThemeProvider({ children }: Readonly<{ children: React.ReactNode }>) {
   const [theme, setThemeState] = useState<Theme | undefined>(undefined);
 
   useEffect(() => {

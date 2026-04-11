@@ -17,7 +17,7 @@ type ProvidersProps = {
   children: React.ReactNode;
 };
 
-export default function Providers({ children }: ProvidersProps) {
+export default function Providers({ children }: Readonly<ProvidersProps>) {
   useEffect(() => {
     logger.info('Initializing auth store');
 

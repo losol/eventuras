@@ -15,7 +15,7 @@ interface CancelPaymentButtonProps {
  * Admin button to cancel authorized payment
  * Only shown for orders that have authorized payment and are not completed/shipped
  */
-export function CancelPaymentButton({ orderId, orderStatus }: CancelPaymentButtonProps) {
+export function CancelPaymentButton({ orderId, orderStatus }: Readonly<CancelPaymentButtonProps>) {
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useAuth();
   const router = useRouter();

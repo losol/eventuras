@@ -35,7 +35,7 @@ interface PaymentStatusUpdate {
 export function PaymentStatusSSE({
   reference,
   onStatusChange,
-}: PaymentStatusProps) {
+}: Readonly<PaymentStatusProps>) {
   const router = useRouter();
   const toast = useToast();
   const [status, setStatus] = useState<string>('pending');

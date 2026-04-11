@@ -22,7 +22,7 @@ interface CartDrawerProps {
   locale: string;
 }
 
-export function CartDrawer({ isOpen, onClose, locale }: CartDrawerProps) {
+export function CartDrawer({ isOpen, onClose, locale }: Readonly<CartDrawerProps>) {
   const { items, updateCartItem, removeFromCart } = useCart();
   const [cartSummary, setCartSummary] = useState<CartSummary | null>(null);
   const [loading, setLoading] = useState(true);

@@ -29,7 +29,7 @@ function isValidCollection(collection: string): collection is PageCollectionsTyp
   return pageCollections.includes(collection as any);
 }
 
-export default async function Page({ params: paramsPromise }: Props) {
+export default async function Page({ params: paramsPromise }: Readonly<Props>) {
   const payload = await getPayload({ config: configPromise });
   const { locale, collection } = await paramsPromise;
 

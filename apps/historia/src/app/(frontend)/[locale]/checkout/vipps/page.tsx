@@ -29,9 +29,9 @@ const logger = Logger.create({
  */
 export default async function VippsCheckoutPageWrapper({
   searchParams,
-}: {
+}: Readonly<{
   searchParams: Promise<{ reference?: string }>;
-}) {
+}>) {
   const params = await searchParams;
   const reference = params.reference;
 

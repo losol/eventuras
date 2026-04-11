@@ -18,7 +18,7 @@ interface ShipCompleteOrderButtonProps {
 export function ShipCompleteOrderButton({
   orderId,
   orderStatus,
-}: ShipCompleteOrderButtonProps) {
+}: Readonly<ShipCompleteOrderButtonProps>) {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 

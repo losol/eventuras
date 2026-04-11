@@ -19,7 +19,7 @@ interface InteractionDetails {
   };
 }
 
-function ErrorAlert({ message }: { message: string }) {
+function ErrorAlert({ message }: Readonly<{ message: string }>) {
   return (
     <div className="rounded-md bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 p-3 mb-4">
       <Text className="text-red-700 dark:text-red-300 text-sm">{message}</Text>
@@ -27,7 +27,7 @@ function ErrorAlert({ message }: { message: string }) {
   );
 }
 
-function InteractionCard({ children }: { children: React.ReactNode }) {
+function InteractionCard({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <div className="flex items-center justify-center min-h-screen p-4">
       <Card variant="default" className="w-full max-w-md" padding="p-8">
@@ -107,7 +107,7 @@ export default function Interaction() {
   );
 }
 
-function LoginPrompt({ uid, details }: { uid: string; details: InteractionDetails }) {
+function LoginPrompt({ uid, details }: Readonly<{ uid: string; details: InteractionDetails }>) {
   const [step, setStep] = useState<'email' | 'otp'>('email');
   const [email, setEmail] = useState('');
   const [otpCode, setOtpCode] = useState('');
@@ -261,7 +261,7 @@ function LoginPrompt({ uid, details }: { uid: string; details: InteractionDetail
   );
 }
 
-function ConsentPrompt({ uid, details }: { uid: string; details: InteractionDetails }) {
+function ConsentPrompt({ uid, details }: Readonly<{ uid: string; details: InteractionDetails }>) {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

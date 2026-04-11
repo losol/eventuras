@@ -31,7 +31,7 @@ export async function generateMetadata(
 }
 
 export default async function DocPage(
-  props: { params: Promise<{ slug: string[] }> },
+  props: Readonly<{ params: Promise<{ slug: string[] }> }>,
 ) {
   const { slug } = await props.params;
   const doc = getDocBySlug(slug);

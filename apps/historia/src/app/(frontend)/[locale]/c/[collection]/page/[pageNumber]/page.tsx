@@ -20,7 +20,7 @@ type Args = {
   }>
 }
 
-export default async function Page({ params: paramsPromise }: Args) {
+export default async function Page({ params: paramsPromise }: Readonly<Args>) {
   const { pageNumber } = await paramsPromise
   const payload = await getPayload({ config: configPromise })
 

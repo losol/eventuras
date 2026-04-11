@@ -114,7 +114,7 @@ type Args = {
   }>;
 };
 
-export default async function Page({ params: paramsPromise }: Args) {
+export default async function Page({ params: paramsPromise }: Readonly<Args>) {
   const { isEnabled: draft } = await draftMode();
   const props = await paramsPromise;
   const { locale, collection, slug: combinedSlug } = props;
