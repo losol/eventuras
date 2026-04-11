@@ -245,7 +245,7 @@ export async function createVippsPayment({
       if (rawPhone) {
         // Normalize phone number: remove +, spaces, and other non-digits
         // Vipps requires 9-15 digits WITH country code (e.g., 4712345678)
-        phoneNumber = rawPhone.replace(/\D/g, '');
+        phoneNumber = rawPhone.replaceAll(/\D/g, '');
 
         // Validate length (9-15 digits)
         if (phoneNumber.length < 9 || phoneNumber.length > 15) {

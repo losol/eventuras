@@ -145,7 +145,7 @@ function QuotePage({ quote }: { quote: Quote }) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(generateQuoteJsonLd(quote)).replace(/</g, '\\u003c'),
+          __html: JSON.stringify(generateQuoteJsonLd(quote)).replaceAll('<', '\\u003c'),
         }}
       />
       <Container>
@@ -198,7 +198,7 @@ function SourcePage({ source, locale }: { source: Source; locale: string }) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(generateSourceJsonLd(source)).replace(/</g, '\\u003c'),
+          __html: JSON.stringify(generateSourceJsonLd(source)).replaceAll('<', '\\u003c'),
         }}
       />
       <Container>

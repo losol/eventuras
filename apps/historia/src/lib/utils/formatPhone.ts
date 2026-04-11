@@ -8,7 +8,7 @@ export function formatPhoneForDisplay(phoneNumber: string | undefined | null): s
   if (!phoneNumber) return '';
 
   // Remove any existing formatting or whitespace
-  const cleaned = phoneNumber.replace(/\s/g, '');
+  const cleaned = phoneNumber.replaceAll(/\s/g, '');
 
   // Match Norwegian phone numbers: +47 followed by 8 digits
   const norwegianMatch = /^(\+47)(\d{8})$/.exec(cleaned);

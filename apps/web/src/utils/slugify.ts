@@ -21,9 +21,9 @@ const slugify = (str: string): string => {
 
   return str
     .normalize('NFKD') // Normalize Unicode characters
-    .replace(/\p{Diacritic}/gu, '') // Replace accented characters
-    .replace(/[^a-z0-9 -]/g, '') // Replace everything not a-z or a number
-    .replace(/\s+/g, '-'); // Replace spaces with hyphens
+    .replaceAll(/\p{Diacritic}/gu, '') // Replace accented characters
+    .replaceAll(/[^a-z0-9 -]/g, '') // Replace everything not a-z or a number
+    .replaceAll(/\s+/g, '-'); // Replace spaces with hyphens
 };
 
 export default slugify;

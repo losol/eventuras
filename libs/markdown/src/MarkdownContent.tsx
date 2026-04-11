@@ -51,7 +51,7 @@ export const MarkdownContent = ({
   // Strip HTML tags if requested (useful for legacy content with HTML-wrapped markdown)
   let processedMarkdown = markdown;
   if (stripHtmlTags) {
-    processedMarkdown = markdown.replace(/<[^>]*>/g, '');
+    processedMarkdown = markdown.replaceAll(/<[^>]*>/g, '');
   }
 
   const source = keepInvisibleCharacters ? processedMarkdown : normalizeMarkdown(processedMarkdown);

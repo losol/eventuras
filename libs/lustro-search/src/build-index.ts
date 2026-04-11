@@ -81,20 +81,20 @@ function extractTitle(html: string): string {
 /** Strip HTML tags and collapse whitespace to get searchable text */
 function stripHtml(html: string): string {
   return html
-    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
-    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
-    .replace(/<nav[^>]*>[\s\S]*?<\/nav>/gi, '')
-    .replace(/<header[^>]*>[\s\S]*?<\/header>/gi, '')
-    .replace(/<footer[^>]*>[\s\S]*?<\/footer>/gi, '')
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/&[a-z]+;/gi, ' ')
-    .replace(/\s+/g, ' ')
+    .replaceAll(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+    .replaceAll(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+    .replaceAll(/<nav[^>]*>[\s\S]*?<\/nav>/gi, '')
+    .replaceAll(/<header[^>]*>[\s\S]*?<\/header>/gi, '')
+    .replaceAll(/<footer[^>]*>[\s\S]*?<\/footer>/gi, '')
+    .replaceAll(/<[^>]+>/g, ' ')
+    .replaceAll(/&[a-z]+;/gi, ' ')
+    .replaceAll(/\s+/g, ' ')
     .trim();
 }
 
 /** Convert an HTML file path to a URL path: /site/foo/bar/index.html → /foo/bar */
 function htmlPathToUrl(file: string, siteDir: string): string {
-  let url = '/' + relative(siteDir, file).replace(/\\/g, '/');
+  let url = '/' + relative(siteDir, file).replaceAll('\\', '/');
   url = url.replace(/\/index\.html$/, '').replace(/\.html$/, '');
   return url || '/';
 }

@@ -23,9 +23,9 @@ export const formatSlug = (val: string): string => {
   // Final formatting (spaces to hyphens, remove invalid characters, lowercase)
   return val
     .normalize('NFKD') // Normalize Unicode characters
-    .replace(/\p{Diacritic}/gu, '') // Remove diacritic marks
-    .replace(/[^a-z0-9 -]/g, '') // Remove invalid characters
-    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .replaceAll(/\p{Diacritic}/gu, '') // Remove diacritic marks
+    .replaceAll(/[^a-z0-9 -]/g, '') // Remove invalid characters
+    .replaceAll(/\s+/g, '-') // Replace spaces with hyphens
     .toLowerCase(); // Convert to lowercase
 };
 

@@ -36,7 +36,7 @@ export function extractPlainText(richText: unknown): string {
         return '';
       })
       .join(' ')
-      .replace(/\s+/g, ' ')
+      .replaceAll(/\s+/g, ' ')
       .trim();
   }
 

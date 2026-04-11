@@ -79,7 +79,7 @@ class ErrorContextReporter implements Reporter {
     if (result.status !== 'failed' && result.status !== 'timedOut') return;
 
     const context = this.buildErrorContext(test, result);
-    const safeName = test.title.replace(/[^a-zA-Z0-9-_]/g, '_').substring(0, 80);
+    const safeName = test.title.replaceAll(/[^a-zA-Z0-9-_]/g, '_').substring(0, 80);
     const contextPath = join(
       this.outputDir,
       result.workerIndex.toString(),

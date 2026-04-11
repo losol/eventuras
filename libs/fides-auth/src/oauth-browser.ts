@@ -69,8 +69,8 @@ async function generateCodeChallenge(verifier: string): Promise<string> {
 
   // Base64URL encode
   return btoa(String.fromCharCode(...new Uint8Array(hash)))
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
+    .replaceAll('+', '-')
+    .replaceAll('/', '_')
     .replace(/=+$/, '');
 }
 

@@ -219,7 +219,7 @@ function formatFrontmatter(data: Record<string, unknown>): string {
     const str = String(value);
     // Quote strings that contain special YAML characters
     if (typeof value === 'string' && /[:#{}[\],&*?|>!%@`]/.test(str)) {
-      return `${key}: "${str.replace(/"/g, '\\"')}"`;
+      return `${key}: "${str.replaceAll('"', '\\"')}"`;
     }
     return `${key}: ${str}`;
   });
