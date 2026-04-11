@@ -1,8 +1,25 @@
 {
   "name": "@eventuras/logger",
   "version": "0.6.0",
-  "private": "true",
-  "description": "Logger utility for eventuras",
+  "description": "Structured logging with Pino and optional OpenTelemetry integration",
+  "keywords": [
+    "logger",
+    "logging",
+    "structured-logging",
+    "pino",
+    "opentelemetry",
+    "otel"
+  ],
+  "homepage": "https://github.com/losol/eventuras/tree/main/libs/logger#readme",
+  "bugs": {
+    "url": "https://github.com/losol/eventuras/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/losol/eventuras.git",
+    "directory": "libs/logger"
+  },
+  "license": "Apache-2.0",
   "type": "module",
   "exports": {
     ".": {
@@ -25,14 +42,37 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@opentelemetry/api": "^1.9.1",
-    "@opentelemetry/api-logs": "^0.214.0",
-    "@opentelemetry/instrumentation-pino": "^0.60.0",
-    "@opentelemetry/sdk-logs": "^0.214.0",
     "pino": "^10.3.1"
   },
   "devDependencies": {
     "@eventuras/vite-config": "workspace:*",
+    "@opentelemetry/api": "^1.9.1",
+    "@opentelemetry/api-logs": "^0.214.0",
+    "@opentelemetry/instrumentation-pino": "^0.60.0",
+    "@opentelemetry/sdk-logs": "^0.214.0",
     "vite": "^8.0.3"
+  },
+  "peerDependencies": {
+    "@opentelemetry/api": "^1.9.0",
+    "@opentelemetry/api-logs": ">=0.200.0",
+    "@opentelemetry/instrumentation-pino": ">=0.50.0",
+    "@opentelemetry/sdk-logs": ">=0.200.0"
+  },
+  "peerDependenciesMeta": {
+    "@opentelemetry/api": {
+      "optional": true
+    },
+    "@opentelemetry/api-logs": {
+      "optional": true
+    },
+    "@opentelemetry/instrumentation-pino": {
+      "optional": true
+    },
+    "@opentelemetry/sdk-logs": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": ">=20"
   }
 }
