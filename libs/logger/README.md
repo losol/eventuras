@@ -1,26 +1,16 @@
 # @eventuras/logger
 
-A flexible logging solution for Eventuras with two separate utilities:
-
-- **Logger** - Production-ready structured logging with Pino
-- **Debug** - Development debugging with debug-js
-- **OpenTelemetry** - Optional integration for sending logs to any OTel-compatible backend
+A structured logging library with pluggable transports and optional OpenTelemetry integration. Works in Node.js and browser environments.
 
 ## Features
 
-### Logger (Production)
-- 🎯 **Scoped loggers** - Create logger instances with persistent context
-- 🎨 **Pretty printing** - Beautiful logs in development mode
-- 🔒 **Auto-redaction** - Protect sensitive data in logs
-- 📊 **Log levels** - Control verbosity per logger or globally
-- 🔍 **Correlation IDs** - Track requests across services
-- 🌐 **Context fields** - Add persistent metadata to all logs
-
-### Debug (Development)
-- 🐛 **Namespace filtering** - Enable/disable debug output by namespace
-- 🎯 **Browser support** - Works in browser with localStorage
-- 📦 **Lightweight** - Only debug-js, no production overhead
-- 🔧 **Development-only** - Separate from production logging
+- 🎯 **Scoped loggers** — Create instances with persistent context and namespace
+- 🔌 **Pluggable transports** — Use Pino (default), console, or bring your own
+- 🔒 **Auto-redaction** — Protect sensitive fields in log output
+- 📊 **Log levels** — Control verbosity per logger or globally
+- 🔍 **Correlation IDs** — Track requests across services
+- 🌐 **OpenTelemetry** — Optional integration for any OTel-compatible backend
+- 🌍 **Cross-runtime** — Works in Node.js, browsers, and edge runtimes
 
 ## Installation
 
@@ -28,508 +18,276 @@ A flexible logging solution for Eventuras with two separate utilities:
 pnpm add @eventuras/logger
 ```
 
-## Logger (Production Logging)
+## Quick Start
 
-Use `Logger` for all production logging with structured data, context, and levels.
-
-### Static Methods (One-off logs)
+### Scoped Logger (recommended)
 
 ```typescript
-import { Logger } from '@eventuras/logger';
+import { Logger } from "@eventuras/logger";
 
-// Simple logs
-Logger.info('Server started');
-Logger.warn('Memory usage high');
-Logger.error({ error: new Error('Failed') }, 'Database connection failed');
-```
-
-### Scoped Logger (Recommended for components/modules)
-
-```typescript
-import { Logger } from '@eventuras/logger';
-
-const logger = Logger.create({ namespace: 'CollectionEditor' });
-
-logger.info('Updating collection...');
-logger.info('Collection saved successfully');
-logger.error({ error: err }, 'Failed to save collection');
-```
-
-## Advanced Usage
-
-### Context Fields
-
-Add persistent fields to all logs from a logger instance:
-
-```typescript
 const logger = Logger.create({
-  namespace: 'API',
-  context: {
-    userId: user.id,
-    collectionId: collection.id,
-  },
+  namespace: "web:admin:events",
+  context: { module: "EventEditor" },
 });
 
-logger.info('Event added', { eventId: 123 });
-// Logs: { namespace: 'API', userId: 42, collectionId: 99, eventId: 123, msg: 'Event added' }
+logger.info({ eventId: 42 }, "Event updated");
+logger.error({ error }, "Failed to save event");
 ```
 
-### Correlation IDs (Request Tracking)
-
-Track requests across your microservices:
+### Static Methods (one-off logs)
 
 ```typescript
-const logger = Logger.create({
-  namespace: 'EventsController',
-  correlationId: req.headers['x-correlation-id'],
-  context: { userId: req.user.id },
-});
+import { Logger } from "@eventuras/logger";
 
-logger.info('Processing request');
-// Logs include correlationId for easy trace lookup
-```
-
-### Log Levels
-
-Control verbosity per logger instance:
-
-```typescript
-const logger = Logger.create({
-  namespace: 'DebugComponent',
-  level: 'debug', // Only log debug and above (debug, info, warn, error, fatal)
-});
-
-logger.trace('Very detailed'); // Won't log (below debug level)
-logger.debug('Debugging info'); // Will log
-logger.info('Important event'); // Will log
-```
-
-## Global Configuration
-
-Configure the logger once at application startup:
-
-```typescript
-import { Logger } from '@eventuras/logger';
-
-// In your app initialization (e.g., app.ts or layout.tsx)
-Logger.configure({
-  prettyPrint: process.env.NODE_ENV === 'development',
-  level: process.env.LOG_LEVEL || 'info',
-  redact: ['password', 'token', 'apiKey', 'authorization', 'secret'],
-  destination: process.env.LOG_FILE, // Optional file output
-});
-```
-
-## Environment Variables
-
-### Development (Browser)
-
-Enable namespace filtering in the browser console:
-
-```javascript
-localStorage.debug = 'eventuras:*'; // All logs
-localStorage.debug = 'eventuras:auth*'; // Only auth logs
-localStorage.debug = 'eventuras:CollectionEditor'; // Specific namespace
-```
-
-### Server (Node.js)
-
-```bash
-# Enable all Eventuras logs
-DEBUG=eventuras:*
-
-# Enable specific namespaces
-DEBUG=eventuras:auth*,eventuras:api*
-
-# Set global log level
-LOG_LEVEL=debug
-
-# Write logs to file
-LOG_FILE=/var/log/eventuras.log
+Logger.info("Server started");
+Logger.warn({ memoryUsage: "85%" }, "Memory usage high");
+Logger.error({ error }, "Unhandled exception");
 ```
 
 ## Log Levels
 
 From most to least verbose:
 
-- `trace` (10) - Most detailed, for fine-grained debugging
-- `debug` (20) - Debugging information
-- `info` (30) - General informational messages (default)
-- `warn` (40) - Warning messages
-- `error` (50) - Error messages
-- `fatal` (60) - Critical errors that may cause shutdown
+| Level   | Value | Use case                     |
+| ------- | ----- | ---------------------------- |
+| `trace` | 10    | Fine-grained debugging       |
+| `debug` | 20    | Development debugging        |
+| `info`  | 30    | General events **(default)** |
+| `warn`  | 40    | Warnings                     |
+| `error` | 50    | Errors                       |
+| `fatal` | 60    | Critical/shutdown errors     |
 
-## Security: Auto-Redaction
+## Configuration
 
-Sensitive fields are automatically redacted in production:
-
-```typescript
-logger.info({
-  username: 'john',
-  password: 'secret123', // Will be logged as '[REDACTED]'
-  apiKey: 'key_123', // Will be logged as '[REDACTED]'
-});
-```
-
-Default redacted paths:
-- `password`
-- `token`
-- `apiKey`
-- `authorization`
-- `secret`
-
-Add custom redaction patterns via `Logger.configure()`.
-
-## Examples
-
-### React Component
+Configure the logger once at application startup:
 
 ```typescript
-'use client';
-import { Logger } from '@eventuras/logger';
-import { useEffect } from 'react';
+import { Logger } from "@eventuras/logger";
 
-const CollectionEditor = ({ collection }) => {
-  const logger = Logger.create({
-    namespace: 'CollectionEditor',
-    context: { collectionId: collection.id },
-  });
-
-  useEffect(() => {
-    logger.info('Component mounted');
-    return () => logger.info('Component unmounted');
-  }, []);
-
-  const handleSave = async () => {
-    try {
-      logger.info('Saving collection...');
-      await saveCollection(collection);
-      logger.info('Collection saved successfully');
-    } catch (error) {
-      logger.error({ error }, 'Failed to save collection');
-    }
-  };
-
-  return <button onClick={handleSave}>Save</button>;
-};
-```
-
-### API Route Handler
-
-```typescript
-import { Logger } from '@eventuras/logger';
-
-export async function POST(req: Request) {
-  const logger = Logger.create({
-    namespace: 'EventsAPI',
-    correlationId: req.headers.get('x-correlation-id') || crypto.randomUUID(),
-    context: { endpoint: '/api/events' },
-  });
-
-  try {
-    logger.info('Received event creation request');
-    const data = await req.json();
-    logger.debug({ eventData: data }, 'Parsed request body');
-
-    const result = await createEvent(data);
-    logger.info({ eventId: result.id }, 'Event created successfully');
-
-    return Response.json(result);
-  } catch (error) {
-    logger.error({ error }, 'Failed to create event');
-    return Response.json({ error: 'Internal server error' }, { status: 500 });
-  }
-}
-```
-
-## TypeScript
-
-All types are exported:
-
-```typescript
-import type { LoggerOptions, LogLevel, LoggerConfig } from '@eventuras/logger';
-```
-
----
-
-## Debug (Development Debugging)
-
-Use `Debug` for development-only debugging with namespace filtering. This is completely separate from Logger and uses debug-js.
-
-### Basic Usage
-
-```typescript
-import { Debug } from '@eventuras/logger';
-
-// Create a debug instance for a namespace
-const debug = Debug.create('CollectionEditor');
-
-debug('Loading collection...');
-debug('Collection loaded:', collection);
-debug('User action:', { action: 'save', userId: 123 });
-```
-
-### Quick Debug Calls
-
-```typescript
-import { Debug } from '@eventuras/logger';
-
-// One-off debug without creating an instance
-Debug.log('API', 'Request received:', req);
-Debug.log('EventHandler', 'Processing event:', event);
-```
-
-### Enabling Debug Output
-
-#### In Node.js (Server)
-
-```bash
-# Enable all Eventuras debug output
-DEBUG=eventuras:* node app.js
-
-# Enable specific namespaces
-DEBUG=eventuras:auth*,eventuras:api* node app.js
-
-# Enable specific namespace only
-DEBUG=eventuras:CollectionEditor node app.js
-```
-
-#### In Browser
-
-```javascript
-// In browser console
-localStorage.debug = 'eventuras:*'; // All namespaces
-localStorage.debug = 'eventuras:auth*'; // Auth namespaces only
-localStorage.debug = 'eventuras:CollectionEditor'; // Specific namespace
-
-// Then refresh the page
-```
-
-### Programmatic Control
-
-```typescript
-import { Debug } from '@eventuras/logger';
-
-// Enable debug output
-Debug.enable('eventuras:*');
-
-// Disable debug output
-Debug.disable();
-
-// Check if a namespace is enabled
-if (Debug.isEnabled('CollectionEditor')) {
-  console.log('CollectionEditor debugging is active');
-}
-```
-
-### When to Use Debug vs Logger
-
-**Use Debug when:**
-- 🐛 Debugging during development
-- 🔍 Need to trace code execution flow
-- 💡 Want to toggle output with DEBUG env var
-- 🚫 Don't need logs in production
-
-**Use Logger when:**
-- 📊 Production logging
-- 📝 Need structured data
-- 🔒 Need security (redaction)
-- 📈 Monitoring and analytics
-- 🔍 Correlation IDs and context
-
-### Example: Using Both Together
-
-```typescript
-import { Logger, Debug } from '@eventuras/logger';
-
-const logger = Logger.create({ 
-  namespace: 'CollectionEditor',
-  context: { collectionId: 123 }
-});
-const debug = Debug.create('CollectionEditor');
-
-async function saveCollection(data: CollectionDto) {
-  // Use Debug for development tracing
-  debug('saveCollection called with:', data);
-  
-  try {
-    // Use Logger for production-worthy logs
-    logger.info('Saving collection');
-    
-    debug('Validating data...');
-    validateData(data);
-    
-    debug('Calling API...');
-    const result = await api.save(data);
-    
-    logger.info({ collectionId: result.id }, 'Collection saved successfully');
-    return result;
-  } catch (error) {
-    debug('Error occurred:', error);
-    logger.error({ error }, 'Failed to save collection');
-    throw error;
-  }
-}
-```
-
-In development with `DEBUG=eventuras:*`, you'll see both debug traces and logger output.  
-In production, only Logger output is captured (Debug is silent unless explicitly enabled).
-
----
-
-## OpenTelemetry Integration (Optional)
-
-Send logs to any OpenTelemetry-compatible backend (Sentry, Grafana, Jaeger, etc.) without vendor lock-in.
-
-### Installation
-
-Install the required OpenTelemetry packages as peer dependencies:
-
-```bash
-pnpm add @opentelemetry/api @opentelemetry/api-logs @opentelemetry/sdk-logs @opentelemetry/instrumentation-pino @opentelemetry/exporter-logs-otlp-http
-```
-
-### Basic Setup
-
-In your application's instrumentation or entry point (e.g., `instrumentation.ts` or `sentry.server.config.ts`):
-
-```typescript
-import { setupOpenTelemetryLogger } from '@eventuras/logger/opentelemetry';
-import { OTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-http';
-import { BatchLogRecordProcessor } from '@opentelemetry/sdk-logs';
-
-// Set up OpenTelemetry logger once at startup
-setupOpenTelemetryLogger({
-  logRecordProcessor: new BatchLogRecordProcessor(
-    new OTLPLogExporter({
-      url: process.env.OTEL_EXPORTER_OTLP_LOGS_ENDPOINT,
-      headers: {
-        'x-sentry-auth': `sentry sentry_key=${process.env.SENTRY_KEY}`
-      }
-    })
-  )
+Logger.configure({
+  level: "debug",
+  prettyPrint: process.env.NODE_ENV === "development",
+  redact: ["password", "token", "apiKey", "authorization", "secret"],
+  destination: "/var/log/app.log", // Optional file output
 });
 ```
 
 ### Environment Variables
 
 ```bash
-# Required: OTLP endpoint URL
-OTEL_EXPORTER_OTLP_LOGS_ENDPOINT=https://[org].ingest.sentry.io/api/[project]/integration/otlp/v1/logs
-
-# Required: Authentication header
-OTEL_EXPORTER_OTLP_LOGS_HEADERS=x-sentry-auth=sentry sentry_key=YOUR_KEY_HERE
-
-# Optional: Service name (defaults to 'eventuras')
-OTEL_SERVICE_NAME=historia
+LOG_LEVEL=debug       # Set global log level
+NODE_ENV=development  # Enables pretty printing
 ```
 
-### Using with Sentry
+## Transports
 
-Example setup for sending logs to Sentry via OTLP:
+The library uses a pluggable transport system. A transport implements the `LogTransport` interface:
 
 ```typescript
-// sentry.server.config.ts
-import { OTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-http';
-import { BatchLogRecordProcessor } from '@opentelemetry/sdk-logs';
-import * as Sentry from '@sentry/nextjs';
-
-import { setupOpenTelemetryLogger } from '@eventuras/logger/opentelemetry';
-
-// Initialize Sentry
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-  tracesSampleRate: 1.0,
-});
-
-// Set up OpenTelemetry logger integration
-const otlpLogsEndpoint = process.env.OTEL_EXPORTER_OTLP_LOGS_ENDPOINT;
-const otlpLogsHeaders = process.env.OTEL_EXPORTER_OTLP_LOGS_HEADERS;
-
-if (otlpLogsEndpoint && otlpLogsHeaders) {
-  const headers: Record<string, string> = {};
-  otlpLogsHeaders.split(',').forEach((header) => {
-    const [key, value] = header.split('=');
-    if (key && value) {
-      headers[key.trim()] = value.trim();
-    }
-  });
-
-  setupOpenTelemetryLogger({
-    logRecordProcessor: new BatchLogRecordProcessor(
-      new OTLPLogExporter({
-        url: otlpLogsEndpoint,
-        headers,
-      })
-    ),
-  });
+interface LogTransport {
+  log(level: LogLevel, data: Record<string, unknown>, msg?: string): void;
+  child(bindings: Record<string, unknown>): LogTransport;
+  flush?(): Promise<void>;
+  shutdown?(): Promise<void>;
 }
 ```
 
-### Features
+### PinoTransport (default)
 
-- **Vendor-neutral**: Works with any OpenTelemetry-compatible backend
-- **Server-side only**: Automatically detects browser environment and skips initialization
-- **Lazy loading**: OpenTelemetry packages are optional peer dependencies
-- **Graceful degradation**: Works without OTel packages installed (logs warning and continues)
-- **Zero configuration**: Uses environment variables by default
+[Pino](https://getpino.io) is included as a dependency and used automatically. No configuration needed for most use cases.
+
+```typescript
+import { Logger, PinoTransport } from "@eventuras/logger";
+
+// Explicit Pino configuration
+Logger.configure({
+  transport: new PinoTransport({
+    level: "debug",
+    prettyPrint: true,
+    redact: ["password", "secret"],
+  }),
+});
+```
+
+### ConsoleTransport
+
+A lightweight transport using native `console` methods. Useful for browsers, edge runtimes, and testing:
+
+```typescript
+import { Logger, ConsoleTransport } from "@eventuras/logger";
+
+Logger.configure({
+  transport: new ConsoleTransport(),
+});
+```
+
+### Custom Transport
+
+Implement the `LogTransport` interface for any logging backend:
+
+```typescript
+import type { LogTransport, LogLevel } from "@eventuras/logger";
+
+class DatadogTransport implements LogTransport {
+  log(level: LogLevel, data: Record<string, unknown>, msg?: string) {
+    // Send to Datadog, Winston, Bunyan, or any backend
+  }
+
+  child(bindings: Record<string, unknown>): LogTransport {
+    // Return a new transport with merged bindings
+    return new DatadogTransport({ ...this.config, bindings });
+  }
+}
+
+Logger.configure({ transport: new DatadogTransport() });
+```
+
+## Auto-Redaction
+
+Sensitive fields are automatically redacted:
+
+```typescript
+logger.info(
+  {
+    username: "john",
+    password: "secret123", // → '[REDACTED]'
+    apiKey: "key_123", // → '[REDACTED]'
+  },
+  "User login",
+);
+```
+
+Default redacted paths: `password`, `token`, `apiKey`, `authorization`, `secret`.
+
+Configure additional paths via `Logger.configure({ redact: [...] })`.
+
+## HTTP Header Redaction
+
+Utility for redacting sensitive HTTP headers:
+
+```typescript
+import { redactHeaders } from "@eventuras/logger";
+
+const safe = redactHeaders(request.headers);
+logger.info({ headers: safe }, "Incoming request");
+```
+
+Redacts `authorization`, `cookie`, `set-cookie`, `x-api-key`, `x-auth-token`, and `proxy-authorization`.
+
+## OpenTelemetry Integration
+
+Send logs to any OTel-compatible backend (Sentry, Grafana, Jaeger, etc.) without vendor lock-in.
+
+### Install OTel Packages
+
+```bash
+pnpm add @opentelemetry/api @opentelemetry/api-logs @opentelemetry/sdk-logs \
+  @opentelemetry/instrumentation-pino @opentelemetry/exporter-logs-otlp-http
+```
+
+These are optional peer dependencies — the library works fine without them.
+
+### Setup
+
+```typescript
+import { setupOpenTelemetryLogger } from "@eventuras/logger/opentelemetry";
+import { OTLPLogExporter } from "@opentelemetry/exporter-logs-otlp-http";
+import { BatchLogRecordProcessor } from "@opentelemetry/sdk-logs";
+
+setupOpenTelemetryLogger({
+  serviceName: "my-app",
+  logRecordProcessor: new BatchLogRecordProcessor(
+    new OTLPLogExporter({
+      url: process.env.OTEL_EXPORTER_OTLP_LOGS_ENDPOINT,
+    }),
+  ),
+});
+```
 
 ### Shutdown
 
-For clean shutdown (e.g., on process termination):
-
 ```typescript
-import { shutdownOpenTelemetryLogger } from '@eventuras/logger/opentelemetry';
+import { shutdownOpenTelemetryLogger } from "@eventuras/logger/opentelemetry";
 
-process.on('SIGTERM', async () => {
+process.on("SIGTERM", async () => {
   await shutdownOpenTelemetryLogger();
   process.exit(0);
 });
 ```
 
-### Advanced: Custom Logger Provider
+### Environment Variables
 
-```typescript
-import { setupOpenTelemetryLogger } from '@eventuras/logger/opentelemetry';
-import { LoggerProvider } from '@opentelemetry/sdk-logs';
-import { BatchLogRecordProcessor } from '@opentelemetry/sdk-logs';
-import { OTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-http';
-
-const loggerProvider = new LoggerProvider();
-const processor = new BatchLogRecordProcessor(new OTLPLogExporter());
-
-setupOpenTelemetryLogger({
-  loggerProvider,
-  logRecordProcessor: processor,
-});
+```bash
+OTEL_EXPORTER_OTLP_LOGS_ENDPOINT=https://...
+OTEL_EXPORTER_OTLP_LOGS_HEADERS=x-api-key=YOUR_KEY
+OTEL_SERVICE_NAME=my-app
 ```
 
-### Disabling OpenTelemetry
+## Examples
+
+### API Route Handler
 
 ```typescript
-// Disable programmatically
-setupOpenTelemetryLogger({ enabled: false });
+import { Logger } from "@eventuras/logger";
 
-// Or don't call setupOpenTelemetryLogger at all
+export async function POST(req: Request) {
+  const logger = Logger.create({
+    namespace: "events-api",
+    correlationId: req.headers.get("x-correlation-id") || crypto.randomUUID(),
+  });
+
+  try {
+    const data = await req.json();
+    logger.info("Creating event");
+
+    const result = await createEvent(data);
+    logger.info({ eventId: result.id }, "Event created");
+
+    return Response.json(result);
+  } catch (error) {
+    logger.error({ error }, "Failed to create event");
+    return Response.json({ error: "Internal server error" }, { status: 500 });
+  }
+}
 ```
 
----
-
-## Migration from Old API
-
-**Before:**
+### Server Action
 
 ```typescript
-Logger.info({ namespace: 'CollectionEditor' }, 'Removing event');
-Logger.error({ namespace: 'CollectionEditor' }, 'Failed');
-```
+"use server";
 
-**After:**
+import { Logger } from "@eventuras/logger";
+
+const logger = Logger.create({ namespace: "web:admin:collections" });
+
+export async function updateCollection(data: CollectionDto) {
+  logger.info({ collectionId: data.id }, "Updating collection");
+
+  try {
+    const result = await api.put(data);
+    logger.info({ collectionId: data.id }, "Collection updated");
+    return { success: true, data: result };
+  } catch (error) {
+    logger.error({ error, collectionId: data.id }, "Failed to update");
+    return { success: false, error: "Update failed" };
+  }
+}
+```
 
 ## TypeScript
 
 All types are exported:
 
 ```typescript
-import type { LoggerOptions, LogLevel, LoggerConfig } from '@eventuras/logger';
+import type {
+  LogTransport,
+  LogLevel,
+  LoggerOptions,
+  LoggerConfig,
+  ErrorLoggerOptions,
+} from "@eventuras/logger";
 ```
+
+## License
+
+MIT
