@@ -85,7 +85,7 @@ async function main() {
 
   // Get webhook URL
   const url = await question('Webhook URL (e.g., https://your-domain.com/api/webhooks/vipps): ');
-  if (!url || !url.startsWith('https://')) {
+  if (!url?.startsWith('https://')) {
     console.error('❌ Invalid URL. Must start with https://');
     rl.close();
     process.exit(1);

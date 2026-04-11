@@ -177,7 +177,7 @@ export const MarkdownContent = ({
     ),
     code: ({ node, className, children, ...props }) => {
       // Check if it's inline code (no className with "language-" prefix)
-      const isInline = !className || !className.startsWith('language-');
+      const isInline = !className?.startsWith('language-');
       return isInline ? (
         <code
           className="bg-gray-100 px-1 py-0.5 rounded text-sm font-mono"

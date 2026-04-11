@@ -76,7 +76,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
     editorState.read(() => {
       const markdown = $convertToMarkdownString(allTransformers);
       const plainText = $getRoot().getTextContent();
-      props.onChange && props.onChange(markdown, { plainText });
+      props.onChange?.(markdown, { plainText });
     });
   };
 

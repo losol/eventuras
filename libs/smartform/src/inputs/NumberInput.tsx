@@ -50,7 +50,7 @@ export const NumberInput = React.forwardRef<HTMLInputElement, InputProps>((props
           register(name, validation).ref(e);
         }}
       />
-      {errors && errors[name] && (
+      {errors?.[name] && (
         <label htmlFor={inputId} role="alert" className="text-red-500">
           {errors[name]?.message?.toString()}
         </label>

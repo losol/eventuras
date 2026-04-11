@@ -100,7 +100,7 @@ export const List: React.FC<ListProps> & { Item: typeof ListItem } = ({
   }
 
   // 2) Data mode: items array
-  if (items && items.length) {
+  if (items?.length) {
     return (
       <Component className={finalListClassName}>
         {items.map((item, idx) => (

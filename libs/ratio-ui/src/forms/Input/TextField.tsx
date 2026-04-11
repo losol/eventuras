@@ -66,7 +66,7 @@ export const TextField = forwardRef<HTMLElement, ExtendedInputProps>(
     },
     forwardedRef
   ) => {
-    const hasError = errors && errors[name];
+    const hasError = errors?.[name];
 
     let inputClassName = `${className ?? formStyles.defaultInputStyle} ${
       hasError ? formStyles.inputErrorGlow : ''
