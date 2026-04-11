@@ -13,6 +13,7 @@ Add pluggable transport architecture for structured logging.
 - **OpenTelemetry as optional peer deps**: OTel packages moved from hard dependencies to optional peer dependencies — install only if you need tracing.
 - **Browser/edge safety**: `process.env` access is guarded via `globalThis` checks — no more crashes in client components or edge runtimes.
 - **Configurable service name**: OTel integration no longer hardcodes a service name — uses `OTEL_SERVICE_NAME` env var or accepts it as an option.
+- **Pretty printing**: `prettyPrint` option for human-readable log output. Auto-enabled in development when using PinoTransport.
 - **Type safety**: All `any` types in OTel module replaced with proper interfaces.
 
 ## Public API
