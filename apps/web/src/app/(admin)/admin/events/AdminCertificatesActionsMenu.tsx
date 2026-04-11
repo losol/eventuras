@@ -121,12 +121,12 @@ export const AdminCertificatesActionsMenu: React.FC<AdminCertificatesActionsMenu
         </Drawer.Header>
         <Drawer.Body>
           <DescriptionList>
-            <DescriptionList.Term>Certificate title:</DescriptionList.Term>
-            <DescriptionList.Definition>{eventinfo.certificateTitle}</DescriptionList.Definition>
-            <DescriptionList.Term>Certificate description:</DescriptionList.Term>
-            <DescriptionList.Definition>
+            <DescriptionList.Description term="Certificate title:">
+              {eventinfo.certificateTitle}
+            </DescriptionList.Description>
+            <DescriptionList.Description term="Certificate description:">
               {eventinfo.certificateDescription}
-            </DescriptionList.Definition>
+            </DescriptionList.Description>
           </DescriptionList>
         </Drawer.Body>
         <Drawer.Footer>
