@@ -5,7 +5,7 @@
  * 2. Validate it and get the session back
  * 3. Detect expired / tampered / malformed tokens
  */
-import { EncryptJWT } from 'jose';
+import { EncryptJWT, SignJWT } from 'jose';
 
 import { validateSessionJwt, isSession, type SessionValidationResult } from './session-validation';
 import { createEncryptedJWT, hexToUint8Array } from './utils';
@@ -183,5 +183,82 @@ describe('isSession', () => {
 
   it('returns false when user is a number', () => {
     expect(isSession({ user: 42 })).toBe(false);
+  });
+});
+
+// ────────────────────────────────────────────
+// Access token expiry detection
+// ────────────────────────────────────────────
+
+/** Creates a minimal signed JWT with a specific exp claim. */
+async function makeAccessToken(exp: number): Promise<string> {
+  const key = new Uint8Array(32); // dummy key — we only need decodeJwt to work
+  return new SignJWT({ sub: 'user-1' })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setExpirationTime(exp)
+    .sign(key);
+}
+
+describe('validateSessionJwt — access token expiry', () => {
+  it('returns EXPIRED when the access token exp is in the past', async () => {
+    const pastExp = Math.floor(Date.now() / 1000) - 3600; // 1 hour ago
+    const expiredAccessToken = await makeAccessToken(pastExp);
+
+    const session: Session = {
+      tokens: { accessToken: expiredAccessToken },
+      user: { name: 'Test', email: 'test@example.com' },
+    };
+
+    const jwt = await createEncryptedJWT({ ...session }, SECRET);
+    const result = await validateSessionJwt(jwt, SECRET);
+
+    expect(result.status).toBe('EXPIRED');
+    expect(result.reason).toMatch(/expired/i);
+    expect(result.accessTokenExpiresIn).toBeDefined();
+    expect(result.accessTokenExpiresIn!).toBeLessThanOrEqual(0);
+    expect(result.session).toBeDefined();
+  });
+
+  it('returns VALID with accessTokenExpiresIn when access token is still valid', async () => {
+    const futureExp = Math.floor(Date.now() / 1000) + 3600; // 1 hour from now
+    const validAccessToken = await makeAccessToken(futureExp);
+
+    const session: Session = {
+      tokens: { accessToken: validAccessToken },
+      user: { name: 'Test', email: 'test@example.com' },
+    };
+
+    const jwt = await createEncryptedJWT({ ...session }, SECRET);
+    const result = await validateSessionJwt(jwt, SECRET);
+
+    expect(result.status).toBe('VALID');
+    expect(result.accessTokenExpiresIn).toBeDefined();
+    expect(result.accessTokenExpiresIn!).toBeGreaterThan(0);
+    expect(result.accessTokenExpiresIn!).toBeLessThanOrEqual(3600);
+  });
+
+  it('returns VALID without accessTokenExpiresIn when no access token exists', async () => {
+    const session: Session = {
+      user: { name: 'No Token', email: 'no-token@example.com' },
+    };
+
+    const jwt = await createEncryptedJWT({ ...session }, SECRET);
+    const result = await validateSessionJwt(jwt, SECRET);
+
+    expect(result.status).toBe('VALID');
+    expect(result.accessTokenExpiresIn).toBeUndefined();
+  });
+
+  it('returns VALID without accessTokenExpiresIn when access token is not a JWT', async () => {
+    const session: Session = {
+      tokens: { accessToken: 'opaque-token-not-a-jwt' },
+      user: { name: 'Opaque', email: 'opaque@example.com' },
+    };
+
+    const jwt = await createEncryptedJWT({ ...session }, SECRET);
+    const result = await validateSessionJwt(jwt, SECRET);
+
+    expect(result.status).toBe('VALID');
+    expect(result.accessTokenExpiresIn).toBeUndefined();
   });
 });

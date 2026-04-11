@@ -1,6 +1,6 @@
 // session-validation.ts
 
-import { jwtDecrypt } from 'jose';
+import { jwtDecrypt, decodeJwt } from 'jose';
 
 import { createLogger } from './logger';
 import { hexToUint8Array } from './utils';
@@ -61,11 +61,46 @@ export async function validateSessionJwt(
 
   logger.debug('Session validated successfully');
 
-  // It's valid
+  // Check access token expiry if available
+  const expiresIn = computeAccessTokenExpiresIn(payload);
+
+  if (expiresIn !== undefined && expiresIn <= 0) {
+    logger.info({ accessTokenExpiresIn: expiresIn }, 'Session access token has expired');
+    return {
+      session: payload,
+      status: 'EXPIRED',
+      accessTokenExpiresIn: expiresIn,
+      reason: 'Access token has expired',
+    };
+  }
+
   return {
     session: payload,
     status: 'VALID',
+    accessTokenExpiresIn: expiresIn,
   };
+}
+
+/**
+ * Computes the number of seconds until the access token expires.
+ * Returns undefined if no expiry can be determined.
+ */
+function computeAccessTokenExpiresIn(session: Session): number | undefined {
+  const accessToken = session.tokens?.accessToken;
+  if (!accessToken) {
+    return undefined;
+  }
+
+  try {
+    const { exp } = decodeJwt(accessToken);
+    if (typeof exp !== 'number') {
+      return undefined;
+    }
+    return Math.floor(exp - Date.now() / 1000);
+  } catch {
+    // Not a valid JWT or can't decode — ignore
+    return undefined;
+  }
 }
 
 
