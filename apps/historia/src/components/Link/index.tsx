@@ -1,6 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
-import { cn } from 'src/utilities/cn'
+
+import { cn } from '@eventuras/ratio-ui/utils'
 
 import { Button, type ButtonProps } from '@/components/ui/button'
 import type { Article, Page } from '@/payload-types'

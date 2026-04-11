@@ -6,8 +6,9 @@ import { useRouter } from 'next/navigation'
 import type { PayloadAdminBarProps, PayloadMeUser } from 'payload-admin-bar'
 import { PayloadAdminBar } from 'payload-admin-bar'
 
+import { cn } from '@eventuras/ratio-ui/utils'
+
 import { User } from '@/payload-types';
-import { cn } from '@/utilities/cn'
 import { getClientSideURL } from '@/utilities/getURL'
 
 import './index.scss'

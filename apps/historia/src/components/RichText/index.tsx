@@ -7,10 +7,11 @@ import {
   RichText as RichTextWithoutBlocks,
 } from '@payloadcms/richtext-lexical/react';
 
+import { cn } from '@eventuras/ratio-ui/utils';
+
 import { ImageBlock } from '@/blocks/Image/Component';
 import { headingConverter, internalDocToHref } from '@/lib/richtext/converters';
 import type { ImageBlock as ImageBlockProps } from '@/payload-types';
-import { cn } from '@/utilities/cn';
 
 
 type NodeTypes =

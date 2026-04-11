@@ -3,7 +3,8 @@
 import React from 'react'
 import type { StaticImageData } from 'next/image'
 import NextImage from 'next/image'
-import { cn } from 'src/utilities/cn'
+
+import { cn } from '@eventuras/ratio-ui/utils'
 
 import { cssVariables } from '@/cssVariables'
 import { getClientSideURL } from '@/utilities/getURL'

@@ -1,7 +1,8 @@
 'use client'
 
 import React, { useEffect, useRef } from 'react'
-import { cn } from 'src/utilities/cn'
+
+import { cn } from '@eventuras/ratio-ui/utils'
 
 import { getClientSideURL } from '@/utilities/getURL'
 

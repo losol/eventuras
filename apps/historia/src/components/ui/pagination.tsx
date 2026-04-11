@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { ChevronLeft, ChevronRight, MoreHorizontal } from 'lucide-react'
-import { cn } from 'src/utilities/cn'
+
+import { cn } from '@eventuras/ratio-ui/utils'
 
 import type { ButtonProps } from '@/components/ui/button'
 import { buttonVariants } from '@/components/ui/button'
