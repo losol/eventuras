@@ -92,9 +92,9 @@ interface LogTransport {
 }
 ```
 
-### PinoTransport (default)
+### PinoTransport (default in Node.js)
 
-[Pino](https://getpino.io) is included as a dependency and used automatically. No configuration needed for most use cases.
+[Pino](https://getpino.io) is included as a dependency and used automatically in Node.js environments. In browser/edge runtimes, `ConsoleTransport` is used as the default instead.
 
 ```typescript
 import { Logger, PinoTransport } from "@eventuras/logger";
@@ -111,7 +111,7 @@ Logger.configure({
 
 ### ConsoleTransport
 
-A lightweight transport using native `console` methods. Useful for browsers, edge runtimes, and testing:
+A lightweight transport using native `console` methods. Automatically selected as the default in browser and edge runtimes. Also useful for testing:
 
 ```typescript
 import { Logger, ConsoleTransport } from "@eventuras/logger";
@@ -286,6 +286,22 @@ import type {
   LoggerConfig,
   ErrorLoggerOptions,
 } from "@eventuras/logger";
+```
+
+## Subpath Exports
+
+| Import path                       | Contents                                                        | Environment |
+| --------------------------------- | --------------------------------------------------------------- | ----------- |
+| `@eventuras/logger`               | Logger, types, PinoTransport, ConsoleTransport, httpLogger      | Universal   |
+| `@eventuras/logger/node`          | `formatLogLine`, `createPrettyStream` (depends on `node:stream`) | Node.js     |
+| `@eventuras/logger/opentelemetry` | `setupOpenTelemetryLogger`, `shutdownOpenTelemetryLogger`        | Node.js     |
+
+### Node-only Pretty-print Utilities
+
+The pretty-print formatter and stream are available via a separate entry point to avoid pulling `node:stream` into browser bundles:
+
+```typescript
+import { createPrettyStream, formatLogLine } from "@eventuras/logger/node";
 ```
 
 ## License
