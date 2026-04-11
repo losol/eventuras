@@ -1,5 +1,11 @@
 # @eventuras/api
 
+## 3.1.0
+
+### Minor Changes
+
+- e61d631: Add .NET Aspire for local development orchestration and observability. Run `dotnet run --project src/Eventuras.AppHost` to start PostgreSQL and the API with an Aspire Dashboard for real-time logs, traces, and metrics. OpenTelemetry exports to Grafana (Prometheus/Loki/Tempo) when `OTEL_EXPORTER_OTLP_ENDPOINT` is set.
+
 ## 3.0.0
 
 ### Major Changes

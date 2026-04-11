@@ -1,5 +1,205 @@
 # @eventuras/ratio-ui
 
+## 1.0.0
+
+### Major Changes
+
+- abaa171: ### Unified spacing, border, color, and status APIs (ADR-0001)
+
+  Major prop cleanup across ratio-ui in preparation for 1.0. The goal:
+  typed semantic props instead of raw Tailwind strings, a single shared
+  `Status` vocabulary across all status-bearing components, and consistent
+  HTML attribute forwarding.
+
+  #### New shared types and utilities
+  - `Space` — 6-step semantic spacing scale (`'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl'`),
+    backed by fluid CSS tokens
+  - `SpacingProps` — `padding`, `paddingX`, `paddingY`, `paddingTop`, `paddingBottom`,
+    `margin`, `marginX`, `marginY`, `marginTop`, `marginBottom`, `gap` — all typed as `Space`
+  - `BorderProps` — typed `border`, `borderColor`, `radius` props
+  - `Color` — full semantic palette (`neutral`, `primary`, `secondary`, `accent`,
+    `success`, `warning`, `error`, `info`)
+  - `Status` — status subset (`neutral`, `success`, `warning`, `error`, `info`)
+  - `buildSpacingClasses(props)` and `buildBorderClasses(props)` — typed mappers
+    exported from `@eventuras/ratio-ui/tokens`
+  - `cn(...inputs)` — `clsx` + `tailwind-merge`, exported from
+    `@eventuras/ratio-ui/utils`
+  - `buildCoverImageStyle(url, style?, overlay?)` — exported from
+    `@eventuras/ratio-ui/utils`
+
+  #### Tailwind v4 theme extension
+
+  `tokens/spacing.css` now registers `--spacing-xs` through `--spacing-xl` so
+  that `p-xs`, `gap-md`, `m-lg` etc. work as standard Tailwind utilities.
+
+  #### Component changes
+
+  Component props migrated from raw Tailwind strings to the new typed APIs:
+  - **Box** — uses `SpacingProps` + `BorderProps`. `BoxSpacingProps`,
+    `BoxBackgroundProps`, `BoxContentProps`, and the old `buildSpacingClasses`
+    are removed. `getBackgroundStyle` is renamed to `buildCoverImageStyle` and
+    moved to `utils/`.
+  - **Stack** — `gap` uses the shared `Space` type. The `'2xl'` value is removed.
+  - **Container** — uses `SpacingProps` + forwards HTML attrs.
+  - **Section** — single Section component at `layout/Section`. The old
+    `core/Section` is removed. `container`, `grid`, `backgroundColorClass`,
+    `backgroundImageUrl`, and `backgroundImageOverlay` props removed; consumers
+    use `<Container>` wrapping, `className`, and `style={buildCoverImageStyle(...)}`
+    directly. New typed `color?: Color` prop for surface colors.
+  - **Card** — uses `SpacingProps` + `BorderProps`. `dark`, `container`, `grid`,
+    and `backgroundColorClass` props removed. New typed `color?: Color` prop.
+    `Card.css` removed; surface tokens live in `tokens/theme.css` (`--card`,
+    `--card-hover`).
+  - **Button** — default `margin="m-1"` removed (parents control spacing).
+    `padding`, `margin`, `border`, `width`, `height` props removed.
+  - **ButtonGroup** — uses `SpacingProps` + forwards HTML attrs.
+  - **Heading**, **Text**, **Lead**, **Link** — use `SpacingProps`. `border`,
+    `width`, `height` props removed.
+  - **Text**, **Lead** — `text`/`children` props are now a discriminated union;
+    passing both is a compile-time error instead of a runtime throw.
+  - **Story**, **StoryHeader**, **StoryBody**, **StoryFooter** — use
+    `SpacingProps` + forward HTML attrs.
+  - **Panel** — `intent` prop renamed to `status`, uses shared `Status` type.
+    `Panel.css` removed; classes mapped via Tailwind Records using design tokens.
+  - **Badge** — `variant` renamed to `status`. `'positive'`/`'negative'` removed
+    in favor of `'success'`/`'error'`. `'warning'` added. Uses shared `Status`.
+  - **Toast** — old `core/Toast` component removed. See the separate toast
+    changeset: the toast system is rewritten on top of React Aria and now lives
+    at `@eventuras/ratio-ui/toast` (replacing the standalone `@eventuras/toast`
+    package).
+  - **PageOverlay** — `variant` renamed to `status`. `'default'` becomes
+    `'neutral'`. Uses shared `Status`.
+  - **Error block** — `tone` renamed to `status`. Uses shared `Status`.
+  - **ErrorPage** — `tone` renamed to `status`. `'fatal'` renamed to `'error'`.
+    Uses shared `Status`.
+  - **DescriptionList** — now a compound component. Use
+    `<DescriptionList.Item>`, `<DescriptionList.Term>`,
+    `<DescriptionList.Definition>`, or the new `<DescriptionList.Description term="...">`
+    shortcut. The standalone `Item`, `Term`, `Definition` exports are removed.
+  - **Dialog** — `DialogModal` and `DialogModalProps` are no longer exported
+    (internal implementation detail).
+
+  #### Other cleanups
+  - All `default exports` replaced with named exports (~25 components). Menu
+    retains `Object.assign` compound pattern.
+  - `gridGapClasses` and `getGridClasses` removed (no consumers).
+  - `tailwind-merge` added as a dependency.
+  - New `testId` prop on Container, Section, Card, Heading, ButtonGroup, and
+    Story blocks for consistency with other components.
+  - New export paths: `@eventuras/ratio-ui/tokens` and `@eventuras/ratio-ui/utils`.
+
+  #### Migration
+
+  For most consumers, the migration is mechanical:
+
+  ```tsx
+  // Before
+  <Heading as="h2" padding="pb-3">Title</Heading>
+  <Section padding="py-8" backgroundColorClass="bg-gray-50 dark:bg-gray-900">
+  <Badge variant="positive">Active</Badge>
+  <Panel variant="alert" intent="error">Error</Panel>
+
+  // After
+  <Heading as="h2" paddingBottom="xs">Title</Heading>
+  <Section paddingY="lg" color="neutral">
+  <Badge status="success">Active</Badge>
+  <Panel variant="alert" status="error">Error</Panel>
+  ```
+
+  For unusual spacing values that don't map to the semantic scale, use
+  `className` as the escape hatch.
+
+- 7b0c54c: Add accessible toast system at `@eventuras/ratio-ui/toast`, replacing the standalone `@eventuras/toast` package.
+
+  ## Why
+
+  The previous `@eventuras/toast` package was a custom XState machine rendering plain `<div>`s. It lacked landmark navigation, focus management, pause-on-hover, and proper screen reader announcements. We've rewritten it on top of [React Aria's toast primitives](https://react-aria.adobe.com/react-aria/Toast.html) and folded the package into ratio-ui so all UI lives in one place.
+
+  ## What changed
+  - **New export path**: `@eventuras/ratio-ui/toast`. The standalone `@eventuras/toast` package has been removed.
+  - **Accessibility**: toast region is now a landmark (navigate with F6 / Shift+F6), focus is managed on close, timers pause on hover/focus, screen readers announce content correctly.
+  - **Animations**: toasts slide in/out via CSS animations targeting react-aria's `data-entering` / `data-exiting` attributes.
+  - **No provider required**: `ToastsContext` is removed. Toast state lives in a singleton `toastQueue`. Just render `<ToastRenderer />` once at the app root.
+  - **Dependencies**: `xstate`, `@xstate/react`, and `uuid` are no longer needed for toasts.
+
+  ## Public API
+
+  The `useToast()` hook signature is unchanged:
+
+  ```ts
+  toast.success(message, options?): string
+  toast.error(message, options?): string
+  toast.warning(message, options?): string
+  toast.info(message, options?): string
+  toast.remove(key): void
+  ```
+
+  Each method returns a string `key` that can be passed to `toast.remove()` for programmatic dismissal.
+
+  ## Migration
+
+  ```diff
+  - import { useToast } from '@eventuras/toast';
+  + import { useToast } from '@eventuras/ratio-ui/toast';
+
+  - import { ToastRenderer, ToastsContext } from '@eventuras/toast';
+  + import { ToastRenderer } from '@eventuras/ratio-ui/toast';
+  ```
+
+  Providers that wrapped children in `<ToastsContext.Provider>` must drop the wrapper:
+
+  ```diff
+  - <ToastsContext.Provider>
+  -   <ToastRenderer />
+  -   {children}
+  - </ToastsContext.Provider>
+  + <ToastRenderer />
+  + {children}
+  ```
+
+  Remove `@eventuras/toast` from your app's `package.json` dependencies.
+
+### Minor Changes
+
+- 202f819: ### Add `Lookup` component for async typeahead pickers
+
+  New `Lookup<T>` component in `core/Lookup/`, exposed as
+  `@eventuras/ratio-ui/core/Lookup`. Generic, inline typeahead picker for
+  "search asynchronously, navigate results with the keyboard, pick one to
+  trigger an action" flows — the pattern that was previously duplicated
+  between `UserLookup` and `EventLookup` in `apps/web`.
+
+  ```tsx
+  <Lookup<UserDto>
+    label="Search User"
+    placeholder="Search by name or email (min 3 characters)"
+    minChars={3}
+    load={searchUsers}
+    getItemKey={(u) => u.id!}
+    getItemLabel={(u) => u.name ?? ""}
+    getItemTextValue={(u) => `${u.name} ${u.email}`}
+    renderItem={(u) => (
+      <>
+        <div className="font-medium">{u.name}</div>
+        <div className="text-sm text-gray-600">{u.email}</div>
+      </>
+    )}
+    onItemSelected={(u) => setSelected(u)}
+    emptyState="No users found"
+  />
+  ```
+
+  Built on `react-aria`'s `Autocomplete` + `ListBox` + `useAsyncList`. Handles
+  loading spinner, min-char threshold, re-query dedup after selection, and
+  empty/placeholder states internally. Placed in `core/` next to
+  `CommandPalette` because it is a standalone interactive widget — not a form
+  control — and is used to trigger actions rather than collect form values.
+
+### Patch Changes
+
+- Updated dependencies [6e7d2d4]
+  - @eventuras/logger@0.7.0
+
 ## 0.14.1
 
 ### Patch Changes

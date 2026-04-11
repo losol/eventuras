@@ -1,5 +1,11 @@
 # @eventuras/docs-framework
 
+## 0.1.5
+
+### Patch Changes
+
+- @eventuras/lustro-search@4.0.0
+
 ## 0.1.4
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "@eventuras/payload-vipps-auth",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "private": true,
   "description": "Vipps Login authentication plugin for Payload CMS",
   "type": "module",

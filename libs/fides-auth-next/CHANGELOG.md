@@ -1,5 +1,12 @@
 # @eventuras/fides-auth-next
 
+## 0.1.5
+
+### Patch Changes
+
+- Updated dependencies [6e7d2d4]
+  - @eventuras/logger@0.7.0
+
 ## 0.1.4
 
 ### Patch Changes
