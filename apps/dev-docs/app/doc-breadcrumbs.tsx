@@ -8,7 +8,7 @@ interface DocBreadcrumbsProps {
   segments: { label: string; href?: string }[];
 }
 
-export function DocBreadcrumbs({ segments }: DocBreadcrumbsProps) {
+export function DocBreadcrumbs({ segments }: Readonly<DocBreadcrumbsProps>) {
   return (
     <Breadcrumbs LinkComponent={Link}>
       {segments.map((segment, i) =>

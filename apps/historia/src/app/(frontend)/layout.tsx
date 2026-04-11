@@ -24,7 +24,7 @@ type RootLayoutProps = {
   params?: Promise<{ locale?: string }>
 }
 
-export default async function RootLayout({ children, params }: RootLayoutProps) {
+export default async function RootLayout({ children, params }: Readonly<RootLayoutProps>) {
   const { isEnabled } = await draftMode()
   const resolvedParams = params ? await params : {}
   const locale = resolvedParams.locale || process.env.NEXT_PUBLIC_CMS_DEFAULT_LOCALE || 'no'

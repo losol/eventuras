@@ -15,7 +15,7 @@ interface ProductActionsProps {
   locale: string;
 }
 
-export function ProductActions({ product, locale }: ProductActionsProps) {
+export function ProductActions({ product, locale }: Readonly<ProductActionsProps>) {
   const { addToCart, updateCartItem, removeFromCart, items } = useCart();
   const router = useRouter();
 

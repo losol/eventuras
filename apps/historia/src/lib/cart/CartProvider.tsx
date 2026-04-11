@@ -19,7 +19,7 @@ interface CartContextValue {
 
 const CartContext = createContext<CartContextValue | undefined>(undefined);
 
-export function CartProvider({ children }: { children: React.ReactNode }) {
+export function CartProvider({ children }: Readonly<{ children: React.ReactNode }>) {
   const cart = useSessionCart();
 
   return <CartContext.Provider value={cart}>{children}</CartContext.Provider>;

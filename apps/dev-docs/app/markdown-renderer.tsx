@@ -12,7 +12,7 @@ interface MarkdownRendererProps {
  * Renders markdown content with GFM support and heading IDs
  * for table-of-contents anchor links.
  */
-export function MarkdownRenderer({ content }: MarkdownRendererProps) {
+export function MarkdownRenderer({ content }: Readonly<MarkdownRendererProps>) {
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}

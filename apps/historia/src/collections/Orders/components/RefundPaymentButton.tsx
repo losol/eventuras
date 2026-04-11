@@ -15,7 +15,7 @@ interface RefundPaymentButtonProps {
  * Admin button to refund captured payment
  * Only shown for completed orders
  */
-export function RefundPaymentButton({ orderId, orderStatus }: RefundPaymentButtonProps) {
+export function RefundPaymentButton({ orderId, orderStatus }: Readonly<RefundPaymentButtonProps>) {
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useAuth();
   const router = useRouter();

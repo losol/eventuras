@@ -122,7 +122,7 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
 }
 
 // Page component
-export default async function Page({ params: paramsPromise }: Args) {
+export default async function Page({ params: paramsPromise }: Readonly<Args>) {
   const draftModeResult = await draftMode();
   const draft = draftModeResult.isEnabled;
   const params = await paramsPromise;

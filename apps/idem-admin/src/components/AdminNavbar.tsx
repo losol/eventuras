@@ -14,7 +14,7 @@ type AdminNavbarProps = {
   user?: User;
 };
 
-export function AdminNavbar({ user }: AdminNavbarProps) {
+export function AdminNavbar({ user }: Readonly<AdminNavbarProps>) {
   return (
     <Navbar
       title="Idem Admin"

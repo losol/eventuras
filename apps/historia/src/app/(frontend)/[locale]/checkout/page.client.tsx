@@ -35,7 +35,7 @@ interface CheckoutPageClientProps {
   locale: string;
 }
 
-export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
+export function CheckoutPageClient({ locale }: Readonly<CheckoutPageClientProps>) {
   const { items, updateCartItem, removeFromCart, loading: cartLoading, refreshCart } = useCart();
   const [cart, setCart] = useState<CartSummary | null>(null);
   const [pendingPayment, setPendingPayment] = useState<PaymentDetails | null>(null);

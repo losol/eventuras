@@ -39,7 +39,7 @@ function getCustomerName(customer: OrderWithTransactions['customer']): string | 
   return parts.length > 0 ? parts.join(' ') : null;
 }
 
-function ReceiptCard({ order, currency }: { order: OrderWithTransactions; currency: string }) {
+function ReceiptCard({ order, currency }: Readonly<{ order: OrderWithTransactions; currency: string }>) {
   const isTaxExempt = order.taxExempt === true;
   const customerName = getCustomerName(order.customer);
   const addr = order.shippingAddress;

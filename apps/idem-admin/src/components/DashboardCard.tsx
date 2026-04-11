@@ -19,7 +19,7 @@ export function DashboardCard({
   href,
   icon: Icon,
   disabled = false,
-}: DashboardCardProps) {
+}: Readonly<DashboardCardProps>) {
   const content = (
     <Card
       variant="outline"

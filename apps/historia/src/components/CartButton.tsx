@@ -10,7 +10,7 @@ interface CartButtonProps {
   locale: string;
 }
 
-export function CartButton({ locale }: CartButtonProps) {
+export function CartButton({ locale }: Readonly<CartButtonProps>) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const { itemCount } = useCart();

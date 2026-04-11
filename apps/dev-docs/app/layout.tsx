@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   description: 'Documentation for Eventuras — Event and Course Management Solution',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
