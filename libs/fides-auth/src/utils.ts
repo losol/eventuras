@@ -165,50 +165,36 @@ function bufferToHex(buffer: ArrayBuffer): string {
 }
 
 /**
- * Converts input data (string or Buffer) to a Uint8Array.
- * Ensures the returned Uint8Array is backed by an ArrayBuffer (not SharedArrayBuffer).
+ * Converts input data (string or Uint8Array) to a Uint8Array backed by a plain ArrayBuffer.
  * @param data - The input data.
  * @returns A Uint8Array representing the input data.
  */
-function toUint8Array(data: string | Buffer): Uint8Array {
+function toUint8Array(data: string | Uint8Array): Uint8Array {
   if (typeof data === 'string') {
-    const encoded = new TextEncoder().encode(data);
-    // Ensure it's backed by a regular ArrayBuffer
-    return new Uint8Array([...encoded]);
+    return new TextEncoder().encode(data);
   }
-  // Assuming Node.js Buffer; in Edge or browser environments, use appropriate conversion.
-  const bufferArray = new Uint8Array(data);
-  // Ensure it's backed by a regular ArrayBuffer
-  return new Uint8Array([...bufferArray]);
+  return data;
 }
 
 /**
  * Hashes the input using SHA-256 with the Web Crypto API.
- * @param data - The input data (string or Buffer).
+ * @param data - The input data (string or Uint8Array).
  * @returns A Promise that resolves to the SHA-256 hash as a hex string.
  */
-export async function sha256(data: string | Buffer): Promise<string> {
+export async function sha256(data: string | Uint8Array): Promise<string> {
   const buffer = toUint8Array(data);
-  // Create a new ArrayBuffer and copy the data to ensure proper typing
-  const arrayBuffer = new ArrayBuffer(buffer.length);
-  const safeBuffer = new Uint8Array(arrayBuffer);
-  safeBuffer.set(buffer);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', safeBuffer);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
   return bufferToHex(hashBuffer);
 }
 
 /**
  * Hashes the input using SHA-512 with the Web Crypto API.
- * @param data - The input data (string or Buffer).
+ * @param data - The input data (string or Uint8Array).
  * @returns A Promise that resolves to the SHA-512 hash as a hex string.
  */
-export async function sha512(data: string | Buffer): Promise<string> {
+export async function sha512(data: string | Uint8Array): Promise<string> {
   const buffer = toUint8Array(data);
-  // Create a new ArrayBuffer and copy the data to ensure proper typing
-  const arrayBuffer = new ArrayBuffer(buffer.length);
-  const safeBuffer = new Uint8Array(arrayBuffer);
-  safeBuffer.set(buffer);
-  const hashBuffer = await crypto.subtle.digest('SHA-512', safeBuffer);
+  const hashBuffer = await crypto.subtle.digest('SHA-512', buffer);
   return bufferToHex(hashBuffer);
 }
 
