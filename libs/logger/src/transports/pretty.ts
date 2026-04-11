@@ -21,7 +21,7 @@ const ANSI = {
   gray: '\x1b[90m',
 } as const;
 
-const LEVEL_CONFIG: Record<number, { label: string; color: string; }> = {
+const LEVEL_BY_NUMBER: Record<number, { label: string; color: string; }> = {
   10: { label: 'TRACE', color: ANSI.gray },
   20: { label: 'DEBUG', color: ANSI.cyan },
   30: { label: 'INFO ', color: ANSI.green },
@@ -30,14 +30,30 @@ const LEVEL_CONFIG: Record<number, { label: string; color: string; }> = {
   60: { label: 'FATAL', color: `${ANSI.bold}${ANSI.red}` },
 };
 
+const LEVEL_BY_NAME: Record<string, { label: string; color: string; }> = {
+  trace: { label: 'TRACE', color: ANSI.gray },
+  debug: { label: 'DEBUG', color: ANSI.cyan },
+  info:  { label: 'INFO ', color: ANSI.green },
+  warn:  { label: 'WARN ', color: ANSI.yellow },
+  error: { label: 'ERROR', color: ANSI.red },
+  fatal: { label: 'FATAL', color: `${ANSI.bold}${ANSI.red}` },
+};
+
 /** Keys excluded from the "extra data" output. */
 const INTERNAL_KEYS = new Set([
   'level', 'time', 'pid', 'hostname', 'msg', 'name', 'ns',
 ]);
 
-function formatTime(epoch: number): string {
-  const d = new Date(epoch);
-  return d.toLocaleTimeString('en-GB', { hour12: false });
+function formatTime(time: unknown): string {
+  if (typeof time === 'string') {
+    // ISO string — extract time portion
+    const d = new Date(time);
+    return isNaN(d.getTime()) ? '' : d.toLocaleTimeString('en-GB', { hour12: false });
+  }
+  if (typeof time === 'number') {
+    return new Date(time).toLocaleTimeString('en-GB', { hour12: false });
+  }
+  return new Date().toLocaleTimeString('en-GB', { hour12: false });
 }
 
 function formatData(obj: Record<string, unknown>): string {
@@ -71,9 +87,11 @@ export function formatLogLine(line: string): string {
     return trimmed;
   }
 
-  const level = obj.level as number;
-  const config = LEVEL_CONFIG[level] ?? { label: `L${level}`, color: ANSI.gray };
-  const time = formatTime((obj.time as number) ?? Date.now());
+  const level = obj.level;
+  const config = typeof level === 'string'
+    ? LEVEL_BY_NAME[level] ?? { label: level.toUpperCase().padEnd(5), color: ANSI.gray }
+    : LEVEL_BY_NUMBER[level as number] ?? { label: `L${level}`, color: ANSI.gray };
+  const time = formatTime(obj.time);
   const msg = (obj.msg as string) ?? '';
   const ns = (obj.ns as string) || (obj.name as string) || '';
 
