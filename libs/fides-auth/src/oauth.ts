@@ -1,11 +1,11 @@
 import { decodeJwt } from 'jose';
 
-import { Logger } from '@eventuras/logger';
 import * as openid from 'openid-client';
 
+import { createLogger } from './logger';
 import type { Session } from './types';
 
-const logger = Logger.create({ namespace: 'fides-auth:oauth' });
+const logger = createLogger({ namespace: 'fides-auth:oauth' });
 
 // Re-export commonly used types from openid-client for convenience
 export type { Configuration, TokenEndpointResponse } from 'openid-client';

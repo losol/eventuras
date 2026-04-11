@@ -4,6 +4,7 @@
  * Generic authentication utilities with support for multiple providers.
  */
 
+export * from './logger';
 export * from './session-refresh';
 export * from './session-validation';
 export * from './utils';

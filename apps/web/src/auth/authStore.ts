@@ -5,9 +5,16 @@
  * with app-specific settings and the auth status checker.
  */
 
-import { createAuthStore, createAuthStoreHooks } from '@eventuras/fides-auth-next/store';
+import {
+  configureAuthLogger,
+  createAuthStore,
+  createAuthStoreHooks,
+} from '@eventuras/fides-auth-next/store';
 
 import { getAuthStatus } from '@/utils/auth/getAuthStatus';
+
+// Configure fides-auth to use @eventuras/logger (must happen before store creation)
+configureAuthLogger();
 
 /**
  * Create the configured auth store
