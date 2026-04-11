@@ -11,7 +11,6 @@ export async function GET(req: Request): Promise<Response> {
 
   const path = searchParams.get('path')
   const collection = searchParams.get('collection') as CollectionSlug
-  const slug = searchParams.get('slug')
   const previewSecret = searchParams.get('previewSecret')
 
   if (previewSecret !== process.env.PREVIEW_SECRET) {

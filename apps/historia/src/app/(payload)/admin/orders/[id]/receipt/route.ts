@@ -5,7 +5,6 @@ import {
   formatOrderDate,
   getLineTotalMinor,
   getPriceExVatMinor,
-  getPriceIncVatMinor,
   getProductName,
   getVatRate,
   sanitizeForHtml,
@@ -114,7 +113,6 @@ export async function GET(
     const quantity = item.quantity || 1;
     const priceExVat = getPriceExVatMinor(item);
     const vatRate = getVatRate(item, isTaxExempt);
-    const priceIncVat = getPriceIncVatMinor(item, isTaxExempt);
     const lineTotal = getLineTotalMinor(item, isTaxExempt);
     const lineTotalExVat = priceExVat * quantity;
     const lineVat = lineTotal - lineTotalExVat;

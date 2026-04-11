@@ -225,7 +225,7 @@ export async function createVippsPayment({
       );
     }
 
-    const { cartId, cartSecret } = saveResult.data;
+    const { cartId } = saveResult.data;
     logger.info({ cartId }, 'Cart saved to database successfully');
 
     // STEP 2: Calculate cart totals server-side
