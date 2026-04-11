@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Meta, StoryObj } from '@storybook/react-vite';
-import { Card, CardProps } from './Card';
+import { Card } from './Card';
 import { Image } from '../Image';
 import { Box } from '../../layout/Box';
 import { Heading } from '../Heading';
