@@ -50,7 +50,7 @@ export function DropDownItem({
   const {registerItem} = dropDownContext;
 
   useEffect(() => {
-    if (ref && ref.current) {
+    if (ref?.current) {
       registerItem(ref as React.RefObject<HTMLButtonElement>);
     }
   }, [ref, registerItem]);
@@ -130,7 +130,7 @@ function DropDownItems({
       setHighlightedItem(items[0]);
     }
 
-    if (highlightedItem && highlightedItem.current) {
+    if (highlightedItem?.current) {
       highlightedItem.current.focus();
     }
   }, [items, highlightedItem]);
@@ -167,7 +167,7 @@ export default function DropDown({
 
   const handleClose = () => {
     setShowDropDown(false);
-    if (buttonRef && buttonRef.current) {
+    if (buttonRef?.current) {
       buttonRef.current.focus();
     }
   };
@@ -196,7 +196,7 @@ export default function DropDown({
           return;
         }
         if (stopCloseOnClickSelf) {
-          if (dropDownRef.current && dropDownRef.current.contains(target)) {
+          if (dropDownRef.current?.contains(target)) {
             return;
           }
         }

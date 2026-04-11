@@ -37,14 +37,14 @@ function parseListItem(item: ListItem): ParsedScheduleItem | null {
   // ListItem must contain exactly one paragraph
   if (item.children.length !== 1) return null;
   const firstChild = item.children[0];
-  if (!firstChild || firstChild.type !== 'paragraph') return null;
+  if (firstChild?.type !== 'paragraph') return null;
 
   const para = firstChild as Paragraph;
   if (para.children.length === 0) return null;
 
   // First inline child must be <strong> containing a time pattern
   const first = para.children[0];
-  if (!first || first.type !== 'strong') return null;
+  if (first?.type !== 'strong') return null;
 
   const timeText = textContent(first.children).trim();
   if (!TIME_RE.test(timeText)) return null;

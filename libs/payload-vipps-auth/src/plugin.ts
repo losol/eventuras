@@ -70,7 +70,7 @@ export function vippsAuthPlugin(pluginConfig: VippsAuthPluginConfig) {
         (collection) => collection.slug === 'users'
       );
 
-      if (usersCollection && usersCollection.auth) {
+      if (usersCollection?.auth) {
         // Convert auth: true to an object if needed
         if (usersCollection.auth === true) {
           usersCollection.auth = {};
