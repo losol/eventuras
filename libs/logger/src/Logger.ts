@@ -93,7 +93,7 @@ export class Logger {
    */
   static configure(config: Partial<LoggerConfig>): void {
     Logger.config = { ...Logger.config, ...config };
-    Logger.transport = config.transport ?? createDefaultTransport(Logger.config);
+    Logger.transport = Logger.config.transport ?? createDefaultTransport(Logger.config);
     // Re-bind static convenience methods to the new transport
     Logger.rebindStaticMethods();
   }

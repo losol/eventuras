@@ -221,5 +221,15 @@ describe('Logger', () => {
       expect(() => Logger.getPinoInstance()).not.toThrow();
       expect(Logger.getPinoInstance()).toBeDefined();
     });
+
+    it('preserves custom transport when reconfiguring other options', () => {
+      const custom = createMockTransport();
+      Logger.configure({ transport: custom });
+      expect(Logger.getTransport()).toBe(custom);
+
+      // Reconfigure level without specifying transport — should keep custom
+      Logger.configure({ level: 'debug' });
+      expect(Logger.getTransport()).toBe(custom);
+    });
   });
 });
