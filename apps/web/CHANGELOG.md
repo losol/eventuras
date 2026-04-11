@@ -1,5 +1,23 @@
 # @eventuras/web
 
+## 3.0.1
+
+### Patch Changes
+
+- Updated dependencies [6e7d2d4]
+- Updated dependencies [abaa171]
+- Updated dependencies [202f819]
+- Updated dependencies [7b0c54c]
+  - @eventuras/logger@0.7.0
+  - @eventuras/ratio-ui@1.0.0
+  - @eventuras/event-sdk@3.0.1
+  - @eventuras/fides-auth-next@0.1.5
+  - @eventuras/smartform@0.3.5
+  - @eventuras/datatable@0.5.12
+  - @eventuras/markdown@9.0.0
+  - @eventuras/markdown-plugin-happening@4.0.0
+  - @eventuras/ratio-ui-next@0.1.13
+
 ## 3.0.0
 
 ### Major Changes
