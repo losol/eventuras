@@ -47,7 +47,7 @@ export async function findClient(clientId: string) {
       .where(eq(oauthClients.clientId, clientId))
       .limit(1);
 
-    if (!client || !client.active) {
+    if (!client?.active) {
       logger.debug({ clientId }, 'Client not found or inactive');
       return undefined;
     }

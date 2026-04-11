@@ -160,7 +160,7 @@ function inferBump(subject: string, body: string): Bump {
 /** Extract scopes: type(scope,scope2): msg */
 function extractScopes(subject: string): string[] {
   const m = /^\w+\(([^)]+)\)!?:/.exec(subject)
-  if (!m || !m[1]) return []
+  if (!m?.[1]) return []
   return m[1].split(',').map(s => s.trim().toLowerCase()).filter(Boolean)
 }
 

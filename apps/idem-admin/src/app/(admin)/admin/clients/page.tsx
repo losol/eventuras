@@ -35,7 +35,7 @@ export default async function ClientsPage() {
         </Panel>
       )}
 
-      {result.success && result.clients && result.clients.length === 0 && (
+      {result.success && result.clients?.length === 0 && (
         <Panel variant="callout" status="info">
           No OAuth clients found.
         </Panel>

@@ -43,7 +43,7 @@ export async function findAccount(ctx: any, sub: string) {
     .where(eq(accounts.id, sub))
     .limit(1);
 
-  if (!account || !account.active || account.deletedAt) {
+  if (!account?.active || account.deletedAt) {
     logger.warn('Account not found or inactive');
     return undefined;
   }

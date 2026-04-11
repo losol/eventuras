@@ -68,7 +68,7 @@ const tokenRoutes: FastifyPluginAsync = async (fastify: FastifyInstance) => {
   ) => {
     try {
       const authHeader = request.headers.authorization;
-      if (!authHeader || !authHeader.startsWith('Basic ')) {
+      if (!authHeader?.startsWith('Basic ')) {
         return reply.status(401).send({
           error: 'invalid_client',
           error_description: 'Client credentials must be provided in Authorization header',
