@@ -29,6 +29,12 @@ export class PinoTransport implements LogTransport {
   constructor(options: PinoTransportOptions = {}) {
     const pinoOpts: PinoLoggerOptions = {
       level: options.level ?? 'info',
+      // ISO timestamps for Loki/Grafana compatibility
+      timestamp: pino.stdTimeFunctions.isoTime,
+      // Output level as string label — avoids numeric mapping in log pipelines
+      formatters: {
+        level: (label) => ({ level: label }),
+      },
       ...(options.redact && {
         redact: { paths: options.redact, censor: '[REDACTED]' },
       }),
