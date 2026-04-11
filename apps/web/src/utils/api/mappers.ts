@@ -16,7 +16,7 @@ import { ParticipationTypes, PaymentFormValues, RegistrationProduct } from '@/ty
  */
 
 export const mapEventProductsToView = (eventProducts: ProductDto[]): RegistrationProduct[] => {
-  if (!eventProducts || !eventProducts.length) return [];
+  if (!eventProducts?.length) return [];
   return eventProducts
     .map((product: ProductDto) => {
       let minimumQuantity = 0;

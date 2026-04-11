@@ -43,9 +43,7 @@ const CollectionIndexPage: React.FC = async () => {
         </Heading>
       </Section>
       <Section>
-        {collections &&
-          collections.data &&
-          collections.data.map(collection => (
+        {collections?.data?.map(collection => (
             <Card key={collection.id} className="my-4">
               <Heading as="h2">{collection.name}</Heading>
               <MarkdownContent markdown={collection.description} />
