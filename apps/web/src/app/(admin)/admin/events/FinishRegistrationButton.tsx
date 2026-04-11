@@ -20,7 +20,7 @@ interface FinishRegistrationButtonProps {
 export function FinishRegistrationButton({
   registration,
   onStatusUpdate,
-}: FinishRegistrationButtonProps) {
+}: Readonly<FinishRegistrationButtonProps>) {
   const toast = useToast();
   const [submitting, setSubmitting] = useState(false);
 

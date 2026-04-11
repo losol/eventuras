@@ -14,7 +14,7 @@ import OrdersTable from './OrdersTable';
 type PageProps = {
   searchParams: Promise<{ page?: string }>;
 };
-export default async function AdminOrdersPage({ searchParams }: PageProps) {
+export default async function AdminOrdersPage({ searchParams }: Readonly<PageProps>) {
   // Check authorization
   const authResult = await checkAuthorization('Admin');
   if (!authResult.authorized) {

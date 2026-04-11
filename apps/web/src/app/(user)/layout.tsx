@@ -18,7 +18,7 @@ export const dynamic = 'force-dynamic';
  * Includes navbar and footer with container-wrapped content
  * Requires authentication
  */
-export default async function UserLayout({ children }: { children: ReactNode }) {
+export default async function UserLayout({ children }: Readonly<{ children: ReactNode }>) {
   const site = await getSiteSettings();
   const t = await getTranslations();
 

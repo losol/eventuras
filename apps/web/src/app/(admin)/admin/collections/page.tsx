@@ -15,7 +15,7 @@ type PageProps = {
   searchParams: Promise<{ page?: string }>;
 };
 
-export default async function AdminCollectionsPage({ searchParams }: PageProps) {
+export default async function AdminCollectionsPage({ searchParams }: Readonly<PageProps>) {
   const t = await getTranslations();
   const params = await searchParams;
   const page = params.page ? parseInt(params.page, 10) : 1;

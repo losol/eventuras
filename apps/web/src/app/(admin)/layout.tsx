@@ -21,7 +21,7 @@ export const dynamic = 'force-dynamic';
  * Requires admin authentication - all routes under /admin/* require 'Admin' role
  * Individual pages can add stricter role requirements if needed
  */
-export default async function AdminLayout({ children }: { children: ReactNode }) {
+export default async function AdminLayout({ children }: Readonly<{ children: ReactNode }>) {
   // Check base Admin role for all admin routes
   const authResult = await checkAuthorization('Admin');
 

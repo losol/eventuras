@@ -20,7 +20,7 @@ type ProvidersProps = {
   children: React.ReactNode;
 };
 
-export default function Providers({ children }: ProvidersProps) {
+export default function Providers({ children }: Readonly<ProvidersProps>) {
   // Initialize auth store and start session monitoring
   useEffect(() => {
     logger.info('Initializing auth store');

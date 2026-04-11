@@ -17,7 +17,7 @@ type NotificationsTableProps = {
   notifications: NotificationDto[];
 };
 
-export default function NotificationsTable({ notifications }: NotificationsTableProps) {
+export default function NotificationsTable({ notifications }: Readonly<NotificationsTableProps>) {
   const t = useTranslations();
   const [selectedNotification, setSelectedNotification] = useState<NotificationDto | null>(null);
 

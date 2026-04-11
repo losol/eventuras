@@ -19,7 +19,7 @@ type CommunicationSectionProps = {
 export default function CommunicationSection({
   eventinfo,
   notifications,
-}: CommunicationSectionProps) {
+}: Readonly<CommunicationSectionProps>) {
   const [emailDrawerOpen, setEmailDrawerOpen] = useState<boolean>(false);
   const [SMSDrawerOpen, setSMSDrawerOpen] = useState<boolean>(false);
   const t = useTranslations();

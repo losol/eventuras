@@ -14,7 +14,7 @@ import getSiteSettings from '@/utils/site/getSiteSettings';
  * For publicly accessible pages: /collections, /events
  * Includes navbar and footer with container-wrapped content
  */
-export default async function PublicLayout({ children }: { children: ReactNode }) {
+export default async function PublicLayout({ children }: Readonly<{ children: ReactNode }>) {
   const site = await getSiteSettings();
   const t = await getTranslations();
 

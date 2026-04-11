@@ -22,7 +22,7 @@ export const metadata: Metadata = {
  * Root Layout - Minimal wrapper providing html/body structure
  * Actual navbar/footer are in route group layouts
  */
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const locale = await getLocale();
   const messages = await getMessages();
 

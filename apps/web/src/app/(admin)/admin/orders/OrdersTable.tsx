@@ -14,7 +14,7 @@ type OrdersTableProps = {
   currentPage: number;
   totalPages: number;
 };
-export default function OrdersTable({ orders, currentPage, totalPages }: OrdersTableProps) {
+export default function OrdersTable({ orders, currentPage, totalPages }: Readonly<OrdersTableProps>) {
   const t = useTranslations();
   const router = useRouter();
   const searchParams = useSearchParams();

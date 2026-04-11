@@ -109,7 +109,7 @@ export default function EventNotificator({
   eventId,
   onClose,
   notificatorType,
-}: EventNotificatorProps) {
+}: Readonly<EventNotificatorProps>) {
   const toast = useToast();
   const t = useTranslations();
   const {

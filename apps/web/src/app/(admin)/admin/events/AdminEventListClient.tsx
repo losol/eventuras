@@ -26,7 +26,7 @@ export function AdminEventListClient({
   totalPages,
   pageSize,
   translations,
-}: AdminEventListClientProps) {
+}: Readonly<AdminEventListClientProps>) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const handlePageChange = (newPage: number) => {

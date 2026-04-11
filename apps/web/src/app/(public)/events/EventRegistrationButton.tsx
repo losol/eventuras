@@ -7,7 +7,7 @@ import { EventDto, EventInfoStatus } from '@/lib/eventuras-public-sdk';
 export type EventRegistrationButtonProps = {
   event: EventDto;
 };
-export default async function EventRegistrationButton({ event }: EventRegistrationButtonProps) {
+export default async function EventRegistrationButton({ event }: Readonly<EventRegistrationButtonProps>) {
   const t = await getTranslations();
   const canRegister = event.status === EventInfoStatus.REGISTRATIONS_OPEN;
   const getStatusText = (status: EventInfoStatus): string => {

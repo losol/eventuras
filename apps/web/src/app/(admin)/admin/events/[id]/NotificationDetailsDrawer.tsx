@@ -29,7 +29,7 @@ export default function NotificationDetailsDrawer({
   notification,
   isOpen,
   onClose,
-}: NotificationDetailsDrawerProps) {
+}: Readonly<NotificationDetailsDrawerProps>) {
   const [recipients, setRecipients] = useState<RecipientDto[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
