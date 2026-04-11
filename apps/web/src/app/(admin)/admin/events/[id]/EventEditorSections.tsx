@@ -77,7 +77,7 @@ export const OverviewSection = ({
         validation={{
           pattern: {
             value:
-              /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_.~#?&//=]*)/i,
+              /^https?:\/\/(www\.)?[-a-z0-9@:%._~#=]{1,256}\.[a-z0-9()]{1,6}\b([-a-z0-9()@:%_.~#?&/=]*)/i,
             message: 'Invalid url',
           },
         }}
