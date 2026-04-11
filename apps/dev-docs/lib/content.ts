@@ -1,10 +1,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import type { TreeViewNode } from '@eventuras/ratio-ui/core/TreeView';
 import type { TocHeading } from '@eventuras/ratio-ui/core/TableOfContents';
+import type { TreeViewNode } from '@eventuras/ratio-ui/core/TreeView';
 
 const CONTENT_DIR = path.join(process.cwd(), 'content');
+const FRONTMATTER_REGEX = /^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/;
 
 export interface DocPage {
   slug: string[];
@@ -22,7 +23,7 @@ export interface DocPage {
  * Returns the parsed fields and the remaining body.
  */
 function parseFrontmatter(raw: string): { frontmatter: DocPage['frontmatter']; content: string } {
-  const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
+  const match = FRONTMATTER_REGEX.exec(raw);
   if (!match) {
     return { frontmatter: { title: '' }, content: raw };
   }
@@ -30,9 +31,9 @@ function parseFrontmatter(raw: string): { frontmatter: DocPage['frontmatter']; c
   const yaml = match[1] ?? '';
   const content = match[2] ?? '';
 
-  const title = yaml.match(/^title:\s*(.+)$/m)?.[1]?.replace(/^["']|["']$/g, '') ?? '';
-  const description = yaml.match(/^description:\s*(.+)$/m)?.[1]?.replace(/^["']|["']$/g, '');
-  const source = yaml.match(/^source:\s*(.+)$/m)?.[1]?.replace(/^["']|["']$/g, '');
+  const title = getFrontmatterValue(yaml, 'title') ?? '';
+  const description = getFrontmatterValue(yaml, 'description');
+  const source = getFrontmatterValue(yaml, 'source');
 
   // Strip leading h1 from content — it duplicates the frontmatter title
   const body = content.replace(/^\s*#\s+.+\r?\n+/, '');
@@ -46,10 +47,10 @@ function parseFrontmatter(raw: string): { frontmatter: DocPage['frontmatter']; c
 function slugify(text: string): string {
   return text
     .toLowerCase()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '');
+    .replaceAll(/[^\w\s-]/g, '')
+    .replaceAll(/\s+/g, '-')
+    .replaceAll(/-+/g, '-')
+    .replaceAll(/^-|-$/g, '');
 }
 
 /**
@@ -101,7 +102,7 @@ function filePathToSlug(filePath: string): string[] {
   const parts = withoutExt.split(path.sep);
 
   // index files represent the parent directory
-  if (parts[parts.length - 1] === 'index') {
+  if (parts.at(-1) === 'index') {
     parts.pop();
   }
 
@@ -160,61 +161,12 @@ export function getDocBySlug(slug: string[]): DocPage | null {
 export function getSidebarTree(): TreeViewNode[] {
   const files = findMarkdownFiles(CONTENT_DIR);
   const tree: TreeViewNode[] = [];
-
-  // Group files by their directory structure
   const nodeMap = new Map<string, TreeViewNode>();
 
   for (const file of files) {
-    const slug = filePathToSlug(file);
-    const raw = fs.readFileSync(path.join(CONTENT_DIR, file), 'utf-8');
-    const { frontmatter } = parseFrontmatter(raw);
-    const href = slug.length === 0 ? '/' : `/${slug.join('/')}`;
-    const title = frontmatter.title || slug[slug.length - 1] || 'Home';
-
-    if (slug.length === 0) {
-      // Root index
-      tree.push({ title, href });
-      continue;
-    }
-
-    // For each directory level, ensure a parent node exists
-    for (let i = 0; i < slug.length; i++) {
-      const key = slug.slice(0, i + 1).join('/');
-      if (!nodeMap.has(key)) {
-        const isLeaf = i === slug.length - 1;
-        const node: TreeViewNode = {
-          title: isLeaf ? title : formatDirName(slug[i] ?? ''),
-          href: isLeaf ? href : undefined,
-          children: isLeaf ? undefined : [],
-        };
-        nodeMap.set(key, node);
-
-        // Attach to parent or root
-        if (i === 0) {
-          tree.push(node);
-        } else {
-          const parentKey = slug.slice(0, i).join('/');
-          const parent = nodeMap.get(parentKey);
-          if (parent && parent.children) {
-            parent.children.push(node);
-          }
-        }
-      } else if (i === slug.length - 1) {
-        // This is a leaf file for an existing directory node
-        const existing = nodeMap.get(key)!;
-        existing.href = href;
-        existing.title = title;
-      }
-    }
+    addFileToSidebarTree(file, tree, nodeMap);
   }
 
-  // Sort children alphabetically
-  function sortTree(nodes: TreeViewNode[]) {
-    nodes.sort((a, b) => a.title.localeCompare(b.title));
-    for (const node of nodes) {
-      if (node.children) sortTree(node.children);
-    }
-  }
   sortTree(tree);
 
   return tree;
@@ -228,4 +180,108 @@ function formatDirName(name: string): string {
     .split(/[-_]/)
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
+}
+
+function getFrontmatterValue(yaml: string, field: keyof DocPage['frontmatter']): string | undefined {
+  const match = new RegExp(`^${field}:\\s*(.+)$`, 'm').exec(yaml);
+  const value = match?.[1]?.trim();
+
+  if (!value) {
+    return undefined;
+  }
+
+  return stripWrappingQuotes(value);
+}
+
+function stripWrappingQuotes(value: string): string {
+  const isWrappedInDoubleQuotes = value.startsWith('"') && value.endsWith('"');
+  const isWrappedInSingleQuotes = value.startsWith("'") && value.endsWith("'");
+
+  if (isWrappedInDoubleQuotes || isWrappedInSingleQuotes) {
+    return value.slice(1, -1);
+  }
+
+  return value;
+}
+
+function getSidebarNodeTitle(file: string, slug: string[]): string {
+  const raw = fs.readFileSync(path.join(CONTENT_DIR, file), 'utf-8');
+  const { frontmatter } = parseFrontmatter(raw);
+
+  return frontmatter.title || slug.at(-1) || 'Home';
+}
+
+function addFileToSidebarTree(
+  file: string,
+  tree: TreeViewNode[],
+  nodeMap: Map<string, TreeViewNode>,
+): void {
+  const slug = filePathToSlug(file);
+  const href = slug.length === 0 ? '/' : `/${slug.join('/')}`;
+  const title = getSidebarNodeTitle(file, slug);
+
+  if (slug.length === 0) {
+    tree.push({ title, href });
+    return;
+  }
+
+  for (let i = 0; i < slug.length; i++) {
+    upsertSidebarNode(slug, i, title, href, tree, nodeMap);
+  }
+}
+
+function upsertSidebarNode(
+  slug: string[],
+  index: number,
+  title: string,
+  href: string,
+  tree: TreeViewNode[],
+  nodeMap: Map<string, TreeViewNode>,
+): void {
+  const key = slug.slice(0, index + 1).join('/');
+  const existing = nodeMap.get(key);
+
+  if (existing) {
+    if (index === slug.length - 1) {
+      existing.href = href;
+      existing.title = title;
+    }
+    return;
+  }
+
+  const isLeaf = index === slug.length - 1;
+  const node: TreeViewNode = {
+    title: isLeaf ? title : formatDirName(slug[index] ?? ''),
+    href: isLeaf ? href : undefined,
+    children: isLeaf ? undefined : [],
+  };
+
+  nodeMap.set(key, node);
+  attachSidebarNode(slug, index, node, tree, nodeMap);
+}
+
+function attachSidebarNode(
+  slug: string[],
+  index: number,
+  node: TreeViewNode,
+  tree: TreeViewNode[],
+  nodeMap: Map<string, TreeViewNode>,
+): void {
+  if (index === 0) {
+    tree.push(node);
+    return;
+  }
+
+  const parentKey = slug.slice(0, index).join('/');
+  const parent = nodeMap.get(parentKey);
+  parent?.children?.push(node);
+}
+
+function sortTree(nodes: TreeViewNode[]): void {
+  nodes.sort((a, b) => a.title.localeCompare(b.title));
+  for (const node of nodes) {
+    if (node.children) {
+      sortTree(node.children);
+    }
+  }
 }
