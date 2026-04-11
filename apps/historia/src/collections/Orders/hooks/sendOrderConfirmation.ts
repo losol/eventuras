@@ -3,7 +3,6 @@ import type { CollectionAfterChangeHook } from 'payload';
 import { Logger } from '@eventuras/logger';
 import { notitiaTemplates } from '@eventuras/notitia-templates';
 
-import { createPackingNotifier } from '@/lib/packing';
 import type { Order, Product, User, Website } from '@/payload-types';
 
 const logger = Logger.create({

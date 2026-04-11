@@ -1,4 +1,4 @@
-import type { Order, Product, Transaction } from '@/payload-types';
+import type { Order, Transaction } from '@/payload-types';
 import {
   toMajorUnits,
   getProductName,

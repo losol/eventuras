@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation'
 import type { PayloadAdminBarProps, PayloadMeUser } from 'payload-admin-bar'
 import { PayloadAdminBar } from 'payload-admin-bar'
 
-import { User } from '@/payload-types';
 import { cn } from '@/utilities/cn'
 import { getClientSideURL } from '@/utilities/getURL'
 
