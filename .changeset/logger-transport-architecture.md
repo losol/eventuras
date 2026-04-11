@@ -15,6 +15,9 @@ Add pluggable transport architecture for structured logging.
 - **Configurable service name**: OTel integration no longer hardcodes a service name — uses `OTEL_SERVICE_NAME` env var or accepts it as an option.
 - **Pretty printing**: Built-in zero-dependency pretty formatter for human-readable dev output. Auto-enabled in development when using PinoTransport.
 - **Pipeline-friendly output**: ISO timestamps and string log levels (`"info"` instead of `30`) by default — no level mapping needed in Loki/Grafana Alloy.
+- **Node subpath export**: `@eventuras/logger/node` exposes `createPrettyStream`/`formatLogLine` — keeping the root entrypoint free of `node:stream` imports for browser safety.
+- **Environment detection**: `createDefaultTransport()` auto-selects ConsoleTransport in non-Node environments (browsers, edge runtimes).
+- **Static method overloads**: `Logger.info('message')` now works alongside `Logger.info({ namespace: 'x' }, 'message')`.
 - **Type safety**: All `any` types in OTel module replaced with proper interfaces.
 
 ## Public API
@@ -29,6 +32,10 @@ logger.error({ error: err }, 'Something failed');
 
 // Static logging (unchanged)
 Logger.info({ namespace: 'quick' }, 'One-off log');
+
+// NEW: Static logging with string shorthand
+Logger.info('Quick message');
+Logger.error('Something broke');
 
 // NEW: Custom transport
 import { ConsoleTransport } from '@eventuras/logger';
