@@ -4,14 +4,14 @@ import { Command, Flags } from '@oclif/core';
 import { buildSearchIndex } from '@eventuras/lustro-search/build-index';
 
 export default class DocsSearchIndex extends Command {
-  static override description = 'Build an Orama search index from the documentation site';
+  static readonly override description = 'Build an Orama search index from the documentation site';
 
-  static override examples = [
+  static readonly override examples = [
     '$ oxo docs search-index',
     '$ oxo docs search-index --site .next/server/app --output public/search-index.json',
   ];
 
-  static override flags = {
+  static readonly override flags = {
     output: Flags.string({
       char: 'o',
       default: 'public/search-index.json',

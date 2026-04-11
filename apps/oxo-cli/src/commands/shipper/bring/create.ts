@@ -4,8 +4,8 @@ import { Command, Flags } from '@oclif/core';
 import { loadEnvFile, requireEnvVar } from '../../../utils/env.js';
 
 export default class BringCreate extends Command {
-  static override description = 'Create a Bring shipment';
-static override examples = [
+  static readonly override description = 'Create a Bring shipment';
+static readonly override examples = [
     `$ oxo shipper bring create \\
       --correlation-id "EVENT-2026-001" \\
       --sender-name "Eventuras AS" \\
@@ -20,7 +20,7 @@ static override examples = [
       --length 30 --width 20 --height 10`,
     `$ oxo shipper bring create --correlation-id "REG-456" --json [options]`,
   ];
-static override flags = {
+static readonly override flags = {
     'correlation-id': Flags.string({
       description: 'Correlation ID for tracking (e.g., EVENT-123, ORDER-456, REG-789)',
       required: true,
