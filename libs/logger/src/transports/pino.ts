@@ -13,6 +13,8 @@ export type PinoTransportOptions = {
   level?: LogLevel;
   /** Field paths to redact from output. */
   redact?: string[];
+  /** Enable pretty-printed, human-readable output. */
+  prettyPrint?: boolean;
   /** File path destination (omit for stdout). */
   destination?: string;
   /** Raw Pino options for advanced tuning (merged after built-in defaults). */
@@ -28,6 +30,9 @@ export class PinoTransport implements LogTransport {
       level: options.level ?? 'info',
       ...(options.redact && {
         redact: { paths: options.redact, censor: '[REDACTED]' },
+      }),
+      ...(options.prettyPrint && {
+        transport: { target: 'pino-pretty', options: { colorize: true } },
       }),
       ...options.pinoOptions,
     };

@@ -45,9 +45,11 @@ function getEnv(key: string): string | undefined {
 }
 
 function createDefaultTransport(config: LoggerConfig): LogTransport {
+  const isDev = getEnv('NODE_ENV') === 'development';
   return new PinoTransport({
     level: config.level ?? (getEnv('LOG_LEVEL') as LogLevel | undefined) ?? 'info',
     redact: config.redact ?? DEFAULT_REDACT,
+    prettyPrint: config.prettyPrint ?? isDev,
     destination: config.destination,
   });
 }
@@ -219,22 +221,30 @@ export class Logger {
     }
   }
 
+  /** Log at `trace` level. Pass a string or `{ data }` with an optional message. */
   trace(data?: Record<string, unknown> | string, msg?: string): void {
     this.logInstance('trace', data, msg);
   }
 
+  /** Log at `debug` level. */
   debug(data?: Record<string, unknown> | string, msg?: string): void {
     this.logInstance('debug', data, msg);
   }
 
+  /** Log at `info` level. */
   info(data?: Record<string, unknown> | string, msg?: string): void {
     this.logInstance('info', data, msg);
   }
 
+  /** Log at `warn` level. */
   warn(data?: Record<string, unknown> | string, msg?: string): void {
     this.logInstance('warn', data, msg);
   }
 
+  /**
+   * Log at `error` level. Accepts an `Error` instance, a data object, or a plain string.
+   * Error instances are serialized automatically.
+   */
   error(errorOrData?: unknown, msg?: string): void {
     const transport = this.childTransport ?? Logger.transport;
     if (typeof errorOrData === 'string') {
@@ -248,6 +258,9 @@ export class Logger {
     }
   }
 
+  /**
+   * Log at `fatal` level. Same signature as `error()` but signals a critical/shutdown failure.
+   */
   fatal(errorOrData?: unknown, msg?: string): void {
     const transport = this.childTransport ?? Logger.transport;
     if (typeof errorOrData === 'string') {

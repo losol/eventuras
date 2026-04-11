@@ -60,6 +60,8 @@ export type LoggerConfig = {
   level?: LogLevel;
   /** Field paths to redact from log output (e.g., ['password', 'token']). */
   redact?: string[];
+  /** Enable pretty-printed output in development (Pino only). */
+  prettyPrint?: boolean;
   /** Optional file path for log output (Pino only). */
   destination?: string;
   /** Custom transport implementation. Defaults to PinoTransport. */
