@@ -10,7 +10,7 @@
  *
  * @example
  * // In your app's instrumentation.ts or main entry point
- * import { setupOpenTelemetryLogger } from '@eventuras/logger';
+ * import { setupOpenTelemetryLogger } from '@eventuras/logger/opentelemetry';
  * import { OTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-http';
  * import { BatchLogRecordProcessor } from '@opentelemetry/sdk-logs';
  *
@@ -31,6 +31,32 @@
  * logger.error({ error: err }, 'Something failed'); // Sent to OpenTelemetry backend
  */
 
+/**
+ * Minimal interface for an OpenTelemetry LogRecordProcessor.
+ * Compatible with `@opentelemetry/sdk-logs` `LogRecordProcessor`.
+ * Defined locally to avoid requiring OTel types at compile time.
+ */
+export interface LogRecordProcessor {
+  shutdown(): Promise<void>;
+  forceFlush(): Promise<void>;
+}
+
+/**
+ * Minimal interface for an OpenTelemetry LoggerProvider.
+ * Compatible with `@opentelemetry/sdk-logs` `LoggerProvider`.
+ */
+export interface OTelLoggerProvider {
+  addLogRecordProcessor(processor: LogRecordProcessor): void;
+  shutdown(): Promise<void>;
+  forceFlush?(): Promise<void>;
+}
+
+/** Internal interface for Pino instrumentation */
+interface PinoInstrumentationInstance {
+  enable(): void;
+  disable(): void;
+}
+
 // Lazy load OpenTelemetry packages to handle optional peer dependencies
 async function loadOpenTelemetry() {
   try {
@@ -47,22 +73,26 @@ async function loadOpenTelemetry() {
   }
 }
 
-export type LogRecordProcessor = any;
-
 /**
  * Options for OpenTelemetry logger integration
  */
 export type OpenTelemetryLoggerOptions = {
   /**
-   * Log record processor (e.g., BatchLogRecordProcessor with an exporter)
-   * If not provided, logs will only be instrumented but not exported
+   * Log record processor (e.g., BatchLogRecordProcessor with an exporter).
+   * If not provided, logs will only be instrumented but not exported.
    */
-  logRecordProcessor?: any;
+  logRecordProcessor?: LogRecordProcessor;
 
   /**
    * Logger provider instance. If not provided, a new one will be created.
    */
-  loggerProvider?: any;
+  loggerProvider?: OTelLoggerProvider;
+
+  /**
+   * Service name to attach to log records.
+   * Defaults to the `OTEL_SERVICE_NAME` environment variable, or `'unknown-service'`.
+   */
+  serviceName?: string;
 
   /**
    * Whether to enable the integration. Default: true
@@ -70,8 +100,8 @@ export type OpenTelemetryLoggerOptions = {
   enabled?: boolean;
 };
 
-let pinoInstrumentation: any | null = null;
-let loggerProvider: any | null = null;
+let pinoInstrumentation: PinoInstrumentationInstance | null = null;
+let loggerProvider: OTelLoggerProvider | null = null;
 
 /**
  * Set up OpenTelemetry integration for Pino logger.
@@ -127,7 +157,12 @@ export async function setupOpenTelemetryLogger(
     return;
   }
 
-  const { logRecordProcessor, loggerProvider: providedLoggerProvider, enabled = true } = options;
+  const {
+    logRecordProcessor,
+    loggerProvider: providedLoggerProvider,
+    serviceName,
+    enabled = true,
+  } = options;
 
   if (!enabled) {
     console.log('[logger] OpenTelemetry integration disabled');
@@ -152,21 +187,25 @@ export async function setupOpenTelemetryLogger(
   }
 
   // Create or use provided logger provider
-  loggerProvider = providedLoggerProvider ?? new LoggerProvider();
+  loggerProvider = (providedLoggerProvider ?? new LoggerProvider()) as OTelLoggerProvider;
 
   // Register log record processor if provided
-  if (logRecordProcessor) {
+  if (logRecordProcessor && loggerProvider) {
     loggerProvider.addLogRecordProcessor(logRecordProcessor);
   }
 
+  // Resolve service name from option, env var, or fallback
+  const resolvedServiceName =
+    serviceName ??
+    (typeof process !== 'undefined' ? process.env?.OTEL_SERVICE_NAME : undefined) ??
+    'unknown-service';
+
   // Enable Pino instrumentation to bridge Pino logs to OpenTelemetry
   pinoInstrumentation = new PinoInstrumentation({
-    logHook: (_span: any, record: any) => {
-      // Optionally modify log records here before they're sent to OTel
-      // For now, pass through as-is
-      record['service.name'] = process.env.OTEL_SERVICE_NAME || 'eventuras';
+    logHook: (_span: unknown, record: Record<string, unknown>) => {
+      record['service.name'] = resolvedServiceName;
     },
-  });
+  }) as PinoInstrumentationInstance;
 
   pinoInstrumentation.enable();
 
@@ -209,7 +248,7 @@ export async function shutdownOpenTelemetryLogger(): Promise<void> {
  * Get the active LoggerProvider instance, if any.
  * Useful for advanced use cases or debugging.
  */
-export function getLoggerProvider(): any | null {
+export function getLoggerProvider(): OTelLoggerProvider | null {
   // Return null if in browser environment
   if (typeof window !== 'undefined') {
     return null;
