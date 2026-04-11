@@ -1,11 +1,12 @@
 // session-validation.ts
 
-import { Logger } from '@eventuras/logger';
 import { jwtDecrypt } from 'jose';
-import { getSessionSecretUint8Array } from './utils';
-import {Session} from './types';
 
-const logger = Logger.create({ namespace: 'fides-auth:session-validation' });
+import { createLogger } from './logger';
+import { getSessionSecretUint8Array } from './utils';
+import { Session } from './types';
+
+const logger = createLogger({ namespace: 'fides-auth:session-validation' });
 
 export interface SessionValidationResult {
   session?: Session;

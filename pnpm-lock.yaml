@@ -1051,12 +1051,6 @@ importers:
 
   libs/fides-auth:
     dependencies:
-      '@eventuras/logger':
-        specifier: workspace:*
-        version: link:../logger
-      '@eventuras/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
       jose:
         specifier: 6.2.2
         version: 6.2.2

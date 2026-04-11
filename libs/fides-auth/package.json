@@ -9,6 +9,10 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./logger": {
+      "types": "./dist/logger.d.ts",
+      "import": "./dist/logger.js"
+    },
     "./session-refresh": {
       "types": "./dist/session-refresh.d.ts",
       "import": "./dist/session-refresh.js"
@@ -58,8 +62,6 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@eventuras/logger": "workspace:*",
-    "@eventuras/typescript-config": "workspace:*",
     "jose": "6.2.2",
     "openid-client": "^6.8.2"
   },

@@ -5,9 +5,9 @@
  * Implements OAuth/OIDC operations with PKCE for Vipps.
  */
 
-import { Logger } from '@eventuras/logger';
 import * as openid from 'openid-client';
 
+import { createLogger } from '../../logger';
 import {
   buildAuthorizationUrl,
   buildPKCEOptions,
@@ -20,7 +20,7 @@ import {
   type VippsUserInfo,
 } from './types';
 
-const logger = Logger.create({
+const logger = createLogger({
   namespace: 'fides-auth:vipps',
   context: { module: 'VippsLoginClient' },
 });

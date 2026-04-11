@@ -8,11 +8,12 @@
  * - Implementing "keep me logged in" features
  */
 
-import { Logger } from '@eventuras/logger';
 import * as openid from 'openid-client';
+
+import { createLogger } from './logger';
 import { OAuthConfig } from './oauth';
 
-const logger = Logger.create({ namespace: 'fides-auth:silent-login' });
+const logger = createLogger({ namespace: 'fides-auth:silent-login' });
 
 export interface SilentLoginOptions {
   /** Optional hint about the user's identity (e.g., email or user ID) */

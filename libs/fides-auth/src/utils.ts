@@ -1,7 +1,8 @@
-import { Logger } from '@eventuras/logger';
 import * as jose from 'jose';
 
-const algorithm = 'aes-256-gcm';
+import { createLogger } from './logger';
+
+const logger = createLogger({ namespace: 'fides-auth:utils' });
 
 
 /**
@@ -290,10 +291,9 @@ export const accessTokenExpires = (
     return remainingSeconds < seconds;
   } catch (error) {
     // If decoding fails, treat the token as invalid so no refresh is triggered.
-    Logger.error(
-      { namespace: 'eventuras:accessTokenExpires' },
-      'Error decoding access token',
-      error
+    logger.error(
+      { error },
+      'Error decoding access token'
     );
     return true;
   }

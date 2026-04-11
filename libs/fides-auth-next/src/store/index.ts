@@ -121,6 +121,8 @@ export {
 
 export { useSessionMonitor } from './use-session-monitor';
 
+export { configureAuthLogger } from './configure-logger';
+
 // Shared types
 export type { SessionUser, AuthStatus } from './types';
 
