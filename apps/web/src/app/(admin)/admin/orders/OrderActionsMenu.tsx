@@ -95,12 +95,11 @@ export const OrderActionsMenu = ({ order }: OrderActionsMenuProps) => {
         <Heading as="h2">Invoice</Heading>
         <div>
           <DescriptionList>
-            <DescriptionList.Term>Order</DescriptionList.Term>
-            <DescriptionList.Definition>{order.orderId}</DescriptionList.Definition>
-            <DescriptionList.Term>PaymentMethod</DescriptionList.Term>
-            <DescriptionList.Definition>{order.paymentMethod}</DescriptionList.Definition>
-            <DescriptionList.Term>Log</DescriptionList.Term>
-            <DescriptionList.Definition>{order.log}</DescriptionList.Definition>
+            <DescriptionList.Description term="Order">{order.orderId}</DescriptionList.Description>
+            <DescriptionList.Description term="PaymentMethod">
+              {order.paymentMethod}
+            </DescriptionList.Description>
+            <DescriptionList.Description term="Log">{order.log}</DescriptionList.Description>
           </DescriptionList>
         </div>
         {shouldShowInvoiceButton && (
