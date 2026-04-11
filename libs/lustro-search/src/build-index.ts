@@ -69,10 +69,10 @@ function findHtmlFiles(dir: string): string[] {
 
 /** Extract the <title> or first <h1> from HTML */
 function extractTitle(html: string): string {
-  const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i);
+  const titleMatch = /<title[^>]*>([^<]+)<\/title>/i.exec(html);
   if (titleMatch?.[1]) return titleMatch[1].trim();
 
-  const h1Match = html.match(/<h1[^>]*>([^<]+)<\/h1>/i);
+  const h1Match = /<h1[^>]*>([^<]+)<\/h1>/i.exec(html);
   if (h1Match?.[1]) return h1Match[1].trim();
 
   return '';

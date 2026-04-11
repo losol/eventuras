@@ -189,7 +189,7 @@ export function verifyWebhookSignature(request: WebhookRequest, secret: string):
  * @internal
  */
 export function extractSignature(authHeader: string): string | null {
-  const match = authHeader.match(/Signature=([^&]+)/);
+  const match = /Signature=([^&]+)/.exec(authHeader);
   return match?.[1] ?? null;
 }
 

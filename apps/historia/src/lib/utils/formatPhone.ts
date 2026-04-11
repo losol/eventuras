@@ -11,13 +11,13 @@ export function formatPhoneForDisplay(phoneNumber: string | undefined | null): s
   const cleaned = phoneNumber.replace(/\s/g, '');
 
   // Match Norwegian phone numbers: +47 followed by 8 digits
-  const norwegianMatch = cleaned.match(/^(\+47)(\d{8})$/);
+  const norwegianMatch = /^(\+47)(\d{8})$/.exec(cleaned);
   if (norwegianMatch) {
     return `(${norwegianMatch[1]}) ${norwegianMatch[2]}`;
   }
 
   // Match other international formats: + followed by country code and number
-  const internationalMatch = cleaned.match(/^(\+\d{1,3})(\d+)$/);
+  const internationalMatch = /^(\+\d{1,3})(\d+)$/.exec(cleaned);
   if (internationalMatch) {
     return `(${internationalMatch[1]}) ${internationalMatch[2]}`;
   }
