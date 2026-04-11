@@ -12,7 +12,7 @@ The previous `@eventuras/toast` package was a custom XState machine rendering pl
 
 - **New export path**: `@eventuras/ratio-ui/toast`. The standalone `@eventuras/toast` package has been removed.
 - **Accessibility**: toast region is now a landmark (navigate with F6 / Shift+F6), focus is managed on close, timers pause on hover/focus, screen readers announce content correctly.
-- **View transitions**: toasts animate in/out using `startViewTransition` when available.
+- **Animations**: toasts slide in/out via CSS animations targeting react-aria's `data-entering` / `data-exiting` attributes.
 - **No provider required**: `ToastsContext` is removed. Toast state lives in a singleton `toastQueue`. Just render `<ToastRenderer />` once at the app root.
 - **Dependencies**: `xstate`, `@xstate/react`, and `uuid` are no longer needed for toasts.
 

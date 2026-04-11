@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react';
+import React from 'react';
 import {
   UNSTABLE_Toast as Toast,
   UNSTABLE_ToastContent as ToastContent,
@@ -31,8 +31,7 @@ export const ToastRenderer: React.FC = () => {
           <Toast
             toast={toast}
             data-testid={`toast-${status}`}
-            style={{ viewTransitionName: toast.key } as CSSProperties}
-            className={`flex items-center gap-4 m-2 p-4 rounded-xs shadow-lg min-w-[230px] max-w-[400px] outline-none [view-transition-class:toast] ${statusClasses[status]}`}
+            className={`flex items-center gap-4 m-2 p-4 rounded-xs shadow-lg min-w-[230px] max-w-[400px] outline-none ${statusClasses[status]}`}
           >
             <ToastContent className="flex flex-col flex-1 min-w-0">
               <Text slot="title" className="font-semibold text-sm">

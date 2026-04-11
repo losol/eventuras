@@ -1,4 +1,5 @@
 import { Meta, StoryFn } from '@storybook/react-vite';
+import type { MouseEvent } from 'react';
 import { expect, fn, userEvent, within } from 'storybook/test';
 
 import { Link, LinkProps } from './Link';
@@ -161,13 +162,17 @@ let clickSpy: ReturnType<typeof fn>;
 export const LinkTest = {
   render: () => {
     clickSpy = fn();
+    const handleClick = (event: MouseEvent) => {
+      event.preventDefault();
+      clickSpy();
+    };
 
     return (
       <div className="flex flex-col gap-2">
-        <Link href="#test" componentProps={{ onClick: clickSpy }}>
+        <Link href="#test" componentProps={{ onClick: handleClick }}>
           Test Link
         </Link>
-        <Link href="#button" variant="button-primary" componentProps={{ onClick: clickSpy }}>
+        <Link href="#button" variant="button-primary" componentProps={{ onClick: handleClick }}>
           Button Link
         </Link>
       </div>

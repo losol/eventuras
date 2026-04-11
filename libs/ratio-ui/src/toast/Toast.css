@@ -1,9 +1,9 @@
-::view-transition-new(.toast):only-child {
-  animation: toast-slide-in 300ms ease-out;
+[data-rac][role='alertdialog'][data-entering] {
+  animation: toast-slide-in 250ms ease-out;
 }
 
-::view-transition-old(.toast):only-child {
-  animation: toast-slide-out 300ms ease-in forwards;
+[data-rac][role='alertdialog'][data-exiting] {
+  animation: toast-slide-out 200ms ease-in forwards;
 }
 
 @keyframes toast-slide-in {
@@ -17,6 +17,5 @@
   to {
     translate: 100% 0;
     opacity: 0;
-    visibility: hidden;
   }
 }

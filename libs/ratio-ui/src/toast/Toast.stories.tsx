@@ -1,10 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect, userEvent, within, waitFor } from 'storybook/test';
+import { useRef, useState } from 'react';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { Button } from '../core/Button/Button';
 import { Stack } from '../layout/Stack/Stack';
 
 import { ToastRenderer } from './ToastRenderer';
+import { toastQueue } from './toastQueue';
 import { useToast } from './useToast';
 
 const meta = {
@@ -111,7 +113,15 @@ export const ProgrammaticDismissal: Story = {
   },
 };
 
-const InteractionTrigger = () => {
+const clearQueue = () => {
+  // toastQueue is a module-level singleton; clear any leftover toasts from
+  // previous play runs so each test starts from a known state.
+  for (const t of [...toastQueue.visibleToasts]) {
+    toastQueue.close(t.key);
+  }
+};
+
+const ClickDismissTrigger = () => {
   const toast = useToast();
   return (
     <Button variant="primary" onClick={() => toast.success('Hello from test')}>
@@ -120,28 +130,87 @@ const InteractionTrigger = () => {
   );
 };
 
-export const ShowsToastOnClick: Story = {
+export const ClickToDismiss: Story = {
   render: () => (
     <>
-      <InteractionTrigger />
+      <ClickDismissTrigger />
       <ToastRenderer />
     </>
   ),
   play: async ({ canvasElement }) => {
+    clearQueue();
     const canvas = within(canvasElement);
+    const body = within(document.body);
 
-    const trigger = canvas.getByRole('button', { name: 'Show toast' });
-    await userEvent.click(trigger);
+    await userEvent.click(canvas.getByRole('button', { name: 'Show toast' }));
+
+    const toast = await body.findByText('Hello from test');
+    expect(toast).toBeInTheDocument();
+
+    await userEvent.click(body.getByRole('button', { name: 'Close' }));
 
     await waitFor(() => {
-      expect(canvas.getByText('Hello from test')).toBeInTheDocument();
+      expect(body.queryByText('Hello from test')).not.toBeInTheDocument();
     });
+  },
+};
 
-    const closeBtn = canvas.getByRole('button', { name: 'Close' });
-    await userEvent.click(closeBtn);
+const ProgrammaticDismissTrigger = () => {
+  const toast = useToast();
+  const keyRef = useRef<string | null>(null);
+  const [shown, setShown] = useState(false);
+
+  return (
+    <Stack gap="sm">
+      <Button
+        variant="primary"
+        onClick={() => {
+          keyRef.current = toast.info('Dismiss me programmatically', {
+            expiresAfter: 60_000,
+          });
+          setShown(true);
+        }}
+      >
+        Show toast
+      </Button>
+      <Button
+        variant="secondary"
+        disabled={!shown}
+        onClick={() => {
+          if (keyRef.current) {
+            toast.remove(keyRef.current);
+            keyRef.current = null;
+            setShown(false);
+          }
+        }}
+      >
+        Remove via key
+      </Button>
+    </Stack>
+  );
+};
+
+export const ProgrammaticRemove: Story = {
+  render: () => (
+    <>
+      <ProgrammaticDismissTrigger />
+      <ToastRenderer />
+    </>
+  ),
+  play: async ({ canvasElement }) => {
+    clearQueue();
+    const canvas = within(canvasElement);
+    const body = within(document.body);
+
+    await userEvent.click(canvas.getByRole('button', { name: 'Show toast' }));
+
+    const toast = await body.findByText('Dismiss me programmatically');
+    expect(toast).toBeInTheDocument();
+
+    await userEvent.click(canvas.getByRole('button', { name: 'Remove via key' }));
 
     await waitFor(() => {
-      expect(canvas.queryByText('Hello from test')).not.toBeInTheDocument();
+      expect(body.queryByText('Dismiss me programmatically')).not.toBeInTheDocument();
     });
   },
 };
