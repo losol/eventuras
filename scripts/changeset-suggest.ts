@@ -159,7 +159,7 @@ function inferBump(subject: string, body: string): Bump {
 
 /** Extract scopes: type(scope,scope2): msg */
 function extractScopes(subject: string): string[] {
-  const m = subject.match(/^\w+\(([^)]+)\)!?:/)
+  const m = /^\w+\(([^)]+)\)!?:/.exec(subject)
   if (!m || !m[1]) return []
   return m[1].split(',').map(s => s.trim().toLowerCase()).filter(Boolean)
 }
@@ -189,7 +189,7 @@ function describeCommit(c: Commit): string {
   while (bodyLines.length && bodyLines[0]?.trim() === '') bodyLines.shift()
 
   // parse conventional parts once
-  const m = subject.match(/^(\w+)(\([^)]+\))?:\s*(.+)$/)
+  const m = /^(\w+)(\([^)]+\))?:\s*(.+)$/.exec(subject)
   const type = (m?.[1] ?? 'chore').toLowerCase()
   const message = (m?.[3] ?? subject).trim()
   const dupCandidates = new Set([
@@ -242,7 +242,7 @@ function buildChangesetForPackage(pkg: string, bump: Bump, commits: Commit[], li
 
   const sortedCommits = [...commits].sort((a, b) => {
     const getType = (subject: string) => {
-      const m = subject.match(/^(\w+)(\([^)]+\))?:/)
+      const m = /^(\w+)(\([^)]+\))?:/.exec(subject)
       return m?.[1]?.toLowerCase() ?? 'other'
     }
 
@@ -270,7 +270,7 @@ function buildChangesetForPackage(pkg: string, bump: Bump, commits: Commit[], li
   // Group commits by type and add headers with emojis
   let currentType: string | null = null
   for (const c of sortedCommits) {
-    const m = c.subject.match(/^(\w+)(\([^)]+\))?:/)
+    const m = /^(\w+)(\([^)]+\))?:/.exec(c.subject)
     const type = m?.[1]?.toLowerCase() ?? 'other'
 
     if (type !== currentType) {

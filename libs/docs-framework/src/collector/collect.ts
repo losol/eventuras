@@ -137,7 +137,7 @@ function enrichContent(content: string, sourcePath: string, source: DocSource, r
 
   // If no title, derive from first heading or filename
   if (!frontmatter.title) {
-    const headingMatch = body.match(/^#\s+(.+)$/m);
+    const headingMatch = /^#\s+(.+)$/m.exec(body);
     if (headingMatch) {
       frontmatter.title = headingMatch[1].trim();
     }
@@ -177,7 +177,7 @@ function findNearestPackageJson(
  * Replaces gray-matter to avoid the js-yaml vulnerability.
  */
 function parseFrontmatter(content: string): { frontmatter: Record<string, unknown>; body: string } {
-  const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
+  const match = /^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/.exec(content);
   if (!match) {
     return { frontmatter: {}, body: content };
   }
