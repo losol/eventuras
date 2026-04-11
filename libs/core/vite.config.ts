@@ -6,5 +6,6 @@ export default defineVanillaLibConfig({
     'datetime/index': 'src/datetime/index.ts',
     'currency/index': 'src/currency/index.ts',
     'url/index': 'src/url/index.ts',
+    'dom/index': 'src/dom/index.ts',
   },
 });

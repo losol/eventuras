@@ -1,6 +1,6 @@
-import { getLocalizedCollectionName, getOriginalCollectionName } from '@/app/(frontend)/[locale]/c/[collection]/pageCollections';
+import { canUseDOM } from '@eventuras/core/dom';
 
-import canUseDOM from './canUseDOM';
+import { getLocalizedCollectionName, getOriginalCollectionName } from '@/app/(frontend)/[locale]/c/[collection]/pageCollections';
 
 export const getServerSideURL = () => {
   return process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3000';;

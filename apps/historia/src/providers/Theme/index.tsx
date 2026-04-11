@@ -2,7 +2,7 @@
 
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
 
-import canUseDOM from '@/utilities/canUseDOM'
+import { canUseDOM } from '@eventuras/core/dom'
 
 import { defaultTheme, getImplicitPreference, themeLocalStorageKey } from './shared'
 import type { Theme, ThemeContextType } from './types'

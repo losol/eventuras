@@ -6,4 +6,5 @@
  * - @eventuras/core/regex
  * - @eventuras/core/datetime
  * - @eventuras/core/currency
+ * - @eventuras/core/dom
  */
