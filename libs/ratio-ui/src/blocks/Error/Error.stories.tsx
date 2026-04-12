@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { ErrorBlock } from './Error';
 
-const meta: Meta<typeof Error> = {
+const meta: Meta<typeof ErrorBlock> = {
   title: 'Blocks/Error',
-  component: Error,
+  component: ErrorBlock,
   parameters: {
     layout: 'fullscreen',
   },
@@ -11,7 +11,7 @@ const meta: Meta<typeof Error> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof Error>;
+type Story = StoryObj<typeof ErrorBlock>;
 
 export const ServerError: Story = {
   render: () => (
