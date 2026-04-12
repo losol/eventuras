@@ -33,7 +33,7 @@ export const createClientConfig: CreateClientConfig = (config) => {
   }
 
   return {
-    ...(config || {}),
+    ...config,
     baseUrl: config.baseUrl,
   };
 };

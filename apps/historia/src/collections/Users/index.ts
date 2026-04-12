@@ -218,7 +218,7 @@ export const Users: CollectionConfig = {
       ...defaultTenantArrayField,
       required: false,
       admin: {
-        ...(defaultTenantArrayField?.admin ?? {}),
+        ...defaultTenantArrayField?.admin,
         position: 'sidebar',
         description: 'Optional: Assign user to specific websites/tenants. Leave empty for global access.',
       },
