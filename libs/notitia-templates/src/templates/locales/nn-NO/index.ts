@@ -10,4 +10,5 @@ export const templatesNnNO: TemplateRegistry = {
   ...smsTemplatesNnNO,
 };
 
-export { emailTemplatesNnNO, smsTemplatesNnNO };
+export { emailTemplatesNnNO } from './email';
+export { smsTemplatesNnNO } from './sms';

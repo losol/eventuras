@@ -177,4 +177,5 @@ function ensureConfigured() {
 // This allows builds to succeed even without env vars set
 // (admin pages are server-rendered, not statically generated)
 
-export { client, ensureConfigured };
+export { client } from '@eventuras/event-sdk';
+export { ensureConfigured };
