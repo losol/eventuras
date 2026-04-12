@@ -5,9 +5,9 @@ import type { TextField } from '@payloadcms/plugin-form-builder/types'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
-import { Error } from '../Error'
+import { FieldError } from '../Error'
 import { Width } from '../Width'
-export const Number: React.FC<
+export const NumberField: React.FC<
   TextField & {
     errors: Partial<
       FieldErrorsImpl<{
@@ -26,7 +26,7 @@ export const Number: React.FC<
         type="number"
         {...register(name, { required: requiredFromProps })}
       />
-      {requiredFromProps && errors[name] && <Error />}
+      {requiredFromProps && errors[name] && <FieldError />}
     </Width>
   )
 }
