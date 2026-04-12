@@ -31,7 +31,8 @@ type EventDetailsPageProps = {
 export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({ params }: EventDetailsPageProps): Promise<Metadata> {
-  const { id } = await params;
+  const { id: rawId } = await params;
+  const id = Number(rawId);
 
   if (Number.isNaN(id)) {
     return {
@@ -71,7 +72,8 @@ export async function generateMetadata({ params }: EventDetailsPageProps): Promi
 }
 
 export default async function EventDetailsPage({ params }: Readonly<EventDetailsPageProps>) {
-  const { id, slug } = await params;
+  const { id: rawId, slug } = await params;
+  const id = Number(rawId);
 
   if (Number.isNaN(id)) {
     logger.warn({ id }, 'Invalid event ID');
