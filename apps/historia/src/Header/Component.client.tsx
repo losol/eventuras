@@ -32,8 +32,10 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ title }) => {
     }
   }, [headerTheme, theme]);
 
+  const themeAttr = theme ? `data-theme=${theme}` : '';
+
   return (
-    <header className={`relative z-20 ${theme ? `data-theme=${theme}` : ''}`}>
+    <header className={`relative z-20 ${themeAttr}`}>
       <Navbar
         title={title}
         titleHref="/"

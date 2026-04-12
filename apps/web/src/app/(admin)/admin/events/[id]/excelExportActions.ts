@@ -56,8 +56,9 @@ export async function downloadRegistrationsExcel(
         },
         'Failed to download Excel file'
       );
+      const refSuffix = correlationId ? ` (ref: ${correlationId})` : '';
       return actionError(
-        `Failed to download: ${response.status} ${response.statusText}${correlationId ? ` (ref: ${correlationId})` : ''}`
+        `Failed to download: ${response.status} ${response.statusText}${refSuffix}`
       );
     }
 

@@ -21,8 +21,9 @@ export class ConfigLoader {
     // Validate schema
     const result = appConfigSchema.safeParse(configObject);
     if (!result.success) {
+      const issues = result.error.issues.map(i => `  - ${i.path.join('.')}: ${i.message}`).join('\n');
       throw new Error(
-        `Invalid app.config.json:\n${result.error.issues.map(i => `  - ${i.path.join('.')}: ${i.message}`).join('\n')}`
+        `Invalid app.config.json:\n${issues}`
       );
     }
 

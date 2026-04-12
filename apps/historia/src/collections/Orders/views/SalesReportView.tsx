@@ -158,11 +158,13 @@ function ReceiptCard({ order, currency }: Readonly<{ order: OrderWithTransaction
               </tr>
             </thead>
             <tbody>
-              {order.resolvedTransactions.map((txn) => (
+              {order.resolvedTransactions.map((txn) => {
+                const statusKey = `status_${txn.status}` as keyof typeof styles;
+                return (
                 <tr key={txn.id}>
                   <td>{new Date(txn.createdAt).toLocaleDateString('nb-NO')}</td>
                   <td>
-                    <span className={`${styles.statusBadge} ${styles[`status_${txn.status}`] || ''}`}>
+                    <span className={`${styles.statusBadge} ${styles[statusKey] || ''}`}>
                       {getStatusLabel(txn.status)}
                     </span>
                   </td>
@@ -170,7 +172,8 @@ function ReceiptCard({ order, currency }: Readonly<{ order: OrderWithTransaction
                   <td className={styles.receiptRef}>{txn.paymentReference}</td>
                   <td className={styles.rightAlign}>{formatCurrency(txn.amount, currency)}</td>
                 </tr>
-              ))}
+                );
+              })}
             </tbody>
           </table>
         </div>
