@@ -33,17 +33,17 @@ export const WithChildren: FooterStory = () => (
         <h3 className="mb-2 font-semibold">Resources</h3>
         <ul className="space-y-1">
           <li>
-            <a href="#" className="hover:underline">
+            <a href="/docs" className="hover:underline">
               Documentation
             </a>
           </li>
           <li>
-            <a href="#" className="hover:underline">
+            <a href="/api" className="hover:underline">
               API
             </a>
           </li>
           <li>
-            <a href="#" className="hover:underline">
+            <a href="/support" className="hover:underline">
               Support
             </a>
           </li>
@@ -53,17 +53,17 @@ export const WithChildren: FooterStory = () => (
         <h3 className="mb-2 font-semibold">Company</h3>
         <ul className="space-y-1">
           <li>
-            <a href="#" className="hover:underline">
+            <a href="/about" className="hover:underline">
               About
             </a>
           </li>
           <li>
-            <a href="#" className="hover:underline">
+            <a href="/contact" className="hover:underline">
               Contact
             </a>
           </li>
           <li>
-            <a href="#" className="hover:underline">
+            <a href="/privacy" className="hover:underline">
               Privacy
             </a>
           </li>
@@ -73,17 +73,17 @@ export const WithChildren: FooterStory = () => (
         <h3 className="mb-2 font-semibold">Legal</h3>
         <ul className="space-y-1">
           <li>
-            <a href="#" className="hover:underline">
+            <a href="/terms" className="hover:underline">
               Terms
             </a>
           </li>
           <li>
-            <a href="#" className="hover:underline">
+            <a href="/privacy-policy" className="hover:underline">
               Privacy Policy
             </a>
           </li>
           <li>
-            <a href="#" className="hover:underline">
+            <a href="/cookie-policy" className="hover:underline">
               Cookie Policy
             </a>
           </li>
@@ -109,17 +109,17 @@ export const Complete: FooterStory = () => {
           <h3 className="mb-2 font-semibold dark:text-white">Events</h3>
           <ul className="space-y-1 text-gray-600 dark:text-gray-400">
             <li>
-              <a href="#" className="hover:underline">
+              <a href="/events" className="hover:underline">
                 Upcoming Events
               </a>
             </li>
             <li>
-              <a href="#" className="hover:underline">
+              <a href="/events/past" className="hover:underline">
                 Past Events
               </a>
             </li>
             <li>
-              <a href="#" className="hover:underline">
+              <a href="/events/create" className="hover:underline">
                 Create Event
               </a>
             </li>
@@ -129,17 +129,17 @@ export const Complete: FooterStory = () => {
           <h3 className="mb-2 font-semibold dark:text-white">Resources</h3>
           <ul className="space-y-1 text-gray-600 dark:text-gray-400">
             <li>
-              <a href="#" className="hover:underline">
+              <a href="/docs" className="hover:underline">
                 Documentation
               </a>
             </li>
             <li>
-              <a href="#" className="hover:underline">
+              <a href="/api" className="hover:underline">
                 API
               </a>
             </li>
             <li>
-              <a href="#" className="hover:underline">
+              <a href="/support" className="hover:underline">
                 Support
               </a>
             </li>
@@ -149,17 +149,17 @@ export const Complete: FooterStory = () => {
           <h3 className="mb-2 font-semibold dark:text-white">Company</h3>
           <ul className="space-y-1 text-gray-600 dark:text-gray-400">
             <li>
-              <a href="#" className="hover:underline">
+              <a href="/about" className="hover:underline">
                 About Us
               </a>
             </li>
             <li>
-              <a href="#" className="hover:underline">
+              <a href="/contact" className="hover:underline">
                 Contact
               </a>
             </li>
             <li>
-              <a href="#" className="hover:underline">
+              <a href="/careers" className="hover:underline">
                 Careers
               </a>
             </li>
@@ -169,17 +169,17 @@ export const Complete: FooterStory = () => {
           <h3 className="mb-2 font-semibold dark:text-white">Legal</h3>
           <ul className="space-y-1 text-gray-600 dark:text-gray-400">
             <li>
-              <a href="#" className="hover:underline">
+              <a href="/terms" className="hover:underline">
                 Terms of Service
               </a>
             </li>
             <li>
-              <a href="#" className="hover:underline">
+              <a href="/privacy-policy" className="hover:underline">
                 Privacy Policy
               </a>
             </li>
             <li>
-              <a href="#" className="hover:underline">
+              <a href="/cookie-policy" className="hover:underline">
                 Cookie Policy
               </a>
             </li>
