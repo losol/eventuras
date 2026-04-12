@@ -59,7 +59,7 @@ RUN addgroup --system --gid 1001 nodejs \
     && adduser --system --uid 1001 --ingroup nodejs idem
 
 # Copy built artifacts (dependencies are bundled by tsup)
-COPY --from=build --chown=idem:nodejs /srv/deploy ./
+COPY --from=build --chown=idem:nodejs --chmod=555 /srv/deploy ./
 
 USER idem
 
