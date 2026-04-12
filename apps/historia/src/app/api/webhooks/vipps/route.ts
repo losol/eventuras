@@ -826,13 +826,16 @@ async function processPaymentEvent(businessEventId: string, payload: WebhookPayl
       );
 
       // Attempt to create order from payment
+      // Extract user ID if customerId is a User object, otherwise use as string
+      let resolvedUserId: string | undefined;
+      if (customerId) {
+        resolvedUserId = typeof customerId === 'string' ? customerId : customerId.id;
+      }
+
       const orderResult = await createOrderFromPayment({
         paymentReference: payload.reference,
         paymentDetails: paymentDetails,
-        // Extract user ID if customerId is a User object, otherwise use as string
-        userId: customerId
-          ? (typeof customerId === 'string' ? customerId : customerId.id)
-          : undefined,
+        userId: resolvedUserId,
       });
 
       if (orderResult.success) {

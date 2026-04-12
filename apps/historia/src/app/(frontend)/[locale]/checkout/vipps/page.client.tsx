@@ -154,13 +154,16 @@ export default function VippsCheckoutPage() {
           );
           setState('error');
           // Show user-friendly message, log technical details
-          const userMessage = orderResult.error.message.includes('Cart is empty')
-            ? 'Handlekurven er tom. Vennligst start en ny bestilling.'
-            : orderResult.error.message.includes('not found')
-              ? 'Noen produkter er ikke lenger tilgjengelige. Vennligst start en ny bestilling.'
-              : orderResult.error.message.includes('amount')
-                ? 'Betalingsbeløpet stemmer ikke. Vennligst kontakt support med referanse: ' + reference
-                : 'Kunne ikke opprette ordre. Vennligst kontakt support hvis beløpet er trukket.';
+          let userMessage: string;
+          if (orderResult.error.message.includes('Cart is empty')) {
+            userMessage = 'Handlekurven er tom. Vennligst start en ny bestilling.';
+          } else if (orderResult.error.message.includes('not found')) {
+            userMessage = 'Noen produkter er ikke lenger tilgjengelige. Vennligst start en ny bestilling.';
+          } else if (orderResult.error.message.includes('amount')) {
+            userMessage = 'Betalingsbeløpet stemmer ikke. Vennligst kontakt support med referanse: ' + reference;
+          } else {
+            userMessage = 'Kunne ikke opprette ordre. Vennligst kontakt support hvis beløpet er trukket.';
+          }
           setMessage(userMessage);
           toast.error(userMessage);
           return;

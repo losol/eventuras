@@ -70,11 +70,10 @@ export const List: React.FC<ListProps> & { Item: typeof ListItem } = ({
     : '';
 
   // Determine list type styles
-  const listTypeStyles = variant !== 'unstyled'
-    ? Component === 'ul'
-      ? 'list-disc'
-      : 'list-decimal'
-    : '';
+  let listTypeStyles = '';
+  if (variant !== 'unstyled') {
+    listTypeStyles = Component === 'ul' ? 'list-disc' : 'list-decimal';
+  }
 
   // Build final classNames
   const finalListClassName = [

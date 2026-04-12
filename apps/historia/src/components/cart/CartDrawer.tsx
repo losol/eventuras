@@ -55,12 +55,13 @@ export function CartDrawer({ isOpen, onClose, locale }: Readonly<CartDrawerProps
       <Drawer.Header as="h2">Handlekurv</Drawer.Header>
 
       <Drawer.Body>
-        {loading ? (
+        {loading && (
           <div className="flex items-center justify-center py-12">
             <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-blue-600"></div>
             <span className="ml-3 text-gray-600">Laster...</span>
           </div>
-        ) : items.length === 0 ? (
+        )}
+        {!loading && items.length === 0 && (
           <div className="py-12 text-center">
             <svg
               className="mx-auto mb-4 h-16 w-16 text-gray-400"
@@ -78,7 +79,8 @@ export function CartDrawer({ isOpen, onClose, locale }: Readonly<CartDrawerProps
             <p className="mb-4 text-lg font-medium text-gray-900">Handlekurven er tom</p>
             <p className="text-gray-600">Legg til produkter for å komme i gang</p>
           </div>
-        ) : (
+        )}
+        {!loading && items.length > 0 && (
           <div className="space-y-4">
             {cartSummary?.items.map((item) => (
               <div

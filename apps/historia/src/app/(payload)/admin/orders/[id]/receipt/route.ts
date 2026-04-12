@@ -158,11 +158,16 @@ export async function GET(
           </tr>
         </thead>
         <tbody>
-          ${transactions.map(txn => `
+          ${transactions.map(txn => {
+            let statusBg: string;
+            if (txn.status === 'captured') statusBg = '#dcfce7';
+            else if (txn.status === 'refunded') statusBg = '#fef2f2';
+            else statusBg = '#f3f4f6';
+            return `
             <tr>
               <td style="padding: 8px; border-bottom: 1px solid #e5e7eb;">${new Date(txn.createdAt).toLocaleDateString('nb-NO')}</td>
               <td style="padding: 8px; border-bottom: 1px solid #e5e7eb;">
-                <span style="display: inline-block; padding: 2px 8px; background: ${txn.status === 'captured' ? '#dcfce7' : txn.status === 'refunded' ? '#fef2f2' : '#f3f4f6'}; border-radius: 4px; font-size: 12px;">
+                <span style="display: inline-block; padding: 2px 8px; background: ${statusBg}; border-radius: 4px; font-size: 12px;">
                   ${getStatusLabel(txn.status)}
                 </span>
               </td>
@@ -170,24 +175,29 @@ export async function GET(
               <td style="padding: 8px; border-bottom: 1px solid #e5e7eb; font-family: monospace; font-size: 11px;">${sanitizeForHtml(txn.paymentReference)}</td>
               <td style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: right;">${currency} ${toMajorUnits(txn.amount).toFixed(2)}</td>
             </tr>
-          `).join('')}
+          `}).join('')}
         </tbody>
       </table>
     </div>
   ` : '';
 
   const shippingAddress = order.shippingAddress;
-  const shippingHtml = shippingAddress ? `
+  let shippingHtml = '';
+  if (shippingAddress) {
+    const addressLine2Html = shippingAddress.addressLine2 ? `${sanitizeForHtml(shippingAddress.addressLine2)}<br>` : '';
+    const country = sanitizeForHtml(shippingAddress.country) || 'Norge';
+    shippingHtml = `
     <div style="margin-top: 24px;">
       <h3 style="margin: 0 0 8px 0; font-size: 12px; color: #6b7280; text-transform: uppercase;">Leveringsadresse</h3>
       <p style="margin: 0; line-height: 1.6;">
         ${sanitizeForHtml(shippingAddress.addressLine1)}<br>
-        ${shippingAddress.addressLine2 ? `${sanitizeForHtml(shippingAddress.addressLine2)}<br>` : ''}
+        ${addressLine2Html}
         ${sanitizeForHtml(shippingAddress.postalCode)} ${sanitizeForHtml(shippingAddress.city)}<br>
-        ${sanitizeForHtml(shippingAddress.country) || 'Norge'}
+        ${country}
       </p>
     </div>
-  ` : '';
+  `;
+  }
 
   const html = `
 <!DOCTYPE html>

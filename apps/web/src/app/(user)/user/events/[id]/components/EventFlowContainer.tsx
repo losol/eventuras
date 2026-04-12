@@ -77,14 +77,17 @@ const EventFlowContainer: React.FC<EventFlowContainerProps> = ({
       currentStep = 4;
     }
     // Mark completed steps
-    const steps = baseSteps.map((step, index) => ({
-      ...step,
-      status: (index + 1 < currentStep
-        ? 'complete'
-        : index + 1 === currentStep
-          ? 'current'
-          : 'upcoming') as Step['status'],
-    }));
+    const steps = baseSteps.map((step, index) => {
+      let status: Step['status'];
+      if (index + 1 < currentStep) {
+        status = 'complete';
+      } else if (index + 1 === currentStep) {
+        status = 'current';
+      } else {
+        status = 'upcoming';
+      }
+      return { ...step, status };
+    });
     return { currentStep, steps };
   };
   const stepInfo = getCurrentStepInfo();

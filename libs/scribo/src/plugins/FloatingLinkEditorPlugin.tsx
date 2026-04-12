@@ -279,7 +279,7 @@ function FloatingLinkEditor({
 
   return (
     <div ref={editorRef} className="link-editor">
-      {!isLink ? null : isLinkEditMode ? (
+      {isLink && isLinkEditMode && (
         <>
           <input
             ref={inputRef}
@@ -312,7 +312,8 @@ function FloatingLinkEditor({
             />
           </div>
         </>
-      ) : (
+      )}
+      {isLink && !isLinkEditMode && (
         <div className="link-view">
           <a
             href={sanitizeUrl(linkUrl)}

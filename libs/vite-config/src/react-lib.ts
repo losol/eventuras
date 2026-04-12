@@ -132,12 +132,14 @@ export function defineReactLibConfig(config: ReactLibConfig): UserConfig {
   } = config;
 
   // Determine entry points
-  const entryPoints =
-    typeof entry === 'string' && entry.includes('*')
-      ? glob.sync(resolve(process.cwd(), entry))
-      : typeof entry === 'string'
-        ? resolve(process.cwd(), entry)
-        : entry;
+  let entryPoints: string | string[] | Record<string, string>;
+  if (typeof entry === 'string' && entry.includes('*')) {
+    entryPoints = glob.sync(resolve(process.cwd(), entry));
+  } else if (typeof entry === 'string') {
+    entryPoints = resolve(process.cwd(), entry);
+  } else {
+    entryPoints = entry;
+  }
 
   // Common React externals
   const reactExternals = ['react', 'react-dom', 'react/jsx-runtime'];

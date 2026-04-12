@@ -64,30 +64,33 @@ export function Breadcrumbs({ className = '', LinkComponent, children, ...props 
 export function Breadcrumb({ href, className = '', children, ...props }: Readonly<BreadcrumbProps>) {
   const LinkComponent = useContext(LinkContext);
 
+  const linkClasses = `text-primary-600 dark:text-primary-400 hover:underline ${className}`;
+
+  let content: React.ReactNode;
+  if (href && LinkComponent) {
+    content = (
+      <LinkComponent href={href} className={linkClasses}>
+        {children}
+      </LinkComponent>
+    );
+  } else if (href) {
+    content = (
+      <a href={href} className={linkClasses}>
+        {children}
+      </a>
+    );
+  } else {
+    content = (
+      <span className={`text-gray-700 dark:text-gray-300 ${className}`}>
+        {children}
+      </span>
+    );
+  }
+
   return (
     <>
       <AriaBreadcrumb {...props}>
-        {href ? (
-          LinkComponent ? (
-            <LinkComponent
-              href={href}
-              className={`text-primary-600 dark:text-primary-400 hover:underline ${className}`}
-            >
-              {children}
-            </LinkComponent>
-          ) : (
-            <a
-              href={href}
-              className={`text-primary-600 dark:text-primary-400 hover:underline ${className}`}
-            >
-              {children}
-            </a>
-          )
-        ) : (
-          <span className={`text-gray-700 dark:text-gray-300 ${className}`}>
-            {children}
-          </span>
-        )}
+        {content}
       </AriaBreadcrumb>
       <span className="text-gray-400 dark:text-gray-600 last:hidden" aria-hidden="true">
         /

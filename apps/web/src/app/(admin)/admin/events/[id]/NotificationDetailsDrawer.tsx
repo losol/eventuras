@@ -163,21 +163,19 @@ export default function NotificationDetailsDrawer({
             <Text weight="semibold" marginBottom="xs">
               Recipients
             </Text>
-            {isLoading ? (
-              <Loading />
-            ) : recipients.length > 0 ? (
+            {isLoading && <Loading />}
+            {!isLoading && recipients.length > 0 && (
               <div className="space-y-2 max-h-96 overflow-y-auto">
                 {recipients.map((recipient, index) => {
-                  const badgeStatus: 'success' | 'error' | 'neutral' = recipient.sent
-                    ? 'success'
-                    : recipient.errors
-                      ? 'error'
-                      : 'neutral';
-                  const badgeLabel = recipient.sent
-                    ? 'Sent'
-                    : recipient.errors
-                      ? 'Error'
-                      : 'Pending';
+                  let badgeStatus: 'success' | 'error' | 'neutral';
+                  if (recipient.sent) badgeStatus = 'success';
+                  else if (recipient.errors) badgeStatus = 'error';
+                  else badgeStatus = 'neutral';
+
+                  let badgeLabel: string;
+                  if (recipient.sent) badgeLabel = 'Sent';
+                  else if (recipient.errors) badgeLabel = 'Error';
+                  else badgeLabel = 'Pending';
 
                   return (
                     <Card key={recipient.notificationRecipientId || index} padding="xs">
@@ -204,7 +202,8 @@ export default function NotificationDetailsDrawer({
                   );
                 })}
               </div>
-            ) : (
+            )}
+            {!isLoading && recipients.length === 0 && (
               <Text variant="subtle">No recipients data available</Text>
             )}
           </div>

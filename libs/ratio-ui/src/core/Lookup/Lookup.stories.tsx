@@ -155,13 +155,11 @@ export const RichRendering: Story = {
               <div className="text-xs text-gray-500 truncate">{u.email}</div>
             </div>
             <span
-              className={`rounded px-2 py-0.5 text-xs font-medium ${
-                u.role === 'Admin'
-                  ? 'bg-purple-100 text-purple-800'
-                  : u.role === 'Manager'
-                    ? 'bg-blue-100 text-blue-800'
-                    : 'bg-gray-100 text-gray-700'
-              }`}
+              className={`rounded px-2 py-0.5 text-xs font-medium ${(() => {
+                if (u.role === 'Admin') return 'bg-purple-100 text-purple-800';
+                if (u.role === 'Manager') return 'bg-blue-100 text-blue-800';
+                return 'bg-gray-100 text-gray-700';
+              })()}`}
             >
               {u.role}
             </span>

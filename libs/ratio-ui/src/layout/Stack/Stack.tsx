@@ -112,11 +112,12 @@ export const Stack: React.FC<StackProps> = ({
   const alignClass = align ? alignClasses[align] : '';
   const justifyClass = justify ? justifyClasses[justify] : '';
   const wrapClass = wrap ? 'flex-wrap' : '';
-  const dividerClass = dividers
-    ? direction === 'vertical'
+  let dividerClass = '';
+  if (dividers) {
+    dividerClass = direction === 'vertical'
       ? 'divide-y divide-gray-200 dark:divide-gray-700'
-      : 'divide-x divide-gray-200 dark:divide-gray-700'
-    : '';
+      : 'divide-x divide-gray-200 dark:divide-gray-700';
+  }
 
   const classes = [
     'flex',

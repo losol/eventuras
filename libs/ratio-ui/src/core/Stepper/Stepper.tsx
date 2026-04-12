@@ -54,16 +54,26 @@ const getConnectorClasses = (isComplete: boolean) => {
   }`;
 };
 
+const getStepLabelColor = (status: StepStatus): string => {
+  if (status === 'current') return 'text-primary-600 dark:text-primary-400';
+  if (status === 'complete') return 'text-green-600 dark:text-green-400';
+  if (status === 'error') return 'text-red-600 dark:text-red-400';
+  return 'text-gray-500 dark:text-gray-400';
+};
+
 const StepContent: React.FC<{ step: Step; variant: StepperVariant }> = ({ step, variant }) => {
   const showCheck = step.status === 'complete' && variant !== 'dots';
 
+  let content: React.ReactNode = null;
+  if (showCheck) {
+    content = <Check size={20} strokeWidth={3} />;
+  } else if (variant !== 'dots') {
+    content = <span>{step.number}</span>;
+  }
+
   return (
     <div className={getStepStatusClasses(step.status, variant)}>
-      {showCheck ? (
-        <Check size={20} strokeWidth={3} />
-      ) : variant !== 'dots' ? (
-        <span>{step.number}</span>
-      ) : null}
+      {content}
     </div>
   );
 };
@@ -84,15 +94,7 @@ const HorizontalStepper: React.FC<{ steps: Step[]; variant: StepperVariant }> = 
               </div>
               {variant !== 'dots' && (
                 <div className="text-center">
-                  <div className={`text-sm font-medium ${
-                    step.status === 'current'
-                      ? 'text-primary-600 dark:text-primary-400'
-                      : step.status === 'complete'
-                      ? 'text-green-600 dark:text-green-400'
-                      : step.status === 'error'
-                      ? 'text-red-600 dark:text-red-400'
-                      : 'text-gray-500 dark:text-gray-400'
-                  }`}>
+                  <div className={`text-sm font-medium ${getStepLabelColor(step.status)}`}>
                     {step.label}
                   </div>
                   {step.description && (
@@ -138,15 +140,7 @@ const VerticalStepper: React.FC<{ steps: Step[]; variant: StepperVariant }> = ({
 
           {variant !== 'dots' && (
             <div className="flex-1 pb-8">
-              <div className={`font-medium ${
-                step.status === 'current'
-                  ? 'text-primary-600 dark:text-primary-400'
-                  : step.status === 'complete'
-                  ? 'text-green-600 dark:text-green-400'
-                  : step.status === 'error'
-                  ? 'text-red-600 dark:text-red-400'
-                  : 'text-gray-500 dark:text-gray-400'
-              }`}>
+              <div className={`font-medium ${getStepLabelColor(step.status)}`}>
                 {step.label}
               </div>
               {step.description && (
@@ -170,14 +164,14 @@ export const Stepper: React.FC<StepperProps> = ({
   className = '',
 }) => {
   // Automatically set status based on currentStep if not explicitly set
-  const processedSteps = steps.map(step => ({
-    ...step,
-    status: step.status || (
-      step.number < currentStep ? 'complete' as StepStatus :
-      step.number === currentStep ? 'current' as StepStatus :
-      'upcoming' as StepStatus
-    ),
-  }));
+  const processedSteps = steps.map(step => {
+    if (step.status) return step;
+    let status: StepStatus;
+    if (step.number < currentStep) status = 'complete';
+    else if (step.number === currentStep) status = 'current';
+    else status = 'upcoming';
+    return { ...step, status };
+  });
 
   const containerClasses = `stepper ${orientation} ${className}`.trim();
 
