@@ -16,8 +16,8 @@ import { defaultTemplates, getTemplatesForLocale } from './templates';
  */
 export class NotitiaTemplates {
   private customTemplates: TemplateRegistry = {};
-  private handlebarsInstance: typeof Handlebars;
-  private defaultLocale: Locale = 'en-US';
+  private readonly handlebarsInstance: typeof Handlebars;
+  private readonly defaultLocale: Locale = 'en-US';
 
   constructor(defaultLocale: Locale = 'en-US') {
     this.defaultLocale = defaultLocale;

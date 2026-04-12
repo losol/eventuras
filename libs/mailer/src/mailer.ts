@@ -34,7 +34,7 @@ export interface MailerConfig {
  */
 export class Mailer {
   private transporter: Transporter<SMTPTransport.SentMessageInfo> | null = null;
-  private config: MailerConfig;
+  private readonly config: MailerConfig;
 
   constructor(config: MailerConfig) {
     this.config = config;

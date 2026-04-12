@@ -29,8 +29,8 @@ interface PluginInstance {
  * Manages loading, initialization, and routing of plugins
  */
 export class PluginRegistry {
-  private plugins: Map<string, PluginInstance> = new Map();
-  private channelMap: Map<string, Map<string, string>> = new Map(); // tenantId:channelId -> channelType:pluginName
+  private readonly plugins: Map<string, PluginInstance> = new Map();
+  private readonly channelMap: Map<string, Map<string, string>> = new Map(); // tenantId:channelId -> channelType:pluginName
 
   constructor() {
     // Registry logger is the module-level logger
