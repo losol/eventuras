@@ -76,11 +76,11 @@ RUN groupadd -r conductor && useradd -r -g conductor conductor
 WORKDIR /app
 
 # Copy built application and production dependencies
-COPY --from=builder --chown=conductor:conductor /app/apps/conductor/dist ./dist
-COPY --from=builder --chown=conductor:conductor /app/apps/conductor/package.json ./package.json
+COPY --from=builder --chown=conductor:conductor --chmod=555 /app/apps/conductor/dist ./dist
+COPY --from=builder --chown=conductor:conductor --chmod=555 /app/apps/conductor/package.json ./package.json
 
 # Copy node_modules (contains production dependencies)
-COPY --from=builder --chown=conductor:conductor /app/node_modules ./node_modules
+COPY --from=builder --chown=conductor:conductor --chmod=555 /app/node_modules ./node_modules
 
 # Create config directory with proper permissions
 RUN mkdir -p /data/config && chown -R conductor:conductor /data/config
@@ -98,7 +98,7 @@ EXPOSE 3333
 
 # Health check using wget (available in alpine)
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:3333/health || exit 1
+    CMD wget --no-verbose --tries=1 --spider http://localhost:3333/health || exit 1
 
 # Start the application
 CMD ["node", "dist/index.js"]
