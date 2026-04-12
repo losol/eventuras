@@ -261,11 +261,8 @@ export function extractUserFromTokens(
 
   // Normalize roles: some providers send a single string instead of an array
   const rawRoles = idToken[rolesClaim];
-  const roles = Array.isArray(rawRoles)
-    ? rawRoles
-    : typeof rawRoles === 'string'
-      ? [rawRoles]
-      : [];
+  const nonArrayRoles = typeof rawRoles === 'string' ? [rawRoles] : [];
+  const roles = Array.isArray(rawRoles) ? rawRoles : nonArrayRoles;
 
   logger.debug({ sub: idToken.sub, rolesClaim, rolesCount: roles.length }, 'Extracted user from ID token');
 

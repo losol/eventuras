@@ -788,22 +788,23 @@ export async function createOrderFromPayment({
     );
 
     // Extract shipping address from Vipps (prioritize shippingDetails over userDetails)
-    const vippsShippingAddress = paymentDetails.shippingDetails?.address
-      ? {
-          addressLine1: paymentDetails.shippingDetails.address.addressLine1,
-          addressLine2: paymentDetails.shippingDetails.address.addressLine2,
-          postalCode: paymentDetails.shippingDetails.address.postCode,
-          city: paymentDetails.shippingDetails.address.city,
-          country: paymentDetails.shippingDetails.address.country,
-        }
-      : paymentDetails.userDetails
-        ? {
-            addressLine1: paymentDetails.userDetails.streetAddress,
-            postalCode: paymentDetails.userDetails.zipCode,
-            city: paymentDetails.userDetails.city,
-            country: paymentDetails.userDetails.country,
-          }
-        : undefined;
+    let vippsShippingAddress;
+    if (paymentDetails.shippingDetails?.address) {
+      vippsShippingAddress = {
+        addressLine1: paymentDetails.shippingDetails.address.addressLine1,
+        addressLine2: paymentDetails.shippingDetails.address.addressLine2,
+        postalCode: paymentDetails.shippingDetails.address.postCode,
+        city: paymentDetails.shippingDetails.address.city,
+        country: paymentDetails.shippingDetails.address.country,
+      };
+    } else if (paymentDetails.userDetails) {
+      vippsShippingAddress = {
+        addressLine1: paymentDetails.userDetails.streetAddress,
+        postalCode: paymentDetails.userDetails.zipCode,
+        city: paymentDetails.userDetails.city,
+        country: paymentDetails.userDetails.country,
+      };
+    }
 
     if (vippsShippingAddress) {
       logger.info(

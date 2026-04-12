@@ -160,10 +160,11 @@ export function Lookup<T>({
   };
 
   const textValueOf = getItemTextValue ?? getItemLabel;
+  const pluralSuffix = minChars === 1 ? '' : 's';
   const resolvedMinCharsMessage =
     minCharsMessage ??
     (minChars > 0
-      ? `Type at least ${minChars} character${minChars === 1 ? '' : 's'} to search`
+      ? `Type at least ${minChars} character${pluralSuffix} to search`
       : undefined);
 
   const clearInput = () => {

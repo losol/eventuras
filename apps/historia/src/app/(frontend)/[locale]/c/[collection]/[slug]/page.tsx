@@ -156,7 +156,8 @@ export default async function Page({ params: paramsPromise }: Readonly<Args>) {
   const isProduct = originalCollectionName === 'products';
   const hasLead = 'lead' in document && document.lead;
   const hasImage = 'image' in document && document.image;
-  const imageProps = hasImage ? getImageProps(document.image, isProduct ? 'square' : 'landscape') : null;
+  const imageFormat = isProduct ? 'square' : 'landscape';
+  const imageProps = hasImage ? getImageProps(document.image, imageFormat) : null;
 
   return (
     <Container>

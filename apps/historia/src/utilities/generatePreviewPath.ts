@@ -35,7 +35,12 @@ export const generatePreviewPath = ({ collection, slug, resourceId, breadcrumbsU
       path = `/${locale}/t/${resourceId}`;
     } else {
       // Map collection to URL name (quote/source vs quotes/sources)
-      const urlCollection = collection === 'quotes' ? (locale === 'no' ? 'sitat' : 'quote') : (locale === 'no' ? 'kilde' : 'source');
+      let urlCollection: string;
+      if (collection === 'quotes') {
+        urlCollection = locale === 'no' ? 'sitat' : 'quote';
+      } else {
+        urlCollection = locale === 'no' ? 'kilde' : 'source';
+      }
       path = `/${locale}/i/${urlCollection}/${resourceId}`;
     }
   } else if (prefix === 'c' && slug) {

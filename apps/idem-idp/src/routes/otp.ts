@@ -171,12 +171,18 @@ export const registerOtpRoutes: FastifyPluginAsync<OtpRoutesOptions> = async (fa
 
       // Handle specific OTP errors
       if (error instanceof OtpError) {
-        const statusCode =
-          error.code === 'RATE_LIMITED' || error.code === 'BLOCKED' ? 429 :
-          error.code === 'NOT_FOUND' || error.code === 'INVALID_CODE' ? 401 :
-          error.code === 'EXPIRED' ? 410 :
-          error.code === 'MAX_ATTEMPTS' ? 429 :
-          400;
+        let statusCode: number;
+        if (error.code === 'RATE_LIMITED' || error.code === 'BLOCKED') {
+          statusCode = 429;
+        } else if (error.code === 'NOT_FOUND' || error.code === 'INVALID_CODE') {
+          statusCode = 401;
+        } else if (error.code === 'EXPIRED') {
+          statusCode = 410;
+        } else if (error.code === 'MAX_ATTEMPTS') {
+          statusCode = 429;
+        } else {
+          statusCode = 400;
+        }
 
         return reply.code(statusCode).send({
           error: error.code,

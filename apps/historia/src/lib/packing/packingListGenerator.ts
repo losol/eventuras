@@ -158,17 +158,22 @@ export function formatPackingListAsHtml(order: Order, customerName?: string, cus
   `).join('');
 
   const shippingAddress = order.shippingAddress;
-  const shippingHtml = shippingAddress ? `
+  let shippingHtml = '';
+  if (shippingAddress) {
+    const addressLine2Html = shippingAddress.addressLine2 ? `${sanitizeForHtml(shippingAddress.addressLine2)}<br>` : '';
+    const country = sanitizeForHtml(shippingAddress.country) || 'NO';
+    shippingHtml = `
     <div style="margin-bottom: 24px;">
       <h3 style="margin: 0 0 8px 0; font-size: 14px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em;">Leveringsadresse / Shipping Address</h3>
       <div style="padding: 12px; background: #f9fafb; border-radius: 6px; color: #374151;">
         ${sanitizeForHtml(shippingAddress.addressLine1)}<br>
-        ${shippingAddress.addressLine2 ? `${sanitizeForHtml(shippingAddress.addressLine2)}<br>` : ''}
+        ${addressLine2Html}
         ${sanitizeForHtml(shippingAddress.postalCode)} ${sanitizeForHtml(shippingAddress.city)}<br>
-        ${sanitizeForHtml(shippingAddress.country) || 'NO'}
+        ${country}
       </div>
     </div>
-  ` : '';
+  `;
+  }
 
   const orderDate = formatOrderDate(order.createdAt, {
     year: 'numeric',
