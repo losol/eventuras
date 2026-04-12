@@ -5,7 +5,7 @@ function loadScopes(): string[] {
     const repo = JSON.parse(readFileSync('./repo.json', 'utf8'));
     const scopes = new Set<string>(repo.scopes ?? []);
     for (const section of ['apps', 'libs'] as const) {
-      for (const [key, val] of Object.entries(repo[section] ?? {}) as [string, { aliases?: string[] }][]) {
+      for (const [key, val] of Object.entries(repo[section] ?? {}) as [string, { aliases?: string[]; }][]) {
         scopes.add(key);
         if (val.aliases) {
           for (const alias of val.aliases) {
@@ -14,7 +14,7 @@ function loadScopes(): string[] {
         }
       }
     }
-    return [...scopes].sort();
+    return [...scopes].sort((a, b) => a.localeCompare(b));
   } catch {
     return [];
   }
