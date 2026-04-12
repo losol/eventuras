@@ -224,7 +224,7 @@ i.redo {
 }
 
 [data-theme="dark"] .link-editor .link-input {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: #303030;
   color: #e5e5e5;
 }
 
@@ -893,7 +893,7 @@ i.chevron-down {
 }
 
 [data-theme="dark"] .action-button {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: #303030;
   color: #e5e5e5;
 }
 
@@ -903,7 +903,7 @@ i.chevron-down {
 }
 
 [data-theme="dark"] .action-button:hover {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: #474747;
   color: #fff;
 }
 
