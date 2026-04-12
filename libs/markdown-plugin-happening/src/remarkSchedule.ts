@@ -12,7 +12,7 @@ export interface ParsedScheduleItem {
  * Regex matching a time range like "09:00–10:30" or a single time like "19:00".
  * Supports : and . as separator, – and - as range delimiter.
  */
-const TIME_RE = /^(\d{1,2}[.:]\d{2})\s*([–\-]\s*\d{1,2}[.:]\d{2})?$/;
+const TIME_RE = /^(\d{1,2}[.:]\d{2})\s*([–-]\s*\d{1,2}[.:]\d{2})?$/;
 
 /** Extract plain text from mdast phrasing content nodes. */
 function textContent(nodes: PhrasingContent[]): string {
