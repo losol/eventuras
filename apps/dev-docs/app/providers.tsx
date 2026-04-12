@@ -27,18 +27,18 @@ export function ThemeProvider({ children }: Readonly<{ children: React.ReactNode
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored === 'light' || stored === 'dark') {
       setThemeState(stored);
-      document.documentElement.setAttribute('data-theme', stored);
+      document.documentElement.dataset.theme = stored;
     } else {
       const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
       setThemeState(preferred);
-      document.documentElement.setAttribute('data-theme', preferred);
+      document.documentElement.dataset.theme = preferred;
     }
   }, []);
 
   const setTheme = useCallback((t: Theme) => {
     setThemeState(t);
     localStorage.setItem(STORAGE_KEY, t);
-    document.documentElement.setAttribute('data-theme', t);
+    document.documentElement.dataset.theme = t;
   }, []);
 
   const value = useMemo(() => ({ theme, setTheme }), [theme, setTheme]);
