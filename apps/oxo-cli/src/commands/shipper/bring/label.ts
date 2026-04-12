@@ -5,13 +5,13 @@ import { writeFileSync } from 'node:fs';
 import { loadEnvFile, requireEnvVar } from '../../../utils/env.js';
 
 export default class BringLabel extends Command {
-  static readonly override description = 'Download a Bring shipping label as PDF';
-static readonly override examples = [
+  static override readonly description = 'Download a Bring shipping label as PDF';
+  static override readonly examples = [
     '$ oxo shipper bring label --label-url "https://api.bring.com/booking/api/booking/labels/XXX"',
     '$ oxo shipper bring label --label-url "..." --output custom-label.pdf',
     '$ oxo shipper bring label --label-url "..." --json',
   ];
-static readonly override flags = {
+  static override readonly flags = {
     json: Flags.boolean({
       default: false,
       description: 'Output result as JSON',
