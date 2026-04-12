@@ -9,15 +9,15 @@ import { collect } from '../../collector/collect.js';
 const CONFIG_FILENAMES = ['docs.config.ts', 'docs.config.js', 'docs.config.mjs'];
 
 export default class DocsCollect extends Command {
-  static readonly override description = 'Collect documentation from across the repo into a single output directory';
+  static override readonly description = 'Collect documentation from across the repo into a single output directory';
 
-  static readonly override examples = [
+  static override readonly examples = [
     '$ oxo docs collect',
     '$ oxo docs collect --config ./custom.config.ts',
     '$ oxo docs collect --root /path/to/repo',
   ];
 
-  static readonly override flags = {
+  static override readonly flags = {
     config: Flags.string({
       char: 'c',
       description: 'Path to docs config file',
