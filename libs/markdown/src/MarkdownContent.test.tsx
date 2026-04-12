@@ -150,9 +150,9 @@ describe('MarkdownContent', () => {
   })
 
   // unescapes backslash-escaped markdown characters
-  it('unescapes backslash-escaped markdown (e.g., \\*\\* from server)', () => {
+  it(String.raw`unescapes backslash-escaped markdown (e.g., \*\* from server)`, () => {
     // This simulates data that comes from server with escaped asterisks
-    const escapedMarkdown = 'Join us for \\*\\*Amazing Event\\*\\*, an exciting opportunity.'
+    const escapedMarkdown = String.raw`Join us for \*\*Amazing Event\*\*, an exciting opportunity.`
     const { container } = render(<MarkdownContent markdown={escapedMarkdown} />)
     const strong = container.querySelector('strong')
     expect(strong).toBeInTheDocument()
