@@ -6,8 +6,8 @@ import { appConfig } from '@/config.server';
  */
 export function getOrganizationId(): number {
   const raw = appConfig.env.ORGANIZATION_ID;
-  const id = typeof raw === 'number' ? raw : parseInt(raw as string, 10);
-  if (!id || isNaN(id)) {
+  const id = typeof raw === 'number' ? raw : Number.parseInt(raw as string, 10);
+  if (!id || Number.isNaN(id)) {
     throw new Error('ORGANIZATION_ID is not configured');
   }
   return id;

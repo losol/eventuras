@@ -25,7 +25,7 @@ export const createEventRegistration = async (
   const products = productMapToOrderLineModel(selectedProducts);
   const orgId = getOrganizationId();
 
-  if (!orgId || isNaN(orgId)) {
+  if (!orgId || Number.isNaN(orgId)) {
     logger.error('Organization ID is not configured or invalid');
     throw new Error('Organization ID is required');
   }
@@ -101,7 +101,7 @@ export const addProductsToRegistration = async (
   const orgId = getOrganizationId();
 
   const response = await postV3RegistrationsByIdProducts({
-    path: { id: parseInt(registrationId.toString(), 10) },
+    path: { id: Number.parseInt(registrationId.toString(), 10) },
     headers: { 'Eventuras-Org-Id': orgId },
     body: { lines: products },
   });

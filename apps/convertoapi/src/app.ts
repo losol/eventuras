@@ -30,7 +30,7 @@ if (isMainModule) {
   fastify.log.info('Fastify routes registered:\n' + fastify.printRoutes());
 
   try {
-    const port = process.env.PORT ? parseInt(process.env.PORT) : 3100;
+    const port = process.env.PORT ? Number.parseInt(process.env.PORT) : 3100;
     const host = process.env.HOST ?? '0.0.0.0';
 
     await fastify.listen({ port, host });

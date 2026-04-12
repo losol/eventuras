@@ -159,7 +159,7 @@ export function createMailerFromEnv(): Mailer {
   if (mode === 'production' && hasSmtpConfig) {
     config.smtp = {
       host: host!,
-      port: parseInt(port!, 10),
+      port: Number.parseInt(port!, 10),
       secure: process.env.SMTP_SECURE === 'true',
       auth: { user: user!, pass: pass! },
     };

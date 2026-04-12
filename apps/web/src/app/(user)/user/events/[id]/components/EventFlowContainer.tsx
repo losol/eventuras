@@ -48,7 +48,7 @@ const EventFlowContainer: React.FC<EventFlowContainerProps> = ({
     const stateSelected = context.selectedProducts;
     if (stateSelected) {
       return [...stateSelected.keys()].map((key: string) => ({
-        productId: parseInt(key, 10),
+        productId: Number.parseInt(key, 10),
         quantity: stateSelected.get(key) ?? 0,
       }));
     }

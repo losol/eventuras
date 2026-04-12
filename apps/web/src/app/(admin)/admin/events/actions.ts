@@ -37,8 +37,8 @@ export async function createEvent(
     let organizationId: number | null = null;
 
     if (orgIdFromForm && orgIdFromForm.trim() !== '') {
-      const parsed = parseInt(orgIdFromForm, 10);
-      organizationId = isNaN(parsed) ? null : parsed;
+      const parsed = Number.parseInt(orgIdFromForm, 10);
+      organizationId = Number.isNaN(parsed) ? null : parsed;
       logger.info({ orgIdFromForm, organizationId }, 'Using organization ID from form');
     } else {
       organizationId = getOrganizationId();
@@ -160,7 +160,7 @@ export async function updateEvent(
 
   try {
     // Validate event ID
-    if (!eventId || isNaN(eventId)) {
+    if (!eventId || Number.isNaN(eventId)) {
       const errorMsg = 'Invalid event ID';
       updateLogger.error({ eventId }, errorMsg);
       return actionError(errorMsg, 'INVALID_EVENT_ID');
@@ -275,7 +275,7 @@ export async function issueCertificates(eventId: number): Promise<ServerActionRe
 
   try {
     // Validate event ID
-    if (!eventId || isNaN(eventId)) {
+    if (!eventId || Number.isNaN(eventId)) {
       const errorMsg = 'Invalid event ID';
       certificateLogger.error({ eventId }, errorMsg);
       return actionError(errorMsg, 'INVALID_EVENT_ID');
@@ -360,7 +360,7 @@ export async function previewCertificate(eventId: number): Promise<ServerActionR
   previewLogger.info({ eventId }, 'Previewing certificate for event');
 
   try {
-    if (!eventId || isNaN(eventId)) {
+    if (!eventId || Number.isNaN(eventId)) {
       return actionError('Invalid event ID', 'INVALID_EVENT_ID');
     }
 

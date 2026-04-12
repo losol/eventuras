@@ -9,7 +9,7 @@ export const productMapToOrderLineModel = (
 ): OrderLineModel[] => {
   return selectedProducts
     ? (Array.from(selectedProducts, ([productId, quantity]) => ({
-        productId: parseInt(productId, 10),
+        productId: Number.parseInt(productId, 10),
         quantity,
       })) as OrderLineModel[])
     : [];

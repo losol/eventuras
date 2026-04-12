@@ -85,7 +85,7 @@ export function validateShippingDate(dateString: string): void {
   const date = new Date(dateString);
   
   // Check if date is valid
-  if (isNaN(date.getTime())) {
+  if (Number.isNaN(date.getTime())) {
     throw new Error('Invalid shipping date');
   }
 

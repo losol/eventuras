@@ -114,7 +114,7 @@ export function validateEnvironmentVariables(config: ValidatedConfig): void {
 
   // Check PORT environment variable
   const port = process.env['PORT'];
-  if (port && (isNaN(Number(port)) || Number(port) < 1 || Number(port) > 65535)) {
+  if (port && (Number.isNaN(Number(port)) || Number(port) < 1 || Number(port) > 65535)) {
     throw new Error(
       `Invalid PORT environment variable: "${port}". Must be a number between 1 and 65535.`,
     );

@@ -48,7 +48,7 @@ function formatTime(time: unknown): string {
   if (typeof time === 'string') {
     // ISO string — extract time portion
     const d = new Date(time);
-    return isNaN(d.getTime()) ? '' : d.toLocaleTimeString('en-GB', { hour12: false });
+    return Number.isNaN(d.getTime()) ? '' : d.toLocaleTimeString('en-GB', { hour12: false });
   }
   if (typeof time === 'number') {
     return new Date(time).toLocaleTimeString('en-GB', { hour12: false });

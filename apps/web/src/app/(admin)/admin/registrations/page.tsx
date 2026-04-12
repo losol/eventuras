@@ -16,7 +16,7 @@ type PageProps = {
 export default async function AdminRegistrationsPage({ searchParams }: Readonly<PageProps>) {
   const t = await getTranslations();
   const params = await searchParams;
-  const page = params.page ? parseInt(params.page, 10) : 1;
+  const page = params.page ? Number.parseInt(params.page, 10) : 1;
   const pageSize = 50;
   const response = await getRegistrations(page, pageSize);
   if (!response.ok || !response.data) {
