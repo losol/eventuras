@@ -87,7 +87,7 @@ export class Logger {
       const bindings: Record<string, unknown> = {
         ...(options.namespace && { namespace: options.namespace }),
         ...(options.correlationId && { correlationId: options.correlationId }),
-        ...(options.context || {}),
+        ...options.context,
       };
       this.childTransport = Logger.transport.child(bindings);
     }
@@ -168,7 +168,7 @@ export class Logger {
     return {
       ...(options.namespace && { namespace: options.namespace }),
       ...(options.correlationId && { correlationId: options.correlationId }),
-      ...(options.context || {}),
+      ...options.context,
     };
   }
 

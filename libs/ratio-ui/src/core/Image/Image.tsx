@@ -64,7 +64,7 @@ export function Image(props: Readonly<ImageProps>) {
     height: props.height,
     className: props.imgClassName ?? 'h-auto max-w-full rounded',
     loading: props.loading,
-    ...(props.rendererProps ?? {}),
+    ...props.rendererProps,
   };
 
   // decide wrapper semantics
