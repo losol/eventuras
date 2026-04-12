@@ -860,14 +860,13 @@ i.redo {
 
 .table-cell-action-button {
   background-color: none;
-  display: flex;
+  display: inline-block;
   justify-content: center;
   align-items: center;
   border: 0;
   position: relative;
   border-radius: 15px;
   color: #222;
-  display: inline-block;
   cursor: pointer;
 }
 
@@ -967,11 +966,10 @@ button.toolbar-item.spaced {
 
 button.toolbar-item i.format {
   background-size: contain;
-  display: inline-block;
+  display: flex;
   height: 18px;
   width: 18px;
   vertical-align: -0.25em;
-  display: flex;
   opacity: 0.6;
 }
 
@@ -1087,7 +1085,7 @@ button.toolbar-item.active i {
   padding: 20px 10px;
   position: relative;
   border: 1px solid #e8e8e8;
-  font-family: "Reenie Beanie";
+  font-family: "Reenie Beanie", cursive;
   font-size: 24px;
   border-bottom-right-radius: 60px 5px;
   display: block;
