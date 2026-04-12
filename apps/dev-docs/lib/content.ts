@@ -183,7 +183,7 @@ function formatDirName(name: string): string {
 }
 
 function getFrontmatterValue(yaml: string, field: keyof DocPage['frontmatter']): string | undefined {
-  const match = new RegExp(`^${field}:\\s*(.+)$`, 'm').exec(yaml);
+  const match = new RegExp(String.raw`^${field}:\s*(.+)$`, 'm').exec(yaml);
   const value = match?.[1]?.trim();
 
   if (!value) {

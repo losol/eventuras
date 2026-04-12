@@ -6,17 +6,17 @@ import { loadEnvFile, requireEnvVar } from '../../../utils/env.js';
 export default class BringCreate extends Command {
   static override readonly description = 'Create a Bring shipment';
   static override readonly examples = [
-    `$ oxo shipper bring create \\
-      --correlation-id "EVENT-2026-001" \\
-      --sender-name "Eventuras AS" \\
-      --sender-address "Testveien 1" \\
-      --sender-postal "0001" \\
-      --sender-city "Oslo" \\
-      --recipient-name "Test Recipient" \\
-      --recipient-address "Testgata 42" \\
-      --recipient-postal "0010" \\
-      --recipient-city "Oslo" \\
-      --weight 1000 \\
+    String.raw`$ oxo shipper bring create \
+      --correlation-id "EVENT-2026-001" \
+      --sender-name "Eventuras AS" \
+      --sender-address "Testveien 1" \
+      --sender-postal "0001" \
+      --sender-city "Oslo" \
+      --recipient-name "Test Recipient" \
+      --recipient-address "Testgata 42" \
+      --recipient-postal "0010" \
+      --recipient-city "Oslo" \
+      --weight 1000 \
       --length 30 --width 20 --height 10`,
     `$ oxo shipper bring create --correlation-id "REG-456" --json [options]`,
   ];
