@@ -1,4 +1,4 @@
-import { Error } from '@eventuras/ratio-ui/blocks/Error';
+import { ErrorBlock } from '@eventuras/ratio-ui/blocks/Error';
 import { PageOverlay } from '@eventuras/ratio-ui/core/PageOverlay';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
@@ -12,18 +12,18 @@ import { Link } from '@eventuras/ratio-ui-next/Link';
 export default function InternalServerError() {
   return (
     <PageOverlay status="error" fullScreen>
-      <Error type="server-error" status="error">
-        <Error.Title>Internal Server Error</Error.Title>
-        <Error.Description>
+      <ErrorBlock type="server-error" status="error">
+        <ErrorBlock.Title>Internal Server Error</ErrorBlock.Title>
+        <ErrorBlock.Description>
           The server encountered an unexpected error and could not complete your request. Please try
           again later or contact support if the problem persists.
-        </Error.Description>
-        <Error.Actions>
+        </ErrorBlock.Description>
+        <ErrorBlock.Actions>
           <Link href="/" variant="button-primary">
             Go to Home
           </Link>
-        </Error.Actions>
-      </Error>
+        </ErrorBlock.Actions>
+      </ErrorBlock>
     </PageOverlay>
   );
 }

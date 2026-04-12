@@ -1,4 +1,4 @@
-import { Error } from '@eventuras/ratio-ui/blocks/Error';
+import { ErrorBlock } from '@eventuras/ratio-ui/blocks/Error';
 import { PageOverlay } from '@eventuras/ratio-ui/core/PageOverlay';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
@@ -11,15 +11,15 @@ import { Link } from '@eventuras/ratio-ui-next/Link';
 export default function NotFound() {
   return (
     <PageOverlay status="info" fullScreen>
-      <Error type="not-found" status="info">
-        <Error.Title>Page Not Found</Error.Title>
-        <Error.Description>
+      <ErrorBlock type="not-found" status="info">
+        <ErrorBlock.Title>Page Not Found</ErrorBlock.Title>
+        <ErrorBlock.Description>
           The page you&apos;re looking for doesn&apos;t exist or has been moved.
-        </Error.Description>
-        <Error.Actions>
+        </ErrorBlock.Description>
+        <ErrorBlock.Actions>
           <Link href="/">Go to Home</Link>
-        </Error.Actions>
-      </Error>
+        </ErrorBlock.Actions>
+      </ErrorBlock>
     </PageOverlay>
   );
 }

@@ -32,7 +32,7 @@ const statusStyles: Record<Status, string> = {
 };
 
 /** Icon for each error type */
-function ErrorIcon({ type = 'generic', status = 'error' }: Readonly<{ type: ErrorType; status: Status }>) {
+function ErrorIcon({ type = 'generic', status = 'error' }: Readonly<{ type: ErrorType; status: Status; }>) {
   const colorClass = statusStyles[status];
   const baseClass = 'w-12 h-12 mb-4';
 
@@ -213,7 +213,7 @@ function Actions({
 }
 
 /** Export compound component */
-export const Error = Object.assign(Root, {
+export const ErrorBlock = Object.assign(Root, {
   Title,
   Description,
   Details,

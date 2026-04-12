@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import { Logger } from '@eventuras/logger';
-import { Error } from '@eventuras/ratio-ui/blocks/Error';
+import { ErrorBlock } from '@eventuras/ratio-ui/blocks/Error';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
@@ -243,17 +243,17 @@ export default function VippsCheckoutPage() {
       <Container paddingX="sm" paddingY="xl">
         <div className="mx-auto max-w-2xl">
           <Card>
-            <Error status="error" type="generic">
-              <Error.Title>Ugyldig betalingsreferanse</Error.Title>
-              <Error.Description>
+            <ErrorBlock status="error" type="generic">
+              <ErrorBlock.Title>Ugyldig betalingsreferanse</ErrorBlock.Title>
+              <ErrorBlock.Description>
                 Betalingsreferansen mangler eller er ugyldig.
-              </Error.Description>
-              <Error.Actions>
+              </ErrorBlock.Description>
+              <ErrorBlock.Actions>
                 <Button onClick={() => router.push('/no')} variant="primary">
                   Tilbake til forsiden
                 </Button>
-              </Error.Actions>
-            </Error>
+              </ErrorBlock.Actions>
+            </ErrorBlock>
           </Card>
         </div>
       </Container>
@@ -334,18 +334,18 @@ export default function VippsCheckoutPage() {
 
           {/* ERROR STATE */}
           {state === 'error' && (
-            <Error status="error" type="generic">
-              <Error.Title>Betaling feilet</Error.Title>
-              <Error.Description>{message}</Error.Description>
-              <Error.Actions>
+            <ErrorBlock status="error" type="generic">
+              <ErrorBlock.Title>Betaling feilet</ErrorBlock.Title>
+              <ErrorBlock.Description>{message}</ErrorBlock.Description>
+              <ErrorBlock.Actions>
                 <Button onClick={() => router.push('/no/checkout')} variant="primary">
                   Prøv igjen
                 </Button>
                 <Button onClick={() => router.push('/no')} variant="outline">
                   Tilbake til forsiden
                 </Button>
-              </Error.Actions>
-            </Error>
+              </ErrorBlock.Actions>
+            </ErrorBlock>
           )}
         </Card>
       </div>

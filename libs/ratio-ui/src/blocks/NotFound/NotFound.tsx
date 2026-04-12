@@ -1,5 +1,5 @@
 import React from 'react';
-import { Error } from '../Error';
+import { ErrorBlock } from '../Error';
 
 export interface NotFoundProps {
   /** Page title (defaults to "404") */
@@ -34,11 +34,11 @@ export const NotFound: React.FC<NotFoundProps> = ({
   className,
 }) => {
   return (
-    <Error type="not-found" status="info" className={className}>
-      <Error.Title>{title}</Error.Title>
-      <Error.Description>{message}</Error.Description>
-      {details && <Error.Details>{details}</Error.Details>}
-      {actions && <Error.Actions>{actions}</Error.Actions>}
-    </Error>
+    <ErrorBlock type="not-found" status="info" className={className}>
+      <ErrorBlock.Title>{title}</ErrorBlock.Title>
+      <ErrorBlock.Description>{message}</ErrorBlock.Description>
+      {details && <ErrorBlock.Details>{details}</ErrorBlock.Details>}
+      {actions && <ErrorBlock.Actions>{actions}</ErrorBlock.Actions>}
+    </ErrorBlock>
   );
 };
