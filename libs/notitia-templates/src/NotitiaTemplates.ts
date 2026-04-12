@@ -233,7 +233,7 @@ export class NotitiaTemplates {
   getAvailableTemplates(): string[] {
     const defaultKeys = Object.keys(defaultTemplates);
     const customKeys = Object.keys(this.customTemplates);
-    return Array.from(new Set([...defaultKeys, ...customKeys])).sort();
+    return Array.from(new Set([...defaultKeys, ...customKeys])).sort((a, b) => a.localeCompare(b));
   }
 
   /**
