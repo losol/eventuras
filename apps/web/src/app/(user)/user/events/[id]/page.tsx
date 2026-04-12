@@ -36,7 +36,8 @@ type UserEventPageProps = {
   }>;
 };
 export default async function UserEventPage({ params }: Readonly<UserEventPageProps>) {
-  const { id } = await params;
+  const { id: rawId } = await params;
+  const id = Number(rawId);
   if (Number.isNaN(id)) {
     return <Heading>Invalid event ID</Heading>;
   }
