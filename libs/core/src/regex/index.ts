@@ -8,7 +8,7 @@
  * Format: +[country code][number] (1-15 digits total after +)
  * @example "+4712345678", "+14155552671"
  */
-export const internationalPhoneNumber = /^\+[1-9]{1}[0-9]{1,14}$/;
+export const internationalPhoneNumber = /^\+[1-9]\d{1,14}$/;
 
 /**
  * Validates strings containing only letters (Unicode-aware).
