@@ -66,7 +66,7 @@ export interface FidesLoggerFactory {
  * Used as the default when no custom logger factory is configured.
  */
 class ConsoleLogger implements FidesLogger {
-  private prefix: string;
+  private readonly prefix: string;
 
   constructor(namespace: string, context?: Record<string, unknown>) {
     const contextStr = context && Object.keys(context).length > 0

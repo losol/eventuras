@@ -73,8 +73,8 @@ export class Logger {
   private static config: LoggerConfig = {};
 
   // Instance properties for scoped logger
-  private options: LoggerOptions;
-  private childTransport?: LogTransport;
+  private readonly options: LoggerOptions;
+  private readonly childTransport?: LogTransport;
 
   static {
     Logger.transport = createDefaultTransport(Logger.config);

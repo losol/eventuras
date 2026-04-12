@@ -31,8 +31,8 @@ const logger = createLogger({
  * Handles Vipps Login (OIDC) authentication flow using PKCE.
  */
 export class VippsLoginClient {
-  private config: VippsLoginConfig;
-  private oauthConfig: OAuthConfig;
+  private readonly config: VippsLoginConfig;
+  private readonly oauthConfig: OAuthConfig;
   private configPromise: Promise<openid.Configuration> | null = null;
 
   constructor(config: VippsLoginConfig) {

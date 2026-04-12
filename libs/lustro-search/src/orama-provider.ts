@@ -10,7 +10,7 @@ export class OramaProvider implements SearchProvider {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Orama's deep generics cause TS2589
   private db: any = null;
   private initPromise: Promise<void> | null = null;
-  private indexPath: string;
+  private readonly indexPath: string;
 
   /**
    * @param indexPath URL or path to the serialized Orama index JSON

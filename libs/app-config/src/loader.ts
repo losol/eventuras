@@ -5,7 +5,7 @@ import { parseEnvValue, EnvValidationError } from './validator.js';
  * Configuration loader class
  */
 export class ConfigLoader {
-  private config: AppConfig;
+  private readonly config: AppConfig;
   private envValues: Record<string, unknown> = {};
 
   /**

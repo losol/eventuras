@@ -16,7 +16,7 @@ const LEVEL_TO_CONSOLE: Record<LogLevel, 'log' | 'warn' | 'error' | 'debug'> = {
 };
 
 export class ConsoleTransport implements LogTransport {
-  private bindings: Record<string, unknown>;
+  private readonly bindings: Record<string, unknown>;
 
   /** Create a ConsoleTransport with optional pre-bound context fields. */
   constructor(bindings?: Record<string, unknown>) {

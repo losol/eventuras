@@ -37,7 +37,7 @@ export interface PackingNotifier {
  * Sends packing list via email
  */
 export class EmailPackingNotifier implements PackingNotifier {
-  constructor(private payload: Payload) {}
+  constructor(private readonly payload: Payload) {}
 
   async notify(options: PackingNotificationOptions): Promise<void> {
     const { targets, order, customerName, customerPhone, locale = 'nb-NO' } = options;
