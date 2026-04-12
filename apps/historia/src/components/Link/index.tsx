@@ -1,24 +1,24 @@
-import React from 'react'
-import Link from 'next/link'
-import { cn } from 'src/utilities/cn'
+import React from 'react';
+import Link from 'next/link';
+import { cn } from 'src/utilities/cn';
 
-import { Button, type ButtonProps } from '@/components/ui/button'
-import type { Article, Page } from '@/payload-types'
+import { Button, type ButtonProps } from '@/components/ui/button';
+import type { Article, Page } from '@/payload-types';
 
 type CMSLinkType = {
-  appearance?: 'inline' | ButtonProps['variant']
-  children?: React.ReactNode
-  className?: string
-  label?: string | null
-  newTab?: boolean | null
+  appearance?: 'inline' | ButtonProps['variant'];
+  children?: React.ReactNode;
+  className?: string;
+  label?: string | null;
+  newTab?: boolean | null;
   reference?: {
-    relationTo: 'pages' | 'articles'
-    value: Article | Page | string | number
-  } | null
-  size?: ButtonProps['size'] | null
-  type?: 'custom' | 'reference' | null
-  url?: string | null
-}
+    relationTo: 'pages' | 'articles';
+    value: Article | Page | string | number;
+  } | null;
+  size?: ButtonProps['size'] | null;
+  type?: 'custom' | 'reference' | null;
+  url?: string | null;
+};
 
 export const CMSLink: React.FC<CMSLinkType> = (props) => {
   const {
@@ -31,35 +31,35 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
     reference,
     size: sizeFromProps,
     url,
-  } = props
+  } = props;
 
   const relationToPrefix = reference?.relationTo !== 'pages' ? `/${reference?.relationTo}` : '';
   const href =
     type === 'reference' && typeof reference?.value === 'object' && reference.value.slug
       ? `${relationToPrefix}/${reference.value.slug}`
-      : url
+      : url;
 
-  if (!href) return null
+  if (!href) return null;
 
-  const size = appearance === 'link' ? 'clear' : sizeFromProps
-  const newTabProps = newTab ? { rel: 'noopener noreferrer', target: '_blank' } : {}
+  const size = appearance === 'link' ? 'clear' : sizeFromProps;
+  const newTabProps = newTab ? { rel: 'noopener noreferrer', target: '_blank' } : {};
 
   /* Ensure we don't break any styles set by richText */
   if (appearance === 'inline') {
     return (
       <Link className={cn(className)} href={href || url || ''} {...newTabProps}>
-        {label && label}
-        {children && children}
+        {label}
+        {children}
       </Link>
-    )
+    );
   }
 
   return (
     <Button asChild className={className} size={size} variant={appearance}>
       <Link className={cn(className)} href={href || url || ''} {...newTabProps}>
-        {label && label}
-        {children && children}
+        {label}
+        {children}
       </Link>
     </Button>
-  )
-}
+  );
+};
