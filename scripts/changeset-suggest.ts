@@ -168,7 +168,7 @@ function extractScopes(subject: string): string[] {
 function merge(a: Bump | null, b: Bump | null): Bump | null {
   const ai = a ? ORDER.indexOf(a) : -1;
   const bi = b ? ORDER.indexOf(b) : -1;
-  return ai >= bi ? (a ?? null) : (b ?? null);
+  return ai >= bi ? a : b;
 }
 
 /** Commit title */
