@@ -54,7 +54,7 @@ export async function generateStaticParams() {
   for (const locale of locales) {
     for (const page of pages.docs) {
       const breadcrumbs = page.breadcrumbs as Array<{ url?: string | null }> | null;
-      const lastBreadcrumb = breadcrumbs?.[breadcrumbs.length - 1];
+      const lastBreadcrumb = breadcrumbs?.at(-1);
       const pageUrl = lastBreadcrumb?.url;
 
       let slugArray: string[];
@@ -96,7 +96,7 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
 
   // Build the full path from slug segments
   const fullPath = slug?.length ? `/${slug.join('/')}` : undefined;
-  const currentSlug = slug?.length ? slug[slug.length - 1] : undefined;
+  const currentSlug = slug?.length ? slug.at(-1) : undefined;
 
   let page;
   if (!currentSlug || !fullPath) {
@@ -150,7 +150,7 @@ export default async function Page({ params: paramsPromise }: Readonly<Args>) {
   // Build the full path from slug segments (this is the breadcrumbs URL)
   const fullPath = slug?.length ? `/${slug.join('/')}` : undefined;
   // Get the last segment (the page's own slug)
-  const currentSlug = slug?.length ? slug[slug.length - 1] : undefined;
+  const currentSlug = slug?.length ? slug.at(-1) : undefined;
 
   let page;
   if (!currentSlug || !fullPath) {
@@ -320,7 +320,7 @@ const queryPageByBreadcrumbsUrl = cache(async ({
     const page = result.docs.find((doc) => {
       const breadcrumbs = doc.breadcrumbs as Array<{ url?: string | null }> | null;
       if (!breadcrumbs || breadcrumbs.length === 0) return false;
-      const lastBreadcrumb = breadcrumbs[breadcrumbs.length - 1];
+      const lastBreadcrumb = breadcrumbs.at(-1);
       return lastBreadcrumb?.url === breadcrumbsUrl;
     });
 
