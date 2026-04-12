@@ -40,7 +40,7 @@ export const Pages: CollectionConfig<'pages'> = {
       url: ({ data, req }) => {
         // Get breadcrumbs URL for nested pages
         const breadcrumbs = data?.breadcrumbs as Array<{ url?: string | null }> | undefined;
-        const lastBreadcrumb = breadcrumbs?.[breadcrumbs.length - 1];
+        const lastBreadcrumb = breadcrumbs?.at(-1);
         const breadcrumbsUrl = lastBreadcrumb?.url || undefined;
 
         const path = generatePreviewPath({
@@ -56,7 +56,7 @@ export const Pages: CollectionConfig<'pages'> = {
     preview: (data, { req }) => {
       // Get breadcrumbs URL for nested pages
       const breadcrumbs = data?.breadcrumbs as Array<{ url?: string | null }> | undefined;
-      const lastBreadcrumb = breadcrumbs?.[breadcrumbs.length - 1];
+      const lastBreadcrumb = breadcrumbs?.at(-1);
       const breadcrumbsUrl = lastBreadcrumb?.url || undefined;
 
       return generatePreviewPath({

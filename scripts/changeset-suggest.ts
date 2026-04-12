@@ -283,7 +283,7 @@ function buildChangesetForPackage(pkg: string, bump: Bump, commits: Commit[], li
     lines.push(`- ${describeCommit(c)} [${pkg}]`)
   }
 
-  if (lines[lines.length - 1] === '') lines.push('- Suggested changes')
+  if (lines.at(-1) === '') lines.push('- Suggested changes')
   return lines.join('\n')
 }
 
