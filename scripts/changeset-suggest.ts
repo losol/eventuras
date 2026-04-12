@@ -2,219 +2,219 @@
 // Generate per-package Changesets from commit scopes (npm workspaces + aliases + warnings)
 // Run: npm run suggest:changeset -- --since origin/main [--write] [--no-dedupe-titles]
 
-import {execSync} from 'node:child_process'
-import {existsSync, readFileSync, writeFileSync, mkdirSync} from 'node:fs'
-import {dirname, join, resolve, basename} from 'node:path'
+import { execSync } from 'node:child_process';
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { dirname, join, resolve, basename } from 'node:path';
 
-type Bump = 'patch' | 'minor' | 'major'
-type Commit = { hash: string; subject: string; body: string }
-type Pkg = { name: string; dir: string; token: string; private?: boolean }
+type Bump = 'patch' | 'minor' | 'major';
+type Commit = { hash: string; subject: string; body: string; };
+type Pkg = { name: string; dir: string; token: string; private?: boolean; };
 
 /** CLI */
-const SINCE = arg('--since') ?? 'origin/main'
-const WRITE = has('--write')
-const DEDUPE_TITLES = !has('--no-dedupe-titles')
+const SINCE = arg('--since') ?? 'origin/main';
+const WRITE = has('--write');
+const DEDUPE_TITLES = !has('--no-dedupe-titles');
 
 /** Order */
-const ORDER: Bump[] = ['patch', 'minor', 'major']
+const ORDER: Bump[] = ['patch', 'minor', 'major'];
 
 /** Get arg value */
 function arg(flag: string) {
   const i = process.argv.indexOf(flag);
-  return i >= 0 ? process.argv[i + 1] : undefined
+  return i >= 0 ? process.argv[i + 1] : undefined;
 }
 
 /** Has flag */
 function has(flag: string) {
-  return process.argv.includes(flag)
+  return process.argv.includes(flag);
 }
 
 /** Run git */
 function git(cmd: string) {
-  return execSync(`git ${cmd}`, {encoding: 'utf8'}).trim()
+  return execSync(`git ${cmd}`, { encoding: 'utf8' }).trim();
 }
 
 /** Read workspaces from package.json (array or { packages }) */
 function readRootWorkspaces(): string[] {
-  const pkg = JSON.parse(readFileSync('package.json', 'utf8'))
-  const ws = pkg.workspaces
-  if (Array.isArray(ws)) return ws
-  if (ws && Array.isArray(ws.packages)) return ws.packages
-  return []
+  const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
+  const ws = pkg.workspaces;
+  if (Array.isArray(ws)) return ws;
+  if (ws && Array.isArray(ws.packages)) return ws.packages;
+  return [];
 }
 
 /** Minimal glob: foo/* (one level), foo/** (any depth) */
 function matchesGlob(glob: string, path: string) {
   const g = glob.replace(/\/+$/, '');
-  const p = path.replace(/\/+$/, '')
+  const p = path.replace(/\/+$/, '');
   if (g.endsWith('/**')) {
     const base = g.slice(0, -3);
-    return p === base || p.startsWith(base + '/')
+    return p === base || p.startsWith(base + '/');
   }
   if (g.endsWith('/*')) {
     const base = g.slice(0, -2);
     if (!p.startsWith(base + '/')) return false;
-    return p.slice(base.length + 1).split('/').length === 1
+    return p.slice(base.length + 1).split('/').length === 1;
   }
-  return p === g
+  return p === g;
 }
 
 /** Workspace dirs from globs */
 function workspaceDirsFromGlobs(globs: string[]) {
-  const files = git('ls-files **/package.json').split('\n').filter(Boolean)
-  const dirs = files.map(f => dirname(f))
-  return Array.from(new Set(dirs.filter(d => globs.some(g => matchesGlob(g, d)))))
+  const files = git('ls-files **/package.json').split('\n').filter(Boolean);
+  const dirs = files.map(f => dirname(f));
+  return Array.from(new Set(dirs.filter(d => globs.some(g => matchesGlob(g, d)))));
 }
 
 /** Read package.json → Pkg (token = folder name) */
 function readPkg(dir: string): Pkg | null {
-  const pj = join(dir, 'package.json')
-  if (!existsSync(pj)) return null
+  const pj = join(dir, 'package.json');
+  if (!existsSync(pj)) return null;
   try {
-    const json = JSON.parse(readFileSync(pj, 'utf8'))
-    if (!json?.name) return null
-    const name: string = json.name
-    const token = basename(dir).toLowerCase()
-    return {name, dir: resolve(dir), token, private: !!json.private}
+    const json = JSON.parse(readFileSync(pj, 'utf8'));
+    if (!json?.name) return null;
+    const name: string = json.name;
+    const token = basename(dir).toLowerCase();
+    return { name, dir: resolve(dir), token, private: !!json.private };
   } catch {
-    return null
+    return null;
   }
 }
 
 /** All workspaces */
 function getWorkspaces(): Pkg[] {
-  const dirs = workspaceDirsFromGlobs(readRootWorkspaces())
-  return dirs.map(readPkg).filter(Boolean) as Pkg[]
+  const dirs = workspaceDirsFromGlobs(readRootWorkspaces());
+  return dirs.map(readPkg).filter(Boolean) as Pkg[];
 }
 
 /** Load aliases from repo.json */
 function loadAliases(): Record<string, string> {
-  const REPO_JSON_PATH = './repo.json'
+  const REPO_JSON_PATH = './repo.json';
   if (!existsSync(REPO_JSON_PATH)) {
-    console.info('Info: no repo.json found.')
-    return {}
+    console.info('Info: no repo.json found.');
+    return {};
   }
   try {
-    const repo = JSON.parse(readFileSync(REPO_JSON_PATH, 'utf8'))
-    const aliases: Record<string, string> = {}
+    const repo = JSON.parse(readFileSync(REPO_JSON_PATH, 'utf8'));
+    const aliases: Record<string, string> = {};
     for (const section of ['apps', 'libs']) {
-      const entries = repo[section] ?? {}
+      const entries = repo[section] ?? {};
       for (const [key, val] of Object.entries(entries) as [string, any][]) {
-        aliases[key] = val.package
+        aliases[key] = val.package;
         if (val.aliases) {
           for (const alias of val.aliases) {
-            aliases[alias] = val.package
+            aliases[alias] = val.package;
           }
         }
       }
     }
-    return aliases
+    return aliases;
   } catch (err) {
-    console.warn(`⚠️  Failed to parse ${REPO_JSON_PATH}:`, err)
-    return {}
+    console.warn(`⚠️  Failed to parse ${REPO_JSON_PATH}:`, err);
+    return {};
   }
 }
 
 /** Load linked packages from .changeset/config.json */
 function loadLinkedPackages(): string[][] {
-  const CONFIG_PATH = './.changeset/config.json'
+  const CONFIG_PATH = './.changeset/config.json';
   if (!existsSync(CONFIG_PATH)) {
-    return []
+    return [];
   }
   try {
-    const config = JSON.parse(readFileSync(CONFIG_PATH, 'utf8'))
-    return config.linked ?? []
+    const config = JSON.parse(readFileSync(CONFIG_PATH, 'utf8'));
+    return config.linked ?? [];
   } catch (err) {
-    console.warn(`⚠️  Failed to parse ${CONFIG_PATH}:`, err)
-    return []
+    console.warn(`⚠️  Failed to parse ${CONFIG_PATH}:`, err);
+    return [];
   }
 }
 
 /** Commits since ref */
 function getCommits(ref: string): Commit[] {
-  const raw = git(`log ${ref}..HEAD --pretty=format:%H:::%s:::%B`)
-  const lines = raw ? raw.split('\n') : []
+  const raw = git(`log ${ref}..HEAD --pretty=format:%H:::%s:::%B`);
+  const lines = raw ? raw.split('\n') : [];
   const out: Commit[] = [];
-  let cur: Commit | null = null
+  let cur: Commit | null = null;
   for (const line of lines) {
     if (line.includes(':::')) {
-      if (cur) out.push(cur)
-      const parts = line.split(':::')
-      const hash = parts[0] ?? ''
-      const subject = parts[1] ?? ''
-      const body = parts[2] ?? ''
-      cur = {hash, subject, body}
+      if (cur) out.push(cur);
+      const parts = line.split(':::');
+      const hash = parts[0] ?? '';
+      const subject = parts[1] ?? '';
+      const body = parts[2] ?? '';
+      cur = { hash, subject, body };
     }
   }
-  if (cur) out.push(cur)
-  return out
+  if (cur) out.push(cur);
+  return out;
 }
 
 /** Bump policy: feat→minor, breaking(!/BREAKING)→major, else patch */
 function inferBump(subject: string, body: string): Bump {
-  if (/^(\w+)(\([^)]*\))?!:/.test(subject) || /BREAKING CHANGE/i.test(body)) return 'major'
-  const type = subject.split(':')[0]?.split('(')[0]
-  return type === 'feat' ? 'minor' : 'patch'
+  if (/^(\w+)(\([^)]*\))?!:/.test(subject) || /BREAKING CHANGE/i.test(body)) return 'major';
+  const type = subject.split(':')[0]?.split('(')[0];
+  return type === 'feat' ? 'minor' : 'patch';
 }
 
 /** Extract scopes: type(scope,scope2): msg */
 function extractScopes(subject: string): string[] {
-  const m = /^\w+\(([^)]+)\)!?:/.exec(subject)
-  if (!m?.[1]) return []
-  return m[1].split(',').map(s => s.trim().toLowerCase()).filter(Boolean)
+  const m = /^\w+\(([^)]+)\)!?:/.exec(subject);
+  if (!m?.[1]) return [];
+  return m[1].split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
 }
 
 /** Keep higher bump */
 function merge(a: Bump | null, b: Bump | null): Bump | null {
   const ai = a ? ORDER.indexOf(a) : -1;
-  const bi = b ? ORDER.indexOf(b) : -1
-  return ai >= bi ? (a ?? null) : (b ?? null)
+  const bi = b ? ORDER.indexOf(b) : -1;
+  return ai >= bi ? (a ?? null) : (b ?? null);
 }
 
 /** Commit title */
 function commitTitle(c: Commit) {
-  return c.subject.trim()
+  return c.subject.trim();
 }
 
 /** Pretty commit formatter (no repeated subject) */
 // include full body (all lines), but remove duplicated first line if it equals the subject/message
 function describeCommit(c: Commit): string {
   // grab raw subject and body
-  const subject = c.subject.trim()
-  const bodyRaw = (c.body ?? '').replaceAll('\r\n', '\n')
+  const subject = c.subject.trim();
+  const bodyRaw = (c.body ?? '').replaceAll('\r\n', '\n');
 
   // clean and split body lines
-  const bodyLines = bodyRaw.split('\n').map(l => l.replace(/\s+$/, ''))
+  const bodyLines = bodyRaw.split('\n').map(l => l.replace(/\s+$/, ''));
   // remove blank lines at start
-  while (bodyLines.length && bodyLines[0]?.trim() === '') bodyLines.shift()
+  while (bodyLines.length && bodyLines[0]?.trim() === '') bodyLines.shift();
 
   // parse conventional parts once
-  const m = /^(\w+)(\([^)]+\))?:\s*(.+)$/.exec(subject)
-  const type = (m?.[1] ?? 'chore').toLowerCase()
-  const message = (m?.[3] ?? subject).trim()
+  const m = /^(\w+)(\([^)]+\))?:\s*(.+)$/.exec(subject);
+  const type = (m?.[1] ?? 'chore').toLowerCase();
+  const message = (m?.[3] ?? subject).trim();
   const dupCandidates = new Set([
     subject,
     message,
     `${type}${m?.[2] ?? ''}: ${message}`.trim()
-  ].map(s => s.toLowerCase()))
+  ].map(s => s.toLowerCase()));
 
   // strip first body line if it duplicates the title/message
   if (bodyLines.length && bodyLines[0] && dupCandidates.has(bodyLines[0].trim().toLowerCase())) {
-    bodyLines.shift()
+    bodyLines.shift();
     // also strip an extra blank line after that, if present
-    if (bodyLines.length && bodyLines[0]?.trim() === '') bodyLines.shift()
+    if (bodyLines.length && bodyLines[0]?.trim() === '') bodyLines.shift();
   }
 
   // indent full remaining body (all lines)
-  const bodyBlock = bodyLines.length ? `\n  ${bodyLines.join('\n  ')}` : ''
+  const bodyBlock = bodyLines.length ? `\n  ${bodyLines.join('\n  ')}` : '';
 
   // final: subject on first line, full body below, then short hash (no emoji)
-  return `${subject}${bodyBlock} (${c.hash.slice(0, 7)})`
+  return `${subject}${bodyBlock} (${c.hash.slice(0, 7)})`;
 }
 
 /** Safe slug */
 function slug(s: string) {
-  return s.toLowerCase().replaceAll(/[^a-z0-9]+/g, '-').replaceAll(/(^-|-$)/g, '')
+  return s.toLowerCase().replaceAll(/[^a-z0-9]+/g, '-').replaceAll(/(^-|-$)/g, '');
 }
 
 /** Build per-package changeset */
@@ -228,7 +228,7 @@ function buildChangesetForPackage(pkg: string, bump: Bump, commits: Commit[], li
     test: 4,
     chore: 5,
     ci: 6,
-  }
+  };
 
   const typeHeaders: Record<string, string> = {
     feat: '### 🧱 Features',
@@ -238,188 +238,188 @@ function buildChangesetForPackage(pkg: string, bump: Bump, commits: Commit[], li
     test: '### ✅ Testing',
     chore: '### 🧹 Maintenance',
     ci: '### ⚙️ CI/CD',
-  }
+  };
 
   const sortedCommits = [...commits].sort((a, b) => {
     const getType = (subject: string) => {
-      const m = /^(\w+)(\([^)]+\))?:/.exec(subject)
-      return m?.[1]?.toLowerCase() ?? 'other'
-    }
+      const m = /^(\w+)(\([^)]+\))?:/.exec(subject);
+      return m?.[1]?.toLowerCase() ?? 'other';
+    };
 
-    const typeA = getType(a.subject)
-    const typeB = getType(b.subject)
-    const priorityA = typePriority[typeA] ?? 99
-    const priorityB = typePriority[typeB] ?? 99
+    const typeA = getType(a.subject);
+    const typeB = getType(b.subject);
+    const priorityA = typePriority[typeA] ?? 99;
+    const priorityB = typePriority[typeB] ?? 99;
 
-    return priorityA - priorityB
-  })
+    return priorityA - priorityB;
+  });
 
-  const lines = ['---']
+  const lines = ['---'];
 
   // Add all packages in the linked group with the same bump
   if (linkedGroup.length > 0) {
     for (const linkedPkg of linkedGroup) {
-      lines.push(`"${linkedPkg}": ${bump}`)
+      lines.push(`"${linkedPkg}": ${bump}`);
     }
   } else {
-    lines.push(`"${pkg}": ${bump}`)
+    lines.push(`"${pkg}": ${bump}`);
   }
 
-  lines.push('---', '')
+  lines.push('---', '');
 
   // Group commits by type and add headers with emojis
-  let currentType: string | null = null
+  let currentType: string | null = null;
   for (const c of sortedCommits) {
-    const m = /^(\w+)(\([^)]+\))?:/.exec(c.subject)
-    const type = m?.[1]?.toLowerCase() ?? 'other'
+    const m = /^(\w+)(\([^)]+\))?:/.exec(c.subject);
+    const type = m?.[1]?.toLowerCase() ?? 'other';
 
     if (type !== currentType) {
-      if (currentType !== null) lines.push('') // Add blank line between sections
-      const header = typeHeaders[type] ?? '### 🔧 Other Changes'
-      lines.push(header, '')
-      currentType = type
+      if (currentType !== null) lines.push(''); // Add blank line between sections
+      const header = typeHeaders[type] ?? '### 🔧 Other Changes';
+      lines.push(header, '');
+      currentType = type;
     }
 
-    lines.push(`- ${describeCommit(c)} [${pkg}]`)
+    lines.push(`- ${describeCommit(c)} [${pkg}]`);
   }
 
-  if (lines.at(-1) === '') lines.push('- Suggested changes')
-  return lines.join('\n')
+  if (lines.at(-1) === '') lines.push('- Suggested changes');
+  return lines.join('\n');
 }
 
 /** Main */
-;(function main() {
+; (function main() {
   if (!existsSync('.git')) {
     console.error('Run from repository root.');
-    process.exit(1)
+    process.exit(1);
   }
 
-  const pkgs = getWorkspaces()
+  const pkgs = getWorkspaces();
   if (!pkgs.length) {
     console.error('No npm workspaces found.');
-    process.exit(1)
+    process.exit(1);
   }
 
-  const aliases = loadAliases()
-  const linkedGroups = loadLinkedPackages()
+  const aliases = loadAliases();
+  const linkedGroups = loadLinkedPackages();
 
   // Build a map from package name to its linked group
-  const packageToLinkedGroup = new Map<string, string[]>()
+  const packageToLinkedGroup = new Map<string, string[]>();
   for (const group of linkedGroups) {
     for (const pkg of group) {
-      packageToLinkedGroup.set(pkg, group)
+      packageToLinkedGroup.set(pkg, group);
     }
   }
 
   // token -> package name
-  const tokenToPkg = new Map<string, string>()
-  for (const p of pkgs) if (!p.private) tokenToPkg.set(p.token, p.name)
+  const tokenToPkg = new Map<string, string>();
+  for (const p of pkgs) if (!p.private) tokenToPkg.set(p.token, p.name);
 
   // results
-  const bumps = new Map<string, Bump>()
-  const notes = new Map<string, Commit[]>()
-  const commits = getCommits(SINCE)
+  const bumps = new Map<string, Bump>();
+  const notes = new Map<string, Commit[]>();
+  const commits = getCommits(SINCE);
 
-  let skipped = 0
+  let skipped = 0;
 
   for (const c of commits) {
-    const bump = inferBump(c.subject, c.body)
-    const scopes = extractScopes(c.subject)
+    const bump = inferBump(c.subject, c.body);
+    const scopes = extractScopes(c.subject);
 
     if (!scopes.length) {
-      console.warn(`⚠️  No scope → skipped: ${c.subject} (${c.hash.slice(0, 7)})`)
-      skipped++
-      continue
+      console.warn(`⚠️  No scope → skipped: ${c.subject} (${c.hash.slice(0, 7)})`);
+      skipped++;
+      continue;
     }
 
     for (const raw of scopes) {
-      const pkgName = aliases[raw] ?? tokenToPkg.get(raw)
+      const pkgName = aliases[raw] ?? tokenToPkg.get(raw);
       if (!pkgName) {
-        console.warn(`⚠️  Unknown scope "${raw}" → skipped: ${c.subject} (${c.hash.slice(0, 7)})`)
-        skipped++
-        continue
+        console.warn(`⚠️  Unknown scope "${raw}" → skipped: ${c.subject} (${c.hash.slice(0, 7)})`);
+        skipped++;
+        continue;
       }
 
-      const prev = bumps.get(pkgName) ?? null
-      const next = merge(prev, bump)
-      if (next) bumps.set(pkgName, next)
+      const prev = bumps.get(pkgName) ?? null;
+      const next = merge(prev, bump);
+      if (next) bumps.set(pkgName, next);
 
-      const list = notes.get(pkgName) ?? []
+      const list = notes.get(pkgName) ?? [];
       if (DEDUPE_TITLES) {
-        const title = commitTitle(c)
-        if (list.some(x => commitTitle(x) === title)) continue
+        const title = commitTitle(c);
+        if (list.some(x => commitTitle(x) === title)) continue;
       }
-      list.push(c)
-      notes.set(pkgName, list)
+      list.push(c);
+      notes.set(pkgName, list);
     }
   }
 
   if (!bumps.size) {
     console.log(`No package bumps inferred since ${SINCE}.`);
-    return
+    return;
   }
 
   console.table([...bumps.entries()].map(([pkg, bump]) => ({
     package: pkg,
     bump,
     commits: (notes.get(pkg) ?? []).length
-  })))
+  })));
 
-  if (skipped) console.log(`⚠️  ${skipped} commit(s) skipped due to missing/unknown scope.`)
+  if (skipped) console.log(`⚠️  ${skipped} commit(s) skipped due to missing/unknown scope.`);
 
   if (!WRITE) {
-    console.log('Preview only. Use --write to create per-package .changeset files.')
-    return
+    console.log('Preview only. Use --write to create per-package .changeset files.');
+    return;
   }
 
-  if (!existsSync('.changeset')) mkdirSync('.changeset', {recursive: true})
-  const date = new Date().toISOString().slice(0, 10)
+  if (!existsSync('.changeset')) mkdirSync('.changeset', { recursive: true });
+  const date = new Date().toISOString().slice(0, 10);
 
   // Track which linked groups have been written to avoid duplicates
-  const writtenLinkedGroups = new Set<string>()
+  const writtenLinkedGroups = new Set<string>();
 
   for (const [pkg, bump] of bumps.entries()) {
-    const linkedGroup = packageToLinkedGroup.get(pkg)
+    const linkedGroup = packageToLinkedGroup.get(pkg);
 
     // If this package is in a linked group
     if (linkedGroup && linkedGroup.length > 1) {
       // Create a sorted key to identify this group
-      const groupKey = [...linkedGroup].sort().join('|')
+      const groupKey = [...linkedGroup].sort((a, b) => a.localeCompare(b)).join('|');
 
       // Skip if we've already written a changeset for this group
       if (writtenLinkedGroups.has(groupKey)) {
-        continue
+        continue;
       }
 
-      writtenLinkedGroups.add(groupKey)
+      writtenLinkedGroups.add(groupKey);
 
       // Collect all commits from all packages in the linked group
-      const allGroupCommits: Commit[] = []
+      const allGroupCommits: Commit[] = [];
       for (const linkedPkg of linkedGroup) {
-        const pkgCommits = notes.get(linkedPkg) ?? []
-        allGroupCommits.push(...pkgCommits)
+        const pkgCommits = notes.get(linkedPkg) ?? [];
+        allGroupCommits.push(...pkgCommits);
       }
 
       // Deduplicate commits by hash
       const uniqueCommits = Array.from(
         new Map(allGroupCommits.map(c => [c.hash, c])).values()
-      )
+      );
 
-      const firstTitle = uniqueCommits[0]?.subject ?? pkg
-      const suffix = 'linked-' + linkedGroup.map(p => slug(p.split('/').pop()!)).join('-')
-      const filename = `${date}-${slug(firstTitle).slice(0, 30) || 'changes'}-${suffix}.md`
-      const md = buildChangesetForPackage(pkg, bump, uniqueCommits, linkedGroup)
-      writeFileSync(join('.changeset', filename), md, 'utf8')
-      console.log(`✅  Created .changeset/${filename} (linked: ${linkedGroup.join(', ')})`)
+      const firstTitle = uniqueCommits[0]?.subject ?? pkg;
+      const suffix = 'linked-' + linkedGroup.map(p => slug(p.split('/').pop()!)).join('-');
+      const filename = `${date}-${slug(firstTitle).slice(0, 30) || 'changes'}-${suffix}.md`;
+      const md = buildChangesetForPackage(pkg, bump, uniqueCommits, linkedGroup);
+      writeFileSync(join('.changeset', filename), md, 'utf8');
+      console.log(`✅  Created .changeset/${filename} (linked: ${linkedGroup.join(', ')})`);
     } else {
       // Non-linked package: create individual changeset
-      const pkgCommits = notes.get(pkg) ?? []
-      const firstTitle = pkgCommits[0]?.subject ?? pkg
-      const suffix = slug(pkg.split('/').pop()!)
-      const filename = `${date}-${slug(firstTitle).slice(0, 40) || 'changes'}-${suffix}.md`
-      const md = buildChangesetForPackage(pkg, bump, pkgCommits)
-      writeFileSync(join('.changeset', filename), md, 'utf8')
-      console.log(`✅  Created .changeset/${filename}`)
+      const pkgCommits = notes.get(pkg) ?? [];
+      const firstTitle = pkgCommits[0]?.subject ?? pkg;
+      const suffix = slug(pkg.split('/').pop()!);
+      const filename = `${date}-${slug(firstTitle).slice(0, 40) || 'changes'}-${suffix}.md`;
+      const md = buildChangesetForPackage(pkg, bump, pkgCommits);
+      writeFileSync(join('.changeset', filename), md, 'utf8');
+      console.log(`✅  Created .changeset/${filename}`);
     }
   }
-})()
+})();
