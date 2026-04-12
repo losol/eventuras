@@ -36,6 +36,7 @@ export const beforeSyncWithSearch: BeforeSync = async ({ originalDoc, searchDoc,
     } catch (err) {
       console.error(
         `Failed. Topic not found when syncing collection '${collection}' with id: '${id}' to search.`,
+        err,
       )
     }
   }

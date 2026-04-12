@@ -101,6 +101,7 @@ const tokenRoutes: FastifyPluginAsync = async (fastify: FastifyInstance) => {
         expires_in: 3600,
       });
     } catch (error) {
+      fastify.log.error(error, 'Client authentication failed');
       reply.status(401).send({
         error: 'invalid_client',
         error_description: 'Client authentication failed',
