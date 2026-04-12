@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 
 import { Logger } from '@eventuras/logger';
-import { Error } from '@eventuras/ratio-ui/blocks/Error';
+import { ErrorBlock } from '@eventuras/ratio-ui/blocks/Error';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
@@ -130,13 +130,13 @@ export default async function EventAdminPage({ params, searchParams }: Readonly<
           <Heading as="h1">{eventinfo.title}</Heading>
           {hasPartialErrors && (
             <div className="mt-4">
-              <Error type="generic" status="warning">
-                <Error.Title>Some Data Could Not Be Loaded</Error.Title>
-                <Error.Description>
+              <ErrorBlock type="generic" status="warning">
+                <ErrorBlock.Title>Some Data Could Not Be Loaded</ErrorBlock.Title>
+                <ErrorBlock.Description>
                   The event information loaded successfully, but some additional data is temporarily
                   unavailable:
-                </Error.Description>
-                <Error.Details>
+                </ErrorBlock.Description>
+                <ErrorBlock.Details>
                   <ul className="text-sm list-disc list-inside space-y-1">
                     {(!registrationsRes || !!registrationsRes?.error) && (
                       <li>Participant registrations</li>
@@ -145,8 +145,8 @@ export default async function EventAdminPage({ params, searchParams }: Readonly<
                     {(!statisticsRes || !!statisticsRes?.error) && <li>Event statistics</li>}
                     {!!notificationsRes?.error && <li>Notifications</li>}
                   </ul>
-                </Error.Details>
-              </Error>
+                </ErrorBlock.Details>
+              </ErrorBlock>
             </div>
           )}
         </Container>

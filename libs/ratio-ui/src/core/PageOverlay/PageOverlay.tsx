@@ -34,10 +34,10 @@ const statusOverlayClasses: Record<Status, string> = {
  * @example
  * ```tsx
  * <PageOverlay status="error">
- *   <Error type="server-error" status="error">
- *     <Error.Title>Fatal Error</Error.Title>
- *     <Error.Description>The application encountered a critical error.</Error.Description>
- *   </Error>
+ *   <ErrorBlock type="server-error" status="error">
+ *     <ErrorBlock.Title>Fatal Error</ErrorBlock.Title>
+ *     <ErrorBlock.Description>The application encountered a critical error.</ErrorBlock.Description>
+ *   </ErrorBlock>
  * </PageOverlay>
  * ```
  */

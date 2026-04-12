@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { PageOverlay } from './PageOverlay';
-import { Error } from '../../blocks/Error';
+import { ErrorBlock } from '../../blocks/Error';
 
 const meta: Meta<typeof PageOverlay> = {
   title: 'Core/PageOverlay',
@@ -43,17 +43,17 @@ export const ErrorVariant: Story = {
     fullScreen: true,
     status: 'error',
     children: (
-      <Error type="server-error" status="error">
-        <Error.Title>Server Error</Error.Title>
-        <Error.Description>
+      <ErrorBlock type="server-error" status="error">
+        <ErrorBlock.Title>Server Error</ErrorBlock.Title>
+        <ErrorBlock.Description>
           The server encountered an unexpected error. Please try again later.
-        </Error.Description>
-        <Error.Actions>
+        </ErrorBlock.Description>
+        <ErrorBlock.Actions>
           <button className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors">
             Go Home
           </button>
-        </Error.Actions>
-      </Error>
+        </ErrorBlock.Actions>
+      </ErrorBlock>
     ),
   },
 };
@@ -63,17 +63,17 @@ export const InfoVariant: Story = {
     fullScreen: true,
     status: 'info',
     children: (
-      <Error type="not-found" status="info">
-        <Error.Title>Page Not Found</Error.Title>
-        <Error.Description>
+      <ErrorBlock type="not-found" status="info">
+        <ErrorBlock.Title>Page Not Found</ErrorBlock.Title>
+        <ErrorBlock.Description>
           The page you&apos;re looking for doesn&apos;t exist or has been moved.
-        </Error.Description>
-        <Error.Actions>
+        </ErrorBlock.Description>
+        <ErrorBlock.Actions>
           <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
             Go Home
           </button>
-        </Error.Actions>
-      </Error>
+        </ErrorBlock.Actions>
+      </ErrorBlock>
     ),
   },
 };
@@ -83,20 +83,20 @@ export const WarningVariant: Story = {
     fullScreen: true,
     status: 'warning',
     children: (
-      <Error type="generic" status="warning">
-        <Error.Title>Maintenance Mode</Error.Title>
-        <Error.Description>
+      <ErrorBlock type="generic" status="warning">
+        <ErrorBlock.Title>Maintenance Mode</ErrorBlock.Title>
+        <ErrorBlock.Description>
           The system is currently undergoing maintenance. Please check back soon.
-        </Error.Description>
-        <Error.Details>
+        </ErrorBlock.Description>
+        <ErrorBlock.Details>
           Expected completion time: 2 hours
-        </Error.Details>
-        <Error.Actions>
+        </ErrorBlock.Details>
+        <ErrorBlock.Actions>
           <button className="px-4 py-2 bg-amber-600 text-white rounded-md hover:bg-amber-700 transition-colors">
             Check Status
           </button>
-        </Error.Actions>
-      </Error>
+        </ErrorBlock.Actions>
+      </ErrorBlock>
     ),
   },
 };
@@ -148,12 +148,12 @@ export const ErrorWithContactInfo: Story = {
     fullScreen: true,
     status: 'error',
     children: (
-      <Error type="server-error" status="error">
-        <Error.Title>Critical Error</Error.Title>
-        <Error.Description>
+      <ErrorBlock type="server-error" status="error">
+        <ErrorBlock.Title>Critical Error</ErrorBlock.Title>
+        <ErrorBlock.Description>
           A critical error occurred. Our team has been notified and is working on it.
-        </Error.Description>
-        <Error.Details>
+        </ErrorBlock.Description>
+        <ErrorBlock.Details>
           <div className="text-sm space-y-2">
             <p className="font-medium">Need immediate help?</p>
             <p>
@@ -176,16 +176,16 @@ export const ErrorWithContactInfo: Story = {
             </p>
             <p className="text-xs opacity-75 mt-4">Error ID: ERR-2025-10-20-12345</p>
           </div>
-        </Error.Details>
-        <Error.Actions>
+        </ErrorBlock.Details>
+        <ErrorBlock.Actions>
           <button className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors">
             Try Again
           </button>
           <button className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
             Go Home
           </button>
-        </Error.Actions>
-      </Error>
+        </ErrorBlock.Actions>
+      </ErrorBlock>
     ),
   },
 };

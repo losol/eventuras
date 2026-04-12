@@ -1,4 +1,4 @@
-import { Error } from '@eventuras/ratio-ui/blocks/Error';
+import { ErrorBlock } from '@eventuras/ratio-ui/blocks/Error';
 import { PageOverlay } from '@eventuras/ratio-ui/core/PageOverlay';
 
 import { SiteInfo } from '@/utils/site/getSiteSettings';
@@ -26,15 +26,15 @@ const FatalError: React.FC<FatalErrorProps> = ({
 }) => {
   return (
     <PageOverlay status="error" fullScreen>
-      <Error type="server-error" status="error">
-        <Error.Title>{title}</Error.Title>
-        <Error.Description>
+      <ErrorBlock type="server-error" status="error">
+        <ErrorBlock.Title>{title}</ErrorBlock.Title>
+        <ErrorBlock.Description>
           {description ||
             'An unexpected error occurred. Our team has been notified and is working on it.'}
-        </Error.Description>
-        {additional && <Error.Details>{additional}</Error.Details>}
+        </ErrorBlock.Description>
+        {additional && <ErrorBlock.Details>{additional}</ErrorBlock.Details>}
         {(siteInfo?.contactInformation?.support || siteInfo?.publisher || contactUsText) && (
-          <Error.Details>
+          <ErrorBlock.Details>
             <div className="text-sm space-y-2">
               {contactUsLabel && <p className="font-medium">{contactUsLabel}</p>}
               {contactUsText && <p>{contactUsText}</p>}
@@ -72,9 +72,9 @@ const FatalError: React.FC<FatalErrorProps> = ({
                 </p>
               )}
             </div>
-          </Error.Details>
+          </ErrorBlock.Details>
         )}
-      </Error>
+      </ErrorBlock>
     </PageOverlay>
   );
 };

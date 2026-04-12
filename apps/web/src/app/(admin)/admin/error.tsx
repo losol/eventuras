@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import Link from 'next/link';
 
 import { Logger } from '@eventuras/logger';
-import { Error } from '@eventuras/ratio-ui/blocks/Error';
+import { ErrorBlock } from '@eventuras/ratio-ui/blocks/Error';
 import { PageOverlay } from '@eventuras/ratio-ui/core/PageOverlay';
 
 const logger = Logger.create({ namespace: 'web:admin:error', context: { section: 'admin' } });
@@ -35,17 +35,17 @@ export default function AdminErrorBoundary({
 
   return (
     <PageOverlay status="error" fullScreen>
-      <Error type="server-error" status="error">
-        <Error.Title>Admin Error</Error.Title>
-        <Error.Description>
+      <ErrorBlock type="server-error" status="error">
+        <ErrorBlock.Title>Admin Error</ErrorBlock.Title>
+        <ErrorBlock.Description>
           An error occurred in the admin section. This has been logged for investigation.
-        </Error.Description>
+        </ErrorBlock.Description>
         {error.digest && (
-          <Error.Details>
+          <ErrorBlock.Details>
             <div className="text-sm opacity-75">Error ID: {error.digest}</div>
-          </Error.Details>
+          </ErrorBlock.Details>
         )}
-        <Error.Actions>
+        <ErrorBlock.Actions>
           <button
             onClick={reset}
             className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
@@ -64,8 +64,8 @@ export default function AdminErrorBoundary({
           >
             Go to Home
           </Link>
-        </Error.Actions>
-      </Error>
+        </ErrorBlock.Actions>
+      </ErrorBlock>
     </PageOverlay>
   );
 }
