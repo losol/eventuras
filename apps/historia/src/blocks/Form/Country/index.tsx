@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/select'
 
 import { countryOptions } from './options'
-import { Error } from '../Error'
+import { FieldError } from '../Error'
 import { Width } from '../Width'
 
 export const Country: React.FC<
@@ -57,7 +57,7 @@ export const Country: React.FC<
         }}
         rules={{ required }}
       />
-      {required && errors[name] && <Error />}
+      {required && errors[name] && <FieldError />}
     </Width>
   )
 }

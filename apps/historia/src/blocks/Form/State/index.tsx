@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/select'
 
 import { stateOptions } from './options'
-import { Error } from '../Error'
+import { FieldError } from '../Error'
 import { Width } from '../Width'
 
 export const State: React.FC<
@@ -55,7 +55,7 @@ export const State: React.FC<
         }}
         rules={{ required }}
       />
-      {required && errors[name] && <Error />}
+      {required && errors[name] && <FieldError />}
     </Width>
   )
 }
