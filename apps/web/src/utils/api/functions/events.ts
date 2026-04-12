@@ -16,7 +16,7 @@ import { productMapToOrderLineModel } from '@/utils/registration-helpers';
 const logger = Logger.create({ namespace: 'web:utils:api', context: { module: 'events' } });
 
 // Re-export for backwards compatibility
-export { productMapToOrderLineModel };
+export { productMapToOrderLineModel } from '@/utils/registration-helpers';
 
 export const createEventRegistration = async (
   newRegistration: NewRegistrationDto,

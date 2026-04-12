@@ -136,4 +136,4 @@ export default function EventNotificator({
   );
 }
 
-export { NotificationType };
+export { NotificationType } from './Notificator';
