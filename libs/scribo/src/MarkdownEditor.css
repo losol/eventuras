@@ -859,8 +859,8 @@ i.redo {
 }
 
 .table-cell-action-button {
-  background-color: none;
-  display: inline-block;
+  background-color: transparent;
+  display: inline-flex;
   justify-content: center;
   align-items: center;
   border: 0;
