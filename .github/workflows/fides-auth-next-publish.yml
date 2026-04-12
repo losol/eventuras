@@ -1,0 +1,53 @@
+name: fides-auth-next Publish
+
+on:
+  push:
+    tags:
+      - "@eventuras/fides-auth-next@*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag (e.g., @eventuras/fides-auth-next@0.1.5)"
+        required: true
+
+jobs:
+  publish:
+    name: Publish to npm
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Resolve ref
+        id: ref
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_TAG: ${{ github.event.inputs.tag }}
+        run: |
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            echo "ref=$INPUT_TAG" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=$GITHUB_REF" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ steps.ref.outputs.ref }}
+
+      - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
+
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version: "24"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --filter @eventuras/fides-auth-next... --frozen-lockfile
+
+      - name: Build package
+        run: pnpm --filter @eventuras/fides-auth-next build
+
+      - name: Publish to npm
+        run: |
+          cd libs/fides-auth-next
+          npm publish --access public --provenance
