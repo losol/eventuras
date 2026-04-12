@@ -76,8 +76,8 @@ export function parseEnvValue(
       }
 
     case 'int': {
-      const intValue = parseInt(rawValue, 10);
-      if (isNaN(intValue)) {
+      const intValue = Number.parseInt(rawValue, 10);
+      if (Number.isNaN(intValue)) {
         throw new EnvValidationError(
           `Environment variable "${varName}" must be a valid integer.\n` + `Got: "${rawValue}"`,
           varName,

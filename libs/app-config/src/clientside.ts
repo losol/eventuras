@@ -40,7 +40,7 @@ export type PublicEnvObject<T> = T extends { env: infer Env }
  */
 export function parseIntValue(value: string | undefined): number | undefined {
   if (value === undefined) return undefined;
-  return parseInt(value, 10);
+  return Number.parseInt(value, 10);
 }
 
 /**

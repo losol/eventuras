@@ -17,7 +17,7 @@ interface AdminPageProps {
 const AdminPage = async (props: AdminPageProps) => {
   const t = await getTranslations();
   const params = props.searchParams ? await props.searchParams : {};
-  const page = params.page ? parseInt(params.page, 10) : 1;
+  const page = params.page ? Number.parseInt(params.page, 10) : 1;
   return (
     <Container>
       <Heading as="h1">{t('admin.title')}</Heading>

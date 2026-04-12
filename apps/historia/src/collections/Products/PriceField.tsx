@@ -30,8 +30,8 @@ export const PriceField: React.FC = () => {
       return
     }
 
-    const majorUnits = parseFloat(displayValue)
-    if (!isNaN(majorUnits)) {
+    const majorUnits = Number.parseFloat(displayValue)
+    if (!Number.isNaN(majorUnits)) {
       const multiplier = Math.pow(10, decimals)
       const minorUnits = Math.round(majorUnits * multiplier)
       setValue(minorUnits)

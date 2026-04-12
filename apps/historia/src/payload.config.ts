@@ -79,7 +79,7 @@ const emailAdapter = smtpEnabled
       defaultFromName: process.env.SMTP_FROM_NAME || 'Historia',
       transportOptions: {
         host: process.env.SMTP_HOST || 'localhost',
-        port: parseInt(process.env.SMTP_PORT || '587', 10),
+        port: Number.parseInt(process.env.SMTP_PORT || '587', 10),
         secure: process.env.SMTP_SECURE === 'true',
         auth: {
           user: process.env.SMTP_USER,

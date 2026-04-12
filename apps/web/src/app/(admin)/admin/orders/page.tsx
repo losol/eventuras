@@ -22,7 +22,7 @@ export default async function AdminOrdersPage({ searchParams }: Readonly<PagePro
   }
   const t = await getTranslations();
   const params = await searchParams;
-  const page = params.page ? parseInt(params.page, 10) : 1;
+  const page = params.page ? Number.parseInt(params.page, 10) : 1;
   const pageSize = 50;
   const response = await getOrders(page, pageSize);
   if (!response.ok || !response.data) {

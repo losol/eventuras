@@ -107,7 +107,7 @@ async function main() {
   } else {
     const indices = eventsInput
       .split(',')
-      .map((s) => parseInt(s.trim()) - 1)
+      .map((s) => Number.parseInt(s.trim()) - 1)
       .filter((i) => i >= 0 && i < availableEvents.length);
 
     if (indices.length === 0) {

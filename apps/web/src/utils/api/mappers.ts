@@ -105,7 +105,7 @@ export const mapSelectedProductsToQuantity = (
         value = 1;
       }
     } else {
-      value = parseInt(formValue, 10);
+      value = Number.parseInt(formValue, 10);
     }
     if (value > 0) {
       //only set when we actually have a quantity to send
