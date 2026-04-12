@@ -231,6 +231,7 @@ export async function createOidcProvider(): Promise<any> {
         const hash = crypto.createHash('sha256').update(codeVerifier).digest('base64url');
         computedChallenge = hash;
       } catch (e) {
+        // Intentionally ignored: crypto hash may fail; sentinel value is sufficient for debug logging
         computedChallenge = 'computation_failed';
       }
     }

@@ -83,8 +83,8 @@ export const MediaCollections: CollectionConfig = {
                 : parent.parentCollection.id,
               visitedIds,
             );
-          } catch (error) {
-            // Parent not found = broken reference but not circular
+          } catch (_error) {
+            // Intentionally ignored: parent not found means broken reference, not circular
             return false;
           }
         };
