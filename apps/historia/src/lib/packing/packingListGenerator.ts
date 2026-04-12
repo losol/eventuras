@@ -20,21 +20,25 @@ export function formatPackingListAsText(order: Order, customerName?: string, cus
   const lines: string[] = [];
 
   // Header
-  lines.push('═══════════════════════════════════════════════════════════');
-  lines.push('                     PAKKELISTE / PACKING LIST');
-  lines.push('═══════════════════════════════════════════════════════════');
-  lines.push('');
+  lines.push(
+    '═══════════════════════════════════════════════════════════',
+    '                     PAKKELISTE / PACKING LIST',
+    '═══════════════════════════════════════════════════════════',
+    '',
+  );
 
   // Order info
-  lines.push(`Ordre-ID:     ${order.id}`);
-  lines.push(`Dato:         ${formatOrderDate(order.createdAt, {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  })}`);
-  lines.push(`Status:       ${order.status.toUpperCase()}`);
+  lines.push(
+    `Ordre-ID:     ${order.id}`,
+    `Dato:         ${formatOrderDate(order.createdAt, {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    })}`,
+    `Status:       ${order.status.toUpperCase()}`,
+  );
   if (order.taxExempt) {
     lines.push(`MVA-fritatt:  JA`);
     if (order.taxExemptReason) {
@@ -44,8 +48,7 @@ export function formatPackingListAsText(order: Order, customerName?: string, cus
   lines.push('');
 
   // Customer info
-  lines.push('KUNDE / CUSTOMER:');
-  lines.push('───────────────────────────────────────────────────────────');
+  lines.push('KUNDE / CUSTOMER:', '───────────────────────────────────────────────────────────');
   if (customerName) {
     lines.push(`Navn:         ${customerName}`);
   }
@@ -58,8 +61,7 @@ export function formatPackingListAsText(order: Order, customerName?: string, cus
   // Shipping address
   const shippingAddress = order.shippingAddress;
   if (shippingAddress) {
-    lines.push('LEVERINGSADRESSE / SHIPPING ADDRESS:');
-    lines.push('───────────────────────────────────────────────────────────');
+    lines.push('LEVERINGSADRESSE / SHIPPING ADDRESS:', '───────────────────────────────────────────────────────────');
     if (shippingAddress.addressLine1) {
       lines.push(`              ${shippingAddress.addressLine1}`);
     }
@@ -76,9 +78,11 @@ export function formatPackingListAsText(order: Order, customerName?: string, cus
   }
 
   // Items to pack
-  lines.push('PRODUKTER Å PAKKE / ITEMS TO PACK:');
-  lines.push('═══════════════════════════════════════════════════════════');
-  lines.push('');
+  lines.push(
+    'PRODUKTER Å PAKKE / ITEMS TO PACK:',
+    '═══════════════════════════════════════════════════════════',
+    '',
+  );
 
   const currency = order.currency ?? 'NOK';
   const items = order.items ?? [];
@@ -92,28 +96,30 @@ export function formatPackingListAsText(order: Order, customerName?: string, cus
     const priceIncVat = getPriceIncVatMinor(item, isTaxExempt);
     const lineTotal = getLineTotalMinor(item, isTaxExempt);
 
-    lines.push(`${index + 1}. ${productName}`);
-    lines.push(`   Antall:           ${quantity} stk`);
-    lines.push(`   Pris eks. MVA:    ${currency} ${toMajorUnits(priceExVat).toFixed(2)}`);
-    lines.push(`   MVA:              ${vatRate}%`);
-    lines.push(`   Pris inkl. MVA:   ${currency} ${toMajorUnits(priceIncVat).toFixed(2)}`);
-    lines.push(`   Linjetotal:       ${currency} ${toMajorUnits(lineTotal).toFixed(2)}`);
-    lines.push('');
+    lines.push(
+      `${index + 1}. ${productName}`,
+      `   Antall:           ${quantity} stk`,
+      `   Pris eks. MVA:    ${currency} ${toMajorUnits(priceExVat).toFixed(2)}`,
+      `   MVA:              ${vatRate}%`,
+      `   Pris inkl. MVA:   ${currency} ${toMajorUnits(priceIncVat).toFixed(2)}`,
+      `   Linjetotal:       ${currency} ${toMajorUnits(lineTotal).toFixed(2)}`,
+      '',
+    );
   });
 
-  lines.push('───────────────────────────────────────────────────────────');
-  lines.push(`TOTALT / TOTAL:       ${currency} ${toMajorUnits(order.totalAmount ?? 0).toFixed(2)}`);
-  lines.push('═══════════════════════════════════════════════════════════');
-  lines.push('');
+  lines.push(
+    '───────────────────────────────────────────────────────────',
+    `TOTALT / TOTAL:       ${currency} ${toMajorUnits(order.totalAmount ?? 0).toFixed(2)}`,
+    '═══════════════════════════════════════════════════════════',
+    '',
+  );
 
   // Packing checklist
-  lines.push('PAKKELISTE / PACKING CHECKLIST:');
-  lines.push('───────────────────────────────────────────────────────────');
+  lines.push('PAKKELISTE / PACKING CHECKLIST:', '───────────────────────────────────────────────────────────');
   items.forEach((item) => {
     lines.push(`☐ ${item.quantity ?? 1}x ${getProductName(item)}`);
   });
-  lines.push('');
-  lines.push('═══════════════════════════════════════════════════════════');
+  lines.push('', '═══════════════════════════════════════════════════════════');
 
   return lines.join('\n');
 }

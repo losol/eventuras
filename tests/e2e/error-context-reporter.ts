@@ -105,53 +105,54 @@ class ErrorContextReporter implements Reporter {
     const lines: string[] = [];
     const error = result.errors[0];
 
-    lines.push('# Test Failure Context');
-    lines.push('');
-    lines.push(`**Test:** ${test.title}`);
-    lines.push(`**Suite:** ${test.parent.title}`);
-    lines.push(`**File:** ${test.location.file}:${test.location.line}`);
-    lines.push(`**Project:** ${test.parent.project()?.name ?? 'unknown'}`);
-    lines.push(`**Status:** ${result.status}`);
-    lines.push(`**Duration:** ${result.duration}ms`);
-    lines.push(`**Started:** ${new Date(result.startTime).toISOString()}`);
-    lines.push(`**Retry:** ${result.retry}`);
-    lines.push('');
+    lines.push(
+      '# Test Failure Context',
+      '',
+      `**Test:** ${test.title}`,
+      `**Suite:** ${test.parent.title}`,
+      `**File:** ${test.location.file}:${test.location.line}`,
+      `**Project:** ${test.parent.project()?.name ?? 'unknown'}`,
+      `**Status:** ${result.status}`,
+      `**Duration:** ${result.duration}ms`,
+      `**Started:** ${new Date(result.startTime).toISOString()}`,
+      `**Retry:** ${result.retry}`,
+      '',
+    );
 
     // Error details
     if (error) {
-      lines.push('## Error');
-      lines.push('');
-      lines.push('```');
-      lines.push(redact(error.message ?? 'No error message'));
-      lines.push('```');
-      lines.push('');
+      lines.push(
+        '## Error',
+        '',
+        '```',
+        redact(error.message ?? 'No error message'),
+        '```',
+        '',
+      );
 
       if (error.stack) {
-        lines.push('## Stack Trace');
-        lines.push('');
-        lines.push('```');
+        lines.push('## Stack Trace', '', '```');
         // Only include the first 30 lines of the stack trace
         const stackLines = redact(error.stack).split('\n').slice(0, 30);
-        lines.push(stackLines.join('\n'));
-        lines.push('```');
-        lines.push('');
+        lines.push(stackLines.join('\n'), '```', '');
       }
 
       // Extract snippet if available
       if (error.snippet) {
-        lines.push('## Code Snippet');
-        lines.push('');
-        lines.push('```typescript');
-        lines.push(redact(error.snippet));
-        lines.push('```');
-        lines.push('');
+        lines.push(
+          '## Code Snippet',
+          '',
+          '```typescript',
+          redact(error.snippet),
+          '```',
+          '',
+        );
       }
     }
 
     // Steps taken before failure
     if (result.steps.length > 0) {
-      lines.push('## Steps');
-      lines.push('');
+      lines.push('## Steps', '');
       const flatSteps = this.flattenSteps(result.steps);
       for (const step of flatSteps.slice(-20)) {
         const status = step.error ? 'FAIL' : 'OK';
@@ -164,8 +165,7 @@ class ErrorContextReporter implements Reporter {
     // Attachments (list paths to screenshots, traces, videos)
     const attachments = result.attachments.filter(a => a.name !== 'error-context.md');
     if (attachments.length > 0) {
-      lines.push('## Attachments');
-      lines.push('');
+      lines.push('## Attachments', '');
       for (const att of attachments) {
         if (att.path) {
           lines.push(`- **${att.name}** (${att.contentType}): \`${att.path}\``);
@@ -176,28 +176,19 @@ class ErrorContextReporter implements Reporter {
 
     // Stdout/stderr
     if (result.stdout.length > 0) {
-      lines.push('## Stdout');
-      lines.push('');
-      lines.push('```');
+      lines.push('## Stdout', '', '```');
       const stdout = result.stdout.map(s => (typeof s === 'string' ? s : s.toString())).join('');
-      lines.push(redact(stdout).substring(0, 2000));
-      lines.push('```');
-      lines.push('');
+      lines.push(redact(stdout).substring(0, 2000), '```', '');
     }
 
     if (result.stderr.length > 0) {
-      lines.push('## Stderr');
-      lines.push('');
-      lines.push('```');
+      lines.push('## Stderr', '', '```');
       const stderr = result.stderr.map(s => (typeof s === 'string' ? s : s.toString())).join('');
-      lines.push(redact(stderr).substring(0, 2000));
-      lines.push('```');
-      lines.push('');
+      lines.push(redact(stderr).substring(0, 2000), '```', '');
     }
 
     // Environment (sanitized)
-    lines.push('## Environment');
-    lines.push('');
+    lines.push('## Environment', '');
     const envVars = sanitizeEnvVars();
     for (const [key, value] of Object.entries(envVars)) {
       lines.push(`- \`${key}\`: ${value}`);
