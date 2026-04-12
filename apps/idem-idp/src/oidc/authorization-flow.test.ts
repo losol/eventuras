@@ -109,7 +109,7 @@ describe('OIDC Authorization Code Flow with PKCE', () => {
 
       expect(authResponse.statusCode).toBe(303);
 
-      const uid = authResponse.headers.location?.match(/\/interaction\/([^\/]+)/)?.[1];
+      const uid = authResponse.headers.location?.match(/\/interaction\/([^/]+)/)?.[1];
       expect(uid).toBeDefined();
 
       // Login
@@ -136,7 +136,7 @@ describe('OIDC Authorization Code Flow with PKCE', () => {
 
       // Handle consent if required
       if (resumeAuthResponse.headers.location?.includes('/interaction/')) {
-        const consentUid = resumeAuthResponse.headers.location.match(/\/interaction\/([^\/]+)/)?.[1];
+        const consentUid = resumeAuthResponse.headers.location.match(/\/interaction\/([^/]+)/)?.[1];
         const consentResponse = await app.inject({
           method: 'POST',
           url: `/interaction/${consentUid}/consent`,
@@ -205,7 +205,7 @@ describe('OIDC Authorization Code Flow with PKCE', () => {
 
       expect(authResponse.statusCode).toBe(303);
 
-      const uid = authResponse.headers.location?.match(/\/interaction\/([^\/]+)/)?.[1];
+      const uid = authResponse.headers.location?.match(/\/interaction\/([^/]+)/)?.[1];
       expect(uid).toBeDefined();
 
       // Login
@@ -232,7 +232,7 @@ describe('OIDC Authorization Code Flow with PKCE', () => {
 
       // Handle consent if required
       if (resumeAuthResponse.headers.location?.includes('/interaction/')) {
-        const consentUid = resumeAuthResponse.headers.location.match(/\/interaction\/([^\/]+)/)?.[1];
+        const consentUid = resumeAuthResponse.headers.location.match(/\/interaction\/([^/]+)/)?.[1];
         const consentResponse = await app.inject({
           method: 'POST',
           url: `/interaction/${consentUid}/consent`,
@@ -302,7 +302,7 @@ describe('OIDC Authorization Code Flow with PKCE', () => {
 
       expect(authResponse.statusCode).toBe(303);
 
-      const uid = authResponse.headers.location?.match(/\/interaction\/([^\/]+)/)?.[1];
+      const uid = authResponse.headers.location?.match(/\/interaction\/([^/]+)/)?.[1];
       expect(uid).toBeDefined();
 
       // Login
@@ -329,7 +329,7 @@ describe('OIDC Authorization Code Flow with PKCE', () => {
 
       // Handle consent if required
       if (resumeAuthResponse.headers.location?.includes('/interaction/')) {
-        const consentUid = resumeAuthResponse.headers.location.match(/\/interaction\/([^\/]+)/)?.[1];
+        const consentUid = resumeAuthResponse.headers.location.match(/\/interaction\/([^/]+)/)?.[1];
         const consentResponse = await app.inject({
           method: 'POST',
           url: `/interaction/${consentUid}/consent`,
