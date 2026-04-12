@@ -5,7 +5,7 @@ import type { EmailField } from '@payloadcms/plugin-form-builder/types'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
-import { Error } from '../Error'
+import { FieldError } from '../Error'
 import { Width } from '../Width'
 
 export const Email: React.FC<
@@ -28,7 +28,7 @@ export const Email: React.FC<
         {...register(name, { pattern: /^\S[^\s@]*@\S+$/, required: requiredFromProps })}
       />
 
-      {requiredFromProps && errors[name] && <Error />}
+      {requiredFromProps && errors[name] && <FieldError />}
     </Width>
   )
 }

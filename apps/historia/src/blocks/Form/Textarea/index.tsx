@@ -5,7 +5,7 @@ import type { TextField } from '@payloadcms/plugin-form-builder/types'
 import { Label } from '@/components/ui/label'
 import { Textarea as TextAreaComponent } from '@/components/ui/textarea'
 
-import { Error } from '../Error'
+import { FieldError } from '../Error'
 import { Width } from '../Width'
 
 export const Textarea: React.FC<
@@ -39,7 +39,7 @@ export const Textarea: React.FC<
         {...register(name, { required: requiredFromProps })}
       />
 
-      {requiredFromProps && errors[name] && <Error />}
+      {requiredFromProps && errors[name] && <FieldError />}
     </Width>
   )
 }

@@ -6,7 +6,7 @@ import type { CheckboxField } from '@payloadcms/plugin-form-builder/types'
 import { Checkbox as CheckboxUi } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
 
-import { Error } from '../Error'
+import { FieldError } from '../Error'
 import { Width } from '../Width'
 
 export const Checkbox: React.FC<
@@ -37,7 +37,7 @@ export const Checkbox: React.FC<
         />
         <Label htmlFor={name}>{label}</Label>
       </div>
-      {requiredFromProps && errors[name] && <Error />}
+      {requiredFromProps && errors[name] && <FieldError />}
     </Width>
   )
 }
