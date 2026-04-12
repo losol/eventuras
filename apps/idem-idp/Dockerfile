@@ -44,9 +44,9 @@ ARG GIT_SHA=unknown
 
 # OCI labels
 LABEL org.opencontainers.image.title="idem-idp" \
-      org.opencontainers.image.version="${APP_VERSION}" \
-      org.opencontainers.image.revision="${GIT_SHA}" \
-      org.opencontainers.image.source="https://github.com/losol/eventuras"
+    org.opencontainers.image.version="${APP_VERSION}" \
+    org.opencontainers.image.revision="${GIT_SHA}" \
+    org.opencontainers.image.source="https://github.com/losol/eventuras"
 
 # Also expose in env (handy for / and /health)
 ENV NODE_ENV=production \
@@ -54,11 +54,16 @@ ENV NODE_ENV=production \
     GIT_SHA=${GIT_SHA} \
     PORT=3001
 
-# Copy built artifacts (dependencies are bundled by tsup)
-COPY --from=build /srv/deploy ./
+# Create non-root user for security
+RUN addgroup --system --gid 1001 nodejs \
+    && adduser --system --uid 1001 --ingroup nodejs idem
 
-# (rest unchanged)
+# Copy built artifacts (dependencies are bundled by tsup)
+COPY --from=build --chown=idem:nodejs /srv/deploy ./
+
+USER idem
+
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s \
-  CMD wget -qO- http://127.0.0.1:${PORT}/health || exit 1
+    CMD wget -qO- http://127.0.0.1:${PORT}/health || exit 1
 EXPOSE 3001
 CMD ["node", "--enable-source-maps", "dist/main.js"]
