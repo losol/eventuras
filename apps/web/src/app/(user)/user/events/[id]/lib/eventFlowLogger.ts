@@ -63,6 +63,7 @@ export function logStepError(
  * Log state machine transition
  */
 export function logStateTransition(from: string, to: string, event?: string, context?: LogContext) {
+  const eventSuffix = event ? ` (${event})` : '';
   eventFlowLogger.debug(
     {
       from,
@@ -70,7 +71,7 @@ export function logStateTransition(from: string, to: string, event?: string, con
       event,
       ...context,
     },
-    `State transition: ${from} → ${to}${event ? ` (${event})` : ''}`
+    `State transition: ${from} → ${to}${eventSuffix}`
   );
 }
 

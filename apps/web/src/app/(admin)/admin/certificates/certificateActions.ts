@@ -56,8 +56,9 @@ export async function downloadCertificatePdf(
         },
         'Failed to download certificate PDF'
       );
+      const refSuffix = correlationId ? ` (ref: ${correlationId})` : '';
       return actionError(
-        `Failed to download: ${response.status} ${response.statusText}${correlationId ? ` (ref: ${correlationId})` : ''}`
+        `Failed to download: ${response.status} ${response.statusText}${refSuffix}`
       );
     }
 
@@ -121,8 +122,9 @@ export async function sendCertificateToParticipant(
         },
         'Failed to send certificate'
       );
+      const refSuffix = correlationId ? ` (ref: ${correlationId})` : '';
       return actionError(
-        `Failed to send: ${response.status} ${response.statusText}${correlationId ? ` (ref: ${correlationId})` : ''}`
+        `Failed to send: ${response.status} ${response.statusText}${refSuffix}`
       );
     }
 

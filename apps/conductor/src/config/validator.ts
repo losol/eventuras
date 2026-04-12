@@ -79,22 +79,25 @@ export function loadAndValidateConfig(): ValidatedConfig {
   // Validate with Zod schemas
   const tenantsResult = tenantsConfigSchema.safeParse(tenantsData);
   if (!tenantsResult.success) {
+    const issues = tenantsResult.error.issues.map((i) => `  - ${i.path.join('.')}: ${i.message}`).join('\n');
     throw new Error(
-      `Invalid tenants configuration:\n${tenantsResult.error.issues.map((i) => `  - ${i.path.join('.')}: ${i.message}`).join('\n')}`,
+      `Invalid tenants configuration:\n${issues}`,
     );
   }
 
   const channelsResult = channelsConfigSchema.safeParse(channelsData);
   if (!channelsResult.success) {
+    const issues = channelsResult.error.issues.map((i) => `  - ${i.path.join('.')}: ${i.message}`).join('\n');
     throw new Error(
-      `Invalid channels configuration:\n${channelsResult.error.issues.map((i) => `  - ${i.path.join('.')}: ${i.message}`).join('\n')}`,
+      `Invalid channels configuration:\n${issues}`,
     );
   }
 
   const pluginsResult = pluginsConfigSchema.safeParse(pluginsData);
   if (!pluginsResult.success) {
+    const issues = pluginsResult.error.issues.map((i) => `  - ${i.path.join('.')}: ${i.message}`).join('\n');
     throw new Error(
-      `Invalid plugins configuration:\n${pluginsResult.error.issues.map((i) => `  - ${i.path.join('.')}: ${i.message}`).join('\n')}`,
+      `Invalid plugins configuration:\n${issues}`,
     );
   }
 
@@ -147,8 +150,9 @@ export function validateEnvironmentVariables(config: ValidatedConfig): void {
   }
 
   if (missing.length > 0) {
+    const missingList = missing.map((v) => `  ❌ ${v}`).join('\n');
     throw new Error(
-      `Missing required environment variables:\n${missing.map((v) => `  ❌ ${v}`).join('\n')}\n\n` +
+      `Missing required environment variables:\n${missingList}\n\n` +
         'Please set these variables in your .env file or environment.',
     );
   }

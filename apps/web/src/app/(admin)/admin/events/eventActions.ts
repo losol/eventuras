@@ -95,6 +95,7 @@ export async function fetchEvents({
     const errorWithCause = error as { cause?: { code?: string }; code?: string; message?: string };
     const errorCode = errorWithCause?.cause?.code || errorWithCause?.code;
 
+    const errorSuffix = errorCode ? ` (${errorCode})` : '';
     logger.error(
       {
         error: {
@@ -110,7 +111,7 @@ export async function fetchEvents({
           startDate,
         },
       },
-      `Failed to fetch events${errorCode ? ` (${errorCode})` : ''}`
+      `Failed to fetch events${errorSuffix}`
     );
     throw error;
   }

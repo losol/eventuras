@@ -12,7 +12,8 @@ export const getClientSideURL = () => {
     const domain = window.location.hostname;
     const port = window.location.port;
 
-    return `${protocol}//${domain}${port ? `:${port}` : ''}`;
+    const portSuffix = port ? `:${port}` : '';
+    return `${protocol}//${domain}${portSuffix}`;
   }
 
   return process.env.NEXT_PUBLIC_CMS_URL || '';
