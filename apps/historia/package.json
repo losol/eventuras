@@ -5,7 +5,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "build": "cross-env next build --webpack",
+    "build": "cross-env next build",
     "dev": "next dev --port 3100",
     "dev:prod": "rm -rf .next && pnpm run build && pnpm run start",
     "generate:config-types": "tsx scripts/generate-config-types.ts",
