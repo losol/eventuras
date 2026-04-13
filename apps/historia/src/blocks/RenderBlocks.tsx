@@ -9,10 +9,8 @@ import { InstructionSectionBlock } from '@/blocks/InstructionSection/Component';
 import { ProductsBlock } from '@/blocks/Product';
 import { ResourcesBlock } from '@/blocks/ResourcesBlock/Component';
 
-// Extend block components to include `disableInnerContainer`
-const blockComponents: {
-  [key: string]: React.FC<Record<string, unknown> & { disableInnerContainer?: boolean; }>;
-} = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const blockComponents: Record<string, React.FC<any>> = {
   archive: ArchiveBlock,
   content: ContentBlock,
   formBlock: FormBlock,
