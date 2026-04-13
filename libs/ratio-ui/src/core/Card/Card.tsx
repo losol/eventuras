@@ -38,7 +38,7 @@ export const Card: React.FC<CardProps> = ({
   const hoverClasses = hoverEffect ? 'hover:bg-card-hover transition-colors duration-200' : '';
 
   const variantStyles = {
-    default: 'bg-card',
+    default: 'bg-card border-2 border-gray-200/50 shadow-xs dark:border-gray-700/50',
     wide: 'bg-card mx-auto min-h-[33vh]',
     outline: 'border border-border-1 bg-transparent',
     transparent: 'bg-transparent',
