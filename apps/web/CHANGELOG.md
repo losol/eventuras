@@ -1,5 +1,18 @@
 # @eventuras/web
 
+## 3.0.3
+
+### Patch Changes
+
+- e0b00a9: Minor layout refreshments: subtle border and shadow on default Card, improved category group spacing
+- Updated dependencies [e0b00a9]
+  - @eventuras/ratio-ui@1.0.2
+  - @eventuras/datatable@0.5.14
+  - @eventuras/markdown@9.0.2
+  - @eventuras/markdown-plugin-happening@4.0.2
+  - @eventuras/ratio-ui-next@0.1.15
+  - @eventuras/smartform@0.3.7
+
 ## 3.0.2
 
 ### Patch Changes

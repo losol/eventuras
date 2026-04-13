@@ -1,5 +1,11 @@
 # @eventuras/ratio-ui
 
+## 1.0.2
+
+### Patch Changes
+
+- e0b00a9: Minor layout refreshments: subtle border and shadow on default Card, improved category group spacing
+
 ## 1.0.1
 
 ### Patch Changes
