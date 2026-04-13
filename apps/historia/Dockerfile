@@ -121,7 +121,7 @@ RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store \
   --mount=type=secret,id=sentry_auth_token \
   export CMS_SENTRY_AUTH_TOKEN=$(cat /run/secrets/sentry_auth_token 2>/dev/null || echo "") && \
   export NODE_OPTIONS="--max-old-space-size=4096" && \
-  pnpm next build --webpack --experimental-build-mode compile
+  pnpm next build --experimental-build-mode compile
 
 ##########################
 # Runtime                #
