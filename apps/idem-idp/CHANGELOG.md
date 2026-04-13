@@ -1,5 +1,14 @@
 # @eventuras/idem-idp
 
+## 0.7.6
+
+### Patch Changes
+
+- Updated dependencies [e073558]
+- Updated dependencies [b3d101f]
+  - @eventuras/ratio-ui@1.0.1
+  - @eventuras/notitia-templates@0.2.2
+
 ## 0.7.5
 
 ### Patch Changes

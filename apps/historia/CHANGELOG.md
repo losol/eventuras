@@ -1,5 +1,19 @@
 # @eventuras/historia
 
+## 0.25.6
+
+### Patch Changes
+
+- e073558: Rename component exports that shadow built-in globals (Error → ErrorBlock/FieldError, Number → NumberField), remove identical sub-expressions in Link, and fix duplicate CSS properties with missing font fallback
+- b3d101f: Fix SonarCloud reliability issues: use locale-aware string sorting and replace unsafe `any` intersection type
+- Updated dependencies [e073558]
+- Updated dependencies [b3d101f]
+- Updated dependencies [4b30339]
+  - @eventuras/ratio-ui@1.0.1
+  - @eventuras/notitia-templates@0.2.2
+  - @eventuras/fides-auth-next@0.1.6
+  - @eventuras/ratio-ui-next@0.1.14
+
 ## 0.25.5
 
 ### Patch Changes

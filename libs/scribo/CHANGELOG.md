@@ -1,5 +1,11 @@
 # @eventuras/scribo
 
+## 0.10.1
+
+### Patch Changes
+
+- e073558: Rename component exports that shadow built-in globals (Error → ErrorBlock/FieldError, Number → NumberField), remove identical sub-expressions in Link, and fix duplicate CSS properties with missing font fallback
+
 ## 0.10.0
 
 ### Minor Changes

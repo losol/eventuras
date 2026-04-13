@@ -1,5 +1,21 @@
 # @eventuras/web
 
+## 3.0.2
+
+### Patch Changes
+
+- e073558: Rename component exports that shadow built-in globals (Error → ErrorBlock/FieldError, Number → NumberField), remove identical sub-expressions in Link, and fix duplicate CSS properties with missing font fallback
+- Updated dependencies [e073558]
+- Updated dependencies [4b30339]
+  - @eventuras/ratio-ui@1.0.1
+  - @eventuras/scribo@0.10.1
+  - @eventuras/fides-auth-next@0.1.6
+  - @eventuras/datatable@0.5.13
+  - @eventuras/markdown@9.0.1
+  - @eventuras/markdown-plugin-happening@4.0.1
+  - @eventuras/ratio-ui-next@0.1.14
+  - @eventuras/smartform@0.3.6
+
 ## 3.0.1
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.2
+
+### Patch Changes
+
+- b3d101f: Fix SonarCloud reliability issues: use locale-aware string sorting and replace unsafe `any` intersection type
+
 ## 0.2.1
 
 ### Patch Changes
