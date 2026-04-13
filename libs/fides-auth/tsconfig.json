@@ -1,6 +1,7 @@
 {
   "extends": "@eventuras/typescript-config/library.json",
   "compilerOptions": {
-    "rootDir": "src"
+    "rootDir": "src",
+    "types": ["node"]
   }
 }

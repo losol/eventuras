@@ -68,7 +68,7 @@ export async function encrypt(text: string, secret: string | Uint8Array): Promis
   // Import the key for AES-GCM encryption.
   const key = await crypto.subtle.importKey(
     'raw',
-    keyData,
+    keyData as BufferSource,
     { name: 'AES-GCM' },
     false,
     ['encrypt']
@@ -134,7 +134,7 @@ export async function decrypt(data: string, secret: string | Uint8Array): Promis
 
   const key = await crypto.subtle.importKey(
     'raw',
-    keyDataArrayBuffer,
+    keyDataArrayBuffer as BufferSource,
     { name: 'AES-GCM' },
     false,
     ['decrypt']
@@ -171,7 +171,7 @@ function toUint8Array(data: string | Uint8Array): Uint8Array {
  */
 export async function sha256(data: string | Uint8Array): Promise<string> {
   const buffer = toUint8Array(data);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', buffer as BufferSource);
   return toHex(new Uint8Array(hashBuffer));
 }
 
@@ -182,7 +182,7 @@ export async function sha256(data: string | Uint8Array): Promise<string> {
  */
 export async function sha512(data: string | Uint8Array): Promise<string> {
   const buffer = toUint8Array(data);
-  const hashBuffer = await crypto.subtle.digest('SHA-512', buffer);
+  const hashBuffer = await crypto.subtle.digest('SHA-512', buffer as BufferSource);
   return toHex(new Uint8Array(hashBuffer));
 }
 
