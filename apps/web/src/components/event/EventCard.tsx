@@ -25,11 +25,11 @@ const EventCard: React.FC<EventCardProps> = ({ eventinfo }) => {
       )}
       {eventinfo.description && <MarkdownContent markdown={eventinfo.description} />}
       {eventinfo.location && (
-        <Text icon={<MapPin size={16} />} className="pt-1">
+        <Text icon={<MapPin size={16} />} className="m-0">
           {eventinfo.location}
         </Text>
       )}
-      <Text icon={<Calendar size={16} />} className="pt-1">
+      <Text icon={<Calendar size={16} />} className="m-0">
         {formatDateSpan(eventinfo.dateStart as string, eventinfo.dateEnd as string, {
           locale: appConfig.env.DEFAULT_LOCALE as string,
         })}

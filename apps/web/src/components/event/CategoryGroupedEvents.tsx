@@ -41,7 +41,7 @@ export const CategoryGroupedEvents = async ({ events }: CategoryGroupedEventsPro
   const t = await getTranslations();
 
   return (
-    <div className="space-y-8">
+    <div className="flex flex-col gap-md">
       {Array.from(groups.entries()).map(([category, categoryEvents]) => (
         <div key={category || '__uncategorized'}>
           <Heading as="h3" paddingBottom="xs">
