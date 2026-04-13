@@ -3,24 +3,17 @@
   "extends": ["config:recommended", "helpers:pinGitHubActionDigestsToSemver"],
   "enabledManagers": [
     "npm",
-    "nuget",
     "github-actions",
-    "dockerfile",
-    "docker-compose",
-    "devcontainer"
+    "dockerfile"
   ],
   "includePaths": [
     ".github/workflows/**",
-    ".devcontainer/**",
     "apps/**",
     "libs/**",
     "tests/**",
-    "docs/**",
-    "lab/**",
     "package.json",
     "pnpm-workspace.yaml",
-    "pnpm-lock.yaml",
-    "docker-compose.yml"
+    "pnpm-lock.yaml"
   ],
   "timezone": "Europe/Oslo",
   "labels": ["dependencies"],
@@ -32,7 +25,7 @@
   "pruneStaleBranches": true,
   "minimumReleaseAge": "3 days",
   "prConcurrentLimit": 4,
-  "branchConcurrentLimit": 2,
+  "branchConcurrentLimit": 1,
   "lockFileMaintenance": {
     "enabled": false
   },
@@ -52,12 +45,6 @@
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "matchManagers": ["npm"],
       "groupName": "npm minor/patch"
-    },
-    {
-      "description": "Group ALL non-major NuGet updates into one PR",
-      "matchUpdateTypes": ["minor", "patch"],
-      "matchManagers": ["nuget"],
-      "groupName": "nuget minor/patch"
     },
     {
       "description": "Group Payload CMS packages",
