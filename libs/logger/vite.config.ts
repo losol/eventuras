@@ -6,4 +6,5 @@ export default defineVanillaLibConfig({
     node: 'src/node.ts',
     opentelemetry: 'src/opentelemetry.ts',
   },
+  external: ['pino', /^node:/],
 });
