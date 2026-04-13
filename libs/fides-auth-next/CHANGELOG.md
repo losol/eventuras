@@ -1,5 +1,11 @@
 # @eventuras/fides-auth-next
 
+## 0.1.6
+
+### Patch Changes
+
+- 4b30339: Move @eventuras/typescript-config from dependencies to devDependencies
+
 ## 0.1.5
 
 ### Patch Changes

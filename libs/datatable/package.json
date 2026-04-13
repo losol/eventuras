@@ -1,6 +1,6 @@
 {
   "name": "@eventuras/datatable",
-  "version": "0.5.12",
+  "version": "0.5.13",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
