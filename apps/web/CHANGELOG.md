@@ -1,5 +1,12 @@
 # @eventuras/web
 
+## 3.0.4
+
+### Patch Changes
+
+- 7f445e3: Security update: next 16.2.3
+  - @eventuras/event-sdk@3.0.2
+
 ## 3.0.3
 
 ### Patch Changes
