@@ -1,15 +1,12 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended", "helpers:pinGitHubActionDigestsToSemver"],
-  "enabledManagers": [
-    "npm",
-    "github-actions",
-    "dockerfile"
-  ],
+  "enabledManagers": ["npm", "github-actions", "dockerfile"],
   "includePaths": [
     ".github/workflows/**",
     "apps/**",
     "libs/**",
+    "lab/**",
     "tests/**",
     "package.json",
     "pnpm-workspace.yaml",
