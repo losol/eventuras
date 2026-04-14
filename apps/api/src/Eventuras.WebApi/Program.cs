@@ -24,6 +24,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
 using Scalar.AspNetCore;
@@ -31,9 +32,15 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Remove default Console/Debug providers before ServiceDefaults re-adds OpenTelemetry logging.
+// Serilog writes the console output; OTEL stays registered for log export to infra.
+builder.Logging.ClearProviders();
+
 builder.AddServiceDefaults();
 
-// Configure Serilog (reads from appsettings.json "Serilog" section)
+// Configure Serilog (reads from appsettings.json "Serilog" section).
+// writeToProviders: true forwards Serilog events to the OpenTelemetry logging provider
+// registered by ServiceDefaults, so logs are both written to stdout and exported via OTEL.
 builder.Host.UseSerilog((context, config) =>
     config.ReadFrom.Configuration(context.Configuration), writeToProviders: true);
 
@@ -150,7 +157,12 @@ var app = builder.Build();
 
 // Configure middleware pipeline — correlation ID first so all requests get it
 app.UseMiddleware<CorrelationIdMiddleware>();
-app.UseSerilogRequestLogging();
+
+// Skip Serilog request logging for /health probes to reduce log noise.
+// Health check failures are still logged by AddHealthChecks itself.
+app.UseWhen(
+    ctx => !ctx.Request.Path.StartsWithSegments("/health"),
+    branch => branch.UseSerilogRequestLogging());
 
 if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("IntegrationTests"))
 {
