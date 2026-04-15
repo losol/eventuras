@@ -109,8 +109,6 @@ export class Logger {
   static configure(config: Partial<LoggerConfig>): void {
     Logger.config = { ...Logger.config, ...config };
     Logger.transport = Logger.config.transport ?? createDefaultTransport(Logger.config);
-    // Re-bind static convenience methods to the new transport
-    Logger.rebindStaticMethods();
   }
 
   /**
@@ -245,11 +243,6 @@ export class Logger {
   static fatal(optionsOrMsg: ErrorLoggerOptions | string, ...msg: unknown[]): void {
     const [options, messages] = Logger.normalizeArgs(optionsOrMsg, msg);
     Logger.staticErrorLog('fatal', options, ...messages);
-  }
-
-  private static rebindStaticMethods(): void {
-    // No-op — static methods now delegate through Logger.transport directly
-    // so rebinding is not needed. Kept for API compatibility.
   }
 
   /**
