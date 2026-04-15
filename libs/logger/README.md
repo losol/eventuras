@@ -161,6 +161,33 @@ Default redacted paths: `password`, `token`, `apiKey`, `authorization`, `secret`
 
 Configure additional paths via `Logger.configure({ redact: [...] })`.
 
+### Nested fields
+
+Redaction uses [Pino's `redact` option](https://getpino.io/#/docs/redaction), which is powered by [fast-redact](https://github.com/davidmarkclements/fast-redact). Paths are **exact field paths** — they don't match nested occurrences by default:
+
+```typescript
+// Only redacts top-level `password`
+Logger.configure({ redact: ["password"] });
+
+logger.info({ password: "x" });          // → [REDACTED]
+logger.info({ user: { password: "x" } }); // → NOT redacted
+```
+
+To redact nested fields, spell out the path or use wildcards:
+
+```typescript
+Logger.configure({
+  redact: [
+    "password",
+    "user.password",
+    "request.headers.authorization",
+    "*.token", // any key named `token` one level deep
+  ],
+});
+```
+
+For HTTP headers specifically, prefer [`redactHeaders`](#http-header-redaction) — it normalizes the object and handles `Headers` instances in addition to plain objects.
+
 ## HTTP Header Redaction
 
 Utility for redacting sensitive HTTP headers:
