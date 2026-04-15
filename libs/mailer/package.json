@@ -2,6 +2,15 @@
   "name": "@eventuras/mailer",
   "version": "0.1.1",
   "description": "Email sending utility for Eventuras applications",
+  "homepage": "https://github.com/losol/eventuras/tree/main/libs/mailer#readme",
+  "bugs": {
+    "url": "https://github.com/losol/eventuras/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/losol/eventuras.git",
+    "directory": "libs/mailer"
+  },
   "type": "module",
   "exports": {
     ".": {

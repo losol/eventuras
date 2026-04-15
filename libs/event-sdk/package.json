@@ -2,6 +2,15 @@
   "name": "@eventuras/event-sdk",
   "version": "3.0.3",
   "description": "Event api sdk",
+  "homepage": "https://github.com/losol/eventuras/tree/main/libs/event-sdk#readme",
+  "bugs": {
+    "url": "https://github.com/losol/eventuras/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/losol/eventuras.git",
+    "directory": "libs/event-sdk"
+  },
   "license": "GPL-2.0-or-later",
   "author": "Ole Kristian Losvik",
   "type": "module",
