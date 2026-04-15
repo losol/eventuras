@@ -6,8 +6,8 @@
     <ProjectReference Include="..\Eventuras.Services\Eventuras.Services.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="PowerOfficeGoSdk" Version="2.58.0" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.5" />
-    <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="10.0.5" />
+    <PackageReference Include="PowerOfficeGoSdk" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.6" />
+    <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="10.0.6" />
   </ItemGroup>
 </Project>

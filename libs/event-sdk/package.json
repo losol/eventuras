@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "@eventuras/api": "workspace:*",
-    "@hey-api/openapi-ts": "0.95.0"
+    "@hey-api/openapi-ts": "0.96.0"
   },
   "devDependencies": {
     "@eventuras/typescript-config": "workspace:*",

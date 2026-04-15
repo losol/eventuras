@@ -61,7 +61,7 @@ jobs:
               || echo "Failed to create release for ${TAG}"
           done
 
-      - name: Trigger Docker retag for released packages
+      - name: Trigger downstream workflows for released packages
         if: steps.changesets.outputs.published == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -79,6 +79,33 @@ jobs:
               @eventuras/web)
                 echo "Triggering Docker retag for Web: ${TAG}"
                 gh workflow run web-docker.yml -f "tag=${TAG}"
+                ;;
+              @eventuras/fides-auth)
+                echo "Triggering npm publish for fides-auth: ${TAG}"
+                gh workflow run fides-auth-publish.yml -f "tag=${TAG}"
+                ;;
+              @eventuras/fides-auth-next)
+                echo "Triggering npm publish for fides-auth-next: ${TAG}"
+                gh workflow run fides-auth-next-publish.yml -f "tag=${TAG}"
+                ;;
+              @eventuras/logger)
+                echo "Triggering npm publish for logger: ${TAG}"
+                gh workflow run logger-publish.yml -f "tag=${TAG}"
+                ;;
+              @eventuras/datatable)
+                echo "Triggering npm publish for datatable: ${TAG}"
+                gh workflow run datatable-publish.yml -f "tag=${TAG}"
+                ;;
+              @eventuras/scribo)
+                echo "Triggering npm publish for scribo: ${TAG}"
+                gh workflow run scribo-publish.yml -f "tag=${TAG}"
+                ;;
+              @eventuras/ratio-ui)
+                echo "Triggering npm publish for ratio-ui: ${TAG}"
+                gh workflow run ratio-release.yml -f "tag=${TAG}"
+                ;;
+              *)
+                echo "No downstream workflow configured for package ${NAME} with tag ${TAG}"
                 ;;
             esac
           done

@@ -48,6 +48,4 @@ jobs:
         run: pnpm --filter @eventuras/datatable build
 
       - name: Publish to npm
-        run: |
-          cd libs/datatable
-          npm publish --access public --provenance
+        run: pnpm --filter @eventuras/datatable publish --access public --provenance --no-git-checks

@@ -48,6 +48,4 @@ jobs:
         run: pnpm --filter @eventuras/logger build
 
       - name: Publish to npm
-        run: |
-          cd libs/logger
-          npm publish --access public --provenance
+        run: pnpm --filter @eventuras/logger publish --access public --provenance --no-git-checks
