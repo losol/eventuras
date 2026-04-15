@@ -1,14 +1,17 @@
 /**
  * Pluggable logger for fides-auth.
  *
- * By default, uses a console-based logger. Users can provide their own
- * implementation (pino, winston, etc.) via `configureLogger()`.
+ * The default writes newline-delimited JSON to `console.<level>` so output
+ * is interoperable with Loki / Grafana / Datadog out of the box, even when
+ * the consumer hasn't wired in a structured logger. Users can plug their
+ * own backend (pino, winston, @eventuras/logger, ...) via `configureLogger()`.
  *
  * @example
- * // Use default console logger (no setup needed)
+ * // Use default JSONL console logger (no setup needed)
  * import { createLogger } from '@eventuras/fides-auth/logger';
  * const logger = createLogger({ namespace: 'my-app:auth' });
  * logger.info('Authentication successful');
+ * // → {"level":"info","time":"…","namespace":"my-app:auth","msg":"Authentication successful"}
  *
  * @example
  * // Plug in pino
@@ -62,57 +65,92 @@ export interface FidesLoggerFactory {
 }
 
 /**
- * Console-based logger implementation.
- * Used as the default when no custom logger factory is configured.
+ * Console-based logger implementation that emits newline-delimited JSON.
+ *
+ * Used as the default when no custom logger factory is configured. JSONL
+ * keeps fides-auth's output interoperable with log shippers (Loki, Grafana,
+ * Datadog, etc.) even when the consuming app hasn't wired in a structured
+ * logger via `configureLogger()`. Each entry preserves the original
+ * `console.<level>` call so browser devtools and CI log filters still work.
+ *
+ * Output shape (example):
+ *
+ *   {"level":"info","time":"2026-04-15T19:40:57.300Z","namespace":"fides-auth:oauth","msg":"PKCE parameters generated","codeChallenge":"…"}
+ *
+ * Errors in the `data` field are serialized to `{ name, message, stack }`
+ * so they survive `JSON.stringify`.
  */
-class ConsoleLogger implements FidesLogger {
-  private readonly prefix: string;
+type ConsoleMethod = 'debug' | 'info' | 'warn' | 'error';
 
-  constructor(namespace: string, context?: Record<string, unknown>) {
-    const contextStr = context && Object.keys(context).length > 0
-      ? ` ${JSON.stringify(context)}`
-      : '';
-    this.prefix = `[${namespace}]${contextStr}`;
+function serializeError(value: unknown): unknown {
+  if (value instanceof Error) {
+    return { name: value.name, message: value.message, stack: value.stack };
+  }
+  return value;
+}
+
+function safeStringify(record: Record<string, unknown>): string {
+  try {
+    return JSON.stringify(record, (_key, value) =>
+      value instanceof Error ? serializeError(value) : value,
+    );
+  } catch {
+    // Circular or otherwise non-serializable — fall back to a marker entry.
+    return JSON.stringify({
+      ...record,
+      msg: typeof record.msg === 'string' ? record.msg : '[unserializable log entry]',
+      _serializeError: true,
+    });
+  }
+}
+
+class ConsoleLogger implements FidesLogger {
+  constructor(
+    private readonly namespace: string,
+    private readonly context?: Record<string, unknown>,
+  ) { }
+
+  private write(
+    method: ConsoleMethod,
+    level: 'debug' | 'info' | 'warn' | 'error',
+    data?: Record<string, unknown> | string,
+    msg?: string,
+  ): void {
+    const entry: Record<string, unknown> = {
+      level,
+      time: new Date().toISOString(),
+      namespace: this.namespace,
+      ...this.context,
+    };
+
+    if (typeof data === 'string') {
+      entry.msg = data;
+    } else {
+      if (msg !== undefined) entry.msg = msg;
+      if (data) Object.assign(entry, data);
+    }
+
+    if (entry.error !== undefined) {
+      entry.error = serializeError(entry.error);
+    }
+
+    console[method](safeStringify(entry));
   }
 
   debug(data?: Record<string, unknown> | string, msg?: string): void {
-    if (typeof data === 'string') {
-      console.debug(this.prefix, data);
-    } else if (msg) {
-      console.debug(this.prefix, msg, data);
-    } else if (data) {
-      console.debug(this.prefix, data);
-    }
+    this.write('debug', 'debug', data, msg);
   }
 
   info(data?: Record<string, unknown> | string, msg?: string): void {
-    if (typeof data === 'string') {
-      console.info(this.prefix, data);
-    } else if (msg) {
-      console.info(this.prefix, msg, data);
-    } else if (data) {
-      console.info(this.prefix, data);
-    }
+    this.write('info', 'info', data, msg);
   }
 
   warn(data?: Record<string, unknown> | string, msg?: string): void {
-    if (typeof data === 'string') {
-      console.warn(this.prefix, data);
-    } else if (msg) {
-      console.warn(this.prefix, msg, data);
-    } else if (data) {
-      console.warn(this.prefix, data);
-    }
+    this.write('warn', 'warn', data, msg);
   }
 
   error(data?: Record<string, unknown> | string, msg?: string): void {
-    if (typeof data === 'string') {
-      console.error(this.prefix, data);
-    } else if (msg) {
-      console.error(this.prefix, msg, data);
-    } else if (data) {
-      console.error(this.prefix, data);
-    }
+    this.write('error', 'error', data, msg);
   }
 }
 
