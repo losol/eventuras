@@ -4,16 +4,11 @@
   "private": true,
   "license": "GPL-2.0+",
   "workspaces": [
-    "apps/api",
-    "apps/dev-docs",
-    "apps/historia",
-    "apps/idem-idp",
-    "apps/web",
-    "tests/e2e",
-    "apps/convertoapi",
+    "apps/*",
     "docs",
     "libs/**",
-    "lab/**"
+    "lab/**",
+    "tests/e2e"
   ],
   "scripts": {
     "build": "turbo run build --concurrency 30",
