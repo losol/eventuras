@@ -1,8 +1,25 @@
 {
   "name": "@eventuras/typescript-config",
   "version": "1.0.0",
-  "private": true,
+  "description": "Shared TypeScript configurations for Eventuras projects",
+  "homepage": "https://github.com/losol/eventuras/tree/main/libs/typescript-config#readme",
+  "bugs": {
+    "url": "https://github.com/losol/eventuras/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/losol/eventuras.git",
+    "directory": "libs/typescript-config"
+  },
   "license": "MIT",
+  "files": [
+    "base.json",
+    "library.json",
+    "nextjs.json",
+    "node.json",
+    "react-library.json",
+    "README.md"
+  ],
   "publishConfig": {
     "access": "public"
   }
