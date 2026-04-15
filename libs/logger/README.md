@@ -20,7 +20,12 @@ pnpm add @eventuras/logger
 
 ## Quick Start
 
-### Scoped Logger (recommended)
+### Scoped Logger (preferred)
+
+Create a `Logger` instance per module so every log entry carries the
+module's namespace and any persistent context — it's the pattern we
+use everywhere in Eventuras, and it makes filtering by module in Loki
+/ Grafana trivial.
 
 ```typescript
 import { Logger } from "@eventuras/logger";
@@ -35,6 +40,11 @@ logger.error({ error }, "Failed to save event");
 ```
 
 ### Static Methods (one-off logs)
+
+The static methods are fine for bootstrap code that runs before any
+scoped logger exists (server startup, top-level error handlers,
+scripts). For anything inside a module or request path, prefer
+`Logger.create()` so the output stays namespaced.
 
 ```typescript
 import { Logger } from "@eventuras/logger";
