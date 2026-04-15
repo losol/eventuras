@@ -8,6 +8,15 @@
     "environment",
     "validation"
   ],
+  "homepage": "https://github.com/losol/eventuras/tree/main/libs/app-config#readme",
+  "bugs": {
+    "url": "https://github.com/losol/eventuras/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/losol/eventuras.git",
+    "directory": "libs/app-config"
+  },
   "license": "MIT",
   "type": "module",
   "exports": {

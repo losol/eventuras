@@ -1,6 +1,15 @@
 {
   "name": "@eventuras/ratio-ui",
   "version": "1.0.3",
+  "homepage": "https://github.com/losol/eventuras/tree/main/libs/ratio-ui#readme",
+  "bugs": {
+    "url": "https://github.com/losol/eventuras/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/losol/eventuras.git",
+    "directory": "libs/ratio-ui"
+  },
   "type": "module",
   "exports": {
     ".": {

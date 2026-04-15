@@ -1,6 +1,15 @@
 {
   "name": "@eventuras/datatable",
   "version": "0.5.15",
+  "homepage": "https://github.com/losol/eventuras/tree/main/libs/datatable#readme",
+  "bugs": {
+    "url": "https://github.com/losol/eventuras/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/losol/eventuras.git",
+    "directory": "libs/datatable"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
