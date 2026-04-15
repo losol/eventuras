@@ -1,5 +1,11 @@
 # @eventuras/convertoapi
 
+## 1.0.1
+
+### Patch Changes
+
+- 7c9fe79: chore: update dependencies
+
 ## 1.0.0
 
 First release of ConvertoAPI — a Fastify-based HTML-to-PDF microservice powered by Playwright/Chromium.

@@ -1,5 +1,11 @@
 # @eventuras/logger
 
+## 0.7.1
+
+### Patch Changes
+
+- 7c9fe79: chore: update dependencies
+
 ## 0.7.0
 
 ### Minor Changes

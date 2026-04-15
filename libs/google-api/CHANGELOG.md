@@ -1,5 +1,11 @@
 # @eventuras/google-api
 
+## 0.2.2
+
+### Patch Changes
+
+- 7c9fe79: chore: update dependencies
+
 ## 0.2.1
 
 ### Patch Changes

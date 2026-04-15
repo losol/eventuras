@@ -1,5 +1,25 @@
 # @eventuras/web
 
+## 3.0.5
+
+### Patch Changes
+
+- 7c9fe79: chore: update dependencies
+- Updated dependencies [7c9fe79]
+  - @eventuras/app-config@0.1.3
+  - @eventuras/core-nextjs@0.1.3
+  - @eventuras/core@0.1.1
+  - @eventuras/datatable@0.5.15
+  - @eventuras/event-sdk@3.0.3
+  - @eventuras/fides-auth-next@0.1.7
+  - @eventuras/logger@0.7.1
+  - @eventuras/markdown-plugin-happening@4.0.3
+  - @eventuras/markdown@9.0.3
+  - @eventuras/ratio-ui-next@0.1.16
+  - @eventuras/ratio-ui@1.0.3
+  - @eventuras/scribo@0.10.2
+  - @eventuras/smartform@0.3.8
+
 ## 3.0.4
 
 ### Patch Changes

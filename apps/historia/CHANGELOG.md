@@ -1,5 +1,23 @@
 # @eventuras/historia
 
+## 0.25.8
+
+### Patch Changes
+
+- 7c9fe79: chore: update dependencies
+- Updated dependencies [7c9fe79]
+  - @eventuras/app-config@0.1.3
+  - @eventuras/core-nextjs@0.1.3
+  - @eventuras/core@0.1.1
+  - @eventuras/fides-auth-next@0.1.7
+  - @eventuras/fides-auth@0.3.1
+  - @eventuras/logger@0.7.1
+  - @eventuras/notitia-templates@0.2.3
+  - @eventuras/payload-vipps-auth@0.1.4
+  - @eventuras/ratio-ui-next@0.1.16
+  - @eventuras/ratio-ui@1.0.3
+  - @eventuras/vipps@0.2.3
+
 ## 0.25.7
 
 ### Patch Changes

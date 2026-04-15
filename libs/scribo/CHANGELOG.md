@@ -1,5 +1,11 @@
 # @eventuras/scribo
 
+## 0.10.2
+
+### Patch Changes
+
+- 7c9fe79: chore: update dependencies
+
 ## 0.10.1
 
 ### Patch Changes
