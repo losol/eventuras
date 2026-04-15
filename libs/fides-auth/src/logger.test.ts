@@ -91,6 +91,56 @@ describe('default console logger (structured JSON)', () => {
     spy.mockRestore();
   });
 
+  it('protects reserved keys (level, time, namespace) from caller overrides', () => {
+    const spy = vi.spyOn(console, 'info').mockImplementation(() => { });
+    const logger = createLogger({
+      namespace: 'auth',
+      context: { time: 'context-clobber-attempt', user: 'alice' },
+    });
+
+    logger.info(
+      { level: 'fatal', namespace: 'fake', requestId: 'r1' },
+      'still original',
+    );
+
+    const entry = JSON.parse(spy.mock.calls[0]![0] as string);
+    expect(entry.level).toBe('info');
+    expect(entry.namespace).toBe('auth');
+    expect(typeof entry.time).toBe('string');
+    expect(entry.time).not.toBe('context-clobber-attempt');
+    // Caller fields that don't collide are preserved.
+    expect(entry.user).toBe('alice');
+    expect(entry.requestId).toBe('r1');
+    expect(entry.msg).toBe('still original');
+    spy.mockRestore();
+  });
+
+  it('skips empty calls without emitting a log line', () => {
+    const spy = vi.spyOn(console, 'info').mockImplementation(() => { });
+    const logger = createLogger({ namespace: 'auth' });
+
+    logger.info();
+
+    expect(spy).not.toHaveBeenCalled();
+    spy.mockRestore();
+  });
+
+  it('survives circular and BigInt values without throwing', () => {
+    const spy = vi.spyOn(console, 'info').mockImplementation(() => { });
+    const logger = createLogger({ namespace: 'auth' });
+
+    const circular: Record<string, unknown> = { name: 'self' };
+    circular.self = circular;
+
+    expect(() => logger.info({ circular, count: 9007199254740993n }, 'edge cases')).not.toThrow();
+
+    const entry = JSON.parse(spy.mock.calls[0]![0] as string);
+    expect(entry.msg).toBe('edge cases');
+    expect(entry.circular).toMatchObject({ name: 'self', self: '[Circular]' });
+    expect(entry.count).toBe('9007199254740993');
+    spy.mockRestore();
+  });
+
   it('each log level delegates to the matching console method', () => {
     const spyDebug = vi.spyOn(console, 'debug').mockImplementation(() => { });
     const spyInfo = vi.spyOn(console, 'info').mockImplementation(() => { });

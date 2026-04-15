@@ -89,15 +89,28 @@ function serializeError(value: unknown): unknown {
   return value;
 }
 
+/** Field names the logger reserves so callers can't accidentally clobber them. */
+const RESERVED_KEYS = new Set(['level', 'time', 'namespace']);
+
 function safeStringify(record: Record<string, unknown>): string {
+  const seen = new WeakSet<object>();
   try {
-    return JSON.stringify(record, (_key, value) =>
-      value instanceof Error ? serializeError(value) : value,
-    );
+    return JSON.stringify(record, (_key, value) => {
+      if (value instanceof Error) return serializeError(value);
+      if (typeof value === 'bigint') return value.toString();
+      if (typeof value === 'object' && value !== null) {
+        if (seen.has(value)) return '[Circular]';
+        seen.add(value);
+      }
+      return value;
+    });
   } catch {
-    // Circular or otherwise non-serializable — fall back to a marker entry.
+    // Last-resort fallback: drop the original record entirely so a single
+    // non-serializable payload can't take down the caller's request path.
     return JSON.stringify({
-      ...record,
+      level: record.level,
+      time: record.time,
+      namespace: record.namespace,
       msg: typeof record.msg === 'string' ? record.msg : '[unserializable log entry]',
       _serializeError: true,
     });
@@ -116,18 +129,34 @@ class ConsoleLogger implements FidesLogger {
     data?: Record<string, unknown> | string,
     msg?: string,
   ): void {
+    // Skip noisy empty entries — match the pre-JSON ConsoleLogger, which
+    // dropped calls with no data and no message.
+    if (data === undefined && msg === undefined) return;
+
+    // Reserved keys are set first so they appear at the front of the JSON
+    // output. User-supplied fields are filtered against RESERVED_KEYS so
+    // they can't clobber level/time/namespace.
     const entry: Record<string, unknown> = {
       level,
       time: new Date().toISOString(),
       namespace: this.namespace,
-      ...this.context,
     };
+
+    if (this.context) {
+      for (const [key, value] of Object.entries(this.context)) {
+        if (!RESERVED_KEYS.has(key)) entry[key] = value;
+      }
+    }
 
     if (typeof data === 'string') {
       entry.msg = data;
     } else {
       if (msg !== undefined) entry.msg = msg;
-      if (data) Object.assign(entry, data);
+      if (data) {
+        for (const [key, value] of Object.entries(data)) {
+          if (!RESERVED_KEYS.has(key)) entry[key] = value;
+        }
+      }
     }
 
     if (entry.error !== undefined) {
