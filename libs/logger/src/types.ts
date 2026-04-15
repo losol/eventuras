@@ -63,9 +63,11 @@ export type LoggerConfig = {
   /** Optional file path for log output (Pino only). */
   destination?: string;
   /**
-   * Custom transport implementation. Defaults to PinoTransport with JSON
-   * output. For pretty-printed dev output, use `configureNodeLogger`
-   * from `@eventuras/logger/node`.
+   * Custom transport implementation. The default depends on the runtime:
+   * `PinoTransport` (JSON output) on Node.js, and `ConsoleTransport`
+   * (browser-safe `console.*` calls) in browser/edge runtimes. For
+   * pretty-printed dev output, use `configureNodeLogger` from
+   * `@eventuras/logger/node`.
    */
   transport?: LogTransport;
 };

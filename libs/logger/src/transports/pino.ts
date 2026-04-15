@@ -11,6 +11,16 @@
 import pino, { type Logger as PinoLogger, type LoggerOptions as PinoLoggerOptions } from 'pino';
 import type { LogLevel, LogTransport } from '../types';
 
+/**
+ * Minimal structural type for a Pino destination stream — accepts anything
+ * with a `write` method. Defined locally so this file (re-exported from the
+ * universal `@eventuras/logger` entry) doesn't pull `NodeJS.*` types into
+ * browser/edge consumers that don't ship `@types/node`.
+ */
+export interface PinoDestinationStream {
+  write(chunk: string | Uint8Array): unknown;
+}
+
 /** Options for creating a PinoTransport. */
 export type PinoTransportOptions = {
   /** Minimum log level. Defaults to `'info'`. */
@@ -23,7 +33,7 @@ export type PinoTransportOptions = {
    * Writable stream destination (e.g. a pretty-print stream from
    * `@eventuras/logger/node`). Takes precedence over `destination`.
    */
-  destinationStream?: NodeJS.WritableStream;
+  destinationStream?: PinoDestinationStream;
   /** Raw Pino options for advanced tuning (merged after built-in defaults). */
   pinoOptions?: PinoLoggerOptions;
 };
@@ -48,7 +58,10 @@ export class PinoTransport implements LogTransport {
     };
 
     if (options.destinationStream) {
-      this.pino = pino(pinoOpts, options.destinationStream);
+      // Pino's overload expects a NodeJS.WritableStream; the structural
+      // PinoDestinationStream is a strict subset (only `.write` is read at
+      // runtime), so the cast is safe.
+      this.pino = pino(pinoOpts, options.destinationStream as Parameters<typeof pino>[1]);
     } else if (options.destination) {
       this.pino = pino(pinoOpts, pino.destination(options.destination));
     } else {
