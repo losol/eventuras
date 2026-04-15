@@ -66,17 +66,30 @@ import { Logger } from "@eventuras/logger";
 
 Logger.configure({
   level: "debug",
-  prettyPrint: process.env.NODE_ENV === "development",
   redact: ["password", "token", "apiKey", "authorization", "secret"],
   destination: "/var/log/app.log", // Optional file output
+});
+```
+
+### Pretty dev output (Node only)
+
+Pretty-printing depends on `node:stream`, so it lives in the `/node`
+subpath to keep the main entry browser/edge-safe. Call it from your
+server bootstrap:
+
+```typescript
+import { configureNodeLogger } from "@eventuras/logger/node";
+
+configureNodeLogger({
+  level: "debug",
+  prettyPrint: process.env.NODE_ENV === "development",
 });
 ```
 
 ### Environment Variables
 
 ```bash
-LOG_LEVEL=debug       # Set global log level
-NODE_ENV=development  # Enables pretty printing
+LOG_LEVEL=debug       # Set global log level (picked up by the default PinoTransport)
 ```
 
 ## Transports
@@ -242,7 +255,7 @@ process.on("SIGTERM", async () => {
 });
 ```
 
-### Environment Variables
+### OTel Environment Variables
 
 ```bash
 OTEL_EXPORTER_OTLP_LOGS_ENDPOINT=https://...
@@ -317,11 +330,11 @@ import type {
 
 ## Subpath Exports
 
-| Import path                       | Contents                                                        | Environment |
-| --------------------------------- | --------------------------------------------------------------- | ----------- |
-| `@eventuras/logger`               | Logger, types, PinoTransport, ConsoleTransport, httpLogger      | Universal   |
-| `@eventuras/logger/node`          | `formatLogLine`, `createPrettyStream` (depends on `node:stream`) | Node.js     |
-| `@eventuras/logger/opentelemetry` | `setupOpenTelemetryLogger`, `shutdownOpenTelemetryLogger`        | Node.js     |
+| Import path | Contents | Environment |
+| --- | --- | --- |
+| `@eventuras/logger` | `Logger`, types, `PinoTransport`, `ConsoleTransport`, `redactHeaders` | Universal |
+| `@eventuras/logger/node` | `configureNodeLogger`, `createPrettyStream`, `formatLogLine` | Node.js |
+| `@eventuras/logger/opentelemetry` | `setupOpenTelemetryLogger`, `shutdownOpenTelemetryLogger` | Node.js |
 
 ### Node-only Pretty-print Utilities
 

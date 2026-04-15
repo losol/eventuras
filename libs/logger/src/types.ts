@@ -60,10 +60,12 @@ export type LoggerConfig = {
   level?: LogLevel;
   /** Field paths to redact from log output (e.g., ['password', 'token']). */
   redact?: string[];
-  /** Enable pretty-printed output (auto-enabled in development). */
-  prettyPrint?: boolean;
   /** Optional file path for log output (Pino only). */
   destination?: string;
-  /** Custom transport implementation. Defaults to PinoTransport. */
+  /**
+   * Custom transport implementation. Defaults to PinoTransport with JSON
+   * output. For pretty-printed dev output, use `configureNodeLogger`
+   * from `@eventuras/logger/node`.
+   */
   transport?: LogTransport;
 };
