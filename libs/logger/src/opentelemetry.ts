@@ -31,6 +31,8 @@
  * logger.error({ error: err }, 'Something failed'); // Sent to OpenTelemetry backend
  */
 
+import { Logger } from './Logger';
+
 /**
  * Minimal interface for an OpenTelemetry LogRecordProcessor.
  * Compatible with `@opentelemetry/sdk-logs` `LogRecordProcessor`.
@@ -153,7 +155,7 @@ export async function setupOpenTelemetryLogger(
 ): Promise<void> {
   // Check if we're running in a browser environment
   if (typeof window !== 'undefined') {
-    console.warn('[logger] OpenTelemetry integration is server-side only - skipping in browser');
+    Logger.warn({ namespace: 'logger:otel' }, 'OpenTelemetry integration is server-side only, skipping');
     return;
   }
 
@@ -165,7 +167,7 @@ export async function setupOpenTelemetryLogger(
   } = options;
 
   if (!enabled) {
-    console.log('[logger] OpenTelemetry integration disabled');
+    Logger.debug({ namespace: 'logger:otel' }, 'OpenTelemetry integration disabled');
     return;
   }
 
@@ -173,8 +175,10 @@ export async function setupOpenTelemetryLogger(
   const otel = await loadOpenTelemetry();
 
   if (!otel) {
-    console.warn('[logger] OpenTelemetry packages not available - integration disabled');
-    console.warn('[logger] Install @opentelemetry/* packages to enable OpenTelemetry integration');
+    Logger.warn(
+      { namespace: 'logger:otel' },
+      'OpenTelemetry packages not available — integration disabled. Install @opentelemetry/api, @opentelemetry/api-logs, @opentelemetry/instrumentation-pino, and @opentelemetry/sdk-logs to enable.',
+    );
     return;
   }
 
@@ -209,10 +213,10 @@ export async function setupOpenTelemetryLogger(
 
   pinoInstrumentation.enable();
 
-  console.log('[logger] OpenTelemetry integration enabled');
-  if (logRecordProcessor) {
-    console.log('[logger] Log record processor registered');
-  }
+  Logger.info(
+    { namespace: 'logger:otel', context: { hasProcessor: Boolean(logRecordProcessor) } },
+    'OpenTelemetry integration enabled',
+  );
 }
 
 /**
@@ -241,7 +245,7 @@ export async function shutdownOpenTelemetryLogger(): Promise<void> {
     loggerProvider = null;
   }
 
-  console.log('[logger] OpenTelemetry integration shut down');
+  Logger.info({ namespace: 'logger:otel' }, 'OpenTelemetry integration shut down');
 }
 
 /**
