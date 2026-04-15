@@ -1,5 +1,13 @@
 # @eventuras/event-sdk
 
+## 3.0.3
+
+### Patch Changes
+
+- 7c9fe79: chore: update dependencies
+- Updated dependencies [cf4ffa4]
+  - @eventuras/api@3.1.2
+
 ## 3.0.2
 
 ### Patch Changes

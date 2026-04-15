@@ -1,5 +1,11 @@
 # @eventuras/fides-auth
 
+## 0.3.1
+
+### Patch Changes
+
+- 7c9fe79: chore: update dependencies
+
 ## 0.3.0
 
 ### Minor Changes

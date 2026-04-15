@@ -1,6 +1,6 @@
 {
   "name": "@eventuras/fides-auth-next",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Next.js bindings for @eventuras/fides-auth",
   "exports": {
     ".": {

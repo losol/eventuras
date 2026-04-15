@@ -1,5 +1,15 @@
 # @eventuras/payload-vipps-auth
 
+## 0.1.4
+
+### Patch Changes
+
+- 7c9fe79: chore: update dependencies
+- Updated dependencies [7c9fe79]
+  - @eventuras/fides-auth@0.3.1
+  - @eventuras/logger@0.7.1
+  - @eventuras/vipps@0.2.3
+
 ## 0.1.3
 
 ### Patch Changes

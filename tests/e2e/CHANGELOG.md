@@ -1,5 +1,16 @@
 # web-e2e
 
+## 0.2.7
+
+### Patch Changes
+
+- 7c9fe79: chore: update dependencies
+- Updated dependencies [7c9fe79]
+  - @eventuras/event-sdk@3.0.3
+  - @eventuras/fides-auth@0.3.1
+  - @eventuras/google-api@0.2.2
+  - @eventuras/logger@0.7.1
+
 ## 0.2.6
 
 ### Patch Changes

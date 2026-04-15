@@ -1,5 +1,13 @@
 # @eventuras/markdown
 
+## 9.0.3
+
+### Patch Changes
+
+- 7c9fe79: chore: update dependencies
+- Updated dependencies [7c9fe79]
+  - @eventuras/ratio-ui@1.0.3
+
 ## 9.0.2
 
 ### Patch Changes

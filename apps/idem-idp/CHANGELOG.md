@@ -1,5 +1,17 @@
 # @eventuras/idem-idp
 
+## 0.7.8
+
+### Patch Changes
+
+- 7c9fe79: chore: update dependencies
+- Updated dependencies [7c9fe79]
+  - @eventuras/fides-auth@0.3.1
+  - @eventuras/logger@0.7.1
+  - @eventuras/mailer@0.1.1
+  - @eventuras/notitia-templates@0.2.3
+  - @eventuras/ratio-ui@1.0.3
+
 ## 0.7.7
 
 ### Patch Changes

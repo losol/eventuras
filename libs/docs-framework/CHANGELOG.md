@@ -1,5 +1,13 @@
 # @eventuras/docs-framework
 
+## 0.1.8
+
+### Patch Changes
+
+- 7c9fe79: chore: update dependencies
+- Updated dependencies [7c9fe79]
+  - @eventuras/lustro-search@4.0.3
+
 ## 0.1.7
 
 ### Patch Changes

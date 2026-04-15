@@ -1,6 +1,6 @@
 {
   "name": "@eventuras/core-nextjs",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "private": "true",
   "description": "Core Next.js utilities for Eventuras",
   "type": "module",
