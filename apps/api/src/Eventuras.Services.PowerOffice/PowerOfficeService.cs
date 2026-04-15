@@ -1,3 +1,4 @@
+#nullable enable annotations
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -137,6 +138,7 @@ public class PowerOfficeService : IInvoicingProvider
         var vatNumber = info.CustomerVatNumber != null
             ? new string(info.CustomerVatNumber.Where(char.IsDigit).ToArray())
             : null;
+        vatNumber = NullIfEmpty(vatNumber);
         _logger.LogDebug("Resolved VAT number");
 
         var existingCustomer = !string.IsNullOrWhiteSpace(vatNumber)
@@ -144,11 +146,11 @@ public class PowerOfficeService : IInvoicingProvider
                 .FirstOrDefault(c => c.VatNumber == info.CustomerVatNumber)
             : null;
 
-        var customerEmail = info.CustomerEmail;
+        var customerEmail = NullIfEmpty(info.CustomerEmail);
         _logger.LogDebug("Resolved customer email");
 
         // If no customer was found by VAT number, then search by email
-        if (!string.IsNullOrWhiteSpace(customerEmail))
+        if (customerEmail != null)
         {
             existingCustomer ??= api.Customer.Get()
                 .FirstOrDefault(c => c.EmailAddress == customerEmail);
@@ -184,10 +186,10 @@ public class PowerOfficeService : IInvoicingProvider
             InvoiceEmailAddress = customerEmail,
             MailAddress = new Address
             {
-                Address1 = info.CustomerAddress,
-                City = info.CustomerCity,
-                ZipCode = info.CustomerZip,
-                CountryCode = info.CustomerCountry
+                Address1 = NullIfEmpty(info.CustomerAddress),
+                City = NullIfEmpty(info.CustomerCity),
+                ZipCode = NullIfEmpty(info.CustomerZip),
+                CountryCode = NullIfEmpty(info.CustomerCountry)
             }
         };
 
@@ -232,4 +234,8 @@ public class PowerOfficeService : IInvoicingProvider
             await CreateProductIfNotExistsAsync(line);
         }
     }
+
+    // PowerOffice Go v3 rejects empty strings in optional fields with a validation error.
+    private static string? NullIfEmpty(string? value) =>
+        string.IsNullOrWhiteSpace(value) ? null : value;
 }
