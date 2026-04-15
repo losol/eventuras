@@ -36,8 +36,8 @@
     "@eventuras/vite-config": "workspace:*",
     "@types/node": "^24.12.0",
     "@types/react": "^19.2.14",
-    "react": "^19.2.4",
-    "vite": "^8.0.3"
+    "react": "^19.2.5",
+    "vite": "^8.0.8"
   },
   "peerDependencies": {
     "@eventuras/ratio-ui": "workspace:*",
