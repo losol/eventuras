@@ -1,6 +1,6 @@
 {
   "name": "@eventuras/markdown-plugin-happening",
-  "version": "4.0.3",
+  "version": "4.0.4",
   "description": "Markdown plugins for events and conferences — schedule detection, speaker cards, etc.",
   "homepage": "https://github.com/losol/eventuras/tree/main/libs/markdown-plugin-happening#readme",
   "bugs": {

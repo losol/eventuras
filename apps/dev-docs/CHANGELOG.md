@@ -1,5 +1,14 @@
 # @eventuras/dev-docs
 
+## 0.8.8
+
+### Patch Changes
+
+- Updated dependencies [3543c98]
+  - @eventuras/ratio-ui@1.0.4
+  - @eventuras/lustro-search@4.0.4
+  - @eventuras/docs-framework@0.1.9
+
 ## 0.8.7
 
 ### Patch Changes

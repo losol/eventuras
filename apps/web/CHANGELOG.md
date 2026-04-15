@@ -1,5 +1,33 @@
 # @eventuras/web
 
+## 3.0.6
+
+### Patch Changes
+
+- 33ceb8c: `LoginSuccessHandler` cleanup:
+  - Wrap the immediate `checkAuth()` call so a rejection logs at error
+    level instead of becoming an unhandled promise rejection.
+  - Drop the per-page-load debug log when the `?login=success` parameter
+    isn't present — the silent path is the common case and the noise
+    showed up everywhere when debug filters were on.
+  - Use a single `URL` object for both reading and cleaning the query
+    parameter.
+  - Document why the `hasChecked` ref exists (StrictMode dev double-fire)
+    and replace the dated `useSearchParams` comment with the actual
+    reason (avoiding a Suspense boundary in the layout).
+
+- Updated dependencies [3543c98]
+- Updated dependencies [7d2b896]
+- Updated dependencies [fc1f5dc]
+  - @eventuras/ratio-ui@1.0.4
+  - @eventuras/logger@0.8.0
+  - @eventuras/datatable@0.5.16
+  - @eventuras/markdown@9.0.4
+  - @eventuras/markdown-plugin-happening@4.0.4
+  - @eventuras/ratio-ui-next@0.1.17
+  - @eventuras/smartform@0.3.9
+  - @eventuras/fides-auth-next@0.1.8
+
 ## 3.0.5
 
 ### Patch Changes
