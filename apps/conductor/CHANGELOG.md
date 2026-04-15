@@ -1,5 +1,13 @@
 # @eventuras/conductor
 
+## 0.1.2
+
+### Patch Changes
+
+- Updated dependencies [7d2b896]
+- Updated dependencies [fc1f5dc]
+  - @eventuras/logger@0.8.0
+
 ## 0.1.1
 
 ### Patch Changes
