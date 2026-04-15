@@ -231,15 +231,22 @@ import {
 
 ### Pluggable Logging (`/logger`)
 
-The library uses console logging by default. Plug in your preferred logger at startup:
+The library writes newline-delimited JSON to `console.<level>` by default — interoperable with Loki, Grafana, Datadog, and other log shippers without any setup. Plug in a richer logger at startup if you want OpenTelemetry, redaction, or shared formatting with the rest of your app:
 
 ```typescript
 import { configureLogger } from "@eventuras/fides-auth/logger";
 
-// Example: plug in pino
+// Example: plug in @eventuras/logger
+import { Logger } from "@eventuras/logger";
+configureLogger({
+  create(options) {
+    return Logger.create(options);
+  },
+});
+
+// Or plug in pino directly
 import pino from "pino";
 const pinoInstance = pino();
-
 configureLogger({
   create({ namespace, context }) {
     return pinoInstance.child({ namespace, ...context });
@@ -248,6 +255,12 @@ configureLogger({
 ```
 
 Any object implementing `{ debug, info, warn, error }` works — pino, winston, bunyan, or your own.
+
+The default JSONL output looks like:
+
+```json
+{"level":"info","time":"2026-04-15T19:40:57.300Z","namespace":"fides-auth:oauth","msg":"PKCE parameters generated"}
+```
 
 ### Vipps Login Provider (`/providers/vipps`)
 

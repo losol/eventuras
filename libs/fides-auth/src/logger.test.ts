@@ -17,7 +17,7 @@ import {
 // Default console logger
 // ────────────────────────────────────────────
 
-describe('default console logger', () => {
+describe('default console logger (structured JSON)', () => {
   it('creates a logger without any configuration', () => {
     const logger = createLogger({ namespace: 'test' });
     expect(logger).toBeDefined();
@@ -27,27 +27,40 @@ describe('default console logger', () => {
     expect(typeof logger.error).toBe('function');
   });
 
-  it('logs a string message to console.info', () => {
+  it('logs a string message as a JSON line to console.info', () => {
     const spy = vi.spyOn(console, 'info').mockImplementation(() => { });
     const logger = createLogger({ namespace: 'my-app' });
 
     logger.info('hello world');
 
-    expect(spy).toHaveBeenCalledWith('[my-app]', 'hello world');
+    expect(spy).toHaveBeenCalledOnce();
+    const entry = JSON.parse(spy.mock.calls[0]![0] as string);
+    expect(entry).toMatchObject({
+      level: 'info',
+      namespace: 'my-app',
+      msg: 'hello world',
+    });
+    expect(typeof entry.time).toBe('string');
     spy.mockRestore();
   });
 
-  it('logs a context object + message to console.warn', () => {
+  it('merges context object with the message in a single JSON entry', () => {
     const spy = vi.spyOn(console, 'warn').mockImplementation(() => { });
     const logger = createLogger({ namespace: 'auth' });
 
     logger.warn({ userId: 42 }, 'Rate limited');
 
-    expect(spy).toHaveBeenCalledWith('[auth]', 'Rate limited', { userId: 42 });
+    const entry = JSON.parse(spy.mock.calls[0]![0] as string);
+    expect(entry).toMatchObject({
+      level: 'warn',
+      namespace: 'auth',
+      msg: 'Rate limited',
+      userId: 42,
+    });
     spy.mockRestore();
   });
 
-  it('includes persistent context in the prefix', () => {
+  it('includes persistent context fields in every entry', () => {
     const spy = vi.spyOn(console, 'debug').mockImplementation(() => { });
     const logger = createLogger({
       namespace: 'auth:session',
@@ -56,14 +69,29 @@ describe('default console logger', () => {
 
     logger.debug('checking session');
 
-    expect(spy).toHaveBeenCalledWith(
-      '[auth:session] {"module":"validator"}',
-      'checking session',
-    );
+    const entry = JSON.parse(spy.mock.calls[0]![0] as string);
+    expect(entry).toMatchObject({
+      level: 'debug',
+      namespace: 'auth:session',
+      module: 'validator',
+      msg: 'checking session',
+    });
     spy.mockRestore();
   });
 
-  it('each log level delegates to the correct console method', () => {
+  it('serializes Error instances on the error field', () => {
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => { });
+    const logger = createLogger({ namespace: 'auth' });
+
+    logger.error({ error: new Error('boom') }, 'request failed');
+
+    const entry = JSON.parse(spy.mock.calls[0]![0] as string);
+    expect(entry.error).toMatchObject({ name: 'Error', message: 'boom' });
+    expect(typeof entry.error.stack).toBe('string');
+    spy.mockRestore();
+  });
+
+  it('each log level delegates to the matching console method', () => {
     const spyDebug = vi.spyOn(console, 'debug').mockImplementation(() => { });
     const spyInfo = vi.spyOn(console, 'info').mockImplementation(() => { });
     const spyWarn = vi.spyOn(console, 'warn').mockImplementation(() => { });
@@ -246,23 +274,29 @@ describe('lazy proxy — configureLogger after createLogger', () => {
 });
 
 /**
- * Helper: replicate the default ConsoleLogger to reset configureLogger
- * in afterEach. This avoids importing the private ConsoleLogger class.
+ * Helper: replicate the default JSONL ConsoleLogger so the suites that
+ * `configureLogger()` mid-test can reset back to the default behavior in
+ * afterEach without importing the private ConsoleLogger class.
  */
 function createDefaultConsoleLogger(
   namespace: string,
   context?: Record<string, unknown>,
 ): FidesLogger {
-  const contextStr = context && Object.keys(context).length > 0
-    ? ` ${JSON.stringify(context)}`
-    : '';
-  const prefix = `[${namespace}]${contextStr}`;
-
   const log = (method: 'debug' | 'info' | 'warn' | 'error') =>
     (data?: Record<string, unknown> | string, msg?: string) => {
-      if (typeof data === 'string') console[method](prefix, data);
-      else if (msg) console[method](prefix, msg, data);
-      else if (data) console[method](prefix, data);
+      const entry: Record<string, unknown> = {
+        level: method,
+        time: new Date().toISOString(),
+        namespace,
+        ...context,
+      };
+      if (typeof data === 'string') {
+        entry.msg = data;
+      } else {
+        if (msg !== undefined) entry.msg = msg;
+        if (data) Object.assign(entry, data);
+      }
+      console[method](JSON.stringify(entry));
     };
 
   return {
