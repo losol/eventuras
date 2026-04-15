@@ -48,6 +48,4 @@ jobs:
         run: pnpm --filter @eventuras/fides-auth build
 
       - name: Publish to npm
-        run: |
-          cd libs/fides-auth
-          npm publish --access public --provenance
+        run: pnpm --filter @eventuras/fides-auth publish --access public --provenance --no-git-checks

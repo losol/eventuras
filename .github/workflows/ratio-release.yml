@@ -48,6 +48,4 @@ jobs:
         run: pnpm --filter @eventuras/ratio-ui build
 
       - name: Publish to npm
-        run: |
-          cd libs/ratio-ui
-          npm publish --access public --provenance
+        run: pnpm --filter @eventuras/ratio-ui publish --access public --provenance --no-git-checks
