@@ -122,15 +122,19 @@ interface LogTransport {
 ```typescript
 import { Logger, PinoTransport } from "@eventuras/logger";
 
-// Explicit Pino configuration
+// Explicit Pino configuration (JSON output to stdout)
 Logger.configure({
   transport: new PinoTransport({
     level: "debug",
-    prettyPrint: true,
     redact: ["password", "secret"],
   }),
 });
 ```
+
+For pretty-printed dev output, use `configureNodeLogger` from
+`@eventuras/logger/node` (see [Pretty dev output](#pretty-dev-output-node-only))
+— the `prettyPrint` option lives there to keep `node:stream` out of the
+universal main entry.
 
 ### ConsoleTransport
 
@@ -170,6 +174,9 @@ Logger.configure({ transport: new DatadogTransport() });
 Sensitive fields are automatically redacted:
 
 ```typescript
+import { Logger } from "@eventuras/logger";
+const logger = Logger.create({ namespace: "auth" });
+
 logger.info(
   {
     username: "john",
@@ -192,7 +199,8 @@ Redaction uses [Pino's `redact` option](https://getpino.io/#/docs/redaction), wh
 // Only redacts top-level `password`
 Logger.configure({ redact: ["password"] });
 
-logger.info({ password: "x" });          // → [REDACTED]
+const logger = Logger.create({ namespace: "auth" });
+logger.info({ password: "x" });           // → [REDACTED]
 logger.info({ user: { password: "x" } }); // → NOT redacted
 ```
 
