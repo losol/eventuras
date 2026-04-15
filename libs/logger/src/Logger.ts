@@ -63,7 +63,6 @@ function createDefaultTransport(config: LoggerConfig): LogTransport {
   return new PinoTransport({
     level: config.level ?? (getEnv('LOG_LEVEL') as LogLevel | undefined) ?? 'info',
     redact: config.redact ?? DEFAULT_REDACT,
-    prettyPrint: config.prettyPrint ?? getEnv('NODE_ENV') === 'development',
     destination: config.destination,
   });
 }

@@ -3,10 +3,13 @@
  *
  * Wraps a Pino logger instance to satisfy the `LogTransport` interface,
  * keeping Pino as an implementation detail that consumers never interact with directly.
+ *
+ * For pretty-printed dev output, see `configureNodeLogger` in
+ * `@eventuras/logger/node` — this module intentionally stays free of
+ * `node:stream` imports so the main entry stays browser/edge-safe.
  */
 import pino, { type Logger as PinoLogger, type LoggerOptions as PinoLoggerOptions } from 'pino';
 import type { LogLevel, LogTransport } from '../types';
-import { createPrettyStream } from './pretty';
 
 /** Options for creating a PinoTransport. */
 export type PinoTransportOptions = {
@@ -14,10 +17,13 @@ export type PinoTransportOptions = {
   level?: LogLevel;
   /** Field paths to redact from output. */
   redact?: string[];
-  /** Enable pretty-printed, human-readable output. */
-  prettyPrint?: boolean;
   /** File path destination (omit for stdout). */
   destination?: string;
+  /**
+   * Writable stream destination (e.g. a pretty-print stream from
+   * `@eventuras/logger/node`). Takes precedence over `destination`.
+   */
+  destinationStream?: NodeJS.WritableStream;
   /** Raw Pino options for advanced tuning (merged after built-in defaults). */
   pinoOptions?: PinoLoggerOptions;
 };
@@ -41,8 +47,8 @@ export class PinoTransport implements LogTransport {
       ...options.pinoOptions,
     };
 
-    if (options.prettyPrint) {
-      this.pino = pino(pinoOpts, createPrettyStream());
+    if (options.destinationStream) {
+      this.pino = pino(pinoOpts, options.destinationStream);
     } else if (options.destination) {
       this.pino = pino(pinoOpts, pino.destination(options.destination));
     } else {
