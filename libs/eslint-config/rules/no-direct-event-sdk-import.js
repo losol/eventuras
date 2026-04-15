@@ -4,8 +4,8 @@
  * Prevents direct imports from '@eventuras/event-sdk' in the apps/web codebase.
  * Requires using wrapper modules that ensure proper client configuration.
  *
- * @see /Users/ole/Kode/eventuras/apps/web/src/lib/eventuras-sdk.ts
- * @see /Users/ole/Kode/eventuras/apps/web/src/lib/eventuras-public-sdk.ts
+ * @see apps/web/src/lib/eventuras-sdk.ts
+ * @see apps/web/src/lib/eventuras-public-sdk.ts
  */
 
 export default {

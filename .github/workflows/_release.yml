@@ -104,6 +104,14 @@ jobs:
                 echo "Triggering npm publish for ratio-ui: ${TAG}"
                 gh workflow run ratio-release.yml -f "tag=${TAG}"
                 ;;
+              @eventuras/eslint-config)
+                echo "Triggering npm publish for eslint-config: ${TAG}"
+                gh workflow run eslint-config-publish.yml -f "tag=${TAG}"
+                ;;
+              @eventuras/typescript-config)
+                echo "Triggering npm publish for typescript-config: ${TAG}"
+                gh workflow run typescript-config-publish.yml -f "tag=${TAG}"
+                ;;
               *)
                 echo "No downstream workflow configured for package ${NAME} with tag ${TAG}"
                 ;;

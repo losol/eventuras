@@ -1,7 +1,17 @@
 {
   "name": "@eventuras/eslint-config",
   "version": "1.0.3",
-  "private": true,
+  "description": "Shared ESLint configurations for Eventuras projects",
+  "homepage": "https://github.com/losol/eventuras/tree/main/libs/eslint-config#readme",
+  "bugs": {
+    "url": "https://github.com/losol/eventuras/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/losol/eventuras.git",
+    "directory": "libs/eslint-config"
+  },
+  "license": "MIT",
   "type": "module",
   "exports": {
     "./base": "./base.js",
@@ -9,17 +19,32 @@
     "./react-library": "./react-library.js",
     "./rules": "./rules/index.js"
   },
-  "devDependencies": {
+  "files": [
+    "base.js",
+    "next-js.js",
+    "react-library.js",
+    "rules",
+    "README.md"
+  ],
+  "dependencies": {
     "@eslint/js": "^10.0.1",
     "@next/eslint-plugin-next": "^16.2.3",
-    "eslint": "^10.2.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-only-warn": "^1.2.1",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-simple-import-sort": "^13.0.0",
     "eslint-plugin-turbo": "^2.9.6",
     "globals": "^17.5.0",
-    "typescript": "^6.0.2",
     "typescript-eslint": "^8.58.2"
+  },
+  "devDependencies": {
+    "eslint": "^10.2.0",
+    "typescript": "^6.0.2"
+  },
+  "peerDependencies": {
+    "eslint": "^10.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
