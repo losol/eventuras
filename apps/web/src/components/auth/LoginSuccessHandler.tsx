@@ -24,31 +24,30 @@ const logger = Logger.create({
  * Place this component in the root layout so it runs on every page load.
  */
 export function LoginSuccessHandler() {
+  // Guards against React StrictMode's intentional double-effect-invocation in
+  // dev. Without it, checkAuth would fire twice on the success redirect.
   const hasChecked = useRef(false);
 
   useEffect(() => {
-    // Only run once per page load
     if (hasChecked.current) return;
     hasChecked.current = true;
 
-    // Read query params directly from window.location (more reliable than useSearchParams during hydration)
-    const urlParams = new URLSearchParams(window.location.search);
-    const loginSuccess = urlParams.get('login') === 'success';
+    // Read directly from window.location to keep this component a single
+    // 'use client' island — using next/navigation's useSearchParams would
+    // pull a Suspense boundary into the layout for no real benefit.
+    const url = new URL(window.location.href);
+    if (url.searchParams.get('login') !== 'success') return;
 
-    if (loginSuccess) {
-      logger.info('Login success detected via query param, triggering immediate auth check');
+    logger.info('Login success detected via query param, triggering immediate auth check');
 
-      // Trigger immediate check to update store
-      checkAuth(authStore, getAuthStatus);
+    checkAuth(authStore, getAuthStatus).catch((error: unknown) => {
+      logger.error({ error }, 'Immediate auth check failed after login redirect');
+    });
 
-      // Clean up the URL (remove query param) without triggering navigation
-      const url = new URL(window.location.href);
-      url.searchParams.delete('login');
-      window.history.replaceState({}, '', url.toString());
-    } else {
-      logger.debug('No login success parameter found, skipping immediate check');
-    }
+    // Clean up the URL without triggering navigation.
+    url.searchParams.delete('login');
+    window.history.replaceState({}, '', url.toString());
   }, []);
 
-  return null; // This component renders nothing
+  return null;
 }
