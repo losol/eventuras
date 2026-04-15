@@ -123,8 +123,9 @@ export class Logger {
   }
 
   /**
-   * @deprecated Use `Logger.getTransport()` instead. If you need the raw
-   * Pino instance, cast the transport: `(Logger.getTransport() as PinoTransport).pino`
+   * @deprecated Since 0.7 — will be removed in 1.0. Use `Logger.getTransport()`
+   * instead. If you need the raw Pino instance, cast the transport:
+   * `(Logger.getTransport() as PinoTransport).pino`.
    */
   static getPinoInstance(): import('pino').Logger {
     if (Logger.transport instanceof PinoTransport) {
