@@ -19,7 +19,7 @@
     "@xstate/react": "^6.1.0",
     "jose": "6.2.2",
     "lucide-react": "^1.8.0",
-    "next": "16.2.3",
+    "next": "16.2.4",
     "openid-client": "^6.8.3",
     "react": "^19.2.5",
     "react-aria-components": "^1.17.0",

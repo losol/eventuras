@@ -43,7 +43,7 @@
     "@xstate/react": "^6.1.0",
     "jose": "6.2.2",
     "lucide-react": "^1.8.0",
-    "next": "16.2.3",
+    "next": "16.2.4",
     "next-intl": "^4.9.1",
     "openid-client": "^6.8.3",
     "pino": "^10.3.1",
@@ -57,7 +57,7 @@
   },
   "devDependencies": {
     "@eventuras/eslint-config": "workspace:*",
-    "@next/bundle-analyzer": "16.2.3",
+    "@next/bundle-analyzer": "16.2.4",
     "@types/node": "25.5.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
