@@ -1437,21 +1437,6 @@ importers:
       '@react-stately/data':
         specifier: ^3.16.0
         version: 3.16.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
-      '@storybook/react':
-        specifier: ^10.3.5
-        version: 10.3.5(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(storybook@10.3.5(@testing-library/dom@10.4.1)(prettier@3.8.3)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(typescript@6.0.2)
-      '@swc/helpers':
-        specifier: ^0.5.21
-        version: 0.5.21
-      '@tailwindcss/postcss':
-        specifier: ^4.2.2
-        version: 4.2.2
-      '@tailwindcss/vite':
-        specifier: ^4.2.2
-        version: 4.2.2(vite@8.0.8(@types/node@25.6.0)(esbuild@0.27.7)(jiti@2.6.1)(sass@1.77.4)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))
-      ajv:
-        specifier: ^8.18.0
-        version: 8.18.0
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -1495,9 +1480,21 @@ importers:
       '@storybook/addon-vitest':
         specifier: ^10.3.5
         version: 10.3.5(@vitest/browser-playwright@4.1.4)(@vitest/browser@4.1.4)(@vitest/runner@4.1.4)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(storybook@10.3.5(@testing-library/dom@10.4.1)(prettier@3.8.3)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(vitest@4.1.4)
+      '@storybook/react':
+        specifier: ^10.3.5
+        version: 10.3.5(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(storybook@10.3.5(@testing-library/dom@10.4.1)(prettier@3.8.3)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(typescript@6.0.2)
       '@storybook/react-vite':
         specifier: ^10.3.5
         version: 10.3.5(esbuild@0.27.7)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(rollup@4.60.1)(storybook@10.3.5(@testing-library/dom@10.4.1)(prettier@3.8.3)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(typescript@6.0.2)(vite@8.0.8(@types/node@25.6.0)(esbuild@0.27.7)(jiti@2.6.1)(sass@1.77.4)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))(webpack@5.104.1(esbuild@0.27.7))
+      '@swc/helpers':
+        specifier: ^0.5.21
+        version: 0.5.21
+      '@tailwindcss/postcss':
+        specifier: ^4.2.2
+        version: 4.2.2
+      '@tailwindcss/vite':
+        specifier: ^4.2.2
+        version: 4.2.2(vite@8.0.8(@types/node@25.6.0)(esbuild@0.27.7)(jiti@2.6.1)(sass@1.77.4)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))
       '@types/react':
         specifier: ^19.2.14
         version: 19.2.14
@@ -1510,6 +1507,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: ^4.1.4
         version: 4.1.4(@vitest/browser@4.1.4)(vitest@4.1.4)
+      ajv:
+        specifier: ^8.18.0
+        version: 8.18.0
       autoprefixer:
         specifier: 10.5.0
         version: 10.5.0(postcss@8.5.10)
