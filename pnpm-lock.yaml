@@ -1168,7 +1168,7 @@ importers:
   libs/lustro-search:
     dependencies:
       '@eventuras/ratio-ui':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ratio-ui
       '@orama/orama':
         specifier: ^3.1.18
@@ -1231,7 +1231,7 @@ importers:
         version: 5.1.0
     devDependencies:
       '@eventuras/ratio-ui':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ratio-ui
       '@eventuras/typescript-config':
         specifier: workspace:*
@@ -1295,7 +1295,7 @@ importers:
         version: 5.1.0
     devDependencies:
       '@eventuras/ratio-ui':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ratio-ui
       '@eventuras/typescript-config':
         specifier: workspace:*
