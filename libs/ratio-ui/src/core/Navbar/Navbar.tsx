@@ -1,54 +1,100 @@
-import React from 'react';
+import React, { type ReactNode } from 'react';
+import { cn } from '../../utils/cn';
 
 export interface NavbarProps {
-  /** Text shown at the left side. */
-  title?: string;
-  /** Optional right‑side content (buttons, links …). */
-  children?: React.ReactNode;
+  children?: ReactNode;
   /** Forces white text for dark backgrounds. */
   bgDark?: boolean;
-  /** Extra Tailwind background class (default `bg-transparent`). */
+  /** Tailwind background class (default `bg-transparent`). */
   bgColor?: string;
-  /** URL for the title link (default `/`). */
-  titleHref?: string;  /** Make navbar sticky at the top (default: false). */
+  /** Make navbar sticky at the top. */
   sticky?: boolean;
-  /** Routing link component (e.g. `next/link`, `react-router-dom` Link). */
+  className?: string;
+
+  // ── Legacy shorthand props (still supported, prefer Navbar.Brand) ──
+
+  /** @deprecated Use `<Navbar.Brand>` instead. */
+  title?: string;
+  /** @deprecated Use `<Navbar.Brand>` instead. */
+  titleHref?: string;
+  /** @deprecated Use `<Navbar.Brand>` instead. */
   LinkComponent?: React.ComponentType<{
     href: string;
-    children: React.ReactNode;
+    children: ReactNode;
     className?: string;
   }>;
 }
 
-/**
- * Simple, responsive navbar.
- *
- * @see {@link NavbarProps}
- *
- */
-export const Navbar = ({
-  title,
+export interface NavbarBrandProps {
+  children?: ReactNode;
+  className?: string;
+}
+
+export interface NavbarContentProps {
+  children?: ReactNode;
+  className?: string;
+}
+
+function NavbarBrand({ children, className }: Readonly<NavbarBrandProps>) {
+  return (
+    <div className={cn('flex shrink-0 items-center', className)}>
+      {children}
+    </div>
+  );
+}
+
+function NavbarContent({ children, className }: Readonly<NavbarContentProps>) {
+  return (
+    <div className={cn('flex grow items-center gap-3', className)}>
+      {children}
+    </div>
+  );
+}
+
+const NavbarRoot = ({
   children,
   bgDark = false,
   bgColor,
-  titleHref = '/',
   sticky = false,
+  className,
+  // eslint-disable-next-line deprecation/deprecation -- backward-compat bridge
+  title,
+  // eslint-disable-next-line deprecation/deprecation -- backward-compat bridge
+  titleHref = '/',
+  // eslint-disable-next-line deprecation/deprecation -- backward-compat bridge
   LinkComponent,
-}: NavbarProps) => {
+}: Readonly<NavbarProps>) => {
   const textColor = bgDark ? 'text-light' : 'text-dark dark:text-light';
-  const LinkTag = LinkComponent ?? ('a' as React.ElementType);
   const positionClass = sticky ? 'sticky top-0 z-50' : '';
 
+  const hasLegacyTitle = typeof title === 'string' && title !== '';
+  const LinkTag = LinkComponent ?? ('a' as React.ElementType);
+
   return (
-    <nav className={`${bgColor} ${positionClass} ${textColor} m-0 p-0`}>
-      <div className="flex flex-wrap items-center justify-between mx-auto py-2 px-3">
-        { title && (
-        <LinkTag href={titleHref} className={`text-lg tracking-tight whitespace-nowrap no-underline ${textColor}`}>
-          {title}
-          </LinkTag>
+    <nav className={cn(bgColor, positionClass, textColor, 'm-0 p-0', className)}>
+      <div
+        className={cn(
+          'flex flex-wrap items-center mx-auto gap-3 py-2 px-3',
+          hasLegacyTitle && 'justify-between',
+        )}
+      >
+        {hasLegacyTitle && (
+          <NavbarBrand>
+            <LinkTag
+              href={titleHref}
+              className={cn('text-lg tracking-tight whitespace-nowrap no-underline', textColor)}
+            >
+              {title}
+            </LinkTag>
+          </NavbarBrand>
         )}
         {children}
       </div>
     </nav>
   );
 };
+
+export const Navbar = Object.assign(NavbarRoot, {
+  Brand: NavbarBrand,
+  Content: NavbarContent,
+});

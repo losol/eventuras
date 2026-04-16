@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
-export const ModeDecorator = (Story: any) => {
+export const ModeDecorator = (Story: any, context: any) => {
+  const noPadding = context?.parameters?.noPadding === true;
   const [isDarkMode, setIsDarkMode] = useState(true);
 
   const toggleMode = () => {
@@ -19,10 +20,10 @@ export const ModeDecorator = (Story: any) => {
         onClick={toggleMode}
         style={{
           position: 'fixed',
-          top: 10,
+          bottom: 10,
           right: 10,
           zIndex: 9999,
-          padding: '8px 12px',
+          padding: '2px 8px',
           backgroundColor: isDarkMode ? '#333' : '#fff',
           color: isDarkMode ? '#fff' : '#333',
           border: '1px solid #ccc',
@@ -37,7 +38,7 @@ export const ModeDecorator = (Story: any) => {
         style={{
           minWidth: '100%',
           backgroundColor: isDarkMode ? '#1a1a1a' : '#ffffff',
-          padding: '2rem',
+          padding: noPadding ? '0' : '2rem',
         }}
       >
         <Story />
