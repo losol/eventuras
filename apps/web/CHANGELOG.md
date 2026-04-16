@@ -1,5 +1,15 @@
 # @eventuras/web
 
+## 3.0.7
+
+### Patch Changes
+
+- Updated dependencies [161ee7b]
+  - @eventuras/ratio-ui@1.1.0
+  - @eventuras/datatable@0.5.17
+  - @eventuras/ratio-ui-next@0.1.18
+  - @eventuras/smartform@0.3.10
+
 ## 3.0.6
 
 ### Patch Changes

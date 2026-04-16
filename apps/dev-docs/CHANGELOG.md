@@ -1,5 +1,12 @@
 # @eventuras/dev-docs
 
+## 0.8.9
+
+### Patch Changes
+
+- Updated dependencies [161ee7b]
+  - @eventuras/ratio-ui@1.1.0
+
 ## 0.8.8
 
 ### Patch Changes
