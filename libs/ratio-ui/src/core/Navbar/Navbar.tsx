@@ -37,7 +37,7 @@ export interface NavbarContentProps {
 
 function NavbarBrand({ children, className }: Readonly<NavbarBrandProps>) {
   return (
-    <div className={cn('flex shrink-0 items-center', className)}>
+    <div className={cn('flex shrink-0 items-center text-[var(--navbar-color,inherit)]', className)}>
       {children}
     </div>
   );
@@ -45,7 +45,7 @@ function NavbarBrand({ children, className }: Readonly<NavbarBrandProps>) {
 
 function NavbarContent({ children, className }: Readonly<NavbarContentProps>) {
   return (
-    <div className={cn('flex grow items-center gap-3', className)}>
+    <div className={cn('flex grow items-center gap-3 text-[var(--navbar-color,inherit)]', className)}>
       {children}
     </div>
   );
@@ -66,12 +66,17 @@ const NavbarRoot = ({
 }: Readonly<NavbarProps>) => {
   const textColor = bgDark ? 'text-light' : 'text-dark dark:text-light';
   const positionClass = sticky ? 'sticky top-0 z-50' : '';
+  // CSS custom property so Brand/Content get the resolved color without
+  // React context (which would require 'use client').
+  const navbarColorVar = bgDark
+    ? '[--navbar-color:white]'
+    : '[--navbar-color:var(--text-dark,#1a1a1a)] dark:[--navbar-color:var(--text-light,white)]';
 
   const hasLegacyTitle = typeof title === 'string' && title !== '';
   const LinkTag = LinkComponent ?? ('a' as React.ElementType);
 
   return (
-    <nav className={cn(bgColor, positionClass, textColor, 'm-0 p-0', className)}>
+    <nav className={cn(bgColor, positionClass, textColor, navbarColorVar, 'm-0 p-0', className)}>
       <div
         className={cn(
           'flex flex-wrap items-center mx-auto gap-3 py-2 px-3',
