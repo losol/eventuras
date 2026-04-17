@@ -5,6 +5,7 @@ Framework-agnostic OAuth 2.0 / OpenID Connect library with PKCE, encrypted sessi
 ## Features
 
 - **OAuth 2.0 + OIDC** — Authorization Code with PKCE, token refresh, client credentials
+- **Pushed Authorization Requests** — Opt-in RFC 9126 support (`usePar`) when the provider advertises it
 - **Dual environment** — Node.js (`openid-client`) and browser (Web Crypto) entry points
 - **Encrypted sessions** — AES-256-GCM encrypted JWTs for secure session storage
 - **Rate limiting** — Generic token-bucket algorithm, ready for login protection
@@ -123,6 +124,8 @@ Full OIDC flows using `openid-client`:
 import {
   buildPKCEOptions,
   buildAuthorizationUrl,
+  buildAuthorizationUrlWithPAR,
+  discoverAndBuildAuthorizationUrl,
   exchangeAuthorizationCode,
   refreshAccessToken,
   extractUserFromTokens,
@@ -131,6 +134,43 @@ import {
   buildOidcLogoutUrl,
   clientCredentialsGrant,
 } from "@eventuras/fides-auth/oauth";
+```
+
+#### Pushed Authorization Requests (PAR, RFC 9126)
+
+Opt in by setting `usePar: true` on your `OAuthConfig`. The convenience
+helper `discoverAndBuildAuthorizationUrl` then posts the authorization
+parameters to the provider's PAR endpoint and returns a URL containing
+only `client_id` and `request_uri`:
+
+```typescript
+const oauthConfig = {
+  issuer: "https://auth.example.com",
+  clientId: "your-client-id",
+  clientSecret: "your-client-secret",
+  redirect_uri: "https://app.example.com/callback",
+  scope: "openid profile email offline_access",
+  usePar: true,
+};
+
+const pkce = await buildPKCEOptions(oauthConfig);
+const authUrl = await discoverAndBuildAuthorizationUrl(oauthConfig, pkce);
+// redirect user to authUrl
+```
+
+Behaviour:
+
+- `usePar: true` + provider advertises `pushed_authorization_request_endpoint` → uses PAR.
+- `usePar: true` + provider does **not** advertise PAR → throws.
+- `usePar` unset/false + provider advertises PAR → standard flow, with a
+  one-line `info` log noting that PAR is available but not enabled.
+- `usePar` unset/false + no PAR endpoint → standard flow, no advisory.
+
+If you already have a discovered `Configuration` you can call the
+low-level wrapper directly:
+
+```typescript
+const authUrl = await buildAuthorizationUrlWithPAR(config, pkce);
 ```
 
 ### OAuth — Browser (`/oauth-browser`)
