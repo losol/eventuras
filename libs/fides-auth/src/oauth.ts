@@ -20,6 +20,14 @@ export type OAuthConfig = {
   clientSecret: string;
   redirect_uri: string;
   scope: string;
+  /**
+   * Opt in to Pushed Authorization Requests (RFC 9126) when the provider
+   * supports it. When true, authorization parameters are posted to the
+   * provider's PAR endpoint ahead of the redirect, and only `client_id` +
+   * `request_uri` travel through the user-agent. The provider must advertise
+   * `pushed_authorization_request_endpoint` in its discovery metadata.
+   */
+  usePar?: boolean;
 };
 
 /**
@@ -131,7 +139,7 @@ export async function buildAuthorizationUrl(
 ): Promise<URL> {
   try {
     const authUrl = openid.buildAuthorizationUrl(config, pkceOptions.parameters);
-    logger.info({ authUrl: authUrl.origin }, 'Authorization URL built successfully');
+    logger.info('Authorization URL built successfully');
     return authUrl;
   } catch (error) {
     logger.error({ error }, 'Failed to build authorization URL');
@@ -140,8 +148,43 @@ export async function buildAuthorizationUrl(
 }
 
 /**
- * Convenience function to discover OpenID configuration and build authorization URL.
- * This combines discovery + buildAuthorizationUrl in one call.
+ * Builds an authorization URL using Pushed Authorization Requests (RFC 9126).
+ *
+ * Posts the PKCE parameters to the provider's PAR endpoint and returns a URL
+ * containing only `client_id` and `request_uri`. The provider's discovery
+ * metadata must include `pushed_authorization_request_endpoint`.
+ *
+ * @param config - Discovered OpenID Configuration (use openid.discovery() to obtain)
+ * @param pkceOptions - The PKCE options (e.g., code challenge, state, parameters)
+ * @returns A Promise that resolves to the PAR-based authorization URL
+ */
+export async function buildAuthorizationUrlWithPAR(
+  config: openid.Configuration,
+  pkceOptions: PKCEOptions
+): Promise<URL> {
+  try {
+    const authUrl = await openid.buildAuthorizationUrlWithPAR(
+      config,
+      pkceOptions.parameters,
+    );
+    logger.info('PAR authorization URL built successfully');
+    return authUrl;
+  } catch (error) {
+    logger.error({ error }, 'Failed to build PAR authorization URL');
+    throw error;
+  }
+}
+
+/**
+ * Convenience function to discover OpenID configuration and build an
+ * authorization URL. Routes through PAR when `oauthConfig.usePar` is true and
+ * the provider advertises `pushed_authorization_request_endpoint`.
+ *
+ * - `usePar === true` + provider advertises PAR → uses PAR.
+ * - `usePar === true` + provider does **not** advertise PAR → throws.
+ * - `usePar` unset/false + provider advertises PAR → standard flow + one-line
+ *   `info` advisory that PAR is available but not enabled.
+ * - `usePar` unset/false + no PAR endpoint → standard flow, no advisory.
  *
  * @param oauthConfig - Your OAuth configuration
  * @param pkceOptions - The PKCE options (e.g., code challenge, state, parameters)
@@ -160,6 +203,24 @@ export async function discoverAndBuildAuthorizationUrl(
       oauthConfig.clientSecret,
       openid.ClientSecretPost(oauthConfig.clientSecret)
     );
+
+    const parEndpoint = config.serverMetadata().pushed_authorization_request_endpoint;
+
+    if (oauthConfig.usePar) {
+      if (!parEndpoint) {
+        throw new Error(
+          'PAR requested (usePar=true) but provider does not advertise pushed_authorization_request_endpoint',
+        );
+      }
+      return buildAuthorizationUrlWithPAR(config, pkceOptions);
+    }
+
+    if (parEndpoint) {
+      logger.info(
+        { issuer: oauthConfig.issuer },
+        'Provider advertises PAR but usePar is not enabled — set OAuthConfig.usePar=true to use it',
+      );
+    }
 
     return buildAuthorizationUrl(config, pkceOptions);
   } catch (error) {
