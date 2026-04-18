@@ -1,23 +1,31 @@
 'use client';
 import { useTranslations } from 'next-intl';
 
+import { Logger } from '@eventuras/logger';
 import { Badge } from '@eventuras/ratio-ui/core/Badge';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { DescriptionList } from '@eventuras/ratio-ui/core/DescriptionList';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
+import { useToast } from '@eventuras/ratio-ui/toast';
 import { Form, Select } from '@eventuras/smartform';
 
 import { CertificateActionsButton } from '@/components/eventuras/CertificateActionsButton';
 import {
   PaymentProvider,
-  RegistrationCustomerInfoDto,
   RegistrationDto,
+  RegistrationPatchDto,
   RegistrationStatus,
   RegistrationType,
 } from '@/lib/eventuras-sdk';
 
+import { patchRegistration } from './actions';
 import Order from '../orders/Order';
+
+const logger = Logger.create({
+  namespace: 'web:admin:registrations',
+  context: { component: 'Registration' },
+});
 interface RegistrationProps {
   registration?: RegistrationDto;
   adminMode?: boolean;
@@ -26,14 +34,6 @@ interface RegistrationProps {
   editMode?: boolean;
   userNameHeading?: boolean;
 }
-// Replace with the real type from the SDK when it's available
-export type RegistrationUpdateDto = {
-  status?: RegistrationStatus;
-  type?: RegistrationType;
-  notes?: string | null;
-  customer?: RegistrationCustomerInfoDto;
-  paymentMethod?: PaymentProvider;
-};
 type TranslationFunction = (
   key: string,
   options?: Record<string, string | number | Date>
@@ -72,6 +72,19 @@ export const getTypeLabels = (t: TranslationFunction) => [
 ];
 
 /**
+ * Payment method labels. Hardcoded strings until translations are added.
+ */
+export const paymentMethodLabels: { value: PaymentProvider; label: string }[] = [
+  { value: 'EmailInvoice', label: 'Email invoice' },
+  { value: 'PowerOfficeEmailInvoice', label: 'PowerOffice email invoice' },
+  { value: 'PowerOfficeEHFInvoice', label: 'PowerOffice EHF invoice' },
+  { value: 'StripeInvoice', label: 'Stripe invoice' },
+  { value: 'StripeDirect', label: 'Stripe (direct)' },
+  { value: 'VippsInvoice', label: 'Vipps invoice' },
+  { value: 'VippsDirect', label: 'Vipps (direct)' },
+];
+
+/**
  * Gets the appropriate badge variant for registration status
  */
 export const getStatusBadgeStatus = (status: string): 'neutral' | 'info' | 'success' | 'error' => {
@@ -100,11 +113,25 @@ const Registration = ({
   userNameHeading = false,
 }: RegistrationProps) => {
   const t = useTranslations();
-  // TODO: Implement proper registration update functionality
-  // This component needs a complete refactor to handle registration updates correctly
-  const handleUpdateRegistration = async () => {
-    throw new Error('Registration update not yet implemented. Please use the admin panel.');
+  const toast = useToast();
+
+  const handleUpdateRegistration = async (form: RegistrationPatchDto) => {
+    if (!registration?.registrationId) {
+      return;
+    }
+    const result = await patchRegistration(registration.registrationId, form);
+    if (!result.success) {
+      logger.error(
+        { error: result.error, registrationId: registration.registrationId },
+        'Failed to patch registration'
+      );
+      toast.error(result.error.message);
+      return;
+    }
+    logger.info({ registrationId: registration.registrationId }, 'Registration patched');
+    toast.success(result.message ?? t('common.labels.save'));
   };
+
   if (!registration) {
     return <p>{t('common.registrations.labels.noRegistration')}</p>;
   }
@@ -190,12 +217,13 @@ const Registration = ({
             defaultValues={{
               type: registration.type,
               status: registration.status,
+              paymentMethod: registration.paymentMethod,
             }}
             onSubmit={handleUpdateRegistration}
-            className=""
           >
             <Select name="type" options={getTypeLabels(t)} label="Type" />
             <Select name="status" options={getStatusLabels(t)} label="Status" />
+            <Select name="paymentMethod" options={paymentMethodLabels} label="Payment method" />
             <Button type="submit">{t('common.labels.save')}</Button>
           </Form>
         )}
