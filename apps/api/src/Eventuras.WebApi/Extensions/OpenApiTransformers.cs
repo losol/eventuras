@@ -120,6 +120,7 @@ public class NodaTimeSchemaTransformer : IOpenApiSchemaTransformer
                    ?? context.JsonTypeInfo.Type;
 
         string format;
+        string description = string.Empty;
         if (type == typeof(LocalDate))
         {
             format = "date";
@@ -128,6 +129,18 @@ public class NodaTimeSchemaTransformer : IOpenApiSchemaTransformer
         {
             format = "date-time";
         }
+        else if (type == typeof(LocalDateTime))
+        {
+            // RFC 3339 "date-time" implies an offset. LocalDateTime is deliberately
+            // timezone-less wall-clock time — a custom format name prevents SDK
+            // generators from auto-parsing the string into a native Date/Instant
+            // with the wrong interpretation.
+            format = "local-date-time";
+            description =
+                "Wall-clock date and time without timezone. Render verbatim; do not parse "
+                + "via `new Date()` or equivalent, which would reinterpret the value in the "
+                + "client's local zone.";
+        }
         else
         {
             return Task.CompletedTask;
@@ -135,6 +148,10 @@ public class NodaTimeSchemaTransformer : IOpenApiSchemaTransformer
 
         schema.Type = JsonSchemaType.String;
         schema.Format = format;
+        if (description.Length > 0 && string.IsNullOrEmpty(schema.Description))
+        {
+            schema.Description = description;
+        }
         schema.Properties?.Clear();
         return Task.CompletedTask;
     }

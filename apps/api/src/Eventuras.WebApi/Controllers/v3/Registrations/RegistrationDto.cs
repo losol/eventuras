@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Eventuras.Domain;
 using Eventuras.Services.Registrations;
+using Eventuras.WebApi.Config;
 using Eventuras.WebApi.Controllers.v3.Events;
 using Eventuras.WebApi.Controllers.v3.Events.Products;
 using Eventuras.WebApi.Controllers.v3.Orders;
@@ -31,7 +32,10 @@ public class RegistrationDto
         Status = registration.Status;
         Type = registration.Type;
         Notes = registration.Notes;
-        RegistrationTime = registration.RegistrationTime;
+        RegistrationTime = registration.RegistrationTime
+            ?.InZone(DisplayTimeZone.Current)
+            .LocalDateTime
+            .With(TimeAdjusters.TruncateToSecond);
         PaymentMethod = registration.PaymentMethod;
         CertificateComment = registration.CertificateComment;
         CustomerVatNumber = registration.CustomerVatNumber;
@@ -80,7 +84,16 @@ public class RegistrationDto
     public string? CertificateComment { get; init; }
     public string? Notes { get; init; }
     public string? Log { get; set; }
-    public Instant? RegistrationTime { get; init; }
+    /// <summary>
+    ///     Wall-clock date and time the registration was recorded, in the
+    ///     tenant's configured display zone (AppSettings.TimeZone, defaulting
+    ///     to Europe/Oslo). Timezone-less on purpose — same model as a flight
+    ///     departure time, which is always expressed in the local time of the
+    ///     airport regardless of where you view it from. Clients should render
+    ///     this string verbatim and not re-parse via <c>new Date()</c> or
+    ///     equivalent, which would reinterpret the value in the client's zone.
+    /// </summary>
+    public LocalDateTime? RegistrationTime { get; init; }
     public PaymentProvider PaymentMethod { get; init; }
     public string? CustomerVatNumber { get; init; }
     public string? CustomerInvoiceReference { get; init; }

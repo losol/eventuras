@@ -5581,6 +5581,11 @@
         "type": "string",
         "format": "date"
       },
+      "LocalDateTime": {
+        "type": "string",
+        "description": "Wall-clock date and time without timezone. Render verbatim; do not parse via `new Date()` or equivalent, which would reinterpret the value in the client's local zone.",
+        "format": "local-date-time"
+      },
       "NewOrderRequestDto": {
         "required": [
           "registrationId",
@@ -6860,7 +6865,8 @@
                 "type": "null"
               },
               {
-                "$ref": "#/components/schemas/Instant"
+                "description": "Wall-clock date and time the registration was recorded, in the\ntenant's configured display zone (AppSettings.TimeZone, defaulting\nto Europe/Oslo). Timezone-less on purpose — same model as a flight\ndeparture time, which is always expressed in the local time of the\nairport regardless of where you view it from. Clients should render\nthis string verbatim and not re-parse via `new Date()` or\nequivalent, which would reinterpret the value in the client's zone.",
+                "$ref": "#/components/schemas/LocalDateTime"
               }
             ]
           },
@@ -6923,26 +6929,12 @@
         "type": "object",
         "properties": {
           "status": {
-            "oneOf": [
-              {
-                "type": "null"
-              },
-              {
-                "description": "The registration status. Cannot be explicitly null.",
-                "$ref": "#/components/schemas/RegistrationStatus"
-              }
-            ]
+            "description": "The registration status.",
+            "$ref": "#/components/schemas/RegistrationStatus"
           },
           "type": {
-            "oneOf": [
-              {
-                "type": "null"
-              },
-              {
-                "description": "The registration type. Cannot be explicitly null.",
-                "$ref": "#/components/schemas/RegistrationType"
-              }
-            ]
+            "description": "The registration type.",
+            "$ref": "#/components/schemas/RegistrationType"
           },
           "notes": {
             "type": [
@@ -6952,15 +6944,8 @@
             "description": "Notes about the registration. Explicit null clears the field."
           },
           "paymentMethod": {
-            "oneOf": [
-              {
-                "type": "null"
-              },
-              {
-                "description": "Payment method for the registration. Cannot be explicitly null.",
-                "$ref": "#/components/schemas/PaymentProvider"
-              }
-            ]
+            "description": "Payment method for the registration.",
+            "$ref": "#/components/schemas/PaymentProvider"
           },
           "certificateComment": {
             "type": [
@@ -6984,7 +6969,7 @@
             "description": "Customer invoice reference. Explicit null clears the field."
           }
         },
-        "description": "DTO for partial updates to a registration (JSON Merge Patch semantics).\n\nOnly fields present in the request body are applied. A field set to\n`null` clears the corresponding entity field (for nullable\nstring fields). Omitted fields are left untouched.\n\nPresence is tracked via property setters: the JSON deserializer only\ninvokes a setter when the field is in the payload, so a dedicated\nbacking flag can distinguish \"absent\" from \"explicit null\"."
+        "description": "DTO for partial updates to a registration (JSON Merge Patch semantics).\n\nOnly fields present in the request body are applied. Nullable string\nfields set to `null` clear the corresponding entity value.\nOmitted fields are left untouched. Sending `null` on non-nullable\nfields (status/type/paymentMethod) is rejected with a 400 by the JSON\ndeserializer.\n\nPresence is tracked via property setters: the JSON deserializer only\ninvokes a setter when the field is in the payload, so a dedicated\nbacking flag can distinguish \"absent\" from \"explicit null\"."
       },
       "RegistrationStatus": {
         "enum": [
