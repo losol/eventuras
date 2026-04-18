@@ -189,9 +189,9 @@ export const generateTestEventData = (baseName: string): TestEventData => {
     title: eventTitle,
     headline: `${eventTitle} - A comprehensive learning experience`,
     category: 'Technology & Innovation',
-    description: `Join us for **${eventTitle}**, an exciting event that brings together professionals and enthusiasts from around the world.
-
-This event will cover the latest trends and best practices, with hands-on workshops and networking opportunities.`,
+    // EventInfo.Description is capped at 300 chars server-side; keep this short
+    // (and free of the dynamic event title) so the length stays predictable.
+    description: `An exciting event bringing together professionals from around the world for hands-on workshops and networking.`,
 
     program: `### Day 1 - Introduction & Fundamentals
 
