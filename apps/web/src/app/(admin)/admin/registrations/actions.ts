@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 
+import { formatApiError } from '@eventuras/core/errors';
 import { actionError, actionSuccess, ServerActionResult } from '@eventuras/core-nextjs/actions';
 import { Logger } from '@eventuras/logger';
 
@@ -110,7 +111,7 @@ export async function updateRegistration(
 
     if (!response.data) {
       logger.error({ error: response.error, registrationId: id }, 'Failed to update registration');
-      return actionError('Failed to update registration');
+      return actionError(formatApiError(response.error, 'Failed to update registration'));
     }
 
     logger.info({ registrationId: id }, 'Registration updated successfully');
@@ -147,7 +148,7 @@ export async function patchRegistration(
 
     if (!response.data) {
       logger.error({ error: response.error, registrationId }, 'Failed to patch registration');
-      return actionError('Failed to update registration');
+      return actionError(formatApiError(response.error, 'Failed to update registration'));
     }
 
     logger.info({ registrationId }, 'Registration patched successfully');

@@ -20,6 +20,10 @@
     "./url": {
       "types": "./dist/url/index.d.ts",
       "import": "./dist/url/index.js"
+    },
+    "./errors": {
+      "types": "./dist/errors/index.d.ts",
+      "import": "./dist/errors/index.js"
     }
   },
   "files": [
