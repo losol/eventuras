@@ -3,15 +3,13 @@ import { getTranslations } from 'next-intl/server';
 
 import { Logger } from '@eventuras/logger';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
-import { Navbar } from '@eventuras/ratio-ui/core/Navbar';
 import { Text } from '@eventuras/ratio-ui/core/Text';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 import { buildCoverImageStyle } from '@eventuras/ratio-ui/utils';
-import { Link } from '@eventuras/ratio-ui-next';
 
 import { EventGrid, FeaturedCollectionSection } from '@/components/event';
-import UserMenu from '@/components/eventuras/UserMenu';
+import SiteNavbar from '@/components/eventuras/SiteNavbar';
 import {
   type EventCollectionDto,
   type EventDto,
@@ -106,29 +104,15 @@ export default async function Homepage() {
 
   return (
     <>
-      {/* Sticky navbar */}
-      <Navbar title={site?.frontpage.title ?? 'Eventuras'} bgDark LinkComponent={Link}>
-        <UserMenu
-          translations={{
-            loginLabel: t('common.buttons.login'),
-            userLabel: t('common.user.profile'),
-            accountLabel: t('common.labels.account'),
-            adminLabel: t('common.labels.admin'),
-            logoutLabel: t('common.labels.logout'),
-            loggingOutLabel: t('common.labels.loggingOut'),
-            lightThemeLabel: t('common.labels.lightTheme'),
-            darkThemeLabel: t('common.labels.darkTheme'),
-          }}
-        />
-      </Navbar>
+      <SiteNavbar variant="dark" title={site?.frontpage.title ?? 'Eventuras'} />
 
       {/* Hero section with background image */}
       <Section
         style={buildCoverImageStyle('/assets/images/mountains.jpg')}
-        className="min-h-[30vh] flex items-center"
+        className="min-h-[30vh] flex flex-col justify-end"
       >
-        <Container>
-          <Heading as="h1" onDark paddingBottom="sm" className="text-3xl md:text-4xl lg:text-5xl">
+        <Container className="pb-3">
+          <Heading as="h1" onDark paddingBottom="xs" className="text-3xl md:text-4xl lg:text-5xl">
             {site?.frontpage.introduction ?? 'Eventuras for your life!'}
           </Heading>
         </Container>

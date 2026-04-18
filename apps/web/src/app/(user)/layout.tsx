@@ -1,12 +1,10 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
-import { getTranslations } from 'next-intl/server';
 
 import { Footer } from '@eventuras/ratio-ui/core/Footer';
 import { List } from '@eventuras/ratio-ui/core/List';
-import { Navbar } from '@eventuras/ratio-ui/core/Navbar';
 
-import UserMenu from '@/components/eventuras/UserMenu';
+import SiteNavbar from '@/components/eventuras/SiteNavbar';
 import getSiteSettings from '@/utils/site/getSiteSettings';
 
 // Force dynamic rendering for all user routes since they use authentication
@@ -20,28 +18,10 @@ export const dynamic = 'force-dynamic';
  */
 export default async function UserLayout({ children }: Readonly<{ children: ReactNode }>) {
   const site = await getSiteSettings();
-  const t = await getTranslations();
 
   return (
     <>
-      <Navbar
-        title={site?.name ?? 'Eventuras'}
-        bgColor="bg-transparent w-full py-1"
-        LinkComponent={Link}
-      >
-        <UserMenu
-          translations={{
-            loginLabel: t('common.labels.login'),
-            accountLabel: t('common.labels.account'),
-            adminLabel: t('common.labels.admin'),
-            userLabel: t('common.labels.user'),
-            logoutLabel: t('common.labels.logout'),
-            loggingOutLabel: t('common.labels.loggingOut'),
-            lightThemeLabel: t('common.labels.lightTheme'),
-            darkThemeLabel: t('common.labels.darkTheme'),
-          }}
-        />
-      </Navbar>
+      <SiteNavbar />
 
       <main id="main-content">{children}</main>
 
