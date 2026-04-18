@@ -184,18 +184,10 @@ export const createTestEvent = async (
   return eventId;
 };
 
-/**
- * Save the event and validate that it was properly saved to the backend.
- *
- * The form uses auto-save with a 1-second debounce, so data may already be saved
- * by the time we get here. We wait for pending auto-saves to settle, then click
- * save as a safety net, and verify via API.
- */
+/** Click Save and poll the API until the event fields appear, or throw. */
 async function saveEventAndValidate(page: Page, eventId: string): Promise<void> {
-  logger.debug('Waiting for pending auto-saves to settle...');
-
-  // Let auto-save debounce (1s) + API call finish before clicking save manually.
-  // This avoids concurrent PUT requests which can cause API errors.
+  // Let any in-flight auto-save PUT finish before we click Save, so the two
+  // requests don't race on the backend.
   await page.waitForTimeout(2000);
   await page.waitForLoadState('networkidle', { timeout: 5000 }).catch(() => {
     logger.debug('Network not idle after 5s, continuing...');
@@ -203,75 +195,53 @@ async function saveEventAndValidate(page: Page, eventId: string): Promise<void> 
 
   const saveButton = page.locator('[data-testid="event-save-button"]');
   await saveButton.waitFor({ state: 'visible', timeout: 5000 });
+  await saveButton.click();
+  logger.debug('Save clicked — polling API for persisted data');
 
-  // Wait for any stale toasts from auto-save to disappear before clicking save,
-  // so we can reliably detect the toast from our explicit save click.
-  const staleToast = page.getByText('Changes saved');
-  await staleToast.waitFor({ state: 'hidden', timeout: 5000 }).catch(() => {
-    logger.debug('Stale toast still visible, continuing...');
-  });
+  const pollIntervalMs = 500;
+  const maxAttempts = 20;
+  let lastResponse: Awaited<ReturnType<typeof getEventFromApi>> | null = null;
 
-  // Try saving up to 2 times — auto-save race conditions can cause transient failures
-  for (let attempt = 1; attempt <= 2; attempt++) {
-    logger.debug({ attempt }, 'Save attempt...');
-    await saveButton.click();
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    lastResponse = await getEventFromApi(eventId);
 
-    // Wait for either success or error toast.
-    // Stale "Changes saved" toasts were cleared above, so any new one is from this click.
-    const successToast = page.getByText('Changes saved');
-    const errorToast = page.getByText('Save failed', { exact: false });
+    const hasData =
+      lastResponse.description ||
+      lastResponse.city ||
+      (lastResponse.maxParticipants ?? 0) > 0;
 
-    const result = await Promise.race([
-      successToast
-        .waitFor({ state: 'visible', timeout: 8000 })
-        .then(() => 'success' as const),
-      errorToast
-        .waitFor({ state: 'visible', timeout: 8000 })
-        .then(() => 'error' as const),
-    ]).catch(() => 'timeout' as const);
-
-    if (result === 'success') {
-      logger.debug('Save confirmed via toast');
-      break;
-    } else if (result === 'error') {
-      const errorMsg = await errorToast.last().textContent();
-      logger.debug({ attempt, errorMsg }, 'Save failed');
-      if (attempt < 2) {
-        logger.debug('Retrying after a brief wait...');
-        await page.waitForTimeout(2000);
-      }
-    } else {
-      logger.debug({ attempt }, 'No toast seen — auto-save may have already persisted');
-      break;
+    if (hasData) {
+      logger.debug(
+        {
+          attempt,
+          city: lastResponse.city,
+          maxParticipants: lastResponse.maxParticipants,
+          descriptionLength: lastResponse.description?.length ?? 0,
+        },
+        'Event data verified as saved'
+      );
+      return;
     }
+
+    await page.waitForTimeout(pollIntervalMs);
   }
 
-  // Give the API time to finish
-  await page.waitForTimeout(1000);
+  logger.debug(
+    {
+      attempts: maxAttempts,
+      status: lastResponse?.status,
+      city: lastResponse?.city,
+      maxParticipants: lastResponse?.maxParticipants,
+      descriptionLength: lastResponse?.description?.length ?? 0,
+    },
+    'Polling exhausted — event fields still NULL after Save click'
+  );
 
-  // Validate event was saved by fetching from API
-  logger.debug('Fetching event from API to validate...');
-  const jsonResponse = await getEventFromApi(eventId);
-
-  logger.debug({
-    status: jsonResponse.status,
-    city: jsonResponse.city,
-    maxParticipants: jsonResponse.maxParticipants,
-    descriptionLength: jsonResponse.description?.length ?? 0,
-  }, 'API response');
-
-  // Verify that data was actually saved
-  const hasData =
-    jsonResponse.description || jsonResponse.city || (jsonResponse.maxParticipants ?? 0) > 0;
-
-  if (!hasData) {
-    logger.debug('CRITICAL: Event fields were NOT saved! All fields are NULL.');
-    throw new Error(
-      'Event data not saved — description, city, and maxParticipants are all NULL. ' +
-        'This likely means Lexical editor paste events or form field changes are not ' +
-        'reaching React Hook Form state.'
-    );
-  }
-
-  logger.debug('Event data verified as saved');
+  throw new Error(
+    `Event data not persisted after ${(pollIntervalMs * maxAttempts) / 1000}s of polling. ` +
+      'description, city, and maxParticipants are all NULL even though Save was clicked. ' +
+      'The form values are not reaching the PUT request — check the Save button handler, ' +
+      'RHF state after tab switches, or whether Controllers are unregistering despite ' +
+      '`shouldUnregister: false` on <Form>.'
+  );
 }
