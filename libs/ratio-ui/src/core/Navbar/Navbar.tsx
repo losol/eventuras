@@ -7,8 +7,20 @@ export interface NavbarProps {
   bgDark?: boolean;
   /** Tailwind background class (default `bg-transparent`). */
   bgColor?: string;
-  /** Make navbar sticky at the top. */
+  /** Make navbar sticky at the top. Ignored when `overlay` is also set. */
   sticky?: boolean;
+  /**
+   * Float the navbar over the next sibling (e.g. a hero section) using
+   * absolute positioning. Unlike `sticky`, it doesn't reserve layout space
+   * and scrolls away with the page. Takes precedence over `sticky` when
+   * both are provided.
+   */
+  overlay?: boolean;
+  /**
+   * Translucent dark background with backdrop-blur. Composes with `overlay`
+   * for a glass hero-overlay look, and with `bgDark` for white text.
+   */
+  glass?: boolean;
   className?: string;
 
   // ── Legacy shorthand props (still supported, prefer Navbar.Brand) ──
@@ -56,6 +68,8 @@ const NavbarRoot = ({
   bgDark = false,
   bgColor,
   sticky = false,
+  overlay = false,
+  glass = false,
   className,
   // eslint-disable-next-line deprecation/deprecation -- backward-compat bridge
   title,
@@ -65,7 +79,13 @@ const NavbarRoot = ({
   LinkComponent,
 }: Readonly<NavbarProps>) => {
   const textColor = bgDark ? 'text-light' : 'text-dark dark:text-light';
-  const positionClass = sticky ? 'sticky top-0 z-50' : '';
+  // overlay takes precedence over sticky when both are passed.
+  const positionClass = overlay
+    ? 'absolute top-0 left-0 right-0 z-50'
+    : sticky
+      ? 'sticky top-0 z-50'
+      : '';
+  const glassClass = glass ? 'bg-black/20 dark:bg-white/10  backdrop-blur-md' : '';
   // CSS custom property so Brand/Content get the resolved color without
   // React context (which would require 'use client').
   const navbarColorVar = bgDark
@@ -76,10 +96,10 @@ const NavbarRoot = ({
   const LinkTag = LinkComponent ?? ('a' as React.ElementType);
 
   return (
-    <nav className={cn(bgColor, positionClass, textColor, navbarColorVar, 'm-0 p-0', className)}>
+    <nav className={cn(bgColor, positionClass, glassClass, textColor, navbarColorVar, 'm-0 p-0', className)}>
       <div
         className={cn(
-          'flex flex-wrap items-center mx-auto gap-3 py-2 px-3',
+          'container flex flex-wrap items-center mx-auto gap-3 py-2 px-3',
           hasLegacyTitle && 'justify-between',
         )}
       >
