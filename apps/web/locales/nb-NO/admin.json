@@ -1,6 +1,7 @@
 {
   "certificates": {
     "labels": {
+      "comment": "Kommentar",
       "download": "Last ned kursbevis",
       "noCertificate": "Kursbevis ikke utstedt",
       "notFound": "Fant ikke noe deltakerbevis",

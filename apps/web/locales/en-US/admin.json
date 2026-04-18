@@ -1,6 +1,7 @@
 {
   "certificates": {
     "labels": {
+      "comment": "Comment",
       "download": "Download certificate",
       "noCertificate": "No certificate issued",
       "notFound": "Certificate not found",

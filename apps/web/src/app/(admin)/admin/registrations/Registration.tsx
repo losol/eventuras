@@ -1,5 +1,5 @@
 'use client';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 
 import { Logger } from '@eventuras/logger';
 import { Badge } from '@eventuras/ratio-ui/core/Badge';
@@ -84,6 +84,21 @@ export const paymentMethodLabels: { value: PaymentProvider; label: string }[] = 
   { value: 'VippsDirect', label: 'Vipps (direct)' },
 ];
 
+export const getPaymentMethodLabel = (method?: PaymentProvider | null): string => {
+  if (!method) return '';
+  return paymentMethodLabels.find(x => x.value === method)?.label ?? method;
+};
+
+export const formatRegistrationTime = (
+  instant?: string | null,
+  locale?: string
+): string | null => {
+  if (!instant) return null;
+  const date = new Date(instant);
+  if (Number.isNaN(date.getTime())) return null;
+  return new Intl.DateTimeFormat(locale, { dateStyle: 'medium', timeStyle: 'short' }).format(date);
+};
+
 /**
  * Gets the appropriate badge variant for registration status
  */
@@ -113,6 +128,7 @@ const Registration = ({
   userNameHeading = false,
 }: RegistrationProps) => {
   const t = useTranslations();
+  const locale = useLocale();
   const toast = useToast();
 
   const handleUpdateRegistration = async (form: RegistrationPatchDto) => {
@@ -192,6 +208,16 @@ const Registration = ({
           <DescriptionList.Term>{t('common.registrations.labels.userName')}</DescriptionList.Term>
           <DescriptionList.Definition>{registration.user?.name}</DescriptionList.Definition>
         </DescriptionList.Item>
+        {registration.registrationTime && (
+          <DescriptionList.Item>
+            <DescriptionList.Term>
+              {t('common.registrations.labels.registeredAt')}
+            </DescriptionList.Term>
+            <DescriptionList.Definition>
+              {formatRegistrationTime(registration.registrationTime, locale)}
+            </DescriptionList.Definition>
+          </DescriptionList.Item>
+        )}
         {/* Show status and type as badges when not in edit mode, or when not in admin mode */}
         {(!editMode || !adminMode) && (
           <>
@@ -209,7 +235,47 @@ const Registration = ({
                 <Badge status="neutral">{typeLabel}</Badge>
               </DescriptionList.Definition>
             </DescriptionList.Item>
+            {registration.paymentMethod && (
+              <DescriptionList.Item>
+                <DescriptionList.Term>
+                  {t('common.registrations.labels.paymentMethod')}
+                </DescriptionList.Term>
+                <DescriptionList.Definition>
+                  <Badge status="neutral">
+                    {getPaymentMethodLabel(registration.paymentMethod)}
+                  </Badge>
+                </DescriptionList.Definition>
+              </DescriptionList.Item>
+            )}
           </>
+        )}
+        {registration.customerVatNumber && (
+          <DescriptionList.Item>
+            <DescriptionList.Term>
+              {t('common.registrations.labels.vatNumber')}
+            </DescriptionList.Term>
+            <DescriptionList.Definition>
+              {registration.customerVatNumber}
+            </DescriptionList.Definition>
+          </DescriptionList.Item>
+        )}
+        {registration.customerInvoiceReference && (
+          <DescriptionList.Item>
+            <DescriptionList.Term>
+              {t('common.registrations.labels.invoiceReference')}
+            </DescriptionList.Term>
+            <DescriptionList.Definition>
+              {registration.customerInvoiceReference}
+            </DescriptionList.Definition>
+          </DescriptionList.Item>
+        )}
+        {adminMode && registration.uuid && (
+          <DescriptionList.Item>
+            <DescriptionList.Term>{t('common.registrations.labels.uuid')}</DescriptionList.Term>
+            <DescriptionList.Definition>
+              <code className="text-xs">{registration.uuid}</code>
+            </DescriptionList.Definition>
+          </DescriptionList.Item>
         )}
         {/* Show editable forms when in edit mode and admin mode */}
         {editMode && adminMode && (
@@ -221,9 +287,21 @@ const Registration = ({
             }}
             onSubmit={handleUpdateRegistration}
           >
-            <Select name="type" options={getTypeLabels(t)} label="Type" />
-            <Select name="status" options={getStatusLabels(t)} label="Status" />
-            <Select name="paymentMethod" options={paymentMethodLabels} label="Payment method" />
+            <Select
+              name="type"
+              options={getTypeLabels(t)}
+              label={t('common.registrations.labels.type')}
+            />
+            <Select
+              name="status"
+              options={getStatusLabels(t)}
+              label={t('common.registrations.labels.status')}
+            />
+            <Select
+              name="paymentMethod"
+              options={paymentMethodLabels}
+              label={t('common.registrations.labels.paymentMethod')}
+            />
             <Button type="submit">{t('common.labels.save')}</Button>
           </Form>
         )}
@@ -254,6 +332,12 @@ const Registration = ({
             />
           ) : (
             <p className="text-gray-500">{t('admin.certificates.labels.noCertificate')}</p>
+          )}
+          {registration.certificateComment && (
+            <p className="mt-2 text-sm">
+              <strong>{t('admin.certificates.labels.comment')}:</strong>{' '}
+              {registration.certificateComment}
+            </p>
           )}
         </Section>
       )}
