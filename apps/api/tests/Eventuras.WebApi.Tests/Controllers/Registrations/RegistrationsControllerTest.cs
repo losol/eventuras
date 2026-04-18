@@ -850,6 +850,248 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
         return updated;
     }
 
+    #region PATCH Tests
+
+    [Fact]
+    public async Task Patch_Should_Require_Auth()
+    {
+        var client = factory.CreateClient();
+        var response = await client.PatchAsync("/v3/registrations/1", new { status = "Verified" });
+        response.CheckUnauthorized();
+    }
+
+    [Fact]
+    public async Task Patch_Should_Return_NotFound_For_Missing_Registration()
+    {
+        var client = factory.CreateClient().AuthenticatedAsSystemAdmin();
+        var response = await client.PatchAsync("/v3/registrations/10001", new { status = "Verified" });
+        response.CheckNotFound();
+    }
+
+    [Fact]
+    public async Task Patch_Should_Update_Status_And_Type()
+    {
+        using var scope = factory.Services.NewTestScope();
+        using var user = await scope.CreateUserAsync();
+        using var evt = await scope.CreateEventAsync();
+        using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
+
+        var client = factory.CreateClient().AuthenticatedAsSystemAdmin();
+        var response = await client.PatchAsync($"/v3/registrations/{reg.Entity.RegistrationId}",
+            new { status = "Verified", type = "Student" });
+        response.CheckOk();
+
+        await LoadAndCheckAsync(scope, reg.Entity, updated =>
+        {
+            Assert.Equal(Registration.RegistrationStatus.Verified, updated.Status);
+            Assert.Equal(Registration.RegistrationType.Student, updated.Type);
+        });
+    }
+
+    [Fact]
+    public async Task Patch_Should_Update_PaymentMethod()
+    {
+        using var scope = factory.Services.NewTestScope();
+        using var user = await scope.CreateUserAsync();
+        using var evt = await scope.CreateEventAsync();
+        using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
+
+        var client = factory.CreateClient().AuthenticatedAsSystemAdmin();
+        var response = await client.PatchAsync($"/v3/registrations/{reg.Entity.RegistrationId}",
+            new { paymentMethod = "StripeDirect" });
+        response.CheckOk();
+
+        await LoadAndCheckAsync(scope, reg.Entity,
+            updated => Assert.Equal(PaymentMethod.PaymentProvider.StripeDirect, updated.PaymentMethod));
+    }
+
+    [Fact]
+    public async Task Patch_Should_Update_CertificateComment()
+    {
+        using var scope = factory.Services.NewTestScope();
+        using var user = await scope.CreateUserAsync();
+        using var evt = await scope.CreateEventAsync();
+        using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
+
+        var client = factory.CreateClient().AuthenticatedAsSystemAdmin();
+        var response = await client.PatchAsync($"/v3/registrations/{reg.Entity.RegistrationId}",
+            new { certificateComment = "Well done" });
+        response.CheckOk();
+
+        await LoadAndCheckAsync(scope, reg.Entity,
+            updated => Assert.Equal("Well done", updated.CertificateComment));
+    }
+
+    [Fact]
+    public async Task Patch_Should_Update_Customer_Vat_And_Invoice_Reference()
+    {
+        using var scope = factory.Services.NewTestScope();
+        using var user = await scope.CreateUserAsync();
+        using var evt = await scope.CreateEventAsync();
+        using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
+
+        var client = factory.CreateClient().AuthenticatedAsSystemAdmin();
+        var response = await client.PatchAsync($"/v3/registrations/{reg.Entity.RegistrationId}",
+            new { customerVatNumber = "NO999888777", customerInvoiceReference = "PO-42" });
+        response.CheckOk();
+
+        await LoadAndCheckAsync(scope, reg.Entity, updated =>
+        {
+            Assert.Equal("NO999888777", updated.CustomerVatNumber);
+            Assert.Equal("PO-42", updated.CustomerInvoiceReference);
+        });
+    }
+
+    [Fact]
+    public async Task Patch_Should_Null_Notes_When_Explicit_Null()
+    {
+        using var scope = factory.Services.NewTestScope();
+        using var user = await scope.CreateUserAsync();
+        using var evt = await scope.CreateEventAsync();
+        using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
+
+        // Seed notes so we can observe clearing them.
+        reg.Entity.Notes = "to be cleared";
+        await scope.Db.SaveChangesAsync();
+
+        var client = factory.CreateClient().AuthenticatedAsSystemAdmin();
+        // Anonymous object with an explicit null string serializes as `"notes":null`
+        // under System.Text.Json's default settings (DefaultIgnoreCondition = Never),
+        // which is what we need to trigger the JSON-Merge-Patch clear semantics.
+        var response = await client.PatchAsync($"/v3/registrations/{reg.Entity.RegistrationId}",
+            new { notes = (string)null });
+        response.CheckOk();
+
+        await LoadAndCheckAsync(scope, reg.Entity, updated => Assert.Null(updated.Notes));
+    }
+
+    [Fact]
+    public async Task Patch_Should_Null_CertificateComment_When_Explicit_Null()
+    {
+        using var scope = factory.Services.NewTestScope();
+        using var user = await scope.CreateUserAsync();
+        using var evt = await scope.CreateEventAsync();
+        using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
+
+        reg.Entity.CertificateComment = "to be cleared";
+        await scope.Db.SaveChangesAsync();
+
+        var client = factory.CreateClient().AuthenticatedAsSystemAdmin();
+        var response = await client.PatchAsync($"/v3/registrations/{reg.Entity.RegistrationId}",
+            new { certificateComment = (string)null });
+        response.CheckOk();
+
+        await LoadAndCheckAsync(scope, reg.Entity, updated => Assert.Null(updated.CertificateComment));
+    }
+
+    [Fact]
+    public async Task Patch_Should_Null_CustomerVatNumber_When_Explicit_Null()
+    {
+        using var scope = factory.Services.NewTestScope();
+        using var user = await scope.CreateUserAsync();
+        using var evt = await scope.CreateEventAsync();
+        using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
+
+        reg.Entity.CustomerVatNumber = "NO999888777";
+        await scope.Db.SaveChangesAsync();
+
+        var client = factory.CreateClient().AuthenticatedAsSystemAdmin();
+        var response = await client.PatchAsync($"/v3/registrations/{reg.Entity.RegistrationId}",
+            new { customerVatNumber = (string)null });
+        response.CheckOk();
+
+        await LoadAndCheckAsync(scope, reg.Entity, updated => Assert.Null(updated.CustomerVatNumber));
+    }
+
+    [Fact]
+    public async Task Patch_Should_Null_CustomerInvoiceReference_When_Explicit_Null()
+    {
+        using var scope = factory.Services.NewTestScope();
+        using var user = await scope.CreateUserAsync();
+        using var evt = await scope.CreateEventAsync();
+        using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
+
+        reg.Entity.CustomerInvoiceReference = "PO-42";
+        await scope.Db.SaveChangesAsync();
+
+        var client = factory.CreateClient().AuthenticatedAsSystemAdmin();
+        var response = await client.PatchAsync($"/v3/registrations/{reg.Entity.RegistrationId}",
+            new { customerInvoiceReference = (string)null });
+        response.CheckOk();
+
+        await LoadAndCheckAsync(scope, reg.Entity,
+            updated => Assert.Null(updated.CustomerInvoiceReference));
+    }
+
+    [Fact]
+    public async Task Patch_Should_Reject_Explicit_Null_For_NonNullable_Status()
+    {
+        using var scope = factory.Services.NewTestScope();
+        using var user = await scope.CreateUserAsync();
+        using var evt = await scope.CreateEventAsync();
+        using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
+
+        var client = factory.CreateClient().AuthenticatedAsSystemAdmin();
+        // Non-nullable enum: explicit null must not silently succeed.
+        var response = await client.PatchAsync($"/v3/registrations/{reg.Entity.RegistrationId}",
+            new { status = (string)null });
+
+        response.CheckBadRequest();
+    }
+
+    [Fact]
+    public async Task Patch_Should_Not_Touch_Notes_When_Field_Absent()
+    {
+        using var scope = factory.Services.NewTestScope();
+        using var user = await scope.CreateUserAsync();
+        using var evt = await scope.CreateEventAsync();
+        using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
+
+        reg.Entity.Notes = "keep me";
+        await scope.Db.SaveChangesAsync();
+
+        var client = factory.CreateClient().AuthenticatedAsSystemAdmin();
+        // Body only sets status — notes must stay as "keep me".
+        var response = await client.PatchAsync($"/v3/registrations/{reg.Entity.RegistrationId}",
+            new { status = "Verified" });
+        response.CheckOk();
+
+        await LoadAndCheckAsync(scope, reg.Entity, updated =>
+        {
+            Assert.Equal("keep me", updated.Notes);
+            Assert.Equal(Registration.RegistrationStatus.Verified, updated.Status);
+        });
+    }
+
+    [Fact]
+    public async Task Patch_Response_Should_Include_New_Fields()
+    {
+        using var scope = factory.Services.NewTestScope();
+        using var user = await scope.CreateUserAsync();
+        using var evt = await scope.CreateEventAsync();
+        using var reg = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
+
+        var client = factory.CreateClient().AuthenticatedAsSystemAdmin();
+        var response = await client.PatchAsync($"/v3/registrations/{reg.Entity.RegistrationId}",
+            new
+            {
+                certificateComment = "ok",
+                customerVatNumber = "NO123",
+                customerInvoiceReference = "REF-1",
+                paymentMethod = "StripeDirect",
+            });
+        var dto = await response.AsTokenAsync();
+
+        Assert.Equal(reg.Entity.Uuid.ToString(), dto.GetProperty("uuid").GetString());
+        Assert.Equal("ok", dto.GetProperty("certificateComment").GetString());
+        Assert.Equal("NO123", dto.GetProperty("customerVatNumber").GetString());
+        Assert.Equal("REF-1", dto.GetProperty("customerInvoiceReference").GetString());
+        Assert.Equal("StripeDirect", dto.GetProperty("paymentMethod").GetString());
+        Assert.NotEqual(JsonValueKind.Null, dto.GetProperty("registrationTime").ValueKind);
+    }
+
+    #endregion
+
     public static object[][] GetRegInfoWithAdditionalInfoFilled()
         => new[]
         {

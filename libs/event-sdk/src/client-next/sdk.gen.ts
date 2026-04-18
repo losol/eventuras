@@ -101,7 +101,7 @@ export const getV3RegistrationsById = <ThrowOnError extends boolean = false>(opt
 /**
  * Partially update a registration
  *
- * Updates specific fields of a registration. Only Status, Type, and Notes can be modified.
+ * Updates specific fields of a registration using JSON Merge Patch semantics. Settable fields: Status, Type, Notes, PaymentMethod, CertificateComment, CustomerVatNumber, CustomerInvoiceReference. Fields omitted from the body are untouched; string fields set to null clear the corresponding value.
  */
 export const patchV3RegistrationsById = <ThrowOnError extends boolean = false>(options: Options<PatchV3RegistrationsByIdData, ThrowOnError>) => (options.client ?? client).patch<PatchV3RegistrationsByIdResponses, PatchV3RegistrationsByIdErrors, ThrowOnError>({
     url: '/v3/registrations/{id}',

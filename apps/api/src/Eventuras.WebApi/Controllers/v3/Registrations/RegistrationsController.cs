@@ -218,7 +218,7 @@ public class RegistrationsController : ControllerBase
 
     [HttpPatch("{id}")]
     [EndpointSummary("Partially update a registration")]
-    [EndpointDescription("Updates specific fields of a registration. Only Status, Type, and Notes can be modified.")]
+    [EndpointDescription("Updates specific fields of a registration using JSON Merge Patch semantics. Settable fields: Status, Type, Notes, PaymentMethod, CertificateComment, CustomerVatNumber, CustomerInvoiceReference. Fields omitted from the body are untouched; string fields set to null clear the corresponding value.")]
     [ProducesResponseType(typeof(RegistrationDto), 200)]
     [ProducesResponseType(400)]
     [ProducesResponseType(404)]
