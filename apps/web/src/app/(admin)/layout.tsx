@@ -1,13 +1,11 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
-import { getTranslations } from 'next-intl/server';
 
 import { Unauthorized } from '@eventuras/ratio-ui/blocks/Unauthorized';
 import { Footer } from '@eventuras/ratio-ui/core/Footer';
 import { List } from '@eventuras/ratio-ui/core/List';
-import { Navbar } from '@eventuras/ratio-ui/core/Navbar';
 
-import UserMenu from '@/components/eventuras/UserMenu';
+import SiteNavbar from '@/components/eventuras/SiteNavbar';
 import { checkAuthorization } from '@/utils/auth/checkAuthorization';
 import getSiteSettings from '@/utils/site/getSiteSettings';
 
@@ -30,28 +28,10 @@ export default async function AdminLayout({ children }: Readonly<{ children: Rea
   }
 
   const site = await getSiteSettings();
-  const t = await getTranslations();
 
   return (
     <>
-      <Navbar
-        title={site?.name ?? 'Eventuras'}
-        bgColor="bg-transparent w-full py-1"
-        LinkComponent={Link}
-      >
-        <UserMenu
-          translations={{
-            loginLabel: t('common.labels.login'),
-            accountLabel: t('common.labels.account'),
-            adminLabel: t('common.labels.admin'),
-            userLabel: t('common.labels.user'),
-            logoutLabel: t('common.labels.logout'),
-            loggingOutLabel: t('common.labels.loggingOut'),
-            lightThemeLabel: t('common.labels.lightTheme'),
-            darkThemeLabel: t('common.labels.darkTheme'),
-          }}
-        />
-      </Navbar>
+      <SiteNavbar />
 
       <main id="main-content">{children}</main>
 
