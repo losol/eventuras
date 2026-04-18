@@ -79,6 +79,34 @@ export const DoubleNavbar: Story = {
   ),
 };
 
+/**
+ * Glass navbar floating over a hero section. `overlay` anchors it to the
+ * viewport top without reserving layout space; `glass` gives the translucent
+ * dark bg + backdrop-blur; `bgDark` makes the text readable over the image.
+ * The nav scrolls away with the page (unlike `sticky`, which stays pinned).
+ */
+export const OverlayGlass: Story = {
+  render: () => (
+    <div className="relative">
+      <Navbar overlay glass bgDark>
+        <Navbar.Brand>
+          <a href="/" className="text-lg tracking-tight no-underline">
+            Eventuras
+          </a>
+        </Navbar.Brand>
+        <Navbar.Content className="justify-end">
+          <a href="/login" className="hover:underline">
+            Log in
+          </a>
+        </Navbar.Content>
+      </Navbar>
+      <section className="flex min-h-[60vh] items-center justify-center bg-linear-to-br from-slate-700 via-slate-900 to-black">
+        <h1 className="text-4xl text-white">Hero with a glass navbar on top</h1>
+      </section>
+    </div>
+  ),
+};
+
 /** Legacy API — still works, renders identically to the old Navbar. */
 export const LegacyTitle: Story = {
   args: {

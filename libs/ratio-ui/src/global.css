@@ -11,6 +11,19 @@
 @plugin 'tailwindcss-react-aria-components';
 @source '**/*.tsx';
 
+/*
+ * Safelist utility classes that consumers (apps/*) commonly use but that
+ * aren't referenced inside ratio-ui itself. Without this they'd be stripped
+ * from the bundled ratio-ui.css because Tailwind only scans ratio-ui's own
+ * tsx files. Grow this list pragmatically as real needs surface.
+ */
+@source inline("pt-16 pt-20 pt-24 pt-28 pt-32 pt-40");
+@source inline("pb-16 pb-20 pb-24 pb-28 pb-32 pb-40");
+@source inline("mt-16 mt-20 mt-24 mt-28 mt-32 mt-40");
+@source inline("mb-16 mb-20 mb-24 mb-28 mb-32 mb-40");
+/* Hero/section viewport heights. */
+@source inline("min-h-[20vh] min-h-[30vh] min-h-[33vh] min-h-[40vh] min-h-[50vh] min-h-[60vh] min-h-[66vh] min-h-[70vh] min-h-[80vh]");
+
 /* Dark mode variant */
 @custom-variant dark (&:where(html[data-theme="dark"] &, body[data-theme="dark"] &, [data-theme="dark"] *));
 
