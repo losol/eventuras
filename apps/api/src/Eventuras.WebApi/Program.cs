@@ -50,6 +50,12 @@ builder.WebHost.UseSentry();
 // Get configuration
 var features = GetFeatureManagement(builder.Configuration);
 var appSettings = GetAppSettings(builder.Configuration);
+if (!DisplayTimeZone.Configure(appSettings.TimeZone))
+{
+    Log.Warning(
+        "AppSettings.TimeZone '{TimeZone}' is not a valid IANA zone id; falling back to {Default}",
+        appSettings.TimeZone, DisplayTimeZone.Current.Id);
+}
 
 // Configure JSON serializer options shared by MVC and the OpenAPI schema generator.
 // Microsoft.AspNetCore.OpenApi reads the Minimal API JSON options (ConfigureHttpJsonOptions),

@@ -279,6 +279,11 @@ export type InvoiceRequestDto = {
 
 export type LocalDate = string;
 
+/**
+ * Wall-clock date and time without timezone. Render verbatim; do not parse via `new Date()` or equivalent, which would reinterpret the value in the client's local zone.
+ */
+export type LocalDateTime = string;
+
 export type NewOrderRequestDto = {
     registrationId: number;
     lines: null | Array<OrderLineModel>;
@@ -644,7 +649,7 @@ export type RegistrationDto = {
     certificateComment?: null | string;
     notes?: null | string;
     log?: null | string;
-    registrationTime?: null | Instant;
+    registrationTime?: null | LocalDateTime;
     paymentMethod?: PaymentProvider;
     customerVatNumber?: null | string;
     customerInvoiceReference?: null | string;
@@ -657,22 +662,33 @@ export type RegistrationDto = {
 /**
  * DTO for partial updates to a registration (JSON Merge Patch semantics).
  *
- * Only fields present in the request body are applied. A field set to
- * `null` clears the corresponding entity field (for nullable
- * string fields). Omitted fields are left untouched.
+ * Only fields present in the request body are applied. Nullable string
+ * fields set to `null` clear the corresponding entity value.
+ * Omitted fields are left untouched. Sending `null` on non-nullable
+ * fields (status/type/paymentMethod) is rejected with a 400 by the JSON
+ * deserializer.
  *
  * Presence is tracked via property setters: the JSON deserializer only
  * invokes a setter when the field is in the payload, so a dedicated
  * backing flag can distinguish "absent" from "explicit null".
  */
 export type RegistrationPatchDto = {
-    status?: null | RegistrationStatus;
-    type?: null | RegistrationType;
+    /**
+     * The registration status.
+     */
+    status?: RegistrationStatus;
+    /**
+     * The registration type.
+     */
+    type?: RegistrationType;
     /**
      * Notes about the registration. Explicit null clears the field.
      */
     notes?: null | string;
-    paymentMethod?: null | PaymentProvider;
+    /**
+     * Payment method for the registration.
+     */
+    paymentMethod?: PaymentProvider;
     /**
      * Comment shown on the certificate. Explicit null clears the field.
      */

@@ -94,6 +94,51 @@ public class OpenApiSpecTests : IClassFixture<CustomWebApiApplicationFactory<Pro
     }
 
     [Fact]
+    public async Task OpenApiSpec_LocalDateTimeShouldUseCustomFormat()
+    {
+        // NodaTime's LocalDateTime is serialised as a timezone-less ISO 8601
+        // string. The default OpenApi schema for it is { } which the SDK
+        // generator turns into `unknown`. NodaTimeSchemaTransformer rewrites
+        // it to { type: "string", format: "local-date-time" }. The custom
+        // format name (not "date-time") prevents SDK generators from
+        // auto-parsing the value into a native Date/Instant and reinterpreting
+        // it in the client's timezone.
+        var client = _factory.CreateClient();
+        var response = await client.GetAsync("/openapi/v3.json");
+        Assert.True(response.IsSuccessStatusCode);
+
+        var content = await response.Content.ReadAsStringAsync();
+        using var document = JsonDocument.Parse(content);
+        var schemas = document.RootElement.GetProperty("components").GetProperty("schemas");
+
+        Assert.True(schemas.TryGetProperty("LocalDateTime", out var localDateTime),
+            "LocalDateTime schema must be present");
+
+        Assert.True(localDateTime.TryGetProperty("type", out var typeProp),
+            "LocalDateTime schema must declare a type (not be an empty object)");
+        Assert.Equal("string", typeProp.GetString());
+
+        Assert.True(localDateTime.TryGetProperty("format", out var formatProp),
+            "LocalDateTime schema must declare a format");
+        Assert.Equal("local-date-time", formatProp.GetString());
+
+        // RegistrationDto.registrationTime must reference the LocalDateTime schema.
+        var registrationDto = schemas.GetProperty("RegistrationDto");
+        var properties = registrationDto.GetProperty("properties");
+        var registrationTime = properties.GetProperty("registrationTime");
+
+        // Nullable references use oneOf [{ $ref }, { type: "null" }].
+        var refString = registrationTime.TryGetProperty("$ref", out var directRef)
+            ? directRef.GetString()
+            : registrationTime.GetProperty("oneOf")
+                .EnumerateArray()
+                .Select(e => e.TryGetProperty("$ref", out var r) ? r.GetString() : null)
+                .FirstOrDefault(s => s != null);
+
+        Assert.Equal("#/components/schemas/LocalDateTime", refString);
+    }
+
+    [Fact]
     public async Task OpenApiSpec_DiffCheck()
     {
         var specPath = GetOpenApiSpecPath();
