@@ -8,6 +8,8 @@ using Eventuras.Domain;
 using Eventuras.TestAbstractions;
 using Eventuras.WebApi.Controllers.v3.Registrations;
 using Eventuras.WebApi.Models;
+using NodaTime;
+using NodaTime.Serialization.SystemTextJson;
 using Xunit;
 
 namespace Eventuras.WebApi.Tests.Controllers.Registrations;
@@ -19,12 +21,19 @@ namespace Eventuras.WebApi.Tests.Controllers.Registrations;
 /// </summary>
 public class RegistrationProductsControllerTest : IClassFixture<CustomWebApiApplicationFactory<Program>>
 {
-    // JSON options matching the API's configuration (enums as strings)
-    private static readonly JsonSerializerOptions JsonOptions = new()
+    // JSON options matching the API's configuration (enums as strings + NodaTime).
+    private static readonly JsonSerializerOptions JsonOptions = CreateJsonOptions();
+
+    private static JsonSerializerOptions CreateJsonOptions()
     {
-        PropertyNameCaseInsensitive = true,
-        Converters = { new JsonStringEnumConverter() }
-    };
+        var options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+            Converters = { new JsonStringEnumConverter() }
+        };
+        options.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
+        return options;
+    }
 
     private readonly CustomWebApiApplicationFactory<Program> _factory;
 

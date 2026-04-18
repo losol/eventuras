@@ -1047,7 +1047,7 @@
           "Registrations"
         ],
         "summary": "Partially update a registration",
-        "description": "Updates specific fields of a registration. Only Status, Type, and Notes can be modified.",
+        "description": "Updates specific fields of a registration using JSON Merge Patch semantics. Settable fields: Status, Type, Notes, PaymentMethod, CertificateComment, CustomerVatNumber, CustomerInvoiceReference. Fields omitted from the body are untouched; string fields set to null clear the corresponding value.",
         "parameters": [
           {
             "name": "id",
@@ -6811,6 +6811,10 @@
             "type": "integer",
             "format": "int32"
           },
+          "uuid": {
+            "type": "string",
+            "format": "uuid"
+          },
           "eventId": {
             "type": "integer",
             "format": "int32"
@@ -6832,6 +6836,12 @@
             ],
             "format": "int32"
           },
+          "certificateComment": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
           "notes": {
             "type": [
               "null",
@@ -6839,6 +6849,31 @@
             ]
           },
           "log": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "registrationTime": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Instant"
+              }
+            ]
+          },
+          "paymentMethod": {
+            "$ref": "#/components/schemas/PaymentProvider"
+          },
+          "customerVatNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "customerInvoiceReference": {
             "type": [
               "null",
               "string"
@@ -6893,7 +6928,7 @@
                 "type": "null"
               },
               {
-                "description": "The registration status.",
+                "description": "The registration status. Cannot be explicitly null.",
                 "$ref": "#/components/schemas/RegistrationStatus"
               }
             ]
@@ -6904,7 +6939,7 @@
                 "type": "null"
               },
               {
-                "description": "The registration type.",
+                "description": "The registration type. Cannot be explicitly null.",
                 "$ref": "#/components/schemas/RegistrationType"
               }
             ]
@@ -6914,10 +6949,42 @@
               "null",
               "string"
             ],
-            "description": "Notes about the registration."
+            "description": "Notes about the registration. Explicit null clears the field."
+          },
+          "paymentMethod": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "description": "Payment method for the registration. Cannot be explicitly null.",
+                "$ref": "#/components/schemas/PaymentProvider"
+              }
+            ]
+          },
+          "certificateComment": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Comment shown on the certificate. Explicit null clears the field."
+          },
+          "customerVatNumber": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Customer VAT number for invoicing. Explicit null clears the field."
+          },
+          "customerInvoiceReference": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Customer invoice reference. Explicit null clears the field."
           }
         },
-        "description": "DTO for partial updates to a registration.\nOnly allows updating Status, Type, and Notes fields."
+        "description": "DTO for partial updates to a registration (JSON Merge Patch semantics).\n\nOnly fields present in the request body are applied. A field set to\n`null` clears the corresponding entity field (for nullable\nstring fields). Omitted fields are left untouched.\n\nPresence is tracked via property setters: the JSON deserializer only\ninvokes a setter when the field is in the payload, so a dedicated\nbacking flag can distinguish \"absent\" from \"explicit null\"."
       },
       "RegistrationStatus": {
         "enum": [

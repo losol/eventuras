@@ -635,13 +635,19 @@ export type RegistrationCustomerInfoDto = {
 
 export type RegistrationDto = {
     registrationId?: number;
+    uuid?: string;
     eventId?: number;
     userId?: string;
     status?: RegistrationStatus;
     type?: RegistrationType;
     certificateId?: null | number;
+    certificateComment?: null | string;
     notes?: null | string;
     log?: null | string;
+    registrationTime?: null | Instant;
+    paymentMethod?: PaymentProvider;
+    customerVatNumber?: null | string;
+    customerInvoiceReference?: null | string;
     user?: null | UserDto;
     event?: null | EventDto;
     products?: null | Array<ProductOrderDto>;
@@ -649,16 +655,36 @@ export type RegistrationDto = {
 };
 
 /**
- * DTO for partial updates to a registration.
- * Only allows updating Status, Type, and Notes fields.
+ * DTO for partial updates to a registration (JSON Merge Patch semantics).
+ *
+ * Only fields present in the request body are applied. A field set to
+ * `null` clears the corresponding entity field (for nullable
+ * string fields). Omitted fields are left untouched.
+ *
+ * Presence is tracked via property setters: the JSON deserializer only
+ * invokes a setter when the field is in the payload, so a dedicated
+ * backing flag can distinguish "absent" from "explicit null".
  */
 export type RegistrationPatchDto = {
     status?: null | RegistrationStatus;
     type?: null | RegistrationType;
     /**
-     * Notes about the registration.
+     * Notes about the registration. Explicit null clears the field.
      */
     notes?: null | string;
+    paymentMethod?: null | PaymentProvider;
+    /**
+     * Comment shown on the certificate. Explicit null clears the field.
+     */
+    certificateComment?: null | string;
+    /**
+     * Customer VAT number for invoicing. Explicit null clears the field.
+     */
+    customerVatNumber?: null | string;
+    /**
+     * Customer invoice reference. Explicit null clears the field.
+     */
+    customerInvoiceReference?: null | string;
 };
 
 export const RegistrationStatus = {

@@ -5,6 +5,8 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using NodaTime;
+using NodaTime.Serialization.SystemTextJson;
 using Xunit;
 
 namespace Eventuras.TestAbstractions;
@@ -59,6 +61,9 @@ public static class HttpResponseMessageExtensions
             Converters = { new JsonStringEnumConverter() },
             PropertyNameCaseInsensitive = true
         };
+        // Match the API's NodaTime serialization so DTOs containing `Instant`,
+        // `LocalDate`, etc. round-trip through tests without manual converters.
+        options.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
         return await response.Content.ReadFromJsonAsync<TContent>(options, cancellationToken);
     }
 

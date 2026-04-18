@@ -9,6 +9,8 @@ using Eventuras.WebApi.Controllers.v3.Events;
 using Eventuras.WebApi.Controllers.v3.Events.Products;
 using Eventuras.WebApi.Controllers.v3.Orders;
 using Eventuras.WebApi.Controllers.v3.Users;
+using NodaTime;
+using static Eventuras.Domain.PaymentMethod;
 
 namespace Eventuras.WebApi.Controllers.v3.Registrations;
 
@@ -23,11 +25,17 @@ public class RegistrationDto
         bool includeOrders = true)
     {
         RegistrationId = registration.RegistrationId;
+        Uuid = registration.Uuid;
         EventId = registration.EventInfoId;
         UserId = registration.UserId;
         Status = registration.Status;
         Type = registration.Type;
         Notes = registration.Notes;
+        RegistrationTime = registration.RegistrationTime;
+        PaymentMethod = registration.PaymentMethod;
+        CertificateComment = registration.CertificateComment;
+        CustomerVatNumber = registration.CustomerVatNumber;
+        CustomerInvoiceReference = registration.CustomerInvoiceReference;
 
         if (includeOrders && registration.Orders != null)
         {
@@ -63,13 +71,19 @@ public class RegistrationDto
     }
 
     public int RegistrationId { get; init; }
+    public Guid Uuid { get; init; }
     public int EventId { get; init; }
     public Guid UserId { get; init; }
     public Registration.RegistrationStatus Status { get; init; }
     public Registration.RegistrationType Type { get; init; }
     public int? CertificateId { get; init; }
+    public string? CertificateComment { get; init; }
     public string? Notes { get; init; }
     public string? Log { get; set; }
+    public Instant? RegistrationTime { get; init; }
+    public PaymentProvider PaymentMethod { get; init; }
+    public string? CustomerVatNumber { get; init; }
+    public string? CustomerInvoiceReference { get; init; }
     public UserDto? User { get; init; }
     public EventDto? Event { get; init; }
     public IEnumerable<ProductOrderDto>? Products { get; init; }
