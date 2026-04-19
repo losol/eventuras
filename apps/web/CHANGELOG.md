@@ -1,5 +1,85 @@
 # @eventuras/web
 
+## 3.1.0
+
+### Minor Changes
+
+- 86449d7: feat: BusinessEvent → Organization link (audit/tenant tracking)
+
+  The `BusinessEvent` append-only log is now tenant-aware:
+  - New `OrganizationUuid` column on `BusinessEvents`, with a FK to
+    `Organizations.Uuid` (`OnDelete: Restrict` — archive orgs rather
+    than delete through the audit trail). `Organization.Uuid` promoted
+    to alternate key to serve as the FK target, with the previous
+    `IX_Organizations_Uuid` unique index dropped to avoid a duplicate
+    uniqueness structure.
+  - `IBusinessEventService.ListEventsAsync(orgUuid, subject, paging)`
+    returns paged events for a given `(organization, subject)`, newest
+    first, with `Uuid` as a stable tie-breaker for deterministic
+    pagination under equal timestamps.
+  - `IBusinessEventService.AddEvent(...)` now accepts an optional
+    `organizationUuid`. All existing call sites
+    (`RegistrationsController.PatchRegistration`/`CancelRegistration`,
+    `OrdersController.PatchOrder`,
+    `OrderManagementService.CancelOrderAsync`,
+    `InvoicingService.CreateInvoiceAsync`) resolve the tenant from the
+    resource's registration → event → organization via the new
+    `IRegistrationRetrievalService.GetOrganizationUuidAsync`, so audit
+    data reflects the resource's actual owner rather than the
+    `Eventuras-Org-Id` request header. `PatchRegistration` only
+    resolves the tenant when `Status` or `Type` actually changed,
+    avoiding an unnecessary 400 for no-op patches without the header.
+
+  The `web` bump tracks that the admin UI can now consume the new
+  audit data once the frontend wiring lands.
+
+### Patch Changes
+
+- a2e6ba0: feat(core): add `formatApiError` under `@eventuras/core/errors`
+
+  Extracts a shared `formatApiError(raw, fallback)` helper that turns SDK
+  error payloads into a human-readable string. Handles:
+  - Plain string bodies (the SDK falls back to the text body when the
+    response isn't JSON).
+  - ASP.NET Problem Details (RFC 7807) with `errors: { Field: [msgs] }`
+    — surfaces per-field validation feedback.
+  - Problem Details `detail` and `title` fields (previously `detail` was
+    ignored so callers saw the generic fallback even when the backend
+    provided a clear explanation).
+  - Legacy shapes with `body.message`, `message`, and `statusText`.
+
+  Replaces the inline copy that landed in `apps/web` for event updates
+  and extends the same handling to `updateRegistration` and
+  `patchRegistration` server actions so admins see the actual API error
+  instead of `"Failed to update registration"`.
+
+- a00eabd: refactor: extract `SiteNavbar` and migrate layouts to compound Navbar API
+
+  Consolidates four duplicated navbar blocks across `(public)`, `(user)`,
+  `(admin)`, and `(frontpage)` into a single async server component with
+  a `variant` prop (`primary` | `transparent` | `dark`), optional `title`
+  override, and internal `UserMenu` wiring. Uses ratio-ui's compound
+  `<Navbar.Brand>` + `<Navbar.Content>` slots.
+
+  The frontpage's dark variant now uses ratio-ui's new `overlay` + `glass`
+  props to float above the hero image.
+
+  UserMenu translation keys on the frontpage are standardised to the
+  `common.labels.*` set already used by the other three layouts. Net
+  visible change: the landing-page user menu now reads "Mine kurs"
+  instead of "Dine kurs" for consistency.
+
+- Updated dependencies [a2e6ba0]
+- Updated dependencies [b5de2d6]
+- Updated dependencies [6dbc23a]
+  - @eventuras/core@0.2.0
+  - @eventuras/ratio-ui@1.2.0
+  - @eventuras/event-sdk@3.0.4
+  - @eventuras/fides-auth-next@0.1.9
+  - @eventuras/datatable@0.5.19
+  - @eventuras/ratio-ui-next@0.1.20
+  - @eventuras/smartform@0.3.12
+
 ## 3.0.8
 
 ### Patch Changes
