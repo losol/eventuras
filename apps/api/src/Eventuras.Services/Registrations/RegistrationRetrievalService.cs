@@ -185,4 +185,17 @@ public class RegistrationRetrievalService : IRegistrationRetrievalService
 
         return Task.FromResult(products);
     }
+
+    public async Task<Guid?> GetOrganizationUuidAsync(
+        int registrationId,
+        CancellationToken cancellationToken = default)
+    {
+        return await (
+            from r in _context.Registrations.AsNoTracking()
+            where r.RegistrationId == registrationId
+            join e in _context.EventInfos on r.EventInfoId equals e.EventInfoId
+            join o in _context.Organizations on e.OrganizationId equals o.OrganizationId
+            select (Guid?)o.Uuid
+        ).FirstOrDefaultAsync(cancellationToken);
+    }
 }

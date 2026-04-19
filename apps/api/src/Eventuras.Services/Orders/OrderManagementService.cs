@@ -74,10 +74,16 @@ public class OrderManagementService : IOrderManagementService
 
         order.Status = Order.OrderStatus.Cancelled;
 
+        // Tenant derived from the order's registration → event → organization,
+        // not the request header, so audit data reflects the resource's owner.
+        var organizationUuid = await _registrationRetrievalService
+            .GetOrganizationUuidAsync(order.RegistrationId, cancellationToken);
+
         _businessEventService.AddEvent(
             BusinessEventSubjects.ForOrder(order.Uuid),
             "order.status.changed",
-            "Order cancelled");
+            "Order cancelled",
+            organizationUuid: organizationUuid);
 
         await _context.UpdateAsync(order, cancellationToken);
     }

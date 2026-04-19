@@ -243,20 +243,33 @@ public class RegistrationsController : ControllerBase
 
         patchDto.ApplyTo(registration);
 
-        if (registration.Status != oldStatus)
-        {
-            _businessEventService.AddEvent(
-                BusinessEventSubjects.ForRegistration(registration.Uuid),
-                "registration.status.changed",
-                $"Status changed from {oldStatus} to {registration.Status}");
-        }
+        var statusChanged = registration.Status != oldStatus;
+        var typeChanged = registration.Type != oldType;
 
-        if (registration.Type != oldType)
+        if (statusChanged || typeChanged)
         {
-            _businessEventService.AddEvent(
-                BusinessEventSubjects.ForRegistration(registration.Uuid),
-                "registration.type.changed",
-                $"Type changed from {oldType} to {registration.Type}");
+            // Tenant derived from the registration's event organization — audit
+            // data reflects the resource's owner, not the Eventuras-Org-Id header.
+            var organizationUuid = await _registrationRetrievalService
+                .GetOrganizationUuidAsync(id, cancellationToken);
+
+            if (statusChanged)
+            {
+                _businessEventService.AddEvent(
+                    BusinessEventSubjects.ForRegistration(registration.Uuid),
+                    "registration.status.changed",
+                    $"Status changed from {oldStatus} to {registration.Status}",
+                    organizationUuid: organizationUuid);
+            }
+
+            if (typeChanged)
+            {
+                _businessEventService.AddEvent(
+                    BusinessEventSubjects.ForRegistration(registration.Uuid),
+                    "registration.type.changed",
+                    $"Type changed from {oldType} to {registration.Type}",
+                    organizationUuid: organizationUuid);
+            }
         }
 
         await _registrationManagementService.UpdateRegistrationAsync(registration, cancellationToken);
@@ -285,10 +298,14 @@ public class RegistrationsController : ControllerBase
 
         registration.Status = Registration.RegistrationStatus.Cancelled;
 
+        var organizationUuid = await _registrationRetrievalService
+            .GetOrganizationUuidAsync(id, cancellationToken);
+
         _businessEventService.AddEvent(
             BusinessEventSubjects.ForRegistration(registration.Uuid),
             "registration.status.changed",
-            "Registration cancelled");
+            "Registration cancelled",
+            organizationUuid: organizationUuid);
 
         await _registrationManagementService.UpdateRegistrationAsync(registration, cancellationToken);
 
