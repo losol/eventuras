@@ -11,6 +11,7 @@ import {
 } from '@eventuras/core-nextjs/actions';
 import { Logger } from '@eventuras/logger';
 
+import { readCorrelationIdFromResponse } from '@/lib/correlation-id';
 import { client } from '@/lib/eventuras-client';
 import {
   EventFormDto,
@@ -215,7 +216,11 @@ export async function updateEvent(
 
       const userMessage = formatApiError(
         response.error,
-        'An error occurred while updating the event'
+        'An error occurred while updating the event',
+        (response.response as unknown as { status?: number })?.status,
+        response.response instanceof Response
+          ? readCorrelationIdFromResponse(response.response)
+          : undefined
       );
       return actionError(userMessage, 'API_ERROR', errorDetails);
     }
