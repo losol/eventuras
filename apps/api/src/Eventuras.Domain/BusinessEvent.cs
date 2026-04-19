@@ -12,6 +12,8 @@ public class BusinessEvent
     [Key]
     public Guid Uuid { get; set; } = Guid.CreateVersion7();
 
+    public Guid? OrganizationUuid { get; set; }
+
     public Instant CreatedAt { get; set; } = SystemClock.Instance.GetCurrentInstant();
 
     [Required]

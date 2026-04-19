@@ -110,8 +110,7 @@ public class ApplicationDbContext : DbContext
             .IsUnique();
 
         builder.Entity<Organization>()
-            .HasIndex(x => x.Uuid)
-            .IsUnique();
+            .HasAlternateKey(x => x.Uuid);
 
         builder.Entity<OrganizationMember>()
             .HasIndex(x => x.Uuid)
@@ -161,8 +160,16 @@ public class ApplicationDbContext : DbContext
         {
             entity.HasIndex(x => x.CreatedAt);
             entity.HasIndex(x => new { x.SubjectType, x.SubjectUuid });
+            entity.HasIndex(x => x.OrganizationUuid);
+            entity.HasIndex(x => new { x.OrganizationUuid, x.SubjectType, x.SubjectUuid });
             entity.HasIndex(x => x.EventType);
             entity.HasIndex(x => x.ActorUserUuid);
+
+            entity.HasOne<Organization>()
+                .WithMany()
+                .HasForeignKey(x => x.OrganizationUuid)
+                .HasPrincipalKey(o => o.Uuid)
+                .OnDelete(DeleteBehavior.Restrict);
         });
     }
 

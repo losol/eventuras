@@ -2485,3 +2485,56 @@ BEGIN
 END $EF$;
 COMMIT;
 
+START TRANSACTION;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260419205942_AddBusinessEventOrganizationLink') THEN
+    DROP INDEX "IX_Organizations_Uuid";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260419205942_AddBusinessEventOrganizationLink') THEN
+    ALTER TABLE "BusinessEvents" ADD "OrganizationUuid" uuid;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260419205942_AddBusinessEventOrganizationLink') THEN
+    ALTER TABLE "Organizations" ADD CONSTRAINT "AK_Organizations_Uuid" UNIQUE ("Uuid");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260419205942_AddBusinessEventOrganizationLink') THEN
+    CREATE INDEX "IX_BusinessEvents_OrganizationUuid" ON "BusinessEvents" ("OrganizationUuid");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260419205942_AddBusinessEventOrganizationLink') THEN
+    CREATE INDEX "IX_BusinessEvents_OrganizationUuid_SubjectType_SubjectUuid" ON "BusinessEvents" ("OrganizationUuid", "SubjectType", "SubjectUuid");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260419205942_AddBusinessEventOrganizationLink') THEN
+    ALTER TABLE "BusinessEvents" ADD CONSTRAINT "FK_BusinessEvents_Organizations_OrganizationUuid" FOREIGN KEY ("OrganizationUuid") REFERENCES "Organizations" ("Uuid") ON DELETE RESTRICT;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260419205942_AddBusinessEventOrganizationLink') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20260419205942_AddBusinessEventOrganizationLink', '10.0.6');
+    END IF;
+END $EF$;
+COMMIT;
+
