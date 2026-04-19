@@ -1,5 +1,15 @@
 # @eventuras/idem-idp
 
+## 0.7.12
+
+### Patch Changes
+
+- Updated dependencies [0783155]
+- Updated dependencies [b5de2d6]
+- Updated dependencies [6dbc23a]
+  - @eventuras/fides-auth@0.5.0
+  - @eventuras/ratio-ui@1.2.0
+
 ## 0.7.11
 
 ### Patch Changes

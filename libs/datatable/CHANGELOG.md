@@ -1,5 +1,13 @@
 # @eventuras/datatable
 
+## 0.5.19
+
+### Patch Changes
+
+- Updated dependencies [b5de2d6]
+- Updated dependencies [6dbc23a]
+  - @eventuras/ratio-ui@1.2.0
+
 ## 0.5.18
 
 ### Patch Changes
