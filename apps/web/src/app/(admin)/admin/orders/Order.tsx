@@ -9,8 +9,10 @@ import { Table } from '@eventuras/ratio-ui/core/Table';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 
 import { OrderDto } from '@/lib/eventuras-sdk';
+import { getPaymentMethodLabel } from '@/lib/paymentMethod';
 
 import { OrderActionsMenu } from './OrderActionsMenu';
+import OrderPaymentMethodSelect from './OrderPaymentMethodSelect';
 type OrderProps = {
   order: OrderDto;
   admin?: boolean;
@@ -44,6 +46,16 @@ const Order: React.FC<OrderProps> = ({ admin, order }) => {
         <DescriptionList.Item>
           <DescriptionList.Term>{t('common.order.labels.date')}</DescriptionList.Term>
           <DescriptionList.Definition>{formatDateSpan(order.time!)}</DescriptionList.Definition>
+        </DescriptionList.Item>
+        <DescriptionList.Item>
+          <DescriptionList.Term>{t('common.order.labels.paymentMethod')}</DescriptionList.Term>
+          <DescriptionList.Definition>
+            {admin ? (
+              <OrderPaymentMethodSelect order={order} />
+            ) : (
+              getPaymentMethodLabel(order.paymentMethod)
+            )}
+          </DescriptionList.Definition>
         </DescriptionList.Item>
       </DescriptionList>
       <div>

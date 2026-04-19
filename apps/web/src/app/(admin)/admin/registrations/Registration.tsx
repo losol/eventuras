@@ -12,12 +12,12 @@ import { Form, Select } from '@eventuras/smartform';
 
 import { CertificateActionsButton } from '@/components/eventuras/CertificateActionsButton';
 import {
-  PaymentProvider,
   RegistrationDto,
   RegistrationPatchDto,
   RegistrationStatus,
   RegistrationType,
 } from '@/lib/eventuras-sdk';
+import { getPaymentMethodLabel, paymentMethodLabels } from '@/lib/paymentMethod';
 
 import { patchRegistration } from './actions';
 import Order from '../orders/Order';
@@ -71,28 +71,7 @@ export const getTypeLabels = (t: TranslationFunction) => [
   { value: 'Artist' as RegistrationType, label: t('common.registrations.labels.artist') },
 ];
 
-/**
- * Payment method labels. Hardcoded strings until translations are added.
- */
-export const paymentMethodLabels: { value: PaymentProvider; label: string }[] = [
-  { value: 'EmailInvoice', label: 'Email invoice' },
-  { value: 'PowerOfficeEmailInvoice', label: 'PowerOffice email invoice' },
-  { value: 'PowerOfficeEHFInvoice', label: 'PowerOffice EHF invoice' },
-  { value: 'StripeInvoice', label: 'Stripe invoice' },
-  { value: 'StripeDirect', label: 'Stripe (direct)' },
-  { value: 'VippsInvoice', label: 'Vipps invoice' },
-  { value: 'VippsDirect', label: 'Vipps (direct)' },
-];
-
-export const getPaymentMethodLabel = (method?: PaymentProvider | null): string => {
-  if (!method) return '';
-  return paymentMethodLabels.find(x => x.value === method)?.label ?? method;
-};
-
-export const formatRegistrationTime = (
-  instant?: string | null,
-  locale?: string
-): string | null => {
+export const formatRegistrationTime = (instant?: string | null, locale?: string): string | null => {
   if (!instant) return null;
   const date = new Date(instant);
   if (Number.isNaN(date.getTime())) return null;
