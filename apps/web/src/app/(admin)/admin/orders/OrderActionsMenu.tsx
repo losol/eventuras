@@ -38,16 +38,20 @@ export const OrderActionsMenu = ({ order }: OrderActionsMenuProps) => {
   const handleVerifyOrder = async () => {
     if (!order.orderId) {
       logger.error('Order ID is required');
+      toast.error('Order ID is required');
       return;
     }
 
-    try {
-      await verifyOrderAction(order.orderId);
-      logger.info({ orderId: order.orderId }, 'Order verified successfully');
-      router.refresh();
-    } catch (error) {
-      logger.error({ error, orderId: order.orderId }, 'Failed to verify order');
+    const result = await verifyOrderAction(order.orderId);
+    if (!result.success) {
+      logger.error({ error: result.error, orderId: order.orderId }, 'Failed to verify order');
+      toast.error(result.error.message);
+      return;
     }
+
+    logger.info({ orderId: order.orderId }, 'Order verified successfully');
+    toast.success(result.message ?? 'Order verified');
+    router.refresh();
   };
 
   const handleInvoiceOrder = async () => {

@@ -197,6 +197,7 @@
       "id": "Id",
       "items": "Ordrelinjer",
       "orderId": "Ordre id",
+      "paymentMethod": "Betalingsmåte",
       "price": "Pris",
       "product": "Produkt",
       "quantity": "Antall",

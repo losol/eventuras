@@ -198,6 +198,7 @@
       "id": "Id",
       "items": "Items",
       "orderId": "Order id",
+      "paymentMethod": "Payment method",
       "price": "Price",
       "product": "Product",
       "quantity": "Quantity",

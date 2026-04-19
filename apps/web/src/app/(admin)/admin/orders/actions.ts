@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 
+import { formatApiError } from '@eventuras/core/errors';
 import { actionError, actionSuccess, ServerActionResult } from '@eventuras/core-nextjs/actions';
 import { Logger } from '@eventuras/logger';
 
@@ -10,6 +11,7 @@ import {
   getV3Orders,
   InvoiceRequestDto,
   OrderDto,
+  OrderPatchDto,
   patchV3OrdersById,
   postV3Invoices,
 } from '@/lib/eventuras-sdk';
@@ -90,37 +92,48 @@ export async function getOrders(page: number = 1, pageSize: number = 50) {
   }
 }
 
-export async function verifyOrderAction(orderId: number) {
-  logger.info({ orderId }, 'Verifying order...');
-
-  const orgId = getOrganizationId();
+/**
+ * Apply a partial update to an order via PATCH. Callers can pass any subset
+ * of the {@link OrderPatchDto} shape (status, comments, paymentMethod).
+ */
+export async function patchOrder(
+  orderId: number,
+  patch: OrderPatchDto
+): Promise<ServerActionResult<OrderDto>> {
+  logger.info({ orderId, fields: Object.keys(patch) }, 'Patching order');
 
   try {
+    const orgId = getOrganizationId();
     const response = await patchV3OrdersById({
       client,
-      headers: {
-        'Eventuras-Org-Id': orgId,
-      },
-      path: {
-        id: orderId,
-      },
-      body: {
-        status: 'Verified',
-      },
+      headers: { 'Eventuras-Org-Id': orgId },
+      path: { id: orderId },
+      body: patch,
     });
 
-    if (response.error) {
-      logger.error({ orderId, error: response.error }, 'Failed to verify order');
-      throw new Error('Failed to verify order');
+    if (!response.data) {
+      logger.error({ orderId, error: response.error }, 'Failed to patch order');
+      return actionError(formatApiError(response.error, 'Failed to update order'));
     }
 
-    logger.info({ orderId }, 'Order verified successfully');
+    logger.info({ orderId }, 'Order patched successfully');
     revalidatePath('/admin/orders');
-    return { success: true };
+    revalidatePath(`/admin/orders/${orderId}`);
+    // Callers supply context-specific success toast text via `result.message ?? '...'`.
+    return actionSuccess(response.data);
   } catch (error) {
-    logger.error({ error, orderId }, 'Error verifying order');
-    throw error;
+    logger.error({ error, orderId }, 'Unexpected error patching order');
+    return actionError('An unexpected error occurred');
   }
+}
+
+/**
+ * Narrow helper: flip an order's status to Verified. Thin wrapper over
+ * `patchOrder` so existing callers keep working and get the same
+ * formatted-error + revalidate behaviour.
+ */
+export async function verifyOrderAction(orderId: number): Promise<ServerActionResult<OrderDto>> {
+  return patchOrder(orderId, { status: 'Verified' });
 }
 
 export async function invoiceOrderAction(orderId: number): Promise<ServerActionResult<void>> {
@@ -143,20 +156,10 @@ export async function invoiceOrderAction(orderId: number): Promise<ServerActionR
       logger.info({ orderId }, 'Invoice sent to accounting system successfully');
       revalidatePath('/admin/orders');
       return actionSuccess(undefined, 'Invoice sent to accounting system');
-    } else {
-      logger.error({ orderId, error: response.error }, 'Failed to create invoice');
-
-      // Extract error message from API response
-      const errorMessage =
-        typeof response.error === 'object' &&
-        response.error &&
-        'message' in response.error &&
-        typeof response.error.message === 'string'
-          ? response.error.message
-          : 'Failed to create invoice';
-
-      return actionError(errorMessage);
     }
+
+    logger.error({ orderId, error: response.error }, 'Failed to create invoice');
+    return actionError(formatApiError(response.error, 'Failed to create invoice'));
   } catch (error) {
     logger.error({ error, orderId }, 'Error creating invoice');
     return actionError(error instanceof Error ? error.message : 'An unexpected error occurred');
