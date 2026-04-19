@@ -50,9 +50,14 @@ Introduce a centralized, append-only `BusinessEvent` table for domain events.
 - Simple and extensible model
 
 ### Negative
-- No DB-enforced FK constraints for subjects
+
+- No DB-enforced FK constraints for subjects (polymorphic by design — `SubjectUuid` can point to orders, registrations, users, …)
 - Requires consistent use of `SubjectType`
 - Slight increase in architectural complexity
+
+### Exception: Organization is a FK
+
+`OrganizationUuid` is the one exception to the "no FK" rule. Organizations are a tenant boundary with a known parent table, so referential integrity applies without the polymorphism trade-off that forced `SubjectUuid` to be a loose reference. The FK uses `OnDelete: Restrict` — organizations with audit history cannot be deleted (archive instead).
 
 ## Migration strategy
 
@@ -74,14 +79,17 @@ public class BusinessEvent
     public Instant CreatedAt { get; set; } = SystemClock.Instance.GetCurrentInstant();
 
     public string EventType { get; set; } = string.Empty;
-    
+
     public string SubjectType { get; set; } = string.Empty;
     public Guid SubjectUuid { get; set; }
+
+    // Tenant boundary — FK to Organization.Uuid (see Consequences).
+    public Guid? OrganizationUuid { get; set; }
 
     public Guid? ActorUserUuid { get; set; }
 
     public string Message { get; set; } = string.Empty;
-    
+
     public string? MetadataJson { get; set; }
 }
 ```
@@ -119,8 +127,15 @@ public interface IBusinessEventService
         BusinessEventSubject subject,
         string eventType,
         string message,
+        Guid? organizationUuid = null,
         Guid? actorUserUuid = null,
         object? metadata = null);
+
+    Task<Paging<BusinessEvent>> ListEventsAsync(
+        Guid organizationUuid,
+        BusinessEventSubject subject,
+        PagingRequest request,
+        CancellationToken cancellationToken = default);
 }
 ```
 
@@ -140,6 +155,7 @@ public class BusinessEventService : IBusinessEventService
         BusinessEventSubject subject,
         string eventType,
         string message,
+        Guid? organizationUuid = null,
         Guid? actorUserUuid = null,
         object? metadata = null)
     {
@@ -149,6 +165,7 @@ public class BusinessEventService : IBusinessEventService
             Message = message,
             SubjectType = subject.Type,
             SubjectUuid = subject.Uuid,
+            OrganizationUuid = organizationUuid,
             ActorUserUuid = actorUserUuid,
             MetadataJson = metadata is null
                 ? null
@@ -163,11 +180,15 @@ public class BusinessEventService : IBusinessEventService
 # Appendix E: Example usage
 
 ```csharp
-// Calling service owns SaveChangesAsync — event is persisted in the same transaction
+// Calling service owns SaveChangesAsync — event is persisted in the same transaction.
+// organizationUuid is derived from the resource's event organization (not the
+// Eventuras-Org-Id header) so audit data reflects the tenant the resource
+// actually belongs to, independent of what the caller claimed.
 businessEventService.AddEvent(
-    BusinessEventSubjects.ForOrder(order.OrderUuid),
+    BusinessEventSubjects.ForOrder(order.Uuid),
     "order.verified",
     "Order was verified",
+    organizationUuid: order.Registration?.EventInfo?.Organization?.Uuid,
     actorUserUuid: currentUserUuid);
 
 await _dbContext.SaveChangesAsync(cancellationToken);

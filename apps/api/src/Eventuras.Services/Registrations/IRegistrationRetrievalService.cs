@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -36,4 +37,10 @@ public interface IRegistrationRetrievalService
         CancellationToken cancellationToken = default);
 
     Task<RegistrationStatistics> GetRegistrationStatisticsAsync(int eventId, CancellationToken cancellationToken);
+
+    /// <summary>
+    ///     Resolves the owning tenant's <see cref="Organization.Uuid" /> for a
+    ///     registration by walking Registration → EventInfo → Organization.
+    /// </summary>
+    Task<Guid?> GetOrganizationUuidAsync(int registrationId, CancellationToken cancellationToken = default);
 }

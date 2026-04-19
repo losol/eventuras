@@ -7,6 +7,7 @@ using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Eventuras.Services.BusinessEvents;
 using Eventuras.Services.Orders;
+using Eventuras.Services.Registrations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -19,11 +20,13 @@ internal class InvoicingService : IInvoicingService
     private readonly ApplicationDbContext _db;
     private readonly ILogger<InvoicingService> _logger;
     private readonly IOrderAccessControlService _orderAccessControlService;
+    private readonly IRegistrationRetrievalService _registrationRetrievalService;
 
     public InvoicingService(
         IEnumerable<IInvoicingProvider> components,
         IOrderAccessControlService orderAccessControlService,
         IBusinessEventService businessEventService,
+        IRegistrationRetrievalService registrationRetrievalService,
         ILogger<InvoicingService> logger,
         ApplicationDbContext db)
     {
@@ -31,6 +34,7 @@ internal class InvoicingService : IInvoicingService
         _orderAccessControlService = orderAccessControlService ??
                                      throw new ArgumentNullException(nameof(orderAccessControlService));
         _businessEventService = businessEventService ?? throw new ArgumentNullException(nameof(businessEventService));
+        _registrationRetrievalService = registrationRetrievalService ?? throw new ArgumentNullException(nameof(registrationRetrievalService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _db = db ?? throw new ArgumentNullException(nameof(db));
     }
@@ -70,6 +74,12 @@ internal class InvoicingService : IInvoicingService
             // Invoice log entries are tracked via the result object
         }
 
+        // All orders in a single invoice share the same tenant. Derive from
+        // the first order's registration → event → organization (header-independent).
+        var organizationUuid = orders.Length > 0
+            ? await _registrationRetrievalService.GetOrganizationUuidAsync(orders[0].RegistrationId)
+            : null;
+
         foreach (var order in orders)
         {
             order.Invoice = invoice;
@@ -77,7 +87,8 @@ internal class InvoicingService : IInvoicingService
             _businessEventService.AddEvent(
                 BusinessEventSubjects.ForOrder(order.Uuid),
                 "order.status.changed",
-                $"Status changed to {Order.OrderStatus.Invoiced} (invoiced)");
+                $"Status changed to {Order.OrderStatus.Invoiced} (invoiced)",
+                organizationUuid: organizationUuid);
             _db.Orders.Update(order);
         }
 
