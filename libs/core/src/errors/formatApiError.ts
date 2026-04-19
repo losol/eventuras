@@ -8,16 +8,31 @@
  *  - Problem Details with `detail` or `title`
  *  - Legacy shapes with `body.message`, `message`, or `statusText`
  *
- * Returns the provided `fallback` when nothing readable can be extracted.
+ * When nothing readable can be extracted, falls back to a status-aware
+ * synthetic message for 5xx responses — servers often return an empty body
+ * on unhandled exceptions, and "Failed to update X" hides that it's a
+ * server problem, not the caller's. Falls back to the caller-supplied
+ * `fallback` otherwise.
  */
-export function formatApiError(raw: unknown, fallback: string): string {
+export function formatApiError(
+  raw: unknown,
+  fallback: string,
+  statusCode?: number,
+  correlationId?: string | null
+): string {
+  const reference = correlationId ? `Reference ${correlationId}. ` : '';
+  const serverFallback =
+    statusCode != null && statusCode >= 500
+      ? `Server error (${statusCode}). ${reference}Please try again or contact support if the problem persists.`
+      : null;
+
   if (typeof raw === 'string') {
     const trimmed = raw.trim();
-    return trimmed || fallback;
+    return trimmed || serverFallback || fallback;
   }
 
   if (!raw || typeof raw !== 'object') {
-    return fallback;
+    return serverFallback || fallback;
   }
 
   const err = raw as {
@@ -48,6 +63,7 @@ export function formatApiError(raw: unknown, fallback: string): string {
     err.body?.message ||
     err.message ||
     err.statusText ||
+    serverFallback ||
     fallback
   );
 }
