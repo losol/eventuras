@@ -106,6 +106,20 @@ builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddMemoryCache();
 builder.Services.Configure<AuthSettings>(builder.Configuration.GetSection("Auth"));
 
+// Problem Details for unhandled exceptions. Populates `traceId` from the
+// correlation ID and re-sets the X-Correlation-Id response header after
+// ASP.NET's exception middleware clears response state — so clients can
+// still look the failure up in logs.
+builder.Services.AddProblemDetails(options =>
+{
+    options.CustomizeProblemDetails = ctx =>
+    {
+        var correlationId = ctx.HttpContext.TraceIdentifier;
+        ctx.ProblemDetails.Extensions["traceId"] = correlationId;
+        ctx.HttpContext.Response.Headers[Api.CorrelationIdHeader] = correlationId;
+    };
+});
+
 builder.Services.AddCors(options =>
 {
     var origins =
@@ -169,6 +183,11 @@ app.UseMiddleware<CorrelationIdMiddleware>();
 app.UseWhen(
     ctx => !ctx.Request.Path.StartsWithSegments("/health"),
     branch => branch.UseSerilogRequestLogging());
+
+// Production-style exception handler — renders Problem Details (with traceId
+// and re-applied correlation-id header). DeveloperExceptionPage is pushed on
+// top in dev/tests so contributors still see the full stack trace.
+app.UseExceptionHandler();
 
 if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("IntegrationTests"))
 {

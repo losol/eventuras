@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Eventuras.Services.Constants;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Sentry;
 
 namespace Eventuras.WebApi;
 
@@ -36,6 +37,10 @@ public partial class CorrelationIdMiddleware
 
         context.TraceIdentifier = correlationId;
         context.Response.Headers[Api.CorrelationIdHeader] = correlationId;
+
+        // Tag the Sentry/GlitchTip scope so captured events carry the same id
+        // the client sees in the response header and the logs.
+        SentrySdk.ConfigureScope(scope => scope.SetTag("correlation_id", correlationId));
 
         using (_logger.BeginScope(new Dictionary<string, object>
         {
