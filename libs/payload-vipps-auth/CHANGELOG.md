@@ -1,5 +1,13 @@
 # @eventuras/payload-vipps-auth
 
+## 0.1.6
+
+### Patch Changes
+
+- Updated dependencies [0783155]
+  - @eventuras/fides-auth@0.5.0
+  - @eventuras/vipps@0.2.5
+
 ## 0.1.5
 
 ### Patch Changes

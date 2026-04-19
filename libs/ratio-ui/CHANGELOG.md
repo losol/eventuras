@@ -1,5 +1,74 @@
 # @eventuras/ratio-ui
 
+## 1.2.0
+
+### Minor Changes
+
+- b5de2d6: feat(navbar): `overlay`/`glass` props and container-aligned content
+
+  Adds two composable props to `<Navbar>`:
+  - `overlay` — absolute positioning pinned to the viewport top. The navbar
+    floats over the next sibling (typically a hero section) without
+    reserving layout space and scrolls away with the page. Mutually
+    exclusive with `sticky`.
+  - `glass` — translucent dark background with backdrop-blur, for the
+    classic "glass navbar over hero image" look.
+
+  Combine with `bgDark` for white text readable over dark hero imagery:
+
+  ```tsx
+  <Navbar overlay glass bgDark>
+    <Navbar.Brand>…</Navbar.Brand>
+    <Navbar.Content className="justify-end">…</Navbar.Content>
+  </Navbar>
+  ```
+
+  The inner content row now also applies the Tailwind `container` class so
+  brand and navigation align with `<Container>`-wrapped page content
+  instead of stretching to the viewport edges.
+
+  See the `OverlayGlass` story for a live example.
+
+  Also safelists a set of commonly-needed layout utilities in ratio-ui's
+  bundled CSS: spacing (`pt-16…pt-40`, `pb-16…pb-40`, `mt-16…mt-40`,
+  `mb-16…mb-40`) and hero viewport heights (`min-h-[20vh]` through
+  `min-h-[80vh]`). Consumers (apps/\*) can now use these without setting
+  up their own Tailwind entry.
+
+- 6dbc23a: feat(core): add `Timeline` component (beta)
+
+  New compound component `Timeline` + `Timeline.Item` under
+  `@eventuras/ratio-ui/core/Timeline` for rendering chronological event
+  lists — audit logs, order history, registration activity, and the
+  upcoming BusinessEvent feed.
+
+  ```tsx
+  import { Timeline } from "@eventuras/ratio-ui/core/Timeline";
+
+  <Timeline>
+    <Timeline.Item
+      timestamp="2026-04-19 10:22"
+      title="Order created"
+      status="success"
+      actor="Ada Lovelace"
+    />
+    <Timeline.Item
+      timestamp="2026-04-19 10:25"
+      title="Payment method updated"
+      actor="Ada Lovelace"
+    >
+      Changed from Email invoice to EHF invoice.
+    </Timeline.Item>
+  </Timeline>;
+  ```
+
+  Props on `Timeline.Item`: `timestamp`, `title`, optional `actor`,
+  `status` (controls dot color), `icon` (replaces the dot), and
+  `children` for additional metadata or supporting content.
+
+  Marked as **beta** via a `@beta` JSDoc tag. Prop shape and visuals may
+  change before the component is promoted out of beta.
+
 ## 1.1.1
 
 ### Patch Changes

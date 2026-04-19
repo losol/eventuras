@@ -1,5 +1,13 @@
 # web-e2e
 
+## 0.2.9
+
+### Patch Changes
+
+- Updated dependencies [0783155]
+  - @eventuras/fides-auth@0.5.0
+  - @eventuras/event-sdk@3.0.4
+
 ## 0.2.8
 
 ### Patch Changes
