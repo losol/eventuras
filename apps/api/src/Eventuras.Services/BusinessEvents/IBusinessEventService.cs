@@ -1,6 +1,8 @@
 #nullable enable
 
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 using Eventuras.Domain;
 
@@ -12,6 +14,13 @@ public interface IBusinessEventService
         BusinessEventSubject subject,
         string eventType,
         string message,
+        Guid? organizationUuid = null,
         Guid? actorUserUuid = null,
         object? metadata = null);
+
+    Task<Paging<BusinessEvent>> ListEventsAsync(
+        Guid organizationUuid,
+        BusinessEventSubject subject,
+        PagingRequest request,
+        CancellationToken cancellationToken = default);
 }

@@ -1,10 +1,14 @@
 #nullable enable
 
 using System;
+using System.Linq;
 using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
 
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 
 namespace Eventuras.Services.BusinessEvents;
 
@@ -21,6 +25,7 @@ public class BusinessEventService : IBusinessEventService
         BusinessEventSubject subject,
         string eventType,
         string message,
+        Guid? organizationUuid = null,
         Guid? actorUserUuid = null,
         object? metadata = null)
     {
@@ -34,6 +39,7 @@ public class BusinessEventService : IBusinessEventService
             Message = message,
             SubjectType = subject.Type,
             SubjectUuid = subject.Uuid,
+            OrganizationUuid = organizationUuid,
             ActorUserUuid = actorUserUuid,
             MetadataJson = metadata is null
                 ? null
@@ -41,5 +47,26 @@ public class BusinessEventService : IBusinessEventService
         };
 
         _dbContext.BusinessEvents.Add(entity);
+    }
+
+    public async Task<Paging<BusinessEvent>> ListEventsAsync(
+        Guid organizationUuid,
+        BusinessEventSubject subject,
+        PagingRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(subject);
+        ArgumentNullException.ThrowIfNull(request);
+
+        var query = _dbContext.BusinessEvents
+            .AsNoTracking()
+            .Where(e =>
+                e.OrganizationUuid == organizationUuid &&
+                e.SubjectType == subject.Type &&
+                e.SubjectUuid == subject.Uuid)
+            .OrderByDescending(e => e.CreatedAt)
+            .ThenByDescending(e => e.Uuid);
+
+        return await Paging.CreateAsync(query, request, cancellationToken);
     }
 }
