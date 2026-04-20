@@ -4,6 +4,18 @@ export type ClientOptions = {
     baseUrl: 'https://localhost:5001/' | (string & {});
 };
 
+export type BusinessEventDto = {
+    uuid?: string;
+    createdAt?: Instant;
+    eventType?: string;
+    subjectType?: string;
+    subjectUuid?: string;
+    organizationUuid?: null | string;
+    actorUserUuid?: null | string;
+    message?: string;
+    metadata?: null | JsonElement;
+};
+
 export type ByRegistrationStatus = {
     draft?: number;
     cancelled?: number;
@@ -277,6 +289,8 @@ export type InvoiceRequestDto = {
     orderIds?: Array<number>;
 };
 
+export type JsonElement = unknown;
+
 export type LocalDate = string;
 
 /**
@@ -487,6 +501,14 @@ export type OrganizationSettingType = typeof OrganizationSettingType[keyof typeo
 export type OrganizationSettingValueDto = {
     name: null | string;
     value?: null | string;
+};
+
+export type PageResponseDtoOfBusinessEventDto = {
+    page?: number;
+    count?: number;
+    total?: number;
+    pages?: number;
+    data?: null | Array<BusinessEventDto>;
 };
 
 export type PageResponseDtoOfEventCollectionDto = {
@@ -2663,3 +2685,49 @@ export type GetV3CertificatesByIdResponses = {
 };
 
 export type GetV3CertificatesByIdResponse = GetV3CertificatesByIdResponses[keyof GetV3CertificatesByIdResponses];
+
+export type GetV3BusinessEventsData = {
+    body?: never;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path?: never;
+    query?: {
+        /**
+         * Subject type to filter on. Free-form string matching the values produced
+         * by `BusinessEventSubjects.For*` factories (e.g. "order", "registration", "user").
+         */
+        SubjectType?: string;
+        /**
+         * The subject entity's Uuid.
+         */
+        SubjectUuid?: string;
+        Page?: number;
+        Count?: number;
+        Limit?: number;
+        Offset?: number;
+        Ordering?: Array<string>;
+    };
+    url: '/v3/business-events';
+};
+
+export type GetV3BusinessEventsErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetails;
+};
+
+export type GetV3BusinessEventsError = GetV3BusinessEventsErrors[keyof GetV3BusinessEventsErrors];
+
+export type GetV3BusinessEventsResponses = {
+    /**
+     * OK
+     */
+    200: PageResponseDtoOfBusinessEventDto;
+};
+
+export type GetV3BusinessEventsResponse = GetV3BusinessEventsResponses[keyof GetV3BusinessEventsResponses];
