@@ -1,5 +1,54 @@
 # @eventuras/event-sdk
 
+## 3.1.0
+
+### Minor Changes
+
+- e5b6622: feat: `GET /v3/business-events` endpoint
+
+  New admin-only endpoint and corresponding SDK client for listing
+  business events (audit log) for a given subject within the current
+  organization.
+  - `getV3BusinessEvents(...)` — fetches paged `BusinessEventDto[]`.
+  - Query: `?subjectType=order|registration|user&subjectUuid={guid}&page=1&count=50`.
+  - Gated server-side by role **and** membership: org admins can only
+    read their own organisation's events, system admins can read any.
+    The new `IBusinessEventAccessControlService` is invoked from inside
+    `BusinessEventService.ListEventsAsync`, so every future caller of
+    the service inherits the same enforcement.
+  - Org resolved from `Eventuras-Org-Id` / `?orgId` / hostname; a caller
+    cannot silently read another tenant by flipping the header because
+    the membership check fails.
+
+- f9b1373: feat(web): show business-events Timeline on admin registration/order pages
+
+  Admins browsing `/admin/registrations/{id}` or `/admin/orders/{id}`
+  now see an "Activity" section at the bottom with a vertical timeline
+  of the resource's BusinessEvents — status changes, cancellations,
+  invoicing, etc. — fetched server-side via
+  `GET /v3/business-events?subjectType=&subjectUuid=`. The new
+  `<BusinessEventsTimeline>` server component maps each
+  `BusinessEventDto` onto a `<Timeline.Item>` from
+  `@eventuras/ratio-ui/core/Timeline`, with:
+  - formatted `createdAt` timestamp
+  - the event's human-readable `message` as the title
+  - dot colour derived from the event type suffix (`.created` →
+    success, `.cancelled`/`.refunded` → warning, `.invoiced` → info)
+  - optional actor (short Uuid for now; name resolution is a follow-up)
+  - metadata rendered as a collapsed JSON block when present
+
+  Also exposes `Uuid` on `OrderDto` so the SDK has the subject key
+  available without an extra lookup; `RegistrationDto.uuid` already
+  existed. Access is enforced server-side by the endpoint's admin
+  policy and org-membership check — the component itself does not
+  re-validate.
+
+### Patch Changes
+
+- Updated dependencies [e5b6622]
+- Updated dependencies [f9b1373]
+  - @eventuras/api@3.3.0
+
 ## 3.0.4
 
 ### Patch Changes
