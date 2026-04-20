@@ -1,6 +1,6 @@
 {
   "name": "@eventuras/event-sdk",
-  "version": "3.0.4",
+  "version": "3.1.0",
   "description": "Event api sdk",
   "homepage": "https://github.com/losol/eventuras/tree/main/libs/event-sdk#readme",
   "bugs": {
