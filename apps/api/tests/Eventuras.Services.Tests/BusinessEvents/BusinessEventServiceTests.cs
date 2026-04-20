@@ -3,6 +3,7 @@
 using System;
 using System.Linq;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
@@ -24,11 +25,23 @@ public class BusinessEventServiceTests
         return new ApplicationDbContext(options);
     }
 
+    private static BusinessEventService CreateService(ApplicationDbContext db)
+        => new(db, new NoopAccessControl());
+
+    // Unit tests exercise AddEvent (which does not touch access control) and
+    // the pure query-shape of ListEventsAsync. HTTP-level access enforcement
+    // is covered by BusinessEventsControllerTest in WebApi.Tests.
+    private sealed class NoopAccessControl : IBusinessEventAccessControlService
+    {
+        public Task CheckListAccessAsync(Guid organizationUuid, CancellationToken cancellationToken = default)
+            => Task.CompletedTask;
+    }
+
     [Fact]
     public void AddEvent_Throws_On_Null_Subject()
     {
         using var db = CreateDbContext();
-        var service = new BusinessEventService(db);
+        var service = CreateService(db);
 
         Assert.Throws<ArgumentNullException>(() =>
             service.AddEvent(null!, "order.created", "Order created"));
@@ -41,7 +54,7 @@ public class BusinessEventServiceTests
     public void AddEvent_Throws_On_Invalid_EventType(string? eventType)
     {
         using var db = CreateDbContext();
-        var service = new BusinessEventService(db);
+        var service = CreateService(db);
         var subject = BusinessEventSubjects.ForOrder(Guid.NewGuid());
 
         Assert.ThrowsAny<ArgumentException>(() =>
@@ -55,7 +68,7 @@ public class BusinessEventServiceTests
     public void AddEvent_Throws_On_Invalid_Message(string? message)
     {
         using var db = CreateDbContext();
-        var service = new BusinessEventService(db);
+        var service = CreateService(db);
         var subject = BusinessEventSubjects.ForOrder(Guid.NewGuid());
 
         Assert.ThrowsAny<ArgumentException>(() =>
@@ -66,7 +79,7 @@ public class BusinessEventServiceTests
     public void AddEvent_Adds_Entity_To_DbContext()
     {
         using var db = CreateDbContext();
-        var service = new BusinessEventService(db);
+        var service = CreateService(db);
         var orderUuid = Guid.NewGuid();
         var organizationUuid = Guid.NewGuid();
         var actorUuid = Guid.NewGuid();
@@ -94,7 +107,7 @@ public class BusinessEventServiceTests
     public void AddEvent_Serializes_Metadata_As_Json()
     {
         using var db = CreateDbContext();
-        var service = new BusinessEventService(db);
+        var service = CreateService(db);
         var subject = BusinessEventSubjects.ForRegistration(Guid.NewGuid());
         var metadata = new { reason = "duplicate", source = "admin" };
 
@@ -112,7 +125,7 @@ public class BusinessEventServiceTests
     public async Task ListEventsAsync_Returns_Subject_Events_In_Descending_Created_Order()
     {
         using var db = CreateDbContext();
-        var service = new BusinessEventService(db);
+        var service = CreateService(db);
         var orderUuid = Guid.NewGuid();
         var organizationUuid = Guid.NewGuid();
         var otherOrganizationUuid = Guid.NewGuid();
