@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/vscode/devcontainers/dotnet:6.0
+FROM mcr.microsoft.com/devcontainers/dotnet:10.0
 
 # Node.js version: none, lts, 16, 14, 12, 10
 ARG NODE_VERSION="16"
