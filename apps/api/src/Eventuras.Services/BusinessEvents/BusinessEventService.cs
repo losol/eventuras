@@ -14,11 +14,18 @@ namespace Eventuras.Services.BusinessEvents;
 
 public class BusinessEventService : IBusinessEventService
 {
+    private readonly IBusinessEventAccessControlService _accessControl;
     private readonly ApplicationDbContext _dbContext;
 
-    public BusinessEventService(ApplicationDbContext dbContext)
+    public BusinessEventService(
+        ApplicationDbContext dbContext,
+        IBusinessEventAccessControlService accessControl)
     {
+        ArgumentNullException.ThrowIfNull(dbContext);
+        ArgumentNullException.ThrowIfNull(accessControl);
+
         _dbContext = dbContext;
+        _accessControl = accessControl;
     }
 
     public void AddEvent(
@@ -57,6 +64,8 @@ public class BusinessEventService : IBusinessEventService
     {
         ArgumentNullException.ThrowIfNull(subject);
         ArgumentNullException.ThrowIfNull(request);
+
+        await _accessControl.CheckListAccessAsync(organizationUuid, cancellationToken);
 
         var query = _dbContext.BusinessEvents
             .AsNoTracking()

@@ -7,6 +7,7 @@ public static class BusinessEventServiceCollectionExtensions
     public static IServiceCollection AddBusinessEventServices(this IServiceCollection services)
     {
         services.AddScoped<IBusinessEventService, BusinessEventService>();
+        services.AddScoped<IBusinessEventAccessControlService, BusinessEventAccessControlService>();
         return services;
     }
 }
