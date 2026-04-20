@@ -1,4 +1,9 @@
 {
+  "businessEvents": {
+    "empty": "No activity logged yet.",
+    "loadError": "Unable to load activity right now. Please try again later.",
+    "title": "Activity"
+  },
   "certificates": {
     "labels": {
       "comment": "Comment",

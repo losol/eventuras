@@ -5,6 +5,7 @@ import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 
+import BusinessEventsTimeline from '@/components/admin/BusinessEventsTimeline';
 import { getV3RegistrationsById } from '@/lib/eventuras-sdk';
 
 import Registration from '../Registration';
@@ -38,16 +39,13 @@ const RegistrationDetailPage: React.FC<EventInfoProps> = async props => {
   }
   return (
     <>
-      <Section className="bg-white dark:bg-black pb-8">
-        <Container>
-          <Heading as="h1">{t('common.registrations.detailsPage.title')}</Heading>
-        </Container>
-      </Section>
-      <Section className="py-12">
-        <Container>
-          <Registration registration={response.data} adminMode />
-        </Container>
-      </Section>
+      <Container>
+        <Heading as="h1">{t('common.registrations.detailsPage.title')}</Heading>
+        <Registration registration={response.data} adminMode />
+        {response.data.uuid && (
+          <BusinessEventsTimeline subjectType="registration" subjectUuid={response.data.uuid} />
+        )}
+      </Container >
     </>
   );
 };

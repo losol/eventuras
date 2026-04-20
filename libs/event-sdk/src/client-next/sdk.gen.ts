@@ -409,6 +409,6 @@ export const getV3CertificatesById = <ThrowOnError extends boolean = false>(opti
 /**
  * List business events for a subject in the current organization
  *
- * Returns audit/business events scoped to the organization resolved from the Eventuras-Org-Id header, filtered by subjectType + subjectUuid (e.g. order + OrderUuid). Newest first.
+ * Returns audit/business events scoped to the organization resolved from the Eventuras-Org-Id header, filtered by subjectType + subjectUuid (e.g. order + OrderUuid). Newest first. Requires the caller to be SystemAdmin or an Admin member of the resolved organization.
  */
 export const getV3BusinessEvents = <ThrowOnError extends boolean = false>(options?: Options<GetV3BusinessEventsData, ThrowOnError>) => (options?.client ?? client).get<GetV3BusinessEventsResponses, GetV3BusinessEventsErrors, ThrowOnError>({ url: '/v3/business-events', ...options });

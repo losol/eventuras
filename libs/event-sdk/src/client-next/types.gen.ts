@@ -395,6 +395,7 @@ export type OnlineCourseDto = {
 
 export type OrderDto = {
     orderId?: number;
+    uuid?: string;
     status?: OrderStatus;
     time?: string;
     userId?: string;
@@ -2719,6 +2720,10 @@ export type GetV3BusinessEventsErrors = {
      * Bad Request
      */
     400: ProblemDetails;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetails;
 };
 
 export type GetV3BusinessEventsError = GetV3BusinessEventsErrors[keyof GetV3BusinessEventsErrors];

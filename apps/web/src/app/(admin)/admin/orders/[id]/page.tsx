@@ -5,6 +5,7 @@ import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 
+import BusinessEventsTimeline from '@/components/admin/BusinessEventsTimeline';
 import { getV3OrdersById } from '@/lib/eventuras-sdk';
 
 import Order from '../Order';
@@ -43,6 +44,9 @@ const OrderDetailPage: React.FC<EventInfoProps> = async props => {
       <Section className="py-12">
         <Container>
           <Order order={response.data} admin />
+          {response.data.uuid && (
+            <BusinessEventsTimeline subjectType="order" subjectUuid={response.data.uuid} />
+          )}
         </Container>
       </Section>
     </>

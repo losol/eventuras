@@ -18,6 +18,7 @@ public class OrderDto
     public OrderDto(Order order)
     {
         OrderId = order.OrderId;
+        Uuid = order.Uuid;
         Status = order.Status;
         Time = order.OrderTime.ToDateTimeOffset();
         UserId = order.UserId;
@@ -41,6 +42,8 @@ public class OrderDto
     }
 
     public int OrderId { get; set; }
+
+    public Guid Uuid { get; set; }
 
     public Order.OrderStatus Status { get; set; }
 
