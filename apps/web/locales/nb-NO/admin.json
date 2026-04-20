@@ -1,4 +1,9 @@
 {
+  "businessEvents": {
+    "empty": "Ingen aktivitet registrert ennå.",
+    "loadError": "Kunne ikke laste aktivitetsloggen akkurat nå. Prøv igjen senere.",
+    "title": "Aktivitet"
+  },
   "certificates": {
     "labels": {
       "comment": "Kommentar",
