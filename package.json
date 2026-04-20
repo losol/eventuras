@@ -73,6 +73,18 @@
         "@types/react-dom"
       ]
     },
+    "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "@sentry/cli",
+      "@swc/core",
+      "aws-crt",
+      "esbuild",
+      "protobufjs",
+      "sharp",
+      "simple-git-hooks",
+      "unrs-resolver",
+      "yarn"
+    ],
     "updateConfig": {
       "ignoreDependencies": [
         "@types/node",
