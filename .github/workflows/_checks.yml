@@ -2,8 +2,8 @@ name: PR Checks
 
 on:
   pull_request:
-    branches: [main]
-    types: [opened, synchronize]
+    branches: [ main ]
+    types: [ opened, synchronize ]
 
 concurrency:
   group: pr-checks-${{ github.ref }}
@@ -20,10 +20,10 @@ jobs:
       - uses: pnpm/action-setup@08c4be7e2e672a47d11bd04269e27e5f3e8529cb # v6.0.0
       - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
-          node-version: '24.x'
-          cache: 'pnpm'
+          node-version: "24.x"
+          cache: "pnpm"
       - name: Install commitlint dependencies
-        run: pnpm install --filter . --frozen-lockfile --prod=false
+        run: pnpm install --filter . --frozen-lockfile --prod=false --ignore-scripts
       - name: Lint commits
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}

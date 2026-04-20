@@ -12,3 +12,13 @@ packages:
 
 onlyBuiltDependencies:
   - esbuild
+  - simple-git-hooks
+
+# Disables the multi-document pnpm-lock.yaml format that pnpm >= 10.17
+# writes when `packageManager` is set in package.json. turbo <= 2.9.6
+# (currently latest stable) cannot parse multi-doc lockfiles, so
+# `turbo prune` in the Docker builds fails with
+# "deserializing from YAML containing more than one document is not supported".
+# Re-enable once a turbo release with multi-doc support ships
+# (pull request merged to canary 2026-04-14, not yet on stable).
+managePackageManagerVersions: false
