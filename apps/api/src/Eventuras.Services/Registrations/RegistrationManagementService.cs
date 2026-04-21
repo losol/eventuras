@@ -6,12 +6,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
+using Eventuras.Services.Auth;
 using Eventuras.Services.BusinessEvents;
 using Eventuras.Services.Events;
 using Eventuras.Services.Exceptions;
 using Eventuras.Services.Notifications;
 using Eventuras.Services.Orders;
 using Eventuras.Services.Users;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -22,6 +24,7 @@ internal class RegistrationManagementService : IRegistrationManagementService
     private readonly IBusinessEventService _businessEventService;
     private readonly ApplicationDbContext _context;
     private readonly IEventInfoRetrievalService _eventInfoRetrievalService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILogger<RegistrationManagementService> _logger;
     private readonly INotificationDeliveryService _notificationDeliveryService;
     private readonly INotificationManagementService _notificationsManagementService;
@@ -39,6 +42,7 @@ internal class RegistrationManagementService : IRegistrationManagementService
         INotificationManagementService notificationsManagementService,
         IUserRetrievalService userRetrievalService,
         IBusinessEventService businessEventService,
+        IHttpContextAccessor httpContextAccessor,
         ILogger<RegistrationManagementService> logger,
         ApplicationDbContext context)
     {
@@ -49,6 +53,7 @@ internal class RegistrationManagementService : IRegistrationManagementService
         _notificationsManagementService = notificationsManagementService;
         _userRetrievalService = userRetrievalService;
         _businessEventService = businessEventService;
+        _httpContextAccessor = httpContextAccessor;
         _context = context;
         _orderManagementService = orderManagementService;
         _logger = logger;
@@ -206,7 +211,8 @@ internal class RegistrationManagementService : IRegistrationManagementService
             BusinessEventSubjects.ForRegistration(registration.Uuid),
             "registration.status.changed",
             "Registration cancelled",
-            organizationUuid: organizationUuid);
+            organizationUuid: organizationUuid,
+            actorUserUuid: _httpContextAccessor.HttpContext?.User?.GetUserId());
 
         await _context.UpdateAsync(registration, cancellationToken);
 
@@ -228,13 +234,18 @@ internal class RegistrationManagementService : IRegistrationManagementService
         var organizationUuid = await _registrationRetrievalService
             .GetOrganizationUuidAsync(after.RegistrationId, cancellationToken);
 
+        // Actor is the authenticated user from the current request, if any.
+        // Null for background jobs / anonymous paths.
+        var actorUserUuid = _httpContextAccessor.HttpContext?.User?.GetUserId();
+
         if (before.Status != after.Status)
         {
             _businessEventService.AddEvent(
                 BusinessEventSubjects.ForRegistration(after.Uuid),
                 "registration.status.changed",
                 $"Status changed from {before.Status} to {after.Status}",
-                organizationUuid: organizationUuid);
+                organizationUuid: organizationUuid,
+                actorUserUuid: actorUserUuid);
         }
 
         if (before.Type != after.Type)
@@ -243,7 +254,8 @@ internal class RegistrationManagementService : IRegistrationManagementService
                 BusinessEventSubjects.ForRegistration(after.Uuid),
                 "registration.type.changed",
                 $"Type changed from {before.Type} to {after.Type}",
-                organizationUuid: organizationUuid);
+                organizationUuid: organizationUuid,
+                actorUserUuid: actorUserUuid);
         }
     }
 
