@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
+using Eventuras.Services.BusinessEvents;
 using Eventuras.Services.Events;
 using Eventuras.Services.Exceptions;
 using Eventuras.Services.Notifications;
@@ -18,6 +19,7 @@ namespace Eventuras.Services.Registrations;
 
 internal class RegistrationManagementService : IRegistrationManagementService
 {
+    private readonly IBusinessEventService _businessEventService;
     private readonly ApplicationDbContext _context;
     private readonly IEventInfoRetrievalService _eventInfoRetrievalService;
     private readonly ILogger<RegistrationManagementService> _logger;
@@ -25,23 +27,28 @@ internal class RegistrationManagementService : IRegistrationManagementService
     private readonly INotificationManagementService _notificationsManagementService;
     private readonly IOrderManagementService _orderManagementService;
     private readonly IRegistrationAccessControlService _registrationAccessControlService;
+    private readonly IRegistrationRetrievalService _registrationRetrievalService;
     private readonly IUserRetrievalService _userRetrievalService;
 
     public RegistrationManagementService(
         IRegistrationAccessControlService registrationAccessControlService,
+        IRegistrationRetrievalService registrationRetrievalService,
         IOrderManagementService orderManagementService,
         IEventInfoRetrievalService eventInfoRetrievalService,
         INotificationDeliveryService notificationDeliveryService,
         INotificationManagementService notificationsManagementService,
         IUserRetrievalService userRetrievalService,
+        IBusinessEventService businessEventService,
         ILogger<RegistrationManagementService> logger,
         ApplicationDbContext context)
     {
         _registrationAccessControlService = registrationAccessControlService;
+        _registrationRetrievalService = registrationRetrievalService;
         _eventInfoRetrievalService = eventInfoRetrievalService;
         _notificationDeliveryService = notificationDeliveryService;
         _notificationsManagementService = notificationsManagementService;
         _userRetrievalService = userRetrievalService;
+        _businessEventService = businessEventService;
         _context = context;
         _orderManagementService = orderManagementService;
         _logger = logger;
@@ -155,7 +162,84 @@ internal class RegistrationManagementService : IRegistrationManagementService
 
         await _registrationAccessControlService.CheckRegistrationUpdateAccessAsync(registration, cancellationToken);
 
+        // Load pre-update state (AsNoTracking, separate instance from the
+        // incoming mutated entity) for audit-delta detection.
+        var before = await _context.Registrations
+            .AsNoTracking()
+            .FirstOrDefaultAsync(r => r.RegistrationId == registration.RegistrationId, cancellationToken);
+
+        if (before != null)
+        {
+            await EmitAuditEventsAsync(before, registration, cancellationToken);
+        }
+
         await _context.UpdateAsync(registration, cancellationToken);
+    }
+
+    public async Task<Registration> CancelRegistrationAsync(
+        int id,
+        CancellationToken cancellationToken = default)
+    {
+        var registration = await _registrationRetrievalService.GetRegistrationByIdAsync(
+            id, null, cancellationToken);
+
+        if (registration.Status == Registration.RegistrationStatus.Cancelled)
+        {
+            return registration; // already cancelled — no-op, don't double-audit
+        }
+
+        var before = new Registration
+        {
+            RegistrationId = registration.RegistrationId,
+            Status = registration.Status,
+            Type = registration.Type,
+            Uuid = registration.Uuid,
+        };
+        registration.Status = Registration.RegistrationStatus.Cancelled;
+
+        await _registrationAccessControlService.CheckRegistrationUpdateAccessAsync(registration, cancellationToken);
+
+        await EmitAuditEventsAsync(before, registration, cancellationToken);
+        await _context.UpdateAsync(registration, cancellationToken);
+
+        return registration;
+    }
+
+    private async Task EmitAuditEventsAsync(
+        Registration before,
+        Registration after,
+        CancellationToken cancellationToken)
+    {
+        if (before.Status == after.Status && before.Type == after.Type)
+        {
+            return;
+        }
+
+        // Tenant derived from the registration's event organization — audit
+        // data tracks the resource's owner, not any request header.
+        var organizationUuid = await _registrationRetrievalService
+            .GetOrganizationUuidAsync(after.RegistrationId, cancellationToken);
+
+        if (before.Status != after.Status)
+        {
+            var message = after.Status == Registration.RegistrationStatus.Cancelled
+                ? "Registration cancelled"
+                : $"Status changed from {before.Status} to {after.Status}";
+            _businessEventService.AddEvent(
+                BusinessEventSubjects.ForRegistration(after.Uuid),
+                "registration.status.changed",
+                message,
+                organizationUuid: organizationUuid);
+        }
+
+        if (before.Type != after.Type)
+        {
+            _businessEventService.AddEvent(
+                BusinessEventSubjects.ForRegistration(after.Uuid),
+                "registration.type.changed",
+                $"Type changed from {before.Type} to {after.Type}",
+                organizationUuid: organizationUuid);
+        }
     }
 
     public async Task SendWelcomeLetterAsync(Registration registration, CancellationToken cancellationToken)

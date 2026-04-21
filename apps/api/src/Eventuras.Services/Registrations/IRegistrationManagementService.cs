@@ -23,7 +23,19 @@ public interface IRegistrationManagementService
         CancellationToken cancellationToken = default);
 
     /// <exception cref="Exceptions.NotAccessibleException">Not permitted to update the given registration.</exception>
+    /// <remarks>
+    ///     Emits <c>registration.status.changed</c> and <c>registration.type.changed</c>
+    ///     BusinessEvents for any detected delta. The caller no longer needs to
+    ///     track which fields changed or invoke the audit log.
+    /// </remarks>
     Task UpdateRegistrationAsync(
         Registration registration,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>Sets a registration's status to Cancelled and emits the audit event.</summary>
+    /// <exception cref="Exceptions.NotFoundException">Registration not found.</exception>
+    /// <exception cref="Exceptions.NotAccessibleException">Not permitted to cancel the given registration.</exception>
+    Task<Registration> CancelRegistrationAsync(
+        int id,
         CancellationToken cancellationToken = default);
 }

@@ -4,9 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asp.Versioning;
-using Eventuras.Domain;
 using Eventuras.Services.Auth;
-using Eventuras.Services.BusinessEvents;
 using Eventuras.Services.Exceptions;
 using Eventuras.Services.Registrations;
 using Eventuras.WebApi.Models;
@@ -25,7 +23,6 @@ public class RegistrationsController : ControllerBase
 {
     private const string MimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
-    private readonly IBusinessEventService _businessEventService;
     private readonly ILogger<RegistrationsController> _logger;
     private readonly IRegistrationExportService _registrationExportService;
     private readonly IRegistrationManagementService _registrationManagementService;
@@ -35,7 +32,6 @@ public class RegistrationsController : ControllerBase
         IRegistrationRetrievalService registrationRetrievalService,
         IRegistrationManagementService registrationManagementService,
         IRegistrationExportService registrationExportService,
-        IBusinessEventService businessEventService,
         ILogger<RegistrationsController> logger)
     {
         _registrationRetrievalService = registrationRetrievalService ?? throw
@@ -46,9 +42,6 @@ public class RegistrationsController : ControllerBase
 
         _registrationExportService = registrationExportService ?? throw
             new ArgumentNullException(nameof(registrationExportService));
-
-        _businessEventService = businessEventService ?? throw
-            new ArgumentNullException(nameof(businessEventService));
 
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
@@ -238,40 +231,10 @@ public class RegistrationsController : ControllerBase
             return NotFound("Registration not found.");
         }
 
-        var oldStatus = registration.Status;
-        var oldType = registration.Type;
-
         patchDto.ApplyTo(registration);
 
-        var statusChanged = registration.Status != oldStatus;
-        var typeChanged = registration.Type != oldType;
-
-        if (statusChanged || typeChanged)
-        {
-            // Tenant derived from the registration's event organization — audit
-            // data reflects the resource's owner, not the Eventuras-Org-Id header.
-            var organizationUuid = await _registrationRetrievalService
-                .GetOrganizationUuidAsync(id, cancellationToken);
-
-            if (statusChanged)
-            {
-                _businessEventService.AddEvent(
-                    BusinessEventSubjects.ForRegistration(registration.Uuid),
-                    "registration.status.changed",
-                    $"Status changed from {oldStatus} to {registration.Status}",
-                    organizationUuid: organizationUuid);
-            }
-
-            if (typeChanged)
-            {
-                _businessEventService.AddEvent(
-                    BusinessEventSubjects.ForRegistration(registration.Uuid),
-                    "registration.type.changed",
-                    $"Type changed from {oldType} to {registration.Type}",
-                    organizationUuid: organizationUuid);
-            }
-        }
-
+        // UpdateRegistrationAsync now owns audit-event emission for status/type
+        // deltas — the controller doesn't need to track before/after itself.
         await _registrationManagementService.UpdateRegistrationAsync(registration, cancellationToken);
 
         var updatedDto = new RegistrationDto(registration);
@@ -288,26 +251,15 @@ public class RegistrationsController : ControllerBase
             return BadRequest("Invalid registration ID.");
         }
 
-        var registration = await _registrationRetrievalService.GetRegistrationByIdAsync(id, null, cancellationToken);
-
-        if (registration == null)
+        try
+        {
+            await _registrationManagementService.CancelRegistrationAsync(id, cancellationToken);
+        }
+        catch (NotFoundException)
         {
             _logger.LogWarning("CancelRegistration called with non-existent registration ID: {id}", id);
             return NotFound("Registration not found.");
         }
-
-        registration.Status = Registration.RegistrationStatus.Cancelled;
-
-        var organizationUuid = await _registrationRetrievalService
-            .GetOrganizationUuidAsync(id, cancellationToken);
-
-        _businessEventService.AddEvent(
-            BusinessEventSubjects.ForRegistration(registration.Uuid),
-            "registration.status.changed",
-            "Registration cancelled",
-            organizationUuid: organizationUuid);
-
-        await _registrationManagementService.UpdateRegistrationAsync(registration, cancellationToken);
 
         return Ok();
     }
