@@ -251,16 +251,9 @@ public class RegistrationsController : ControllerBase
             return BadRequest("Invalid registration ID.");
         }
 
-        try
-        {
-            await _registrationManagementService.CancelRegistrationAsync(id, cancellationToken);
-        }
-        catch (NotFoundException)
-        {
-            _logger.LogWarning("CancelRegistration called with non-existent registration ID: {id}", id);
-            return NotFound("Registration not found.");
-        }
-
+        // NotFoundException bubbles to HttpResponseExceptionFilter, which
+        // maps it to 404. No local try/catch needed.
+        await _registrationManagementService.CancelRegistrationAsync(id, cancellationToken);
         return Ok();
     }
 

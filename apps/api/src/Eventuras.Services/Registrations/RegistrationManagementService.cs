@@ -183,23 +183,31 @@ internal class RegistrationManagementService : IRegistrationManagementService
         var registration = await _registrationRetrievalService.GetRegistrationByIdAsync(
             id, null, cancellationToken);
 
-        if (registration.Status == Registration.RegistrationStatus.Cancelled)
-        {
-            return registration; // already cancelled — no-op, don't double-audit
-        }
-
-        var before = new Registration
-        {
-            RegistrationId = registration.RegistrationId,
-            Status = registration.Status,
-            Type = registration.Type,
-            Uuid = registration.Uuid,
-        };
-        registration.Status = Registration.RegistrationStatus.Cancelled;
-
+        // Access is checked on the (soon-to-be) mutated entity before we
+        // decide idempotency — a caller without update rights must not
+        // silently succeed just because the registration is already
+        // Cancelled.
         await _registrationAccessControlService.CheckRegistrationUpdateAccessAsync(registration, cancellationToken);
 
-        await EmitAuditEventsAsync(before, registration, cancellationToken);
+        // Idempotent: if already cancelled, do nothing and skip the audit
+        // event. DELETE is not expected to emit a second "cancelled" record.
+        if (registration.Status == Registration.RegistrationStatus.Cancelled)
+        {
+            return registration;
+        }
+
+        registration.Status = Registration.RegistrationStatus.Cancelled;
+
+        // Cancellation gets its own dedicated message rather than the generic
+        // status-delta text from EmitAuditEventsAsync.
+        var organizationUuid = await _registrationRetrievalService
+            .GetOrganizationUuidAsync(registration.RegistrationId, cancellationToken);
+        _businessEventService.AddEvent(
+            BusinessEventSubjects.ForRegistration(registration.Uuid),
+            "registration.status.changed",
+            "Registration cancelled",
+            organizationUuid: organizationUuid);
+
         await _context.UpdateAsync(registration, cancellationToken);
 
         return registration;
@@ -222,13 +230,10 @@ internal class RegistrationManagementService : IRegistrationManagementService
 
         if (before.Status != after.Status)
         {
-            var message = after.Status == Registration.RegistrationStatus.Cancelled
-                ? "Registration cancelled"
-                : $"Status changed from {before.Status} to {after.Status}";
             _businessEventService.AddEvent(
                 BusinessEventSubjects.ForRegistration(after.Uuid),
                 "registration.status.changed",
-                message,
+                $"Status changed from {before.Status} to {after.Status}",
                 organizationUuid: organizationUuid);
         }
 
