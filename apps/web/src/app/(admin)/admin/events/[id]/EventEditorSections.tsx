@@ -243,6 +243,7 @@ export const AdvancedSection = ({
         testId="eventeditor-form-eventid"
       />
       <TextField name="slug" label="Slug" placeholder="Event Slug" disabled />
+      <TextField name="projectCode" label="Project Code" placeholder="Accounting project code" />
       <TextField
         name="externalInfoPageUrl"
         label="External Info Page URL"
