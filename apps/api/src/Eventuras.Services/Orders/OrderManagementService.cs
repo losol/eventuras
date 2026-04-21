@@ -7,10 +7,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
+using Eventuras.Services.Auth;
 using Eventuras.Services.BusinessEvents;
 using Eventuras.Services.Events.Products;
 using Eventuras.Services.Exceptions;
 using Eventuras.Services.Registrations;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -20,6 +22,7 @@ public class OrderManagementService : IOrderManagementService
 {
     private readonly IBusinessEventService _businessEventService;
     private readonly ApplicationDbContext _context;
+    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILogger<OrderManagementService> _logger;
     private readonly IOrderAccessControlService _orderAccessControlService;
     private readonly IProductRetrievalService _productRetrievalService;
@@ -32,11 +35,13 @@ public class OrderManagementService : IOrderManagementService
         IRegistrationAccessControlService registrationAccessControlService,
         IProductRetrievalService productRetrievalService,
         IBusinessEventService businessEventService,
+        IHttpContextAccessor httpContextAccessor,
         ApplicationDbContext context,
         ILogger<OrderManagementService> logger)
     {
         _orderAccessControlService = orderAccessControlService;
         _businessEventService = businessEventService;
+        _httpContextAccessor = httpContextAccessor;
         _context = context;
         _registrationRetrievalService = registrationRetrievalService;
         _registrationAccessControlService = registrationAccessControlService;
@@ -70,12 +75,14 @@ public class OrderManagementService : IOrderManagementService
         {
             var organizationUuid = await _registrationRetrievalService
                 .GetOrganizationUuidAsync(order.RegistrationId, cancellationToken);
+            var actorUserUuid = _httpContextAccessor.HttpContext?.User?.GetUserId();
 
             _businessEventService.AddEvent(
                 BusinessEventSubjects.ForOrder(order.Uuid),
                 "order.status.changed",
                 $"Status changed from {before.Status} to {order.Status}",
-                organizationUuid: organizationUuid);
+                organizationUuid: organizationUuid,
+                actorUserUuid: actorUserUuid);
         }
 
         _context.Update(order);
@@ -96,12 +103,14 @@ public class OrderManagementService : IOrderManagementService
         // not the request header, so audit data reflects the resource's owner.
         var organizationUuid = await _registrationRetrievalService
             .GetOrganizationUuidAsync(order.RegistrationId, cancellationToken);
+        var actorUserUuid = _httpContextAccessor.HttpContext?.User?.GetUserId();
 
         _businessEventService.AddEvent(
             BusinessEventSubjects.ForOrder(order.Uuid),
             "order.status.changed",
             "Order cancelled",
-            organizationUuid: organizationUuid);
+            organizationUuid: organizationUuid,
+            actorUserUuid: actorUserUuid);
 
         await _context.UpdateAsync(order, cancellationToken);
     }
