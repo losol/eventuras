@@ -1,5 +1,56 @@
 # @eventuras/web
 
+## 3.3.0
+
+### Minor Changes
+
+- d27ed81: feat(web): add Project Code field to event advanced settings
+
+  `EventInfo.ProjectCode` has been round-tripped through the API and
+  forwarded to PowerOffice on invoicing, but the field was missing from
+  the Next.js admin since the Razor/MVC port (the old
+  `EventInfoViewModel` was removed back in Oct 2023 and the input was
+  never re-added). Any event created or edited after that had
+  `projectCode = null`, and generated PowerOffice invoices had no
+  project/accounting code. Adds a `projectCode` TextField to the event
+  editor's Advanced tab; existing form wiring (defaultValues +
+  updateEvent) carries it through with no other changes.
+
+- d27ed81: feat(web): registration drawer for quick view from admin lists
+
+  Admins can now inspect (and edit) a registration without leaving the
+  current list. A new `RegistrationDrawer` fetches the full
+  `RegistrationDto` via a `getRegistrationDetail` server action and
+  renders the existing `<Registration adminMode />` inside a slide-out
+  panel. Wired into both `/admin/registrations` and the
+  `/admin/events/[id]` participant list; the drawer footer has a link
+  to the full detail page where the BusinessEvents timeline still
+  lives. Deletes unused `AdminRegistrationsList.tsx` dead code.
+
+- 75ac0b5: refactor(web): align admin/users with registrations patterns
+  - Server-side pagination on `/admin/users` via `?page=` URL param
+    (replaces the client-side 10-row window that didn't scale).
+  - Server-side search via `?q=` forwarded to the SDK's `Query`
+    parameter; debounced input resets `?page=` on a new search.
+  - `createUser`, `updateUser`, and `updateUserProfile` run API errors
+    through `formatApiError` + `readCorrelationIdFromResponse`, matching
+    the registrations actions for operational debugging parity.
+  - Pagination input hardened against `NaN` / out-of-range URL values.
+  - Adds `common.labels.search` in both locales.
+
+### Patch Changes
+
+- d27ed81: fix(web): silence React 19 script-tag warning in InitTheme
+
+  `InitTheme` renders an inline `<script>` in `<head>` to set
+  `data-theme` before hydration (anti-FOUC pattern). React 19's dev
+  runtime flags bare `<script>` tags inside components because
+  client-rendered scripts don't execute — the warning fires even
+  though this one only reaches the client via SSR output and works
+  fine. Switches to `next/script` with `strategy="beforeInteractive"`:
+  same timing, no warning.
+  - @eventuras/event-sdk@3.1.1
+
 ## 3.2.0
 
 ### Minor Changes
