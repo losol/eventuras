@@ -11,7 +11,7 @@ import UserList from './UserList';
 import UsersActionMenu from './UsersActionMenu';
 
 type PageProps = {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; q?: string }>;
 };
 
 export default async function AdminUserPage({ searchParams }: Readonly<PageProps>) {
@@ -20,7 +20,8 @@ export default async function AdminUserPage({ searchParams }: Readonly<PageProps
   const parsedPage = params.page ? Number.parseInt(params.page, 10) : 1;
   const page = Number.isInteger(parsedPage) && parsedPage >= 1 ? parsedPage : 1;
   const pageSize = 50;
-  const response = await getUsers(page, pageSize);
+  const query = params.q?.trim() || undefined;
+  const response = await getUsers(page, pageSize, query);
 
   if (!response.ok || !response.data) {
     return (
@@ -44,6 +45,7 @@ export default async function AdminUserPage({ searchParams }: Readonly<PageProps
         users={response.data.data ?? []}
         currentPage={page}
         totalPages={response.data.pages ?? 0}
+        query={query ?? ''}
       />
     </Container>
   );
