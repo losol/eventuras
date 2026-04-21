@@ -1,3 +1,5 @@
+import Script from 'next/script';
+
 import { defaultTheme, themeLocalStorageKey } from './shared';
 
 const themeScript = `
@@ -28,6 +30,11 @@ const themeScript = `
 })();
 `;
 
-export const InitTheme = () => {
-  return <script id="theme-script" dangerouslySetInnerHTML={{ __html: themeScript }} />;
-};
+// Uses next/script with beforeInteractive so the script lands in the SSR
+// head and runs before hydration (anti-FOUC). A plain <script> here
+// triggers a React 19 dev warning even though it works at runtime.
+export const InitTheme = () => (
+  <Script id="theme-script" strategy="beforeInteractive">
+    {themeScript}
+  </Script>
+);
