@@ -60,6 +60,24 @@ public class OrderManagementService : IOrderManagementService
 
         await _orderAccessControlService.CheckOrderUpdateAccessAsync(order, cancellationToken);
 
+        // Load pre-update state (AsNoTracking, separate instance from the
+        // incoming mutated entity) for audit-delta detection.
+        var before = await _context.Orders
+            .AsNoTracking()
+            .FirstOrDefaultAsync(o => o.OrderId == order.OrderId, cancellationToken);
+
+        if (before != null && before.Status != order.Status)
+        {
+            var organizationUuid = await _registrationRetrievalService
+                .GetOrganizationUuidAsync(order.RegistrationId, cancellationToken);
+
+            _businessEventService.AddEvent(
+                BusinessEventSubjects.ForOrder(order.Uuid),
+                "order.status.changed",
+                $"Status changed from {before.Status} to {order.Status}",
+                organizationUuid: organizationUuid);
+        }
+
         _context.Update(order);
         await _context.SaveChangesAsync(cancellationToken);
 

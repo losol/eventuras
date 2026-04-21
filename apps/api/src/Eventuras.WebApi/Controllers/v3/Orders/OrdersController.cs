@@ -2,10 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asp.Versioning;
-using Eventuras.Domain;
-using Eventuras.Services.BusinessEvents;
 using Eventuras.Services.Orders;
-using Eventuras.Services.Registrations;
 using Eventuras.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -19,21 +16,15 @@ namespace Eventuras.WebApi.Controllers.v3.Orders;
 [ApiController]
 public class OrdersController : ControllerBase
 {
-    private readonly IBusinessEventService _businessEventService;
     private readonly IOrderManagementService _orderManagementService;
     private readonly IOrderRetrievalService _orderRetrievalService;
-    private readonly IRegistrationRetrievalService _registrationRetrievalService;
 
     public OrdersController(
         IOrderRetrievalService orderRetrievalService,
-        IOrderManagementService orderManagementService,
-        IBusinessEventService businessEventService,
-        IRegistrationRetrievalService registrationRetrievalService)
+        IOrderManagementService orderManagementService)
     {
         _orderRetrievalService = orderRetrievalService ?? throw new ArgumentNullException(nameof(orderRetrievalService));
         _orderManagementService = orderManagementService ?? throw new ArgumentNullException(nameof(orderManagementService));
-        _businessEventService = businessEventService ?? throw new ArgumentNullException(nameof(businessEventService));
-        _registrationRetrievalService = registrationRetrievalService ?? throw new ArgumentNullException(nameof(registrationRetrievalService));
     }
 
     [HttpGet("{id:int}")]
@@ -122,8 +113,6 @@ public class OrdersController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        var oldStatus = order.Status;
-
         try
         {
             patchDto.ApplyTo(order);
@@ -131,19 +120,6 @@ public class OrdersController : ControllerBase
         catch (InvalidOperationException ex)
         {
             return BadRequest(ex.Message);
-        }
-
-        if (order.Status != oldStatus)
-        {
-            // Tenant derived from the order's registration → event → organization
-            var organizationUuid = await _registrationRetrievalService
-                .GetOrganizationUuidAsync(order.RegistrationId, cancellationToken);
-
-            _businessEventService.AddEvent(
-                BusinessEventSubjects.ForOrder(order.Uuid),
-                "order.status.changed",
-                $"Status changed from {oldStatus} to {order.Status}",
-                organizationUuid: organizationUuid);
         }
 
         await _orderManagementService.UpdateOrderAsync(order, cancellationToken);
