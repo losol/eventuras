@@ -22,6 +22,7 @@ import AddUserToEvent from './AddUserToEvent';
 import EventStatistics from './EventStatistics';
 import { getEventRegistrations, getRegistrationDetails } from './participantActions';
 import { createParticipantColumns, renderExpandedRow } from './ParticipantTableColumns';
+import RegistrationDrawer from '../registrations/RegistrationDrawer';
 
 const logger = Logger.create({
   namespace: 'web:admin:events',
@@ -84,6 +85,9 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
 
   // Email drawer state
   const [registrationOpen, setRegistrationOpen] = useState<RegistrationDto | null>(null);
+
+  // Registration detail drawer state
+  const [openRegistrationId, setOpenRegistrationId] = useState<number | null>(null);
 
   // Product editor state
   const [selectedRegistration, setSelectedRegistration] = useState<RegistrationDto | null>(null);
@@ -170,6 +174,7 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
           renderExpandedRow({
             registration: row.original,
             onStatusUpdate: handleStatusUpdate,
+            onOpenRegistration: (id: number) => setOpenRegistrationId(id),
             t: (key: string) => t(key).toString(),
           })
         }
@@ -222,6 +227,13 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
           </Drawer.Footer>
         </Drawer>
       )}
+
+      {/* Registration detail drawer */}
+      <RegistrationDrawer
+        registrationId={openRegistrationId}
+        isOpen={openRegistrationId !== null}
+        onClose={() => setOpenRegistrationId(null)}
+      />
 
       {/* Product editor dialog */}
       {fullRegistration && eventProducts && isProductEditorOpen && (

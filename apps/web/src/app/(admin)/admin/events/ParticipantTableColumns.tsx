@@ -154,12 +154,15 @@ export function createParticipantColumns({
 export function renderExpandedRow({
   registration,
   onStatusUpdate,
+  onOpenRegistration,
   t,
 }: {
   registration: RegistrationDto;
   onStatusUpdate: (registration: RegistrationDto) => void;
+  onOpenRegistration?: (registrationId: number) => void;
   t: (key: string) => string;
 }) {
+  const registrationId = registration.registrationId;
   return (
     <div className="flex flex-col gap-4 py-2">
       {/* Status */}
@@ -178,7 +181,7 @@ export function renderExpandedRow({
             <span className="text-sm text-gray-600 dark:text-gray-400">
               {t('common.labels.id')}:
             </span>
-            <Badge>{registration.registrationId}</Badge>
+            <Badge>{registrationId}</Badge>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-sm text-gray-600 dark:text-gray-400">
@@ -190,13 +193,23 @@ export function renderExpandedRow({
 
         {/* Right side: Actions */}
         <div className="flex items-center gap-2">
-          <Link
-            variant="button-outline"
-            href={`/admin/registrations/${registration.registrationId}`}
-            testId={`view-registration-${registration.registrationId}`}
-          >
-            <span>{t('admin.participantColumns.viewRegistration')}</span>
-          </Link>
+          {onOpenRegistration && registrationId !== undefined ? (
+            <Button
+              variant="outline"
+              onClick={() => onOpenRegistration(registrationId)}
+              testId={`view-registration-${registrationId}`}
+            >
+              {t('admin.participantColumns.viewRegistration')}
+            </Button>
+          ) : (
+            <Link
+              variant="button-outline"
+              href={`/admin/registrations/${registrationId}`}
+              testId={`view-registration-${registrationId}`}
+            >
+              <span>{t('admin.participantColumns.viewRegistration')}</span>
+            </Link>
+          )}
         </div>
       </div>
     </div>

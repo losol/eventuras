@@ -10,6 +10,7 @@ import { readCorrelationIdFromResponse } from '@/lib/correlation-id';
 import { client } from '@/lib/eventuras-client';
 import {
   getV3Registrations,
+  getV3RegistrationsById,
   PageResponseDtoOfRegistrationDto,
   patchV3RegistrationsById,
   postV3RegistrationsByIdCertificateSend,
@@ -88,6 +89,47 @@ export async function getRegistrations(page: number = 1, pageSize: number = 50) 
       error: error instanceof Error ? error.message : 'Unknown error',
       data: null,
     };
+  }
+}
+
+export async function getRegistrationDetail(
+  registrationId: number
+): Promise<ServerActionResult<RegistrationDto>> {
+  logger.info({ registrationId }, 'Fetching registration detail');
+
+  try {
+    const orgId = getOrganizationId();
+    const response = await getV3RegistrationsById({
+      client,
+      path: { id: registrationId },
+      headers: { 'Eventuras-Org-Id': orgId },
+      query: {
+        IncludeEventInfo: true,
+        IncludeProducts: true,
+        IncludeUserInfo: true,
+        IncludeOrders: true,
+      },
+    });
+
+    if (!response.data) {
+      logger.error(
+        { error: response.error, registrationId },
+        'Failed to fetch registration detail'
+      );
+      return actionError(
+        formatApiError(
+          response.error,
+          'Failed to load registration',
+          response.response?.status,
+          response.response ? readCorrelationIdFromResponse(response.response) : undefined
+        )
+      );
+    }
+
+    return actionSuccess(response.data);
+  } catch (error) {
+    logger.error({ error, registrationId }, 'Unexpected error fetching registration detail');
+    return actionError('An unexpected error occurred');
   }
 }
 
