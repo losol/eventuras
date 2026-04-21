@@ -29,7 +29,7 @@ const logger = Logger.create({
   context: { module: 'actions' },
 });
 
-export async function getUsers(page: number = 1, pageSize: number = 50) {
+export async function getUsers(page: number = 1, pageSize: number = 50, query?: string) {
   let organizationId: number | undefined;
 
   try {
@@ -43,11 +43,12 @@ export async function getUsers(page: number = 1, pageSize: number = 50) {
       query: {
         Page: page,
         Count: pageSize,
+        ...(query ? { Query: query } : {}),
       },
     });
 
     if (error) {
-      logger.error({ error, organizationId, page, pageSize }, 'Failed to fetch users');
+      logger.error({ error, organizationId, page, pageSize, query }, 'Failed to fetch users');
       return {
         ok: false as const,
         error: String(error),
@@ -61,7 +62,10 @@ export async function getUsers(page: number = 1, pageSize: number = 50) {
       error: null,
     };
   } catch (error) {
-    logger.error({ error, organizationId, page, pageSize }, 'Unexpected error fetching users');
+    logger.error(
+      { error, organizationId, page, pageSize, query },
+      'Unexpected error fetching users'
+    );
     return {
       ok: false as const,
       error: error instanceof Error ? error.message : 'Unknown error',

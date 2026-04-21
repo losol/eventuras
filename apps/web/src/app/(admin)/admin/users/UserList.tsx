@@ -1,4 +1,5 @@
 'use client';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
@@ -14,12 +15,31 @@ type UserListProps = {
   users: UserDto[];
   currentPage: number;
   totalPages: number;
+  query: string;
 };
 
-const UserList: React.FC<UserListProps> = ({ users, currentPage, totalPages }) => {
+const UserList: React.FC<UserListProps> = ({ users, currentPage, totalPages, query }) => {
   const t = useTranslations();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [input, setInput] = useState(query);
+  const lastPushedRef = useRef(query);
+
+  // Debounce the input → URL sync so typing one letter at a time doesn't
+  // fire a server request per keystroke. Also resets ?page so a new search
+  // doesn't land on an out-of-range page.
+  useEffect(() => {
+    if (input === lastPushedRef.current) return;
+    const timeout = setTimeout(() => {
+      const params = new URLSearchParams(searchParams);
+      if (input) params.set('q', input);
+      else params.delete('q');
+      params.delete('page');
+      lastPushedRef.current = input;
+      router.push(`?${params.toString()}`);
+    }, 300);
+    return () => clearTimeout(timeout);
+  }, [input, router, searchParams]);
 
   const handlePageChange = (newPage: number) => {
     if (!Number.isFinite(newPage)) return;
@@ -57,7 +77,16 @@ const UserList: React.FC<UserListProps> = ({ users, currentPage, totalPages }) =
 
   return (
     <>
-      <DataTable data={users} columns={columns} enableGlobalSearch={true} />
+      <div className="mb-4">
+        <input
+          type="search"
+          value={input}
+          onChange={e => setInput(e.target.value)}
+          placeholder={t('common.labels.search').toString()}
+          className="w-full max-w-md rounded border border-gray-300 px-3 py-2 dark:border-gray-600 dark:bg-gray-800"
+        />
+      </div>
+      <DataTable data={users} columns={columns} />
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
