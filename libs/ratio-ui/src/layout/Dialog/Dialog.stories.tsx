@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
-import { Dialog, DialogProps } from './Dialog';
+import { Dialog, DialogProps, DialogSize } from './Dialog';
 import { Button } from '../../core/Button';
 
 const meta: Meta<DialogProps> = {
@@ -60,6 +60,39 @@ export const WithTriggerButton: Story = {
         <p>You can put any JSX inside here.</p>
       </>
     ),
+  },
+};
+
+/**
+ * All size variants side by side. Each button opens a dialog of the
+ * corresponding width so layouts with wider forms can pick what fits.
+ */
+export const Sizes: Story = {
+  render: () => {
+    const sizes: DialogSize[] = ['sm', 'md', 'lg', 'xl'];
+    const Trigger = ({ size }: { size: DialogSize }) => {
+      const [open, setOpen] = useState(false);
+      return (
+        <>
+          <Button onClick={() => setOpen(true)}>size=&quot;{size}&quot;</Button>
+          <Dialog
+            isOpen={open}
+            onClose={() => setOpen(false)}
+            title={`Dialog (${size})`}
+            size={size}
+          >
+            <p>This panel uses size=&quot;{size}&quot;.</p>
+          </Dialog>
+        </>
+      );
+    };
+    return (
+      <div className="flex gap-3">
+        {sizes.map(s => (
+          <Trigger key={s} size={s} />
+        ))}
+      </div>
+    );
   },
 };
 
