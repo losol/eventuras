@@ -9,11 +9,87 @@
   --space-xl: clamp(3.375rem, 3.2216rem + 0.6818vw, 3.75rem);
   --space-2xl: clamp(4.5rem, 4.2955rem + 0.9091vw, 5rem);
   --space-3xl: clamp(6.75rem, 6.4432rem + 1.3636vw, 7.5rem);
-
-  /* Semantic spacing scale for Tailwind utilities (p-xs, gap-md, m-lg, etc.) */
-  --spacing-xs: var(--space-xs);
-  --spacing-sm: var(--space-s);
-  --spacing-md: var(--space-m);
-  --spacing-lg: var(--space-l);
-  --spacing-xl: var(--space-xl);
 }
+
+/*
+ * Semantic spacing utilities.
+ *
+ * These `@utility` rules are the source of truth for `p-md`,
+ * `gap-lg`, etc. They replace an earlier approach that aliased
+ * `--spacing-xs/sm/md/lg/xl` to `--space-*`, which collided with
+ * Tailwind's size utilities (`w-*`, `h-*`, `min-w-*`, `max-w-*` …)
+ * because those also read from `--spacing-*` — causing `max-w-lg`
+ * to shrink from 32rem to 2.25rem and similar.
+ *
+ * Scope is kept in sync with `buildSpacingClasses()` in ./spacing.ts
+ * (padding p/px/py/pt/pb, margin m/mx/my/mt/mb, gap — each in
+ * xs/sm/md/lg/xl). If you add a new size or direction here, update
+ * `buildSpacingClasses` too so the TS layer can emit it.
+ * Don't re-introduce `--spacing-*` theme keys.
+ */
+
+@utility p-xs { padding: var(--space-xs); }
+@utility p-sm { padding: var(--space-s); }
+@utility p-md { padding: var(--space-m); }
+@utility p-lg { padding: var(--space-l); }
+@utility p-xl { padding: var(--space-xl); }
+
+@utility px-xs { padding-inline: var(--space-xs); }
+@utility px-sm { padding-inline: var(--space-s); }
+@utility px-md { padding-inline: var(--space-m); }
+@utility px-lg { padding-inline: var(--space-l); }
+@utility px-xl { padding-inline: var(--space-xl); }
+
+@utility py-xs { padding-block: var(--space-xs); }
+@utility py-sm { padding-block: var(--space-s); }
+@utility py-md { padding-block: var(--space-m); }
+@utility py-lg { padding-block: var(--space-l); }
+@utility py-xl { padding-block: var(--space-xl); }
+
+@utility pt-xs { padding-top: var(--space-xs); }
+@utility pt-sm { padding-top: var(--space-s); }
+@utility pt-md { padding-top: var(--space-m); }
+@utility pt-lg { padding-top: var(--space-l); }
+@utility pt-xl { padding-top: var(--space-xl); }
+
+@utility pb-xs { padding-bottom: var(--space-xs); }
+@utility pb-sm { padding-bottom: var(--space-s); }
+@utility pb-md { padding-bottom: var(--space-m); }
+@utility pb-lg { padding-bottom: var(--space-l); }
+@utility pb-xl { padding-bottom: var(--space-xl); }
+
+@utility m-xs { margin: var(--space-xs); }
+@utility m-sm { margin: var(--space-s); }
+@utility m-md { margin: var(--space-m); }
+@utility m-lg { margin: var(--space-l); }
+@utility m-xl { margin: var(--space-xl); }
+
+@utility mx-xs { margin-inline: var(--space-xs); }
+@utility mx-sm { margin-inline: var(--space-s); }
+@utility mx-md { margin-inline: var(--space-m); }
+@utility mx-lg { margin-inline: var(--space-l); }
+@utility mx-xl { margin-inline: var(--space-xl); }
+
+@utility my-xs { margin-block: var(--space-xs); }
+@utility my-sm { margin-block: var(--space-s); }
+@utility my-md { margin-block: var(--space-m); }
+@utility my-lg { margin-block: var(--space-l); }
+@utility my-xl { margin-block: var(--space-xl); }
+
+@utility mt-xs { margin-top: var(--space-xs); }
+@utility mt-sm { margin-top: var(--space-s); }
+@utility mt-md { margin-top: var(--space-m); }
+@utility mt-lg { margin-top: var(--space-l); }
+@utility mt-xl { margin-top: var(--space-xl); }
+
+@utility mb-xs { margin-bottom: var(--space-xs); }
+@utility mb-sm { margin-bottom: var(--space-s); }
+@utility mb-md { margin-bottom: var(--space-m); }
+@utility mb-lg { margin-bottom: var(--space-l); }
+@utility mb-xl { margin-bottom: var(--space-xl); }
+
+@utility gap-xs { gap: var(--space-xs); }
+@utility gap-sm { gap: var(--space-s); }
+@utility gap-md { gap: var(--space-m); }
+@utility gap-lg { gap: var(--space-l); }
+@utility gap-xl { gap: var(--space-xl); }
