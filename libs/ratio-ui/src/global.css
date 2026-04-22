@@ -23,6 +23,10 @@
 @source inline("mb-16 mb-20 mb-24 mb-28 mb-32 mb-40");
 /* Hero/section viewport heights. */
 @source inline("min-h-[20vh] min-h-[30vh] min-h-[33vh] min-h-[40vh] min-h-[50vh] min-h-[60vh] min-h-[66vh] min-h-[70vh] min-h-[80vh]");
+/* Dialog size variants — safelisted because the class name is looked up
+   from the size prop at runtime, not written inline. Arbitrary px values
+   until we untangle the spacing/width token collision in a separate PR. */
+@source inline("max-w-[28rem] max-w-[32rem] max-w-[42rem] max-w-[56rem]");
 
 /* Dark mode variant */
 @custom-variant dark (&:where(html[data-theme="dark"] &, body[data-theme="dark"] &, [data-theme="dark"] *));

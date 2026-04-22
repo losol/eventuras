@@ -134,6 +134,7 @@
   },
   "labels": {
     "account": "User account",
+    "actions": "Actions",
     "active": "Active",
     "admin": "Admin",
     "all": "All",

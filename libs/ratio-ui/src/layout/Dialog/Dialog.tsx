@@ -2,11 +2,23 @@ import { Heading } from '../../core/Heading';
 import { Overlay } from '@react-aria/overlays';
 import React, { ReactNode } from 'react';
 import { Dialog as AriaDialog } from 'react-aria-components';
+
+export type DialogSize = 'sm' | 'md' | 'lg' | 'xl';
+
+const sizeClasses: Record<DialogSize, string> = {
+  sm: 'max-w-[28rem]',
+  md: 'max-w-[32rem]',
+  lg: 'max-w-[42rem]',
+  xl: 'max-w-[56rem]',
+};
+
 export type DialogProps = {
   isOpen: boolean;
   onClose: () => void;
   title: string;
   children: ReactNode;
+  /** Max width of the dialog panel. Defaults to 'md' (~512px). */
+  size?: DialogSize;
   testId?: string;
 };
 
@@ -16,6 +28,7 @@ export const Dialog = (props: DialogProps) => {
       isOpen={props.isOpen}
       testId={props.testId}
       onClickOutside={props.onClose}
+      size={props.size}
     >
       <AriaDialog className="relative z-10">
         <Heading as="h3" paddingBottom="xs">
@@ -31,6 +44,7 @@ interface DialogModalProps {
   children: React.ReactNode;
   isOpen: boolean;
   onClickOutside?: () => void;
+  size?: DialogSize;
   testId?: string;
 }
 
@@ -38,6 +52,8 @@ function DialogModal(props: Readonly<DialogModalProps>) {
   if (!props.isOpen) {
     return null;
   }
+
+  const panelWidth = sizeClasses[props.size ?? 'md'];
 
   return (
     <Overlay>
@@ -61,7 +77,9 @@ function DialogModal(props: Readonly<DialogModalProps>) {
           }
         }}
       >
-        <div className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-slate-700 dark:text-white p-6 text-left align-middle shadow-xl transition-all">
+        <div
+          className={`w-full ${panelWidth} transform overflow-hidden rounded-2xl bg-white dark:bg-slate-700 dark:text-white p-6 text-left align-middle shadow-xl transition-all`}
+        >
           {props.children}
         </div>
       </div>

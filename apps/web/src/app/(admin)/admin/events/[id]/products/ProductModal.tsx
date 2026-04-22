@@ -1,6 +1,6 @@
 'use client';
-import { useEffect, useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { useState } from 'react';
+import { SubmitHandler } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
 
 import { Logger } from '@eventuras/logger';
@@ -12,11 +12,12 @@ import { Form, NumberInput, TextField } from '@eventuras/smartform';
 import type { NewProductDto, ProductDto } from '@/lib/eventuras-sdk';
 
 import { createProduct, updateProduct } from './actions';
-import ConfirmDiscardModal from './ConfirmDiscardModal';
+
 const logger = Logger.create({
   namespace: 'web:admin',
   context: { component: 'ProductModal' },
 });
+
 interface ProductModalProps {
   isOpen: boolean;
   onSubmit: (values: ProductDto) => void;
@@ -24,6 +25,7 @@ interface ProductModalProps {
   product?: ProductDto;
   eventId: number;
 }
+
 const ProductModal: React.FC<ProductModalProps> = ({
   isOpen,
   onSubmit,
@@ -33,18 +35,14 @@ const ProductModal: React.FC<ProductModalProps> = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const toast = useToast();
-  const [confirmDiscardChanges, setConfirmDiscardChanges] = useState(false);
-  const { reset } = useForm<ProductDto>({ defaultValues: product || {} });
   const t = useTranslations();
-  useEffect(() => {
-    reset(product || {});
-  }, [product, reset]);
+
   const isEditMode = Boolean(product);
   const buttonText = isEditMode ? t('common.labels.edit') : t('common.labels.save');
   const titleText = isEditMode
     ? t('admin.products.modal.title.edit')
     : t('admin.products.modal.title.add-product');
-  // Product modal submit handler
+
   const submitProduct: SubmitHandler<ProductDto> = async (data: ProductDto) => {
     setLoading(true);
     try {
@@ -71,7 +69,6 @@ const ProductModal: React.FC<ProductModalProps> = ({
         onSubmit(result.data);
         toast.success(result.message || 'Product was created!');
       }
-      // Close the modal on success
       onClose();
     } catch (error) {
       logger.error({ error }, 'Unexpected error in submitProduct');
@@ -80,28 +77,27 @@ const ProductModal: React.FC<ProductModalProps> = ({
       setLoading(false);
     }
   };
+
   return (
-    <>
-      <Dialog isOpen={isOpen} onClose={onClose} title={titleText}>
-        <Form onSubmit={submitProduct} className="space-y-6" defaultValues={product}>
-          <TextField
-            name="name"
-            label={t('common.products.labels.name')}
-            placeholder={t('common.products.labels.name')}
-            testId="product-name-input"
-            required
-          />
-          <TextField
-            name="description"
-            label={t('common.products.labels.description')}
-            placeholder={t('common.products.labels.description')}
-            testId="product-description-input"
-            multiline
-          />
+    <Dialog isOpen={isOpen} onClose={onClose} title={titleText} size="lg">
+      <Form onSubmit={submitProduct} className="space-y-6" defaultValues={product}>
+        <TextField
+          name="name"
+          label={t('common.products.labels.name')}
+          testId="product-name-input"
+          required
+        />
+        <TextField
+          name="description"
+          label={t('common.products.labels.description')}
+          testId="product-description-input"
+          multiline
+        />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <NumberInput
             name="price"
             label={t('common.products.labels.price')}
-            placeholder="1234"
+            placeholder="0"
             testId="product-price-input"
             required
           />
@@ -119,22 +115,17 @@ const ProductModal: React.FC<ProductModalProps> = ({
             placeholder="0"
             testId="product-minimum-quantity-input"
           />
+        </div>
+        <div className="flex gap-2">
           <Button type="submit" disabled={loading}>
             {buttonText}
           </Button>
           <Button type="reset" variant="secondary" onClick={onClose}>
             {t('common.buttons.cancel')}
           </Button>
-        </Form>
-      </Dialog>
-      <ConfirmDiscardModal
-        isOpen={confirmDiscardChanges}
-        onClose={() => setConfirmDiscardChanges(false)}
-        onConfirm={onClose}
-        title="Discard Changes?"
-        description="Are you sure you want to discard your changes?"
-      />
-    </>
+        </div>
+      </Form>
+    </Dialog>
   );
 };
 export default ProductModal;
