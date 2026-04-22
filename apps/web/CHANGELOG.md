@@ -1,5 +1,34 @@
 # @eventuras/web
 
+## 3.3.1
+
+### Patch Changes
+
+- 135e60e: feat(ratio-ui): Dialog size prop; refactor(web): widen + clean ProductModal
+
+  **ratio-ui**: `<Dialog>` takes a new `size` prop (`sm | md | lg | xl`)
+  mapped to 28 / 32 / 42 / 56 rem max-widths on the panel. Default is
+  `md` (~32rem). Callers that need the previous narrower width can opt
+  in with `size="sm"`. Arbitrary max-width values are used in place of
+  Tailwind's `max-w-md/lg/xl` utilities because ratio-ui's spacing
+  tokens override the same `--spacing-*` scale those utilities read
+  from; untangling the spacing/width scales is tracked as a follow-up.
+
+  **web**: `ProductModal` now uses `size="lg"` for a more usable editing
+  width, lays the three numeric fields (price / vat / min quantity) in a
+  3-column grid on ≥sm viewports, and drops dead code: an unused
+  `useForm`/`reset` pair that never drove the smartform-backed form, and
+  the `<ConfirmDiscardModal>` wiring whose `setConfirmDiscardChanges`
+  was never invoked. Also deletes the now-orphaned
+  `ConfirmDiscardModal.tsx`.
+
+- Updated dependencies [135e60e]
+- Updated dependencies [521eb30]
+  - @eventuras/ratio-ui@1.3.0
+  - @eventuras/datatable@0.5.20
+  - @eventuras/ratio-ui-next@0.1.21
+  - @eventuras/smartform@0.3.13
+
 ## 3.3.0
 
 ### Minor Changes
