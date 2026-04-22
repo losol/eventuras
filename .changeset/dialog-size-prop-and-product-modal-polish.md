@@ -6,12 +6,9 @@
 feat(ratio-ui): Dialog size prop; refactor(web): widen + clean ProductModal
 
 **ratio-ui**: `<Dialog>` takes a new `size` prop (`sm | md | lg | xl`)
-mapped to 28 / 32 / 42 / 56 rem max-widths on the panel. Default is
-`md` (~32rem). Callers that need the previous narrower width can opt
-in with `size="sm"`. Arbitrary max-width values are used in place of
-Tailwind's `max-w-md/lg/xl` utilities because ratio-ui's spacing
-tokens override the same `--spacing-*` scale those utilities read
-from; untangling the spacing/width scales is tracked as a follow-up.
+mapped to `max-w-md | max-w-lg | max-w-2xl | max-w-4xl` on the panel
+(28 / 32 / 42 / 56 rem). Default is `md` (~32rem). Callers that need
+the previous narrower width can opt in with `size="sm"`.
 
 **web**: `ProductModal` now uses `size="lg"` for a more usable editing
 width, lays the three numeric fields (price / vat / min quantity) in a
