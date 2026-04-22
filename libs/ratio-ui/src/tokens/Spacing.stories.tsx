@@ -94,7 +94,7 @@ const SemanticScale = () => (
           <span className="text-xs font-mono text-text-subtle w-24 shrink-0">{css}</span>
           <div
             className="h-6 rounded bg-primary-400"
-            style={{ width: value === 'none' ? '2px' : `var(--spacing-${value})` }}
+            style={{ width: value === 'none' ? '2px' : `var(${css})` }}
           />
           <span className="text-[10px] font-mono text-text-subtle">{tailwind}</span>
         </div>
