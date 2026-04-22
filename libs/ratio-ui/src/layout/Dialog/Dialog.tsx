@@ -5,11 +5,15 @@ import { Dialog as AriaDialog } from 'react-aria-components';
 
 export type DialogSize = 'sm' | 'md' | 'lg' | 'xl';
 
+// Tailwind max-w utilities (28 / 32 / 42 / 56 rem). All four class
+// names are safelisted via `@source inline(...)` in
+// libs/ratio-ui/src/global.css because the lookup is dynamic — keep
+// that list in sync if you add sizes here.
 const sizeClasses: Record<DialogSize, string> = {
-  sm: 'max-w-[28rem]',
-  md: 'max-w-[32rem]',
-  lg: 'max-w-[42rem]',
-  xl: 'max-w-[56rem]',
+  sm: 'max-w-md',
+  md: 'max-w-lg',
+  lg: 'max-w-2xl',
+  xl: 'max-w-4xl',
 };
 
 export type DialogProps = {
