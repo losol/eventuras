@@ -1,6 +1,7 @@
 import * as jose from 'jose';
 
 import { createLogger } from './logger';
+import type { Session } from './types';
 
 const logger = createLogger({ namespace: 'fides-auth:utils' });
 
@@ -272,3 +273,13 @@ export const accessTokenExpires = (
     return true;
   }
 };
+
+/**
+ * Returns true if the session was granted the given scope.
+ *
+ * @param session - The session to check
+ * @param scope - The scope string to look for (e.g. "operations.read")
+ */
+export function hasScope(session: Session, scope: string): boolean {
+  return session.scopes?.includes(scope) ?? false;
+}

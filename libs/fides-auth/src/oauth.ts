@@ -353,6 +353,12 @@ export function buildSessionFromTokens(
 
   const userInfo = extractUserFromTokens(tokens, rolesClaim);
 
+  let scopes: string[] | undefined;
+  if (typeof tokens.scope === 'string') {
+    const parsed = tokens.scope.split(' ').filter(s => s.length > 0);
+    if (parsed.length > 0) scopes = parsed;
+  }
+
   return {
     tokens: {
       accessToken: tokens.access_token,
@@ -366,6 +372,7 @@ export function buildSessionFromTokens(
       email: userInfo.email,
       roles: userInfo.roles,
     },
+    scopes,
   };
 }
 

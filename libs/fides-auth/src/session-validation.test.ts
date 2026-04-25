@@ -74,6 +74,19 @@ describe('session lifecycle: create → validate', () => {
     expect((result.session as any).data).toEqual({ orgId: 42, plan: 'enterprise' });
   });
 
+  it('preserves scopes through the round-trip', async () => {
+    const session: Session = {
+      ...testSession,
+      scopes: ['openid', 'profile', 'operations.read'],
+    };
+
+    const jwt = await createEncryptedJWT({ ...session }, SECRET);
+    const result = await validateSessionJwt(jwt, SECRET);
+
+    expect(result.status).toBe('VALID');
+    expect(result.session?.scopes).toEqual(['openid', 'profile', 'operations.read']);
+  });
+
   it('handles a minimal session with only user info', async () => {
     const minimalSession: Session = {
       user: { name: 'Min', email: 'min@test.no' },
