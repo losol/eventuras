@@ -14,6 +14,8 @@ export interface Session<TData = Record<string, unknown>> {
     email: string;
     roles?: string[];
   };
+  /** OAuth scopes granted to this session (e.g. ["openid", "profile", "email"]). */
+  scopes?: string[];
   /** Application-specific data stored alongside the session. */
   data?: TData;
 }

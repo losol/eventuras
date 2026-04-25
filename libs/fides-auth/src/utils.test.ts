@@ -12,6 +12,7 @@ import {
   accessTokenExpires,
   getSessionSecret,
   getSessionSecretUint8Array,
+  hasScope,
 } from './utils';
 
 /** 32-byte (256-bit) AES key — 64 hex characters */
@@ -379,5 +380,25 @@ describe('getSessionSecretUint8Array', () => {
   it('throws when SESSION_SECRET is not set', () => {
     vi.stubEnv('SESSION_SECRET', '');
     expect(() => getSessionSecretUint8Array()).toThrow('SESSION_SECRET is not defined');
+  });
+});
+
+describe('hasScope', () => {
+  const session = { scopes: ['openid', 'profile', 'operations.read'] };
+
+  it('returns true when the scope is present', () => {
+    expect(hasScope(session, 'operations.read')).toBe(true);
+  });
+
+  it('returns false when the scope is absent', () => {
+    expect(hasScope(session, 'admin.write')).toBe(false);
+  });
+
+  it('returns false when session.scopes is undefined', () => {
+    expect(hasScope({}, 'openid')).toBe(false);
+  });
+
+  it('is case-sensitive', () => {
+    expect(hasScope(session, 'OPENID')).toBe(false);
   });
 });
