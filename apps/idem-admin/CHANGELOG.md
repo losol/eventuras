@@ -1,5 +1,11 @@
 # @eventuras/idem-admin
 
+## 0.1.7
+
+### Patch Changes
+
+- @eventuras/fides-auth-next@0.1.10
+
 ## 0.1.6
 
 ### Patch Changes

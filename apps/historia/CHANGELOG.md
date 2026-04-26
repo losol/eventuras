@@ -1,5 +1,15 @@
 # @eventuras/historia
 
+## 0.25.14
+
+### Patch Changes
+
+- Updated dependencies [7caaea2]
+  - @eventuras/fides-auth@0.6.0
+  - @eventuras/fides-auth-next@0.1.10
+  - @eventuras/payload-vipps-auth@0.1.7
+  - @eventuras/vipps@0.2.6
+
 ## 0.25.13
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # web-e2e
 
+## 0.2.12
+
+### Patch Changes
+
+- Updated dependencies [7caaea2]
+  - @eventuras/fides-auth@0.6.0
+
 ## 0.2.11
 
 ### Patch Changes
