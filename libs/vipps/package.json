@@ -1,6 +1,6 @@
 {
   "name": "@eventuras/vipps",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "private": true,
   "description": "Vipps MobilePay integration for Eventuras",
   "type": "module",

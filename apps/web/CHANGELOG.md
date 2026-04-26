@@ -1,5 +1,11 @@
 # @eventuras/web
 
+## 3.3.2
+
+### Patch Changes
+
+- @eventuras/fides-auth-next@0.1.10
+
 ## 3.3.1
 
 ### Patch Changes
