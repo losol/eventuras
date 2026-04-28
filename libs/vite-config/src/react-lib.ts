@@ -6,6 +6,8 @@ import { resolve } from 'node:path';
 import { glob } from 'glob';
 import fs from 'node:fs';
 
+import { getRuntimeDependencyExternals, NODE_BUILTINS_EXTERNAL } from './externals.ts';
+
 /**
  * Plugin to preserve 'use client' directives in React Server Components.
  * This ensures client-side code is properly marked when building for Next.js.
@@ -57,10 +59,11 @@ export interface ReactLibConfig {
   entry: string | Record<string, string>;
 
   /**
-   * Additional external dependencies to exclude from the bundle.
-   * React, react-dom, and react/jsx-runtime are already included.
+   * Additional external dependencies to exclude from the bundle, on top of the
+   * runtime deps read from the consumer's package.json and the React core
+   * externals. Pass `false` to opt out of package.json auto-externalization.
    */
-  external?: (string | RegExp)[];
+  external?: (string | RegExp)[] | false;
 
   /**
    * Enable Tailwind CSS support via @tailwindcss/vite plugin.
@@ -122,7 +125,7 @@ export interface ReactLibConfig {
 export function defineReactLibConfig(config: ReactLibConfig): UserConfig {
   const {
     entry,
-    external = [],
+    external,
     tailwind = false,
     preserveModules = true,
     preserveUseClientDirectives = true,
@@ -130,6 +133,10 @@ export function defineReactLibConfig(config: ReactLibConfig): UserConfig {
     dts: dtsOptions = {},
     viteConfig = {},
   } = config;
+
+  const autoExternals =
+    external === false ? [] : getRuntimeDependencyExternals();
+  const userExternals = Array.isArray(external) ? external : [];
 
   // Determine entry points
   let entryPoints: string | string[] | Record<string, string>;
@@ -192,13 +199,20 @@ export function defineReactLibConfig(config: ReactLibConfig): UserConfig {
       ...viteConfig.resolve,
     },
     build: {
+      minify: false,
+      sourcemap: true,
       lib: {
         entry: entryPoints,
         formats: ['es'],
       },
       rollupOptions: {
         ...viteConfig.build?.rollupOptions,
-        external: [...reactExternals, ...external],
+        external: [
+          ...reactExternals,
+          ...autoExternals,
+          ...NODE_BUILTINS_EXTERNAL,
+          ...userExternals,
+        ],
         output: {
           preserveModules,
           ...(preserveModules && {

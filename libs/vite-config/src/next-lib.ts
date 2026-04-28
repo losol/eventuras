@@ -3,8 +3,8 @@ import { defineReactLibConfig, type ReactLibConfig } from './react-lib.ts';
 
 export interface NextLibConfig extends Omit<ReactLibConfig, 'external'> {
   /**
-   * Additional external dependencies beyond the Next.js defaults.
-   * Next.js, next/image, and next/link are already included.
+   * Additional external dependencies beyond the Next.js defaults and the
+   * package.json auto-externalization (via the underlying React preset).
    */
   external?: (string | RegExp)[];
 }
