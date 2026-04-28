@@ -2,6 +2,8 @@ import { defineConfig, type UserConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 import { resolve } from 'node:path';
 
+import { getRuntimeDependencyExternals, NODE_BUILTINS_EXTERNAL } from './externals.ts';
+
 export interface VanillaLibConfig {
   /**
    * Library entry point(s). Can be a string or an object with multiple entries.
@@ -16,10 +18,11 @@ export interface VanillaLibConfig {
   name?: string;
 
   /**
-   * Additional external dependencies to exclude from the bundle.
-   * Common dependencies like 'react' and 'react-dom' are already included.
+   * Additional external dependencies to exclude from the bundle, on top of the
+   * runtime deps read from the consumer's package.json. Pass `false` to opt out
+   * of the package.json auto-externalization (rarely what you want).
    */
-  external?: (string | RegExp)[];
+  external?: (string | RegExp)[] | false;
 
   /**
    * Additional Vite configuration to merge.
@@ -29,10 +32,21 @@ export interface VanillaLibConfig {
 
 /**
  * Vite configuration preset for vanilla TypeScript libraries.
- * Includes TypeScript declaration generation and ES module output.
+ *
+ * Defaults that matter for libraries:
+ * - All runtime deps (dependencies + peerDependencies + optionalDependencies)
+ *   are externalized so consumers get one copy from their node_modules instead
+ *   of inlined+mangled copies inside the published bundle.
+ * - Minification is OFF — consumers minify their own bundle, and unminified
+ *   output preserves class names (so `instanceof` and stack traces work).
+ * - Sourcemaps ON for debuggable consumer stack traces.
  */
 export function defineVanillaLibConfig(config: VanillaLibConfig): UserConfig {
-  const { entry, name, external = [], viteConfig = {} } = config;
+  const { entry, name, external, viteConfig = {} } = config;
+
+  const autoExternals =
+    external === false ? [] : getRuntimeDependencyExternals();
+  const userExternals = Array.isArray(external) ? external : [];
 
   return defineConfig({
     plugins: [
@@ -43,20 +57,34 @@ export function defineVanillaLibConfig(config: VanillaLibConfig): UserConfig {
       ...(viteConfig.plugins || []),
     ],
     build: {
+      minify: false,
+      sourcemap: true,
       lib: {
         entry: typeof entry === 'string' ? resolve(process.cwd(), entry) : entry,
         ...(name && { name }),
         formats: ['es'],
-        fileName: (format, entryName) => `${entryName}.js`,
+        fileName: (_format, entryName) => `${entryName}.js`,
       },
       rollupOptions: {
-        external,
+        ...viteConfig.build?.rollupOptions,
+        external: [...autoExternals, ...NODE_BUILTINS_EXTERNAL, ...userExternals],
         output: {
           preserveModules: false,
+          ...viteConfig.build?.rollupOptions?.output,
         },
       },
-      ...viteConfig.build,
+      // Spread other build options from viteConfig except lib and rollupOptions
+      ...Object.fromEntries(
+        Object.entries(viteConfig.build || {}).filter(
+          ([key]) => key !== 'lib' && key !== 'rollupOptions'
+        )
+      ),
     },
-    ...viteConfig,
+    // Spread other viteConfig options except build and plugins
+    ...Object.fromEntries(
+      Object.entries(viteConfig).filter(
+        ([key]) => key !== 'build' && key !== 'plugins'
+      )
+    ),
   });
 }
