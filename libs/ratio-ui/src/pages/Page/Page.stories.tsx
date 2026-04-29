@@ -8,21 +8,18 @@ import { Section } from '../../layout/Section/Section';
 import { Container } from '../../layout/Container';
 import { Button } from '../../core/Button';
 
-const AnchorLink = ({
-  href,
-  children,
-  ...rest
-}: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
-  <a href={href} {...rest}>{children}</a>
-);
-
 const PageDemo: React.FC<{ title: string }> = ({ title }) => (
   <div className="min-h-screen flex flex-col">
-    <Navbar title={title} bgColor="bg-transparent w-full py-1" LinkComponent={AnchorLink}>
-      <nav className="flex gap-4 ml-auto">
+    <Navbar bgColor="bg-transparent w-full py-1">
+      <Navbar.Brand>
+        <a href="/" className="text-lg tracking-tight whitespace-nowrap no-underline">
+          {title}
+        </a>
+      </Navbar.Brand>
+      <Navbar.Content className="justify-end">
         <a href="#hero" className="hover:underline">Home</a>
         <a href="#features" className="hover:underline">Features</a>
-      </nav>
+      </Navbar.Content>
     </Navbar>
 
     <main className="flex-1">

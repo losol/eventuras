@@ -50,8 +50,3 @@ export function Label({ children, className, ...props }: ComponentProps<typeof A
     </AriaLabel>
   );
 }
-
-/**
- * @deprecated Use `Label` instead. This export is kept for backward compatibility.
- */
-export const InputLabel = Label;

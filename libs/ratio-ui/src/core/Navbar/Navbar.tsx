@@ -1,4 +1,4 @@
-import React, { type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { cn } from '../../utils/cn';
 
 export interface NavbarProps {
@@ -22,19 +22,6 @@ export interface NavbarProps {
    */
   glass?: boolean;
   className?: string;
-
-  // ── Legacy shorthand props (still supported, prefer Navbar.Brand) ──
-
-  /** @deprecated Use `<Navbar.Brand>` instead. */
-  title?: string;
-  /** @deprecated Use `<Navbar.Brand>` instead. */
-  titleHref?: string;
-  /** @deprecated Use `<Navbar.Brand>` instead. */
-  LinkComponent?: React.ComponentType<{
-    href: string;
-    children: ReactNode;
-    className?: string;
-  }>;
 }
 
 export interface NavbarBrandProps {
@@ -71,12 +58,6 @@ const NavbarRoot = ({
   overlay = false,
   glass = false,
   className,
-  // eslint-disable-next-line deprecation/deprecation -- backward-compat bridge
-  title,
-  // eslint-disable-next-line deprecation/deprecation -- backward-compat bridge
-  titleHref = '/',
-  // eslint-disable-next-line deprecation/deprecation -- backward-compat bridge
-  LinkComponent,
 }: Readonly<NavbarProps>) => {
   const textColor = bgDark ? 'text-light' : 'text-dark dark:text-light';
   // overlay takes precedence over sticky when both are passed.
@@ -92,27 +73,9 @@ const NavbarRoot = ({
     ? '[--navbar-color:white]'
     : '[--navbar-color:var(--text-dark,#1a1a1a)] dark:[--navbar-color:var(--text-light,white)]';
 
-  const hasLegacyTitle = typeof title === 'string' && title !== '';
-  const LinkTag = LinkComponent ?? ('a' as React.ElementType);
-
   return (
     <nav className={cn(bgColor, positionClass, glassClass, textColor, navbarColorVar, 'm-0 p-0', className)}>
-      <div
-        className={cn(
-          'container flex flex-wrap items-center mx-auto gap-3 py-2 px-3',
-          hasLegacyTitle && 'justify-between',
-        )}
-      >
-        {hasLegacyTitle && (
-          <NavbarBrand>
-            <LinkTag
-              href={titleHref}
-              className={cn('text-lg tracking-tight whitespace-nowrap no-underline', textColor)}
-            >
-              {title}
-            </LinkTag>
-          </NavbarBrand>
-        )}
+      <div className="container flex flex-wrap items-center mx-auto gap-3 py-2 px-3">
         {children}
       </div>
     </nav>
