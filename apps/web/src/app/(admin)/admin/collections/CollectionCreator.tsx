@@ -62,14 +62,17 @@ const CollectionCreator: React.FC<{ organizationId: number }> = ({ organizationI
       <Button onClick={() => setModalOpen(!modalOpen)}>
         {t('admin.collection.labels.create')}
       </Button>
-      <Dialog isOpen={modalOpen} onClose={() => setModalOpen(false)} title={'Add collection'}>
-        <Form onSubmit={data => handleCreateCollection(data as EventCollectionCreateDto)}>
-          <HiddenInput name="organizationId" value={organizationId.toString()} />
-          <TextField name="name" label={t('common.labels.name')} />
-          <Button type="submit" loading={isSubmitting}>
-            {t('admin.collection.labels.create')}
-          </Button>
-        </Form>
+      <Dialog isOpen={modalOpen} onClose={() => setModalOpen(false)}>
+        <Dialog.Heading>Add collection</Dialog.Heading>
+        <Dialog.Content>
+          <Form onSubmit={data => handleCreateCollection(data as EventCollectionCreateDto)}>
+            <HiddenInput name="organizationId" value={organizationId.toString()} />
+            <TextField name="name" label={t('common.labels.name')} />
+            <Button type="submit" loading={isSubmitting}>
+              {t('admin.collection.labels.create')}
+            </Button>
+          </Form>
+        </Dialog.Content>
       </Dialog>
     </>
   );

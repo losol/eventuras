@@ -7,60 +7,68 @@ const meta: Meta<DialogProps> = {
   title: 'Layout/Dialog',
   component: Dialog,
   args: {
-    title: 'Example Dialog',
-    children: <p>This is a dialog body.</p>,
     isOpen: true,
+    onClose: () => {},
   },
 };
 export default meta;
 
 type Story = StoryObj<DialogProps>;
 
-/**
- * Helper wrapper to handle open/close state
- */
-const StatefulDialog = (args: Omit<DialogProps, 'isOpen' | 'onClose'>) => {
+const StatefulDialog = (args: Omit<DialogProps, 'isOpen' | 'onClose' | 'children'>) => {
   const [open, setOpen] = useState(false);
-
   return (
     <div>
-      {/* Open dialog button */}
       <Button onClick={() => setOpen(true)}>Open Dialog</Button>
-
-      {/* Dialog with state control */}
-      <Dialog {...args} isOpen={open} onClose={() => setOpen(false)} />
+      <Dialog {...args} isOpen={open} onClose={() => setOpen(false)}>
+        <Dialog.Heading>Interactive Dialog</Dialog.Heading>
+        <Dialog.Content>
+          <p>Click outside or press ESC to close.</p>
+          <p>You can put any JSX inside here.</p>
+        </Dialog.Content>
+      </Dialog>
     </div>
   );
 };
 
-/**
- * Default open dialog
- */
 export const Default: Story = {
-  args: {
-    title: 'Default Dialog',
-    children: (
-      <div>
+  render: args => (
+    <Dialog {...args}>
+      <Dialog.Heading>Default Dialog</Dialog.Heading>
+      <Dialog.Content>
         <p>This is the default dialog content.</p>
-      </div>
-    ),
-  },
+      </Dialog.Content>
+    </Dialog>
+  ),
 };
 
-/**
- * Dialog opened via button click
- */
 export const WithTriggerButton: Story = {
   render: args => <StatefulDialog {...args} />,
-  args: {
-    title: 'Interactive Dialog',
-    children: (
-      <>
-        <p>Click outside or press ESC to close.</p>
-        <p>You can put any JSX inside here.</p>
-      </>
-    ),
-  },
+};
+
+const FooterDemo = () => {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Button onClick={() => setOpen(true)}>Open Dialog</Button>
+      <Dialog isOpen={open} onClose={() => setOpen(false)}>
+        <Dialog.Heading>Save changes?</Dialog.Heading>
+        <Dialog.Content>
+          <p>Your edits will be applied to all participants.</p>
+        </Dialog.Content>
+        <Dialog.Footer>
+          <Button variant="secondary" onClick={() => setOpen(false)}>
+            Cancel
+          </Button>
+          <Button onClick={() => setOpen(false)}>Save</Button>
+        </Dialog.Footer>
+      </Dialog>
+    </>
+  );
+};
+
+export const WithFooter: Story = {
+  render: () => <FooterDemo />,
 };
 
 /**
@@ -75,13 +83,11 @@ export const Sizes: Story = {
       return (
         <>
           <Button onClick={() => setOpen(true)}>size=&quot;{size}&quot;</Button>
-          <Dialog
-            isOpen={open}
-            onClose={() => setOpen(false)}
-            title={`Dialog (${size})`}
-            size={size}
-          >
-            <p>This panel uses size=&quot;{size}&quot;.</p>
+          <Dialog isOpen={open} onClose={() => setOpen(false)} size={size}>
+            <Dialog.Heading>Dialog ({size})</Dialog.Heading>
+            <Dialog.Content>
+              <p>This panel uses size=&quot;{size}&quot;.</p>
+            </Dialog.Content>
           </Dialog>
         </>
       );
@@ -96,19 +102,25 @@ export const Sizes: Story = {
   },
 };
 
-/**
- * Dialog with long scrolling content
- */
+const LongContentDemo = (args: Omit<DialogProps, 'isOpen' | 'onClose' | 'children'>) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Button onClick={() => setOpen(true)}>Open Dialog</Button>
+      <Dialog {...args} isOpen={open} onClose={() => setOpen(false)}>
+        <Dialog.Heading>Dialog with Long Content</Dialog.Heading>
+        <Dialog.Content>
+          <div className="space-y-4">
+            {[...Array(20)].map((_, i) => (
+              <p key={i}>This is line {i + 1} inside a long dialog.</p>
+            ))}
+          </div>
+        </Dialog.Content>
+      </Dialog>
+    </>
+  );
+};
+
 export const LongContent: Story = {
-  render: args => <StatefulDialog {...args} />,
-  args: {
-    title: 'Dialog with Long Content',
-    children: (
-      <div className="space-y-4">
-        {[...Array(20)].map((_, i) => (
-          <p key={i}>This is line {i + 1} inside a long dialog.</p>
-        ))}
-      </div>
-    ),
-  },
+  render: args => <LongContentDemo {...args} />,
 };

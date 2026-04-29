@@ -66,7 +66,6 @@ const EditRegistrationProductsDialog = (props: EditRegistrationProductsDialogPro
         </Button>
       )}
       <Dialog
-        title="Edit Orders"
         isOpen={editorOpen}
         testId="edit-orders-dialog"
         onClose={() => {
@@ -76,20 +75,23 @@ const EditRegistrationProductsDialog = (props: EditRegistrationProductsDialogPro
           }
         }}
       >
-        <div className="mt-2">
-          <p>
-            {props.description ??
-              `Go ahead and edit your orders below. Please note that mandatory products of an event
+        <Dialog.Heading>Edit Orders</Dialog.Heading>
+        <Dialog.Content>
+          <div className="mt-2">
+            <p>
+              {props.description ??
+                `Go ahead and edit your orders below. Please note that mandatory products of an event
             cannot be changed directly, please contact an administrator instead.`}
-          </p>
-        </div>
-        <div>
-          <RegistrationProductsCustomize
-            products={props.eventProducts}
-            selectedProducts={props.currentRegistration.products!}
-            onSubmit={onSubmit}
-          />
-        </div>
+            </p>
+          </div>
+          <div>
+            <RegistrationProductsCustomize
+              products={props.eventProducts}
+              selectedProducts={props.currentRegistration.products!}
+              onSubmit={onSubmit}
+            />
+          </div>
+        </Dialog.Content>
       </Dialog>
     </>
   );
