@@ -79,52 +79,55 @@ const ProductModal: React.FC<ProductModalProps> = ({
   };
 
   return (
-    <Dialog isOpen={isOpen} onClose={onClose} title={titleText} size="lg">
-      <Form onSubmit={submitProduct} className="space-y-6" defaultValues={product}>
-        <TextField
-          name="name"
-          label={t('common.products.labels.name')}
-          testId="product-name-input"
-          required
-        />
-        <TextField
-          name="description"
-          label={t('common.products.labels.description')}
-          testId="product-description-input"
-          multiline
-        />
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <NumberInput
-            name="price"
-            label={t('common.products.labels.price')}
-            placeholder="0"
-            testId="product-price-input"
+    <Dialog isOpen={isOpen} onClose={onClose} size="lg">
+      <Dialog.Heading>{titleText}</Dialog.Heading>
+      <Dialog.Content>
+        <Form onSubmit={submitProduct} className="space-y-6" defaultValues={product}>
+          <TextField
+            name="name"
+            label={t('common.products.labels.name')}
+            testId="product-name-input"
             required
           />
-          <NumberInput
-            name="vatPercent"
-            label={t('common.products.labels.vatPercent')}
-            placeholder="0"
-            testId="product-vat-input"
-            defaultValue={0}
-            required
+          <TextField
+            name="description"
+            label={t('common.products.labels.description')}
+            testId="product-description-input"
+            multiline
           />
-          <NumberInput
-            name="minimumQuantity"
-            label={t('common.products.labels.minimumQuantity')}
-            placeholder="0"
-            testId="product-minimum-quantity-input"
-          />
-        </div>
-        <div className="flex gap-2">
-          <Button type="submit" disabled={loading}>
-            {buttonText}
-          </Button>
-          <Button type="reset" variant="secondary" onClick={onClose}>
-            {t('common.buttons.cancel')}
-          </Button>
-        </div>
-      </Form>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <NumberInput
+              name="price"
+              label={t('common.products.labels.price')}
+              placeholder="0"
+              testId="product-price-input"
+              required
+            />
+            <NumberInput
+              name="vatPercent"
+              label={t('common.products.labels.vatPercent')}
+              placeholder="0"
+              testId="product-vat-input"
+              defaultValue={0}
+              required
+            />
+            <NumberInput
+              name="minimumQuantity"
+              label={t('common.products.labels.minimumQuantity')}
+              placeholder="0"
+              testId="product-minimum-quantity-input"
+            />
+          </div>
+          <Dialog.Footer>
+            <Button type="reset" variant="secondary" onClick={onClose}>
+              {t('common.buttons.cancel')}
+            </Button>
+            <Button type="submit" disabled={loading}>
+              {buttonText}
+            </Button>
+          </Dialog.Footer>
+        </Form>
+      </Dialog.Content>
     </Dialog>
   );
 };

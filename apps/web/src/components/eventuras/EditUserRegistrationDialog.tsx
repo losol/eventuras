@@ -6,14 +6,16 @@ export type EditUserRegistrationDialogProps = {
 
 const EditUserRegistrationDialog = (props: EditUserRegistrationDialogProps) => {
   return (
-    <Dialog title="Edit Participant" isOpen={props.editorOpen} onClose={() => {}}>
-      <div className="mt-2">
-        <p className="text-sm text-gray-500">
-          Go ahead and edit your orders below. Please note that mandatory products of an event
-          cannot be changed directly, please contact an administrator instead.
-        </p>
-      </div>
-      <div></div>
+    <Dialog isOpen={props.editorOpen} onClose={() => {}}>
+      <Dialog.Heading>Edit Participant</Dialog.Heading>
+      <Dialog.Content>
+        <div className="mt-2">
+          <p className="text-sm text-gray-500">
+            Go ahead and edit your orders below. Please note that mandatory products of an event
+            cannot be changed directly, please contact an administrator instead.
+          </p>
+        </div>
+      </Dialog.Content>
     </Dialog>
   );
 };
