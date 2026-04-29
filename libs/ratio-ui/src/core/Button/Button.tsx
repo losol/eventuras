@@ -24,6 +24,9 @@ export const buttonStyles = {
   outline:
     `border border-gray-700 hover:border-primary-500 hover:bg-primary-100/10 dark:hover:bg-primary-900 ` +
     `dark:text-white rounded-full ${ANIMATION_CLASSES}`,
+  danger:
+    `border font-bold bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600 ` +
+    `text-white rounded-full ${ANIMATION_CLASSES}`,
 };
 
 export const buttonSizes = {
