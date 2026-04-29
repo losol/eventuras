@@ -107,21 +107,3 @@ export const OverlayGlass: Story = {
   ),
 };
 
-/** Legacy API — still works, renders identically to the old Navbar. */
-export const LegacyTitle: Story = {
-  args: {
-    title: 'Eventuras Inc.',
-    sticky: true,
-  },
-};
-
-/** Legacy API with children. */
-export const LegacyWithChildren: Story = {
-  render: (args) => (
-    <Navbar {...args}>
-      <a href="/about" className="px-3">About</a>
-      <button type="button" className="btn-primary ml-2">Sign up</button>
-    </Navbar>
-  ),
-  args: { title: 'Acme Inc.' },
-};

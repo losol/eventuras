@@ -1,12 +1,13 @@
-import type { Metadata } from 'next';
 import React from 'react';
+import type { Metadata } from 'next';
 
 import { Navbar } from '@eventuras/ratio-ui/core/Navbar';
 
-import './globals.css';
 import { ThemeProvider } from './providers';
 import { SearchButton } from './search-wrapper';
 import { DocsThemeToggle } from './theme-toggle';
+
+import './globals.css';
 
 export const metadata: Metadata = {
   title: {
@@ -28,11 +29,16 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       </head>
       <body className="bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100">
         <ThemeProvider>
-          <Navbar title="Eventuras Docs" titleHref="/" sticky>
-            <div className="flex items-center gap-2">
+          <Navbar sticky>
+            <Navbar.Brand>
+              <a href="/" className="text-lg tracking-tight whitespace-nowrap no-underline">
+                Eventuras Docs
+              </a>
+            </Navbar.Brand>
+            <Navbar.Content className="justify-end">
               <SearchButton />
               <DocsThemeToggle />
-            </div>
+            </Navbar.Content>
           </Navbar>
           <div className="min-h-screen">
             {children}

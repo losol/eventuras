@@ -34,13 +34,17 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ title }) => {
 
   return (
     <header className="relative z-20" data-theme={theme ?? undefined}>
-      <Navbar
-        title={title}
-        titleHref="/"
-        LinkComponent={Link}
-        bgColor="bg-transparent"
-      >
-        <CartButton locale={locale} />
+      <Navbar bgColor="bg-transparent">
+        {title && (
+          <Navbar.Brand>
+            <Link href="/" className="text-lg tracking-tight whitespace-nowrap no-underline">
+              {title}
+            </Link>
+          </Navbar.Brand>
+        )}
+        <Navbar.Content className="justify-end">
+          <CartButton locale={locale} />
+        </Navbar.Content>
       </Navbar>
     </header>
   );

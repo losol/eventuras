@@ -16,15 +16,15 @@ type AdminNavbarProps = {
 
 export function AdminNavbar({ user }: Readonly<AdminNavbarProps>) {
   return (
-    <Navbar
-      title="Idem Admin"
-      titleHref="/admin"
-      bgColor="bg-primary-700"
-      bgDark
-      sticky
-      LinkComponent={Link}
-    >
-      <UserMenu user={user} />
+    <Navbar bgColor="bg-primary-700" bgDark sticky>
+      <Navbar.Brand>
+        <Link href="/admin" className="text-lg tracking-tight whitespace-nowrap no-underline">
+          Idem Admin
+        </Link>
+      </Navbar.Brand>
+      <Navbar.Content className="justify-end">
+        <UserMenu user={user} />
+      </Navbar.Content>
     </Navbar>
   );
 }
