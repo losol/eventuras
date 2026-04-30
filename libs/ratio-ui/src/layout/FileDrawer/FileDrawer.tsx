@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react';
 
 import { Button } from '../../core/Button';
-import { Heading } from '../../core/Heading';
 import { Drawer } from '../Drawer/Drawer';
 
 export interface FileDrawerProps {
@@ -62,7 +61,7 @@ export const FileDrawer = ({
   return (
     <Drawer isOpen={isOpen} onCancel={onCancel}>
       <Drawer.Header>
-        <Heading as="h2">{title}</Heading>
+        <Drawer.Heading>{title}</Drawer.Heading>
       </Drawer.Header>
       <Drawer.Body className="flex flex-col">
         {iframeSrc && (

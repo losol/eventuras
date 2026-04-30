@@ -29,8 +29,10 @@ const OpenDrawerComponent: React.FC = () => {
   return (
     <div>
       <p>{getRandomHipsterIpsum()}</p>
-      <Drawer isOpen={isOpen} onSave={() => setIsOpen(false)} onCancel={() => setIsOpen(false)}>
-        <Drawer.Header>Drawer Header</Drawer.Header>
+      <Drawer isOpen={isOpen} onCancel={() => setIsOpen(false)}>
+        <Drawer.Header>
+          <Drawer.Heading>Drawer Header</Drawer.Heading>
+        </Drawer.Header>
         <Drawer.Body>
           <p>{getRandomHipsterIpsum()}</p>
         </Drawer.Body>
@@ -49,8 +51,10 @@ const ClosedDrawerComponent: React.FC = () => {
     <div>
       <p>This is some content before the drawer.</p>
       <button onClick={() => setIsOpen(true)}>Open Drawer</button>
-      <Drawer isOpen={isOpen} onSave={() => setIsOpen(false)} onCancel={() => setIsOpen(false)}>
-        <Drawer.Header>Drawer Header sample</Drawer.Header>
+      <Drawer isOpen={isOpen} onCancel={() => setIsOpen(false)}>
+        <Drawer.Header>
+          <Drawer.Heading>Drawer Header sample</Drawer.Heading>
+        </Drawer.Header>
         <Drawer.Body>
           <p>{getRandomHipsterIpsum()}</p>
         </Drawer.Body>
@@ -65,11 +69,6 @@ export const ClosedDrawer = () => <ClosedDrawerComponent />;
 const DrawerWithActionsComponent: React.FC = () => {
   const [isOpen, setIsOpen] = useState(true);
 
-  const handleSave = () => {
-    alert('Save action triggered!');
-    setIsOpen(false);
-  };
-
   const handleCancel = () => {
     alert('Cancel action triggered!');
     setIsOpen(false);
@@ -78,8 +77,10 @@ const DrawerWithActionsComponent: React.FC = () => {
   return (
     <div>
       <button onClick={() => setIsOpen(true)}>Open Drawer</button>
-      <Drawer isOpen={isOpen} onSave={handleSave} onCancel={handleCancel}>
-        <Drawer.Header>Drawer With Save and Cancel</Drawer.Header>
+      <Drawer isOpen={isOpen} onCancel={handleCancel}>
+        <Drawer.Header>
+          <Drawer.Heading>Drawer With Cancel</Drawer.Heading>
+        </Drawer.Header>
         <Drawer.Body>
           <p>{getRandomHipsterIpsum()}</p>
         </Drawer.Body>
@@ -88,4 +89,4 @@ const DrawerWithActionsComponent: React.FC = () => {
   );
 };
 
-export const DrawerWithSaveAndCancel = () => <DrawerWithActionsComponent />;
+export const DrawerWithCancel = () => <DrawerWithActionsComponent />;
