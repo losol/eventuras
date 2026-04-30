@@ -13,44 +13,44 @@
    Tailwind v4 theme: color scales (oklch)
    -------------------------------------------- */
 @theme {
-  /* Primary - Ocean Teal */
-  --color-primary-50: oklch(0.9898 0.0026 229.9);
-  --color-primary-100: oklch(0.9282 0.0203 216.4);
-  --color-primary-200: oklch(0.8659 0.0390 215.1);
-  --color-primary-300: oklch(0.7743 0.0618 216.3);
-  --color-primary-400: oklch(0.6753 0.0768 215.9);
-  --color-primary-500: oklch(0.6096 0.0745 218.3);
-  --color-primary-600: oklch(0.5227 0.0675 224.9);
-  --color-primary-700: oklch(0.4578 0.0567 219.2);
-  --color-primary-800: oklch(0.3412 0.0399 221.7);
-  --color-primary-900: oklch(0.2736 0.0317 219.8);
-  --color-primary-950: oklch(0.1831 0.0213 231.0);
+  /* Primary - Linseed Blue (classic linoljemaling, chalky pigment) */
+  --color-primary-50: oklch(0.985 0.004 232);
+  --color-primary-100: oklch(0.948 0.018 230);
+  --color-primary-200: oklch(0.895 0.038 228);
+  --color-primary-300: oklch(0.820 0.060 226);
+  --color-primary-400: oklch(0.730 0.078 224);
+  --color-primary-500: oklch(0.625 0.085 224);
+  --color-primary-600: oklch(0.520 0.082 226);
+  --color-primary-700: oklch(0.420 0.072 228);
+  --color-primary-800: oklch(0.330 0.058 230);
+  --color-primary-900: oklch(0.245 0.044 232);
+  --color-primary-950: oklch(0.165 0.030 234);
 
-  /* Secondary - Sunny Yellow */
-  --color-secondary-50: oklch(0.9964 0.0066 97.5);
-  --color-secondary-100: oklch(0.9645 0.0603 96.2);
-  --color-secondary-200: oklch(0.9257 0.1174 94.9);
-  --color-secondary-300: oklch(0.8836 0.1564 91.1);
-  --color-secondary-400: oklch(0.8466 0.1677 84.6);
-  --color-secondary-500: oklch(0.8247 0.1474 73.0);
-  --color-secondary-600: oklch(0.7093 0.1551 67.2);
-  --color-secondary-700: oklch(0.5913 0.1415 56.2);
-  --color-secondary-800: oklch(0.4355 0.1019 57.1);
-  --color-secondary-900: oklch(0.3217 0.0714 60.2);
-  --color-secondary-950: oklch(0.1904 0.0373 65.9);
+  /* Secondary - Linen (warm off-white, low-chroma cream) */
+  --color-secondary-50: oklch(0.992 0.002 90);
+  --color-secondary-100: oklch(0.985 0.004 88);
+  --color-secondary-200: oklch(0.962 0.012 88);
+  --color-secondary-300: oklch(0.928 0.022 85);
+  --color-secondary-400: oklch(0.880 0.025 82);
+  --color-secondary-500: oklch(0.785 0.028 82);
+  --color-secondary-600: oklch(0.640 0.030 82);
+  --color-secondary-700: oklch(0.495 0.030 84);
+  --color-secondary-800: oklch(0.378 0.024 86);
+  --color-secondary-900: oklch(0.275 0.018 88);
+  --color-secondary-950: oklch(0.175 0.012 90);
 
-  /* Accent - Warm Terracotta */
-  --color-accent-50: oklch(0.9931 0.0034 38.5);
-  --color-accent-100: oklch(0.9503 0.0228 41.3);
-  --color-accent-200: oklch(0.8957 0.0517 40.6);
-  --color-accent-300: oklch(0.8226 0.0911 39.2);
-  --color-accent-400: oklch(0.7402 0.1370 35.6);
-  --color-accent-500: oklch(0.6878 0.1331 35.8);
-  --color-accent-600: oklch(0.6047 0.1438 36.5);
-  --color-accent-700: oklch(0.5251 0.1305 34.4);
-  --color-accent-800: oklch(0.3861 0.0934 33.9);
-  --color-accent-900: oklch(0.2670 0.0572 34.1);
-  --color-accent-950: oklch(0.1712 0.0273 32.6);
+  /* Accent - Ochre (warm clay-yellow, the playful note) */
+  --color-accent-50: oklch(0.988 0.012 92);
+  --color-accent-100: oklch(0.965 0.040 90);
+  --color-accent-200: oklch(0.928 0.075 88);
+  --color-accent-300: oklch(0.880 0.105 88);
+  --color-accent-400: oklch(0.815 0.125 85);
+  --color-accent-500: oklch(0.745 0.130 82);
+  --color-accent-600: oklch(0.640 0.125 80);
+  --color-accent-700: oklch(0.520 0.105 78);
+  --color-accent-800: oklch(0.405 0.085 76);
+  --color-accent-900: oklch(0.295 0.060 75);
+  --color-accent-950: oklch(0.180 0.038 74);
 
   /* Neutral */
   --color-neutral-50: oklch(0.9851 0.0001 263.3);
@@ -154,6 +154,7 @@
   /* Surfaces */
   --color-card: var(--card);
   --color-card-hover: var(--card-hover);
+  --color-surface: var(--surface);
 
   /* Overlays */
   --color-overlay-hover: var(--overlay-hover);
@@ -193,22 +194,25 @@
    Semantic tokens (light)
    -------------------------------------------- */
 :root {
-  --primary: var(--color-primary-500);
-  --secondary: var(--color-secondary-500);
-  --accent: var(--color-accent-500);
+  /* Linseed-600 picks up AAA contrast on Linen for links/CTAs.
+     Page surface is Linen-200 — never pure white — so the warm
+     naturmaling temperature carries through everywhere. */
+  --primary: var(--color-primary-600);
+  --secondary: var(--color-secondary-200);
+  --accent: var(--color-accent-700);
 
   --text: var(--color-neutral-900);
   --text-muted: var(--color-neutral-700);
   --text-subtle: var(--color-neutral-500);
-  --text-light: var(--color-neutral-50);
+  --text-light: var(--color-secondary-100);
   --text-dark: var(--color-neutral-900);
 
-  --text-on-primary: var(--color-neutral-50);
-  --text-on-secondary: #1A1405;
-  --text-on-accent: var(--color-neutral-50);
+  --text-on-primary: var(--color-secondary-100);
+  --text-on-secondary: var(--color-neutral-900);
+  --text-on-accent: var(--color-secondary-100);
 
-  --border-1: var(--color-neutral-200);
-  --border-2: var(--color-neutral-300);
+  --border-1: var(--color-secondary-300);
+  --border-2: var(--color-secondary-400);
 
   --alpha-1: 0.04;
   --alpha-2: 0.08;
@@ -219,10 +223,11 @@
   --overlay-press: rgba(var(--overlay-ink), var(--alpha-2));
   --overlay-drag: rgba(var(--overlay-ink), var(--alpha-3));
 
-  --card: rgb(255 255 255 / 0.5);
-  --card-hover: rgb(255 255 255 / 0.65);
+  --card: rgb(255 255 255 / 0.55);
+  --card-hover: rgb(255 255 255 / 0.75);
+  --surface: var(--color-secondary-200);
 
-  --focus-ring: rgba(74, 142, 161, 0.45);
+  --focus-ring: oklch(0.520 0.082 226 / 0.45);
 
   /* Status */
   --success-solid: #2E9A62;
@@ -254,22 +259,25 @@
    Semantic tokens (dark)
    -------------------------------------------- */
 :root[data-theme="dark"] {
+  /* Surface = Linseed-950, not black. Same DNA, different gravity.
+     Anchors lift one step lighter so they glow on the dark surface:
+     primary 600→400, accent 700→300. Text stays in the Linen family. */
   --primary: var(--color-primary-400);
-  --secondary: var(--color-secondary-400);
-  --accent: var(--color-accent-400);
+  --secondary: var(--color-primary-900);
+  --accent: var(--color-accent-300);
 
-  --text: var(--color-neutral-50);
-  --text-muted: var(--color-neutral-200);
-  --text-subtle: var(--color-neutral-400);
-  --text-light: var(--color-neutral-50);
+  --text: var(--color-secondary-200);
+  --text-muted: var(--color-secondary-600);
+  --text-subtle: var(--color-secondary-700);
+  --text-light: var(--color-secondary-100);
   --text-dark: var(--color-neutral-900);
 
-  --text-on-primary: #071114;
-  --text-on-secondary: #1A1405;
-  --text-on-accent: #160B08;
+  --text-on-primary: var(--color-primary-950);
+  --text-on-secondary: var(--color-secondary-200);
+  --text-on-accent: var(--color-accent-950);
 
-  --border-1: rgba(250, 247, 243, 0.10);
-  --border-2: rgba(250, 247, 243, 0.16);
+  --border-1: var(--color-primary-800);
+  --border-2: var(--color-primary-700);
 
   --alpha-1: 0.06;
   --alpha-2: 0.10;
@@ -280,10 +288,11 @@
   --overlay-press: rgba(var(--overlay-ink), var(--alpha-2));
   --overlay-drag: rgba(var(--overlay-ink), var(--alpha-3));
 
-  --card: rgb(0 0 0 / 0.5);
-  --card-hover: rgb(0 0 0 / 0.65);
+  --card: oklch(0.220 0.040 232);
+  --card-hover: oklch(0.260 0.046 232);
+  --surface: var(--color-primary-950);
 
-  --focus-ring: rgba(91, 163, 181, 0.55);
+  --focus-ring: oklch(0.730 0.078 224 / 0.45);
 
   /* Status (dark) */
   --success-bg: rgba(46, 154, 98, 0.16);
@@ -308,4 +317,5 @@
    -------------------------------------------- */
 html {
   color: var(--text);
+  background-color: var(--surface);
 }

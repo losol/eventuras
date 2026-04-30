@@ -10,7 +10,7 @@ type ScaleConfig = {
 /* Tailwind classes must be written out statically so the scanner picks them up */
 const scales: Record<string, ScaleConfig> = {
   primary: {
-    label: 'Primary — Ocean Teal',
+    label: 'Primary — Linseed Blue',
     steps: [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950],
     bg: {
       50: 'bg-primary-50', 100: 'bg-primary-100', 200: 'bg-primary-200', 300: 'bg-primary-300',
@@ -19,7 +19,7 @@ const scales: Record<string, ScaleConfig> = {
     },
   },
   secondary: {
-    label: 'Secondary — Sunny Yellow',
+    label: 'Secondary — Linen',
     steps: [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950],
     bg: {
       50: 'bg-secondary-50', 100: 'bg-secondary-100', 200: 'bg-secondary-200', 300: 'bg-secondary-300',
@@ -28,7 +28,7 @@ const scales: Record<string, ScaleConfig> = {
     },
   },
   accent: {
-    label: 'Accent — Warm Terracotta',
+    label: 'Accent — Ochre',
     steps: [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950],
     bg: {
       50: 'bg-accent-50', 100: 'bg-accent-100', 200: 'bg-accent-200', 300: 'bg-accent-300',
