@@ -40,7 +40,10 @@ export const Card: React.FC<CardProps> = ({
   testId,
   ...spacingAndBorder
 }) => {
-  const baseClasses = variant === 'tile' ? 'relative rounded-lg' : 'p-4 relative rounded-lg';
+  const baseClasses =
+    variant === 'tile'
+      ? 'p-6 relative rounded-lg border border-border-1'
+      : 'p-4 relative rounded-lg';
   const transitionClasses = hoverEffect ? 'transform transition duration-300 ease-in-out' : '';
   const hoverClasses = hoverEffect ? 'hover:bg-card-hover transition-colors duration-200' : '';
 
@@ -49,7 +52,7 @@ export const Card: React.FC<CardProps> = ({
     wide: 'bg-card mx-auto min-h-[33vh]',
     outline: 'border border-border-1 bg-transparent',
     transparent: 'bg-transparent',
-    tile: 'p-6 border border-(--border-1) bg-(--card)',
+    tile: 'bg-card',
   };
 
   const bgClasses = color ? surfaceBgClasses[color] : variantStyles[variant];
