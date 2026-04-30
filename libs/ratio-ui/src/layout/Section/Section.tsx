@@ -79,12 +79,15 @@ const SectionRoot: SectionComponent = (props => {
  * Header row for a section — eyebrow + title on the left, optional
  * `Section.Link`(s) on the right. The component picks up `Section.Link`
  * children automatically and groups them on the right via
- * `justify-between`; everything else (eyebrow, title, free markup) is
- * stacked on the left in a flex column. Drop the link to get a
- * left-aligned single-column header.
+ * `justify-between`; `Section.Eyebrow` + `Section.Title` are wrapped in
+ * `Heading.Group` (renders `<hgroup>`) for semantic grouping; any other
+ * "free markup" children render below the heading group as siblings in
+ * the left column. Drop the link to get a left-aligned single-column
+ * header.
  *
- * `Section.Link` must be a direct child — links nested inside fragments
- * or other wrappers are treated as part of the left column.
+ * `Section.Link`, `Section.Eyebrow`, and `Section.Title` must be direct
+ * children — items nested inside fragments or other wrappers are treated
+ * as free markup.
  *
  * @example
  * ```tsx
@@ -99,14 +102,21 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({ children, className }) =>
   const childArray = React.Children.toArray(children);
   const isLink = (child: React.ReactNode): boolean =>
     React.isValidElement(child) && child.type === SectionLink;
+  const isHeadingPair = (child: React.ReactNode): boolean =>
+    React.isValidElement(child) && (child.type === SectionEyebrow || child.type === SectionTitle);
+
   const links = childArray.filter(isLink);
-  const rest = childArray.filter(child => !isLink(child));
+  const headingPair = childArray.filter(isHeadingPair);
+  const freeMarkup = childArray.filter(child => !isLink(child) && !isHeadingPair(child));
 
   return (
     <div
       className={cn('flex justify-between items-baseline gap-6 flex-wrap mb-9', className)}
     >
-      <Heading.Group className="flex flex-col">{rest}</Heading.Group>
+      <div className="flex flex-col">
+        {headingPair.length > 0 && <Heading.Group>{headingPair}</Heading.Group>}
+        {freeMarkup}
+      </div>
       {links.length > 0 && <div className="flex items-baseline gap-4">{links}</div>}
     </div>
   );
