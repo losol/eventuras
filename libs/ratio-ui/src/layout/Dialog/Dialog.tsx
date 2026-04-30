@@ -1,6 +1,10 @@
-import { Overlay } from '@react-aria/overlays';
 import { ReactNode } from 'react';
-import { Dialog as AriaDialog, Heading as AriaHeading } from 'react-aria-components';
+import {
+  Dialog as AriaDialog,
+  Heading as AriaHeading,
+  Modal,
+  ModalOverlay,
+} from 'react-aria-components';
 import { buildSpacingClasses } from '../../tokens/spacing';
 import { cn } from '../../utils/cn';
 
@@ -26,6 +30,13 @@ export interface DialogProps {
   testId?: string;
   /** Sets `role="alertdialog"` for prompts that interrupt the user. */
   role?: 'dialog' | 'alertdialog';
+  /**
+   * Whether clicking the backdrop closes the dialog. Defaults to true.
+   * Pair with `isKeyboardDismissDisabled` to fully prevent dismissal.
+   */
+  isDismissable?: boolean;
+  /** When true, Escape no longer closes the dialog. Defaults to false. */
+  isKeyboardDismissDisabled?: boolean;
 }
 
 const DialogRoot = ({
@@ -35,35 +46,35 @@ const DialogRoot = ({
   size,
   testId,
   role = 'dialog',
+  isDismissable = true,
+  isKeyboardDismissDisabled = false,
 }: Readonly<DialogProps>) => {
-  if (!isOpen) {
-    return null;
-  }
-
   const panelWidth = sizeClasses[size ?? 'md'];
 
   return (
-    <Overlay>
-      <div
-        data-testid={testId}
-        className="flex min-h-full min-w-full items-start justify-center p-4 text-center fixed inset-0 z-100 overflow-auto h-full bg-black/50"
-        role="presentation"
-        onClick={e => {
-          if (e.target === e.currentTarget) onClose();
-        }}
-        onKeyDown={e => {
-          if (e.key === 'Escape') onClose();
-        }}
+    <ModalOverlay
+      isOpen={isOpen}
+      onOpenChange={open => {
+        if (!open) onClose();
+      }}
+      isDismissable={isDismissable}
+      isKeyboardDismissDisabled={isKeyboardDismissDisabled}
+      data-testid={testId}
+      className="flex min-h-full min-w-full items-start justify-center p-4 text-center fixed inset-0 z-100 overflow-auto h-full bg-black/50"
+    >
+      <Modal
+        className={cn(
+          'w-full',
+          panelWidth,
+          'transform overflow-hidden rounded-2xl bg-white dark:bg-slate-700 dark:text-white',
+          'p-6 text-left align-middle shadow-xl transition-all',
+        )}
       >
-        <div
-          className={`w-full ${panelWidth} transform overflow-hidden rounded-2xl bg-white dark:bg-slate-700 dark:text-white p-6 text-left align-middle shadow-xl transition-all`}
-        >
-          <AriaDialog role={role} className="relative z-10">
-            {children}
-          </AriaDialog>
-        </div>
-      </div>
-    </Overlay>
+        <AriaDialog role={role} className="relative z-10 outline-hidden">
+          {children}
+        </AriaDialog>
+      </Modal>
+    </ModalOverlay>
   );
 };
 

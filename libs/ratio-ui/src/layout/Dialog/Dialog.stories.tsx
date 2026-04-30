@@ -124,3 +124,34 @@ const LongContentDemo = (args: Omit<DialogProps, 'isOpen' | 'onClose' | 'childre
 export const LongContent: Story = {
   render: args => <LongContentDemo {...args} />,
 };
+
+const NonDismissableDemo = () => {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Button onClick={() => setOpen(true)}>Open Dialog</Button>
+      <Dialog isOpen={open} onClose={() => setOpen(false)} isDismissable={false}>
+        <Dialog.Heading>Action required</Dialog.Heading>
+        <Dialog.Content>
+          <p>
+            Clicking the backdrop will not close this dialog. Press Escape or click Continue to
+            proceed. Add <code>isKeyboardDismissDisabled</code> too if you also need to disable
+            Escape.
+          </p>
+        </Dialog.Content>
+        <Dialog.Footer>
+          <Button onClick={() => setOpen(false)}>Continue</Button>
+        </Dialog.Footer>
+      </Dialog>
+    </>
+  );
+};
+
+/**
+ * Dialog that can't be closed by clicking the backdrop. Useful for forced
+ * confirmation flows where the user must take an explicit action. Pair with
+ * `isKeyboardDismissDisabled` to also disable Escape.
+ */
+export const NonDismissable: Story = {
+  render: () => <NonDismissableDemo />,
+};
