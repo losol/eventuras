@@ -34,7 +34,6 @@ export const FooterClient: React.FC<FooterClientProps> = ({ navigation }) => {
             <Heading
               as="h3"
               className="pb-2 text-sm font-semibold uppercase"
-              onDark
               padding="none"
             >
               {navBlock.title}

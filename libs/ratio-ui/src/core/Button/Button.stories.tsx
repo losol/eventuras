@@ -12,7 +12,6 @@ const meta: Meta<typeof Button> = {
     disabled: false,
     loading: false,
     block: false,
-    onDark: false,
     icon: false,
     children: 'Button',
     onClick: fn(),
@@ -25,7 +24,6 @@ const meta: Meta<typeof Button> = {
     disabled: { control: 'boolean' },
     loading: { control: 'boolean' },
     block: { control: 'boolean' },
-    onDark: { control: 'boolean' },
     icon: {
       control: 'boolean',
       description: 'Toggle to show a Home icon before the label',
@@ -84,7 +82,7 @@ export const AllCombinations = () => {
     'text',
   ];
 
-  const states: { label: string; props: Partial<ButtonProps> }[] = [
+  const states: { label: string; props: Partial<ButtonProps>; onSurfaceDark?: boolean }[] = [
     { label: 'Default', props: {} },
     { label: 'Disabled', props: { disabled: true } },
     { label: 'Loading', props: { loading: true } },
@@ -93,7 +91,7 @@ export const AllCombinations = () => {
       label: 'Icon + Loading',
       props: { icon: <Home strokeWidth={1} />, loading: true },
     },
-    { label: 'On Dark', props: { onDark: true } },
+    { label: 'On Dark Surface', props: {}, onSurfaceDark: true },
   ];
 
   return (
@@ -102,7 +100,7 @@ export const AllCombinations = () => {
         <div key={variant}>
           <h4 className="mb-2 font-semibold">{variant}</h4>
           <div className="flex flex-wrap gap-2">
-            {states.map(({ label, props }) => {
+            {states.map(({ label, props, onSurfaceDark }) => {
               const btn = (
                 <Button
                   key={`${variant}-${label}`}
@@ -113,12 +111,11 @@ export const AllCombinations = () => {
                 </Button>
               );
 
-              // If this is the On Dark case, wrap in a black bg
-              if (props.onDark) {
+              if (onSurfaceDark) {
                 return (
                   <div
                     key={`${variant}-${label}`}
-                    className="bg-black p-2 rounded"
+                    className="surface-dark bg-black p-2 rounded"
                   >
                     {btn}
                   </div>
