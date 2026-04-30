@@ -26,12 +26,30 @@
 /* Dialog size variants — safelisted because the class name is looked up
    from the size prop at runtime, not written inline. */
 @source inline("max-w-md max-w-lg max-w-2xl max-w-4xl");
+/* Surface tone utilities — override --text for descendants. Used by
+   components like Heading/Button/Link/Navbar that read `var(--text)`
+   so a parent container can declare "everything inside me is on a
+   dark/light surface" without each child needing a per-component prop. */
+@source inline("surface-dark surface-light");
 
 /* Dark mode variant */
 @custom-variant dark (&:where(html[data-theme="dark"] &, body[data-theme="dark"] &, [data-theme="dark"] *));
 
 /* Design tokens */
 @import "./tokens/index.css";
+
+/* Surface tone overrides. Composes with the theme-aware default `--text`
+   from tokens/theme.css: in unmarked containers `--text` follows the
+   page theme; inside `.surface-dark`/`.surface-light` it's pinned via
+   the semantic `--text-light`/`--text-dark` tokens (so palette changes
+   propagate automatically). */
+.surface-dark {
+  --text: var(--text-light);
+}
+
+.surface-light {
+  --text: var(--text-dark);
+}
 
 /* Base styles */
 @layer base {

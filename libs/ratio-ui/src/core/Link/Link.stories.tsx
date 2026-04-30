@@ -12,7 +12,6 @@ const meta: Meta<typeof Link> = {
     children: 'Link text',
     variant: undefined,
     block: false,
-    onDark: false,
     linkOverlay: false,
   },
   argTypes: {
@@ -24,7 +23,6 @@ const meta: Meta<typeof Link> = {
       description: 'Style the link as a button',
     },
     block: { control: 'boolean' },
-    onDark: { control: 'boolean' },
     linkOverlay: { control: 'boolean' },
   },
 };
@@ -137,16 +135,14 @@ export const AllVariants = () => {
         </div>
       </div>
 
-      <div className="bg-gray-900 p-4 rounded">
-        <h4 className="mb-2 font-semibold text-white">On Dark Background</h4>
+      <div className="surface-dark bg-gray-900 p-4 rounded">
+        <h4 className="mb-2 font-semibold text-white">On Dark Surface</h4>
         <div className="flex flex-wrap gap-2">
-          <Link href="#" onDark>
-            Text link
-          </Link>
-          <Link href="#" variant="button-primary" onDark>
+          <Link href="#">Text link</Link>
+          <Link href="#" variant="button-primary">
             Primary
           </Link>
-          <Link href="#" variant="button-secondary" onDark>
+          <Link href="#" variant="button-secondary">
             Secondary
           </Link>
         </div>

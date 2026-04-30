@@ -23,7 +23,7 @@ export const buttonStyles = {
   text: `bg-transparent hover:bg-primary-200 hover:bg-opacity-20 rounded-full ${ANIMATION_CLASSES}`,
   outline:
     `border border-gray-700 hover:border-primary-500 hover:bg-primary-100/10 dark:hover:bg-primary-900 ` +
-    `dark:text-white rounded-full ${ANIMATION_CLASSES}`,
+    `rounded-full ${ANIMATION_CLASSES}`,
   danger:
     `border font-bold bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600 ` +
     `text-white rounded-full ${ANIMATION_CLASSES}`,
@@ -40,7 +40,6 @@ export interface ButtonProps
   ariaLabel?: string;
   icon?: React.ReactNode;
   loading?: boolean;
-  onDark?: boolean;
   variant?: keyof typeof buttonStyles;
   size?: keyof typeof buttonSizes;
   block?: boolean;
@@ -52,7 +51,6 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   {
     variant = 'primary',
     size = 'md',
-    onDark = false,
     block = false,
     disabled = false,
     loading = false,
@@ -72,13 +70,11 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   const displayClass = block ? 'w-full' : '';
   const variantClass = buttonStyles[variant];
 
+  // Transparent variants inherit text color from the surface (--text token,
+  // overridable via .surface-dark / .surface-light on a parent). Filled
+  // variants ship their own text color via buttonStyles.
   const isTransparent = variant === 'text' || variant === 'outline';
-  let textColorClass = '';
-  if (isTransparent) {
-    textColorClass = onDark
-      ? 'text-white'
-      : 'text-black dark:text-white';
-  }
+  const textColorClass = isTransparent ? 'text-(--text)' : '';
 
   const disabledClasses = (disabled || loading) ? 'opacity-75 cursor-not-allowed' : '';
 
