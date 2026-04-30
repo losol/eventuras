@@ -16,10 +16,16 @@ export interface NavbarProps {
   overlay?: boolean;
   /**
    * Translucent dark background with backdrop-blur. Composes with `overlay`
-   * for a glass hero-overlay look. Pair with `surface-dark` className when
-   * the resulting background is dark enough that you need light text.
+   * for a glass hero-overlay look. Pair with `dark` when the resulting
+   * background is dark enough that you need light text.
    */
   glass?: boolean;
+  /**
+   * Marks the navbar as a dark surface so the brand and content text
+   * use the light `var(--text)` color. Use for primary-toned navbars
+   * or glass overlays on dark heroes.
+   */
+  dark?: boolean;
   className?: string;
 }
 
@@ -55,6 +61,7 @@ const NavbarRoot = ({
   sticky = false,
   overlay = false,
   glass = false,
+  dark = false,
   className,
 }: Readonly<NavbarProps>) => {
   // overlay takes precedence over sticky when both are passed.
@@ -66,7 +73,16 @@ const NavbarRoot = ({
   const glassClass = glass ? 'bg-black/20 dark:bg-white/10  backdrop-blur-md' : '';
 
   return (
-    <nav className={cn(bgColor, positionClass, glassClass, 'text-(--text) m-0 p-0', className)}>
+    <nav
+      className={cn(
+        bgColor,
+        positionClass,
+        glassClass,
+        dark && 'surface-dark',
+        'text-(--text) m-0 p-0',
+        className,
+      )}
+    >
       <div className="container flex flex-wrap items-center mx-auto gap-3 py-2 px-3">
         {children}
       </div>

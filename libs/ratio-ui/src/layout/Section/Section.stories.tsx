@@ -77,14 +77,39 @@ export const AllColors: Story = {
 export const FullWidthHero: Story = {
   render: () => (
     <Section
-      className="bg-linear-to-r from-blue-600 to-purple-600 text-white"
+      dark
+      className="bg-linear-to-r from-blue-600 to-purple-600"
       paddingY="xl"
     >
-      <div className="container mx-auto px-4 text-center">
-        <h1 className="text-4xl md:text-6xl font-bold mb-4">Welcome to Eventuras</h1>
+      <Container>
+        <Heading as="h1" marginBottom="sm">
+          Welcome to Eventuras
+        </Heading>
         <p className="text-xl mb-8">Manage your events with ease</p>
         <Button variant="secondary">Get Started</Button>
-      </div>
+      </Container>
+    </Section>
+  ),
+};
+
+/**
+ * `dark` declares the section as a dark-toned surface so child components
+ * (Heading, Button text/outline variants, Link, …) read the right `--text`
+ * color automatically — no per-component overrides needed.
+ */
+export const DarkSurface: Story = {
+  render: () => (
+    <Section dark className="bg-slate-900" paddingY="xl">
+      <Container>
+        <Heading as="h2" marginBottom="sm">
+          Dark surface section
+        </Heading>
+        <p className="mb-4">
+          The Heading and this paragraph both inherit `var(--text)`, which is
+          pinned to a light value inside <code>{'<Section dark>'}</code>.
+        </p>
+        <Button variant="outline">Outline button</Button>
+      </Container>
     </Section>
   ),
 };
