@@ -69,7 +69,8 @@
       "import": "./dist/utils/index.js"
     },
     "./ratio-ui.css": "./dist/ratio-ui.css",
-    "./global.css": "./dist/global.css"
+    "./global.css": "./dist/global.css",
+    "./fonts.css": "./src/fonts.css"
   },
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -77,7 +78,9 @@
   "files": [
     "dist",
     "src/global.css",
-    "src/tokens"
+    "src/tokens",
+    "src/fonts",
+    "src/fonts.css"
   ],
   "scripts": {
     "build": "tsc && vite build",

@@ -1,0 +1,50 @@
+/* ============================================================
+   Ratio UI — Brand fonts (opt-in)
+   ============================================================
+   Self-hosted variable WOFF2 for Source Serif 4 (display) and
+   Source Sans 3 (body). Both axes (weight + italic) covered.
+   Licensed under SIL OFL 1.1 — see ./fonts/OFL.txt.
+
+   This stylesheet is shipped as-is (not processed by the lib's
+   bundler) so the @font-face URLs resolve through the consumer's
+   own asset pipeline and the WOFF2 files stay as separate assets.
+   Import it from your app's root once:
+
+     import '@eventuras/ratio-ui/fonts.css';
+
+   The base type tokens in `tokens/typography.css` reference these
+   font families. Without this import the consumer's browser falls
+   back to the system serif/sans stack defined in the same tokens.
+   ============================================================ */
+
+@font-face {
+  font-family: "Source Serif 4";
+  src: url("./fonts/SourceSerif4-VariableFont_opsz_wght.woff2") format("woff2");
+  font-weight: 200 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Source Serif 4";
+  src: url("./fonts/SourceSerif4-Italic-VariableFont_opsz_wght.woff2") format("woff2");
+  font-weight: 200 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Source Sans 3";
+  src: url("./fonts/SourceSans3-VariableFont_wght.woff2") format("woff2");
+  font-weight: 200 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Source Sans 3";
+  src: url("./fonts/SourceSans3-Italic-VariableFont_wght.woff2") format("woff2");
+  font-weight: 200 900;
+  font-style: italic;
+  font-display: swap;
+}
