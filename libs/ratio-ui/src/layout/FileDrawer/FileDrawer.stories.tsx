@@ -41,7 +41,7 @@ export const WithHtmlContent: Story = {
     title: 'Certificate Preview',
     content: sampleHtml,
     closeLabel: 'Close',
-    onCancel: () => {},
+    onClose: () => {},
   },
 };
 
@@ -53,7 +53,7 @@ export const WithDownload: Story = {
     downloadFilename: 'certificate.html',
     downloadLabel: 'Download',
     closeLabel: 'Close',
-    onCancel: () => {},
+    onClose: () => {},
   },
 };
 
@@ -65,7 +65,7 @@ const InteractiveExample = () => {
       <Button onClick={() => setHtml(sampleHtml)}>Preview Certificate</Button>
       <FileDrawer
         isOpen={!!html}
-        onCancel={() => setHtml(null)}
+        onClose={() => setHtml(null)}
         title="Certificate Preview"
         content={html ?? undefined}
       />

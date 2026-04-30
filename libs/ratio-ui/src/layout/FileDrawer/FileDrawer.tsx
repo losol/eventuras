@@ -5,7 +5,7 @@ import { Drawer } from '../Drawer/Drawer';
 
 export interface FileDrawerProps {
   isOpen: boolean;
-  onCancel: () => void;
+  onClose: () => void;
   title: string;
   /** Raw file content (HTML string, SVG, etc.) */
   content?: string;
@@ -28,7 +28,7 @@ export interface FileDrawerProps {
  */
 export const FileDrawer = ({
   isOpen,
-  onCancel,
+  onClose,
   title,
   content,
   contentType = 'text/html',
@@ -59,7 +59,7 @@ export const FileDrawer = ({
   }, [iframeSrc, downloadFilename]);
 
   return (
-    <Drawer isOpen={isOpen} onCancel={onCancel}>
+    <Drawer isOpen={isOpen} onClose={onClose}>
       <Drawer.Header>
         <Drawer.Heading>{title}</Drawer.Heading>
       </Drawer.Header>
@@ -79,7 +79,7 @@ export const FileDrawer = ({
             {downloadLabel}
           </Button>
         )}
-        <Button onClick={onCancel} variant="secondary">
+        <Button onClick={onClose} variant="secondary">
           {closeLabel}
         </Button>
       </Drawer.Footer>

@@ -53,7 +53,7 @@ export default function CommunicationSection({
         </div>
       </div>
 
-      <Drawer isOpen={emailDrawerOpen} onCancel={() => setEmailDrawerOpen(false)}>
+      <Drawer isOpen={emailDrawerOpen} onClose={() => setEmailDrawerOpen(false)}>
         <Drawer.Header as="h3" className="text-black">
           {t('admin.eventNotifier.title')}
         </Drawer.Header>
@@ -70,7 +70,7 @@ export default function CommunicationSection({
         </Drawer.Footer>
       </Drawer>
 
-      <Drawer isOpen={SMSDrawerOpen} onCancel={() => setSMSDrawerOpen(false)}>
+      <Drawer isOpen={SMSDrawerOpen} onClose={() => setSMSDrawerOpen(false)}>
         <Drawer.Header as="h3" className="text-black">
           SMS
         </Drawer.Header>

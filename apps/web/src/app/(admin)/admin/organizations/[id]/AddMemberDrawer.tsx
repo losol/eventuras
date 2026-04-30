@@ -66,7 +66,7 @@ const AddMemberDrawer: React.FC<AddMemberDrawerProps> = ({
     }
   };
   return (
-    <Drawer isOpen={isOpen} onCancel={handleClose}>
+    <Drawer isOpen={isOpen} onClose={handleClose}>
       <Drawer.Header as="h2">
         Add New Member
         {organizationName && (

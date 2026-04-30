@@ -108,14 +108,14 @@ export const AdminCertificatesActionsMenu: React.FC<AdminCertificatesActionsMenu
 
       <FileDrawer
         isOpen={!!previewHtml}
-        onCancel={() => setPreviewHtml(null)}
+        onClose={() => setPreviewHtml(null)}
         title={t('admin.labels.previewCertificate')}
         content={previewHtml ?? undefined}
         downloadFilename={`certificate-${eventinfo.slug ?? eventinfo.id}-preview.html`}
         closeLabel={t('common.buttons.cancel')}
       />
 
-      <Drawer isOpen={certificateDrawerOpen} onCancel={() => setCertificateDrawerOpen(false)}>
+      <Drawer isOpen={certificateDrawerOpen} onClose={() => setCertificateDrawerOpen(false)}>
         <Drawer.Header>
           <Heading as="h2">Certificate details</Heading>
         </Drawer.Header>

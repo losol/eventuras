@@ -12,7 +12,7 @@ import { cn } from '../../utils/cn';
 
 export interface DrawerProps {
   isOpen: boolean;
-  onCancel?: () => void;
+  onClose?: () => void;
   children: ReactNode;
   /** Whether clicking the backdrop closes the drawer. Defaults to true. */
   isDismissable?: boolean;
@@ -49,7 +49,7 @@ interface DrawerComponent extends React.FC<DrawerProps> {
 
 const Drawer: DrawerComponent = ({
   isOpen,
-  onCancel,
+  onClose,
   children,
   isDismissable = true,
   isKeyboardDismissDisabled = false,
@@ -58,7 +58,7 @@ const Drawer: DrawerComponent = ({
     <ModalOverlay
       isOpen={isOpen}
       onOpenChange={open => {
-        if (!open) onCancel?.();
+        if (!open) onClose?.();
       }}
       isDismissable={isDismissable}
       isKeyboardDismissDisabled={isKeyboardDismissDisabled}
@@ -66,9 +66,9 @@ const Drawer: DrawerComponent = ({
     >
       <Modal className="fixed top-0 right-0 h-full w-11/12 md:w-10/12 lg:w-7/12 2xl:w-8/12 bg-gray-100 dark:bg-slate-950 overflow-auto">
         <AriaDialog className="relative flex flex-col p-6 outline-hidden h-full">
-          {onCancel && (
+          {onClose && (
             <Button
-              onClick={onCancel}
+              onClick={onClose}
               className="absolute top-0 right-0 m-4"
               variant="secondary"
               ariaLabel="Close drawer"

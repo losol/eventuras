@@ -90,7 +90,7 @@ export const OrderActionsMenu = ({ order }: OrderActionsMenuProps) => {
           {t('admin.labels.invoice')}
         </Button>
       )}
-      <Drawer isOpen={invoiceDrawerOpen} onCancel={() => setInvoiceDrawerOpen(false)}>
+      <Drawer isOpen={invoiceDrawerOpen} onClose={() => setInvoiceDrawerOpen(false)}>
         <Drawer.Header as="h2">Invoice</Drawer.Header>
         <div>
           <DescriptionList>
