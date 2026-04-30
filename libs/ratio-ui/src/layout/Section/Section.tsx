@@ -3,6 +3,7 @@ import type { SpacingProps } from '../../tokens/spacing';
 import type { Color } from '../../tokens/colors';
 import { surfaceBgClasses } from '../../tokens/colors';
 import { buildSpacingClasses, extractSpacingProps } from '../../tokens/spacing';
+import { Heading } from '../../core/Heading';
 import { ArrowUpRight } from '../../icons';
 import { cn } from '../../utils/cn';
 
@@ -105,7 +106,7 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({ children, className }) =>
     <div
       className={cn('flex justify-between items-baseline gap-6 flex-wrap mb-9', className)}
     >
-      <div className="flex flex-col">{rest}</div>
+      <Heading.Group className="flex flex-col">{rest}</Heading.Group>
       {links.length > 0 && <div className="flex items-baseline gap-4">{links}</div>}
     </div>
   );
@@ -115,32 +116,32 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({ children, className }) =>
  * Small mono-font kicker line above the section title. Uses Linseed
  * primary by default — quieter than a hero eyebrow (which is Ochre)
  * so sections stay subordinate to the page's primary heading.
+ *
+ * Delegates to `Heading.Eyebrow` with `tone="primary"`.
  */
 const SectionEyebrow: React.FC<SectionEyebrowProps> = ({ children, className }) => (
-  <p
-    className={cn(
-      'font-mono text-[10.5px] uppercase tracking-[0.18em] text-(--primary) font-bold mb-2',
-      className,
-    )}
-  >
+  <Heading.Eyebrow tone="primary" className={className}>
     {children}
-  </p>
+  </Heading.Eyebrow>
 );
 
 /**
  * Section heading — serif, ~36px, with subtle italic accents for emphasis
  * via `<em>` children. Renders as `<h2>` by default since the page's
  * primary heading is usually in a Hero. Override via `as`.
+ *
+ * Delegates to `Heading` with section-tier serif styling.
  */
-const SectionTitle: React.FC<SectionTitleProps> = ({ children, className, as: Component = 'h2' }) => (
-  <Component
+const SectionTitle: React.FC<SectionTitleProps> = ({ children, className, as = 'h2' }) => (
+  <Heading
+    as={as}
     className={cn(
-      'font-serif font-medium text-3xl md:text-4xl leading-[1.1] tracking-tight m-0 text-(--text)',
+      'font-serif font-medium text-3xl md:text-4xl leading-[1.1] tracking-tight m-0',
       className,
     )}
   >
     {children}
-  </Component>
+  </Heading>
 );
 
 /**

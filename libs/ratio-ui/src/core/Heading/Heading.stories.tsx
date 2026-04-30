@@ -10,7 +10,6 @@ const meta: Meta<typeof Heading> = {
 
 export default meta;
 
-// Define a function that returns a JSX element of the Heading component
 const renderHeading = (args: HeadingProps) => <Heading {...args} />;
 
 export const Level1 = () =>
@@ -48,3 +47,33 @@ export const Level6 = () =>
     as: 'h6',
     children: 'Heading Level 6',
   });
+
+/**
+ * `Heading.Group` renders an `<hgroup>` — semantic HTML for a heading
+ * paired with a kicker/eyebrow. Screen readers announce the pair as a
+ * single heading unit.
+ */
+export const WithGroup = () => (
+  <Heading.Group>
+    <Heading.Eyebrow>The library</Heading.Eyebrow>
+    <Heading as="h2">What's inside</Heading>
+  </Heading.Group>
+);
+
+/**
+ * `Heading.Eyebrow` defaults to `tone="primary"` (Linseed) — quieter,
+ * intended for sections subordinate to the page hero. Use `tone="accent"`
+ * (Ochre) for the page's top-of-page heading.
+ */
+export const EyebrowTones = () => (
+  <div className="space-y-6">
+    <Heading.Group>
+      <Heading.Eyebrow>Primary tone (default)</Heading.Eyebrow>
+      <Heading as="h3">Quieter, for body sections</Heading>
+    </Heading.Group>
+    <Heading.Group>
+      <Heading.Eyebrow tone="accent">Accent tone</Heading.Eyebrow>
+      <Heading as="h3">Louder, for the page hero</Heading>
+    </Heading.Group>
+  </div>
+);
