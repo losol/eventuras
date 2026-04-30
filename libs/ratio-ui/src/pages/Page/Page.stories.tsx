@@ -68,12 +68,12 @@ const PageDemo: React.FC<{ title: string }> = ({ title }) => (
       </Section>
     </main>
 
-    <Footer siteTitle={title}>
+    <Footer.Classic siteTitle={title}>
       <List>
         <List.Item className="mb-2"><a href="/">Home</a></List.Item>
         <List.Item className="mb-2"><a href="/privacy">Privacy</a></List.Item>
       </List>
-    </Footer>
+    </Footer.Classic>
   </div>
 );
 

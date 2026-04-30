@@ -25,7 +25,7 @@ export default async function UserLayout({ children }: Readonly<{ children: Reac
 
       <main id="main-content">{children}</main>
 
-      <Footer siteTitle={site?.name} publisher={site?.publisher}>
+      <Footer.Classic siteTitle={site?.name} publisher={site?.publisher}>
         <List className="list-none text-gray-800 dark:text-gray-300 font-medium">
           {site?.footerLinks?.map((link, idx) => (
             <List.Item key={link.href ?? idx} className="mb-4">
@@ -33,7 +33,7 @@ export default async function UserLayout({ children }: Readonly<{ children: Reac
             </List.Item>
           ))}
         </List>
-      </Footer>
+      </Footer.Classic>
     </>
   );
 }

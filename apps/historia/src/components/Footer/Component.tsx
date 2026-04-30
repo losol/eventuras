@@ -45,8 +45,8 @@ export async function Footer() {
       : undefined;
 
   return (
-    <FooterUI siteTitle={website.title} publisher={publisher}>
+    <FooterUI.Classic siteTitle={website.title} publisher={publisher}>
       <FooterClient navigation={website.siteSettings?.footer?.navigation} />
-    </FooterUI>
+    </FooterUI.Classic>
   );
 }

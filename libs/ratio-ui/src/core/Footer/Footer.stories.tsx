@@ -10,193 +10,75 @@ export default meta;
 
 type FooterStory = StoryFn<typeof Footer>;
 
-export const Playground: FooterStory = args => <Footer {...args} />;
-
-export const Basic: FooterStory = () => <Footer siteTitle="Eventuras" />;
-
-export const WithPublisher: FooterStory = () => {
-  const publisher: Publisher = {
-    name: 'Example Organization',
-    address: '123 Main Street, Oslo',
-    phone: '+47 123 45 678',
-    email: 'contact@example.com',
-    organizationNumber: '123456789',
-  };
-
-  return <Footer siteTitle="Eventuras" publisher={publisher} />;
+const samplePublisher: Publisher = {
+  name: 'Example Organization',
+  address: '123 Main Street, Oslo',
+  phone: '+47 123 45 678',
+  email: 'contact@example.com',
+  organizationNumber: '123456789',
 };
 
-export const WithChildren: FooterStory = () => (
-  <Footer siteTitle="Eventuras">
+/**
+ * The plain `<Footer>` is a thin shell — the `<footer>` element with the
+ * standard background, padding, and a `Container` wrapper. Compose your
+ * own layout inside.
+ */
+export const Shell: FooterStory = () => (
+  <Footer>
+    <p>Compose anything you want inside the shell.</p>
+  </Footer>
+);
+
+/**
+ * `dark` flips the surface tone, so plain text and any descendants that
+ * read `var(--text)` switch to the light value.
+ */
+export const DarkShell: FooterStory = () => (
+  <Footer dark className="bg-slate-900">
+    <p>Plain text inside the dark footer inherits the light surface tone.</p>
+  </Footer>
+);
+
+/**
+ * `Footer.Classic` is the pre-2.0 fixed layout — siteTitle and an
+ * optional publisher block on the left, children on the right via
+ * `md:flex md:justify-between`. Kept for backward compatibility.
+ */
+export const Classic: FooterStory = () => (
+  <Footer.Classic siteTitle="Eventuras" publisher={samplePublisher} />
+);
+
+export const ClassicWithChildren: FooterStory = () => (
+  <Footer.Classic siteTitle="Eventuras" publisher={samplePublisher}>
     <div className="grid grid-cols-2 gap-6 sm:grid-cols-3">
       <div>
         <h3 className="mb-2 font-semibold">Resources</h3>
         <ul className="space-y-1">
-          <li>
-            <a href="/docs" className="hover:underline">
-              Documentation
-            </a>
-          </li>
-          <li>
-            <a href="/api" className="hover:underline">
-              API
-            </a>
-          </li>
-          <li>
-            <a href="/support" className="hover:underline">
-              Support
-            </a>
-          </li>
+          <li><a href="/docs" className="hover:underline">Documentation</a></li>
+          <li><a href="/api" className="hover:underline">API</a></li>
+          <li><a href="/support" className="hover:underline">Support</a></li>
         </ul>
       </div>
       <div>
         <h3 className="mb-2 font-semibold">Company</h3>
         <ul className="space-y-1">
-          <li>
-            <a href="/about" className="hover:underline">
-              About
-            </a>
-          </li>
-          <li>
-            <a href="/contact" className="hover:underline">
-              Contact
-            </a>
-          </li>
-          <li>
-            <a href="/privacy" className="hover:underline">
-              Privacy
-            </a>
-          </li>
+          <li><a href="/about" className="hover:underline">About</a></li>
+          <li><a href="/contact" className="hover:underline">Contact</a></li>
+          <li><a href="/privacy" className="hover:underline">Privacy</a></li>
         </ul>
       </div>
       <div>
         <h3 className="mb-2 font-semibold">Legal</h3>
         <ul className="space-y-1">
-          <li>
-            <a href="/terms" className="hover:underline">
-              Terms
-            </a>
-          </li>
-          <li>
-            <a href="/privacy-policy" className="hover:underline">
-              Privacy Policy
-            </a>
-          </li>
-          <li>
-            <a href="/cookie-policy" className="hover:underline">
-              Cookie Policy
-            </a>
-          </li>
+          <li><a href="/terms" className="hover:underline">Terms</a></li>
+          <li><a href="/privacy-policy" className="hover:underline">Privacy Policy</a></li>
+          <li><a href="/cookie-policy" className="hover:underline">Cookie Policy</a></li>
         </ul>
       </div>
     </div>
-  </Footer>
+  </Footer.Classic>
 );
 
-export const Complete: FooterStory = () => {
-  const publisher: Publisher = {
-    name: 'Eventuras AS',
-    address: 'Karl Johans gate 1, 0154 Oslo',
-    phone: '+47 22 33 44 55',
-    email: 'post@eventuras.com',
-    organizationNumber: '987654321',
-  };
-
-  return (
-    <Footer siteTitle="Eventuras" publisher={publisher}>
-      <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
-        <div>
-          <h3 className="mb-2 font-semibold dark:text-white">Events</h3>
-          <ul className="space-y-1 text-gray-600 dark:text-gray-400">
-            <li>
-              <a href="/events" className="hover:underline">
-                Upcoming Events
-              </a>
-            </li>
-            <li>
-              <a href="/events/past" className="hover:underline">
-                Past Events
-              </a>
-            </li>
-            <li>
-              <a href="/events/create" className="hover:underline">
-                Create Event
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div>
-          <h3 className="mb-2 font-semibold dark:text-white">Resources</h3>
-          <ul className="space-y-1 text-gray-600 dark:text-gray-400">
-            <li>
-              <a href="/docs" className="hover:underline">
-                Documentation
-              </a>
-            </li>
-            <li>
-              <a href="/api" className="hover:underline">
-                API
-              </a>
-            </li>
-            <li>
-              <a href="/support" className="hover:underline">
-                Support
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div>
-          <h3 className="mb-2 font-semibold dark:text-white">Company</h3>
-          <ul className="space-y-1 text-gray-600 dark:text-gray-400">
-            <li>
-              <a href="/about" className="hover:underline">
-                About Us
-              </a>
-            </li>
-            <li>
-              <a href="/contact" className="hover:underline">
-                Contact
-              </a>
-            </li>
-            <li>
-              <a href="/careers" className="hover:underline">
-                Careers
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div>
-          <h3 className="mb-2 font-semibold dark:text-white">Legal</h3>
-          <ul className="space-y-1 text-gray-600 dark:text-gray-400">
-            <li>
-              <a href="/terms" className="hover:underline">
-                Terms of Service
-              </a>
-            </li>
-            <li>
-              <a href="/privacy-policy" className="hover:underline">
-                Privacy Policy
-              </a>
-            </li>
-            <li>
-              <a href="/cookie-policy" className="hover:underline">
-                Cookie Policy
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </Footer>
-  );
-};
-
-export const MinimalWithPublisher: FooterStory = () => {
-  const publisher: Publisher = {
-    name: 'Simple Company',
-    address: 'Oslo, Norway',
-    phone: '+47 123 45 678',
-    email: 'hello@simple.com',
-  };
-
-  return <Footer siteTitle="Simple Site" publisher={publisher} />;
-};
+export const ClassicMinimal: FooterStory = () => (
+  <Footer.Classic siteTitle="Simple Site" publisher={samplePublisher} />
+);
