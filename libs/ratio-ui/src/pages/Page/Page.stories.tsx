@@ -74,7 +74,13 @@ const PageDemo: React.FC<{ title: string }> = ({ title }) => (
       {/* Three-up feature cards — neutral surface */}
       <Section paddingY="lg" color="neutral" id="features">
         <Container>
-          <Heading as="h2" className="!mb-2">What's inside</Heading>
+          <Section.Header>
+            <Section.Eyebrow>The library</Section.Eyebrow>
+            <Section.Title>
+              What's <em className="font-serif text-(--primary)">inside</em>
+            </Section.Title>
+            <Section.Link href="#">Browse all components</Section.Link>
+          </Section.Header>
           <p className="text-(--text-muted) max-w-[60ch] mb-10">
             Tokens, primitives, and patterns ready to compose. Every piece is documented in
             Storybook with the source you actually ship.

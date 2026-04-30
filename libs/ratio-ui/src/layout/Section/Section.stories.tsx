@@ -114,6 +114,54 @@ export const DarkSurface: Story = {
   ),
 };
 
+/**
+ * Editorial section header — eyebrow + serif title with optional italic
+ * accent. Use when you want a quietly-marked content section to stand
+ * apart from neighboring sections without competing with the page hero.
+ */
+export const WithHeader: Story = {
+  render: () => (
+    <Section paddingY="lg">
+      <Container>
+        <Section.Header>
+          <Section.Eyebrow>Lær på din egen tid</Section.Eyebrow>
+          <Section.Title>
+            Self-paced <em className="font-serif text-(--primary)">study</em> tracks
+          </Section.Title>
+        </Section.Header>
+        <p className="text-(--text-muted) max-w-prose">
+          Each track is a curated reading list with notes and exercises — go through them in
+          order, or jump in wherever your curiosity takes you.
+        </p>
+      </Container>
+    </Section>
+  ),
+};
+
+/**
+ * Section header with a CTA link. `Section.Link` is auto-detected and
+ * pushed to the right side of the header row; everything else stacks on
+ * the left. The arrow nudges on hover.
+ */
+export const WithHeaderAndLink: Story = {
+  render: () => (
+    <Section paddingY="lg">
+      <Container>
+        <Section.Header>
+          <Section.Eyebrow>Kommende</Section.Eyebrow>
+          <Section.Title>
+            All <em className="font-serif text-(--primary)">articles</em>, in chronological order
+          </Section.Title>
+          <Section.Link href="#">Filter and search</Section.Link>
+        </Section.Header>
+        <p className="text-(--text-muted)">
+          The full archive — newest first. Use the filter for tags, authors, or date range.
+        </p>
+      </Container>
+    </Section>
+  ),
+};
+
 export const GridLayout: Story = {
   render: () => (
     <Section paddingY="xl" className="grid grid-cols-1 md:grid-cols-2" gap="lg">

@@ -25,6 +25,7 @@ export {
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
+  ArrowUpRight,
   MoreHorizontal,
 
   // Content
