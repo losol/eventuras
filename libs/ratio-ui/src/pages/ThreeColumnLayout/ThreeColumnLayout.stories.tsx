@@ -87,7 +87,8 @@ const SampleContent = () => (
     <p>Install using your preferred package manager:</p>
     <CodeBlock>pnpm add @eventuras/ratio-ui</CodeBlock>
     <p>Then import the CSS in your root layout:</p>
-    <CodeBlock>{`import '@eventuras/ratio-ui/ratio-ui.css';`}</CodeBlock>
+    <CodeBlock>{`import '@eventuras/ratio-ui/ratio-ui.css';
+import '@eventuras/ratio-ui/fonts.css';`}</CodeBlock>
 
     <h2 id="quick-start">Quick Start</h2>
     <p>

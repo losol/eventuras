@@ -8,6 +8,7 @@ import getSiteSettings from '@/utils/site/getSiteSettings';
 import Providers from './Providers';
 
 import '@eventuras/ratio-ui/ratio-ui.css';
+import '@eventuras/ratio-ui/fonts.css';
 
 const siteSettings = await getSiteSettings();
 export const metadata: Metadata = {

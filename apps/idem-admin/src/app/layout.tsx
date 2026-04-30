@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import Providers from './Providers';
 
 import '@eventuras/ratio-ui/ratio-ui.css';
+import '@eventuras/ratio-ui/fonts.css';
 
 export const metadata: Metadata = {
   title: {
