@@ -1,133 +1,122 @@
-import { HTMLAttributes, ReactNode } from 'react';
+import React, { ReactNode } from 'react';
+import {
+  Dialog as AriaDialog,
+  Heading as AriaHeading,
+  Modal,
+  ModalOverlay,
+} from 'react-aria-components';
+
+import { Button } from '../../core/Button';
 import { X } from '../../icons';
+import { cn } from '../../utils/cn';
 
-import { Button  } from '../../core/Button';
-import { Heading } from '../../core/Heading';
-import { Portal } from '../../layout/Portal';
-import React from 'react';
-
-/**
- * DrawerProps interface for Drawer component
- * @property {boolean} isOpen - Determines if the Drawer is open
- * @property {() => void} onSave - Function to be called when the Drawer is saved
- * @property {() => void} onCancel - Function to be called when the Drawer is cancelled
- * @property {ReactNode} children - The children nodes of the Drawer component
- */
 export interface DrawerProps {
   isOpen: boolean;
-  onSave?: () => void;
   onCancel?: () => void;
   children: ReactNode;
+  /** Whether clicking the backdrop closes the drawer. Defaults to true. */
+  isDismissable?: boolean;
+  /** When true, Escape no longer closes the drawer. Defaults to false. */
+  isKeyboardDismissDisabled?: boolean;
 }
 
-/**
- * DrawerChildProps interface for Drawer child components
- * @property {'Header' | 'Body' | 'Footer'} type - The type of the Drawer child component
- * @property {ReactNode} children - The children nodes of the Drawer child component
- * @property {string} className - The CSS class of the Drawer child component
- */
 interface DrawerChildProps {
   type?: 'Header' | 'Body' | 'Footer';
   children: ReactNode;
   className?: string;
 }
 
-/**
- * HeaderProps interface for Header component
- * @property {'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'} as - The HTML tag for the Header component
- */
 interface HeaderProps extends DrawerChildProps {
   as?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 }
 
 interface BodyProps extends DrawerChildProps {}
-
 interface FooterProps extends DrawerChildProps {}
+
+interface HeadingSlotProps {
+  children?: ReactNode;
+  className?: string;
+  /** Heading level (h1-h6). Defaults to 2. */
+  level?: 1 | 2 | 3 | 4 | 5 | 6;
+}
 
 interface DrawerComponent extends React.FC<DrawerProps> {
   Header: React.FC<HeaderProps>;
+  Heading: React.FC<HeadingSlotProps>;
   Body: React.FC<BodyProps>;
   Footer: React.FC<FooterProps>;
 }
 
-const Drawer: DrawerComponent = (props: DrawerProps) => {
-  const validChildren = React.Children.toArray(props.children);
-
-  const filteredChildren = validChildren
-    .map((child) => {
-      if (React.isValidElement<HeaderProps | BodyProps | FooterProps>(child)) {
-        return child;
-      }
-      return null; // Ignore other types of children
-    })
-    .filter(Boolean);
-
-  const ariaHiddenProps: HTMLAttributes<HTMLDivElement> = props.isOpen
-    ? {}
-    : { 'aria-hidden': 'true' };
-
-  const styles = {
-    drawer: {
-      base: `flex flex-col p-6 fixed top-0 right-0 w-11/12 md:w-10/12 lg:w-7/12 2xl:w-8/12 h-full bg-gray-100 dark:bg-slate-950 overflow-auto z-30`,
-      open: 'transition-opacity opacity-100 duration-2',
-      closed: 'transition-all delay-500 opacity-0',
-    },
-  };
-
+const Drawer: DrawerComponent = ({
+  isOpen,
+  onCancel,
+  children,
+  isDismissable = true,
+  isKeyboardDismissDisabled = false,
+}: DrawerProps) => {
   return (
-    <Portal isOpen={props.isOpen} clickOutside={props.onCancel}>
-      <div
-        id="backdrop"
-        className="fixed top-0 left-0 bg-cover z-10 w-screen h-screen backdrop-blur-xs"
-      />
-      <section
-        {...ariaHiddenProps}
-        className={`${styles.drawer.base} ${props.isOpen ? styles.drawer.open : styles.drawer.closed}`}
-      >
-        {' '}
-        {/* Cancel icon top right */}
-        {props.onCancel && (
-          <Button
-            onClick={props.onCancel}
-            className="absolute top-0 right-0 m-4"
-            variant="secondary"
-          >
-            <X />
-          </Button>
-        )}
-        {filteredChildren}
-      </section>
-    </Portal>
+    <ModalOverlay
+      isOpen={isOpen}
+      onOpenChange={open => {
+        if (!open) onCancel?.();
+      }}
+      isDismissable={isDismissable}
+      isKeyboardDismissDisabled={isKeyboardDismissDisabled}
+      className="fixed inset-0 z-30 bg-cover backdrop-blur-xs"
+    >
+      <Modal className="fixed top-0 right-0 h-full w-11/12 md:w-10/12 lg:w-7/12 2xl:w-8/12 bg-gray-100 dark:bg-slate-950 overflow-auto">
+        <AriaDialog className="relative flex flex-col p-6 outline-hidden h-full">
+          {onCancel && (
+            <Button
+              onClick={onCancel}
+              className="absolute top-0 right-0 m-4"
+              variant="secondary"
+              ariaLabel="Close drawer"
+            >
+              <X />
+            </Button>
+          )}
+          {children}
+        </AriaDialog>
+      </Modal>
+    </ModalOverlay>
   );
 };
 
-// Header component
-const Header: React.FC<HeaderProps> = (props) => {
-  if (props.as) {
+const headingClass = 'text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4';
+
+const Header: React.FC<HeaderProps> = ({ as, children, className }) => {
+  // When `as` is set, render the heading as a slotted RAC Heading so the
+  // dialog gets its accessible name auto-wired via aria-labelledby.
+  if (as) {
+    const level = parseInt(as.charAt(1), 10) as 1 | 2 | 3 | 4 | 5 | 6;
     return (
       <header>
-        <Heading {...props}>{props.children}</Heading>
+        <AriaHeading slot="title" level={level} className={cn(headingClass, className)}>
+          {children}
+        </AriaHeading>
       </header>
     );
-  } else {
-    return <header {...props}>{props.children}</header>;
   }
+  return <header className={className}>{children}</header>;
 };
 
-// Body component
-const Body: React.FC<BodyProps> = (props) => (
-  <div role="main" className={`grow ${props.className || ''}`}>
-    {props.children}
-  </div>
+const DrawerHeading: React.FC<HeadingSlotProps> = ({ children, className, level = 2 }) => (
+  <AriaHeading slot="title" level={level} className={cn(headingClass, className)}>
+    {children}
+  </AriaHeading>
 );
 
-// Footer component
-const Footer: React.FC<FooterProps> = (props) => (
-  <footer className={`pt-8 ${props.className}`}>{props.children}</footer>
+const Body: React.FC<BodyProps> = ({ children, className }) => (
+  <div className={cn('grow', className)}>{children}</div>
 );
 
-// Define valid child types
+const Footer: React.FC<FooterProps> = ({ children, className }) => (
+  <footer className={cn('pt-8', className)}>{children}</footer>
+);
+
 Drawer.Header = Header;
+Drawer.Heading = DrawerHeading;
 Drawer.Body = Body;
 Drawer.Footer = Footer;
 

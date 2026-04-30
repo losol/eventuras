@@ -6,7 +6,6 @@ import { useTranslations } from 'next-intl';
 import { Logger } from '@eventuras/logger';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { DescriptionList } from '@eventuras/ratio-ui/core/DescriptionList';
-import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
 import { useToast } from '@eventuras/ratio-ui/toast';
 
@@ -91,12 +90,8 @@ export const OrderActionsMenu = ({ order }: OrderActionsMenuProps) => {
           {t('admin.labels.invoice')}
         </Button>
       )}
-      <Drawer
-        isOpen={invoiceDrawerOpen}
-        onSave={() => setInvoiceDrawerOpen(false)}
-        onCancel={() => setInvoiceDrawerOpen(false)}
-      >
-        <Heading as="h2">Invoice</Heading>
+      <Drawer isOpen={invoiceDrawerOpen} onCancel={() => setInvoiceDrawerOpen(false)}>
+        <Drawer.Header as="h2">Invoice</Drawer.Header>
         <div>
           <DescriptionList>
             <DescriptionList.Description term="Order">{order.orderId}</DescriptionList.Description>
