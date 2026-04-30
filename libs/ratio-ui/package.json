@@ -98,7 +98,6 @@
     "@eventuras/logger": "workspace:*",
     "@internationalized/date": "^3.12.1",
     "@internationalized/number": "^3.6.6",
-    "@react-aria/overlays": "^3.32.0",
     "@react-stately/data": "^3.16.0",
     "clsx": "^2.1.1",
     "lucide-react": "^1.8.0",
