@@ -100,14 +100,16 @@ const ValueTileRoot: ValueTileComponent = (({
 }) as ValueTileComponent;
 
 /**
- * Display value slot. Serif, large, Linseed-800 by default. Wrap accent
- * tokens in `<em>` for the editorial italic-numeral look (HTML `<em>` is
- * italic by default; add a color class for emphasis).
+ * Display value slot. Serif, large, follows the semantic `--primary`
+ * token (Linseed-600 on light, Linseed-400 on dark) so the value reads
+ * on either surface. Wrap accent tokens in `<em>` for the editorial
+ * italic-numeral look (HTML `<em>` is italic by default; add a color
+ * class for emphasis).
  */
 const ValueTileValue: React.FC<ValueProps> = ({ children, className }) => (
   <div
     className={cn(
-      'font-serif text-4xl leading-none tracking-tight text-primary-800',
+      'font-serif text-4xl leading-none tracking-tight text-(--primary)',
       className,
     )}
   >
