@@ -108,8 +108,9 @@ export default async function Homepage() {
 
       {/* Hero section with background image */}
       <Section
+        dark
         style={buildCoverImageStyle('/assets/images/mountains.jpg')}
-        className="surface-dark min-h-[30vh] flex flex-col justify-end"
+        className="min-h-[30vh] flex flex-col justify-end"
       >
         <Container className="pb-3">
           <Heading as="h1" paddingBottom="xs" className="text-3xl md:text-4xl lg:text-5xl">

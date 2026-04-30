@@ -16,7 +16,7 @@ type AdminNavbarProps = {
 
 export function AdminNavbar({ user }: Readonly<AdminNavbarProps>) {
   return (
-    <Navbar bgColor="bg-primary-700" className="surface-dark" sticky>
+    <Navbar bgColor="bg-primary-700" dark sticky>
       <Navbar.Brand>
         <Link href="/admin" className="text-lg tracking-tight whitespace-nowrap no-underline">
           Idem Admin

@@ -34,7 +34,7 @@ export const BrandAndContent: Story = {
 
 export const BrandOnly: Story = {
   render: () => (
-    <Navbar bgColor="bg-slate-900" className="surface-dark">
+    <Navbar bgColor="bg-slate-900" dark>
       <Navbar.Brand>
         <a href="/" className="text-lg tracking-tight no-underline text-white">
           Ignis
@@ -59,7 +59,7 @@ export const ContentOnly: Story = {
 export const DoubleNavbar: Story = {
   render: () => (
     <div>
-      <Navbar sticky bgColor="bg-slate-900" className="surface-dark">
+      <Navbar sticky bgColor="bg-slate-900" dark>
         <Navbar.Brand>
           <a href="/" className="text-lg tracking-tight no-underline text-white">Eventuras</a>
         </Navbar.Brand>
@@ -82,13 +82,13 @@ export const DoubleNavbar: Story = {
 /**
  * Glass navbar floating over a hero section. `overlay` anchors it to the
  * viewport top without reserving layout space; `glass` gives the translucent
- * dark bg + backdrop-blur; the `surface-dark` className makes the text readable over the image.
+ * dark bg + backdrop-blur; `dark` makes the text readable over the image.
  * The nav scrolls away with the page (unlike `sticky`, which stays pinned).
  */
 export const OverlayGlass: Story = {
   render: () => (
     <div className="relative">
-      <Navbar overlay glass className="surface-dark">
+      <Navbar overlay glass dark>
         <Navbar.Brand>
           <a href="/" className="text-lg tracking-tight no-underline">
             Eventuras

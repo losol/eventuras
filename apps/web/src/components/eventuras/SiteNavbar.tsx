@@ -34,7 +34,7 @@ export default async function SiteNavbar({
   return (
     <Navbar
       {...(isDark
-        ? { className: 'surface-dark', overlay: true, glass: true }
+        ? { dark: true, overlay: true, glass: true }
         : { bgColor: BG_COLOR_BY_VARIANT[variant], sticky })}
     >
       <Navbar.Brand>

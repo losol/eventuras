@@ -9,12 +9,20 @@ export interface SectionProps
   extends SpacingProps,
     Omit<React.ComponentPropsWithoutRef<'section'>, keyof SpacingProps | 'color'> {
   color?: Color;
+  /**
+   * Marks the section as a dark surface so descendants (Heading, Button,
+   * Link) pick up light `var(--text)` color. Use for hero sections with
+   * dark or strongly colored backgrounds. For the rare case of forcing a
+   * light surface inside a dark page, apply `className="surface-light"`.
+   */
+  dark?: boolean;
   testId?: string;
 }
 
 export const Section: React.FC<SectionProps> = (props) => {
   const [spacing, {
     color,
+    dark,
     className,
     children,
     testId,
@@ -26,6 +34,7 @@ export const Section: React.FC<SectionProps> = (props) => {
       className={cn(
         buildSpacingClasses(spacing),
         color && surfaceBgClasses[color],
+        dark && 'surface-dark',
         className,
       )}
       data-testid={testId}
