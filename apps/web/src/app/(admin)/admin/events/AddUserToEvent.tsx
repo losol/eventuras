@@ -40,7 +40,7 @@ type AddUserToEventFormValues = {
 type AddUserCardProps = {
   user: UserDto;
   eventinfo: EventDto;
-  onUseradded: (user: UserDto) => void;
+  onUserAdded: (user: UserDto) => void;
   products: ProductDto[];
   onRemove: (u: UserDto) => void;
 };
@@ -78,7 +78,7 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
   eventinfo,
   products,
   onRemove,
-  onUseradded,
+  onUserAdded,
 }) => {
   const toast = useToast();
   const t = useTranslations();
@@ -110,7 +110,7 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
       if (result.success) {
         logger.info({ userId: user.id }, 'User successfully added to the event!');
         toast.success(result.message || 'User successfully added to the event!');
-        onUseradded(user);
+        onUserAdded(user);
       } else {
         logger.error({ error: result.error, userId: user.id }, 'Failed to add user to event');
         toast.error(result.error.message);
@@ -208,21 +208,21 @@ const AddUserCard: React.FC<AddUserCardProps> = ({
 export type AddUserToEventDrawerProps = {
   eventinfo: EventDto;
   eventProducts: ProductDto[];
-  onUseradded: (user: UserDto) => void;
-  isOpen?: boolean;
-  onCancel?: () => void;
+  onUserAdded: (user: UserDto) => void;
+  isOpen: boolean;
+  onClose?: () => void;
 };
 const AddUserToEventDrawer: React.FC<AddUserToEventDrawerProps> = ({
   eventinfo,
   eventProducts,
-  onUseradded,
+  onUserAdded,
   isOpen,
-  onCancel,
+  onClose,
 }) => {
   const [usersToAdd, setUsersToAdd] = useState<UserDto[]>([]);
 
   return (
-    <Drawer isOpen={isOpen!} onCancel={onCancel}>
+    <Drawer isOpen={isOpen} onClose={onClose}>
       <Drawer.Header as="h2">Add users to event</Drawer.Header>
 
       <Drawer.Body>
@@ -236,9 +236,9 @@ const AddUserToEventDrawer: React.FC<AddUserToEventDrawerProps> = ({
           {usersToAdd.map(user => (
             <AddUserCard
               user={user}
-              onUseradded={u => {
+              onUserAdded={u => {
                 setUsersToAdd([...usersToAdd].filter(us => u.id !== us.id));
-                onUseradded(u);
+                onUserAdded(u);
               }}
               onRemove={u => {
                 setUsersToAdd([...usersToAdd].filter(us => u.id !== us.id));
@@ -288,8 +288,8 @@ const AddUserToEvent: React.FC<AddUserToEventProps> = props => {
       <AddUserToEventDrawer
         eventinfo={props.eventinfo}
         eventProducts={props.eventProducts}
-        onUseradded={handleUserAdded}
-        onCancel={() => {
+        onUserAdded={handleUserAdded}
+        onClose={() => {
           setIsOpen(false);
         }}
         isOpen={isOpen}

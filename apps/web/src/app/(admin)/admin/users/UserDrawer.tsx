@@ -15,7 +15,7 @@ const UserDrawer: React.FC = () => {
   return (
     <>
       <Button onClick={showDrawer}>{t('admin.users.labels.createUser')}</Button>
-      <Drawer isOpen={visible} onCancel={onClose}>
+      <Drawer isOpen={visible} onClose={onClose}>
         <UserEditor adminMode />
       </Drawer>
     </>

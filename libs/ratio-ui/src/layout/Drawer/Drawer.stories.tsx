@@ -29,7 +29,7 @@ const OpenDrawerComponent: React.FC = () => {
   return (
     <div>
       <p>{getRandomHipsterIpsum()}</p>
-      <Drawer isOpen={isOpen} onCancel={() => setIsOpen(false)}>
+      <Drawer isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <Drawer.Header>
           <Drawer.Heading>Drawer Header</Drawer.Heading>
         </Drawer.Header>
@@ -51,7 +51,7 @@ const ClosedDrawerComponent: React.FC = () => {
     <div>
       <p>This is some content before the drawer.</p>
       <button onClick={() => setIsOpen(true)}>Open Drawer</button>
-      <Drawer isOpen={isOpen} onCancel={() => setIsOpen(false)}>
+      <Drawer isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <Drawer.Header>
           <Drawer.Heading>Drawer Header sample</Drawer.Heading>
         </Drawer.Header>
@@ -69,17 +69,17 @@ export const ClosedDrawer = () => <ClosedDrawerComponent />;
 const DrawerWithActionsComponent: React.FC = () => {
   const [isOpen, setIsOpen] = useState(true);
 
-  const handleCancel = () => {
-    alert('Cancel action triggered!');
+  const handleClose = () => {
+    alert('Close action triggered!');
     setIsOpen(false);
   };
 
   return (
     <div>
       <button onClick={() => setIsOpen(true)}>Open Drawer</button>
-      <Drawer isOpen={isOpen} onCancel={handleCancel}>
+      <Drawer isOpen={isOpen} onClose={handleClose}>
         <Drawer.Header>
-          <Drawer.Heading>Drawer With Cancel</Drawer.Heading>
+          <Drawer.Heading>Drawer With Close</Drawer.Heading>
         </Drawer.Header>
         <Drawer.Body>
           <p>{getRandomHipsterIpsum()}</p>
@@ -89,4 +89,4 @@ const DrawerWithActionsComponent: React.FC = () => {
   );
 };
 
-export const DrawerWithCancel = () => <DrawerWithActionsComponent />;
+export const DrawerWithClose = () => <DrawerWithActionsComponent />;

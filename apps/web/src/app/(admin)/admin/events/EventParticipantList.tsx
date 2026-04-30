@@ -210,7 +210,7 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
 
       {/* Email notification drawer */}
       {registrationOpen && (
-        <Drawer isOpen={true} onCancel={() => setRegistrationOpen(null)}>
+        <Drawer isOpen={true} onClose={() => setRegistrationOpen(null)}>
           <Drawer.Header as="h3" className="text-black">
             <p>Mailer</p>
           </Drawer.Header>

@@ -85,7 +85,7 @@ export default function NotificationDetailsDrawer({
   }, [isOpen, notification.notificationId]);
 
   return (
-    <Drawer isOpen={isOpen} onCancel={onClose}>
+    <Drawer isOpen={isOpen} onClose={onClose}>
       <Drawer.Header as="h3" className="text-black">
         Notification Details
       </Drawer.Header>

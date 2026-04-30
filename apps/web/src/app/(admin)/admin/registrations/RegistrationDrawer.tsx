@@ -63,7 +63,7 @@ export default function RegistrationDrawer({
   }, [isOpen, registrationId]);
 
   return (
-    <Drawer isOpen={isOpen} onCancel={onClose}>
+    <Drawer isOpen={isOpen} onClose={onClose}>
       <Drawer.Header as="h3" className="text-black">
         {t('common.registrations.detailsPage.title')}
       </Drawer.Header>

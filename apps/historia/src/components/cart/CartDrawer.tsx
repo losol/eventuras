@@ -51,7 +51,7 @@ export function CartDrawer({ isOpen, onClose, locale }: Readonly<CartDrawerProps
 
 
   return (
-    <Drawer isOpen={isOpen} onCancel={onClose}>
+    <Drawer isOpen={isOpen} onClose={onClose}>
       <Drawer.Header as="h2">Handlekurv</Drawer.Header>
 
       <Drawer.Body>
