@@ -14,7 +14,14 @@ export interface CardProps extends SpacingProps, BorderProps {
   className?: string;
   style?: React.CSSProperties;
   color?: Color;
-  variant?: 'default' | 'wide' | 'outline' | 'transparent';
+  /**
+   * Visual treatment. `default` — branded card, border + shadow. `outline`
+   * — border only. `transparent` — no chrome. `wide` — full-bleed feature
+   * surface. `tile` — editorial card: quieter border, roomier padding,
+   * uses the modern surface tokens. Pair with `Heading` + `<p>` (or
+   * `ValueTile` for stat content).
+   */
+  variant?: 'default' | 'wide' | 'outline' | 'transparent' | 'tile';
   hoverEffect?: boolean;
   backgroundImageUrl?: string;
   testId?: string;
@@ -33,7 +40,7 @@ export const Card: React.FC<CardProps> = ({
   testId,
   ...spacingAndBorder
 }) => {
-  const baseClasses = 'p-4 relative rounded-lg';
+  const baseClasses = variant === 'tile' ? 'relative rounded-lg' : 'p-4 relative rounded-lg';
   const transitionClasses = hoverEffect ? 'transform transition duration-300 ease-in-out' : '';
   const hoverClasses = hoverEffect ? 'hover:bg-card-hover transition-colors duration-200' : '';
 
@@ -42,6 +49,7 @@ export const Card: React.FC<CardProps> = ({
     wide: 'bg-card mx-auto min-h-[33vh]',
     outline: 'border border-border-1 bg-transparent',
     transparent: 'bg-transparent',
+    tile: 'p-6 border border-(--border-1) bg-(--card)',
   };
 
   const bgClasses = color ? surfaceBgClasses[color] : variantStyles[variant];
