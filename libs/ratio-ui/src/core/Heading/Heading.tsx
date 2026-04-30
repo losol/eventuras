@@ -39,9 +39,11 @@ export interface HeadingGroupProps {
 
 /**
  * Renders an `<hgroup>` — semantic HTML for a heading paired with an
- * eyebrow, kicker, or tagline. Screen readers announce the group as a
- * single heading unit, so use this when stacking `Heading.Eyebrow` +
- * `Heading` (or any title + subtitle pair).
+ * eyebrow, kicker, or tagline. Use this when stacking `Heading.Eyebrow`
+ * + `Heading` (or any title + subtitle pair) so the markup conveys the
+ * pair as a unit. Assistive-technology presentation of `<hgroup>` varies
+ * across browsers and screen readers, so treat the benefit as semantic
+ * grouping rather than a guaranteed single-announcement.
  *
  * @example
  * ```tsx

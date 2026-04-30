@@ -13,7 +13,7 @@ Add `Heading.Group` and `Heading.Eyebrow` compound subcomponents, then refactor 
 
 ### New primitives
 
-- **`Heading.Group`** — renders `<hgroup>`, the semantic HTML element for a heading paired with an eyebrow, kicker, or tagline. Screen readers announce the pair as a single heading unit.
+- **`Heading.Group`** — renders `<hgroup>`, the semantic HTML element for grouping a heading with an eyebrow, kicker, or tagline. This provides semantic structure for the pair, though assistive-technology presentation may vary.
 - **`Heading.Eyebrow`** — small mono-font kicker line. `tone="primary"` (default) uses Linseed primary — quieter, for subordinate body sections. `tone="accent"` uses Ochre accent — louder, for the page hero.
 
 ### Internal refactors

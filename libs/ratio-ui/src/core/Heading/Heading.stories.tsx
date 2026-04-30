@@ -50,8 +50,8 @@ export const Level6 = () =>
 
 /**
  * `Heading.Group` renders an `<hgroup>` — semantic HTML for a heading
- * paired with a kicker/eyebrow. Screen readers announce the pair as a
- * single heading unit.
+ * paired with a kicker/eyebrow. Assistive technology may present this
+ * grouping differently, but it conveys that the texts belong together.
  */
 export const WithGroup = () => (
   <Heading.Group>
