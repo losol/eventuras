@@ -21,7 +21,7 @@ export default async function PublicLayout({ children }: Readonly<{ children: Re
 
       <main id="main-content">{children}</main>
 
-      <Footer siteTitle={site?.name} publisher={site?.publisher}>
+      <Footer.Classic siteTitle={site?.name} publisher={site?.publisher}>
         <List className="list-none text-gray-800 dark:text-gray-300 font-medium">
           {site?.footerLinks?.map((link, idx) => (
             <List.Item key={link.href ?? idx} className="mb-4">
@@ -29,7 +29,7 @@ export default async function PublicLayout({ children }: Readonly<{ children: Re
             </List.Item>
           ))}
         </List>
-      </Footer>
+      </Footer.Classic>
     </>
   );
 }

@@ -35,7 +35,7 @@ export default async function AdminLayout({ children }: Readonly<{ children: Rea
 
       <main id="main-content">{children}</main>
 
-      <Footer siteTitle={site?.name} publisher={site?.publisher}>
+      <Footer.Classic siteTitle={site?.name} publisher={site?.publisher}>
         <List className="list-none text-gray-800 dark:text-gray-300 font-medium">
           {site?.footerLinks?.map((link, idx) => (
             <List.Item key={link.href ?? idx} className="mb-4">
@@ -43,7 +43,7 @@ export default async function AdminLayout({ children }: Readonly<{ children: Rea
             </List.Item>
           ))}
         </List>
-      </Footer>
+      </Footer.Classic>
     </>
   );
 }
