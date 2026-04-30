@@ -14,7 +14,7 @@ const meta: Meta<typeof Card> = {
   argTypes: {
     variant: {
       control: 'select',
-      options: ['default', 'wide', 'outline', 'transparent'],
+      options: ['default', 'wide', 'outline', 'transparent', 'tile'],
     },
     gap: {
       control: 'select',
@@ -52,6 +52,25 @@ export const Outline: Story = {
       <Box>
         <Heading as="h3" marginBottom="xs">Outline Card</Heading>
         <p>This card uses the outline variant with a border.</p>
+      </Box>
+    ),
+  },
+};
+
+/**
+ * Editorial tile — quieter border, roomier padding (`p-6`), modern
+ * surface tokens. Pair with a `Heading` + paragraph for feature-card
+ * grids; pair with `ValueTile` for stat blocks that need a surface.
+ */
+export const Tile: Story = {
+  args: {
+    variant: 'tile',
+    children: (
+      <Box>
+        <Heading as="h4" marginBottom="xs">Tokens</Heading>
+        <p className="text-sm text-(--text-muted)">
+          Color scales, typography, spacing, borders — all theme-aware via CSS variables.
+        </p>
       </Box>
     ),
   },

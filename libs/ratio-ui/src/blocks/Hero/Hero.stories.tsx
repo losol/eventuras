@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Button } from '../../core/Button';
+import { ValueTile } from '../../core/ValueTile';
 import { Hero } from './Hero';
 
 const meta: Meta<typeof Hero> = {
@@ -37,30 +38,26 @@ export const WithStatPanel: Story = {
         </Hero.Actions>
       </Hero.Main>
       <Hero.Side>
-        <div>
-          <div className="font-serif text-4xl leading-none text-(--color-primary-800) tracking-tight">
-            <em className="italic text-(--accent)">240+</em> articles
-          </div>
-          <div className="text-sm text-(--text-muted) mt-1.5">
-            Across reading, writing, research, and craft
-          </div>
-        </div>
-        <div>
-          <div className="font-serif text-4xl leading-none text-(--color-primary-800) tracking-tight">
-            12 <em className="italic text-(--accent)">collections</em>
-          </div>
-          <div className="text-sm text-(--text-muted) mt-1.5">
-            Editorial reading lists curated by topic
-          </div>
-        </div>
-        <div>
-          <div className="font-serif text-4xl leading-none text-(--color-primary-800) tracking-tight">
-            1 <em className="italic text-(--accent)">subscription</em>
-          </div>
-          <div className="text-sm text-(--text-muted) mt-1.5">
+        <ValueTile>
+          <ValueTile.Value>
+            <em className="text-(--accent)">240+</em> articles
+          </ValueTile.Value>
+          <ValueTile.Caption>Across reading, writing, research, and craft</ValueTile.Caption>
+        </ValueTile>
+        <ValueTile>
+          <ValueTile.Value>
+            12 <em className="text-(--accent)">collections</em>
+          </ValueTile.Value>
+          <ValueTile.Caption>Editorial reading lists curated by topic</ValueTile.Caption>
+        </ValueTile>
+        <ValueTile>
+          <ValueTile.Value>
+            1 <em className="text-(--accent)">subscription</em>
+          </ValueTile.Value>
+          <ValueTile.Caption>
             Open access, free for the curious, supported by patrons
-          </div>
-        </div>
+          </ValueTile.Caption>
+        </ValueTile>
       </Hero.Side>
     </Hero>
   ),

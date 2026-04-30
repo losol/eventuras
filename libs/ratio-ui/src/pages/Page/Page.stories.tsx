@@ -3,8 +3,10 @@ import React from 'react';
 
 import { Hero } from '../../blocks/Hero';
 import { Button } from '../../core/Button';
+import { Card } from '../../core/Card';
 import { Footer } from '../../core/Footer/Footer';
 import { Heading } from '../../core/Heading';
+import { ValueTile } from '../../core/ValueTile';
 import { List } from '../../core/List/List';
 import { Navbar } from '../../core/Navbar/Navbar';
 import { Container } from '../../layout/Container';
@@ -44,30 +46,24 @@ const PageDemo: React.FC<{ title: string }> = ({ title }) => (
           </Hero.Actions>
         </Hero.Main>
         <Hero.Side>
-          <div>
-            <div className="font-serif text-4xl leading-none text-(--primary) tracking-tight">
-              <em className="italic text-(--accent)">11</em>-step scales
-            </div>
-            <div className="text-sm text-(--text-muted) mt-1.5">
-              Linseed, Linen, Ochre — three voices, eleven stops each
-            </div>
-          </div>
-          <div>
-            <div className="font-serif text-4xl leading-none text-(--primary) tracking-tight">
-              2 <em className="italic text-(--accent)">families</em>
-            </div>
-            <div className="text-sm text-(--text-muted) mt-1.5">
-              Source Serif 4 + Source Sans 3, self-hosted
-            </div>
-          </div>
-          <div>
-            <div className="font-serif text-4xl leading-none text-(--primary) tracking-tight">
-              1 <em className="italic text-(--accent)">surface</em>
-            </div>
-            <div className="text-sm text-(--text-muted) mt-1.5">
-              Linen-200 by default, Linseed-950 in dark mode
-            </div>
-          </div>
+          <ValueTile>
+            <ValueTile.Value>
+              <em className="text-(--accent)">11</em>-step scales
+            </ValueTile.Value>
+            <ValueTile.Caption>Linseed, Linen, Ochre — three voices, eleven stops each</ValueTile.Caption>
+          </ValueTile>
+          <ValueTile>
+            <ValueTile.Value>
+              2 <em className="text-(--accent)">families</em>
+            </ValueTile.Value>
+            <ValueTile.Caption>Source Serif 4 + Source Sans 3, self-hosted</ValueTile.Caption>
+          </ValueTile>
+          <ValueTile>
+            <ValueTile.Value>
+              1 <em className="text-(--accent)">surface</em>
+            </ValueTile.Value>
+            <ValueTile.Caption>Linen-200 by default, Linseed-950 in dark mode</ValueTile.Caption>
+          </ValueTile>
         </Hero.Side>
       </Hero>
 
@@ -86,27 +82,27 @@ const PageDemo: React.FC<{ title: string }> = ({ title }) => (
             Storybook with the source you actually ship.
           </p>
           <div className="grid md:grid-cols-3 gap-6">
-            <div className="p-6 rounded-lg border border-(--border-1) bg-(--card)">
-              <Heading as="h4" className="!mb-2">Tokens</Heading>
+            <Card variant="tile">
+              <Heading as="h4" marginBottom="xs">Tokens</Heading>
               <p className="text-sm text-(--text-muted)">
                 Color scales, typography, spacing, borders, status — all theme-aware via CSS
                 variables.
               </p>
-            </div>
-            <div className="p-6 rounded-lg border border-(--border-1) bg-(--card)">
-              <Heading as="h4" className="!mb-2">Primitives</Heading>
+            </Card>
+            <Card variant="tile">
+              <Heading as="h4" marginBottom="xs">Primitives</Heading>
               <p className="text-sm text-(--text-muted)">
                 Dialog, Drawer, Navbar, Footer — built on React Aria for keyboard and screen
                 reader support.
               </p>
-            </div>
-            <div className="p-6 rounded-lg border border-(--border-1) bg-(--card)">
-              <Heading as="h4" className="!mb-2">Patterns</Heading>
+            </Card>
+            <Card variant="tile">
+              <Heading as="h4" marginBottom="xs">Patterns</Heading>
               <p className="text-sm text-(--text-muted)">
                 Compound APIs (Heading, Content, Footer slots) for the shapes that show up over
                 and over.
               </p>
-            </div>
+            </Card>
           </div>
         </Container>
       </Section>

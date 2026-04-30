@@ -7,9 +7,9 @@ import { useTranslations } from 'next-intl';
 
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { ValueTile } from '@eventuras/ratio-ui/core/ValueTile';
 import { Grid } from '@eventuras/ratio-ui/layout/Grid';
 import { Stack } from '@eventuras/ratio-ui/layout/Stack';
-import { NumberCard } from '@eventuras/ratio-ui/visuals/NumberCard';
 
 import { RegistrationDto, RegistrationStatus } from '@/lib/eventuras-sdk';
 
@@ -119,40 +119,52 @@ const EconomySection: React.FC<EconomySectionProps> = ({ participants }) => {
     <Stack gap="xl" className="py-8">
       {/* Summary */}
       <Grid cols={{ sm: 2, md: 2 }}>
-        <NumberCard
-          number={statistics.totalOrders}
-          label={t('admin.economy.statistics.totalOrders')}
-          variant="outline"
-        />
-        <NumberCard
-          number={Number.parseFloat(statistics.totalRevenue.toFixed(2))}
-          label={`${t('admin.economy.statistics.totalRevenue')} (kr)`}
-          variant="outline"
-        />
+        <Card variant="outline" className="text-center">
+          <ValueTile
+            number={statistics.totalOrders}
+            label={t('admin.economy.statistics.totalOrders')}
+            className="items-center"
+          />
+        </Card>
+        <Card variant="outline" className="text-center">
+          <ValueTile
+            number={Number.parseFloat(statistics.totalRevenue.toFixed(2))}
+            label={`${t('admin.economy.statistics.totalRevenue')} (kr)`}
+            className="items-center"
+          />
+        </Card>
       </Grid>
 
       {/* Order status breakdown */}
       <Grid cols={{ sm: 2, md: 4 }}>
-        <NumberCard
-          number={statistics.draftOrders}
-          label={t('admin.economy.statistics.draftOrders')}
-          variant="outline"
-        />
-        <NumberCard
-          number={statistics.verifiedOrders}
-          label={t('admin.economy.statistics.verifiedOrders')}
-          variant="outline"
-        />
-        <NumberCard
-          number={statistics.invoicedOrders}
-          label={t('admin.economy.statistics.invoicedOrders')}
-          variant="outline"
-        />
-        <NumberCard
-          number={statistics.cancelledOrders}
-          label={t('admin.economy.statistics.cancelledOrders')}
-          variant="outline"
-        />
+        <Card variant="outline" className="text-center">
+          <ValueTile
+            number={statistics.draftOrders}
+            label={t('admin.economy.statistics.draftOrders')}
+            className="items-center"
+          />
+        </Card>
+        <Card variant="outline" className="text-center">
+          <ValueTile
+            number={statistics.verifiedOrders}
+            label={t('admin.economy.statistics.verifiedOrders')}
+            className="items-center"
+          />
+        </Card>
+        <Card variant="outline" className="text-center">
+          <ValueTile
+            number={statistics.invoicedOrders}
+            label={t('admin.economy.statistics.invoicedOrders')}
+            className="items-center"
+          />
+        </Card>
+        <Card variant="outline" className="text-center">
+          <ValueTile
+            number={statistics.cancelledOrders}
+            label={t('admin.economy.statistics.cancelledOrders')}
+            className="items-center"
+          />
+        </Card>
       </Grid>
 
       {/* Registrations grouped by status */}
