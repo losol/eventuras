@@ -1,5 +1,6 @@
 import React, { type ReactNode } from 'react';
 
+import { Heading } from '../../core/Heading';
 import { Container } from '../../layout/Container';
 import { cn } from '../../utils/cn';
 
@@ -108,25 +109,24 @@ const HeroSide: React.FC<HeroSlotProps> = ({ children, className }) => (
 );
 
 const HeroEyebrow: React.FC<HeroSlotProps> = ({ children, className }) => (
-  <p
-    className={cn(
-      'font-mono text-xs uppercase tracking-[0.16em] text-(--accent) font-bold mb-5',
-      className,
-    )}
+  <Heading.Eyebrow
+    tone="accent"
+    className={cn('text-xs tracking-[0.16em] mb-5', className)}
   >
     {children}
-  </p>
+  </Heading.Eyebrow>
 );
 
-const HeroTitle: React.FC<HeroTitleProps> = ({ children, className, as: Component = 'h1' }) => (
-  <Component
+const HeroTitle: React.FC<HeroTitleProps> = ({ children, className, as = 'h1' }) => (
+  <Heading
+    as={as}
     className={cn(
       'font-serif font-normal text-5xl lg:text-6xl leading-[1.05] tracking-tight text-balance text-(--primary)',
       className,
     )}
   >
     {children}
-  </Component>
+  </Heading>
 );
 
 const HeroLead: React.FC<HeroSlotProps> = ({ children, className }) => (
