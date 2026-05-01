@@ -70,9 +70,9 @@
     "vitest": "^4.1.4"
   },
   "optionalDependencies": {
-    "@rollup/rollup-linux-arm64-gnu": "4.60.1",
-    "@rollup/rollup-linux-arm64-musl": "4.60.1",
-    "@rollup/rollup-linux-x64-gnu": "4.60.1"
+    "@rollup/rollup-linux-arm64-gnu": "4.60.2",
+    "@rollup/rollup-linux-arm64-musl": "4.60.2",
+    "@rollup/rollup-linux-x64-gnu": "4.60.2"
   },
   "engines": {
     "node": ">=22.0.0 <25.0.0"
