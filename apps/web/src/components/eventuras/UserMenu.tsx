@@ -85,7 +85,16 @@ function UserDropdownMenu({
   userName: string;
   isAdmin: boolean;
   hasWarning: boolean;
-  translations: Pick<UserMenuTranslations, 'userLabel' | 'accountLabel' | 'adminLabel' | 'logoutLabel' | 'loggingOutLabel' | 'lightThemeLabel' | 'darkThemeLabel'>;
+  translations: Pick<
+    UserMenuTranslations,
+    | 'userLabel'
+    | 'accountLabel'
+    | 'adminLabel'
+    | 'logoutLabel'
+    | 'loggingOutLabel'
+    | 'lightThemeLabel'
+    | 'darkThemeLabel'
+  >;
   onLogout: () => void;
 }>) {
   const { theme, setTheme } = useTheme();
@@ -102,7 +111,11 @@ function UserDropdownMenu({
   const menuLabel = hasWarning ? `⚠️ ${userName}` : userName;
 
   return (
-    <Menu menuLabel={menuLabel}>
+    <Menu>
+      <Menu.Trigger>
+        {menuLabel}
+        <Menu.Chevron />
+      </Menu.Trigger>
       <Menu.Link testId="profile-link" href="/user">
         {translations.userLabel}
       </Menu.Link>
