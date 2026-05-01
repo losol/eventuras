@@ -34,6 +34,8 @@
     "oxo": "cd apps/oxo-cli && node bin/run.js",
     "prepare": "simple-git-hooks",
     "release": "changeset version && git add . && git commit -m 'chore: version packages' && changeset tag && git push --follow-tags",
+    "renovate:dry": "pnpm dlx renovate --platform=github --dry-run losol/eventuras",
+    "renovate:run": "pnpm dlx renovate --platform=github losol/eventuras",
     "test": "turbo run test"
   },
   "simple-git-hooks": {
