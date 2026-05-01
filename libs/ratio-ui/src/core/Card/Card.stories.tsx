@@ -100,13 +100,37 @@ export const Wide: Story = {
   },
 };
 
+/**
+ * `hoverEffect` adds the canonical interactive treatment — surface
+ * lifts to `--card-hover`, border picks up `--primary`, the card
+ * translates 1px upward and gains a soft Linseed-tinted glow. Reserve
+ * for cards that act as clickable surfaces.
+ */
 export const WithHoverEffect: Story = {
   args: {
     hoverEffect: true,
     children: (
       <Box>
-        <Heading as="h3" marginBottom="xs">Hover Me!</Heading>
-        <p>This card has a hover effect. Try hovering over it.</p>
+        <Heading as="h3" marginBottom="xs">Hover me</Heading>
+        <p>Surface lifts, border glows, card nudges upward.</p>
+      </Box>
+    ),
+  },
+};
+
+/**
+ * `tile` variant + `hoverEffect` — the editorial hover for grid tiles.
+ * Same 1px lift as `default`, but with a softer glow tuned for the
+ * tile's smaller footprint.
+ */
+export const TileWithHover: Story = {
+  args: {
+    variant: 'tile',
+    hoverEffect: true,
+    children: (
+      <Box>
+        <Heading as="h4" marginBottom="xs">Editorial tile</Heading>
+        <p className="text-sm text-(--text-muted)">Quiet by default, comes alive on hover.</p>
       </Box>
     ),
   },
