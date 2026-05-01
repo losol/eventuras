@@ -30,6 +30,12 @@
    so a parent container can declare "everything inside me is on a
    dark/light surface" without each child needing a per-component prop. */
 @source inline("surface-dark surface-light");
+/* Spacing token utilities (p-xs..xl, px/py/pt/pb, m/mx/my/mt/mb, gap)
+   — safelisted because `buildSpacingClasses()` constructs the class
+   names at runtime via template literals, which Tailwind's scanner
+   can't see. Defined as @utility in tokens/spacing.css. */
+@source inline("{p,px,py,pt,pb,m,mx,my,mt,mb,gap}-{xs,sm,md,lg,xl}");
+@source inline("{p,px,py,pt,pb,m,mx,my,mt,mb,gap}-0");
 
 /* Dark mode variant */
 @custom-variant dark (&:where(html[data-theme="dark"] &, body[data-theme="dark"] &, [data-theme="dark"] *));

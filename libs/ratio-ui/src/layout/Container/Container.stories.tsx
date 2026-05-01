@@ -1,107 +1,254 @@
+import React from 'react';
 import { Meta, StoryFn } from '@storybook/react-vite';
 import { Container, type ContainerProps } from './Container';
 
 const meta: Meta<typeof Container> = {
   component: Container,
   tags: ['autodocs'],
+  argTypes: (() => {
+    const space = [undefined, 'none', 'xs', 'sm', 'md', 'lg', 'xl'] as const;
+    const spaceCtrl = { control: 'inline-radio', options: space } as const;
+    return {
+      size: {
+        control: 'inline-radio',
+        options: ['sm', 'md', 'lg', 'xl', 'full'],
+      },
+      as: { control: 'text' },
+      padding: spaceCtrl,
+      paddingX: spaceCtrl,
+      paddingY: spaceCtrl,
+      paddingTop: spaceCtrl,
+      paddingBottom: spaceCtrl,
+      margin: spaceCtrl,
+      marginX: spaceCtrl,
+      marginY: spaceCtrl,
+      marginTop: spaceCtrl,
+      marginBottom: spaceCtrl,
+      gap: spaceCtrl,
+      color: {
+        control: 'select',
+        options: [
+          undefined,
+          'neutral',
+          'primary',
+          'secondary',
+          'accent',
+          'success',
+          'warning',
+          'error',
+          'info',
+        ],
+      },
+      radius: {
+        control: 'inline-radio',
+        options: [undefined, 'none', 'sm', 'md', 'lg', 'xl', 'full'],
+      },
+      border: {
+        control: 'inline-radio',
+        options: [undefined, false, true, 'subtle', 'default', 'strong'],
+      },
+      borderColor: {
+        control: 'select',
+        options: [
+          undefined,
+          'default',
+          'subtle',
+          'strong',
+          'neutral',
+          'primary',
+          'secondary',
+          'accent',
+          'success',
+          'warning',
+          'error',
+          'info',
+        ],
+      },
+      dark: { control: 'boolean' },
+    };
+  })(),
 };
 
 export default meta;
 
 type ContainerStory = StoryFn<ContainerProps>;
 
-export const Playground: ContainerStory = args => (
-  <Container {...args}>
-    <div className="bg-blue-100 dark:bg-blue-900 p-4 rounded">
-      <h2 className="text-2xl font-bold mb-2">Container Content</h2>
-      <p>This content is inside a Container component.</p>
-    </div>
-  </Container>
+/**
+ * Three-layer demo so you can see what each token does:
+ *  - outer (page bg)        — striped sky/indigo, shows margin
+ *  - container (the thing)  — sky-200 / sky-800, shows the Container's box
+ *  - content (children)     — amber-200 / amber-800, shows what padding eats
+ */
+const PageBg: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <div className="bg-fuchsia-100 dark:bg-fuchsia-950 p-2 rounded">{children}</div>
 );
+
+const containerBg = 'bg-sky-200 dark:bg-sky-800';
+const contentBg = 'bg-amber-200 dark:bg-amber-800 rounded p-2';
+
+const Content: React.FC<{ children?: React.ReactNode }> = ({ children = 'content' }) => (
+  <div className={contentBg}>{children}</div>
+);
+
+export const Playground: ContainerStory = args => (
+  <PageBg>
+    <Container {...args} className={containerBg}>
+      <Content>Container content</Content>
+    </Container>
+  </PageBg>
+);
+Playground.args = {
+  size: 'lg',
+  paddingY: 'md',
+};
 
 export const Default: ContainerStory = () => (
-  <Container>
-    <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded">
-      <h2 className="text-2xl font-bold mb-2">Default Container</h2>
-      <p>This is a default container with standard padding and margin.</p>
-    </div>
-  </Container>
+  <PageBg>
+    <Container className={containerBg} paddingY="md">
+      <Content>Default container (size=lg, paddingY=md)</Content>
+    </Container>
+  </PageBg>
 );
 
-export const CustomPadding: ContainerStory = () => (
-  <Container padding="xl">
-    <div className="bg-green-100 dark:bg-green-900 p-4 rounded">
-      <h2 className="text-2xl font-bold mb-2">Custom Padding</h2>
-      <p>This container has custom padding (p-8).</p>
+export const Sizes: ContainerStory = () => (
+  <PageBg>
+    <div className="space-y-4">
+      {(['sm', 'md', 'lg', 'xl', 'full'] as const).map(size => (
+        <Container
+          key={size}
+          size={size}
+          className={containerBg}
+          border="subtle"
+          radius="md"
+          paddingY="md"
+        >
+          <Content>size="{size}"</Content>
+        </Container>
+      ))}
     </div>
-  </Container>
+  </PageBg>
 );
 
-export const NoPadding: ContainerStory = () => (
-  <Container padding="none">
-    <div className="bg-purple-100 dark:bg-purple-900 p-4 rounded">
-      <h2 className="text-2xl font-bold mb-2">No Padding</h2>
-      <p>This container has no padding.</p>
+export const PaddingShowcase: ContainerStory = () => (
+  <PageBg>
+    <div className="space-y-4">
+      {(['none', 'xs', 'sm', 'md', 'lg', 'xl'] as const).map(p => (
+        <Container key={p} className={containerBg} radius="md" padding={p}>
+          <Content>padding="{p}"</Content>
+        </Container>
+      ))}
     </div>
-  </Container>
+  </PageBg>
+);
+
+export const PaddingXY: ContainerStory = () => (
+  <PageBg>
+    <Container className={containerBg} radius="md" paddingX="xl" paddingY="sm">
+      <Content>paddingX="xl", paddingY="sm" — wide horizontally, tight vertically</Content>
+    </Container>
+  </PageBg>
+);
+
+export const MarginShowcase: ContainerStory = () => (
+  <PageBg>
+    <Container className={containerBg} radius="md" paddingY="md" marginY="lg">
+      <Content>marginY="lg" — note the striped page bg above and below</Content>
+    </Container>
+    <Container className={containerBg} radius="md" paddingY="md">
+      <Content>(no margin) — sits flush against neighbours</Content>
+    </Container>
+  </PageBg>
+);
+
+export const GapShowcase: ContainerStory = () => (
+  <PageBg>
+    <Container className={`${containerBg} flex flex-col`} radius="md" paddingY="md" gap="lg">
+      <Content>child 1 (gap="lg" between siblings)</Content>
+      <Content>child 2</Content>
+      <Content>child 3</Content>
+    </Container>
+  </PageBg>
+);
+
+export const WithVerticalPadding: ContainerStory = () => (
+  <PageBg>
+    <Container paddingY="lg" border="subtle" radius="md" className={containerBg}>
+      <Content>paddingY="lg"</Content>
+    </Container>
+  </PageBg>
+);
+
+export const WithColor: ContainerStory = () => (
+  <PageBg>
+    <Container color="primary" paddingY="md" radius="lg">
+      <Content>color=primary (uses surface tokens)</Content>
+    </Container>
+  </PageBg>
 );
 
 export const WithBorder: ContainerStory = () => (
-  <Container className="border-2 border-blue-500 rounded-lg">
-    <div className="p-4">
-      <h2 className="text-2xl font-bold mb-2">With Border</h2>
-      <p>This container has a custom border.</p>
-    </div>
-  </Container>
+  <PageBg>
+    <Container border="strong" borderColor="primary" radius="lg" paddingY="md">
+      <Content>border=strong, borderColor=primary</Content>
+    </Container>
+  </PageBg>
+);
+
+export const Dark: ContainerStory = () => (
+  <PageBg>
+    <Container dark color="neutral" paddingY="md" radius="lg">
+      <Content>dark surface</Content>
+    </Container>
+  </PageBg>
 );
 
 export const FullWidth: ContainerStory = () => (
-  <Container className="w-full" margin="none">
-    <div className="bg-yellow-100 dark:bg-yellow-900 p-4 rounded">
-      <h2 className="text-2xl font-bold mb-2">Full Width Container</h2>
-      <p>This container spans the full width with no margin.</p>
-    </div>
-  </Container>
+  <PageBg>
+    <Container size="full" paddingX="none" paddingY="md" className={containerBg}>
+      <Content>size="full", paddingX="none" — fills the viewport</Content>
+    </Container>
+  </PageBg>
 );
 
-export const MultipleContainers: ContainerStory = () => (
-  <>
-    <Container className="mb-4">
-      <div className="bg-red-100 dark:bg-red-900 p-4 rounded">
-        <h3 className="text-xl font-bold">Container 1</h3>
-        <p>First container with content.</p>
-      </div>
+export const PolymorphicAsMain: ContainerStory = () => (
+  <PageBg>
+    <Container as="main" paddingY="md" className={containerBg}>
+      <Content>as="main"</Content>
     </Container>
-    <Container className="mb-4">
-      <div className="bg-blue-100 dark:bg-blue-900 p-4 rounded">
-        <h3 className="text-xl font-bold">Container 2</h3>
-        <p>Second container with content.</p>
-      </div>
-    </Container>
-    <Container>
-      <div className="bg-green-100 dark:bg-green-900 p-4 rounded">
-        <h3 className="text-xl font-bold">Container 3</h3>
-        <p>Third container with content.</p>
-      </div>
-    </Container>
-  </>
+  </PageBg>
+);
+
+export const Stacked: ContainerStory = () => (
+  <PageBg>
+    <div className="space-y-4">
+      <Container border="subtle" radius="md" paddingY="md" className={containerBg}>
+        <Content>Container 1</Content>
+      </Container>
+      <Container border="subtle" radius="md" paddingY="md" className={containerBg}>
+        <Content>Container 2</Content>
+      </Container>
+      <Container border="subtle" radius="md" paddingY="md" className={containerBg}>
+        <Content>Container 3</Content>
+      </Container>
+    </div>
+  </PageBg>
 );
 
 export const WithComplexContent: ContainerStory = () => (
-  <Container>
-    <div className="space-y-4">
-      <h1 className="text-3xl font-bold">Page Title</h1>
-      <p className="text-lg">This is a container with more complex content structure.</p>
+  <PageBg>
+    <Container paddingY="md" gap="md" className={`${containerBg} flex flex-col`}>
+      <h1 className="text-3xl font-bold">Page title</h1>
+      <p className="text-lg">A container with rich content layout.</p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded">
+        <div className={contentBg}>
           <h3 className="font-semibold mb-2">Section 1</h3>
           <p>Content for section 1</p>
         </div>
-        <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded">
+        <div className={contentBg}>
           <h3 className="font-semibold mb-2">Section 2</h3>
           <p>Content for section 2</p>
         </div>
       </div>
-    </div>
-  </Container>
+    </Container>
+  </PageBg>
 );
