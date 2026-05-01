@@ -5,33 +5,31 @@ import { cn } from '../../utils/cn';
 // Animation constants
 const ANIMATION_CLASSES = [
   'transition-all',
-  'duration-500',
-  'transform',
+  'duration-200',
   'ease-in-out',
-  'active:scale-110',
-  'hover:shadow-sm',
+  'active:scale-[1.04]',
 ].join(' ');
 
 export const buttonStyles = {
-  primary: `border border-transparent font-bold bg-(--primary) hover:opacity-90 text-(--text-on-primary) rounded-full ${ANIMATION_CLASSES}`,
+  primary: `border border-transparent font-medium bg-(--primary) hover:opacity-90 text-(--text-on-primary) rounded-full ${ANIMATION_CLASSES}`,
   secondary:
-    `border border-border-1 text-(--text) bg-card hover:bg-card-hover hover:border-border-2 ` +
+    `border border-border-1 font-medium text-(--text) bg-card hover:bg-card-hover hover:border-border-2 ` +
     `rounded-full ${ANIMATION_CLASSES}`,
-  light: `bg-primary-100 text-(--text) hover:bg-primary-200 dark:bg-primary-800 dark:hover:bg-primary-700 ` +
+  light: `font-medium bg-primary-100 text-(--text) hover:bg-primary-200 dark:bg-primary-800 dark:hover:bg-primary-700 ` +
     `rounded-full ${ANIMATION_CLASSES}`,
-  text: `bg-transparent hover:bg-primary-200 hover:bg-opacity-20 rounded-full ${ANIMATION_CLASSES}`,
+  text: `font-medium bg-transparent hover:bg-primary-200 hover:bg-opacity-20 rounded-full ${ANIMATION_CLASSES}`,
   outline:
-    `border border-border-2 hover:border-(--primary) hover:bg-card-hover ` +
+    `border border-border-2 font-medium hover:border-(--primary) hover:bg-card-hover ` +
     `rounded-full ${ANIMATION_CLASSES}`,
   danger:
-    `border border-transparent font-bold bg-error hover:opacity-90 ` +
+    `border border-transparent font-medium bg-error hover:opacity-90 ` +
     `text-error-on rounded-full ${ANIMATION_CLASSES}`,
 };
 
 export const buttonSizes = {
-  sm: 'px-3 py-0.5 text-sm',
-  md: 'px-4 py-1 text-base',
-  lg: 'px-6 py-2 text-lg',
+  sm: 'px-3 py-1 text-xs',
+  md: 'px-4 py-2 text-sm',
+  lg: 'px-6 py-3 text-base',
 };
 
 export interface ButtonProps
