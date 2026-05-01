@@ -82,7 +82,8 @@ export const Card: React.FC<CardProps> = ({
     ? `hover:bg-card-hover hover:border-(--primary) ${hoverShadow}`
     : '';
 
-  const bgClasses = color ? surfaceBgClasses[color] : fillClass;
+  // `transparent` takes precedence over `color` so the prop contract holds.
+  const bgClasses = transparent ? fillClass : color ? surfaceBgClasses[color] : fillClass;
 
   const {
     padding: _padding,

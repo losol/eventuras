@@ -44,7 +44,7 @@ export const Default: Story = {
 
 /**
  * Transparent fill with an outline — replaces the old `outline` variant.
- * Compose via `variant="transparent" border`.
+ * Compose via `transparent border`.
  */
 export const Outline: Story = {
   args: {
