@@ -1,13 +1,23 @@
-import { ReactNode, createContext, useContext, useEffect, useId, useRef } from 'react';
+import {
+  Children,
+  isValidElement,
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useId,
+  useRef,
+} from 'react';
 import {
   Button as AriaButton,
   Menu as AriaMenu,
   MenuItem,
   MenuItemProps,
-  MenuTrigger,
+  MenuTrigger as AriaMenuTrigger,
   Popover,
 } from 'react-aria-components';
 import { ChevronDown, Sun, Moon } from '../../icons';
+import { cn } from '../../utils/cn';
 
 const styles = {
   popover:
@@ -15,6 +25,8 @@ const styles = {
   menuItemsList: 'bg-card focus:outline-hidden',
   menuItem:
     'cursor-pointer group flex w-full items-center px-2 py-3 border-b border-border-1 last:border-b-0 hover:bg-card-hover text-(--text)',
+  triggerDefault:
+    'inline-flex items-center gap-2 border border-transparent font-bold bg-(--primary) hover:opacity-90 text-(--text-on-primary) rounded-full px-4 py-1 m-1 transition-all duration-500 transform ease-in-out active:scale-110 hover:shadow-sm',
 };
 
 type MenuActionsApi = {
@@ -25,6 +37,28 @@ const MenuActionsContext = createContext<MenuActionsApi>({
   register: () => {},
   unregister: () => {},
 });
+
+export type MenuTriggerProps = {
+  children: ReactNode;
+  /**
+   * Override the default pill-shaped primary button styling. Pass any
+   * Tailwind / utility classes to fully restyle the trigger (e.g. an
+   * avatar pill or icon-only button). When omitted, the default
+   * `--primary` rounded-full button is used.
+   */
+  className?: string;
+  testId?: string;
+};
+
+const MenuTrigger = ({ children, className, testId }: MenuTriggerProps) => (
+  <AriaButton
+    data-testid={testId ?? 'logged-in-menu-button'}
+    className={className ?? styles.triggerDefault}
+  >
+    {children}
+  </AriaButton>
+);
+MenuTrigger.displayName = 'Menu.Trigger';
 
 export type MenuLinkProps = {
   href: string;
@@ -39,7 +73,6 @@ const MenuLink = (props: MenuLinkProps & MenuItemProps) => (
 );
 
 export type MenuProps = {
-  menuLabel: string;
   children: ReactNode;
 };
 
@@ -57,7 +90,7 @@ export type MenuThemeToggleProps = {
   darkLabel?: string;
 };
 
-const Menu = (props: MenuProps) => {
+const Menu = ({ children }: MenuProps) => {
   const actionsRef = useRef(new Map<string, () => void>());
 
   const api = useRef<MenuActionsApi>({
@@ -65,15 +98,31 @@ const Menu = (props: MenuProps) => {
     unregister: (id) => actionsRef.current.delete(id),
   }).current;
 
+  // Split children: the first <Menu.Trigger> becomes the React Aria
+  // button, everything else lives inside the popover menu list. This
+  // keeps the compound API ergonomic while preserving Aria's required
+  // shape (button + popover as direct siblings of MenuTrigger).
+  let trigger: ReactNode = null;
+  const items: ReactNode[] = [];
+  for (const child of Children.toArray(children)) {
+    if (isValidElement(child) && child.type === MenuTrigger) {
+      if (trigger === null) {
+        trigger = child;
+      }
+      // Silently ignore additional <Menu.Trigger>s — first wins.
+    } else {
+      items.push(child);
+    }
+  }
+  if (trigger === null) {
+    throw new Error(
+      'Menu requires a <Menu.Trigger> child. Wrap the trigger label/content in <Menu.Trigger>...</Menu.Trigger>.',
+    );
+  }
+
   return (
-    <MenuTrigger>
-      <AriaButton
-        data-testid="logged-in-menu-button"
-        className="inline-flex items-center gap-2 border border-transparent font-bold bg-(--primary) hover:opacity-90 text-(--text-on-primary) rounded-full px-4 py-1 m-1 transition-all duration-500 transform ease-in-out active:scale-110 hover:shadow-sm"
-      >
-        {props.menuLabel}
-        <ChevronDown aria-hidden="true" className="ml-1 h-5 w-5" />
-      </AriaButton>
+    <AriaMenuTrigger>
+      {trigger}
       <Popover className={styles.popover}>
         <MenuActionsContext.Provider value={api}>
           <AriaMenu
@@ -83,11 +132,11 @@ const Menu = (props: MenuProps) => {
               if (fn) fn();
             }}
           >
-            {props.children}
+            {items}
           </AriaMenu>
         </MenuActionsContext.Provider>
       </Popover>
-    </MenuTrigger>
+    </AriaMenuTrigger>
   );
 };
 
@@ -136,7 +185,19 @@ const MenuThemeToggle = ({
   );
 };
 
+/**
+ * Convenience: the chevron used by the default trigger pattern. Exported
+ * so consumers can drop it into a custom `Menu.Trigger` without having to
+ * reach into `../icons` themselves.
+ */
+const MenuChevron = ({ className }: { className?: string }) => (
+  <ChevronDown aria-hidden="true" className={cn('ml-1 h-5 w-5', className)} />
+);
+MenuChevron.displayName = 'Menu.Chevron';
+
 export default Object.assign(Menu, {
+  Trigger: MenuTrigger,
+  Chevron: MenuChevron,
   Link: MenuLink,
   Button: MenuButton,
   ThemeToggle: MenuThemeToggle,
