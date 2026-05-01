@@ -69,10 +69,10 @@ const Menu = (props: MenuProps) => {
     <MenuTrigger>
       <AriaButton
         data-testid="logged-in-menu-button"
-        className="inline-flex items-center gap-2 border font-bold bg-(--primary) hover:opacity-90 text-(--text-on-primary) rounded-full px-4 py-1 m-1 transition-all duration-500 transform ease-in-out active:scale-110 hover:shadow-sm"
+        className="inline-flex items-center gap-2 border border-transparent font-bold bg-(--primary) hover:opacity-90 text-(--text-on-primary) rounded-full px-4 py-1 m-1 transition-all duration-500 transform ease-in-out active:scale-110 hover:shadow-sm"
       >
         {props.menuLabel}
-        <ChevronDown className="ml-1 h-5 w-5" />
+        <ChevronDown aria-hidden="true" className="ml-1 h-5 w-5" />
       </AriaButton>
       <Popover className={styles.popover}>
         <MenuActionsContext.Provider value={api}>

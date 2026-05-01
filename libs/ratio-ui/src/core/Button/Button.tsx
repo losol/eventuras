@@ -13,7 +13,7 @@ const ANIMATION_CLASSES = [
 ].join(' ');
 
 export const buttonStyles = {
-  primary: `border font-bold bg-(--primary) hover:opacity-90 text-(--text-on-primary) rounded-full ${ANIMATION_CLASSES}`,
+  primary: `border border-transparent font-bold bg-(--primary) hover:opacity-90 text-(--text-on-primary) rounded-full ${ANIMATION_CLASSES}`,
   secondary:
     `border border-border-1 text-(--text) bg-card hover:bg-card-hover hover:border-border-2 ` +
     `rounded-full ${ANIMATION_CLASSES}`,
@@ -24,7 +24,7 @@ export const buttonStyles = {
     `border border-border-2 hover:border-(--primary) hover:bg-card-hover ` +
     `rounded-full ${ANIMATION_CLASSES}`,
   danger:
-    `border font-bold bg-error hover:opacity-90 ` +
+    `border border-transparent font-bold bg-error hover:opacity-90 ` +
     `text-error-on rounded-full ${ANIMATION_CLASSES}`,
 };
 

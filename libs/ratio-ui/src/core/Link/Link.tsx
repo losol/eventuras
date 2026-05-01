@@ -41,7 +41,7 @@ export const Link = React.forwardRef<HTMLElement, LinkProps>(
 
     // Default link styling (when no variant or custom className is set)
     const defaultLinkClasses = !variant && !className
-      ? 'text-(--primary) hover:opacity-80 underline decoration-blue-600/30 hover:decoration-blue-800 underline-offset-2 transition-colors'
+      ? 'text-(--primary) hover:opacity-80 underline decoration-current/30 hover:decoration-current underline-offset-2 transition-colors'
       : '';
 
     // Transparent variants (`button-outline`, `button-text`) inherit text
