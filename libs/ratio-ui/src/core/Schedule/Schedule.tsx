@@ -21,13 +21,13 @@ const ScheduleItem: React.FC<ScheduleItemProps> = ({
   className = '',
 }) => (
   <li
-    className={`schedule-item grid grid-cols-[6rem_1fr] gap-x-4 py-3 border-b border-gray-200 dark:border-gray-700 last:border-b-0 ${className}`}
+    className={`schedule-item grid grid-cols-[6rem_1fr] gap-x-4 py-3 border-b border-border-1 last:border-b-0 ${className}`}
   >
-    <time className="text-sm font-medium text-gray-500 dark:text-gray-400 pt-0.5">{time}</time>
+    <time className="text-sm font-medium text-(--text-subtle) pt-0.5">{time}</time>
     <div>
       <h4>{title}</h4>
       {speaker && (
-        <p className="text-sm text-gray-600 dark:text-gray-400 mt-0.5">{speaker}</p>
+        <p className="text-sm text-(--text-muted) mt-0.5">{speaker}</p>
       )}
       {description && <p className="mt-1 text-sm">{description}</p>}
     </div>

@@ -17,7 +17,7 @@ export interface NavListProps {
 export const NavList: React.FC<NavListProps> = ({ items, LinkComponent, sticky = false }) => {
   return (
     <nav
-      className={`bg-white dark:bg-primary-900 z-10 py-2 shadow-xs${
+      className={`bg-card z-10 py-2 shadow-xs${
         sticky ? ' sticky top-0' : ''
       }`}
     >

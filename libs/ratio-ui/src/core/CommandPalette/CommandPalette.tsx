@@ -158,7 +158,7 @@ export function CommandPalette({
       <button
         type="button"
         onClick={open}
-        className={`flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-1.5 text-sm text-gray-500 transition-colors hover:border-gray-300 hover:text-gray-700 dark:border-gray-700 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:text-gray-300 ${className}`}
+        className={`flex items-center gap-2 rounded-lg border border-border-1 px-3 py-1.5 text-sm text-(--text-subtle) transition-colors hover:border-border-2 hover:text-(--text) ${className}`}
         aria-label={placeholder}
       >
         <SearchIcon aria-hidden="true" className="h-4 w-4" />
@@ -182,19 +182,19 @@ export function CommandPalette({
             ref={dialogRef}
             aria-label={placeholder}
             aria-modal="true"
-            className="w-full max-w-lg rounded-xl bg-white shadow-2xl dark:bg-gray-800"
+            className="w-full max-w-lg rounded-xl bg-card shadow-2xl"
             role="dialog"
           >
             {/* Input */}
-            <div className="flex items-center border-b border-gray-200 px-4 dark:border-gray-700">
-              <SearchIcon aria-hidden="true" className="mr-3 h-5 w-5 text-gray-400" />
+            <div className="flex items-center border-b border-border-1 px-4">
+              <SearchIcon aria-hidden="true" className="mr-3 h-5 w-5 text-(--text-subtle)" />
               <input
                 ref={inputRef}
                 aria-activedescendant={items.length > 0 ? `command-palette-option-${activeIndex}` : undefined}
                 aria-autocomplete="list"
                 aria-controls="command-palette-results"
                 aria-expanded={items.length > 0}
-                className="w-full bg-transparent py-4 text-base text-gray-900 outline-none placeholder:text-gray-400 dark:text-white dark:placeholder:text-gray-500"
+                className="w-full bg-transparent py-4 text-base text-(--text) outline-none placeholder:text-(--text-subtle)"
                 onChange={(e) => handleQueryChange(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder={placeholder}
@@ -220,17 +220,17 @@ export function CommandPalette({
                     className={`cursor-pointer rounded-lg px-4 py-3 ${
                       i === activeIndex
                         ? 'bg-primary-50 dark:bg-primary-900/30'
-                        : 'hover:bg-gray-50 dark:hover:bg-gray-700/50'
+                        : 'hover:bg-card-hover/50'
                     }`}
                     onClick={() => handleSelect(item)}
                     role="option"
                   >
-                    <div className="text-sm font-medium text-gray-900 dark:text-white">
+                    <div className="text-sm font-medium text-(--text)">
                       {item.title}
                     </div>
                     {item.descriptionHtml && (
                       <div
-                        className="mt-1 line-clamp-2 text-xs text-gray-500 dark:text-gray-400"
+                        className="mt-1 line-clamp-2 text-xs text-(--text-subtle)"
                         dangerouslySetInnerHTML={{ __html: item.descriptionHtml }}
                       />
                     )}
@@ -241,7 +241,7 @@ export function CommandPalette({
 
             {/* Empty state */}
             {query && items.length === 0 && (
-              <div className="px-4 py-8 text-center text-sm text-gray-500 dark:text-gray-400">
+              <div className="px-4 py-8 text-center text-sm text-(--text-subtle)">
                 {emptyMessage.replace('{query}', query)}
               </div>
             )}

@@ -24,7 +24,7 @@ export interface ErrorProps {
 
 /** Map status → colors */
 const statusStyles: Record<Status, string> = {
-  neutral: 'text-neutral-600 dark:text-neutral-400',
+  neutral: 'text-(--text-muted)',
   info: 'text-info-text',
   success: 'text-success-text',
   warning: 'text-warning-text',
@@ -191,7 +191,7 @@ function Details({
   className?: string;
 }>) {
   return (
-    <div className={clsx('text-sm text-gray-600 dark:text-gray-400 mb-6 max-w-2xl', className)}>
+    <div className={clsx('text-sm text-(--text-muted) mb-6 max-w-2xl', className)}>
       {children}
     </div>
   );

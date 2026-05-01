@@ -13,10 +13,10 @@ export type BadgeProps = {
 
 const statusClasses: Record<Status, string> = {
   neutral: 'bg-neutral-700 dark:bg-neutral-800',
-  info: 'bg-info dark:bg-info',
-  success: 'bg-success dark:bg-success',
-  warning: 'bg-warning dark:bg-warning',
-  error: 'bg-error dark:bg-error',
+  info: 'bg-info',
+  success: 'bg-success',
+  warning: 'bg-warning',
+  error: 'bg-error',
 };
 
 export const Badge: React.FC<BadgeProps> = ({

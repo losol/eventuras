@@ -73,7 +73,7 @@ export function SessionWarning({
         <p className="text-lg">{messages.description}</p>
 
         {messages.tip && (
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <p className="text-sm text-(--text-muted)">
             {messages.tip}
           </p>
         )}

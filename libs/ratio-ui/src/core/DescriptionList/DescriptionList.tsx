@@ -1,7 +1,7 @@
 import React from 'react';
 
 const styles = {
-  descriptionList: 'divide-y divide-gray-100 dark:divide-gray-800',
+  descriptionList: 'divide-y divide-border-1',
   item: 'px-2 py-2 grid grid-cols-2 md:grid-cols-4',
   term: 'text-sm font-medium leading-6 break-words md:col-span-1',
   definition: 'mt-1 text-sm leading-6 break-words md:col-span-3',

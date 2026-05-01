@@ -17,7 +17,7 @@ export const ListItem: React.FC<ListItemProps> = ({
   if (variant === 'check') {
     return (
       <li className={`flex items-start gap-3 ${className || ''}`}>
-        <Check className="mt-0.5 h-5 w-5 shrink-0 text-green-600 dark:text-green-400" />
+        <Check className="mt-0.5 h-5 w-5 shrink-0 text-success-text" />
         <span>{children}</span>
       </li>
     );
@@ -77,7 +77,7 @@ export const List: React.FC<ListProps> & { Item: typeof ListItem } = ({
 
   // Build final classNames
   const finalListClassName = [
-    variant === 'unstyled' ? 'text-gray-800 dark:text-gray-300 font-medium' : '',
+    variant === 'unstyled' ? 'text-(--text) font-medium' : '',
     listTypeStyles,
     variantStyle.list,
     markerStyles,

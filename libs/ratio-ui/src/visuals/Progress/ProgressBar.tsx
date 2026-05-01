@@ -29,10 +29,10 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
       {(label || showValue) && (
         <div className="flex justify-between mb-1 text-sm">
           {label && (
-            <span className="font-medium text-gray-700 dark:text-gray-300">{label}</span>
+            <span className="font-medium text-(--text-muted)">{label}</span>
           )}
           {showValue && (
-            <span className="text-gray-500 dark:text-gray-400">
+            <span className="text-(--text-subtle)">
               {value} / {max}
             </span>
           )}

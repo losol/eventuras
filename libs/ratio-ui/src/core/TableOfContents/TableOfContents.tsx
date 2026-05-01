@@ -54,7 +54,7 @@ export function TableOfContents({ headings, className = '' }: Readonly<TableOfCo
 
   return (
     <nav aria-label="On this page" className={`text-sm ${className}`}>
-      <p className="mb-3 font-medium text-gray-900 dark:text-white">On this page</p>
+      <p className="mb-3 font-medium text-(--text)">On this page</p>
       <ul className="space-y-2">
         {headings.map((heading) => (
           <li key={heading.id}>
@@ -63,8 +63,8 @@ export function TableOfContents({ headings, className = '' }: Readonly<TableOfCo
               aria-current={activeId === heading.id ? true : undefined}
               className={`block transition-colors ${heading.level === 3 ? 'pl-3' : ''}
                 ${activeId === heading.id
-                  ? 'font-medium text-primary-700 dark:text-primary-400'
-                  : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
+                  ? 'font-medium text-(--primary)'
+                  : 'text-(--text-subtle) hover:text-(--text)'
                 }`}
             >
               {heading.text}
