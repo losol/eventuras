@@ -54,8 +54,10 @@ const OrientationContext = React.createContext<ValueTileOrientation>('vertical')
  * - **Compound:** wrap `ValueTile.Value` and `ValueTile.Caption` for rich
  *   markup — italic accents, multi-token phrases, etc.
  *
- * Has no surface of its own. Wrap in `Card` (e.g. `variant="outline"` or
- * `variant="tile"`) when you want a border or background.
+ * Has no surface of its own. Wrap in `Card` (e.g.
+ * `<Card transparent border>` or `<Card padding="lg" radius="lg"
+ * shadow="none">` for the editorial tile look) when you want a
+ * border or background.
  *
  * @example
  * ```tsx

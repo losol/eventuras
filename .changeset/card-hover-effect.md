@@ -2,10 +2,10 @@
 "@eventuras/ratio-ui": minor
 ---
 
-Refresh the `Card` `hoverEffect` treatment to match the canonical interactive card pattern, and add two `--shadow-card-hover*` tokens so the glow stays theme-aware. Tuned to hint, not shout.
+Refresh the `Card` `hoverEffect` treatment to match the canonical interactive card pattern, and add two `--shadow-card-hover*` tokens so the glow stays theme-aware.
 
 ```tsx
-<Card variant="tile" hoverEffect>
+<Card hoverEffect>
   …
 </Card>
 ```
@@ -14,15 +14,16 @@ When `hoverEffect` is on, the card now:
 
 - Lifts its surface to `--card-hover`.
 - Picks up `--primary` on the border.
-- Translates 1px upward (`-translate-y-px`).
-- Gains a low-alpha Linseed-tinted glow (`--shadow-card-hover` for `default`/`outline`/`wide`/`transparent`, `--shadow-card-hover-tile` for the smaller `tile`).
-- Transitions snappily — `duration-200` instead of `300`.
+- Gains a soft Linseed-tinted glow (`--shadow-card-hover` when the card has a base shadow, `--shadow-card-hover-tile` when `shadow="none"`).
+- Transitions snappily — `duration-200`, `ease-out`.
 
-Two new shadow tokens in `theme.css`, theme-aware automatically via `--primary`:
+The glow is implemented via two new shadow tokens in `theme.css`:
 
 ```css
---shadow-card-hover-tile: 0 2px 6px  color-mix(in oklch, var(--primary) 12%, transparent);
---shadow-card-hover:      0 3px 10px color-mix(in oklch, var(--primary) 15%, transparent);
+--shadow-card-hover-tile: 0 4px 12px color-mix(in oklch, var(--primary) 25%, transparent);
+--shadow-card-hover:      0 6px 18px color-mix(in oklch, var(--primary) 25%, transparent);
 ```
 
-Reserve `hoverEffect` for cards that act as clickable surfaces — static cards should leave it off so the page doesn't twitch on cursor pass-by.
+Theme-aware automatically via `--primary` (Linseed-600 light, Linseed-400 dark).
+
+The card stays put on hover (no translate) so cursor pass-by doesn't make text twitch. Reserve `hoverEffect` for cards that act as clickable surfaces.

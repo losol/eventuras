@@ -82,21 +82,21 @@ const PageDemo: React.FC<{ title: string }> = ({ title }) => (
             Storybook with the source you actually ship.
           </p>
           <div className="grid md:grid-cols-3 gap-6">
-            <Card variant="tile">
+            <Card padding="lg" radius="lg" shadow="none">
               <Heading as="h4" marginBottom="xs">Tokens</Heading>
               <p className="text-sm text-(--text-muted)">
                 Color scales, typography, spacing, borders, status — all theme-aware via CSS
                 variables.
               </p>
             </Card>
-            <Card variant="tile">
+            <Card padding="lg" radius="lg" shadow="none">
               <Heading as="h4" marginBottom="xs">Primitives</Heading>
               <p className="text-sm text-(--text-muted)">
                 Dialog, Drawer, Navbar, Footer — built on React Aria for keyboard and screen
                 reader support.
               </p>
             </Card>
-            <Card variant="tile">
+            <Card padding="lg" radius="lg" shadow="none">
               <Heading as="h4" marginBottom="xs">Patterns</Heading>
               <p className="text-sm text-(--text-muted)">
                 Compound APIs (Heading, Content, Footer slots) for the shapes that show up over

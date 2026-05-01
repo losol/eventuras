@@ -127,10 +127,10 @@ export function MyPage() {
 
     <h3 id="card">Card</h3>
     <p>
-      Cards are container components with optional hover effects, multiple variants (default, wide,
-      outline, transparent), and support for click handlers.
+      Cards are container components with optional hover effects, a transparent variant, semantic
+      color tints, and composable padding/border/radius props.
     </p>
-    <CodeBlock>{`<Card variant="outline" hoverEffect>
+    <CodeBlock>{`<Card transparent border hoverEffect>
   <Heading as="h3">Feature</Heading>
   <Text>Description of this feature.</Text>
 </Card>`}</CodeBlock>
