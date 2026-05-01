@@ -12,7 +12,7 @@
 | `<Card variant="outline">`        | `<Card transparent border>`                                      |
 | `<Card variant="transparent">`    | `<Card transparent>`                                             |
 | `<Card variant="tile">`           | `<Card padding="lg" radius="lg" shadow="none">`                  |
-| `<Card variant="wide" backgroundImageUrl={…} />` | `<Card backgroundImageUrl={…} className="min-h-[33vh] mx-auto" />` (or use `Hero`, which now also accepts `backgroundImageUrl`) |
+| `<Card variant="wide" backgroundImageUrl={…} />` | `<Card backgroundImageUrl={…} className="min-h-[33vh] mx-auto" radius="lg" border="none" shadow="none" />` (or use `Hero`, which now also accepts `backgroundImageUrl`) |
 
 ### What changed
 

@@ -2,7 +2,7 @@
 "@eventuras/ratio-ui": minor
 ---
 
-Refresh the `Card` `hoverEffect` treatment to match the canonical interactive card pattern, and add two `--shadow-card-hover*` tokens so the glow stays theme-aware.
+Refresh the `Card` `hoverEffect` treatment to match the canonical interactive card pattern, using the existing `--shadow-card-hover*` tokens so the glow stays theme-aware.
 
 ```tsx
 <Card hoverEffect>
@@ -17,11 +17,11 @@ When `hoverEffect` is on, the card now:
 - Gains a soft Linseed-tinted glow (`--shadow-card-hover` when the card has a base shadow, `--shadow-card-hover-tile` when `shadow="none"`).
 - Transitions snappily — `duration-200`, `ease-out`.
 
-The glow is implemented via two new shadow tokens in `theme.css`:
+The glow is implemented via the shadow tokens defined in `theme.css`:
 
 ```css
---shadow-card-hover-tile: 0 4px 12px color-mix(in oklch, var(--primary) 25%, transparent);
---shadow-card-hover:      0 6px 18px color-mix(in oklch, var(--primary) 25%, transparent);
+--shadow-card-hover-tile: 0 2px 6px color-mix(in oklch, var(--primary) 12%, transparent);
+--shadow-card-hover:      0 3px 10px color-mix(in oklch, var(--primary) 15%, transparent);
 ```
 
 Theme-aware automatically via `--primary` (Linseed-600 light, Linseed-400 dark).
