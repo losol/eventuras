@@ -188,6 +188,10 @@
 
   /* Shadow */
   --shadow-focus: 0 0 0 4px var(--focus-ring);
+  /* Card hover glow — Linseed-tinted, theme-aware via --primary.
+     Kept low-alpha so the lift hints rather than shouts. */
+  --shadow-card-hover-tile: 0 2px 6px color-mix(in oklch, var(--primary) 12%, transparent);
+  --shadow-card-hover: 0 3px 10px color-mix(in oklch, var(--primary) 15%, transparent);
 }
 
 /* --------------------------------------------

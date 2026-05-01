@@ -27,6 +27,14 @@ export interface CardProps extends SpacingProps, BorderProps {
    * - `wide` — full-bleed feature surface.
    */
   variant?: 'default' | 'wide' | 'outline' | 'transparent' | 'tile';
+  /**
+   * Add the canonical interactive hover — surface lifts to `--card-hover`,
+   * border picks up `--primary`, the card translates 1px upward, and a
+   * soft Linseed-tinted glow appears. Tuned to hint, not shout. Use only
+   * on cards that act as clickable surfaces (links, calls-to-action) —
+   * static cards should omit this so the page doesn't twitch on cursor
+   * pass-by.
+   */
   hoverEffect?: boolean;
   backgroundImageUrl?: string;
   testId?: string;
@@ -53,8 +61,15 @@ export const Card: React.FC<CardProps> = ({
     wide: 'p-4 relative rounded-lg',
   };
   const baseClasses = baseByVariant[variant];
-  const transitionClasses = hoverEffect ? 'transform transition duration-300 ease-in-out' : '';
-  const hoverClasses = hoverEffect ? 'hover:bg-card-hover transition-colors duration-200' : '';
+  // Hover effect — opt-in, only meaningful for clickable surfaces.
+  // tile gets the smaller glow; every other variant gets a slightly
+  // bigger one to match its visual presence. All share a subtle 1px
+  // lift — the goal is "hints" not "shouts".
+  const hoverShadow = variant === 'tile' ? 'hover:shadow-card-hover-tile' : 'hover:shadow-card-hover';
+  const transitionClasses = hoverEffect ? 'transition-all duration-200 ease-out' : '';
+  const hoverClasses = hoverEffect
+    ? `hover:bg-card-hover hover:border-(--primary) hover:-translate-y-px ${hoverShadow}`
+    : '';
 
   const variantStyles = {
     default: 'bg-card border border-border-2 shadow-sm',
