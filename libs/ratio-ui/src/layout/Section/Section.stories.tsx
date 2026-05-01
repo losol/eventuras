@@ -93,6 +93,27 @@ export const FullWidthHero: Story = {
 };
 
 /**
+ * Layer a brand-tinted animated gradient behind a section by adding
+ * `surface-animated` to its className. Pairs well with hero/landing
+ * sections; reserve for one accent area per page.
+ */
+export const AnimatedSurface: Story = {
+  render: () => (
+    <Section className="surface-animated" paddingY="xl">
+      <Container>
+        <Heading as="h2" marginBottom="sm">Animated surface</Heading>
+        <p className="mb-4 max-w-prose">
+          Brand-tinted gradient blobs drift slowly behind the content. The
+          palette uses semantic <code>--primary</code>, <code>--accent</code>,
+          and <code>--secondary</code> tokens, so it follows the active theme.
+        </p>
+        <Button variant="primary">Get started</Button>
+      </Container>
+    </Section>
+  ),
+};
+
+/**
  * `dark` declares the section as a dark-toned surface so child components
  * (Heading, Button text/outline variants, Link, …) read the right `--text`
  * color automatically — no per-component overrides needed.

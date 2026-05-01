@@ -136,6 +136,25 @@ export const TileWithHover: Story = {
   },
 };
 
+/**
+ * Apply `className="surface-animated"` to layer a slow, brand-tinted
+ * gradient drift behind the card content. Theme-aware — colors come
+ * from `--primary`, `--accent`, and `--secondary`. Use sparingly —
+ * one accent block per page reads better than several.
+ */
+export const Animated: Story = {
+  args: {
+    className: 'surface-animated',
+    variant: 'default',
+    children: (
+      <Box>
+        <Heading as="h3" marginBottom="xs">Animated surface</Heading>
+        <p>Brand-colored gradient drifts slowly behind the content.</p>
+      </Box>
+    ),
+  },
+};
+
 export const GridWithImage: Story = {
   args: {
     className: 'grid grid-cols-1 md:grid-cols-2',

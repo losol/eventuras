@@ -163,210 +163,140 @@
   body {
     @apply h-full m-0 flex flex-col min-h-screen antialiased;
     overflow-x: hidden;
+    background-color: var(--surface);
+  }
+}
+
+/*
+ * Animated brand-colored gradient surface — reusable as a backdrop on
+ * body, Section, Card, Hero, or any block. Opt-in via `.surface-animated`.
+ *
+ * @example
+ *   <body class="surface-animated">…
+ *   <Section className="surface-animated">…
+ *   <Card variant="tile" className="surface-animated">…
+ *
+ * Composition: drops a positioned `::before` layer with three brand-tinted
+ * gradient blobs (primary + accent + secondary), one warm spotlight, and
+ * a fine grain. Palette uses the semantic `--primary`/`--accent`/`--secondary`
+ * tokens so it follows the active theme automatically.
+ *
+ * The host element gets `position: relative; overflow: hidden;` so the
+ * blobs stay clipped to it. Direct children are bumped to `z-index: 1`
+ * so they sit above the blobs.
+ *
+ * Respects `prefers-reduced-motion` — animation off when the user opts
+ * out of motion.
+ */
+@layer components {
+  .surface-animated {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
   }
 
-  /* Main animated gradient background */
-  body::before {
+  .surface-animated > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .surface-animated::before {
     content: "";
-    position: fixed;
-    inset: -15%;
-    z-index: -1;
+    position: absolute;
+    /*
+     * Bleed past the parent on all sides so the gradient's transparent
+     * outer edge is always clipped by the parent — animation translate
+     * never exposes a "rectangle" of empty gradient.
+     */
+    inset: -8%;
+    z-index: 0;
     pointer-events: none;
-    will-change: transform;
 
+    /*
+     * Theme-aware via relative color syntax — pulls L/C/H from the
+     * semantic tokens so the gradient follows the active theme without
+     * duplicate rules.
+     */
     background-image:
-      /* Organic blob 1 - Linseed Blue */
+      /* Linseed primary — left center */
       radial-gradient(
-        ellipse 1200px 800px at 15% 20%,
-        oklch(0.625 0.085 224 / 0.3),
-        transparent 75%
+        ellipse 100% 100% at 25% 40%,
+        oklch(from var(--primary) l c h / 0.08),
+        transparent 95%
       ),
-
-      /* Organic blob 2 - Ochre highlight */
+      /* Ochre accent — top-right corner, dominant warm note */
       radial-gradient(
-        ellipse 900px 1100px at 85% 15%,
-        oklch(0.815 0.125 85 / 0.22),
-        transparent 80%
+        ellipse 100% 110% at 85% 15%,
+        oklch(from var(--accent) l c h / 0.1),
+        transparent 95%
       ),
-
-      /* Warm accent - deeper Ochre */
+      /* Linseed primary, deeper — bottom anchor */
       radial-gradient(
-        ellipse 700px 600px at 75% 80%,
-        oklch(0.640 0.125 80 / 0.18),
-        transparent 85%
+        ellipse 90% 90% at 60% 80%,
+        oklch(from var(--primary) l c h / 0.07),
+        transparent 95%
       ),
-
-      /* Support - warm Linen */
+      /* Linen secondary — soft warm support */
       radial-gradient(
-        ellipse 1000px 700px at 25% 75%,
-        oklch(0.928 0.022 85 / 0.20),
-        transparent 88%
+        ellipse 100% 80% at 30% 75%,
+        oklch(from var(--secondary) l c h / 0.1),
+        transparent 95%
       ),
-
-      /* Spotlight effect (subtle warm glow) */
+      /* Warm spotlight — top-right, reinforces the corner sunlight feel.
+         Note: ellipse, not circle, since circle does not accept
+         percentage radii in CSS. */
       radial-gradient(
-        circle 600px at 50% 10%,
-        oklch(0.985 0.004 88 / 0.14),
-        transparent 75%
-      ),
-
-      /* Fine grain texture */
-      radial-gradient(
-        1px 1px,
-        rgba(22, 20, 18, 0.05),
-        transparent 60%
+        ellipse 80% 80% at 80% 20%,
+        oklch(from var(--accent) l c h / 0.08),
+        transparent 90%
       );
-
-    background-size: auto, auto, auto, auto, auto, 5px 5px;
-    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, repeat;
-    background-blend-mode: normal, normal, normal, normal, screen, multiply;
-    background-color: var(--surface);
-
-    /* Elegant mask to blend edges */
-    -webkit-mask-image: radial-gradient(
-      130% 130% at 50% 30%,
-      #000 52%,
-      transparent 90%
-    );
-    mask-image: radial-gradient(
-      130% 130% at 50% 30%,
-      #000 52%,
-      transparent 90%
-    );
   }
 
-  /* Dark mode variant - more dramatic and moody */
-  :root[data-theme="dark"] body::before {
-    background-image:
-      /* Linseed deep */
-      radial-gradient(
-        ellipse 1300px 900px at 12% 18%,
-        oklch(0.330 0.058 230 / 0.35),
-        transparent 78%
-      ),
-
-      /* Ochre warm glow */
-      radial-gradient(
-        ellipse 800px 1000px at 88% 12%,
-        oklch(0.405 0.085 76 / 0.25),
-        transparent 82%
-      ),
-
-      /* Linseed deepest - bottom accent */
-      radial-gradient(
-        ellipse 800px 700px at 72% 85%,
-        oklch(0.245 0.044 232 / 0.22),
-        transparent 84%
-      ),
-
-      /* Ochre subtle - atmospheric */
-      radial-gradient(
-        ellipse 1100px 800px at 28% 78%,
-        oklch(0.295 0.060 75 / 0.18),
-        transparent 86%
-      ),
-
-      /* Subtle warm highlight */
-      radial-gradient(
-        circle 500px at 50% 8%,
-        oklch(0.985 0.004 88 / 0.06),
-        transparent 78%
-      ),
-
-      /* Grain - more visible in dark */
-      radial-gradient(
-        1px 1px,
-        rgba(250, 247, 243, 0.08),
-        transparent 60%
-      );
-
-    background-size: auto, auto, auto, auto, auto, 5px 5px;
-    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, repeat;
-    background-blend-mode: normal, normal, normal, normal, screen, screen;
+  /*
+   * Body opt-in needs the surface color baked into the layer because
+   * the ::before is fixed-positioned and detached from the body's
+   * normal background. Card/Section/etc. let their own bg show
+   * through.
+   */
+  body.surface-animated::before {
     background-color: var(--surface);
   }
 
-  /* Smooth organic drift animation */
   @media (prefers-reduced-motion: no-preference) {
-    body::before {
-      animation: losol-organic-flow 45s ease-in-out infinite alternate;
+    .surface-animated::before {
+      animation: surface-flow 12s ease-in-out infinite alternate;
     }
 
-    :root[data-theme="dark"] body::before {
-      animation-duration: 55s;
-    }
-
-    @keyframes losol-organic-flow {
+    /*
+     * Drift via translate only — no scale. Scaling the ::before beyond
+     * its inset:0 box momentarily exposes the gradient's sharp edge as
+     * a visible rectangle near the parent's border. Pure translate
+     * keeps the gradient aligned and the box-edge invisible.
+     */
+    @keyframes surface-flow {
       0% {
-        transform: translate3d(0, 0, 0) scale(1);
+        transform: translate(0, 0);
       }
-      33% {
-        transform: translate3d(25px, -15px, 0) scale(1.02);
-      }
-      66% {
-        transform: translate3d(-20px, 20px, 0) scale(0.98);
+      50% {
+        transform: translate(20px, -12px);
       }
       100% {
-        transform: translate3d(15px, -10px, 0) scale(1.01);
+        transform: translate(-15px, 14px);
       }
     }
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    body::before {
-      animation: none !important;
-    }
-  }
-
-  /* Optional: Add a secondary layer for extra depth */
-  body::after {
-    content: "";
+  /*
+   * When applied to <body>, the gradient should track the viewport
+   * rather than the body's box (which can grow with content).
+   */
+  body.surface-animated::before {
     position: fixed;
-    inset: 0;
+    inset: -10%;
     z-index: -1;
-    pointer-events: none;
-    opacity: 0.4;
-
-    background-image:
-      /* Subtle mesh pattern overlay */
-      repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(22, 20, 18, 0.01) 2px,
-        rgba(22, 20, 18, 0.01) 4px
-      ),
-      repeating-linear-gradient(
-        90deg,
-        transparent,
-        transparent 2px,
-        rgba(22, 20, 18, 0.01) 2px,
-        rgba(22, 20, 18, 0.01) 4px
-      );
   }
 
-  :root[data-theme="dark"] body::after {
-    opacity: 0.2;
-    background-image:
-      repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(250, 247, 243, 0.015) 2px,
-        rgba(250, 247, 243, 0.015) 4px
-      ),
-      repeating-linear-gradient(
-        90deg,
-        transparent,
-        transparent 2px,
-        rgba(250, 247, 243, 0.015) 2px,
-        rgba(250, 247, 243, 0.015) 4px
-      );
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    body::after {
-      display: none;
-    }
+  body.surface-animated > * {
+    z-index: auto;
   }
 }
