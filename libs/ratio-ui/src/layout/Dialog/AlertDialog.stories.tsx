@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
+import { expect, fn, userEvent, within } from 'storybook/test';
 import { AlertDialog, AlertDialogProps, AlertDialogVariant } from './AlertDialog';
 import { Button } from '../../core/Button';
 
@@ -150,5 +151,69 @@ export const AutoFocusCancel: Story = {
     cancelLabel: 'Cancel',
     secondaryActionLabel: undefined,
     autoFocusButton: 'cancel',
+  },
+};
+
+/**
+ * Type-to-confirm gate. The primary button stays disabled until the user
+ * types the exact `confirmText` phrase (whitespace trimmed, case-sensitive).
+ * Reserve for irreversible destructive actions where a single misclick is
+ * too easy.
+ */
+export const TypeToConfirm: Story = {
+  render: args => <StatefulAlertDialog {...args} />,
+  args: {
+    variant: 'destructive',
+    title: 'Delete event?',
+    children: 'This will permanently remove the event and all registrations. This cannot be undone.',
+    primaryActionLabel: 'Delete event',
+    cancelLabel: 'Cancel',
+    secondaryActionLabel: undefined,
+    confirmText: 'delete',
+    confirmLabel: 'Type "delete" to confirm',
+  },
+};
+
+const onPrimarySpy = fn();
+
+export const TypeToConfirmPlay: Story = {
+  name: 'TypeToConfirm — play test',
+  render: () => (
+    <AlertDialog
+      isOpen
+      onClose={fn()}
+      onPrimaryAction={onPrimarySpy}
+      variant="destructive"
+      title="Delete event?"
+      primaryActionLabel="Delete event"
+      cancelLabel="Cancel"
+      confirmText="delete"
+      confirmLabel='Type "delete" to confirm'
+    >
+      Permanently remove the event.
+    </AlertDialog>
+  ),
+  play: async ({ canvasElement }) => {
+    onPrimarySpy.mockClear();
+    // The dialog renders via React Aria's portal — reach into the body, not
+    // the canvas, since the Modal escapes the story root.
+    const screen = within(canvasElement.ownerDocument.body);
+
+    const primary = await screen.findByRole('button', { name: 'Delete event' });
+    await expect(primary).toBeDisabled();
+
+    const input = await screen.findByLabelText('Type "delete" to confirm');
+
+    // Wrong phrase keeps it disabled — case-sensitive match.
+    await userEvent.type(input, 'DELETE');
+    await expect(primary).toBeDisabled();
+
+    // Right phrase enables it (after clearing the wrong one).
+    await userEvent.clear(input);
+    await userEvent.type(input, 'delete');
+    await expect(primary).toBeEnabled();
+
+    await userEvent.click(primary);
+    await expect(onPrimarySpy).toHaveBeenCalledTimes(1);
   },
 };

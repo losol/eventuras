@@ -1,5 +1,5 @@
 import { Input as AriaInput } from 'react-aria-components';
-import type { ComponentProps } from 'react';
+import type { ComponentPropsWithRef } from 'react';
 
 /**
  * Default input styles for React Aria components
@@ -39,6 +39,6 @@ export const inputStyles = {
  * </SearchField>
  * ```
  */
-export function Input({ className, ...props }: ComponentProps<typeof AriaInput>) {
-  return <AriaInput className={className ?? inputStyles.default} {...props} />;
+export function Input({ className, ref, ...props }: ComponentPropsWithRef<typeof AriaInput>) {
+  return <AriaInput ref={ref} className={className ?? inputStyles.default} {...props} />;
 }
