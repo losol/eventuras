@@ -60,7 +60,7 @@
     "vitest": "4.1.5"
   },
   "peerDependencies": {
-    "@eventuras/ratio-ui": "workspace:^",
+    "@eventuras/ratio-ui": ">=1",
     "react": ">=18 <20",
     "react-dom": ">=18 <20",
     "react-markdown": "^10.0.0",
