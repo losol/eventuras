@@ -4,9 +4,16 @@
 
 import type { Color } from './colors';
 
-export type BorderVariant = 'default' | 'strong' | 'subtle';
+export type BorderVariant = 'none' | 'default' | 'strong' | 'subtle';
 
 export interface BorderProps {
+  /**
+   * Border weight.
+   * - `false` / `'none'` — no border.
+   * - `true` / `'default'` — 1px solid.
+   * - `'strong'` — 2px solid.
+   * - `'subtle'` — 1px dashed.
+   */
   border?: boolean | BorderVariant;
   borderColor?: 'default' | 'subtle' | 'strong' | Color;
   radius?: 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'full';
@@ -38,7 +45,7 @@ const borderColorMap: Record<NonNullable<BorderProps['borderColor']>, string> = 
 export function buildBorderClasses(props: BorderProps): string {
   const classes: string[] = [];
 
-  if (props.border) {
+  if (props.border !== undefined && props.border !== false && props.border !== 'none') {
     const variant = props.border === true ? 'default' : props.border;
     switch (variant) {
       case 'default':

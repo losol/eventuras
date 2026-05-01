@@ -215,9 +215,6 @@
   --text-on-secondary: var(--color-neutral-900);
   --text-on-accent: var(--color-secondary-100);
 
-  --border-1: var(--color-secondary-300);
-  --border-2: var(--color-secondary-400);
-
   --alpha-1: 0.04;
   --alpha-2: 0.08;
   --alpha-3: 0.12;
@@ -227,9 +224,18 @@
   --overlay-press: rgba(var(--overlay-ink), var(--alpha-2));
   --overlay-drag: rgba(var(--overlay-ink), var(--alpha-3));
 
-  --card: rgb(255 255 255 / 0.55);
-  --card-hover: rgb(255 255 255 / 0.75);
-  --surface: var(--color-secondary-200);
+  /* Page surface — warm Linen, slightly muted. */
+  --surface: oklch(0.945 0.012 88);
+
+  /* Card lifts from the surface toward white — a touch lighter so
+     it reads as elevated. Hover steps further. */
+  --card: oklch(0.985 0.008 88);
+  --card-hover: oklch(0.998 0.005 90);
+
+  /* Borders — subtle hairline (1) and a more visible step (2),
+     darker than the card so the edge defines without competing. */
+  --border-1: oklch(0.92 0.018 85);
+  --border-2: oklch(0.85 0.025 85);
 
   --focus-ring: oklch(0.520 0.082 226 / 0.45);
 
@@ -280,9 +286,6 @@
   --text-on-secondary: var(--color-secondary-200);
   --text-on-accent: var(--color-accent-950);
 
-  --border-1: var(--color-primary-800);
-  --border-2: var(--color-primary-700);
-
   --alpha-1: 0.06;
   --alpha-2: 0.10;
   --alpha-3: 0.16;
@@ -292,9 +295,18 @@
   --overlay-press: rgba(var(--overlay-ink), var(--alpha-2));
   --overlay-drag: rgba(var(--overlay-ink), var(--alpha-3));
 
-  --card: oklch(0.220 0.040 232);
-  --card-hover: oklch(0.260 0.046 232);
+  /* Page surface — Linseed-950, the deep cool floor of the palette. */
   --surface: var(--color-primary-950);
+
+  /* Card lifts to Linseed-900, a clear step above surface. Hover sits
+     between Linseed-900 and 800. */
+  --card: var(--color-primary-900);
+  --card-hover: oklch(0.290 0.050 230);
+
+  /* Borders — hairline subtle, then a more visible step. Both
+     Linseed-tinted so they stay coherent with the surface family. */
+  --border-1: oklch(0.285 0.035 232);
+  --border-2: oklch(0.350 0.050 230);
 
   --focus-ring: oklch(0.730 0.078 224 / 0.45);
 

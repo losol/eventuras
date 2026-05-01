@@ -8,40 +8,51 @@ import { buildBorderClasses } from '../../tokens/borders';
 import { buildCoverImageStyle } from '../../utils/buildCoverImageStyle';
 import { cn } from '../../utils/cn';
 
+export type CardShadow = 'none' | 'xs' | 'sm' | 'md';
+
 export interface CardProps extends SpacingProps, BorderProps {
   children?: ReactNode;
   as?: React.ElementType;
   className?: string;
   style?: React.CSSProperties;
+  /**
+   * Semantic surface tint. Maps to `bg-{color}-50` in light and
+   * `bg-{color}-950` in dark via `surfaceBgClasses`. Overrides the
+   * default `--card` fill.
+   */
   color?: Color;
   /**
-   * Visual treatment.
-   *
-   * - `default` — elevated card: 1px border, soft shadow, `rounded-xl`.
-   *   Use for primary content surfaces that should read as "lifted".
-   * - `tile` — flat editorial card: 1px border, no shadow, `rounded-lg`,
-   *   roomier padding. Use for content tiles in grids that should sit
-   *   quietly on the page.
-   * - `outline` — border only, transparent fill. Functional framing.
-   * - `transparent` — no chrome.
-   * - `wide` — full-bleed feature surface.
+   * Drop the fill, leaving the card transparent. Pair with `border`
+   * (from `BorderProps`) when you want an outlined transparent card.
    */
-  variant?: 'default' | 'wide' | 'outline' | 'transparent' | 'tile';
+  transparent?: boolean;
+  /**
+   * Drop shadow. Defaults to `'xs'` for filled cards, `'none'` for
+   * transparent ones.
+   */
+  shadow?: CardShadow;
   /**
    * Add the canonical interactive hover — surface lifts to `--card-hover`,
-   * border picks up `--primary`, the card translates 1px upward, and a
-   * soft Linseed-tinted glow appears. Tuned to hint, not shout. Use only
-   * on cards that act as clickable surfaces (links, calls-to-action) —
-   * static cards should omit this so the page doesn't twitch on cursor
-   * pass-by.
+   * border picks up `--primary`, and a soft Linseed-tinted glow appears.
+   * Tuned to hint, not shout; the card stays put so cursor pass-by
+   * doesn't make text twitch. Use only on cards that act as clickable
+   * surfaces (links, calls-to-action).
    */
   hoverEffect?: boolean;
   backgroundImageUrl?: string;
   testId?: string;
 }
 
+const SHADOW_CLASSES: Record<CardShadow, string> = {
+  none: '',
+  xs: 'shadow-xs',
+  sm: 'shadow-sm',
+  md: 'shadow-md',
+};
+
 export const Card: React.FC<CardProps> = ({
-  variant = 'default',
+  transparent = false,
+  shadow,
   hoverEffect = false,
   gap = 'sm',
   color,
@@ -53,43 +64,40 @@ export const Card: React.FC<CardProps> = ({
   testId,
   ...spacingAndBorder
 }) => {
-  const baseByVariant: Record<NonNullable<CardProps['variant']>, string> = {
-    default: 'p-4 relative rounded-xl',
-    tile: 'p-6 relative rounded-lg border border-border-1',
-    outline: 'p-4 relative rounded-lg',
-    transparent: 'p-4 relative rounded-lg',
-    wide: 'p-4 relative rounded-lg',
-  };
-  const baseClasses = baseByVariant[variant];
+  // Card-tier defaults — applied when consumer doesn't pass them.
+  const padding = spacingAndBorder.padding ?? 'md';
+  const radius = spacingAndBorder.radius ?? 'xl';
+  const border = spacingAndBorder.border ?? !transparent;
+  const effectiveShadow: CardShadow = shadow ?? (transparent ? 'none' : 'xs');
+
+  const fillClass = transparent ? 'bg-transparent' : 'bg-card';
+
   // Hover effect — opt-in, only meaningful for clickable surfaces.
-  // tile gets the smaller glow; every other variant gets a slightly
-  // bigger one to match its visual presence. All share a subtle 1px
-  // lift — the goal is "hints" not "shouts".
-  const hoverShadow = variant === 'tile' ? 'hover:shadow-card-hover-tile' : 'hover:shadow-card-hover';
+  // The smaller tile-tier glow when no shadow is present (flat editorial
+  // mode); the bigger one for elevated cards.
+  const hoverShadow =
+    effectiveShadow === 'none' ? 'hover:shadow-card-hover-tile' : 'hover:shadow-card-hover';
   const transitionClasses = hoverEffect ? 'transition-all duration-200 ease-out' : '';
   const hoverClasses = hoverEffect
-    ? `hover:bg-card-hover hover:border-(--primary) hover:-translate-y-px ${hoverShadow}`
+    ? `hover:bg-card-hover hover:border-(--primary) ${hoverShadow}`
     : '';
 
-  const variantStyles = {
-    default: 'bg-card border border-border-2 shadow-sm',
-    wide: 'bg-card mx-auto min-h-[33vh]',
-    outline: 'border border-border-1 bg-transparent',
-    transparent: 'bg-transparent',
-    tile: 'bg-card',
-  };
-
-  const bgClasses = color ? surfaceBgClasses[color] : variantStyles[variant];
+  // `transparent` takes precedence over `color` so the prop contract holds.
+  const bgClasses = transparent ? fillClass : color ? surfaceBgClasses[color] : fillClass;
 
   const {
-    padding, paddingX, paddingY, paddingTop, paddingBottom,
+    padding: _padding,
+    paddingX, paddingY, paddingTop, paddingBottom,
     margin, marginX, marginY, marginTop, marginBottom,
-    border, borderColor, radius,
+    border: _border,
+    borderColor,
+    radius: _radius,
     ...rest
   } = spacingAndBorder;
 
   const spacingClasses = buildSpacingClasses({
-    padding, paddingX, paddingY, paddingTop, paddingBottom,
+    padding,
+    paddingX, paddingY, paddingTop, paddingBottom,
     margin, marginX, marginY, marginTop, marginBottom,
     gap,
   });
@@ -99,7 +107,16 @@ export const Card: React.FC<CardProps> = ({
 
   return (
     <Component
-      className={cn(baseClasses, transitionClasses, hoverClasses, bgClasses, spacingClasses, borderClasses, className)}
+      className={cn(
+        'relative',
+        bgClasses,
+        borderClasses,
+        SHADOW_CLASSES[effectiveShadow],
+        transitionClasses,
+        hoverClasses,
+        spacingClasses,
+        className,
+      )}
       style={combinedStyle}
       data-testid={testId}
       {...rest}

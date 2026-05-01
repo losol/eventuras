@@ -20,7 +20,7 @@ export const FeaturedCollectionSection: React.FC<FeaturedCollectionSectionProps>
   return (
     <Section paddingY="lg">
       {collection.featuredImageUrl && (
-        <Card variant="wide" backgroundImageUrl={collection.featuredImageUrl} />
+        <Card className="min-h-[33vh] mx-auto" backgroundImageUrl={collection.featuredImageUrl} />
       )}
       <Container>
         <Heading as="h2" paddingTop="sm" paddingBottom="xs">
