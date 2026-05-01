@@ -36,7 +36,7 @@
     "postcss": "^8.5.10",
     "prettier": "^3.8.3",
     "tailwindcss": "^4.2.2",
-    "typescript": "6.0.2"
+    "typescript": "6.0.3"
   },
   "engines": {
     "node": ">=22.0.0 <25.0.0",
