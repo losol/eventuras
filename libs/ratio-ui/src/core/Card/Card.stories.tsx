@@ -12,21 +12,18 @@ const meta: Meta<typeof Card> = {
   component: Card,
   tags: ['autodocs'],
   argTypes: {
-    variant: {
-      control: 'select',
-      options: ['default', 'wide', 'outline', 'transparent', 'tile'],
-    },
-    gap: {
-      control: 'select',
-      options: ['none', 'xs', 'sm', 'md', 'lg', 'xl'],
-    },
+    transparent: { control: 'boolean' },
+    border: { control: 'select', options: [false, true, 'default', 'strong', 'subtle', 'none'] },
+    radius: { control: 'select', options: ['none', 'sm', 'md', 'lg', 'xl', 'full'] },
+    shadow: { control: 'select', options: ['none', 'xs', 'sm', 'md'] },
+    padding: { control: 'select', options: ['none', 'xs', 'sm', 'md', 'lg', 'xl'] },
+    gap: { control: 'select', options: ['none', 'xs', 'sm', 'md', 'lg', 'xl'] },
     hoverEffect: { control: 'boolean' },
     color: {
       control: 'select',
       options: [undefined, 'neutral', 'primary', 'secondary', 'accent', 'success', 'warning', 'error', 'info'],
     },
     backgroundImageUrl: { control: 'text' },
-    padding: { control: 'select', options: ['none', 'xs', 'sm', 'md', 'lg', 'xl'] },
     margin: { control: 'select', options: ['none', 'xs', 'sm', 'md', 'lg', 'xl'] },
   },
 };
@@ -45,26 +42,34 @@ export const Default: Story = {
   },
 };
 
+/**
+ * Transparent fill with an outline — replaces the old `outline` variant.
+ * Compose via `variant="transparent" border`.
+ */
 export const Outline: Story = {
   args: {
-    variant: 'outline',
+    transparent: true,
+    border: true,
     children: (
       <Box>
         <Heading as="h3" marginBottom="xs">Outline Card</Heading>
-        <p>This card uses the outline variant with a border.</p>
+        <p>This card uses `transparent border`.</p>
       </Box>
     ),
   },
 };
 
 /**
- * Editorial tile — quieter border, roomier padding (`p-6`), modern
- * surface tokens. Pair with a `Heading` + paragraph for feature-card
- * grids; pair with `ValueTile` for stat blocks that need a surface.
+ * Editorial tile composition — flat (no shadow), roomier padding,
+ * tighter radius. Compose via `padding="lg" radius="lg" shadow="none"`.
+ * Pair with a `Heading` + paragraph for feature-card grids; pair with
+ * `ValueTile` for stat blocks that need a surface.
  */
 export const Tile: Story = {
   args: {
-    variant: 'tile',
+    padding: 'lg',
+    radius: 'lg',
+    shadow: 'none',
     children: (
       <Box>
         <Heading as="h4" marginBottom="xs">Tokens</Heading>
@@ -78,23 +83,11 @@ export const Tile: Story = {
 
 export const Transparent: Story = {
   args: {
-    variant: 'transparent',
+    transparent: true,
     children: (
       <Box>
         <Heading as="h3" marginBottom="xs">Transparent Card</Heading>
         <p>This card has no background or border, just structure and padding.</p>
-      </Box>
-    ),
-  },
-};
-
-export const Wide: Story = {
-  args: {
-    variant: 'wide',
-    children: (
-      <Box>
-        <Heading as="h3" marginBottom="xs">Wide Card</Heading>
-        <p>This card uses the wide variant with minimum height.</p>
       </Box>
     ),
   },
@@ -119,13 +112,15 @@ export const WithHoverEffect: Story = {
 };
 
 /**
- * `tile` variant + `hoverEffect` — the editorial hover for grid tiles.
- * Same 1px lift as `default`, but with a softer glow tuned for the
- * tile's smaller footprint.
+ * Tile composition + `hoverEffect` — the editorial hover for grid
+ * tiles. The smaller `--shadow-card-hover-tile` glow kicks in when no
+ * base shadow is present.
  */
 export const TileWithHover: Story = {
   args: {
-    variant: 'tile',
+    padding: 'lg',
+    radius: 'lg',
+    shadow: 'none',
     hoverEffect: true,
     children: (
       <Box>
@@ -158,7 +153,8 @@ export const GridWithImage: Story = {
 
 export const GridOutline: Story = {
   args: {
-    variant: 'outline',
+    transparent: true,
+    border: true,
     className: 'grid grid-cols-1 md:grid-cols-2',
     children: (
       <>
@@ -202,7 +198,8 @@ export const GridWithSmallGap: Story = {
   args: {
     className: 'grid grid-cols-1 md:grid-cols-2',
     gap: 'sm',
-    variant: 'outline',
+    transparent: true,
+    border: true,
     children: (
       <>
         <Image

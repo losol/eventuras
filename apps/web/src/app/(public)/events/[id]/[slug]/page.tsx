@@ -120,7 +120,10 @@ export default async function EventDetailsPage({ params }: Readonly<EventDetails
         <Section className="pb-8">
           <Container>
             {eventinfo.featuredImageUrl && (
-              <Card variant="wide" backgroundImageUrl={eventinfo.featuredImageUrl} />
+              <Card
+                className="min-h-[33vh] mx-auto"
+                backgroundImageUrl={eventinfo.featuredImageUrl}
+              />
             )}
 
             <Heading as="h1" paddingY="xs">

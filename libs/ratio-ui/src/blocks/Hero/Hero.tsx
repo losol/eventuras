@@ -1,18 +1,27 @@
-import React, { type ReactNode } from 'react';
+import React, { type CSSProperties, type ReactNode } from 'react';
 
 import { Heading } from '../../core/Heading';
 import { Container } from '../../layout/Container';
+import { buildCoverImageStyle } from '../../utils/buildCoverImageStyle';
 import { cn } from '../../utils/cn';
 
 export interface HeroProps {
   children?: ReactNode;
   className?: string;
+  style?: CSSProperties;
   /**
    * Marks the hero as a dark surface (applies `surface-dark` className) so
    * descendants reading `var(--text)` pick up the light tone. Useful for
    * heroes with photo backgrounds or strongly colored fills.
    */
   dark?: boolean;
+  /**
+   * Background image URL — sets the hero's `background-image` to a
+   * full-cover image with a soft dark overlay so foreground text stays
+   * readable. Pair with `dark` if you want the typography tuned for
+   * a dark surface.
+   */
+  backgroundImageUrl?: string;
 }
 
 interface HeroSlotProps {
@@ -62,7 +71,13 @@ interface HeroComponent extends React.FC<HeroProps> {
  * </Hero>
  * ```
  */
-const HeroRoot: HeroComponent = (({ children, className, dark }: HeroProps) => {
+const HeroRoot: HeroComponent = (({
+  children,
+  className,
+  style,
+  dark,
+  backgroundImageUrl,
+}: HeroProps) => {
   // Detect whether the consumer included a Hero.Side so we can drop the
   // second grid column when there's nothing to put in it. Without this
   // the main content would float in the left half on lg+ with empty
@@ -71,6 +86,8 @@ const HeroRoot: HeroComponent = (({ children, className, dark }: HeroProps) => {
     child => React.isValidElement(child) && child.type === HeroSide,
   );
 
+  const combinedStyle = buildCoverImageStyle(backgroundImageUrl, style);
+
   return (
     <section
       className={cn(
@@ -78,6 +95,7 @@ const HeroRoot: HeroComponent = (({ children, className, dark }: HeroProps) => {
         dark && 'surface-dark',
         className,
       )}
+      style={combinedStyle}
     >
       <Container>
         <div

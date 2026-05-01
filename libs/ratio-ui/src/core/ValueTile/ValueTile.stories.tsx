@@ -88,21 +88,21 @@ export const Grid: Story = {
 
 /**
  * Wrapped in `Card` for a surfaced dashboard tile. The dashboard pattern
- * pairs `Card variant="outline"` with the convenience API.
+ * pairs `Card transparent border` with the convenience API.
  */
 export const InsideCard: Story = {
   render: () => (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl">
-      <Card variant="outline" className="text-center">
+      <Card transparent border className="text-center">
         <ValueTile number={156} label="Total events" className="items-center" />
       </Card>
-      <Card variant="outline" className="text-center">
+      <Card transparent border className="text-center">
         <ValueTile number={2341} label="Registrations" className="items-center" />
       </Card>
-      <Card variant="outline" className="text-center">
+      <Card transparent border className="text-center">
         <ValueTile number={89} label="Active events" className="items-center" />
       </Card>
-      <Card variant="outline" className="text-center">
+      <Card transparent border className="text-center">
         <ValueTile number={undefined} label="Loading…" className="items-center" />
       </Card>
     </div>

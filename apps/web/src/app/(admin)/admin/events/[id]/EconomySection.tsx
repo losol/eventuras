@@ -119,14 +119,14 @@ const EconomySection: React.FC<EconomySectionProps> = ({ participants }) => {
     <Stack gap="xl" className="py-8">
       {/* Summary */}
       <Grid cols={{ sm: 2, md: 2 }}>
-        <Card variant="outline" className="text-center">
+        <Card transparent border className="text-center">
           <ValueTile
             number={statistics.totalOrders}
             label={t('admin.economy.statistics.totalOrders')}
             className="items-center"
           />
         </Card>
-        <Card variant="outline" className="text-center">
+        <Card transparent border className="text-center">
           <ValueTile
             number={Number.parseFloat(statistics.totalRevenue.toFixed(2))}
             label={`${t('admin.economy.statistics.totalRevenue')} (kr)`}
@@ -137,28 +137,28 @@ const EconomySection: React.FC<EconomySectionProps> = ({ participants }) => {
 
       {/* Order status breakdown */}
       <Grid cols={{ sm: 2, md: 4 }}>
-        <Card variant="outline" className="text-center">
+        <Card transparent border className="text-center">
           <ValueTile
             number={statistics.draftOrders}
             label={t('admin.economy.statistics.draftOrders')}
             className="items-center"
           />
         </Card>
-        <Card variant="outline" className="text-center">
+        <Card transparent border className="text-center">
           <ValueTile
             number={statistics.verifiedOrders}
             label={t('admin.economy.statistics.verifiedOrders')}
             className="items-center"
           />
         </Card>
-        <Card variant="outline" className="text-center">
+        <Card transparent border className="text-center">
           <ValueTile
             number={statistics.invoicedOrders}
             label={t('admin.economy.statistics.invoicedOrders')}
             className="items-center"
           />
         </Card>
-        <Card variant="outline" className="text-center">
+        <Card transparent border className="text-center">
           <ValueTile
             number={statistics.cancelledOrders}
             label={t('admin.economy.statistics.cancelledOrders')}

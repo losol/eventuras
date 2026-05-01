@@ -163,6 +163,8 @@
   body {
     @apply h-full m-0 flex flex-col min-h-screen antialiased;
     overflow-x: hidden;
+    background-color: var(--surface);
+    color: var(--text);
   }
 
   /* Main animated gradient background */
