@@ -64,7 +64,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
 
       {/* Items */}
       {children && (
-        <div className="space-y-4 mb-6 pb-6 border-b border-gray-200 dark:border-gray-700">
+        <div className="space-y-4 mb-6 pb-6 border-b border-border-1">
           {children}
         </div>
       )}
@@ -73,20 +73,20 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
       <div className="space-y-2">
         {showVatBreakdown && (
           <>
-            <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
+            <div className="flex justify-between text-sm text-(--text-muted)">
               <span>Subtotal (eks. mva)</span>
               <span>{formatPrice(summary.subtotalExVat, summary.currency, locale)}</span>
             </div>
-            <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
+            <div className="flex justify-between text-sm text-(--text-muted)">
               <span>MVA</span>
               <span>{formatPrice(summary.totalVat, summary.currency, locale)}</span>
             </div>
           </>
         )}
 
-        <div className="flex justify-between items-center pt-2 border-t border-gray-200 dark:border-gray-700">
-          <span className="text-lg font-semibold text-gray-900 dark:text-white">Total</span>
-          <span className="text-2xl font-bold text-gray-900 dark:text-white">
+        <div className="flex justify-between items-center pt-2 border-t border-border-1">
+          <span className="text-lg font-semibold text-(--text)">Total</span>
+          <span className="text-2xl font-bold text-(--text)">
             {formatPrice(summary.totalIncVat, summary.currency, locale)}
           </span>
         </div>

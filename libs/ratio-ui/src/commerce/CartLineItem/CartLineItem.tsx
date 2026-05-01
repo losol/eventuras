@@ -70,10 +70,10 @@ export const CartLineItem: React.FC<CartLineItemProps> = ({
   return (
     <div className="flex items-start gap-4">
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+        <p className="text-sm font-medium text-(--text) truncate">
           {item.title}
         </p>
-        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+        <p className="mt-1 text-xs text-(--text-subtle)">
           {item.quantity} x {formatPrice(item.pricePerUnitIncVat, item.currency, locale)}
           {' '}(inkl mva {formatPrice(item.vatAmount, item.currency, locale)})
         </p>
@@ -102,17 +102,18 @@ export const CartLineItem: React.FC<CartLineItemProps> = ({
       <div className="flex flex-col items-end justify-between">
         {showQuantityControls && onRemove && (
           <button
+            type="button"
             onClick={() => onRemove(item.productId)}
-            className="text-sm text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+            className="text-sm text-error-text hover:opacity-80"
           >
             Fjern
           </button>
         )}
         <div className="text-right">
-          <p className="text-sm font-semibold text-gray-900 dark:text-white whitespace-nowrap">
+          <p className="text-sm font-semibold text-(--text) whitespace-nowrap">
             {formatPrice(item.lineTotalIncVat, item.currency, locale)}
           </p>
-          <p className="text-xs text-gray-500 dark:text-gray-400">
+          <p className="text-xs text-(--text-subtle)">
             inkl. mva
           </p>
         </div>
