@@ -15,11 +15,16 @@ export interface CardProps extends SpacingProps, BorderProps {
   style?: React.CSSProperties;
   color?: Color;
   /**
-   * Visual treatment. `default` — branded card, border + shadow. `outline`
-   * — border only. `transparent` — no chrome. `wide` — full-bleed feature
-   * surface. `tile` — editorial card: quieter border, roomier padding,
-   * uses the modern surface tokens. Pair with `Heading` + `<p>` (or
-   * `ValueTile` for stat content).
+   * Visual treatment.
+   *
+   * - `default` — elevated card: 1px border, soft shadow, `rounded-xl`.
+   *   Use for primary content surfaces that should read as "lifted".
+   * - `tile` — flat editorial card: 1px border, no shadow, `rounded-lg`,
+   *   roomier padding. Use for content tiles in grids that should sit
+   *   quietly on the page.
+   * - `outline` — border only, transparent fill. Functional framing.
+   * - `transparent` — no chrome.
+   * - `wide` — full-bleed feature surface.
    */
   variant?: 'default' | 'wide' | 'outline' | 'transparent' | 'tile';
   hoverEffect?: boolean;
@@ -40,15 +45,19 @@ export const Card: React.FC<CardProps> = ({
   testId,
   ...spacingAndBorder
 }) => {
-  const baseClasses =
-    variant === 'tile'
-      ? 'p-6 relative rounded-lg border border-border-1'
-      : 'p-4 relative rounded-lg';
+  const baseByVariant: Record<NonNullable<CardProps['variant']>, string> = {
+    default: 'p-4 relative rounded-xl',
+    tile: 'p-6 relative rounded-lg border border-border-1',
+    outline: 'p-4 relative rounded-lg',
+    transparent: 'p-4 relative rounded-lg',
+    wide: 'p-4 relative rounded-lg',
+  };
+  const baseClasses = baseByVariant[variant];
   const transitionClasses = hoverEffect ? 'transform transition duration-300 ease-in-out' : '';
   const hoverClasses = hoverEffect ? 'hover:bg-card-hover transition-colors duration-200' : '';
 
   const variantStyles = {
-    default: 'bg-card border-2 border-border-1 shadow-xs',
+    default: 'bg-card border border-border-2 shadow-sm',
     wide: 'bg-card mx-auto min-h-[33vh]',
     outline: 'border border-border-1 bg-transparent',
     transparent: 'bg-transparent',
