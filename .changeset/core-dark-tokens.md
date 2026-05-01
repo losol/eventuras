@@ -12,9 +12,9 @@ Final dark-mode token sweep — replace remaining legacy `dark:bg-gray-*` / `dar
 'text-(--text)' / 'bg-card' / 'border-border-1'
 ```
 
-### Touched (31 files)
+### Touched (34 files)
 
-`Badge`, `Breadcrumbs`, `Button`, `CommandPalette`, `DescriptionList`, `Image`, `Kbd`, `Link`, `List`, `Lookup`, `Menu`, `NavList`, `ObfuscatedEmail`, `PageOverlay`, `ProductCard`, `Schedule`, `SplitButton`, `Stepper`, `Table`, `TableOfContents`, `Tabs`, `Timeline`, `ToggleButton`, `ToggleButtonGroup`, `TreeView`, `Dialog`, `Drawer`, `Stack`, `Error`, `SessionWarning`, `ProgressBar`.
+`Badge`, `Breadcrumbs`, `Button`, `CommandPalette`, `DescriptionList`, `Footer`, `Image`, `Kbd`, `Link`, `List`, `Lookup`, `Menu`, `Navbar`, `NavList`, `ObfuscatedEmail`, `PageOverlay`, `ProductCard`, `Schedule`, `SplitButton`, `Stepper`, `Table`, `TableOfContents`, `Tabs`, `Timeline`, `ToggleButton`, `ToggleButtonGroup`, `TreeView`, `ActionBar`, `Dialog`, `Drawer`, `Stack`, `Error`, `SessionWarning`, `ProgressBar`.
 
 ### Notable refactors
 
@@ -22,7 +22,8 @@ Final dark-mode token sweep — replace remaining legacy `dark:bg-gray-*` / `dar
 - **`Stepper` status colors** mapped to status palette: `bg-green-500 dark:bg-green-600` → `bg-success-500`, `bg-red-500 dark:bg-red-600` → `bg-error-500`, `bg-primary-600 dark:bg-primary-500` → `bg-(--primary)`. Connector "upcoming" → `bg-(--border-2)`.
 - **Inputs and popovers** rounded to `rounded-lg` (8px) per the canonical 8px reference. Lookup input bumped from `rounded-md` to `rounded-lg`.
 - **`Badge`/`PageOverlay`** removed redundant `dark:` duplicates that hardcoded the same value.
+- **Glass overlays** in `Footer`, `Navbar` (when `glass`), and `ActionBar` now route through the existing `--overlay-hover/press/drag` tokens (`bg-overlay-hover/press/drag`) instead of hardcoded `bg-black/X dark:bg-white/X` patterns. Visual: ActionBar near-identical (5%→4-6%); Footer slightly subtler in light (10%→8%); Navbar glass tint reduced in light (20%→12%) and slightly stronger in dark (10%→16%) — now consistent with the system convention that dark surfaces benefit from a more visible overlay.
 
 ### Remaining `dark:` (intentional)
 
-After this sweep, ~20 `dark:` occurrences remain. All are intentional brand/status/neutral palette tints (`bg-primary-100 dark:bg-primary-800` for selected/focused list states, `ring-primary-200 dark:ring-primary-800` for Stepper rings, `bg-neutral-50 dark:bg-neutral-900` in `tokens/colors.ts` `surfaceBgClasses`) or theme-inverted glass effects (`bg-black/10 dark:bg-white/10` in Footer/Navbar/ActionBar). These differ in shade per theme by design and don't bypass the token system.
+After this sweep, ~17 `dark:` occurrences remain. All are intentional brand/status/neutral palette tints: `bg-primary-100 dark:bg-primary-800` for selected/focused list states, `ring-primary-200 dark:ring-primary-800` for Stepper rings, `bg-neutral-50 dark:bg-neutral-900` in `tokens/colors.ts` `surfaceBgClasses`. These differ in shade per theme by design and don't bypass the token system.
