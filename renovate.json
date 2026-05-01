@@ -20,11 +20,16 @@
   "rebaseWhen": "conflicted",
   "platformCommit": "enabled",
   "pruneStaleBranches": true,
-  "minimumReleaseAge": "3 days",
+  "minimumReleaseAge": "5 days",
   "prConcurrentLimit": 4,
   "branchConcurrentLimit": 1,
   "lockFileMaintenance": {
     "enabled": false
+  },
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "minimumReleaseAge": null,
+    "labels": ["security"]
   },
   "packageRules": [
     {
