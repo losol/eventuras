@@ -28,7 +28,7 @@
     "@eventuras/logger": "workspace:*",
     "@eventuras/vipps": "workspace:*",
     "openid-client": "^6.8.3",
-    "uuid": "^13.0.0"
+    "uuid": "^14.0.0"
   },
   "devDependencies": {
     "@eventuras/typescript-config": "workspace:*",
