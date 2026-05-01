@@ -56,19 +56,19 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         className="flex-1 p-4 no-underline hover:no-underline"
         variant={undefined}
       >
-        <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+        <h3 className="mb-2 text-lg font-semibold text-(--text) hover:text-(--primary) transition-colors">
           {title}
         </h3>
 
         {lead && (
-          <p className="mb-4 text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
+          <p className="mb-4 text-sm text-(--text-muted) line-clamp-2">
             {lead}
           </p>
         )}
 
         {price && (
           <div className="mb-4">
-            <span className="text-2xl font-bold text-gray-900 dark:text-white">
+            <span className="text-2xl font-bold text-(--text)">
               {price}
             </span>
           </div>
@@ -77,7 +77,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
       {/* Action Button */}
       {onAddToCart && (
-        <div className="border-t border-gray-200 dark:border-gray-700 p-4">
+        <div className="border-t border-border-1 p-4">
           <Button
             onClick={onAddToCart}
             variant="primary"

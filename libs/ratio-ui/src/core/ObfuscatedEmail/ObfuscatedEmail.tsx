@@ -49,7 +49,7 @@ export const ObfuscatedEmail = ({
       <span className={className}>
         <span className="inline-flex items-center gap-1">
           <Mail className="h-4 w-4" aria-hidden="true" />
-          <span className="text-gray-500 dark:text-gray-400">Email loading...</span>
+          <span className="text-(--text-subtle)">Email loading...</span>
         </span>
       </span>
     );

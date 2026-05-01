@@ -24,21 +24,21 @@ export interface ToggleButtonProps extends Omit<AriaToggleButtonProps, 'classNam
 
 const variantStyles = {
   default: {
-    base: 'border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800',
-    hover: 'hover:border-blue-300 dark:hover:border-blue-600 hover:bg-gray-50 dark:hover:bg-gray-700',
-    selected: 'border-blue-500 bg-blue-50 dark:bg-blue-900/30 shadow-sm',
+    base: 'border-2 border-border-1 bg-card',
+    hover: 'hover:border-(--primary) hover:bg-card-hover',
+    selected: 'border-(--primary) bg-primary-100 dark:bg-primary-800 shadow-sm',
     pressed: 'pressed:scale-95',
   },
   primary: {
-    base: 'border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800',
-    hover: 'hover:bg-blue-50 dark:hover:bg-blue-900/20',
-    selected: 'border-blue-600 bg-blue-600 text-white dark:bg-blue-700 shadow-md',
+    base: 'border-2 border-border-1 bg-card',
+    hover: 'hover:bg-card-hover',
+    selected: 'border-(--primary) bg-(--primary) text-(--text-on-primary) shadow-md',
     pressed: 'pressed:scale-95',
   },
   outline: {
-    base: 'border-2 border-gray-400 dark:border-gray-500 bg-transparent',
-    hover: 'hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50/50 dark:hover:bg-blue-900/20',
-    selected: 'border-blue-600 dark:border-blue-500 bg-blue-50 dark:bg-blue-900/30',
+    base: 'border-2 border-border-2 bg-transparent',
+    hover: 'hover:border-(--primary) hover:bg-card-hover',
+    selected: 'border-(--primary) bg-primary-100 dark:bg-primary-800',
     pressed: 'pressed:scale-95',
   },
 };
@@ -88,7 +88,7 @@ export const ToggleButton: React.FC<ToggleButtonProps> = ({
           isPressed && styles.pressed,
 
           // Focus visible ring
-          isFocusVisible && 'ring-2 ring-blue-500 ring-offset-2',
+          isFocusVisible && 'ring-2 ring-(--focus-ring) ring-offset-2',
 
           // Disabled state
           'disabled:opacity-50 disabled:cursor-not-allowed',

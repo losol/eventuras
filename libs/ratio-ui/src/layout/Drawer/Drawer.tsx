@@ -64,7 +64,7 @@ const Drawer: DrawerComponent = ({
       isKeyboardDismissDisabled={isKeyboardDismissDisabled}
       className="fixed inset-0 z-30 bg-cover backdrop-blur-xs"
     >
-      <Modal className="fixed top-0 right-0 h-full w-11/12 md:w-10/12 lg:w-7/12 2xl:w-8/12 bg-gray-100 dark:bg-slate-950 overflow-auto">
+      <Modal className="fixed top-0 right-0 h-full w-11/12 md:w-10/12 lg:w-7/12 2xl:w-8/12 bg-(--surface) overflow-auto">
         <AriaDialog className="relative flex flex-col p-6 outline-hidden h-full">
           {onClose && (
             <Button
@@ -83,7 +83,7 @@ const Drawer: DrawerComponent = ({
   );
 };
 
-const headingClass = 'text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4';
+const headingClass = 'text-2xl font-bold text-(--text) mb-4';
 
 const Header: React.FC<HeaderProps> = ({ as, children, className }) => {
   // When `as` is set, render the heading as a slotted RAC Heading so the

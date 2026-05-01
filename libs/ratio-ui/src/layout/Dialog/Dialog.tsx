@@ -66,7 +66,7 @@ const DialogRoot = ({
         className={cn(
           'w-full',
           panelWidth,
-          'transform overflow-hidden rounded-2xl bg-white dark:bg-slate-700 dark:text-white',
+          'transform overflow-hidden rounded-2xl bg-card text-(--text)',
           'p-6 text-left align-middle shadow-xl transition-all',
         )}
       >
@@ -89,7 +89,7 @@ function DialogHeading({ children, className }: Readonly<DialogSlotProps>) {
       slot="title"
       level={3}
       className={cn(
-        'text-gray-800 dark:text-gray-200',
+        'text-(--text)',
         buildSpacingClasses({ paddingBottom: 'xs' }),
         className,
       )}

@@ -102,8 +102,8 @@ function TreeViewItem({ node, currentPath, LinkComponent, depth }: Readonly<Tree
           onClick={toggle}
           aria-expanded={isOpen}
           className={`flex w-full items-center justify-between rounded-md px-3 py-1.5 text-left transition-colors
-            ${containsActive ? 'font-medium text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400'}
-            hover:bg-gray-100 dark:hover:bg-white/10`}
+            ${containsActive ? 'font-medium text-(--text)' : 'text-(--text-muted)'}
+            hover:bg-card-hover`}
           style={{ paddingLeft }}
         >
           <span>{node.title}</span>
@@ -168,8 +168,8 @@ function TreeViewLink({
         href={href}
         className={`block rounded-md px-3 py-1.5 transition-colors
           ${active
-            ? 'bg-primary-50 font-medium text-primary-700 dark:bg-primary-900/30 dark:text-primary-400'
-            : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-white/10 dark:hover:text-white'
+            ? 'bg-primary-100 dark:bg-primary-800 font-medium text-(--primary)'
+            : 'text-(--text-muted) hover:bg-card-hover hover:text-(--text)'
           }`}
         style={{ paddingLeft }}
         aria-current={active ? 'page' : undefined}

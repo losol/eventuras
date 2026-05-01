@@ -13,20 +13,19 @@ const ANIMATION_CLASSES = [
 ].join(' ');
 
 export const buttonStyles = {
-  primary: `border font-bold bg-primary-700 dark:bg-primary-950 hover:bg-primary-700 text-white rounded-full ${ANIMATION_CLASSES}`,
+  primary: `border font-bold bg-(--primary) hover:opacity-90 text-(--text-on-primary) rounded-full ${ANIMATION_CLASSES}`,
   secondary:
-    `border border-gray-300 text-gray-700 bg-white hover:bg-gray-100 hover:border-gray-400 ` +
-    `dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700 dark:hover:border-gray-500 ` +
+    `border border-border-1 text-(--text) bg-card hover:bg-card-hover hover:border-border-2 ` +
     `rounded-full ${ANIMATION_CLASSES}`,
-  light: `bg-primary-100 text-gray-800 hover:bg-primary-200 dark:bg-primary-800 dark:text-white ` +
-    `dark:hover:bg-primary-700 rounded-full ${ANIMATION_CLASSES}`,
+  light: `bg-primary-100 text-(--text) hover:bg-primary-200 dark:bg-primary-800 dark:hover:bg-primary-700 ` +
+    `rounded-full ${ANIMATION_CLASSES}`,
   text: `bg-transparent hover:bg-primary-200 hover:bg-opacity-20 rounded-full ${ANIMATION_CLASSES}`,
   outline:
-    `border border-gray-700 hover:border-primary-500 hover:bg-primary-100/10 dark:hover:bg-primary-900 ` +
+    `border border-border-2 hover:border-(--primary) hover:bg-card-hover ` +
     `rounded-full ${ANIMATION_CLASSES}`,
   danger:
-    `border font-bold bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600 ` +
-    `text-white rounded-full ${ANIMATION_CLASSES}`,
+    `border font-bold bg-error hover:opacity-90 ` +
+    `text-error-on rounded-full ${ANIMATION_CLASSES}`,
 };
 
 export const buttonSizes = {

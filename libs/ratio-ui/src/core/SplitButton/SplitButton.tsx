@@ -38,10 +38,10 @@ export interface SplitButtonProps {
 }
 
 const menuItemStyles =
-  'cursor-pointer flex w-full items-center gap-2 px-3 py-2 hover:bg-primary-100 dark:hover:bg-primary-900 text-gray-900 dark:text-gray-100 outline-none';
+  'cursor-pointer flex w-full items-center gap-2 px-3 py-2 hover:bg-card-hover text-(--text) outline-none';
 
 const menuStyles =
-  'min-w-48 origin-top-right bg-white dark:bg-slate-900 shadow-lg ring-1 ring-black/5 rounded-md overflow-hidden';
+  'min-w-48 origin-top-right bg-card border border-border-1 shadow-lg rounded-lg overflow-hidden';
 
 export function SplitButton({
   children,

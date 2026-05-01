@@ -16,10 +16,10 @@ export interface PageOverlayProps {
 
 const statusOverlayClasses: Record<Status, string> = {
   neutral: 'bg-black/90',
-  info: 'bg-info-950/95 dark:bg-info-950/95',
-  success: 'bg-success-950/95 dark:bg-success-950/95',
-  warning: 'bg-warning-950/95 dark:bg-warning-950/95',
-  error: 'bg-error-950/95 dark:bg-error-950/95',
+  info: 'bg-info-950/95',
+  success: 'bg-success-950/95',
+  warning: 'bg-warning-950/95',
+  error: 'bg-error-950/95',
 };
 
 /**
@@ -59,7 +59,7 @@ export function PageOverlay({
       aria-modal="true"
       aria-live="assertive"
     >
-      <div className="w-full max-w-2xl bg-white dark:bg-gray-900 rounded-lg shadow-2xl p-6 sm:p-8">
+      <div className="w-full max-w-2xl bg-card rounded-lg shadow-2xl p-6 sm:p-8">
         {children}
       </div>
     </div>

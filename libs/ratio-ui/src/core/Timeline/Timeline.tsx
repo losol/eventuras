@@ -3,7 +3,7 @@ import type { Status } from '../../tokens/colors';
 import { cn } from '../../utils/cn';
 
 const dotStatusClasses: Record<Status, string> = {
-  neutral: 'bg-neutral-400 dark:bg-neutral-600',
+  neutral: 'bg-(--border-2)',
   info: 'bg-info',
   success: 'bg-success',
   warning: 'bg-warning',
@@ -53,28 +53,28 @@ const Item: React.FC<TimelineItemProps> = ({
 }) => (
   <li
     className={cn(
-      'relative border-l-2 border-gray-200 pb-6 pl-6 last:border-transparent last:pb-0 dark:border-gray-800',
+      'relative border-l-2 border-border-1 pb-6 pl-6 last:border-transparent last:pb-0',
       className,
     )}
     data-testid={testId}
   >
     <span
       className={cn(
-        'absolute left-0 top-1 flex h-3 w-3 -translate-x-1/2 items-center justify-center rounded-full ring-4 ring-white dark:ring-neutral-950',
+        'absolute left-0 top-1 flex h-3 w-3 -translate-x-1/2 items-center justify-center rounded-full ring-4 ring-(--surface)',
         !icon && dotStatusClasses[status],
       )}
       aria-hidden="true"
     >
       {icon}
     </span>
-    <div className="flex flex-wrap items-baseline gap-x-2 text-xs text-neutral-600 dark:text-neutral-400">
+    <div className="flex flex-wrap items-baseline gap-x-2 text-xs text-(--text-muted)">
       <time>{timestamp}</time>
       {actor && <span>· {actor}</span>}
     </div>
-    <div className="mt-0.5 text-sm font-medium text-neutral-900 dark:text-neutral-100">
+    <div className="mt-0.5 text-sm font-medium text-(--text)">
       {title}
     </div>
-    {children && <div className="mt-2 text-sm text-neutral-700 dark:text-neutral-300">{children}</div>}
+    {children && <div className="mt-2 text-sm text-(--text-muted)">{children}</div>}
   </li>
 );
 

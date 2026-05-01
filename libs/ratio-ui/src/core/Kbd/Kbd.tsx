@@ -13,7 +13,7 @@ export interface KbdProps {
 export function Kbd({ children, className = '' }: Readonly<KbdProps>) {
   return (
     <kbd
-      className={`inline-flex items-center justify-center rounded border border-gray-300 bg-gray-50 px-1.5 py-0.5 text-xs font-sans text-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 ${className}`}
+      className={`inline-flex items-center justify-center rounded border border-border-1 bg-card px-1.5 py-0.5 text-xs font-sans text-(--text-subtle) ${className}`}
     >
       {children}
     </kbd>

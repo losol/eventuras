@@ -11,10 +11,10 @@ import { ChevronDown, Sun, Moon } from '../../icons';
 
 const styles = {
   popover:
-    'w-56 origin-top-right shadow-lg border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden',
-  menuItemsList: 'bg-white dark:bg-slate-900 focus:outline-hidden',
+    'w-56 origin-top-right shadow-lg border border-border-1 rounded-xl overflow-hidden',
+  menuItemsList: 'bg-card focus:outline-hidden',
   menuItem:
-    'cursor-pointer group flex w-full items-center px-2 py-3 border-b border-gray-200 dark:border-gray-700 last:border-b-0 hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-900 dark:text-gray-100',
+    'cursor-pointer group flex w-full items-center px-2 py-3 border-b border-border-1 last:border-b-0 hover:bg-card-hover text-(--text)',
 };
 
 type MenuActionsApi = {
@@ -69,7 +69,7 @@ const Menu = (props: MenuProps) => {
     <MenuTrigger>
       <AriaButton
         data-testid="logged-in-menu-button"
-        className="inline-flex items-center gap-2 border font-bold bg-primary-700 dark:bg-primary-950 hover:bg-primary-700 text-white rounded-full px-4 py-1 m-1 transition-all duration-500 transform ease-in-out active:scale-110 hover:shadow-sm"
+        className="inline-flex items-center gap-2 border font-bold bg-(--primary) hover:opacity-90 text-(--text-on-primary) rounded-full px-4 py-1 m-1 transition-all duration-500 transform ease-in-out active:scale-110 hover:shadow-sm"
       >
         {props.menuLabel}
         <ChevronDown className="ml-1 h-5 w-5" />

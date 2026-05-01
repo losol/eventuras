@@ -77,7 +77,7 @@ export function Image(props: Readonly<ImageProps>) {
     // caption class
     const cap =
       props.figCaptionClassName ??
-      'mt-2 text-sm text-center text-gray-500 dark:text-gray-400';
+      'mt-2 text-sm text-center text-(--text-subtle)';
 
     return (
       <figure className={wrapper}>

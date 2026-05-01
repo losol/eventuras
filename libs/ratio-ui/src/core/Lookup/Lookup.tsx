@@ -195,19 +195,19 @@ export function Lookup<T>({
       isLoading={list.isLoading}
     >
       <SearchField className="group flex flex-col gap-1">
-        <Label className="text-sm font-medium text-gray-700 dark:text-gray-200">{label}</Label>
+        <Label className="text-sm font-medium text-(--text)">{label}</Label>
         <div className="relative">
           <Input
             id={inputId}
             className={
               inputClassName ??
-              'w-full px-3 py-2 pr-16 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+              'w-full px-3 py-2 pr-16 border border-border-1 bg-card text-(--text) placeholder:text-(--text-subtle) rounded-lg focus:outline-none focus:ring-2 focus:ring-(--focus-ring)'
             }
             placeholder={placeholder}
           />
           {list.isLoading && (
             <div className="absolute right-9 top-1/2 -translate-y-1/2 pointer-events-none">
-              <div className="animate-spin h-4 w-4 border-2 border-blue-500 border-t-transparent rounded-full" />
+              <div className="animate-spin h-4 w-4 border-2 border-(--primary) border-t-transparent rounded-full" />
             </div>
           )}
           {/*
@@ -221,7 +221,7 @@ export function Lookup<T>({
           <Button
             aria-label="Clear search"
             onPress={clearInput}
-            className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 group-data-empty:hidden cursor-pointer"
+            className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded text-(--text-subtle) hover:text-(--text) focus:outline-none focus:ring-2 focus:ring-(--focus-ring) group-data-empty:hidden cursor-pointer"
           >
             <X className="h-4 w-4" />
           </Button>
@@ -232,12 +232,12 @@ export function Lookup<T>({
           items={list.items as Iterable<T & { id?: Key; }>}
           className={
             listClassName ??
-            'mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md shadow-lg max-h-60 overflow-auto outline-none'
+            'mt-1 bg-card border border-border-1 rounded-lg shadow-lg max-h-60 overflow-auto outline-none'
           }
           selectionMode="single"
           onSelectionChange={handleSelectionChange}
           renderEmptyState={() => (
-            <div className="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">
+            <div className="px-3 py-2 text-sm text-(--text-subtle)">
               {belowMinChars && resolvedMinCharsMessage ? resolvedMinCharsMessage : emptyState}
             </div>
           )}
@@ -248,7 +248,7 @@ export function Lookup<T>({
               <ListBoxItem
                 id={getItemKey(typed)}
                 textValue={textValueOf(typed)}
-                className="px-3 py-2 cursor-pointer outline-none rounded text-gray-900 dark:text-gray-100 hover:bg-blue-50 dark:hover:bg-gray-700 focus:bg-blue-100 dark:focus:bg-gray-600 selected:bg-blue-500 selected:text-white"
+                className="px-3 py-2 cursor-pointer outline-none rounded text-(--text) hover:bg-card-hover focus:bg-card-hover selected:bg-(--primary) selected:text-(--text-on-primary)"
               >
                 {renderItem(typed)}
               </ListBoxItem>

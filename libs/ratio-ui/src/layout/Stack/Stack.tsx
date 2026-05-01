@@ -115,8 +115,8 @@ export const Stack: React.FC<StackProps> = ({
   let dividerClass = '';
   if (dividers) {
     dividerClass = direction === 'vertical'
-      ? 'divide-y divide-gray-200 dark:divide-gray-700'
-      : 'divide-x divide-gray-200 dark:divide-gray-700';
+      ? 'divide-y divide-border-1'
+      : 'divide-x divide-border-1';
   }
 
   const classes = [
