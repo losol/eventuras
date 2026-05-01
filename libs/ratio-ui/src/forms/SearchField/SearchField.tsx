@@ -80,7 +80,7 @@ export const SearchField = React.forwardRef<HTMLDivElement, SearchFieldProps>(
         ref={ref}
       >
         <div className="relative">
-          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 pointer-events-none">
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-(--text-subtle) pointer-events-none">
             <Search className="w-5 h-5" />
           </div>
           <Input

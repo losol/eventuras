@@ -3,8 +3,8 @@ import React, { FC, InputHTMLAttributes, ReactNode } from 'react';
 export const checkboxStyles = {
   container: 'my-2',
   checkbox:
-    'align-text-bottom w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600',
-  label: 'font-bold ml-2 text-gray-900 dark:text-gray-300',
+    'align-text-bottom w-5 h-5 text-(--primary) bg-card border-border-1 focus:ring-(--focus-ring) focus:ring-2',
+  label: 'font-bold ml-2 text-(--text)',
   description: 'ml-7 mt-2 text-sm',
 };
 
