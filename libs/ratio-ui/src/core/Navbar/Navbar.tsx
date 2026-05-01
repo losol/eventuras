@@ -70,7 +70,7 @@ const NavbarRoot = ({
     : sticky
       ? 'sticky top-0 z-50'
       : '';
-  const glassClass = glass ? 'bg-black/20 dark:bg-white/10  backdrop-blur-md' : '';
+  const glassClass = glass ? 'bg-overlay-drag backdrop-blur-md' : '';
 
   return (
     <nav

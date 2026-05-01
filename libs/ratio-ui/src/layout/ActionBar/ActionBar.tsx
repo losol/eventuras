@@ -10,7 +10,7 @@ export interface ActionBarProps {
  */
 const ActionBarBase: FC<ActionBarProps> = ({ children, className = '' }) => (
   <div
-    className={`flex items-center gap-2 rounded-md bg-black/5 px-4 py-3 dark:bg-white/5 ${className}`}
+    className={`flex items-center gap-2 rounded-md bg-overlay-hover px-4 py-3 ${className}`}
   >
     {children}
   </div>

@@ -43,7 +43,7 @@ interface FooterComponent extends React.FC<FooterProps> {
 const FooterRoot: FooterComponent = (({ children, className, dark }: FooterProps) => (
   <footer
     className={cn(
-      'p-3 pt-10 bg-black/10 dark:bg-white/10',
+      'p-3 pt-10 bg-overlay-press',
       dark && 'surface-dark',
       className,
     )}
