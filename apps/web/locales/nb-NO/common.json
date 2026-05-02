@@ -129,7 +129,12 @@
     "practicalinformation": "Praktisk",
     "program": "Program",
     "otherCategory": "Andre",
-    "sectiontitle": "Hva som skjer!"
+    "sectiontitle": "Hva som skjer!",
+    "onDemand": {
+      "eyebrow": "Lær når det passer",
+      "title": "Nettkurs",
+      "tag": "Nettkurs"
+    }
   },
   "labels": {
     "account": "Mine opplysninger",

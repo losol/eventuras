@@ -130,7 +130,12 @@
     "practicalinformation": "Practical information",
     "program": "Program",
     "otherCategory": "Other",
-    "sectiontitle": "Happenings"
+    "sectiontitle": "Happenings",
+    "onDemand": {
+      "eyebrow": "Learn when it suits you",
+      "title": "Online courses",
+      "tag": "Online course"
+    }
   },
   "labels": {
     "account": "User account",
