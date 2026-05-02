@@ -42,7 +42,9 @@ interface ValueTileComponent extends React.FC<ValueTileProps> {
   Caption: React.FC<CaptionProps>;
 }
 
-const OrientationContext = React.createContext<ValueTileOrientation>('vertical');
+// Orientation propagates from root to Caption via a `data-orientation`
+// attribute on the root element + Tailwind's named group-data variant.
+// CSS-only so ValueTile stays server-component-safe (no React context).
 
 /**
  * Editorial stat tile — a serif display value with a small muted caption.
@@ -93,11 +95,13 @@ const ValueTileRoot: ValueTileComponent = (({
   );
 
   return (
-    <OrientationContext.Provider value={orientation}>
-      <div className={cn(layoutClass, className)} data-testid={testId}>
-        {inner}
-      </div>
-    </OrientationContext.Provider>
+    <div
+      className={cn('group/value-tile', layoutClass, className)}
+      data-orientation={orientation}
+      data-testid={testId}
+    >
+      {inner}
+    </div>
   );
 }) as ValueTileComponent;
 
@@ -124,20 +128,19 @@ const ValueTileValue: React.FC<ValueProps> = ({ children, className }) => (
  * (horizontal). The vertical layout adds a small top margin; horizontal
  * relies on the parent's gap.
  */
-const ValueTileCaption: React.FC<CaptionProps> = ({ children, className }) => {
-  const orientation = React.useContext(OrientationContext);
-  return (
-    <p
-      className={cn(
-        'text-sm text-(--text-muted)',
-        orientation === 'vertical' && 'mt-1.5',
-        className,
-      )}
-    >
-      {children}
-    </p>
-  );
-};
+const ValueTileCaption: React.FC<CaptionProps> = ({ children, className }) => (
+  <p
+    className={cn(
+      'text-sm text-(--text-muted)',
+      // Vertical (default) gets a small top margin; horizontal cancels it
+      // so the caption sits flush on the same baseline.
+      'mt-1.5 group-data-[orientation=horizontal]/value-tile:mt-0',
+      className,
+    )}
+  >
+    {children}
+  </p>
+);
 
 ValueTileRoot.Value = ValueTileValue;
 ValueTileRoot.Caption = ValueTileCaption;
