@@ -79,12 +79,19 @@ export const Container: React.FC<ContainerProps> = ({
   // horizontal margin (which would otherwise be overridden by mx-auto).
   const autoCenter = !margin && !marginX;
 
+  // Default horizontal padding so Container gives content breathing room
+  // against the viewport edge on narrow screens. Skipped when the caller
+  // has provided their own horizontal padding via `padding` or `paddingX`.
+  const defaultPx =
+    padding === undefined && paddingX === undefined ? 'px-3 sm:px-4 lg:px-6' : undefined;
+
   return (
     <Component
       className={cn(
         autoCenter && 'mx-auto',
         'w-full',
         SIZE_CLASSES[size],
+        defaultPx,
         bgClasses,
         borderClasses,
         spacingClasses,
