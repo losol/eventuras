@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 
 import { Logger } from '@eventuras/logger';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
@@ -7,8 +7,13 @@ import { Text } from '@eventuras/ratio-ui/core/Text';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 import { buildCoverImageStyle } from '@eventuras/ratio-ui/utils';
+import { Link } from '@eventuras/ratio-ui-next/Link';
 
-import { EventGrid, FeaturedCollectionSection, OnDemandCoursesSection } from '@/components/event';
+import {
+  EventListRow,
+  FeaturedCollectionSection,
+  OnDemandCoursesSection,
+} from '@/components/event';
 import SiteNavbar from '@/components/eventuras/SiteNavbar';
 import {
   type EventCollectionDto,
@@ -36,6 +41,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Homepage() {
   const site = await getSiteSettings();
   const t = await getTranslations();
+  const locale = await getLocale();
 
   const ORGANIZATION_ID = getOrganizationId();
 
@@ -149,14 +155,26 @@ export default async function Homepage() {
       {/* On-demand courses — Course events flagged onDemand */}
       {hasOnDemand && <OnDemandCoursesSection events={onDemandCourses} />}
 
-      {/* Regular events */}
+      {/* Regular events — chronological list */}
       {hasEvents && (
         <Section paddingY="lg">
           <Container>
-            <Heading as="h2" paddingBottom="sm">
-              {t('common.events.sectiontitle')}
-            </Heading>
-            <EventGrid eventinfos={regularEvents} />
+            <Section.Header>
+              <Section.Title>{t('common.events.list.shortTitle')}</Section.Title>
+              <Section.Link as={Link} href="/events">
+                {t('common.events.list.linkLabel')}
+              </Section.Link>
+            </Section.Header>
+            <div className="flex flex-col gap-3.5">
+              {regularEvents.map(event => (
+                <EventListRow
+                  key={event.id}
+                  event={event}
+                  ctaLabel={t('common.events.list.cta')}
+                  locale={locale}
+                />
+              ))}
+            </div>
           </Container>
         </Section>
       )}

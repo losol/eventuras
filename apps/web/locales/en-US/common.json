@@ -135,6 +135,13 @@
       "eyebrow": "Learn when it suits you",
       "title": "Online courses",
       "tag": "Online course"
+    },
+    "list": {
+      "eyebrow": "Upcoming courses",
+      "title": "All courses in <em>chronological</em> order",
+      "cta": "View course",
+      "shortTitle": "All courses",
+      "linkLabel": "See all courses"
     }
   },
   "labels": {
