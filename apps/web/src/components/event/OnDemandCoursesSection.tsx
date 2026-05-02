@@ -29,7 +29,7 @@ export const OnDemandCoursesSection = async ({ events }: OnDemandCoursesSectionP
   const t = await getTranslations();
 
   return (
-    <Section paddingY="lg">
+    <Section paddingY="lg" id="ondemand">
       <Container>
         <Card color="primary" padding="sm" radius="xl" shadow="none">
           <Section.Header>
