@@ -295,5 +295,15 @@
     },
     "name": "Navn",
     "profile": "Dine kurs"
+  },
+  "frontpage": {
+    "hero": {
+      "coursesLabel": "{count, plural, one {kurs} other {kurs}}",
+      "onDemandLabel": "{count, plural, one {nettkurs} other {nettkurs}}",
+      "collectionsLabel": "{count, plural, one {samling} other {samlinger}}",
+      "browseAllCta": "Se alle kurs",
+      "featuredCollectionCta": "Se {name}",
+      "onDemandCta": "Se nettkurs"
+    }
   }
 }

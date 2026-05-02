@@ -2,11 +2,12 @@ import { Metadata } from 'next';
 import { getLocale, getTranslations } from 'next-intl/server';
 
 import { Logger } from '@eventuras/logger';
+import { Hero } from '@eventuras/ratio-ui/blocks/Hero';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Text } from '@eventuras/ratio-ui/core/Text';
+import { ValueTile } from '@eventuras/ratio-ui/core/ValueTile';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
-import { buildCoverImageStyle } from '@eventuras/ratio-ui/utils';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
 import {
@@ -110,25 +111,69 @@ export default async function Homepage() {
   const regularEvents = events.filter(e => !isOnDemandCourse(e));
 
   const hasEvents = regularEvents.length > 0;
-  const hasFeatured = featuredCollections.length > 0;
   const hasOnDemand = onDemandCourses.length > 0;
+  const firstFeatured = featuredCollections[0];
+  const hasFeatured = !!firstFeatured;
 
   return (
     <>
-      <SiteNavbar variant="dark" title={site?.frontpage.title ?? 'Eventuras'} />
+      <SiteNavbar title={site?.frontpage.title ?? 'Eventuras'} />
 
-      {/* Hero section with background image */}
-      <Section
-        dark
-        style={buildCoverImageStyle('/assets/images/mountains.jpg')}
-        className="min-h-[30vh] flex flex-col justify-end"
-      >
-        <Container className="pb-3">
-          <Heading as="h1" paddingBottom="xs" className="text-3xl md:text-4xl lg:text-5xl">
-            {site?.frontpage.introduction ?? 'Eventuras for your life!'}
-          </Heading>
-        </Container>
-      </Section>
+      <Hero>
+        <Hero.Main>
+          <Hero.Title>{site?.frontpage.title ?? 'Eventuras'}</Hero.Title>
+          {site?.frontpage.introduction && <Hero.Lead>{site.frontpage.introduction}</Hero.Lead>}
+          <Hero.Actions>
+            {firstFeatured ? (
+              <>
+                <Link href="#collections" variant="button-primary">
+                  {t('common.frontpage.hero.featuredCollectionCta', {
+                    name: firstFeatured.name ?? '',
+                  })}
+                </Link>
+                <Link href="#all-courses" variant="button-secondary">
+                  {t('common.frontpage.hero.browseAllCta')}
+                </Link>
+              </>
+            ) : (
+              <Link href="#all-courses" variant="button-primary">
+                {t('common.frontpage.hero.browseAllCta')}
+              </Link>
+            )}
+            {hasOnDemand && (
+              <Link href="#ondemand" variant="button-secondary">
+                {t('common.frontpage.hero.onDemandCta')}
+              </Link>
+            )}
+          </Hero.Actions>
+        </Hero.Main>
+        {events.length + featuredCollections.length > 0 && (
+          <Hero.Side>
+            {events.length > 0 && (
+              <ValueTile
+                number={events.length}
+                label={t('common.frontpage.hero.coursesLabel', { count: events.length })}
+              />
+            )}
+            {hasOnDemand && (
+              <ValueTile
+                number={onDemandCourses.length}
+                label={t('common.frontpage.hero.onDemandLabel', {
+                  count: onDemandCourses.length,
+                })}
+              />
+            )}
+            {featuredCollections.length > 1 && (
+              <ValueTile
+                number={featuredCollections.length}
+                label={t('common.frontpage.hero.collectionsLabel', {
+                  count: featuredCollections.length,
+                })}
+              />
+            )}
+          </Hero.Side>
+        )}
+      </Hero>
 
       {/* Error section */}
       {hasError && (
@@ -143,21 +188,24 @@ export default async function Homepage() {
       )}
 
       {/* Featured collections — shown at the top */}
-      {hasFeatured &&
-        featuredCollections.map(collection => (
-          <FeaturedCollectionSection
-            key={collection.id}
-            collection={collection}
-            events={collection.events}
-          />
-        ))}
+      {hasFeatured && (
+        <div id="collections" className="scroll-mt-20">
+          {featuredCollections.map(collection => (
+            <FeaturedCollectionSection
+              key={collection.id}
+              collection={collection}
+              events={collection.events}
+            />
+          ))}
+        </div>
+      )}
 
       {/* On-demand courses — Course events flagged onDemand */}
       {hasOnDemand && <OnDemandCoursesSection events={onDemandCourses} />}
 
       {/* Regular events — chronological list */}
       {hasEvents && (
-        <Section paddingY="lg">
+        <Section paddingY="lg" id="all-courses">
           <Container>
             <Section.Header>
               <Section.Title>{t('common.events.list.shortTitle')}</Section.Title>

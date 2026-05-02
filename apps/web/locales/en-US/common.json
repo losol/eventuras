@@ -299,5 +299,15 @@
     },
     "name": "Name",
     "profile": "Profile"
+  },
+  "frontpage": {
+    "hero": {
+      "coursesLabel": "{count, plural, one {course} other {courses}}",
+      "onDemandLabel": "{count, plural, one {online course} other {online courses}}",
+      "collectionsLabel": "{count, plural, one {collection} other {collections}}",
+      "browseAllCta": "Browse all courses",
+      "featuredCollectionCta": "View {name}",
+      "onDemandCta": "View online courses"
+    }
   }
 }
