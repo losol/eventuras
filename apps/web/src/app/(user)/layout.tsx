@@ -1,11 +1,7 @@
 import type { ReactNode } from 'react';
-import Link from 'next/link';
 
-import { Footer } from '@eventuras/ratio-ui/core/Footer';
-import { List } from '@eventuras/ratio-ui/core/List';
-
+import SiteFooter from '@/components/eventuras/SiteFooter';
 import SiteNavbar from '@/components/eventuras/SiteNavbar';
-import getSiteSettings from '@/utils/site/getSiteSettings';
 
 // Force dynamic rendering for all user routes since they use authentication
 export const dynamic = 'force-dynamic';
@@ -16,24 +12,14 @@ export const dynamic = 'force-dynamic';
  * Includes navbar and footer with container-wrapped content
  * Requires authentication
  */
-export default async function UserLayout({ children }: Readonly<{ children: ReactNode }>) {
-  const site = await getSiteSettings();
-
+export default function UserLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <>
       <SiteNavbar />
 
       <main id="main-content">{children}</main>
 
-      <Footer.Classic siteTitle={site?.name} publisher={site?.publisher}>
-        <List className="list-none text-gray-800 dark:text-gray-300 font-medium">
-          {site?.footerLinks?.map((link, idx) => (
-            <List.Item key={link.href ?? idx} className="mb-4">
-              <Link href={link.href}>{link.text}</Link>
-            </List.Item>
-          ))}
-        </List>
-      </Footer.Classic>
+      <SiteFooter />
     </>
   );
 }
