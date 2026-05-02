@@ -1,6 +1,6 @@
 {
   "name": "@eventuras/e2e",
-  "version": "0.2.12",
+  "version": "0.2.13",
   "private": "true",
   "description": "End to end tests for the Eventuras platform",
   "keywords": [
