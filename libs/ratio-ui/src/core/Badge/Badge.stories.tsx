@@ -10,6 +10,10 @@ const meta: Meta<typeof Badge> = {
       control: 'select',
       options: ['neutral', 'info', 'success', 'warning', 'error'],
     },
+    variant: {
+      control: 'inline-radio',
+      options: ['filled', 'subtle'],
+    },
     block: { control: 'boolean' },
   },
 };
@@ -64,11 +68,41 @@ export const AllStatuses: Story = {
   ),
 };
 
+export const Subtle: Story = {
+  args: {
+    children: 'Course',
+    status: 'neutral',
+    variant: 'subtle',
+  },
+};
+
+export const SubtleAllStatuses: Story = {
+  render: () => (
+    <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+      <Badge variant="subtle" status="neutral">Course</Badge>
+      <Badge variant="subtle" status="info">Online</Badge>
+      <Badge variant="subtle" status="success">Available</Badge>
+      <Badge variant="subtle" status="warning">Few seats</Badge>
+      <Badge variant="subtle" status="error">Full</Badge>
+    </div>
+  ),
+};
+
 export const Definition: Story = {
   args: {
     children: 'REG-001',
     definition: true,
     label: 'ID',
     status: 'neutral',
+  },
+};
+
+export const SubtleDefinition: Story = {
+  args: {
+    children: 'REG-001',
+    definition: true,
+    label: 'ID',
+    status: 'neutral',
+    variant: 'subtle',
   },
 };
