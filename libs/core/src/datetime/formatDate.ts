@@ -52,5 +52,47 @@ const formatDateSpan = (
   return `${formattedStartDate} - ${formattedEndDate}`;
 };
 
-export { formatDate, formatDateSpan };
+/**
+ * Compact date range formatter for dense listings — produces strings like
+ * `"14. SEP"`, `"14.–16. SEP"`, `"30. AUG–2. SEP"`, or
+ * `"30. DEC 2026–2. JAN 2027"` depending on whether the range crosses
+ * months or years. Output is uppercased to read as a label / pill.
+ *
+ * Returns an empty string when no start date is supplied. Pair with the
+ * mono caps tile pattern in `EventTile` and similar dense displays.
+ */
+const formatCompactDateRange = (
+  startDate: string | Date | null | undefined,
+  endDate: string | Date | null | undefined,
+  locale = 'en-US'
+): string => {
+  if (!startDate) return '';
+
+  const start = new Date(startDate);
+  const end = endDate ? new Date(endDate) : null;
+
+  const dayMonthFmt = new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short' });
+  const dayFmt = new Intl.DateTimeFormat(locale, { day: 'numeric' });
+  const yearFmt = new Intl.DateTimeFormat(locale, { year: 'numeric' });
+
+  const startLabel = dayMonthFmt.format(start).toUpperCase();
+
+  if (!end || +start === +end) {
+    return startLabel;
+  }
+
+  const sameMonth =
+    start.getFullYear() === end.getFullYear() && start.getMonth() === end.getMonth();
+  const sameYear = start.getFullYear() === end.getFullYear();
+
+  if (sameMonth) {
+    return `${dayFmt.format(start)}.–${dayMonthFmt.format(end)}`.toUpperCase();
+  }
+  if (sameYear) {
+    return `${dayMonthFmt.format(start)}–${dayMonthFmt.format(end)}`.toUpperCase();
+  }
+  return `${dayMonthFmt.format(start)} ${yearFmt.format(start)}–${dayMonthFmt.format(end)} ${yearFmt.format(end)}`.toUpperCase();
+};
+
+export { formatDate, formatDateSpan, formatCompactDateRange };
 export type { FormatDateOptions };

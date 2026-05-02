@@ -3,5 +3,5 @@
  * @module datetime
  */
 
-export { formatDate, formatDateSpan } from './formatDate.js';
+export { formatDate, formatDateSpan, formatCompactDateRange } from './formatDate.js';
 export type { FormatDateOptions } from './formatDate.js';
