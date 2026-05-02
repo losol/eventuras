@@ -16,9 +16,12 @@ export interface FooterProps {
   children?: React.ReactNode;
   className?: string;
   /**
-   * Marks the footer as a dark surface so child text uses the light
-   * `var(--text)` color. Use when the footer is rendered against a
-   * dark page or branded section.
+   * Render the footer as a dark surface — flips the background to
+   * `--color-primary-900` (Linseed deep) and applies `surface-dark`
+   * so child text picks up the light `var(--text)` color. In dark
+   * mode the footer also gets a thin `--color-primary-700` top border
+   * so it reads as a separate block against the dark page surface.
+   * Use to anchor the bottom of the page with a deep block.
    */
   dark?: boolean;
 }
@@ -43,8 +46,10 @@ interface FooterComponent extends React.FC<FooterProps> {
 const FooterRoot: FooterComponent = (({ children, className, dark }: FooterProps) => (
   <footer
     className={cn(
-      'p-3 pt-10 bg-overlay-press',
-      dark && 'surface-dark',
+      'p-3 pt-10',
+      dark
+        ? 'bg-primary-900 surface-dark dark:border-t dark:border-primary-700'
+        : 'bg-overlay-press',
       className,
     )}
   >
