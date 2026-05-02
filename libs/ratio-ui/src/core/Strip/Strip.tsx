@@ -1,4 +1,4 @@
-import React, { createContext, ReactNode, useContext } from 'react';
+import React, { ReactNode } from 'react';
 import type { SpacingProps } from '../../tokens/spacing';
 import type { BorderProps } from '../../tokens/borders';
 import type { Color } from '../../tokens/colors';
@@ -7,11 +7,10 @@ import { buildBorderClasses } from '../../tokens/borders';
 import { buildSpacingClasses } from '../../tokens/spacing';
 import { cn } from '../../utils/cn';
 
-// Internal context so slots (Lead/Body/Trail) can mirror the parent's
-// `border` prop on their own dashed separator borders. When the outer
-// strip is borderless, the dashed slot dividers disappear too — keeps
-// the border API consistent across the whole component.
-const StripContext = createContext<{ showSeparators: boolean }>({ showSeparators: true });
+// Slot separators mirror the parent's `border` prop via a `data-borderless`
+// attribute on the strip root + Tailwind's named group-data variant.
+// Implemented in CSS rather than React context so Strip stays a
+// server-component-safe primitive (no `createContext` / `useContext`).
 
 export type StripShadow = 'none' | 'xs' | 'sm' | 'md';
 
@@ -58,25 +57,25 @@ export interface StripSlotProps {
  * Picks up a subtle tinted background and a dashed right-border that
  * separates it from the body.
  */
-const StripLead = ({ children, className }: StripSlotProps) => {
-  const { showSeparators } = useContext(StripContext);
-  return (
-    <div
-      className={cn(
-        'px-5 py-5 flex flex-col gap-1',
-        showSeparators && 'border-b md:border-b-0 md:border-r border-dashed border-border-2',
-        'bg-secondary-300 dark:bg-primary-900',
-        // Default child typography — bare <span>s render as mono-uppercase
-        // primary-toned date labels. Consumer overrides by passing different
-        // element types (e.g. <div>) or adding their own classNames on the spans.
-        '[&>span]:font-mono [&>span]:text-base [&>span]:uppercase [&>span]:tracking-wide [&>span]:font-bold [&>span]:text-(--primary) [&>span]:leading-tight',
-        className,
-      )}
-    >
-      {children}
-    </div>
-  );
-};
+const StripLead = ({ children, className }: StripSlotProps) => (
+  <div
+    className={cn(
+      'px-5 py-5 flex flex-col gap-1',
+      // Dashed separator that disappears when the strip root is borderless
+      // (group-data-borderless/strip on the parent).
+      'border-b md:border-b-0 md:border-r border-dashed border-border-2',
+      'group-data-borderless/strip:border-0',
+      'bg-secondary-300 dark:bg-primary-900',
+      // Default child typography — bare <span>s render as mono-uppercase
+      // primary-toned date labels. Consumer overrides by passing different
+      // element types (e.g. <div>) or adding their own classNames on the spans.
+      '[&>span]:font-mono [&>span]:text-base [&>span]:uppercase [&>span]:tracking-wide [&>span]:font-bold [&>span]:text-(--primary) [&>span]:leading-tight',
+      className,
+    )}
+  >
+    {children}
+  </div>
+);
 StripLead.displayName = 'Strip.Lead';
 
 /**
@@ -94,20 +93,18 @@ StripBody.displayName = 'Strip.Body';
  * meta info (location, points, duration) and a CTA. Stacks vertically
  * on wide screens, falls back to an inline row when the strip stacks.
  */
-const StripTrail = ({ children, className }: StripSlotProps) => {
-  const { showSeparators } = useContext(StripContext);
-  return (
-    <div
-      className={cn(
-        'px-6 py-5 flex flex-row md:flex-col items-start md:items-stretch md:justify-center gap-3 md:gap-2.5 min-w-0',
-        showSeparators && 'border-t md:border-t-0 md:border-l border-dashed border-border-2',
-        className,
-      )}
-    >
-      {children}
-    </div>
-  );
-};
+const StripTrail = ({ children, className }: StripSlotProps) => (
+  <div
+    className={cn(
+      'px-6 py-5 flex flex-row md:flex-col items-start md:items-stretch md:justify-center gap-3 md:gap-2.5 min-w-0',
+      'border-t md:border-t-0 md:border-l border-dashed border-border-2',
+      'group-data-borderless/strip:border-0',
+      className,
+    )}
+  >
+    {children}
+  </div>
+);
 StripTrail.displayName = 'Strip.Trail';
 
 /**
@@ -177,31 +174,31 @@ const StripRoot: React.FC<StripProps> = ({
     margin, marginX, marginY, marginTop, marginBottom,
   });
 
-  // Internal slot separators echo the outer border on/off state. When
-  // the consumer opts into a borderless strip, the dashed dividers
-  // disappear too.
-  const showSeparators = borderProp !== false && borderProp !== 'none';
+  // Slot separators echo the outer border on/off state. Signaled to
+  // children via a `data-borderless` attribute + named Tailwind group so
+  // the slots can react in CSS (no React context — keeps Strip
+  // server-component-safe).
+  const isBorderless = borderProp === false || borderProp === 'none';
 
   return (
-    <StripContext.Provider value={{ showSeparators }}>
-      <Component
-        href={href}
-        className={cn(
-          'grid grid-cols-1 md:grid-cols-[160px_1fr_280px] gap-0 overflow-hidden',
-          'text-(--text) no-underline',
-          bgClasses,
-          borderClasses,
-          SHADOW_CLASSES[shadow],
-          transitionClasses,
-          hoverClasses,
-          spacingClasses,
-          className,
-        )}
-        data-testid={testId}
-      >
-        {children}
-      </Component>
-    </StripContext.Provider>
+    <Component
+      href={href}
+      data-borderless={isBorderless || undefined}
+      className={cn(
+        'group/strip grid grid-cols-1 md:grid-cols-[160px_1fr_280px] gap-0 overflow-hidden',
+        'text-(--text) no-underline',
+        bgClasses,
+        borderClasses,
+        SHADOW_CLASSES[shadow],
+        transitionClasses,
+        hoverClasses,
+        spacingClasses,
+        className,
+      )}
+      data-testid={testId}
+    >
+      {children}
+    </Component>
   );
 };
 StripRoot.displayName = 'Strip';
