@@ -40,6 +40,14 @@ interface SectionTitleProps {
 interface SectionLinkProps extends React.ComponentPropsWithoutRef<'a'> {
   children?: ReactNode;
   className?: string;
+  /**
+   * Override the rendered element. Defaults to a plain `<a>`. Pass a
+   * Next.js / TanStack / framework-specific Link component when the
+   * destination is an internal route so you keep client-side navigation
+   * and prefetching. Receives the same `href`, `className`, and any
+   * other anchor props passed to `Section.Link`.
+   */
+  as?: React.ElementType;
 }
 
 interface SectionComponent extends React.FC<SectionProps> {
@@ -159,8 +167,13 @@ const SectionTitle: React.FC<SectionTitleProps> = ({ children, className, as = '
  * by an up-right arrow that nudges on hover. Pass any anchor props
  * (`href`, `target`, etc.).
  */
-const SectionLink: React.FC<SectionLinkProps> = ({ children, className, ...rest }) => (
-  <a
+const SectionLink: React.FC<SectionLinkProps> = ({
+  as: Component = 'a',
+  children,
+  className,
+  ...rest
+}) => (
+  <Component
     className={cn(
       'group inline-flex items-center gap-1.5 text-sm font-medium text-(--primary) no-underline border-b border-transparent hover:border-(--primary) pb-0.5 transition-colors',
       className,
@@ -173,7 +186,7 @@ const SectionLink: React.FC<SectionLinkProps> = ({ children, className, ...rest 
       focusable={false}
       className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
     />
-  </a>
+  </Component>
 );
 
 SectionRoot.Header = SectionHeader;
