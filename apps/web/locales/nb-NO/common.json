@@ -96,7 +96,8 @@
       "description": "Vi prøvde å utføre handlingen, men noe gikk galt. Vennligst prøv igjen senere.",
       "title": "Noe gikk veldig galt"
     },
-    "tryRefresh": "Prøv gjerne å oppfrisk siden!"
+    "tryRefresh": "Prøv gjerne å oppfrisk siden!",
+    "failedToLoadEvents": "Kunne ikke laste arrangementer"
   },
   "event-not-found": "Arrangement ikke funnet",
   "events": {
@@ -134,6 +135,13 @@
       "eyebrow": "Lær når det passer",
       "title": "Nettkurs",
       "tag": "Nettkurs"
+    },
+    "list": {
+      "eyebrow": "Kommende kurs",
+      "title": "Alle kurs i <em>kronologisk</em> rekkefølge",
+      "cta": "Se kurs",
+      "shortTitle": "Alle kurs",
+      "linkLabel": "Se alle kurs"
     }
   },
   "labels": {

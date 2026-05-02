@@ -1,84 +1,96 @@
-import Link from 'next/link';
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 
 import { Logger } from '@eventuras/logger';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
-import { List } from '@eventuras/ratio-ui/core/List';
 import { Text } from '@eventuras/ratio-ui/core/Text';
+import { Container } from '@eventuras/ratio-ui/layout/Container';
+import { Section } from '@eventuras/ratio-ui/layout/Section';
 
+import { EventListRow } from '@/components/event';
 import { getPublicClient } from '@/lib/eventuras-public-client';
-import { getV3Events } from '@/lib/eventuras-public-sdk';
+import { type EventDto, getV3Events } from '@/lib/eventuras-public-sdk';
 import { getOrganizationId } from '@/utils/organization';
 
 const logger = Logger.create({
   namespace: 'web:events-page',
   context: { page: 'EventsPage' },
 });
+
 // Always render server-side so ORGANIZATION_ID is read at request time, not build time
 export const dynamic = 'force-dynamic';
+
 export default async function EventsPage() {
   const ORGANIZATION_ID = getOrganizationId();
   const t = await getTranslations();
+  const locale = await getLocale();
   logger.info({ organizationId: ORGANIZATION_ID }, 'Fetching events for organization');
-  let eventinfos;
+
+  let events: EventDto[] = [];
   let fetchError = false;
+
   try {
-    // Use public client for anonymous API access
     const publicClient = getPublicClient();
-    eventinfos = await getV3Events({
+    const response = await getV3Events({
       client: publicClient,
       query: {
         OrganizationId: ORGANIZATION_ID,
+        Ordering: ['DateStart', 'Title'],
       },
     });
-    if (eventinfos.error) {
+
+    if (response.error) {
       logger.error(
-        {
-          error: eventinfos.error,
-          organizationId: ORGANIZATION_ID,
-        },
+        { error: response.error, organizationId: ORGANIZATION_ID },
         'Failed to fetch events'
       );
       fetchError = true;
     } else {
+      events = response.data?.data ?? [];
       logger.info(
-        {
-          count: eventinfos.data?.count || 0,
-          organizationId: ORGANIZATION_ID,
-        },
+        { count: events.length, organizationId: ORGANIZATION_ID },
         'Successfully fetched events'
       );
     }
   } catch (error) {
     logger.warn(
-      {
-        error,
-        organizationId: ORGANIZATION_ID,
-        backendUrl: process.env.BACKEND_URL,
-      },
+      { error, organizationId: ORGANIZATION_ID, backendUrl: process.env.BACKEND_URL },
       'Exception while fetching events - this is expected during build time if backend is not running'
     );
     fetchError = true;
   }
+
   return (
-    <>
-      <Heading as="h1" paddingBottom="sm">
-        {t('common.events.sectiontitle')}
-      </Heading>
-      {/* Show error message if fetch failed */}
-      {fetchError && <Text>Unable to load events. Please try again later.</Text>}
-      {/* Events section */}
-      {!fetchError && eventinfos?.data?.count && eventinfos.data.data && (
-        <List>
-          {eventinfos.data.data.map(eventInfo => (
-            <List.Item key={eventInfo.id}>
-              <Link href={`/events/${eventInfo.id}`}>
-                <Text>{eventInfo.title}</Text>
-              </Link>
-            </List.Item>
-          ))}
-        </List>
-      )}
-    </>
+    <Section paddingY="lg">
+      <Container>
+        <Heading.Group className="mb-9">
+          <Heading.Eyebrow>{t('common.events.list.eyebrow')}</Heading.Eyebrow>
+          <Heading
+            as="h1"
+            className="font-serif font-medium text-3xl md:text-4xl leading-[1.1] tracking-tight m-0"
+          >
+            {t.rich('common.events.list.title', {
+              em: chunks => <em className="font-serif italic text-(--primary)">{chunks}</em>,
+            })}
+          </Heading>
+        </Heading.Group>
+
+        {fetchError && <Text>{t('common.errors.failedToLoadEvents')}</Text>}
+
+        {!fetchError && events.length === 0 && <Text>{t('common.events.noEventsAvailable')}</Text>}
+
+        {!fetchError && events.length > 0 && (
+          <div className="flex flex-col gap-3.5">
+            {events.map(event => (
+              <EventListRow
+                key={event.id}
+                event={event}
+                ctaLabel={t('common.events.list.cta')}
+                locale={locale}
+              />
+            ))}
+          </div>
+        )}
+      </Container>
+    </Section>
   );
 }
