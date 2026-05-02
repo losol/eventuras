@@ -8,7 +8,7 @@ import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 import { buildCoverImageStyle } from '@eventuras/ratio-ui/utils';
 
-import { EventGrid, FeaturedCollectionSection } from '@/components/event';
+import { EventGrid, FeaturedCollectionSection, OnDemandCoursesSection } from '@/components/event';
 import SiteNavbar from '@/components/eventuras/SiteNavbar';
 import {
   type EventCollectionDto,
@@ -99,8 +99,13 @@ export default async function Homepage() {
     hasError = true;
   }
 
-  const hasEvents = events.length > 0;
+  const isOnDemandCourse = (e: EventDto) => e.type === 'Course' && e.onDemand === true;
+  const onDemandCourses = events.filter(isOnDemandCourse);
+  const regularEvents = events.filter(e => !isOnDemandCourse(e));
+
+  const hasEvents = regularEvents.length > 0;
   const hasFeatured = featuredCollections.length > 0;
+  const hasOnDemand = onDemandCourses.length > 0;
 
   return (
     <>
@@ -141,6 +146,9 @@ export default async function Homepage() {
           />
         ))}
 
+      {/* On-demand courses — Course events flagged onDemand */}
+      {hasOnDemand && <OnDemandCoursesSection events={onDemandCourses} />}
+
       {/* Regular events */}
       {hasEvents && (
         <Section paddingY="lg">
@@ -148,11 +156,11 @@ export default async function Homepage() {
             <Heading as="h2" paddingBottom="sm">
               {t('common.events.sectiontitle')}
             </Heading>
-            <EventGrid eventinfos={events} />
+            <EventGrid eventinfos={regularEvents} />
           </Container>
         </Section>
       )}
-      {!hasError && !hasEvents && !hasFeatured && (
+      {!hasError && !hasEvents && !hasFeatured && !hasOnDemand && (
         <Section color="neutral" paddingY="lg">
           <Container>
             <Heading as="h2" paddingBottom="sm">
