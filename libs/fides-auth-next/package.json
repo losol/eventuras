@@ -1,6 +1,6 @@
 {
   "name": "@eventuras/fides-auth-next",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "Next.js bindings for @eventuras/fides-auth",
   "homepage": "https://github.com/losol/eventuras/tree/main/libs/fides-auth-next#readme",
   "bugs": {
