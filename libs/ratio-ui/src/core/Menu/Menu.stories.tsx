@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Meta, StoryFn } from '@storybook/react-vite';
 import Menu, { MenuProps } from './Menu';
+import { Avatar } from '../Avatar';
 import { fn } from 'storybook/test';
 
 const meta: Meta<typeof Menu> = {
@@ -118,19 +119,14 @@ export const WithThemeToggle: MenuStory = () => {
 };
 
 /**
- * A custom trigger — pass any content + className to override the default
- * pill. Useful for avatar-style triggers or icon-only buttons.
+ * A custom trigger pill with the new `Avatar` component — the canonical
+ * user-menu trigger look.
  */
 export const CustomTrigger: MenuStory = () => (
   <Menu>
-    <Menu.Trigger className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-border-2 bg-card text-(--text) hover:border-(--primary) transition-colors">
-      <span
-        aria-hidden="true"
-        className="w-7 h-7 rounded-full bg-(--primary)/20 text-(--primary) font-serif italic text-sm flex items-center justify-center"
-      >
-        ol
-      </span>
-      <span className="text-sm">losvik@gmail.com</span>
+    <Menu.Trigger className="inline-flex items-center gap-2.5 pl-1 pr-4 py-1 rounded-full border border-border-2 bg-card text-(--text) hover:border-(--primary) transition-colors">
+      <Avatar name="Leo Losen" size="sm" />
+      <span className="text-sm">leo@losen.com</span>
       <Menu.Chevron className="ml-0 h-3.5 w-3.5 text-(--text-muted)" />
     </Menu.Trigger>
     <Menu.Link href="/user">My profile</Menu.Link>
@@ -139,4 +135,35 @@ export const CustomTrigger: MenuStory = () => (
       Log out
     </Menu.Button>
   </Menu>
+);
+
+/**
+ * The full user-menu shape with `Menu.Header` at the top — avatar +
+ * name + email + role chip on a primary-tinted surface, followed by
+ * the regular menu items.
+ *
+ * `Menu.Header` and its `.Name` / `.Email` / `.Role` slots are marked
+ * `@beta` — the API may evolve before release without major bumps.
+ */
+export const UserMenuWithHeader: MenuStory = () => (
+  <div className="flex justify-end">
+    <Menu>
+      <Menu.Trigger className="inline-flex items-center gap-2.5 pl-1 pr-4 py-1 rounded-full border border-border-2 bg-card text-(--text) hover:border-(--accent) focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-(--accent)/45 aria-expanded:shadow-[0_2px_10px_color-mix(in_oklch,var(--accent)_28%,transparent)] transition-all">
+        <Avatar name="Leo Losen" size="sm" />
+        <span className="text-sm">leo@losen.com</span>
+        <Menu.Chevron className="ml-0 h-3.5 w-3.5 text-(--text-muted)" />
+      </Menu.Trigger>
+      <Menu.Header>
+        <Avatar name="Leo Losen" size="lg" />
+        <Menu.Header.Name>Leo Losen</Menu.Header.Name>
+        <Menu.Header.Email>leo@losen.com</Menu.Header.Email>
+        <Menu.Header.Role>Admin</Menu.Header.Role>
+      </Menu.Header>
+      <Menu.Link href="/user">My profile</Menu.Link>
+      <Menu.Link href="/user/account">Account</Menu.Link>
+      <Menu.Button id="user-logout" onClick={() => console.log('Logout')}>
+        Log out
+      </Menu.Button>
+    </Menu>
+  </div>
 );
