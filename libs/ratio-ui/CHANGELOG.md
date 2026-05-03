@@ -1,5 +1,53 @@
 # @eventuras/ratio-ui
 
+## 2.2.0
+
+### Minor Changes
+
+- 991b508: Add `Avatar` — circular user-avatar component with serif italic initials over a primary-tinted radial gradient. Pass `src` to render a profile image; the browser handles the load. The component does not silently fall back to the initials on broken images — pass URLs you've already verified, or skip `src` and rely on the initials.
+
+  ```tsx
+  <Avatar name="Leo Losen" />                  // initials "ll" auto-derived
+  <Avatar name="Ola" initials="o" size="sm" /> // manual override + small
+  <Avatar name="Ada Lovelace" src="/me.jpg" size="lg" /> // image + lg
+  ```
+
+  Three sizes — `sm` (30px) for navbar trigger pills, `md` (40px) default, `lg` (44px) for the identity header inside user-menu dropdowns. Initials auto-derive from `name` (first letter of first + last word, lowercased; first two letters for a single-word name) with a manual `initials` override for edge cases.
+
+  The radial gradient uses different primary-mix percentages per theme (25/12 in light, 10/4 in dark) so the avatar reads as lighter against a light page and noticeably darker against the dark surface. Initial text uses `text-primary-800 dark:text-primary-200` for strong contrast in either mode.
+
+  When `src` is set the wrapper carries `role="img"` plus an accessible name from `name` (or the new `ariaLabel` override) so screen readers announce something meaningful even if the image element itself ends up empty.
+
+- b399eb5: Add `Menu.Header` (beta) — identity block for the top of a user-menu dropdown. Composes a leading node (typically `<Avatar>`) with three meta slots — `Menu.Header.Name`, `Menu.Header.Email`, `Menu.Header.Role` — over a primary-tinted background separated from the menu items by a hairline border.
+
+  ```tsx
+  import { Avatar } from '@eventuras/ratio-ui/core/Avatar';
+
+  <Menu>
+    <Menu.Trigger>...</Menu.Trigger>
+    <Menu.Header>
+      <Avatar name="Leo Losen" size="lg" />
+      <Menu.Header.Name>Leo Losen</Menu.Header.Name>
+      <Menu.Header.Email>leo@losen.com</Menu.Header.Email>
+      <Menu.Header.Role>Admin</Menu.Header.Role>
+    </Menu.Header>
+    <Menu.Link href="/user">My profile</Menu.Link>
+    <Menu.Button id="logout" onClick={...}>Log out</Menu.Button>
+  </Menu>
+  ```
+
+  The component walks its children and groups the meta slots into a flex column to the right of any non-meta children, so consumers write the natural reading order without wrapping the meta column themselves.
+
+  Marked `@beta` in JSDoc — the prop shape, slot contract, and visual treatment may evolve before release. Additive only: existing `Menu` callers are unaffected.
+
+### Patch Changes
+
+- 745a994: Address review feedback on `Avatar`:
+  - **Falls back to initials on image load failure** — instead of leaving the browser's default broken-image indicator over the badge, `Avatar` now hides the `<img>` when `onError` fires and reveals the initials underneath. Tracks the failed URL so swapping `src` to a new value re-shows the image without resetting state via an effect.
+  - **Initials-only avatars are now labelled** — when no `src` is provided, the wrapper still gets `role="img"` + `aria-label={name}`, so an avatar-only button or link is announced with the user's full name instead of just the visible initials (e.g. "ll").
+  - **Initials text uses the semantic `--text` token** — replaces the hardcoded `text-primary-800 dark:text-primary-200` so the avatar adapts to consumers that swap the text color independently of the primary scale.
+  - **Storybook no longer makes a real failing network request** — the broken-image story uses an invalid `data:` URL so the failure is synchronous and offline; renamed to `FallsBackToInitialsOnError` to reflect the new behaviour.
+
 ## 2.1.0
 
 ### Minor Changes
