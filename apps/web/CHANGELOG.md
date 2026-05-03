@@ -1,5 +1,18 @@
 # @eventuras/web
 
+## 3.3.4
+
+### Patch Changes
+
+- 2842f02: Pick up the recent frontpage and event-list polish — collection-name badges on rows in the all-courses list, on-demand filter that accepts both `OnlineCourse` and the legacy `Course + onDemand` shape, headline + markdown description in the event-list row body, and the `formatCompactDateRange` fix that stops doubling the period for nb-NO multi-day labels.
+- Updated dependencies [2842f02]
+- Updated dependencies [ac349ed]
+  - @eventuras/ratio-ui@2.1.0
+  - @eventuras/core@0.3.1
+  - @eventuras/datatable@0.5.22
+  - @eventuras/ratio-ui-next@0.1.23
+  - @eventuras/smartform@0.3.15
+
 ## 3.3.3
 
 ### Patch Changes
