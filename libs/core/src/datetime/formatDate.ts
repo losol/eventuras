@@ -75,6 +75,12 @@ const formatCompactDateRange = (
   const dayFmt = new Intl.DateTimeFormat(locale, { day: 'numeric' });
   const yearFmt = new Intl.DateTimeFormat(locale, { year: 'numeric' });
 
+  // Pull the locale-formatted day number without any trailing punctuation
+  // (some locales — e.g. nb-NO — append "." after the day; we add our own
+  // literal `.` below and don't want a doubled period).
+  const dayPart = (date: Date): string =>
+    dayFmt.formatToParts(date).find(p => p.type === 'day')?.value ?? String(date.getDate());
+
   const startLabel = dayMonthFmt.format(start).toUpperCase();
 
   if (!end || +start === +end) {
@@ -86,7 +92,7 @@ const formatCompactDateRange = (
   const sameYear = start.getFullYear() === end.getFullYear();
 
   if (sameMonth) {
-    return `${dayFmt.format(start)}.–${dayMonthFmt.format(end)}`.toUpperCase();
+    return `${dayPart(start)}.–${dayMonthFmt.format(end)}`.toUpperCase();
   }
   if (sameYear) {
     return `${dayMonthFmt.format(start)}–${dayMonthFmt.format(end)}`.toUpperCase();

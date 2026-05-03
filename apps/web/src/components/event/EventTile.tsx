@@ -1,12 +1,14 @@
 import { formatCompactDateRange } from '@eventuras/core/datetime';
+import { Badge } from '@eventuras/ratio-ui/core/Badge';
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
 import { appConfig } from '@/config.server';
-import { EventDto } from '@/lib/eventuras-sdk';
+import type { EventDto } from '@/lib/eventuras-types';
 
 interface EventTileProps {
   event: EventDto;
+  collectionName?: string;
 }
 
 /**
@@ -20,7 +22,7 @@ interface EventTileProps {
  * intentionally omitted until we have a category-name → token-color
  * mapping. Re-introduce when that lands.
  */
-export const EventTile: React.FC<EventTileProps> = ({ event }) => {
+export const EventTile: React.FC<EventTileProps> = ({ event, collectionName }) => {
   const dateLabel = formatCompactDateRange(
     event.dateStart as string | null | undefined,
     event.dateEnd as string | null | undefined,
@@ -34,6 +36,11 @@ export const EventTile: React.FC<EventTileProps> = ({ event }) => {
         <span className="font-mono text-xs uppercase tracking-wider text-(--text-subtle) font-semibold">
           {dateLabel}
         </span>
+      )}
+      {collectionName && (
+        <Badge variant="subtle" className="inline-flex items-center gap-1.5 self-start">
+          {collectionName}
+        </Badge>
       )}
       <Link
         href={`/events/${event.id}/${event.slug ?? ''}`}
