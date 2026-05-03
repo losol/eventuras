@@ -47,16 +47,15 @@ export const WithImage: Story = {
 };
 
 /**
- * Documents what a 404 image looks like with the current implementation:
- * the browser paints its default broken-image indicator inside the
- * `<img>` box. The component does not silently fall back to the
- * initials on load failure — pass URLs you've already verified, or
- * skip `src` entirely.
+ * When the image fails to load, the component hides the `<img>` and
+ * shows the initials underneath instead of leaving the browser's
+ * broken-image indicator on the badge. This story uses an invalid
+ * `data:` URL so the failure is synchronous — no real network request.
  */
-export const BrokenImageDoesNotSilentlyFallBack: Story = {
+export const FallsBackToInitialsOnError: Story = {
   args: {
     name: 'Leo Losen',
-    src: 'https://example.invalid/this-will-404.jpg',
+    src: 'data:image/png;base64,not-a-real-image',
     size: 'md',
   },
 };
