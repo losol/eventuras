@@ -1,5 +1,13 @@
 # @eventuras/idem-admin
 
+## 0.1.9
+
+### Patch Changes
+
+- Updated dependencies [2842f02]
+  - @eventuras/ratio-ui@2.1.0
+  - @eventuras/ratio-ui-next@0.1.23
+
 ## 0.1.8
 
 ### Patch Changes
