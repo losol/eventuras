@@ -106,9 +106,23 @@ export default async function Homepage() {
     hasError = true;
   }
 
-  const isOnDemandCourse = (e: EventDto) => e.type === 'Course' && e.onDemand === true;
+  // On-demand: production uses `type === 'OnlineCourse'`; older data may
+  // still use `type === 'Course' && onDemand === true`. Accept both so we
+  // don't drop events through the migration.
+  const isOnDemandCourse = (e: EventDto) =>
+    e.type === 'OnlineCourse' || (e.type === 'Course' && e.onDemand === true);
   const onDemandCourses = events.filter(isOnDemandCourse);
   const regularEvents = events.filter(e => !isOnDemandCourse(e));
+
+  // Build event-id → collection-name lookup so the chronological list can
+  // tag each event with the collection it belongs to (when it does).
+  const eventCollectionMap = new Map<number, string>();
+  for (const c of featuredCollections) {
+    if (!c.name) continue;
+    for (const e of c.events) {
+      if (typeof e.id === 'number') eventCollectionMap.set(e.id, c.name);
+    }
+  }
 
   const hasEvents = regularEvents.length > 0;
   const hasOnDemand = onDemandCourses.length > 0;
@@ -220,6 +234,9 @@ export default async function Homepage() {
                   event={event}
                   ctaLabel={t('common.events.list.cta')}
                   locale={locale}
+                  collectionName={
+                    typeof event.id === 'number' ? eventCollectionMap.get(event.id) : undefined
+                  }
                 />
               ))}
             </div>
