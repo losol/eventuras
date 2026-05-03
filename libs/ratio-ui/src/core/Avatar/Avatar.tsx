@@ -1,23 +1,21 @@
-import type { FC } from 'react';
+import { useState, type FC } from 'react';
 import { cn } from '../../utils/cn';
 
 export type AvatarSize = 'sm' | 'md' | 'lg';
 
 export interface AvatarProps {
   /**
-   * User image URL. Rendered as an `<img>` over the initials. When the
-   * URL loads, the photo covers the initials. When it fails to load
-   * the browser paints its default broken-image indicator inside the
-   * `<img>` box, which obscures the initials underneath — pass URLs
-   * you've already verified, or skip `src` and rely on the initials.
+   * User image URL. Rendered as an `<img>` over the initials. If the
+   * image fails to load, the component hides the `<img>` and falls
+   * back to the initials underneath — no broken-image indicator is
+   * shown.
    */
   src?: string;
   /**
-   * User's name. Used for the `<img>` alt attribute, the wrapper's
-   * accessible name when `src` is set, and (when `initials` is
-   * omitted) auto-derived initials — first letter of the first and
-   * last word, lowercased; for a single-word name the first two
-   * letters of that word.
+   * User's name. Used for the wrapper's accessible label and (when
+   * `initials` is omitted) auto-derived initials — first letter of
+   * the first and last word, lowercased; for a single-word name the
+   * first two letters of that word.
    */
   name?: string;
   /**
@@ -35,9 +33,8 @@ export interface AvatarProps {
   size?: AvatarSize;
   /**
    * Override the wrapper's accessible label. Defaults to `name` when
-   * `src` is set, otherwise the avatar relies on the visible initials
-   * and is left unlabelled. Use this to provide a meaningful label
-   * when neither `name` nor visible content carries one.
+   * provided. Use this when neither `name` nor visible content carries
+   * a meaningful label.
    */
   ariaLabel?: string;
   className?: string;
@@ -63,8 +60,8 @@ function deriveInitials(name?: string): string {
 /**
  * User avatar — circular badge with serif italic initials over a
  * primary-tinted radial gradient. Pass `src` to render a profile
- * image; the browser handles loading and missing-resource painting,
- * so callers should provide URLs they trust.
+ * image; on load failure the component falls back to the initials
+ * underneath without showing a broken-image indicator.
  *
  * Pair with the `Menu.Trigger` (avatar pill in a navbar) and the
  * identity header inside a user-menu dropdown — three sizes cover the
@@ -87,19 +84,25 @@ export const Avatar: FC<AvatarProps> = ({
   testId,
 }) => {
   const initialsText = initials ?? deriveInitials(name);
-  const wrapperLabel = ariaLabel ?? (src ? name : undefined);
-  // Only set role="img" when we also have an accessible label. A
-  // role="img" without a name fails axe rules, and the avatar with
-  // visible initials and no src is already labelled by its text.
+  const wrapperLabel = ariaLabel ?? name;
+  // role="img" requires a name. When the avatar has no accessible
+  // label and no visible text, leave the role off so axe doesn't flag
+  // an unlabelled image role; the empty span is then ignored by AT.
   const a11yProps = wrapperLabel
     ? { role: 'img' as const, 'aria-label': wrapperLabel }
     : {};
+
+  // Track the URL that failed instead of a boolean flag — comparing
+  // against `src` lets a new URL re-show the image without an effect
+  // resetting state on every src change.
+  const [brokenSrc, setBrokenSrc] = useState<string | null>(null);
+  const showImage = Boolean(src) && brokenSrc !== src;
 
   return (
     <span
       className={cn(
         'relative inline-flex items-center justify-center rounded-full overflow-hidden shrink-0',
-        'text-primary-800 dark:text-primary-200 font-serif italic font-medium tracking-tight',
+        'text-(--text) font-serif italic font-medium tracking-tight',
         'bg-[radial-gradient(circle_at_30%_30%,color-mix(in_oklch,var(--primary)_25%,var(--surface)),color-mix(in_oklch,var(--primary)_12%,var(--surface)))]',
         'dark:bg-[radial-gradient(circle_at_30%_30%,color-mix(in_oklch,var(--primary)_10%,var(--surface)),color-mix(in_oklch,var(--primary)_4%,var(--surface)))]',
         SIZE_CLASSES[size],
@@ -108,11 +111,16 @@ export const Avatar: FC<AvatarProps> = ({
       {...a11yProps}
       data-testid={testId}
     >
-      {initialsText && <span aria-hidden={Boolean(src)}>{initialsText}</span>}
-      {src && (
+      {initialsText && <span aria-hidden={showImage}>{initialsText}</span>}
+      {showImage && (
         <img
           src={src}
-          alt={name ?? ''}
+          alt=""
+          // Read the failed URL off the element rather than closing
+          // over the `src` prop — if the prop has already advanced to
+          // a newer value when the error fires, we'd otherwise mark
+          // the new (still-valid) URL as broken.
+          onError={(e) => setBrokenSrc(e.currentTarget.getAttribute('src'))}
           className="absolute inset-0 size-full object-cover"
         />
       )}
