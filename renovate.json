@@ -114,6 +114,11 @@
       "matchPackageNames": ["/^@radix-ui//"]
     },
     {
+      "description": "Group @hey-api codegen — own PR so regenerated SDK diff is reviewable in isolation",
+      "groupName": "hey-api",
+      "matchPackageNames": ["/^@hey-api//"]
+    },
+    {
       "description": "Group Docker base images",
       "matchDatasources": ["docker"],
       "groupName": "docker"
