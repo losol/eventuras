@@ -23,6 +23,9 @@
   "minimumReleaseAge": "5 days",
   "prConcurrentLimit": 4,
   "branchConcurrentLimit": 1,
+  "dependencyDashboard": true,
+  "dependencyDashboardTitle": "Renovate Dependency Dashboard",
+  "postUpdateOptions": ["pnpmDedupe"],
   "lockFileMaintenance": {
     "enabled": false
   },
@@ -64,6 +67,53 @@
       "matchPackageNames": ["/eslint/"]
     },
     {
+      "description": "Group typescript-eslint family (must come after broad eslint rule)",
+      "groupName": "typescript-eslint",
+      "matchPackageNames": ["/^typescript-eslint$/", "/^@typescript-eslint//"]
+    },
+    {
+      "description": "Group React core + types — must always move together",
+      "groupName": "react",
+      "matchPackageNames": ["/^react$/", "/^react-dom$/", "@types/react", "@types/react-dom"]
+    },
+    {
+      "description": "Group Next.js core + first-party plugins",
+      "groupName": "next",
+      "matchPackageNames": ["/^next$/", "/^@next//", "next-intl", "next-sitemap"]
+    },
+    {
+      "description": "Group Vite + Vitest ecosystem",
+      "groupName": "vite",
+      "matchPackageNames": ["/^vite$/", "/^@vitejs//", "/^vitest$/", "/^@vitest//"]
+    },
+    {
+      "description": "Group Tailwind ecosystem",
+      "groupName": "tailwind",
+      "matchPackageNames": [
+        "/^tailwindcss$/",
+        "/^@tailwindcss//",
+        "tailwind-merge",
+        "tailwindcss-react-aria-components",
+        "autoprefixer",
+        "postcss"
+      ]
+    },
+    {
+      "description": "Group testing-library + jsdom",
+      "groupName": "testing-library",
+      "matchPackageNames": ["/^@testing-library//", "jsdom"]
+    },
+    {
+      "description": "Group TanStack packages",
+      "groupName": "tanstack",
+      "matchPackageNames": ["/^@tanstack//"]
+    },
+    {
+      "description": "Group Radix UI packages",
+      "groupName": "radix",
+      "matchPackageNames": ["/^@radix-ui//"]
+    },
+    {
       "description": "Group Docker base images",
       "matchDatasources": ["docker"],
       "groupName": "docker"
@@ -72,6 +122,11 @@
       "description": "Group GitHub Actions",
       "matchManagers": ["github-actions"],
       "groupName": "github-actions"
+    },
+    {
+      "description": "Label major updates so they're easy to spot in the PR list",
+      "matchUpdateTypes": ["major"],
+      "addLabels": ["major"]
     }
   ]
 }
