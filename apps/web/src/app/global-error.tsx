@@ -1,6 +1,7 @@
 'use client'; // Global error must be a Client Component
 
 import { useEffect } from 'react';
+import * as Sentry from '@sentry/nextjs';
 
 import { ErrorBlock } from '@eventuras/ratio-ui/blocks/Error';
 import { PageOverlay } from '@eventuras/ratio-ui/core/PageOverlay';
@@ -20,8 +21,9 @@ export default function GlobalError({
   reset: () => void;
 }>) {
   useEffect(() => {
-    // Log the error - avoid using custom logger here to prevent circular errors
+    // Avoid the custom logger here to prevent circular errors
     console.error('Global error:', error);
+    Sentry.captureException(error);
   }, [error]);
 
   return (

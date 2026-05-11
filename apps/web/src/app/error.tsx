@@ -1,6 +1,7 @@
 'use client'; // Error boundaries must be Client Components
 
 import { useEffect } from 'react';
+import * as Sentry from '@sentry/nextjs';
 import Link from 'next/link';
 
 import { Logger } from '@eventuras/logger';
@@ -23,7 +24,6 @@ export default function ErrorBoundary({
   reset: () => void;
 }>) {
   useEffect(() => {
-    // Log the error to monitoring service
     logger.error(
       {
         error: {
@@ -34,6 +34,10 @@ export default function ErrorBoundary({
       },
       'Unhandled error in app'
     );
+
+    Sentry.captureException(error, {
+      extra: { digest: error.digest },
+    });
   }, [error]);
 
   return (

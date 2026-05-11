@@ -1,7 +1,9 @@
 'use client'; // Error boundaries must be Client Components
 
 import { useEffect } from 'react';
+import * as Sentry from '@sentry/nextjs';
 import Link from 'next/link';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 import { Logger } from '@eventuras/logger';
 import { ErrorBlock } from '@eventuras/ratio-ui/blocks/Error';
@@ -20,7 +22,12 @@ export default function AdminErrorBoundary({
   error: Error & { digest?: string };
   reset: () => void;
 }>) {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   useEffect(() => {
+    const search = searchParams?.toString() ?? '';
+
     logger.error(
       {
         error: {
@@ -28,10 +35,17 @@ export default function AdminErrorBoundary({
           stack: error.stack,
           digest: error.digest,
         },
+        pathname,
+        search,
       },
       'Error in admin section'
     );
-  }, [error]);
+
+    Sentry.captureException(error, {
+      tags: { section: 'admin' },
+      extra: { pathname, search, digest: error.digest },
+    });
+  }, [error, pathname, searchParams]);
 
   return (
     <PageOverlay status="error" fullScreen>
