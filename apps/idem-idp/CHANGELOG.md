@@ -1,5 +1,14 @@
 # @eventuras/idem-idp
 
+## 0.7.17
+
+### Patch Changes
+
+- Updated dependencies [991b508]
+- Updated dependencies [745a994]
+- Updated dependencies [b399eb5]
+  - @eventuras/ratio-ui@2.2.0
+
 ## 0.7.16
 
 ### Patch Changes
