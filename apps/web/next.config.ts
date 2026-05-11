@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 
+import { withSentryConfig } from '@sentry/nextjs';
 import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
 
@@ -42,4 +43,16 @@ const nextConfig: NextConfig = {
 };
 
 const withNextIntl = createNextIntlPlugin();
-export default withNextIntl(nextConfig);
+
+export default withSentryConfig(withNextIntl(nextConfig), {
+  silent: !process.env.CI,
+  tunnelRoute: '/monitoring',
+  // GlitchTip does not accept sourcemap uploads — omit org/project/authToken
+  // so the Sentry CLI does not try to upload during build.
+  // Strip Sentry's debug logging to keep the client bundle small (matches
+  // apps/historia's webpack treeshake config; addresses prior bundle-size
+  // concern that motivated removing Sentry from the frontend in #743).
+  webpack: {
+    treeshake: { removeDebugLogging: true },
+  },
+});
