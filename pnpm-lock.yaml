@@ -1091,7 +1091,7 @@ importers:
         version: 6.1.0(@types/react@19.2.14)(react@19.2.6)(xstate@5.31.0)
       '@xstate/store':
         specifier: ^3.17.1
-        version: 3.17.4(react@19.2.6)
+        version: 3.17.5(react@19.2.6)
       next:
         specifier: ^16.0.0
         version: 16.2.6(@opentelemetry/api@1.9.1)(@playwright/test@1.59.1)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.77.4)
@@ -6402,8 +6402,8 @@ packages:
       xstate:
         optional: true
 
-  '@xstate/store@3.17.4':
-    resolution: {integrity: sha512-LOmx7B1hmKv3giOIs6NpLw2L1uldL6YoCnwxx21u4r5/u8HJbJIzhmnIpKoJ9gBmt/k7rYhGxuFrSSdct2/X8g==}
+  '@xstate/store@3.17.5':
+    resolution: {integrity: sha512-ITajQVRAMa1pgmgM0OdRFYQ6OQ8GK4ynh391p13GKtZnELXn9Hgs9pr4mqO1Z95HH9INcmczmWi5xk3O18GBWg==}
     peerDependencies:
       react: ^18.2.0 || ^19.0.0
       solid-js: ^1.7.6
@@ -17675,7 +17675,7 @@ snapshots:
     transitivePeerDependencies:
       - '@types/react'
 
-  '@xstate/store@3.17.4(react@19.2.6)':
+  '@xstate/store@3.17.5(react@19.2.6)':
     optionalDependencies:
       react: 19.2.6
 
