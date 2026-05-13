@@ -7,6 +7,7 @@ import { Section } from '@eventuras/ratio-ui/layout/Section';
 import { getV3OrganizationsByOrganizationIdSettings } from '@/lib/eventuras-sdk';
 
 import { ErrorTestButton } from './ErrorTestButton';
+import { SentryDiagnostics } from './SentryDiagnostics';
 
 const AdminSystemPage = async () => {
   const t = await getTranslations();
@@ -31,7 +32,10 @@ const AdminSystemPage = async () => {
       <Section>
         <Container>
           <Heading as="h2">Diagnostics</Heading>
+          <Heading as="h3">Backend API</Heading>
           <ErrorTestButton />
+          <Heading as="h3">Web app Sentry</Heading>
+          <SentryDiagnostics />
         </Container>
       </Section>
     </>

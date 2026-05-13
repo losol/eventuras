@@ -8,12 +8,27 @@ import {
 import { Logger } from '@eventuras/logger';
 
 import { appConfig } from '@/config.server';
+import { checkAuthorization } from '@/utils/auth/checkAuthorization';
 import { getAccessToken } from '@/utils/getAccesstoken';
 
 const logger = Logger.create({
   namespace: 'web:system',
   context: { module: 'actions' },
 });
+
+export async function triggerWebServerError(): Promise<never> {
+  const authResult = await checkAuthorization('Admin');
+  if (!authResult.authorized) {
+    logger.warn({ error: authResult.error }, 'Unauthorized call to triggerWebServerError');
+    throw new Error('Forbidden');
+  }
+
+  logger.warn(
+    { userId: authResult.userId },
+    'Intentional server-side error fired from admin diagnostics',
+  );
+  throw new Error('Sentry diagnostics: intentional web server error');
+}
 
 export async function triggerErrorTest(): Promise<ServerActionResult<{ status: number }>> {
   const baseUrl = appConfig.env.BACKEND_URL as string;
