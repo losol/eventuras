@@ -8,6 +8,7 @@ import { ToastRenderer } from '@eventuras/ratio-ui/toast';
 import { authStore } from '@/auth/authStore';
 import { LoginSuccessHandler } from '@/components/auth/LoginSuccessHandler';
 import { SessionWarningOverlay } from '@/components/SessionWarningOverlay';
+import { SentryUserContext } from '@/providers/sentry/SentryUserContext';
 import { ThemeProvider } from '@/providers/theme';
 import { getAuthStatus } from '@/utils/auth/getAuthStatus';
 
@@ -61,6 +62,7 @@ export default function Providers({ children }: Readonly<ProvidersProps>) {
     <ThemeProvider>
       <ToastRenderer />
       <LoginSuccessHandler />
+      <SentryUserContext />
       <SessionWarningOverlay />
       {children}
     </ThemeProvider>
