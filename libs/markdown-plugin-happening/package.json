@@ -48,8 +48,8 @@
     "remark-parse": "^11.0.0",
     "typescript": "6.0.3",
     "unified": "^11.0.5",
-    "vite": "8.0.11",
-    "vitest": "4.1.5"
+    "vite": "8.0.12",
+    "vitest": "4.1.6"
   },
   "peerDependencies": {
     "@eventuras/ratio-ui": ">=1",
