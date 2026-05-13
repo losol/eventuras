@@ -44,7 +44,7 @@
     "@types/mdast": "^4.0.4",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "jsdom": "29.0.2",
+    "jsdom": "29.1.1",
     "remark-parse": "^11.0.0",
     "typescript": "6.0.3",
     "unified": "^11.0.5",
