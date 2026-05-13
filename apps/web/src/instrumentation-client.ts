@@ -1,21 +1,26 @@
 import * as Sentry from '@sentry/nextjs';
 
-const isSentryEnabled = process.env.NEXT_PUBLIC_FEATURE_SENTRY === 'true';
-const sentryDsn = process.env.NEXT_PUBLIC_SENTRY_DSN;
+import type { SentryClientConfig } from '@/providers/sentry';
 
-if (isSentryEnabled && sentryDsn) {
+declare global {
+  interface Window {
+    __SENTRY_CONFIG__?: SentryClientConfig;
+  }
+}
+
+const config = typeof window === 'undefined' ? undefined : window.__SENTRY_CONFIG__;
+
+if (config?.dsn) {
   Sentry.init({
-    dsn: sentryDsn,
+    dsn: config.dsn,
     enableLogs: true,
-    sendDefaultPii: process.env.NEXT_PUBLIC_WEB_SENTRY_SEND_DEFAULT_PII
-      ? process.env.NEXT_PUBLIC_WEB_SENTRY_SEND_DEFAULT_PII === 'true'
-      : false,
+    sendDefaultPii: config.sendDefaultPii,
   });
 
   console.log('[Sentry] Client-side initialized successfully');
 } else {
   console.log(
-    `[Sentry] Client-side disabled (NEXT_PUBLIC_FEATURE_SENTRY=${process.env.NEXT_PUBLIC_FEATURE_SENTRY}, has DSN=${!!sentryDsn})`
+    `[Sentry] Client-side disabled (has window.__SENTRY_CONFIG__=${!!config}, has DSN=${!!config?.dsn})`
   );
 }
 

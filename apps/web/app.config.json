@@ -83,6 +83,24 @@
       "client": false,
       "type": "string",
       "description": "Secret key for session encryption (must be a strong random string)"
+    },
+    "SENTRY_DSN": {
+      "required": false,
+      "client": false,
+      "type": "url",
+      "description": "GlitchTip/Sentry DSN. Server-side only — emitted to the browser via an inline <script> in the root layout so the SDK can init without a NEXT_PUBLIC_* build arg."
+    },
+    "SENTRY_ENABLED": {
+      "required": false,
+      "client": false,
+      "type": "bool",
+      "description": "Feature flag for Sentry/GlitchTip reporting. When false (or DSN missing), the SDK is not initialized on client or server."
+    },
+    "SENTRY_SEND_DEFAULT_PII": {
+      "required": false,
+      "client": false,
+      "type": "bool",
+      "description": "Whether the SDK may include default PII (IP, headers) on captured events. Defaults to false on the client and true on the server."
     }
   },
   "build": {

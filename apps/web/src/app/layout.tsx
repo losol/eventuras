@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
 
+import { InitSentry } from '@/providers/sentry';
 import { InitTheme } from '@/providers/theme';
 import getSiteSettings from '@/utils/site/getSiteSettings';
 
@@ -30,6 +31,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   return (
     <html lang={locale} suppressHydrationWarning>
       <head>
+        <InitSentry />
         <InitTheme />
       </head>
       <body>
