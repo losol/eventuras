@@ -1,20 +1,20 @@
 import * as Sentry from '@sentry/nextjs';
 
-const isSentryEnabled = process.env.NEXT_PUBLIC_FEATURE_SENTRY === 'true';
-const sentryDsn = process.env.NEXT_PUBLIC_SENTRY_DSN;
+import { appConfig } from './src/config.server';
+
+const isSentryEnabled = appConfig.env.SENTRY_ENABLED === true;
+const sentryDsn = appConfig.env.SENTRY_DSN as string | undefined;
 
 if (isSentryEnabled && sentryDsn) {
   Sentry.init({
     dsn: sentryDsn,
     enableLogs: true,
-    sendDefaultPii: process.env.NEXT_PUBLIC_WEB_SENTRY_SEND_DEFAULT_PII
-      ? process.env.NEXT_PUBLIC_WEB_SENTRY_SEND_DEFAULT_PII === 'true'
-      : false,
+    sendDefaultPii: appConfig.env.SENTRY_SEND_DEFAULT_PII === true,
   });
 
   console.log('[Sentry] Edge runtime initialized successfully');
 } else {
   console.log(
-    `[Sentry] Edge runtime disabled (NEXT_PUBLIC_FEATURE_SENTRY=${process.env.NEXT_PUBLIC_FEATURE_SENTRY}, has DSN=${!!sentryDsn})`
+    `[Sentry] Edge runtime disabled (SENTRY_ENABLED=${isSentryEnabled}, has DSN=${!!sentryDsn})`
   );
 }

@@ -5,6 +5,4 @@
  * To regenerate, run: pnpm generate:config-types
  */
 
-// All environment variables are now server-side only.
-// No NEXT_PUBLIC_* vars remain in apps/web.
 export interface WebPublicEnv {}
