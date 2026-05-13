@@ -5,6 +5,7 @@ import { appConfig } from '@/config.server';
 export type SentryClientConfig = {
   dsn: string;
   sendDefaultPii: boolean;
+  release?: string;
 };
 
 declare global {
@@ -30,9 +31,12 @@ export const InitSentry = () => {
     return null;
   }
 
+  const release = process.env.BUILD_GIT_SHA;
+
   const config: SentryClientConfig = {
     dsn,
     sendDefaultPii: appConfig.env.SENTRY_SEND_DEFAULT_PII === true,
+    ...(release && release !== 'unknown' ? { release } : {}),
   };
 
   return (

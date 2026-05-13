@@ -15,6 +15,7 @@ if (config?.dsn) {
     dsn: config.dsn,
     enableLogs: true,
     sendDefaultPii: config.sendDefaultPii,
+    release: config.release,
   });
 
   console.log('[Sentry] Client-side initialized successfully');
