@@ -20,7 +20,7 @@
   "rebaseWhen": "conflicted",
   "platformCommit": "enabled",
   "pruneStaleBranches": true,
-  "minimumReleaseAge": "5 days",
+  "minimumReleaseAge": "10 days",
   "prConcurrentLimit": 10,
   "dependencyDashboard": true,
   "dependencyDashboardTitle": "Renovate Dependency Dashboard",
