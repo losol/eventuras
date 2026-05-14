@@ -10,15 +10,47 @@ packages:
   - '!**/bin/**'
   - '!**/obj/**'
 
-onlyBuiltDependencies:
-  - esbuild
-  - simple-git-hooks
+# Allow-list of packages whose install scripts may run.
+# Replaces `onlyBuiltDependencies` (removed in pnpm 11).
+# With `strictDepBuilds: true` (v11 default), any other dep with scripts
+# will fail the install instead of being silently skipped.
+allowBuilds:
+  '@parcel/watcher': true
+  '@sentry/cli': true
+  '@swc/core': true
+  aws-crt: true
+  esbuild: true
+  protobufjs: true
+  sharp: true
+  simple-git-hooks: true
+  unrs-resolver: true
+  yarn: true
 
-# Disables the multi-document pnpm-lock.yaml format that pnpm >= 10.17
-# writes when `packageManager` is set in package.json. turbo <= 2.9.6
-# (currently latest stable) cannot parse multi-doc lockfiles, so
-# `turbo prune` in the Docker builds fails with
+# Supply-chain protection: do not resolve packages published less than
+# 10 days ago. Mirrors `minimumReleaseAge: "10 days"` in renovate.json
+# so local installs and Renovate apply the same window.
+minimumReleaseAge: 14400
+
+# pnpm 11 no longer reads the `pnpm` field in package.json — these
+# settings (formerly under `pnpm.peerDependencyRules` and `pnpm.updateConfig`
+# in the root package.json) live here now.
+peerDependencyRules:
+  ignoreMissing:
+    - '@types/react'
+    - '@types/react-dom'
+
+updateConfig:
+  ignoreDependencies:
+    - '@types/node'
+    - lexical
+    - '@lexical/*'
+
+# Skips pnpm's own version-management against `packageManager`, which avoids
+# the multi-document pnpm-lock.yaml format that pnpm >= 10.17 writes when
+# packageManager is set. turbo <= 2.9.6 (currently latest stable) cannot parse
+# multi-doc lockfiles, so `turbo prune` in the Docker builds fails with
 # "deserializing from YAML containing more than one document is not supported".
-# Re-enable once a turbo release with multi-doc support ships
-# (pull request merged to canary 2026-04-14, not yet on stable).
-managePackageManagerVersions: false
+# Re-enable (set to `download` or remove) once a turbo release with multi-doc
+# support ships (pull request merged to canary 2026-04-14, not yet on stable).
+# Replaces `managePackageManagerVersions: false` (removed in pnpm 11).
+pmOnFail: ignore
