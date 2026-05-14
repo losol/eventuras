@@ -1022,7 +1022,7 @@ importers:
         version: 13.0.0(eslint@10.3.0(jiti@2.7.0))
       eslint-plugin-turbo:
         specifier: ^2.9.6
-        version: 2.9.10(eslint@10.3.0(jiti@2.7.0))(turbo@2.9.12)
+        version: 2.9.12(eslint@10.3.0(jiti@2.7.0))(turbo@2.9.12)
       globals:
         specifier: ^17.5.0
         version: 17.6.0
@@ -7800,8 +7800,8 @@ packages:
       eslint: '>=8'
       storybook: ^10.3.6
 
-  eslint-plugin-turbo@2.9.10:
-    resolution: {integrity: sha512-0o/EC/uSEbipDGmadlf2CMSAYbEMT0KQZ90Ar/STh0IpLs8vpaRPxmY5JeQctHlsd45DtKQd/8uMG3OYcSQGIA==}
+  eslint-plugin-turbo@2.9.12:
+    resolution: {integrity: sha512-Ilv1DTYyghdIdTUsW/VbjVTYKt1Hfs7X2C+rq/i4u7ZVofzcHZwk/3QwrV5UyOGADmxmWNyD+xcRS7+ZE5arQg==}
     peerDependencies:
       eslint: '>6.6.0'
       turbo: '>2.0.0'
@@ -19285,7 +19285,7 @@ snapshots:
       - supports-color
       - typescript
 
-  eslint-plugin-turbo@2.9.10(eslint@10.3.0(jiti@2.7.0))(turbo@2.9.12):
+  eslint-plugin-turbo@2.9.12(eslint@10.3.0(jiti@2.7.0))(turbo@2.9.12):
     dependencies:
       dotenv: 16.0.3
       eslint: 10.3.0(jiti@2.7.0)
