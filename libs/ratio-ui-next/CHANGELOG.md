@@ -1,5 +1,12 @@
 # @eventuras/ratio-ui-next
 
+## 0.1.25
+
+### Patch Changes
+
+- Updated dependencies [3b1c4fb]
+  - @eventuras/ratio-ui@2.3.0
+
 ## 0.1.24
 
 ### Patch Changes
