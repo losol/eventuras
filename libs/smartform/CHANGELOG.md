@@ -1,5 +1,12 @@
 # @eventuras/smartform
 
+## 0.3.17
+
+### Patch Changes
+
+- Updated dependencies [3b1c4fb]
+  - @eventuras/ratio-ui@2.3.0
+
 ## 0.3.16
 
 ### Patch Changes

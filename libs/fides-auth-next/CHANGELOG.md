@@ -1,5 +1,12 @@
 # @eventuras/fides-auth-next
 
+## 0.1.12
+
+### Patch Changes
+
+- Updated dependencies [3796814]
+  - @eventuras/fides-auth@0.7.1
+
 ## 0.1.11
 
 ### Patch Changes

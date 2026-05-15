@@ -1,5 +1,17 @@
 # @eventuras/web
 
+## 3.3.6
+
+### Patch Changes
+
+- 99f39cb: Add Next.js application manifest (`manifest.ts`) for PWA support and browser theme integration
+- Updated dependencies [3b1c4fb]
+  - @eventuras/ratio-ui@2.3.0
+  - @eventuras/datatable@0.5.24
+  - @eventuras/ratio-ui-next@0.1.25
+  - @eventuras/smartform@0.3.17
+  - @eventuras/fides-auth-next@0.1.12
+
 ## 3.3.5
 
 ### Patch Changes

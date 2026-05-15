@@ -1,5 +1,12 @@
 # @eventuras/vipps
 
+## 0.2.8
+
+### Patch Changes
+
+- Updated dependencies [3796814]
+  - @eventuras/fides-auth@0.7.1
+
 ## 0.2.7
 
 ### Patch Changes
