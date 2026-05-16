@@ -48,7 +48,7 @@
     "remark-parse": "^11.0.0",
     "typescript": "6.0.3",
     "unified": "^11.0.5",
-    "vite": "8.0.12",
+    "vite": "8.0.13",
     "vitest": "4.1.6"
   },
   "peerDependencies": {
