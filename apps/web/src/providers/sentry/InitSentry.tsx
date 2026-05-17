@@ -1,5 +1,3 @@
-import Script from 'next/script';
-
 import { appConfig } from '@/config.server';
 
 export type SentryClientConfig = {
@@ -39,9 +37,25 @@ export const InitSentry = () => {
     ...(release && release !== 'unknown' ? { release } : {}),
   };
 
+  // `<Script strategy="beforeInteractive">` queues into __next_s and runs
+  // after the client bundle, so `instrumentation-client.ts` would read
+  // `window.__SENTRY_CONFIG__` as undefined. An inline `<script>` executes
+  // synchronously at parse time, before any module.
+  //
+  // Escape HTML-significant characters so a value containing `</script>`
+  // can't terminate the tag and inject markup, even though every field
+  // comes from server-side env.
+  const json = JSON.stringify(config)
+    .replaceAll('<', String.raw`\u003c`)
+    .replaceAll('>', String.raw`\u003e`)
+    .replaceAll('&', String.raw`\u0026`);
+
   return (
-    <Script id="sentry-config" strategy="beforeInteractive">
-      {`window.__SENTRY_CONFIG__ = ${JSON.stringify(config)};`}
-    </Script>
+    <script
+      id="sentry-config"
+      dangerouslySetInnerHTML={{
+        __html: `window.__SENTRY_CONFIG__ = ${json};`,
+      }}
+    />
   );
 };
