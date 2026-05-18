@@ -58,7 +58,7 @@ const chromeDesktop = devices['Desktop Chrome'];
 
 export default defineConfig({
   testDir: './specs',
-  outputDir: './tmp/results',
+  outputDir: './test-results',
   timeout: timeouts.test,
   globalTimeout: timeouts.global,
   fullyParallel: false,
@@ -67,9 +67,9 @@ export default defineConfig({
   workers: 1,
   reporter: [
     ['list'],
-    ['html', { outputFolder: './tmp/report' }],
+    ['html', { outputFolder: './playwright-report' }],
     ['./error-context-reporter.ts'],
-    ['allure-playwright', { outputFolder: './tmp/allure-results' }],
+    ['allure-playwright', { outputFolder: './allure-results' }],
   ],
 
   use: {

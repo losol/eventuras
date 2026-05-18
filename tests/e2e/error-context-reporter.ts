@@ -67,7 +67,7 @@ function sanitizeEnvVars(): Record<string, string> {
 }
 
 class ErrorContextReporter implements Reporter {
-  private outputDir = 'tmp/results';
+  private outputDir = 'test-results';
 
   onBegin(config: FullConfig, _suite: Suite): void {
     // Use Playwright's configured outputDir to stay in sync with playwright.config.ts
