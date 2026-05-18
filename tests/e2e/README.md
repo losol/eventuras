@@ -173,7 +173,7 @@ Quick overview:
    - `EVENTURAS_TEST_GOOGLE_CLIENT_ID` - OAuth client ID from Google Cloud Console
    - `EVENTURAS_TEST_GOOGLE_CLIENT_SECRET` - OAuth client secret
    - `EVENTURAS_TEST_GOOGLE_REDIRECT_URI` - Use `http://localhost:3123/oauth/callback` (or `https://developers.google.com/oauthplayground` for manual setup)
-   - `EVENTURAS_TEST_GOOGLE_REFRESH_TOKEN` - Refresh token obtained from OAuth flow **OR** store it in `test-results/.google-refresh-token` file (recommended for CI/CD)
+   - `EVENTURAS_TEST_GOOGLE_REFRESH_TOKEN` - Refresh token obtained from OAuth flow **OR** store it in `tmp/auth/google-refresh-token` file (recommended for CI/CD)
 
 ### Gmail Plus Addressing
 

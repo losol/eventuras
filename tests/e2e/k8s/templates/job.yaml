@@ -54,7 +54,7 @@ spec:
           {{- if .Values.allure.enabled }}
           volumeMounts:
             - name: allure-results
-              mountPath: /app/tests/e2e/tmp/allure-results
+              mountPath: /app/tests/e2e/allure-results
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

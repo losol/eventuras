@@ -23,7 +23,7 @@ let gmailClient: gmail_v1.Gmail | null = null;
  * Read refresh token from file or environment variable.
  * Priority:
  * 1. E2E_GMAIL_REFRESH_TOKEN env var
- * 2. test-results/.google-refresh-token file
+ * 2. tmp/auth/google-refresh-token file
  */
 const getRefreshToken = (): string | undefined => {
   // Try environment variable first
@@ -35,7 +35,7 @@ const getRefreshToken = (): string | undefined => {
 
   // Try reading from file
   try {
-    const tokenPath = join(process.cwd(), 'test-results', '.google-refresh-token');
+    const tokenPath = join(process.cwd(), 'tmp', 'auth', 'google-refresh-token');
     const fileToken = readFileSync(tokenPath, 'utf-8').trim();
     if (fileToken) {
       logger.debug({ tokenPath }, 'Using refresh token from file');
@@ -101,12 +101,12 @@ export const initializeGmailClient = async (): Promise<gmail_v1.Gmail> => {
     logger.debug({ refreshToken: tokens.refresh_token ? 'present' : 'missing' }, 'Tokens obtained');
     if (tokens.refresh_token) {
       logger.info(
-        'IMPORTANT: Store the refresh token in E2E_GMAIL_REFRESH_TOKEN env var or test-results/.google-refresh-token file'
+        'IMPORTANT: Store the refresh token in E2E_GMAIL_REFRESH_TOKEN env var or tmp/auth/google-refresh-token file'
       );
     }
   } else {
     throw new Error(
-      'No E2E_GMAIL_REFRESH_TOKEN (env var or test-results/.google-refresh-token file) or E2E_GMAIL_AUTH_CODE provided. Please complete OAuth flow first.'
+      'No E2E_GMAIL_REFRESH_TOKEN (env var or tmp/auth/google-refresh-token file) or E2E_GMAIL_AUTH_CODE provided. Please complete OAuth flow first.'
     );
   }
 
