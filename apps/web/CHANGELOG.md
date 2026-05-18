@@ -1,5 +1,11 @@
 # @eventuras/web
 
+## 3.3.7
+
+### Patch Changes
+
+- 2fc396e: Fix Sentry init timing in `InitSentry`. In the App Router, `<Script strategy="beforeInteractive">` is queued into Next's `__next_s` runtime instead of emitted as an inline `<script>`, so it executes _after_ the client bundle. `instrumentation-client.ts` reads `window.__SENTRY_CONFIG__` at module top-level and saw `undefined`, so `Sentry.init` never ran. Render the config as a plain `<script dangerouslySetInnerHTML>` so it executes synchronously at parse time, before any module.
+
 ## 3.3.6
 
 ### Patch Changes
