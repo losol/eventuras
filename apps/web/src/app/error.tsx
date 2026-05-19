@@ -1,14 +1,9 @@
-'use client'; // Error boundaries must be Client Components
+'use client';
 
-import { useEffect } from 'react';
-import * as Sentry from '@sentry/nextjs';
-import Link from 'next/link';
+import { RouteErrorView } from '@/components/RouteErrorView';
 
-import { Logger } from '@eventuras/logger';
-import { ErrorBlock } from '@eventuras/ratio-ui/blocks/Error';
-import { PageOverlay } from '@eventuras/ratio-ui/core/PageOverlay';
-
-const logger = Logger.create({ namespace: 'web:error' });
+// Module-level constant so `links` stays stable across re-renders.
+const LINKS = [{ href: '/', label: 'Go to Home' }] as const;
 
 /**
  * Root error boundary
@@ -23,50 +18,14 @@ export default function ErrorBoundary({
   error: Error & { digest?: string };
   reset: () => void;
 }>) {
-  useEffect(() => {
-    logger.error(
-      {
-        error: {
-          message: error.message,
-          stack: error.stack,
-          digest: error.digest,
-        },
-      },
-      'Unhandled error in app'
-    );
-
-    Sentry.captureException(error, {
-      extra: { digest: error.digest },
-    });
-  }, [error]);
-
   return (
-    <PageOverlay status="error" fullScreen>
-      <ErrorBlock type="server-error" status="error">
-        <ErrorBlock.Title>Something Went Wrong</ErrorBlock.Title>
-        <ErrorBlock.Description>
-          An unexpected error occurred. Please try again or contact support if the problem persists.
-        </ErrorBlock.Description>
-        {error.digest && (
-          <ErrorBlock.Details>
-            <div className="text-sm opacity-75">Error ID: {error.digest}</div>
-          </ErrorBlock.Details>
-        )}
-        <ErrorBlock.Actions>
-          <button
-            onClick={reset}
-            className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-          >
-            Try Again
-          </button>
-          <Link
-            href="/"
-            className="px-4 py-2 rounded bg-gray-600 text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-          >
-            Go to Home
-          </Link>
-        </ErrorBlock.Actions>
-      </ErrorBlock>
-    </PageOverlay>
+    <RouteErrorView
+      error={error}
+      reset={reset}
+      title="Something Went Wrong"
+      description="An unexpected error occurred. Please try again or contact support if the problem persists."
+      loggerNamespace="web:error"
+      links={LINKS}
+    />
   );
 }

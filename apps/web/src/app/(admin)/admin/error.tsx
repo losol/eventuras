@@ -1,15 +1,14 @@
-'use client'; // Error boundaries must be Client Components
+'use client';
 
-import { useEffect } from 'react';
-import * as Sentry from '@sentry/nextjs';
-import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { RouteErrorView } from '@/components/RouteErrorView';
 
-import { Logger } from '@eventuras/logger';
-import { ErrorBlock } from '@eventuras/ratio-ui/blocks/Error';
-import { PageOverlay } from '@eventuras/ratio-ui/core/PageOverlay';
-
-const logger = Logger.create({ namespace: 'web:admin:error', context: { section: 'admin' } });
+// Module-level constants so `tags`/`links` don't re-mount the underlying
+// `useEffect` (which would fire duplicate Sentry/logger captures).
+const TAGS = { section: 'admin' } as const;
+const LINKS = [
+  { href: '/admin', label: 'Back to Admin Dashboard' },
+  { href: '/', label: 'Go to Home' },
+] as const;
 
 /**
  * Admin section error boundary
@@ -22,64 +21,15 @@ export default function AdminErrorBoundary({
   error: Error & { digest?: string };
   reset: () => void;
 }>) {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-
-  useEffect(() => {
-    const search = searchParams?.toString() ?? '';
-
-    logger.error(
-      {
-        error: {
-          message: error.message,
-          stack: error.stack,
-          digest: error.digest,
-        },
-        pathname,
-        search,
-      },
-      'Error in admin section'
-    );
-
-    Sentry.captureException(error, {
-      tags: { section: 'admin' },
-      extra: { pathname, search, digest: error.digest },
-    });
-  }, [error, pathname, searchParams]);
-
   return (
-    <PageOverlay status="error" fullScreen>
-      <ErrorBlock type="server-error" status="error">
-        <ErrorBlock.Title>Admin Error</ErrorBlock.Title>
-        <ErrorBlock.Description>
-          An error occurred in the admin section. This has been logged for investigation.
-        </ErrorBlock.Description>
-        {error.digest && (
-          <ErrorBlock.Details>
-            <div className="text-sm opacity-75">Error ID: {error.digest}</div>
-          </ErrorBlock.Details>
-        )}
-        <ErrorBlock.Actions>
-          <button
-            onClick={reset}
-            className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-          >
-            Try Again
-          </button>
-          <Link
-            href="/admin"
-            className="px-4 py-2 rounded bg-gray-600 text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-          >
-            Back to Admin Dashboard
-          </Link>
-          <Link
-            href="/"
-            className="px-4 py-2 rounded bg-gray-500 text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400"
-          >
-            Go to Home
-          </Link>
-        </ErrorBlock.Actions>
-      </ErrorBlock>
-    </PageOverlay>
+    <RouteErrorView
+      error={error}
+      reset={reset}
+      title="Admin Error"
+      description="An error occurred in the admin section. This has been logged for investigation."
+      loggerNamespace="web:admin:error"
+      tags={TAGS}
+      links={LINKS}
+    />
   );
 }
