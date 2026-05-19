@@ -260,7 +260,10 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
     [Fact]
     public async Task Should_Return_Not_Found_For_Unknown_User_Id()
     {
-        var client = factory.CreateClient().Authenticated();
+        // Use a SystemAdmin client so access control doesn't refuse the call
+        // before the unknown-user lookup runs — we want to assert what
+        // happens when the user ID itself is bogus.
+        var client = factory.CreateClient().AuthenticatedAsSystemAdmin();
         using var scope = factory.Services.NewTestScope();
         using var e = await scope.CreateEventAsync();
         var response = await client.PostAsync("/v3/registrations",
@@ -433,7 +436,7 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
     }
 
     [Fact]
-    public async Task Should_Move_Event_To_Waiting_List_Status()
+    public async Task Should_Close_Event_When_Filling_Last_Spot()
     {
         using var scope = factory.Services.NewTestScope();
         using var user = await scope.CreateUserAsync();
@@ -456,7 +459,72 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
 
         var updatedEvent = await scope.Db.EventInfos.AsNoTracking()
             .SingleAsync(e => e.EventInfoId == evt.Entity.EventInfoId);
-        Assert.Equal(EventInfo.EventInfoStatus.WaitingList, updatedEvent.Status);
+        Assert.Equal(EventInfo.EventInfoStatus.RegistrationsClosed, updatedEvent.Status);
+    }
+
+    [Fact]
+    public async Task Should_Refuse_Self_Service_Registration_When_Event_At_Capacity()
+    {
+        // Event at capacity, status still RegistrationsOpen (no one has flipped
+        // it yet): the in-service capacity gate must refuse with 400 to prevent
+        // a race where two requests slip past the status flip.
+        using var scope = factory.Services.NewTestScope();
+        using var existing = await scope.CreateUserAsync();
+        using var newcomer = await scope.CreateUserAsync();
+        using var evt =
+            await scope.CreateEventAsync(status: EventInfo.EventInfoStatus.RegistrationsOpen, maxParticipants: 1);
+        using var _ = await scope.CreateRegistrationAsync(evt.Entity, existing.Entity,
+            status: Registration.RegistrationStatus.Verified);
+
+        var client = factory.CreateClient().AuthenticatedAs(newcomer.Entity);
+        var response = await client.PostAsync("/v3/registrations",
+            new { userId = newcomer.Entity.Id, eventId = evt.Entity.EventInfoId });
+
+        response.CheckBadRequest();
+    }
+
+    [Fact]
+    public async Task Should_Forbid_Self_Service_Registration_When_Event_Registrations_Closed()
+    {
+        // Once the event has flipped to RegistrationsClosed (typically after a
+        // previous registration filled the last spot), self-service callers
+        // should be refused by the access-control layer with 403 — not by the
+        // capacity gate with 400. Admins are unaffected.
+        using var scope = factory.Services.NewTestScope();
+        using var user = await scope.CreateUserAsync();
+        using var evt =
+            await scope.CreateEventAsync(status: EventInfo.EventInfoStatus.RegistrationsClosed);
+
+        var client = factory.CreateClient().AuthenticatedAs(user.Entity);
+        var response = await client.PostAsync("/v3/registrations",
+            new { userId = user.Entity.Id, eventId = evt.Entity.EventInfoId });
+
+        response.CheckForbidden();
+    }
+
+    [Fact]
+    public async Task Admin_Can_Overbook_Event_That_Is_Closed_And_Status_Stays_Closed()
+    {
+        // Admin overbooks an already-Closed event (EnforceCapacity=false in the
+        // controller). The status must remain Closed afterwards so self-service
+        // attempts continue to hit the 403 path.
+        using var scope = factory.Services.NewTestScope();
+        using var existing = await scope.CreateUserAsync();
+        using var admin = await scope.CreateUserAsync(role: Roles.SystemAdmin);
+        using var target = await scope.CreateUserAsync();
+        using var evt =
+            await scope.CreateEventAsync(status: EventInfo.EventInfoStatus.RegistrationsClosed, maxParticipants: 1);
+        using var _ = await scope.CreateRegistrationAsync(evt.Entity, existing.Entity,
+            status: Registration.RegistrationStatus.Verified);
+
+        var client = factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.SystemAdmin);
+        var response = await client.PostAsync("/v3/registrations",
+            new { userId = target.Entity.Id, eventId = evt.Entity.EventInfoId });
+        response.CheckOk();
+
+        var updatedEvent = await scope.Db.EventInfos.AsNoTracking()
+            .SingleAsync(e => e.EventInfoId == evt.Entity.EventInfoId);
+        Assert.Equal(EventInfo.EventInfoStatus.RegistrationsClosed, updatedEvent.Status);
     }
 
     [Fact]
