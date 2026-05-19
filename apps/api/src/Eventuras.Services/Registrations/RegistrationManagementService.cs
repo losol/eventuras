@@ -165,8 +165,29 @@ internal class RegistrationManagementService : IRegistrationManagementService
             _logger.LogInformation(
                 "Event {EventId} has reached max participants, closing registrations",
                 eventId);
+            var previousStatus = eventInfo.Status;
             eventInfo.Status = EventInfo.EventInfoStatus.RegistrationsClosed;
             await _context.SaveChangesAsync(cancellationToken);
+
+            // Emit the same `event.status.changed` business event the
+            // EventManagementService does for manual transitions, so the
+            // audit trail records auto-close just like operator-initiated
+            // status changes. Actor is the registering user — the person
+            // whose registration triggered the auto-flip.
+            if (previousStatus != eventInfo.Status)
+            {
+                var organizationUuid = await _context.Organizations
+                    .AsNoTracking()
+                    .Where(o => o.OrganizationId == eventInfo.OrganizationId)
+                    .Select(o => (Guid?)o.Uuid)
+                    .FirstOrDefaultAsync(cancellationToken);
+                _businessEventService.AddEvent(
+                    BusinessEventSubjects.ForEvent(eventInfo.Uuid),
+                    "event.status.changed",
+                    $"Status changed from {previousStatus} to {eventInfo.Status} (auto: reached MaxParticipants {eventInfo.MaxParticipants})",
+                    organizationUuid: organizationUuid,
+                    actorUserUuid: _httpContextAccessor.HttpContext?.User?.GetUserId());
+            }
         }
 
         if (options.SendWelcomeLetter && registration.Status != Registration.RegistrationStatus.WaitingList)
