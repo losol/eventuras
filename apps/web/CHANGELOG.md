@@ -1,5 +1,20 @@
 # @eventuras/web
 
+## 3.3.8
+
+### Patch Changes
+
+- 4d6880c: Isolate each tab in the admin event editor behind an `ErrorBoundary` so a deep crash inside one tab no longer takes down the whole admin page. Logs to Sentry with `section: admin` and `tab: <id>` tags.
+- b3bdb6f: Extract `RouteErrorView` and route `app/error.tsx` + `admin/error.tsx` through it. Refactor with a visual tweak: error-page actions now use `ratio-ui` `Button` + `Link` instead of hand-rolled tailwind buttons, so they match the rest of the app.
+- Updated dependencies [0457941]
+- Updated dependencies [cf7a1a5]
+  - @eventuras/ratio-ui@2.4.0
+  - @eventuras/scribo@0.10.4
+  - @eventuras/event-sdk@3.1.2
+  - @eventuras/datatable@0.5.25
+  - @eventuras/ratio-ui-next@0.1.26
+  - @eventuras/smartform@0.3.18
+
 ## 3.3.7
 
 ### Patch Changes
