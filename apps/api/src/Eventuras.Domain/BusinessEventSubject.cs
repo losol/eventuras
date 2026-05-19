@@ -14,6 +14,9 @@ public static class BusinessEventSubjects
     public static BusinessEventSubject ForRegistration(Guid registrationId) =>
         new("registration", registrationId);
 
+    public static BusinessEventSubject ForEvent(Guid eventInfoUuid) =>
+        new("event", eventInfoUuid);
+
     public static BusinessEventSubject ForUser(Guid userId) =>
         new("user", userId);
 }

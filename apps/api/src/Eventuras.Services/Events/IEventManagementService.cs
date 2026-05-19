@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 
@@ -7,7 +8,7 @@ public interface IEventManagementService
 {
     Task CreateNewEventAsync(EventInfo info);
 
-    Task UpdateEventAsync(EventInfo info);
+    Task UpdateEventAsync(EventInfo info, CancellationToken cancellationToken = default);
 
     Task DeleteEventAsync(int id);
 }

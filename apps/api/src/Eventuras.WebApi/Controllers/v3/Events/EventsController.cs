@@ -106,9 +106,13 @@ public class EventsController : ControllerBase
     /// </summary>
     /// <param name="id">The ID of the event.</param>
     /// <param name="dto">Updated event information.</param>
+    /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>The updated event or NotFound if the event is archived.</returns>
     [HttpPut("{id:int}")]
-    public async Task<ActionResult<EventDto>> Put(int id, [FromBody] EventFormDto dto)
+    public async Task<ActionResult<EventDto>> Put(
+        int id,
+        [FromBody] EventFormDto dto,
+        CancellationToken cancellationToken = default)
     {
         if (dto.Id.HasValue && id != dto.Id.Value)
         {
@@ -116,7 +120,7 @@ public class EventsController : ControllerBase
             return BadRequest($"Event ID {id} does not match the ID in the request body.");
         }
 
-        var eventInfo = await _eventInfoService.GetEventInfoByIdAsync(id);
+        var eventInfo = await _eventInfoService.GetEventInfoByIdAsync(id, cancellationToken);
         if (eventInfo.Archived)
         {
             _logger.LogWarning("Event with ID {Id} is archived and cannot be updated.", id);
@@ -124,7 +128,7 @@ public class EventsController : ControllerBase
         }
 
         dto.CopyTo(eventInfo);
-        await _eventManagementService.UpdateEventAsync(eventInfo);
+        await _eventManagementService.UpdateEventAsync(eventInfo, cancellationToken);
         return Ok(new EventDto(eventInfo));
     }
 
@@ -163,7 +167,7 @@ public class EventsController : ControllerBase
 
         patchDto.ApplyTo(entity);
 
-        await _eventManagementService.UpdateEventAsync(entity);
+        await _eventManagementService.UpdateEventAsync(entity, cancellationToken);
 
         return Ok(new EventDto(entity));
     }
