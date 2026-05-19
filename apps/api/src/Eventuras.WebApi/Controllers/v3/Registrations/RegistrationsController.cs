@@ -146,12 +146,16 @@ public class RegistrationsController : ControllerBase
         [FromBody] NewRegistrationDto dto,
         CancellationToken cancellationToken)
     {
+        // Only true admins skip the capacity gate. Non-admins can hit this
+        // endpoint to register themselves (CheckOwnerOrAdminAccessAsync allows
+        // self-registration), so they must still be subject to MaxParticipants.
         var registration = await _registrationManagementService.CreateRegistrationAsync(dto.EventId, dto.UserId!.Value,
             new RegistrationOptions
             {
                 CreateOrder = dto.CreateOrder,
                 Verified = true,
-                SendWelcomeLetter = dto.SendWelcomeLetter
+                SendWelcomeLetter = dto.SendWelcomeLetter,
+                EnforceCapacity = !User.IsAdmin()
             }, cancellationToken);
 
         if (!dto.Empty)

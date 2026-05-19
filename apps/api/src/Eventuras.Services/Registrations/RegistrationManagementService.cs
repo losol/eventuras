@@ -80,9 +80,39 @@ internal class RegistrationManagementService : IRegistrationManagementService
         var eventInfo = await _eventInfoRetrievalService.GetEventInfoByIdAsync(eventId,
             new EventInfoRetrievalOptions { ForUpdate = true, LoadRegistrations = true, LoadProducts = true },
             cancellationToken);
-        var user = await _userRetrievalService.GetUserByIdAsync(userId, null, cancellationToken);
 
-        var registration = new Registration { EventInfoId = eventId, UserId = userId, ParticipantName = user.Name };
+        options ??= new RegistrationOptions();
+
+        var registration = new Registration { EventInfoId = eventId, UserId = userId };
+
+        // Access check runs before the capacity gate: a non-admin hitting an
+        // event that is already RegistrationsClosed should get 403 (semantic
+        // "not for you") rather than 400 (the post-fill capacity error). The
+        // gate below is for the in-flight overflow case while the event is
+        // still nominally Open.
+        await _registrationAccessControlService.CheckRegistrationCreateAccessAsync(registration, cancellationToken);
+
+        // Hard capacity gate for self-service flows. Until the waitlist email
+        // flow is in place, refuse new registrations when the event has
+        // reached MaxParticipants instead of silently sending a welcome letter
+        // to participant N+1. Admin flows pass EnforceCapacity=false to
+        // override (manual overbooking).
+        if (options.EnforceCapacity && eventInfo.MaxParticipants > 0)
+        {
+            var activeCount = eventInfo.Registrations
+                .Count(reg => reg.Status != Registration.RegistrationStatus.Cancelled);
+            if (activeCount >= eventInfo.MaxParticipants)
+            {
+                _logger.LogInformation(
+                    "Refusing registration: EventId {EventId} at capacity ({Active}/{Max})",
+                    eventId, activeCount, eventInfo.MaxParticipants);
+                throw new InvalidOperationServiceException(
+                    $"Event {eventId} has reached its maximum participant capacity ({eventInfo.MaxParticipants}).");
+            }
+        }
+
+        var user = await _userRetrievalService.GetUserByIdAsync(userId, null, cancellationToken);
+        registration.ParticipantName = user.Name;
 
         // Use the active default payment method from the database if available
         var defaultPaymentMethod = await _context.PaymentMethods
@@ -93,12 +123,10 @@ internal class RegistrationManagementService : IRegistrationManagementService
         }
 
         // Check if the registration should be verified, and only set it if it's a draft
-        if (options?.Verified == true && registration.Status == Registration.RegistrationStatus.Draft)
+        if (options.Verified && registration.Status == Registration.RegistrationStatus.Draft)
         {
             registration.Status = Registration.RegistrationStatus.Verified;
         }
-
-        await _registrationAccessControlService.CheckRegistrationCreateAccessAsync(registration, cancellationToken);
 
         if (eventInfo.Status == EventInfo.EventInfoStatus.WaitingList)
         {
@@ -106,7 +134,6 @@ internal class RegistrationManagementService : IRegistrationManagementService
         }
 
         await _context.CreateAsync(registration, true, cancellationToken);
-        options ??= new RegistrationOptions();
 
         if (options.CreateOrder && registration.Status != Registration.RegistrationStatus.WaitingList)
         {
@@ -131,9 +158,14 @@ internal class RegistrationManagementService : IRegistrationManagementService
         if (eventInfo.MaxParticipants > 0
             && nonCancelledRegistrationsCount + 1 >= eventInfo.MaxParticipants)
         {
-            _logger.LogInformation("Event {EventId} has reached max participants, changing status to WaitingList",
+            // Flip to RegistrationsClosed (not WaitingList) so the public
+            // event page renders the "closed" badge and the next registration
+            // attempt is refused by the capacity gate above. Will move to
+            // WaitingList once the waitlist-email flow is in place.
+            _logger.LogInformation(
+                "Event {EventId} has reached max participants, closing registrations",
                 eventId);
-            eventInfo.Status = EventInfo.EventInfoStatus.WaitingList;
+            eventInfo.Status = EventInfo.EventInfoStatus.RegistrationsClosed;
             await _context.SaveChangesAsync(cancellationToken);
         }
 
