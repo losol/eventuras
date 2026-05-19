@@ -1,5 +1,11 @@
 # @eventuras/ratio-ui
 
+## 2.4.0
+
+### Minor Changes
+
+- 0457941: Add `<ErrorBoundary>` at `@eventuras/ratio-ui/core/ErrorBoundary` for isolating render-time errors in a sub-tree. See the component README for usage.
+
 ## 2.3.0
 
 ### Minor Changes

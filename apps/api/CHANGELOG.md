@@ -1,5 +1,12 @@
 # @eventuras/api
 
+## 3.4.1
+
+### Patch Changes
+
+- 2490a48: Block self-service registration when an event has reached `MaxParticipants`, and flip the event to `RegistrationsClosed` (not `WaitingList`) when the filling registration is created. Admins keep the manual-overbook path via `EnforceCapacity = false`.
+- 6dc0bf4: Emit `event.status.changed` business events whenever an event's status changes — both for operator-initiated changes via `EventManagementService.UpdateEventAsync` and for the auto-close triggered by `CreateRegistrationAsync` reaching `MaxParticipants`. Each event records the acting user and the from→to transition.
+
 ## 3.4.0
 
 ### Minor Changes
