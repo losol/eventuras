@@ -3,7 +3,7 @@ import {
   $convertToMarkdownString,
   TRANSFORMERS,
 } from "@lexical/markdown";
-import { $getRoot } from 'lexical';
+import { $createParagraphNode, $createTextNode, $getRoot } from 'lexical';
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
@@ -91,7 +91,19 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
       ? () => {
           // Unescape backslash-escaped markdown characters
           const unescapedMarkdown = props.initialMarkdown!.replaceAll(/\\([*_`\[\]()#+-])/g, '$1');
-          $convertFromMarkdownString(unescapedMarkdown, allTransformers);
+          try {
+            $convertFromMarkdownString(unescapedMarkdown, allTransformers);
+          } catch (err) {
+            // Markdown parsing threw (e.g. a transformer bug). Fall back to plain
+            // text so the field stays editable and content isn't lost — better
+            // than crashing the whole tree and propagating to the page boundary.
+            console.error('Scribo: markdown parse failed, falling back to plain text', err);
+            const root = $getRoot();
+            root.clear();
+            const paragraph = $createParagraphNode();
+            paragraph.append($createTextNode(unescapedMarkdown));
+            root.append(paragraph);
+          }
         }
       : undefined,
   };
