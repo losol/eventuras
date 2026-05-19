@@ -1,11 +1,13 @@
 'use client';
 
 import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import * as Sentry from '@sentry/nextjs';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
 import { Logger } from '@eventuras/logger';
 import { Button } from '@eventuras/ratio-ui/core/Button';
+import { ErrorBoundary } from '@eventuras/ratio-ui/core/ErrorBoundary';
 import { Tabs } from '@eventuras/ratio-ui/core/Tabs';
 import { ActionBar } from '@eventuras/ratio-ui/layout/ActionBar';
 import { useToast } from '@eventuras/ratio-ui/toast';
@@ -34,6 +36,31 @@ import ParticipantsSection from './ParticipantsSection';
 import EventProductsEditor from './products/EventProductsEditor';
 import { updateEvent } from '../actions';
 import { AdminCertificatesActionsMenu } from '../AdminCertificatesActionsMenu';
+
+// Isolates a tab's content so a crash there doesn't propagate to the page boundary.
+const TabErrorBoundary = ({ tabId, children }: { tabId: string; children: ReactNode }) => (
+  <ErrorBoundary
+    onError={(error, info) => {
+      const logger = Logger.create({
+        namespace: 'web:admin:events',
+        context: { section: 'admin', tab: tabId },
+      });
+      logger.error(
+        {
+          error: { message: error.message, stack: error.stack },
+          componentStack: info.componentStack,
+        },
+        'Tab content crashed'
+      );
+      Sentry.captureException(error, {
+        tags: { section: 'admin', tab: tabId },
+        extra: { componentStack: info.componentStack },
+      });
+    }}
+  >
+    {children}
+  </ErrorBoundary>
+);
 
 // Auto-save wrapper component that watches form changes
 const AutoSaveHandler = ({ onAutoSave }: { onAutoSave: (data: EventFormDto) => void }) => {
@@ -231,22 +258,28 @@ export default function EventPageTabs({
           title={t('admin.events.tabs.participants')}
           testId="tab-participants"
         >
-          <ParticipantsSection
-            eventInfo={eventinfo}
-            participants={participants}
-            statistics={statistics}
-            eventProducts={eventProducts}
-          />
+          <TabErrorBoundary tabId="participants">
+            <ParticipantsSection
+              eventInfo={eventinfo}
+              participants={participants}
+              statistics={statistics}
+              eventProducts={eventProducts}
+            />
+          </TabErrorBoundary>
         </Tabs.Item>
 
         <Tabs.Item id="overview" title={t('admin.events.tabs.overview')} testId="tab-overview">
-          <OverviewSection organizationId={organizationId} />
-          <SaveActionBar onSave={handleAutoSave} />
+          <TabErrorBoundary tabId="overview">
+            <OverviewSection organizationId={organizationId} />
+            <SaveActionBar onSave={handleAutoSave} />
+          </TabErrorBoundary>
         </Tabs.Item>
 
         <Tabs.Item id="dates" title={t('admin.events.tabs.dates')} testId="tab-dates">
-          <DatesLocationSection />
-          <SaveActionBar onSave={handleAutoSave} />
+          <TabErrorBoundary tabId="dates">
+            <DatesLocationSection />
+            <SaveActionBar onSave={handleAutoSave} />
+          </TabErrorBoundary>
         </Tabs.Item>
 
         <Tabs.Item
@@ -254,8 +287,10 @@ export default function EventPageTabs({
           title={t('admin.events.tabs.descriptions')}
           testId="tab-descriptions"
         >
-          <DescriptionsSection />
-          <SaveActionBar onSave={handleAutoSave} />
+          <TabErrorBoundary tabId="descriptions">
+            <DescriptionsSection />
+            <SaveActionBar onSave={handleAutoSave} />
+          </TabErrorBoundary>
         </Tabs.Item>
 
         <Tabs.Item
@@ -263,10 +298,12 @@ export default function EventPageTabs({
           title={t('admin.events.tabs.certificate')}
           testId="tab-certificate"
         >
-          <CertificateSection />
-          <SaveActionBar onSave={handleAutoSave}>
-            <AdminCertificatesActionsMenu eventinfo={eventinfo} />
-          </SaveActionBar>
+          <TabErrorBoundary tabId="certificate">
+            <CertificateSection />
+            <SaveActionBar onSave={handleAutoSave}>
+              <AdminCertificatesActionsMenu eventinfo={eventinfo} />
+            </SaveActionBar>
+          </TabErrorBoundary>
         </Tabs.Item>
 
         <Tabs.Item
@@ -274,20 +311,28 @@ export default function EventPageTabs({
           title={t('admin.events.tabs.communication')}
           testId="tab-communication"
         >
-          <CommunicationSection eventinfo={eventinfo} notifications={notifications} />
+          <TabErrorBoundary tabId="communication">
+            <CommunicationSection eventinfo={eventinfo} notifications={notifications} />
+          </TabErrorBoundary>
         </Tabs.Item>
 
         <Tabs.Item id="products" title={t('admin.events.tabs.products')} testId="tab-products">
-          <EventProductsEditor eventInfo={eventinfo} products={eventProducts} />
+          <TabErrorBoundary tabId="products">
+            <EventProductsEditor eventInfo={eventinfo} products={eventProducts} />
+          </TabErrorBoundary>
         </Tabs.Item>
 
         <Tabs.Item id="advanced" title={t('admin.events.tabs.advanced')} testId="tab-advanced">
-          <AdvancedSection eventId={eventinfo.id} />
-          <SaveActionBar onSave={handleAutoSave} />
+          <TabErrorBoundary tabId="advanced">
+            <AdvancedSection eventId={eventinfo.id} />
+            <SaveActionBar onSave={handleAutoSave} />
+          </TabErrorBoundary>
         </Tabs.Item>
 
         <Tabs.Item id="economy" title={t('admin.events.tabs.economy')} testId="tab-economy">
-          <EconomySection participants={participants} />
+          <TabErrorBoundary tabId="economy">
+            <EconomySection participants={participants} />
+          </TabErrorBoundary>
         </Tabs.Item>
       </Tabs>
     </Form>
