@@ -48,7 +48,7 @@ export const CALLOUT_TRANSFORMER: MultilineElementTransformer = {
     return `> [!${calloutType}]\n${quoted}`;
   },
 
-  replace: (rootNode, _children, startMatch, _endMatch, linesInBetween) => {
+  replace: (parentNode, _children, startMatch, _endMatch, linesInBetween, isImport) => {
     const calloutType = startMatch[1] as CalloutType;
     if (!CALLOUT_TYPES.includes(calloutType)) return false;
 
@@ -75,7 +75,13 @@ export const CALLOUT_TRANSFORMER: MultilineElementTransformer = {
       calloutNode.append($createParagraphNode());
     }
 
-    rootNode.replace(calloutNode);
+    // On import, parentNode is the RootNode (which can't be replaced — Lexical #53).
+    // On keyboard-shortcut, parentNode is a ParagraphNode we should replace.
+    if (isImport) {
+      parentNode.append(calloutNode);
+    } else {
+      parentNode.replace(calloutNode);
+    }
     return true;
   },
 };
