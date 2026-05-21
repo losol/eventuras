@@ -4,6 +4,7 @@
  * Generic authentication utilities with support for multiple providers.
  */
 
+export * from './activity-tracker';
 export * from './logger';
 export * from './oauth-logging';
 export * from './session-refresh';

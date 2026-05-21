@@ -31,6 +31,10 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./activity-tracker": {
+      "types": "./dist/activity-tracker.d.ts",
+      "import": "./dist/activity-tracker.js"
+    },
     "./logger": {
       "types": "./dist/logger.d.ts",
       "import": "./dist/logger.js"
