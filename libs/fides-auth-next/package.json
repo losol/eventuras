@@ -35,6 +35,10 @@
     "./oidc-login": {
       "types": "./dist/oidc-login.d.ts",
       "import": "./dist/oidc-login.js"
+    },
+    "./heartbeat-handler": {
+      "types": "./dist/heartbeat-handler.d.ts",
+      "import": "./dist/heartbeat-handler.js"
     }
   },
   "main": "./dist/index.js",

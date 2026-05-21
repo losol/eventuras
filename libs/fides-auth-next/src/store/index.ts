@@ -121,6 +121,8 @@ export {
 
 export { useSessionMonitor } from './use-session-monitor';
 
+export { useHeartbeat, type HeartbeatConfig } from './use-heartbeat';
+
 export { configureAuthLogger } from './configure-logger';
 
 // Shared types

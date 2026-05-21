@@ -6,6 +6,7 @@ export default defineNextLibConfig({
     session: 'src/session.ts',
     request: 'src/request.ts',
     'store/index': 'src/store/index.ts',
+    'heartbeat-handler': 'src/heartbeat-handler.ts',
   },
   external: [
     // State management
