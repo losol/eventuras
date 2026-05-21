@@ -3,6 +3,7 @@ import { defineVanillaLibConfig } from '@eventuras/vite-config/vanilla-lib';
 export default defineVanillaLibConfig({
   entry: {
     index: 'src/index.ts',
+    'activity-tracker': 'src/activity-tracker.ts',
     logger: 'src/logger.ts',
     'session-refresh': 'src/session-refresh.ts',
     'session-validation': 'src/session-validation.ts',
