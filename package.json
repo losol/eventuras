@@ -47,7 +47,7 @@
     "**/*.{jsx,ts,tsx,cjs,mjs}": "eslint --fix"
   },
   "dependencies": {
-    "turbo": "^2.9.6"
+    "turbo": "^2.9.14"
   },
   "devDependencies": {
     "@changesets/cli": "^2.30.0",
