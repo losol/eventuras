@@ -1,0 +1,22 @@
+/*
+ * ActionButton tokens — defaults consumed by `core/ActionButton` and
+ * anywhere it's composed. Overridable per-scope (any ancestor can set
+ * `--action-button-bg` etc. to re-skin the button inside its subtree
+ * without forking the component).
+ *
+ * Default radius is `6px`. Flip `--action-button-radius` on a container
+ * to round or square all action buttons inside that scope.
+ */
+
+:root {
+  --action-button-bg:        transparent;
+  --action-button-fg:        var(--text-muted);
+  --action-button-border:    var(--border-1);
+  --action-button-bg-hover:  var(--card-hover);
+  --action-button-fg-hover:  var(--text);
+  --action-button-radius:    6px;
+}
+
+/* No dark-mode override block needed — every value resolves through a
+   semantic token (--text-muted, --border-1, --card-hover, --text) that
+   already switches with the page theme. */
