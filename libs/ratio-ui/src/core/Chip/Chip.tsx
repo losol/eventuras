@@ -21,6 +21,21 @@ import { cn } from '../../utils/cn';
  *   themed container, or kicker labels that should look "embedded" in their
  *   surrounding surface.
  *
+ * ## Variants
+ *
+ * Both variants read from the same `--chip-*` tokens — the only difference
+ * is whether the background is filled (`subtle`) or transparent (`outline`).
+ * Override tokens on a wrapper to tint chips semantically:
+ *
+ * ```tsx
+ * <div style={{
+ *   '--chip-fg': 'var(--info-text)',
+ *   '--chip-border': 'var(--info-border)',
+ * } as React.CSSProperties}>
+ *   <Chip variant="outline">info</Chip>
+ * </div>
+ * ```
+ *
  * ## Composition
  *
  * Chip is a flex row with `gap-1.5`, so any children render side-by-side.
@@ -28,45 +43,35 @@ import { cn } from '../../utils/cn';
  * icon, text, or other element before/after the label.
  *
  * Typography (mono, uppercase, etc.) is intentionally not on Chip — apply
- * it via `className` or wrap the text in a typography primitive. This keeps
- * Chip focused on the chip shape itself.
+ * it via `className` or wrap the text in a typography primitive.
  *
  * ```tsx
- * <Chip>v2.4</Chip>
+ * <Chip>v2.4</Chip>                              // default
+ * <Chip variant="outline">draft</Chip>           // just a border
+ * <Chip><Chip.Dot/> active</Chip>                // with leading dot
  *
- * // Tag style — typography via className
- * <Chip className="font-mono uppercase tracking-widest font-bold px-2 py-0.5">
- *   prod
- * </Chip>
- *
- * // Leading dot
- * <Chip>
- *   <Chip.Dot />
- *   active
- * </Chip>
- *
- * // Themed scope — overrides cascade in
- * <section style={{ '--chip-bg': '#0a0d09', '--chip-fg': '#b8f2c8' }}>
+ * // Themed scope — custom-property casts via React.CSSProperties so TS
+ * // accepts the `--chip-*` keys (CSSProperties doesn't type custom props).
+ * <section style={{ '--chip-bg': '#0a0d09' } as React.CSSProperties}>
  *   <Chip>prod</Chip>
  * </section>
  *
  * // Sharp corners
- * <div style={{ '--chip-radius': '0' }}>
+ * <div style={{ '--chip-radius': '0' } as React.CSSProperties}>
  *   <Chip>v2.4</Chip>
  * </div>
  * ```
  *
  * @beta This component is experimental — prop shape may change before release.
  */
-export type ChipVariant = 'subtle' | 'outline' | 'filled';
+export type ChipVariant = 'subtle' | 'outline';
 
 export interface ChipProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, 'children'> {
   children: React.ReactNode;
   /**
    * Visual treatment.
-   * - `'subtle'` (default) — tinted background, border, muted text via chip tokens
-   * - `'outline'` — transparent-ish background + border derived from `currentColor`
-   * - `'filled'` — solid `currentColor` background
+   * - `'subtle'` (default) — `--chip-bg` background + border + text
+   * - `'outline'` — transparent background, `--chip-border` outline + `--chip-fg` text
    */
   variant?: ChipVariant;
 }
@@ -85,12 +90,10 @@ const ChipRoot: React.FC<ChipProps> = ({
       'text-xs font-medium leading-none',
       // Themable surface (overridable by any ancestor scope)
       'rounded-[var(--chip-radius,9999px)]',
-      'bg-(--chip-bg) text-(--chip-fg) border border-(--chip-border)',
-      // Variant treatments — outline + filled tint from `currentColor`.
-      // Outline uses --alpha-2 (10%) for the background wash — pulled from
-      // the shared alpha scale rather than a magic number.
-      variant === 'outline' && 'bg-current/(--alpha-2) border-current',
-      variant === 'filled' && 'bg-current text-(--chip-on-solid) border-transparent',
+      'text-(--chip-fg) border border-(--chip-border)',
+      // Subtle has a filled background; outline is transparent
+      variant === 'subtle' && 'bg-(--chip-bg)',
+      variant === 'outline' && 'bg-transparent',
       className,
     )}
   >
