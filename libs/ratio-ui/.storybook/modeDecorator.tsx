@@ -37,7 +37,6 @@ export const ModeDecorator = (Story: any, context: any) => {
         data-theme={isDarkMode ? 'dark' : 'light'}
         style={{
           minWidth: '100%',
-          minHeight: '100vh',
           backgroundColor: 'var(--surface)',
           color: 'var(--text)',
           padding: noPadding ? '0' : '2rem',
