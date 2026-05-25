@@ -54,3 +54,6 @@ updateConfig:
 # support ships (pull request merged to canary 2026-04-14, not yet on stable).
 # Replaces `managePackageManagerVersions: false` (removed in pnpm 11).
 pmOnFail: ignore
+minimumReleaseAgeExclude:
+  # Renovate security update: turbo@2.9.14
+  - turbo@2.9.14
