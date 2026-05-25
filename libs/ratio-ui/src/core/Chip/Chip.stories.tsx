@@ -76,53 +76,69 @@ export const WithDot: Story = {
 };
 
 export const Outline: Story = {
-  name: 'Outline — currentColor tint',
+  name: 'Outline — transparent + border',
   parameters: {
     docs: {
       description: {
         story:
-          'The outline variant uses `currentColor` for both border and a faint background tint (via the shared `--alpha-2` token). Set `color` on the chip — or an ancestor — to tint it to any status.',
+          'Outline has no fill — just `--chip-border` outline and `--chip-fg` text. To tint per-chip, wrap in a container that overrides those tokens with the semantic status palette.',
       },
     },
   },
   render: () => (
     <div className="flex gap-2 items-center">
-      <span style={{ color: 'var(--info-solid)' }}>
+      <Chip variant="outline">draft</Chip>
+      <div
+        style={
+          {
+            '--chip-fg': 'var(--info-text)',
+            '--chip-border': 'var(--info-border)',
+          } as React.CSSProperties
+        }
+      >
         <Chip variant="outline" className={TAG_CLASS}>info</Chip>
-      </span>
-      <span style={{ color: 'var(--success-solid)' }}>
+      </div>
+      <div
+        style={
+          {
+            '--chip-fg': 'var(--success-text)',
+            '--chip-border': 'var(--success-border)',
+          } as React.CSSProperties
+        }
+      >
         <Chip variant="outline" className={TAG_CLASS}>success</Chip>
-      </span>
-      <span style={{ color: 'var(--warning-solid)' }}>
+      </div>
+      <div
+        style={
+          {
+            '--chip-fg': 'var(--warning-text)',
+            '--chip-border': 'var(--warning-border)',
+          } as React.CSSProperties
+        }
+      >
         <Chip variant="outline" className={TAG_CLASS}>warn</Chip>
-      </span>
-      <span style={{ color: 'var(--error-solid)' }}>
+      </div>
+      <div
+        style={
+          {
+            '--chip-fg': 'var(--error-text)',
+            '--chip-border': 'var(--error-border)',
+          } as React.CSSProperties
+        }
+      >
         <Chip variant="outline" className={TAG_CLASS}>error</Chip>
-      </span>
-    </div>
-  ),
-};
-
-export const Filled: Story = {
-  render: () => (
-    <div className="flex gap-2 items-center">
-      <span style={{ color: 'var(--info-solid)' }}>
-        <Chip variant="filled">info</Chip>
-      </span>
-      <span style={{ color: 'var(--success-solid)' }}>
-        <Chip variant="filled">success</Chip>
-      </span>
+      </div>
     </div>
   ),
 };
 
 export const ThemeScopeOverride: Story = {
-  name: 'Theme-scope override',
+  name: 'Theme-scope override — full chip palette',
   parameters: {
     docs: {
       description: {
         story:
-          'A container can override the chip tokens locally — useful for themed surfaces where the chip should follow the local palette rather than the app theme.',
+          'The canonical way to tint chips: a container overrides `--chip-bg`, `--chip-fg`, and `--chip-border` so every chip inside adopts the local palette. Used by themed surfaces (Console, dark panels, etc.) to re-skin pills without touching the component.',
       },
     },
   },
