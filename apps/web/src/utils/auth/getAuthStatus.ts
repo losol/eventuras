@@ -1,9 +1,4 @@
-'use server';
-
-import { getCurrentSession } from '@eventuras/fides-auth-next/session';
 import { Logger } from '@eventuras/logger';
-
-import { oauthConfig } from '@/utils/oauthConfig';
 
 const logger = Logger.create({ namespace: 'web:utils:getAuthStatus' });
 
@@ -18,29 +13,28 @@ export type AuthStatus = {
 };
 
 /**
- * Get the current authentication status
- * Server action that can be called from client components
+ * Fetches the current authentication status from the server.
+ *
+ * Backed by `GET /api/auth/status` rather than a Server Action: Server Actions
+ * POST to the current route URL, which can race with in-flight client
+ * navigations and silently cancel them in the Next.js app router.
  */
 export async function getAuthStatus(): Promise<AuthStatus> {
   try {
-    const session = await getCurrentSession(oauthConfig);
+    const response = await fetch('/api/auth/status', {
+      method: 'GET',
+      credentials: 'same-origin',
+      cache: 'no-store',
+      headers: { Accept: 'application/json' },
+    });
 
-    if (!session?.user || !session?.tokens?.accessToken) {
+    if (!response.ok) {
       return { authenticated: false };
     }
 
-    logger.debug({ roles: session.user.roles }, 'User authenticated');
-
-    return {
-      authenticated: true,
-      user: {
-        name: session.user.name,
-        email: session.user.email,
-        roles: session.user.roles,
-      },
-    };
+    return (await response.json()) as AuthStatus;
   } catch (error) {
-    logger.debug({ error }, 'No active session');
+    logger.debug({ error }, 'Auth status fetch failed');
     return { authenticated: false };
   }
 }
