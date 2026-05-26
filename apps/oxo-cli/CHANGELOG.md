@@ -1,5 +1,11 @@
 # @eventuras/oxo-cli
 
+## 0.0.8
+
+### Patch Changes
+
+- @eventuras/shipper@0.2.9
+
 ## 0.0.7
 
 ### Patch Changes
