@@ -1,5 +1,24 @@
 # @eventuras/ratio-ui
 
+## 2.5.0
+
+### Minor Changes
+
+- 4939c3e: Add `<ActionButton>` at `@eventuras/ratio-ui/core/ActionButton` — a compact chrome button for toolbars, close affordances, table-row actions, and other dense surfaces. Sibling to `Button` for cases where a labelled `Button` would be too loud. Composes via `children` so the same component covers icon-only, icon + text, and text-only buttons; `ariaLabel` is the screen-reader name for icon-only usage. Variants `subtle` and `solid` on top of a transparent bordered default. Colors and radius come from CSS tokens (`--action-button-bg/-fg/-border/-radius`, hover variants) so themed containers can re-skin locally without forking. Tokens live in `tokens/action-button.css`.
+- 3b307db: Fix `<Chip>` variants. The previous `outline` and `filled` variants used `bg-current` to inherit a parent's `color` for tinting — but Chip's own `text-(--chip-fg)` override resolved `currentColor` to the chip's own text color, making `filled` chips render as muted bg + muted text (invisible label) and `outline` chips render as gray instead of tinted. Simplified to two token-driven variants: `subtle` (default — filled background via `--chip-bg`) and `outline` (transparent background, `--chip-border` outline). To tint chips per status, wrap in a container that overrides `--chip-bg/-fg/-border` with the semantic palette. The `filled` variant is removed; consumers wanting a solid-color chip override `--chip-bg` directly.
+- c970894: Add `<Chip>` at `@eventuras/ratio-ui/core/Chip` — a theme-scope-aware tag primitive that reads colors and radius from CSS tokens (`--chip-bg/-fg/-border/-on-solid/-radius`), so any ancestor can re-skin chips locally without forking. Sibling to `Badge` (which carries semantic status); Chip is a neutral primitive that adopts its surrounding palette. Composes freely — use `<Chip.Dot/>` for the conventional `currentColor` dot, or place any icon before/after the label. Variants: `subtle` (default), `outline`, `filled` — outline uses the shared `--alpha-2` token for its background wash. Tokens live in `tokens/chip.css`.
+- 23402a4: Add `<Console>` at `@eventuras/ratio-ui/console` — a themable presentational log/event console (light / dark / retro CRT) with sticky title bar, severity-tagged rows, sticky time-bucket groups, controlled inline expand for detail payloads, and container-query responsiveness that collapses columns based on the console's own width.
+
+  Final piece of the chip/button/indicator stack: composes `Chip` for the env tag and severity badge, `LiveIndicator` for the live-tail status, and `ActionButton` for chrome buttons. Themed containers re-skin those primitives via local CSS-variable overrides — no per-theme rules per primitive.
+
+  Pure presentation: consumers own data, expansion, pause/play, filter selections, and scroll. Use for streaming logs, business-event feeds, audit trails, liveblogs. Lives as its own top-level folder (like `toast/`) to give room for upcoming logic helpers (auto-scroll, stream adapters, filter utilities) without crowding `core/`.
+
+  Also adds `tokens/retro.css` with the shared retro palette (used by `Console`'s `--theme-retro`, available to any future component wanting the CRT aesthetic) and `--debug-*` status tokens.
+
+- c3aa762: Add `<LiveIndicator>` at `@eventuras/ratio-ui/core/LiveIndicator` — a pulsing dot + status label. Use for connection status (WebSocket, SignalR, SSE), recording UI, polling monitors, or any "is this happening right now?" affordance. `children` is required so consumers always wire their own (typically translated) label; no English defaults that might leak through missed i18n. Dot color reads from `--live-indicator-dot` (defaults to `--success-solid`); chip chrome is set locally so the page's `--chip-*` defaults stay untouched. Re-skin per status (amber "reconnecting", red "error") via wrapper token overrides. Respects `prefers-reduced-motion`.
+
+  Also extends `Chip.Dot` with a `pulse` prop so the expanding-ring animation is available to any chip composition — `LiveIndicator` is now a thin wrapper around `<Chip><Chip.Dot pulse/>…</Chip>`. The keyframe lives in a small `Chip.css` and uses `currentColor`, so the pulse follows whatever color the dot inherits.
+
 ## 2.4.0
 
 ### Minor Changes

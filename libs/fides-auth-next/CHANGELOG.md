@@ -1,5 +1,16 @@
 # @eventuras/fides-auth-next
 
+## 0.2.0
+
+### Minor Changes
+
+- e275a40: Add `useHeartbeat` React hook and `handleHeartbeat` route handler for activity-driven session keepalive.
+
+### Patch Changes
+
+- Updated dependencies [2fed638]
+  - @eventuras/fides-auth@0.8.0
+
 ## 0.1.12
 
 ### Patch Changes

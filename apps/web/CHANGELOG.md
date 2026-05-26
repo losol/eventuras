@@ -1,5 +1,21 @@
 # @eventuras/web
 
+## 3.3.9
+
+### Patch Changes
+
+- Updated dependencies [e275a40]
+- Updated dependencies [4939c3e]
+- Updated dependencies [3b307db]
+- Updated dependencies [c970894]
+- Updated dependencies [23402a4]
+- Updated dependencies [c3aa762]
+  - @eventuras/fides-auth-next@0.2.0
+  - @eventuras/ratio-ui@2.5.0
+  - @eventuras/datatable@0.5.26
+  - @eventuras/ratio-ui-next@0.1.27
+  - @eventuras/smartform@0.3.19
+
 ## 3.3.8
 
 ### Patch Changes

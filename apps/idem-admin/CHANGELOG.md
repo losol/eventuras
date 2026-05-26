@@ -1,5 +1,19 @@
 # @eventuras/idem-admin
 
+## 0.1.13
+
+### Patch Changes
+
+- Updated dependencies [e275a40]
+- Updated dependencies [4939c3e]
+- Updated dependencies [3b307db]
+- Updated dependencies [c970894]
+- Updated dependencies [23402a4]
+- Updated dependencies [c3aa762]
+  - @eventuras/fides-auth-next@0.2.0
+  - @eventuras/ratio-ui@2.5.0
+  - @eventuras/ratio-ui-next@0.1.27
+
 ## 0.1.12
 
 ### Patch Changes

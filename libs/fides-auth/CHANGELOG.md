@@ -1,5 +1,11 @@
 # @eventuras/fides-auth
 
+## 0.8.0
+
+### Minor Changes
+
+- 2fed638: Add `@eventuras/fides-auth/activity-tracker` — framework-agnostic DOM activity tracker used to gate session keepalive on real user interaction.
+
 ## 0.7.1
 
 ### Patch Changes
