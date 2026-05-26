@@ -1,0 +1,12 @@
+/*
+ * LiveIndicator tokens — only the dot color lives here. The chip chrome
+ * (bg/fg/border) is set locally on `.live-indicator` so we don't pollute
+ * the global `--chip-*` defaults for every chip on the page.
+ *
+ * Override `--live-indicator-dot` on a wrapper to switch the pulse color
+ * (e.g. amber for "reconnecting", red for "error" states).
+ */
+
+:root {
+  --live-indicator-dot: var(--success-solid);
+}

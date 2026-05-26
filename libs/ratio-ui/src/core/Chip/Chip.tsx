@@ -1,5 +1,6 @@
 import React from 'react';
 import { cn } from '../../utils/cn';
+import './Chip.css';
 
 /**
  * Theme-scope-aware tag primitive — a small chip whose colors and radius
@@ -102,14 +103,29 @@ const ChipRoot: React.FC<ChipProps> = ({
 );
 ChipRoot.displayName = 'Chip';
 
+interface DotProps {
+  /**
+   * When true, the dot animates an expanding-ring pulse in its current
+   * color. Used by `LiveIndicator` for live-status pills, but available
+   * to any chip composition (e.g. a recording indicator). Respects
+   * `prefers-reduced-motion`.
+   */
+  pulse?: boolean;
+  className?: string;
+}
+
 /**
  * Small leading/trailing dot in `currentColor`. Compose inside `<Chip>`
- * before or after the label.
+ * before or after the label. Opt-in to a pulsing animation via `pulse`.
  */
-const Dot: React.FC<{ className?: string }> = ({ className }) => (
+const Dot: React.FC<DotProps> = ({ pulse, className }) => (
   <span
     aria-hidden="true"
-    className={cn('size-2 rounded-full bg-current opacity-70 shrink-0', className)}
+    className={cn(
+      'size-2 rounded-full bg-current opacity-70 shrink-0',
+      pulse && 'animate-[chip-dot-pulse_3s_ease-out_infinite] motion-reduce:animate-none',
+      className,
+    )}
   />
 );
 Dot.displayName = 'Chip.Dot';
