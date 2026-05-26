@@ -75,6 +75,34 @@ export const WithDot: Story = {
   ),
 };
 
+export const PulsingDot: Story = {
+  name: 'Composing — Chip.Dot pulse',
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Pass `pulse` to `<Chip.Dot/>` for an expanding-ring animation in `currentColor`. Used by `LiveIndicator`, but available for any "something is happening here" composition. Respects `prefers-reduced-motion`.',
+      },
+    },
+  },
+  render: () => (
+    <div className="flex gap-3 items-center">
+      <span style={{ color: 'var(--success-solid)' }}>
+        <Chip>
+          <Chip.Dot pulse />
+          recording
+        </Chip>
+      </span>
+      <span style={{ color: 'var(--warning-solid)' }}>
+        <Chip>
+          <Chip.Dot pulse />
+          reconnecting
+        </Chip>
+      </span>
+    </div>
+  ),
+};
+
 export const Outline: Story = {
   name: 'Outline — transparent + border',
   parameters: {
