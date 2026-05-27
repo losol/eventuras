@@ -17,5 +17,11 @@ public class PowerOfficeSettingsRegistryComponent : IOrganizationSettingsRegistr
                 PowerOfficeConstants.SectionName,
                 PowerOfficeConstants.ClientKeyDescription,
                 OrganizationSettingType.String);
+
+        registry
+            .RegisterSetting(PowerOfficeConstants.DefaultSalesAccountKey,
+                PowerOfficeConstants.SectionName,
+                PowerOfficeConstants.DefaultSalesAccountDescription,
+                OrganizationSettingType.Number);
     }
 }
