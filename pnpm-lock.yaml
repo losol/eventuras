@@ -669,7 +669,7 @@ importers:
         version: 10.4.0(jiti@2.7.0)
       eslint-config-oclif:
         specifier: ^6.0.157
-        version: 6.0.164(eslint@10.4.0(jiti@2.7.0))(typescript@6.0.3)
+        version: 6.0.165(eslint@10.4.0(jiti@2.7.0))(typescript@6.0.3)
       eslint-config-prettier:
         specifier: ^10.1.8
         version: 10.1.8(eslint@10.4.0(jiti@2.7.0))
@@ -7849,8 +7849,8 @@ packages:
     resolution: {integrity: sha512-NNTyyolSmKJicgxtoWZ/hoy2Rw56WIoWCFxgnBkXqDgi9qPKMwZs2Nx2b6SHLJvCiWWhZhWr5V46CFPo3PSPag==}
     engines: {node: '>=18.0.0'}
 
-  eslint-config-oclif@6.0.164:
-    resolution: {integrity: sha512-LEJRa/q7FAIH8zeZJ16E3RghSU/kZEa6oBV8kxTSE57djsgSNcwf92NbhcPj6RaQ/eANIva8nWJ9h+FeeWUlew==}
+  eslint-config-oclif@6.0.165:
+    resolution: {integrity: sha512-kbzxHAXEHKTY2X4UVVu4cPjjxP2YsVEsgYaXJDakpBEoAUEUSnYCKOOoxrIHl1egDM3q07kOZnBPkwYQ+nR4Og==}
     engines: {node: '>=18.18.0'}
 
   eslint-config-prettier@10.1.8:
@@ -18826,7 +18826,7 @@ snapshots:
     transitivePeerDependencies:
       - eslint
 
-  eslint-config-oclif@6.0.164(eslint@10.4.0(jiti@2.7.0))(typescript@6.0.3):
+  eslint-config-oclif@6.0.165(eslint@10.4.0(jiti@2.7.0))(typescript@6.0.3):
     dependencies:
       '@eslint/compat': 1.4.1(eslint@10.4.0(jiti@2.7.0))
       '@eslint/eslintrc': 3.3.5
