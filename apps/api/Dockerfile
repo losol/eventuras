@@ -11,6 +11,7 @@ COPY ./src/common.props ./src/common.props
 # Copy all src csproj files
 COPY ./src/Eventuras.Domain/*.csproj ./src/Eventuras.Domain/
 COPY ./src/Eventuras.Infrastructure/*.csproj ./src/Eventuras.Infrastructure/
+COPY ./src/Eventuras.Libs.DocComposer/*.csproj ./src/Eventuras.Libs.DocComposer/
 COPY ./src/Eventuras.Libs.Pdf/*.csproj ./src/Eventuras.Libs.Pdf/
 COPY ./src/Eventuras.Services/*.csproj ./src/Eventuras.Services/
 COPY ./src/Eventuras.Services.Converto/*.csproj ./src/Eventuras.Services.Converto/
@@ -27,6 +28,7 @@ COPY ./src/Losol.Communication.Sms/*.csproj ./src/Losol.Communication.Sms/
 
 # Copy test csproj files
 COPY ./tests/TestProject.props ./tests/TestProject.props
+COPY ./tests/Eventuras.Libs.DocComposer.Tests/*.csproj ./tests/Eventuras.Libs.DocComposer.Tests/
 COPY ./tests/Eventuras.Libs.Pdf.Tests/*.csproj ./tests/Eventuras.Libs.Pdf.Tests/
 COPY ./tests/Eventuras.Services.Converto.Tests/*.csproj ./tests/Eventuras.Services.Converto.Tests/
 COPY ./tests/Eventuras.Services.Tests/*.csproj ./tests/Eventuras.Services.Tests/
