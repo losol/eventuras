@@ -1,5 +1,6 @@
 #nullable enable annotations
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Eventuras.Services.Invoicing;
@@ -221,10 +222,31 @@ public class PowerOfficeService : IInvoicingProvider
                 Name = line.Description,
                 Description = line.ProductDescription,
                 SalesPrice = line.Price,
-                SalesAccount = 3100
+                SalesAccount = await ResolveDefaultSalesAccountAsync()
             };
             await api.Product.SaveAsync(product);
         }
+    }
+
+    private async Task<int> ResolveDefaultSalesAccountAsync()
+    {
+        var configured = await _organizationSettingsAccessorService
+            .GetOrganizationSettingByNameAsync(PowerOfficeConstants.DefaultSalesAccountKey);
+
+        if (string.IsNullOrWhiteSpace(configured))
+        {
+            return PowerOfficeConstants.FallbackSalesAccount;
+        }
+
+        if (int.TryParse(configured, NumberStyles.Integer, CultureInfo.InvariantCulture, out var parsed))
+        {
+            return parsed;
+        }
+
+        _logger.LogWarning(
+            "Invalid value {Value} configured for {Key}; falling back to {Fallback}.",
+            configured, PowerOfficeConstants.DefaultSalesAccountKey, PowerOfficeConstants.FallbackSalesAccount);
+        return PowerOfficeConstants.FallbackSalesAccount;
     }
 
     private async Task CreateProductsIfNotExistsAsync(InvoiceInfo info)
