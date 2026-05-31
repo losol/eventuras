@@ -14,7 +14,7 @@ namespace Eventuras.Services.Certificates;
 internal sealed class LiquidCertificateRenderer
 {
     private const string TemplateName = "course-certificate";
-    private const string DefaultLocale = "no";
+    private const string DefaultLocale = "nb";
     private const string TemplateBaseNamespace = "Eventuras.Services.Certificates.Templates";
 
     private readonly IDocumentComposer _documentComposer;
@@ -41,15 +41,18 @@ internal sealed class LiquidCertificateRenderer
         return rendered.Html;
     }
 
-    // Collapse regional tags (en-US, nb-NO, ...) to the language root and pick the closest
-    // available template locale. Unknown languages pass through so DocComposer can fall back
-    // to its configured default.
+    // Collapse regional tags (en-US, nb-NO, nn-NO, ...) to their language root.
+    // The macrolanguage tag "no" maps to Bokmål. "nn" stays as "nn" so a future
+    // course-certificate.nn.liquid is picked up automatically; until that exists,
+    // DocComposer falls back to the configured default (nb). Unknown languages pass
+    // through so DocComposer can apply the same fallback.
     private static string NormalizeToTemplateLocale(string locale)
     {
         var lang = locale.Split('-')[0].ToLowerInvariant();
         return lang switch
         {
-            "no" or "nb" or "nn" => "no",
+            "nb" or "no" => "nb",
+            "nn" => "nn",
             "en" => "en",
             _ => locale
         };

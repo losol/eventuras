@@ -34,7 +34,7 @@ public class CourseCertificateModelMapperTest
     {
         var viewModel = CreateViewModel();
 
-        var model = CourseCertificateModelMapper.FromViewModel(viewModel, "no");
+        var model = CourseCertificateModelMapper.FromViewModel(viewModel, "nb");
 
         Assert.Equal("Avansert Fluid-templating", model.Title);
         Assert.Equal("Leo Losen", model.RecipientName);
@@ -52,7 +52,7 @@ public class CourseCertificateModelMapperTest
     {
         var viewModel = CreateViewModel();
 
-        var model = CourseCertificateModelMapper.FromViewModel(viewModel, "no");
+        var model = CourseCertificateModelMapper.FromViewModel(viewModel, "nb");
 
         Assert.Equal("15.05.2026", model.IssuedDate);
     }
@@ -78,7 +78,7 @@ public class CourseCertificateModelMapperTest
             c.IssuedByName = null!;
         });
 
-        var model = CourseCertificateModelMapper.FromViewModel(viewModel, "no");
+        var model = CourseCertificateModelMapper.FromViewModel(viewModel, "nb");
 
         Assert.Equal(string.Empty, model.Title);
         Assert.Equal(string.Empty, model.RecipientName);
@@ -97,7 +97,7 @@ public class CourseCertificateModelMapperTest
             c.IssuingOrganizationName = null;
         });
 
-        var model = CourseCertificateModelMapper.FromViewModel(viewModel, "no");
+        var model = CourseCertificateModelMapper.FromViewModel(viewModel, "nb");
 
         Assert.Null(model.EvidenceDescription);
         Assert.Null(model.Comment);
@@ -111,7 +111,7 @@ public class CourseCertificateModelMapperTest
     public void FromViewModel_Throws_WhenViewModelIsNull()
     {
         Assert.Throws<ArgumentNullException>(() =>
-            CourseCertificateModelMapper.FromViewModel(null!, "no"));
+            CourseCertificateModelMapper.FromViewModel(null!, "nb"));
     }
 
     [Fact]

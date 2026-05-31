@@ -35,7 +35,7 @@ public class LiquidCertificateRendererTest
         var renderer = new LiquidCertificateRenderer(Mock.Of<IPdfRenderService>());
         var viewModel = CreateViewModel();
 
-        var html = await renderer.RenderToHtmlAsStringAsync(viewModel, "no");
+        var html = await renderer.RenderToHtmlAsStringAsync(viewModel, "nb");
 
         Assert.Contains("Kursbevis", html);
         Assert.Contains("Avansert Fluid-templating", html);
@@ -88,7 +88,7 @@ public class LiquidCertificateRendererTest
         var renderer = new LiquidCertificateRenderer(pdfRenderService.Object);
         var viewModel = CreateViewModel();
 
-        await using var pdfStream = await renderer.RenderToPdfAsStreamAsync(viewModel, "no");
+        await using var pdfStream = await renderer.RenderToPdfAsStreamAsync(viewModel, "nb");
 
         Assert.NotNull(capturedHtml);
         Assert.Contains("Kursbevis", capturedHtml);
@@ -112,7 +112,7 @@ public class LiquidCertificateRendererTest
     }
 
     [Fact]
-    public async Task RenderToHtmlAsStringAsync_NormalizesRegionalLocale_NbNO_ToNorwegianTemplate()
+    public async Task RenderToHtmlAsStringAsync_NormalizesRegionalLocale_NbNO_ToBokmaalTemplate()
     {
         var renderer = new LiquidCertificateRenderer(Mock.Of<IPdfRenderService>());
         var viewModel = CreateViewModel();
@@ -124,12 +124,35 @@ public class LiquidCertificateRendererTest
     }
 
     [Fact]
+    public async Task RenderToHtmlAsStringAsync_MacrolanguageNo_RendersBokmaalTemplate()
+    {
+        var renderer = new LiquidCertificateRenderer(Mock.Of<IPdfRenderService>());
+        var viewModel = CreateViewModel();
+
+        var html = await renderer.RenderToHtmlAsStringAsync(viewModel, "no");
+
+        Assert.Contains("Kursbevis", html);
+    }
+
+    [Fact]
+    public async Task RenderToHtmlAsStringAsync_Nynorsk_FallsBackToBokmaalTemplate()
+    {
+        var renderer = new LiquidCertificateRenderer(Mock.Of<IPdfRenderService>());
+        var viewModel = CreateViewModel();
+
+        var html = await renderer.RenderToHtmlAsStringAsync(viewModel, "nn");
+
+        // No dedicated Nynorsk template yet — Bokmål is used as the closest fallback.
+        Assert.Contains("Kursbevis", html);
+    }
+
+    [Fact]
     public async Task RenderToHtmlAsStringAsync_Throws_WhenViewModelIsNull()
     {
         var renderer = new LiquidCertificateRenderer(Mock.Of<IPdfRenderService>());
 
         await Assert.ThrowsAsync<ArgumentNullException>(() =>
-            renderer.RenderToHtmlAsStringAsync(null!, "no"));
+            renderer.RenderToHtmlAsStringAsync(null!, "nb"));
     }
 
     [Fact]
@@ -156,7 +179,7 @@ public class LiquidCertificateRendererTest
         var viewModel = CreateViewModel();
         using var cts = new CancellationTokenSource();
 
-        var html = await renderer.RenderToHtmlAsStringAsync(viewModel, "no", cts.Token);
+        var html = await renderer.RenderToHtmlAsStringAsync(viewModel, "nb", cts.Token);
 
         Assert.Contains("Kursbevis", html);
     }

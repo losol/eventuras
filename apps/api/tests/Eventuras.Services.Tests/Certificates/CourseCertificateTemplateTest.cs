@@ -38,7 +38,7 @@ public class CourseCertificateTemplateTest
         var options = Options.Create(new DocComposerOptions
         {
             TemplateFileProvider = provider,
-            DefaultLocale = "no"
+            DefaultLocale = "nb"
         });
         return new FluidDocumentComposer(options);
     }
@@ -63,7 +63,7 @@ public class CourseCertificateTemplateTest
         var composer = CreateComposer();
         var model = CreateSampleModel();
 
-        var rendered = await composer.ComposeAsync(TemplateName, model, "no");
+        var rendered = await composer.ComposeAsync(TemplateName, model, "nb");
 
         Assert.Contains("<title>Kursbevis</title>", rendered.Html);
         Assert.Contains("Kursbevis", rendered.Html);
@@ -108,7 +108,7 @@ public class CourseCertificateTemplateTest
             IssuerPersonSignatureDataUri = null
         };
 
-        var rendered = await composer.ComposeAsync(TemplateName, model, "no");
+        var rendered = await composer.ComposeAsync(TemplateName, model, "nb");
 
         Assert.DoesNotContain("For deltakelse på", rendered.Html);
         Assert.DoesNotContain("Arrangert av", rendered.Html);
