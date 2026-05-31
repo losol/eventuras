@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Certificate of Completion</title>
+  <link
+    href="https://fonts.googleapis.com/css?family=Material+Icons|Reenie+Beanie|Carrois+Gothic+SC|Libre+Baskerville"
+    rel="stylesheet"/>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Carrois Gothic SC';
+      font-weight: 500;
+      font-size: 16px;
+      background: rgb(241, 241, 241);
+      -webkit-print-color-adjust: exact;
+      box-sizing: border-box;
+    }
+
+    .page {
+      position: relative;
+      height: 297mm;
+      width: 210mm;
+      text-align: center;
+      display: block;
+      background: #fff;
+      color: black;
+      page-break-after: auto;
+      margin: 50px;
+      overflow: hidden;
+    }
+
+    @media print {
+      html, body {
+        font-size: 10px;
+      }
+
+      body {
+        background: #fff;
+      }
+
+      .page {
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+    }
+
+    .page.first {
+      border-left: 5px solid green;
+    }
+
+    .bottom {
+      position: absolute;
+      left: 5mm;
+      right: 5mm;
+      bottom: 5mm;
+    }
+
+    .group {
+      padding: 3mm 25mm;
+      margin: 5mm;
+    }
+
+    .line {
+      position: relative;
+    }
+
+    .keep-lines {
+      white-space: pre-line;
+    }
+
+    .center {
+      text-align: center;
+    }
+
+    .logo {
+      padding: 3mm;
+    }
+
+    .w-100 { width: 100%; }
+    .w-75 { width: 75%; }
+    .w-66 { width: 66%; }
+    .w-50 { width: 50%; }
+    .w-33 { width: 33%; }
+    .w-25 { width: 25%; }
+
+    .handwriting {
+      font-size: 24px;
+      font-family: 'Reenie Beanie';
+      padding-bottom: 0;
+      text-decoration: underline;
+    }
+
+    .featured {
+      padding: 15mm 0 10mm 0;
+      background-color: #336699;
+      color: white;
+    }
+
+    .title { font-size: 32px }
+    .subtitle { font-size: 28px }
+
+    .text {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 14px
+    }
+
+    .light { color: #555 }
+  </style>
+</head>
+<body>
+<div class="page">
+  <div class="featured">
+    <div class="line title">Certificate of Completion</div>
+    <div class="line subtitle">{{ Title }}</div>
+  </div>
+
+  <div class="group">
+    <div class="line">Awarded to</div>
+    <div class="subtitle">{{ RecipientName }}</div>
+  </div>
+
+  <div class="group">
+    {% if EvidenceDescription %}
+      <p class="line">For participation in {{ EvidenceDescription }}</p>
+    {% endif %}
+    <br/>
+    {% if Comment %}
+      <p class="line">{{ Comment }}</p>
+      <br/>
+    {% endif %}
+  </div>
+
+  {% if Description %}
+    <div class="group">
+      <p class="line keep-lines">{{ Description }}</p>
+    </div>
+  {% endif %}
+
+  {% if IssuerOrganizationName %}
+    <div class="group">
+      <div class="logo">
+        {% if IssuerOrganizationLogoDataUri %}
+          <img src="{{ IssuerOrganizationLogoDataUri }}" alt="Logo" class="center w-50"/>
+        {% endif %}
+      </div>
+      <div class="line">
+        Organized by {{ IssuerOrganizationName }}
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="group">
+    <div class="line">{{ IssuedInCity }} {{ IssuedDate }}</div>
+
+    {% if IssuerPersonSignatureDataUri %}
+      <div class="center">
+        <img src="{{ IssuerPersonSignatureDataUri }}" class="w-33" alt="Signature"/>
+      </div>
+    {% else %}
+      <div class="line handwriting">{{ IssuerPersonName }}</div>
+    {% endif %}
+    <div class="line">{{ IssuerPersonName }}</div>
+    <div class="line">
+      Course leader<br/>
+      <br/>
+      <br/>
+      <small>Digitally signed with code <br/>
+        <code>{{ Uuid }}</code></small>
+    </div>
+  </div>
+</div>
+</body>
+</html>
