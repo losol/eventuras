@@ -31,10 +31,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Views\Shared\Templates\Certificates\">
-    </Folder>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Remove="IRegistrationService.cs" />
     <Compile Remove="RegistrationService.cs" />
     <Compile Remove="Orders\IOrderVmConversionService.cs" />
