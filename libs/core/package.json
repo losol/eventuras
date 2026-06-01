@@ -24,6 +24,10 @@
     "./errors": {
       "types": "./dist/errors/index.d.ts",
       "import": "./dist/errors/index.js"
+    },
+    "./useragents": {
+      "types": "./dist/useragents/index.d.ts",
+      "import": "./dist/useragents/index.js"
     }
   },
   "files": [
