@@ -7,5 +7,6 @@ export default defineVanillaLibConfig({
     'currency/index': 'src/currency/index.ts',
     'url/index': 'src/url/index.ts',
     'errors/index': 'src/errors/index.ts',
+    'useragents/index': 'src/useragents/index.ts',
   },
 });
