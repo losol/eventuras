@@ -1,4 +1,4 @@
-import patterns from './patterns.json' with { type: 'json' };
+import patterns from './patterns.json';
 
 // Patterns vendored from https://github.com/omrilotan/isbot (Unlicense /
 // public domain) so the same list can be used in browser, edge, and server
