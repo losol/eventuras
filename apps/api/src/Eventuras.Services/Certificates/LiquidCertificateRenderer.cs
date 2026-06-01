@@ -65,7 +65,7 @@ internal sealed class LiquidCertificateRenderer : ICertificateRenderer
     {
         var html = await RenderToHtmlAsStringAsync(viewModel, locale, cancellationToken);
         return await _pdfRenderService.GeneratePdfFromHtml(html,
-            new PdfOptions { PaperSize = PaperSize.A4, Scale = 0.8f });
+            new PdfOptions { PaperSize = PaperSize.A4, Scale = 1.0f });
     }
 
     private static FluidDocumentComposer CreateDocumentComposer()
