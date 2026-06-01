@@ -1,11 +1,18 @@
 interface FormatDateOptions {
   locale?: string;
   showTime?: boolean;
+  timeZone?: string;
 }
+
+// Default IANA time zone for formatted dates. Hardcoded to the project's
+// operational time zone so SSR (server clock, typically UTC) and client
+// hydration (user device) produce identical strings. Override via
+// FormatDateOptions.timeZone where needed.
+const DEFAULT_TIME_ZONE = 'Europe/Oslo';
 
 const formatDate = (
   date: string | Date,
-  { locale = 'en-US', showTime = false }: FormatDateOptions = {}
+  { locale = 'en-US', showTime = false, timeZone = DEFAULT_TIME_ZONE }: FormatDateOptions = {}
 ): string => {
   if (!date) {
     return '';
@@ -15,11 +22,13 @@ const formatDate = (
     year: 'numeric',
     month: 'numeric',
     day: 'numeric',
+    timeZone,
   };
 
   const timeOptions: Intl.DateTimeFormatOptions = {
     hour: '2-digit',
     minute: '2-digit',
+    timeZone,
   };
 
   const parsedDate = new Date(date);
@@ -64,16 +73,17 @@ const formatDateSpan = (
 const formatCompactDateRange = (
   startDate: string | Date | null | undefined,
   endDate: string | Date | null | undefined,
-  locale = 'en-US'
+  locale = 'en-US',
+  timeZone: string = DEFAULT_TIME_ZONE
 ): string => {
   if (!startDate) return '';
 
   const start = new Date(startDate);
   const end = endDate ? new Date(endDate) : null;
 
-  const dayMonthFmt = new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short' });
-  const dayFmt = new Intl.DateTimeFormat(locale, { day: 'numeric' });
-  const yearFmt = new Intl.DateTimeFormat(locale, { year: 'numeric' });
+  const dayMonthFmt = new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short', timeZone });
+  const dayFmt = new Intl.DateTimeFormat(locale, { day: 'numeric', timeZone });
+  const yearFmt = new Intl.DateTimeFormat(locale, { year: 'numeric', timeZone });
 
   // Pull the locale-formatted day number without any trailing punctuation
   // (some locales — e.g. nb-NO — append "." after the day; we add our own
@@ -87,9 +97,29 @@ const formatCompactDateRange = (
     return startLabel;
   }
 
-  const sameMonth =
-    start.getFullYear() === end.getFullYear() && start.getMonth() === end.getMonth();
-  const sameYear = start.getFullYear() === end.getFullYear();
+  // Compare year/month/day in the configured time zone, not the runtime's
+  // local zone — otherwise an event that starts late on day N in Europe/Oslo
+  // can be classified as same-month/same-year against day N+1 in UTC.
+  const ymdInZoneFmt = new Intl.DateTimeFormat('en-US', {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    timeZone,
+  });
+  const partsInZone = (date: Date) => {
+    const lookup = Object.fromEntries(
+      ymdInZoneFmt.formatToParts(date).map(p => [p.type, p.value])
+    );
+    return {
+      year: Number(lookup.year),
+      month: Number(lookup.month),
+    };
+  };
+
+  const startParts = partsInZone(start);
+  const endParts = partsInZone(end);
+  const sameMonth = startParts.year === endParts.year && startParts.month === endParts.month;
+  const sameYear = startParts.year === endParts.year;
 
   if (sameMonth) {
     return `${dayPart(start)}.–${dayMonthFmt.format(end)}`.toUpperCase();
