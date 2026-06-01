@@ -1,5 +1,7 @@
 import * as Sentry from '@sentry/nextjs';
 
+import { isBot } from '@eventuras/core/useragents';
+
 import type { SentryClientConfig } from '@/providers/sentry';
 
 declare global {
@@ -9,8 +11,11 @@ declare global {
 }
 
 const config = typeof window === 'undefined' ? undefined : window.__SENTRY_CONFIG__;
+const userAgent = typeof navigator === 'undefined' ? undefined : navigator.userAgent;
 
-if (config?.dsn) {
+if (isBot(userAgent)) {
+  console.log('[Sentry] Client-side disabled (bot user agent detected)');
+} else if (config?.dsn) {
   Sentry.init({
     dsn: config.dsn,
     enableLogs: true,
