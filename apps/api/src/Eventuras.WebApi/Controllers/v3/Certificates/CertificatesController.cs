@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 
 namespace Eventuras.WebApi.Controllers.v3.Certificates;
@@ -22,16 +23,19 @@ public class CertificatesController : ControllerBase
 {
     private readonly ICertificateRenderer _certificateRenderer;
     private readonly ICertificateRetrievalService _certificateRetrievalService;
+    private readonly IOptions<CertificateOptions> _certificateOptions;
     private readonly ILogger<CertificatesController> _logger;
 
     public CertificatesController(
         ICertificateRetrievalService certificateRetrievalService,
         ICertificateRenderer certificateRenderer,
+        IOptions<CertificateOptions> certificateOptions,
         ILogger<CertificatesController> logger)
     {
         _certificateRetrievalService = certificateRetrievalService ??
                                        throw new ArgumentNullException(nameof(certificateRetrievalService));
         _certificateRenderer = certificateRenderer ?? throw new ArgumentNullException(nameof(certificateRenderer));
+        _certificateOptions = certificateOptions ?? throw new ArgumentNullException(nameof(certificateOptions));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
@@ -51,16 +55,14 @@ public class CertificatesController : ControllerBase
                 return Ok(new CertificateDto(cert));
 
             case CertificateFormat.Html:
-                // TODO: derive locale from Accept-Language / user preference / org default instead of hardcoded "nb"
                 var html = await _certificateRenderer
-                    .RenderToHtmlAsStringAsync(new CertificateViewModel(cert), "nb");
+                    .RenderToHtmlAsStringAsync(new CertificateViewModel(cert), _certificateOptions.Value.DefaultLocale);
                 return Content(html, MediaTypeNames.Text.Html);
 
             case CertificateFormat.Pdf:
                 try
                 {
-                    // TODO: derive locale from Accept-Language / user preference / org default instead of hardcoded "nb"
-                    var stream = await _certificateRenderer.RenderToPdfAsStreamAsync(new CertificateViewModel(cert), "nb");
+                    var stream = await _certificateRenderer.RenderToPdfAsStreamAsync(new CertificateViewModel(cert), _certificateOptions.Value.DefaultLocale);
                     var memoryStream = new MemoryStream();
                     await stream.CopyToAsync(memoryStream);
                     return File(memoryStream.ToArray(), MediaTypeNames.Application.Pdf);
