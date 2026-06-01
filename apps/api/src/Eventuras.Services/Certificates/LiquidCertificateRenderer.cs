@@ -11,7 +11,7 @@ using Microsoft.Extensions.Options;
 
 namespace Eventuras.Services.Certificates;
 
-internal sealed class LiquidCertificateRenderer
+internal sealed class LiquidCertificateRenderer : ICertificateRenderer
 {
     private const string TemplateName = "course-certificate";
     private const string DefaultLocale = "nb";

@@ -100,8 +100,9 @@ public class EventCertificatesController : ControllerBase
                 EventInfoRetrievalOptions.ForCertificateRendering,
                 cancellationToken);
 
+        // TODO: derive locale from Accept-Language / user preference / org default instead of hardcoded "nb"
         var html = await _certificateRenderer
-            .RenderToHtmlAsStringAsync(new CertificateViewModel(eventInfo));
+            .RenderToHtmlAsStringAsync(new CertificateViewModel(eventInfo), "nb", cancellationToken);
 
         return Content(html, MediaTypeNames.Text.Html);
     }

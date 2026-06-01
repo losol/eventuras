@@ -51,14 +51,16 @@ public class CertificatesController : ControllerBase
                 return Ok(new CertificateDto(cert));
 
             case CertificateFormat.Html:
+                // TODO: derive locale from Accept-Language / user preference / org default instead of hardcoded "nb"
                 var html = await _certificateRenderer
-                    .RenderToHtmlAsStringAsync(new CertificateViewModel(cert));
+                    .RenderToHtmlAsStringAsync(new CertificateViewModel(cert), "nb");
                 return Content(html, MediaTypeNames.Text.Html);
 
             case CertificateFormat.Pdf:
                 try
                 {
-                    var stream = await _certificateRenderer.RenderToPdfAsStreamAsync(new CertificateViewModel(cert));
+                    // TODO: derive locale from Accept-Language / user preference / org default instead of hardcoded "nb"
+                    var stream = await _certificateRenderer.RenderToPdfAsStreamAsync(new CertificateViewModel(cert), "nb");
                     var memoryStream = new MemoryStream();
                     await stream.CopyToAsync(memoryStream);
                     return File(memoryStream.ToArray(), MediaTypeNames.Application.Pdf);

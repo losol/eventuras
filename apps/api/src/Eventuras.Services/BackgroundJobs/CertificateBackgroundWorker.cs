@@ -87,8 +87,9 @@ public sealed class CertificateBackgroundWorker : BackgroundService
             return;
         }
 
+        // TODO: derive locale from registration user preference / org default instead of hardcoded "nb"
         await using var pdfStream = await certificateRenderer
-            .RenderToPdfAsStreamAsync(new CertificateViewModel(certificate));
+            .RenderToPdfAsStreamAsync(new CertificateViewModel(certificate), "nb", cancellationToken);
 
         if (pdfStream == null)
         {

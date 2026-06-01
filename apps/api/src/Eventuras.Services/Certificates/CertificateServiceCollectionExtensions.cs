@@ -9,7 +9,7 @@ public static class CertificateServiceCollectionExtensions
         services.AddTransient<ICertificateAccessControlService, CertificateAccessControlService>();
         services.AddTransient<ICertificateIssuingService, CertificateIssuingService>();
         services.AddTransient<ICertificateRetrievalService, CertificateRetrievalService>();
-        services.AddTransient<ICertificateRenderer, CertificateRenderer>();
+        services.AddTransient<ICertificateRenderer, LiquidCertificateRenderer>();
         services.AddTransient<ICertificateDeliveryService, CertificateDeliveryService>();
         return services;
     }

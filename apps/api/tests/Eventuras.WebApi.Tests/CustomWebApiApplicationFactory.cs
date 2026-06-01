@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Infrastructure;
 using Eventuras.Libs.Pdf;
@@ -34,12 +35,13 @@ public class CustomWebApiApplicationFactory<TStartup> : WebApplicationFactory<TS
     {
         // Setup default behavior for certificate renderer mock
         CertificateRendererMock
-            .Setup(x => x.RenderToPdfAsStreamAsync(It.IsAny<CertificateViewModel>()))
-            .ReturnsAsync((CertificateViewModel vm) => SimplePdfGenerator.GenerateFromText($"{vm.Title}\n{vm.RecipientName}"));
+            .Setup(x => x.RenderToPdfAsStreamAsync(It.IsAny<CertificateViewModel>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((CertificateViewModel vm, string _, CancellationToken _) =>
+                SimplePdfGenerator.GenerateFromText($"{vm.Title}\n{vm.RecipientName}"));
 
         CertificateRendererMock
-            .Setup(x => x.RenderToHtmlAsStringAsync(It.IsAny<CertificateViewModel>()))
-            .ReturnsAsync((CertificateViewModel vm) =>
+            .Setup(x => x.RenderToHtmlAsStringAsync(It.IsAny<CertificateViewModel>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((CertificateViewModel vm, string _, CancellationToken _) =>
                 $"<html><body><h1>{vm.Title}</h1><p>Certificate for {vm.RecipientName}</p></body></html>");
     }
 
