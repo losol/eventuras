@@ -8,6 +8,7 @@ using Losol.Communication.Email;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Eventuras.Services.BackgroundJobs;
 
@@ -74,6 +75,7 @@ public sealed class CertificateBackgroundWorker : BackgroundService
     {
         var certificateRetrievalService = serviceProvider.GetRequiredService<ICertificateRetrievalService>();
         var certificateRenderer = serviceProvider.GetRequiredService<ICertificateRenderer>();
+        var certificateOptions = serviceProvider.GetRequiredService<IOptions<CertificateOptions>>().Value;
         var emailSender = serviceProvider.GetRequiredService<IEmailSender>();
 
         var certificate = await certificateRetrievalService.GetCertificateByIdAsync(
@@ -87,9 +89,8 @@ public sealed class CertificateBackgroundWorker : BackgroundService
             return;
         }
 
-        // TODO: derive locale from registration user preference / org default instead of hardcoded "nb"
         await using var pdfStream = await certificateRenderer
-            .RenderToPdfAsStreamAsync(new CertificateViewModel(certificate), "nb", cancellationToken);
+            .RenderToPdfAsStreamAsync(new CertificateViewModel(certificate), certificateOptions.DefaultLocale, cancellationToken);
 
         if (pdfStream == null)
         {

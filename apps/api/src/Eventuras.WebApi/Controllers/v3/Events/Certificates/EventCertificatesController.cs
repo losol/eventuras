@@ -12,6 +12,7 @@ using Eventuras.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Eventuras.WebApi.Controllers.v3.Events.Certificates;
 
@@ -25,6 +26,7 @@ public class EventCertificatesController : ControllerBase
     private readonly ICertificateIssuingService _certificateIssuingService;
     private readonly ICertificateRenderer _certificateRenderer;
     private readonly ICertificateRetrievalService _certificateRetrievalService;
+    private readonly IOptions<CertificateOptions> _certificateOptions;
     private readonly IEventInfoAccessControlService _eventInfoAccessControlService;
     private readonly IEventInfoRetrievalService _eventInfoRetrievalService;
     private readonly ILogger<EventCertificatesController> _logger;
@@ -32,6 +34,7 @@ public class EventCertificatesController : ControllerBase
     public EventCertificatesController(
         IEventInfoRetrievalService eventInfoRetrievalService,
         ICertificateRenderer certificateRenderer,
+        IOptions<CertificateOptions> certificateOptions,
         ICertificateIssuingService certificateIssuingService,
         ICertificateDeliveryService certificateDeliveryService,
         IEventInfoAccessControlService eventInfoAccessControlService,
@@ -43,6 +46,9 @@ public class EventCertificatesController : ControllerBase
 
         _certificateRenderer = certificateRenderer ?? throw
             new ArgumentNullException(nameof(certificateRenderer));
+
+        _certificateOptions = certificateOptions ?? throw
+            new ArgumentNullException(nameof(certificateOptions));
 
         _certificateIssuingService = certificateIssuingService ?? throw
             new ArgumentNullException(nameof(certificateIssuingService));
@@ -100,9 +106,8 @@ public class EventCertificatesController : ControllerBase
                 EventInfoRetrievalOptions.ForCertificateRendering,
                 cancellationToken);
 
-        // TODO: derive locale from Accept-Language / user preference / org default instead of hardcoded "nb"
         var html = await _certificateRenderer
-            .RenderToHtmlAsStringAsync(new CertificateViewModel(eventInfo), "nb", cancellationToken);
+            .RenderToHtmlAsStringAsync(new CertificateViewModel(eventInfo), _certificateOptions.Value.DefaultLocale, cancellationToken);
 
         return Content(html, MediaTypeNames.Text.Html);
     }
