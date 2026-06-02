@@ -84,6 +84,30 @@ This project includes an OAuth setup script that handles the OAuth flow automati
    EVENTURAS_TEST_GOOGLE_REFRESH_TOKEN=1//0gxxxxx...
    ```
 
+#### Rotating the CI secret in one step
+
+When you're rotating the `E2E_GMAIL_REFRESH_TOKEN` secret used by the CD pipeline, you can have the script push the new token straight into a GitHub Actions environment secret instead of copy-pasting:
+
+1. Add the target repo and environment to your `.env` (they live there, not in code, so the public repo stays free of infra references):
+
+   ```bash
+   GH_SECRET_REPO=<owner>/<repo>
+   GH_SECRET_ENV=<environment-name>
+   ```
+
+2. Run the script with the push flag:
+
+   ```bash
+   OAUTH_PUSH_GH_SECRET=1 pnpm oauth:setup
+   ```
+
+Requirements:
+
+- `gh` CLI installed and authenticated as a user with write access to the target repo + environment.
+- Both `GH_SECRET_REPO` and `GH_SECRET_ENV` set (no defaults; missing values fall back to printing the token).
+
+The browser page still shows the token (so you can grab it for `.env` if needed); the terminal prints a confirmation like `✅ Pushed E2E_GMAIL_REFRESH_TOKEN to <repo> (env: <env>)`. If `gh` is missing or the push fails, the script falls back to printing the token so nothing is lost.
+
 The script is located at `scripts/oauth-server.ts` if you need to review or modify it.
 
 ## Step 3: Store the Refresh Token

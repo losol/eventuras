@@ -1,20 +1,39 @@
 #!/usr/bin/env tsx
 
 /**
- * OAuth Server for obtaining Google refresh token
+ * OAuth Server for obtaining Google refresh token.
  *
- * This script starts a temporary server to handle the OAuth callback
- * and exchange the authorization code for a refresh token.
+ * This script starts a temporary server to handle the OAuth callback and
+ * exchanges the authorization code for a refresh token.
+ *
+ * By default the token is only printed (terminal + browser page) so a human
+ * can paste it into .env. To rotate the CI secret in one shot, set
+ * OAUTH_PUSH_GH_SECRET=1 — the new token is then pushed straight into a
+ * GitHub Actions environment secret via the `gh` CLI, no copy-paste.
  *
  * Usage:
- *   pnpm oauth:setup
+ *   pnpm oauth:setup                       # local: prints the token
+ *   OAUTH_PUSH_GH_SECRET=1 pnpm oauth:setup # CI rotation: pushes to GitHub
  *
  * Prerequisites:
- *   1. Set up Google Cloud Console OAuth credentials
- *   2. Add http://localhost:3123/oauth/callback to Authorized redirect URIs
- *   3. Set E2E_GMAIL_CLIENT_ID and E2E_GMAIL_CLIENT_SECRET in .env
+ *   1. Set up Google Cloud Console OAuth credentials.
+ *   2. Add http://localhost:3123/oauth/callback to Authorized redirect URIs.
+ *   3. Set E2E_GMAIL_CLIENT_ID and E2E_GMAIL_CLIENT_SECRET in .env.
+ *   4. For the push path: `gh` CLI installed and authenticated against a user
+ *      with write access to the target repo + environment named by
+ *      GH_SECRET_REPO / GH_SECRET_ENV. Both are required when
+ *      OAUTH_PUSH_GH_SECRET=1.
+ *
+ * Environment variables:
+ *   OAUTH_PUSH_GH_SECRET  Set to "1" to push the new token into GitHub Actions
+ *                         (opt-in). Default is print-only.
+ *   GH_SECRET_REPO        Repo to push the secret into (required when pushing).
+ *                         May be set in .env.
+ *   GH_SECRET_ENV         Environment to push into (required when pushing).
+ *                         May be set in .env.
  */
 
+import { spawn } from 'node:child_process';
 import { createServer } from 'node:http';
 import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath, parse } from 'node:url';
@@ -49,6 +68,8 @@ if (existsSync(envPath)) {
 const PORT = 3123;
 const REDIRECT_URI = `http://localhost:${PORT}/oauth/callback`;
 
+const GH_SECRET_NAME = 'E2E_GMAIL_REFRESH_TOKEN';
+
 // Validate required environment variables
 if (
   !process.env.E2E_GMAIL_CLIENT_ID ||
@@ -65,6 +86,54 @@ const oauth2Client = createOAuthClient({
   clientSecret: process.env.E2E_GMAIL_CLIENT_SECRET,
   redirectUri: REDIRECT_URI,
 });
+
+interface PushResult {
+  ok: boolean;
+  /** Human-readable error message when ok=false; never includes the token value. */
+  error?: string;
+}
+
+/**
+ * Push the refresh token to a GitHub Actions environment secret using `gh`.
+ * The token is sent via stdin so it never appears in argv or shell history.
+ */
+function pushSecretToGitHub(token: string, repo: string, env: string): Promise<PushResult> {
+  return new Promise(resolve => {
+    let child;
+    try {
+      child = spawn(
+        'gh',
+        ['secret', 'set', GH_SECRET_NAME, '--repo', repo, '--env', env],
+        { stdio: ['pipe', 'inherit', 'inherit'] }
+      );
+    } catch (err) {
+      resolve({ ok: false, error: err instanceof Error ? err.message : String(err) });
+      return;
+    }
+
+    child.on('error', (err: NodeJS.ErrnoException) => {
+      if (err.code === 'ENOENT') {
+        resolve({
+          ok: false,
+          error: '`gh` CLI not found on PATH (install from https://cli.github.com)',
+        });
+      } else {
+        resolve({ ok: false, error: err.message });
+      }
+    });
+
+    child.on('close', code => {
+      if (code === 0) {
+        resolve({ ok: true });
+      } else {
+        resolve({ ok: false, error: `gh exited with code ${code}` });
+      }
+    });
+
+    child.stdin.write(token);
+    child.stdin.end();
+  });
+}
 
 const server = createServer(async (req, res) => {
   const parsedUrl = parse(req.url || '', true);
@@ -91,7 +160,10 @@ const server = createServer(async (req, res) => {
 
     try {
       const tokens = await exchangeCodeForTokens(oauth2Client, code);
+      const refreshToken = tokens.refresh_token;
 
+      // Always render the HTML view with the token — local .env seeding still
+      // relies on being able to copy it out of the browser page.
       res.writeHead(200, { 'Content-Type': 'text/html' });
       res.end(`
         <html>
@@ -100,7 +172,7 @@ const server = createServer(async (req, res) => {
             <h1>Successfully obtained refresh token!</h1>
             <h2>Add this to your .env file:</h2>
             <pre style="background: #f4f4f4; padding: 15px; border-radius: 5px;">
-E2E_GMAIL_REFRESH_TOKEN=${tokens.refresh_token}
+E2E_GMAIL_REFRESH_TOKEN=${refreshToken}
             </pre>
             <p><strong>Important:</strong> This token will only be shown once. Copy it now!</p>
             <p>You can close this window.</p>
@@ -108,11 +180,35 @@ E2E_GMAIL_REFRESH_TOKEN=${tokens.refresh_token}
         </html>
       `);
 
-      console.log('\nSuccess! Refresh token obtained.');
-      console.log('\nAdd this line to your .env file:');
-      console.log(`E2E_GMAIL_REFRESH_TOKEN=${tokens.refresh_token}\n`);
+      const pushToGitHub = process.env.OAUTH_PUSH_GH_SECRET === '1';
+      const repo = process.env.GH_SECRET_REPO;
+      const env = process.env.GH_SECRET_ENV;
 
-      // Close server after successful token exchange
+      console.log('\n✅ Refresh token obtained.');
+
+      if (!pushToGitHub) {
+        console.log('Add this to your .env (or set OAUTH_PUSH_GH_SECRET=1 to push to GitHub):');
+        console.log(`\n${GH_SECRET_NAME}=${refreshToken}\n`);
+      } else if (!repo || !env) {
+        console.warn(
+          '\n⚠️  OAUTH_PUSH_GH_SECRET=1 was set, but GH_SECRET_REPO and GH_SECRET_ENV are both required to push.'
+        );
+        console.warn('Set them (in .env or the environment) or run without the push flag.');
+        console.warn('Falling back to printing the token:');
+        console.warn(`\n${GH_SECRET_NAME}=${refreshToken}\n`);
+      } else {
+        console.log(`Pushing to ${repo} (env: ${env})...`);
+        const result = await pushSecretToGitHub(refreshToken, repo, env);
+        if (result.ok) {
+          console.log(`✅ Pushed ${GH_SECRET_NAME} to ${repo} (env: ${env})`);
+        } else {
+          console.warn(`\n⚠️  Could not push secret via gh: ${result.error}`);
+          console.warn('Falling back to manual setup — copy this token:');
+          console.warn(`\n${GH_SECRET_NAME}=${refreshToken}\n`);
+        }
+      }
+
+      // Close server after the callback is fully handled
       setTimeout(() => {
         console.log('🔒 Shutting down OAuth server...');
         server.close();
@@ -137,5 +233,18 @@ server.listen(PORT, () => {
   console.log(`   1. Open this URL in your browser:`);
   console.log(`      http://localhost:${PORT}/auth`);
   console.log(`   2. Authorize the application`);
-  console.log(`   3. Copy the refresh token to your .env file\n`);
+  if (process.env.OAUTH_PUSH_GH_SECRET === '1') {
+    const repo = process.env.GH_SECRET_REPO;
+    const env = process.env.GH_SECRET_ENV;
+    if (repo && env) {
+      console.log(`   3. The refresh token will be pushed to ${repo} (env: ${env}).\n`);
+    } else {
+      console.log(
+        `   3. OAUTH_PUSH_GH_SECRET=1 is set but GH_SECRET_REPO and GH_SECRET_ENV are missing — the token will be printed for fallback.\n`
+      );
+    }
+  } else {
+    console.log(`   3. The refresh token will be printed for you to add to .env.`);
+    console.log(`      Set OAUTH_PUSH_GH_SECRET=1 to rotate the GitHub Actions secret directly.\n`);
+  }
 });
