@@ -75,6 +75,7 @@ public sealed class CertificateBackgroundWorker : BackgroundService
     {
         var certificateRetrievalService = serviceProvider.GetRequiredService<ICertificateRetrievalService>();
         var certificateRenderer = serviceProvider.GetRequiredService<ICertificateRenderer>();
+        var deliveryEmailRenderer = serviceProvider.GetRequiredService<CertificateDeliveryEmailRenderer>();
         var certificateOptions = serviceProvider.GetRequiredService<IOptions<CertificateOptions>>().Value;
         var emailSender = serviceProvider.GetRequiredService<IEmailSender>();
 
@@ -109,11 +110,17 @@ public sealed class CertificateBackgroundWorker : BackgroundService
 
         memoryStream.Position = 0;
 
+        var deliveryEmail = await deliveryEmailRenderer.RenderAsync(
+            new CertificateDeliveryEmailModel(certificate.Title, certificate.RecipientName),
+            certificateOptions.DefaultLocale,
+            cancellationToken);
+
         var emailModel = new EmailModel
         {
             Recipients = new[] { new Address { Email = certificate.RecipientEmail } },
-            Subject = $"Kursbevis for {certificate.Title}",
-            TextBody = "Her er kursbeviset! Gratulere!",
+            Subject = deliveryEmail.Subject,
+            HtmlBody = deliveryEmail.HtmlBody,
+            TextBody = deliveryEmail.TextBody,
             Attachments = new List<Attachment>
             {
                 new()
