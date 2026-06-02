@@ -1218,7 +1218,7 @@ importers:
     dependencies:
       nodemailer:
         specifier: ^8.0.5
-        version: 8.0.7
+        version: 8.0.8
     devDependencies:
       '@eventuras/vite-config':
         specifier: workspace:*
@@ -9899,8 +9899,8 @@ packages:
     resolution: {integrity: sha512-H+rnK5bX2Pi/6ms3sN4/jRQvYSMltV6vqup/0SFOrxYYY/qoNvhXPlYq3e+Pm9RFJRwrMGbMIwi81M4dxpomhA==}
     engines: {node: '>=6.0.0'}
 
-  nodemailer@8.0.7:
-    resolution: {integrity: sha512-pkjE4mkBzQjdJT4/UmlKl3pX0rC9fZmjh7c6C9o7lv66Ac6w9WCnzPzhbPNxwZAzlF4mdq4CSWB5+FbK6FWCow==}
+  nodemailer@8.0.8:
+    resolution: {integrity: sha512-p+XsnzXGdtIHXUu2ugxdfG+eX2nehsGhMjW9h0CWj1BhE30hrFz0kh0yIM0/VjUgVsRrDj+80ZO+I1nSkGE4tA==}
     engines: {node: '>=6.0.0'}
 
   nodemon@3.1.14:
@@ -21462,7 +21462,7 @@ snapshots:
 
   nodemailer@7.0.12: {}
 
-  nodemailer@8.0.7: {}
+  nodemailer@8.0.8: {}
 
   nodemon@3.1.14:
     dependencies:
