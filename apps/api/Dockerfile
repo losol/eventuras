@@ -14,6 +14,7 @@ COPY ./src/Eventuras.Infrastructure/*.csproj ./src/Eventuras.Infrastructure/
 COPY ./src/Eventuras.Libs.DocComposer/*.csproj ./src/Eventuras.Libs.DocComposer/
 COPY ./src/Eventuras.Libs.Pdf/*.csproj ./src/Eventuras.Libs.Pdf/
 COPY ./src/Eventuras.Services/*.csproj ./src/Eventuras.Services/
+COPY ./src/Eventuras.Services.Certificates/*.csproj ./src/Eventuras.Services.Certificates/
 COPY ./src/Eventuras.Services.Converto/*.csproj ./src/Eventuras.Services.Converto/
 COPY ./src/Eventuras.Services.PowerOffice/*.csproj ./src/Eventuras.Services.PowerOffice/
 COPY ./src/Eventuras.Services.SendGrid/*.csproj ./src/Eventuras.Services.SendGrid/
@@ -30,6 +31,7 @@ COPY ./src/Losol.Communication.Sms/*.csproj ./src/Losol.Communication.Sms/
 COPY ./tests/TestProject.props ./tests/TestProject.props
 COPY ./tests/Eventuras.Libs.DocComposer.Tests/*.csproj ./tests/Eventuras.Libs.DocComposer.Tests/
 COPY ./tests/Eventuras.Libs.Pdf.Tests/*.csproj ./tests/Eventuras.Libs.Pdf.Tests/
+COPY ./tests/Eventuras.Services.Certificates.Tests/*.csproj ./tests/Eventuras.Services.Certificates.Tests/
 COPY ./tests/Eventuras.Services.Converto.Tests/*.csproj ./tests/Eventuras.Services.Converto.Tests/
 COPY ./tests/Eventuras.Services.Tests/*.csproj ./tests/Eventuras.Services.Tests/
 COPY ./tests/Eventuras.TestAbstractions/*.csproj ./tests/Eventuras.TestAbstractions/

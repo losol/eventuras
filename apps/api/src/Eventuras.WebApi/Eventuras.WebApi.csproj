@@ -28,6 +28,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Eventuras.Services.Certificates\Eventuras.Services.Certificates.csproj" />
     <ProjectReference Include="..\Eventuras.Services.Converto\Eventuras.Services.Converto.csproj" />
     <ProjectReference Include="..\Eventuras.Services.PowerOffice\Eventuras.Services.PowerOffice.csproj" />
     <ProjectReference Include="..\Eventuras.Services.SendGrid\Eventuras.Services.SendGrid.csproj" />
