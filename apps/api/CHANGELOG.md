@@ -1,5 +1,26 @@
 # @eventuras/api
 
+## 3.5.0
+
+### Minor Changes
+
+- ac5b727: Switch course certificate rendering from the Razor `CertificateRenderer` (with `Templates/Certificates/CourseCertificate.cshtml`) to `LiquidCertificateRenderer`. `ICertificateRenderer` gains a required `locale` parameter on both `RenderToHtmlAsStringAsync` and `RenderToPdfAsStreamAsync` (breaking). Existing call sites hardcode `"nb"` with a TODO until real locale plumbing (Accept-Language / user preference / org default) lands in a follow-up.
+
+### Patch Changes
+
+- 2e1763b: Render the certificate-delivery email through DocComposer/`IEmailComposer` instead of the hardcoded Norwegian `Subject = "Kursbevis for {Title}"` and `TextBody = "Her er kursbeviset! Gratulere!"` strings in `CertificateBackgroundWorker`. Adds `certificate-delivery.{nb,en}.liquid` embedded templates, a `CertificateDeliveryEmailModel` record, and a small `CertificateDeliveryEmailRenderer` that wraps `FluidEmailComposer` and pulls subject from `<title>` plus a derived plain-text alternative. The outgoing email now also includes an HTML body (it was text-only before).
+- 28681ae: Add embedded Liquid templates for course certificates (`course-certificate.no.liquid`, `course-certificate.en.liquid`) and wire `Eventuras.Libs.DocComposer` into `Eventuras.Services`. Foundation for the upcoming DocComposer-based certificate renderer; no production code uses it yet.
+- 76285a9: Add `LiquidCertificateRenderer` (standalone, not yet registered) along with `CourseCertificateModel` and `CourseCertificateModelMapper`. Renderer composes the embedded Liquid templates from PR #1502 with `CertificateViewModel` data and produces HTML + PDF via `IPdfRenderService`. Wiring into `ICertificateRenderer` follows in the next PR.
+- b22f241: Add a `Certificates:DefaultLocale` setting (defaults to `nb-NO`) bound to `CertificateOptions` so the certificate renderer's default locale can be configured from `appsettings.json` without code changes. The two certificate controllers and the background worker now read it via `IOptions<CertificateOptions>` instead of a hardcoded value.
+- 865533b: Rename the Norwegian course certificate template from `course-certificate.no.liquid` to `course-certificate.nb.liquid` to use the precise Bokmål BCP 47 tag instead of the `no` macrolanguage. `LiquidCertificateRenderer` now normalises `no`/`nb`/`nn` (and their regional variants) to `nb`, leaving room for a dedicated Nynorsk template later without further code changes.
+- c9bfd7b: Move the certificate stack from `Eventuras.Services` into a dedicated `Eventuras.Services.Certificates` project (with its own `Eventuras.Services.Certificates.Tests` test project), matching the pattern already used for `Eventuras.Services.Converto`, `Eventuras.Services.PowerOffice`, and other satellite integrations. The 21 cert source files, the `CertificateBackgroundWorker`, the embedded Liquid templates, and the 3 cert tests all moved; `Eventuras.Services` no longer references `Eventuras.Libs.DocComposer` or `Microsoft.Extensions.FileProviders.Embedded`. `AddCertificateServices()` is now called from `Eventuras.WebApi`'s service-collection extension instead of from `AddCoreServices()` so `Services` itself stops depending on cert-specific infrastructure. Pure mechanical refactor — no behavior change.
+- 3f129b5: Make the course certificate PDF fill the A4 page with readable text. Three changes:
+  - `LiquidCertificateRenderer` now renders at `Scale = 1.0` (was `0.8f`), so content is no longer shrunk to ~80% of the paper with a gray band below it.
+  - Both Liquid templates drop the `@media print` block and apply its rules as defaults — Converto's headless-Chrome render does not always trigger print media, which left the screen-only gray background and the small `font-size: 10px` showing through.
+  - Base font is `14px` (was `16px`) so body text reads cleanly at the new scale on A4 without crowding the page.
+
+- 27db7e3: Add `Eventuras.Libs.DocComposer` for rendering localized Liquid templates with Fluid. Provides a core `IDocumentComposer` for HTML output (intended for emails, certificates, invoices) and a thin `IEmailComposer` wrapper that derives subject and plain-text body.
+
 ## 3.4.1
 
 ### Patch Changes
