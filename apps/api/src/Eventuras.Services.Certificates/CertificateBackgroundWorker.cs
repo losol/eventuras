@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using Eventuras.Services.Certificates;
+using Eventuras.Services.BackgroundJobs;
 using Losol.Communication.Email;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Eventuras.Services.BackgroundJobs;
+namespace Eventuras.Services.Certificates;
 
 /// <summary>
 /// Background service that processes certificate delivery jobs from the queue.

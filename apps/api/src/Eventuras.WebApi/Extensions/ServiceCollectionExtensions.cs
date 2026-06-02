@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Eventuras.Infrastructure;
 using Eventuras.Services;
+using Eventuras.Services.Certificates;
 using Eventuras.Services.Converto;
 using Eventuras.Services.DbInitializers;
 using Eventuras.Services.Email;
@@ -115,6 +116,7 @@ public static class ServiceCollectionExtensions
     {
         // Register our application services
         services.AddCoreServices();
+        services.AddCertificateServices();
 
         // for cert PDF rendering
         services.AddHttpContextAccessor();

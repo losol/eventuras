@@ -1,6 +1,5 @@
 using Eventuras.Services.Auth;
 using Eventuras.Services.BusinessEvents;
-using Eventuras.Services.Certificates;
 using Eventuras.Services.EventCollections;
 using Eventuras.Services.Events;
 using Eventuras.Services.Invoicing;
@@ -23,7 +22,6 @@ public static class ServiceCollectionExtensions
         services.AddRegistrationServices();
         services.AddNotificationServices();
         services.AddOrganizationServices();
-        services.AddCertificateServices();
         services.AddUserServices();
         services.AddAuthServices();
         services.AddEventServices();

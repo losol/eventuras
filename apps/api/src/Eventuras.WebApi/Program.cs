@@ -7,6 +7,7 @@ using Asp.Versioning.ApiExplorer;
 using Eventuras.ServiceDefaults;
 using Eventuras.Services;
 using Eventuras.Services.BackgroundJobs;
+using Eventuras.Services.Certificates;
 using Eventuras.Services.Constants;
 using Eventuras.Services.DbInitializers;
 using Eventuras.Services.Notifications;
