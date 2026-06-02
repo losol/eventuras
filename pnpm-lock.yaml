@@ -109,7 +109,7 @@ importers:
         version: 9.7.0
       '@scalar/fastify-api-reference':
         specifier: ^1.52.1
-        version: 1.57.3
+        version: 1.57.5
       dotenv:
         specifier: ^17.4.2
         version: 17.4.2
@@ -365,8 +365,8 @@ importers:
         specifier: ^19.2.5
         version: 19.2.6(react@19.2.6)
       react-hook-form:
-        specifier: 7.76.0
-        version: 7.76.0(react@19.2.6)
+        specifier: 7.76.1
+        version: 7.76.1(react@19.2.6)
       require-in-the-middle:
         specifier: 8.0.1
         version: 8.0.1
@@ -647,7 +647,7 @@ importers:
         version: 6.2.49
       '@oclif/plugin-plugins':
         specifier: ^5.4.61
-        version: 5.4.68
+        version: 5.4.69
     devDependencies:
       '@eslint/compat':
         specifier: ^2.0.5
@@ -774,7 +774,7 @@ importers:
         version: 19.2.6(react@19.2.6)
       react-hook-form:
         specifier: ^7.72.1
-        version: 7.76.0(react@19.2.6)
+        version: 7.76.1(react@19.2.6)
       react-stately:
         specifier: ^3.46.0
         version: 3.46.0(react@19.2.6)
@@ -1722,7 +1722,7 @@ importers:
         version: 19.2.6(react@19.2.6)
       react-hook-form:
         specifier: ^7.68.0
-        version: 7.76.0(react@19.2.6)
+        version: 7.76.1(react@19.2.6)
     devDependencies:
       '@eventuras/eslint-config':
         specifier: workspace:*
@@ -3979,8 +3979,8 @@ packages:
     resolution: {integrity: sha512-BJhJSahwsYayZpo18f0fPTg8tKb9dIvydaz03NCK3eMfmcsT1MmXhXqh1KEV8J7mz0sQ6f0qFEb6BXy490/iUg==}
     engines: {node: '>=18.0.0'}
 
-  '@oclif/plugin-plugins@5.4.68':
-    resolution: {integrity: sha512-+YZ5Afv9OiTsOIS3ODGJH2T8+CymruYQxRPXOCDQBZC0sjLb02S5yQ4OGKSCLBFpbbeBjo05C3IOBdxKzwF+wA==}
+  '@oclif/plugin-plugins@5.4.69':
+    resolution: {integrity: sha512-cPpdnLDl0iNWEMcAsSgxdz4v/clERvu3xnWgmwBHImYjts/uq75XGYbkQG603e9wYZoinp3clB7U1/GLNxy5MA==}
     engines: {node: '>=18.0.0'}
 
   '@oclif/plugin-warn-if-update-available@3.1.65':
@@ -5345,12 +5345,12 @@ packages:
     resolution: {integrity: sha512-xzvBr1Q1c4lCe7i6sRnrofxeO1QTP/LKQ6A6qy0iB4x5yfiSfARMEQEghojzTNALDTcv8En04qYNIco9/K9eZQ==}
     engines: {node: '>=v14.0.0', npm: '>=7.0.0'}
 
-  '@scalar/client-side-rendering@0.1.10':
-    resolution: {integrity: sha512-c8dTP/JlvFHvdz2rbfMcpLgKaYkleDVBFYhHwOM41BsVjN+GLLQJsgjH4Z/bWSxZlWeE7FPYFYvZN4VWNgVnIw==}
+  '@scalar/client-side-rendering@0.1.12':
+    resolution: {integrity: sha512-prwHK4ozTU268BHZ/5OstoKB23JSidDuvddAOp0bVz9c29ZxsyzzxPtPcVgF7X16LiZnS1OzY030FoDCM+iC9Q==}
     engines: {node: '>=22'}
 
-  '@scalar/fastify-api-reference@1.57.3':
-    resolution: {integrity: sha512-klqYKPdhJg94I+9yYcU0byqZpJf3GNpuksntuqwI6ZoP87k1r0C9wtLoLmAEvPERgZTtjxar7zFgBeEGvDhBqA==}
+  '@scalar/fastify-api-reference@1.57.5':
+    resolution: {integrity: sha512-GtkU5lT3hX5ID+IQa1DXfMk2pdhNVdEBpjNrkJ4PHtaTqRTMMTjvv86jWoAc0IZ3q/9Gnbbe852j8Lrnxa2HwQ==}
     engines: {node: '>=22'}
 
   '@scalar/helpers@0.8.0':
@@ -5373,12 +5373,12 @@ packages:
     resolution: {integrity: sha512-/SDb3+SIFuScKwrNRTFd7bklGDkayo81cHZlajXfUaT22Oc4VUlOUvyMXBLPa0miOfZTExYTM1I0BWW7Nujugw==}
     engines: {node: '>=22'}
 
-  '@scalar/schemas@0.3.0':
-    resolution: {integrity: sha512-xnTmfx2mlCxH1zEKO0YvCGVQzGSwm0YrUQ5DGSOE2Us8l7lbaoxHQudUocbmioOiWzFR2vPM98j6W3Mu/ZYhZg==}
+  '@scalar/schemas@0.3.2':
+    resolution: {integrity: sha512-iadXBgJ02XUU5C5s6/xh/PmGLzUPd7X8upXIvPWBXDcQ4FHACNgkG8PPZ/beYM8UPDDkTUPM3ygEs0G6jKwGjQ==}
     engines: {node: '>=22'}
 
-  '@scalar/types@0.12.0':
-    resolution: {integrity: sha512-LhhFFGB6FLzgVUBnhqtJ+A/ULNNNDe+TWhQZIBOD0R2xgVbPm8Bf5ZlokW5b6xhQE3PDLQYZC9VQqc6FfEZ6sw==}
+  '@scalar/types@0.12.2':
+    resolution: {integrity: sha512-EzLkubCb7xioiTm9eYnmn/032akaq4kkrrdclgV2uezwtniR8ErQICjhMl2AjBWL6nstHiFZ9RnPZm2Z2/KM0Q==}
     engines: {node: '>=22'}
 
   '@scalar/validation@0.6.0':
@@ -9935,8 +9935,8 @@ packages:
     resolution: {integrity: sha512-ppwTtiJZq0O/ai0z7yfudtBpWIoxM8yE6nHi1X47eFR2EWORqfbu6CnPlNsjeN683eT0qG6H/Pyf9fCcvjnnnQ==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
-  npm@11.14.1:
-    resolution: {integrity: sha512-aopNZ0eEl6LbxoFcrXLmTEPzNBNxfiQnVgR9RmJBqzm+5h5pFoOmRljpRJbsXxocBeSl7GLcx3MoDf2UlEOjZw==}
+  npm@11.15.0:
+    resolution: {integrity: sha512-+k0tk7lRnpMUPnC7kTuU/yrV/mnFoPhJQ75VfLtZ6fwbzOVXaPsTE/Il9Pn1DHi482byMyqkHv/XsQ76mNjXLw==}
     engines: {node: ^20.17.0 || >=22.9.0}
     hasBin: true
     bundledDependencies:
@@ -10611,8 +10611,8 @@ packages:
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
 
-  react-hook-form@7.76.0:
-    resolution: {integrity: sha512-eKtLGgFeSgkHqQD8J59AMZ9a4uD1D83iSIzt4YlTGD7liDen5rrjcUO1rVIGd9yC1gofryjtHbv+4ny4hkLWlw==}
+  react-hook-form@7.76.1:
+    resolution: {integrity: sha512-rYM7tPiWlu3nZchkR/ex7piyzui2vFPyaLnXnI/RnblB/L4qfMmyses8llJVtF1NpE9WBBsJlGtcSZzPCXW1qQ==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18 || ^19
@@ -14625,12 +14625,12 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
 
-  '@oclif/plugin-plugins@5.4.68':
+  '@oclif/plugin-plugins@5.4.69':
     dependencies:
       '@oclif/core': 4.11.3
       ansis: 3.17.0
       debug: 4.4.3(supports-color@8.1.1)
-      npm: 11.14.1
+      npm: 11.15.0
       npm-package-arg: 11.0.3
       npm-run-path: 5.3.0
       object-treeify: 4.0.1
@@ -16021,15 +16021,15 @@ snapshots:
 
   '@sapphire/snowflake@3.5.5': {}
 
-  '@scalar/client-side-rendering@0.1.10':
+  '@scalar/client-side-rendering@0.1.12':
     dependencies:
-      '@scalar/schemas': 0.3.0
-      '@scalar/types': 0.12.0
+      '@scalar/schemas': 0.3.2
+      '@scalar/types': 0.12.2
       '@scalar/validation': 0.6.0
 
-  '@scalar/fastify-api-reference@1.57.3':
+  '@scalar/fastify-api-reference@1.57.5':
     dependencies:
-      '@scalar/client-side-rendering': 0.1.10
+      '@scalar/client-side-rendering': 0.1.12
       '@scalar/openapi-parser': 0.28.5
       '@scalar/openapi-types': 0.9.0
       fastify-plugin: 4.5.1
@@ -16062,12 +16062,12 @@ snapshots:
     dependencies:
       '@scalar/openapi-types': 0.9.0
 
-  '@scalar/schemas@0.3.0':
+  '@scalar/schemas@0.3.2':
     dependencies:
       '@scalar/helpers': 0.8.0
       '@scalar/validation': 0.6.0
 
-  '@scalar/types@0.12.0':
+  '@scalar/types@0.12.2':
     dependencies:
       '@scalar/helpers': 0.8.0
       nanoid: 5.1.11
@@ -21509,7 +21509,7 @@ snapshots:
     dependencies:
       path-key: 4.0.0
 
-  npm@11.14.1: {}
+  npm@11.15.0: {}
 
   number-allocator@1.0.14:
     dependencies:
@@ -22237,7 +22237,7 @@ snapshots:
     dependencies:
       react: 19.2.6
 
-  react-hook-form@7.76.0(react@19.2.6):
+  react-hook-form@7.76.1(react@19.2.6):
     dependencies:
       react: 19.2.6
 
