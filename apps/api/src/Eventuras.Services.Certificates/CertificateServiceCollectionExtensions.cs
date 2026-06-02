@@ -13,6 +13,7 @@ public static class CertificateServiceCollectionExtensions
         services.AddTransient<ICertificateIssuingService, CertificateIssuingService>();
         services.AddTransient<ICertificateRetrievalService, CertificateRetrievalService>();
         services.AddTransient<ICertificateRenderer, LiquidCertificateRenderer>();
+        services.AddSingleton<CertificateDeliveryEmailRenderer>();
         services.AddTransient<ICertificateDeliveryService, CertificateDeliveryService>();
         return services;
     }

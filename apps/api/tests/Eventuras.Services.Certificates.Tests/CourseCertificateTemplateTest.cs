@@ -8,7 +8,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
 using Xunit;
 
-namespace Eventuras.Services.Tests.Certificates;
+namespace Eventuras.Services.Certificates.Tests;
 
 public class CourseCertificateTemplateTest
 {

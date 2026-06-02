@@ -6,7 +6,7 @@ using Eventuras.Services.Certificates;
 using NodaTime;
 using Xunit;
 
-namespace Eventuras.Services.Tests.Certificates;
+namespace Eventuras.Services.Certificates.Tests;
 
 public class CourseCertificateModelMapperTest
 {

@@ -12,7 +12,7 @@ using Moq;
 using NodaTime;
 using Xunit;
 
-namespace Eventuras.Services.Tests.Certificates;
+namespace Eventuras.Services.Certificates.Tests;
 
 public class LiquidCertificateRendererTest
 {
