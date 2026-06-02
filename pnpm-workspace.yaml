@@ -31,6 +31,12 @@ allowBuilds:
 # so local installs and Renovate apply the same window.
 minimumReleaseAge: 14400
 
+# Soft mode: warn but don't block when a fresh package is encountered.
+# Strict mode prompts for approval and writes to minimumReleaseAgeExclude,
+# which fails any install run with --no-save (GitHub Actions, `pnpm dlx`,
+# pre-commit hooks). Auto-collect still happens on the next normal install.
+minimumReleaseAgeStrict: false
+
 # pnpm 11 no longer reads the `pnpm` field in package.json — these
 # settings (formerly under `pnpm.peerDependencyRules` and `pnpm.updateConfig`
 # in the root package.json) live here now.
