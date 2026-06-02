@@ -1,5 +1,20 @@
 # @eventuras/web
 
+## 3.3.10
+
+### Patch Changes
+
+- 12d3b95: Skip Sentry client-side initialisation when `navigator.userAgent` matches a known crawler (detected via the new `isBot` helper from `@eventuras/core/useragents`). Crawlers produce ChunkLoadError and hydration noise that's not actionable; suppressing the SDK at init time keeps those events out of the error tracker without affecting real users.
+- Updated dependencies [8e09062]
+- Updated dependencies [a6ac019]
+- Updated dependencies [7ccc38e]
+  - @eventuras/core@0.4.0
+  - @eventuras/ratio-ui@2.6.0
+  - @eventuras/event-sdk@3.1.3
+  - @eventuras/datatable@0.5.27
+  - @eventuras/ratio-ui-next@0.1.28
+  - @eventuras/smartform@0.3.20
+
 ## 3.3.9
 
 ### Patch Changes

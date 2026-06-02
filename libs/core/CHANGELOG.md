@@ -1,5 +1,15 @@
 # @eventuras/core
 
+## 0.4.0
+
+### Minor Changes
+
+- a6ac019: Add `@eventuras/core/useragents` subpath export with an `isBot(userAgent)` helper. Patterns are vendored from [omrilotan/isbot](https://github.com/omrilotan/isbot) (public domain / Unlicense), compiled once at module load into a single regex, and work in browser, edge, and server runtimes without an extra npm dependency. Refresh `libs/core/src/useragents/patterns.json` from upstream when new crawlers start polluting events.
+
+### Patch Changes
+
+- 8e09062: Default `formatDate`/`formatDateSpan`/`formatCompactDateRange` to `Europe/Oslo` time zone so SSR (server clock, typically UTC) and client hydration (user device) produce identical date strings. Fixes React hydration error #418 on event pages for users whose device time zone differs from the server's. Override via the new `timeZone` option (or `timeZone` argument on `formatCompactDateRange`) when a different zone is needed.
+
 ## 0.3.1
 
 ### Patch Changes
