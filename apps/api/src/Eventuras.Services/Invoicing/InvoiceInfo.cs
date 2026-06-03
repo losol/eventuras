@@ -52,6 +52,7 @@ public class InvoiceInfo
                             : l.ProductName,
                         ProductCode = l.ItemCode,
                         ProductDescription = l.ProductVariantDescription ?? l.ProductDescription,
+                        SalesAccount = l.Product?.SalesAccount,
                         Quantity = l.Quantity,
                         Price = l.Price,
                         Total = l.LineTotal
