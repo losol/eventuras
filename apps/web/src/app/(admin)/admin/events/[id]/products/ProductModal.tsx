@@ -118,6 +118,12 @@ const ProductModal: React.FC<ProductModalProps> = ({
               testId="product-minimum-quantity-input"
             />
           </div>
+          <NumberInput
+            name="salesAccount"
+            label={t('common.products.labels.salesAccount')}
+            description={t('common.products.labels.salesAccountDescription')}
+            testId="product-sales-account-input"
+          />
           <Dialog.Footer>
             <Button type="reset" variant="secondary" onClick={onClose}>
               {t('common.buttons.cancel')}

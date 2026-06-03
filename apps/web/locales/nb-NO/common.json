@@ -244,6 +244,8 @@
       "minimumQuantity": "Minste antall",
       "name": "Navn",
       "price": "Pris",
+      "salesAccount": "Salgskonto",
+      "salesAccountDescription": "Valgfritt. Tom bruker organisasjonens standard salgskonto på nye produkter; på eksisterende produkter beholdes gjeldende verdi.",
       "vatPercent": "Mva",
       "visibility": "Type"
     }
