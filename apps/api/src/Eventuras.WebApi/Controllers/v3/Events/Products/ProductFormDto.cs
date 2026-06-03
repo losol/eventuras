@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using Eventuras.Domain;
 
 namespace Eventuras.WebApi.Controllers.v3.Events.Products;
@@ -19,6 +20,12 @@ public class ProductFormDto
 
     public ProductVisibility? Visibility { get; set; }
 
+    /// <summary>
+    ///     Sales account code for the external accounting system.
+    ///     Null means the organization default is used.
+    /// </summary>
+    [Range(1, int.MaxValue)] public int? SalesAccount { get; set; }
+
     public void CopyTo(Product product)
     {
         if (product == null)
@@ -32,6 +39,11 @@ public class ProductFormDto
         product.VatPercent = VatPercent;
         product.EnableQuantity = EnableQuantity;
         product.MinimumQuantity = MinimumQuantity;
+
+        if (SalesAccount.HasValue)
+        {
+            product.SalesAccount = SalesAccount;
+        }
 
         if (Inventory.HasValue)
         {

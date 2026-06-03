@@ -25,6 +25,12 @@ public class Product
     public int Inventory { get; set; } = 0;
     public bool Published { get; set; } = true;
 
+    /// <summary>
+    ///     Sales account code used when the product is created in the external
+    ///     accounting system. When null, the organization default applies.
+    /// </summary>
+    public int? SalesAccount { get; set; }
+
     public bool Archived { get; set; }
 
     /// <summary>

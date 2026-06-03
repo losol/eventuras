@@ -231,6 +231,7 @@ public static class JsonElementExtensions
         Assert.Equal(product.Price, token.GetValue<decimal>("price"));
         Assert.Equal(product.VatPercent, token.GetValue<int>("vatPercent"));
         Assert.Equal(product.Visibility.ToString(), token.GetValue<string>("visibility"));
+        Assert.Equal(product.SalesAccount, token.GetValue<int?>("salesAccount"));
 
         if (variants.Any())
         {

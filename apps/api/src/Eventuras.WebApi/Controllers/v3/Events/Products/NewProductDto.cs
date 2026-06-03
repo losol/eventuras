@@ -17,6 +17,12 @@ public class NewProductDto
 
     public ProductVisibility Visibility { get; set; } = ProductVisibility.Event;
 
+    /// <summary>
+    ///     Sales account code for the external accounting system.
+    ///     Null means the organization default is used.
+    /// </summary>
+    [Range(1, int.MaxValue)] public int? SalesAccount { get; set; }
+
     public Product ToProduct() =>
         new()
         {
@@ -25,6 +31,7 @@ public class NewProductDto
             MoreInformation = More,
             Price = Price,
             VatPercent = VatPercent,
-            Visibility = Visibility
+            Visibility = Visibility,
+            SalesAccount = SalesAccount
         };
 }
