@@ -5811,6 +5811,16 @@
           },
           "visibility": {
             "$ref": "#/components/schemas/ProductVisibility"
+          },
+          "salesAccount": {
+            "maximum": 2147483647,
+            "minimum": 1,
+            "type": [
+              "null",
+              "integer"
+            ],
+            "description": "Sales account code for the external accounting system.\nNull means the organization default is used.",
+            "format": "int32"
           }
         }
       },
@@ -6716,6 +6726,16 @@
               "boolean"
             ]
           },
+          "salesAccount": {
+            "maximum": 2147483647,
+            "minimum": 1,
+            "type": [
+              "null",
+              "integer"
+            ],
+            "description": "Sales account code for the external accounting system.\nNull means the organization default is used.",
+            "format": "int32"
+          },
           "variants": {
             "type": "array",
             "items": {
@@ -6786,6 +6806,16 @@
                 "$ref": "#/components/schemas/ProductVisibility"
               }
             ]
+          },
+          "salesAccount": {
+            "maximum": 2147483647,
+            "minimum": 1,
+            "type": [
+              "null",
+              "integer"
+            ],
+            "description": "Sales account code for the external accounting system.\nNull means the organization default is used.",
+            "format": "int32"
           }
         }
       },

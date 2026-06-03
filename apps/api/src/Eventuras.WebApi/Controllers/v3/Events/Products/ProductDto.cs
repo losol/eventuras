@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Eventuras.Domain;
 
@@ -31,6 +32,7 @@ public class ProductDto
             .ToArray() ?? Array.Empty<ProductVariantDto>();
         MinimumQuantity = product.MinimumQuantity;
         EnableQuantity = product.EnableQuantity;
+        SalesAccount = product.SalesAccount;
     }
 
     public int ProductId { get; set; }
@@ -47,6 +49,13 @@ public class ProductDto
 
     public int? Inventory { get; set; }
     public bool? Published { get; set; }
+
+    /// <summary>
+    ///     Sales account code for the external accounting system.
+    ///     Null means the organization default is used.
+    /// </summary>
+    [Range(1, int.MaxValue)]
+    public int? SalesAccount { get; set; }
 
     public ProductVariantDto[] Variants { get; set; }
 
@@ -68,6 +77,11 @@ public class ProductDto
         product.Price = Price;
         product.VatPercent = VatPercent;
         product.Visibility = Visibility;
+
+        if (SalesAccount.HasValue)
+        {
+            product.SalesAccount = SalesAccount;
+        }
 
         if (Published.HasValue)
         {

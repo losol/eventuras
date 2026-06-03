@@ -374,6 +374,41 @@ public class EventProductsControllerTests : IClassFixture<CustomWebApiApplicatio
         token.CheckProduct(product);
     }
 
+    [Fact]
+    public async Task Add_Should_Persist_Sales_Account()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var evt = await scope.CreateEventAsync();
+
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
+        var response = await client.PostAsync($"/v3/events/{evt.Entity.EventInfoId}/products",
+            new { name = "test", salesAccount = 3010 });
+        response.CheckOk();
+
+        var product = await scope.Db.Products
+            .SingleAsync(p => p.EventInfoId == evt.Entity.EventInfoId);
+        Assert.Equal(3010, product.SalesAccount);
+
+        var token = await response.AsTokenAsync();
+        token.CheckProduct(product);
+    }
+
+    [Fact]
+    public async Task Add_Should_Default_Sales_Account_To_Null()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var evt = await scope.CreateEventAsync();
+
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
+        var response = await client.PostAsync($"/v3/events/{evt.Entity.EventInfoId}/products",
+            new { name = "test" });
+        response.CheckOk();
+
+        var product = await scope.Db.Products
+            .SingleAsync(p => p.EventInfoId == evt.Entity.EventInfoId);
+        Assert.Null(product.SalesAccount);
+    }
+
     #endregion
 
     #region Update
@@ -516,6 +551,52 @@ public class EventProductsControllerTests : IClassFixture<CustomWebApiApplicatio
 
         Assert.Equal(ProductVisibility.Collection, updatedProduct.Visibility);
         Assert.True(updatedProduct.Published);
+    }
+
+    [Fact]
+    public async Task Update_Should_Set_Sales_Account_And_Preserve_It_When_Omitted()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var evt = await scope.CreateEventAsync();
+        using var p = await scope.CreateProductAsync(evt.Entity);
+
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
+
+        // Set the sales account.
+        var response = await client.PutAsync(
+            $"/v3/events/{evt.Entity.EventInfoId}/products/{p.Entity.ProductId}",
+            new { name = "test", price = 100, vatPercent = 0, salesAccount = 3010 });
+        var token = await response.CheckOk().AsTokenAsync();
+
+        var updated = await scope.Db.Products.AsNoTracking()
+            .SingleAsync(product => product.ProductId == p.Entity.ProductId);
+        Assert.Equal(3010, updated.SalesAccount);
+        token.CheckProduct(updated);
+
+        // Omitting it leaves the stored value untouched, like the other optional fields.
+        response = await client.PutAsync(
+            $"/v3/events/{evt.Entity.EventInfoId}/products/{p.Entity.ProductId}",
+            new { name = "test", price = 100, vatPercent = 0 });
+        token = await response.CheckOk().AsTokenAsync();
+
+        var preserved = await scope.Db.Products.AsNoTracking()
+            .SingleAsync(product => product.ProductId == p.Entity.ProductId);
+        Assert.Equal(3010, preserved.SalesAccount);
+        token.CheckProduct(preserved);
+    }
+
+    [Fact]
+    public async Task Update_Should_Reject_Invalid_Sales_Account()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var evt = await scope.CreateEventAsync();
+        using var p = await scope.CreateProductAsync(evt.Entity);
+
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
+        var response = await client.PutAsync(
+            $"/v3/events/{evt.Entity.EventInfoId}/products/{p.Entity.ProductId}",
+            new { price = 100, vatPercent = 0, salesAccount = 0 });
+        response.CheckBadRequest();
     }
 
     #endregion
