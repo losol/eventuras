@@ -310,6 +310,11 @@ export type NewProductDto = {
     price?: number;
     vatPercent?: number;
     visibility?: ProductVisibility;
+    /**
+     * Sales account code for the external accounting system.
+     * Null means the organization default is used.
+     */
+    salesAccount?: null | number;
 };
 
 export type NewProductVariantDto = {
@@ -587,6 +592,11 @@ export type ProductDto = {
     visibility?: ProductVisibility;
     inventory?: null | number;
     published?: null | boolean;
+    /**
+     * Sales account code for the external accounting system.
+     * Null means the organization default is used.
+     */
+    salesAccount?: null | number;
     variants?: Array<ProductVariantDto>;
     minimumQuantity?: number;
     isMandatory?: boolean;
@@ -603,6 +613,11 @@ export type ProductFormDto = {
     inventory?: null | number;
     published?: null | boolean;
     visibility?: null | ProductVisibility;
+    /**
+     * Sales account code for the external accounting system.
+     * Null means the organization default is used.
+     */
+    salesAccount?: null | number;
 };
 
 export type ProductOrderDto = {

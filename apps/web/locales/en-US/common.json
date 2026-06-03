@@ -244,6 +244,8 @@
       "minimumQuantity": "Min quantity",
       "name": "Name",
       "price": "Price",
+      "salesAccount": "Sales account",
+      "salesAccountDescription": "Optional. Empty uses the organization's default sales account on new products; on existing products it keeps the current value.",
       "vatPercent": "Vat",
       "visibility": "Visibility"
     }
