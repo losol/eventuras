@@ -9,6 +9,6 @@ internal static class PowerOfficeConstants
     internal const string ClientKeyDescription = "PowerOffice Client key";
     internal const string DefaultSalesAccountKey = "POWER_OFFICE_DEFAULT_SALES_ACCOUNT";
     internal const string DefaultSalesAccountDescription =
-        "Default sales account (kontokode) used when a product is first created in PowerOffice. Falls back to 3100 if unset.";
+        "Fallback sales account (kontokode) used when a product is first created in PowerOffice and the product itself has no sales account set. Falls back to 3100 if unset or invalid.";
     internal const int FallbackSalesAccount = 3100;
 }

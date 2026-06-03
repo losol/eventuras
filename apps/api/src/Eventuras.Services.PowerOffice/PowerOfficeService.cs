@@ -222,7 +222,7 @@ public class PowerOfficeService : IInvoicingProvider
                 Name = line.Description,
                 Description = line.ProductDescription,
                 SalesPrice = line.Price,
-                SalesAccount = await ResolveDefaultSalesAccountAsync()
+                SalesAccount = line.SalesAccount ?? await ResolveDefaultSalesAccountAsync()
             };
             await api.Product.SaveAsync(product);
         }

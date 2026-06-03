@@ -7,6 +7,13 @@ public class InvoiceLine
 
     public string ProductCode { get; set; }
     public string ProductDescription { get; set; }
+
+    /// <summary>
+    ///     Per-product sales account code. When null, the invoicing provider falls
+    ///     back to the organization default.
+    /// </summary>
+    public int? SalesAccount { get; set; }
+
     public int? Quantity { get; set; }
 
     public decimal? Price { get; set; }

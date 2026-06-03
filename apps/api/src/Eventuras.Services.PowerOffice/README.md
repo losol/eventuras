@@ -31,7 +31,7 @@ PowerOffice settings are configured per organization through the organization se
 | ------------------------------------ | ------ | ---------------------------------------------------------------------------------------------------------------------- |
 | `POWER_OFFICE_APP_KEY`               | String | PowerOffice Application Key                                                                                            |
 | `POWER_OFFICE_CLIENT_KEY`            | String | PowerOffice Client Key                                                                                                 |
-| `POWER_OFFICE_DEFAULT_SALES_ACCOUNT` | Number | Default sales account (kontokode) assigned when a product is first created in PowerOffice. Defaults to `3100` if unset. |
+| `POWER_OFFICE_DEFAULT_SALES_ACCOUNT` | Number | Fallback sales account (kontokode) assigned when a product is first created in PowerOffice and the product has no sales account of its own. Defaults to `3100` if unset or invalid. |
 
 **Note**: These settings are stored securely in the database per organization, not in configuration files.
 
@@ -53,8 +53,8 @@ The service handles invoices for the following payment methods:
 
 2. **Product Creation**
    - Creates products in PowerOffice if they don't exist (matched by product code)
-   - New products are assigned the sales account from `POWER_OFFICE_DEFAULT_SALES_ACCOUNT`, falling back to `3100` if the setting is missing or invalid
-   - Products that already exist in PowerOffice are left unchanged — the sales account on existing PowerOffice products is never overwritten
+   - New products are assigned the product's own sales account when set; otherwise the `POWER_OFFICE_DEFAULT_SALES_ACCOUNT` setting, falling back to `3100` if it is missing or invalid
+   - Products that already exist in PowerOffice are left unchanged — the sales account on existing PowerOffice products is never overwritten, so changing a product's sales account in Eventuras does not propagate to a product already created in PowerOffice
 
 3. **Invoice Generation**
    - Creates draft invoice in PowerOffice
