@@ -92,9 +92,12 @@ export async function handleOidcCallback(
   }
 
   try {
-    // 2) Reconstruct the public callback URL
+    // 2) Reconstruct the public callback URL. Keep the request path: behind a
+    // TLS-terminating proxy applicationUrl is just the origin ("/"), and the
+    // token-exchange redirect_uri must match the callback path used at authorize.
     const currentUrl = new URL(request.url);
     const publicUrl = new URL(applicationUrl);
+    publicUrl.pathname = currentUrl.pathname;
     publicUrl.search = currentUrl.search;
 
     // 3) Read PKCE cookies
