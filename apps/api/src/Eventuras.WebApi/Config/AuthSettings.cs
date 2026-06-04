@@ -8,4 +8,5 @@ public class AuthSettings
     public string ClientSecret { get; set; }
     public string ApiIdentifier { get; set; }
     public bool EnablePiiLogging { get; set; }
+    public string RoleClaimType { get; set; }
 }
