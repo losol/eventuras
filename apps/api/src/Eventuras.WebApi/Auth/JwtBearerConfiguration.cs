@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authentication;
@@ -12,7 +13,7 @@ namespace Eventuras.WebApi.Auth;
 public static class JwtBearerConfiguration
 {
     public static AuthenticationBuilder AddJwtBearerConfiguration(this AuthenticationBuilder builder, string issuer,
-        string audience, string jwtSecret) =>
+        string audience, string jwtSecret, string roleClaimType = null) =>
         builder.AddJwtBearer(options =>
         {
             options.Authority = issuer;
@@ -21,7 +22,9 @@ public static class JwtBearerConfiguration
             {
                 ValidateIssuer = true,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret)),
-                ValidAudiences = new List<string> { audience, issuer.TrimEnd('/') + "/userinfo" }
+                ValidAudiences = new List<string> { audience, issuer.TrimEnd('/') + "/userinfo" },
+                // Default preserves current Auth0 behavior; Keycloak deployments set Auth:RoleClaimType=roles
+                RoleClaimType = string.IsNullOrWhiteSpace(roleClaimType) ? ClaimTypes.Role : roleClaimType.Trim()
             };
 
             options.Events = new JwtBearerEvents

@@ -152,15 +152,16 @@ builder.Services.AddSingleton<IBackgroundJobQueue, BackgroundJobQueue>();
 builder.Services.AddHostedService<NotificationBackgroundWorker>();
 builder.Services.AddHostedService<CertificateBackgroundWorker>();
 
+var authSettings = builder.Configuration.GetRequiredSection("Auth").Get<AuthSettings>()
+    ?? throw new InvalidOperationException("The \"Auth\" configuration section is empty.");
 builder.Services.AddAuthentication(options =>
     {
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
         options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
         options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     })
-    .AddJwtBearerConfiguration(builder.Configuration["Auth:Issuer"],
-        builder.Configuration["Auth:Audience"],
-        builder.Configuration["Auth:ClientSecret"]);
+    .AddJwtBearerConfiguration(authSettings.Issuer, authSettings.Audience,
+        authSettings.ClientSecret, authSettings.RoleClaimType);
 
 builder.Services.AddSingleton<IAuthorizationHandler, RequireScopeHandler>();
 
