@@ -130,6 +130,21 @@
     }
   },
   "organizations": {
+    "create": {
+      "button": "Opprett ny organisasjon",
+      "title": "Opprett ny organisasjon",
+      "name": "Navn",
+      "description": "Beskrivelse",
+      "url": "Nettside",
+      "email": "E-post",
+      "phone": "Telefon",
+      "nameRequired": "Navn er påkrevd",
+      "submit": "Opprett",
+      "submitting": "Oppretter…",
+      "cancel": "Avbryt",
+      "success": "Organisasjon opprettet",
+      "error": "Kunne ikke opprette organisasjon"
+    },
     "page": {
       "title": "Organisasjoner"
     }
