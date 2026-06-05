@@ -130,6 +130,21 @@
     }
   },
   "organizations": {
+    "create": {
+      "button": "Create new organization",
+      "title": "Create new organization",
+      "name": "Name",
+      "description": "Description",
+      "url": "Website",
+      "email": "Email",
+      "phone": "Phone",
+      "nameRequired": "Name is required",
+      "submit": "Create",
+      "submitting": "Creating…",
+      "cancel": "Cancel",
+      "success": "Organization created",
+      "error": "Could not create organization"
+    },
     "page": {
       "title": "Organizations"
     }

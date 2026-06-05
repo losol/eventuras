@@ -8,6 +8,8 @@ import { Link } from '@eventuras/ratio-ui-next/Link';
 
 import { getV3Organizations } from '@/lib/eventuras-sdk';
 
+import { CreateOrganization } from './CreateOrganization';
+
 const AdminOrganizationsPage = async () => {
   const t = await getTranslations();
   const organizations = await getV3Organizations();
@@ -15,17 +17,20 @@ const AdminOrganizationsPage = async () => {
     <>
       <Section className="py-8">
         <Container>
-          <Heading as="h1">{t('admin.organizations.page.title')}</Heading>
+          <div className="flex items-center justify-between gap-4">
+            <Heading as="h1">{t('admin.organizations.page.title')}</Heading>
+            <CreateOrganization />
+          </div>
         </Container>
       </Section>
       <Section>
         <Container>
           <List>
             {organizations?.data?.map(org => (
-                <List.Item key={org.organizationId}>
-                  <Link href={`/admin/organizations/${org.organizationId}`}>{org.name}</Link>
-                </List.Item>
-              ))}
+              <List.Item key={org.organizationId}>
+                <Link href={`/admin/organizations/${org.organizationId}`}>{org.name}</Link>
+              </List.Item>
+            ))}
           </List>
         </Container>
       </Section>
