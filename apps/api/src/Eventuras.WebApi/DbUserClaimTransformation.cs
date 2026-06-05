@@ -50,6 +50,9 @@ public class DbUserClaimTransformation : IClaimsTransformation
 
         try
         {
+            // Email is the join key between the IdP identity and the DB user.
+            // It relies on the token carrying `email` (mapped to ClaimTypes.Email
+            // via default inbound mapping). See docs/auth-claims.md.
             var dbUser = await _userRetrievalService.GetUserByEmailAsync(userEmail);
 
             var identity = new ClaimsIdentity(EventurasDbAuthType);

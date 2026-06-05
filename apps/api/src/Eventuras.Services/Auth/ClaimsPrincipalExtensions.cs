@@ -22,8 +22,15 @@ public static class ClaimsPrincipalExtensions
 
     public static string? GetMobilePhone(this ClaimsPrincipal user) => user.FindFirstValue(ClaimTypes.MobilePhone);
 
+    // Read roles per identity using that identity's RoleClaimType (same basis as
+    // IsInRole): the JWT identity uses the configured Auth:RoleClaimType (e.g.
+    // "roles" for Keycloak), the DB identity uses ClaimTypes.Role. A hardcoded
+    // ClaimTypes.Role here would miss IdP roles when RoleClaimType is "roles".
     public static IEnumerable<string> GetRoles(this ClaimsPrincipal user) =>
-        user.FindAll(ClaimTypes.Role).Select(c => c.Value);
+        user.Identities
+            .SelectMany(identity => identity.FindAll(identity.RoleClaimType))
+            .Select(c => c.Value)
+            .Distinct();
 
     public static bool IsAdmin(this ClaimsPrincipal user) =>
         new[] { Roles.Admin, Roles.SystemAdmin }.Any(user.IsInRole);

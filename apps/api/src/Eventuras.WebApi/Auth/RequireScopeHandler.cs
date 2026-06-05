@@ -21,6 +21,10 @@ public class RequireScopeHandler : AuthorizationHandler<ScopeRequirement>
 {
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, ScopeRequirement requirement)
     {
+        // The scope claim's Issuer must equal Auth:Issuer (the token "iss"). A
+        // mismatch (e.g. a trailing-slash difference after an IdP change) silently
+        // fails the requirement rather than erroring — keep Auth:Issuer exact.
+        // Both Auth0 and Keycloak emit a single space-delimited "scope" claim.
         var scopeClaim = context.User.FindFirst(c => c.Type == "scope" && c.Issuer == requirement.Issuer);
         if (scopeClaim == null || string.IsNullOrEmpty(scopeClaim.Value))
         {
