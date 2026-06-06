@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
+using Eventuras.Infrastructure.HealthChecks;
 using Eventuras.ServiceDefaults;
 using Eventuras.Services;
 using Eventuras.Services.BackgroundJobs;
@@ -165,6 +166,11 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddSingleton<IAuthorizationHandler, RequireScopeHandler>();
 
+// Diagnostics health checks (e.g. pending migrations) live near their subsystem
+// and are registered here. Tagged "diagnostics" → surfaced to admins, kept off
+// the probe /health so they can never flip the Kubernetes probes.
+builder.Services.AddInfrastructureHealthChecks();
+
 builder.Services.AddOpenApi("v3", options =>
 {
     options.AddDocumentTransformer<AddSecuritySchemeTransformer>();
@@ -225,8 +231,17 @@ app.MapDefaultEndpoints();
 // Kubernetes liveness/readiness probe – excludes external dependency checks.
 app.MapHealthChecks("/health", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
 {
-    Predicate = check => !check.Tags.Contains("converto"),
+    Predicate = check => !check.Tags.Contains("converto") && !check.Tags.Contains(HealthTags.Diagnostics),
 });
+
+// Admin diagnostics: runs the "diagnostics"-tagged checks (e.g. pending
+// migrations) and returns per-check JSON for the admin UI. Not used by probes.
+app.MapHealthChecks("/health/diagnostics",
+    new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+    {
+        Predicate = check => check.Tags.Contains(HealthTags.Diagnostics),
+        ResponseWriter = HealthReportWriter.WriteJson,
+    }).RequireAuthorization(Auth.AdministratorRole);
 
 // Manual diagnostics endpoint – call this to verify Converto is reachable.
 // Not used by Kubernetes probes. Requires AdministratorRole to prevent abuse.
