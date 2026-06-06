@@ -30,9 +30,15 @@ export {
 
   // Content
   FileText,
+  File,
+  Image as ImageIcon,
   Calendar,
   MapPin,
   Home,
+
+  // Upload
+  Upload,
+  CloudUpload,
 
   // E-commerce
   ShoppingCart,

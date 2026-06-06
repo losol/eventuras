@@ -18,3 +18,10 @@ export { Select } from './Select';
 export type { SelectProps, SelectOption } from './Select';
 export { AutoComplete } from './Autocomplete';
 export type { AutoCompleteProps } from './Autocomplete';
+export { FileUpload } from './FileUpload';
+export type {
+  FileUploadProps,
+  FileUploadItem,
+  FileUploadStatus,
+  FileUploadRejection,
+} from './FileUpload';
