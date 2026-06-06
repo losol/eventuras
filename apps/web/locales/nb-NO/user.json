@@ -1,5 +1,9 @@
 {
   "account": {
+    "details": {
+      "title": "Brukerdetaljer",
+      "userId": "Bruker-ID"
+    },
     "create": {
       "label": "Lag bruker"
     },

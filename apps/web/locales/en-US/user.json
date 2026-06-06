@@ -1,5 +1,9 @@
 {
   "account": {
+    "details": {
+      "title": "User details",
+      "userId": "User ID"
+    },
     "create": {
       "label": "Create user"
     },
