@@ -55,7 +55,7 @@ public static class Extensions
     public static IHostApplicationBuilder AddDefaultHealthChecks(this IHostApplicationBuilder builder)
     {
         builder.Services.AddHealthChecks()
-            .AddCheck("self", () => HealthCheckResult.Healthy(), tags: ["live"]);
+            .AddCheck("self", () => HealthCheckResult.Healthy(), tags: [HealthTags.Live]);
 
         return builder;
     }
@@ -68,7 +68,7 @@ public static class Extensions
     {
         app.MapHealthChecks("/alive", new HealthCheckOptions
         {
-            Predicate = r => r.Tags.Contains("live"),
+            Predicate = r => r.Tags.Contains(HealthTags.Live),
         });
 
         return app;
