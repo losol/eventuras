@@ -37,7 +37,9 @@ public class JwtBearerConfigurationTests
         // must also fall back rather than become an invalid claim type.
         var options = BuildOptions(roleClaimType);
 
+        Assert.True(options.MapInboundClaims);
         Assert.Equal(ClaimTypes.Role, options.TokenValidationParameters.RoleClaimType);
+        Assert.Equal(ClaimTypes.Name, options.TokenValidationParameters.NameClaimType);
     }
 
     [Theory]
@@ -48,6 +50,8 @@ public class JwtBearerConfigurationTests
         // Keycloak deployments set Auth:RoleClaimType=roles.
         var options = BuildOptions(roleClaimType);
 
+        Assert.False(options.MapInboundClaims);
         Assert.Equal("roles", options.TokenValidationParameters.RoleClaimType);
+        Assert.Equal("name", options.TokenValidationParameters.NameClaimType);
     }
 }
