@@ -9,6 +9,10 @@ namespace Eventuras.Services.Auth;
 
 public static class ClaimsPrincipalExtensions
 {
+    private const string EmailClaimType = "email";
+    private const string NameClaimType = "name";
+    private const string PhoneNumberClaimType = "phone_number";
+
     public static Guid? GetUserId(this ClaimsPrincipal user)
     {
         var dbIdentity = user.Identities.FirstOrDefault(i => i.AuthenticationType == "Eventuras.Database");
@@ -16,11 +20,14 @@ public static class ClaimsPrincipalExtensions
         return value != null && Guid.TryParse(value, out var id) ? id : null;
     }
 
-    public static string? GetEmail(this ClaimsPrincipal user) => user.FindFirstValue(ClaimTypes.Email);
+    public static string? GetEmail(this ClaimsPrincipal user) =>
+        user.FindFirstValue(ClaimTypes.Email) ?? user.FindFirstValue(EmailClaimType);
 
-    public static string? GetName(this ClaimsPrincipal user) => user.FindFirstValue(ClaimTypes.Name);
+    public static string? GetName(this ClaimsPrincipal user) =>
+        user.FindFirstValue(ClaimTypes.Name) ?? user.FindFirstValue(NameClaimType);
 
-    public static string? GetMobilePhone(this ClaimsPrincipal user) => user.FindFirstValue(ClaimTypes.MobilePhone);
+    public static string? GetMobilePhone(this ClaimsPrincipal user) =>
+        user.FindFirstValue(ClaimTypes.MobilePhone) ?? user.FindFirstValue(PhoneNumberClaimType);
 
     // Read roles per identity using that identity's RoleClaimType (same basis as
     // IsInRole): the JWT identity uses the configured Auth:RoleClaimType (e.g.

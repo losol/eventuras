@@ -8,15 +8,18 @@ what the identity provider (Auth0 or Keycloak) must emit for it to work.
 | Concern | Claim read | Mechanism |
 | --- | --- | --- |
 | Roles (authorization) | `Auth:RoleClaimType` (e.g. `roles` for Keycloak; defaults to the .NET `ClaimTypes.Role` URI) | Configured on the JWT bearer in [`JwtBearerConfiguration`](../src/Eventuras.WebApi/Auth/JwtBearerConfiguration.cs); drives `IsInRole`, `[Authorize(Roles=…)]`, `IsSystemAdmin()`, `IsAdmin()` |
-| Email | `email` → `ClaimTypes.Email` | .NET **default inbound claim mapping** (`MapInboundClaims` is left at its default `true` — not set in code) |
-| Name | `name` → `ClaimTypes.Name` | Same default inbound mapping |
+| Email | `ClaimTypes.Email` or raw `email` | [`ClaimsPrincipalExtensions.GetEmail()`](../src/Eventuras.Services/Auth/ClaimsPrincipalExtensions.cs) supports both mapped and raw JWT claims |
+| Name | `ClaimTypes.Name` or raw `name` | [`ClaimsPrincipalExtensions.GetName()`](../src/Eventuras.Services/Auth/ClaimsPrincipalExtensions.cs) supports both mapped and raw JWT claims |
 | Scopes | `scope` (space-delimited) | [`RequireScopeHandler`](../src/Eventuras.WebApi/Auth/RequireScopeHandler.cs); the claim's `Issuer` must equal `Auth:Issuer` |
 | DB user id | `ClaimTypes.NameIdentifier` on the `Eventuras.Database` identity | Added by [`DbUserClaimTransformation`](../src/Eventuras.WebApi/DbUserClaimTransformation.cs) after resolving the DB user |
 | Org-member roles | `ClaimTypes.Role` on the `Eventuras.Database` identity | Added by `DbUserClaimTransformation` for the **current** organization only |
 
-Only **roles** and **scope** are handled explicitly; email and name ride on the
-framework default inbound mapping. `GetRoles()` reads roles per identity using
-each identity's `RoleClaimType`, so it stays correct regardless of `Auth:RoleClaimType`.
+When `Auth:RoleClaimType` is blank, JWT bearer keeps the framework default
+inbound claim mapping for compatibility with existing Auth0 tokens. When
+`Auth:RoleClaimType` is set (for example to `roles`), inbound mapping is disabled
+so the raw JWT claim name remains available to `IsInRole` and
+`[Authorize(Roles=…)]`. `GetRoles()` reads roles per identity using each
+identity's `RoleClaimType`, so it stays correct regardless of `Auth:RoleClaimType`.
 
 ## What the IdP must emit
 

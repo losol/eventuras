@@ -16,15 +16,20 @@ public static class JwtBearerConfiguration
         string audience, string jwtSecret, string roleClaimType = null) =>
         builder.AddJwtBearer(options =>
         {
+            var useDefaultInboundClaimMapping = string.IsNullOrWhiteSpace(roleClaimType);
+
             options.Authority = issuer;
+            options.MapInboundClaims = useDefaultInboundClaimMapping;
             options.SaveToken = true;
             options.TokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = true,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret)),
                 ValidAudiences = new List<string> { audience, issuer.TrimEnd('/') + "/userinfo" },
-                // Default preserves current Auth0 behavior; Keycloak deployments set Auth:RoleClaimType=roles
-                RoleClaimType = string.IsNullOrWhiteSpace(roleClaimType) ? ClaimTypes.Role : roleClaimType.Trim()
+                // Default preserves current Auth0 behavior. When a custom role claim
+                // is configured, keep raw JWT claim names so "roles" remains "roles".
+                RoleClaimType = useDefaultInboundClaimMapping ? ClaimTypes.Role : roleClaimType.Trim(),
+                NameClaimType = useDefaultInboundClaimMapping ? ClaimTypes.Name : "name"
             };
 
             options.Events = new JwtBearerEvents
