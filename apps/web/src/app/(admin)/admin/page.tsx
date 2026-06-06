@@ -10,6 +10,7 @@ import { Link } from '@eventuras/ratio-ui-next/Link';
 import { getOrganizationId } from '@/utils/organization';
 
 import AdminEventList from './events/AdminEventList';
+import { HealthAlert } from './HealthAlert';
 
 interface AdminPageProps {
   searchParams?: Promise<{ page?: string }>;
@@ -21,6 +22,7 @@ const AdminPage = async (props: AdminPageProps) => {
   return (
     <Container>
       <Heading as="h1">{t('admin.title')}</Heading>
+      <HealthAlert />
       <Section className="py-10">
         <ButtonGroup wrap gap="xs">
           <Link href={`/admin/events/create`} variant="button-primary" testId="add-event-button">
