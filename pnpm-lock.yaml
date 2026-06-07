@@ -1090,8 +1090,8 @@ importers:
         specifier: ^5.0.0 || ^6.0.0
         version: 6.1.0(@types/react@19.2.15)(react@19.2.6)(xstate@5.31.1)
       '@xstate/store':
-        specifier: ^3.17.1
-        version: 3.17.5(react@19.2.6)
+        specifier: ^4.0.0
+        version: 4.0.0
       next:
         specifier: ^16.0.0
         version: 16.2.6(@opentelemetry/api@1.9.1)(@playwright/test@1.59.1)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.77.4)
@@ -6358,16 +6358,8 @@ packages:
       xstate:
         optional: true
 
-  '@xstate/store@3.17.5':
-    resolution: {integrity: sha512-ITajQVRAMa1pgmgM0OdRFYQ6OQ8GK4ynh391p13GKtZnELXn9Hgs9pr4mqO1Z95HH9INcmczmWi5xk3O18GBWg==}
-    peerDependencies:
-      react: ^18.2.0 || ^19.0.0
-      solid-js: ^1.7.6
-    peerDependenciesMeta:
-      react:
-        optional: true
-      solid-js:
-        optional: true
+  '@xstate/store@4.0.0':
+    resolution: {integrity: sha512-uhsEuaG04t71GjkJubwfFr8ylxRmwe6y/un2/sbU699aA2ddfVizmj4ex7K4DB81pysL8CvKRjAQUMb6Eb6nng==}
 
   '@xtuc/ieee754@1.2.0':
     resolution: {integrity: sha512-DX8nKgqcGwsc0eJSqYt5lwP4DH5FlHnmuWWBRy7X0NcaGR0ZtuyeESgMwTYVEtxmsNGY+qit4QYT/MIYTOTPeA==}
@@ -16883,9 +16875,7 @@ snapshots:
     transitivePeerDependencies:
       - '@types/react'
 
-  '@xstate/store@3.17.5(react@19.2.6)':
-    optionalDependencies:
-      react: 19.2.6
+  '@xstate/store@4.0.0': {}
 
   '@xtuc/ieee754@1.2.0': {}
 
