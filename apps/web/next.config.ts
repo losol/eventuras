@@ -29,6 +29,7 @@ const nextConfig: NextConfig = {
     '@eventuras/fides-auth-next',
     '@eventuras/markdown',
     '@xstate/store',
+    '@xstate/store-react',
   ],
 
   allowedDevOrigins: process.env.APPLICATION_URL
