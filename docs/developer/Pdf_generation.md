@@ -1,6 +1,6 @@
 # Configure PDF generation
 
-The PDF generation is done by the `apps/convertoapi` app.
+The PDF generation is done by the Converto service ([losol/converto](https://github.com/losol/converto)), which the API calls over HTTP via the `Eventuras.Services.Converto` client.
 
 ## Installation
 

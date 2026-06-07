@@ -14,7 +14,6 @@
 
 - **[✨ Frontend Developer](../.github/agents/frontend-developer.md)** - UI implementation, E2E testing, feature development
 - **[⚙️ Backend Developer](../.github/agents/backend-developer.md)** - C# .NET API development, business logic, database operations
-- **[🔧 Converto Developer](../.github/agents/converto-developer.md)** - PDF generation microservice
 
 ### Maintenance & Documentation
 
@@ -32,7 +31,6 @@
 | **Frontend Developer** | Features, components, tests | `apps/web`, `apps/historia`, `libs/` | UI development, testing, implementation |
 | **Backend Developer** | API endpoints, business logic | `apps/api` | C#, EF Core, API design, testing |
 | **Content Architect** | CMS planning | `apps/historia` | Payload CMS, planning, research |
-| **Converto Developer** | PDF generation | `apps/convertoapi` | Playwright, Node.js, microservices |
 | **Maintenance Specialist** | Cleanup, updates | All code & docs | Refactoring, dependency management |
 | **Documentation Specialist** | READMEs, guides | Documentation files | Technical writing, organization |
 
@@ -43,7 +41,7 @@
 ### "I need to..."
 
 **Build a new feature:**
-- Single domain? → Use domain specialist (Frontend/Backend/Converto Developer)
+- Single domain? → Use domain specialist (Frontend/Backend)
 - Multiple domains? → Start with **Project Architect**
 
 **Fix architecture or design:**

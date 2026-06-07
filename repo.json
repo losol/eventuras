@@ -8,11 +8,6 @@
       "path": "apps/conductor",
       "package": "@eventuras/conductor"
     },
-    "converto": {
-      "path": "apps/convertoapi",
-      "package": "@eventuras/convertoapi",
-      "aliases": ["converto-api", "convertoapi"]
-    },
     "docs-framework": {
       "path": "apps/docs-framework",
       "package": "@eventuras/docs-framework"

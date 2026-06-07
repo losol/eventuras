@@ -334,7 +334,6 @@ Use Frontend Developer for:
 - **Backend/API concerns** → `@Max` (Backend Specialist)
 - **CMS integration** → `@Connie` (Content Architect)
 - **Documentation needs** → `@Dora` (Documentation Specialist)
-- **PDF/Converto questions** → `@Rendi` (Converto Developer)
 
 Example:
 ```

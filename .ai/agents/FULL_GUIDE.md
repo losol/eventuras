@@ -99,14 +99,6 @@ This directory contains specialized AI agents for developing the Eventuras platf
 
 ---
 
-### 📄 Converto Developer (`converto-developer.md`)
-
-**Role:** PDF generation microservice development
-
-**Scope:** `apps/convertoapi`
-
----
-
 ### 📝 Documentation Specialist (`documentation-specialist.md`)
 
 **Role:** Creates and maintains README files and project documentation
@@ -551,7 +543,6 @@ project-architect.md         # 🎯 Multi-domain coordination & PM
 │   ├── frontend-developer.md        # ✨ Frontend feature implementation
 │   ├── backend-developer.md         # ⚙️ Backend API development
 │   ├── content-architect.md         # 📝 Historia CMS planning
-│   ├── converto-developer.md        # 🔧 PDF generation service
 │   ├── documentation-specialist.md  # 📝 Documentation and README files
 │   └── maintenance-specialist.md    # 🧹 Code cleanup and dependency updates
 │
