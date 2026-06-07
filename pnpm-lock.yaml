@@ -403,7 +403,7 @@ importers:
         version: 19.2.6(react@19.2.6)
       tailwindcss-react-aria-components:
         specifier: ^2.1.0
-        version: 2.1.0(tailwindcss@4.3.0)
+        version: 2.1.1(tailwindcss@4.3.0)
       xstate:
         specifier: ^5.30.0
         version: 5.32.0
@@ -531,7 +531,7 @@ importers:
         version: 4.3.0
       tailwindcss-react-aria-components:
         specifier: ^2.1.0
-        version: 2.1.0(tailwindcss@4.3.0)
+        version: 2.1.1(tailwindcss@4.3.0)
       tsup:
         specifier: 8.5.1
         version: 8.5.1(@swc/core@1.15.33(@swc/helpers@0.5.23))(jiti@2.7.0)(postcss@8.5.15)(tsx@4.22.3)(typescript@6.0.3)(yaml@2.9.0)
@@ -728,7 +728,7 @@ importers:
         version: 3.47.0(react@19.2.6)
       tailwindcss-react-aria-components:
         specifier: ^2.1.0
-        version: 2.1.0(tailwindcss@4.3.0)
+        version: 2.1.1(tailwindcss@4.3.0)
       xstate:
         specifier: ^5.30.0
         version: 5.32.0
@@ -1423,7 +1423,7 @@ importers:
         version: 3.6.0
       tailwindcss-react-aria-components:
         specifier: ^2.1.0
-        version: 2.1.0(tailwindcss@4.3.0)
+        version: 2.1.1(tailwindcss@4.3.0)
     devDependencies:
       '@eventuras/eslint-config':
         specifier: workspace:*
@@ -10972,8 +10972,8 @@ packages:
     peerDependencies:
       tailwindcss: '>=3.0.0 || insiders'
 
-  tailwindcss-react-aria-components@2.1.0:
-    resolution: {integrity: sha512-wP1BHdqFoFVKTVscM/EIhd1WEBUcNqmPgucMl+nzVAnruq7dzmn2J4CYcJ9cpf1WiyklzO8SH6M+Z6ZoF9X4Jg==}
+  tailwindcss-react-aria-components@2.1.1:
+    resolution: {integrity: sha512-MjJzUShRN52Wj29e1/DQgrocOXsP62cySztEaPbDsdDjYpPfEo2DlLAPOP8GH9YwwqZ+SC7Bpi31QJUOCcROkA==}
     peerDependencies:
       tailwindcss: ^4.0.0
 
@@ -13206,7 +13206,7 @@ snapshots:
       react-dom: 19.2.6(react@19.2.6)
       react-stately: 3.47.0(react@19.2.6)
       tailwind-merge: 3.6.0
-      tailwindcss-react-aria-components: 2.1.0(tailwindcss@4.3.0)
+      tailwindcss-react-aria-components: 2.1.1(tailwindcss@4.3.0)
     transitivePeerDependencies:
       - '@opentelemetry/api'
       - '@opentelemetry/api-logs'
@@ -22287,7 +22287,7 @@ snapshots:
     dependencies:
       tailwindcss: 4.3.0
 
-  tailwindcss-react-aria-components@2.1.0(tailwindcss@4.3.0):
+  tailwindcss-react-aria-components@2.1.1(tailwindcss@4.3.0):
     dependencies:
       tailwindcss: 4.3.0
 
