@@ -16,7 +16,6 @@ All agent specifications are in **[`.github/agents/`](../../.github/agents/)**:
 ### ✨ Developers
 - **[Backend Developer](../../.github/agents/backend-developer.md)** - C# .NET API development
 - **[Frontend Developer](../../.github/agents/frontend-developer.md)** - TypeScript/React implementation
-- **[Converto Developer](../../.github/agents/converto-developer.md)** - PDF generation microservice
 
 ### 🔧 Specialists  
 - **[Documentation Specialist](../../.github/agents/documentation-specialist.md)** - README and docs maintenance

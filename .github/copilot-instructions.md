@@ -7,7 +7,6 @@ Eventuras is a platform for managing courses, events, and conferences. This mono
 - **apps/api**: C# .NET backend API (ASP.NET Core + PostgreSQL)
 - **apps/web**: Next.js frontend for participants and organizers
 - **apps/historia**: Next.js knowledge management CMS (in development)
-- **apps/convertoapi**: Node.js PDF generation microservice
 - **libs/**: Shared TypeScript libraries for frontend
 
 ## Context-Aware Assistance
@@ -44,20 +43,6 @@ Key principles:
 - Implement responsive design and accessibility
 
 See detailed guidelines: `.github/agents/frontend-developer.md`
-
-### When working in `apps/convertoapi/` (Node.js Microservice)
-- **Language**: TypeScript
-- **Framework**: Fastify (→ Express.js migration planned)
-- **PDF Generation**: Playwright
-- **Auth**: JWT-based
-
-Key principles:
-- Keep business logic framework-agnostic
-- Implement proper error handling and timeouts
-- Validate inputs with Zod schemas
-- Handle browser resource cleanup
-
-See detailed guidelines: `.github/agents/converto-developer.md`
 
 ## Code Standards
 

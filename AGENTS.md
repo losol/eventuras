@@ -26,12 +26,7 @@ This file provides context and instructions for AI coding agents working on the 
    - Framework: React, Next.js
    - Purpose: Knowledge management system (in development)
 
-4. **Converto API** (`apps/convertoapi`)
-   - Language: TypeScript, Node.js
-   - Framework: Fastify → Express.js (planned)
-   - Purpose: HTML-to-PDF conversion microservice
-
-5. **Shared Libraries** (`libs/`)
+4. **Shared Libraries** (`libs/`)
    - Language: TypeScript
    - Purpose: Reusable frontend components, utilities, and SDKs
 
@@ -55,13 +50,6 @@ This project uses specialized agents for different contexts:
 - **Focus**: UI development, shared libraries, E2E testing, refactoring to libs
 
 Frontend agents should actively look for opportunities to refactor code from `apps/web/` and `apps/historia/` into shared libraries under `libs/` to promote code reuse and maintainability. Please ask before doing refactors.
-
-### Converto Agent
-
-- **Scope**: `apps/convertoapi/`
-- **File**: `.github/agents/converto-developer.md`
-- **Tech**: TypeScript, Node.js, Fastify/Express, Playwright
-- **Focus**: PDF generation, microservice architecture, API design
 
 ## Path-Specific Instructions
 

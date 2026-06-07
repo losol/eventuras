@@ -23,7 +23,6 @@
   - Separate interfaces for participants and organizers
   - Internationalization with next-intl
 - **`apps/historia`** — Upcoming knowledge focuses cms. 
-- **`apps/convertoapi`** — PDF generator - converts html to pdf
 - **`apps/dev-docs`** — Developer documentation website
 
 ### 📚 **Libs: Reusable Libraries**
@@ -49,8 +48,7 @@ eventuras/
 ├── apps/               # Main applications
 │   ├── api/            # .NET Core backend
 │   ├── web/            # Next.js frontend
-│   ├── historia/       # Historical data
-│   └── convertoapi/    # PDF generator
+│   └── historia/       # Historical data
 ├── libs/               # Shared libraries
 │   ├── sdk/            # TypeScript API client
 │   ├── smartform/      # Form system
@@ -97,7 +95,6 @@ The applications will be available at
 - **AI Agent Guides:** Specialized instructions for AI-assisted development
   - [Backend Agent](.github/agents/backend-developer.md) — for `apps/api`
   - [Frontend Agent](.github/agents/frontend-developer.md) — for `apps/web` and `libs/*`
-  - [Converto Agent](.github/agents/converto-developer.md) — for `apps/convertoapi`
   - [Complete AI Guide](.ai/README.md)
 
 ---

@@ -8,7 +8,6 @@ This monorepo contains:
 - `apps/api` — C# .NET backend API
 - `apps/web` — Next.js frontend for participants/organizers
 - `apps/historia` — Next.js knowledge CMS (in development)
-- `apps/convertoapi` — Node.js PDF generation service
 - `libs/` — Shared TypeScript libraries
 
 ## Context-Aware Agent Selection
@@ -35,16 +34,6 @@ Key context:
 - Actively refactor reusable code to `libs/`
 - Playwright for E2E testing
 - TSDoc for documentation
-
-### Converto Service (Node.js)
-**Path**: `apps/convertoapi/`
-**Instructions**: `.github/agents/converto-developer.md`
-
-Key context:
-- TypeScript with Fastify (migrating to Express.js)
-- HTML-to-PDF conversion using Playwright
-- JWT authentication and rate limiting
-- Standalone microservice
 
 ## Code Standards
 
@@ -83,5 +72,4 @@ Use Conventional Commits:
 For detailed guidance, always reference:
 - `.github/agents/backend-developer.md`
 - `.github/agents/frontend-developer.md`
-- `.github/agents/converto-developer.md`
 - `CONTRIBUTING.md`
