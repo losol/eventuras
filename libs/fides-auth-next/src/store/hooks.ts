@@ -1,4 +1,4 @@
-import { useSelector as useStoreSelector } from '@xstate/store/react';
+import { useSelector as useStoreSelector } from '@xstate/store-react';
 import type { SessionUser } from './types';
 import type { createAuthStore } from './store';
 
