@@ -339,7 +339,7 @@ importers:
         version: 3.0.1
       lucide-react:
         specifier: ^1.8.0
-        version: 1.16.0(react@19.2.6)
+        version: 1.17.0(react@19.2.6)
       nanoid:
         specifier: ^5.1.9
         version: 5.1.11
@@ -431,13 +431,13 @@ importers:
         version: 4.3.0
       '@xstate/react':
         specifier: ^6.1.0
-        version: 6.1.0(@types/react@19.2.15)(react@19.2.6)(xstate@5.31.1)
+        version: 6.1.0(@types/react@19.2.15)(react@19.2.6)(xstate@5.32.0)
       jose:
         specifier: 6.2.3
         version: 6.2.3
       lucide-react:
         specifier: ^1.8.0
-        version: 1.16.0(react@19.2.6)
+        version: 1.17.0(react@19.2.6)
       next:
         specifier: 16.2.6
         version: 16.2.6(@opentelemetry/api@1.9.1)(@playwright/test@1.59.1)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.77.4)
@@ -458,7 +458,7 @@ importers:
         version: 2.1.0(tailwindcss@4.3.0)
       xstate:
         specifier: ^5.30.0
-        version: 5.31.1
+        version: 5.32.0
     devDependencies:
       '@eventuras/eslint-config':
         specifier: workspace:*
@@ -744,13 +744,13 @@ importers:
         version: 4.1.13
       '@xstate/react':
         specifier: ^6.1.0
-        version: 6.1.0(@types/react@19.2.15)(react@19.2.6)(xstate@5.31.1)
+        version: 6.1.0(@types/react@19.2.15)(react@19.2.6)(xstate@5.32.0)
       jose:
         specifier: 6.2.3
         version: 6.2.3
       lucide-react:
         specifier: ^1.8.0
-        version: 1.16.0(react@19.2.6)
+        version: 1.17.0(react@19.2.6)
       next:
         specifier: 16.2.6
         version: 16.2.6(@opentelemetry/api@1.9.1)(@playwright/test@1.59.1)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.77.4)
@@ -783,7 +783,7 @@ importers:
         version: 2.1.0(tailwindcss@4.3.0)
       xstate:
         specifier: ^5.30.0
-        version: 5.31.1
+        version: 5.32.0
     devDependencies:
       '@eventuras/eslint-config':
         specifier: workspace:*
@@ -976,7 +976,7 @@ importers:
         version: 19.2.3(@types/react@19.2.15)
       lucide-react:
         specifier: ^1.8.0
-        version: 1.16.0(react@19.2.6)
+        version: 1.17.0(react@19.2.6)
       vite:
         specifier: ^8.0.8
         version: 8.0.14(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.77.4)(terser@5.48.0)(tsx@4.22.3)(yaml@2.9.0)
@@ -1088,7 +1088,7 @@ importers:
         version: link:../logger
       '@xstate/react':
         specifier: ^5.0.0 || ^6.0.0
-        version: 6.1.0(@types/react@19.2.15)(react@19.2.6)(xstate@5.31.1)
+        version: 6.1.0(@types/react@19.2.15)(react@19.2.6)(xstate@5.32.0)
       '@xstate/store':
         specifier: ^3.17.1
         version: 3.17.5(react@19.2.6)
@@ -1131,7 +1131,7 @@ importers:
         version: 4.1.7(@opentelemetry/api@1.9.1)(@types/node@24.12.4)(@vitest/browser-playwright@4.1.7)(@vitest/coverage-v8@4.1.7)(@vitest/ui@4.1.7)(happy-dom@20.9.0)(jsdom@29.1.1)(vite@8.0.14(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.77.4)(terser@5.48.0)(tsx@4.22.3)(yaml@2.9.0))
       xstate:
         specifier: ^5.30.0
-        version: 5.31.1
+        version: 5.32.0
 
   libs/google-api:
     dependencies:
@@ -1457,7 +1457,7 @@ importers:
         version: 2.1.1
       lucide-react:
         specifier: ^1.8.0
-        version: 1.16.0(react@19.2.6)
+        version: 1.17.0(react@19.2.6)
       react:
         specifier: ^19.0.0
         version: 19.2.6
@@ -9223,8 +9223,8 @@ packages:
     resolution: {integrity: sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==}
     engines: {node: '>=10'}
 
-  lucide-react@1.16.0:
-    resolution: {integrity: sha512-dYwyPzb4MEKpGUmNYk3WKWPnMrHs3FKM+q94kAnJrcDIqqn1hq2xY8scaS2ovsOCM5D51ey2gaRG3PBb1vgoYQ==}
+  lucide-react@1.17.0:
+    resolution: {integrity: sha512-9FA9evdox/JQL5PT57fdA1x/yg8T7knJ98+zjTL3UfKza6pflQUUh3XtaQIHKvnsJw1lmsEyHVlt5jchYxOQ5w==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
@@ -11942,8 +11942,8 @@ packages:
     engines: {node: '>= 0.10.0'}
     hasBin: true
 
-  xstate@5.31.1:
-    resolution: {integrity: sha512-3P7t7GQ61BvLu+8Cj6Zq7rcS34vecL9pvfN2ucUWmIFIUG+rAREviOs4Xy4OO3BuJHSz6RLU8eqDXxSbVotjDQ==}
+  xstate@5.32.0:
+    resolution: {integrity: sha512-zsk73aWGmxn9z34P0kbiod5JwTvdYRW3+IDxITq8sd9+VWwMyW7BUzpplnYy9mIEXa6V8IMDv7Hy4m0mhT5+2Q==}
 
   xtend@4.0.2:
     resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==}
@@ -13360,7 +13360,7 @@ snapshots:
       '@react-aria/overlays': 3.32.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@react-stately/data': 3.16.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       clsx: 2.1.1
-      lucide-react: 1.16.0(react@19.2.6)
+      lucide-react: 1.17.0(react@19.2.6)
       react: 19.2.6
       react-aria-components: 1.17.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       react-dom: 19.2.6(react@19.2.6)
@@ -16873,13 +16873,13 @@ snapshots:
 
   '@webcontainer/env@1.1.1': {}
 
-  '@xstate/react@6.1.0(@types/react@19.2.15)(react@19.2.6)(xstate@5.31.1)':
+  '@xstate/react@6.1.0(@types/react@19.2.15)(react@19.2.6)(xstate@5.32.0)':
     dependencies:
       react: 19.2.6
       use-isomorphic-layout-effect: 1.2.1(@types/react@19.2.15)(react@19.2.6)
       use-sync-external-store: 1.6.0(react@19.2.6)
     optionalDependencies:
-      xstate: 5.31.1
+      xstate: 5.32.0
     transitivePeerDependencies:
       - '@types/react'
 
@@ -20152,7 +20152,7 @@ snapshots:
     dependencies:
       yallist: 4.0.0
 
-  lucide-react@1.16.0(react@19.2.6):
+  lucide-react@1.17.0(react@19.2.6):
     dependencies:
       react: 19.2.6
 
@@ -23579,7 +23579,7 @@ snapshots:
       commander: 2.20.3
       cssfilter: 0.0.10
 
-  xstate@5.31.1: {}
+  xstate@5.32.0: {}
 
   xtend@4.0.2: {}
 
