@@ -22,15 +22,6 @@
       "package": "@eventuras/historia",
       "aliases": ["cms", "historia-cms"]
     },
-    "idem-admin": {
-      "path": "apps/idem-admin",
-      "package": "@eventuras/idem-admin"
-    },
-    "idem-idp": {
-      "path": "apps/idem-idp",
-      "package": "@eventuras/idem-idp",
-      "aliases": ["idem"]
-    },
     "nuntius": {
       "path": "apps/nuntius-homey-app",
       "package": "no.losol.nuntius",

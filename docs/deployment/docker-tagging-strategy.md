@@ -75,7 +75,6 @@ image:
 |-------------|-------|----------|
 | API | `losolio/eventuras-api` | `api-main.yml`, `api-release.yml` |
 | Web | `losolio/eventuras-web` | `web-main.yml`, `web-release.yml` |
-| Idem IDP | `losolio/idem-idp` | `idem-idp-main.yml` |
 
 ## Multi-Architecture Support
 
