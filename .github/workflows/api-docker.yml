@@ -95,6 +95,11 @@ jobs:
             org.opencontainers.image.revision=${{ steps.ver.outputs.sha }}
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
 
+      - name: Compute migration metadata
+        id: migr
+        working-directory: ${{ github.workspace }}
+        run: ./apps/api/scripts/migration-metadata.sh >> "$GITHUB_OUTPUT"
+
       - name: Login to Docker Hub
         if: inputs.push
         uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
@@ -109,7 +114,11 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: ${{ inputs.push }}
           tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          labels: |
+            ${{ steps.meta.outputs.labels }}
+            eventuras.migrations.latest=${{ steps.migr.outputs.latest }}
+            eventuras.migrations.count=${{ steps.migr.outputs.count }}
+            eventuras.migrations.sha=${{ steps.migr.outputs.sha }}
           build-args: |
             BUILD_VERSION=${{ steps.ver.outputs.version }}
             BUILD_SHA=${{ steps.ver.outputs.sha }}
@@ -176,6 +185,10 @@ jobs:
         id: sha
         run: echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
+      - name: Compute migration metadata
+        id: migr
+        run: ./apps/api/scripts/migration-metadata.sh >> "$GITHUB_OUTPUT"
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@06116385d9baf250c9f4dcb4858b16962ea869c3 # v4.1.0
 
@@ -201,6 +214,9 @@ jobs:
             org.opencontainers.image.version=${{ needs.check-release.outputs.version }}
             org.opencontainers.image.revision=${{ steps.sha.outputs.commit }}
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            eventuras.migrations.latest=${{ steps.migr.outputs.latest }}
+            eventuras.migrations.count=${{ steps.migr.outputs.count }}
+            eventuras.migrations.sha=${{ steps.migr.outputs.sha }}
           build-args: |
             BUILD_VERSION=${{ needs.check-release.outputs.version }}
             BUILD_SHA=${{ steps.sha.outputs.commit }}
