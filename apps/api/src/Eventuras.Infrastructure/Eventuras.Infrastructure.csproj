@@ -25,4 +25,12 @@
   <ItemGroup>
     <Folder Include="Migrations\" />
   </ItemGroup>
+  <ItemGroup>
+    <!-- Ship the idempotent EF migration script in build/publish output (and the
+         runtime Docker image) at sqlscript/database-migrations.sql. -->
+    <None Include="sqlscript/database-migrations.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
 </Project>
