@@ -1,9 +1,11 @@
 /** OAuth/OIDC token set stored in a session. */
 export interface Tokens {
   accessToken?: string;
-  accessTokenExpiresAt?: Date;
+  /** ISO 8601 string — the session is a JSON/JWT envelope, so dates live as strings on the wire. */
+  accessTokenExpiresAt?: string;
   refreshToken?: string;
-  refreshTokenExpiresAt?: Date;
+  /** ISO 8601 string — see {@link accessTokenExpiresAt}. */
+  refreshTokenExpiresAt?: string;
 }
 
 /** Authenticated user session with tokens, user info, and optional custom data. */

@@ -95,7 +95,7 @@ export async function GET(request: Request): Promise<Response> {
         tokens: {
           accessToken: tokens.access_token!,
           accessTokenExpiresAt: tokens.expires_in
-            ? new Date(Date.now() + tokens.expires_in * 1000)
+            ? new Date(Date.now() + tokens.expires_in * 1000).toISOString()
             : undefined,
           refreshToken: tokens.refresh_token,
         },

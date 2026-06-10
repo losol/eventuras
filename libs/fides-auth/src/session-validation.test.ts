@@ -21,7 +21,7 @@ const testSession: Session = {
   tokens: {
     accessToken: 'eyJ.test.access-token',
     refreshToken: 'eyJ.test.refresh-token',
-    accessTokenExpiresAt: new Date('2099-01-01'),
+    accessTokenExpiresAt: new Date('2099-01-01').toISOString(),
   },
   user: {
     name: 'Ola Nordmann',
@@ -85,6 +85,25 @@ describe('session lifecycle: create → validate', () => {
 
     expect(result.status).toBe('VALID');
     expect(result.session?.scopes).toEqual(['openid', 'profile', 'operations.read']);
+  });
+
+  it('preserves ISO-string token expiry fields through the round-trip', async () => {
+    const session: Session = {
+      tokens: {
+        accessToken: 'eyJ.test.access-token',
+        accessTokenExpiresAt: '2099-01-01T00:00:00.000Z',
+        refreshToken: 'eyJ.test.refresh-token',
+        refreshTokenExpiresAt: '2099-06-01T00:00:00.000Z',
+      },
+      user: { name: 'Ola Nordmann', email: 'ola@example.com' },
+    };
+
+    const jwt = await createEncryptedJWT({ ...session }, SECRET);
+    const result = await validateSessionJwt(jwt, SECRET);
+
+    expect(result.status).toBe('VALID');
+    expect(result.session!.tokens!.accessTokenExpiresAt).toBe('2099-01-01T00:00:00.000Z');
+    expect(result.session!.tokens!.refreshTokenExpiresAt).toBe('2099-06-01T00:00:00.000Z');
   });
 
   it('handles a minimal session with only user info', async () => {
