@@ -26,9 +26,13 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
   <ItemGroup>
-    <!-- Ship the idempotent EF migration script in build/publish output (and the
-         runtime Docker image) at sqlscript/database-migrations.sql. -->
+    <!-- Ship the idempotent EF migration script and its pending-check helper in
+         build/publish output (and the runtime Docker image) under sqlscript/. -->
     <None Include="sqlscript/database-migrations.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
+    <None Include="sqlscript/check-pending-migrations.sh">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
