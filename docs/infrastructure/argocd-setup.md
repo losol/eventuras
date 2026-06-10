@@ -84,8 +84,6 @@ See each application's Kubernetes deployment documentation for detailed setup in
 
 - [eventuras-api](../../apps/api/k8s/README.md)
 - [eventuras-web](../../apps/web/k8s/README.md)
-- [idem-idp](../../apps/idem-idp/k8s/README.md)
-- [idem-admin](../../apps/idem-admin/k8s/README.md)
 
 ## Secrets Setup
 
@@ -93,8 +91,6 @@ Before syncing applications, create required secrets in each namespace. See each
 
 - [eventuras-api secrets](../../apps/api/k8s/README.md#2-create-kubernetes-secrets)
 - [eventuras-web secrets](../../apps/web/k8s/README.md#2-create-kubernetes-secrets)
-- [idem-idp secrets](../../apps/idem-idp/k8s/README.md#2-create-kubernetes-secrets)
-- [idem-admin secrets](../../apps/idem-admin/k8s/README.md#2-create-kubernetes-secrets)
 
 ### Generic Pattern
 
