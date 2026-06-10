@@ -110,7 +110,7 @@ describe('handleHeartbeat — authentication', () => {
 
 describe('handleHeartbeat — success', () => {
   it('returns 200 with accessTokenExpiresAt and no-store Cache-Control', async () => {
-    const expiresAt = new Date('2026-05-21T20:00:00.000Z');
+    const expiresAt = new Date('2026-05-21T20:00:00.000Z').toISOString();
     mockedGetCurrentSession.mockResolvedValue({
       tokens: { accessToken: 'a', refreshToken: 'r' },
     } as any);
@@ -130,7 +130,7 @@ describe('handleHeartbeat — success', () => {
 
     const body = await response.json();
     expect(body).toMatchObject({
-      accessTokenExpiresAt: expiresAt.toISOString(),
+      accessTokenExpiresAt: expiresAt,
     });
   });
 

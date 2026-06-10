@@ -35,7 +35,7 @@ export const refreshSession = async (
         ...current_session.tokens,
         accessToken: newtokens.access_token,
         accessTokenExpiresAt: newtokens.expires_in
-          ? new Date(Date.now() + newtokens.expires_in * 1000)
+          ? new Date(Date.now() + newtokens.expires_in * 1000).toISOString()
           : undefined,
         refreshToken: newtokens.refresh_token ?? current_session.tokens?.refreshToken,
       },
