@@ -1,8 +1,9 @@
 /**
  * Tests for the useHeartbeat React hook.
  *
- * The hook combines an activity tracker, a setTimeout-driven schedule, fetch,
- * and a visibilitychange listener. Tests run under fake timers so we can
+ * The hook schedules refreshes from the access token's expiry (returned by the
+ * endpoint as `accessTokenExpiresAt`), primes once on mount to learn it, and
+ * defers when the tab is hidden/idle. Tests run under fake timers so we can
  * advance time deterministically, with a mocked global fetch.
  */
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
@@ -30,16 +31,28 @@ function setVisibility(state: 'visible' | 'hidden'): void {
   document.dispatchEvent(new Event('visibilitychange'));
 }
 
+/** A 200 response carrying an access-token expiry `ttlMs` from now (ISO). */
+function expiryResponse(ttlMs: number): Response {
+  return new Response(
+    JSON.stringify({ accessTokenExpiresAt: new Date(Date.now() + ttlMs).toISOString() }),
+    { status: 200, headers: { 'content-type': 'application/json' } },
+  );
+}
+
+/** Flush pending timers up to `ms`, draining microtasks in between. */
+async function advance(ms: number): Promise<void> {
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(ms);
+  });
+}
+
 let fetchMock: ReturnType<typeof vi.fn>;
 
 beforeEach(() => {
   vi.useFakeTimers();
   setVisibility('visible');
-
-  // Default: every fetch succeeds with 200 + empty JSON body.
-  fetchMock = vi.fn().mockResolvedValue(
-    new Response('{}', { status: 200, headers: { 'content-type': 'application/json' } }),
-  );
+  // Default: every refresh succeeds with a 5-minute token.
+  fetchMock = vi.fn().mockImplementation(() => Promise.resolve(expiryResponse(5 * 60_000)));
   vi.stubGlobal('fetch', fetchMock);
 });
 
@@ -48,182 +61,157 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-// Params chosen so the activity gate is meaningful:
-//
-// - intervalMs > tracker throttle (1000) so keystrokes between ticks register
-// - idleThresholdMs < intervalMs so the tracker's initial mount-time timestamp
-//   has already fallen outside the idle window by the time the first tick
-//   fires. With these numbers, a tick can only fire if a keystroke was
-//   recorded in the last 500ms — proving the gate is exercised.
-const HAPPY_INTERVAL = 3000;
-const HAPPY_IDLE = 500;
-
-describe('useHeartbeat — happy path', () => {
-  it('POSTs to the default endpoint on each tick when active and visible', async () => {
+describe('useHeartbeat — priming', () => {
+  it('refreshes immediately on mount to discover the expiry', async () => {
     const onRefreshed = vi.fn();
-    const { unmount } = render(
-      <HeartbeatHost intervalMs={HAPPY_INTERVAL} idleThresholdMs={HAPPY_IDLE} onRefreshed={onRefreshed} />,
-    );
+    render(<HeartbeatHost onRefreshed={onRefreshed} />);
 
-    // Advance to just before the first tick, record a keystroke INSIDE the
-    // idle window, then let the tick fire. The initial mount timestamp is now
-    // 2900ms old, well outside the 500ms idle window, so only the fresh
-    // keystroke can keep the tick alive.
-    await act(async () => {
-      await vi.advanceTimersByTimeAsync(HAPPY_INTERVAL - 100);
-    });
-    recordKeystroke();
-    await act(async () => {
-      await vi.advanceTimersByTimeAsync(100);
-    });
+    await advance(0);
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(fetchMock).toHaveBeenCalledWith('/api/auth/heartbeat', expect.objectContaining({
-      method: 'POST',
-      credentials: 'same-origin',
-    }));
+    expect(fetchMock).toHaveBeenCalledWith(
+      '/api/auth/heartbeat',
+      expect.objectContaining({ method: 'POST', credentials: 'same-origin' }),
+    );
     expect(onRefreshed).toHaveBeenCalledTimes(1);
-
-    // Second tick: same pattern — fresh keystroke close to the next tick.
-    await act(async () => {
-      await vi.advanceTimersByTimeAsync(HAPPY_INTERVAL - 100);
-    });
-    recordKeystroke();
-    await act(async () => {
-      await vi.advanceTimersByTimeAsync(100);
-    });
-    expect(fetchMock).toHaveBeenCalledTimes(2);
-
-    unmount();
   });
 
   it('honors a custom endpoint', async () => {
-    render(<HeartbeatHost endpoint="/custom/heartbeat" intervalMs={HAPPY_INTERVAL} idleThresholdMs={HAPPY_IDLE} />);
-
-    await act(async () => {
-      await vi.advanceTimersByTimeAsync(HAPPY_INTERVAL - 100);
-    });
-    recordKeystroke();
-    await act(async () => {
-      await vi.advanceTimersByTimeAsync(100);
-    });
-
+    render(<HeartbeatHost endpoint="/custom/heartbeat" />);
+    await advance(0);
     expect(fetchMock).toHaveBeenCalledWith('/custom/heartbeat', expect.anything());
   });
 
-  it('skips the tick when no fresh keystroke arrived before the activity window closed', async () => {
-    // Companion to the happy-path: with the SAME interval/threshold but no
-    // keystroke, the tick should be skipped — proving the gate works in both
-    // directions. (The "no recent activity" describe block below uses a
-    // broader scenario; this one shares params with the happy-path tests to
-    // pin down the gate.)
-    render(<HeartbeatHost intervalMs={HAPPY_INTERVAL} idleThresholdMs={HAPPY_IDLE} />);
+  it('skips the prime and schedules from initialExpiresAt when provided', async () => {
+    const tenMin = new Date(Date.now() + 10 * 60_000).toISOString();
+    render(<HeartbeatHost initialExpiresAt={tenMin} fraction={0.3} />);
 
-    await act(async () => {
-      await vi.advanceTimersByTimeAsync(HAPPY_INTERVAL);
-    });
-
+    // No immediate refresh — expiry is already known.
+    await advance(0);
     expect(fetchMock).not.toHaveBeenCalled();
+
+    // lead = 0.3 * 10min = 3min → refresh after 7min.
+    await advance(7 * 60_000 - 1000);
+    expect(fetchMock).not.toHaveBeenCalled();
+    await advance(1000);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 });
 
-describe('useHeartbeat — gating', () => {
-  it('skips the tick when the tab is hidden', async () => {
-    render(<HeartbeatHost intervalMs={1000} idleThresholdMs={5000} />);
-    recordKeystroke();
-    setVisibility('hidden');
+describe('useHeartbeat — expiry-driven cadence', () => {
+  it('schedules the next refresh from the returned expiry (5-min token, fraction 0.3)', async () => {
+    render(<HeartbeatHost fraction={0.3} />);
 
-    await act(async () => {
-      await vi.advanceTimersByTimeAsync(1000);
-    });
+    // Prime.
+    await advance(0);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
 
-    expect(fetchMock).not.toHaveBeenCalled();
+    // lead = 0.3 * 5min = 90s → next refresh after 210s.
+    await advance(210_000 - 1000);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    await advance(1000);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 
-  it('skips the tick when there has been no recent activity', async () => {
-    // No keystroke is dispatched, so the tracker's initial timestamp is the
-    // only activity — and we advance time past the idle threshold before tick.
-    render(<HeartbeatHost intervalMs={5000} idleThresholdMs={1000} />);
+  it('self-adjusts to a short TTL via the skew floor (10-second token)', async () => {
+    fetchMock.mockImplementation(() => Promise.resolve(expiryResponse(10_000)));
+    render(<HeartbeatHost fraction={0.3} minSkewMs={5_000} minRefreshIntervalMs={5_000} />);
 
-    await act(async () => {
-      await vi.advanceTimersByTimeAsync(5000);
-    });
+    await advance(0);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
 
-    expect(fetchMock).not.toHaveBeenCalled();
+    // lead = max(5s, 0.3*10s=3s) = 5s → refresh 5s in.
+    await advance(4_000);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    await advance(1_000);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('never refreshes faster than minRefreshIntervalMs for ultra-short tokens', async () => {
+    fetchMock.mockImplementation(() => Promise.resolve(expiryResponse(1_000)));
+    render(<HeartbeatHost minSkewMs={5_000} minRefreshIntervalMs={5_000} />);
+
+    await advance(0);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    await advance(4_999);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    await advance(1);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 });
 
 describe('useHeartbeat — session expired', () => {
-  it('fires onSessionExpired when the endpoint returns 401 and stops further ticks', async () => {
+  it('fires onSessionExpired on 401 and stops further refreshes', async () => {
     fetchMock.mockResolvedValueOnce(new Response(null, { status: 401 }));
     const onSessionExpired = vi.fn();
     const onRefreshed = vi.fn();
 
-    render(<HeartbeatHost
-      intervalMs={1000}
-      idleThresholdMs={5000}
-      onSessionExpired={onSessionExpired}
-      onRefreshed={onRefreshed}
-    />);
-    recordKeystroke();
+    render(<HeartbeatHost onSessionExpired={onSessionExpired} onRefreshed={onRefreshed} />);
 
-    await act(async () => {
-      await vi.advanceTimersByTimeAsync(1000);
-    });
+    await advance(0);
     expect(onSessionExpired).toHaveBeenCalledTimes(1);
     expect(onRefreshed).not.toHaveBeenCalled();
 
-    // After teardown on 401, subsequent intervals should NOT fire fetch.
-    recordKeystroke();
-    await act(async () => {
-      await vi.advanceTimersByTimeAsync(5000);
-    });
+    // No further refreshes after teardown.
+    await advance(10 * 60_000);
     expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(onSessionExpired).toHaveBeenCalledTimes(1);
   });
 });
 
-describe('useHeartbeat — visibilitychange refocus', () => {
-  it('beats immediately when tab regains focus after >= intervalMs away', async () => {
-    render(<HeartbeatHost intervalMs={1000} idleThresholdMs={10_000} />);
-    recordKeystroke();
+describe('useHeartbeat — transient failure', () => {
+  it('retries with backoff and reports via onError, then resumes', async () => {
+    fetchMock
+      .mockRejectedValueOnce(new Error('network down'))
+      .mockImplementation(() => Promise.resolve(expiryResponse(5 * 60_000)));
+    const onError = vi.fn();
 
-    // Hide the tab so the scheduled tick at t=1000 is skipped.
-    setVisibility('hidden');
-    await act(async () => {
-      await vi.advanceTimersByTimeAsync(2000);
-    });
-    expect(fetchMock).not.toHaveBeenCalled();
+    render(<HeartbeatHost minRefreshIntervalMs={5_000} onError={onError} />);
 
-    // Now reveal — sinceLast (2s) >= intervalMs (1s), so beat should fire immediately.
-    recordKeystroke();
-    setVisibility('visible');
-
-    await act(async () => {
-      // Let the microtask queue drain.
-      await Promise.resolve();
-      await Promise.resolve();
-    });
-
+    // Prime fails.
+    await advance(0);
     expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(onError).toHaveBeenCalledTimes(1);
+
+    // Backoff = minRefreshIntervalMs (first retry) → retry succeeds.
+    await advance(5_000);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(onError).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('useHeartbeat — defer when hidden/idle', () => {
+  it('defers a due refresh while idle, then refreshes on the next interaction', async () => {
+    render(<HeartbeatHost fraction={0.3} idleThresholdMs={1_000} />);
+
+    // Prime at mount (active), token = 5min → next refresh at 210s.
+    await advance(0);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+
+    // By 210s the user has been idle far longer than 1s → refresh is deferred.
+    await advance(210_000);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+
+    // Interaction wakes the deferred refresh.
+    recordKeystroke();
+    await advance(0);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 
-  it('does NOT immediately beat when refocus happens within intervalMs', async () => {
-    render(<HeartbeatHost intervalMs={10_000} idleThresholdMs={60_000} />);
-    recordKeystroke();
+  it('defers while the tab is hidden, then refreshes when it becomes visible', async () => {
+    // idleThresholdMs is shorter than the time spent hidden, so returning to the
+    // tab must count as activity for the deferred refresh to run on focus alone.
+    render(<HeartbeatHost fraction={0.3} idleThresholdMs={1_000} />);
+
+    await advance(0);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
 
     setVisibility('hidden');
-    await act(async () => {
-      await vi.advanceTimersByTimeAsync(1000);
-    });
+    await advance(210_000);
+    expect(fetchMock).toHaveBeenCalledTimes(1); // deferred while hidden
+
     setVisibility('visible');
-
-    await act(async () => {
-      await Promise.resolve();
-    });
-
-    // sinceLast (1s) < intervalMs (10s), so no immediate beat.
-    expect(fetchMock).not.toHaveBeenCalled();
+    await advance(0);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 });
 
@@ -231,7 +219,6 @@ describe('useHeartbeat — unmount', () => {
   it('does not fire callbacks for fetches that resolve after unmount', async () => {
     let resolveFetch: (response: Response) => void = () => undefined;
     fetchMock.mockImplementation((_url: string, init: RequestInit) => {
-      // Mirror the AbortController behavior: reject if signal aborts.
       return new Promise<Response>((resolve, reject) => {
         resolveFetch = resolve;
         init.signal?.addEventListener('abort', () => {
@@ -242,21 +229,13 @@ describe('useHeartbeat — unmount', () => {
 
     const onRefreshed = vi.fn();
     const onError = vi.fn();
-    const { unmount } = render(<HeartbeatHost
-      intervalMs={1000}
-      idleThresholdMs={5000}
-      onRefreshed={onRefreshed}
-      onError={onError}
-    />);
-    recordKeystroke();
+    const { unmount } = render(<HeartbeatHost onRefreshed={onRefreshed} onError={onError} />);
 
-    // Tick fires; fetch is in-flight (pending promise).
-    await act(async () => {
-      await vi.advanceTimersByTimeAsync(1000);
-    });
+    // Prime fires; fetch is in-flight (pending promise).
+    await advance(0);
     expect(fetchMock).toHaveBeenCalledTimes(1);
 
-    // Unmount aborts the controller; resolve the pending fetch and let microtasks drain.
+    // Unmount aborts the controller; resolve the pending fetch and drain.
     unmount();
     resolveFetch(new Response('{}', { status: 200 }));
     await act(async () => {
@@ -264,8 +243,6 @@ describe('useHeartbeat — unmount', () => {
       await Promise.resolve();
     });
 
-    // Neither callback should have fired — the post-await `stopped` guard
-    // bails before they're called.
     expect(onRefreshed).not.toHaveBeenCalled();
     expect(onError).not.toHaveBeenCalled();
   });
