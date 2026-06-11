@@ -37,8 +37,8 @@ const AdminUserDetailPage: React.FC<EventInfoProps> = async props => {
         </Container>
       </Section>
       <Section className="py-12">
-        <Container>
-          <UserEditor user={response.data} adminMode />
+        <Container paddingY="md">
+          <UserEditor user={response.data} adminMode showMetadata />
         </Container>
       </Section>
     </>
