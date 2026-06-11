@@ -12,6 +12,7 @@ import { Form, PhoneInput, TextField } from '@eventuras/smartform';
 import { UserDto, UserFormDto } from '@/lib/eventuras-sdk';
 
 import { createUser, updateUser, updateUserProfile } from './actions';
+import { UserMetadata } from './UserMetadata';
 const logger = Logger.create({
   namespace: 'web:admin:users',
   context: { component: 'UserEditor' },
@@ -22,9 +23,11 @@ interface UserEditorProps {
   testId?: string;
   adminMode?: boolean;
   submitButtonLabel?: string;
+  /** Show read-only account metadata (user id, etc.) below the form. */
+  showMetadata?: boolean;
 }
 const UserEditor: FC<UserEditorProps> = props => {
-  const { adminMode, user, onUserUpdated, submitButtonLabel } = props;
+  const { adminMode, user, onUserUpdated, submitButtonLabel, showMetadata } = props;
   const t = useTranslations();
   const [isUpdating, setIsUpdating] = useState(false);
   const toast = useToast();
@@ -84,103 +87,106 @@ const UserEditor: FC<UserEditorProps> = props => {
     return editMode ? t('user.account.update.label') : t('user.account.create.label');
   };
   return (
-    <Form onSubmit={onSubmit} defaultValues={user} testId={props.testId}>
-      {/* Given Name Field */}
-      <Fieldset label={t('common.account.name.legend')}>
-        <TextField
-          name="givenName"
-          label={t('common.labels.givenName')}
-          description={t('user.account.name.description')}
-          placeholder="Gerhard"
-          // Only allow letters, including accentuated characters
-          validation={{
-            required: t('user.account.name.requiredText'),
-            pattern: {
-              value: regex.lettersSpaceAndHyphen,
-              message: t('common.account.name.validationText'),
-            },
-          }}
-          testId="accounteditor-form-givenname"
-        />
-        <TextField
-          name="middleName"
-          label={t('common.labels.middleName')}
-          description={t('user.account.name.description')}
-          placeholder="Armauer"
-          // Only allow letters, including accentuated characters
-          validation={{
-            pattern: {
-              value: regex.lettersSpaceAndHyphen,
-              message: t('common.account.name.validationText'),
-            },
-          }}
-          testId="accounteditor-form-middlename"
-        />
-        {/* Family Name Field */}
-        <TextField
-          name="familyName"
-          label={t('common.labels.familyName')}
-          description={t('user.account.name.description')}
-          placeholder="Hansen"
-          validation={{
-            required: t('user.account.name.requiredText'),
-            pattern: {
-              value: regex.lettersSpaceAndHyphen,
-              message: t('common.account.name.validationText'),
-            },
-          }}
-          testId="accounteditor-form-familyname"
-        />
-      </Fieldset>
-      <Fieldset label={t('common.account.contactInfo.legend')}>
-        {/* Email Field */}
-        <TextField
-          name="email"
-          label={t('user.account.email.label')}
-          description={
-            editMode
-              ? t('user.account.email.existingDescription')
-              : t('user.account.email.description')
-          }
-          type="email"
-          placeholder={t('user.account.email.placeholder')}
-          validation={{ required: t('user.account.email.requiredText') }}
-          disabled={editMode} // Disable editing email field for existing users
-        />
-        {/* Phone Field */}
-        <PhoneInput
-          name="phoneNumber"
-          label={t('user.account.phoneNumber.label')}
-          description={t('user.account.phoneNumber.description')}
-          validation={{
-            required: adminMode ? false : t('user.account.phoneNumber.requiredText'),
-            pattern: {
-              value: regex.internationalPhoneNumber,
-              message: t('user.account.phoneNumber.invalidFormatText'),
-            },
-          }}
-          testId="accounteditor-form-phonenumber"
-        />
-      </Fieldset>
-      <Fieldset label={t('common.account.moreInfo.legend')}>
-        <TextField
-          name="professionalIdentityNumber"
-          label={t('common.account.professionalIdentityNumber.label')}
-          description={t('common.account.professionalIdentityNumber.description')}
-          testId="accounteditor-form-professionalIdentityNumber"
-        />
-        <TextField
-          name="supplementaryInformation"
-          label={t('common.account.supplementaryInformation.label')}
-          description={t('common.account.supplementaryInformation.description')}
-          testId="accounteditor-form-supplementaryInformation"
-        />
-      </Fieldset>
-      {/* Submit Button */}
-      <Button type="submit" testId="account-update-button" loading={isUpdating}>
-        {getButtonLabel()}
-      </Button>
-    </Form>
+    <>
+      <Form onSubmit={onSubmit} defaultValues={user} testId={props.testId}>
+        {/* Given Name Field */}
+        <Fieldset label={t('common.account.name.legend')}>
+          <TextField
+            name="givenName"
+            label={t('common.labels.givenName')}
+            description={t('user.account.name.description')}
+            placeholder="Gerhard"
+            // Only allow letters, including accentuated characters
+            validation={{
+              required: t('user.account.name.requiredText'),
+              pattern: {
+                value: regex.lettersSpaceAndHyphen,
+                message: t('common.account.name.validationText'),
+              },
+            }}
+            testId="accounteditor-form-givenname"
+          />
+          <TextField
+            name="middleName"
+            label={t('common.labels.middleName')}
+            description={t('user.account.name.description')}
+            placeholder="Armauer"
+            // Only allow letters, including accentuated characters
+            validation={{
+              pattern: {
+                value: regex.lettersSpaceAndHyphen,
+                message: t('common.account.name.validationText'),
+              },
+            }}
+            testId="accounteditor-form-middlename"
+          />
+          {/* Family Name Field */}
+          <TextField
+            name="familyName"
+            label={t('common.labels.familyName')}
+            description={t('user.account.name.description')}
+            placeholder="Hansen"
+            validation={{
+              required: t('user.account.name.requiredText'),
+              pattern: {
+                value: regex.lettersSpaceAndHyphen,
+                message: t('common.account.name.validationText'),
+              },
+            }}
+            testId="accounteditor-form-familyname"
+          />
+        </Fieldset>
+        <Fieldset label={t('common.account.contactInfo.legend')}>
+          {/* Email Field */}
+          <TextField
+            name="email"
+            label={t('user.account.email.label')}
+            description={
+              editMode
+                ? t('user.account.email.existingDescription')
+                : t('user.account.email.description')
+            }
+            type="email"
+            placeholder={t('user.account.email.placeholder')}
+            validation={{ required: t('user.account.email.requiredText') }}
+            disabled={editMode} // Disable editing email field for existing users
+          />
+          {/* Phone Field */}
+          <PhoneInput
+            name="phoneNumber"
+            label={t('user.account.phoneNumber.label')}
+            description={t('user.account.phoneNumber.description')}
+            validation={{
+              required: adminMode ? false : t('user.account.phoneNumber.requiredText'),
+              pattern: {
+                value: regex.internationalPhoneNumber,
+                message: t('user.account.phoneNumber.invalidFormatText'),
+              },
+            }}
+            testId="accounteditor-form-phonenumber"
+          />
+        </Fieldset>
+        <Fieldset label={t('common.account.moreInfo.legend')}>
+          <TextField
+            name="professionalIdentityNumber"
+            label={t('common.account.professionalIdentityNumber.label')}
+            description={t('common.account.professionalIdentityNumber.description')}
+            testId="accounteditor-form-professionalIdentityNumber"
+          />
+          <TextField
+            name="supplementaryInformation"
+            label={t('common.account.supplementaryInformation.label')}
+            description={t('common.account.supplementaryInformation.description')}
+            testId="accounteditor-form-supplementaryInformation"
+          />
+        </Fieldset>
+        {/* Submit Button */}
+        <Button type="submit" testId="account-update-button" loading={isUpdating}>
+          {getButtonLabel()}
+        </Button>
+      </Form>
+      {showMetadata && user && <UserMetadata user={user} />}
+    </>
   );
 };
 export default UserEditor;
