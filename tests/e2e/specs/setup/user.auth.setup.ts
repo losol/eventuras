@@ -1,13 +1,4 @@
-/* eslint no-process-env: 0 */
-
 import { authenticate } from '../web/helpers/auth';
+import { newRegularEmail } from '../../utils/personas';
 
-const baseEmail = process.env.E2E_BASE_EMAIL;
-if (!baseEmail) {
-  throw new Error('E2E_BASE_EMAIL must be set');
-}
-
-const [localPart, domain] = baseEmail.split('@');
-const userName = `${localPart}+user@${domain}`;
-
-authenticate(userName, 'tmp/auth/user.json');
+authenticate(newRegularEmail(), 'tmp/auth/user.json');

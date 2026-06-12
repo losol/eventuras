@@ -1,5 +1,3 @@
-/* eslint no-process-env: 0 */
-
 import { expect, test } from '@playwright/test';
 
 import { readCreatedEvent } from '../helpers/event';
@@ -9,22 +7,9 @@ import {
   visitAndClickEventRegistrationButton,
 } from '../helpers/registration';
 import { cleanupOtpEmails, fetchLoginCode } from '../../../utils/otp';
+import { newRegularEmail } from '../../../utils/personas';
 
 test.describe.configure({ mode: 'serial' });
-
-// Generate a unique test email using Gmail's plus addressing feature
-// This allows using a single Gmail account for multiple test identities
-const baseEmail = process.env.E2E_BASE_EMAIL;
-if (!baseEmail) {
-  throw new Error('E2E_BASE_EMAIL must be set');
-}
-
-// Extract the local part and domain from the base email
-const [localPart, domain] = baseEmail.split('@');
-// Create a unique identifier for this test run
-const timestamp = Math.floor(Date.now() / 1000 / 10);
-// Use Gmail's plus addressing: localpart+tag@domain.com
-const userName = `${localPart}+newuser-${timestamp}@${domain}`;
 
 test.describe('should be able to register as an anonymous user when hitting the event registration page', () => {
   let createdEvent: ReturnType<typeof readCreatedEvent>;
@@ -43,6 +28,9 @@ test.describe('should be able to register as an anonymous user when hitting the 
   });
 
   test('should be able to register user through the even registration page', async ({ page }) => {
+    // Generate inside the test so each retry signs up a fresh user (a reused
+    // address would hit "user already exists" instead of the sign-up flow).
+    const userName = newRegularEmail();
     // Clean up any old OTP emails before starting
     await cleanupOtpEmails(userName);
 
