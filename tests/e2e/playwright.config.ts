@@ -43,6 +43,7 @@ const isCI = !!process.env.CI;
 const HEALTHCHECK = 'healthcheck';
 const SETUP_ADMIN = 'setup-admin';
 const SETUP_USER = 'setup-user';
+const SETUP_SYSTEMADMIN = 'setup-systemadmin';
 
 const timeouts = {
   global: 1000 * 60 * 5,
@@ -90,6 +91,11 @@ export default defineConfig({
     { name: SETUP_ADMIN, testMatch: /setup\/admin\.auth\.setup\.ts/, dependencies: [HEALTHCHECK] },
     { name: SETUP_USER, testMatch: /setup\/user\.auth\.setup\.ts/, dependencies: [HEALTHCHECK] },
     {
+      name: SETUP_SYSTEMADMIN,
+      testMatch: /setup\/systemadmin\.auth\.setup\.ts/,
+      dependencies: [HEALTHCHECK],
+    },
+    {
       name: 'web:admin',
       testMatch: /web\/admin\/.+\.spec\.ts/,
       use: { ...chromeDesktop },
@@ -100,6 +106,12 @@ export default defineConfig({
       testMatch: /web\/user\/.+\.spec\.ts/,
       use: { ...chromeDesktop },
       dependencies: [SETUP_USER, 'web:admin'],
+    },
+    {
+      name: 'web:systemadmin',
+      testMatch: /web\/systemadmin\/.+\.spec\.ts/,
+      use: { ...chromeDesktop },
+      dependencies: [SETUP_SYSTEMADMIN],
     },
     {
       name: 'web:public',
