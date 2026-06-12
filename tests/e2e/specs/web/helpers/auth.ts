@@ -3,7 +3,7 @@ import { chromium, expect, test as setup } from '@playwright/test';
 import { mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 
-import { cleanupOtpEmails, fetchLoginCode } from '../../shared/utils';
+import { cleanupOtpEmails, fetchLoginCode } from '../../../utils/otp';
 
 const logger = Logger.create({ namespace: 'e2e:auth' });
 const isCI = !!process.env.CI;

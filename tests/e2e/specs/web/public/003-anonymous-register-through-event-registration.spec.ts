@@ -8,7 +8,7 @@ import {
   validateRegistration,
   visitAndClickEventRegistrationButton,
 } from '../helpers/registration';
-import { cleanupOtpEmails, fetchLoginCode } from '../../shared/utils';
+import { cleanupOtpEmails, fetchLoginCode } from '../../../utils/otp';
 
 test.describe.configure({ mode: 'serial' });
 
@@ -37,7 +37,7 @@ test.describe('should be able to register as an anonymous user when hitting the 
     await visitAndClickEventRegistrationButton(page, createdEvent.eventId);
     // Should be redirected away from the public event page to the identity provider
     const publicEventUrl = `/events/${createdEvent.eventId}`;
-    await page.waitForURL((url) => !url.pathname.startsWith(publicEventUrl), { timeout: 15000 });
+    await page.waitForURL(url => !url.pathname.startsWith(publicEventUrl), { timeout: 15000 });
     // Verify we were redirected away (the exact URL depends on the IdP)
     expect(page.url()).not.toContain(publicEventUrl);
   });
