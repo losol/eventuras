@@ -15,6 +15,8 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { gmail_v1 } from 'googleapis';
 
+import { extractLoginCode } from './code';
+
 const logger = Logger.create({ namespace: 'e2e:utils' });
 
 let gmailClient: gmail_v1.Gmail | null = null;
@@ -52,6 +54,8 @@ const getRefreshToken = (): string | undefined => {
 /**
  * Initialize Gmail client using OAuth2 credentials from environment variables.
  * Reuses the same client instance for subsequent calls.
+ *
+ * Only invoked on the Gmail OTP path; the Mailpit path needs no auth.
  */
 export const initializeGmailClient = async (): Promise<gmail_v1.Gmail> => {
   if (gmailClient) {
@@ -90,7 +94,10 @@ export const initializeGmailClient = async (): Promise<gmail_v1.Gmail> => {
       // Get token info to see scopes
       const credentials = oauth2Client.credentials;
       logger.debug({ scope: credentials.scope || 'not specified' }, 'OAuth credentials - scope');
-      logger.debug({ tokenType: credentials.token_type || 'not specified' }, 'OAuth credentials - token_type');
+      logger.debug(
+        { tokenType: credentials.token_type || 'not specified' },
+        'OAuth credentials - token_type'
+      );
     } catch (error) {
       logger.debug({ error }, 'Warning: Could not get token info');
     }
@@ -116,12 +123,9 @@ export const initializeGmailClient = async (): Promise<gmail_v1.Gmail> => {
 };
 
 /**
- * Fetches login/verification code from Gmail inbox.
- * @param userEmail - The email address to search for verification emails
- * @param maxRetries - Maximum number of polling attempts (default: 20)
- * @param intervalMs - Milliseconds between retry attempts (default: 5000)
+ * Fetches login/verification code from a Gmail inbox.
  */
-export const fetchLoginCode = async (
+export const fetchLoginCodeViaGmail = async (
   userEmail: string,
   maxRetries = 20,
   intervalMs = 3000
@@ -170,12 +174,15 @@ export const fetchLoginCode = async (
   const subjectHeader = headers.find(h => h.name?.toLowerCase() === 'subject');
   const dateHeader = headers.find(h => h.name?.toLowerCase() === 'date');
 
-  logger.debug({
-    from: fromHeader?.value || 'unknown',
-    subject: subjectHeader?.value || 'unknown',
-    date: dateHeader?.value || 'unknown',
-    internalDate: fullMessage.internalDate || 'unknown',
-  }, 'Email details');
+  logger.debug(
+    {
+      from: fromHeader?.value || 'unknown',
+      subject: subjectHeader?.value || 'unknown',
+      date: dateHeader?.value || 'unknown',
+      internalDate: fullMessage.internalDate || 'unknown',
+    },
+    'Email details'
+  );
 
   const emailBody = getPlainTextBody(fullMessage);
   if (!emailBody) {
@@ -187,26 +194,7 @@ export const fetchLoginCode = async (
   // Log the email body for debugging (first 300 chars)
   logger.debug({ bodyPreview: emailBody.substring(0, 300) }, 'Email body preview');
 
-  // Extract the login code using multiple regex patterns
-  // Pattern 1: "Your verification code is: 123456"
-  // Pattern 2: "verification code is: 123456" (more lenient)
-  // Pattern 3: Any 6-digit code after "code" (fallback)
-  const patterns = [
-    /Your verification code is:\s*(\d{6})/i,
-    /verification code is:\s*(\d{6})/i,
-    /code\s*(?:is)?:?\s*(\d{6})/i,
-  ];
-
-  let loginCode: string | null = null;
-  for (const pattern of patterns) {
-    const match = pattern.exec(emailBody);
-    if (match?.[1]) {
-      loginCode = match[1];
-      logger.debug({ pattern: pattern.source }, 'Matched verification code with pattern');
-      break;
-    }
-  }
-
+  const loginCode = extractLoginCode(emailBody);
   if (!loginCode) {
     logger.debug('Failed to match verification code in email body');
     throw new Error('No verification code found in email body');
@@ -232,13 +220,12 @@ export const fetchLoginCode = async (
 };
 
 /**
- * Cleans up all OTP/verification code emails for a specific user.
- * Useful to run before test suites to ensure a clean state.
+ * Cleans up all OTP/verification code emails for a specific user from Gmail.
  *
  * @param userEmail - The email address to clean up verification emails for
  * @returns Number of emails trashed
  */
-export const cleanupOtpEmails = async (userEmail: string): Promise<number> => {
+export const cleanupOtpEmailsViaGmail = async (userEmail: string): Promise<number> => {
   logger.debug({ userEmail }, 'Cleaning up all OTP emails');
 
   const gmail = await initializeGmailClient();
