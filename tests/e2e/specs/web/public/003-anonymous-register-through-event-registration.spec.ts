@@ -1,12 +1,13 @@
 import { expect, test } from '@playwright/test';
 
+import { submitTesseraOtpLogin } from '../helpers/auth';
 import { readCreatedEvent } from '../helpers/event';
 import {
   registerForEvent,
   validateRegistration,
   visitAndClickEventRegistrationButton,
 } from '../helpers/registration';
-import { cleanupOtpEmails, fetchLoginCode } from '../../../utils/otp';
+import { cleanupOtpEmails } from '../../../utils/otp';
 import { newRegularEmail } from '../../../utils/personas';
 
 test.describe.configure({ mode: 'serial' });
@@ -35,23 +36,9 @@ test.describe('should be able to register as an anonymous user when hitting the 
     await cleanupOtpEmails(userName);
 
     await visitAndClickEventRegistrationButton(page, createdEvent.eventId);
-    // Wait for Auth0 login page to load
-    await page.waitForLoadState();
-    await page.getByRole('link', { name: 'Sign up' }).click();
-    await page.waitForLoadState();
-    await page.locator('[id="email"]').fill(userName);
-    await page.getByRole('button', { name: 'Continue', exact: true }).click();
-    const registrationCode = await fetchLoginCode(userName);
-    await page.locator('[id="code"]').fill(registrationCode!);
-    await page.getByRole('button', { name: 'Continue', exact: true }).click();
-    await page.waitForLoadState();
-
-    // Auth0 consent screen may or may not appear depending on configuration
-    const acceptButton = page.getByRole('button', { name: 'Accept', exact: true });
-    if (await acceptButton.isVisible({ timeout: 5000 }).catch(() => false)) {
-      await acceptButton.click();
-      await page.waitForLoadState();
-    }
+    // The anonymous click redirects to the tessera-otp login; a brand-new email
+    // is auto-created on first OTP login (the realm has no self-registration).
+    await submitTesseraOtpLogin(page, userName);
 
     await registerForEvent(page, createdEvent.eventId, false);
     await validateRegistration(page, createdEvent.eventId);

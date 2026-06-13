@@ -1,5 +1,5 @@
 import { Logger } from '@eventuras/logger';
-import { chromium, expect, test as setup } from '@playwright/test';
+import { chromium, expect, test as setup, type Page } from '@playwright/test';
 import { mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 
@@ -7,6 +7,33 @@ import { cleanupOtpEmails, fetchLoginCode } from '../../../utils/otp';
 
 const logger = Logger.create({ namespace: 'e2e:auth' });
 const isCI = !!process.env.CI;
+
+/**
+ * Drives the custom tessera-otp login (keycloak-ratio-theme), assuming the login
+ * start page is showing. Fills the email, waits for the ALTCHA challenge to
+ * auto-solve into its hidden field (the server rejects the form otherwise),
+ * reads the OTP from the inbox, and submits the code. Resolves once the web
+ * app's OIDC callback has appended `?login=success`.
+ *
+ * Shared by the persona setup and the anonymous-registration spec so the IdP
+ * selectors live in one place.
+ */
+export const submitTesseraOtpLogin = async (page: Page, email: string): Promise<void> => {
+  // Start page (#kc-email-form): the ALTCHA challenge auto-solves into a hidden
+  // field — the server rejects the form unless it's populated, so wait for it.
+  await page.locator('#email').fill(email);
+  await expect(page.locator('[name="altcha"]')).toHaveValue(/.+/, { timeout: 15000 });
+  await page.locator('#kc-login').click();
+
+  // Code page (#kc-otp-form) — the OTP was just delivered to the inbox.
+  const loginCode = await fetchLoginCode(email);
+  await page.locator('#otp-code').fill(loginCode);
+  await Promise.all([
+    // `?` is a wildcard in Playwright globs, so match the query param explicitly.
+    page.waitForURL(url => url.searchParams.get('login') === 'success', { timeout: 30000 }),
+    page.locator('#kc-login').click(),
+  ]);
+};
 
 export const authenticate = async (userName: string, authFile: string) => {
   setup.use({
@@ -28,26 +55,8 @@ export const authenticate = async (userName: string, authFile: string) => {
     await page.waitForLoadState('load');
     await page.locator('[data-testid="login-button"]').click();
 
-    // tessera-otp start page (keycloak-ratio-theme): enter the email, wait for the
-    // ALTCHA challenge to auto-solve into its hidden field — the server rejects the
-    // form otherwise — then submit.
-    await page.locator('#email').fill(userName);
-    await page.waitForFunction(() => {
-      const altcha = document.querySelector('[name="altcha"]');
-      return altcha instanceof HTMLInputElement && altcha.value.length > 0;
-    });
-    await page.locator('#kc-login').click();
-
-    logger.debug('authenticate: attempting to fetch login code');
-    const loginCode = await fetchLoginCode(userName);
-
-    // tessera-otp code page: enter the OTP and submit. The web app's callback
-    // appends ?login=success — wait for that to confirm the full redirect chain.
-    await page.locator('#otp-code').fill(loginCode!);
-    await Promise.all([
-      page.waitForURL('**?login=success**', { timeout: 30000 }),
-      page.locator('#kc-login').click(),
-    ]);
+    logger.debug('authenticate: completing tessera-otp login');
+    await submitTesseraOtpLogin(page, userName);
     logger.debug('authenticate: login redirect completed');
 
     await page.goto('/user');
