@@ -27,17 +27,26 @@ export const authenticate = async (userName: string, authFile: string) => {
     await page.goto('/');
     await page.waitForLoadState('load');
     await page.locator('[data-testid="login-button"]').click();
-    await page.locator('[id="username"]').fill(userName);
-    await page.getByRole('button', { name: 'Continue', exact: true }).click();
+
+    // tessera-otp start page (keycloak-ratio-theme): enter the email, wait for the
+    // ALTCHA challenge to auto-solve into its hidden field — the server rejects the
+    // form otherwise — then submit.
+    await page.locator('#email').fill(userName);
+    await page.waitForFunction(() => {
+      const altcha = document.querySelector('[name="altcha"]');
+      return altcha instanceof HTMLInputElement && altcha.value.length > 0;
+    });
+    await page.locator('#kc-login').click();
+
     logger.debug('authenticate: attempting to fetch login code');
     const loginCode = await fetchLoginCode(userName);
-    await page.locator('[id="code"]').fill(loginCode!);
-    // Click Continue and wait for the full Auth0 redirect chain to complete.
-    // The callback route appends ?login=success, so wait for that.
-    // Use Promise.all to avoid the click timing out on the cross-domain redirect.
+
+    // tessera-otp code page: enter the OTP and submit. The web app's callback
+    // appends ?login=success — wait for that to confirm the full redirect chain.
+    await page.locator('#otp-code').fill(loginCode!);
     await Promise.all([
       page.waitForURL('**?login=success**', { timeout: 30000 }),
-      page.getByRole('button', { name: 'Continue', exact: true }).click(),
+      page.locator('#kc-login').click(),
     ]);
     logger.debug('authenticate: login redirect completed');
 
