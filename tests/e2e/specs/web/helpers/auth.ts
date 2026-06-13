@@ -10,19 +10,16 @@ const isCI = !!process.env.CI;
 
 /**
  * Drives the custom tessera-otp login (keycloak-ratio-theme), assuming the login
- * start page is showing. Fills the email, waits for the ALTCHA challenge to
- * auto-solve into its hidden field (the server rejects the form otherwise),
- * reads the OTP from the inbox, and submits the code. Resolves once the web
- * app's OIDC callback has appended `?login=success`.
+ * start page is showing. Fills the email and submits, reads the OTP from the
+ * inbox, and submits the code. Resolves once the web app's OIDC callback has
+ * appended `?login=success`.
  *
  * Shared by the persona setup and the anonymous-registration spec so the IdP
- * selectors live in one place.
+ * selectors live in one place. The test realms have captcha (ALTCHA) disabled.
  */
 export const submitTesseraOtpLogin = async (page: Page, email: string): Promise<void> => {
-  // Start page (#kc-email-form): the ALTCHA challenge auto-solves into a hidden
-  // field — the server rejects the form unless it's populated, so wait for it.
+  // Start page (#kc-email-form)
   await page.locator('#email').fill(email);
-  await expect(page.locator('[name="altcha"]')).toHaveValue(/.+/, { timeout: 15000 });
   await page.locator('#kc-login').click();
 
   // Code page (#kc-otp-form) — the OTP was just delivered to the inbox.
