@@ -1,23 +1,22 @@
 # syntax=docker/dockerfile:1.7
 # Build from monorepo root:
 #   docker build -f tests/e2e/Dockerfile -t eventuras-e2e:latest .
+#
+# Based on the official Playwright image, which ships the browsers and their OS
+# dependencies pre-installed — so the build never downloads a browser at build
+# time (a flaky CDN download used to hang the build). Keep the image tag in sync
+# with the @playwright/test version in tests/e2e/package.json.
 
 ##########################
 # Base                   #
 ##########################
-FROM node:24-bookworm-slim AS base
+FROM mcr.microsoft.com/playwright:v1.60.0-noble AS base
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libc6 \
-    libstdc++6 \
-    ca-certificates \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/* \
-  && corepack enable \
-  && corepack prepare pnpm@10.28.2 --activate \
+RUN corepack enable \
+  && corepack prepare pnpm@11.5.0 --activate \
   && pnpm config set store-dir /pnpm/store
 
 ##########################
@@ -42,26 +41,11 @@ RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store \
 RUN pnpm --filter=@eventuras/e2e^... run build
 
 ##########################
-# Playwright browsers    #
-##########################
-FROM install AS browsers
-
-WORKDIR /app/tests/e2e
-
-ENV PLAYWRIGHT_BROWSERS_PATH=/opt/playwright
-RUN pnpm exec playwright install --with-deps chromium
-
-##########################
 # Runner                 #
 ##########################
-FROM browsers AS runner
+FROM install AS runner
 
 WORKDIR /app/tests/e2e
-
-# Create non-root user for running tests
-RUN groupadd -r pwuser && useradd -r -g pwuser -G audio,video pwuser \
-  && mkdir -p /home/pwuser && chown -R pwuser:pwuser /home/pwuser \
-  && chown -R pwuser:pwuser /app
 
 ENV CI=true
 ENV NODE_ENV=test
@@ -73,6 +57,9 @@ ENV NODE_ENV=test
 # E2E_GMAIL_* - OAuth credentials (when E2E_OTP_SOURCE=gmail)
 # E2E_ADMIN_EMAIL / E2E_SYSTEMADMIN_EMAIL / E2E_USER_EMAIL_PATTERN - persona logins
 
+# The base image ships a non-root `pwuser`; give it ownership of the e2e subtree
+# where the suite writes (test-results, playwright-report, allure-results, tmp/auth).
+RUN chown -R pwuser:pwuser /app/tests/e2e
 USER pwuser
 
 CMD ["pnpm", "test"]
