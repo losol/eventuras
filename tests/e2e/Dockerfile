@@ -15,8 +15,12 @@ FROM mcr.microsoft.com/playwright:v1.60.0-noble AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 
-RUN corepack enable \
-  && corepack prepare pnpm@11.5.0 --activate \
+# Install pnpm as a real global binary instead of via corepack. corepack fetches
+# the pinned pnpm into a per-user cache on first use, so the root-prepared copy
+# isn't visible to the non-root `pwuser` at runtime — it would re-download (and
+# need a writable HOME). A global install is world-readable and never downloads
+# at runtime. Keep the version matching the repo's packageManager field.
+RUN npm install -g pnpm@11.5.0 \
   && pnpm config set store-dir /pnpm/store
 
 ##########################
