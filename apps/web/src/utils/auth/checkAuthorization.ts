@@ -4,10 +4,7 @@ import { getCurrentSession } from '@eventuras/fides-auth-next/session';
 import { Logger } from '@eventuras/logger';
 
 import { client } from '@/lib/eventuras-client';
-import {
-  getV3OrganizationsByOrganizationIdMembersByUserIdRoles,
-  getV3Userprofile,
-} from '@/lib/eventuras-sdk';
+import { getV3Userprofile } from '@/lib/eventuras-sdk';
 import { oauthConfig } from '@/utils/oauthConfig';
 import { getOrganizationId } from '@/utils/organization';
 
@@ -83,31 +80,16 @@ export async function checkAuthorization(requiredRole: string): Promise<Authoriz
     // with no organisations configured, so it must not run for SystemAdmins.
     const ORGANIZATION_ID = getOrganizationId();
 
-    // Get user's roles in the organization using configured client
-    const rolesResult = await getV3OrganizationsByOrganizationIdMembersByUserIdRoles({
-      client,
-      path: {
-        organizationId: ORGANIZATION_ID,
-        userId: userId,
-      },
-      headers: {
-        'Eventuras-Org-Id': ORGANIZATION_ID,
-      },
-    });
-
-    if (rolesResult.error || !rolesResult.data) {
-      logger.warn(
-        { error: rolesResult.error, userId },
-        'Failed to get user roles for organization'
-      );
-      return {
-        authorized: false,
-        userId,
-        error: 'Failed to check roles',
-      };
-    }
-
-    const roles = rolesResult.data;
+    // Read the caller's org roles straight from their own profile. The profile
+    // endpoint is self-scoped (`[Authorize]` only), whereas the dedicated
+    // org-member-roles endpoint is SystemAdmin-only — so a legitimately granted
+    // org Admin can read this but not that. Reusing the already-fetched profile
+    // also avoids a second round-trip.
+    const roles = (user.organizationMembership ?? [])
+      .filter(membership => membership.organizationId === ORGANIZATION_ID)
+      .flatMap(membership => membership.roles ?? [])
+      .map(role => role.role)
+      .filter((role): role is string => Boolean(role));
 
     // Check if user has the required role
     const hasRole = roles.includes(requiredRole);
