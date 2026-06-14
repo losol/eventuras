@@ -65,7 +65,8 @@ public class UserProfileController : Controller
 
         try
         {
-            user = await _userRetrievalService.GetUserByEmailAsync(emailClaim, null, cancellationToken);
+            user = await _userRetrievalService.GetUserByEmailAsync(emailClaim,
+                new UserRetrievalOptions { IncludeOrgMembership = true }, cancellationToken);
         }
         catch (NotFoundException)
         {
