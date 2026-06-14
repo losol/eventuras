@@ -32,29 +32,33 @@ export const submitTesseraOtpLogin = async (page: Page, email: string): Promise<
   ]);
 };
 
-export const authenticate = async (userName: string, authFile: string) => {
-  setup.use({
-    locale: 'en-GB',
-    timezoneId: 'Europe/Berlin',
-  });
-  setup('authenticate', async () => {
-    // Clean up any old OTP emails before starting authentication
-    logger.debug({ userName }, 'authenticate: cleaning up old OTP emails');
-    const cleanedCount = await cleanupOtpEmails(userName);
-    logger.debug({ cleanedCount }, 'authenticate: cleaned up old OTP emails');
+/**
+ * Logs the persona in via the tessera-otp flow in a fresh browser context and
+ * saves the storage state to `authFile`. Standalone (no Playwright fixtures), so
+ * it can be reused outside a `setup()` test — e.g. to refresh a session after a
+ * role change.
+ */
+export const loginPersona = async (userName: string, authFile: string): Promise<void> => {
+  // Clean up any old OTP emails before starting authentication
+  logger.debug({ userName }, 'login: cleaning up old OTP emails');
+  const cleanedCount = await cleanupOtpEmails(userName);
+  logger.debug({ cleanedCount }, 'login: cleaned up old OTP emails');
 
-    const browser = await chromium.launch(
-      isCI ? { args: ['--no-sandbox', '--disable-setuid-sandbox'] } : undefined
-    );
-    const context = await browser.newContext();
+  const browser = await chromium.launch(
+    isCI ? { args: ['--no-sandbox', '--disable-setuid-sandbox'] } : undefined
+  );
+  try {
+    // A manually launched context doesn't inherit the config's `use.baseURL`, so
+    // set it explicitly for the relative navigations below.
+    const context = await browser.newContext({ baseURL: process.env.E2E_WEB_URL });
     const page = await context.newPage();
     await page.goto('/');
     await page.waitForLoadState('load');
     await page.locator('[data-testid="login-button"]').click();
 
-    logger.debug('authenticate: completing tessera-otp login');
+    logger.debug('login: completing tessera-otp login');
     await submitTesseraOtpLogin(page, userName);
-    logger.debug('authenticate: login redirect completed');
+    logger.debug('login: redirect completed');
 
     await page.goto('/user');
     await page.waitForLoadState('load');
@@ -62,8 +66,18 @@ export const authenticate = async (userName: string, authFile: string) => {
     await expect(page.getByText(userName).first()).toBeVisible();
     mkdirSync(dirname(authFile), { recursive: true });
     await context.storageState({ path: authFile });
-    logger.debug('Auth Complete');
+    logger.debug('login: complete');
+  } finally {
+    await browser.close();
+  }
+};
+
+export const authenticate = (userName: string, authFile: string) => {
+  setup.use({
+    locale: 'en-GB',
+    timezoneId: 'Europe/Berlin',
   });
+  setup('authenticate', () => loginPersona(userName, authFile));
 };
 
 export const checkIfLoggedIn = async (page: import('@playwright/test').Page) => {
