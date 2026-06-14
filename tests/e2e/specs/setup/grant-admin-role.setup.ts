@@ -3,6 +3,7 @@
 import { Logger } from '@eventuras/logger';
 import { test as setup } from '@playwright/test';
 
+import { loginPersona } from '../web/helpers/auth';
 import { getAccessTokenFromAuthFile } from '../shared/api-helpers';
 import { adminEmail } from '../../utils/personas';
 
@@ -75,11 +76,19 @@ setup('grant org Admin role to the admin persona', async () => {
     SYSTEMADMIN_AUTH
   );
   if (Array.isArray(roles) && roles.includes('Admin')) {
-    logger.info('Admin role already present');
+    // Already granted (e.g. a re-run) — the admin logged in with the role
+    // already in place, so its saved session is current. Nothing to refresh.
+    logger.info('Admin role already present; admin session is current');
     return;
   }
+
   await call('POST', `/v3/organizations/${ORG_ID}/members/${userId}/roles`, SYSTEMADMIN_AUTH, {
     role: 'Admin',
   });
-  logger.info('Admin role granted');
+  logger.info('Admin role granted; refreshing admin session to reflect it');
+
+  // The admin logged in (setup-admin) before this first-time grant, so its saved
+  // session predates the role. Re-login now — only on this fresh-grant path — so
+  // tmp/auth/admin.json reflects the new org Admin role for the admin specs.
+  await loginPersona(adminEmail(), ADMIN_AUTH);
 });
