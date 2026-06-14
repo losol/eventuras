@@ -44,6 +44,7 @@ const HEALTHCHECK = 'healthcheck';
 const SETUP_ADMIN = 'setup-admin';
 const SETUP_USER = 'setup-user';
 const SETUP_SYSTEMADMIN = 'setup-systemadmin';
+const SETUP_GRANT_ADMIN = 'setup-grant-admin';
 
 const timeouts = {
   global: 1000 * 60 * 5,
@@ -96,10 +97,16 @@ export default defineConfig({
       dependencies: [HEALTHCHECK],
     },
     {
+      // Grants admin@ the backend org `Admin` role using the systemadmin token.
+      name: SETUP_GRANT_ADMIN,
+      testMatch: /setup\/grant-admin-role\.setup\.ts/,
+      dependencies: [SETUP_ADMIN, SETUP_SYSTEMADMIN],
+    },
+    {
       name: 'web:admin',
       testMatch: /web\/admin\/.+\.spec\.ts/,
       use: { ...chromeDesktop },
-      dependencies: [SETUP_ADMIN],
+      dependencies: [SETUP_GRANT_ADMIN],
     },
     {
       name: 'web:user',
