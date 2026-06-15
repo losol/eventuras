@@ -71,15 +71,7 @@ export async function generateMetadata({ params }: EventDetailsPageProps): Promi
   }
 }
 
-export default async function EventDetailsPage({ params }: Readonly<EventDetailsPageProps>) {
-  const { id: rawId, slug } = await params;
-  const id = Number(rawId);
-
-  if (Number.isNaN(id)) {
-    logger.warn({ id }, 'Invalid event ID');
-    return <EventNotFound />;
-  }
-
+async function fetchEvent(id: number) {
   try {
     // Use public client for anonymous API access
     const publicClient = getPublicClient();
@@ -98,79 +90,103 @@ export default async function EventDetailsPage({ params }: Readonly<EventDetails
       'Event details fetched'
     );
 
+    // The SDK client does not throw on HTTP errors; it returns { data, error }.
+    // Treat a populated error as a real failure rather than a missing event.
+    if (response.error) {
+      logger.error({ error: response.error, eventId: id }, 'Failed to load event details');
+      return null;
+    }
+
     // Handle not found or draft events
     if (!response.data || response.data.status === EventInfoStatus.DRAFT) {
       logger.warn({ eventId: id, status: response.data?.status }, 'Event not found or is draft');
-      return <EventNotFound />;
+      return null;
     }
 
-    const eventinfo = response.data;
-
-    // Redirect if slug doesn't match
-    if (slug !== eventinfo.slug && eventinfo.slug) {
-      logger.info(
-        { eventId: id, providedSlug: slug, correctSlug: eventinfo.slug },
-        'Redirecting to correct slug'
-      );
-      redirect(`/events/${eventinfo.id}/${encodeURI(eventinfo.slug)}`);
-    }
-
-    return (
-      <>
-        <Section className="pb-8">
-          <Container>
-            {eventinfo.featuredImageUrl && (
-              <Card
-                className="min-h-[33vh] mx-auto"
-                backgroundImageUrl={eventinfo.featuredImageUrl}
-              />
-            )}
-
-            <Heading as="h1" paddingY="xs">
-              {eventinfo.title ?? 'Mysterious Event'}
-            </Heading>
-
-            {eventinfo.headline && (
-              <Heading as="h2" paddingY="xs" className="text-xl font-semibold text-gray-700">
-                &mdash; {eventinfo.headline}
-              </Heading>
-            )}
-
-            <div className="py-3">
-              <MarkdownContent markdown={eventinfo.description} />
-            </div>
-
-            {eventinfo.dateStart && (
-              <div className="flex items-center gap-2 py-0">
-                <Calendar className="h-5 w-5 mb-5 text-gray-600" />
-                <span>
-                  {formatDateSpan(eventinfo.dateStart as string, eventinfo.dateEnd as string, {
-                    locale: appConfig.env.DEFAULT_LOCALE as string,
-                  })}
-                </span>
-              </div>
-            )}
-
-            {eventinfo.city && (
-              <div className="flex items-center gap-2 py-0 mb-4">
-                <MapPin className="h-5 w-5 text-gray-600" />
-                <span>{eventinfo.city}</span>
-              </div>
-            )}
-
-            <Suspense fallback={<div>Loading registration options...</div>}>
-              <EventRegistrationButton event={eventinfo} />
-            </Suspense>
-          </Container>
-        </Section>
-
-        <Suspense fallback={<div>Loading event details...</div>}>
-          <EventDetails eventinfo={eventinfo} />
-        </Suspense>
-      </>
-    );
+    return response.data;
   } catch (error) {
     logger.error({ error, eventId: id }, 'Failed to load event details');
+    return null;
+  }
+}
+
+export default async function EventDetailsPage({ params }: Readonly<EventDetailsPageProps>) {
+  const { id: rawId, slug } = await params;
+  const id = Number(rawId);
+
+  if (Number.isNaN(id)) {
+    logger.warn({ id }, 'Invalid event ID');
     return <EventNotFound />;
   }
+
+  const eventinfo = await fetchEvent(id);
+
+  if (!eventinfo) {
+    return <EventNotFound />;
+  }
+
+  // Redirect if slug doesn't match. redirect() signals via a thrown NEXT_REDIRECT,
+  // so it must stay outside fetchEvent's try/catch or the redirect gets swallowed.
+  if (slug !== eventinfo.slug && eventinfo.slug) {
+    logger.info(
+      { eventId: id, providedSlug: slug, correctSlug: eventinfo.slug },
+      'Redirecting to correct slug'
+    );
+    redirect(`/events/${eventinfo.id}/${encodeURI(eventinfo.slug)}`);
+  }
+
+  return (
+    <>
+      <Section className="pb-8">
+        <Container>
+          {eventinfo.featuredImageUrl && (
+            <Card
+              className="min-h-[33vh] mx-auto"
+              backgroundImageUrl={eventinfo.featuredImageUrl}
+            />
+          )}
+
+          <Heading as="h1" paddingY="xs">
+            {eventinfo.title ?? 'Mysterious Event'}
+          </Heading>
+
+          {eventinfo.headline && (
+            <Heading as="h2" paddingY="xs" className="text-xl font-semibold text-gray-700">
+              &mdash; {eventinfo.headline}
+            </Heading>
+          )}
+
+          <div className="py-3">
+            <MarkdownContent markdown={eventinfo.description} />
+          </div>
+
+          {eventinfo.dateStart && (
+            <div className="flex items-center gap-2 py-0">
+              <Calendar className="h-5 w-5 mb-5 text-gray-600" />
+              <span>
+                {formatDateSpan(eventinfo.dateStart as string, eventinfo.dateEnd as string, {
+                  locale: appConfig.env.DEFAULT_LOCALE as string,
+                })}
+              </span>
+            </div>
+          )}
+
+          {eventinfo.city && (
+            <div className="flex items-center gap-2 py-0 mb-4">
+              <MapPin className="h-5 w-5 text-gray-600" />
+              <span>{eventinfo.city}</span>
+            </div>
+          )}
+
+          <Suspense fallback={<div>Loading registration options...</div>}>
+            <EventRegistrationButton event={eventinfo} />
+          </Suspense>
+        </Container>
+      </Section>
+
+      <Suspense fallback={<div>Loading event details...</div>}>
+        <EventDetails eventinfo={eventinfo} />
+      </Suspense>
+    </>
+  );
 }
