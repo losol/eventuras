@@ -64,6 +64,19 @@ function ensureConfigured() {
   // Configure base URL
   client.setConfig({ baseUrl });
 
+  // Resolve the configured organization once. Most v3 endpoints need a current
+  // org and the API can't infer it, so we inject this header by default below.
+  // Parsed leniently (no throw) so build-time/misconfigured runs degrade rather
+  // than crash every request.
+  const ORG_HEADER = 'Eventuras-Org-Id';
+  const rawOrgId = appConfig.env.ORGANIZATION_ID;
+  const organizationId =
+    typeof rawOrgId === 'number' ? rawOrgId : Number.parseInt(rawOrgId as string, 10);
+  const hasOrganizationId = !!organizationId && !Number.isNaN(organizationId);
+  if (!hasOrganizationId) {
+    logger.warn('ORGANIZATION_ID not configured - org header will not be injected');
+  }
+
   // Inject correlation ID and auth token on every request (server-side only)
   client.interceptors.request.use(async (options: RequestOptions) => {
     // Always set correlation ID — even if auth fails
@@ -75,6 +88,22 @@ function ensureConfigured() {
       options.headers.push([CORRELATION_ID_HEADER, correlationId]);
     } else {
       (options.headers as Record<string, string>)[CORRELATION_ID_HEADER] = correlationId;
+    }
+
+    // Inject the configured organization id, unless the call already set one
+    // explicitly (per-call headers win, so callers can target a different org).
+    if (hasOrganizationId) {
+      const orgValue = String(organizationId);
+      if (options.headers instanceof Headers) {
+        if (!options.headers.has(ORG_HEADER)) options.headers.set(ORG_HEADER, orgValue);
+      } else if (Array.isArray(options.headers)) {
+        if (!options.headers.some(([key]) => key === ORG_HEADER)) {
+          options.headers.push([ORG_HEADER, orgValue]);
+        }
+      } else {
+        const headers = options.headers as Record<string, string>;
+        if (!(ORG_HEADER in headers)) headers[ORG_HEADER] = orgValue;
+      }
     }
 
     try {
