@@ -1,5 +1,19 @@
 # @eventuras/event-sdk
 
+## 3.2.0
+
+### Minor Changes
+
+- a562894: Surface the product `salesAccount` field: regenerate the SDK types to include it, and add an optional "Sales account" input to the admin product create/edit form.
+
+### Patch Changes
+
+- Updated dependencies [b5f6b47]
+- Updated dependencies [1fa6f8f]
+- Updated dependencies [4ecf8ab]
+- Updated dependencies [6aada3d]
+  - @eventuras/api@3.6.0
+
 ## 3.1.3
 
 ### Patch Changes

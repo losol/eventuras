@@ -1,5 +1,11 @@
 # @eventuras/ratio-ui
 
+## 2.7.0
+
+### Minor Changes
+
+- 0b2432a: Add `FileUpload` form component (beta): drag-and-drop, image previews, upload progress and optional folder picking, built on react-aria-components `DropZone` + `FileTrigger`.
+
 ## 2.6.0
 
 ### Minor Changes

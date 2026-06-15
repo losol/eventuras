@@ -1,5 +1,28 @@
 # @eventuras/web
 
+## 3.4.0
+
+### Minor Changes
+
+- a178d1f: Add a "Create new organization" drawer to the admin organizations page. Submits to the existing `POST /v3/organizations` endpoint (SystemAdmin only) and redirects to the new organization so an admin can immediately add members.
+- a562894: Surface the product `salesAccount` field: regenerate the SDK types to include it, and add an optional "Sales account" input to the admin product create/edit form.
+
+### Patch Changes
+
+- 00ac341: Show the user's own ID in a discreet "User details" accordion at the bottom of the account page (useful for support).
+- a5c1d60: Surface backend health diagnostics in admin: the `/admin/system` page reads the API's admin-only `/health/diagnostics` and renders each check as a ratio Panel (red on problems), and the `/admin` dashboard shows a warning banner — linking on to the details — whenever a check is not Healthy. Starts with pending database migrations.
+- Updated dependencies [d2b4f73]
+- Updated dependencies [7e4039e]
+- Updated dependencies [0b2432a]
+- Updated dependencies [a562894]
+- Updated dependencies [7250e63]
+  - @eventuras/fides-auth-next@0.3.0
+  - @eventuras/ratio-ui@2.7.0
+  - @eventuras/event-sdk@3.2.0
+  - @eventuras/datatable@0.5.28
+  - @eventuras/ratio-ui-next@0.1.29
+  - @eventuras/smartform@0.3.21
+
 ## 3.3.10
 
 ### Patch Changes
