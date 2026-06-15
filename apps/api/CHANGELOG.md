@@ -1,5 +1,17 @@
 # @eventuras/api
 
+## 3.6.0
+
+### Minor Changes
+
+- 1fa6f8f: Add a pending-migrations health check. Reports Degraded (never Unhealthy) when EF Core migrations exist that haven't been applied, surfaced via the admin-only `GET /health/diagnostics` endpoint. Tagged "diagnostics" and excluded from the probe `/health`, so it can never flip the Kubernetes liveness/readiness probes.
+- 4ecf8ab: Send a product's own sales account to PowerOffice when the product is first created there. The per-product `salesAccount` now flows through the invoice line; when a product has none, the integration keeps falling back to the organization default (`POWER_OFFICE_DEFAULT_SALES_ACCOUNT`). Existing PowerOffice products are still never modified.
+- 6aada3d: Add an optional `salesAccount` field to products. When set, it overrides the organization-wide default sales account used when the product is created in the external accounting system; when null, the default still applies.
+
+### Patch Changes
+
+- b5f6b47: Harden auth claim mapping: `GetRoles()` now reads roles per identity using each identity's `RoleClaimType` (so it respects `Auth:RoleClaimType` instead of a hardcoded claim type), add `RequireScopeHandler` tests covering the issuer-coupled scope claim, and document the claim → usage mapping and Keycloak requirements in `docs/auth-claims.md`.
+
 ## 3.5.0
 
 ### Minor Changes

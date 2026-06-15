@@ -1,5 +1,21 @@
 # @eventuras/fides-auth-next
 
+## 0.3.0
+
+### Minor Changes
+
+- d2b4f73: `useHeartbeat` now schedules session refreshes from the access-token expiry
+  instead of a fixed interval, so the cadence self-adjusts to any token TTL.
+  Adds `fraction`, `minSkewMs`, `minRefreshIntervalMs` and `initialExpiresAt`
+  config and decouples `idleThresholdMs` from the token TTL; removes `intervalMs`.
+
+### Patch Changes
+
+- 7e4039e: Preserve the request path when reconstructing the OIDC callback URL. Behind a TLS-terminating proxy the token-exchange `redirect_uri` collapsed to `/`, causing Keycloak to reject login with `invalid_redirect_uri`.
+- 7250e63: Upgrade `@xstate/store` to v4. React hooks moved to the dedicated `@xstate/store-react` package; the store API itself is unchanged.
+- Updated dependencies [7bcf252]
+  - @eventuras/fides-auth@0.9.0
+
 ## 0.2.0
 
 ### Minor Changes
