@@ -73,12 +73,40 @@ export const addProductToEvent = async (page: Page, eventId: string) => {
   await page.locator('[data-testid="product-price-input"]').fill('10');
   await page.locator('[data-testid="product-vat-input"]').fill('10');
 
-  // Click submit and wait for the modal to close and product to be created
+  // Submit, then wait for either success (modal closes) or an error toast.
+  // The modal only closes when createProduct succeeds, so a bare "input never
+  // hidden" timeout hides the real cause — surface the error toast instead.
   logger.debug('Submitting product...');
-  await Promise.all([
-    page.waitForSelector('[data-testid="product-name-input"]', { state: 'hidden', timeout: 10000 }),
-    page.locator('[type="submit"]').click(),
+  await page.locator('[type="submit"]').click();
+
+  const nameInput = page.locator('[data-testid="product-name-input"]');
+  const errorToast = page.locator('[data-testid="toast-error"]');
+  const outcome = await Promise.race([
+    nameInput.waitFor({ state: 'hidden', timeout: 10000 }).then(
+      () => 'closed' as const,
+      () => null
+    ),
+    errorToast.waitFor({ state: 'visible', timeout: 10000 }).then(
+      () => 'error' as const,
+      () => null
+    ),
   ]);
+
+  if (outcome === 'error') {
+    const message = (await errorToast.innerText()).trim();
+    throw new Error(
+      `Product creation failed — error toast: "${message}". ` +
+        'The create request was rejected by the API. Check the web server log line ' +
+        '"Failed to create product" (logs response.error) or open the trace: ' +
+        'pnpm exec playwright show-trace <result-dir>/trace.zip'
+    );
+  }
+  if (outcome !== 'closed') {
+    throw new Error(
+      'Product form neither closed nor showed an error toast within 10s after submit — ' +
+        'the form may not have submitted. Verify the [type="submit"] button and form wiring.'
+    );
+  }
 
   // Wait for the product to appear in the table
   logger.debug('Waiting for product to appear in table...');
