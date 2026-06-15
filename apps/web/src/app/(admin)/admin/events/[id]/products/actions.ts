@@ -15,6 +15,7 @@ import {
   postV3EventsByEventIdProducts,
   putV3EventsByEventIdProductsByProductId,
 } from '@/lib/eventuras-sdk';
+import { getOrganizationId } from '@/utils/organization';
 
 const logger = Logger.create({
   namespace: 'web:admin:products',
@@ -32,6 +33,7 @@ export async function fetchEventProducts(
   try {
     const response = await getV3EventsByEventIdProducts({
       path: { eventId },
+      headers: { 'Eventuras-Org-Id': getOrganizationId() },
     });
 
     if (!response.data) {
@@ -65,6 +67,7 @@ export async function createProduct(
   try {
     const response = await postV3EventsByEventIdProducts({
       path: { eventId },
+      headers: { 'Eventuras-Org-Id': getOrganizationId() },
       body: data,
     });
 
@@ -111,6 +114,7 @@ export async function updateProduct(
   try {
     const response = await putV3EventsByEventIdProductsByProductId({
       path: { eventId, productId },
+      headers: { 'Eventuras-Org-Id': getOrganizationId() },
       body: data,
     });
 
