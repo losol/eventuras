@@ -16,7 +16,7 @@
   "dependencies": {
     "@eventuras/docs-framework": "workspace:*",
     "@eventuras/lustro-search": "workspace:*",
-    "@eventuras/ratio-ui": "workspace:*",
+    "@eventuras/ratio-ui": "^2.7.0",
     "@eventuras/typescript-config": "workspace:*",
     "next": "16.2.7",
     "react": "^19.2.5",
