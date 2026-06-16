@@ -76,10 +76,6 @@
       "package": "@eventuras/notitia-templates",
       "aliases": ["notitia"]
     },
-    "ratio-ui": {
-      "package": "@eventuras/ratio-ui",
-      "aliases": ["ratio", "ui"]
-    },
     "scribo": {
       "package": "@eventuras/scribo"
     },
