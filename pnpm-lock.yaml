@@ -313,8 +313,8 @@ importers:
         specifier: ^19.2.5
         version: 19.2.7(react@19.2.7)
       react-hook-form:
-        specifier: 7.77.0
-        version: 7.77.0(react@19.2.7)
+        specifier: 7.78.0
+        version: 7.78.0(react@19.2.7)
       require-in-the-middle:
         specifier: 8.0.1
         version: 8.0.1
@@ -425,7 +425,7 @@ importers:
         version: 10.1.8(eslint@10.4.1(jiti@2.7.0))
       oclif:
         specifier: ^4.23.0
-        version: 4.23.13(@types/node@24.13.1)
+        version: 4.23.14(@types/node@24.13.1)
       shx:
         specifier: ^0.4.0
         version: 0.4.0
@@ -524,7 +524,7 @@ importers:
         version: 19.2.7(react@19.2.7)
       react-hook-form:
         specifier: ^7.72.1
-        version: 7.77.0(react@19.2.7)
+        version: 7.78.0(react@19.2.7)
       react-stately:
         specifier: ^3.46.0
         version: 3.47.0(react@19.2.7)
@@ -1326,7 +1326,7 @@ importers:
         version: 19.2.7(react@19.2.7)
       react-hook-form:
         specifier: ^7.68.0
-        version: 7.77.0(react@19.2.7)
+        version: 7.78.0(react@19.2.7)
     devDependencies:
       '@eventuras/eslint-config':
         specifier: workspace:*
@@ -8621,8 +8621,8 @@ packages:
     resolution: {integrity: sha512-AWGB9WFcRXOQs48Z/udjI5ZcZMHXwX8XPByNpOydgcGsDLIzjGizhoMWJyKAWze7AVW/2W1i+/gPX4YtKe5cyg==}
     engines: {node: '>=12.20.0'}
 
-  oclif@4.23.13:
-    resolution: {integrity: sha512-Pk6vrGD8RMHI8nM7rE7Em5ShuN2t9sP0s7KsUdVVLk6CNz+9kO2hBB74abWWh+CAmjfkyLWxoS31nOOomOmTfA==}
+  oclif@4.23.14:
+    resolution: {integrity: sha512-zrJOnzdjQrwjfunn7cwf/vUHeJT5uVOithtw0gHWbcCH6EmtBscz5KK4dRKVYoc9JQxSXX7keV2Y9p3SKhsnCw==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -9102,8 +9102,8 @@ packages:
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
 
-  react-hook-form@7.77.0:
-    resolution: {integrity: sha512-Sslh9YDYc0GDlWT/lxasnIduNo4v3yyvqRGvmGKUre5AFjDs/HV9/OafHGD8d+sB2yoL4UIL9L8X9i0WlZZebg==}
+  react-hook-form@7.78.0:
+    resolution: {integrity: sha512-EEZqc+N23moyzTlz61Pj+JvcXo76ICkpfOZo8JZw+sM4+wLQGh6nI2Ms+PdMOYNluFu0ghlM7B8mCzhRYtJCnA==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18 || ^19
@@ -18652,7 +18652,7 @@ snapshots:
 
   obug@2.1.2: {}
 
-  oclif@4.23.13(@types/node@24.13.1):
+  oclif@4.23.14(@types/node@24.13.1):
     dependencies:
       '@aws-sdk/client-cloudfront': 3.1063.0
       '@aws-sdk/client-s3': 3.1063.0
@@ -19197,7 +19197,7 @@ snapshots:
     dependencies:
       react: 19.2.7
 
-  react-hook-form@7.77.0(react@19.2.7):
+  react-hook-form@7.78.0(react@19.2.7):
     dependencies:
       react: 19.2.7
 
