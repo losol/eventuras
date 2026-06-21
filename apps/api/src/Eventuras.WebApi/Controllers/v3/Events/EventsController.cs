@@ -1,9 +1,12 @@
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asp.Versioning;
 using Eventuras.Domain;
+using Eventuras.Services;
 using Eventuras.Services.Events;
+using Eventuras.Services.Registrations;
 using Eventuras.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -21,15 +24,19 @@ public class EventsController : ControllerBase
 {
     private readonly IEventInfoRetrievalService _eventInfoService;
     private readonly IEventManagementService _eventManagementService;
+    private readonly IRegistrationRetrievalService _registrationRetrievalService;
 
     private readonly ILogger<EventsController> _logger;
 
     public EventsController(IEventInfoRetrievalService eventInfoService, IEventManagementService eventManagementService,
+        IRegistrationRetrievalService registrationRetrievalService,
         ILogger<EventsController> logger)
     {
         _eventInfoService = eventInfoService ?? throw new ArgumentNullException(nameof(eventInfoService));
         _eventManagementService =
             eventManagementService ?? throw new ArgumentNullException(nameof(eventManagementService));
+        _registrationRetrievalService =
+            registrationRetrievalService ?? throw new ArgumentNullException(nameof(registrationRetrievalService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
@@ -59,7 +66,24 @@ public class EventsController : ControllerBase
             },
             cancellationToken: cancellationToken);
 
-        return PageResponseDto<EventDto>.FromPaging(query, events, e => new EventDto(e));
+        var response = PageResponseDto<EventDto>.FromPaging(query, events, e => new EventDto(e));
+
+        // Statistics are admin-only: the flag is ignored for anonymous/non-admin callers
+        // so registration counts are never exposed on the public events list. Mirrors the
+        // AdministratorRole policy, which covers both Admin and SystemAdmin.
+        if (query.IncludeStatistics && Roles.All.Any(User.IsInRole))
+        {
+            var eventIds = response.Data.Select(e => e.Id).ToArray();
+            var statistics =
+                await _registrationRetrievalService.GetRegistrationStatisticsForEventsAsync(eventIds, cancellationToken);
+
+            foreach (var dto in response.Data.Where(dto => statistics.ContainsKey(dto.Id)))
+            {
+                dto.Statistics = EventDto.ToStatisticsDto(statistics[dto.Id]);
+            }
+        }
+
+        return response;
     }
 
     // GET: v3/events/5

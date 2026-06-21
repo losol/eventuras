@@ -17,6 +17,12 @@ public class EventsQueryDto : PageQueryDto
     public bool IncludePastEvents { get; set; }
     public bool IncludeDraftEvents { get; set; }
 
+    /// <summary>
+    ///     Include registration statistics per event. Honored for administrators only;
+    ///     ignored for anonymous or non-admin callers.
+    /// </summary>
+    public bool IncludeStatistics { get; set; }
+
     [Range(1, int.MaxValue)] public int? OrganizationId { get; set; }
 
     [Range(1, int.MaxValue)] public int? CollectionId { get; set; }

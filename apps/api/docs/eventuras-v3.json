@@ -3022,6 +3022,14 @@
             }
           },
           {
+            "name": "IncludeStatistics",
+            "in": "query",
+            "description": "Include registration statistics per event. Honored for administrators only;\nignored for anonymous or non-admin callers.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
             "name": "OrganizationId",
             "in": "query",
             "schema": {
@@ -5235,6 +5243,10 @@
               "null",
               "string"
             ]
+          },
+          "statistics": {
+            "description": "Registration statistics for the event, populated only for administrators when the list is\nrequested with IncludeStatistics=true and omitted from the response otherwise.",
+            "$ref": "#/components/schemas/EventStatisticsDto"
           }
         }
       },

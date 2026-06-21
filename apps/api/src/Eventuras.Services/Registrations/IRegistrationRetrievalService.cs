@@ -39,6 +39,14 @@ public interface IRegistrationRetrievalService
     Task<RegistrationStatistics> GetRegistrationStatisticsAsync(int eventId, CancellationToken cancellationToken);
 
     /// <summary>
+    ///     Returns registration statistics for several events at once, using a single
+    ///     grouped query instead of one round-trip per event. Every requested event id
+    ///     is present in the result; events without registrations get zeroed counts.
+    /// </summary>
+    Task<Dictionary<int, RegistrationStatistics>> GetRegistrationStatisticsForEventsAsync(
+        IReadOnlyCollection<int> eventIds, CancellationToken cancellationToken = default);
+
+    /// <summary>
     ///     Resolves the owning tenant's <see cref="Organization.Uuid" /> for a
     ///     registration by walking Registration → EventInfo → Organization.
     /// </summary>
