@@ -63,6 +63,7 @@
   "eventColumns": {
     "actions": "Handlinger",
     "location": "Sted",
+    "registrations": "Påmeldte",
     "title": "Tittel",
     "when": "Når"
   },

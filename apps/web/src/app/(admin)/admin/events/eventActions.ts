@@ -48,6 +48,7 @@ export async function fetchEvents({
       query: {
         OrganizationId: organizationId,
         IncludeDraftEvents: true,
+        IncludeStatistics: true,
         IncludePastEvents: includePastEvents,
         Start: startDate,
         Period: 'Contain',
