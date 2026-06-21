@@ -130,6 +130,11 @@ export type EventDto = {
     organizerUserId?: null | string;
     maxParticipants?: null | number;
     externalInfoPageUrl?: null | string;
+    /**
+     * Registration statistics for the event, populated only for administrators when the list is
+     * requested with IncludeStatistics=true and omitted from the response otherwise.
+     */
+    statistics?: EventStatisticsDto;
 };
 
 /**
@@ -2006,6 +2011,11 @@ export type GetV3EventsData = {
         Period?: PeriodMatchingKind;
         IncludePastEvents?: boolean;
         IncludeDraftEvents?: boolean;
+        /**
+         * Include registration statistics per event. Honored for administrators only;
+         * ignored for anonymous or non-admin callers.
+         */
+        IncludeStatistics?: boolean;
         OrganizationId?: number;
         CollectionId?: number;
         Page?: number;
