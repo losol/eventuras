@@ -38,6 +38,77 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
         token.CheckEmptyPaging();
     }
 
+    [Fact]
+    public async Task Should_Include_Statistics_For_Admin_When_Requested()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var u1 = await scope.CreateUserAsync();
+        using var u2 = await scope.CreateUserAsync();
+        using var u3 = await scope.CreateUserAsync();
+        using var u4 = await scope.CreateUserAsync();
+        using var evt = await scope.CreateEventAsync(
+            dateStart: SystemClock.Instance.Today().PlusDays(1), maxParticipants: 40);
+
+        using var r1 = await scope.CreateRegistrationAsync(evt.Entity, u1.Entity,
+            status: Registration.RegistrationStatus.Verified);
+        using var r2 = await scope.CreateRegistrationAsync(evt.Entity, u2.Entity,
+            status: Registration.RegistrationStatus.Attended);
+        using var r3 = await scope.CreateRegistrationAsync(evt.Entity, u3.Entity,
+            status: Registration.RegistrationStatus.WaitingList);
+        using var r4 = await scope.CreateRegistrationAsync(evt.Entity, u4.Entity,
+            status: Registration.RegistrationStatus.Cancelled);
+
+        var client = _factory.CreateClient().AuthenticatedAsAdmin();
+
+        var response = await client.GetAsync("/v3/events?includeStatistics=true");
+        response.CheckOk();
+
+        var token = await response.AsTokenAsync();
+        var byStatus = token.GetProperty("data")[0].GetProperty("statistics").GetProperty("byStatus");
+        Assert.Equal(1, byStatus.GetProperty("verified").GetInt32());
+        Assert.Equal(1, byStatus.GetProperty("attended").GetInt32());
+        Assert.Equal(1, byStatus.GetProperty("waitingList").GetInt32());
+        Assert.Equal(1, byStatus.GetProperty("cancelled").GetInt32());
+    }
+
+    [Fact]
+    public async Task Should_Include_Statistics_For_SystemAdmin_When_Requested()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var user = await scope.CreateUserAsync();
+        using var evt = await scope.CreateEventAsync(
+            dateStart: SystemClock.Instance.Today().PlusDays(1), maxParticipants: 40);
+        using var registration = await scope.CreateRegistrationAsync(evt.Entity, user.Entity,
+            status: Registration.RegistrationStatus.Verified);
+
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
+
+        var response = await client.GetAsync("/v3/events?includeStatistics=true");
+        response.CheckOk();
+
+        var token = await response.AsTokenAsync();
+        var byStatus = token.GetProperty("data")[0].GetProperty("statistics").GetProperty("byStatus");
+        Assert.Equal(1, byStatus.GetProperty("verified").GetInt32());
+    }
+
+    [Fact]
+    public async Task Should_Not_Expose_Statistics_To_Anonymous_Callers()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var user = await scope.CreateUserAsync();
+        using var evt = await scope.CreateEventAsync(
+            dateStart: SystemClock.Instance.Today().PlusDays(1), maxParticipants: 40);
+        using var registration = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
+
+        var client = _factory.CreateClient();
+
+        var response = await client.GetAsync("/v3/events?includeStatistics=true");
+        response.CheckOk();
+
+        var token = await response.AsTokenAsync();
+        Assert.False(token.GetProperty("data")[0].TryGetProperty("statistics", out _));
+    }
+
     [Theory]
     [MemberData(nameof(GetInvalidFilterParams))]
     public async Task Should_Validate_Filter_Params_For_Event_List(string query)

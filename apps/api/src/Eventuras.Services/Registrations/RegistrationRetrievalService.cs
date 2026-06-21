@@ -150,6 +150,64 @@ public class RegistrationRetrievalService : IRegistrationRetrievalService
         return new RegistrationStatistics { ByStatus = byStatus, ByType = byType };
     }
 
+    public async Task<Dictionary<int, RegistrationStatistics>> GetRegistrationStatisticsForEventsAsync(
+        IReadOnlyCollection<int> eventIds, CancellationToken cancellationToken = default)
+    {
+        // Seed every requested event so callers always get a complete map, even
+        // for events that have no registrations at all.
+        var result = eventIds.Distinct().ToDictionary(
+            id => id,
+            _ => new RegistrationStatistics { ByStatus = new ByStatus(), ByType = new ByType() });
+
+        if (result.Count == 0)
+        {
+            return result;
+        }
+
+        // Single grouped round-trip: counts per (event, status) and per (event, type).
+        var statusRows = await _context.Registrations
+            .Where(r => result.Keys.Contains(r.EventInfoId))
+            .GroupBy(r => new { r.EventInfoId, r.Status })
+            .Select(g => new { g.Key.EventInfoId, g.Key.Status, Count = g.Count() })
+            .ToListAsync(cancellationToken);
+
+        var typeRows = await _context.Registrations
+            .Where(r => result.Keys.Contains(r.EventInfoId))
+            .GroupBy(r => new { r.EventInfoId, r.Type })
+            .Select(g => new { g.Key.EventInfoId, g.Key.Type, Count = g.Count() })
+            .ToListAsync(cancellationToken);
+
+        foreach (var row in statusRows)
+        {
+            var byStatus = result[row.EventInfoId].ByStatus;
+            switch (row.Status)
+            {
+                case Registration.RegistrationStatus.Draft: byStatus.Draft = row.Count; break;
+                case Registration.RegistrationStatus.Cancelled: byStatus.Cancelled = row.Count; break;
+                case Registration.RegistrationStatus.Verified: byStatus.Verified = row.Count; break;
+                case Registration.RegistrationStatus.NotAttended: byStatus.NotAttended = row.Count; break;
+                case Registration.RegistrationStatus.Attended: byStatus.Attended = row.Count; break;
+                case Registration.RegistrationStatus.Finished: byStatus.Finished = row.Count; break;
+                case Registration.RegistrationStatus.WaitingList: byStatus.WaitingList = row.Count; break;
+            }
+        }
+
+        foreach (var row in typeRows)
+        {
+            var byType = result[row.EventInfoId].ByType;
+            switch (row.Type)
+            {
+                case Registration.RegistrationType.Participant: byType.Participant = row.Count; break;
+                case Registration.RegistrationType.Student: byType.Student = row.Count; break;
+                case Registration.RegistrationType.Staff: byType.Staff = row.Count; break;
+                case Registration.RegistrationType.Lecturer: byType.Lecturer = row.Count; break;
+                case Registration.RegistrationType.Artist: byType.Artist = row.Count; break;
+            }
+        }
+
+        return result;
+    }
+
     public Task<List<RegistrationProductDto>> GetRegistrationProductsAsync(
         Registration registration,
         CancellationToken cancellationToken = default)

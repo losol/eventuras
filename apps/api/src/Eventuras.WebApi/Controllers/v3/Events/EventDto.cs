@@ -1,5 +1,8 @@
 using System;
+using System.Text.Json.Serialization;
 using Eventuras.Domain;
+using Eventuras.Servcies.Registrations;
+using Eventuras.WebApi.Controllers.v3.Events.Statistics;
 using NodaTime;
 
 namespace Eventuras.WebApi.Controllers.v3.Events;
@@ -74,4 +77,41 @@ public class EventDto
     public Guid? OrganizerUserId { get; set; }
     public int? MaxParticipants { get; set; }
     public string ExternalInfoPageUrl { get; set; }
+
+    /// <summary>
+    ///     Registration statistics for the event, populated only for administrators when the list is
+    ///     requested with IncludeStatistics=true and omitted from the response otherwise.
+    /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public EventStatisticsDto Statistics { get; set; }
+
+    public static EventStatisticsDto ToStatisticsDto(RegistrationStatistics statistics)
+    {
+        if (statistics == null)
+        {
+            return null;
+        }
+
+        return new EventStatisticsDto
+        {
+            ByStatus = new Statistics.ByStatus
+            {
+                Draft = statistics.ByStatus.Draft,
+                Cancelled = statistics.ByStatus.Cancelled,
+                Verified = statistics.ByStatus.Verified,
+                NotAttended = statistics.ByStatus.NotAttended,
+                Attended = statistics.ByStatus.Attended,
+                Finished = statistics.ByStatus.Finished,
+                WaitingList = statistics.ByStatus.WaitingList
+            },
+            ByType = new Statistics.ByType
+            {
+                Participant = statistics.ByType.Participant,
+                Student = statistics.ByType.Student,
+                Staff = statistics.ByType.Staff,
+                Lecturer = statistics.ByType.Lecturer,
+                Artist = statistics.ByType.Artist
+            }
+        };
+    }
 }
