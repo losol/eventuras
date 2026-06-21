@@ -47,6 +47,7 @@ const AdminEventList = async ({
         title: t('admin.eventColumns.title'),
         location: t('admin.eventColumns.location'),
         when: t('admin.eventColumns.when'),
+        registrations: t('admin.eventColumns.registrations'),
         actions: t('admin.eventColumns.actions'),
         view: t('common.labels.view'),
       }}
