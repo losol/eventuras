@@ -58,6 +58,7 @@ ENV NODE_ENV=test
 # E2E_WEB_URL - URL of the web app to test
 # E2E_OTP_SOURCE - gmail | mailpit
 # E2E_MAILPIT_API_URL - Mailpit REST API (when E2E_OTP_SOURCE=mailpit)
+# E2E_MAILPIT_TOKEN_URL / E2E_MAILPIT_CLIENT_ID / E2E_MAILPIT_CLIENT_SECRET - oauth2-proxy bearer auth (optional)
 # E2E_GMAIL_* - OAuth credentials (when E2E_OTP_SOURCE=gmail)
 # E2E_ADMIN_EMAIL / E2E_SYSTEMADMIN_EMAIL / E2E_USER_EMAIL_PATTERN - persona logins
 

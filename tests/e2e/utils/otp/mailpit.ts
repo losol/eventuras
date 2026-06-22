@@ -10,6 +10,12 @@
  * `E2E_OTP_SOURCE=mailpit` by {@link ./index}.
  *
  * Mailpit HTTP API (default port 8025): https://mailpit.axllent.org/docs/api-v1/
+ *
+ * In CI the public Mailpit endpoint sits behind oauth2-proxy ForwardAuth, which
+ * accepts bearer tokens. When `E2E_MAILPIT_CLIENT_ID` / `E2E_MAILPIT_CLIENT_SECRET`
+ * / `E2E_MAILPIT_TOKEN_URL` are set, every request carries a
+ * service-account token (client_credentials grant). They are optional so a local
+ * Mailpit reached directly still works with no auth.
  */
 
 import { Logger } from '@eventuras/logger';
@@ -17,6 +23,64 @@ import { Logger } from '@eventuras/logger';
 import { extractLoginCode } from './code';
 
 const logger = Logger.create({ namespace: 'e2e:mailpit' });
+
+interface TokenResponse {
+  access_token: string;
+  expires_in?: number;
+}
+
+let cachedToken: { value: string; expiresAt: number; } | null = null;
+
+/**
+ * Bearer token for the oauth2-proxy in front of Mailpit, via the Keycloak
+ * `client_credentials` grant. Returns null when no client credentials are
+ * configured (e.g. a local Mailpit reached directly), so auth is simply omitted.
+ * Cached until shortly before it expires.
+ */
+const getBearerToken = async (): Promise<string | null> => {
+  const tokenUrl = process.env.E2E_MAILPIT_TOKEN_URL;
+  const clientId = process.env.E2E_MAILPIT_CLIENT_ID;
+  const clientSecret = process.env.E2E_MAILPIT_CLIENT_SECRET;
+  if (!tokenUrl || !clientId || !clientSecret) {
+    return null;
+  }
+
+  const now = Date.now();
+  if (cachedToken && cachedToken.expiresAt > now) {
+    return cachedToken.value;
+  }
+
+  const response = await fetch(tokenUrl, {
+    method: 'POST',
+    headers: { 'content-type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      grant_type: 'client_credentials',
+      client_id: clientId,
+      client_secret: clientSecret,
+    }),
+  });
+  if (!response.ok) {
+    throw new Error(`Mailpit token request failed: ${response.status} ${response.statusText}`);
+  }
+
+  const token = (await response.json()) as TokenResponse;
+  if (!token.access_token) {
+    throw new Error('Mailpit token response did not contain an access_token');
+  }
+
+  // Refresh a little early so a token never expires mid-request. Cap the skew at
+  // half the TTL so a short-lived token still gets a positive lifetime here.
+  const ttlMs = (token.expires_in ?? 60) * 1000;
+  const skewMs = Math.min(5000, Math.floor(ttlMs / 2));
+  cachedToken = { value: token.access_token, expiresAt: now + ttlMs - skewMs };
+  return token.access_token;
+};
+
+/** Authorization header for Mailpit requests; empty when no credentials are set. */
+const authHeaders = async (): Promise<Record<string, string>> => {
+  const token = await getBearerToken();
+  return token ? { authorization: `Bearer ${token}` } : {};
+};
 
 interface MailpitMessageSummary {
   ID: string;
@@ -45,7 +109,7 @@ const getApiUrl = (): string => {
 };
 
 const mailpitGet = async <T>(base: string, path: string): Promise<T> => {
-  const response = await fetch(`${base}${path}`);
+  const response = await fetch(`${base}${path}`, { headers: await authHeaders() });
   if (!response.ok) {
     throw new Error(`Mailpit GET ${path} failed: ${response.status} ${response.statusText}`);
   }
@@ -70,7 +134,7 @@ const deleteMessages = async (base: string, ids: string[]): Promise<void> => {
   }
   const response = await fetch(`${base}/api/v1/messages`, {
     method: 'DELETE',
-    headers: { 'content-type': 'application/json' },
+    headers: { 'content-type': 'application/json', ...(await authHeaders()) },
     body: JSON.stringify({ IDs: ids }),
   });
   if (!response.ok) {
