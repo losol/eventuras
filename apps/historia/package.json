@@ -28,8 +28,8 @@
     "@eventuras/ratio-ui-next": "^0.2.0",
     "@eventuras/vipps": "workspace:*",
     "@opentelemetry/api": "^1.9.1",
-    "@opentelemetry/exporter-logs-otlp-http": "^0.218.0",
-    "@opentelemetry/sdk-logs": "^0.218.0",
+    "@opentelemetry/exporter-logs-otlp-http": "^0.219.0",
+    "@opentelemetry/sdk-logs": "^0.219.0",
     "@payloadcms/admin-bar": "3.85.0",
     "@payloadcms/db-postgres": "3.85.0",
     "@payloadcms/db-sqlite": "^3.82.1",
@@ -70,7 +70,7 @@
     "prism-react-renderer": "^2.4.1",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
-    "react-hook-form": "7.78.0",
+    "react-hook-form": "7.79.0",
     "require-in-the-middle": "8.0.1",
     "tailwind-merge": "^3.5.0",
     "tailwindcss": "^4.2.2",
@@ -85,10 +85,10 @@
     "typescript": "^6.0.2"
   },
   "optionalDependencies": {
-    "@esbuild/linux-x64": "0.28.0",
+    "@esbuild/linux-x64": "0.28.1",
     "@libsql/linux-x64-gnu": "0.5.29",
     "libsql": "^0.5.29",
-    "sharp": "^0.34.5"
+    "sharp": "^0.35.0"
   },
   "engines": {
     "node": ">=22.0.0 <25.0.0"

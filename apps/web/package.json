@@ -71,7 +71,7 @@
     "typescript": "6.0.3"
   },
   "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "4.61.1"
+    "@rollup/rollup-linux-x64-gnu": "4.62.0"
   },
   "engines": {
     "node": ">=22.0.0 <25.0.0",
