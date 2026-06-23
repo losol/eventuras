@@ -1,5 +1,11 @@
 # @eventuras/api
 
+## 3.7.0
+
+### Minor Changes
+
+- 0acfd1f: Add `IncludeStatistics` query flag to `GET /v3/events` and an optional `statistics` field on `EventDto` (admin-only).
+
 ## 3.6.0
 
 ### Minor Changes
