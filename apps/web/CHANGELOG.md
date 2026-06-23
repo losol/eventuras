@@ -1,5 +1,17 @@
 # @eventuras/web
 
+## 3.4.1
+
+### Patch Changes
+
+- Updated dependencies [b0f301b]
+- Updated dependencies [5519c0b]
+  - @eventuras/event-sdk@3.3.0
+  - @eventuras/markdown-plugin-happening@4.0.6
+  - @eventuras/smartform@0.3.22
+  - @eventuras/datatable@0.5.29
+  - @eventuras/markdown@9.0.6
+
 ## 3.4.0
 
 ### Minor Changes
