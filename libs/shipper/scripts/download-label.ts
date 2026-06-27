@@ -41,11 +41,38 @@ function fail(message: string): never {
   process.exit(1);
 }
 
+/**
+ * Validate that a label URL is safe to call with Bring API credentials.
+ *
+ * `fetchLabel()` attaches BRING_API_KEY/BRING_API_UID as request headers, so an
+ * arbitrary URL would leak those credentials to that host. Only allow HTTPS URLs
+ * pointing at an official Bring API host.
+ */
+function assertSafeLabelUrl(rawUrl: string): void {
+  let url: URL;
+  try {
+    url = new URL(rawUrl);
+  } catch {
+    fail('--label-url must be a valid URL');
+  }
+
+  if (url.protocol !== 'https:') {
+    fail('--label-url must use HTTPS');
+  }
+
+  const host = url.hostname.toLowerCase();
+  if (host !== 'bring.com' && !host.endsWith('.bring.com')) {
+    fail('--label-url must point to a Bring API host (*.bring.com)');
+  }
+}
+
 async function main(): Promise<void> {
   const labelUrl = values['label-url'];
   if (!labelUrl) {
     fail('--label-url is required');
   }
+
+  assertSafeLabelUrl(labelUrl);
 
   const config = getShipperConfig();
   const client = new BringClient(config);
