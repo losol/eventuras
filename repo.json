@@ -27,10 +27,6 @@
       "package": "no.losol.nuntius",
       "aliases": ["nuntius-homey"]
     },
-    "oxo": {
-      "path": "apps/oxo-cli",
-      "package": "@eventuras/oxo-cli"
-    },
     "web": {
       "path": "apps/web",
       "package": "@eventuras/web",

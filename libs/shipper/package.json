@@ -22,6 +22,8 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite build --watch",
+    "label:download": "tsx --env-file=.env scripts/download-label.ts",
+    "shipment:create": "tsx --env-file=.env scripts/create-shipment.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
@@ -33,6 +35,7 @@
     "@eventuras/typescript-config": "workspace:*",
     "@eventuras/vite-config": "workspace:*",
     "@vitest/ui": "^4.1.4",
+    "tsx": "^4.21.0",
     "typescript": "^6.0.2",
     "vite": "^8.0.8",
     "vitest": "^4.1.4"
