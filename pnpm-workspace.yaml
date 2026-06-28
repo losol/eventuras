@@ -27,8 +27,8 @@ allowBuilds:
   yarn: true
 
 # Supply-chain protection: do not resolve packages published less than
-# 10 days ago. Mirrors `minimumReleaseAge: "10 days"` in renovate.json
-# so local installs and Renovate apply the same window.
+# 10 days ago. Mirrors the Dependabot `cooldown: 10` in .github/dependabot.yml
+# so local installs and Dependabot apply the same window.
 minimumReleaseAge: 14400
 
 # Soft mode: warn but don't block when a fresh package is encountered.
@@ -64,7 +64,7 @@ minimumReleaseAgeExclude:
   # Our own first-party packages are trusted; skip the release-age gate so a
   # freshly published @eventuras/* version installs without the 10-day delay.
   - '@eventuras/*'
-  # Renovate security update: turbo@2.9.14
+  # Security update: turbo@2.9.14
   - turbo@2.9.14
-  # Renovate security update: nodemailer@9.0.1
+  # Security update: nodemailer@9.0.1
   - nodemailer@9.0.1

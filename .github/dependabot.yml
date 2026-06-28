@@ -1,0 +1,185 @@
+# Dependabot configuration
+#
+# Replaces the previously self-hosted Renovate setup (renovate.json +
+# .github/workflows/renovate.yml). The 10-day supply-chain window is enforced
+# in two places that mirror each other:
+#   - here, via `cooldown: 10` (Dependabot won't open a PR for a version until
+#     it has been published for 10 days), and
+#   - at install time, via `minimumReleaseAge` in pnpm-workspace.yaml.
+# First-party @eventuras/@losol packages are excluded from the wait.
+#
+# Security updates run as a separate mechanism (Dependabot security updates,
+# enabled in repo settings) and are NOT subject to the cooldown below.
+version: 2
+
+updates:
+  # ---------------------------------------------------------------------------
+  # npm / pnpm workspace
+  # A single root pnpm-lock.yaml covers apps/**, libs/**, lab/**, tests/**, so
+  # one entry at "/" updates dependencies across the whole workspace.
+  # ---------------------------------------------------------------------------
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+      time: "06:00"
+      timezone: "Europe/Oslo"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "chore(deps)"
+    cooldown:
+      default-days: 10
+      exclude:
+        # First-party packages are trusted — no 10-day wait. Mirrors
+        # `minimumReleaseAgeExclude: '@eventuras/*'` in pnpm-workspace.yaml.
+        - "@eventuras/*"
+        - "@losol/*"
+    ignore:
+      # Lexical must match Payload CMS richtext-lexical — bump manually.
+      - dependency-name: "lexical"
+      - dependency-name: "@lexical/*"
+      # @types/node pinned to match engine requirements.
+      - dependency-name: "@types/node"
+    groups:
+      # Order matters: a dependency joins the FIRST group it matches.
+      # Keep the specific groups above the catch-all minor/patch group, and
+      # typescript-eslint above the broad eslint group.
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
+      next:
+        patterns:
+          - "next"
+          - "@next/*"
+          - "next-intl"
+          - "next-sitemap"
+      payload:
+        patterns:
+          - "payload"
+          - "@payloadcms/*"
+      storybook:
+        patterns:
+          - "storybook"
+          - "@storybook/*"
+      typescript-eslint:
+        patterns:
+          - "typescript-eslint"
+          - "@typescript-eslint/*"
+      eslint:
+        patterns:
+          - "*eslint*"
+      vite:
+        patterns:
+          - "vite"
+          - "@vitejs/*"
+          - "vitest"
+          - "@vitest/*"
+      tailwind:
+        patterns:
+          - "tailwindcss"
+          - "@tailwindcss/*"
+          - "tailwind-merge"
+          - "tailwindcss-react-aria-components"
+          - "autoprefixer"
+          - "postcss"
+      testing-library:
+        patterns:
+          - "@testing-library/*"
+          - "jsdom"
+      tanstack:
+        patterns:
+          - "@tanstack/*"
+      radix:
+        patterns:
+          - "@radix-ui/*"
+      hey-api:
+        patterns:
+          - "@hey-api/*"
+      # Everything else: bundle all remaining minor + patch bumps into one PR.
+      # Ungrouped major bumps still open as individual PRs.
+      npm-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+
+  # ---------------------------------------------------------------------------
+  # GitHub Actions
+  # Actions are SHA-pinned with a trailing semver comment; Dependabot keeps both
+  # the SHA and the comment in sync.
+  # ---------------------------------------------------------------------------
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+      time: "06:00"
+      timezone: "Europe/Oslo"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "chore(deps)"
+    cooldown:
+      default-days: 10
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+
+  # ---------------------------------------------------------------------------
+  # Docker base images
+  # ---------------------------------------------------------------------------
+  - package-ecosystem: "docker"
+    directories:
+      - "/apps/*"
+      - "/tests/e2e"
+      - "/.devcontainer"
+    schedule:
+      interval: "daily"
+      time: "06:00"
+      timezone: "Europe/Oslo"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "chore(deps)"
+    cooldown:
+      default-days: 10
+    groups:
+      docker:
+        patterns:
+          - "*"
+
+  # ---------------------------------------------------------------------------
+  # NuGet (.NET)
+  # apps/api has no solution file, so target each project directory directly.
+  # ---------------------------------------------------------------------------
+  - package-ecosystem: "nuget"
+    directories:
+      - "/apps/api/src/*"
+      - "/apps/api/tests/*"
+    schedule:
+      interval: "daily"
+      time: "06:00"
+      timezone: "Europe/Oslo"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "chore(deps)"
+    cooldown:
+      default-days: 10
+    groups:
+      # Bundle minor + patch into one PR; majors open individually.
+      nuget-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
