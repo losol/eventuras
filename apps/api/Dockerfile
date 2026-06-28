@@ -46,9 +46,17 @@ RUN dotnet restore Eventuras.slnx
 COPY ./src/ ./src/
 COPY ./global.json ./global.json
 
+# Stamp the assembly version from the build args passed by the release
+# workflow. ARG is per-stage in multi-stage builds.
+ARG BUILD_VERSION="0.0.0"
+ARG BUILD_SHA="unknown"
+
 # Publish
 WORKDIR /app/src/Eventuras.WebApi
-RUN dotnet publish -c Release -o /app/out
+RUN dotnet publish -c Release -o /app/out \
+  -p:Version=${BUILD_VERSION} \
+  -p:InformationalVersion=${BUILD_VERSION}+${BUILD_SHA} \
+  -p:IncludeSourceRevisionInInformationalVersion=false
 
 #
 # Stage 1
