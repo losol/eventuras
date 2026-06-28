@@ -193,6 +193,8 @@ async function main(): Promise<void> {
   }
 }
 
-main().catch((error) => {
+try {
+  await main();
+} catch (error) {
   fail(error instanceof Error ? error.message : 'Unknown error');
-});
+}
