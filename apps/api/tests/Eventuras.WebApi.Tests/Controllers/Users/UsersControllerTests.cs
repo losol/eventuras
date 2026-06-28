@@ -74,6 +74,44 @@ public class UsersControllerTests : IClassFixture<CustomWebApiApplicationFactory
         token.CheckUser(dbUser);
     }
 
+    [Fact]
+    public async Task Profile_Endpoint_Should_Return_Existing_User_When_Email_Drifted_From_Username()
+    {
+        using var scope = _factory.Services.NewTestScope();
+
+        // A user whose stored email has drifted from their username: NormalizedUserName
+        // matches the login email, but NormalizedEmail does not. An email-only lookup
+        // misses them, so the previous code tried to create a new user. In production
+        // that INSERT violated the unique constraint on NormalizedUserName (HTTP 500 on
+        // every profile load); on the in-memory provider used here, which does not
+        // enforce the constraint, it instead created a duplicate row (count == 2 below).
+        const string loginEmail = "drifted-user@email.com";
+        var normalizedLogin = loginEmail.ToUpperInvariant();
+        scope.Db.Users.Add(new ApplicationUser
+        {
+            GivenName = "Drift",
+            FamilyName = "User",
+            UserName = loginEmail,
+            NormalizedUserName = normalizedLogin,
+            Email = "old-address@email.com",
+            NormalizedEmail = "OLD-ADDRESS@EMAIL.COM",
+            EmailConfirmed = true
+        });
+        await scope.Db.SaveChangesAsync();
+
+        var client = _factory.CreateClient().Authenticated(email: loginEmail);
+
+        var response = await client.GetAsync("/v3/userprofile");
+        response.CheckOk();
+
+        // No duplicate user was created for the same username.
+        Assert.Equal(1, scope.Db.Users.Count(u => u.NormalizedUserName == normalizedLogin));
+
+        // The drifted email was realigned so email-based lookups resolve the user next time.
+        var dbUser = scope.Db.Users.AsNoTracking().Single(u => u.NormalizedUserName == normalizedLogin);
+        Assert.Equal(normalizedLogin, dbUser.NormalizedEmail);
+    }
+
     [Theory]
     [InlineData(Roles.Admin)]
     [InlineData(Roles.SystemAdmin)]
