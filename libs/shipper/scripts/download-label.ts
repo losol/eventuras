@@ -67,24 +67,6 @@ function assertSafeLabelUrl(rawUrl: string): void {
   }
 }
 
-/**
- * Resolve the output path and ensure it stays within the current working
- * directory.
- *
- * `--output` is user-controlled, so without this check a value like
- * `../../etc/passwd` could write the downloaded file outside the intended
- * directory (path traversal).
- */
-function resolveSafeOutputPath(rawPath: string): string {
-  const cwd = process.cwd();
-  const resolved = resolve(cwd, rawPath);
-  if (resolved !== cwd && !resolved.startsWith(cwd + sep)) {
-    fail('--output must stay within the current working directory');
-  }
-
-  return resolved;
-}
-
 async function main(): Promise<void> {
   const labelUrl = values['label-url'];
   if (!labelUrl) {
@@ -97,7 +79,15 @@ async function main(): Promise<void> {
   const client = new BringClient(config);
 
   const labelData = await client.fetchLabel(labelUrl);
-  const outputPath = resolveSafeOutputPath(values.output ?? `label-${Date.now()}.pdf`);
+
+  // Validate the user-controlled --output path before touching the file system.
+  // Resolving it and confirming it stays within the working directory prevents
+  // path traversal (e.g. --output ../../etc/passwd).
+  const baseDir = process.cwd();
+  const outputPath = resolve(baseDir, values.output ?? `label-${Date.now()}.pdf`);
+  if (outputPath !== baseDir && !outputPath.startsWith(baseDir + sep)) {
+    throw new Error('--output must stay within the current working directory');
+  }
 
   writeFileSync(outputPath, Buffer.from(labelData));
 
