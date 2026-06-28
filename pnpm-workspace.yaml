@@ -27,8 +27,8 @@ allowBuilds:
   yarn: true
 
 # Supply-chain protection: do not resolve packages published less than
-# 10 days ago. Mirrors the Dependabot `cooldown: 10` in .github/dependabot.yml
-# so local installs and Dependabot apply the same window.
+# 10 days ago. Mirrors the Dependabot `cooldown.default-days: 10` in
+# .github/dependabot.yml so local installs and Dependabot apply the same window.
 minimumReleaseAge: 14400
 
 # Soft mode: warn but don't block when a fresh package is encountered.

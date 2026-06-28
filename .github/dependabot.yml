@@ -3,8 +3,8 @@
 # Replaces the previously self-hosted Renovate setup (renovate.json +
 # .github/workflows/renovate.yml). The 10-day supply-chain window is enforced
 # in two places that mirror each other:
-#   - here, via `cooldown: 10` (Dependabot won't open a PR for a version until
-#     it has been published for 10 days), and
+#   - here, via `cooldown.default-days: 10` (Dependabot won't open a PR for a
+#     version until it has been published for 10 days), and
 #   - at install time, via `minimumReleaseAge` in pnpm-workspace.yaml.
 # First-party @eventuras/@losol packages are excluded from the wait.
 #
