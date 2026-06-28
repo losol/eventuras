@@ -2,7 +2,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asp.Versioning;
-using Eventuras.Domain;
 using Eventuras.Services.Auth;
 using Eventuras.Services.Exceptions;
 using Eventuras.Services.Users;
@@ -61,30 +60,15 @@ public class UserProfileController : Controller
             throw new BadHttpRequestException("No email provided for user to in this request.");
         }
 
-        ApplicationUser user;
-
-        try
-        {
-            user = await _userRetrievalService.GetUserByEmailAsync(emailClaim,
-                new UserRetrievalOptions { IncludeOrgMembership = true }, cancellationToken);
-        }
-        catch (NotFoundException)
-        {
-            if (_authSettings.EnablePiiLogging)
-            {
-                _logger.LogDebug("No user found with email claim. Creating new user.");
-            }
-            else
-            {
-                _logger.LogDebug("No user found with email. Creating new user.");
-            }
-
-            user = await _userManagementService.CreateNewUserAsync(
-                emailClaim,
-                phoneClaim,
-                cancellationToken);
-
-        }
+        // Get-or-create keyed on the email claim. Resolving by email or username
+        // (and recovering from a lost create race) keeps this resilient to users
+        // whose stored email has drifted from their username — an email-only
+        // lookup followed by a create would hit the NormalizedUserName unique
+        // constraint and fail every profile load for that user.
+        var user = await _userManagementService.GetOrCreateUserByEmailAsync(
+            emailClaim,
+            phoneClaim,
+            cancellationToken);
 
         return new UserDto(user);
     }
