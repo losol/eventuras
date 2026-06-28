@@ -42,7 +42,7 @@
     "react": "^19.2.5",
     "typescript": "^6.0.2",
     "vite": "^8.0.8",
-    "vitest": "^4.1.4"
+    "vitest": "^4.1.9"
   },
   "peerDependencies": {
     "@payloadcms/next": "^3.0.0",

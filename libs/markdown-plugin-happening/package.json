@@ -49,7 +49,7 @@
     "typescript": "6.0.3",
     "unified": "^11.0.5",
     "vite": "8.0.16",
-    "vitest": "4.1.8"
+    "vitest": "4.1.9"
   },
   "peerDependencies": {
     "@eventuras/ratio-ui": ">=1",
