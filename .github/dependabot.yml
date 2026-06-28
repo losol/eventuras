@@ -151,6 +151,10 @@ updates:
       prefix: "chore(deps)"
     cooldown:
       default-days: 10
+    ignore:
+      # Stay on Node 24 LTS — ignore Node 26 and beyond.
+      - dependency-name: "node"
+        versions: [">= 26"]
     groups:
       docker:
         patterns:
