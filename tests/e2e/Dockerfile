@@ -10,7 +10,7 @@
 ##########################
 # Base                   #
 ##########################
-FROM mcr.microsoft.com/playwright:v1.60.0-noble AS base
+FROM mcr.microsoft.com/playwright:v1.61.1-noble AS base
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
