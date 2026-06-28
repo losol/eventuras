@@ -22,9 +22,9 @@
     "@eventuras/fides-auth": "workspace:*",
     "@eventuras/google-api": "workspace:*",
     "@eventuras/logger": "workspace:*",
-    "@playwright/test": "1.60.0",
-    "allure-playwright": "^3.7.1",
-    "jose": "6.2.2",
+    "@playwright/test": "1.61.0",
+    "allure-playwright": "^3.10.0",
+    "jose": "6.2.3",
     "tsx": "^4.21.0"
   },
   "readme": "README.md"
