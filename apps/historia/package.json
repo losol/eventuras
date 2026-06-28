@@ -59,7 +59,7 @@
     "clsx": "^2.1.1",
     "cross-env": "^10.1.0",
     "geist": "^1.7.0",
-    "graphql": "^16.13.2",
+    "graphql": "^17.0.0",
     "import-in-the-middle": "^3.0.1",
     "lucide-react": "^1.8.0",
     "nanoid": "^5.1.9",
