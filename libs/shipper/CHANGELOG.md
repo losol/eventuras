@@ -1,5 +1,11 @@
 # @eventuras/shipper
 
+## 0.2.11
+
+### Patch Changes
+
+- a829d23: Replace the oclif-based `oxo-cli` with runnable `tsx` scripts in `libs/shipper` (`shipment:create`, `label:download`). The label download script now validates that the label URL is HTTPS and points to a Bring API host before attaching API credentials.
+
 ## 0.2.10
 
 ### Patch Changes
