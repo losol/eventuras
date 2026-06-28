@@ -1,0 +1,5 @@
+{
+    "appHost": {
+        "path": "apps/api/src/Eventuras.AppHost/Eventuras.AppHost.csproj"
+    }
+}
