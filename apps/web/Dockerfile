@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.24
+# syntax=docker/dockerfile:1.25
 # Build from monorepo root:
 #   docker build -f apps/web/Dockerfile -t eventuras-web:latest .
 
