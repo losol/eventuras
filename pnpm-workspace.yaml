@@ -68,3 +68,6 @@ minimumReleaseAgeExclude:
   - turbo@2.9.14
   # Security update: nodemailer@9.0.1
   - nodemailer@9.0.1
+  - '@playwright/test@1.61.1'
+  - playwright-core@1.61.1
+  - playwright@1.61.1
