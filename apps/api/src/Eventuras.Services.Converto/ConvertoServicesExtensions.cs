@@ -27,6 +27,19 @@ public static class ConvertoServicesExtensions
                 options.Retry.MaxRetryAttempts = 2;
             });
 
+        // Separate client for the token endpoint, which is fast — keep its timeouts
+        // short so an auth outage fails quickly instead of inheriting the long
+        // PDF-render timeouts above.
+        services.AddHttpClient(ConvertoClient.TokenHttpClientName)
+            .AddStandardResilienceHandler(options =>
+            {
+                options.AttemptTimeout.Timeout = TimeSpan.FromSeconds(10);
+                options.TotalRequestTimeout.Timeout = TimeSpan.FromSeconds(30);
+                // CircuitBreaker.SamplingDuration must be at least 2x AttemptTimeout.
+                options.CircuitBreaker.SamplingDuration = TimeSpan.FromSeconds(20);
+                options.Retry.MaxRetryAttempts = 2;
+            });
+
         services.TryAddSingleton<IConvertoClient, ConvertoClient>();
         services.TryAddTransient<IPdfRenderService, ConvertoPdfRenderService>();
 

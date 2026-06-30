@@ -17,10 +17,18 @@ namespace Eventuras.Services.Converto;
 internal class ConvertoClient : IConvertoClient
 {
     /// <summary>
-    ///     Name of the resilient HttpClient registered in <see cref="ConvertoServicesExtensions" />.
-    ///     Transient failures and timeouts are retried by the resilience handler on that client.
+    ///     Name of the resilient HttpClient (for PDF rendering) registered in
+    ///     <see cref="ConvertoServicesExtensions" />. Transient failures and timeouts are retried
+    ///     by the resilience handler on that client; its timeouts are tuned for slow PDF rendering.
     /// </summary>
     internal const string HttpClientName = "converto";
+
+    /// <summary>
+    ///     Name of the HttpClient used for token requests. Registered separately with shorter
+    ///     timeouts so an auth/token-endpoint outage fails fast instead of inheriting the long
+    ///     PDF-render timeouts.
+    /// </summary>
+    internal const string TokenHttpClientName = "converto-token";
 
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<ConvertoClient> _logger;
@@ -124,7 +132,7 @@ internal class ConvertoClient : IConvertoClient
             }
         }
 
-        var client = _httpClientFactory.CreateClient(HttpClientName);
+        var client = _httpClientFactory.CreateClient(TokenHttpClientName);
 
         // Get credentials
         var clientId = _options.Value.ClientId;
