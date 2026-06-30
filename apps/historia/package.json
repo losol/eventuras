@@ -51,7 +51,7 @@
     "@radix-ui/react-label": "^2.1.8",
     "@radix-ui/react-select": "^2.2.6",
     "@radix-ui/react-slot": "^1.2.4",
-    "@sentry/nextjs": "^10.48.0",
+    "@sentry/nextjs": "^10.59.0",
     "@tailwindcss/typography": "^0.5.19",
     "autoprefixer": "^10.5.0",
     "aws-crt": "^1.31.0",
@@ -70,7 +70,7 @@
     "prism-react-renderer": "^2.4.1",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
-    "react-hook-form": "7.79.0",
+    "react-hook-form": "7.80.0",
     "require-in-the-middle": "8.0.1",
     "tailwind-merge": "^3.5.0",
     "tailwindcss": "^4.2.2",
@@ -88,7 +88,7 @@
     "@esbuild/linux-x64": "0.28.1",
     "@libsql/linux-x64-gnu": "0.5.29",
     "libsql": "^0.5.29",
-    "sharp": "^0.35.0"
+    "sharp": "^0.35.2"
   },
   "engines": {
     "node": ">=22.0.0 <25.0.0"
