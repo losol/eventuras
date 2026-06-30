@@ -6,15 +6,25 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
 
 namespace Eventuras.Services.Converto.Tests;
 
-public class ConvertoClientRetryTest
+public class ConvertoClientRetryTest : IDisposable
 {
+    private readonly List<HttpClient> _httpClients = [];
+
+    public void Dispose()
+    {
+        foreach (var httpClient in _httpClients)
+        {
+            httpClient.Dispose();
+        }
+    }
+
     [Fact]
     public async Task GeneratePdf_RetriesOnceWithFreshToken_When_PdfEndpoint_Returns401()
     {
@@ -90,9 +100,11 @@ public class ConvertoClientRetryTest
         ConvertoTokenCache.Clear();
     }
 
-    private static ConvertoClient NewClient(HttpMessageHandler handler)
+    private ConvertoClient NewClient(HttpMessageHandler handler)
     {
         var httpClient = new HttpClient(handler);
+        _httpClients.Add(httpClient);
+
         var factory = new Mock<IHttpClientFactory>();
         factory.Setup(f => f.CreateClient(It.IsAny<string>())).Returns(httpClient);
 
@@ -104,7 +116,7 @@ public class ConvertoClientRetryTest
             ClientSecret = "secret"
         });
 
-        return new ConvertoClient(factory.Object, options, new LoggerFactory().CreateLogger<ConvertoClient>());
+        return new ConvertoClient(factory.Object, options, NullLogger<ConvertoClient>.Instance);
     }
 
     private static HttpResponseMessage Json(HttpStatusCode status, string body) =>
