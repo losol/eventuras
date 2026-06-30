@@ -1,5 +1,11 @@
 # @eventuras/web
 
+## 3.4.2
+
+### Patch Changes
+
+- 1d8ff91: Ship pending dependency updates.
+
 ## 3.4.1
 
 ### Patch Changes
