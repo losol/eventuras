@@ -40,13 +40,18 @@ export const CertificateActionsButton = ({
         return;
       }
 
-      // Convert base64 to blob and open in new window
+      // Convert base64 to a blob and trigger the download via a temporary anchor.
       const byteCharacters = atob(result.data);
       const byteNumbers = Array.from(byteCharacters, char => char.charCodeAt(0));
       const byteArray = new Uint8Array(byteNumbers);
       const blob = new Blob([byteArray], { type: 'application/pdf' });
       const fileURL = URL.createObjectURL(blob);
-      window.open(fileURL);
+      const link = document.createElement('a');
+      link.href = fileURL;
+      link.download = `certificate-${certificateId}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
       // Revoke the object URL after a short delay to free up memory
       setTimeout(() => URL.revokeObjectURL(fileURL), 1000);
     } finally {

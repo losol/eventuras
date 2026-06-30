@@ -16,6 +16,12 @@ namespace Eventuras.Services.Converto;
 
 internal class ConvertoClient : IConvertoClient
 {
+    /// <summary>
+    ///     Name of the resilient HttpClient registered in <see cref="ConvertoServicesExtensions" />.
+    ///     Transient failures and timeouts are retried by the resilience handler on that client.
+    /// </summary>
+    internal const string HttpClientName = "converto";
+
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<ConvertoClient> _logger;
     private readonly IOptions<ConvertoConfig> _options;
@@ -32,26 +38,24 @@ internal class ConvertoClient : IConvertoClient
 
     public async Task<Stream> GeneratePdfFromHtmlAsync(string html, float scale, PaperSize paperSize = PaperSize.A4)
     {
-        var client = _httpClientFactory.CreateClient();
         var endpointUrl = _options.Value.PdfEndpointUrl;
-        var convertoAccessToken = await GetApiTokenAsync();
 
         _logger.LogInformation("Sending request to generate PDF at {EndpointUrl}", endpointUrl);
 
         try
         {
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", convertoAccessToken);
+            var response = await PostPdfRequestAsync(endpointUrl, html, scale, paperSize, forceTokenRefresh: false);
 
-            var requestBody = new { html, scale, paperSize };
-
-            var options = new JsonSerializerOptions { Converters = { new JsonStringEnumConverter() } };
-
-            using var content = new StringContent(JsonSerializer.Serialize(requestBody, options), Encoding.UTF8,
-                "application/json");
-            var response = await client.PostAsync(
-                endpointUrl,
-                content
-            );
+            // A cached token can be rejected if it was rotated/revoked on the
+            // Converto side or there is clock skew. Drop it, fetch a fresh token, and retry once.
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                _logger.LogWarning(
+                    "Converto returned 401 Unauthorized for PDF generation; clearing cached token and retrying once.");
+                response.Dispose();
+                ConvertoTokenCache.Clear();
+                response = await PostPdfRequestAsync(endpointUrl, html, scale, paperSize, forceTokenRefresh: true);
+            }
 
             if (!response.IsSuccessStatusCode)
             {
@@ -69,33 +73,58 @@ internal class ConvertoClient : IConvertoClient
 
             return await response.Content.ReadAsStreamAsync();
         }
+        catch (AuthenticationException)
+        {
+            // Already logged above (or in GetApiTokenAsync); surface as-is so the
+            // API can map it to 503 Service Unavailable.
+            throw;
+        }
+        catch (ConvertoClientException)
+        {
+            throw;
+        }
         catch (HttpRequestException e)
         {
-            _logger.LogError(e, "HTTP request error while calling Converto API: {ExceptionMessage}", e.Message);
-
-            if (e.Message.Contains("401"))
-            {
-                throw new AuthenticationException("Unauthorized request to Converto API.", e);
-            }
-
-            throw new HttpRequestException("Error occurred while communicating with Converto API.", e);
+            // Reached only after the resilience handler exhausted its retries.
+            _logger.LogError(e, "HTTP request to Converto API failed after retries: {ExceptionMessage}", e.Message);
+            throw new ConvertoClientException("Error occurred while communicating with Converto API.", e);
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Unexpected error: {ExceptionMessage}", e.Message);
-            throw new ConvertoClientException($"Unexpected error occurred: {e.Message}");
+            _logger.LogError(e, "Unexpected error while generating PDF via Converto: {ExceptionMessage}", e.Message);
+            throw new ConvertoClientException($"Unexpected error occurred: {e.Message}", e);
         }
     }
 
-    private async Task<string> GetApiTokenAsync()
+    private async Task<HttpResponseMessage> PostPdfRequestAsync(
+        string endpointUrl, string html, float scale, PaperSize paperSize, bool forceTokenRefresh)
     {
-        var cachedToken = ConvertoTokenCache.GetToken();
-        if (cachedToken != null)
+        var token = await GetApiTokenAsync(forceTokenRefresh);
+
+        var client = _httpClientFactory.CreateClient(HttpClientName);
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        var requestBody = new { html, scale, paperSize };
+        var serializerOptions = new JsonSerializerOptions { Converters = { new JsonStringEnumConverter() } };
+
+        using var content = new StringContent(
+            JsonSerializer.Serialize(requestBody, serializerOptions), Encoding.UTF8, "application/json");
+
+        return await client.PostAsync(endpointUrl, content);
+    }
+
+    private async Task<string> GetApiTokenAsync(bool forceRefresh = false)
+    {
+        if (!forceRefresh)
         {
-            return cachedToken;
+            var cachedToken = ConvertoTokenCache.GetToken();
+            if (cachedToken != null)
+            {
+                return cachedToken;
+            }
         }
 
-        var client = _httpClientFactory.CreateClient();
+        var client = _httpClientFactory.CreateClient(HttpClientName);
 
         // Get credentials
         var clientId = _options.Value.ClientId;
@@ -103,6 +132,7 @@ internal class ConvertoClient : IConvertoClient
 
         if (string.IsNullOrEmpty(clientId) || string.IsNullOrEmpty(clientSecret))
         {
+            _logger.LogError("Converto client credentials are missing from configuration.");
             throw new AuthenticationException("Client ID or Client Secret is missing from configuration.");
         }
 
@@ -123,7 +153,7 @@ internal class ConvertoClient : IConvertoClient
 
         if (!response.IsSuccessStatusCode)
         {
-            _logger.LogError("Token request failed: {StatusCode}, Response: {ResponseContent}",
+            _logger.LogError("Converto token request failed: {StatusCode}, Response: {ResponseContent}",
                 response.StatusCode, responseContent);
 
             throw new AuthenticationException($"Failed to retrieve API token. Status: {response.StatusCode}");
@@ -132,6 +162,7 @@ internal class ConvertoClient : IConvertoClient
         var tokenResponse = JsonSerializer.Deserialize<TokenResponse>(responseContent);
         if (tokenResponse == null || string.IsNullOrEmpty(tokenResponse.AccessToken))
         {
+            _logger.LogError("Converto token endpoint returned an invalid token response.");
             throw new AuthenticationException("Invalid token response from server.");
         }
 
