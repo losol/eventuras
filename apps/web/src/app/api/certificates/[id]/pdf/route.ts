@@ -1,11 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import { Logger } from '@eventuras/logger';
+
 import {
   CORRELATION_ID_HEADER,
   createCorrelationId,
   readCorrelationIdFromResponse,
 } from '@/lib/correlation-id';
 import { getAccessToken } from '@/utils/getAccesstoken';
+
+const logger = Logger.create({
+  namespace: 'web:api:certificates',
+  context: { module: 'certificatePdfRoute' },
+});
 
 function errorResponse(error: string, status: number, correlationId: string) {
   return NextResponse.json(
@@ -47,17 +54,29 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
         [CORRELATION_ID_HEADER]: correlationId,
       },
     });
-  } catch {
+  } catch (error) {
+    logger.error(
+      { certificateId: id, correlationId, error },
+      'Certificate PDF request to backend failed'
+    );
     return errorResponse('Certificate service is currently unavailable', 502, correlationId);
   }
 
   const backendCorrelationId = readCorrelationIdFromResponse(response) ?? correlationId;
 
   if (!response.ok) {
+    logger.error(
+      { certificateId: id, status: response.status, correlationId: backendCorrelationId },
+      'Backend returned an error fetching certificate PDF'
+    );
     return errorResponse('Failed to fetch certificate PDF', response.status, backendCorrelationId);
   }
 
   if (!response.body) {
+    logger.error(
+      { certificateId: id, correlationId: backendCorrelationId },
+      'Certificate PDF response had no body'
+    );
     return errorResponse('Failed to read certificate PDF stream', 502, backendCorrelationId);
   }
 
