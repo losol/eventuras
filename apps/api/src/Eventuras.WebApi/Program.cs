@@ -46,11 +46,15 @@ builder.AddServiceDefaults();
 builder.Host.UseSerilog((context, config) =>
     config.ReadFrom.Configuration(context.Configuration), writeToProviders: true);
 
-// Configure Sentry (activates automatically when Sentry:Dsn is set)
-builder.WebHost.UseSentry();
-
 // Get configuration
 var features = GetFeatureManagement(builder.Configuration);
+
+// Configure Sentry. Enabled by the FeatureManagement:UseSentry flag; a DSN
+// (Sentry:Dsn) must also be configured for events to actually be sent.
+if (features.UseSentry)
+{
+    builder.WebHost.UseSentry();
+}
 var appSettings = GetAppSettings(builder.Configuration);
 if (!DisplayTimeZone.Configure(appSettings.TimeZone))
 {
