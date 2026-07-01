@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>You're on the waiting list – {{ EventTitle | escape }}</title>
+</head>
+<body>
+<p>Hi {{ ParticipantName | escape }},</p>
+
+<p>You are now on the <strong>waiting list</strong> for <strong>{{ EventTitle | escape }}</strong>.{% if EventWhen %} ({{ EventWhen | escape }}){% endif %}</p>
+
+<p>We'll let you know as soon as a place becomes available. You have not been charged.</p>
+
+<p>You can log in to our site to see up-to-date information.</p>
+
+<p>Kind regards</p>
+</body>
+</html>

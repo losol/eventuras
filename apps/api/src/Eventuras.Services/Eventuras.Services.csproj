@@ -14,6 +14,7 @@
     <ProjectReference Include="..\Eventuras.Domain\Eventuras.Domain.csproj" />
     <ProjectReference Include="..\Eventuras.Infrastructure\Eventuras.Infrastructure.csproj" />
     <ProjectReference Include="..\Eventuras.Libs.Pdf\Eventuras.Libs.Pdf.csproj" />
+    <ProjectReference Include="..\Eventuras.Libs.DocComposer\Eventuras.Libs.DocComposer.csproj" />
     <ProjectReference Include="..\..\src\Losol.Communication.Email\Losol.Communication.Email.csproj" />
     <ProjectReference Include="..\..\src\Losol.Communication.Sms\Losol.Communication.Sms.csproj" />
   </ItemGroup>
@@ -21,6 +22,12 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.9" />
     <PackageReference Include="DocumentFormat.OpenXml" Version="3.5.1" />
     <PackageReference Include="Markdig" Version="1.3.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- WithCulture=false: prevent MSBuild from treating ".nb"/".en" as satellite-assembly culture suffixes -->
+    <EmbeddedResource Include="Registrations\Templates\*.liquid">
+      <WithCulture>false</WithCulture>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="IRegistrationService.cs" />

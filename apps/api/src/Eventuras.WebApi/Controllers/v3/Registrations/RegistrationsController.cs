@@ -146,6 +146,15 @@ public class RegistrationsController : ControllerBase
         [FromBody] NewRegistrationDto dto,
         CancellationToken cancellationToken)
     {
+#pragma warning disable CS0618 // deprecated field, kept for backwards compatibility
+        if (!dto.SendWelcomeLetter)
+        {
+            _logger.LogWarning(
+                "Deprecated 'sendWelcomeLetter=false' sent to POST /v3/registrations; it is now ignored " +
+                "(a status-based email is still sent). The field will be removed in the next API version.");
+        }
+#pragma warning restore CS0618
+
         // Only true admins skip the capacity gate. Non-admins can hit this
         // endpoint to register themselves (CheckOwnerOrAdminAccessAsync allows
         // self-registration), so they must still be subject to MaxParticipants.
@@ -154,7 +163,6 @@ public class RegistrationsController : ControllerBase
             {
                 CreateOrder = dto.CreateOrder,
                 Verified = true,
-                SendWelcomeLetter = dto.SendWelcomeLetter,
                 EnforceCapacity = !User.IsAdmin()
             }, cancellationToken);
 

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+  <meta charset="utf-8">
+  <title>Påmelding – {{ EventTitle | escape }}</title>
+</head>
+<body>
+<p>Hei {{ ParticipantName | escape }},</p>
+
+<p>Vi har registrert påmeldingen din til <strong>{{ EventTitle | escape }}</strong>. Her er en oppsummering.</p>
+
+{% if EventWhen %}<p><strong>Tid:</strong> {{ EventWhen | escape }}</p>{% endif %}
+{% if EventLocation %}<p><strong>Sted:</strong> {{ EventLocation | escape }}</p>{% endif %}
+<p><strong>Påmeldingstype:</strong> {{ RegistrationType | escape }}</p>
+
+{% if HasOrders %}
+<h3>Bestilling</h3>
+<table cellpadding="6" cellspacing="0" border="1">
+  <thead>
+    <tr>
+      <th align="left">Produkt</th>
+      <th align="right">Antall</th>
+      <th align="right">Pris</th>
+      <th align="right">Sum</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for line in Lines %}
+    <tr>
+      <td>{{ line.ProductName | escape }}{% if line.VariantName %} – {{ line.VariantName | escape }}{% endif %}</td>
+      <td align="right">{{ line.Quantity }}</td>
+      <td align="right">{{ line.UnitPrice | escape }}</td>
+      <td align="right">{{ line.LineTotal | escape }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="3" align="right"><strong>Totalt</strong></td>
+      <td align="right"><strong>{{ Total | escape }}</strong></td>
+    </tr>
+  </tfoot>
+</table>
+{% endif %}
+
+<p>Du kan logge inn på sidene våre for å se oppdatert informasjon om påmeldingen din.</p>
+
+<p>Med vennlig hilsen</p>
+</body>
+</html>
