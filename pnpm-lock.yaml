@@ -34,8 +34,8 @@ importers:
         specifier: ^10.2.0
         version: 10.5.0(jiti@2.7.0)(supports-color@8.1.1)
       lint-staged:
-        specifier: ^17.0.0
-        version: 17.0.7
+        specifier: ^17.0.8
+        version: 17.0.8
       prettier:
         specifier: ^3.8.3
         version: 3.8.4
@@ -289,8 +289,8 @@ importers:
         specifier: ^1.8.0
         version: 1.21.0(react@19.2.7)
       nanoid:
-        specifier: ^5.1.9
-        version: 5.1.14
+        specifier: ^5.1.15
+        version: 5.1.15
       next:
         specifier: 16.2.9
         version: 16.2.9(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(sass@1.77.4)
@@ -1096,8 +1096,8 @@ importers:
         specifier: ^6.8.3
         version: 6.8.4
       uuid:
-        specifier: ^14.0.0
-        version: 14.0.0
+        specifier: ^14.0.1
+        version: 14.0.1
     devDependencies:
       '@eventuras/typescript-config':
         specifier: workspace:*
@@ -7432,8 +7432,8 @@ packages:
   lines-and-columns@1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
 
-  lint-staged@17.0.7:
-    resolution: {integrity: sha512-JrSobt+tW3rH8IOMi8tDZd3foorM5yPEkLD/V2NxobgHrFfHWGee4MOLVuZeScgxftEwbHrPHIFA/ZL+nUJeuA==}
+  lint-staged@17.0.8:
+    resolution: {integrity: sha512-B2P/d+jVW0UXOQ0MVMLrB/9ydA1P+zz6jYfdrbbEd9ur3S2rcbduFWKiUCC02Sm5hbC8nrm7y24WuYMG54HfxA==}
     engines: {node: '>=22.22.1'}
     hasBin: true
 
@@ -7784,13 +7784,13 @@ packages:
   ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
 
-  nanoid@3.3.13:
-    resolution: {integrity: sha512-sPdqC6ByMVVGvF1ynvvMo0/o+oD1VX7DaHhijt1bFgjvBkHBib4t49GoNDhf2NDta4oeUNlaGbSt5K7qjZ955Q==}
+  nanoid@3.3.14:
+    resolution: {integrity: sha512-U9kYi5bpVMEI31yC8iw4bJJp0avcHXA0W8/wNfLfnvJYzihQo2ZRPYPvpAAd570HAcCBjCTN7vnr+v4StKl1IQ==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
-  nanoid@5.1.14:
-    resolution: {integrity: sha512-5c8l8kVzqpnDPaicbEop/fV0Q1w16FmbWtVhMqugTozAwYdlIQojWH5a/M7UfziFmGdQRrUdV+EPzc9Xng3VAQ==}
+  nanoid@5.1.15:
+    resolution: {integrity: sha512-kBg3RpGtIe+RpTbyXwoI6pk5yD7KUiI3sygUqgeBMRst42KmhB4RZC7eiO9Wa1HIpaCCtpE2DJ6OI4Wi5ebwFw==}
     engines: {node: ^18 || >=20}
     hasBin: true
 
@@ -8939,6 +8939,9 @@ packages:
   tabbable@6.4.0:
     resolution: {integrity: sha512-05PUHKSNE8ou2dwIxTngl4EzcnsCDZGJ/iCLtDflR/SHB/ny14rXc+qU5P4mG9JkusiV7EivzY9Mhm55AzAvCg==}
 
+  tabbable@6.5.0:
+    resolution: {integrity: sha512-wieBHXygIm7OyQOu5hQlkk62/WyCFYGlWg7L6/ZCUZwx0o398Zkn4pVmMyfYhfMG8kGrj/Krt8eIk6UKC6VzwA==}
+
   tailwind-merge@3.6.0:
     resolution: {integrity: sha512-uxL7qAVQriqRQPAyK3pj66VqskWqoZ37PW94jwOTwNfq/z9oyu1V+eqrZqtR2+fCiXdYOZe/Modt8GtvqNzu+w==}
 
@@ -9359,8 +9362,8 @@ packages:
     resolution: {integrity: sha512-vzi9uRZ926x4XV73S/4qQaTwPXM2JBj6/6lI/byHH1jOpCzb0zDbfytgA9LcN/hzb2l7WQSQnxITOVx5un/wGw==}
     hasBin: true
 
-  uuid@14.0.0:
-    resolution: {integrity: sha512-Qo+uWgilfSmAhXCMav1uYFynlQO7fMFiMVZsQqZRMIXp0O7rR7qjkj+cPvBHLgBqi960QCoo/PH2/6ZtVqKvrg==}
+  uuid@14.0.1:
+    resolution: {integrity: sha512-6ZxzVpzDXDa3bJWaHilVayA+BH/1zmxCJoVgvmqJnid/gPoKHxUrS/aC/T6LGQtNHT+XHG9fXPJB4d+IrU30Ew==}
     hasBin: true
 
   uuidv7@1.2.1:
@@ -13410,7 +13413,7 @@ snapshots:
 
   '@types/uuid@11.0.0':
     dependencies:
-      uuid: 14.0.0
+      uuid: 14.0.1
 
   '@types/whatwg-mimetype@3.0.2': {}
 
@@ -15402,7 +15405,7 @@ snapshots:
 
   focus-trap@7.5.4:
     dependencies:
-      tabbable: 6.4.0
+      tabbable: 6.5.0
 
   follow-redirects@1.16.0: {}
 
@@ -16355,7 +16358,7 @@ snapshots:
 
   lines-and-columns@1.2.4: {}
 
-  lint-staged@17.0.7:
+  lint-staged@17.0.8:
     dependencies:
       listr2: 10.2.1
       picomatch: 4.0.4
@@ -16981,9 +16984,9 @@ snapshots:
 
   ms@2.1.3: {}
 
-  nanoid@3.3.13: {}
+  nanoid@3.3.14: {}
 
-  nanoid@5.1.14: {}
+  nanoid@5.1.15: {}
 
   napi-postinstall@0.3.4: {}
 
@@ -17460,13 +17463,13 @@ snapshots:
 
   postcss@8.4.31:
     dependencies:
-      nanoid: 3.3.13
+      nanoid: 3.3.14
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
   postcss@8.5.15:
     dependencies:
-      nanoid: 3.3.13
+      nanoid: 3.3.14
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
@@ -18403,6 +18406,8 @@ snapshots:
 
   tabbable@6.4.0: {}
 
+  tabbable@6.5.0: {}
+
   tailwind-merge@3.6.0: {}
 
   tailwindcss-animate@1.0.7(tailwindcss@4.3.1):
@@ -18833,7 +18838,7 @@ snapshots:
 
   uuid@13.0.2: {}
 
-  uuid@14.0.0: {}
+  uuid@14.0.1: {}
 
   uuidv7@1.2.1: {}
 
