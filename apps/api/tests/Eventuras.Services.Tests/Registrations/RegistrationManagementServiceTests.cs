@@ -8,9 +8,9 @@ using Eventuras.Domain;
 using Eventuras.Infrastructure;
 using Eventuras.Services.BusinessEvents;
 using Eventuras.Services.Exceptions;
-using Eventuras.Services.Notifications;
 using Eventuras.Services.Orders;
 using Eventuras.Services.Registrations;
+using Eventuras.Services.Registrations.Notifications;
 using Eventuras.Services.Users;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -51,7 +51,7 @@ public class RegistrationManagementServiceTests : IDisposable
             service.CreateRegistrationAsync(
                 eventInfo.EventInfoId,
                 userId,
-                new RegistrationOptions { EnforceCapacity = true, SendWelcomeLetter = false }));
+                new RegistrationOptions { EnforceCapacity = true }));
 
         Assert.Contains("maximum participant capacity", ex.Message);
     }
@@ -74,12 +74,28 @@ public class RegistrationManagementServiceTests : IDisposable
             {
                 EnforceCapacity = false,
                 Verified = true,
-                SendWelcomeLetter = false,
             });
 
         Assert.NotNull(registration);
         Assert.Equal(Registration.RegistrationStatus.Verified, registration.Status);
         Assert.Equal(EventInfo.EventInfoStatus.RegistrationsClosed, eventInfo.Status);
+    }
+
+    [Fact]
+    public async Task CreateRegistrationAsync_SetsWaitingList_WhenEventIsWaitingList()
+    {
+        // Even an admin-added (Verified=true) registration defaults to WaitingList when the
+        // event itself is on the waiting list, so only the waiting-list email is sent at create.
+        var eventInfo = MakeFullEvent(maxParticipants: 0, verifiedRegistrations: 0);
+        eventInfo.Status = EventInfo.EventInfoStatus.WaitingList;
+        var service = BuildService(eventInfo);
+
+        var registration = await service.CreateRegistrationAsync(
+            eventInfo.EventInfoId,
+            Guid.NewGuid(),
+            new RegistrationOptions { Verified = true });
+
+        Assert.Equal(Registration.RegistrationStatus.WaitingList, registration.Status);
     }
 
     [Fact]
@@ -96,7 +112,7 @@ public class RegistrationManagementServiceTests : IDisposable
         await service.CreateRegistrationAsync(
             eventInfo.EventInfoId,
             actorUserId,
-            new RegistrationOptions { Verified = true, SendWelcomeLetter = false });
+            new RegistrationOptions { Verified = true });
 
         Assert.Equal(EventInfo.EventInfoStatus.RegistrationsClosed, eventInfo.Status);
         businessEvents.Verify(s => s.AddEvent(
@@ -127,7 +143,6 @@ public class RegistrationManagementServiceTests : IDisposable
             {
                 EnforceCapacity = false,
                 Verified = true,
-                SendWelcomeLetter = false,
             });
 
         businessEvents.Verify(s => s.AddEvent(
@@ -204,8 +219,7 @@ public class RegistrationManagementServiceTests : IDisposable
             Mock.Of<IRegistrationRetrievalService>(),
             Mock.Of<IOrderManagementService>(),
             eventInfoRetrieval,
-            Mock.Of<INotificationDeliveryService>(),
-            Mock.Of<INotificationManagementService>(),
+            Mock.Of<IRegistrationNotificationService>(),
             userRetrieval.Object,
             businessEvents?.Object ?? Mock.Of<IBusinessEventService>(),
             httpContextAccessor,

@@ -13,11 +13,6 @@ public class RegistrationOptions
     public bool Verified { get; set; }
 
     /// <summary>
-    ///     Send a welcome letter to the user.
-    /// </summary>
-    public bool SendWelcomeLetter { get; set; } = true;
-
-    /// <summary>
     ///     Refuse the registration if the event has already reached
     ///     <see cref="Domain.EventInfo.MaxParticipants" />. Admin flows that
     ///     need to override capacity (manual overbooking) can set this to

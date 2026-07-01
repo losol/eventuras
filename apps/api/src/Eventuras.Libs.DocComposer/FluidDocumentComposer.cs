@@ -1,7 +1,10 @@
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Globalization;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Fluid;
@@ -59,12 +62,65 @@ public sealed class FluidDocumentComposer : IDocumentComposer
         return new RenderedDocument(html);
     }
 
+    // Register the model type and, recursively, its nested complex types and
+    // collection element types so templates can access members of nested objects
+    // (e.g. a list of order lines). System/primitive types are skipped.
     private void RegisterModelType(Type modelType)
     {
-        if (_registeredModelTypes.TryAdd(modelType, 0))
+        if (modelType == null)
         {
-            _templateOptions.MemberAccessStrategy.Register(modelType);
+            return;
         }
+
+        var underlying = Nullable.GetUnderlyingType(modelType);
+        if (underlying != null)
+        {
+            RegisterModelType(underlying);
+            return;
+        }
+
+        if (modelType != typeof(string) && typeof(IEnumerable).IsAssignableFrom(modelType))
+        {
+            var elementType = modelType.IsArray
+                ? modelType.GetElementType()
+                : modelType.IsGenericType
+                    ? modelType.GetGenericArguments().FirstOrDefault()
+                    : null;
+            if (elementType != null)
+            {
+                RegisterModelType(elementType);
+            }
+
+            return;
+        }
+
+        if (!IsComplexUserType(modelType) || !_registeredModelTypes.TryAdd(modelType, 0))
+        {
+            return;
+        }
+
+        _templateOptions.MemberAccessStrategy.Register(modelType);
+
+        foreach (var property in modelType.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+        {
+            RegisterModelType(property.PropertyType);
+        }
+    }
+
+    private static bool IsComplexUserType(Type type)
+    {
+        if (type.IsPrimitive || type.IsEnum)
+        {
+            return false;
+        }
+
+        if (type == typeof(string) || type == typeof(decimal) || type == typeof(Guid)
+            || type == typeof(DateTime) || type == typeof(DateTimeOffset) || type == typeof(TimeSpan))
+        {
+            return false;
+        }
+
+        return !(type.Namespace?.StartsWith("System", StringComparison.Ordinal) ?? false);
     }
 
     private async Task<string> LoadTemplateSourceAsync(string templateName, string locale, CancellationToken cancellationToken)
