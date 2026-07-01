@@ -1,4 +1,5 @@
 using Eventuras.Services.Registrations.ExportService;
+using Eventuras.Services.Registrations.Notifications;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Eventuras.Services.Registrations;
@@ -11,6 +12,10 @@ internal static class RegistrationServiceCollectionExtensions
         services.AddTransient<IRegistrationExportService, RegistrationExportService>();
         services.AddTransient<IRegistrationAccessControlService, RegistrationAccessControlService>();
         services.AddTransient<IRegistrationManagementService, RegistrationManagementService>();
+
+        // Renderer is stateless; reuse one instance (and its registered-type cache) -> singleton.
+        services.AddSingleton<RegistrationEmailRenderer>();
+        services.AddTransient<IRegistrationNotificationService, RegistrationNotificationService>();
         return services;
     }
 }

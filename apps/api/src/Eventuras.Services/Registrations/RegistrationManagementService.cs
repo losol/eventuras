@@ -10,8 +10,8 @@ using Eventuras.Services.Auth;
 using Eventuras.Services.BusinessEvents;
 using Eventuras.Services.Events;
 using Eventuras.Services.Exceptions;
-using Eventuras.Services.Notifications;
 using Eventuras.Services.Orders;
+using Eventuras.Services.Registrations.Notifications;
 using Eventuras.Services.Users;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -26,8 +26,7 @@ internal class RegistrationManagementService : IRegistrationManagementService
     private readonly IEventInfoRetrievalService _eventInfoRetrievalService;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILogger<RegistrationManagementService> _logger;
-    private readonly INotificationDeliveryService _notificationDeliveryService;
-    private readonly INotificationManagementService _notificationsManagementService;
+    private readonly IRegistrationNotificationService _notificationService;
     private readonly IOrderManagementService _orderManagementService;
     private readonly IRegistrationAccessControlService _registrationAccessControlService;
     private readonly IRegistrationRetrievalService _registrationRetrievalService;
@@ -38,8 +37,7 @@ internal class RegistrationManagementService : IRegistrationManagementService
         IRegistrationRetrievalService registrationRetrievalService,
         IOrderManagementService orderManagementService,
         IEventInfoRetrievalService eventInfoRetrievalService,
-        INotificationDeliveryService notificationDeliveryService,
-        INotificationManagementService notificationsManagementService,
+        IRegistrationNotificationService notificationService,
         IUserRetrievalService userRetrievalService,
         IBusinessEventService businessEventService,
         IHttpContextAccessor httpContextAccessor,
@@ -49,8 +47,7 @@ internal class RegistrationManagementService : IRegistrationManagementService
         _registrationAccessControlService = registrationAccessControlService;
         _registrationRetrievalService = registrationRetrievalService;
         _eventInfoRetrievalService = eventInfoRetrievalService;
-        _notificationDeliveryService = notificationDeliveryService;
-        _notificationsManagementService = notificationsManagementService;
+        _notificationService = notificationService;
         _userRetrievalService = userRetrievalService;
         _businessEventService = businessEventService;
         _httpContextAccessor = httpContextAccessor;
@@ -190,17 +187,9 @@ internal class RegistrationManagementService : IRegistrationManagementService
             }
         }
 
-        if (options.SendWelcomeLetter && registration.Status != Registration.RegistrationStatus.WaitingList)
-        {
-            if (eventInfo.WelcomeLetter != null)
-            {
-                await SendWelcomeLetterAsync(registration, cancellationToken);
-            }
-            else
-            {
-                _logger.LogDebug("No welcome letter found for EventInfoId {EventInfoId}", eventInfo.EventInfoId);
-            }
-        }
+        // Status-driven: receipt for Verified, waiting-list email for WaitingList,
+        // nothing for other statuses.
+        await _notificationService.NotifyStatusChangeAsync(registration, previousStatus: null, cancellationToken);
 
         _logger.LogInformation(
             "Created registration {RegistrationId} for EventId {EventId}, UserId {UserId}, Status {Status}",
@@ -232,6 +221,13 @@ internal class RegistrationManagementService : IRegistrationManagementService
         }
 
         await _context.UpdateAsync(registration, cancellationToken);
+
+        // Send the status email on an actual status change (e.g. -> WaitingList
+        // sends the waiting-list email, not a confirmation).
+        if (before != null && before.Status != registration.Status)
+        {
+            await _notificationService.NotifyStatusChangeAsync(registration, before.Status, cancellationToken);
+        }
     }
 
     public async Task<Registration> CancelRegistrationAsync(
@@ -310,41 +306,5 @@ internal class RegistrationManagementService : IRegistrationManagementService
                 organizationUuid: organizationUuid,
                 actorUserUuid: actorUserUuid);
         }
-    }
-
-    public async Task SendWelcomeLetterAsync(Registration registration, CancellationToken cancellationToken)
-    {
-        _logger.LogInformation(
-            $"Starting to send a welcome letter for RegistrationId {registration.RegistrationId}, EventInfoId {registration.EventInfoId}");
-        if (registration == null)
-        {
-            _logger.LogError("Did not find registration for welcome letter");
-            throw new ArgumentNullException(nameof(registration));
-        }
-
-        if (registration.User == null)
-        {
-            registration.User =
-                await _userRetrievalService.GetUserByIdAsync(registration.UserId, null, cancellationToken);
-        }
-
-        if (registration.EventInfo == null)
-        {
-            registration.EventInfo =
-                await _eventInfoRetrievalService.GetEventInfoByIdAsync(registration.EventInfoId, null,
-                    cancellationToken);
-        }
-
-        // Compose the subject and body for the welcome email
-        var subject = registration.EventInfo.Title;
-        var body = registration.EventInfo.WelcomeLetter;
-
-        // Create email notification
-        var email = await _notificationsManagementService.CreateEmailNotificationForRegistrationAsync(subject, body,
-            registration);
-        await _notificationDeliveryService.SendNotificationAsync(email, true, cancellationToken);
-
-        _logger.LogInformation(
-            $"Successfully sent a welcome letter for RegistrationId {registration.RegistrationId}, EventInfoId {registration.EventInfoId}");
     }
 }

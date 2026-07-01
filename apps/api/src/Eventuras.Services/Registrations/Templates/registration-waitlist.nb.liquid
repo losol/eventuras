@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+  <meta charset="utf-8">
+  <title>Du står på venteliste – {{ EventTitle | escape }}</title>
+</head>
+<body>
+<p>Hei {{ ParticipantName | escape }},</p>
+
+<p>Du står nå på <strong>venteliste</strong> for <strong>{{ EventTitle | escape }}</strong>.{% if EventWhen %} ({{ EventWhen | escape }}){% endif %}</p>
+
+<p>Vi gir deg beskjed så snart det eventuelt blir ledig plass. Du er ikke belastet for noe.</p>
+
+<p>Du kan logge inn på sidene våre for å se oppdatert informasjon.</p>
+
+<p>Med vennlig hilsen</p>
+</body>
+</html>
