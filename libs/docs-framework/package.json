@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@eventuras/lustro-search": "workspace:*",
-    "@oclif/core": "^4.10.5",
+    "@oclif/core": "^4.11.9",
     "fast-glob": "^3.3.3"
   },
   "devDependencies": {
