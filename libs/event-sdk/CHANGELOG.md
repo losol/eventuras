@@ -1,5 +1,14 @@
 # @eventuras/event-sdk
 
+## 3.3.3
+
+### Patch Changes
+
+- 44151f4: Regenerate the SDK with `@hey-api/openapi-ts@0.99.0` so generated request parameter handling stays aligned with upstream generator changes.
+- Updated dependencies [f269ebe]
+- Updated dependencies [bc521c0]
+  - @eventuras/api@3.8.0
+
 ## 3.3.2
 
 ### Patch Changes

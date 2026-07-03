@@ -1,5 +1,13 @@
 # @eventuras/web
 
+## 3.4.3
+
+### Patch Changes
+
+- 787b4c7: Admin certificate PDF and registration Excel downloads now send the active organization via the `Eventuras-Org-Id` header.
+- Updated dependencies [44151f4]
+  - @eventuras/event-sdk@3.3.3
+
 ## 3.4.2
 
 ### Patch Changes
