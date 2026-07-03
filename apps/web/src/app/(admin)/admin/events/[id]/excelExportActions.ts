@@ -10,6 +10,7 @@ import {
   readCorrelationIdFromResponse,
 } from '@/lib/correlation-id';
 import { getAccessToken } from '@/utils/getAccesstoken';
+import { getOrganizationId } from '@/utils/organization';
 
 const logger = Logger.create({
   namespace: 'web:admin:events',
@@ -26,6 +27,7 @@ export async function downloadRegistrationsExcel(
 ): Promise<ServerActionResult<string>> {
   try {
     logger.info({ eventId }, 'Downloading registrations Excel file');
+    const orgId = getOrganizationId();
 
     const token = await getAccessToken();
 
@@ -40,6 +42,7 @@ export async function downloadRegistrationsExcel(
         headers: {
           Accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
           Authorization: `Bearer ${token}`,
+          'Eventuras-Org-Id': String(orgId),
           [CORRELATION_ID_HEADER]: createCorrelationId(),
         },
       }
