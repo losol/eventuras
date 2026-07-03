@@ -10,6 +10,7 @@ import {
   readCorrelationIdFromResponse,
 } from '@/lib/correlation-id';
 import { getAccessToken } from '@/utils/getAccesstoken';
+import { getOrganizationId } from '@/utils/organization';
 
 const logger = Logger.create({
   namespace: 'web:admin:certificates',
@@ -26,6 +27,7 @@ export async function downloadCertificatePdf(
 ): Promise<ServerActionResult<string>> {
   try {
     logger.info({ certificateId }, 'Downloading certificate PDF');
+    const orgId = getOrganizationId();
 
     const token = await getAccessToken();
 
@@ -40,6 +42,7 @@ export async function downloadCertificatePdf(
         headers: {
           Accept: 'application/pdf',
           Authorization: `Bearer ${token}`,
+          'Eventuras-Org-Id': String(orgId),
           [CORRELATION_ID_HEADER]: createCorrelationId(),
         },
       }
@@ -123,9 +126,7 @@ export async function sendCertificateToParticipant(
         'Failed to send certificate'
       );
       const refSuffix = correlationId ? ` (ref: ${correlationId})` : '';
-      return actionError(
-        `Failed to send: ${response.status} ${response.statusText}${refSuffix}`
-      );
+      return actionError(`Failed to send: ${response.status} ${response.statusText}${refSuffix}`);
     }
 
     logger.info({ registrationId }, 'Certificate sent successfully');
