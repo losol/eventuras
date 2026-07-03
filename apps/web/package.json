@@ -38,7 +38,7 @@
     "@eventuras/scribo": "workspace:*",
     "@eventuras/smartform": "workspace:*",
     "@react-stately/data": "^3.16.0",
-    "@sentry/nextjs": "^10.59.0",
+    "@sentry/nextjs": "^10.60.0",
     "@tailwindcss/postcss": "^4.2.2",
     "@types/debug": "^4.1.13",
     "@xstate/react": "^6.1.0",
@@ -55,7 +55,7 @@
     "react-hook-form": "^7.80.0",
     "react-stately": "^3.46.0",
     "tailwindcss-react-aria-components": "^2.1.0",
-    "xstate": "^5.30.0"
+    "xstate": "^5.32.2"
   },
   "devDependencies": {
     "@eventuras/eslint-config": "workspace:*",

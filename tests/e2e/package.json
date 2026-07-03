@@ -23,7 +23,7 @@
     "@eventuras/google-api": "workspace:*",
     "@eventuras/logger": "workspace:*",
     "@playwright/test": "1.61.1",
-    "allure-playwright": "^3.10.0",
+    "allure-playwright": "^3.10.1",
     "jose": "6.2.3",
     "tsx": "^4.21.0"
   },
