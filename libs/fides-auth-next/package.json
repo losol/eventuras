@@ -55,7 +55,7 @@
   "dependencies": {
     "@eventuras/fides-auth": "workspace:*",
     "@eventuras/logger": "workspace:*",
-    "@xstate/store": "^4.0.0",
+    "@xstate/store": "^4.2.1",
     "@xstate/store-react": "^2.0.0"
   },
   "devDependencies": {
@@ -74,7 +74,7 @@
   },
   "peerDependencies": {
     "@xstate/react": "^5.0.0 || ^6.0.0",
-    "@xstate/store": "^4.0.0",
+    "@xstate/store": "^4.2.1",
     "@xstate/store-react": "^2.0.0",
     "next": "^16.0.0",
     "react": "^19.0.0",
