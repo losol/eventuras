@@ -22,6 +22,10 @@ function loadScopes(): string[] {
 
 export default {
   extends: ['@commitlint/config-conventional'],
+  // Dependabot capitalizes the "Bump" verb in grouped-update subjects, which
+  // trips subject-case. That casing isn't configurable in dependabot.yml, so
+  // skip linting its own commits (identified by the Signed-off-by trailer).
+  ignores: [(message: string) => message.includes('Signed-off-by: dependabot[bot]')],
   rules: {
     'body-max-line-length': [1, 'always', 1024],
     'scope-enum': [1, 'always', loadScopes()],
