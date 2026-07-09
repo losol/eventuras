@@ -11,7 +11,7 @@
     "./next-lib": "./src/next-lib.ts"
   },
   "dependencies": {
-    "@tailwindcss/vite": "^4.2.2",
+    "@tailwindcss/vite": "^4.3.2",
     "@vitejs/plugin-react": "^6.0.1",
     "@vitejs/plugin-react-swc": "^4.3.0",
     "glob": "^13.0.6",

@@ -39,7 +39,7 @@
     "@eventuras/smartform": "workspace:*",
     "@react-stately/data": "^3.16.0",
     "@sentry/nextjs": "^10.62.0",
-    "@tailwindcss/postcss": "^4.2.2",
+    "@tailwindcss/postcss": "^4.3.2",
     "@types/debug": "^4.1.13",
     "@xstate/react": "^6.1.0",
     "@xstate/store": "4.2.1",
@@ -65,10 +65,10 @@
     "@types/react-dom": "^19.2.3",
     "@typescript-eslint/eslint-plugin": "^8.62.0",
     "@typescript-eslint/parser": "^8.62.0",
-    "autoprefixer": "^10.5.0",
-    "postcss": "^8.5.10",
+    "autoprefixer": "^10.5.2",
+    "postcss": "^8.5.16",
     "prettier": "^3.9.1",
-    "tailwindcss": "^4.2.2",
+    "tailwindcss": "^4.3.2",
     "typescript": "6.0.3"
   },
   "optionalDependencies": {
