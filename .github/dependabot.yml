@@ -152,9 +152,13 @@ updates:
     cooldown:
       default-days: 10
     ignore:
-      # Stay on Node 24 LTS — ignore Node 26 and beyond.
+      # Node LTS lines are even majors (24, 26, …); odd majors (25, 27, …) are
+      # never promoted to LTS. Dependabot can't tell LTS from Current, so ignore
+      # ALL node major bumps and move to the next LTS by bumping the Dockerfiles
+      # manually when it ships. Minor/patch bumps within the current major still
+      # flow through.
       - dependency-name: "node"
-        versions: [">= 26"]
+        update-types: ["version-update:semver-major"]
     groups:
       docker:
         patterns:
