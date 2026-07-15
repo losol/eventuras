@@ -12,17 +12,7 @@
   "scripts": {
     "build": "tsc -b"
   },
-  "oclif": {
-    "commands": "./dist/commands",
-    "topics": {
-      "docs": {
-        "description": "Documentation tools"
-      }
-    }
-  },
   "dependencies": {
-    "@eventuras/lustro-search": "workspace:*",
-    "@oclif/core": "^4.11.11",
     "fast-glob": "^3.3.3"
   },
   "devDependencies": {
