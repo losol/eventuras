@@ -27,7 +27,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "nodemailer": "^9.0.0"
+    "nodemailer": "^9.0.3"
   },
   "devDependencies": {
     "@eventuras/vite-config": "workspace:*",
