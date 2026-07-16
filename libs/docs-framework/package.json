@@ -9,8 +9,6 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./collect": "./dist/collector/collect.js",
-    "./config": "./dist/collector/config.js",
     "./search": {
       "types": "./dist/search/index.d.ts",
       "import": "./dist/search/index.js"
