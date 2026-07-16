@@ -5,18 +5,57 @@
   "license": "MIT",
   "type": "module",
   "exports": {
-    ".": "./dist/index.js",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
     "./collect": "./dist/collector/collect.js",
-    "./config": "./dist/collector/config.js"
+    "./config": "./dist/collector/config.js",
+    "./search": {
+      "types": "./dist/search/index.d.ts",
+      "import": "./dist/search/index.js"
+    },
+    "./build-index": {
+      "types": "./dist/search/build-index.d.ts",
+      "import": "./dist/search/build-index.js"
+    },
+    "./react": {
+      "types": "./dist/search/react.d.ts",
+      "import": "./dist/search/react.js"
+    }
   },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "build": "tsc -b"
+    "build": "vite build"
   },
   "dependencies": {
+    "@orama/orama": "^3.1.18",
+    "@orama/plugin-data-persistence": "^3.1.18",
     "fast-glob": "^3.3.3"
   },
   "devDependencies": {
     "@eventuras/typescript-config": "workspace:*",
-    "typescript": "^6.0.2"
+    "@eventuras/vite-config": "workspace:*",
+    "@types/node": "^24.12.0",
+    "@types/react": "^19.2.14",
+    "react": "^19.2.5",
+    "typescript": "^6.0.2",
+    "vite": "^8.1.0"
+  },
+  "peerDependencies": {
+    "@eventuras/ratio-ui": ">=1",
+    "react": "^18 || ^19"
+  },
+  "peerDependenciesMeta": {
+    "@eventuras/ratio-ui": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    }
   }
 }

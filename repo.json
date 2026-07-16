@@ -58,10 +58,6 @@
     "logger": {
       "package": "@eventuras/logger"
     },
-    "lustro-search": {
-      "package": "@eventuras/lustro-search",
-      "aliases": ["lustro"]
-    },
     "mailer": {
       "package": "@eventuras/mailer"
     },

@@ -1,14 +1,7 @@
 {
+  "extends": "@eventuras/typescript-config/react-library.json",
   "compilerOptions": {
-    "declaration": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true,
-    "target": "ES2022",
-    "module": "Node16",
-    "moduleResolution": "Node16",
-    "outDir": "dist",
-    "rootDir": "src"
-  },
-  "include": ["src"]
+    "rootDir": "src",
+    "types": ["react", "react-dom", "node"]
+  }
 }

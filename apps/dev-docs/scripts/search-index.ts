@@ -1,6 +1,6 @@
 import { resolve } from 'node:path';
 
-import { buildSearchIndex } from '@eventuras/lustro-search/build-index';
+import { buildSearchIndex } from '@eventuras/docs-framework/build-index';
 
 const cwd = process.cwd();
 const site = resolve(cwd, '.next/server/app');

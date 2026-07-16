@@ -137,9 +137,9 @@ function enrichContent(content: string, sourcePath: string, source: DocSource, r
 
   // If no title, derive from first heading or filename
   if (!frontmatter.title) {
-    const headingMatch = /^#\s+(.+)$/m.exec(body);
-    if (headingMatch) {
-      frontmatter.title = headingMatch[1].trim();
+    const heading = /^#\s+(.+)$/m.exec(body)?.[1];
+    if (heading) {
+      frontmatter.title = heading.trim();
     }
   }
 
@@ -182,8 +182,8 @@ function parseFrontmatter(content: string): { frontmatter: Record<string, unknow
     return { frontmatter: {}, body: content };
   }
 
-  const yamlBlock = match[1];
-  const body = match[2];
+  const yamlBlock = match[1] ?? '';
+  const body = match[2] ?? '';
   const frontmatter: Record<string, unknown> = {};
 
   for (const line of yamlBlock.split('\n')) {
