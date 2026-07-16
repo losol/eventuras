@@ -1,7 +1,7 @@
 'use client';
 
-import { OramaProvider } from '@eventuras/lustro-search';
-import { Search } from '@eventuras/lustro-search/react';
+import { Search } from '@eventuras/docs-framework/react';
+import { OramaProvider } from '@eventuras/docs-framework/search';
 
 const provider = new OramaProvider('/search-index.json');
 
