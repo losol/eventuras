@@ -1,13 +1,12 @@
 'use client';
 
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-
 import {
   CommandPalette,
   type CommandPaletteItem,
 } from '@eventuras/ratio-ui/core/CommandPalette';
 
 import type { SearchProvider, SearchResult } from '../types.js';
+import { useDocsSearch } from '../hooks/use-docs-search.js';
 
 interface SearchProps {
   /** Search provider instance (e.g. OramaProvider) */
@@ -27,59 +26,19 @@ function toItems(results: SearchResult[]): CommandPaletteItem[] {
 }
 
 /**
- * Full-text search powered by a SearchProvider, rendered via CommandPalette.
+ * Full-text search rendered via the ratio-ui CommandPalette.
  *
- * Handles debounced async search with stale-response protection.
+ * A thin wrapper over {@link useDocsSearch} — swap this component to render the
+ * same search logic with a different design system.
  */
 export function Search({ provider, placeholder = 'Search...', onNavigate }: Readonly<SearchProps>) {
-  const [items, setItems] = useState<CommandPaletteItem[]>([]);
-  const debounceRef = useRef<ReturnType<typeof setTimeout>>(null);
-  const searchIdRef = useRef(0);
-
-  const handleQueryChange = useCallback(
-    (query: string) => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-
-      if (!query.trim()) {
-        setItems([]);
-        return;
-      }
-
-      const requestId = ++searchIdRef.current;
-
-      debounceRef.current = setTimeout(async () => {
-        const hits = await provider.search(query);
-        if (requestId === searchIdRef.current) {
-          setItems(toItems(hits));
-        }
-      }, 200);
-    },
-    [provider],
-  );
-
-  // Cleanup debounce on unmount
-  useEffect(() => {
-    return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-    };
-  }, []);
-
-  const handleSelect = useCallback(
-    (item: CommandPaletteItem) => {
-      if (onNavigate) {
-        onNavigate(item.id);
-      } else {
-        window.location.href = item.id;
-      }
-    },
-    [onNavigate],
-  );
+  const { results, onQueryChange, onSelect } = useDocsSearch({ provider, onNavigate });
 
   return (
     <CommandPalette
-      items={items}
-      onSelect={handleSelect}
-      onQueryChange={handleQueryChange}
+      items={toItems(results)}
+      onSelect={(item) => onSelect(item.id)}
+      onQueryChange={onQueryChange}
       placeholder={placeholder}
     />
   );
