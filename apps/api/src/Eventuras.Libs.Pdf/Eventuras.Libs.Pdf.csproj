@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="QuestPDF" Version="2026.6.1" />
+    <PackageReference Include="QuestPDF" Version="2026.7.0" />
     <PackageReference Include="PdfPig" Version="0.1.15" />
   </ItemGroup>
 </Project>
