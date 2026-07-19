@@ -33,7 +33,7 @@
     "eslint-plugin-only-warn": "^1.2.1",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-simple-import-sort": "^13.0.0",
-    "eslint-plugin-turbo": "^2.10.1",
+    "eslint-plugin-turbo": "^2.10.4",
     "globals": "^17.7.0",
     "typescript-eslint": "^8.63.0"
   },
