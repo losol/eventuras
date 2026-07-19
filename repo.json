@@ -18,11 +18,6 @@
       "package": "@eventuras/historia",
       "aliases": ["cms", "historia-cms"]
     },
-    "nuntius": {
-      "path": "apps/nuntius-homey-app",
-      "package": "no.losol.nuntius",
-      "aliases": ["nuntius-homey"]
-    },
     "web": {
       "path": "apps/web",
       "package": "@eventuras/web",

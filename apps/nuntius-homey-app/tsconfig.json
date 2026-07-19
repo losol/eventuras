@@ -1,9 +1,0 @@
-{
-  "extends": "@tsconfig/node24/tsconfig.json",
-  "compilerOptions": {
-    "allowJs": true,
-    "rootDir": ".",
-    "outDir": ".homeybuild/",
-    "types": ["node"]
-  }
-}
