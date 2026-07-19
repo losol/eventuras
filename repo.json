@@ -8,10 +8,6 @@
       "path": "apps/conductor",
       "package": "@eventuras/conductor"
     },
-    "docs-framework": {
-      "path": "apps/docs-framework",
-      "package": "@eventuras/docs-framework"
-    },
     "dev-docs": {
       "path": "apps/dev-docs",
       "package": "@eventuras/dev-docs",
@@ -43,6 +39,9 @@
   "libs": {
     "datatable": {
       "package": "@eventuras/datatable"
+    },
+    "docs-framework": {
+      "package": "@eventuras/docs-framework"
     },
     "event-sdk": {
       "package": "@eventuras/event-sdk",
