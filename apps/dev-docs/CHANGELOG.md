@@ -1,5 +1,13 @@
 # @eventuras/dev-docs
 
+## 0.8.21
+
+### Patch Changes
+
+- Updated dependencies [ddb57d5]
+- Updated dependencies [696c5f3]
+  - @eventuras/docs-framework@0.2.0
+
 ## 0.8.20
 
 ### Patch Changes
