@@ -42,9 +42,6 @@
       "package": "@eventuras/event-sdk",
       "aliases": ["sdk"]
     },
-    "fides-auth": {
-      "package": "@eventuras/fides-auth"
-    },
     "google-api": {
       "package": "@eventuras/google-api",
       "aliases": ["google"]

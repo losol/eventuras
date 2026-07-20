@@ -157,11 +157,11 @@ importers:
         specifier: workspace:*
         version: link:../../libs/core-nextjs
       '@eventuras/fides-auth':
-        specifier: workspace:*
-        version: link:../../libs/fides-auth
+        specifier: ^0.9.0
+        version: 0.9.0
       '@eventuras/fides-auth-next':
-        specifier: workspace:*
-        version: link:../../libs/fides-auth-next
+        specifier: ^0.3.0
+        version: 0.3.0(@opentelemetry/api-logs@0.219.0)(@opentelemetry/api@1.9.1)(@opentelemetry/instrumentation-pino@0.65.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-logs@0.219.0(@opentelemetry/api@1.9.1))(@xstate/react@6.1.0(@types/react@19.2.17)(react@19.2.7)(xstate@5.32.2))(@xstate/store-react@2.0.0(react@19.2.7))(@xstate/store@4.2.1)(next@16.2.9(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(sass@1.77.4))(react@19.2.7)(xstate@5.32.2)
       '@eventuras/logger':
         specifier: workspace:*
         version: link:../../libs/logger
@@ -742,89 +742,6 @@ importers:
         specifier: ^6.0.2
         version: 6.0.3
 
-  libs/fides-auth:
-    dependencies:
-      jose:
-        specifier: 6.2.3
-        version: 6.2.3
-      openid-client:
-        specifier: ^6.8.3
-        version: 6.8.4
-    devDependencies:
-      '@eventuras/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
-      '@eventuras/vite-config':
-        specifier: workspace:*
-        version: link:../vite-config
-      '@types/node':
-        specifier: ^24.12.0
-        version: 24.13.2
-      vite:
-        specifier: ^8.1.0
-        version: 8.1.0(@types/node@24.13.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.22.4)(yaml@2.9.0)
-      vitest:
-        specifier: ^4.1.4
-        version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(@vitest/ui@4.1.9)(happy-dom@20.9.0)(jsdom@29.1.1)(vite@8.1.0(@types/node@24.13.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.22.4)(yaml@2.9.0))
-
-  libs/fides-auth-next:
-    dependencies:
-      '@eventuras/fides-auth':
-        specifier: workspace:*
-        version: link:../fides-auth
-      '@eventuras/logger':
-        specifier: workspace:*
-        version: link:../logger
-      '@xstate/react':
-        specifier: ^5.0.0 || ^6.0.0
-        version: 6.1.0(@types/react@19.2.17)(react@19.2.7)(xstate@5.32.2)
-      '@xstate/store':
-        specifier: ^4.2.1
-        version: 4.2.1
-      '@xstate/store-react':
-        specifier: ^2.0.0
-        version: 2.0.0(react@19.2.7)
-      next:
-        specifier: ^16.0.0
-        version: 16.2.9(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(sass@1.77.4)
-    devDependencies:
-      '@eventuras/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
-      '@eventuras/vite-config':
-        specifier: workspace:*
-        version: link:../vite-config
-      '@testing-library/jest-dom':
-        specifier: 6.9.1
-        version: 6.9.1
-      '@testing-library/react':
-        specifier: ^16.3.2
-        version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@types/react':
-        specifier: ^19.2.14
-        version: 19.2.17
-      '@types/react-dom':
-        specifier: ^19.2.3
-        version: 19.2.3(@types/react@19.2.17)
-      jsdom:
-        specifier: 29.1.1
-        version: 29.1.1
-      react:
-        specifier: ^19.2.0
-        version: 19.2.7
-      react-dom:
-        specifier: ^19.2.0
-        version: 19.2.7(react@19.2.7)
-      vite:
-        specifier: ^8.1.0
-        version: 8.1.0(@types/node@25.9.3)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.22.4)(yaml@2.9.0)
-      vitest:
-        specifier: ^4.1.6
-        version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@25.9.3)(@vitest/ui@4.1.9)(happy-dom@20.9.0)(jsdom@29.1.1)(vite@8.1.0(@types/node@25.9.3)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.22.4)(yaml@2.9.0))
-      xstate:
-        specifier: ^5.32.2
-        version: 5.32.2
-
   libs/google-api:
     dependencies:
       google-auth-library:
@@ -1047,8 +964,8 @@ importers:
   libs/payload-vipps-auth:
     dependencies:
       '@eventuras/fides-auth':
-        specifier: workspace:*
-        version: link:../fides-auth
+        specifier: ^0.9.0
+        version: 0.9.0
       '@eventuras/logger':
         specifier: workspace:*
         version: link:../logger
@@ -1190,8 +1107,8 @@ importers:
   libs/shipper:
     dependencies:
       '@eventuras/fides-auth':
-        specifier: workspace:*
-        version: link:../fides-auth
+        specifier: ^0.9.0
+        version: 0.9.0
       '@eventuras/logger':
         specifier: workspace:*
         version: link:../logger
@@ -1263,8 +1180,8 @@ importers:
   libs/vipps:
     dependencies:
       '@eventuras/fides-auth':
-        specifier: workspace:*
-        version: link:../fides-auth
+        specifier: ^0.9.0
+        version: 0.9.0
       '@eventuras/logger':
         specifier: workspace:*
         version: link:../logger
@@ -1325,8 +1242,8 @@ importers:
         specifier: workspace:*
         version: link:../../libs/event-sdk
       '@eventuras/fides-auth':
-        specifier: workspace:*
-        version: link:../../libs/fides-auth
+        specifier: ^0.9.0
+        version: 0.9.0
       '@eventuras/google-api':
         specifier: workspace:*
         version: link:../../libs/google-api
@@ -13523,7 +13440,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.17
       tinyrainbow: 3.1.0
-      vitest: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(@vitest/ui@4.1.9)(happy-dom@20.9.0)(jsdom@29.1.1)(vite@8.1.0(@types/node@24.13.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.22.4)(yaml@2.9.0))
+      vitest: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@25.9.3)(@vitest/ui@4.1.9)(happy-dom@20.9.0)(jsdom@29.1.1)(vite@8.1.0(@types/node@25.9.3)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.22.4)(yaml@2.9.0))
 
   '@vitest/utils@4.1.9':
     dependencies:

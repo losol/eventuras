@@ -24,7 +24,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@eventuras/fides-auth": "workspace:*",
+    "@eventuras/fides-auth": "^0.9.0",
     "@eventuras/logger": "workspace:*",
     "@eventuras/vipps": "workspace:*",
     "openid-client": "^6.8.3",
