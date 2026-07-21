@@ -29,8 +29,8 @@ const OrderPaymentMethodSelect = ({ order, onUpdate }: OrderPaymentMethodSelectP
     order.paymentMethod ?? undefined
   );
 
-  const handleChange = async (next: string) => {
-    if (!order.orderId || next === selected) {
+  const handleChange = async (next: string | null) => {
+    if (!next || !order.orderId || next === selected) {
       return;
     }
 

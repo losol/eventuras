@@ -34,7 +34,10 @@ const RegistrationStatusSelect = ({
     context: { component: 'RegistrationStatusSelect' },
   });
 
-  const handleStatusChange = async (newStatus: string) => {
+  const handleStatusChange = async (newStatus: string | null) => {
+    // Clearing the select is a no-op — there is no "unset" registration status.
+    if (!newStatus) return;
+
     logger.info(
       { registrationId: registration.registrationId, newStatus },
       'Updating registration status'
