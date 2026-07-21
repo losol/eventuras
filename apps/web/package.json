@@ -33,7 +33,7 @@
     "@eventuras/logger": "workspace:^",
     "@eventuras/markdown": "workspace:*",
     "@eventuras/markdown-plugin-happening": "workspace:*",
-    "@eventuras/ratio-ui": "^2.8.0",
+    "@eventuras/ratio-ui": "^2.14.0",
     "@eventuras/ratio-ui-next": "^0.2.0",
     "@eventuras/scribo": "workspace:*",
     "@eventuras/smartform": "workspace:*",

@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@eventuras/docs-framework": "workspace:*",
-    "@eventuras/ratio-ui": "^2.8.0",
+    "@eventuras/ratio-ui": "^2.14.0",
     "@eventuras/typescript-config": "workspace:*",
     "next": "16.2.9",
     "react": "^19.2.5",
