@@ -6,6 +6,6 @@
     <AssemblyName>Eventuras.Domain</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="NodaTime" Version="3.3.2" />
+    <PackageReference Include="NodaTime" Version="3.3.3" />
   </ItemGroup>
 </Project>
