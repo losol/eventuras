@@ -32,9 +32,6 @@
     }
   },
   "libs": {
-    "datatable": {
-      "package": "@eventuras/datatable"
-    },
     "docs-framework": {
       "package": "@eventuras/docs-framework"
     },

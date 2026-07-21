@@ -369,8 +369,8 @@ importers:
         specifier: workspace:^
         version: link:../../libs/core-nextjs
       '@eventuras/datatable':
-        specifier: workspace:^
-        version: link:../../libs/datatable
+        specifier: ^0.5.29
+        version: 0.5.29(@opentelemetry/api-logs@0.219.0)(@opentelemetry/api@1.9.1)(@opentelemetry/instrumentation-pino@0.65.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-logs@0.219.0(@opentelemetry/api@1.9.1))(@tanstack/match-sorter-utils@8.19.4)(@tanstack/react-table@8.21.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@tanstack/table-core@8.21.3)(lucide-react@1.22.0(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(tailwindcss@4.3.2)
       '@eventuras/event-sdk':
         specifier: workspace:^
         version: link:../../libs/event-sdk
@@ -550,49 +550,6 @@ importers:
       react:
         specifier: ^19.2.5
         version: 19.2.7
-      vite:
-        specifier: ^8.1.0
-        version: 8.1.0(@types/node@25.9.3)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.22.4)(yaml@2.9.0)
-
-  libs/datatable:
-    dependencies:
-      '@eventuras/ratio-ui':
-        specifier: ^2.8.0
-        version: 2.8.0(@opentelemetry/api-logs@0.219.0)(@opentelemetry/api@1.9.1)(@opentelemetry/instrumentation-pino@0.65.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-logs@0.219.0(@opentelemetry/api@1.9.1))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(tailwindcss@4.3.2)
-      react:
-        specifier: ^19.0.0
-        version: 19.2.7
-      react-dom:
-        specifier: ^19.0.0
-        version: 19.2.7(react@19.2.7)
-    devDependencies:
-      '@eventuras/eslint-config':
-        specifier: workspace:*
-        version: link:../eslint-config
-      '@eventuras/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
-      '@eventuras/vite-config':
-        specifier: workspace:*
-        version: link:../vite-config
-      '@tanstack/match-sorter-utils':
-        specifier: ^8.19.4
-        version: 8.19.4
-      '@tanstack/react-table':
-        specifier: ^8.21.3
-        version: 8.21.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@tanstack/table-core':
-        specifier: ^8.21.3
-        version: 8.21.3
-      '@types/react':
-        specifier: ^19.2.14
-        version: 19.2.17
-      '@types/react-dom':
-        specifier: ^19.2.3
-        version: 19.2.3(@types/react@19.2.17)
-      lucide-react:
-        specifier: ^1.22.0
-        version: 1.22.0(react@19.2.7)
       vite:
         specifier: ^8.1.0
         version: 8.1.0(@types/node@25.9.3)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.22.4)(yaml@2.9.0)
@@ -2235,6 +2192,16 @@ packages:
   '@eslint/plugin-kit@0.7.2':
     resolution: {integrity: sha512-+CNAzxglkrpNf/kKywqQfk74QjtceuOE7Qm+AF8miRvPF/wmmK5+OJOgVh3AVTT3RP2mH3+FOaxlE5v72owk0A==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
+
+  '@eventuras/datatable@0.5.29':
+    resolution: {integrity: sha512-bBNc/S+HhxWcv2e0HEl3ECGnLsOyRA836beB5G5Gej1hMa2RxZ2+X+BuO4qDXJL1L2imG/rjClSC/5Gkhyacvw==}
+    peerDependencies:
+      '@tanstack/match-sorter-utils': ^8.0.0
+      '@tanstack/react-table': ^8.0.0
+      '@tanstack/table-core': ^8.0.0
+      lucide-react: ^0.555.0 || ^0.577.0 || ^1.0.0
+      react: ^19.0.0
+      react-dom: ^19.0.0
 
   '@eventuras/fides-auth-next@0.3.0':
     resolution: {integrity: sha512-+87J1WZkQxqIg+zNoH7JgTQqtYlFlAMLLhKysuE4Ml8WhtdZmfVilpnycHGlpC5wxJOuVHMHD8Fz84XsFctWCw==}
@@ -9950,6 +9917,22 @@ snapshots:
     dependencies:
       '@eslint/core': 1.2.1
       levn: 0.4.1
+
+  '@eventuras/datatable@0.5.29(@opentelemetry/api-logs@0.219.0)(@opentelemetry/api@1.9.1)(@opentelemetry/instrumentation-pino@0.65.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-logs@0.219.0(@opentelemetry/api@1.9.1))(@tanstack/match-sorter-utils@8.19.4)(@tanstack/react-table@8.21.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@tanstack/table-core@8.21.3)(lucide-react@1.22.0(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(tailwindcss@4.3.2)':
+    dependencies:
+      '@eventuras/ratio-ui': 2.8.0(@opentelemetry/api-logs@0.219.0)(@opentelemetry/api@1.9.1)(@opentelemetry/instrumentation-pino@0.65.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-logs@0.219.0(@opentelemetry/api@1.9.1))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(tailwindcss@4.3.2)
+      '@tanstack/match-sorter-utils': 8.19.4
+      '@tanstack/react-table': 8.21.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@tanstack/table-core': 8.21.3
+      lucide-react: 1.22.0(react@19.2.7)
+      react: 19.2.7
+      react-dom: 19.2.7(react@19.2.7)
+    transitivePeerDependencies:
+      - '@opentelemetry/api'
+      - '@opentelemetry/api-logs'
+      - '@opentelemetry/instrumentation-pino'
+      - '@opentelemetry/sdk-logs'
+      - tailwindcss
 
   '@eventuras/fides-auth-next@0.3.0(@opentelemetry/api-logs@0.219.0)(@opentelemetry/api@1.9.1)(@opentelemetry/instrumentation-pino@0.65.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-logs@0.219.0(@opentelemetry/api@1.9.1))(@xstate/react@6.1.0(@types/react@19.2.17)(react@19.2.7)(xstate@5.32.2))(@xstate/store-react@2.0.0(react@19.2.7))(@xstate/store@4.2.1)(next@16.2.9(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(sass@1.77.4))(react@19.2.7)(xstate@5.32.2)':
     dependencies:
