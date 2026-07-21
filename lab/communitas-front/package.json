@@ -16,7 +16,7 @@
     "react-dom": "^19.2.5"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.5",
+    "@eslint/eslintrc": "^3.3.6",
     "@eventuras/datatable": "workspace:*",
     "@eventuras/ratio-ui": "^2.8.0",
     "@tailwindcss/postcss": "^4.3.2",
@@ -24,7 +24,7 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "commander": "^15.0.0",
-    "eslint": "^10.6.0",
+    "eslint": "^10.7.0",
     "eslint-config-next": "16.2.10",
     "tailwindcss": "^4.3.2",
     "ts-node": "^10.9.2",
