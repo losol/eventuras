@@ -27,7 +27,7 @@
     "@eventuras/app-config": "workspace:^",
     "@eventuras/core": "workspace:^",
     "@eventuras/core-nextjs": "workspace:^",
-    "@eventuras/datatable": "workspace:^",
+    "@eventuras/datatable": "^0.5.29",
     "@eventuras/event-sdk": "workspace:^",
     "@eventuras/fides-auth-next": "0.3.0",
     "@eventuras/logger": "workspace:^",
