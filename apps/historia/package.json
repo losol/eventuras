@@ -24,7 +24,7 @@
     "@eventuras/logger": "workspace:*",
     "@eventuras/notitia-templates": "workspace:*",
     "@eventuras/payload-vipps-auth": "workspace:*",
-    "@eventuras/ratio-ui": "^2.8.0",
+    "@eventuras/ratio-ui": "^2.14.0",
     "@eventuras/ratio-ui-next": "^0.2.0",
     "@eventuras/vipps": "workspace:*",
     "@opentelemetry/api": "^1.9.1",
