@@ -42,7 +42,7 @@
     "@types/react": "^19.2.14",
     "react": "^19.2.5",
     "typescript": "^6.0.2",
-    "vite": "^8.1.0"
+    "vite": "^8.1.4"
   },
   "peerDependencies": {
     "@eventuras/ratio-ui": ">=1",

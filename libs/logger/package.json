@@ -55,8 +55,8 @@
     "@opentelemetry/api-logs": "^0.219.0",
     "@opentelemetry/instrumentation-pino": "^0.65.0",
     "@opentelemetry/sdk-logs": "^0.219.0",
-    "vite": "^8.1.0",
-    "vitest": "^4.1.4"
+    "vite": "^8.1.4",
+    "vitest": "^4.1.10"
   },
   "peerDependencies": {
     "@opentelemetry/api": "^1.9.0",
