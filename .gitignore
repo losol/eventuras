@@ -577,3 +577,6 @@ emails/
 
 *.tokenstore
 .vercel
+
+# lectio-docs generated output
+.lectio

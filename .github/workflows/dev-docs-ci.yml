@@ -17,8 +17,11 @@ jobs:
           node-version: '24'
           cache: 'pnpm'
 
+      # The docs site is built by the root devDependency lectio-docs, which
+      # reads docs.config.ts and collects markdown straight from the checkout —
+      # no workspace packages are needed, so install root deps only.
       - name: Install dependencies
-        run: pnpm install --filter @eventuras/dev-docs... --frozen-lockfile --ignore-scripts
+        run: pnpm install --filter eventuras --frozen-lockfile --ignore-scripts
 
       - name: Build
-        run: pnpm --filter @eventuras/dev-docs... build
+        run: pnpm docs:build
