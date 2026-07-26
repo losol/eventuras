@@ -1,22 +1,26 @@
 name: Dev Docs
 
+# Auto-publish only on changes to docs/** — everything else (config, lectio
+# bumps, other doc sources) is validated on PRs but published manually via
+# workflow_dispatch. PRs validate on any markdown change (minus changesets and
+# changelogs) plus the files that change how the site is built.
 on:
   push:
     branches: [main]
     paths:
-      - '.github/workflows/dev-docs*.yml'
-      - 'apps/dev-docs/**'
       - 'docs/**'
-      - 'libs/ratio-ui/**'
-      - 'libs/lustro-search/**'
   pull_request:
     branches: [main]
     paths:
+      - '**/*.md'
+      - '**/*.mdx'
+      - '!.changeset/**'
+      - '!**/CHANGELOG.md'
       - '.github/workflows/dev-docs*.yml'
-      - 'apps/dev-docs/**'
-      - 'docs/**'
-      - 'libs/ratio-ui/**'
-      - 'libs/lustro-search/**'
+      - 'docs.config.ts'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+  workflow_dispatch:
 
 concurrency:
   group: dev-docs-${{ github.ref }}
@@ -30,7 +34,9 @@ jobs:
   deploy:
     name: Deploy
     needs: ci
-    if: github.event_name == 'push'
+    # Publish on docs/** pushes to main, or manually — but only from main, so
+    # a dispatch on a feature branch can't ship unmerged content to production.
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     permissions:
       contents: read
       deployments: write

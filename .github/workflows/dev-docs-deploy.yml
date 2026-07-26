@@ -26,14 +26,18 @@ jobs:
           node-version: '24'
           cache: 'pnpm'
 
+      # The docs site is built by the root devDependency lectio-docs, which
+      # reads docs.config.ts and collects markdown straight from the checkout —
+      # no workspace packages are needed, so install root deps only.
       - name: Install dependencies
-        run: pnpm install --filter @eventuras/dev-docs... --frozen-lockfile --ignore-scripts
+        run: pnpm install --filter eventuras --frozen-lockfile --ignore-scripts
 
+      # `lectio build` writes the static site to ./dist at the repo root.
       - name: Build
-        run: pnpm --filter @eventuras/dev-docs... build
+        run: pnpm docs:build
 
       - name: Deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: npx wrangler pages deploy apps/dev-docs/out --project-name="${{ vars.CLOUDFLARE_PROJECT_NAME }}" --branch=main --commit-dirty=true
+        run: npx wrangler pages deploy dist --project-name="${{ vars.CLOUDFLARE_PROJECT_NAME }}" --branch=main --commit-dirty=true
