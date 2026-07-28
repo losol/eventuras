@@ -429,8 +429,14 @@ export async function createOrderFromPayment({
     let effectiveUserId = userId;
 
     if (!userId) {
-      // Try to get user info from Vipps profile sharing or user details
-      const vippsEmail = paymentDetails.profile?.email || paymentDetails.userDetails?.email;
+      // Try to get user info from Vipps profile sharing or user details.
+      // Payload stores auth emails lowercased — lowercase before lookup/create so
+      // a mixed-case email from Vipps matches the customer's existing user instead
+      // of colliding with the unique index on create. Vipps also redacts personal
+      // data on old payments to the literal string '[Expired]' — treat as missing.
+      const rawVippsEmail = paymentDetails.profile?.email || paymentDetails.userDetails?.email;
+      const vippsEmail =
+        rawVippsEmail && rawVippsEmail !== '[Expired]' ? rawVippsEmail.toLowerCase() : undefined;
       const vippsPhone = paymentDetails.profile?.phoneNumber || paymentDetails.userDetails?.mobileNumber;
       const vippsFirstName = paymentDetails.profile?.givenName || paymentDetails.userDetails?.firstName;
       const vippsLastName = paymentDetails.profile?.familyName || paymentDetails.userDetails?.lastName;
