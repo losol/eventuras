@@ -1,5 +1,14 @@
 # @eventuras/historia
 
+## 0.25.23
+
+### Patch Changes
+
+- 38a2cee: Keep stored payment details when Vipps redacts PII to `[Expired]` instead of overwriting them on re-sync
+- Updated dependencies [38a2cee]
+  - @eventuras/vipps@0.2.11
+  - @eventuras/payload-vipps-auth@0.1.12
+
 ## 0.25.22
 
 ### Patch Changes
