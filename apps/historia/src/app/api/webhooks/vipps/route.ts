@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getPayload } from 'payload';
 
 import { Logger } from '@eventuras/logger';
-import { getPaymentDetails } from '@eventuras/vipps/epayment-v1';
+import { getPaymentDetails, mergeExpiredPaymentDetails } from '@eventuras/vipps/epayment-v1';
 import {
   getEventType,
   parseWebhookPayload,
@@ -781,7 +781,11 @@ async function processPaymentEvent(businessEventId: string, payload: WebhookPayl
     id: transaction.id,
     data: {
       status: newStatus as TransactionStatus,
-      ...(paymentDetails && { data: paymentDetails as any }),
+      // Vipps redacts PII to "[Expired]" after its retention period — keep
+      // the values stored at payment time instead of overwriting them.
+      ...(paymentDetails && {
+        data: mergeExpiredPaymentDetails(paymentDetails, transaction.data) as any,
+      }),
       ...(customerId && { customer: customerId }),
     },
   });

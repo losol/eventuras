@@ -8,7 +8,7 @@ import {
   ServerActionResult,
 } from '@eventuras/core-nextjs/actions';
 import { Logger } from '@eventuras/logger';
-import { getPaymentDetails } from '@eventuras/vipps/epayment-v1';
+import { getPaymentDetails, mergeExpiredPaymentDetails } from '@eventuras/vipps/epayment-v1';
 
 import { getVippsConfig } from '@/lib/vipps/config';
 import config from '@/payload.config';
@@ -118,7 +118,9 @@ export async function updateTransactionDetails(
       id: transactionId,
       data: {
         status: paymentDetails.state.toLowerCase(),
-        data: paymentDetails as any,
+        // Vipps redacts PII to "[Expired]" after its retention period — keep
+        // the values stored at payment time instead of overwriting them.
+        data: mergeExpiredPaymentDetails(paymentDetails, transaction.data) as any,
         ...(customerId && { customer: customerId }),
       },
     });
