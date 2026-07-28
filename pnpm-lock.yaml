@@ -102,8 +102,8 @@ importers:
         specifier: workspace:*
         version: link:../../libs/docs-framework
       '@eventuras/ratio-ui':
-        specifier: ^2.15.0
-        version: 2.15.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        specifier: ^2.16.0
+        version: 2.16.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@eventuras/typescript-config':
         specifier: workspace:*
         version: link:../../libs/typescript-config
@@ -175,11 +175,11 @@ importers:
         specifier: workspace:*
         version: link:../../libs/payload-vipps-auth
       '@eventuras/ratio-ui':
-        specifier: ^2.15.0
-        version: 2.15.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        specifier: ^2.16.0
+        version: 2.16.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@eventuras/ratio-ui-next':
         specifier: ^0.2.0
-        version: 0.2.0(@eventuras/ratio-ui@2.15.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(next@16.2.10(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(sass@1.77.4))
+        version: 0.2.0(@eventuras/ratio-ui@2.16.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(next@16.2.10(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(sass@1.77.4))
       '@eventuras/vipps':
         specifier: workspace:*
         version: link:../../libs/vipps
@@ -286,8 +286,8 @@ importers:
         specifier: ^3.2.0
         version: 3.3.1
       lucide-react:
-        specifier: ^1.22.0
-        version: 1.24.0(react@19.2.7)
+        specifier: ^1.25.0
+        version: 1.25.0(react@19.2.7)
       nanoid:
         specifier: ^5.1.16
         version: 5.1.16
@@ -313,8 +313,8 @@ importers:
         specifier: ^19.2.5
         version: 19.2.7(react@19.2.7)
       react-hook-form:
-        specifier: 7.81.0
-        version: 7.81.0(react@19.2.7)
+        specifier: 7.82.0
+        version: 7.82.0(react@19.2.7)
       require-in-the-middle:
         specifier: 8.0.1
         version: 8.0.1
@@ -373,7 +373,7 @@ importers:
         version: link:../../libs/core-nextjs
       '@eventuras/datatable':
         specifier: ^0.6.0
-        version: 0.6.0(@eventuras/ratio-ui@2.15.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@tanstack/match-sorter-utils@8.19.4)(@tanstack/react-table@8.21.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@tanstack/table-core@8.21.3)(lucide-react@1.24.0(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        version: 0.6.0(@eventuras/ratio-ui@2.16.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@tanstack/match-sorter-utils@8.19.4)(@tanstack/react-table@8.21.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@tanstack/table-core@8.21.3)(lucide-react@1.25.0(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@eventuras/event-sdk':
         specifier: workspace:^
         version: link:../../libs/event-sdk
@@ -390,11 +390,11 @@ importers:
         specifier: workspace:*
         version: link:../../libs/markdown-plugin-happening
       '@eventuras/ratio-ui':
-        specifier: ^2.15.0
-        version: 2.15.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        specifier: ^2.16.0
+        version: 2.16.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@eventuras/ratio-ui-next':
         specifier: ^0.2.0
-        version: 0.2.0(@eventuras/ratio-ui@2.15.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(next@16.2.10(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(sass@1.77.4))
+        version: 0.2.0(@eventuras/ratio-ui@2.16.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(next@16.2.10(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(sass@1.77.4))
       '@eventuras/scribo':
         specifier: workspace:*
         version: link:../../libs/scribo
@@ -423,8 +423,8 @@ importers:
         specifier: 6.2.3
         version: 6.2.3
       lucide-react:
-        specifier: ^1.22.0
-        version: 1.24.0(react@19.2.7)
+        specifier: ^1.25.0
+        version: 1.25.0(react@19.2.7)
       next:
         specifier: 16.2.10
         version: 16.2.10(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(sass@1.77.4)
@@ -447,8 +447,8 @@ importers:
         specifier: ^19.2.5
         version: 19.2.7(react@19.2.7)
       react-hook-form:
-        specifier: ^7.81.0
-        version: 7.81.0(react@19.2.7)
+        specifier: ^7.82.0
+        version: 7.82.0(react@19.2.7)
       react-stately:
         specifier: ^3.46.0
         version: 3.48.0(react@19.2.7)
@@ -732,8 +732,8 @@ importers:
         version: 5.1.0
     devDependencies:
       '@eventuras/ratio-ui':
-        specifier: ^2.15.0
-        version: 2.15.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        specifier: ^2.16.0
+        version: 2.16.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@eventuras/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
@@ -796,8 +796,8 @@ importers:
         version: 5.1.0
     devDependencies:
       '@eventuras/ratio-ui':
-        specifier: ^2.15.0
-        version: 2.15.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        specifier: ^2.16.0
+        version: 2.16.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@eventuras/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
@@ -1046,8 +1046,8 @@ importers:
         specifier: workspace:*
         version: link:../logger
       '@eventuras/ratio-ui':
-        specifier: ^2.15.0
-        version: 2.15.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        specifier: ^2.16.0
+        version: 2.16.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       react:
         specifier: ^19.0.0
         version: 19.2.7
@@ -2305,6 +2305,12 @@ packages:
 
   '@eventuras/ratio-ui@2.15.0':
     resolution: {integrity: sha512-T6pjY61CQ70XHUqV/Eb3gXRVdPCjIRz+84Py4gfXocEACZAvbD2VXvMXxitn9EtQSe9ME9zlfzxTZnycmf+02g==}
+    peerDependencies:
+      react: ^19.0.0
+      react-dom: ^19.0.0
+
+  '@eventuras/ratio-ui@2.16.0':
+    resolution: {integrity: sha512-DGvUNdhj0E1/MZlzrJoScrwQci4FZpNt5jFajULnGTvfDEfCW9/6OM+bPhfNIzsjy4DoRMZ5jva6IwR7tgcjyA==}
     peerDependencies:
       react: ^19.0.0
       react-dom: ^19.0.0
@@ -6839,8 +6845,8 @@ packages:
     resolution: {integrity: sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==}
     engines: {node: '>=10'}
 
-  lucide-react@1.24.0:
-    resolution: {integrity: sha512-YT6mBD8lGKkg4nM39enlm94/sfJIiW0YKUT60fBy4YK8tai31ylg1VhGNWxkpSKHo9UagfnZqwIff3HTDQwXeA==}
+  lucide-react@1.25.0:
+    resolution: {integrity: sha512-/mdJTRbiwcLOQ1NZZK1amZF9rIZyvO18D6r9TngE6TG1NmqHgFuT4eE7Xrkm9UsXMbBJD1NlfwHVltCDWHrOTw==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
@@ -7126,11 +7132,6 @@ packages:
 
   ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
-
-  nanoid@3.3.15:
-    resolution: {integrity: sha512-y7Wygv/7mEOvxTuEQDB8StXdMRBWf1kR/tlhAzBRUFkB2jfcLOAxO/SHmOO2zgz1pVgK29/kyupn059/bCHdjA==}
-    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
-    hasBin: true
 
   nanoid@3.3.16:
     resolution: {integrity: sha512-bzlKTyNJ7+LdGIIwy8ijFpIqEQIvafahV7eYykJ8Cvh42EdJeODoJ6gUJXpQJvej1BddH8OqTXZNE/KfbWAu8Q==}
@@ -7681,8 +7682,8 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18 || ^19
 
-  react-hook-form@7.81.0:
-    resolution: {integrity: sha512-ocbmr2p5KBMoAfj4WCUvped33lVi1Kd5DuDUvQDnB6VEAacOjPI/jMbtDdbhco4y9ct4xUuCmMY0b/C9L0QHjw==}
+  react-hook-form@7.82.0:
+    resolution: {integrity: sha512-Zw/uFZ2dO+02GHlBn7JFGn8kZJ7LdM33B/0BXOovzFay+CMhf94JMw5BVu+F1tVkUKjNvBuaE3fz5BJhga10Tg==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18 || ^19
@@ -10099,13 +10100,13 @@ snapshots:
       '@eslint/core': 1.2.1
       levn: 0.4.1
 
-  '@eventuras/datatable@0.6.0(@eventuras/ratio-ui@2.15.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@tanstack/match-sorter-utils@8.19.4)(@tanstack/react-table@8.21.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@tanstack/table-core@8.21.3)(lucide-react@1.24.0(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@eventuras/datatable@0.6.0(@eventuras/ratio-ui@2.16.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@tanstack/match-sorter-utils@8.19.4)(@tanstack/react-table@8.21.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@tanstack/table-core@8.21.3)(lucide-react@1.25.0(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
-      '@eventuras/ratio-ui': 2.15.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@eventuras/ratio-ui': 2.16.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@tanstack/match-sorter-utils': 8.19.4
       '@tanstack/react-table': 8.21.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@tanstack/table-core': 8.21.3
-      lucide-react: 1.24.0(react@19.2.7)
+      lucide-react: 1.25.0(react@19.2.7)
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
 
@@ -10165,15 +10166,15 @@ snapshots:
       - '@types/react'
       - supports-color
 
-  '@eventuras/ratio-ui-next@0.2.0(@eventuras/ratio-ui@2.15.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(next@16.2.10(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(sass@1.77.4))':
+  '@eventuras/ratio-ui-next@0.2.0(@eventuras/ratio-ui@2.16.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(next@16.2.10(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(sass@1.77.4))':
     dependencies:
-      '@eventuras/ratio-ui': 2.15.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@eventuras/ratio-ui': 2.16.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       next: 16.2.10(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(sass@1.77.4)
 
   '@eventuras/ratio-ui@2.14.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
       clsx: 2.1.1
-      lucide-react: 1.24.0(react@19.2.7)
+      lucide-react: 1.25.0(react@19.2.7)
       react: 19.2.7
       react-aria-components: 1.19.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       react-dom: 19.2.7(react@19.2.7)
@@ -10183,7 +10184,17 @@ snapshots:
   '@eventuras/ratio-ui@2.15.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
       clsx: 2.1.1
-      lucide-react: 1.24.0(react@19.2.7)
+      lucide-react: 1.25.0(react@19.2.7)
+      react: 19.2.7
+      react-aria-components: 1.19.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      react-dom: 19.2.7(react@19.2.7)
+      react-stately: 3.48.0(react@19.2.7)
+      tailwind-merge: 3.6.0
+
+  '@eventuras/ratio-ui@2.16.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+    dependencies:
+      clsx: 2.1.1
+      lucide-react: 1.25.0(react@19.2.7)
       react: 19.2.7
       react-aria-components: 1.19.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       react-dom: 19.2.7(react@19.2.7)
@@ -15028,7 +15039,7 @@ snapshots:
     dependencies:
       yallist: 4.0.0
 
-  lucide-react@1.24.0(react@19.2.7):
+  lucide-react@1.25.0(react@19.2.7):
     dependencies:
       react: 19.2.7
 
@@ -15584,8 +15595,6 @@ snapshots:
   mrmime@2.0.1: {}
 
   ms@2.1.3: {}
-
-  nanoid@3.3.15: {}
 
   nanoid@3.3.16: {}
 
@@ -16173,7 +16182,7 @@ snapshots:
     dependencies:
       react: 19.2.7
 
-  react-hook-form@7.81.0(react@19.2.7):
+  react-hook-form@7.82.0(react@19.2.7):
     dependencies:
       react: 19.2.7
 
