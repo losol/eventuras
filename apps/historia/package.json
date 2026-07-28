@@ -82,7 +82,7 @@
     "@types/react": "^19.2.14",
     "nodemon": "^3.1.14",
     "ts-node": "^10.9.2",
-    "typescript": "^6.0.2"
+    "typescript": "^7.0.2"
   },
   "optionalDependencies": {
     "@esbuild/linux-x64": "0.28.1",
