@@ -18,8 +18,8 @@
     "@eventuras/ratio-ui": "^2.16.0",
     "@eventuras/typescript-config": "workspace:*",
     "next": "16.2.11",
-    "react": "^19.2.5",
-    "react-dom": "^19.2.5",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
     "react-markdown": "^10.1.0",
     "rehype-slug": "^6.0.0",
     "remark-gfm": "^4.0.1"
