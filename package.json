@@ -45,7 +45,7 @@
     "**/*.{jsx,ts,tsx,cjs,mjs}": "eslint --fix"
   },
   "dependencies": {
-    "turbo": "^2.10.5"
+    "turbo": "^2.10.6"
   },
   "devDependencies": {
     "@changesets/cli": "^2.31.1",
@@ -56,8 +56,8 @@
     "@types/node": "^24.12.0",
     "eslint": "^10.7.0",
     "lectio-docs": "^0.2.2",
-    "lint-staged": "^17.0.8",
-    "prettier": "^3.9.5",
+    "lint-staged": "^17.2.0",
+    "prettier": "^3.9.6",
     "simple-git-hooks": "^2.13.1",
     "tsx": "^4.23.1",
     "typescript": "^6.0.2"
