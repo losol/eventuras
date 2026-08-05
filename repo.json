@@ -13,11 +13,6 @@
       "package": "@eventuras/dev-docs",
       "aliases": ["docsite"]
     },
-    "historia": {
-      "path": "apps/historia",
-      "package": "@eventuras/historia",
-      "aliases": ["cms", "historia-cms"]
-    },
     "web": {
       "path": "apps/web",
       "package": "@eventuras/web",
@@ -51,10 +46,6 @@
     },
     "markdown": {
       "package": "@eventuras/markdown"
-    },
-    "notitia-templates": {
-      "package": "@eventuras/notitia-templates",
-      "aliases": ["notitia"]
     },
     "scribo": {
       "package": "@eventuras/scribo"
