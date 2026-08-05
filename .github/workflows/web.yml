@@ -3,10 +3,10 @@ name: Web
 on:
   push:
     branches: [main]
-    paths: ['apps/web/**']
+    paths: ['apps/web/**', '.github/workflows/web*.yml']
   pull_request:
     branches: [main]
-    paths: ['apps/web/**']
+    paths: ['apps/web/**', '.github/workflows/web*.yml']
 
 concurrency:
   group: web-${{ github.ref }}
@@ -16,6 +16,9 @@ jobs:
   ci:
     name: CI
     uses: ./.github/workflows/web-ci.yml
+    secrets:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
 
   docker:
     name: Docker
