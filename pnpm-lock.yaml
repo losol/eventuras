@@ -103,22 +103,22 @@ importers:
         version: link:../../libs/docs-framework
       '@eventuras/ratio-ui':
         specifier: ^2.16.0
-        version: 2.16.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        version: 2.16.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@eventuras/typescript-config':
         specifier: workspace:*
         version: link:../../libs/typescript-config
       next:
         specifier: 16.2.12
-        version: 16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(sass@1.77.4)
+        version: 16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sass@1.77.4)
       react:
-        specifier: ^19.2.5
-        version: 19.2.7
+        specifier: ^19.2.8
+        version: 19.2.8
       react-dom:
-        specifier: ^19.2.5
-        version: 19.2.7(react@19.2.7)
+        specifier: ^19.2.8
+        version: 19.2.8(react@19.2.8)
       react-markdown:
         specifier: ^10.1.0
-        version: 10.1.0(@types/react@19.2.17)(react@19.2.7)
+        version: 10.1.0(@types/react@19.2.17)(react@19.2.8)
       rehype-slug:
         specifier: ^6.0.0
         version: 6.0.0
@@ -161,28 +161,28 @@ importers:
         version: link:../../libs/core-nextjs
       '@eventuras/datatable':
         specifier: ^0.6.0
-        version: 0.6.0(@eventuras/ratio-ui@2.16.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@tanstack/match-sorter-utils@8.19.4)(@tanstack/react-table@8.21.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@tanstack/table-core@8.21.3)(lucide-react@1.25.0(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        version: 0.6.0(@eventuras/ratio-ui@2.16.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@tanstack/match-sorter-utils@8.19.4)(@tanstack/react-table@8.21.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@tanstack/table-core@8.21.3)(lucide-react@1.25.0(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@eventuras/event-sdk':
         specifier: workspace:^
         version: link:../../libs/event-sdk
       '@eventuras/fides-auth-next':
         specifier: 0.3.0
-        version: 0.3.0(@opentelemetry/api-logs@0.220.0)(@opentelemetry/api@1.9.1)(@opentelemetry/instrumentation-pino@0.66.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-logs@0.220.0(@opentelemetry/api@1.9.1))(@xstate/react@6.1.0(@types/react@19.2.17)(react@19.2.7)(xstate@5.32.5))(@xstate/store-react@2.0.0(react@19.2.7))(@xstate/store@4.2.1)(next@16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(sass@1.77.4))(react@19.2.7)(xstate@5.32.5)
+        version: 0.3.0(@opentelemetry/api-logs@0.220.0)(@opentelemetry/api@1.9.1)(@opentelemetry/instrumentation-pino@0.66.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-logs@0.220.0(@opentelemetry/api@1.9.1))(@xstate/react@6.1.0(@types/react@19.2.17)(react@19.2.8)(xstate@5.32.5))(@xstate/store-react@2.0.0(react@19.2.8))(@xstate/store@4.2.1)(next@16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sass@1.77.4))(react@19.2.8)(xstate@5.32.5)
       '@eventuras/logger':
         specifier: workspace:^
         version: link:../../libs/logger
       '@eventuras/markdown':
         specifier: ^0.14.0
-        version: 0.14.0(@eventuras/ratio-ui@2.16.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        version: 0.14.0(@eventuras/ratio-ui@2.16.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@eventuras/markdown-plugin-happening':
         specifier: workspace:*
         version: link:../../libs/markdown-plugin-happening
       '@eventuras/ratio-ui':
         specifier: ^2.16.0
-        version: 2.16.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        version: 2.16.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@eventuras/ratio-ui-next':
         specifier: ^0.2.0
-        version: 0.2.0(@eventuras/ratio-ui@2.16.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(next@16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(sass@1.77.4))
+        version: 0.2.0(@eventuras/ratio-ui@2.16.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(next@16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sass@1.77.4))
       '@eventuras/scribo':
         specifier: workspace:*
         version: link:../../libs/scribo
@@ -191,10 +191,10 @@ importers:
         version: link:../../libs/smartform
       '@react-stately/data':
         specifier: ^3.16.0
-        version: 3.16.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        version: 3.16.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@sentry/nextjs':
         specifier: ^10.66.0
-        version: 10.66.0(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.9.0(@opentelemetry/api@1.9.1))(next@16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(sass@1.77.4))(react@19.2.7)(webpack@5.104.1(esbuild@0.28.1)(postcss@8.5.19))
+        version: 10.66.0(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.9.0(@opentelemetry/api@1.9.1))(next@16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sass@1.77.4))(react@19.2.8)(webpack@5.104.1(esbuild@0.28.1)(postcss@8.5.19))
       '@tailwindcss/postcss':
         specifier: ^4.3.3
         version: 4.3.3
@@ -203,7 +203,7 @@ importers:
         version: 4.1.13
       '@xstate/react':
         specifier: ^6.1.0
-        version: 6.1.0(@types/react@19.2.17)(react@19.2.7)(xstate@5.32.5)
+        version: 6.1.0(@types/react@19.2.17)(react@19.2.8)(xstate@5.32.5)
       '@xstate/store':
         specifier: 4.2.1
         version: 4.2.1
@@ -212,13 +212,13 @@ importers:
         version: 6.2.3
       lucide-react:
         specifier: ^1.25.0
-        version: 1.25.0(react@19.2.7)
+        version: 1.25.0(react@19.2.8)
       next:
         specifier: 16.2.12
-        version: 16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(sass@1.77.4)
+        version: 16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sass@1.77.4)
       next-intl:
         specifier: ^4.13.4
-        version: 4.13.4(@swc/helpers@0.5.23)(next@16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(sass@1.77.4))(react@19.2.7)(typescript@6.0.3)
+        version: 4.13.4(@swc/helpers@0.5.23)(next@16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sass@1.77.4))(react@19.2.8)(typescript@6.0.3)
       openid-client:
         specifier: ^6.8.3
         version: 6.8.4
@@ -226,20 +226,20 @@ importers:
         specifier: ^10.3.1
         version: 10.3.1
       react:
-        specifier: ^19.2.5
-        version: 19.2.7
+        specifier: ^19.2.8
+        version: 19.2.8
       react-aria-components:
         specifier: ^1.17.0
-        version: 1.19.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        version: 1.19.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       react-dom:
-        specifier: ^19.2.5
-        version: 19.2.7(react@19.2.7)
+        specifier: ^19.2.8
+        version: 19.2.8(react@19.2.8)
       react-hook-form:
         specifier: ^7.82.0
-        version: 7.82.0(react@19.2.7)
+        version: 7.82.0(react@19.2.8)
       react-stately:
         specifier: ^3.46.0
-        version: 3.48.0(react@19.2.7)
+        version: 3.48.0(react@19.2.8)
       tailwindcss-react-aria-components:
         specifier: ^2.1.0
         version: 2.2.0(tailwindcss@4.3.3)
@@ -337,10 +337,10 @@ importers:
         version: 19.2.3(@types/react@19.2.17)
       next:
         specifier: 16.2.12
-        version: 16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(sass@1.77.4)
+        version: 16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sass@1.77.4)
       react:
-        specifier: ^19.2.5
-        version: 19.2.7
+        specifier: ^19.2.8
+        version: 19.2.8
       vite:
         specifier: ^8.1.5
         version: 8.1.5(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0)
@@ -349,7 +349,7 @@ importers:
     dependencies:
       '@eventuras/ratio-ui':
         specifier: '>=1'
-        version: 2.14.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        version: 2.14.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@orama/orama':
         specifier: ^3.1.18
         version: 3.1.18
@@ -373,8 +373,8 @@ importers:
         specifier: ^19.2.14
         version: 19.2.17
       react:
-        specifier: ^19.2.5
-        version: 19.2.7
+        specifier: ^19.2.8
+        version: 19.2.8
       typescript:
         specifier: ^6.0.2
         version: 6.0.3
@@ -511,17 +511,17 @@ importers:
     dependencies:
       react:
         specifier: '>=18 <20'
-        version: 19.2.7
+        version: 19.2.8
       react-dom:
         specifier: '>=18 <20'
-        version: 19.2.7(react@19.2.7)
+        version: 19.2.8(react@19.2.8)
       unist-util-visit:
         specifier: ^5.1.0
         version: 5.1.0
     devDependencies:
       '@eventuras/ratio-ui':
         specifier: ^2.16.0
-        version: 2.16.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        version: 2.16.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@eventuras/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
@@ -533,7 +533,7 @@ importers:
         version: 6.9.1
       '@testing-library/react':
         specifier: ^16.3.2
-        version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@types/mdast':
         specifier: ^4.0.4
         version: 4.0.4
@@ -587,7 +587,7 @@ importers:
         version: 0.41.0
       '@lexical/react':
         specifier: ^0.41.0
-        version: 0.41.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(yjs@13.6.31)
+        version: 0.41.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(yjs@13.6.31)
       '@lexical/rich-text':
         specifier: 0.41.0
         version: 0.41.0
@@ -608,10 +608,10 @@ importers:
         version: 1.30.0
       react:
         specifier: ^19.0.0
-        version: 19.2.7
+        version: 19.2.8
       react-dom:
         specifier: ^19.0.0
-        version: 19.2.7(react@19.2.7)
+        version: 19.2.8(react@19.2.8)
       yjs:
         specifier: ^13.6.30
         version: 13.6.31
@@ -627,7 +627,7 @@ importers:
         version: link:../vite-config
       '@testing-library/react':
         specifier: ^16.3.2
-        version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@types/react':
         specifier: ^19.2.14
         version: 19.2.17
@@ -688,19 +688,19 @@ importers:
         version: link:../logger
       '@eventuras/ratio-ui':
         specifier: ^2.16.0
-        version: 2.16.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        version: 2.16.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       react:
         specifier: ^19.0.0
-        version: 19.2.7
+        version: 19.2.8
       react-aria-components:
         specifier: ^1.13.0
-        version: 1.19.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        version: 1.19.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       react-dom:
         specifier: ^19.0.0
-        version: 19.2.7(react@19.2.7)
+        version: 19.2.8(react@19.2.8)
       react-hook-form:
         specifier: ^7.68.0
-        version: 7.80.0(react@19.2.7)
+        version: 7.80.0(react@19.2.8)
     devDependencies:
       '@eventuras/eslint-config':
         specifier: workspace:*
@@ -3296,6 +3296,11 @@ packages:
     engines: {node: '>=6.0.0'}
     hasBin: true
 
+  baseline-browser-mapping@2.11.4:
+    resolution: {integrity: sha512-s4+sLr9mZ/CyqeRritFeYV/Zx73OAtmaHn6kkBS1XRoJn1hrg3xIDUcpicAEX68tkcIN0iBCgti31C8zxtkhsQ==}
+    engines: {node: '>=6.0.0'}
+    hasBin: true
+
   better-path-resolve@1.0.0:
     resolution: {integrity: sha512-pbnl5XzGBdrFU/wT4jqmJVPn2B6UHPBOhzMQkY/SPUPB6QtUXtmBHBIwCbXJol93mOpGMnQyP/+BB19q04xj7g==}
     engines: {node: '>=4'}
@@ -5129,6 +5134,11 @@ packages:
     peerDependencies:
       react: ^19.2.7
 
+  react-dom@19.2.8:
+    resolution: {integrity: sha512-rVprimfGBG3DR+Tq0IQG2DT5PxKth1WIGDmj5yPmlzr4YBe7uyE+Du4oVqTDXZSHGGGXRtTJEGSSePyQCMBglQ==}
+    peerDependencies:
+      react: ^19.2.8
+
   react-error-boundary@6.1.1:
     resolution: {integrity: sha512-BrYwPOdXi5mqkk5lw+Uvt0ThHx32rCt3BkukS4X23A2AIWDPSGX6iaWTc0y9TU/mHDA/6qOSGel+B2ERkOvD1w==}
     peerDependencies:
@@ -5176,6 +5186,10 @@ packages:
 
   react@19.2.7:
     resolution: {integrity: sha512-HNe9WslTbXmFK8o8cmwgAeJFSBvt1bPdHCVKtaaV+WlAN36mpT4hcRpwbf3fY56ar2oIXzsBpOAiIRHAdY0OlQ==}
+    engines: {node: '>=0.10.0'}
+
+  react@19.2.8:
+    resolution: {integrity: sha512-PWaYA1L/q9u2u7xYQi+Y3L3Yfnie7XyLeaJICV1MGD6LprsBxcAqGjYyr0eY3p+QdsA+x/Irkt4Qif8D63+Sbw==}
     engines: {node: '>=0.10.0'}
 
   read-yaml-file@1.1.0:
@@ -6793,25 +6807,25 @@ snapshots:
       '@eslint/core': 1.2.1
       levn: 0.4.1
 
-  '@eventuras/datatable@0.6.0(@eventuras/ratio-ui@2.16.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@tanstack/match-sorter-utils@8.19.4)(@tanstack/react-table@8.21.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@tanstack/table-core@8.21.3)(lucide-react@1.25.0(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@eventuras/datatable@0.6.0(@eventuras/ratio-ui@2.16.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@tanstack/match-sorter-utils@8.19.4)(@tanstack/react-table@8.21.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@tanstack/table-core@8.21.3)(lucide-react@1.25.0(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
-      '@eventuras/ratio-ui': 2.16.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@eventuras/ratio-ui': 2.16.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@tanstack/match-sorter-utils': 8.19.4
-      '@tanstack/react-table': 8.21.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@tanstack/react-table': 8.21.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@tanstack/table-core': 8.21.3
-      lucide-react: 1.25.0(react@19.2.7)
-      react: 19.2.7
-      react-dom: 19.2.7(react@19.2.7)
+      lucide-react: 1.25.0(react@19.2.8)
+      react: 19.2.8
+      react-dom: 19.2.8(react@19.2.8)
 
-  '@eventuras/fides-auth-next@0.3.0(@opentelemetry/api-logs@0.220.0)(@opentelemetry/api@1.9.1)(@opentelemetry/instrumentation-pino@0.66.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-logs@0.220.0(@opentelemetry/api@1.9.1))(@xstate/react@6.1.0(@types/react@19.2.17)(react@19.2.7)(xstate@5.32.5))(@xstate/store-react@2.0.0(react@19.2.7))(@xstate/store@4.2.1)(next@16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(sass@1.77.4))(react@19.2.7)(xstate@5.32.5)':
+  '@eventuras/fides-auth-next@0.3.0(@opentelemetry/api-logs@0.220.0)(@opentelemetry/api@1.9.1)(@opentelemetry/instrumentation-pino@0.66.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-logs@0.220.0(@opentelemetry/api@1.9.1))(@xstate/react@6.1.0(@types/react@19.2.17)(react@19.2.8)(xstate@5.32.5))(@xstate/store-react@2.0.0(react@19.2.8))(@xstate/store@4.2.1)(next@16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sass@1.77.4))(react@19.2.8)(xstate@5.32.5)':
     dependencies:
       '@eventuras/fides-auth': 0.9.0
       '@eventuras/logger': 0.8.1(@opentelemetry/api-logs@0.220.0)(@opentelemetry/api@1.9.1)(@opentelemetry/instrumentation-pino@0.66.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-logs@0.220.0(@opentelemetry/api@1.9.1))
-      '@xstate/react': 6.1.0(@types/react@19.2.17)(react@19.2.7)(xstate@5.32.5)
+      '@xstate/react': 6.1.0(@types/react@19.2.17)(react@19.2.8)(xstate@5.32.5)
       '@xstate/store': 4.2.1
-      '@xstate/store-react': 2.0.0(react@19.2.7)
-      next: 16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(sass@1.77.4)
-      react: 19.2.7
+      '@xstate/store-react': 2.0.0(react@19.2.8)
+      next: 16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sass@1.77.4)
+      react: 19.2.8
       xstate: 5.32.5
     transitivePeerDependencies:
       - '@opentelemetry/api'
@@ -6859,12 +6873,12 @@ snapshots:
       - '@types/react'
       - supports-color
 
-  '@eventuras/markdown@0.14.0(@eventuras/ratio-ui@2.16.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@eventuras/markdown@0.14.0(@eventuras/ratio-ui@2.16.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
-      '@eventuras/ratio-ui': 2.16.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      react: 19.2.7
-      react-dom: 19.2.7(react@19.2.7)
-      react-markdown: 10.1.0(@types/react@19.2.17)(react@19.2.7)
+      '@eventuras/ratio-ui': 2.16.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      react: 19.2.8
+      react-dom: 19.2.8(react@19.2.8)
+      react-markdown: 10.1.0(@types/react@19.2.17)(react@19.2.8)
       rehype-raw: 7.0.0
       rehype-sanitize: 6.0.0
       remark-gfm: 4.0.1
@@ -6873,19 +6887,19 @@ snapshots:
       - '@types/react'
       - supports-color
 
-  '@eventuras/ratio-ui-next@0.2.0(@eventuras/ratio-ui@2.16.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(next@16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(sass@1.77.4))':
+  '@eventuras/ratio-ui-next@0.2.0(@eventuras/ratio-ui@2.16.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(next@16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sass@1.77.4))':
     dependencies:
-      '@eventuras/ratio-ui': 2.16.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      next: 16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(sass@1.77.4)
+      '@eventuras/ratio-ui': 2.16.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      next: 16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sass@1.77.4)
 
-  '@eventuras/ratio-ui@2.14.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@eventuras/ratio-ui@2.14.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
       clsx: 2.1.1
-      lucide-react: 1.25.0(react@19.2.7)
-      react: 19.2.7
-      react-aria-components: 1.19.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      react-dom: 19.2.7(react@19.2.7)
-      react-stately: 3.48.0(react@19.2.7)
+      lucide-react: 1.25.0(react@19.2.8)
+      react: 19.2.8
+      react-aria-components: 1.19.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      react-dom: 19.2.8(react@19.2.8)
+      react-stately: 3.48.0(react@19.2.8)
       tailwind-merge: 3.6.0
 
   '@eventuras/ratio-ui@2.15.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
@@ -6898,14 +6912,14 @@ snapshots:
       react-stately: 3.48.0(react@19.2.7)
       tailwind-merge: 3.6.0
 
-  '@eventuras/ratio-ui@2.16.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@eventuras/ratio-ui@2.16.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
       clsx: 2.1.1
-      lucide-react: 1.25.0(react@19.2.7)
-      react: 19.2.7
-      react-aria-components: 1.19.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      react-dom: 19.2.7(react@19.2.7)
-      react-stately: 3.48.0(react@19.2.7)
+      lucide-react: 1.25.0(react@19.2.8)
+      react: 19.2.8
+      react-aria-components: 1.19.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      react-dom: 19.2.8(react@19.2.8)
+      react-stately: 3.48.0(react@19.2.8)
       tailwind-merge: 3.6.0
 
   '@exodus/bytes@1.15.1': {}
@@ -6919,18 +6933,18 @@ snapshots:
       '@floating-ui/core': 1.8.0
       '@floating-ui/utils': 0.2.12
 
-  '@floating-ui/react-dom@2.1.8(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@floating-ui/react-dom@2.1.8(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
       '@floating-ui/dom': 1.7.6
-      react: 19.2.7
-      react-dom: 19.2.7(react@19.2.7)
+      react: 19.2.8
+      react-dom: 19.2.8(react@19.2.8)
 
-  '@floating-ui/react@0.27.19(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@floating-ui/react@0.27.19(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
-      '@floating-ui/react-dom': 2.1.8(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@floating-ui/react-dom': 2.1.8(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@floating-ui/utils': 0.2.11
-      react: 19.2.7
-      react-dom: 19.2.7(react@19.2.7)
+      react: 19.2.8
+      react-dom: 19.2.8(react@19.2.8)
       tabbable: 6.5.0
 
   '@floating-ui/utils@0.2.11': {}
@@ -7171,7 +7185,7 @@ snapshots:
       lexical: 0.41.0
       prismjs: 1.30.0
 
-  '@lexical/devtools-core@0.41.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@lexical/devtools-core@0.41.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
       '@lexical/html': 0.41.0
       '@lexical/link': 0.41.0
@@ -7179,8 +7193,8 @@ snapshots:
       '@lexical/table': 0.41.0
       '@lexical/utils': 0.41.0
       lexical: 0.41.0
-      react: 19.2.7
-      react-dom: 19.2.7(react@19.2.7)
+      react: 19.2.8
+      react-dom: 19.2.8(react@19.2.8)
 
   '@lexical/dragon@0.41.0':
     dependencies:
@@ -7255,10 +7269,10 @@ snapshots:
       '@lexical/utils': 0.41.0
       lexical: 0.41.0
 
-  '@lexical/react@0.41.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(yjs@13.6.31)':
+  '@lexical/react@0.41.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(yjs@13.6.31)':
     dependencies:
-      '@floating-ui/react': 0.27.19(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@lexical/devtools-core': 0.41.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@floating-ui/react': 0.27.19(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@lexical/devtools-core': 0.41.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@lexical/dragon': 0.41.0
       '@lexical/extension': 0.41.0
       '@lexical/hashtag': 0.41.0
@@ -7275,9 +7289,9 @@ snapshots:
       '@lexical/utils': 0.41.0
       '@lexical/yjs': 0.41.0(yjs@13.6.31)
       lexical: 0.41.0
-      react: 19.2.7
-      react-dom: 19.2.7(react@19.2.7)
-      react-error-boundary: 6.1.1(react@19.2.7)
+      react: 19.2.8
+      react-dom: 19.2.8(react@19.2.8)
+      react-error-boundary: 6.1.1(react@19.2.8)
     transitivePeerDependencies:
       - yjs
 
@@ -7578,16 +7592,20 @@ snapshots:
     optionalDependencies:
       typescript: 6.0.3
 
-  '@react-stately/data@3.16.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@react-stately/data@3.16.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
       '@swc/helpers': 0.5.23
-      react: 19.2.7
-      react-dom: 19.2.7(react@19.2.7)
-      react-stately: 3.48.0(react@19.2.7)
+      react: 19.2.8
+      react-dom: 19.2.8(react@19.2.8)
+      react-stately: 3.48.0(react@19.2.8)
 
   '@react-types/shared@3.36.0(react@19.2.7)':
     dependencies:
       react: 19.2.7
+
+  '@react-types/shared@3.36.0(react@19.2.8)':
+    dependencies:
+      react: 19.2.8
 
   '@remix-run/node-fetch-server@0.13.3': {}
 
@@ -7847,7 +7865,7 @@ snapshots:
     dependencies:
       '@sentry/core': 10.66.0
 
-  '@sentry/nextjs@10.66.0(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.9.0(@opentelemetry/api@1.9.1))(next@16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(sass@1.77.4))(react@19.2.7)(webpack@5.104.1(esbuild@0.28.1)(postcss@8.5.19))':
+  '@sentry/nextjs@10.66.0(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.9.0(@opentelemetry/api@1.9.1))(next@16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sass@1.77.4))(react@19.2.8)(webpack@5.104.1(esbuild@0.28.1)(postcss@8.5.19))':
     dependencies:
       '@opentelemetry/api': 1.9.1
       '@rollup/plugin-commonjs': 28.0.1(rollup@4.62.2)
@@ -7857,11 +7875,11 @@ snapshots:
       '@sentry/core': 10.66.0
       '@sentry/node': 10.66.0(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.1))
       '@sentry/opentelemetry': 10.66.0(@opentelemetry/api@1.9.1)(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.9.0(@opentelemetry/api@1.9.1))
-      '@sentry/react': 10.66.0(react@19.2.7)
+      '@sentry/react': 10.66.0(react@19.2.8)
       '@sentry/server-utils': 10.66.0
       '@sentry/vercel-edge': 10.66.0
       '@sentry/webpack-plugin': 5.4.0(rollup@4.62.2)(webpack@5.104.1(esbuild@0.28.1)(postcss@8.5.19))
-      next: 16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(sass@1.77.4)
+      next: 16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sass@1.77.4)
       rollup: 4.62.2
       stacktrace-parser: 0.1.11
     transitivePeerDependencies:
@@ -7909,12 +7927,12 @@ snapshots:
       '@sentry/conventions': 0.16.0
       '@sentry/core': 10.66.0
 
-  '@sentry/react@10.66.0(react@19.2.7)':
+  '@sentry/react@10.66.0(react@19.2.8)':
     dependencies:
       '@sentry/browser': 10.66.0
       '@sentry/conventions': 0.16.0
       '@sentry/core': 10.66.0
-      react: 19.2.7
+      react: 19.2.8
 
   '@sentry/replay-canvas@10.66.0':
     dependencies:
@@ -8107,11 +8125,11 @@ snapshots:
     dependencies:
       remove-accents: 0.5.0
 
-  '@tanstack/react-table@8.21.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@tanstack/react-table@8.21.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
       '@tanstack/table-core': 8.21.3
-      react: 19.2.7
-      react-dom: 19.2.7(react@19.2.7)
+      react: 19.2.8
+      react-dom: 19.2.8(react@19.2.8)
 
   '@tanstack/table-core@8.21.3': {}
 
@@ -8135,12 +8153,12 @@ snapshots:
       picocolors: 1.1.1
       redent: 3.0.0
 
-  '@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
       '@babel/runtime': 7.29.7
       '@testing-library/dom': 10.4.1
-      react: 19.2.7
-      react-dom: 19.2.7(react@19.2.7)
+      react: 19.2.8
+      react-dom: 19.2.8(react@19.2.8)
     optionalDependencies:
       '@types/react': 19.2.17
       '@types/react-dom': 19.2.3(@types/react@19.2.17)
@@ -8588,20 +8606,20 @@ snapshots:
       '@webassemblyjs/ast': 1.14.1
       '@xtuc/long': 4.2.2
 
-  '@xstate/react@6.1.0(@types/react@19.2.17)(react@19.2.7)(xstate@5.32.5)':
+  '@xstate/react@6.1.0(@types/react@19.2.17)(react@19.2.8)(xstate@5.32.5)':
     dependencies:
-      react: 19.2.7
-      use-isomorphic-layout-effect: 1.2.1(@types/react@19.2.17)(react@19.2.7)
-      use-sync-external-store: 1.6.0(react@19.2.7)
+      react: 19.2.8
+      use-isomorphic-layout-effect: 1.2.1(@types/react@19.2.17)(react@19.2.8)
+      use-sync-external-store: 1.6.0(react@19.2.8)
     optionalDependencies:
       xstate: 5.32.5
     transitivePeerDependencies:
       - '@types/react'
 
-  '@xstate/store-react@2.0.0(react@19.2.7)':
+  '@xstate/store-react@2.0.0(react@19.2.8)':
     dependencies:
       '@xstate/store': 4.2.1
-      react: 19.2.7
+      react: 19.2.8
 
   '@xstate/store@4.2.1': {}
 
@@ -8749,6 +8767,8 @@ snapshots:
 
   baseline-browser-mapping@2.11.3: {}
 
+  baseline-browser-mapping@2.11.4: {}
+
   better-path-resolve@1.0.0:
     dependencies:
       is-windows: 1.0.2
@@ -8794,7 +8814,7 @@ snapshots:
 
   browserslist@4.28.7:
     dependencies:
-      baseline-browser-mapping: 2.11.3
+      baseline-browser-mapping: 2.11.4
       caniuse-lite: 1.0.30001806
       electron-to-chromium: 1.5.396
       node-releases: 2.0.51
@@ -10126,6 +10146,10 @@ snapshots:
     dependencies:
       react: 19.2.7
 
+  lucide-react@1.25.0(react@19.2.8):
+    dependencies:
+      react: 19.2.8
+
   lz-string@1.5.0: {}
 
   magic-bytes.js@1.13.0: {}
@@ -10559,33 +10583,33 @@ snapshots:
 
   next-intl-swc-plugin-extractor@4.13.4: {}
 
-  next-intl@4.13.4(@swc/helpers@0.5.23)(next@16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(sass@1.77.4))(react@19.2.7)(typescript@6.0.3):
+  next-intl@4.13.4(@swc/helpers@0.5.23)(next@16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sass@1.77.4))(react@19.2.8)(typescript@6.0.3):
     dependencies:
       '@formatjs/intl-localematcher': 0.8.13
       '@parcel/watcher': 2.6.0
       '@swc/core': 1.15.46(@swc/helpers@0.5.23)
       icu-minify: 4.13.4
       negotiator: 1.0.0
-      next: 16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(sass@1.77.4)
+      next: 16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sass@1.77.4)
       next-intl-swc-plugin-extractor: 4.13.4
       po-parser: 2.1.1
-      react: 19.2.7
-      use-intl: 4.13.4(react@19.2.7)
+      react: 19.2.8
+      use-intl: 4.13.4(react@19.2.8)
     optionalDependencies:
       typescript: 6.0.3
     transitivePeerDependencies:
       - '@swc/helpers'
 
-  next@16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(sass@1.77.4):
+  next@16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sass@1.77.4):
     dependencies:
       '@next/env': 16.2.12
       '@swc/helpers': 0.5.15
       baseline-browser-mapping: 2.11.3
       caniuse-lite: 1.0.30001806
       postcss: 8.4.31
-      react: 19.2.7
-      react-dom: 19.2.7(react@19.2.7)
-      styled-jsx: 5.1.6(@babel/core@7.29.7)(babel-plugin-macros@3.1.0)(react@19.2.7)
+      react: 19.2.8
+      react-dom: 19.2.8(react@19.2.8)
+      styled-jsx: 5.1.6(@babel/core@7.29.7)(babel-plugin-macros@3.1.0)(react@19.2.8)
     optionalDependencies:
       '@next/swc-darwin-arm64': 16.2.12
       '@next/swc-darwin-x64': 16.2.12
@@ -10888,6 +10912,17 @@ snapshots:
       react-dom: 19.2.7(react@19.2.7)
       react-stately: 3.48.0(react@19.2.7)
 
+  react-aria-components@1.19.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
+    dependencies:
+      '@internationalized/date': 3.12.2
+      '@react-types/shared': 3.36.0(react@19.2.8)
+      '@swc/helpers': 0.5.23
+      client-only: 0.0.1
+      react: 19.2.8
+      react-aria: 3.50.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      react-dom: 19.2.8(react@19.2.8)
+      react-stately: 3.48.0(react@19.2.8)
+
   react-aria@3.50.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
     dependencies:
       '@internationalized/date': 3.12.2
@@ -10902,22 +10937,41 @@ snapshots:
       react-stately: 3.48.0(react@19.2.7)
       use-sync-external-store: 1.6.0(react@19.2.7)
 
+  react-aria@3.50.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
+    dependencies:
+      '@internationalized/date': 3.12.2
+      '@internationalized/number': 3.6.7
+      '@internationalized/string': 3.2.9
+      '@react-types/shared': 3.36.0(react@19.2.8)
+      '@swc/helpers': 0.5.23
+      aria-hidden: 1.2.6
+      clsx: 2.1.1
+      react: 19.2.8
+      react-dom: 19.2.8(react@19.2.8)
+      react-stately: 3.48.0(react@19.2.8)
+      use-sync-external-store: 1.6.0(react@19.2.8)
+
   react-dom@19.2.7(react@19.2.7):
     dependencies:
       react: 19.2.7
       scheduler: 0.27.0
 
-  react-error-boundary@6.1.1(react@19.2.7):
+  react-dom@19.2.8(react@19.2.8):
     dependencies:
-      react: 19.2.7
+      react: 19.2.8
+      scheduler: 0.27.0
 
-  react-hook-form@7.80.0(react@19.2.7):
+  react-error-boundary@6.1.1(react@19.2.8):
     dependencies:
-      react: 19.2.7
+      react: 19.2.8
 
-  react-hook-form@7.82.0(react@19.2.7):
+  react-hook-form@7.80.0(react@19.2.8):
     dependencies:
-      react: 19.2.7
+      react: 19.2.8
+
+  react-hook-form@7.82.0(react@19.2.8):
+    dependencies:
+      react: 19.2.8
 
   react-is@17.0.2: {}
 
@@ -10931,6 +10985,24 @@ snapshots:
       html-url-attributes: 3.0.1
       mdast-util-to-hast: 13.2.1
       react: 19.2.7
+      remark-parse: 11.0.0
+      remark-rehype: 11.1.2
+      unified: 11.0.5
+      unist-util-visit: 5.1.0
+      vfile: 6.0.3
+    transitivePeerDependencies:
+      - supports-color
+
+  react-markdown@10.1.0(@types/react@19.2.17)(react@19.2.8):
+    dependencies:
+      '@types/hast': 3.0.4
+      '@types/mdast': 4.0.4
+      '@types/react': 19.2.17
+      devlop: 1.1.0
+      hast-util-to-jsx-runtime: 2.3.6
+      html-url-attributes: 3.0.1
+      mdast-util-to-hast: 13.2.1
+      react: 19.2.8
       remark-parse: 11.0.0
       remark-rehype: 11.1.2
       unified: 11.0.5
@@ -10958,7 +11030,19 @@ snapshots:
       react: 19.2.7
       use-sync-external-store: 1.6.0(react@19.2.7)
 
+  react-stately@3.48.0(react@19.2.8):
+    dependencies:
+      '@internationalized/date': 3.12.2
+      '@internationalized/number': 3.6.7
+      '@internationalized/string': 3.2.9
+      '@react-types/shared': 3.36.0(react@19.2.8)
+      '@swc/helpers': 0.5.23
+      react: 19.2.8
+      use-sync-external-store: 1.6.0(react@19.2.8)
+
   react@19.2.7: {}
+
+  react@19.2.8: {}
 
   read-yaml-file@1.1.0:
     dependencies:
@@ -11369,10 +11453,10 @@ snapshots:
     dependencies:
       inline-style-parser: 0.2.7
 
-  styled-jsx@5.1.6(@babel/core@7.29.7)(babel-plugin-macros@3.1.0)(react@19.2.7):
+  styled-jsx@5.1.6(@babel/core@7.29.7)(babel-plugin-macros@3.1.0)(react@19.2.8):
     dependencies:
       client-only: 0.0.1
-      react: 19.2.7
+      react: 19.2.8
     optionalDependencies:
       '@babel/core': 7.29.7
       babel-plugin-macros: 3.1.0
@@ -11613,23 +11697,27 @@ snapshots:
 
   url-template@2.0.8: {}
 
-  use-intl@4.13.4(react@19.2.7):
+  use-intl@4.13.4(react@19.2.8):
     dependencies:
       '@formatjs/fast-memoize': 3.1.7
       '@schummar/icu-type-parser': 1.21.5
       icu-minify: 4.13.4
       intl-messageformat: 11.2.12
-      react: 19.2.7
+      react: 19.2.8
 
-  use-isomorphic-layout-effect@1.2.1(@types/react@19.2.17)(react@19.2.7):
+  use-isomorphic-layout-effect@1.2.1(@types/react@19.2.17)(react@19.2.8):
     dependencies:
-      react: 19.2.7
+      react: 19.2.8
     optionalDependencies:
       '@types/react': 19.2.17
 
   use-sync-external-store@1.6.0(react@19.2.7):
     dependencies:
       react: 19.2.7
+
+  use-sync-external-store@1.6.0(react@19.2.8):
+    dependencies:
+      react: 19.2.8
 
   uuidv7@1.2.1: {}
 
