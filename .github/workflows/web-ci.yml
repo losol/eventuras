@@ -17,6 +17,9 @@ env:
 # Lint and build are independent — no `needs` between them, they run in
 # parallel. Installs are filtered to web's dependency subtree; the full
 # workspace install pulls in historia/conductor-heavy deps web never uses.
+# `--filter eventuras` (the workspace root) keeps the turbo binary installed
+# explicitly — pnpm 11 includes the root in filtered installs, but that is
+# behavior we'd rather not depend on silently.
 jobs:
   lint:
     name: Lint
@@ -36,7 +39,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install --filter @eventuras/web... --frozen-lockfile --ignore-scripts
+        run: pnpm install --filter @eventuras/web... --filter eventuras --frozen-lockfile --ignore-scripts
 
       - name: Lint
         run: pnpm turbo run lint --filter=@eventuras/web...
@@ -59,7 +62,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install --filter @eventuras/web... --frozen-lockfile --ignore-scripts
+        run: pnpm install --filter @eventuras/web... --filter eventuras --frozen-lockfile --ignore-scripts
 
       - name: Build dependencies
         run: pnpm turbo run build --filter=@eventuras/web^...
