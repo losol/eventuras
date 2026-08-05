@@ -31,7 +31,7 @@
     "@eventuras/event-sdk": "workspace:^",
     "@eventuras/fides-auth-next": "0.3.0",
     "@eventuras/logger": "workspace:^",
-    "@eventuras/markdown": "workspace:*",
+    "@eventuras/markdown": "^0.14.0",
     "@eventuras/markdown-plugin-happening": "workspace:*",
     "@eventuras/ratio-ui": "^2.16.0",
     "@eventuras/ratio-ui-next": "^0.2.0",
