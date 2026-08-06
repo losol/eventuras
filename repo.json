@@ -30,14 +30,8 @@
       "package": "@eventuras/google-api",
       "aliases": ["google"]
     },
-    "logger": {
-      "package": "@eventuras/logger"
-    },
     "mailer": {
       "package": "@eventuras/mailer"
-    },
-    "markdown": {
-      "package": "@eventuras/markdown"
     },
     "scribo": {
       "package": "@eventuras/scribo"
@@ -47,10 +41,6 @@
     },
     "smartform": {
       "package": "@eventuras/smartform"
-    },
-    "vite-config": {
-      "package": "@eventuras/vite-config",
-      "aliases": ["vite"]
     }
   },
   "scopes": ["deps", "infra", "release"]

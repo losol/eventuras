@@ -22,11 +22,11 @@ importers:
         specifier: ^21.2.0
         version: 21.2.0
       '@eventuras/eslint-config':
-        specifier: workspace:*
-        version: link:libs/eslint-config
+        specifier: ^1.0.4
+        version: 1.0.4(eslint@10.7.0(jiti@2.7.0))(turbo@2.10.5)(typescript@6.0.3)
       '@eventuras/typescript-config':
-        specifier: workspace:*
-        version: link:libs/typescript-config
+        specifier: ^1.0.0
+        version: 1.0.0
       '@types/node':
         specifier: ^24.12.0
         version: 24.13.3
@@ -59,8 +59,8 @@ importers:
   apps/conductor:
     dependencies:
       '@eventuras/logger':
-        specifier: workspace:*
-        version: link:../../libs/logger
+        specifier: ^0.8.1
+        version: 0.8.1(@opentelemetry/api-logs@0.220.0)(@opentelemetry/api@1.9.1)(@opentelemetry/instrumentation-pino@0.66.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-logs@0.220.0(@opentelemetry/api@1.9.1))
       discord.js:
         specifier: ^14.27.0
         version: 14.27.0
@@ -78,8 +78,8 @@ importers:
         version: 4.4.3
     devDependencies:
       '@eventuras/typescript-config':
-        specifier: workspace:*
-        version: link:../../libs/typescript-config
+        specifier: ^1.0.0
+        version: 1.0.0
       '@types/express':
         specifier: ^5.0.6
         version: 5.0.6
@@ -99,14 +99,14 @@ importers:
   apps/web:
     dependencies:
       '@eventuras/app-config':
-        specifier: workspace:^
-        version: link:../../libs/app-config
+        specifier: ^0.1.4
+        version: 0.1.4
       '@eventuras/core':
-        specifier: workspace:^
-        version: link:../../libs/core
+        specifier: ^0.4.0
+        version: 0.4.0
       '@eventuras/core-nextjs':
-        specifier: workspace:^
-        version: link:../../libs/core-nextjs
+        specifier: ^0.1.3
+        version: 0.1.3(next@16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sass@1.77.4))(react@19.2.8)
       '@eventuras/datatable':
         specifier: ^0.6.0
         version: 0.6.0(@eventuras/ratio-ui@2.16.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@tanstack/match-sorter-utils@8.19.4)(@tanstack/react-table@8.21.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@tanstack/table-core@8.21.3)(lucide-react@1.25.0(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -117,8 +117,8 @@ importers:
         specifier: 0.3.0
         version: 0.3.0(@opentelemetry/api-logs@0.220.0)(@opentelemetry/api@1.9.1)(@opentelemetry/instrumentation-pino@0.66.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-logs@0.220.0(@opentelemetry/api@1.9.1))(@xstate/react@6.1.0(@types/react@19.2.17)(react@19.2.8)(xstate@5.32.5))(@xstate/store-react@2.0.0(react@19.2.8))(@xstate/store@4.2.1)(next@16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sass@1.77.4))(react@19.2.8)(xstate@5.32.5)
       '@eventuras/logger':
-        specifier: workspace:^
-        version: link:../../libs/logger
+        specifier: ^0.8.1
+        version: 0.8.1(@opentelemetry/api-logs@0.220.0)(@opentelemetry/api@1.9.1)(@opentelemetry/instrumentation-pino@0.66.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-logs@0.220.0(@opentelemetry/api@1.9.1))
       '@eventuras/markdown':
         specifier: ^0.14.0
         version: 0.14.0(@eventuras/ratio-ui@2.16.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -196,8 +196,8 @@ importers:
         version: 5.32.5
     devDependencies:
       '@eventuras/eslint-config':
-        specifier: workspace:*
-        version: link:../../libs/eslint-config
+        specifier: ^1.0.4
+        version: 1.0.4(eslint@10.8.0(jiti@2.7.0))(turbo@2.10.5)(typescript@6.0.3)
       '@next/bundle-analyzer':
         specifier: 16.2.12
         version: 16.2.12
@@ -238,98 +238,6 @@ importers:
 
   docs: {}
 
-  libs/app-config:
-    dependencies:
-      zod:
-        specifier: ^4.3.6
-        version: 4.4.3
-    devDependencies:
-      '@eventuras/eslint-config':
-        specifier: workspace:*
-        version: link:../eslint-config
-      '@eventuras/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
-      '@eventuras/vite-config':
-        specifier: workspace:*
-        version: link:../vite-config
-      '@types/node':
-        specifier: ^24.12.0
-        version: 24.13.3
-      typescript:
-        specifier: ^6.0.2
-        version: 6.0.3
-      vite:
-        specifier: ^8.1.5
-        version: 8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0)
-
-  libs/core:
-    devDependencies:
-      '@eventuras/vite-config':
-        specifier: workspace:*
-        version: link:../vite-config
-      vite:
-        specifier: ^8.1.5
-        version: 8.1.5(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0)
-
-  libs/core-nextjs:
-    devDependencies:
-      '@eventuras/vite-config':
-        specifier: workspace:*
-        version: link:../vite-config
-      '@types/react':
-        specifier: ^19.2.14
-        version: 19.2.17
-      '@types/react-dom':
-        specifier: ^19.2.3
-        version: 19.2.3(@types/react@19.2.17)
-      next:
-        specifier: 16.2.12
-        version: 16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sass@1.77.4)
-      react:
-        specifier: ^19.2.8
-        version: 19.2.8
-      vite:
-        specifier: ^8.1.5
-        version: 8.1.5(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0)
-
-  libs/eslint-config:
-    dependencies:
-      '@eslint/js':
-        specifier: ^10.0.1
-        version: 10.0.1(eslint@10.7.0(jiti@2.7.0))
-      '@next/eslint-plugin-next':
-        specifier: ^16.2.12
-        version: 16.2.12
-      eslint-config-prettier:
-        specifier: ^10.1.8
-        version: 10.1.8(eslint@10.7.0(jiti@2.7.0))
-      eslint-plugin-only-warn:
-        specifier: ^1.2.1
-        version: 1.2.1
-      eslint-plugin-react-hooks:
-        specifier: ^7.0.1
-        version: 7.1.1(eslint@10.7.0(jiti@2.7.0))
-      eslint-plugin-simple-import-sort:
-        specifier: ^14.0.0
-        version: 14.0.0(eslint@10.7.0(jiti@2.7.0))
-      eslint-plugin-turbo:
-        specifier: ^2.10.5
-        version: 2.10.5(eslint@10.7.0(jiti@2.7.0))(turbo@2.10.5)
-      globals:
-        specifier: ^17.7.0
-        version: 17.7.0
-      typescript-eslint:
-        specifier: ^8.64.0
-        version: 8.64.0(eslint@10.7.0(jiti@2.7.0))(typescript@6.0.3)
-    devDependencies:
-      eslint:
-        specifier: ^10.7.0
-        version: 10.7.0(jiti@2.7.0)
-      typescript:
-        specifier: ^6.0.2
-        version: 6.0.3
-
   libs/event-sdk:
     dependencies:
       '@eventuras/api':
@@ -340,8 +248,8 @@ importers:
         version: 0.99.0(magicast@0.5.3)(typescript@6.0.3)
     devDependencies:
       '@eventuras/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
+        specifier: ^1.0.0
+        version: 1.0.0
       typescript:
         specifier: ^6.0.2
         version: 6.0.3
@@ -356,45 +264,17 @@ importers:
         version: 173.0.0
     devDependencies:
       '@eventuras/eslint-config':
-        specifier: workspace:*
-        version: link:../eslint-config
+        specifier: ^1.0.4
+        version: 1.0.4(eslint@10.8.0(jiti@2.7.0))(turbo@2.10.5)(typescript@6.0.3)
       '@eventuras/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
+        specifier: ^1.0.0
+        version: 1.0.0
       '@eventuras/vite-config':
-        specifier: workspace:*
-        version: link:../vite-config
+        specifier: ^0.3.1
+        version: 0.3.1(@swc/helpers@0.5.23)(esbuild@0.28.1)(rolldown@1.1.5)(rollup@4.62.2)(typescript@6.0.3)(vite@8.1.5(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0))(webpack@5.104.1(esbuild@0.28.1))
       vite:
         specifier: ^8.1.5
         version: 8.1.5(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0)
-
-  libs/logger:
-    dependencies:
-      pino:
-        specifier: ^10.3.1
-        version: 10.3.1
-    devDependencies:
-      '@eventuras/vite-config':
-        specifier: workspace:*
-        version: link:../vite-config
-      '@opentelemetry/api':
-        specifier: ^1.9.1
-        version: 1.9.1
-      '@opentelemetry/api-logs':
-        specifier: ^0.220.0
-        version: 0.220.0
-      '@opentelemetry/instrumentation-pino':
-        specifier: ^0.66.0
-        version: 0.66.0(@opentelemetry/api@1.9.1)
-      '@opentelemetry/sdk-logs':
-        specifier: ^0.220.0
-        version: 0.220.0(@opentelemetry/api@1.9.1)
-      vite:
-        specifier: ^8.1.5
-        version: 8.1.5(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0)
-      vitest:
-        specifier: ^4.1.10
-        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@25.9.3)(@vitest/ui@4.1.10)(happy-dom@20.10.6)(jsdom@29.1.1)(vite@8.1.5(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0))
 
   libs/mailer:
     dependencies:
@@ -403,8 +283,8 @@ importers:
         version: 9.0.3
     devDependencies:
       '@eventuras/vite-config':
-        specifier: workspace:*
-        version: link:../vite-config
+        specifier: ^0.3.1
+        version: 0.3.1(@swc/helpers@0.5.23)(esbuild@0.28.1)(rolldown@1.1.5)(rollup@4.62.2)(typescript@6.0.3)(vite@8.1.5(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0))(webpack@5.104.1(esbuild@0.28.1))
       '@types/nodemailer':
         specifier: ^8.0.0
         version: 8.0.1
@@ -434,11 +314,11 @@ importers:
         specifier: ^2.16.0
         version: 2.16.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@eventuras/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
+        specifier: ^1.0.0
+        version: 1.0.0
       '@eventuras/vite-config':
-        specifier: workspace:*
-        version: link:../vite-config
+        specifier: ^0.3.1
+        version: 0.3.1(@swc/helpers@0.5.23)(esbuild@0.28.1)(rolldown@1.1.5)(rollup@4.62.2)(typescript@6.0.3)(vite@8.1.5(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0))(webpack@5.104.1(esbuild@0.28.1))
       '@testing-library/jest-dom':
         specifier: 6.9.1
         version: 6.9.1
@@ -528,14 +408,14 @@ importers:
         version: 13.6.31
     devDependencies:
       '@eventuras/eslint-config':
-        specifier: workspace:*
-        version: link:../eslint-config
+        specifier: ^1.0.4
+        version: 1.0.4(eslint@10.8.0(jiti@2.7.0))(turbo@2.10.5)(typescript@6.0.3)
       '@eventuras/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
+        specifier: ^1.0.0
+        version: 1.0.0
       '@eventuras/vite-config':
-        specifier: workspace:*
-        version: link:../vite-config
+        specifier: ^0.3.1
+        version: 0.3.1(@swc/helpers@0.5.23)(esbuild@0.28.1)(rolldown@1.1.5)(rollup@4.62.2)(typescript@6.0.3)(vite@8.1.5(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0))(webpack@5.104.1(esbuild@0.28.1)(lightningcss@1.32.0))
       '@testing-library/react':
         specifier: ^16.3.2
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -567,15 +447,15 @@ importers:
         specifier: ^0.9.0
         version: 0.9.0
       '@eventuras/logger':
-        specifier: workspace:*
-        version: link:../logger
+        specifier: ^0.8.1
+        version: 0.8.1(@opentelemetry/api-logs@0.220.0)(@opentelemetry/api@1.9.1)(@opentelemetry/instrumentation-pino@0.66.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-logs@0.220.0(@opentelemetry/api@1.9.1))
     devDependencies:
       '@eventuras/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
+        specifier: ^1.0.0
+        version: 1.0.0
       '@eventuras/vite-config':
-        specifier: workspace:*
-        version: link:../vite-config
+        specifier: ^0.3.1
+        version: 0.3.1(@swc/helpers@0.5.23)(esbuild@0.28.1)(rolldown@1.1.5)(rollup@4.62.2)(typescript@6.0.3)(vite@8.1.5(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0))(webpack@5.104.1(esbuild@0.28.1))
       '@vitest/ui':
         specifier: ^4.1.10
         version: 4.1.10(vitest@4.1.10)
@@ -595,8 +475,8 @@ importers:
   libs/smartform:
     dependencies:
       '@eventuras/logger':
-        specifier: workspace:*
-        version: link:../logger
+        specifier: ^0.8.1
+        version: 0.8.1(@opentelemetry/api-logs@0.220.0)(@opentelemetry/api@1.9.1)(@opentelemetry/instrumentation-pino@0.66.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-logs@0.220.0(@opentelemetry/api@1.9.1))
       '@eventuras/ratio-ui':
         specifier: ^2.16.0
         version: 2.16.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -614,47 +494,20 @@ importers:
         version: 7.80.0(react@19.2.8)
     devDependencies:
       '@eventuras/eslint-config':
-        specifier: workspace:*
-        version: link:../eslint-config
+        specifier: ^1.0.4
+        version: 1.0.4(eslint@10.8.0(jiti@2.7.0))(turbo@2.10.5)(typescript@6.0.3)
       '@eventuras/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
+        specifier: ^1.0.0
+        version: 1.0.0
       '@eventuras/vite-config':
-        specifier: workspace:*
-        version: link:../vite-config
+        specifier: ^0.3.1
+        version: 0.3.1(@swc/helpers@0.5.23)(esbuild@0.28.1)(rolldown@1.1.5)(rollup@4.62.2)(typescript@6.0.3)(vite@8.1.5(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0))(webpack@5.104.1(esbuild@0.28.1))
       '@types/react':
         specifier: ^19.2.14
         version: 19.2.17
       '@types/react-dom':
         specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.17)
-      vite:
-        specifier: ^8.1.5
-        version: 8.1.5(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0)
-
-  libs/typescript-config: {}
-
-  libs/vite-config:
-    dependencies:
-      '@tailwindcss/vite':
-        specifier: ^4.3.3
-        version: 4.3.3(vite@8.1.5(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0))
-      '@vitejs/plugin-react':
-        specifier: ^6.0.4
-        version: 6.0.4(vite@8.1.5(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0))
-      '@vitejs/plugin-react-swc':
-        specifier: ^4.3.2
-        version: 4.3.2(@swc/helpers@0.5.23)(vite@8.1.5(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0))
-      glob:
-        specifier: ^13.0.6
-        version: 13.0.6
-      vite-plugin-dts:
-        specifier: ^5.0.3
-        version: 5.0.3(esbuild@0.28.1)(rolldown@1.1.5)(rollup@4.62.2)(typescript@6.0.3)(vite@8.1.5(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0))(webpack@5.104.1(esbuild@0.28.1))
-    devDependencies:
-      typescript:
-        specifier: ^6.0.2
-        version: 6.0.3
       vite:
         specifier: ^8.1.5
         version: 8.1.5(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0)
@@ -671,8 +524,8 @@ importers:
         specifier: workspace:*
         version: link:../../libs/google-api
       '@eventuras/logger':
-        specifier: workspace:*
-        version: link:../../libs/logger
+        specifier: ^0.8.1
+        version: 0.8.1(@opentelemetry/api-logs@0.220.0)(@opentelemetry/api@1.9.1)(@opentelemetry/instrumentation-pino@0.66.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-logs@0.220.0(@opentelemetry/api@1.9.1))
       '@playwright/test':
         specifier: 1.61.1
         version: 1.61.1
@@ -1283,6 +1136,19 @@ packages:
     resolution: {integrity: sha512-+CNAzxglkrpNf/kKywqQfk74QjtceuOE7Qm+AF8miRvPF/wmmK5+OJOgVh3AVTT3RP2mH3+FOaxlE5v72owk0A==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
 
+  '@eventuras/app-config@0.1.4':
+    resolution: {integrity: sha512-3scFJX43KWSaFUGDOElkgPraYXq0W0Rpe3uECp4bFT+XKyyiR+SL6oG03es7rNiFofljnult3GoiSFLMfPa7Ww==}
+    hasBin: true
+
+  '@eventuras/core-nextjs@0.1.3':
+    resolution: {integrity: sha512-EVcMN5+MqdNAbV8yAEdWNPkQ3cvFskj+3Xgn6sCFe9SADfxYIPRITvwOfuMQ4nCzxNmasZdgbIYo7SL2Qk5FgQ==}
+    peerDependencies:
+      next: ^16.0.0
+      react: ^19.0.0
+
+  '@eventuras/core@0.4.0':
+    resolution: {integrity: sha512-5JTFrii6RHSRLXS1L2lOeXkS6EbYFYlx6bs/armx3InyLzb+JbRLAe3M+jXAFpZUTzUSg7/LyRoJoTLFTwWDgQ==}
+
   '@eventuras/datatable@0.6.0':
     resolution: {integrity: sha512-7dgrGvHB7oQyi4ug7/zHphpKV/guKHAHK+gdI5CD8uvgEpe/iM5xSvS6nPUvK1oeYVRJJsRFjWCbiQAext+1FA==}
     peerDependencies:
@@ -1293,6 +1159,11 @@ packages:
       lucide-react: ^0.555.0 || ^0.577.0 || ^1.0.0
       react: ^19.0.0
       react-dom: ^19.0.0
+
+  '@eventuras/eslint-config@1.0.4':
+    resolution: {integrity: sha512-jvwJQhs+h6gRNZjGsTuR4e4etes8e3vZ+Mrh+nkt020tktOHcPpJgJyQSPZum7xIl67VwkQo4Xm4dJNVMXOBZg==}
+    peerDependencies:
+      eslint: ^10.0.0
 
   '@eventuras/fides-auth-next@0.3.0':
     resolution: {integrity: sha512-+87J1WZkQxqIg+zNoH7JgTQqtYlFlAMLLhKysuE4Ml8WhtdZmfVilpnycHGlpC5wxJOuVHMHD8Fz84XsFctWCw==}
@@ -1371,6 +1242,14 @@ packages:
     peerDependencies:
       react: ^19.0.0
       react-dom: ^19.0.0
+
+  '@eventuras/typescript-config@1.0.0':
+    resolution: {integrity: sha512-aUirOkPE0ng8T/YUG1+i1HX2Rr+m7L4C1l9dEt9TNvC/wFxkzRbqjSNS3qyApiuGDr+KoWwc86gfDekfw2ebcw==}
+
+  '@eventuras/vite-config@0.3.1':
+    resolution: {integrity: sha512-Ql9BO+G/qoEJImnh4YY10MpaCKjZJtCmYIzuaIkUJvzWDxU/jmWq19Kq5Jy4oeTujCPh96RqW2SUiGSj9uA3JQ==}
+    peerDependencies:
+      vite: ^7.0.0 || ^8.0.0
 
   '@exodus/bytes@1.15.1':
     resolution: {integrity: sha512-S6mL0yNB/Abt9Ei4tq8gDhcczc4S3+vQ4ra7vxnAf+YHC02srtqxKKZghx2Dq6p0e66THKwR6r8N6P95wEty7Q==}
@@ -3662,8 +3541,8 @@ packages:
     peerDependencies:
       eslint: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0 || ^9.0.0 || ^10.0.0
 
-  eslint-plugin-simple-import-sort@14.0.0:
-    resolution: {integrity: sha512-NUJO0+XFCkk+o5EsAJruTgnfMEpeWrPWeJS15UVF60GgXmqz1BJ9/3hzlvG7lkL8Bubzos5cCLptThbFfPnSMQ==}
+  eslint-plugin-simple-import-sort@13.0.0:
+    resolution: {integrity: sha512-McAc+/Nlvcg4byY/CABGH8kqnefWBj8s3JA2okEtz8ixbECQgU46p0HkTUKa4YS7wvgGceimlc34p1nXqbWqtA==}
     peerDependencies:
       eslint: '>=5.0.0'
 
@@ -6054,7 +5933,7 @@ snapshots:
     dependencies:
       '@babel/compat-data': 7.29.7
       '@babel/helper-validator-option': 7.29.7
-      browserslist: 4.28.6
+      browserslist: 4.28.7
       lru-cache: 5.1.1
       semver: 6.3.1
 
@@ -6679,12 +6558,27 @@ snapshots:
     optionalDependencies:
       eslint: 10.7.0(jiti@2.7.0)
 
+  '@eslint/js@10.0.1(eslint@10.8.0(jiti@2.7.0))':
+    optionalDependencies:
+      eslint: 10.8.0(jiti@2.7.0)
+
   '@eslint/object-schema@3.0.5': {}
 
   '@eslint/plugin-kit@0.7.2':
     dependencies:
       '@eslint/core': 1.2.1
       levn: 0.4.1
+
+  '@eventuras/app-config@0.1.4':
+    dependencies:
+      zod: 4.4.3
+
+  '@eventuras/core-nextjs@0.1.3(next@16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sass@1.77.4))(react@19.2.8)':
+    dependencies:
+      next: 16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sass@1.77.4)
+      react: 19.2.8
+
+  '@eventuras/core@0.4.0': {}
 
   '@eventuras/datatable@0.6.0(@eventuras/ratio-ui@2.16.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@tanstack/match-sorter-utils@8.19.4)(@tanstack/react-table@8.21.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@tanstack/table-core@8.21.3)(lucide-react@1.25.0(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
@@ -6695,6 +6589,40 @@ snapshots:
       lucide-react: 1.25.0(react@19.2.8)
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
+
+  '@eventuras/eslint-config@1.0.4(eslint@10.7.0(jiti@2.7.0))(turbo@2.10.5)(typescript@6.0.3)':
+    dependencies:
+      '@eslint/js': 10.0.1(eslint@10.7.0(jiti@2.7.0))
+      '@next/eslint-plugin-next': 16.2.12
+      eslint: 10.7.0(jiti@2.7.0)
+      eslint-config-prettier: 10.1.8(eslint@10.7.0(jiti@2.7.0))
+      eslint-plugin-only-warn: 1.2.1
+      eslint-plugin-react-hooks: 7.1.1(eslint@10.7.0(jiti@2.7.0))
+      eslint-plugin-simple-import-sort: 13.0.0(eslint@10.7.0(jiti@2.7.0))
+      eslint-plugin-turbo: 2.10.5(eslint@10.7.0(jiti@2.7.0))(turbo@2.10.5)
+      globals: 17.7.0
+      typescript-eslint: 8.64.0(eslint@10.7.0(jiti@2.7.0))(typescript@6.0.3)
+    transitivePeerDependencies:
+      - supports-color
+      - turbo
+      - typescript
+
+  '@eventuras/eslint-config@1.0.4(eslint@10.8.0(jiti@2.7.0))(turbo@2.10.5)(typescript@6.0.3)':
+    dependencies:
+      '@eslint/js': 10.0.1(eslint@10.8.0(jiti@2.7.0))
+      '@next/eslint-plugin-next': 16.2.12
+      eslint: 10.8.0(jiti@2.7.0)
+      eslint-config-prettier: 10.1.8(eslint@10.8.0(jiti@2.7.0))
+      eslint-plugin-only-warn: 1.2.1
+      eslint-plugin-react-hooks: 7.1.1(eslint@10.8.0(jiti@2.7.0))
+      eslint-plugin-simple-import-sort: 13.0.0(eslint@10.8.0(jiti@2.7.0))
+      eslint-plugin-turbo: 2.10.5(eslint@10.8.0(jiti@2.7.0))(turbo@2.10.5)
+      globals: 17.7.0
+      typescript-eslint: 8.64.0(eslint@10.8.0(jiti@2.7.0))(typescript@6.0.3)
+    transitivePeerDependencies:
+      - supports-color
+      - turbo
+      - typescript
 
   '@eventuras/fides-auth-next@0.3.0(@opentelemetry/api-logs@0.220.0)(@opentelemetry/api@1.9.1)(@opentelemetry/instrumentation-pino@0.66.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-logs@0.220.0(@opentelemetry/api@1.9.1))(@xstate/react@6.1.0(@types/react@19.2.17)(react@19.2.8)(xstate@5.32.5))(@xstate/store-react@2.0.0(react@19.2.8))(@xstate/store@4.2.1)(next@16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sass@1.77.4))(react@19.2.8)(xstate@5.32.5)':
     dependencies:
@@ -6790,6 +6718,52 @@ snapshots:
       react-dom: 19.2.8(react@19.2.8)
       react-stately: 3.48.0(react@19.2.8)
       tailwind-merge: 3.6.0
+
+  '@eventuras/typescript-config@1.0.0': {}
+
+  '@eventuras/vite-config@0.3.1(@swc/helpers@0.5.23)(esbuild@0.28.1)(rolldown@1.1.5)(rollup@4.62.2)(typescript@6.0.3)(vite@8.1.5(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0))(webpack@5.104.1(esbuild@0.28.1)(lightningcss@1.32.0))':
+    dependencies:
+      '@tailwindcss/vite': 4.3.3(vite@8.1.5(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0))
+      '@vitejs/plugin-react': 6.0.4(vite@8.1.5(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0))
+      '@vitejs/plugin-react-swc': 4.3.2(@swc/helpers@0.5.23)(vite@8.1.5(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0))
+      glob: 13.0.6
+      vite: 8.1.5(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0)
+      vite-plugin-dts: 5.0.3(esbuild@0.28.1)(rolldown@1.1.5)(rollup@4.62.2)(typescript@6.0.3)(vite@8.1.5(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0))(webpack@5.104.1(esbuild@0.28.1)(lightningcss@1.32.0))
+    transitivePeerDependencies:
+      - '@microsoft/api-extractor'
+      - '@rolldown/plugin-babel'
+      - '@rspack/core'
+      - '@swc/helpers'
+      - '@vue/language-core'
+      - babel-plugin-react-compiler
+      - esbuild
+      - rolldown
+      - rollup
+      - supports-color
+      - typescript
+      - webpack
+
+  '@eventuras/vite-config@0.3.1(@swc/helpers@0.5.23)(esbuild@0.28.1)(rolldown@1.1.5)(rollup@4.62.2)(typescript@6.0.3)(vite@8.1.5(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0))(webpack@5.104.1(esbuild@0.28.1))':
+    dependencies:
+      '@tailwindcss/vite': 4.3.3(vite@8.1.5(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0))
+      '@vitejs/plugin-react': 6.0.4(vite@8.1.5(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0))
+      '@vitejs/plugin-react-swc': 4.3.2(@swc/helpers@0.5.23)(vite@8.1.5(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0))
+      glob: 13.0.6
+      vite: 8.1.5(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0)
+      vite-plugin-dts: 5.0.3(esbuild@0.28.1)(rolldown@1.1.5)(rollup@4.62.2)(typescript@6.0.3)(vite@8.1.5(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0))(webpack@5.104.1(esbuild@0.28.1))
+    transitivePeerDependencies:
+      - '@microsoft/api-extractor'
+      - '@rolldown/plugin-babel'
+      - '@rspack/core'
+      - '@swc/helpers'
+      - '@vue/language-core'
+      - babel-plugin-react-compiler
+      - esbuild
+      - rolldown
+      - rollup
+      - supports-color
+      - typescript
+      - webpack
 
   '@exodus/bytes@1.15.1': {}
 
@@ -7298,6 +7272,7 @@ snapshots:
       '@opentelemetry/semantic-conventions': 1.43.0
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   '@opentelemetry/instrumentation@0.220.0(@opentelemetry/api@1.9.1)':
     dependencies:
@@ -7321,6 +7296,7 @@ snapshots:
       '@opentelemetry/core': 2.9.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/resources': 2.9.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/semantic-conventions': 1.43.0
+    optional: true
 
   '@opentelemetry/sdk-trace-base@2.9.0(@opentelemetry/api@1.9.1)':
     dependencies:
@@ -9063,6 +9039,10 @@ snapshots:
     dependencies:
       eslint: 10.7.0(jiti@2.7.0)
 
+  eslint-config-prettier@10.1.8(eslint@10.8.0(jiti@2.7.0)):
+    dependencies:
+      eslint: 10.8.0(jiti@2.7.0)
+
   eslint-plugin-only-warn@1.2.1: {}
 
   eslint-plugin-react-hooks@7.1.1(eslint@10.7.0(jiti@2.7.0)):
@@ -9076,14 +9056,35 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-simple-import-sort@14.0.0(eslint@10.7.0(jiti@2.7.0)):
+  eslint-plugin-react-hooks@7.1.1(eslint@10.8.0(jiti@2.7.0)):
+    dependencies:
+      '@babel/core': 7.29.7
+      '@babel/parser': 7.29.7
+      eslint: 10.8.0(jiti@2.7.0)
+      hermes-parser: 0.25.1
+      zod: 4.4.3
+      zod-validation-error: 4.0.2(zod@4.4.3)
+    transitivePeerDependencies:
+      - supports-color
+
+  eslint-plugin-simple-import-sort@13.0.0(eslint@10.7.0(jiti@2.7.0)):
     dependencies:
       eslint: 10.7.0(jiti@2.7.0)
+
+  eslint-plugin-simple-import-sort@13.0.0(eslint@10.8.0(jiti@2.7.0)):
+    dependencies:
+      eslint: 10.8.0(jiti@2.7.0)
 
   eslint-plugin-turbo@2.10.5(eslint@10.7.0(jiti@2.7.0))(turbo@2.10.5):
     dependencies:
       dotenv: 16.0.3
       eslint: 10.7.0(jiti@2.7.0)
+      turbo: 2.10.5
+
+  eslint-plugin-turbo@2.10.5(eslint@10.8.0(jiti@2.7.0))(turbo@2.10.5):
+    dependencies:
+      dotenv: 16.0.3
+      eslint: 10.8.0(jiti@2.7.0)
       turbo: 2.10.5
 
   eslint-scope@5.1.1:
@@ -11322,6 +11323,18 @@ snapshots:
 
   term-size@2.2.1: {}
 
+  terser-webpack-plugin@5.6.1(esbuild@0.28.1)(lightningcss@1.32.0)(webpack@5.104.1(esbuild@0.28.1)(lightningcss@1.32.0)):
+    dependencies:
+      '@jridgewell/trace-mapping': 0.3.31
+      jest-worker: 27.5.1
+      schema-utils: 4.3.3
+      terser: 5.49.0
+      webpack: 5.104.1(esbuild@0.28.1)(lightningcss@1.32.0)
+    optionalDependencies:
+      esbuild: 0.28.1
+      lightningcss: 1.32.0
+    optional: true
+
   terser-webpack-plugin@5.6.1(esbuild@0.28.1)(postcss@8.5.19)(webpack@5.104.1(esbuild@0.28.1)(postcss@8.5.19)):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
@@ -11440,6 +11453,17 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  typescript-eslint@8.64.0(eslint@10.8.0(jiti@2.7.0))(typescript@6.0.3):
+    dependencies:
+      '@typescript-eslint/eslint-plugin': 8.64.0(@typescript-eslint/parser@8.64.0(eslint@10.8.0(jiti@2.7.0))(typescript@6.0.3))(eslint@10.8.0(jiti@2.7.0))(typescript@6.0.3)
+      '@typescript-eslint/parser': 8.64.0(eslint@10.8.0(jiti@2.7.0))(typescript@6.0.3)
+      '@typescript-eslint/typescript-estree': 8.64.0(typescript@6.0.3)
+      '@typescript-eslint/utils': 8.64.0(eslint@10.8.0(jiti@2.7.0))(typescript@6.0.3)
+      eslint: 10.8.0(jiti@2.7.0)
+      typescript: 6.0.3
+    transitivePeerDependencies:
+      - supports-color
+
   typescript@6.0.3: {}
 
   ufo@1.6.4: {}
@@ -11489,6 +11513,26 @@ snapshots:
   universalify@0.1.2: {}
 
   unpipe@1.0.0: {}
+
+  unplugin-dts@1.0.3(esbuild@0.28.1)(rolldown@1.1.5)(rollup@4.62.2)(typescript@6.0.3)(vite@8.1.5(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0))(webpack@5.104.1(esbuild@0.28.1)(lightningcss@1.32.0)):
+    dependencies:
+      '@rollup/pluginutils': 5.4.0(rollup@4.62.2)
+      '@volar/typescript': 2.4.28
+      compare-versions: 6.1.1
+      debug: 4.4.3
+      kolorist: 1.8.0
+      local-pkg: 1.2.1
+      magic-string: 0.30.21
+      typescript: 6.0.3
+      unplugin: 2.3.11
+    optionalDependencies:
+      esbuild: 0.28.1
+      rolldown: 1.1.5
+      rollup: 4.62.2
+      vite: 8.1.5(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0)
+      webpack: 5.104.1(esbuild@0.28.1)(lightningcss@1.32.0)
+    transitivePeerDependencies:
+      - supports-color
 
   unplugin-dts@1.0.3(esbuild@0.28.1)(rolldown@1.1.5)(rollup@4.62.2)(typescript@6.0.3)(vite@8.1.5(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0))(webpack@5.104.1(esbuild@0.28.1)):
     dependencies:
@@ -11579,6 +11623,21 @@ snapshots:
     dependencies:
       '@types/unist': 3.0.3
       vfile-message: 4.0.3
+
+  vite-plugin-dts@5.0.3(esbuild@0.28.1)(rolldown@1.1.5)(rollup@4.62.2)(typescript@6.0.3)(vite@8.1.5(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0))(webpack@5.104.1(esbuild@0.28.1)(lightningcss@1.32.0)):
+    dependencies:
+      unplugin-dts: 1.0.3(esbuild@0.28.1)(rolldown@1.1.5)(rollup@4.62.2)(typescript@6.0.3)(vite@8.1.5(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0))(webpack@5.104.1(esbuild@0.28.1)(lightningcss@1.32.0))
+    optionalDependencies:
+      rollup: 4.62.2
+      vite: 8.1.5(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0)
+    transitivePeerDependencies:
+      - '@rspack/core'
+      - '@vue/language-core'
+      - esbuild
+      - rolldown
+      - supports-color
+      - typescript
+      - webpack
 
   vite-plugin-dts@5.0.3(esbuild@0.28.1)(rolldown@1.1.5)(rollup@4.62.2)(typescript@6.0.3)(vite@8.1.5(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0))(webpack@5.104.1(esbuild@0.28.1)):
     dependencies:
@@ -11726,6 +11785,48 @@ snapshots:
       schema-utils: 4.3.3
       tapable: 2.3.3
       terser-webpack-plugin: 5.6.1(esbuild@0.28.1)(webpack@5.104.1(esbuild@0.28.1))
+      watchpack: 2.5.2
+      webpack-sources: 3.5.1
+    transitivePeerDependencies:
+      - '@minify-html/node'
+      - '@swc/core'
+      - '@swc/css'
+      - '@swc/html'
+      - clean-css
+      - cssnano
+      - csso
+      - esbuild
+      - html-minifier-terser
+      - lightningcss
+      - postcss
+      - uglify-js
+    optional: true
+
+  webpack@5.104.1(esbuild@0.28.1)(lightningcss@1.32.0):
+    dependencies:
+      '@types/eslint-scope': 3.7.7
+      '@types/estree': 1.0.9
+      '@types/json-schema': 7.0.15
+      '@webassemblyjs/ast': 1.14.1
+      '@webassemblyjs/wasm-edit': 1.14.1
+      '@webassemblyjs/wasm-parser': 1.14.1
+      acorn: 8.17.0
+      acorn-import-phases: 1.0.4(acorn@8.17.0)
+      browserslist: 4.28.7
+      chrome-trace-event: 1.0.4
+      enhanced-resolve: 5.24.3
+      es-module-lexer: 2.3.1
+      eslint-scope: 5.1.1
+      events: 3.3.0
+      glob-to-regexp: 0.4.1
+      graceful-fs: 4.2.11
+      json-parse-even-better-errors: 2.3.1
+      loader-runner: 4.3.2
+      mime-types: 2.1.35
+      neo-async: 2.6.2
+      schema-utils: 4.3.3
+      tapable: 2.3.3
+      terser-webpack-plugin: 5.6.1(esbuild@0.28.1)(lightningcss@1.32.0)(webpack@5.104.1(esbuild@0.28.1)(lightningcss@1.32.0))
       watchpack: 2.5.2
       webpack-sources: 3.5.1
     transitivePeerDependencies:

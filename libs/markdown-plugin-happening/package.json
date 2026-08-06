@@ -37,8 +37,8 @@
   },
   "devDependencies": {
     "@eventuras/ratio-ui": "^2.16.0",
-    "@eventuras/typescript-config": "workspace:*",
-    "@eventuras/vite-config": "workspace:*",
+    "@eventuras/typescript-config": "^1.0.0",
+    "@eventuras/vite-config": "^0.3.1",
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/react": "^16.3.2",
     "@types/mdast": "^4.0.4",
