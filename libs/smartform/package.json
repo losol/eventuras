@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@eventuras/logger": "workspace:*",
-    "@eventuras/ratio-ui": "^2.16.0"
+    "@eventuras/ratio-ui": "^2.17.0"
   },
   "devDependencies": {
     "@eventuras/eslint-config": "workspace:*",
