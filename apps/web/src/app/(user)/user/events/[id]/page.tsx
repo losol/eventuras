@@ -77,7 +77,7 @@ export default async function UserEventPage({ params }: Readonly<UserEventPagePr
           logger.debug({ eventId: id }, 'User profile fetch successful after session refresh');
           // Continue with the rest of the page using retryUserResponse
           return (
-            <section className="mt-16">
+            <section className="my-16">
               {eventInfoResponse.data?.title && (
                 <>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -158,7 +158,7 @@ export default async function UserEventPage({ params }: Readonly<UserEventPagePr
   );
 
   return (
-    <Container>
+    <Container marginY="xl">
       {eventInfoResponse.data.title && <Heading as="h1">{eventInfoResponse.data.title}</Heading>}
 
       <EventFlowContainer
