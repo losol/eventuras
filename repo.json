@@ -8,11 +8,6 @@
       "path": "apps/conductor",
       "package": "@eventuras/conductor"
     },
-    "dev-docs": {
-      "path": "apps/dev-docs",
-      "package": "@eventuras/dev-docs",
-      "aliases": ["docsite"]
-    },
     "web": {
       "path": "apps/web",
       "package": "@eventuras/web",
@@ -27,9 +22,6 @@
     }
   },
   "libs": {
-    "docs-framework": {
-      "package": "@eventuras/docs-framework"
-    },
     "event-sdk": {
       "package": "@eventuras/event-sdk",
       "aliases": ["sdk"]
