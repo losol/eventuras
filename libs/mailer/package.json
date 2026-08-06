@@ -30,7 +30,7 @@
     "nodemailer": "^9.0.3"
   },
   "devDependencies": {
-    "@eventuras/vite-config": "workspace:*",
+    "@eventuras/vite-config": "^0.3.1",
     "@types/nodemailer": "^8.0.0",
     "typescript": "^6.0.2",
     "vite": "^8.1.5",
