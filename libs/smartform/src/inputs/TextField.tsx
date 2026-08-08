@@ -15,7 +15,6 @@ export const TextField = React.forwardRef<
     const {
       field,
       fieldState: { error },
-      formState,
     } = useController({
       name,
       control: formContext.control,
@@ -37,8 +36,9 @@ export const TextField = React.forwardRef<
           else if (forwardedRef && 'current' in forwardedRef) forwardedRef.current = el;
         }}
         aria-invalid={error ? true : undefined}
-        // If BaseTextField insists on the whole errors object, give it that:
-        errors={formState.errors}
+        // BaseTextField (ratio-ui 2.17) wants { [name]: { message: string } } —
+        // narrower than RHF's FieldErrors, so hand it just this field's error.
+        errors={error?.message ? { [name]: { message: error.message } } : undefined}
       />
     );
   }
