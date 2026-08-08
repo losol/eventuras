@@ -3,10 +3,10 @@ name: Web
 on:
   push:
     branches: [main]
-    paths: ['apps/web/**', '.github/workflows/web*.yml']
+    paths: ['apps/web/**', '.github/workflows/web*.yml', 'pnpm-lock.yaml']
   pull_request:
     branches: [main]
-    paths: ['apps/web/**', '.github/workflows/web*.yml']
+    paths: ['apps/web/**', '.github/workflows/web*.yml', 'pnpm-lock.yaml']
 
 concurrency:
   group: web-${{ github.ref }}
