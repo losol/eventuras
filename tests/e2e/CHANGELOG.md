@@ -1,5 +1,13 @@
 # web-e2e
 
+## 0.2.23
+
+### Patch Changes
+
+- Updated dependencies [4da06c8]
+  - @eventuras/event-sdk@3.3.4
+  - @eventuras/google-api@0.2.3
+
 ## 0.2.22
 
 ### Patch Changes
