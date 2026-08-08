@@ -30,6 +30,12 @@ const Step03PaymentConfiguration = ({
     watch,
     setValue,
   } = useForm<PaymentFormValues>();
+
+  const fieldErrors = Object.fromEntries(
+    Object.entries(errors).flatMap(([name, error]) =>
+      error?.message ? [[name, { message: String(error.message) }]] : []
+    )
+  );
   const [showBusinessFieldset, setShowBusinessFieldset] = useState(false);
   const selectedPaymentMethod = watch('paymentMethod');
   const t = useTranslations();
@@ -107,25 +113,25 @@ const Step03PaymentConfiguration = ({
           <TextField
             {...register('username', { value: userProfile.name! })}
             label={t('user.registration.user.name')}
-            defaultValue={userProfile.name}
+            defaultValue={userProfile.name ?? undefined}
             disabled
-            errors={errors}
+            errors={fieldErrors}
             hidden
           />
           <TextField
             {...register('email', { value: userProfile.email! })}
             label={t('user.registration.user.email')}
-            defaultValue={userProfile.email}
+            defaultValue={userProfile.email ?? undefined}
             disabled
-            errors={errors}
+            errors={fieldErrors}
             hidden
           />
           <TextField
             {...register('phoneNumber', { value: userProfile.phoneNumber! })}
             label={t('user.registration.user.phoneNumber')}
-            defaultValue={userProfile.phoneNumber}
+            defaultValue={userProfile.phoneNumber ?? undefined}
             disabled
-            errors={errors}
+            errors={fieldErrors}
             hidden
           />
         </Fieldset>
@@ -137,7 +143,7 @@ const Step03PaymentConfiguration = ({
             label={t('user.registration.address.zip')}
             testId="registration-zipcode-input"
             placeholder="Zip Code"
-            errors={errors}
+            errors={fieldErrors}
           />
           <TextField
             {...register('city', {
@@ -146,7 +152,7 @@ const Step03PaymentConfiguration = ({
             label={t('user.registration.address.city')}
             testId="registration-city-input"
             placeholder="City"
-            errors={errors}
+            errors={fieldErrors}
           />
           <TextField
             {...register('country', {
@@ -156,7 +162,7 @@ const Step03PaymentConfiguration = ({
             testId="registration-country-input"
             defaultValue="Norway"
             placeholder="Country"
-            errors={errors}
+            errors={fieldErrors}
           />
         </Fieldset>
         {showBusinessFieldset && (
@@ -168,13 +174,13 @@ const Step03PaymentConfiguration = ({
               label={t('user.registration.businessinfo.vatNumber')}
               testId="registration-vat-input"
               placeholder="Vat Number"
-              errors={errors}
+              errors={fieldErrors}
             />
             <TextField
               {...register('invoiceReference')}
               label={t('user.registration.businessinfo.invoiceReference')}
               placeholder="Invoice Reference"
-              errors={errors}
+              errors={fieldErrors}
             />
           </Fieldset>
         )}
