@@ -64,8 +64,8 @@ jobs:
       - name: Smoke test — configs load and tests are discoverable
         run: |
           COUNT=$(docker run --rm \
-            -e E2E_WEB_URL=http://smoke \
-            -e E2E_API_URL=http://smoke \
+            -e E2E_WEB_URL=https://smoke.invalid \
+            -e E2E_API_URL=https://smoke.invalid \
             -e E2E_ADMIN_EMAIL=smoke@example.com \
             -e E2E_SYSTEMADMIN_EMAIL=smoke2@example.com \
             -e E2E_USER_EMAIL_PATTERN='smoke+{random}@example.com' \
