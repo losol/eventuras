@@ -538,6 +538,13 @@ importers:
       tsx:
         specifier: ^4.23.1
         version: 4.23.1
+    devDependencies:
+      '@eventuras/eslint-config':
+        specifier: ^1.0.4
+        version: 1.0.4(eslint@10.8.0(jiti@2.7.0))(turbo@2.10.7)(typescript@6.0.3)
+      '@eventuras/typescript-config':
+        specifier: ^1.0.0
+        version: 1.0.0
 
 packages:
 
@@ -8065,6 +8072,7 @@ snapshots:
   '@types/node@25.9.3':
     dependencies:
       undici-types: 7.24.6
+    optional: true
 
   '@types/nodemailer@8.0.1':
     dependencies:
@@ -8103,7 +8111,7 @@ snapshots:
 
   '@types/ws@8.18.1':
     dependencies:
-      '@types/node': 25.9.3
+      '@types/node': 24.13.3
 
   '@typescript-eslint/eslint-plugin@8.64.0(@typescript-eslint/parser@8.64.0(eslint@10.8.0(jiti@2.7.0))(typescript@6.0.3))(eslint@10.8.0(jiti@2.7.0))(typescript@6.0.3)':
     dependencies:
@@ -8573,7 +8581,7 @@ snapshots:
 
   buffer-image-size@0.6.4:
     dependencies:
-      '@types/node': 25.9.3
+      '@types/node': 24.13.3
     optional: true
 
   bundle-name@4.1.0:
@@ -9314,7 +9322,7 @@ snapshots:
 
   happy-dom@20.10.6:
     dependencies:
-      '@types/node': 25.9.3
+      '@types/node': 24.13.3
       '@types/whatwg-mimetype': 3.0.2
       '@types/ws': 8.18.1
       buffer-image-size: 0.6.4
@@ -11289,7 +11297,8 @@ snapshots:
 
   undici-types@7.18.2: {}
 
-  undici-types@7.24.6: {}
+  undici-types@7.24.6:
+    optional: true
 
   undici@6.27.0: {}
 
