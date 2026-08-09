@@ -47,6 +47,37 @@ jobs:
             type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
             type=sha,prefix=,format=short
 
+      - name: Build for smoke test
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+        with:
+          context: .
+          file: tests/e2e/Dockerfile
+          load: true
+          tags: e2e-smoke:local
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # A broken image used to reach :latest with a green check and only fail
+      # days later in the infra repo's CD (e.g. an unresolvable tsconfig).
+      # Listing tests needs no staging, secrets or network — but Playwright
+      # exits 0 with "0 tests" when spec loading fails, so assert the count.
+      - name: Smoke test — configs load and tests are discoverable
+        run: |
+          COUNT=$(docker run --rm \
+            -e E2E_WEB_URL=http://smoke \
+            -e E2E_API_URL=http://smoke \
+            -e E2E_ADMIN_EMAIL=smoke@example.com \
+            -e E2E_SYSTEMADMIN_EMAIL=smoke2@example.com \
+            -e E2E_USER_EMAIL_PATTERN='smoke+{random}@example.com' \
+            -e E2E_SESSION_SECRET=smoke \
+            e2e-smoke:local pnpm exec playwright test --list 2>&1 | tee smoke.log | grep -oE 'Total: [0-9]+ tests' | grep -oE '[0-9]+' || echo 0)
+          echo "Playwright listed ${COUNT} tests"
+          if [ "${COUNT}" -lt 1 ]; then
+            echo "::error::Playwright listed ${COUNT} tests — config or spec loading is broken:"
+            tail -40 smoke.log
+            exit 1
+          fi
+
       - name: Build and push
         uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
         with:
