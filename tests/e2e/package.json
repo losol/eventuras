@@ -27,5 +27,9 @@
     "jose": "6.2.4",
     "tsx": "^4.23.1"
   },
+  "devDependencies": {
+    "@eventuras/eslint-config": "^1.0.4",
+    "@eventuras/typescript-config": "^1.0.0"
+  },
   "readme": "README.md"
 }
