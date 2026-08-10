@@ -1,5 +1,11 @@
 # @eventuras/mailer
 
+## 0.1.3
+
+### Patch Changes
+
+- 4da06c8: Consume the shared foundation packages (`eslint-config`, `typescript-config`, `vite-config`, `logger`, `core`, `core-nextjs`, `app-config`) from npm — they are maintained in the origo repo now; the workspace copies are removed
+
 ## 0.1.2
 
 ### Patch Changes
