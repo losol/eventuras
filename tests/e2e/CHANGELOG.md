@@ -1,5 +1,14 @@
 # web-e2e
 
+## 0.2.23
+
+### Patch Changes
+
+- 6ba47b5: Declare `@eventuras/typescript-config` and `@eventuras/eslint-config` as devDependencies — the configs extended them while the workspace copies existed, and the implicit resolution broke when the packages moved to npm (origo)
+- Updated dependencies [4da06c8]
+  - @eventuras/event-sdk@3.3.4
+  - @eventuras/google-api@0.2.3
+
 ## 0.2.22
 
 ### Patch Changes

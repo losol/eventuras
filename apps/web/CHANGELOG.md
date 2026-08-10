@@ -1,5 +1,20 @@
 # @eventuras/web
 
+## 3.4.4
+
+### Patch Changes
+
+- a1b951b: Consume `@eventuras/markdown` from npm (now maintained in ratio-ui); remove the superseded `libs/markdown` copy
+- 4da06c8: Consume the shared foundation packages (`eslint-config`, `typescript-config`, `vite-config`, `logger`, `core`, `core-nextjs`, `app-config`) from npm — they are maintained in the origo repo now; the workspace copies are removed
+- 8fc4341: Adapt the payment step to ratio-ui 2.17's typed Input props: nullable `defaultValue` narrowed with `?? undefined`, and react-hook-form's `FieldErrors` mapped to the stricter `errors` shape
+- 91c8aeb: Fix frontpage 500: split SiteNavbar into server/client halves — ratio-ui 2.14 made Navbar a `use client` module, so its compound statics (`Navbar.Brand`/`Navbar.Content`) are `undefined` when dotted from a server component
+- Updated dependencies [4da06c8]
+- Updated dependencies [01402a0]
+  - @eventuras/event-sdk@3.3.4
+  - @eventuras/markdown-plugin-happening@4.0.7
+  - @eventuras/scribo@0.10.5
+  - @eventuras/smartform@0.3.23
+
 ## 3.4.3
 
 ### Patch Changes

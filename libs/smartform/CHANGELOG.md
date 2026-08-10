@@ -1,5 +1,12 @@
 # @eventuras/smartform
 
+## 0.3.23
+
+### Patch Changes
+
+- 4da06c8: Consume the shared foundation packages (`eslint-config`, `typescript-config`, `vite-config`, `logger`, `core`, `core-nextjs`, `app-config`) from npm — they are maintained in the origo repo now; the workspace copies are removed
+- 01402a0: Pass only the current field's error to ratio-ui's TextField in the shape its 2.17 typed `errors` prop expects, instead of react-hook-form's whole `FieldErrors` object
+
 ## 0.3.22
 
 ### Patch Changes
