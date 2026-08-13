@@ -24,8 +24,8 @@
     "@eventuras/logger": "^0.8.1",
     "@playwright/test": "1.62.1",
     "allure-playwright": "^3.10.2",
-    "jose": "6.2.4",
-    "tsx": "^4.23.1"
+    "jose": "6.2.7",
+    "tsx": "^4.23.5"
   },
   "devDependencies": {
     "@eventuras/eslint-config": "^1.0.4",

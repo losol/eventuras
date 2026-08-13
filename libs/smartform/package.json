@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@eventuras/logger": "^0.8.1",
-    "@eventuras/ratio-ui": "^2.17.0"
+    "@eventuras/ratio-ui": "^2.17.2"
   },
   "devDependencies": {
     "@eventuras/eslint-config": "^1.0.4",
