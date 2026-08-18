@@ -37,6 +37,14 @@ function HeartbeatRunner() {
       logger.warn('Heartbeat detected expired refresh token');
       authStore.send({ type: 'sessionExpired' });
     },
+    onEvent: event => {
+      // Failures are signal; routine refreshes are noise.
+      if (event.event === 'session.rejected' || event.event === 'session.refresh_failed') {
+        logger.warn({ ...event }, 'Heartbeat event');
+      } else {
+        logger.debug({ ...event }, 'Heartbeat event');
+      }
+    },
   });
   return null;
 }
@@ -56,6 +64,13 @@ export default function Providers({ children }: Readonly<ProvidersProps>) {
       interval: 30_000, // Check every 30 seconds
       onSessionExpired: () => {
         logger.warn('Session expired');
+      },
+      onEvent: event => {
+        if (event.event === 'session.rejected' || event.event === 'session.refresh_failed') {
+          logger.warn({ ...event }, 'Session monitor event');
+        } else {
+          logger.debug({ ...event }, 'Session monitor event');
+        }
       },
     });
 
