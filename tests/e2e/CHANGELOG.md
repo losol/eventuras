@@ -1,5 +1,11 @@
 # web-e2e
 
+## 0.2.24
+
+### Patch Changes
+
+- 0d1b4d4: Read the access token from the split `session_at` cookie in the API test helpers — fides-auth 0.7.0 no longer stores it in the main `session` cookie, which broke every authenticated API spec with "No access token found". The legacy single-cookie format still works as a fallback.
+
 ## 0.2.23
 
 ### Patch Changes
