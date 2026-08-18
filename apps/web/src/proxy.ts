@@ -1,19 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import {
-  accessTokenExpires,
-  createSession,
-  getSessionSecret,
-  refreshCurrentSession,
-  type Session,
-  setSessionCookie,
-  validateSessionJwt,
-} from '@eventuras/fides-auth-next';
+import { getSessionSecret, validateSessionJwt } from '@eventuras/fides-auth-next';
 import { Logger } from '@eventuras/logger';
 
-import { oauthConfig } from './utils/oauthConfig';
-
 const logger = Logger.create({ namespace: 'web:proxy' });
+
+/** Every cookie that may hold session state, split format included. */
+const SESSION_COOKIE_NAMES = ['session', 'session_at', 'session_it'];
 
 /**
  * Validates CORS for non-GET requests.
@@ -59,71 +52,24 @@ function validateCorsHeaders(request: NextRequest): NextResponse | null {
   return null;
 }
 
-/**
- * Validates the session and returns session status.
- */
-async function validateSession(sessionCookie: string) {
-  const { status, session } = await validateSessionJwt(sessionCookie, getSessionSecret());
-
-  logger.debug({ status }, 'Session validation result');
-
-  return { status, session };
-}
-
-/**
- * Handles session refresh when access token is expired.
- * Sets a temporary cookie to signal client-side that refresh is happening.
- */
-async function handleSessionRefresh(session: Session): Promise<NextResponse | null> {
-  if (!session?.tokens?.accessToken) {
-    logger.warn('Cannot refresh: no access token in session');
-    return null;
-  }
-
-  // Check if token is expired
-  if (!accessTokenExpires(session.tokens.accessToken)) {
-    logger.debug('Access token still valid, no refresh needed');
-    return null;
-  }
-
-  logger.info('Access token expired, attempting refresh');
-
-  try {
-    const updatedSession = await refreshCurrentSession(oauthConfig);
-
-    if (!updatedSession) {
-      logger.warn('Session refresh returned null - refresh token likely expired');
-      return null;
-    }
-
-    // Return response with updated session cookie
-    const response = NextResponse.next();
-    const encryptedJwt = await createSession(updatedSession);
-    await setSessionCookie(encryptedJwt);
-
-    // Clear any refresh-in-progress signal
-    response.cookies.delete('auth-refreshing');
-
-    logger.info('Session refreshed successfully');
-    return response;
-  } catch (error) {
-    // Refresh token is invalid or expired - this is expected after long inactivity
-    logger.warn({ error }, 'Session refresh failed - refresh token invalid or expired');
-    return null;
-  }
-}
-
-/**
- * Redirects to login page with returnTo parameter.
- */
-function redirectToLogin(pathname: string, search: string, originUrl: string): NextResponse {
+/** Redirects to login with returnTo, clearing session cookies; `reason` is logged. */
+function redirectToLogin(
+  reason: string,
+  details: Record<string, unknown>,
+  pathname: string,
+  search: string,
+  originUrl: string
+): NextResponse {
+  const returnTo = pathname + search;
   const loginUrl = new URL('/api/auth/login', originUrl);
-  loginUrl.searchParams.set('returnTo', pathname + search);
+  loginUrl.searchParams.set('returnTo', returnTo);
 
-  logger.info({ returnTo: pathname + search }, 'Redirecting to login');
+  logger.warn({ reason, ...details, returnTo }, 'Redirecting to login');
 
   const response = NextResponse.redirect(loginUrl.toString());
-  response.cookies.delete('session');
+  for (const name of SESSION_COOKIE_NAMES) {
+    response.cookies.delete(name);
+  }
   return response;
 }
 
@@ -147,62 +93,45 @@ export async function proxy(request: NextRequest) {
   }
 
   // ─── 2) Session validation for protected routes ──────────────────────────
+  // Validation only. Middleware cannot persist cookies, so a refresh from here
+  // would burn a rotated refresh token; refreshing belongs to the heartbeat.
   const sessionCookie = request.cookies.get('session')?.value;
 
-  logger.info({ sessionCookie: !!sessionCookie, pathname }, 'Session cookie status');
-
   if (!sessionCookie) {
-    logger.debug('No session cookie found, redirecting to login');
-    return redirectToLogin(pathname, search, originUrl);
+    return redirectToLogin('no_session_cookie', {}, pathname, search, originUrl);
   }
 
-  const { status, session } = await validateSession(sessionCookie);
+  const { status, session, accessTokenExpiresIn, reason } = await validateSessionJwt(
+    sessionCookie,
+    getSessionSecret()
+  );
 
   if (status === 'INVALID') {
-    logger.warn('Invalid session detected, redirecting to login');
-    return redirectToLogin(pathname, search, originUrl);
+    return redirectToLogin(
+      'invalid_session_cookie',
+      { validationReason: reason },
+      pathname,
+      search,
+      originUrl
+    );
   }
 
+  // EXPIRED only fires for stale legacy single-cookie sessions — one re-login.
   if (status === 'EXPIRED') {
-    logger.info('Session expired, attempting refresh');
-
-    // Try to refresh before redirecting
-    if (session) {
-      const refreshResponse = await handleSessionRefresh(session);
-      if (refreshResponse) {
-        logger.info('Session refreshed successfully');
-        return refreshResponse;
-      }
-    }
-
-    logger.warn('Session expired and refresh failed, redirecting to login');
-    return redirectToLogin(pathname, search, originUrl);
+    return redirectToLogin(
+      'legacy_session_expired',
+      {
+        expiredSecondsAgo: accessTokenExpiresIn !== undefined ? -accessTokenExpiresIn : undefined,
+        hasRefreshToken: !!session?.tokens?.refreshToken,
+      },
+      pathname,
+      search,
+      originUrl
+    );
   }
 
-  // ─── 3) Token refresh if needed ───────────────────────────────────────────
-  // Even if session JWT is valid, the access token might be expired
-  if (session) {
-    const refreshResponse = await handleSessionRefresh(session);
-
-    if (refreshResponse) {
-      // Token was refreshed successfully
-      logger.info('Token refreshed in middleware');
-      return refreshResponse;
-    }
-
-    // handleSessionRefresh returns null in two cases:
-    // 1. Token is still valid (no refresh needed) - this is OK
-    // 2. Refresh failed - need to check if token is actually expired
-
-    if (session.tokens?.accessToken && accessTokenExpires(session.tokens.accessToken)) {
-      // Access token is expired AND refresh failed
-      logger.warn('Access token expired and refresh failed, redirecting to login');
-      return redirectToLogin(pathname, search, originUrl);
-    }
-  }
-
-  // ─── 4) All checks passed ─────────────────────────────────────────────────
-  logger.debug('Request authorized, proceeding');
+  // ─── 3) All checks passed ─────────────────────────────────────────────────
+  logger.debug({ pathname, accessTokenExpiresIn }, 'Request authorized, proceeding');
   return NextResponse.next();
 }
 
