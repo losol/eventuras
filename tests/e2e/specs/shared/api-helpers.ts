@@ -32,10 +32,9 @@ function hexToUint8Array(hex: string): Uint8Array {
 }
 
 /**
- * Decrypts a JWE session token to extract the access token.
- * Uses the same encryption method as @eventuras/fides-auth.
- * @param jweToken - The encrypted JWE token from the session cookie
- * @returns The decrypted session object containing tokens
+ * Decrypts a JWE cookie value with the same key as @eventuras/fides-auth.
+ * @param jweToken - Encrypted value from a session cookie
+ * @returns The payload: `accessToken` (split session_at) or `tokens` (legacy session)
  */
 async function decryptSessionToken(
   jweToken: string
