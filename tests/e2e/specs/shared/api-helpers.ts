@@ -39,7 +39,7 @@ function hexToUint8Array(hex: string): Uint8Array {
  */
 async function decryptSessionToken(
   jweToken: string
-): Promise<{ tokens?: { accessToken?: string } }> {
+): Promise<{ tokens?: { accessToken?: string }; accessToken?: string }> {
   if (!E2E_SESSION_SECRET) {
     throw new Error('E2E_SESSION_SECRET is required');
   }
@@ -51,7 +51,7 @@ async function decryptSessionToken(
     // Decrypt the JWE token using jose library
     const { payload } = await jose.jwtDecrypt(jweToken, secretKey);
 
-    return payload as { tokens?: { accessToken?: string } };
+    return payload as { tokens?: { accessToken?: string }; accessToken?: string };
   } catch (error) {
     logger.error({ error }, 'Error decrypting session token');
     throw new Error(`Failed to decrypt session token: ${error}`);
@@ -67,21 +67,27 @@ async function decryptSessionToken(
 export const getAccessTokenFromAuthFile = async (authFile: string): Promise<string | null> => {
   try {
     const authState = JSON.parse(fs.readFileSync(authFile, 'utf-8'));
+    const cookieValue = (name: string): string | undefined =>
+      authState.cookies?.find((cookie: { name: string }) => cookie.name === name)?.value;
 
-    // Get the session cookie
-    const sessionCookie = authState.cookies?.find(
-      (cookie: { name: string }) => cookie.name === 'session'
-    );
+    // Split format: the access token lives in its own session_at cookie.
+    const accessTokenCookie = cookieValue('session_at');
+    if (accessTokenCookie) {
+      const { accessToken } = await decryptSessionToken(accessTokenCookie);
+      if (accessToken) {
+        logger.debug({ authFile }, 'Extracted access token from session_at cookie');
+        return accessToken;
+      }
+    }
 
+    // Legacy format: the whole session, access token included, in one cookie.
+    const sessionCookie = cookieValue('session');
     if (!sessionCookie) {
       logger.debug({ authFile }, 'No session cookie found in auth file');
       return null;
     }
 
-    // Decrypt the JWE token to get the session data
-    logger.debug({ authFile }, 'Decrypting session token');
-    const session = await decryptSessionToken(sessionCookie.value);
-
+    const session = await decryptSessionToken(sessionCookie);
     const accessToken = session.tokens?.accessToken;
     if (!accessToken) {
       logger.debug('No access token found in decrypted session');
