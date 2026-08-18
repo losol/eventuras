@@ -48,7 +48,7 @@
     "@lexical/utils": "0.41.0",
     "lexical": "0.41.0",
     "prismjs": "^1.30.0",
-    "yjs": "^13.6.30"
+    "yjs": "^13.6.32"
   },
   "devDependencies": {
     "@eventuras/eslint-config": "^1.0.4",
