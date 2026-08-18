@@ -88,7 +88,17 @@ export const checkIfLoggedIn = async (page: import('@playwright/test').Page) => 
 
 export const logout = async (page: import('@playwright/test').Page) => {
   logger.debug('Logging out user');
-  await page.goto('/api/logout');
-  await page.waitForLoadState('load');
-  logger.debug('User logged out, redirected to homepage');
+  const beforeUrl = page.url();
+  // The logout endpoint is POST-only; navigate via a form submit like the app does.
+  await page.evaluate(() => {
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '/api/auth/logout';
+    document.body.appendChild(form);
+    form.submit();
+  });
+  // Wait for the navigation itself — plain waitForLoadState can resolve against
+  // the pre-submit page.
+  await page.waitForURL(url => url.toString() !== beforeUrl);
+  logger.debug('User logged out, redirected to post-logout page');
 };

@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { getSessionSecret, validateSessionJwt } from '@eventuras/fides-auth-next';
+import {
+  getSessionSecret,
+  SESSION_EVENT,
+  type SessionRejectedReason,
+  validateSessionJwt,
+} from '@eventuras/fides-auth-next';
 import { Logger } from '@eventuras/logger';
 
 const logger = Logger.create({ namespace: 'web:proxy' });
@@ -54,7 +59,7 @@ function validateCorsHeaders(request: NextRequest): NextResponse | null {
 
 /** Redirects to login with returnTo, clearing session cookies; `reason` is logged. */
 function redirectToLogin(
-  reason: string,
+  reason: SessionRejectedReason,
   details: Record<string, unknown>,
   pathname: string,
   search: string,
@@ -64,7 +69,10 @@ function redirectToLogin(
   const loginUrl = new URL('/api/auth/login', originUrl);
   loginUrl.searchParams.set('returnTo', returnTo);
 
-  logger.warn({ reason, ...details, returnTo }, 'Redirecting to login');
+  logger.warn(
+    { event: SESSION_EVENT.REJECTED, reason, source: 'proxy', ...details, returnTo },
+    'Redirecting to login'
+  );
 
   const response = NextResponse.redirect(loginUrl.toString());
   for (const name of SESSION_COOKIE_NAMES) {
@@ -108,7 +116,7 @@ export async function proxy(request: NextRequest) {
 
   if (status === 'INVALID') {
     return redirectToLogin(
-      'invalid_session_cookie',
+      'unreadable_session',
       { validationReason: reason },
       pathname,
       search,
@@ -119,8 +127,9 @@ export async function proxy(request: NextRequest) {
   // EXPIRED only fires for stale legacy single-cookie sessions — one re-login.
   if (status === 'EXPIRED') {
     return redirectToLogin(
-      'legacy_session_expired',
+      'stale_legacy_session',
       {
+        sid: session?.sid,
         expiredSecondsAgo: accessTokenExpiresIn !== undefined ? -accessTokenExpiresIn : undefined,
         hasRefreshToken: !!session?.tokens?.refreshToken,
       },
@@ -131,7 +140,10 @@ export async function proxy(request: NextRequest) {
   }
 
   // ─── 3) All checks passed ─────────────────────────────────────────────────
-  logger.debug({ pathname, accessTokenExpiresIn }, 'Request authorized, proceeding');
+  logger.debug(
+    { pathname, sid: session?.sid, accessTokenExpiresIn },
+    'Request authorized, proceeding'
+  );
   return NextResponse.next();
 }
 

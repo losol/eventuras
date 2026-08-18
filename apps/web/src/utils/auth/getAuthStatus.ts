@@ -1,16 +1,9 @@
+import type { AuthStatus } from '@eventuras/fides-auth-next/store';
 import { Logger } from '@eventuras/logger';
 
 const logger = Logger.create({ namespace: 'web:utils:getAuthStatus' });
 
-export type AuthStatus = {
-  authenticated: boolean;
-  user?: {
-    name?: string;
-    email?: string;
-    roles?: string[];
-    [key: string]: unknown;
-  };
-};
+export type { AuthStatus };
 
 /**
  * Fetches the current authentication status from the server.

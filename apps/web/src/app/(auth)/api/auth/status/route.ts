@@ -1,6 +1,4 @@
-import { cookies } from 'next/headers';
-
-import { getSessionSecret, validateSessionJwt } from '@eventuras/fides-auth-next';
+import { accessTokenExpires, tryGetCurrentSession } from '@eventuras/fides-auth-next';
 import { Logger } from '@eventuras/logger';
 
 import type { AuthStatus } from '@/utils/auth/getAuthStatus';
@@ -23,32 +21,30 @@ function notAuthenticated(status = 200): Response {
  */
 export async function GET(): Promise<Response> {
   try {
-    const sessionCookie = (await cookies()).get('session')?.value;
-    if (!sessionCookie) {
+    const { session, reason } = await tryGetCurrentSession();
+
+    if (!session?.user) {
+      // no_session_cookie is the ordinary anonymous case — not worth a line.
+      if (reason && reason !== 'no_session_cookie') {
+        logger.warn({ reason }, 'No usable session, reporting logged out');
+      }
       return notAuthenticated();
     }
 
-    const { status, session, accessTokenExpiresIn, reason } = await validateSessionJwt(
-      sessionCookie,
-      getSessionSecret()
-    );
+    const { accessToken, refreshToken } = session.tokens ?? {};
+    const accessTokenExpired = !!accessToken && accessTokenExpires(accessToken, 0);
 
-    if (status === 'INVALID' || !session?.user) {
-      logger.warn({ status, reason }, 'Unusable session cookie, reporting logged out');
-      return notAuthenticated();
-    }
-
-    if (status === 'EXPIRED' && !session.tokens?.refreshToken) {
+    if (accessTokenExpired && !refreshToken) {
       logger.warn(
-        { accessTokenExpiresIn },
+        { sid: session.sid },
         'Access token expired with no refresh token, reporting logged out'
       );
       return notAuthenticated();
     }
 
-    if (status === 'EXPIRED') {
+    if (accessTokenExpired) {
       logger.debug(
-        { accessTokenExpiresIn },
+        { sid: session.sid },
         'Access token expired but refreshable, still authenticated'
       );
     }
@@ -57,9 +53,9 @@ export async function GET(): Promise<Response> {
       {
         authenticated: true,
         user: {
-          name: session.user.name,
-          email: session.user.email,
-          roles: session.user.roles,
+          name: session.user.name ?? '',
+          email: session.user.email ?? '',
+          roles: session.user.roles ?? [],
         },
       } satisfies AuthStatus,
       { headers: noStore }

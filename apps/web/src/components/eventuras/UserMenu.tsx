@@ -103,8 +103,12 @@ function UserDropdownMenu({
   const handleLogout = () => {
     setIsLoggingOut(true);
     onLogout();
-    // Redirect to logout endpoint which clears cookies
-    window.location.href = '/api/auth/logout';
+    // The logout endpoint is POST-only (CSRF), so navigate via a form submit.
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '/api/auth/logout';
+    document.body.appendChild(form);
+    form.submit();
   };
 
   // Add warning indicator to menu label if session is unstable
