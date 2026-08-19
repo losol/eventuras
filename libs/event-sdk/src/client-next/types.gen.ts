@@ -2128,7 +2128,7 @@ export type GetV3EventsByIdResponse = GetV3EventsByIdResponses[keyof GetV3Events
 
 export type PatchV3EventsByIdData = {
     /**
-     * Cancellation token
+     * Updated event information.
      */
     body: EventPatchDto;
     headers?: {
@@ -2171,7 +2171,7 @@ export type PatchV3EventsByIdResponse = PatchV3EventsByIdResponses[keyof PatchV3
 
 export type PutV3EventsByIdData = {
     /**
-     * Cancellation token
+     * Updated event information.
      */
     body: EventFormDto;
     headers?: {
