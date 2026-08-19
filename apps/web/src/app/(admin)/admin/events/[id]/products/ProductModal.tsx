@@ -123,6 +123,9 @@ const ProductModal: React.FC<ProductModalProps> = ({
             label={t('common.products.labels.salesAccount')}
             description={t('common.products.labels.salesAccountDescription')}
             testId="product-sales-account-input"
+            // Account numbers are identifiers: no spinner arrows next to the
+            // save button, no scroll-stepping.
+            noSpinner
           />
           <Dialog.Footer>
             <Button type="reset" variant="secondary" onClick={onClose}>
