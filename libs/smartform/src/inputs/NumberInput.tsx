@@ -41,6 +41,15 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
     inputClassName = `${inputClassName} cursor-not-allowed`;
   }
 
+  // Register exactly once, with conversion and validation merged — a second
+  // register() call would overwrite the first one's options.
+  const { ref: registerRef, ...registration } = register(name, {
+    ...(noSpinner
+      ? { setValueAs: v => (v === '' || v === null || v === undefined ? undefined : Number(v)) }
+      : { valueAsNumber: true }),
+    ...validation,
+  });
+
   return (
     <div className="my-6">
       {label && <Label htmlFor={inputId}>{label}</Label>}
@@ -58,22 +67,14 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
         defaultValue={defaultValue}
         // Scrolling past a focused number input must not change its value.
         onWheel={e => e.currentTarget.blur()}
-        {...register(
-          name,
-          noSpinner
-            ? { setValueAs: v => (v === '' || v === null ? undefined : Number(v)) }
-            : { valueAsNumber: true }
-        )}
+        {...registration}
         ref={e => {
-          // Assign the ref from forwardRef
           if (typeof ref === 'function') {
             ref(e);
           } else if (ref) {
             ref.current = e;
           }
-
-          // Also call the register function
-          register(name, validation).ref(e);
+          registerRef(e);
         }}
       />
       {errors?.[name] && (
