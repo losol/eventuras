@@ -650,6 +650,17 @@
             }
           },
           {
+            "name": "Statuses",
+            "in": "query",
+            "description": "Only include these statuses, e.g. Statuses=Verified&amp;Statuses=Attended. Empty means all.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/RegistrationStatus"
+              }
+            }
+          },
+          {
             "name": "IncludeEventInfo",
             "in": "query",
             "schema": {
@@ -866,6 +877,17 @@
             "schema": {
               "type": "string",
               "format": "uuid"
+            }
+          },
+          {
+            "name": "Statuses",
+            "in": "query",
+            "description": "Only include these statuses, e.g. Statuses=Verified&amp;Statuses=Attended. Empty means all.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/RegistrationStatus"
+              }
             }
           },
           {
@@ -3238,7 +3260,7 @@
           }
         ],
         "requestBody": {
-          "description": "Updated event information.",
+          "description": "Cancellation token",
           "content": {
             "application/json": {
               "schema": {
@@ -5888,7 +5910,8 @@
             "type": "boolean"
           },
           "sendWelcomeLetter": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "Deprecated and ignored. Replaced by the registration/order confirmation email, which is\nsent automatically based on the registration's status. Kept for backwards compatibility;\nwill be removed in the next API version."
           },
           "customer": {
             "$ref": "#/components/schemas/RegistrationCustomerInfoDto"

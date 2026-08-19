@@ -5,6 +5,8 @@ import { Logger } from '@eventuras/logger';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { useToast } from '@eventuras/ratio-ui/toast';
 
+import type { RegistrationStatus } from '@/lib/eventuras-sdk';
+
 import { downloadRegistrationsExcel } from './excelExportActions';
 
 const logger = Logger.create({
@@ -12,7 +14,11 @@ const logger = Logger.create({
   context: { component: 'ExcelExportButton' },
 });
 
-export const ExcelExportButton = (props: { EventinfoId: number }) => {
+export const ExcelExportButton = (props: {
+  EventinfoId: number;
+  statuses?: RegistrationStatus[];
+  disabled?: boolean;
+}) => {
   const [loading, setLoading] = useState(false);
   const toast = useToast();
 
@@ -21,7 +27,7 @@ export const ExcelExportButton = (props: { EventinfoId: number }) => {
     try {
       logger.info({ eventId: props.EventinfoId }, 'Initiating Excel download');
 
-      const result = await downloadRegistrationsExcel(props.EventinfoId);
+      const result = await downloadRegistrationsExcel(props.EventinfoId, props.statuses);
 
       if (!result.success) {
         logger.error(
@@ -67,7 +73,7 @@ export const ExcelExportButton = (props: { EventinfoId: number }) => {
     }
   };
   return (
-    <Button loading={loading} onClick={downloadExcelFile}>
+    <Button loading={loading} disabled={props.disabled} onClick={downloadExcelFile}>
       Excel
     </Button>
   );

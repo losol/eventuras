@@ -9,6 +9,7 @@ import {
   createCorrelationId,
   readCorrelationIdFromResponse,
 } from '@/lib/correlation-id';
+import { RegistrationStatus } from '@/lib/eventuras-sdk';
 import { getAccessToken } from '@/utils/getAccesstoken';
 import { getOrganizationId } from '@/utils/organization';
 
@@ -20,13 +21,15 @@ const logger = Logger.create({
 /**
  * Server action to download registrations as Excel file
  * @param eventId - The event ID to download registrations for
+ * @param statuses - Statuses to include; defaults to every status except cancelled
  * @returns Excel file as base64-encoded string or error
  */
 export async function downloadRegistrationsExcel(
-  eventId: number
+  eventId: number,
+  statuses?: RegistrationStatus[]
 ): Promise<ServerActionResult<string>> {
   try {
-    logger.info({ eventId }, 'Downloading registrations Excel file');
+    logger.info({ eventId, statuses }, 'Downloading registrations Excel file');
     const orgId = getOrganizationId();
 
     const token = await getAccessToken();
@@ -36,8 +39,20 @@ export async function downloadRegistrationsExcel(
       return actionError('Authentication required');
     }
 
+    // Server action input is untrusted — keep only known statuses.
+    const allStatuses = Object.values(RegistrationStatus);
+    const included =
+      statuses?.filter(status => allStatuses.includes(status)) ??
+      allStatuses.filter(status => status !== RegistrationStatus.CANCELLED);
+
+    if (included.length === 0) {
+      return actionError('No registration statuses selected');
+    }
+
+    const statusQuery = included.map(status => `&Statuses=${status}`).join('');
+
     const response = await fetch(
-      `${appConfig.env.BACKEND_URL}/v3/registrations?EventId=${eventId}`,
+      `${appConfig.env.BACKEND_URL}/v3/registrations?EventId=${eventId}${statusQuery}`,
       {
         headers: {
           Accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',

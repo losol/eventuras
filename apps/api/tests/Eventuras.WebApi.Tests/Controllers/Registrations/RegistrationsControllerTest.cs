@@ -175,6 +175,37 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
     }
 
     [Fact]
+    public async Task Should_Use_Statuses_Param()
+    {
+        using var scope = factory.Services.NewTestScope();
+        using var user = await scope.CreateUserAsync();
+
+        using var e = await scope.CreateEventAsync();
+        using var verified = await scope.CreateRegistrationAsync(e.Entity, user.Entity,
+            time: SystemClock.Instance.Now().Plus(Duration.FromDays(3)));
+        using var attended = await scope.CreateRegistrationAsync(e.Entity, user.Entity,
+            status: Registration.RegistrationStatus.Attended,
+            time: SystemClock.Instance.Now().Plus(Duration.FromDays(2)));
+        using var cancelled = await scope.CreateRegistrationAsync(e.Entity, user.Entity,
+            status: Registration.RegistrationStatus.Cancelled,
+            time: SystemClock.Instance.Now().Plus(Duration.FromDays(1)));
+
+        var client = factory.CreateClient().AuthenticatedAsSystemAdmin();
+
+        var response = await client.GetAsync(
+            $"/v3/registrations?eventId={e.Entity.EventInfoId}&statuses=Verified&statuses=Attended");
+        var paging = await response.AsTokenAsync();
+        paging.CheckPaging(1, 2, (token, r) => token.CheckRegistration(r),
+            verified.Entity, attended.Entity);
+
+        // Without the filter every status is returned.
+        response = await client.GetAsync($"/v3/registrations?eventId={e.Entity.EventInfoId}");
+        paging = await response.AsTokenAsync();
+        paging.CheckPaging(1, 3, (token, r) => token.CheckRegistration(r),
+            verified.Entity, attended.Entity, cancelled.Entity);
+    }
+
+    [Fact]
     public async Task Should_Not_Include_User_And_Event_Info_By_Default()
     {
         using var scope = factory.Services.NewTestScope();
