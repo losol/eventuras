@@ -333,6 +333,11 @@ export type NewRegistrationDto = {
     userId: null | string;
     eventId: number;
     createOrder?: boolean;
+    /**
+     * Deprecated and ignored. Replaced by the registration/order confirmation email, which is
+     * sent automatically based on the registration's status. Kept for backwards compatibility;
+     * will be removed in the next API version.
+     */
     sendWelcomeLetter?: boolean;
     customer?: RegistrationCustomerInfoDto;
     notes?: null | string;
@@ -1125,6 +1130,10 @@ export type GetV3RegistrationsData = {
     query?: {
         EventId?: number;
         UserId?: string;
+        /**
+         * Only include these statuses, e.g. Statuses=Verified&amp;Statuses=Attended. Empty means all.
+         */
+        Statuses?: Array<RegistrationStatus>;
         IncludeEventInfo?: boolean;
         IncludeUserInfo?: boolean;
         IncludeProducts?: boolean;
@@ -1214,6 +1223,10 @@ export type GetV3RegistrationsByIdData = {
     query?: {
         EventId?: number;
         UserId?: string;
+        /**
+         * Only include these statuses, e.g. Statuses=Verified&amp;Statuses=Attended. Empty means all.
+         */
+        Statuses?: Array<RegistrationStatus>;
         IncludeEventInfo?: boolean;
         IncludeUserInfo?: boolean;
         IncludeProducts?: boolean;
@@ -2158,7 +2171,7 @@ export type PatchV3EventsByIdResponse = PatchV3EventsByIdResponses[keyof PatchV3
 
 export type PutV3EventsByIdData = {
     /**
-     * Updated event information.
+     * Cancellation token
      */
     body: EventFormDto;
     headers?: {

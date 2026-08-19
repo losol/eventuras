@@ -95,6 +95,10 @@
     "title": "Email"
   },
   "events": {
+    "export": {
+      "description": "Choose which registration statuses to include in the Excel export.",
+      "noStatusesSelected": "Select at least one status to export."
+    },
     "labes": {
       "create": "Add event"
     },
@@ -105,6 +109,7 @@
       "dates": "Dates & Location",
       "descriptions": "Descriptions",
       "economy": "Economy",
+      "export": "Export",
       "overview": "Overview",
       "participants": "Participants",
       "products": "Products"

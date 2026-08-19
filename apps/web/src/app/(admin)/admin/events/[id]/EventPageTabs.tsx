@@ -32,6 +32,7 @@ import {
   DescriptionsSection,
   OverviewSection,
 } from './EventEditorSections';
+import ExportSection from './ExportSection';
 import ParticipantsSection from './ParticipantsSection';
 import EventProductsEditor from './products/EventProductsEditor';
 import { updateEvent } from '../actions';
@@ -156,7 +157,8 @@ type EventPageTabsProps = {
     | 'advanced'
     | 'communication'
     | 'products'
-    | 'economy';
+    | 'economy'
+    | 'export';
 };
 
 export default function EventPageTabs({
@@ -332,6 +334,12 @@ export default function EventPageTabs({
         <Tabs.Item id="economy" title={t('admin.events.tabs.economy')} testId="tab-economy">
           <TabErrorBoundary tabId="economy">
             <EconomySection participants={participants} />
+          </TabErrorBoundary>
+        </Tabs.Item>
+
+        <Tabs.Item id="export" title={t('admin.events.tabs.export')} testId="tab-export">
+          <TabErrorBoundary tabId="export">
+            <ExportSection eventId={eventinfo.id!} />
           </TabErrorBoundary>
         </Tabs.Item>
       </Tabs>

@@ -71,7 +71,8 @@ public class RegistrationsController : ControllerBase
             {
                 AccessibleOnly = true,
                 EventInfoId = query.EventId,
-                UserId = query.UserId
+                UserId = query.UserId,
+                HavingStatuses = query.Statuses
             },
             OrderBy = RegistrationListOrder.RegistrationTime,
             Descending = true
