@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl';
 
 import { Checkbox } from '@eventuras/ratio-ui/forms';
 
-import { RegistrationStatus } from '@/lib/eventuras-sdk';
+import { RegistrationStatus } from '@/lib/eventuras-types';
 
 import { ExcelExportButton } from './ExcelExportButton';
 
