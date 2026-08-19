@@ -55,7 +55,7 @@
     "@eventuras/typescript-config": "^1.0.0",
     "@types/node": "^24.12.0",
     "eslint": "^10.8.0",
-    "lectio-docs": "^0.2.3",
+    "lectio-docs": "^0.2.4",
     "lint-staged": "^17.3.0",
     "prettier": "^3.9.6",
     "simple-git-hooks": "^2.13.1",
