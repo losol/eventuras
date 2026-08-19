@@ -45,7 +45,19 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
   // register() call would overwrite the first one's options.
   const { ref: registerRef, ...registration } = register(name, {
     ...(noSpinner
-      ? { setValueAs: v => (v === '' || v === null || v === undefined ? undefined : Number(v)) }
+      ? {
+          // Unparseable input stays a string and fails validation below —
+          // coercing to NaN/undefined would silently clear the value on save.
+          setValueAs: v => {
+            if (v === '' || v === null || v === undefined) return undefined;
+            const parsed = Number(v);
+            return Number.isNaN(parsed) ? v : parsed;
+          },
+          validate: {
+            numeric: v =>
+              v === undefined || typeof v === 'number' || 'Must be a number',
+          },
+        }
       : { valueAsNumber: true }),
     ...validation,
   });
