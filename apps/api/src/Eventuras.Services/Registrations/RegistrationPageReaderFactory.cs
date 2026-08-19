@@ -16,7 +16,9 @@ public static class RegistrationPageReaderFactory
                 Limit = limit,
                 OrderBy = RegistrationListOrder.RegistrationTime,
                 Descending = true,
-                Filter = new RegistrationFilter { EventInfoId = request.Filter.EventInfoId }
+                // Keep the caller's whole filter — rebuilding it from EventInfoId
+                // alone dropped HavingStatuses and AccessibleOnly.
+                Filter = request.Filter
             };
 
             var retrievalOptions = new RegistrationRetrievalOptions
