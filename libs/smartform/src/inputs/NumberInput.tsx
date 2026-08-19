@@ -3,9 +3,27 @@ import { useFormContext } from 'react-hook-form';
 
 import { formStyles, Label, InputProps } from '@eventuras/ratio-ui/forms';
 
-export const NumberInput = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => {
-  const { id, name, placeholder, label, description, className, defaultValue, validation, disabled } =
-    props;
+export type NumberInputProps = InputProps & {
+  /**
+   * Render as a numeric text field without spinner arrows — for identifiers
+   * like account numbers, where an accidental step changes the meaning.
+   */
+  noSpinner?: boolean;
+};
+
+export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>((props, ref) => {
+  const {
+    id,
+    name,
+    placeholder,
+    label,
+    description,
+    className,
+    defaultValue,
+    validation,
+    disabled,
+    noSpinner,
+  } = props;
   const inputId = id ?? name;
   const formContext = useFormContext();
 
@@ -30,14 +48,22 @@ export const NumberInput = React.forwardRef<HTMLInputElement, InputProps>((props
 
       <input
         id={inputId}
-        type="number"
+        type={noSpinner ? 'text' : 'number'}
+        inputMode={noSpinner ? 'numeric' : undefined}
         placeholder={placeholder}
         className={inputClassName}
         aria-invalid={hasError}
         disabled={disabled}
         data-testid={props.testId}
         defaultValue={defaultValue}
-        {...register(name, { valueAsNumber: true })}
+        // Scrolling past a focused number input must not change its value.
+        onWheel={e => e.currentTarget.blur()}
+        {...register(
+          name,
+          noSpinner
+            ? { setValueAs: v => (v === '' || v === null ? undefined : Number(v)) }
+            : { valueAsNumber: true }
+        )}
         ref={e => {
           // Assign the ref from forwardRef
           if (typeof ref === 'function') {
