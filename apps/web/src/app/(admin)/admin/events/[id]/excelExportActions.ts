@@ -49,10 +49,13 @@ export async function downloadRegistrationsExcel(
       return actionError('No registration statuses selected');
     }
 
-    const statusQuery = included.map(status => `&Statuses=${status}`).join('');
+    const query = new URLSearchParams({ EventId: String(eventId) });
+    for (const status of included) {
+      query.append('Statuses', status);
+    }
 
     const response = await fetch(
-      `${appConfig.env.BACKEND_URL}/v3/registrations?EventId=${eventId}${statusQuery}`,
+      `${appConfig.env.BACKEND_URL}/v3/registrations?${query.toString()}`,
       {
         headers: {
           Accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',

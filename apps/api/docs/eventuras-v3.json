@@ -3260,7 +3260,7 @@
           }
         ],
         "requestBody": {
-          "description": "Cancellation token",
+          "description": "Updated event information.",
           "content": {
             "application/json": {
               "schema": {
@@ -3322,7 +3322,7 @@
           }
         ],
         "requestBody": {
-          "description": "Cancellation token",
+          "description": "Updated event information.",
           "content": {
             "application/json": {
               "schema": {
