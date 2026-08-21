@@ -47,11 +47,10 @@ jobs:
         if: steps.changesets.outputs.count != '0'
         uses: changesets/action@22ccf9aa43179fe9e27dc62e575971d28cce197c # v2.0.0
         with:
-          version: pnpm changeset:version
-          commit: 'chore: version packages'
-          title: 'chore: version packages'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          version-script: pnpm changeset:version
+          commit-message: 'chore: version packages'
+          pr-title: 'chore: version packages'
 
       - name: Trigger release
         if: steps.changesets.outputs.count == '0'
