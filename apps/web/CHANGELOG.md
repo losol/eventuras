@@ -1,5 +1,16 @@
 # @eventuras/web
 
+## 3.4.7
+
+### Patch Changes
+
+- 548c10f: Excel participant lists no longer include cancelled registrations. The registrations endpoint accepts a `Statuses` query parameter (exposing the service layer's existing status filter), and the admin Excel export requests every status except `Cancelled`.
+- 1935e4b: Tame the "hyperactive mouse" in number inputs: scrolling past a focused number field no longer steps its value, and `NumberInput` gets a `noSpinner` mode that renders a numeric text field without arrows — used for the product sales account, whose spinner sat right above the save button and got misclicked into changing the account number.
+- 5c908be: Upgrade the fides-auth packages.
+- Updated dependencies [1935e4b]
+  - @eventuras/smartform@0.3.24
+  - @eventuras/event-sdk@3.3.5
+
 ## 3.4.6
 
 ### Patch Changes
