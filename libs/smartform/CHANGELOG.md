@@ -1,5 +1,11 @@
 # @eventuras/smartform
 
+## 0.3.24
+
+### Patch Changes
+
+- 1935e4b: Tame the "hyperactive mouse" in number inputs: scrolling past a focused number field no longer steps its value, and `NumberInput` gets a `noSpinner` mode that renders a numeric text field without arrows — used for the product sales account, whose spinner sat right above the save button and got misclicked into changing the account number.
+
 ## 0.3.23
 
 ### Patch Changes
