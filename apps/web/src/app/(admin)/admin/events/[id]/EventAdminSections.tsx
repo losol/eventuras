@@ -8,11 +8,20 @@ import { useTranslations } from 'next-intl';
 import { Logger } from '@eventuras/logger';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { ErrorBoundary } from '@eventuras/ratio-ui/core/ErrorBoundary';
+import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Tabs } from '@eventuras/ratio-ui/core/Tabs';
+import { Text } from '@eventuras/ratio-ui/core/Text';
 import { ActionBar } from '@eventuras/ratio-ui/layout/ActionBar';
 import { useToast } from '@eventuras/ratio-ui/toast';
 import { Form, useFormContext } from '@eventuras/smartform';
 
+import {
+  DEFAULT_EVENT_ADMIN_TAB,
+  type EventAdminTab,
+  type EventEditTab,
+  isEventAdminTab,
+  sectionForTab,
+} from '@/components/admin/shell';
 import {
   EventDto,
   EventFormDto,
@@ -38,8 +47,8 @@ import EventProductsEditor from './products/EventProductsEditor';
 import { updateEvent } from '../actions';
 import { AdminCertificatesActionsMenu } from '../AdminCertificatesActionsMenu';
 
-// Isolates a tab's content so a crash there doesn't propagate to the page boundary.
-const TabErrorBoundary = ({ tabId, children }: { tabId: string; children: ReactNode }) => (
+// Isolates a section's content so a crash there doesn't propagate to the page boundary.
+const SectionErrorBoundary = ({ tabId, children }: { tabId: string; children: ReactNode }) => (
   <ErrorBoundary
     onError={(error, info) => {
       const logger = Logger.create({
@@ -141,35 +150,30 @@ const SaveActionBar = ({
   );
 };
 
-type EventPageTabsProps = {
+type EventAdminSectionsProps = {
   eventinfo: EventDto;
   participants: RegistrationDto[];
   statistics: EventStatisticsDto;
   eventProducts: ProductDto[];
   notifications: NotificationDto[];
   organizationId: number;
-  defaultTab?:
-    | 'participants'
-    | 'overview'
-    | 'dates'
-    | 'descriptions'
-    | 'certificate'
-    | 'advanced'
-    | 'communication'
-    | 'products'
-    | 'economy'
-    | 'export';
+  defaultTab?: EventAdminTab;
 };
 
-export default function EventPageTabs({
+/**
+ * Renders the section of the event admin page selected by `?tab=`. The admin
+ * sidebar is the section navigation; only the five editor tabs keep a tab
+ * strip, inside the "edit" section.
+ */
+export default function EventAdminSections({
   eventinfo,
   participants,
   statistics,
   eventProducts,
   notifications,
   organizationId,
-  defaultTab = 'participants',
-}: Readonly<EventPageTabsProps>) {
+  defaultTab = DEFAULT_EVENT_ADMIN_TAB,
+}: Readonly<EventAdminSectionsProps>) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -179,7 +183,7 @@ export default function EventPageTabs({
 
   const logger = Logger.create({
     namespace: 'web:admin:events',
-    context: { component: 'EventPageTabs', eventId: eventinfo.id },
+    context: { component: 'EventAdminSections', eventId: eventinfo.id },
   });
 
   // Ensure component is mounted before rendering form
@@ -188,9 +192,11 @@ export default function EventPageTabs({
   }, []);
 
   // Get current tab from URL or use default
-  const currentTab = searchParams.get('tab') || defaultTab;
+  const tabParam = searchParams.get('tab');
+  const currentTab: EventAdminTab = isEventAdminTab(tabParam) ? tabParam : defaultTab;
+  const section = sectionForTab(currentTab);
 
-  const handleTabChange = (newTab: string) => {
+  const handleEditTabChange = (newTab: string) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set('tab', newTab);
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
@@ -234,14 +240,68 @@ export default function EventPageTabs({
     [eventinfo.id, logger, toast]
   );
 
-  const isEditTab = ['overview', 'dates', 'descriptions', 'certificate', 'advanced'].includes(
-    currentTab
-  );
+  const isEditSection = section.key === 'edit';
 
   // Don't render until mounted to avoid hydration/context issues
   if (!isMounted) {
     return <div className="p-4">Loading...</div>;
   }
+
+  const sectionTitle = isEditSection
+    ? t('admin.events.sections.edit')
+    : t(`admin.events.tabs.${section.tab}`);
+
+  const editTabs: { id: EventEditTab; content: ReactNode; actions?: ReactNode }[] = [
+    { id: 'overview', content: <OverviewSection organizationId={organizationId} /> },
+    { id: 'dates', content: <DatesLocationSection /> },
+    { id: 'descriptions', content: <DescriptionsSection /> },
+    {
+      id: 'certificate',
+      content: <CertificateSection />,
+      actions: <AdminCertificatesActionsMenu eventinfo={eventinfo} />,
+    },
+    { id: 'advanced', content: <AdvancedSection eventId={eventinfo.id} /> },
+  ];
+
+  const renderSection = () => {
+    switch (section.key) {
+      case 'participants':
+        return (
+          <ParticipantsSection
+            eventInfo={eventinfo}
+            participants={participants}
+            statistics={statistics}
+            eventProducts={eventProducts}
+          />
+        );
+      case 'communication':
+        return <CommunicationSection eventinfo={eventinfo} notifications={notifications} />;
+      case 'products':
+        return <EventProductsEditor eventInfo={eventinfo} products={eventProducts} />;
+      case 'economy':
+        return <EconomySection participants={participants} />;
+      case 'export':
+        return <ExportSection eventId={eventinfo.id!} />;
+      case 'edit':
+        return (
+          <Tabs selectedKey={currentTab} onSelectionChange={handleEditTabChange}>
+            {editTabs.map(tab => (
+              <Tabs.Item
+                key={tab.id}
+                id={tab.id}
+                title={t(`admin.events.tabs.${tab.id}`)}
+                testId={`tab-${tab.id}`}
+              >
+                <SectionErrorBoundary tabId={tab.id}>
+                  {tab.content}
+                  <SaveActionBar onSave={handleAutoSave}>{tab.actions}</SaveActionBar>
+                </SectionErrorBoundary>
+              </Tabs.Item>
+            ))}
+          </Tabs>
+        );
+    }
+  };
 
   return (
     <Form
@@ -252,97 +312,25 @@ export default function EventPageTabs({
         // No-op: auto-save handles all updates
       }}
     >
-      {isEditTab && <AutoSaveHandler onAutoSave={handleAutoSave} />}
+      {isEditSection && <AutoSaveHandler onAutoSave={handleAutoSave} />}
 
-      <Tabs selectedKey={currentTab} onSelectionChange={handleTabChange}>
-        <Tabs.Item
-          id="participants"
-          title={t('admin.events.tabs.participants')}
-          testId="tab-participants"
+      <Heading.Group className="mb-6">
+        <Text
+          as="p"
+          family="mono"
+          size="sm"
+          variant="subtle"
+          marginBottom="none"
+          testId="event-admin-eyebrow"
         >
-          <TabErrorBoundary tabId="participants">
-            <ParticipantsSection
-              eventInfo={eventinfo}
-              participants={participants}
-              statistics={statistics}
-              eventProducts={eventProducts}
-            />
-          </TabErrorBoundary>
-        </Tabs.Item>
+          {eventinfo.title}
+        </Text>
+        <Heading as="h1" marginTop="none" testId="event-admin-section-title">
+          {sectionTitle}
+        </Heading>
+      </Heading.Group>
 
-        <Tabs.Item id="overview" title={t('admin.events.tabs.overview')} testId="tab-overview">
-          <TabErrorBoundary tabId="overview">
-            <OverviewSection organizationId={organizationId} />
-            <SaveActionBar onSave={handleAutoSave} />
-          </TabErrorBoundary>
-        </Tabs.Item>
-
-        <Tabs.Item id="dates" title={t('admin.events.tabs.dates')} testId="tab-dates">
-          <TabErrorBoundary tabId="dates">
-            <DatesLocationSection />
-            <SaveActionBar onSave={handleAutoSave} />
-          </TabErrorBoundary>
-        </Tabs.Item>
-
-        <Tabs.Item
-          id="descriptions"
-          title={t('admin.events.tabs.descriptions')}
-          testId="tab-descriptions"
-        >
-          <TabErrorBoundary tabId="descriptions">
-            <DescriptionsSection />
-            <SaveActionBar onSave={handleAutoSave} />
-          </TabErrorBoundary>
-        </Tabs.Item>
-
-        <Tabs.Item
-          id="certificate"
-          title={t('admin.events.tabs.certificate')}
-          testId="tab-certificate"
-        >
-          <TabErrorBoundary tabId="certificate">
-            <CertificateSection />
-            <SaveActionBar onSave={handleAutoSave}>
-              <AdminCertificatesActionsMenu eventinfo={eventinfo} />
-            </SaveActionBar>
-          </TabErrorBoundary>
-        </Tabs.Item>
-
-        <Tabs.Item
-          id="communication"
-          title={t('admin.events.tabs.communication')}
-          testId="tab-communication"
-        >
-          <TabErrorBoundary tabId="communication">
-            <CommunicationSection eventinfo={eventinfo} notifications={notifications} />
-          </TabErrorBoundary>
-        </Tabs.Item>
-
-        <Tabs.Item id="products" title={t('admin.events.tabs.products')} testId="tab-products">
-          <TabErrorBoundary tabId="products">
-            <EventProductsEditor eventInfo={eventinfo} products={eventProducts} />
-          </TabErrorBoundary>
-        </Tabs.Item>
-
-        <Tabs.Item id="advanced" title={t('admin.events.tabs.advanced')} testId="tab-advanced">
-          <TabErrorBoundary tabId="advanced">
-            <AdvancedSection eventId={eventinfo.id} />
-            <SaveActionBar onSave={handleAutoSave} />
-          </TabErrorBoundary>
-        </Tabs.Item>
-
-        <Tabs.Item id="economy" title={t('admin.events.tabs.economy')} testId="tab-economy">
-          <TabErrorBoundary tabId="economy">
-            <EconomySection participants={participants} />
-          </TabErrorBoundary>
-        </Tabs.Item>
-
-        <Tabs.Item id="export" title={t('admin.events.tabs.export')} testId="tab-export">
-          <TabErrorBoundary tabId="export">
-            <ExportSection eventId={eventinfo.id!} />
-          </TabErrorBoundary>
-        </Tabs.Item>
-      </Tabs>
+      <SectionErrorBoundary tabId={section.key}>{renderSection()}</SectionErrorBoundary>
     </Form>
   );
 }

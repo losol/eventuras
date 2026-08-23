@@ -102,6 +102,9 @@
     "labes": {
       "create": "Add event"
     },
+    "sections": {
+      "edit": "Edit"
+    },
     "tabs": {
       "advanced": "Advanced",
       "certificate": "Certificate",
@@ -123,6 +126,12 @@
     "previewCertificate": "Preview certificate",
     "sendCertificates": "Send certificates",
     "users": "Users"
+  },
+  "nav": {
+    "ariaLabel": "Admin navigation",
+    "closeEvent": "Close event",
+    "events": "Events",
+    "system": "System"
   },
   "notifications": {
     "noNotifications": "No notifications yet..."
