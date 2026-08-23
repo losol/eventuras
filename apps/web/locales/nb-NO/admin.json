@@ -102,6 +102,9 @@
     "labes": {
       "create": "Nytt arrangement"
     },
+    "sections": {
+      "edit": "Rediger"
+    },
     "tabs": {
       "advanced": "Avansert",
       "certificate": "Kursbevis",
@@ -119,10 +122,16 @@
     "collections": "Samlinger",
     "invoice": "Faktura",
     "orders": "Ordre",
-    "registrations": "Registeringer",
+    "registrations": "Registreringer",
     "previewCertificate": "Forhåndsvis kursbevis",
     "sendCertificates": "Send kursbevis",
     "users": "Brukere"
+  },
+  "nav": {
+    "ariaLabel": "Admin-navigasjon",
+    "closeEvent": "Lukk arrangementet",
+    "events": "Arrangementer",
+    "system": "System"
   },
   "notifications": {
     "noNotifications": "Ingen varslinger ennå..."
