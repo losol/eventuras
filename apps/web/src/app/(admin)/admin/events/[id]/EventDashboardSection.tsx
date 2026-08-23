@@ -55,7 +55,7 @@ function KeyFact({
   testId,
 }: Readonly<{ label: string; value: string; note?: string; testId: string }>) {
   return (
-    <Card border transparent testId={testId}>
+    <Card testId={testId}>
       <Text
         as="p"
         family="mono"
@@ -197,7 +197,7 @@ export default function EventDashboardSection({
             href={eventAdminHref(eventId, 'participants')}
             linkLabel={t('admin.events.overview.seeAll', { count: participants.length })}
           />
-          <Card border transparent padding="none" testId="dashboard-latest-registrations">
+          <Card padding="none" testId="dashboard-latest-registrations">
             {latestRegistrations.length === 0 ? (
               <Text as="p" size="sm" variant="subtle" padding="md">
                 {t('admin.events.overview.noRegistrations')}
@@ -238,7 +238,7 @@ export default function EventDashboardSection({
             onClick={activityDrawer.open}
             linkLabel={t('admin.events.overview.showAll')}
           />
-          <Card border transparent testId="dashboard-latest-activity">
+          <Card testId="dashboard-latest-activity">
             <ActivityTimeline events={activity} />
           </Card>
         </Stack>
