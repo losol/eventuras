@@ -63,7 +63,7 @@ export function AdminNav(props: Readonly<Pick<ComponentProps<typeof NavTree>, 'c
           id: 'pinned-event',
           content: (
             <div className="flex items-start gap-2 py-0.5">
-              <span className="min-w-0 flex-1 font-mono text-xs leading-snug text-(--text-muted) wrap-break-word">
+              <span className="min-w-0 flex-1 font-mono text-xs leading-tight text-(--text-muted) break-words">
                 {event.title}
               </span>
               <ActionButton
