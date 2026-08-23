@@ -115,13 +115,13 @@
   border-left-color: #555;
 }
 
-ul {
+.editor ul {
   list-style-type: disc;
   padding: 10px 0 !important;
   padding-left: 20px !important;
 }
 
-pre {
+.editor-shell pre {
   line-height: 1.1;
   background: #222;
   color: #fff;
@@ -132,12 +132,12 @@ pre {
   max-height: 400px;
 }
 
-pre::-webkit-scrollbar {
+.editor-shell pre::-webkit-scrollbar {
   background: transparent;
   width: 10px;
 }
 
-pre::-webkit-scrollbar-thumb {
+.editor-shell pre::-webkit-scrollbar-thumb {
   background: #999;
 }
 
