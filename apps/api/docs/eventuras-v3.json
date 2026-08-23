@@ -4579,13 +4579,13 @@
         "tags": [
           "BusinessEvents"
         ],
-        "summary": "List business events for a subject in the current organization",
-        "description": "Returns audit/business events scoped to the organization resolved from the Eventuras-Org-Id header, filtered by subjectType + subjectUuid (e.g. order + OrderUuid). Newest first. Requires the caller to be SystemAdmin or an Admin member of the resolved organization.",
+        "summary": "List business events for a subject or an event in the current organization",
+        "description": "Returns audit/business events scoped to the current organization (resolved from the Eventuras-Org-Id header, else the orgId query parameter, else the request hostname), filtered by subjectType + subjectUuid (e.g. order + OrderUuid), or by eventInfoUuid for everything recorded on one event (the event itself, its registrations and their orders). Newest first. Requires the caller to be SystemAdmin or an Admin member of the resolved organization.",
         "parameters": [
           {
             "name": "SubjectType",
             "in": "query",
-            "description": "Subject type to filter on. Free-form string matching the values produced\nby `BusinessEventSubjects.For*` factories (e.g. \"order\", \"registration\", \"user\").",
+            "description": "Subject type to filter on. Free-form string matching the values produced\nby `BusinessEventSubjects.For*` factories (e.g. \"order\", \"registration\", \"user\").\nPair with SubjectUuid.",
             "schema": {
               "type": "string"
             }
@@ -4593,7 +4593,16 @@
           {
             "name": "SubjectUuid",
             "in": "query",
-            "description": "The subject entity's Uuid.",
+            "description": "The subject entity's Uuid. Pair with SubjectType.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "EventInfoUuid",
+            "in": "query",
+            "description": "The event (EventInfo) Uuid: returns every business event recorded on that\nevent — the event itself, its registrations and their orders — instead of one subject.",
             "schema": {
               "type": "string",
               "format": "uuid"

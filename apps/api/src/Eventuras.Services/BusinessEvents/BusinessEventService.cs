@@ -72,10 +72,43 @@ public class BusinessEventService : IBusinessEventService
             .Where(e =>
                 e.OrganizationUuid == organizationUuid &&
                 e.SubjectType == subject.Type &&
-                e.SubjectUuid == subject.Uuid)
+                e.SubjectUuid == subject.Uuid);
+
+        return await Paging.CreateAsync(NewestFirst(query), request, cancellationToken);
+    }
+
+    public async Task<Paging<BusinessEvent>> ListEventsForEventAsync(
+        Guid organizationUuid,
+        Guid eventInfoUuid,
+        PagingRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        await _accessControl.CheckListAccessAsync(organizationUuid, cancellationToken);
+
+        // Subjects that belong to the event, resolved as subqueries (IN (...)) so the
+        // audit table needs no event column of its own.
+        var registrationUuids = _dbContext.Registrations
+            .Where(r => r.EventInfo.Uuid == eventInfoUuid)
+            .Select(r => r.Uuid);
+        var orderUuids = _dbContext.Orders
+            .Where(o => o.Registration.EventInfo.Uuid == eventInfoUuid)
+            .Select(o => o.Uuid);
+
+        var query = _dbContext.BusinessEvents
+            .AsNoTracking()
+            .Where(e =>
+                e.OrganizationUuid == organizationUuid &&
+                ((e.SubjectType == BusinessEventSubjects.EventType && e.SubjectUuid == eventInfoUuid) ||
+                 (e.SubjectType == BusinessEventSubjects.RegistrationType && registrationUuids.Contains(e.SubjectUuid)) ||
+                 (e.SubjectType == BusinessEventSubjects.OrderType && orderUuids.Contains(e.SubjectUuid))));
+
+        return await Paging.CreateAsync(NewestFirst(query), request, cancellationToken);
+    }
+
+    private static IOrderedQueryable<BusinessEvent> NewestFirst(IQueryable<BusinessEvent> query) =>
+        query
             .OrderByDescending(e => e.CreatedAt)
             .ThenByDescending(e => e.Uuid);
-
-        return await Paging.CreateAsync(query, request, cancellationToken);
-    }
 }

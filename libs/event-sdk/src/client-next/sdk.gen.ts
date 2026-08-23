@@ -407,8 +407,8 @@ export const putV3EventsByEventIdCollectionsByCollectionId = <ThrowOnError exten
 export const getV3CertificatesById = <ThrowOnError extends boolean = false>(options: Options<GetV3CertificatesByIdData, ThrowOnError>): RequestResult<GetV3CertificatesByIdResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetV3CertificatesByIdResponses, unknown, ThrowOnError>({ url: '/v3/certificates/{id}', ...options });
 
 /**
- * List business events for a subject in the current organization
+ * List business events for a subject or an event in the current organization
  *
- * Returns audit/business events scoped to the organization resolved from the Eventuras-Org-Id header, filtered by subjectType + subjectUuid (e.g. order + OrderUuid). Newest first. Requires the caller to be SystemAdmin or an Admin member of the resolved organization.
+ * Returns audit/business events scoped to the current organization (resolved from the Eventuras-Org-Id header, else the orgId query parameter, else the request hostname), filtered by subjectType + subjectUuid (e.g. order + OrderUuid), or by eventInfoUuid for everything recorded on one event (the event itself, its registrations and their orders). Newest first. Requires the caller to be SystemAdmin or an Admin member of the resolved organization.
  */
 export const getV3BusinessEvents = <ThrowOnError extends boolean = false>(options?: Options<GetV3BusinessEventsData, ThrowOnError>): RequestResult<GetV3BusinessEventsResponses, GetV3BusinessEventsErrors, ThrowOnError> => (options?.client ?? client).get<GetV3BusinessEventsResponses, GetV3BusinessEventsErrors, ThrowOnError>({ url: '/v3/business-events', ...options });

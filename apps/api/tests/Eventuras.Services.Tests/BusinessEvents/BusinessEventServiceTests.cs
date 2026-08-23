@@ -189,4 +189,53 @@ public class BusinessEventServiceTests
             new[] { "order.invoice.created", "order.status.changed" },
             result.Data.Select(e => e.EventType).ToArray());
     }
+
+    [Fact]
+    public async Task ListEventsForEventAsync_Returns_Events_Across_Subjects_For_The_Event()
+    {
+        using var db = CreateDbContext();
+        var service = CreateService(db);
+        var organizationUuid = Guid.NewGuid();
+
+        var eventInfo = new EventInfo { EventInfoId = 1, OrganizationId = 1, Title = "Mine", Slug = "mine" };
+        var otherEvent = new EventInfo { EventInfoId = 2, OrganizationId = 1, Title = "Other", Slug = "other" };
+        var registration = new Registration { RegistrationId = 1, EventInfoId = 1 };
+        var otherRegistration = new Registration { RegistrationId = 2, EventInfoId = 2 };
+        var order = new Order { OrderId = 1, RegistrationId = 1 };
+        var otherOrder = new Order { OrderId = 2, RegistrationId = 2 };
+        db.EventInfos.AddRange(eventInfo, otherEvent);
+        db.Registrations.AddRange(registration, otherRegistration);
+        db.Orders.AddRange(order, otherOrder);
+
+        BusinessEvent Row(Instant at, string message, BusinessEventSubject subject, Guid? org = null) => new()
+        {
+            CreatedAt = at,
+            EventType = subject.Type + ".status.changed",
+            Message = message,
+            SubjectType = subject.Type,
+            SubjectUuid = subject.Uuid,
+            OrganizationUuid = org ?? organizationUuid
+        };
+
+        db.BusinessEvents.AddRange(
+            Row(Instant.FromUtc(2026, 4, 19, 10, 0), "Registration on the event", BusinessEventSubjects.ForRegistration(registration.Uuid)),
+            Row(Instant.FromUtc(2026, 4, 19, 11, 0), "Order on the event", BusinessEventSubjects.ForOrder(order.Uuid)),
+            Row(Instant.FromUtc(2026, 4, 19, 12, 0), "The event itself", BusinessEventSubjects.ForEvent(eventInfo.Uuid)),
+            Row(Instant.FromUtc(2026, 4, 19, 13, 0), "Other event's registration", BusinessEventSubjects.ForRegistration(otherRegistration.Uuid)),
+            Row(Instant.FromUtc(2026, 4, 19, 14, 0), "Other event's order", BusinessEventSubjects.ForOrder(otherOrder.Uuid)),
+            Row(Instant.FromUtc(2026, 4, 19, 15, 0), "Other event itself", BusinessEventSubjects.ForEvent(otherEvent.Uuid)),
+            Row(Instant.FromUtc(2026, 4, 19, 16, 0), "Same event, other org", BusinessEventSubjects.ForRegistration(registration.Uuid), Guid.NewGuid()),
+            Row(Instant.FromUtc(2026, 4, 19, 17, 0), "Unrelated user", BusinessEventSubjects.ForUser(Guid.NewGuid())));
+        await db.SaveChangesAsync();
+
+        var result = await service.ListEventsForEventAsync(
+            organizationUuid,
+            eventInfo.Uuid,
+            new PagingRequest(offset: 0, limit: 10));
+
+        Assert.Equal(3, result.TotalRecords);
+        Assert.Equal(
+            new[] { "The event itself", "Order on the event", "Registration on the event" },
+            result.Data.Select(e => e.Message).ToArray());
+    }
 }

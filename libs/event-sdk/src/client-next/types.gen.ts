@@ -2739,12 +2739,18 @@ export type GetV3BusinessEventsData = {
         /**
          * Subject type to filter on. Free-form string matching the values produced
          * by `BusinessEventSubjects.For*` factories (e.g. "order", "registration", "user").
+         * Pair with SubjectUuid.
          */
         SubjectType?: string;
         /**
-         * The subject entity's Uuid.
+         * The subject entity's Uuid. Pair with SubjectType.
          */
         SubjectUuid?: string;
+        /**
+         * The event (EventInfo) Uuid: returns every business event recorded on that
+         * event — the event itself, its registrations and their orders — instead of one subject.
+         */
+        EventInfoUuid?: string;
         Page?: number;
         Count?: number;
         Limit?: number;
