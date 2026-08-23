@@ -5,7 +5,7 @@ import { ErrorBlock } from '@eventuras/ratio-ui/blocks/Error';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 
-import { type EventAdminTab, PinEvent } from '@/components/admin/shell';
+import { DEFAULT_EVENT_ADMIN_TAB, type EventAdminTab, PinEvent } from '@/components/admin/shell';
 import {
   getV3EventsByEventIdProducts,
   getV3EventsByEventIdStatistics,
@@ -39,9 +39,9 @@ export default async function EventAdminPage({ params, searchParams }: Readonly<
   const { id } = await params;
   const search = await searchParams;
 
-  // A newly created event opens in the editor; otherwise the participant list.
+  // A newly created event opens in the editor; otherwise the overview.
   const isNewlyCreated = search.newlyCreated === 'true';
-  const defaultTab: EventAdminTab = isNewlyCreated ? 'overview' : 'participants';
+  const defaultTab: EventAdminTab = isNewlyCreated ? 'overview' : DEFAULT_EVENT_ADMIN_TAB;
 
   const organizationId = getOrganizationId();
 

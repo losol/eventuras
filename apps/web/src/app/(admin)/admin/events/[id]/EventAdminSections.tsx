@@ -34,6 +34,7 @@ import slugify from '@/utils/slugify';
 
 import CommunicationSection from './CommunicationSection';
 import EconomySection from './EconomySection';
+import EventDashboardSection from './EventDashboardSection';
 import {
   AdvancedSection,
   CertificateSection,
@@ -247,9 +248,7 @@ export default function EventAdminSections({
     return <div className="p-4">Loading...</div>;
   }
 
-  const sectionTitle = isEditSection
-    ? t('admin.events.sections.edit')
-    : t(`admin.events.tabs.${section.tab}`);
+  const sectionTitle = t(section.labelKey);
 
   const editTabs: { id: EventEditTab; content: ReactNode; actions?: ReactNode }[] = [
     { id: 'overview', content: <OverviewSection organizationId={organizationId} /> },
@@ -265,6 +264,15 @@ export default function EventAdminSections({
 
   const renderSection = () => {
     switch (section.key) {
+      case 'dashboard':
+        return (
+          <EventDashboardSection
+            eventinfo={eventinfo}
+            participants={participants}
+            statistics={statistics}
+            notifications={notifications}
+          />
+        );
       case 'participants':
         return (
           <ParticipantsSection

@@ -79,10 +79,7 @@ export function AdminNav(props: Readonly<Pick<ComponentProps<typeof NavTree>, 'c
           ),
         },
         ...EVENT_ADMIN_SECTIONS.map<NavTreeItem>(section => ({
-          title:
-            section.key === 'edit'
-              ? t('admin.events.sections.edit')
-              : t(`admin.events.tabs.${section.tab}`),
+          title: t(section.labelKey),
           href: eventAdminHref(event.id, section.tab),
           trailing:
             section.key === 'participants' && event.participantCount !== undefined ? (
