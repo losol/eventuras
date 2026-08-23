@@ -1,5 +1,11 @@
 # @eventuras/api
 
+## 3.8.1
+
+### Patch Changes
+
+- 548c10f: Excel participant lists no longer include cancelled registrations. The registrations endpoint accepts a `Statuses` query parameter (exposing the service layer's existing status filter), and the admin Excel export requests every status except `Cancelled`.
+
 ## 3.8.0
 
 ### Minor Changes

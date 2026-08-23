@@ -1,5 +1,21 @@
 # @eventuras/web
 
+## 3.5.0
+
+### Minor Changes
+
+- a50b85b: The event admin gets an overview section (now the default when opening an event): key facts — registered/max with waiting list, dates with duration, venue, revenue with draft-order count — plus the five latest registrations with status and order total, and the four latest notifications, each linking on to its full section. Order revenue maths is shared with the economy section via `computeOrderStatistics`, which now also counts refunded orders (shown as its own tile in the economy section) and leaves cancelled and refunded orders out of the revenue total.
+- fbb7a34: Admin gets a sidebar shell (ratio-ui `Sidebar` + `NavTree`) with the top-level areas — events, users, orders, registrations, collections, organizations, system — and a drawer with the same navigation on small screens. Opening an event pins it in the sidebar with its sections (participants, communication, products, economy, edit, export); the pin stays while moving between areas and is cleared with the close button. The event admin page now renders one section at a time from `?tab=`; only the five editor tabs keep a tab strip, inside the edit section. First step towards the admin IA prototype; the overview dashboard, export dialog and activity drawer come later.
+
+### Patch Changes
+
+- 548c10f: Excel participant lists no longer include cancelled registrations. The registrations endpoint accepts a `Statuses` query parameter (exposing the service layer's existing status filter), and the admin Excel export requests every status except `Cancelled`.
+- 1935e4b: Tame the "hyperactive mouse" in number inputs: scrolling past a focused number field no longer steps its value, and `NumberInput` gets a `noSpinner` mode that renders a numeric text field without arrows — used for the product sales account, whose spinner sat right above the save button and got misclicked into changing the account number.
+- 5c908be: Upgrade the fides-auth packages.
+- Updated dependencies [1935e4b]
+  - @eventuras/smartform@0.3.24
+  - @eventuras/event-sdk@3.3.5
+
 ## 3.4.6
 
 ### Patch Changes
