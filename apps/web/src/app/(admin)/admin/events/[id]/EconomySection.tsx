@@ -13,19 +13,11 @@ import { Stack } from '@eventuras/ratio-ui/layout/Stack';
 
 import { RegistrationDto, RegistrationStatus } from '@/lib/eventuras-sdk';
 
+import { computeOrderStatistics } from './orderStatistics';
 import Registration from '../../registrations/Registration';
 
 type EconomySectionProps = {
   participants: RegistrationDto[];
-};
-
-type OrderStatistics = {
-  totalOrders: number;
-  totalRevenue: number;
-  draftOrders: number;
-  verifiedOrders: number;
-  invoicedOrders: number;
-  cancelledOrders: number;
 };
 
 // Define the order for status groups
@@ -45,55 +37,7 @@ const STATUS_GROUP_CONFIG: {
 const EconomySection: React.FC<EconomySectionProps> = ({ participants }) => {
   const t = useTranslations();
 
-  // Calculate statistics from all registrations
-  const statistics = useMemo((): OrderStatistics => {
-    const stats: OrderStatistics = {
-      totalOrders: 0,
-      totalRevenue: 0,
-      draftOrders: 0,
-      verifiedOrders: 0,
-      invoicedOrders: 0,
-      cancelledOrders: 0,
-    };
-
-    for (const registration of participants) {
-      const orders = registration.orders || [];
-      const isRegistrationCancelled = registration.status === 'Cancelled';
-
-      for (const order of orders) {
-        stats.totalOrders++;
-
-        // Only count revenue from non-cancelled registrations
-        if (!isRegistrationCancelled) {
-          const orderTotal =
-            order.items?.reduce(
-              (sum: number, item: { quantity?: number; product?: { price?: number } }) =>
-                sum + (item.quantity ?? 0) * (item.product?.price ?? 0),
-              0
-            ) ?? 0;
-          stats.totalRevenue += orderTotal;
-        }
-
-        // Count by status
-        switch (order.status) {
-          case 'Draft':
-            stats.draftOrders++;
-            break;
-          case 'Verified':
-            stats.verifiedOrders++;
-            break;
-          case 'Invoiced':
-            stats.invoicedOrders++;
-            break;
-          case 'Cancelled':
-            stats.cancelledOrders++;
-            break;
-        }
-      }
-    }
-
-    return stats;
-  }, [participants]);
+  const statistics = useMemo(() => computeOrderStatistics(participants), [participants]);
 
   // Group participants by registration status
   const groupedParticipants = useMemo(() => {
@@ -136,7 +80,7 @@ const EconomySection: React.FC<EconomySectionProps> = ({ participants }) => {
       </Grid>
 
       {/* Order status breakdown */}
-      <Grid cols={{ sm: 2, md: 4 }}>
+      <Grid cols={{ sm: 2, md: 3 }}>
         <Card transparent border className="text-center">
           <ValueTile
             number={statistics.draftOrders}
@@ -162,6 +106,13 @@ const EconomySection: React.FC<EconomySectionProps> = ({ participants }) => {
           <ValueTile
             number={statistics.cancelledOrders}
             label={t('admin.economy.statistics.cancelledOrders')}
+            className="items-center"
+          />
+        </Card>
+        <Card transparent border className="text-center">
+          <ValueTile
+            number={statistics.refundedOrders}
+            label={t('admin.economy.statistics.refundedOrders')}
             className="items-center"
           />
         </Card>

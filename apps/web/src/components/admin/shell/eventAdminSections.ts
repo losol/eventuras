@@ -14,27 +14,30 @@ export const EVENT_EDIT_TABS = [
 export type EventEditTab = (typeof EVENT_EDIT_TABS)[number];
 
 export type EventAdminTab =
-  EventEditTab | 'participants' | 'communication' | 'products' | 'economy' | 'export';
+  EventEditTab | 'dashboard' | 'participants' | 'communication' | 'products' | 'economy' | 'export';
 
 export type EventAdminSectionKey =
-  'participants' | 'communication' | 'products' | 'economy' | 'edit' | 'export';
+  'dashboard' | 'participants' | 'communication' | 'products' | 'economy' | 'edit' | 'export';
 
 export type EventAdminSection = {
   key: EventAdminSectionKey;
   /** The tab the sidebar links to. */
   tab: EventAdminTab;
+  /** Translation key for the section's label. */
+  labelKey: string;
 };
 
 export const EVENT_ADMIN_SECTIONS: readonly EventAdminSection[] = [
-  { key: 'participants', tab: 'participants' },
-  { key: 'communication', tab: 'communication' },
-  { key: 'products', tab: 'products' },
-  { key: 'economy', tab: 'economy' },
-  { key: 'edit', tab: 'overview' },
-  { key: 'export', tab: 'export' },
+  { key: 'dashboard', tab: 'dashboard', labelKey: 'admin.events.sections.overview' },
+  { key: 'participants', tab: 'participants', labelKey: 'admin.events.tabs.participants' },
+  { key: 'communication', tab: 'communication', labelKey: 'admin.events.tabs.communication' },
+  { key: 'products', tab: 'products', labelKey: 'admin.events.tabs.products' },
+  { key: 'economy', tab: 'economy', labelKey: 'admin.events.tabs.economy' },
+  { key: 'edit', tab: 'overview', labelKey: 'admin.events.sections.edit' },
+  { key: 'export', tab: 'export', labelKey: 'admin.events.tabs.export' },
 ];
 
-export const DEFAULT_EVENT_ADMIN_TAB: EventAdminTab = 'participants';
+export const DEFAULT_EVENT_ADMIN_TAB: EventAdminTab = 'dashboard';
 
 export function isEventEditTab(tab: string): tab is EventEditTab {
   return (EVENT_EDIT_TABS as readonly string[]).includes(tab);

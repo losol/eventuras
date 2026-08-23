@@ -49,6 +49,7 @@
       "cancelledOrders": "Kansellert",
       "draftOrders": "Utkast",
       "invoicedOrders": "Fakturert",
+      "refundedOrders": "Tilbakebetalt",
       "totalOrders": "Totale ordre",
       "totalRevenue": "Total inntekt",
       "verifiedOrders": "Verifisert"
@@ -102,8 +103,24 @@
     "labes": {
       "create": "Nytt arrangement"
     },
+    "overview": {
+      "days": "{count, plural, one {# dag} other {# dager}}",
+      "draftOrders": "{count} ordre i utkast",
+      "latestNotifications": "Siste meldinger",
+      "latestRegistrations": "Siste påmeldte",
+      "noDate": "Dato ikke satt",
+      "noLocation": "Sted ikke satt",
+      "noRegistrations": "Ingen påmeldte ennå",
+      "registered": "Påmeldte",
+      "revenue": "Omsetning",
+      "seeAll": "Se alle ({count})",
+      "waitingList": "{count} på venteliste",
+      "when": "Når",
+      "where": "Sted"
+    },
     "sections": {
-      "edit": "Rediger"
+      "edit": "Rediger",
+      "overview": "Oversikt"
     },
     "tabs": {
       "advanced": "Avansert",

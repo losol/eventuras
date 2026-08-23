@@ -49,6 +49,7 @@
       "cancelledOrders": "Cancelled",
       "draftOrders": "Draft",
       "invoicedOrders": "Invoiced",
+      "refundedOrders": "Refunded",
       "totalOrders": "Total Orders",
       "totalRevenue": "Total Revenue",
       "verifiedOrders": "Verified"
@@ -102,8 +103,24 @@
     "labes": {
       "create": "Add event"
     },
+    "overview": {
+      "days": "{count, plural, one {# day} other {# days}}",
+      "draftOrders": "{count} draft orders",
+      "latestNotifications": "Latest notifications",
+      "latestRegistrations": "Latest registrations",
+      "noDate": "Date not set",
+      "noLocation": "Location not set",
+      "noRegistrations": "No registrations yet",
+      "registered": "Registered",
+      "revenue": "Revenue",
+      "seeAll": "See all ({count})",
+      "waitingList": "{count} on the waiting list",
+      "when": "When",
+      "where": "Where"
+    },
     "sections": {
-      "edit": "Edit"
+      "edit": "Edit",
+      "overview": "Overview"
     },
     "tabs": {
       "advanced": "Advanced",
