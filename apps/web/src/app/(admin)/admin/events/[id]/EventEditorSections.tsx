@@ -15,8 +15,6 @@ import {
   useFormContext,
 } from '@eventuras/smartform';
 
-import { ExcelExportButton } from './ExcelExportButton';
-
 import '@eventuras/scribo/style.css';
 
 export const OverviewSection = ({
@@ -226,13 +224,7 @@ export const CertificateSection = () => (
   </Fieldset>
 );
 
-export const AdvancedSection = ({
-  loading = false,
-  eventId,
-}: {
-  loading?: boolean;
-  eventId?: number;
-}) => (
+export const AdvancedSection = ({ loading = false }: { loading?: boolean }) => (
   <>
     <Fieldset label="Additional Fields" disabled={loading}>
       <NumberInput
@@ -255,10 +247,5 @@ export const AdvancedSection = ({
         placeholder="External Registrations URL"
       />
     </Fieldset>
-    {eventId && (
-      <div className="mt-6">
-        <ExcelExportButton EventinfoId={eventId} />
-      </div>
-    )}
   </>
 );

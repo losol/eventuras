@@ -97,8 +97,14 @@
   },
   "events": {
     "export": {
+      "button": "Export to Excel",
       "description": "Choose which registration statuses to include in the Excel export.",
-      "noStatusesSelected": "Select at least one status to export."
+      "done": "The file has been downloaded.",
+      "download": "Download .xlsx",
+      "finish": "Done",
+      "noStatusesSelected": "Select at least one status to export.",
+      "rows": "{count, plural, one {# registration} other {# registrations}}",
+      "title": "Export participant list"
     },
     "labes": {
       "create": "Add event"
@@ -129,7 +135,6 @@
       "dates": "Dates & Location",
       "descriptions": "Descriptions",
       "economy": "Economy",
-      "export": "Export",
       "overview": "Overview",
       "participants": "Participants",
       "products": "Products"

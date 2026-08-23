@@ -42,7 +42,6 @@ import {
   DescriptionsSection,
   OverviewSection,
 } from './EventEditorSections';
-import ExportSection from './ExportSection';
 import ParticipantsSection from './ParticipantsSection';
 import EventProductsEditor from './products/EventProductsEditor';
 import { updateEvent } from '../actions';
@@ -259,7 +258,7 @@ export default function EventAdminSections({
       content: <CertificateSection />,
       actions: <AdminCertificatesActionsMenu eventinfo={eventinfo} />,
     },
-    { id: 'advanced', content: <AdvancedSection eventId={eventinfo.id} /> },
+    { id: 'advanced', content: <AdvancedSection /> },
   ];
 
   const renderSection = () => {
@@ -288,8 +287,6 @@ export default function EventAdminSections({
         return <EventProductsEditor eventInfo={eventinfo} products={eventProducts} />;
       case 'economy':
         return <EconomySection participants={participants} />;
-      case 'export':
-        return <ExportSection eventId={eventinfo.id!} />;
       case 'edit':
         return (
           <Tabs selectedKey={currentTab} onSelectionChange={handleEditTabChange}>

@@ -2,7 +2,6 @@
 import { useState } from 'react';
 
 import { Logger } from '@eventuras/logger';
-import { Button } from '@eventuras/ratio-ui/core/Button';
 import { useToast } from '@eventuras/ratio-ui/toast';
 
 import type { RegistrationStatus } from '@/lib/eventuras-sdk';
@@ -11,31 +10,36 @@ import { downloadRegistrationsExcel } from './excelExportActions';
 
 const logger = Logger.create({
   namespace: 'web:admin:events',
-  context: { component: 'ExcelExportButton' },
+  context: { module: 'useExcelExport' },
 });
 
-export const ExcelExportButton = (props: {
-  EventinfoId: number;
+export type ExcelExportOptions = {
   statuses?: RegistrationStatus[];
-  disabled?: boolean;
-}) => {
+  /** Defaults to `Registrations-Event-{eventId}.xlsx`. */
+  filename?: string;
+};
+
+/**
+ * Fetches the registrations Excel file through the server action and hands it
+ * to the browser as a download. Resolves to the filename on success, null on
+ * failure (already reported via toast).
+ */
+export function useExcelExport(eventId: number) {
   const [loading, setLoading] = useState(false);
   const toast = useToast();
 
-  const downloadExcelFile = async () => {
+  const download = async ({ statuses, filename }: ExcelExportOptions = {}) => {
+    const name = filename ?? `Registrations-Event-${eventId}.xlsx`;
     setLoading(true);
     try {
-      logger.info({ eventId: props.EventinfoId }, 'Initiating Excel download');
+      logger.info({ eventId, statuses }, 'Initiating Excel download');
 
-      const result = await downloadRegistrationsExcel(props.EventinfoId, props.statuses);
+      const result = await downloadRegistrationsExcel(eventId, statuses);
 
       if (!result.success) {
-        logger.error(
-          { eventId: props.EventinfoId, error: result.error },
-          'Failed to download Excel file'
-        );
+        logger.error({ eventId, error: result.error }, 'Failed to download Excel file');
         toast.error(result.error.message || 'Failed to download Excel file');
-        return;
+        return null;
       }
 
       // Convert base64 back to blob
@@ -52,7 +56,7 @@ export const ExcelExportButton = (props: {
       const fileURL = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = fileURL;
-      link.download = `Registrations-Event-${props.EventinfoId}.xlsx`;
+      link.download = name;
       link.style.display = 'none';
       document.body.appendChild(link);
       link.click();
@@ -63,18 +67,16 @@ export const ExcelExportButton = (props: {
         URL.revokeObjectURL(fileURL);
       }, 500);
 
-      logger.info({ eventId: props.EventinfoId }, 'Excel file downloaded successfully');
-      toast.success('Excel file downloaded successfully');
+      logger.info({ eventId, filename: name }, 'Excel file downloaded successfully');
+      return name;
     } catch (error) {
-      logger.error({ error, eventId: props.EventinfoId }, 'Error downloading Excel file');
+      logger.error({ error, eventId }, 'Error downloading Excel file');
       toast.error('An unexpected error occurred while downloading the file');
+      return null;
     } finally {
       setLoading(false);
     }
   };
-  return (
-    <Button loading={loading} disabled={props.disabled} onClick={downloadExcelFile}>
-      Excel
-    </Button>
-  );
-};
+
+  return { download, loading };
+}

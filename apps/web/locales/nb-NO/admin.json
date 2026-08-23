@@ -97,8 +97,14 @@
   },
   "events": {
     "export": {
+      "button": "Eksporter til Excel",
       "description": "Velg hvilke deltakerstatuser som skal med i Excel-eksporten.",
-      "noStatusesSelected": "Velg minst én status for å eksportere."
+      "done": "Fila er lastet ned.",
+      "download": "Last ned .xlsx",
+      "finish": "Ferdig",
+      "noStatusesSelected": "Velg minst én status for å eksportere.",
+      "rows": "{count, plural, one {# registrering} other {# registreringer}}",
+      "title": "Eksporter deltakerliste"
     },
     "labes": {
       "create": "Nytt arrangement"
@@ -129,7 +135,6 @@
       "dates": "Dato/sted",
       "descriptions": "Beskrivelse",
       "economy": "Økonomi",
-      "export": "Eksport",
       "overview": "Oversikt",
       "participants": "Deltakere",
       "products": "Produkter"
