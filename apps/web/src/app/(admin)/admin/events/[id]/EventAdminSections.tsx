@@ -23,6 +23,7 @@ import {
   sectionForTab,
 } from '@/components/admin/shell';
 import {
+  BusinessEventDto,
   EventDto,
   EventFormDto,
   EventStatisticsDto,
@@ -156,6 +157,7 @@ type EventAdminSectionsProps = {
   statistics: EventStatisticsDto;
   eventProducts: ProductDto[];
   notifications: NotificationDto[];
+  activity: BusinessEventDto[];
   organizationId: number;
   defaultTab?: EventAdminTab;
 };
@@ -171,6 +173,7 @@ export default function EventAdminSections({
   statistics,
   eventProducts,
   notifications,
+  activity,
   organizationId,
   defaultTab = DEFAULT_EVENT_ADMIN_TAB,
 }: Readonly<EventAdminSectionsProps>) {
@@ -269,7 +272,7 @@ export default function EventAdminSections({
             eventinfo={eventinfo}
             participants={participants}
             statistics={statistics}
-            notifications={notifications}
+            activity={activity}
           />
         );
       case 'participants':

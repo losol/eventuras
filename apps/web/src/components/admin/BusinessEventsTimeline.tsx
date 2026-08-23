@@ -9,6 +9,8 @@ import { client } from '@/lib/eventuras-client';
 import { BusinessEventDto, getV3BusinessEvents } from '@/lib/eventuras-sdk';
 import { getOrganizationId } from '@/utils/organization';
 
+import { statusForEventType } from './activity/businessEventPresentation';
+
 const logger = Logger.create({
   namespace: 'web:admin:business-events',
   context: { component: 'BusinessEventsTimeline' },
@@ -91,15 +93,6 @@ function formatTimestamp(instant: string | undefined): string {
   const date = new Date(instant);
   if (Number.isNaN(date.getTime())) return instant;
   return date.toLocaleString();
-}
-
-function statusForEventType(eventType: string | undefined) {
-  if (!eventType) return 'neutral' as const;
-  if (eventType.endsWith('.cancelled') || eventType.endsWith('.refunded'))
-    return 'warning' as const;
-  if (eventType.endsWith('.verified') || eventType.endsWith('.created')) return 'success' as const;
-  if (eventType.endsWith('.invoiced')) return 'info' as const;
-  return 'neutral' as const;
 }
 
 function ActorLabel({ uuid }: { uuid: string }) {

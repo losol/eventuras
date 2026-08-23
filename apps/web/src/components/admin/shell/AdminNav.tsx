@@ -6,6 +6,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
 import { ActionButton } from '@eventuras/ratio-ui/core/ActionButton';
+import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Chip } from '@eventuras/ratio-ui/core/Chip';
 import { NavTree, type NavTreeItem, type NavTreeProps } from '@eventuras/ratio-ui/core/NavTree';
 import { X } from '@eventuras/ratio-ui/icons';
@@ -19,6 +20,7 @@ import {
   sectionForTab,
 } from './eventAdminSections';
 import { usePinnedEvent } from './PinnedEvent';
+import { useActivityDrawer } from '../activity';
 
 // Plain next/link, not ratio-ui's Link: NavTree owns the row styling and passes style/aria props its LinkProps don't type.
 const NavLink: NonNullable<NavTreeProps['LinkComponent']> = ({ href, ...rest }) => (
@@ -51,6 +53,7 @@ export function AdminNav(props: Readonly<Pick<ComponentProps<typeof NavTree>, 'c
   const searchParams = useSearchParams();
   const router = useRouter();
   const { event, unpin } = usePinnedEvent();
+  const activity = useActivityDrawer();
 
   const closeEvent = () => {
     unpin();
@@ -88,6 +91,20 @@ export function AdminNav(props: Readonly<Pick<ComponentProps<typeof NavTree>, 'c
               </Chip>
             ) : undefined,
         })),
+        {
+          id: 'pinned-event-activity',
+          content: (
+            <Button
+              variant="outline"
+              size="sm"
+              block
+              onClick={activity.open}
+              testId="admin-nav-activity"
+            >
+              {t('admin.businessEvents.title')}
+            </Button>
+          ),
+        },
       ]
     : undefined;
 
