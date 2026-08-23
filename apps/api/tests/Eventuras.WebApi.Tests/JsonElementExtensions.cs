@@ -90,6 +90,7 @@ public static class JsonElementExtensions
     public static void CheckEvent(this JsonElement token, EventInfo eventInfo)
     {
         Assert.Equal(eventInfo.EventInfoId, token.GetValue<int>("id"));
+        Assert.Equal(eventInfo.Uuid.ToString(), token.GetValue<string>("uuid"));
         Assert.Equal(eventInfo.Type.ToString(), token.GetValue<string>("type"));
         Assert.Equal(eventInfo.Title, token.GetValue<string>("title"));
         Assert.Equal(eventInfo.Slug, token.GetValue<string>("slug"));

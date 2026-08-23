@@ -16,6 +16,7 @@ public class EventDto
     public EventDto(EventInfo e)
     {
         Id = e.EventInfoId;
+        Uuid = e.Uuid;
         Type = e.Type;
         Status = e.Status;
         Title = e.Title;
@@ -48,6 +49,7 @@ public class EventDto
     }
 
     public int Id { get; set; }
+    public Guid Uuid { get; set; }
     public EventInfo.EventInfoType Type { get; set; }
     public EventInfo.EventInfoStatus Status { get; set; }
     public string Title { get; set; }

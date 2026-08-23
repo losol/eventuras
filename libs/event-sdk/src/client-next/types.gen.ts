@@ -101,6 +101,7 @@ export type EventCollectionDto = {
 
 export type EventDto = {
     id?: number;
+    uuid?: string;
     type?: EventInfoType;
     status?: EventInfoStatus;
     title?: null | string;

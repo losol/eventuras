@@ -5089,6 +5089,10 @@
             "type": "integer",
             "format": "int32"
           },
+          "uuid": {
+            "type": "string",
+            "format": "uuid"
+          },
           "type": {
             "$ref": "#/components/schemas/EventInfoType"
           },
