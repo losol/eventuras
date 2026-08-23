@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 
 import { DataTable } from '@eventuras/datatable';
 import { Logger } from '@eventuras/logger';
+import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
 
 import EditRegistrationProductsDialog from '@/components/eventuras/EditRegistrationProductsDialog';
@@ -17,7 +18,7 @@ import type {
 } from '@/lib/eventuras-sdk';
 import { participationMap } from '@/utils/api/mappers';
 
-import { ExcelExportButton } from './[id]/ExcelExportButton';
+import ExcelExportDialog from './[id]/ExcelExportDialog';
 import AddUserToEvent from './AddUserToEvent';
 import EventStatistics from './EventStatistics';
 import { getEventRegistrations, getRegistrationDetails } from './participantActions';
@@ -93,6 +94,7 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
   const [selectedRegistration, setSelectedRegistration] = useState<RegistrationDto | null>(null);
   const [fullRegistration, setFullRegistration] = useState<RegistrationDto | null>(null);
   const [isProductEditorOpen, setIsProductEditorOpen] = useState(false);
+  const [isExportOpen, setIsExportOpen] = useState(false);
 
   // Update participant in list after status change
   const handleStatusUpdate = (updatedRegistration: RegistrationDto) => {
@@ -191,8 +193,16 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
               {/* Search input */}
               {searchInput}
 
-              {/* Excel export button */}
-              {event.id && <ExcelExportButton EventinfoId={event.id} />}
+              {/* Excel export dialog */}
+              {event.id && (
+                <Button
+                  variant="outline"
+                  onClick={() => setIsExportOpen(true)}
+                  testId="excel-export-open"
+                >
+                  {t('admin.events.export.button')}
+                </Button>
+              )}
 
               {/* Add User button */}
               {showAddUser && (
@@ -207,6 +217,15 @@ const EventParticipantList: React.FC<AdminEventListProps> = ({
           </div>
         )}
       />
+
+      {event.id && (
+        <ExcelExportDialog
+          event={event}
+          statistics={statistics}
+          isOpen={isExportOpen}
+          onClose={() => setIsExportOpen(false)}
+        />
+      )}
 
       {/* Email notification drawer */}
       {registrationOpen && (

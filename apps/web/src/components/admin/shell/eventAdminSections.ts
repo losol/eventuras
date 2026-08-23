@@ -14,10 +14,10 @@ export const EVENT_EDIT_TABS = [
 export type EventEditTab = (typeof EVENT_EDIT_TABS)[number];
 
 export type EventAdminTab =
-  EventEditTab | 'dashboard' | 'participants' | 'communication' | 'products' | 'economy' | 'export';
+  EventEditTab | 'dashboard' | 'participants' | 'communication' | 'products' | 'economy';
 
 export type EventAdminSectionKey =
-  'dashboard' | 'participants' | 'communication' | 'products' | 'economy' | 'edit' | 'export';
+  'dashboard' | 'participants' | 'communication' | 'products' | 'economy' | 'edit';
 
 export type EventAdminSection = {
   key: EventAdminSectionKey;
@@ -34,7 +34,6 @@ export const EVENT_ADMIN_SECTIONS: readonly EventAdminSection[] = [
   { key: 'products', tab: 'products', labelKey: 'admin.events.tabs.products' },
   { key: 'economy', tab: 'economy', labelKey: 'admin.events.tabs.economy' },
   { key: 'edit', tab: 'overview', labelKey: 'admin.events.sections.edit' },
-  { key: 'export', tab: 'export', labelKey: 'admin.events.tabs.export' },
 ];
 
 export const DEFAULT_EVENT_ADMIN_TAB: EventAdminTab = 'dashboard';
