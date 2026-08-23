@@ -109,7 +109,7 @@ importers:
         version: 0.1.3(next@16.3.0(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.62.1)(@types/node@24.13.3)(babel-plugin-macros@3.1.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sass@1.77.4))(react@19.2.8)
       '@eventuras/datatable':
         specifier: ^0.6.0
-        version: 0.6.0(@eventuras/ratio-ui@2.17.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@tanstack/match-sorter-utils@8.19.4)(@tanstack/react-table@8.21.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@tanstack/table-core@8.21.3)(lucide-react@1.31.0(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 0.6.0(@eventuras/ratio-ui@2.18.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@tanstack/match-sorter-utils@8.19.4)(@tanstack/react-table@8.21.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@tanstack/table-core@8.21.3)(lucide-react@1.31.0(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@eventuras/event-sdk':
         specifier: workspace:^
         version: link:../../libs/event-sdk
@@ -121,16 +121,16 @@ importers:
         version: 0.8.1(@opentelemetry/api-logs@0.220.0)(@opentelemetry/api@1.9.1)(@opentelemetry/instrumentation-pino@0.66.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-logs@0.220.0(@opentelemetry/api@1.9.1))
       '@eventuras/markdown':
         specifier: ^0.15.0
-        version: 0.15.0(@eventuras/ratio-ui@2.17.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 0.15.0(@eventuras/ratio-ui@2.18.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@eventuras/markdown-plugin-happening':
         specifier: workspace:*
         version: link:../../libs/markdown-plugin-happening
       '@eventuras/ratio-ui':
-        specifier: ^2.17.3
-        version: 2.17.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: ^2.18.0
+        version: 2.18.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@eventuras/ratio-ui-next':
         specifier: ^0.2.0
-        version: 0.2.0(@eventuras/ratio-ui@2.17.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(next@16.3.0(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.62.1)(@types/node@24.13.3)(babel-plugin-macros@3.1.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sass@1.77.4))
+        version: 0.2.0(@eventuras/ratio-ui@2.18.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(next@16.3.0(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.62.1)(@types/node@24.13.3)(babel-plugin-macros@3.1.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sass@1.77.4))
       '@eventuras/scribo':
         specifier: workspace:*
         version: link:../../libs/scribo
@@ -311,8 +311,8 @@ importers:
         version: 5.1.0
     devDependencies:
       '@eventuras/ratio-ui':
-        specifier: ^2.17.3
-        version: 2.17.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: ^2.18.0
+        version: 2.18.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@eventuras/typescript-config':
         specifier: ^1.0.0
         version: 1.0.0
@@ -478,8 +478,8 @@ importers:
         specifier: ^0.8.1
         version: 0.8.1(@opentelemetry/api-logs@0.220.0)(@opentelemetry/api@1.9.1)(@opentelemetry/instrumentation-pino@0.66.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-logs@0.220.0(@opentelemetry/api@1.9.1))
       '@eventuras/ratio-ui':
-        specifier: ^2.17.3
-        version: 2.17.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: ^2.18.0
+        version: 2.18.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       react:
         specifier: ^19.0.0
         version: 19.2.8
@@ -1227,6 +1227,12 @@ packages:
 
   '@eventuras/ratio-ui@2.17.3':
     resolution: {integrity: sha512-kCYdvC1GP2EFKc82zXw8VO3t9FnOt7yU+xBHXNIn9nOous/gUbLoYaMGV0iB9yM6Oez24JYCOVGRT0SOtBKrpQ==}
+    peerDependencies:
+      react: ^19.0.0
+      react-dom: ^19.0.0
+
+  '@eventuras/ratio-ui@2.18.0':
+    resolution: {integrity: sha512-vvCuPrITdR/sPyZAOndcjtVLShSxOocHZI+Kshrpzk44X804/HVKVWzgHAzuHwfMgRM/yqblG3PlCzSt1d3QXQ==}
     peerDependencies:
       react: ^19.0.0
       react-dom: ^19.0.0
@@ -6805,9 +6811,9 @@ snapshots:
 
   '@eventuras/core@0.4.0': {}
 
-  '@eventuras/datatable@0.6.0(@eventuras/ratio-ui@2.17.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@tanstack/match-sorter-utils@8.19.4)(@tanstack/react-table@8.21.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@tanstack/table-core@8.21.3)(lucide-react@1.31.0(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
+  '@eventuras/datatable@0.6.0(@eventuras/ratio-ui@2.18.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@tanstack/match-sorter-utils@8.19.4)(@tanstack/react-table@8.21.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@tanstack/table-core@8.21.3)(lucide-react@1.31.0(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
-      '@eventuras/ratio-ui': 2.17.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@eventuras/ratio-ui': 2.18.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@tanstack/match-sorter-utils': 8.19.4
       '@tanstack/react-table': 8.21.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@tanstack/table-core': 8.21.3
@@ -6929,9 +6935,9 @@ snapshots:
       - '@types/react'
       - supports-color
 
-  '@eventuras/markdown@0.15.0(@eventuras/ratio-ui@2.17.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
+  '@eventuras/markdown@0.15.0(@eventuras/ratio-ui@2.18.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
-      '@eventuras/ratio-ui': 2.17.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@eventuras/ratio-ui': 2.18.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
       react-markdown: 10.1.0(@types/react@19.2.18)(react@19.2.8)
@@ -6942,12 +6948,22 @@ snapshots:
       - '@types/react'
       - supports-color
 
-  '@eventuras/ratio-ui-next@0.2.0(@eventuras/ratio-ui@2.17.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(next@16.3.0(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.62.1)(@types/node@24.13.3)(babel-plugin-macros@3.1.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sass@1.77.4))':
+  '@eventuras/ratio-ui-next@0.2.0(@eventuras/ratio-ui@2.18.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(next@16.3.0(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.62.1)(@types/node@24.13.3)(babel-plugin-macros@3.1.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sass@1.77.4))':
     dependencies:
-      '@eventuras/ratio-ui': 2.17.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@eventuras/ratio-ui': 2.18.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       next: 16.3.0(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.62.1)(@types/node@24.13.3)(babel-plugin-macros@3.1.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sass@1.77.4)
 
   '@eventuras/ratio-ui@2.17.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
+    dependencies:
+      clsx: 2.1.1
+      lucide-react: 1.31.0(react@19.2.8)
+      react: 19.2.8
+      react-aria-components: 1.20.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      react-dom: 19.2.8(react@19.2.8)
+      react-stately: 3.49.0(react@19.2.8)
+      tailwind-merge: 3.6.0
+
+  '@eventuras/ratio-ui@2.18.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
       clsx: 2.1.1
       lucide-react: 1.31.0(react@19.2.8)
