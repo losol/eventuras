@@ -156,6 +156,63 @@ public class BusinessEventsControllerTest : IClassFixture<CustomWebApiApplicatio
     }
 
     [Fact]
+    public async Task List_Should_Return_Events_For_An_Event_Across_Subjects()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var org = await scope.CreateOrganizationAsync();
+        using var user = await scope.CreateUserAsync();
+        using var eventInfo = await scope.CreateEventAsync(organization: org.Entity);
+        using var otherEvent = await scope.CreateEventAsync(organization: org.Entity);
+        using var registration = await scope.CreateRegistrationAsync(eventInfo.Entity, user.Entity);
+        using var otherRegistration = await scope.CreateRegistrationAsync(otherEvent.Entity, user.Entity);
+        using var order = await scope.CreateOrderAsync(registration.Entity, user: user.Entity);
+
+        BusinessEvent Row(Instant at, string message, BusinessEventSubject subject) => new()
+        {
+            CreatedAt = at,
+            EventType = subject.Type + ".status.changed",
+            Message = message,
+            SubjectType = subject.Type,
+            SubjectUuid = subject.Uuid,
+            OrganizationUuid = org.Entity.Uuid
+        };
+
+        scope.Db.BusinessEvents.AddRange(
+            Row(Instant.FromUtc(2026, 4, 19, 10, 0), "Registration", BusinessEventSubjects.ForRegistration(registration.Entity.Uuid)),
+            Row(Instant.FromUtc(2026, 4, 19, 11, 0), "Order", BusinessEventSubjects.ForOrder(order.Entity.Uuid)),
+            Row(Instant.FromUtc(2026, 4, 19, 12, 0), "Event", BusinessEventSubjects.ForEvent(eventInfo.Entity.Uuid)),
+            Row(Instant.FromUtc(2026, 4, 19, 13, 0), "Other event", BusinessEventSubjects.ForRegistration(otherRegistration.Entity.Uuid)));
+        await scope.Db.SaveChangesAsync();
+
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
+
+        var response = await client.GetAsync(
+            $"/v3/business-events?orgId={org.Entity.OrganizationId}&eventInfoUuid={eventInfo.Entity.Uuid}");
+
+        var body = await response.CheckOk().Content.ReadFromJsonAsync<PageResponseDto<BusinessEventDto>>(JsonOptions);
+        Assert.NotNull(body);
+        Assert.Equal(3, body!.Total);
+        Assert.Equal(new[] { "Event", "Order", "Registration" }, body.Data.Select(e => e.Message).ToArray());
+    }
+
+    [Theory]
+    [InlineData("subjectType=order")]
+    [InlineData("subjectUuid=7d5c0a5e-0000-4000-8000-000000000001")]
+    [InlineData("subjectType=order&subjectUuid=7d5c0a5e-0000-4000-8000-000000000001&eventInfoUuid=7d5c0a5e-0000-4000-8000-000000000002")]
+    public async Task List_Should_Reject_Incomplete_Or_Mixed_Selectors(string selectors)
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var org = await scope.CreateOrganizationAsync();
+
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
+
+        var response = await client.GetAsync(
+            $"/v3/business-events?orgId={org.Entity.OrganizationId}&{selectors}");
+
+        Assert.Equal(System.Net.HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
     public async Task List_Should_Require_Subject_Parameters()
     {
         using var scope = _factory.Services.NewTestScope();

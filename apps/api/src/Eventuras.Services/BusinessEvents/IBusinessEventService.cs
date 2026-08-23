@@ -23,4 +23,15 @@ public interface IBusinessEventService
         BusinessEventSubject subject,
         PagingRequest request,
         CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     Every event recorded on an EventInfo, across subjects: the event itself, its
+    ///     registrations and their orders. Resolved from the domain tables, so nothing
+    ///     extra is stored on the records. Newest first.
+    /// </summary>
+    Task<Paging<BusinessEvent>> ListEventsForEventAsync(
+        Guid organizationUuid,
+        Guid eventInfoUuid,
+        PagingRequest request,
+        CancellationToken cancellationToken = default);
 }

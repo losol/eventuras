@@ -32,8 +32,8 @@ public class BusinessEventsController : ControllerBase
     }
 
     [HttpGet]
-    [EndpointSummary("List business events for a subject in the current organization")]
-    [EndpointDescription("Returns audit/business events scoped to the organization resolved from the Eventuras-Org-Id header, filtered by subjectType + subjectUuid (e.g. order + OrderUuid). Newest first. Requires the caller to be SystemAdmin or an Admin member of the resolved organization.")]
+    [EndpointSummary("List business events for a subject or an event in the current organization")]
+    [EndpointDescription("Returns audit/business events scoped to the current organization (resolved from the Eventuras-Org-Id header, else the orgId query parameter, else the request hostname), filtered by subjectType + subjectUuid (e.g. order + OrderUuid), or by eventInfoUuid for everything recorded on one event (the event itself, its registrations and their orders). Newest first. Requires the caller to be SystemAdmin or an Admin member of the resolved organization.")]
     [ProducesResponseType(typeof(PageResponseDto<BusinessEventDto>), 200)]
     [ProducesResponseType(400)]
     [ProducesResponseType(403)]
@@ -49,14 +49,21 @@ public class BusinessEventsController : ControllerBase
         var currentOrg = await _currentOrganizationAccessor.RequireCurrentOrganizationAsync(
             cancellationToken: cancellationToken);
 
-        // Org-membership enforcement (SystemAdmin bypass, Admin must be member)
-        // lives inside BusinessEventService.ListEventsAsync — the service throws
-        // NotAccessibleException which the exception filter maps to HTTP 403.
-        var events = await _businessEventService.ListEventsAsync(
-            currentOrg.Uuid,
-            new BusinessEventSubject(query.SubjectType, query.SubjectUuid),
-            new PagingRequest(query.Offset, query.Limit),
-            cancellationToken);
+        // Org-membership enforcement (SystemAdmin bypass, Admin must be member) lives in
+        // the service: both list methods call CheckListAccessAsync, which throws
+        // NotAccessibleException that the exception filter maps to HTTP 403.
+        var paging = new PagingRequest(query.Offset, query.Limit);
+        var events = query.HasSubject
+            ? await _businessEventService.ListEventsAsync(
+                currentOrg.Uuid,
+                new BusinessEventSubject(query.SubjectType!, query.SubjectUuid!.Value),
+                paging,
+                cancellationToken)
+            : await _businessEventService.ListEventsForEventAsync(
+                currentOrg.Uuid,
+                query.EventInfoUuid!.Value,
+                paging,
+                cancellationToken);
 
         return PageResponseDto<BusinessEventDto>.FromPaging(query, events, e => new BusinessEventDto(e));
     }

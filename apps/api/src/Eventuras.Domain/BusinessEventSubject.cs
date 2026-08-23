@@ -8,15 +8,20 @@ public sealed record BusinessEventSubject(
 
 public static class BusinessEventSubjects
 {
+    public const string OrderType = "order";
+    public const string RegistrationType = "registration";
+    public const string EventType = "event";
+    public const string UserType = "user";
+
     public static BusinessEventSubject ForOrder(Guid orderId) =>
-        new("order", orderId);
+        new(OrderType, orderId);
 
     public static BusinessEventSubject ForRegistration(Guid registrationId) =>
-        new("registration", registrationId);
+        new(RegistrationType, registrationId);
 
     public static BusinessEventSubject ForEvent(Guid eventInfoUuid) =>
-        new("event", eventInfoUuid);
+        new(EventType, eventInfoUuid);
 
     public static BusinessEventSubject ForUser(Guid userId) =>
-        new("user", userId);
+        new(UserType, userId);
 }
