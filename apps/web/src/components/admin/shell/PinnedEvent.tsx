@@ -12,6 +12,8 @@ import {
 export type PinnedEvent = {
   id: number;
   title: string;
+  /** Stable identifier, used to fetch the event's activity. */
+  uuid?: string;
   participantCount?: number;
 };
 
@@ -59,6 +61,7 @@ function parse(raw: string | null): PinnedEvent | null {
     return {
       id: parsed.id,
       title: parsed.title,
+      uuid: typeof parsed.uuid === 'string' ? parsed.uuid : undefined,
       participantCount:
         typeof parsed.participantCount === 'number' ? parsed.participantCount : undefined,
     };
@@ -92,9 +95,9 @@ export function usePinnedEvent(): PinnedEventContextValue {
 /** Rendered by the event admin page to pin that event in the sidebar. */
 export function PinEvent({ event }: Readonly<{ event: PinnedEvent }>) {
   const { pin } = usePinnedEvent();
-  const { id, title, participantCount } = event;
+  const { id, title, uuid, participantCount } = event;
   useEffect(() => {
-    pin({ id, title, participantCount });
-  }, [pin, id, title, participantCount]);
+    pin({ id, title, uuid, participantCount });
+  }, [pin, id, title, uuid, participantCount]);
   return null;
 }

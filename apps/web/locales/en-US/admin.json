@@ -1,7 +1,16 @@
 {
   "businessEvents": {
     "empty": "No activity logged yet.",
+    "filterLabel": "Filter activity",
+    "filters": {
+      "all": "All",
+      "event": "Event",
+      "order": "Order",
+      "registration": "Registration"
+    },
     "loadError": "Unable to load activity right now. Please try again later.",
+    "noEvent": "Open an event to see its activity.",
+    "refresh": "Refresh",
     "title": "Activity"
   },
   "certificates": {
@@ -112,7 +121,7 @@
     "overview": {
       "days": "{count, plural, one {# day} other {# days}}",
       "draftOrders": "{count} draft orders",
-      "latestNotifications": "Latest notifications",
+      "latestActivity": "Latest activity",
       "latestRegistrations": "Latest registrations",
       "noDate": "Date not set",
       "noLocation": "Location not set",
@@ -120,6 +129,7 @@
       "registered": "Registered",
       "revenue": "Revenue",
       "seeAll": "See all ({count})",
+      "showAll": "Show all",
       "waitingList": "{count} on the waiting list",
       "when": "When",
       "where": "Where"

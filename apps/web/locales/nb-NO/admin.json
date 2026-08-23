@@ -1,7 +1,16 @@
 {
   "businessEvents": {
     "empty": "Ingen aktivitet registrert ennå.",
+    "filterLabel": "Filtrer aktivitet",
+    "filters": {
+      "all": "Alle",
+      "event": "Arrangement",
+      "order": "Ordre",
+      "registration": "Påmelding"
+    },
     "loadError": "Kunne ikke laste aktivitetsloggen akkurat nå. Prøv igjen senere.",
+    "noEvent": "Åpne et arrangement for å se aktiviteten.",
+    "refresh": "Oppdater",
     "title": "Aktivitet"
   },
   "certificates": {
@@ -112,7 +121,7 @@
     "overview": {
       "days": "{count, plural, one {# dag} other {# dager}}",
       "draftOrders": "{count} ordre i utkast",
-      "latestNotifications": "Siste meldinger",
+      "latestActivity": "Siste aktivitet",
       "latestRegistrations": "Siste påmeldte",
       "noDate": "Dato ikke satt",
       "noLocation": "Sted ikke satt",
@@ -120,6 +129,7 @@
       "registered": "Påmeldte",
       "revenue": "Omsetning",
       "seeAll": "Se alle ({count})",
+      "showAll": "Vis alt",
       "waitingList": "{count} på venteliste",
       "when": "Når",
       "where": "Sted"

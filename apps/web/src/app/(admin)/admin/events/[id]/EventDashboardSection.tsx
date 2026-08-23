@@ -4,8 +4,9 @@ import { useMemo } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 
 import { formatPrice } from '@eventuras/core/currency';
-import { formatDate, formatDateSpan } from '@eventuras/core/datetime';
+import { formatDateSpan } from '@eventuras/core/datetime';
 import { Badge } from '@eventuras/ratio-ui/core/Badge';
+import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Text } from '@eventuras/ratio-ui/core/Text';
 import { ValueTile } from '@eventuras/ratio-ui/core/ValueTile';
@@ -13,11 +14,12 @@ import { Grid } from '@eventuras/ratio-ui/layout/Grid';
 import { Stack } from '@eventuras/ratio-ui/layout/Stack';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
+import { ActivityTimeline, useActivityDrawer } from '@/components/admin/activity';
 import { eventAdminHref } from '@/components/admin/shell';
 import {
+  BusinessEventDto,
   EventDto,
   EventStatisticsDto,
-  NotificationDto,
   RegistrationDto,
 } from '@/lib/eventuras-sdk';
 
@@ -29,13 +31,13 @@ import {
 } from '../../registrations/Registration';
 
 const LATEST_REGISTRATIONS = 5;
-const LATEST_NOTIFICATIONS = 4;
 
 type EventDashboardSectionProps = {
   eventinfo: EventDto;
   participants: RegistrationDto[];
   statistics: EventStatisticsDto;
-  notifications: NotificationDto[];
+  /** Newest business events on the event, already limited server-side. */
+  activity: BusinessEventDto[];
 };
 
 /** Whole days from start to end, inclusive; undefined when either date is missing or unparsable. */
@@ -75,8 +77,9 @@ function KeyFact({
 function ListHeading({
   title,
   href,
+  onClick,
   linkLabel,
-}: Readonly<{ title: string; href: string; linkLabel: string }>) {
+}: Readonly<{ title: string; href?: string; onClick?: () => void; linkLabel: string }>) {
   return (
     <div className="flex items-center gap-3">
       <Text
@@ -89,25 +92,32 @@ function ListHeading({
       >
         {title}
       </Text>
-      <Link href={href} className="ml-auto text-sm">
-        {linkLabel}
-      </Link>
+      {href ? (
+        <Link href={href} className="ml-auto text-sm">
+          {linkLabel}
+        </Link>
+      ) : (
+        <Button variant="text" size="sm" className="ml-auto" onClick={onClick}>
+          {linkLabel}
+        </Button>
+      )}
     </div>
   );
 }
 
 /**
  * The event's landing section: key facts, the latest registrations and the
- * latest notifications, each linking on to its full section.
+ * latest activity; the lists link on to the full section or the activity drawer.
  */
 export default function EventDashboardSection({
   eventinfo,
   participants,
   statistics,
-  notifications,
+  activity,
 }: Readonly<EventDashboardSectionProps>) {
   const t = useTranslations();
   const locale = useLocale();
+  const activityDrawer = useActivityDrawer();
   const eventId = eventinfo.id!;
 
   const byStatus = statistics.byStatus;
@@ -130,13 +140,6 @@ export default function EventDashboardSection({
         .sort((a, b) => (b.registrationTime ?? '').localeCompare(a.registrationTime ?? ''))
         .slice(0, LATEST_REGISTRATIONS),
     [participants]
-  );
-  const latestNotifications = useMemo(
-    () =>
-      [...notifications]
-        .sort((a, b) => (b.created ?? '').localeCompare(a.created ?? ''))
-        .slice(0, LATEST_NOTIFICATIONS),
-    [notifications]
   );
 
   const days = durationInDays(eventinfo.dateStart, eventinfo.dateEnd);
@@ -231,35 +234,12 @@ export default function EventDashboardSection({
 
         <Stack gap="sm">
           <ListHeading
-            title={t('admin.events.overview.latestNotifications')}
-            href={eventAdminHref(eventId, 'communication')}
-            linkLabel={t('admin.events.overview.seeAll', { count: notifications.length })}
+            title={t('admin.events.overview.latestActivity')}
+            onClick={activityDrawer.open}
+            linkLabel={t('admin.events.overview.showAll')}
           />
-          <Card border transparent padding="none" testId="dashboard-latest-notifications">
-            {latestNotifications.length === 0 ? (
-              <Text as="p" size="sm" variant="subtle" padding="md">
-                {t('admin.notifications.noNotifications')}
-              </Text>
-            ) : (
-              <ul className="divide-y divide-border-1">
-                {latestNotifications.map(notification => (
-                  <li key={notification.notificationId} className="flex flex-col gap-1 px-4 py-3">
-                    <span className="flex items-center gap-2 font-mono text-xs text-(--text-subtle)">
-                      <span>
-                        {notification.created
-                          ? formatDate(notification.created, { locale, showTime: true })
-                          : ''}
-                      </span>
-                      <span className="text-(--text)">{notification.type}</span>
-                      <span className="ml-auto">{notification.status}</span>
-                    </span>
-                    <span className="line-clamp-2 text-sm text-(--text-muted)">
-                      {notification.message}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            )}
+          <Card border transparent testId="dashboard-latest-activity">
+            <ActivityTimeline events={activity} />
           </Card>
         </Stack>
       </Grid>

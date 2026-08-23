@@ -11,6 +11,7 @@ import { Link } from '@eventuras/ratio-ui-next/Link';
 
 import { AdminNav } from './AdminNav';
 import { PinnedEventProvider } from './PinnedEvent';
+import { ActivityDrawer, ActivityDrawerProvider } from '../activity';
 
 export interface AdminShellProps {
   children: ReactNode;
@@ -43,31 +44,35 @@ export function AdminShell({ children, title, menuLabel }: Readonly<AdminShellPr
 
   return (
     <PinnedEventProvider>
-      <div className="flex items-start">
-        <Sidebar aria-label={title} width={256} className="hidden lg:flex" testId="admin-sidebar">
-          <Sidebar.Header>{header}</Sidebar.Header>
-          <Sidebar.Body>
-            <AdminNav />
-          </Sidebar.Body>
-        </Sidebar>
+      <ActivityDrawerProvider>
+        <div className="flex items-start">
+          <Sidebar aria-label={title} width={256} className="hidden lg:flex" testId="admin-sidebar">
+            <Sidebar.Header>{header}</Sidebar.Header>
+            <Sidebar.Body>
+              <AdminNav />
+            </Sidebar.Body>
+          </Sidebar>
 
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-3 border-b border-border-1 px-3 py-2 lg:hidden">
-            <ActionButton round ariaLabel={menuLabel} onPress={() => setOpenedAt(location)}>
-              <MenuIcon size={18} />
-            </ActionButton>
-            {header}
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-3 border-b border-border-1 px-3 py-2 lg:hidden">
+              <ActionButton round ariaLabel={menuLabel} onPress={() => setOpenedAt(location)}>
+                <MenuIcon size={18} />
+              </ActionButton>
+              {header}
+            </div>
+            <main id="main-content">{children}</main>
           </div>
-          <main id="main-content">{children}</main>
         </div>
-      </div>
 
-      <Drawer isOpen={drawerOpen} onClose={() => setOpenedAt(null)} side="left">
-        <Drawer.Header as="h2">{title}</Drawer.Header>
-        <Drawer.Body>
-          <AdminNav />
-        </Drawer.Body>
-      </Drawer>
+        <Drawer isOpen={drawerOpen} onClose={() => setOpenedAt(null)} side="left">
+          <Drawer.Header as="h2">{title}</Drawer.Header>
+          <Drawer.Body>
+            <AdminNav />
+          </Drawer.Body>
+        </Drawer>
+
+        <ActivityDrawer />
+      </ActivityDrawerProvider>
     </PinnedEventProvider>
   );
 }

@@ -5,6 +5,7 @@ import { ErrorBlock } from '@eventuras/ratio-ui/blocks/Error';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 
+import { fetchEventActivity } from '@/components/admin/activity/activityActions';
 import { DEFAULT_EVENT_ADMIN_TAB, type EventAdminTab, PinEvent } from '@/components/admin/shell';
 import {
   getV3EventsByEventIdProducts,
@@ -109,6 +110,13 @@ export default async function EventAdminPage({ params, searchParams }: Readonly<
     );
   }
 
+  // The overview shows the newest activity; the drawer loads the full log on demand.
+  const activityRes = eventinfo.uuid ? await fetchEventActivity(eventinfo.uuid, 4) : undefined;
+  if (activityRes && !activityRes.success) {
+    logger.warn({ eventId: id, error: activityRes.error }, 'Failed to load event activity');
+  }
+  const activity = activityRes?.success ? activityRes.data : [];
+
   // Extract notifications data
   const notificationData = notificationsRes?.data as NotificationListResponse | undefined;
   const notifications = notificationData?.data || [];
@@ -133,6 +141,7 @@ export default async function EventAdminPage({ params, searchParams }: Readonly<
           event={{
             id: eventinfo.id!,
             title: eventinfo.title ?? '',
+            uuid: eventinfo.uuid,
             participantCount: registrations?.length,
           }}
         />
@@ -163,6 +172,7 @@ export default async function EventAdminPage({ params, searchParams }: Readonly<
           statistics={statisticsRes.data ?? {}}
           eventProducts={eventProductsRes.data ?? []}
           notifications={notifications}
+          activity={activity}
           organizationId={organizationId ?? 0}
           defaultTab={defaultTab}
         />
