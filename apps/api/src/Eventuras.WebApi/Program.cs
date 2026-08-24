@@ -145,11 +145,23 @@ var apiVersioningBuilder = builder.Services.AddApiVersioning(o =>
     o.DefaultApiVersion = new ApiVersion(3, 0);
 });
 
-apiVersioningBuilder.AddApiExplorer(o =>
-{
-    o.GroupNameFormat = "'v'VVV";
-    o.SubstituteApiVersionInUrl = true;
-});
+apiVersioningBuilder
+    .AddMvc()
+    .AddApiExplorer(o =>
+    {
+        o.GroupNameFormat = "'v'VVV";
+        o.SubstituteApiVersionInUrl = true;
+    })
+    // One OpenAPI document per API version (currently just v3), named by the
+    // group format above, so the spec stays at /openapi/v3.json.
+    .AddOpenApi(options =>
+    {
+        options.Document.AddDocumentTransformer<AddSecuritySchemeTransformer>();
+        options.Document.AddOperationTransformer<AddOrganizationHeaderTransformer>();
+        options.Document.AddOperationTransformer<RemoveJsonPatchContentTypeTransformer>();
+        options.Document.AddSchemaTransformer<NodaTimeSchemaTransformer>();
+        options.Document.AddSchemaTransformer<NumericSchemaTransformer>();
+    });
 
 
 // Register background job queue and workers
@@ -175,15 +187,6 @@ builder.Services.AddSingleton<IAuthorizationHandler, RequireScopeHandler>();
 // the probe /health so they can never flip the Kubernetes probes.
 builder.Services.AddInfrastructureHealthChecks();
 
-builder.Services.AddOpenApi("v3", options =>
-{
-    options.AddDocumentTransformer<AddSecuritySchemeTransformer>();
-    options.AddOperationTransformer<AddOrganizationHeaderTransformer>();
-    options.AddOperationTransformer<RemoveJsonPatchContentTypeTransformer>();
-    options.AddSchemaTransformer<NodaTimeSchemaTransformer>();
-    options.AddSchemaTransformer<NumericSchemaTransformer>();
-});
-
 // Finish configuring DI, logging and configuration
 var app = builder.Build();
 
@@ -207,7 +210,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Integratio
 }
 
 // OpenAPI spec is always available (needed for SDK generation in CI)
-app.MapOpenApi();
+app.MapOpenApi().WithDocumentPerVersion();
 
 // API docs UI is opt-in via configuration
 if (features.EnableApiDocs || app.Environment.IsDevelopment())
