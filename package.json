@@ -15,7 +15,7 @@
     "build:dev": "turbo run build --filter=@eventuras/web... --concurrency 30",
     "changeset": "changeset",
     "changeset:suggest": "tsx scripts/changeset-suggest.ts --since origin/main --write",
-    "changeset:tag": "changeset tag",
+    "changeset:tag": "changeset git-tag",
     "changeset:version": "changeset version",
     "clean": "pnpm clean:build && pnpm clean:deps",
     "clean:build": "npx rimraf \"**/{.next,.turbo,.vercel,dist,build,storybook-static}\" \"!**/node_modules/**\"",
@@ -33,7 +33,7 @@
     "next:clean": "npx rimraf \"**/{.next,.turbo,.vercel}\"",
     "openapi:update": "cd apps/api && pnpm openapi:update && cd ../.. && cd libs/event-sdk && pnpm build",
     "prepare": "simple-git-hooks",
-    "release": "changeset version && git add . && git commit -m 'chore: version packages' && changeset tag && git push --follow-tags",
+    "release": "changeset version && git add . && git commit -m 'chore: version packages' && changeset git-tag && git push --follow-tags",
     "test": "turbo run test"
   },
   "simple-git-hooks": {
@@ -48,7 +48,7 @@
     "turbo": "^2.10.9"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.31.1",
+    "@changesets/cli": "^3.0.0",
     "@commitlint/cli": "^21.2.1",
     "@commitlint/config-conventional": "^21.2.0",
     "@eventuras/eslint-config": "^1.0.4",
