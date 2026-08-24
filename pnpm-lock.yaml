@@ -54,8 +54,6 @@ importers:
 
   apps/api: {}
 
-  apps/api/src/Eventuras.WebApi: {}
-
   apps/conductor:
     dependencies:
       '@eventuras/logger':
