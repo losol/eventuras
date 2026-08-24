@@ -2,6 +2,7 @@
 
 using System;
 using System.IO;
+using System.Text.RegularExpressions;
 using Eventuras.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -37,8 +38,16 @@ public class MigrationsScriptTests
         return File.Exists(path) ? path : null;
     }
 
+    // The migration-history inserts embed the EF Core version the script was
+    // generated with ("VALUES ('<migration>', '10.0.9')"). That version changes
+    // on every EF package bump without any schema change, so it is masked out
+    // before comparing — genuine SQL differences still fail the test.
+    private static readonly Regex ProductVersionValue = new(
+        @"(VALUES \('\d{14}_\w+', ')[^']+('\))",
+        RegexOptions.Compiled);
+
     private static string Normalize(string sql) =>
-        sql.Replace("\r\n", "\n").TrimEnd() + "\n";
+        ProductVersionValue.Replace(sql.Replace("\r\n", "\n").TrimEnd() + "\n", "$1<ef-version>$2");
 
     [Fact]
     public void IdempotentMigrationsScript_ShouldBeUpToDate()
