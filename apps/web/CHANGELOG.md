@@ -1,5 +1,26 @@
 # @eventuras/web
 
+## 3.6.0
+
+### Minor Changes
+
+- 44f3f72: The event admin gets an activity drawer: every business event recorded on the pinned event — the event itself, its registrations and their orders — in a drawer that overlays whichever section you are on, opened from the sidebar's "Aktivitet" button or from the overview. Filter by all/event/registration/order, refresh on demand (no live push yet). The overview's "latest notifications" card becomes "latest activity", showing the four newest records with a link into the drawer.
+- 82a17a9: The Excel export of an event's registrations is now a dialog opened from the participant list ("Eksporter til Excel") instead of its own admin tab: pick the registration statuses to include (with counts per status), see how many registrations that is, download, and get the filename back. The file is named after the event slug. The download logic lives in a `useExcelExport` hook; the old plain Excel buttons (participant list toolbar, the Advanced editor tab) are gone, so the dialog is the one way to export.
+
+### Patch Changes
+
+- 090825e: The event overview's cards use the elevated card background instead of a transparent fill, so key facts and the latest-registrations/activity lists stand out from the page surface in both themes.
+- 69d6263: Upgrade @eventuras/ratio-ui to 2.18.0 (NavTree expanding rail, surface-dark as a theme context, new SaveStatus and EmptyState components).
+- a6df556: The markdown editor's stylesheet no longer styles bare `ul` and `pre` elements globally — the rules are scoped to the editor. Unscoped, they overrode the design system's list reset on any page that loaded the editor, which is why the admin sidebar grew bullet points and indentation on event pages.
+- Updated dependencies [ac930f2]
+- Updated dependencies [b6ee437]
+- Updated dependencies [69d6263]
+- Updated dependencies [a6df556]
+  - @eventuras/event-sdk@3.4.0
+  - @eventuras/smartform@0.3.25
+  - @eventuras/markdown-plugin-happening@4.0.8
+  - @eventuras/scribo@0.10.6
+
 ## 3.5.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # @eventuras/smartform
 
+## 0.3.25
+
+### Patch Changes
+
+- 69d6263: Upgrade @eventuras/ratio-ui to 2.18.0 (NavTree expanding rail, surface-dark as a theme context, new SaveStatus and EmptyState components).
+
 ## 0.3.24
 
 ### Patch Changes

@@ -1,5 +1,19 @@
 # @eventuras/event-sdk
 
+## 3.4.0
+
+### Minor Changes
+
+- ac930f2: `GET /v3/business-events` accepts `eventInfoUuid` as an alternative to `subjectType` + `subjectUuid`, returning everything recorded on one event — the event itself, its registrations and their orders — newest first. The event is resolved from the domain tables, so nothing new is stored on the audit records and history is covered. Exactly one selector is required.
+- b6ee437: `EventDto` now carries the event's `uuid`, so clients can address an event by its stable identifier — needed to query business events for an event.
+
+### Patch Changes
+
+- Updated dependencies [ac930f2]
+- Updated dependencies [b6ee437]
+- Updated dependencies [f28f42e]
+  - @eventuras/api@3.9.0
+
 ## 3.3.5
 
 ### Patch Changes

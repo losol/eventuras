@@ -1,5 +1,11 @@
 # @eventuras/markdown-plugin-happening
 
+## 4.0.8
+
+### Patch Changes
+
+- 69d6263: Upgrade @eventuras/ratio-ui to 2.18.0 (NavTree expanding rail, surface-dark as a theme context, new SaveStatus and EmptyState components).
+
 ## 4.0.7
 
 ### Patch Changes

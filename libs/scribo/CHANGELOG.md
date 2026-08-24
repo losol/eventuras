@@ -1,5 +1,11 @@
 # @eventuras/scribo
 
+## 0.10.6
+
+### Patch Changes
+
+- a6df556: The markdown editor's stylesheet no longer styles bare `ul` and `pre` elements globally — the rules are scoped to the editor. Unscoped, they overrode the design system's list reset on any page that loaded the editor, which is why the admin sidebar grew bullet points and indentation on event pages.
+
 ## 0.10.5
 
 ### Patch Changes
