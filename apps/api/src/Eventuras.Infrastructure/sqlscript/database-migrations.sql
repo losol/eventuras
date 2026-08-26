@@ -553,7 +553,7 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20200105175922_InitialMigration') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20200105175922_InitialMigration', '10.0.9');
+    VALUES ('20200105175922_InitialMigration', '10.0.11');
     END IF;
 END $EF$;
 COMMIT;
@@ -578,7 +578,7 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20200604144542_LmsEnrollmentFields') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20200604144542_LmsEnrollmentFields', '10.0.9');
+    VALUES ('20200604144542_LmsEnrollmentFields', '10.0.11');
     END IF;
 END $EF$;
 COMMIT;
@@ -700,7 +700,7 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20200917102534_ExternalEvents') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20200917102534_ExternalEvents', '10.0.9');
+    VALUES ('20200917102534_ExternalEvents', '10.0.11');
     END IF;
 END $EF$;
 COMMIT;
@@ -766,7 +766,7 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20200929074958_NewOrgStructure') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20200929074958_NewOrgStructure', '10.0.9');
+    VALUES ('20200929074958_NewOrgStructure', '10.0.11');
     END IF;
 END $EF$;
 COMMIT;
@@ -789,7 +789,7 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20200930061949_OrgMembershipRoles') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20200930061949_OrgMembershipRoles', '10.0.9');
+    VALUES ('20200930061949_OrgMembershipRoles', '10.0.11');
     END IF;
 END $EF$;
 COMMIT;
@@ -807,7 +807,7 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20201012114945_OrgIsRootProperty') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20201012114945_OrgIsRootProperty', '10.0.9');
+    VALUES ('20201012114945_OrgIsRootProperty', '10.0.11');
     END IF;
 END $EF$;
 COMMIT;
@@ -863,7 +863,7 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20210105043828_EventCollections') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20210105043828_EventCollections', '10.0.9');
+    VALUES ('20210105043828_EventCollections', '10.0.11');
     END IF;
 END $EF$;
 COMMIT;
@@ -881,7 +881,7 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20210412130635_EventInfoArchivedField') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20210412130635_EventInfoArchivedField', '10.0.9');
+    VALUES ('20210412130635_EventInfoArchivedField', '10.0.11');
     END IF;
 END $EF$;
 COMMIT;
@@ -915,7 +915,7 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20210509134017_RequireEventOrganization') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20210509134017_RequireEventOrganization', '10.0.9');
+    VALUES ('20210509134017_RequireEventOrganization', '10.0.11');
     END IF;
 END $EF$;
 COMMIT;
@@ -940,7 +940,7 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20210509212610_RenameCodeToSlug') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20210509212610_RenameCodeToSlug', '10.0.9');
+    VALUES ('20210509212610_RenameCodeToSlug', '10.0.11');
     END IF;
 END $EF$;
 COMMIT;
@@ -965,7 +965,7 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20210516150540_AddProductsArchivedField') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20210516150540_AddProductsArchivedField', '10.0.9');
+    VALUES ('20210516150540_AddProductsArchivedField', '10.0.11');
     END IF;
 END $EF$;
 COMMIT;
@@ -989,7 +989,7 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20210606142126_OrganizationSettings') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20210606142126_OrganizationSettings', '10.0.9');
+    VALUES ('20210606142126_OrganizationSettings', '10.0.11');
     END IF;
 END $EF$;
 COMMIT;
@@ -1066,7 +1066,7 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20210820053849_AddInvoiceEntity') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20210820053849_AddInvoiceEntity', '10.0.9');
+    VALUES ('20210820053849_AddInvoiceEntity', '10.0.11');
     END IF;
 END $EF$;
 COMMIT;
@@ -1098,7 +1098,7 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20211020074510_ProductVisibilityAndEventCollectionArchivedFields') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20211020074510_ProductVisibilityAndEventCollectionArchivedFields', '10.0.9');
+    VALUES ('20211020074510_ProductVisibilityAndEventCollectionArchivedFields', '10.0.11');
     END IF;
 END $EF$;
 COMMIT;
@@ -1203,7 +1203,7 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20211026191751_AddSmsEmailNotificationEntities') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20211026191751_AddSmsEmailNotificationEntities', '10.0.9');
+    VALUES ('20211026191751_AddSmsEmailNotificationEntities', '10.0.11');
     END IF;
 END $EF$;
 COMMIT;
@@ -1249,7 +1249,7 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20211029105120_AddNotificationTypeAndStats') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20211029105120_AddNotificationTypeAndStats', '10.0.9');
+    VALUES ('20211029105120_AddNotificationTypeAndStats', '10.0.11');
     END IF;
 END $EF$;
 COMMIT;
@@ -1360,7 +1360,7 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20220402072343_ShiftToNodaTime') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20220402072343_ShiftToNodaTime', '10.0.9');
+    VALUES ('20220402072343_ShiftToNodaTime', '10.0.11');
     END IF;
 END $EF$;
 COMMIT;
@@ -1393,7 +1393,7 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20230906111207_EventInfo_AddOptionsWithPolicies') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20230906111207_EventInfo_AddOptionsWithPolicies', '10.0.9');
+    VALUES ('20230906111207_EventInfo_AddOptionsWithPolicies', '10.0.11');
     END IF;
 END $EF$;
 COMMIT;
@@ -1544,7 +1544,7 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240212195621_ExtendUserprofile') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20240212195621_ExtendUserprofile', '10.0.9');
+    VALUES ('20240212195621_ExtendUserprofile', '10.0.11');
     END IF;
 END $EF$;
 COMMIT;
@@ -1573,7 +1573,7 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20240216204506_SplitName') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20240216204506_SplitName', '10.0.9');
+    VALUES ('20240216204506_SplitName', '10.0.11');
     END IF;
 END $EF$;
 COMMIT;
@@ -1640,7 +1640,7 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260402194432_RemoveMessageLog') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20260402194432_RemoveMessageLog', '10.0.9');
+    VALUES ('20260402194432_RemoveMessageLog', '10.0.11');
     END IF;
 END $EF$;
 COMMIT;
@@ -1696,7 +1696,7 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260402233733_AddBusinessEvent') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20260402233733_AddBusinessEvent', '10.0.9');
+    VALUES ('20260402233733_AddBusinessEvent', '10.0.11');
     END IF;
 END $EF$;
 COMMIT;
@@ -1749,7 +1749,7 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260402235944_AddUuidToOrderAndRegistration') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20260402235944_AddUuidToOrderAndRegistration', '10.0.9');
+    VALUES ('20260402235944_AddUuidToOrderAndRegistration', '10.0.11');
     END IF;
 END $EF$;
 COMMIT;
@@ -2052,7 +2052,7 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403095822_RemoveAspNetIdentity') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20260403095822_RemoveAspNetIdentity', '10.0.9');
+    VALUES ('20260403095822_RemoveAspNetIdentity', '10.0.11');
     END IF;
 END $EF$;
 COMMIT;
@@ -2242,7 +2242,7 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403114746_CleanupDeprecatedFields') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20260403114746_CleanupDeprecatedFields', '10.0.9');
+    VALUES ('20260403114746_CleanupDeprecatedFields', '10.0.11');
     END IF;
 END $EF$;
 COMMIT;
@@ -2480,7 +2480,7 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260403145639_AddUuidToAllEntities') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20260403145639_AddUuidToAllEntities', '10.0.9');
+    VALUES ('20260403145639_AddUuidToAllEntities', '10.0.11');
     END IF;
 END $EF$;
 COMMIT;
@@ -2533,7 +2533,7 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260419205942_AddBusinessEventOrganizationLink') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20260419205942_AddBusinessEventOrganizationLink', '10.0.9');
+    VALUES ('20260419205942_AddBusinessEventOrganizationLink', '10.0.11');
     END IF;
 END $EF$;
 COMMIT;
@@ -2551,7 +2551,95 @@ DO $EF$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260603180354_AddProductSalesAccount') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20260603180354_AddProductSalesAccount', '10.0.9');
+    VALUES ('20260603180354_AddProductSalesAccount', '10.0.11');
+    END IF;
+END $EF$;
+COMMIT;
+
+START TRANSACTION;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260828231506_AddProcessingPurposes') THEN
+    CREATE TABLE "ProcessingPurposes" (
+        "Uuid" uuid NOT NULL,
+        "OrganizationUuid" uuid NOT NULL,
+        "Code" character varying(100) NOT NULL,
+        "Version" integer NOT NULL,
+        "Kind" integer NOT NULL,
+        "Name" character varying(200) NOT NULL,
+        "Text" text NOT NULL,
+        "RequiresReconsent" boolean NOT NULL,
+        "CreatedAt" timestamp with time zone NOT NULL,
+        "RetiredAt" timestamp with time zone,
+        CONSTRAINT "PK_ProcessingPurposes" PRIMARY KEY ("Uuid"),
+        CONSTRAINT "AK_ProcessingPurposes_Uuid_OrganizationUuid_Code" UNIQUE ("Uuid", "OrganizationUuid", "Code"),
+        CONSTRAINT "FK_ProcessingPurposes_Organizations_OrganizationUuid" FOREIGN KEY ("OrganizationUuid") REFERENCES "Organizations" ("Uuid") ON DELETE RESTRICT
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260828231506_AddProcessingPurposes') THEN
+    CREATE TABLE "PurposeDecisions" (
+        "Uuid" uuid NOT NULL,
+        "UserId" uuid NOT NULL,
+        "OrganizationUuid" uuid NOT NULL,
+        "Code" character varying(100) NOT NULL,
+        "ProcessingPurposeUuid" uuid NOT NULL,
+        "Decision" integer NOT NULL,
+        "Source" character varying(50),
+        "CreatedAt" timestamp with time zone NOT NULL,
+        "DecidedAt" timestamp with time zone NOT NULL,
+        CONSTRAINT "PK_PurposeDecisions" PRIMARY KEY ("Uuid"),
+        CONSTRAINT "FK_PurposeDecisions_Organizations_OrganizationUuid" FOREIGN KEY ("OrganizationUuid") REFERENCES "Organizations" ("Uuid") ON DELETE RESTRICT,
+        CONSTRAINT "FK_PurposeDecisions_ProcessingPurposes" FOREIGN KEY ("ProcessingPurposeUuid", "OrganizationUuid", "Code") REFERENCES "ProcessingPurposes" ("Uuid", "OrganizationUuid", "Code") ON DELETE RESTRICT,
+        CONSTRAINT "FK_PurposeDecisions_Users_UserId" FOREIGN KEY ("UserId") REFERENCES "Users" ("Id") ON DELETE RESTRICT
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260828231506_AddProcessingPurposes') THEN
+    CREATE UNIQUE INDEX "IX_ProcessingPurposes_OrganizationUuid_Code" ON "ProcessingPurposes" ("OrganizationUuid", "Code") WHERE "RetiredAt" IS NULL;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260828231506_AddProcessingPurposes') THEN
+    CREATE UNIQUE INDEX "IX_ProcessingPurposes_OrganizationUuid_Code_Version" ON "ProcessingPurposes" ("OrganizationUuid", "Code", "Version");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260828231506_AddProcessingPurposes') THEN
+    CREATE INDEX "IX_PurposeDecisions_OrganizationUuid_Code_Decision" ON "PurposeDecisions" ("OrganizationUuid", "Code", "Decision");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260828231506_AddProcessingPurposes') THEN
+    CREATE INDEX "IX_PurposeDecisions_ProcessingPurposeUuid_OrganizationUuid_Code" ON "PurposeDecisions" ("ProcessingPurposeUuid", "OrganizationUuid", "Code");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260828231506_AddProcessingPurposes') THEN
+    CREATE UNIQUE INDEX "IX_PurposeDecisions_UserId_OrganizationUuid_Code" ON "PurposeDecisions" ("UserId", "OrganizationUuid", "Code");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260828231506_AddProcessingPurposes') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20260828231506_AddProcessingPurposes', '10.0.11');
     END IF;
 END $EF$;
 COMMIT;
