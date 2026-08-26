@@ -103,11 +103,17 @@
   "events": {
     "description": "Description",
     "detailspage": {
+      "facts": {
+        "date": "Date",
+        "deadline": "Registration deadline",
+        "location": "Location"
+      },
       "notfound": {
         "back": "Show me the front page",
         "description": "We do not know where to look.",
         "title": "Sorry, not found."
-      }
+      },
+      "registration": "Registration"
     },
     "event": "Event",
     "event-not-found": "Event not found",
@@ -120,7 +126,7 @@
         "finished": "Finished",
         "planned": "Planned",
         "registrationsClosed": "Registrations now closed",
-        "registrationsOpen": "Register now",
+        "registrationsOpen": "Registration open",
         "unknown": "Unknown",
         "waitingList": "Waitinglist"
       }

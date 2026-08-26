@@ -1,19 +1,19 @@
 import { Suspense } from 'react';
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
+import { getLocale, getTranslations } from 'next-intl/server';
 
 import { formatDateSpan } from '@eventuras/core/datetime';
 import { Logger } from '@eventuras/logger';
 import { MarkdownContent } from '@eventuras/markdown';
 import { Card } from '@eventuras/ratio-ui/core/Card';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
-import { Calendar, MapPin } from '@eventuras/ratio-ui/icons';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 
 import EventDetails from '@/app/(public)/events/EventDetails';
 import EventRegistrationButton from '@/app/(public)/events/EventRegistrationButton';
-import { appConfig } from '@/config.server';
+import EventRegistrationCard from '@/app/(public)/events/EventRegistrationCard';
 import { getPublicClient } from '@/lib/eventuras-public-client';
 import { EventInfoStatus, getV3EventsById } from '@/lib/eventuras-public-sdk';
 
@@ -135,57 +135,87 @@ export default async function EventDetailsPage({ params }: Readonly<EventDetails
     redirect(`/events/${eventinfo.id}/${encodeURI(eventinfo.slug)}`);
   }
 
+  const t = await getTranslations();
+  const locale = await getLocale();
+
+  const dates = eventinfo.dateStart
+    ? formatDateSpan(eventinfo.dateStart as string, eventinfo.dateEnd as string, { locale })
+    : '';
+  const place = [eventinfo.location, eventinfo.city].filter(Boolean).join(', ');
+  const deadline = eventinfo.lastRegistrationDate
+    ? new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(
+        new Date(eventinfo.lastRegistrationDate as string)
+      )
+    : '';
+  const year = eventinfo.dateStart
+    ? String(new Date(eventinfo.dateStart as string).getFullYear())
+    : '';
+  const eyebrow = [eventinfo.category, [eventinfo.city, year].filter(Boolean).join(' ')]
+    .filter(Boolean)
+    .join(' · ');
+
+  const facts = [
+    { label: t('common.events.detailspage.facts.date'), value: dates },
+    { label: t('common.events.detailspage.facts.location'), value: place },
+    { label: t('common.events.detailspage.facts.deadline'), value: deadline },
+  ].filter(fact => fact.value);
+
   return (
     <>
-      <Section className="pb-8">
-        <Container>
+      <Section paddingY="lg" className="pb-8">
+        <Container size="xl">
+          <Heading.Group>
+            {eyebrow && <Heading.Eyebrow tone="accent">{eyebrow}</Heading.Eyebrow>}
+            <Heading
+              as="h1"
+              className="font-serif font-medium text-3xl md:text-4xl leading-tight tracking-tight m-0"
+            >
+              {eventinfo.title ?? 'Mysterious Event'}
+            </Heading>
+          </Heading.Group>
+
+          {eventinfo.headline && (
+            <p className="mt-4 text-xl text-(--text-muted) max-w-prose">{eventinfo.headline}</p>
+          )}
+
+          {eventinfo.description && (
+            <div className="mt-4 max-w-prose">
+              <MarkdownContent markdown={eventinfo.description} />
+            </div>
+          )}
+
+          {facts.length > 0 && (
+            <dl className="grid grid-cols-2 md:grid-cols-4 gap-6 border-t border-b border-(--border-1) py-6 mt-8">
+              {facts.map(fact => (
+                <div key={fact.label}>
+                  <dt className="font-mono text-xs uppercase tracking-widest text-(--text-subtle)">
+                    {fact.label}
+                  </dt>
+                  <dd className="font-serif text-lg leading-tight text-(--text) mt-1">
+                    {fact.value}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          )}
+
           {eventinfo.featuredImageUrl && (
             <Card
-              className="min-h-[33vh] mx-auto"
+              className="h-64 rounded-xl mt-8"
               backgroundImageUrl={eventinfo.featuredImageUrl}
             />
           )}
 
-          <Heading as="h1" paddingY="xs">
-            {eventinfo.title ?? 'Mysterious Event'}
-          </Heading>
-
-          {eventinfo.headline && (
-            <Heading as="h2" paddingY="xs" className="text-xl font-semibold text-gray-700">
-              &mdash; {eventinfo.headline}
-            </Heading>
-          )}
-
-          <div className="py-3">
-            <MarkdownContent markdown={eventinfo.description} />
+          <div className="lg:hidden mt-6">
+            <Suspense fallback={<div>Loading registration options...</div>}>
+              <EventRegistrationButton event={eventinfo} />
+            </Suspense>
           </div>
-
-          {eventinfo.dateStart && (
-            <div className="flex items-center gap-2 py-0">
-              <Calendar className="h-5 w-5 mb-5 text-gray-600" />
-              <span>
-                {formatDateSpan(eventinfo.dateStart as string, eventinfo.dateEnd as string, {
-                  locale: appConfig.env.DEFAULT_LOCALE as string,
-                })}
-              </span>
-            </div>
-          )}
-
-          {eventinfo.city && (
-            <div className="flex items-center gap-2 py-0 mb-4">
-              <MapPin className="h-5 w-5 text-gray-600" />
-              <span>{eventinfo.city}</span>
-            </div>
-          )}
-
-          <Suspense fallback={<div>Loading registration options...</div>}>
-            <EventRegistrationButton event={eventinfo} />
-          </Suspense>
         </Container>
       </Section>
 
       <Suspense fallback={<div>Loading event details...</div>}>
-        <EventDetails eventinfo={eventinfo} />
+        <EventDetails eventinfo={eventinfo} aside={<EventRegistrationCard event={eventinfo} />} />
       </Suspense>
     </>
   );
