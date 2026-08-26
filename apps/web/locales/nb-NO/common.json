@@ -103,11 +103,17 @@
   "events": {
     "description": "Beskrivelse",
     "detailspage": {
+      "facts": {
+        "date": "Dato",
+        "deadline": "Påmeldingsfrist",
+        "location": "Sted"
+      },
       "notfound": {
         "back": "Til forsiden",
         "description": "Vi finner ikke dette arrangementet",
         "title": "Beklager, kunne ikke finne siden"
-      }
+      },
+      "registration": "Påmelding"
     },
     "event": "Arrangement",
     "event-not-found": "Arrangementet ble ikke funnet",
@@ -120,7 +126,7 @@
         "finished": "Ferdig",
         "planned": "Planlagt",
         "registrationsClosed": "Stengt for påmelding",
-        "registrationsOpen": "Registrer deg nå",
+        "registrationsOpen": "Påmelding åpen",
         "unknown": "Ukjent",
         "waitingList": "Venteliste"
       }
