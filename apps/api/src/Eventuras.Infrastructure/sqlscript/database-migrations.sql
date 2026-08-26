@@ -2590,3 +2590,125 @@ BEGIN
 END $EF$;
 COMMIT;
 
+START TRANSACTION;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260921172835_AddProcessingPurposes') THEN
+    DROP INDEX "IX_Registrations_Uuid";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260921172835_AddProcessingPurposes') THEN
+    ALTER TABLE "Registrations" ADD CONSTRAINT "AK_Registrations_Uuid" UNIQUE ("Uuid");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260921172835_AddProcessingPurposes') THEN
+    CREATE TABLE "ProcessingPurposes" (
+        "Uuid" uuid NOT NULL,
+        "OrganizationUuid" uuid NOT NULL,
+        "Code" character varying(100) NOT NULL,
+        "Version" integer NOT NULL,
+        "Kind" integer NOT NULL,
+        "Name" character varying(200) NOT NULL,
+        "Text" text NOT NULL,
+        "RequiresReconsent" boolean NOT NULL,
+        "HasSpecialCategoryData" boolean NOT NULL,
+        "CreatedAt" timestamp with time zone NOT NULL,
+        "RetiredAt" timestamp with time zone,
+        CONSTRAINT "PK_ProcessingPurposes" PRIMARY KEY ("Uuid"),
+        CONSTRAINT "AK_ProcessingPurposes_Uuid_OrganizationUuid_Code" UNIQUE ("Uuid", "OrganizationUuid", "Code"),
+        CONSTRAINT "CK_ProcessingPurposes_Kind" CHECK ("Kind" IN (1, 2)),
+        CONSTRAINT "CK_ProcessingPurposes_SpecialCategoryIsOptIn" CHECK (NOT "HasSpecialCategoryData" OR "Kind" = 1),
+        CONSTRAINT "FK_ProcessingPurposes_Organizations_OrganizationUuid" FOREIGN KEY ("OrganizationUuid") REFERENCES "Organizations" ("Uuid") ON DELETE RESTRICT
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260921172835_AddProcessingPurposes') THEN
+    CREATE TABLE "PurposeDecisions" (
+        "Uuid" uuid NOT NULL,
+        "UserId" uuid NOT NULL,
+        "OrganizationUuid" uuid NOT NULL,
+        "Code" character varying(100) NOT NULL,
+        "RegistrationUuid" uuid,
+        "ProcessingPurposeUuid" uuid NOT NULL,
+        "Decision" integer NOT NULL,
+        "Source" character varying(50),
+        "CreatedAt" timestamp with time zone NOT NULL,
+        "DecidedAt" timestamp with time zone NOT NULL,
+        CONSTRAINT "PK_PurposeDecisions" PRIMARY KEY ("Uuid"),
+        CONSTRAINT "CK_PurposeDecisions_Decision" CHECK ("Decision" IN (1, 2)),
+        CONSTRAINT "FK_PurposeDecisions_Organizations_OrganizationUuid" FOREIGN KEY ("OrganizationUuid") REFERENCES "Organizations" ("Uuid") ON DELETE RESTRICT,
+        CONSTRAINT "FK_PurposeDecisions_ProcessingPurposes" FOREIGN KEY ("ProcessingPurposeUuid", "OrganizationUuid", "Code") REFERENCES "ProcessingPurposes" ("Uuid", "OrganizationUuid", "Code") ON DELETE RESTRICT,
+        CONSTRAINT "FK_PurposeDecisions_Registrations_RegistrationUuid" FOREIGN KEY ("RegistrationUuid") REFERENCES "Registrations" ("Uuid") ON DELETE CASCADE,
+        CONSTRAINT "FK_PurposeDecisions_Users_UserId" FOREIGN KEY ("UserId") REFERENCES "Users" ("Id") ON DELETE RESTRICT
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260921172835_AddProcessingPurposes') THEN
+    CREATE UNIQUE INDEX "IX_ProcessingPurposes_OrganizationUuid_Code" ON "ProcessingPurposes" ("OrganizationUuid", "Code") WHERE "RetiredAt" IS NULL;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260921172835_AddProcessingPurposes') THEN
+    CREATE UNIQUE INDEX "IX_ProcessingPurposes_OrganizationUuid_Code_Version" ON "ProcessingPurposes" ("OrganizationUuid", "Code", "Version");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260921172835_AddProcessingPurposes') THEN
+    CREATE INDEX "IX_PurposeDecisions_OrganizationUuid_Code_Decision" ON "PurposeDecisions" ("OrganizationUuid", "Code", "Decision");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260921172835_AddProcessingPurposes') THEN
+    CREATE INDEX "IX_PurposeDecisions_ProcessingPurposeUuid_OrganizationUuid_Code" ON "PurposeDecisions" ("ProcessingPurposeUuid", "OrganizationUuid", "Code");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260921172835_AddProcessingPurposes') THEN
+    CREATE INDEX "IX_PurposeDecisions_RegistrationUuid" ON "PurposeDecisions" ("RegistrationUuid");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260921172835_AddProcessingPurposes') THEN
+    CREATE UNIQUE INDEX "IX_PurposeDecisions_UserId_OrgUuid_Code" ON "PurposeDecisions" ("UserId", "OrganizationUuid", "Code") WHERE "RegistrationUuid" IS NULL;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260921172835_AddProcessingPurposes') THEN
+    CREATE UNIQUE INDEX "IX_PurposeDecisions_UserId_OrgUuid_Code_RegistrationUuid" ON "PurposeDecisions" ("UserId", "OrganizationUuid", "Code", "RegistrationUuid") WHERE "RegistrationUuid" IS NOT NULL;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260921172835_AddProcessingPurposes') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20260921172835_AddProcessingPurposes', '10.0.11');
+    END IF;
+END $EF$;
+COMMIT;
+

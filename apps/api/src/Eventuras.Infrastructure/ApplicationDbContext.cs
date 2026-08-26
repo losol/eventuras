@@ -35,6 +35,8 @@ public class ApplicationDbContext : DbContext
     public DbSet<EventCollectionMapping> EventCollectionMappings { get; set; }
     public DbSet<OrganizationSetting> OrganizationSettings { get; set; }
     public DbSet<BusinessEvent> BusinessEvents { get; set; }
+    public DbSet<ProcessingPurpose> ProcessingPurposes { get; set; }
+    public DbSet<PurposeDecision> PurposeDecisions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -140,10 +142,6 @@ public class ApplicationDbContext : DbContext
             .HasIndex(x => x.Uuid)
             .IsUnique();
 
-        builder.Entity<Registration>()
-            .HasIndex(x => x.Uuid)
-            .IsUnique();
-
         builder.Entity<Certificate>()
             .HasIndex(x => x.Uuid)
             .IsUnique();
@@ -174,6 +172,98 @@ public class ApplicationDbContext : DbContext
                 .HasForeignKey(x => x.OrganizationUuid)
                 .HasPrincipalKey(o => o.Uuid)
                 .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<ProcessingPurpose>(entity =>
+        {
+            // Lets PurposeDecision reference (Uuid, OrganizationUuid, Code) together,
+            // so its denormalized org and code can't drift from the version it points to.
+            entity.HasAlternateKey(x => new { x.Uuid, x.OrganizationUuid, x.Code });
+
+            entity.HasIndex(x => new { x.OrganizationUuid, x.Code, x.Version })
+                .IsUnique();
+
+            // At most one current (non-retired) version per purpose.
+            entity.HasIndex(x => new { x.OrganizationUuid, x.Code })
+                .IsUnique()
+                .HasFilter($@"""{nameof(ProcessingPurpose.RetiredAt)}"" IS NULL");
+
+            entity.HasOne<Organization>()
+                .WithMany()
+                .HasForeignKey(x => x.OrganizationUuid)
+                .HasPrincipalKey(o => o.Uuid)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // A reservation is not a valid basis for article 9 data, so a special
+            // category purpose can only ever be OptIn (1). Enforced here rather than in
+            // the service layer: an OptOut written by mistake reads as reasonable in
+            // review, and is wrong only for reasons that live outside the code.
+            entity.ToTable(t => t.HasCheckConstraint(
+                "CK_ProcessingPurposes_SpecialCategoryIsOptIn",
+                $@"NOT ""{nameof(ProcessingPurpose.HasSpecialCategoryData)}"" OR ""{nameof(ProcessingPurpose.Kind)}"" = 1"));
+
+            // The enum starts at 1 so an unset Kind (0) is detectable; this makes the
+            // database refuse it rather than store a purpose that is neither kind.
+            entity.ToTable(t => t.HasCheckConstraint(
+                "CK_ProcessingPurposes_Kind",
+                $@"""{nameof(ProcessingPurpose.Kind)}"" IN ({(int)ProcessingPurpose.PurposeKind.OptIn}, {(int)ProcessingPurpose.PurposeKind.OptOut})"));
+        });
+
+        builder.Entity<PurposeDecision>(entity =>
+        {
+            // One decision per purpose, split in two because Postgres treats NULLs as
+            // distinct: without the filters an organization-wide row could be stored
+            // many times over.
+            // Named as a pair: the generated name for the second overflows Postgres'
+            // 63-char limit and gets truncated, which would hide that the two go together.
+            entity.HasIndex(x => new { x.UserId, x.OrganizationUuid, x.Code })
+                .IsUnique()
+                .HasFilter($@"""{nameof(PurposeDecision.RegistrationUuid)}"" IS NULL")
+                .HasDatabaseName("IX_PurposeDecisions_UserId_OrgUuid_Code");
+
+            entity.HasIndex(x => new { x.UserId, x.OrganizationUuid, x.Code, x.RegistrationUuid })
+                .IsUnique()
+                .HasFilter($@"""{nameof(PurposeDecision.RegistrationUuid)}"" IS NOT NULL")
+                .HasDatabaseName("IX_PurposeDecisions_UserId_OrgUuid_Code_RegistrationUuid");
+
+            // Recipient filtering for bulk email: who has denied (reserved against) a purpose.
+            entity.HasIndex(x => new { x.OrganizationUuid, x.Code, x.Decision });
+
+            entity.HasOne<ApplicationUser>()
+                .WithMany()
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne<Organization>()
+                .WithMany()
+                .HasForeignKey(x => x.OrganizationUuid)
+                .HasPrincipalKey(o => o.Uuid)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Cascade, unlike the other FKs here: a decision scoped to a registration
+            // has no meaning once that registration is gone, and Restrict would block
+            // deleting it. Referenced by Uuid, like the organization above.
+            // Makes Registration.Uuid an alternate key, which is what keeps it unique —
+            // so Registration carries no separate unique index on it, like Organization.Uuid.
+            entity.HasOne<Registration>()
+                .WithMany()
+                .HasForeignKey(x => x.RegistrationUuid)
+                .HasPrincipalKey(r => r.Uuid)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne<ProcessingPurpose>()
+                .WithMany()
+                .HasForeignKey(x => new { x.ProcessingPurposeUuid, x.OrganizationUuid, x.Code })
+                .HasPrincipalKey(p => new { p.Uuid, p.OrganizationUuid, p.Code })
+                // The generated name overflows Postgres' 63-char identifier limit.
+                .HasConstraintName("FK_PurposeDecisions_ProcessingPurposes")
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // As with Kind: an unset Decision (0) is neither Allowed nor Denied, so the
+            // effective-decision logic would have nothing to read. Refuse it here.
+            entity.ToTable(t => t.HasCheckConstraint(
+                "CK_PurposeDecisions_Decision",
+                $@"""{nameof(PurposeDecision.Decision)}"" IN ({(int)PurposeDecision.DecisionValue.Allowed}, {(int)PurposeDecision.DecisionValue.Denied})"));
         });
     }
 
