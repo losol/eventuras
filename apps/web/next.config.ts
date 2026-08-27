@@ -10,6 +10,14 @@ const pkg = JSON.parse(readFileSync(path.resolve(__dirname, 'package.json'), 'ut
 const nextConfig: NextConfig = {
   output: 'standalone',
 
+  // next requires @swc/helpers via its `module-sync` export condition on
+  // Node >= 22.10, but file tracing resolves the `require` condition and only
+  // ships the cjs files — crashing the standalone server on startup
+  // (vercel/next.js#90567). Force the whole (tiny) package into the trace.
+  outputFileTracingIncludes: {
+    '/**': ['../../node_modules/.pnpm/@swc+helpers@*/node_modules/@swc/helpers/**'],
+  },
+
   env: {
     BUILD_GIT_SHA: process.env.GIT_SHA ?? 'unknown',
     BUILD_TIME: new Date().toISOString(),
