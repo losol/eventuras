@@ -2,7 +2,7 @@ import type { getTranslations } from 'next-intl/server';
 
 import { EventInfoStatus } from '@/lib/eventuras-public-sdk';
 
-type Translator = Awaited<ReturnType<typeof getTranslations>>;
+export type Translator = Awaited<ReturnType<typeof getTranslations>>;
 
 /** Localized label for an event status, e.g. "Påmelding åpen". */
 export function eventStatusLabel(t: Translator, status?: EventInfoStatus | null): string {
