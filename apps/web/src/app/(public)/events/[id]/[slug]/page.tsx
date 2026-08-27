@@ -3,15 +3,17 @@ import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { getLocale, getTranslations } from 'next-intl/server';
 
-import { formatDateSpan } from '@eventuras/core/datetime';
 import { Logger } from '@eventuras/logger';
 import { MarkdownContent } from '@eventuras/markdown';
 import { Card } from '@eventuras/ratio-ui/core/Card';
+import { DescriptionList } from '@eventuras/ratio-ui/core/DescriptionList';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { Text } from '@eventuras/ratio-ui/core/Text';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 
 import EventDetails from '@/app/(public)/events/EventDetails';
+import { getEventFacts } from '@/app/(public)/events/eventFacts';
 import EventRegistrationButton from '@/app/(public)/events/EventRegistrationButton';
 import EventRegistrationCard from '@/app/(public)/events/EventRegistrationCard';
 import { getPublicClient } from '@/lib/eventuras-public-client';
@@ -138,15 +140,7 @@ export default async function EventDetailsPage({ params }: Readonly<EventDetails
   const t = await getTranslations();
   const locale = await getLocale();
 
-  const dates = eventinfo.dateStart
-    ? formatDateSpan(eventinfo.dateStart as string, eventinfo.dateEnd as string, { locale })
-    : '';
-  const place = [eventinfo.location, eventinfo.city].filter(Boolean).join(', ');
-  const deadline = eventinfo.lastRegistrationDate
-    ? new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(
-        new Date(eventinfo.lastRegistrationDate as string)
-      )
-    : '';
+  const facts = getEventFacts(eventinfo, t, locale);
   const year = eventinfo.dateStart
     ? String(new Date(eventinfo.dateStart as string).getFullYear())
     : '';
@@ -154,28 +148,21 @@ export default async function EventDetailsPage({ params }: Readonly<EventDetails
     .filter(Boolean)
     .join(' · ');
 
-  const facts = [
-    { label: t('common.events.detailspage.facts.date'), value: dates },
-    { label: t('common.events.detailspage.facts.location'), value: place },
-    { label: t('common.events.detailspage.facts.deadline'), value: deadline },
-  ].filter(fact => fact.value);
-
   return (
     <>
       <Section paddingY="lg" className="pb-8">
         <Container size="xl">
           <Heading.Group>
             {eyebrow && <Heading.Eyebrow tone="accent">{eyebrow}</Heading.Eyebrow>}
-            <Heading
-              as="h1"
-              className="font-serif font-medium text-3xl md:text-4xl leading-tight tracking-tight m-0"
-            >
+            <Heading as="h1" size="lg">
               {eventinfo.title ?? 'Mysterious Event'}
             </Heading>
           </Heading.Group>
 
           {eventinfo.headline && (
-            <p className="mt-4 text-xl text-(--text-muted) max-w-prose">{eventinfo.headline}</p>
+            <Text as="p" size="xl" variant="muted" className="mt-4 max-w-prose">
+              {eventinfo.headline}
+            </Text>
           )}
 
           {eventinfo.description && (
@@ -185,18 +172,13 @@ export default async function EventDetailsPage({ params }: Readonly<EventDetails
           )}
 
           {facts.length > 0 && (
-            <dl className="grid grid-cols-2 md:grid-cols-4 gap-6 border-t border-b border-(--border-1) py-6 mt-8">
+            <DescriptionList variant="facts" className="mt-8">
               {facts.map(fact => (
-                <div key={fact.label}>
-                  <dt className="font-mono text-xs uppercase tracking-widest text-(--text-subtle)">
-                    {fact.label}
-                  </dt>
-                  <dd className="font-serif text-lg leading-tight text-(--text) mt-1">
-                    {fact.value}
-                  </dd>
-                </div>
+                <DescriptionList.Description key={fact.label} term={fact.label}>
+                  {fact.value}
+                </DescriptionList.Description>
               ))}
-            </dl>
+            </DescriptionList>
           )}
 
           {eventinfo.featuredImageUrl && (

@@ -15,6 +15,7 @@ import {
 } from '@eventuras/markdown-plugin-happening';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { NavList } from '@eventuras/ratio-ui/core/NavList';
+import { AsideLayout } from '@eventuras/ratio-ui/layout/AsideLayout';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 import { Link } from '@eventuras/ratio-ui-next/Link';
@@ -61,11 +62,11 @@ const EventDetails: React.FC<EventProps> = ({ eventinfo, aside }) => {
     <Section className="pb-24">
       {sections.length > 0 && <NavList items={sections} LinkComponent={Link} sticky />}
       <Container size="xl">
-        <div className="lg:flex gap-8 items-start pt-8">
-          <div className="min-w-0 flex-1">
+        <AsideLayout className="pt-8">
+          <AsideLayout.Main>
             {sections.map(section => (
               <section key={section.id} id={section.id} className="mb-10">
-                <Heading as="h2" className="font-serif font-medium text-2xl tracking-tight m-0">
+                <Heading as="h2" size="md">
                   {section.title}
                 </Heading>
                 <div className="mt-4">
@@ -82,9 +83,13 @@ const EventDetails: React.FC<EventProps> = ({ eventinfo, aside }) => {
                 </div>
               </section>
             ))}
-          </div>
-          {aside && <aside className="w-full max-w-sm shrink-0 lg:sticky lg:top-16">{aside}</aside>}
-        </div>
+          </AsideLayout.Main>
+          {aside && (
+            <AsideLayout.Aside width="lg" top={64}>
+              {aside}
+            </AsideLayout.Aside>
+          )}
+        </AsideLayout>
       </Container>
     </Section>
   );
