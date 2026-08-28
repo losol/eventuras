@@ -15,7 +15,12 @@
         "OIDC_API_AUDIENCE",
         "OIDC_ROLES_CLAIM",
         "SESSION_SECRET",
-        "NODE_ENV"
+        "NODE_ENV",
+        "GIT_SHA",
+        "BUILD_GIT_SHA",
+        "BUILD_VERSION",
+        "BUILD_TIME",
+        "IMAGE_TAG"
       ],
       "inputs": [
         "$TURBO_DEFAULT$",
