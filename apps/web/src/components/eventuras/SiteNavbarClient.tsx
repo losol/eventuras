@@ -11,6 +11,10 @@ const BG_COLOR_BY_VARIANT: Record<Exclude<SiteNavbarVariant, 'dark'>, string> = 
   primary: 'bg-primary w-full py-1',
   transparent: 'bg-transparent w-full py-1',
 };
+// A sticky bar needs a surface behind it, and a known height (h-16 = 16 spacing
+// units) so page-level sticky elements (e.g. the event section nav) can sit right under it.
+const STICKY_TRANSPARENT_BG = 'bg-surface border-b border-border-1 w-full';
+const STICKY_CLASSES = 'h-16 flex items-center';
 
 export interface SiteNavbarClientProps {
   brand: string;
@@ -38,7 +42,14 @@ export default function SiteNavbarClient({
     <Navbar
       {...(isDark
         ? { dark: true, overlay: true, glass: true }
-        : { bgColor: BG_COLOR_BY_VARIANT[variant], sticky })}
+        : {
+            bgColor:
+              sticky && variant === 'transparent'
+                ? STICKY_TRANSPARENT_BG
+                : BG_COLOR_BY_VARIANT[variant],
+            sticky,
+            className: sticky ? STICKY_CLASSES : undefined,
+          })}
     >
       <Navbar.Brand>
         <Link href="/" className="text-lg tracking-tight whitespace-nowrap no-underline">

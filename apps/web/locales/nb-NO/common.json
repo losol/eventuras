@@ -113,7 +113,8 @@
         "description": "Vi finner ikke dette arrangementet",
         "title": "Beklager, kunne ikke finne siden"
       },
-      "registration": "Påmelding"
+      "registration": "Påmelding",
+      "sectionNav": "Innhold"
     },
     "event": "Arrangement",
     "event-not-found": "Arrangementet ble ikke funnet",
