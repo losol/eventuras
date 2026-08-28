@@ -11,7 +11,7 @@ import SiteNavbar from '@/components/eventuras/SiteNavbar';
 export default function PublicLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <>
-      <SiteNavbar />
+      <SiteNavbar sticky />
 
       <main id="main-content">{children}</main>
 

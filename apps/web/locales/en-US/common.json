@@ -113,7 +113,8 @@
         "description": "We do not know where to look.",
         "title": "Sorry, not found."
       },
-      "registration": "Registration"
+      "registration": "Registration",
+      "sectionNav": "On this page"
     },
     "event": "Event",
     "event-not-found": "Event not found",
