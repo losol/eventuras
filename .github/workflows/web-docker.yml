@@ -96,6 +96,62 @@ jobs:
             org.opencontainers.image.revision=${{ steps.ver.outputs.sha }}
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
 
+      - name: Build amd64 image for smoke test
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+        with:
+          context: .
+          file: apps/web/Dockerfile
+          platforms: linux/amd64
+          load: true
+          tags: eventuras-web:smoke
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          secrets: |
+            TURBO_TOKEN=${{ secrets.TURBO_TOKEN }}
+            TURBO_TEAM=${{ secrets.TURBO_TEAM }}
+          build-args: |
+            GIT_SHA=${{ steps.ver.outputs.sha }}
+
+      # A standalone build missing a runtime dependency (next@16.3.1 without the
+      # @swc/helpers esm files, 2026-08-26) only fails when the server starts —
+      # in the cluster that is a CrashLoopBackOff nobody notices. Boot the image
+      # and require /api/healthz to answer with this build's sha before pushing.
+      - name: Smoke test — image starts and serves /api/healthz
+        env:
+          EXPECTED_SHA: ${{ steps.ver.outputs.sha }}
+        run: |
+          set -euo pipefail
+          # Placeholder config: app-config validates these at startup, but
+          # /api/healthz contacts nothing, so the values only need to parse.
+          docker run -d --name web-smoke -p 3000:3000 \
+            -e APPLICATION_URL=http://localhost:3000 \
+            -e LOGOUT_URL_REDIRECT=http://localhost:3000 \
+            -e DEFAULT_LOCALE=nb-NO \
+            -e ORGANIZATION_ID=1 \
+            -e BACKEND_URL=https://smoke.invalid \
+            -e OIDC_ISSUER=https://smoke.invalid/realms/smoke \
+            -e OIDC_CLIENT_ID=smoke \
+            -e OIDC_CLIENT_SECRET=smoke \
+            -e SESSION_SECRET=0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef \
+            eventuras-web:smoke
+          trap 'docker rm -f web-smoke >/dev/null 2>&1 || true' EXIT
+          for _ in $(seq 1 30); do
+            if BODY=$(curl -fsS http://localhost:3000/api/healthz 2>/dev/null); then
+              echo "healthz: ${BODY}"
+              SHA=$(jq -r '.gitSha // empty' <<<"${BODY}")
+              if [[ "${SHA}" != "${EXPECTED_SHA}" ]]; then
+                echo "::error::/api/healthz reports gitSha '${SHA}', expected '${EXPECTED_SHA}'"
+                docker logs web-smoke || true
+                exit 1
+              fi
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "::error::web image did not answer /api/healthz within 30s"
+          docker logs web-smoke || true
+          exit 1
+
       - name: Login to Docker Hub
         if: inputs.push
         uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0

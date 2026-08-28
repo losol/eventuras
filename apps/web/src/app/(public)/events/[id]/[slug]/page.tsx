@@ -190,7 +190,7 @@ export default async function EventDetailsPage({ params }: Readonly<EventDetails
 
           <div className="lg:hidden mt-6">
             <Suspense fallback={<div>Loading registration options...</div>}>
-              <EventRegistrationButton event={eventinfo} />
+              <EventRegistrationButton event={eventinfo} testId="event-registration-button-hero" />
             </Suspense>
           </div>
         </Container>
