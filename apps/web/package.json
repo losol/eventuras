@@ -12,6 +12,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix && prettier . --write",
     "start": "next start",
+    "test": "vitest run",
     "vercel-build": "pnpm --filter=@eventuras/web^... build && next build"
   },
   "lint-staged": {
@@ -70,7 +71,8 @@
     "postcss": "^8.5.26",
     "prettier": "^3.9.6",
     "tailwindcss": "^4.3.3",
-    "typescript": "6.0.3"
+    "typescript": "6.0.3",
+    "vitest": "^4.1.10"
   },
   "optionalDependencies": {
     "@rollup/rollup-linux-x64-gnu": "4.62.4"

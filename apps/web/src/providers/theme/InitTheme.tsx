@@ -1,6 +1,7 @@
 import Script from 'next/script';
 
 import { defaultTheme, themeLocalStorageKey } from './shared';
+import type { Theme } from './types';
 
 const themeScript = `
 (function () {
@@ -26,15 +27,19 @@ const themeScript = `
       themeToSet = implicitPreference
     }
   }
-  document.documentElement.setAttribute('data-theme', themeToSet)
+  document.documentElement.setAttribute('data-color-scheme', themeToSet)
 })();
 `;
 
 // Uses next/script with beforeInteractive so the script lands in the SSR
 // head and runs before hydration (anti-FOUC). A plain <script> here
 // triggers a React 19 dev warning even though it works at runtime.
-export const InitTheme = () => (
-  <Script id="theme-script" strategy="beforeInteractive">
-    {themeScript}
-  </Script>
-);
+// Writes ratio-ui's light/dark axis (data-color-scheme); data-theme is the
+// palette and belongs to the server. With a forced colour scheme the attribute
+// is server-rendered and the stored preference must not override it: no script.
+export const InitTheme = ({ forced }: { forced?: Theme | null }) =>
+  forced ? null : (
+    <Script id="theme-script" strategy="beforeInteractive">
+      {themeScript}
+    </Script>
+  );

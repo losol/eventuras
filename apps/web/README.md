@@ -83,6 +83,52 @@ This is a plugin for visual code which makes it easier to see the translations i
     "i18n-ally.keystyle": "nested"
 ```
 
+## Site settings: occasions
+
+The hosted site-settings JSON (`SITE_SETTINGS_URL`) may carry an `occasions` block under
+`site` for days the site marks — mourning, Pride, Christmas, New Year, Constitution Day. The
+app validates it entry by entry (invalid entries are logged and dropped, never fatal), resolves
+what is active per request in the site's time zone, and sets `data-occasion` on `<html>` — plus
+ratio-ui's `data-motion="none"` switch during mourning. Nothing is styled yet: per ratio-ui's
+`docs/occasions.md` the app owns one CSS block per occasion on the `ratio-navbar` / `ratio-hero`
+hooks and feeds the motif/wash slots from config; that, and announcements (`Announcement`),
+follow once ratio-ui 2.20 is published.
+
+```json
+{
+  "site": {
+    "theme": "bureau",
+    "occasions": {
+      "timeZone": "Europe/Oslo",
+      "override": {
+        "id": "mourning",
+        "from": "2026-08-29",
+        "until": "2026-09-14",
+        "theme": "ink",
+        "colorScheme": "dark"
+      },
+      "schedule": [
+        { "id": "constitution-day", "from": "05-16", "until": "05-17" },
+        { "id": "christmas", "from": "12-15", "until": "12-26" },
+        { "id": "new-year", "from": "12-31", "until": "01-01" },
+        { "id": "pride", "from": "2026-06-19", "until": "2026-06-28" }
+      ]
+    }
+  }
+}
+```
+
+- `id`: any lowercase slug (`^[a-z0-9]+(-[a-z0-9]+)*$`, ≤ 40 chars). Which ids get styling is decided in ratio-ui; an unknown id passes through and styles nothing. `mourning` is the one id the app itself reacts to (motion off)
+- `from`/`until`: inclusive; `YYYY-MM-DD` for a one-off, `MM-DD` for a yearly window (may wrap the year end)
+- Resolution: `override` (inside its window) → first matching `schedule` entry → none
+- `theme`: a named ratio-ui palette (`bureau`, `ink`, …) on `data-theme` while the occasion is active; absent = the standard theme
+- `colorScheme`: `light` or `dark`, forced while the occasion is active. Rendered server-side as `data-color-scheme`; the stored preference is ignored and the theme toggle is hidden. The user's own choice returns untouched when the occasion ends
+- `site.theme` / `site.colorScheme` (outside `occasions`): the same, always on — a site that is `bureau`, or dark by design
+
+Theming is two axes, per ratio-ui's contract: `data-theme` is the palette and belongs to the server (site or occasion), `data-color-scheme` is light/dark and is the user's toggle unless forced. Colours, CSS and motifs never come from JSON.
+
+Run the unit tests with `pnpm test`.
+
 ## Testing
 
 ### Cloudflare tunnels

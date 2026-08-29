@@ -13,7 +13,7 @@ import { authStore, useAuthStore } from '@/auth/authStore';
 import { LoginSuccessHandler } from '@/components/auth/LoginSuccessHandler';
 import { SessionWarningOverlay } from '@/components/SessionWarningOverlay';
 import { SentryUserContext } from '@/providers/sentry/SentryUserContext';
-import { ThemeProvider } from '@/providers/theme';
+import { type Theme, ThemeProvider } from '@/providers/theme';
 import { getAuthStatus } from '@/utils/auth/getAuthStatus';
 
 const logger = Logger.create({
@@ -23,6 +23,8 @@ const logger = Logger.create({
 
 type ProvidersProps = {
   children: React.ReactNode;
+  /** Colour scheme forced by the site or an active occasion; hides the user's toggle. */
+  forcedColorScheme?: Theme | null;
 };
 
 /**
@@ -49,7 +51,7 @@ function HeartbeatRunner() {
   return null;
 }
 
-export default function Providers({ children }: Readonly<ProvidersProps>) {
+export default function Providers({ children, forcedColorScheme }: Readonly<ProvidersProps>) {
   const { isAuthenticated } = useAuthStore();
 
   // Initialize auth store and start session monitoring
@@ -96,7 +98,7 @@ export default function Providers({ children }: Readonly<ProvidersProps>) {
   }, []);
 
   return (
-    <ThemeProvider>
+    <ThemeProvider forced={forcedColorScheme}>
       <ToastRenderer />
       <LoginSuccessHandler />
       <SentryUserContext />
