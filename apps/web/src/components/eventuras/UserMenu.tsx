@@ -97,7 +97,7 @@ function UserDropdownMenu({
   >;
   onLogout: () => void;
 }>) {
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, locked } = useTheme();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleLogout = () => {
@@ -125,12 +125,14 @@ function UserDropdownMenu({
       </Menu.Link>
       <Menu.Link href="/user/account">{translations.accountLabel}</Menu.Link>
       {isAdmin && <Menu.Link href="/admin">{translations.adminLabel}</Menu.Link>}
-      <Menu.ThemeToggle
-        theme={theme}
-        onThemeChange={setTheme}
-        lightLabel={translations.lightThemeLabel}
-        darkLabel={translations.darkThemeLabel}
-      />
+      {!locked && (
+        <Menu.ThemeToggle
+          theme={theme}
+          onThemeChange={setTheme}
+          lightLabel={translations.lightThemeLabel}
+          darkLabel={translations.darkThemeLabel}
+        />
+      )}
       <Menu.Button id="logout-button" onClick={handleLogout} isDisabled={isLoggingOut}>
         {isLoggingOut ? translations.loggingOutLabel : translations.logoutLabel}
       </Menu.Button>

@@ -44,6 +44,9 @@ jobs:
       - name: Lint
         run: pnpm turbo run lint --filter=@eventuras/web...
 
+      - name: Unit tests
+        run: pnpm turbo run test --filter=@eventuras/web
+
   build:
     name: Build
     runs-on: ubuntu-latest
