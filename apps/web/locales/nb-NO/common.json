@@ -209,7 +209,8 @@
     "user": "Mine kurs",
     "view": "Vis",
     "waitingList": "Venteliste",
-    "welcome": "Velkommen"
+    "welcome": "Velkommen",
+    "siteNavigation": "Hovednavigasjon"
   },
   "network-error": "Nettverksfeil oppstod. Sjekk forbindelsen din og prøv igjen.",
   "onlinecourses": "Nettkurs",

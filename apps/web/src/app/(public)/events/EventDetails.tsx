@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { type CSSProperties } from 'react';
 import { useTranslations } from 'next-intl';
 
 import {
@@ -14,11 +14,11 @@ import {
   scheduleSanitizeSchema,
 } from '@eventuras/markdown-plugin-happening';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
+import { SectionNav } from '@eventuras/ratio-ui/core/SectionNav';
 import { AsideLayout } from '@eventuras/ratio-ui/layout/AsideLayout';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 
-import EventSectionNav from '@/app/(public)/events/EventSectionNav';
 import { EventDto } from '@/lib/eventuras-public-sdk';
 
 // Sticky stack in ratio-ui spacing units (0.25rem on a fluid root font size):
@@ -65,30 +65,26 @@ const EventDetails: React.FC<EventProps> = ({ eventinfo, aside }) => {
   const hasNav = sections.length > 0;
   const navItems = [
     ...sections.map(({ id, title }) => ({ id, title })),
-    ...(aside ? [{ id: 'registration', title: registrationLabel }] : []),
+    // The card sits in the sticky aside, always on the spy line — a plain link.
+    ...(aside ? [{ id: 'registration', title: registrationLabel, track: false }] : []),
   ];
-  const stickyUnits = SITE_NAV_UNITS + (hasNav ? SECTION_NAV_UNITS : 0) + GAP_UNITS;
-  const stickyTop = units(stickyUnits);
+  const stickyTop = units(SITE_NAV_UNITS + (hasNav ? SECTION_NAV_UNITS : 0) + GAP_UNITS);
 
   return (
-    <Section className="pb-24">
+    // --scroll-margin-top: every #id inside lands below the sticky rows (ratio-ui global.css).
+    <Section className="pb-24" style={{ '--scroll-margin-top': stickyTop } as CSSProperties}>
       {hasNav && (
-        <EventSectionNav
-          sections={navItems}
+        <SectionNav
+          aria-label={t('common.events.detailspage.sectionNav')}
           top={units(SITE_NAV_UNITS)}
-          ariaLabel={t('common.events.detailspage.sectionNav')}
+          items={navItems}
         />
       )}
       <Container size="xl">
         <AsideLayout className="pt-10">
           <AsideLayout.Main>
             {sections.map(section => (
-              <section
-                key={section.id}
-                id={section.id}
-                className="mb-10"
-                style={{ scrollMarginTop: stickyTop }}
-              >
+              <section key={section.id} id={section.id} className="mb-10">
                 <Heading as="h2" size="md">
                   {section.title}
                 </Heading>
@@ -108,16 +104,9 @@ const EventDetails: React.FC<EventProps> = ({ eventinfo, aside }) => {
             ))}
           </AsideLayout.Main>
           {aside && (
-            // AsideLayout.Aside only takes a px `top`; the sticky stack is rem-based, so
-            // mirror its classes here until ratio-ui accepts a CSS length.
-            <aside
-              id="registration"
-              aria-label={registrationLabel}
-              className="mt-8 lg:mt-0 lg:shrink-0 lg:sticky lg:w-96"
-              style={{ top: stickyTop, scrollMarginTop: stickyTop }}
-            >
-              {aside}
-            </aside>
+            <AsideLayout.Aside width="lg" top={stickyTop} aria-label={registrationLabel}>
+              <div id="registration">{aside}</div>
+            </AsideLayout.Aside>
           )}
         </AsideLayout>
       </Container>
