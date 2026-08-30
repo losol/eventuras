@@ -32,6 +32,7 @@ export default async function SiteNavbar({
       brand={brand}
       variant={variant}
       sticky={sticky}
+      ariaLabel={t('common.labels.siteNavigation')}
       translations={{
         loginLabel: t('common.labels.login'),
         accountLabel: t('common.labels.account'),

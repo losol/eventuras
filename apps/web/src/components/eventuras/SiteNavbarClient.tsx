@@ -20,6 +20,8 @@ export interface SiteNavbarClientProps {
   brand: string;
   variant: SiteNavbarVariant;
   sticky?: boolean;
+  /** Names the landmark — a detail page has a second nav for its sections. */
+  ariaLabel: string;
   translations: UserMenuTranslations;
 }
 
@@ -34,12 +36,14 @@ export default function SiteNavbarClient({
   brand,
   variant,
   sticky,
+  ariaLabel,
   translations,
 }: Readonly<SiteNavbarClientProps>) {
   const isDark = variant === 'dark';
 
   return (
     <Navbar
+      aria-label={ariaLabel}
       {...(isDark
         ? { dark: true, overlay: true, glass: true }
         : {
