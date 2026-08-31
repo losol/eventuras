@@ -1,5 +1,12 @@
 # @eventuras/smartform
 
+## 0.3.26
+
+### Patch Changes
+
+- b73d6fe: Adopt ratio-ui 2.22: the event detail page uses ratio-ui's `SectionNav` (with its `useActiveSection` scroll-spy) instead of a local copy, sticky offsets are CSS lengths on `AsideLayout.Aside` and `--scroll-margin-top` instead of px approximations and inline scroll margins, and the site navbar names its landmark (`aria-label`) so a page with a section nav has two named `<nav>`s. Also picks up `@eventuras/ratio-ui-next` 1.0.1 (same API — the major marks the package stable and adds its licence and provenance) and `@eventuras/markdown` 0.15.1.
+- 3752457: Update to ratio-ui 2.23, which fixes the account menu dragging the sticky header out of the viewport: its popover was modal, and React Aria locks scrolling for modal overlays by setting `overflow: hidden` on the root element, which leaves `position: sticky` without a scrollport. Opening the menu on a scrolled page dropped the navbar and the section nav to the top of the document and took the open menu with them.
+
 ## 0.3.25
 
 ### Patch Changes
