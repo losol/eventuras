@@ -12,8 +12,6 @@ This table outlines the necessary configuration settings for the production envi
 | `Converto__PdfEndpointUrl`             | The endpoint URL for PDF conversion services.                      | `https://url-to-pdf-service`        |
 | `FeatureManagement__UsePowerOffice`    | Flag to enable PowerOffice integration.                            | `true`                              |
 | `FeatureManagement__UseSentry`         | Flag to enable Sentry for error logging and monitoring.            | `True`                              |
-| `FeatureManagement__UseHealthchecks`   | Flag to enable health checks for the application.                  | `True`                              |
-| `FeatureManagement__UseHealthchecksUI` | Flag to enable a UI for health checks.                             | `True`                              |
 | `FeatureManagement__UseStripeInvoice`  | Flag to enable or disable the Stripe invoicing feature.            | `false`                             |
 | `Logging__LogLevel__Default`           | The default logging level.                                         | `Information`                       |
 | `PowerOffice__Mode`                    | The operating mode for PowerOffice integration.                    | `Production`                        |
