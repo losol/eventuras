@@ -1,5 +1,24 @@
 # @eventuras/web
 
+## 3.7.0
+
+### Minor Changes
+
+- da22979: Redesign the public event detail page: editorial hero with eyebrow, serif title and lead, a key-facts strip, and a sticky registration card in a right-hand column from lg. Empty content sections no longer render headings, and the registrations-open status label now reads as a status ("Påmelding åpen") instead of a call to action.
+- 162d84f: Sticky two-row navigation on the event detail page: the public site navbar now sticks to the top with a surface background and hairline, and a section nav sits directly under it with mono overline links (Informasjon · Program · Praktisk · Påmelding) that highlight the section in view. Anchors land clear of both bars, and the sticky registration card sits below them on wide screens.
+- 32ac321: Site settings can carry an `occasions` block — days the site marks (mourning, Pride, Christmas, New Year, Constitution Day) as a dated override and a yearly schedule. The block is validated entry by entry (invalid entries are logged and dropped), resolved per request in the site's time zone, and the active occasion is exposed as `data-occasion` on `<html>`, with ratio-ui's `data-motion="none"` switch set during mourning. Theming follows ratio-ui's two axes: an occasion or the site can set a named palette (`theme` → `data-theme`, e.g. `bureau`, `ink`) and/or force a colour scheme (`colorScheme` → `data-color-scheme`), rendered server-side with the theme toggle hidden while forced. The light/dark toggle itself now writes `data-color-scheme` instead of the legacy `data-theme="dark"` — the consumer step of ratio-ui's theme migration; stored preferences carry over. No visual changes yet: occasion styling and announcements follow in ratio-ui.
+
+### Patch Changes
+
+- 1084844: Adopt the ratio-ui 2.19 detail-page primitives on the public event page: Heading `size` for the editorial serif scale, `DescriptionList` `facts`/`meta` variants for the key-facts strip and registration-card rows, `AsideLayout` for the sticky registration rail (which also fixes the aside being capped at `max-w-sm` on tablets), and `Text` for the lead. Shared `getEventFacts` helper replaces the duplicated date/location/deadline building.
+- 407c45b: The registration CTA in the event hero now has its own test id (`event-registration-button-hero`) so `event-registration-button` uniquely identifies the one in the registration card, and `/api/healthz` reports `gitSha` and `imageTag` so a deploy gate can verify which build is serving without authenticating.
+- 43e2b82: Fix the standalone server crashing on startup with `Cannot find module '@swc/helpers/esm/_interop_require_default.js'`. Since next 16.3.1 (which pins `@swc/helpers` 0.5.23), Node >= 22.10 resolves the helper through the new `module-sync` export condition to the esm files, while Next's output file tracing follows the `require` condition and ships only the cjs files. Force the whole package into the trace via `outputFileTracingIncludes` until vercel/next.js#90567 is fixed upstream.
+- b73d6fe: Adopt ratio-ui 2.22: the event detail page uses ratio-ui's `SectionNav` (with its `useActiveSection` scroll-spy) instead of a local copy, sticky offsets are CSS lengths on `AsideLayout.Aside` and `--scroll-margin-top` instead of px approximations and inline scroll margins, and the site navbar names its landmark (`aria-label`) so a page with a section nav has two named `<nav>`s. Also picks up `@eventuras/ratio-ui-next` 1.0.1 (same API — the major marks the package stable and adds its licence and provenance) and `@eventuras/markdown` 0.15.1.
+- 3752457: Update to ratio-ui 2.23, which fixes the account menu dragging the sticky header out of the viewport: its popover was modal, and React Aria locks scrolling for modal overlays by setting `overflow: hidden` on the root element, which leaves `position: sticky` without a scrollport. Opening the menu on a scrolled page dropped the navbar and the section nav to the top of the document and took the open menu with them.
+- Updated dependencies [b73d6fe]
+- Updated dependencies [3752457]
+  - @eventuras/smartform@0.3.26
+
 ## 3.6.0
 
 ### Minor Changes
