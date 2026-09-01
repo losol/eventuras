@@ -19,12 +19,12 @@
   },
   "dependencies": {
     "@eventuras/event-sdk": "workspace:*",
-    "@eventuras/fides-auth": "^0.13.0",
+    "@eventuras/fides-auth": "^0.14.0",
     "@eventuras/google-api": "workspace:*",
     "@eventuras/logger": "^0.8.1",
     "@playwright/test": "1.62.1",
     "allure-playwright": "^3.10.2",
-    "jose": "6.2.8",
+    "jose": "6.2.10",
     "tsx": "^4.23.12"
   },
   "devDependencies": {
