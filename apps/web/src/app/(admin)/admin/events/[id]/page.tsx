@@ -16,6 +16,7 @@ import {
   NotificationDto,
 } from '@/lib/eventuras-sdk';
 import { getOrganizationId } from '@/utils/organization';
+import { activeRegistrations } from '@/utils/registration-helpers';
 
 import EventAdminSections from './EventAdminSections';
 
@@ -131,8 +132,13 @@ export default async function EventAdminPage({ params, searchParams }: Readonly<
     !eventProductsRes ||
     !statisticsRes
   );
-  // Undefined while registrations failed to load, so the sidebar omits the count rather than showing 0.
   const registrations = registrationsRes?.data?.data;
+  // From the statistics, not `registrations.length` — that is one page of at most
+  // 100, and counts cancellations and the waiting list too. Undefined when the
+  // statistics failed to load, so the sidebar omits the count rather than showing 0.
+  const participantCount = statisticsRes?.data
+    ? activeRegistrations(statisticsRes.data)
+    : undefined;
 
   return (
     <Section>
@@ -142,7 +148,7 @@ export default async function EventAdminPage({ params, searchParams }: Readonly<
             id: eventinfo.id!,
             title: eventinfo.title ?? '',
             uuid: eventinfo.uuid,
-            participantCount: registrations?.length,
+            participantCount,
           }}
         />
         {hasPartialErrors && (

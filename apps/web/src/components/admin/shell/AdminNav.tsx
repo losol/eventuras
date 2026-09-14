@@ -31,17 +31,17 @@ const EVENT_PATH = /^\/admin\/events\/(\d+)(?:\/|$)/;
 
 /**
  * Resolves the path NavTree should treat as current: the event section when
- * inside the pinned event (its product subpages count as the products
- * section), otherwise the top-level admin area (`/admin/users/42` → `/admin/users`).
+ * inside an event (its product subpages count as the products section),
+ * otherwise the top-level admin area (`/admin/users/42` → `/admin/users`).
  */
-function currentNavPath(pathname: string, tab: string | null, pinnedEventId: number | undefined) {
+function currentNavPath(pathname: string, tab: string | null) {
   const eventMatch = EVENT_PATH.exec(pathname);
-  if (eventMatch && pinnedEventId !== undefined && Number(eventMatch[1]) === pinnedEventId) {
+  if (eventMatch) {
     const subpage = pathname.slice(eventMatch[0].length);
     let current: EventAdminTab = DEFAULT_EVENT_ADMIN_TAB;
     if (subpage.startsWith('products')) current = 'products';
     else if (isEventAdminTab(tab)) current = tab;
-    return eventAdminHref(pinnedEventId, sectionForTab(current).tab);
+    return eventAdminHref(Number(eventMatch[1]), sectionForTab(current).tab);
   }
   const [, admin, area] = pathname.split('/');
   return area ? `/${admin}/${area}` : `/${admin}`;
@@ -52,68 +52,88 @@ export function AdminNav(props: Readonly<Pick<ComponentProps<typeof NavTree>, 'c
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { event, unpin } = usePinnedEvent();
+  const { event: pinnedEvent, unpin } = usePinnedEvent();
   const activity = useActivityDrawer();
+
+  // The URL decides which event the sidebar points at. The pin only carries the
+  // event to pages that have none in their path (users, orders, …), so a stale
+  // pin can never send a section link to a different event than the one on screen.
+  const urlEventId = EVENT_PATH.exec(pathname)?.[1];
+  const eventId = urlEventId ? Number(urlEventId) : pinnedEvent?.id;
+  // Title and count describe the pinned event, so only show them for that event.
+  const details = pinnedEvent?.id === eventId ? pinnedEvent : undefined;
 
   const closeEvent = () => {
     unpin();
-    if (event && EVENT_PATH.exec(pathname)?.[1] === String(event.id)) router.push('/admin/events');
+    if (urlEventId) router.push('/admin/events');
   };
 
-  const eventChildren: NavTreeItem[] | undefined = event
-    ? [
-        {
-          id: 'pinned-event',
-          content: (
-            <div className="flex items-start gap-2 py-0.5">
-              <span className="min-w-0 flex-1 font-mono text-xs leading-tight text-(--text-muted) break-words">
-                {event.title}
-              </span>
-              <ActionButton
-                size="sm"
-                variant="ghost"
-                ariaLabel={t('admin.nav.closeEvent')}
-                onPress={closeEvent}
-                testId="admin-nav-close-event"
-              >
-                <X size={14} />
-              </ActionButton>
-            </div>
-          ),
-        },
-        ...EVENT_ADMIN_SECTIONS.map<NavTreeItem>(section => ({
-          title: t(section.labelKey),
-          href: eventAdminHref(event.id, section.tab),
-          trailing:
-            section.key === 'participants' && event.participantCount !== undefined ? (
-              <Chip variant="outline" className="font-mono text-[11px]">
-                {event.participantCount}
-              </Chip>
-            ) : undefined,
-        })),
-        {
-          id: 'pinned-event-activity',
-          content: (
-            <Button
-              variant="outline"
-              size="sm"
-              block
-              onClick={activity.open}
-              testId="admin-nav-activity"
-            >
-              {t('admin.businessEvents.title')}
-            </Button>
-          ),
-        },
-      ]
-    : undefined;
+  const eventChildren: NavTreeItem[] | undefined =
+    eventId !== undefined
+      ? [
+          // Title and close button describe the pinned event, so they wait for it.
+          // The section links come from the URL and need nothing pinned at all.
+          ...(details
+            ? [
+                {
+                  id: 'pinned-event',
+                  content: (
+                    <div className="flex items-start gap-2 py-0.5">
+                      <span className="min-w-0 flex-1 font-mono text-xs leading-tight text-(--text-muted) break-words">
+                        {details.title}
+                      </span>
+                      <ActionButton
+                        size="sm"
+                        variant="ghost"
+                        ariaLabel={t('admin.nav.closeEvent')}
+                        onPress={closeEvent}
+                        testId="admin-nav-close-event"
+                      >
+                        <X size={14} />
+                      </ActionButton>
+                    </div>
+                  ),
+                },
+              ]
+            : []),
+          ...EVENT_ADMIN_SECTIONS.map<NavTreeItem>(section => ({
+            title: t(section.labelKey),
+            href: eventAdminHref(eventId, section.tab),
+            trailing:
+              section.key === 'participants' && details?.participantCount !== undefined ? (
+                <Chip variant="outline" className="font-mono text-[11px]">
+                  {details.participantCount}
+                </Chip>
+              ) : undefined,
+          })),
+          // The drawer loads the pinned event's activity, so only offer it for that event.
+          ...(details
+            ? [
+                {
+                  id: 'pinned-event-activity',
+                  content: (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      block
+                      onClick={activity.open}
+                      testId="admin-nav-activity"
+                    >
+                      {t('admin.businessEvents.title')}
+                    </Button>
+                  ),
+                },
+              ]
+            : []),
+        ]
+      : undefined;
 
   return (
     <NavTree
       aria-label={t('admin.nav.ariaLabel')}
       className={props.className}
       LinkComponent={NavLink}
-      currentPath={currentNavPath(pathname, searchParams.get('tab'), event?.id)}
+      currentPath={currentNavPath(pathname, searchParams.get('tab'))}
       groups={[
         {
           items: [
@@ -121,7 +141,7 @@ export function AdminNav(props: Readonly<Pick<ComponentProps<typeof NavTree>, 'c
               title: t('admin.nav.events'),
               href: '/admin/events',
               children: eventChildren,
-              defaultOpen: !!event,
+              defaultOpen: eventId !== undefined,
             },
             { title: t('admin.labels.users'), href: '/admin/users' },
             { title: t('admin.labels.orders'), href: '/admin/orders' },
