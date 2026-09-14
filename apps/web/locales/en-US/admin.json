@@ -78,12 +78,21 @@
     "when": "When"
   },
   "eventNotifier": {
+    "confirm": {
+      "audience": "{count, plural, =0 {No recipients on} one {To # recipient on} other {To # recipients on}} {audience}",
+      "eyebrow": "Confirm sending",
+      "noRecipients": "Nobody on this event matches the filter. Nothing will be sent.",
+      "resolveError": "Could not load the recipient list. Nothing has been sent.",
+      "send": "{count, plural, one {Send to # recipient} other {Send to # recipients}}",
+      "untitled": "Message without a subject"
+    },
     "form": {
       "body": {
         "feedbackIncorrect": "Needs at least 10 characters",
         "feedbackNoInput": "Can't send a message without body!",
         "label": "Body"
       },
+      "error": "Sending failed.",
       "status": {
         "active": "Active",
         "cancelled": "Cancelled",
@@ -95,6 +104,7 @@
         "feedbackNoInput": "Please provide a subject",
         "label": "Subject"
       },
+      "success": "Sent.",
       "successFeedbackEmail": "Emails succesfully sent!",
       "successFeedbackSMS": "SMS succesfully sent!",
       "type": {

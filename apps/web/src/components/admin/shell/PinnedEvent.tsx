@@ -70,7 +70,20 @@ function parse(raw: string | null): PinnedEvent | null {
   }
 }
 
-const pin = (event: PinnedEvent) => write(JSON.stringify(event));
+/** Re-pinning the same event updates what the page knows, without erasing what it doesn't. */
+const pin = (event: PinnedEvent) => {
+  const current = parse(readSnapshot());
+  const merged =
+    current?.id === event.id
+      ? {
+          ...current,
+          ...event,
+          uuid: event.uuid ?? current.uuid,
+          participantCount: event.participantCount ?? current.participantCount,
+        }
+      : event;
+  write(JSON.stringify(merged));
+};
 const unpin = () => write(null);
 
 /**

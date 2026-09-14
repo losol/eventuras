@@ -6,22 +6,9 @@ import { Pagination } from '@eventuras/ratio-ui/core/Pagination';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
 import { EventDto } from '@/lib/eventuras-sdk';
-const columnHelper = createColumnHelper<EventDto>();
+import { activeRegistrations } from '@/utils/registration-helpers';
 
-/** Active registrations: everything except waiting list and cancelled (mirrors event statistics). */
-function activeRegistrations(event: EventDto): number {
-  const byStatus = event.statistics?.byStatus;
-  if (!byStatus) {
-    return 0;
-  }
-  return (
-    (byStatus.draft ?? 0) +
-    (byStatus.verified ?? 0) +
-    (byStatus.attended ?? 0) +
-    (byStatus.finished ?? 0) +
-    (byStatus.notAttended ?? 0)
-  );
-}
+const columnHelper = createColumnHelper<EventDto>();
 
 interface AdminEventListClientProps {
   events: EventDto[];
@@ -77,7 +64,7 @@ export function AdminEventListClient({
     columnHelper.accessor('maxParticipants', {
       header: translations.registrations,
       cell: info => {
-        const active = activeRegistrations(info.row.original);
+        const active = activeRegistrations(info.row.original.statistics);
         const max = info.getValue();
         return max ? `${active}/${max}` : `${active}`;
       },

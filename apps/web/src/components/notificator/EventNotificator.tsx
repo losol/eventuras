@@ -1,8 +1,12 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
+
+import { formatDateSpan } from '@eventuras/core/datetime';
+import { actionError, type ServerActionResult } from '@eventuras/core-nextjs/actions';
 
 import {
+  previewEventNotificationRecipients,
   sendEmailNotification,
   sendSmsNotification,
 } from '@/app/(admin)/admin/actions/notifications';
@@ -16,7 +20,11 @@ import { ParticipationTypes } from '@/types';
 import { participationMap } from '@/utils/api/mappers';
 import { mapEnum } from '@/utils/enum';
 
-import Notificator, { FilterGroup, NotificationType } from './Notificator';
+import Notificator, {
+  FilterGroup,
+  NotificationType,
+  type NotificatorConfirmation,
+} from './Notificator';
 
 type EventFormValues = {
   subject: string;
@@ -44,6 +52,7 @@ export default function EventNotificator({
   onClose,
 }: Readonly<EventNotificatorProps>) {
   const t = useTranslations();
+  const locale = useLocale();
 
   // Build filter groups for event participants
   const filterGroups: FilterGroup[] = [
@@ -124,6 +133,34 @@ export default function EventNotificator({
       : await sendSmsNotification(dto as SmsNotificationDto);
   };
 
+  // Resolves who the notification reaches, from the `eventId` that will actually
+  // be sent. The event named here is fetched by that id rather than taken from
+  // this component's props, so a drawer showing the wrong event says so.
+  const resolveConfirmation = async (
+    dto: EmailNotificationDto | SmsNotificationDto
+  ): Promise<ServerActionResult<NotificatorConfirmation>> => {
+    const result = await previewEventNotificationRecipients(
+      dto.eventParticipants ?? {},
+      notificationType === NotificationType.EMAIL ? 'email' : 'sms'
+    );
+    if (!result.success) return actionError(result.error.message, result.error.code);
+
+    const { eventTitle: resolvedTitle, dateStart, dateEnd, recipients } = result.data;
+    const dates = dateStart ? formatDateSpan(dateStart, dateEnd, { locale }) : '';
+
+    return {
+      success: true,
+      data: {
+        audience: dates ? `${resolvedTitle} (${dates})` : resolvedTitle,
+        recipients: recipients.map(recipient => ({
+          id: String(recipient.registrationId),
+          name: recipient.name,
+          contact: recipient.contact,
+        })),
+      },
+    };
+  };
+
   return (
     <Notificator
       title={`${t('common.events.event')}: ${eventTitle}`}
@@ -131,6 +168,7 @@ export default function EventNotificator({
       filterGroups={filterGroups}
       transformFormData={transformFormData}
       sendNotification={sendNotification}
+      resolveConfirmation={resolveConfirmation}
       onClose={onClose}
     />
   );

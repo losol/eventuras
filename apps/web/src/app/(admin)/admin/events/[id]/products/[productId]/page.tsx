@@ -9,6 +9,7 @@ import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
+import { PinEvent } from '@/components/admin/shell';
 import { getV3EventsById, getV3ProductsByProductIdSummary } from '@/lib/eventuras-sdk';
 import { getOrganizationId } from '@/utils/organization';
 
@@ -69,6 +70,9 @@ const EventProducts: React.FC<EventProductsPage> = async props => {
     <>
       <Section className="bg-white dark:bg-black py-10">
         <Container>
+          {event && (
+            <PinEvent event={{ id: eventId, title: event.title ?? '', uuid: event.uuid }} />
+          )}
           {/* Breadcrumb Navigation */}
           <nav className="flex items-center gap-2 text-sm mb-4" aria-label="Breadcrumb">
             <Link href="/admin/events" className="hover:underline">
