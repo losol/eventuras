@@ -70,3 +70,6 @@ minimumReleaseAgeExclude:
   - nodemailer@9.0.1
   - lectio-docs@0.2.2
   - vite@8.1.5
+  - '@playwright/test@1.63.0'
+  - playwright-core@1.63.0
+  - playwright@1.63.0
