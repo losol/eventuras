@@ -28,15 +28,17 @@ Before you can run the API locally, ensure you have the following installed:
 
 - [.NET 10 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/10.0)
 - [PostgreSQL 18 or later](https://www.postgresql.org/download/) — required because migrations use the built-in `uuidv7()` function added in PostgreSQL 18
+- [Docker](https://www.docker.com/) — for the containers the Aspire AppHost starts
 - An Identity Provider (IdP) that supports OAuth 2.0 / OpenID Connect
-  - The project is configured to use [Auth0](https://auth0.com/) by default
-  - Any OIDC-compliant provider can be used (e.g., Azure AD, Keycloak, IdentityServer)
+  - The Aspire AppHost brings one up for you; the rest of this list only applies to a manual setup
+  - Deployed environments use [Keycloak](https://www.keycloak.org/); any OIDC-compliant provider can be used
 
 ## Getting Started
 
 ### Quick Start with Aspire (recommended)
 
-The fastest way to get started is with .NET Aspire, which orchestrates PostgreSQL and the API with a single command:
+.NET Aspire orchestrates the whole stack — database, identity provider, mail and
+both apps — with a single command:
 
 ```bash
 dotnet run --project src/Eventuras.AppHost
@@ -45,10 +47,58 @@ dotnet run --project src/Eventuras.AppHost
 This will:
 
 - Start a PostgreSQL container with a pre-configured `eventuras` database
+- Apply migrations and seed reference data as a separate step, before the API starts
 - Start the API with the connection string automatically injected
+- Start **Keycloak** (`ghcr.io/losol/tessera-idp`) with the development realm imported
+- Start **Mailpit**, where the login codes are delivered
+- Start the **web app**, with its API and issuer URLs injected
 - Open the **Aspire Dashboard** where you can inspect logs, traces, and metrics in real time
 
-You still need to configure an identity provider (see below), but the database setup is handled for you.
+| Service | URL |
+| --- | --- |
+| Web | <http://localhost:5100> |
+| API | <http://localhost:5101> |
+| Keycloak | <https://localhost:5102> (realm `eventuras-dev`, admin `admin` / `admin`) |
+| Mailpit | <http://localhost:5103> |
+
+Log in as **`admin@example.com`**. Login is passwordless — the same email plus
+one-time code flow that staging runs — so the code arrives in Mailpit.
+
+No identity provider setup is needed: everything the realm needs is in
+`src/Eventuras.AppHost/realms/eventuras-dev-realm.json`, which is the single
+source of truth for it. Keycloak runs without a data volume on purpose, so the
+realm is re-imported on every start and cannot drift into a container nobody can
+reproduce. Anything you need on every run belongs in that file.
+
+The realm's client secret and admin password are development fixtures for a
+localhost-only realm, deliberately committed so the setup is reproducible. Never
+import that realm into a deployed Keycloak.
+
+#### TLS for the development Keycloak
+
+The web app's OIDC client refuses a plain-http issuer and the API validates the
+issuer's metadata over TLS, so Keycloak has to serve HTTPS locally. The AppHost
+exports the **ASP.NET Core development certificate** to `.certs/` (gitignored) on
+first run, because it is the one certificate a .NET machine already trusts. If
+the export fails, run this once:
+
+```bash
+dotnet dev-certs https --trust
+```
+
+Node does not read the OS trust store, so the AppHost passes the same certificate
+to the web app via `NODE_EXTRA_CA_CERTS`. Running `pnpm dev` by hand needs that
+variable set too — see `apps/web/.env-template`.
+
+#### Running the end-to-end tests against it
+
+The Playwright suite drives the same login flow, and reads the code from Mailpit:
+
+```bash
+cd ../../tests/e2e
+E2E_OTP_SOURCE=mailpit E2E_MAILPIT_API_URL=http://localhost:5103 \
+  E2E_WEB_URL=http://localhost:5100 pnpm test
+```
 
 ### Manual Setup
 

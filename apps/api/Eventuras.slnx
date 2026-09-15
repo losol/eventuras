@@ -20,6 +20,7 @@
     <Project Path="src/Eventuras.Services/Eventuras.Services.csproj" />
     <Project Path="src/Eventuras.AppHost/Eventuras.AppHost.csproj" />
     <Project Path="src/Eventuras.ServiceDefaults/Eventuras.ServiceDefaults.csproj" />
+    <Project Path="src/Eventuras.MigrationService/Eventuras.MigrationService.csproj" />
     <Project Path="src/Eventuras.WebApi/Eventuras.WebApi.csproj" />
     <Project Path="src/Losol.Communication.Email/Losol.Communication.Email.csproj" />
     <Project Path="src/Losol.Communication.Sms/Losol.Communication.Sms.csproj" />

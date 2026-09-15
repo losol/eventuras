@@ -40,7 +40,7 @@ This project uses specialized agents for different contexts:
 - **File**: `.github/agents/backend-developer.md`
 - **Tech**: C# .NET, ASP.NET Core, Entity Framework Core, PostgreSQL, .NET Aspire
 - **Focus**: API development, business logic, database migrations, external integrations
-- **Run locally**: `dotnet run --project src/Eventuras.AppHost` (starts PostgreSQL + API + Aspire Dashboard)
+- **Run locally**: `dotnet run --project src/Eventuras.AppHost` (starts PostgreSQL, migrations, API, Keycloak, Mailpit, the web app and the Aspire Dashboard)
 
 ### Frontend Agent
 
@@ -431,7 +431,7 @@ This automatically starts PostgreSQL in a Docker container and the API with the 
 
 The key Aspire projects:
 
-- `src/Eventuras.AppHost` — Orchestrator that defines the application model (PostgreSQL + API)
+- `src/Eventuras.AppHost` — Orchestrator that defines the application model (PostgreSQL, migrations, API, Keycloak, Mailpit, web)
 - `src/Eventuras.ServiceDefaults` — Shared OpenTelemetry, health checks, service discovery, and HTTP resilience
 
 To run the API without Aspire (e.g., when you manage PostgreSQL separately):
