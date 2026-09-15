@@ -35,6 +35,8 @@ public class ApplicationDbContext : DbContext
     public DbSet<EventCollectionMapping> EventCollectionMappings { get; set; }
     public DbSet<OrganizationSetting> OrganizationSettings { get; set; }
     public DbSet<BusinessEvent> BusinessEvents { get; set; }
+    public DbSet<ProcessingPurpose> ProcessingPurposes { get; set; }
+    public DbSet<PurposeDecision> PurposeDecisions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -169,6 +171,55 @@ public class ApplicationDbContext : DbContext
                 .WithMany()
                 .HasForeignKey(x => x.OrganizationUuid)
                 .HasPrincipalKey(o => o.Uuid)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<ProcessingPurpose>(entity =>
+        {
+            // Lets PurposeDecision reference (Uuid, OrganizationUuid, Code) together,
+            // so its denormalized org and code can't drift from the version it points to.
+            entity.HasAlternateKey(x => new { x.Uuid, x.OrganizationUuid, x.Code });
+
+            entity.HasIndex(x => new { x.OrganizationUuid, x.Code, x.Version })
+                .IsUnique();
+
+            // At most one current (non-retired) version per purpose.
+            entity.HasIndex(x => new { x.OrganizationUuid, x.Code })
+                .IsUnique()
+                .HasFilter($@"""{nameof(ProcessingPurpose.RetiredAt)}"" IS NULL");
+
+            entity.HasOne<Organization>()
+                .WithMany()
+                .HasForeignKey(x => x.OrganizationUuid)
+                .HasPrincipalKey(o => o.Uuid)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<PurposeDecision>(entity =>
+        {
+            entity.HasIndex(x => new { x.UserId, x.OrganizationUuid, x.Code })
+                .IsUnique();
+
+            // Recipient filtering for bulk email: who has denied (reserved against) a purpose.
+            entity.HasIndex(x => new { x.OrganizationUuid, x.Code, x.Decision });
+
+            entity.HasOne<ApplicationUser>()
+                .WithMany()
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne<Organization>()
+                .WithMany()
+                .HasForeignKey(x => x.OrganizationUuid)
+                .HasPrincipalKey(o => o.Uuid)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne<ProcessingPurpose>()
+                .WithMany()
+                .HasForeignKey(x => new { x.ProcessingPurposeUuid, x.OrganizationUuid, x.Code })
+                .HasPrincipalKey(p => new { p.Uuid, p.OrganizationUuid, p.Code })
+                // The generated name overflows Postgres' 63-char identifier limit.
+                .HasConstraintName("FK_PurposeDecisions_ProcessingPurposes")
                 .OnDelete(DeleteBehavior.Restrict);
         });
     }
