@@ -1,0 +1,153 @@
+{
+  "realm": "eventuras-dev",
+  "displayName": "Eventuras (development)",
+  "enabled": true,
+  "sslRequired": "none",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "roles": {
+    "realm": [
+      {
+        "name": "Admin",
+        "description": "Organization administrator"
+      },
+      {
+        "name": "SystemAdmin",
+        "description": "System administrator"
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "web",
+      "name": "Eventuras Web (dev)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "secret": "dev-web-secret",
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "http://localhost:5100/*"
+      ],
+      "webOrigins": [
+        "http://localhost:5100"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "http://localhost:5100",
+        "pkce.code.challenge.method": "S256"
+      },
+      "protocolMappers": [
+        {
+          "name": "realm-roles-flat",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "config": {
+            "claim.name": "roles",
+            "jsonType.label": "String",
+            "multivalued": "true",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "audience-eventuras-api",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "config": {
+            "included.custom.audience": "eventuras-api",
+            "id.token.claim": "false",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "false"
+          }
+        },
+        {
+          "name": "email",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-property-mapper",
+          "config": {
+            "user.attribute": "email",
+            "claim.name": "email",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "full name",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-full-name-mapper",
+          "config": {
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ]
+    }
+  ],
+  "users": [
+    {
+      "id": "03c0179b-f16c-426e-878b-50892895ace0",
+      "username": "admin@example.com",
+      "email": "admin@example.com",
+      "firstName": "Dev",
+      "lastName": "Admin",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admin",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "Admin",
+        "SystemAdmin",
+        "offline_access"
+      ]
+    }
+  ],
+  "loginTheme": "ratio",
+  "authenticationFlows": [
+    {
+      "alias": "browser-tessera",
+      "description": "Email plus a one-time code delivered by mail (tessera-otp)",
+      "providerId": "basic-flow",
+      "topLevel": true,
+      "builtIn": false,
+      "authenticationExecutions": [
+        {
+          "authenticator": "auth-cookie",
+          "requirement": "ALTERNATIVE",
+          "priority": 10,
+          "autheticatorFlow": false,
+          "userSetupAllowed": false
+        },
+        {
+          "authenticator": "tessera-otp",
+          "requirement": "ALTERNATIVE",
+          "priority": 20,
+          "autheticatorFlow": false,
+          "userSetupAllowed": false
+        }
+      ]
+    }
+  ],
+  "browserFlow": "browser-tessera",
+  "smtpServer": {
+    "host": "eventuras-mailpit",
+    "port": "1025",
+    "from": "no-reply@localhost",
+    "fromDisplayName": "Eventuras (development)",
+    "ssl": "false",
+    "starttls": "false",
+    "auth": "false"
+  }
+}

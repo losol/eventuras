@@ -130,3 +130,6 @@ $RECYCLE.BIN/
 .DS_Store
 
 _NCrunch*
+# TLS material the AppHost exports for the development Keycloak. Generated on
+# first run from the ASP.NET Core dev certificate — never commit it.
+src/Eventuras.AppHost/.certs/

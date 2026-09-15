@@ -11,6 +11,7 @@
     <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="13.5.2" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Eventuras.MigrationService\Eventuras.MigrationService.csproj" />
     <ProjectReference Include="..\Eventuras.WebApi\Eventuras.WebApi.csproj" />
   </ItemGroup>
 </Project>
