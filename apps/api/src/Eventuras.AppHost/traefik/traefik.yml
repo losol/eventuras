@@ -1,0 +1,18 @@
+# Static configuration for the development edge proxy.
+#
+# Routing lives in dynamic.yml, loaded through the file provider rather than
+# Docker labels: two of the four services Aspire runs (the API and the web app)
+# are host processes, not containers, so there are no labels to discover.
+entryPoints:
+  websecure:
+    address: ':443'
+
+providers:
+  file:
+    filename: /etc/traefik/dynamic.yml
+    watch: true
+
+log:
+  level: INFO
+
+accessLog: {}

@@ -52,14 +52,27 @@ This will:
 - Start **Keycloak** (`ghcr.io/losol/tessera-idp`) with the development realm imported
 - Start **Mailpit**, where the login codes are delivered
 - Start the **web app**, with its API and issuer URLs injected
+- Start **Traefik**, fronting all of the above on `https://*.dev.localhost`
 - Open the **Aspire Dashboard** where you can inspect logs, traces, and metrics in real time
 
-| Service | URL |
-| --- | --- |
-| Web | <http://localhost:5100> |
-| API | <http://localhost:5101> |
-| Keycloak | <https://localhost:5102> (realm `eventuras-dev`, admin `admin` / `admin`) |
-| Mailpit | <http://localhost:5103> |
+Everything is reached through Traefik, on hostnames rather than ports:
+
+| Service | URL | Direct (bypasses the proxy) |
+| --- | --- | --- |
+| Web | <https://web.dev.localhost> | <http://localhost:5100> |
+| API | <https://api.dev.localhost> | <http://localhost:5101> |
+| Keycloak | <https://id.dev.localhost> (realm `eventuras-dev`, admin `admin` / `admin`) | — |
+| Mailpit | <https://mail.dev.localhost> | <http://localhost:5103> |
+
+Deployed environments sit behind Traefik, so development does too. That is not
+cosmetic: Keycloak derives issuer and redirect URLs from forwarded headers, and
+getting that wrong is invisible until it breaks in staging. Keycloak is therefore
+reachable *only* through the proxy, so there is one canonical issuer URL.
+
+`*.dev.localhost` resolves to loopback without a hosts file, and the development
+certificate already covers that suffix — so the browser, Node and .NET all trust
+it with no extra setup. TLS ends at Traefik; the hop to Keycloak is plain http,
+exactly as in a cluster.
 
 Log in as **`admin@example.com`**. Login is passwordless — the same email plus
 one-time code flow that staging runs — so the code arrives in Mailpit.
@@ -96,8 +109,8 @@ The Playwright suite drives the same login flow, and reads the code from Mailpit
 
 ```bash
 cd ../../tests/e2e
-E2E_OTP_SOURCE=mailpit E2E_MAILPIT_API_URL=http://localhost:5103 \
-  E2E_WEB_URL=http://localhost:5100 pnpm test
+E2E_OTP_SOURCE=mailpit E2E_MAILPIT_API_URL=https://mail.dev.localhost \
+  E2E_WEB_URL=https://web.dev.localhost pnpm test
 ```
 
 ### Manual Setup

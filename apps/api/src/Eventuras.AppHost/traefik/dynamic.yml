@@ -1,0 +1,57 @@
+# Routing for the development stack. Every service is reached as
+# https://<name>.dev.localhost — a suffix the ASP.NET development certificate
+# already covers, so the browser, Node and .NET all trust it with no extra setup.
+tls:
+  stores:
+    default:
+      defaultCertificate:
+        certFile: /certs/kc.pem
+        keyFile: /certs/kc.key
+  certificates:
+    - certFile: /certs/kc.pem
+      keyFile: /certs/kc.key
+
+http:
+  routers:
+    web:
+      rule: Host(`web.dev.localhost`)
+      entryPoints: [websecure]
+      service: web
+      tls: {}
+    api:
+      rule: Host(`api.dev.localhost`)
+      entryPoints: [websecure]
+      service: api
+      tls: {}
+    id:
+      rule: Host(`id.dev.localhost`)
+      entryPoints: [websecure]
+      service: id
+      tls: {}
+    mail:
+      rule: Host(`mail.dev.localhost`)
+      entryPoints: [websecure]
+      service: mail
+      tls: {}
+
+  services:
+    # The API and web app run as host processes, so they are reached back out
+    # through the host rather than over the container network.
+    web:
+      loadBalancer:
+        servers:
+          - url: http://host.docker.internal:5100
+    api:
+      loadBalancer:
+        servers:
+          - url: http://host.docker.internal:5101
+    # Containers, reachable by their pinned names. TLS ends here at the edge,
+    # so the hop to Keycloak is plain http exactly as it is in a cluster.
+    id:
+      loadBalancer:
+        servers:
+          - url: http://eventuras-keycloak:8080
+    mail:
+      loadBalancer:
+        servers:
+          - url: http://eventuras-mailpit:8025

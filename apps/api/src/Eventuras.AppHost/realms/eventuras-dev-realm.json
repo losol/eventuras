@@ -31,13 +31,13 @@
       "serviceAccountsEnabled": false,
       "fullScopeAllowed": true,
       "redirectUris": [
-        "http://localhost:5100/*"
+        "https://web.dev.localhost/*"
       ],
       "webOrigins": [
-        "http://localhost:5100"
+        "https://web.dev.localhost"
       ],
       "attributes": {
-        "post.logout.redirect.uris": "http://localhost:5100",
+        "post.logout.redirect.uris": "https://web.dev.localhost",
         "pkce.code.challenge.method": "S256"
       },
       "protocolMappers": [
