@@ -22,7 +22,7 @@
     "@eventuras/fides-auth": "^0.13.0",
     "@eventuras/google-api": "workspace:*",
     "@eventuras/logger": "^0.8.1",
-    "@playwright/test": "1.62.1",
+    "@playwright/test": "1.63.0",
     "allure-playwright": "^3.10.2",
     "jose": "6.2.8",
     "tsx": "^4.23.12"
