@@ -26,7 +26,7 @@ public class DbInitializer : IDbInitializer
         }
 
         // Seed the payment methods if none exist
-        if (!_db.PaymentMethods.Any())
+        if (!await _db.PaymentMethods.AnyAsync())
         {
             var methods = new[]
             {
@@ -55,6 +55,13 @@ public class DbInitializer : IDbInitializer
             };
 
             _db.PaymentMethods.AddRange(methods);
+            await _db.SaveChangesAsync();
+        }
+
+        // A new database has no organization, and the apps assume one exists.
+        if (!await _db.Organizations.AnyAsync())
+        {
+            _db.Organizations.Add(new Organization { Name = "Eventuras", IsRoot = true });
             await _db.SaveChangesAsync();
         }
     }

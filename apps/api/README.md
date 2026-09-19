@@ -47,7 +47,7 @@ dotnet run --project src/Eventuras.AppHost
 This will:
 
 - Start a PostgreSQL container with a pre-configured `eventuras` database
-- Apply migrations and seed reference data as a separate step, before the API starts
+- Apply migrations and seed reference data (payment methods and a first organization) as a separate step, before the API starts
 - Start the API with the connection string automatically injected
 - Start **Keycloak** (`ghcr.io/losol/tessera-idp`) with the development realm imported
 - Start **Mailpit**, where the login codes are delivered
