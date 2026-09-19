@@ -104,6 +104,11 @@ internal static class EventQueryableExtensions
             query = query.Where(e => e.DateEnd >= filter.EndDateAfter);
         }
 
+        if (filter.NotEndedBefore.HasValue)
+        {
+            query = query.Where(e => e.DateStart >= filter.NotEndedBefore || e.DateEnd >= filter.NotEndedBefore);
+        }
+
         if (filter.CollectionIds?.Any() == true)
         {
             var collectionIds = filter.CollectionIds.ToList();
