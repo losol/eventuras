@@ -29,6 +29,7 @@ public class EventInfoFilter
         StartDateAfter = copy.StartDateAfter;
         EndDateBefore = copy.EndDateBefore;
         EndDateAfter = copy.EndDateAfter;
+        NotEndedBefore = copy.NotEndedBefore;
         CollectionIds = copy.CollectionIds;
         OrganizationId = copy.OrganizationId;
     }
@@ -67,6 +68,9 @@ public class EventInfoFilter
 
     public LocalDate? EndDateAfter { get; set; }
 
+    // Upcoming or still running on the date; an event without an end date ends on its start date.
+    public LocalDate? NotEndedBefore { get; set; }
+
     public int[] CollectionIds { get; set; }
 
     public int? OrganizationId { get; set; }
@@ -86,6 +90,7 @@ public class EventInfoFilter
         $"{nameof(EndDateIsNullOrAfter)}: {EndDateIsNullOrAfter},\n" +
         $"{nameof(EndDateBefore)}: {EndDateBefore},\n" +
         $"{nameof(EndDateAfter)}: {EndDateAfter},\n" +
+        $"{nameof(NotEndedBefore)}: {NotEndedBefore},\n" +
         $"{nameof(CollectionIds)}: {CollectionIds}\n" +
         $"{nameof(OrganizationId)}: {OrganizationId}";
 

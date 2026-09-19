@@ -178,7 +178,7 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
     public async Task Should_Not_List_Past_Events()
     {
         using var scope = _factory.Services.NewTestScope();
-        using var e1 = await scope.CreateEventAsync(dateStart: SystemClock.Instance.Today().PlusDays(-1));
+        using var e1 = await scope.CreateEventAsync(dateStart: SystemClock.Instance.Today().PlusDays(-2));
         using var e2 = await scope.CreateEventAsync(dateStart: SystemClock.Instance.Today().PlusDays(1));
         using var e3 = await scope.CreateEventAsync(dateStart: SystemClock.Instance.Today().PlusDays(2));
 
@@ -189,6 +189,43 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
 
         var token = await response.AsTokenAsync();
         token.CheckPaging(1, 2, (t, e) => t.CheckEvent(e), e2.Entity, e3.Entity);
+    }
+
+    [Fact]
+    public async Task Should_List_Ongoing_Multi_Day_Events()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        var today = SystemClock.Instance.Today();
+        using var ended = await scope.CreateEventAsync(dateStart: today.PlusDays(-4), dateEnd: today.PlusDays(-2));
+        using var endedYesterday = await scope.CreateEventAsync(dateStart: today.PlusDays(-3), dateEnd: today.PlusDays(-1));
+        using var ongoing = await scope.CreateEventAsync(dateStart: today.PlusDays(-1), dateEnd: today.PlusDays(1));
+        using var upcoming = await scope.CreateEventAsync(dateStart: today.PlusDays(2));
+
+        var client = _factory.CreateClient();
+
+        var response = await client.GetAsync("/v3/events");
+        response.CheckOk();
+
+        var token = await response.AsTokenAsync();
+        token.CheckPaging(1, 3, (t, e) => t.CheckEvent(e), endedYesterday.Entity, ongoing.Entity, upcoming.Entity);
+    }
+
+    [Fact]
+    public async Task Should_Treat_Events_Without_End_Date_As_Ending_On_Start_Date()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        var today = SystemClock.Instance.Today();
+        using var twoDaysAgo = await scope.CreateEventAsync(dateStart: today.PlusDays(-2));
+        using var yesterday = await scope.CreateEventAsync(dateStart: today.PlusDays(-1));
+        using var startsToday = await scope.CreateEventAsync(dateStart: today);
+
+        var client = _factory.CreateClient();
+
+        var response = await client.GetAsync("/v3/events");
+        response.CheckOk();
+
+        var token = await response.AsTokenAsync();
+        token.CheckPaging(1, 2, (t, e) => t.CheckEvent(e), yesterday.Entity, startsToday.Entity);
     }
 
     [Fact]

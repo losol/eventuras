@@ -42,7 +42,8 @@ public class EventsQueryDto : PageQueryDto
 
         if (!Start.HasValue && !End.HasValue && !IncludePastEvents)
         {
-            filter.StartDateAfter = SystemClock.Instance.Today();
+            // Events stay listed for a day after they end, so yesterday's course is still findable today.
+            filter.NotEndedBefore = SystemClock.Instance.Today().PlusDays(-1);
         }
 
         switch (Period)
