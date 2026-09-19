@@ -23,12 +23,12 @@ var mailpit = builder.AddContainer("mailpit", "axllent/mailpit", "v1.27")
     // Host ports only; Keycloak reaches the SMTP port over the container network.
     .WithHttpEndpoint(port: 5103, targetPort: 8025, name: "ui")
     .WithEndpoint(port: 5104, targetPort: 1025, name: "smtp")
-    .WithUrl("https://mail.dev.localhost", "Mailpit");
+    .WithUrl("https://eventuras-mail.dev.localhost", "Mailpit");
 
 // The Losol Keycloak distribution, not stock Keycloak: it carries the tessera-otp
 // authenticator and the ratio login theme that staging and the e2e suite use, so
 // development exercises the real login flow rather than a password stand-in.
-const string keycloakHost = "https://id.dev.localhost";
+const string keycloakHost = "https://eventuras-id.dev.localhost";
 var keycloakIssuer = $"{keycloakHost}/realms/eventuras-dev";
 
 var certificates = DevCertificate.Export(builder.AppHostDirectory);
@@ -85,7 +85,7 @@ builder.AddProject<Projects.Eventuras_WebApi>("api")
     // Keycloak emits realm roles as a flat "roles" claim; without this the API
     // falls back to Auth0's inbound claim mapping and finds no roles at all.
     .WithEnvironment("Auth__RoleClaimType", "roles")
-    .WithUrl("https://api.dev.localhost", "API");
+    .WithUrl("https://eventuras-api.dev.localhost", "API");
 
 // The web app, so the whole stack is one command. Aspire owns the wiring that
 // otherwise drifts in apps/web/.env — the API and issuer URLs, and the CA that
@@ -94,13 +94,13 @@ builder.AddProject<Projects.Eventuras_WebApi>("api")
 builder.AddExecutable("web", "pnpm", "../../../web", "dev")
     // Port only, no targetPort: a proxied non-container endpoint cannot have both.
     .WithHttpEndpoint(port: 5100, env: "PORT")
-    .WithEnvironment("APPLICATION_URL", "https://web.dev.localhost")
-    .WithEnvironment("BACKEND_URL", "https://api.dev.localhost")
+    .WithEnvironment("APPLICATION_URL", "https://eventuras-web.dev.localhost")
+    .WithEnvironment("BACKEND_URL", "https://eventuras-api.dev.localhost")
     .WithEnvironment("OIDC_ISSUER", keycloakIssuer)
     // Node does not read the OS trust store, so it needs the certificate that
     // Keycloak serves handed to it explicitly.
     .WithEnvironment("NODE_EXTRA_CA_CERTS", Path.Combine(certificates, "kc.pem"))
-    .WithUrl("https://web.dev.localhost", "Web")
+    .WithUrl("https://eventuras-web.dev.localhost", "Web")
     .WaitFor(keycloak);
 
 builder.Build().Run();

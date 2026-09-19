@@ -31,13 +31,13 @@
       "serviceAccountsEnabled": false,
       "fullScopeAllowed": true,
       "redirectUris": [
-        "https://web.dev.localhost/*"
+        "https://eventuras-web.dev.localhost/*"
       ],
       "webOrigins": [
-        "https://web.dev.localhost"
+        "https://eventuras-web.dev.localhost"
       ],
       "attributes": {
-        "post.logout.redirect.uris": "https://web.dev.localhost",
+        "post.logout.redirect.uris": "https://eventuras-web.dev.localhost",
         "pkce.code.challenge.method": "S256"
       },
       "protocolMappers": [

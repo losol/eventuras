@@ -59,10 +59,10 @@ Everything is reached through Traefik, on hostnames rather than ports:
 
 | Service | URL | Direct (bypasses the proxy) |
 | --- | --- | --- |
-| Web | <https://web.dev.localhost> | <http://localhost:5100> |
-| API | <https://api.dev.localhost> | <http://localhost:5101> |
-| Keycloak | <https://id.dev.localhost> (realm `eventuras-dev`, admin `admin` / `admin`) | — |
-| Mailpit | <https://mail.dev.localhost> | <http://localhost:5103> |
+| Web | <https://eventuras-web.dev.localhost> | <http://localhost:5100> |
+| API | <https://eventuras-api.dev.localhost> | <http://localhost:5101> |
+| Keycloak | <https://eventuras-id.dev.localhost> (realm `eventuras-dev`, admin `admin` / `admin`) | — |
+| Mailpit | <https://eventuras-mail.dev.localhost> | <http://localhost:5103> |
 
 Deployed environments sit behind Traefik, so development does too. That is not
 cosmetic: Keycloak derives issuer and redirect URLs from forwarded headers, and
@@ -99,6 +99,10 @@ the export fails, run this once:
 dotnet dev-certs https --trust
 ```
 
+The `*.dev.localhost` names are only in certificates created by the .NET 10 SDK. A
+certificate from an older SDK covers `localhost` alone and has to be regenerated
+with `dotnet dev-certs https --clean`, then the trust command above.
+
 Node does not read the OS trust store, so the AppHost passes the same certificate
 to the web app via `NODE_EXTRA_CA_CERTS`. Running `pnpm dev` by hand needs that
 variable set too — see `apps/web/.env-template`.
@@ -112,7 +116,7 @@ certificate to reach the stack over HTTPS:
 ```bash
 cd ../../tests/e2e
 NODE_EXTRA_CA_CERTS=../../apps/api/src/Eventuras.AppHost/.certs/kc.pem \
-  E2E_WEB_URL=https://web.dev.localhost E2E_API_URL=http://localhost:5101 \
+  E2E_WEB_URL=https://eventuras-web.dev.localhost E2E_API_URL=http://localhost:5101 \
   E2E_ADMIN_EMAIL=admin@example.com E2E_SYSTEMADMIN_EMAIL=admin@example.com \
   E2E_OTP_SOURCE=mailpit E2E_MAILPIT_API_URL=http://localhost:5103 \
   pnpm test
