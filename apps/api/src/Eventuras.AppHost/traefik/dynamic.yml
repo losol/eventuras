@@ -14,22 +14,22 @@ tls:
 http:
   routers:
     web:
-      rule: Host(`web.dev.localhost`)
+      rule: Host(`eventuras-web.dev.localhost`)
       entryPoints: [websecure]
       service: web
       tls: {}
     api:
-      rule: Host(`api.dev.localhost`)
+      rule: Host(`eventuras-api.dev.localhost`)
       entryPoints: [websecure]
       service: api
       tls: {}
     id:
-      rule: Host(`id.dev.localhost`)
+      rule: Host(`eventuras-id.dev.localhost`)
       entryPoints: [websecure]
       service: id
       tls: {}
     mail:
-      rule: Host(`mail.dev.localhost`)
+      rule: Host(`eventuras-mail.dev.localhost`)
       entryPoints: [websecure]
       service: mail
       tls: {}
