@@ -105,12 +105,28 @@ variable set too — see `apps/web/.env-template`.
 
 #### Running the end-to-end tests against it
 
-The Playwright suite drives the same login flow, and reads the code from Mailpit:
+The Playwright suite drives the same login flow, and reads the code from Mailpit.
+The session secret is read from `apps/web/.env`, and Node needs the exported
+certificate to reach the stack over HTTPS:
 
 ```bash
 cd ../../tests/e2e
-E2E_OTP_SOURCE=mailpit E2E_MAILPIT_API_URL=https://mail.dev.localhost \
-  E2E_WEB_URL=https://web.dev.localhost pnpm test
+NODE_EXTRA_CA_CERTS=../../apps/api/src/Eventuras.AppHost/.certs/kc.pem \
+  E2E_WEB_URL=https://web.dev.localhost E2E_API_URL=http://localhost:5101 \
+  E2E_ADMIN_EMAIL=admin@example.com E2E_SYSTEMADMIN_EMAIL=admin@example.com \
+  E2E_OTP_SOURCE=mailpit E2E_MAILPIT_API_URL=http://localhost:5103 \
+  pnpm test
+```
+
+#### If `https://*.dev.localhost` resets the connection
+
+Docker Desktop can keep a stale forward for port 443 when a restart of the
+AppHost recreates the Traefik container: TCP connects, then every TLS handshake
+is reset, while the stack is otherwise healthy. Restarting the proxy registers
+the forward again:
+
+```bash
+aspire resource traefik restart
 ```
 
 ### Manual Setup
