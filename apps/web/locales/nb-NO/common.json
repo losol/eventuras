@@ -144,6 +144,17 @@
       "title": "Nettkurs",
       "tag": "Nettkurs"
     },
+    "archive": {
+      "eyebrow": "Tidligere kurs",
+      "title": "Kurs vi har <em>gjennomført</em>",
+      "linkLabel": "Se tidligere kurs",
+      "backLabel": "Se kommende kurs",
+      "empty": "Ingen tidligere kurs",
+      "pagination": "Sider",
+      "previousPage": "Forrige side",
+      "nextPage": "Neste side",
+      "pageOf": "Side {page} av {pages}"
+    },
     "list": {
       "eyebrow": "Kommende kurs",
       "title": "Alle kurs i <em>kronologisk</em> rekkefølge",

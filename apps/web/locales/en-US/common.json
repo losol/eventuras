@@ -144,6 +144,17 @@
       "title": "Online courses",
       "tag": "Online course"
     },
+    "archive": {
+      "eyebrow": "Past courses",
+      "title": "Courses we have <em>held</em>",
+      "linkLabel": "See past courses",
+      "backLabel": "See upcoming courses",
+      "empty": "No past courses",
+      "pagination": "Pages",
+      "previousPage": "Previous page",
+      "nextPage": "Next page",
+      "pageOf": "Page {page} of {pages}"
+    },
     "list": {
       "eyebrow": "Upcoming courses",
       "title": "All courses in <em>chronological</em> order",
