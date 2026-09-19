@@ -9,34 +9,50 @@ import { dirname, join } from 'node:path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Load .env file manually without dotenv dependency
+// Parse a .env file without a dotenv dependency: KEY=value lines, comments skipped.
+const readEnvFile = (path: string): Record<string, string> => {
+  const vars: Record<string, string> = {};
+  readFileSync(path, 'utf-8')
+    .split('\n')
+    .forEach(line => {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith('#')) return;
+
+      const equalsIndex = trimmed.indexOf('=');
+      if (equalsIndex === -1) return;
+
+      const key = trimmed.substring(0, equalsIndex).trim();
+      if (key) vars[key] = trimmed.substring(equalsIndex + 1).trim();
+    });
+  return vars;
+};
+
 const envPath = join(__dirname, '.env');
 
 if (existsSync(envPath)) {
-  const envFile = readFileSync(envPath, 'utf-8');
-  let loadedCount = 0;
-  const loadedVars: string[] = [];
-  envFile.split('\n').forEach(line => {
-    const trimmed = line.trim();
-    // Skip empty lines and comments
-    if (!trimmed || trimmed.startsWith('#')) return;
-
-    const equalsIndex = trimmed.indexOf('=');
-    if (equalsIndex === -1) return; // No equals sign
-
-    const key = trimmed.substring(0, equalsIndex).trim();
-    const value = trimmed.substring(equalsIndex + 1).trim();
-
-    if (key) {
-      process.env[key] = value;
-      loadedVars.push(key);
-      loadedCount++;
-    }
-  });
-  console.log(`✓ Loaded ${loadedCount} environment variables from .env`);
+  const loaded = readEnvFile(envPath);
+  Object.assign(process.env, loaded);
+  const loadedVars = Object.keys(loaded);
+  console.log(`✓ Loaded ${loadedVars.length} environment variables from .env`);
   console.log('Variables:', loadedVars.join(', '));
 } else if (!process.env.CI) {
   console.log('⚠ .env file not found - using existing environment variables');
+}
+
+// The session secret only has to match the web app's, so a local run takes it
+// from apps/web/.env instead of repeating it.
+const webEnvPath = join(__dirname, '../../apps/web/.env');
+if (!process.env.E2E_SESSION_SECRET && existsSync(webEnvPath)) {
+  const sessionSecret = readEnvFile(webEnvPath).SESSION_SECRET;
+  // api-helpers decodes it as hex, so anything else would only fail later, at decrypt time.
+  if (sessionSecret && /^([0-9a-f]{2})+$/i.test(sessionSecret)) {
+    process.env.E2E_SESSION_SECRET = sessionSecret;
+    console.log('✓ E2E_SESSION_SECRET taken from apps/web/.env');
+  } else if (sessionSecret) {
+    console.log(
+      '⚠ SESSION_SECRET in apps/web/.env is not hex-encoded; set E2E_SESSION_SECRET explicitly'
+    );
+  }
 }
 
 const isCI = !!process.env.CI;
