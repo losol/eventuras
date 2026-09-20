@@ -1,5 +1,18 @@
 # @eventuras/web
 
+## 3.9.0
+
+### Minor Changes
+
+- 8b9fcca: The public events page can show past courses: `/events?archive=true` lists events that have ended, newest first, fifty per page with previous/next links, and the upcoming list links to it. The archive starts where the API's upcoming list stops, so a course is never in both lists at once. A page number past the end lands on the last page.
+
+### Patch Changes
+
+- c1fc667: Registering for an event sends the selected products in the create request instead of a follow-up request. The confirmation email now lists everything the participant chose, and a registration can no longer end up confirmed without its products because the second request failed.
+- ab3f7b2: Removes `utils/api/functions/events.ts`, an unused second copy of the event registration flow. Nothing imported it, and it still created registrations before adding products, the ordering that left confirmation emails listing only the mandatory ones. Its folder README went with it: it documented a forwarder route, an `apiFetch` helper and `ApiURLs`, none of which exist any more.
+- Updated dependencies [b6d0398]
+  - @eventuras/event-sdk@3.5.0
+
 ## 3.8.0
 
 ### Minor Changes
