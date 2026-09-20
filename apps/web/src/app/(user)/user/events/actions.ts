@@ -129,10 +129,12 @@ export async function createEventRegistration(
   );
 
   try {
+    // Products go in the create call: the API orders them before it sends the confirmation
+    // email, so the receipt lists the whole order instead of only the mandatory products.
     const registrationResponse = await postV3Registrations({
       client,
       headers: { 'Eventuras-Org-Id': orgId },
-      body: newRegistration,
+      body: { ...newRegistration, products },
     });
 
     if (!registrationResponse.data) {
@@ -161,38 +163,9 @@ export async function createEventRegistration(
       'Registration created successfully'
     );
 
-    // If no products, return the registration
-    if (!products.length) {
-      revalidatePath(`/user/events/${newRegistration.eventId}`);
-      revalidatePath(`/admin/events/${newRegistration.eventId}`);
-      return actionSuccess(registrationResponse.data, 'Registration created successfully!');
-    }
-
-    // Add products to the registration
-    const registrationId = registrationResponse.data.registrationId!;
-    const registrationWithProducts = await addProductsToRegistration(registrationId, products, {
-      eventId: newRegistration.eventId,
-      userId: newRegistration.userId ?? undefined,
-      source: 'create',
-    });
-
-    if (!registrationWithProducts) {
-      logger.error(
-        {
-          organizationId: orgId,
-          registrationId,
-          eventId: newRegistration.eventId,
-          userId: newRegistration.userId,
-          productCount: products.length,
-        },
-        'Registration created but failed while adding products'
-      );
-      return actionError('Registration created but failed to add products');
-    }
-
     revalidatePath(`/user/events/${newRegistration.eventId}`);
     revalidatePath(`/admin/events/${newRegistration.eventId}`);
-    return actionSuccess(registrationWithProducts, 'Registration created successfully!');
+    return actionSuccess(registrationResponse.data, 'Registration created successfully!');
   } catch (error) {
     logger.error(
       {
