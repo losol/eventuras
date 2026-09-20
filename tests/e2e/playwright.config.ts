@@ -30,11 +30,16 @@ const readEnvFile = (path: string): Record<string, string> => {
 const envPath = join(__dirname, '.env');
 
 if (existsSync(envPath)) {
-  const loaded = readEnvFile(envPath);
-  Object.assign(process.env, loaded);
-  const loadedVars = Object.keys(loaded);
-  console.log(`✓ Loaded ${loadedVars.length} environment variables from .env`);
-  console.log('Variables:', loadedVars.join(', '));
+  // What is already in the environment wins, so a one-off override on the command line
+  // still works against a .env the AppHost rewrites on every start.
+  const loaded = Object.entries(readEnvFile(envPath)).filter(
+    ([key]) => process.env[key] === undefined
+  );
+  for (const [key, value] of loaded) {
+    process.env[key] = value;
+  }
+  console.log(`✓ Loaded ${loaded.length} environment variables from .env`);
+  console.log('Variables:', loaded.map(([key]) => key).join(', '));
 } else if (!process.env.CI) {
   console.log('⚠ .env file not found - using existing environment variables');
 }
