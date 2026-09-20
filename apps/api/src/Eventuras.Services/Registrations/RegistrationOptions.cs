@@ -1,3 +1,8 @@
+#nullable enable
+
+using System.Collections.Generic;
+using Eventuras.Services.Orders;
+
 namespace Eventuras.Services.Registrations;
 
 public class RegistrationOptions
@@ -6,6 +11,11 @@ public class RegistrationOptions
     ///     Create an order with all mandatory products included.
     /// </summary>
     public bool CreateOrder { get; set; }
+
+    /// <summary>
+    ///     Products selected for the registration, ordered before the confirmation email is sent.
+    /// </summary>
+    public ICollection<OrderLineModel>? Products { get; set; }
 
     /// <summary>
     ///     Sets the registration as verified.

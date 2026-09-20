@@ -5922,6 +5922,16 @@
           "createOrder": {
             "type": "boolean"
           },
+          "products": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/OrderLineModel"
+            },
+            "description": "Products the participant selected. They are ordered before the confirmation email is sent,\nso the receipt lists the complete order rather than only the mandatory products."
+          },
           "sendWelcomeLetter": {
             "type": "boolean",
             "description": "Deprecated and ignored. Replaced by the registration/order confirmation email, which is\nsent automatically based on the registration's status. Kept for backwards compatibility;\nwill be removed in the next API version."
