@@ -8,7 +8,9 @@ using Eventuras.Domain;
 using Eventuras.Services;
 using Eventuras.TestAbstractions;
 using Eventuras.WebApi.Controllers.v3.Registrations;
+using Losol.Communication.Email;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using NodaTime;
 using Xunit;
 
@@ -578,6 +580,72 @@ public class RegistrationsControllerTest(CustomWebApiApplicationFactory<Program>
         token.CheckRegistration(reg);
         Assert.Empty(reg.Orders);
         Assert.Equal(Registration.RegistrationStatus.WaitingList, reg.Status);
+    }
+
+    [Fact]
+    public async Task Should_Order_Selected_Products_Before_Sending_The_Receipt()
+    {
+        using var scope = factory.Services.NewTestScope();
+        using var user = await scope.CreateUserAsync();
+        using var e = await scope.CreateEventAsync(status: EventInfo.EventInfoStatus.RegistrationsOpen);
+        var mandatoryName = $"Mandatory {Guid.NewGuid()}";
+        var optionalName = $"Optional {Guid.NewGuid()}";
+        using var mandatoryProduct = await scope.CreateProductAsync(e.Entity, mandatoryName, minimumQuantity: 1);
+        using var optionalProduct = await scope.CreateProductAsync(e.Entity, optionalName, minimumQuantity: 0);
+
+        var client = factory.CreateClient().AuthenticatedAs(user.Entity);
+        var response = await client.PostAsync("/v3/registrations", new
+        {
+            userId = user.Entity.Id,
+            eventId = e.Entity.EventInfoId,
+            createOrder = true,
+            products = new[]
+            {
+                new { productId = mandatoryProduct.Entity.ProductId, quantity = 1 },
+                new { productId = optionalProduct.Entity.ProductId, quantity = 2 }
+            }
+        });
+        response.CheckOk();
+
+        var reg = await scope.Db.Registrations.AsNoTracking()
+            .Include(r => r.Orders).ThenInclude(o => o.OrderLines)
+            .SingleAsync(r => r.EventInfoId == e.Entity.EventInfoId && r.UserId == user.Entity.Id);
+        var lines = reg.Orders.SelectMany(o => o.OrderLines).ToList();
+        Assert.Contains(lines, l => l.ProductId == mandatoryProduct.Entity.ProductId && l.Quantity == 1);
+        Assert.Contains(lines, l => l.ProductId == optionalProduct.Entity.ProductId && l.Quantity == 2);
+
+        // The receipt goes out once, after the order holds everything the participant selected.
+        factory.EmailSenderMock.Verify(s => s.SendEmailAsync(
+            It.Is<EmailModel>(m => m.HtmlBody.Contains(mandatoryName) && m.HtmlBody.Contains(optionalName)),
+            It.IsAny<EmailOptions>()), Times.Once);
+    }
+    [Fact]
+    public async Task Should_Keep_Mandatory_Products_When_Only_Selections_Are_Sent()
+    {
+        using var scope = factory.Services.NewTestScope();
+        using var user = await scope.CreateUserAsync();
+        using var e = await scope.CreateEventAsync(status: EventInfo.EventInfoStatus.RegistrationsOpen);
+        using var mandatoryProduct = await scope.CreateProductAsync(e.Entity, minimumQuantity: 1);
+        using var optionalProduct = await scope.CreateProductAsync(e.Entity, minimumQuantity: 0);
+
+        var client = factory.CreateClient().AuthenticatedAs(user.Entity);
+        var response = await client.PostAsync("/v3/registrations", new
+        {
+            userId = user.Entity.Id,
+            eventId = e.Entity.EventInfoId,
+            createOrder = true,
+            // Only the optional selection: the mandatory product is the event's rule, not a choice.
+            products = new[] { new { productId = optionalProduct.Entity.ProductId, quantity = 1 } }
+        });
+        response.CheckOk();
+
+        var reg = await scope.Db.Registrations.AsNoTracking()
+            .Include(r => r.Orders).ThenInclude(o => o.OrderLines)
+            .SingleAsync(r => r.EventInfoId == e.Entity.EventInfoId && r.UserId == user.Entity.Id);
+        var lines = reg.Orders.SelectMany(o => o.OrderLines).ToList();
+
+        Assert.Contains(lines, l => l.ProductId == mandatoryProduct.Entity.ProductId && l.Quantity == 1);
+        Assert.Contains(lines, l => l.ProductId == optionalProduct.Entity.ProductId && l.Quantity == 1);
     }
 
     [Fact]

@@ -163,6 +163,7 @@ public class RegistrationsController : ControllerBase
             new RegistrationOptions
             {
                 CreateOrder = dto.CreateOrder,
+                Products = dto.Products,
                 Verified = true,
                 EnforceCapacity = !User.IsAdmin()
             }, cancellationToken);

@@ -132,20 +132,37 @@ internal class RegistrationManagementService : IRegistrationManagementService
 
         await _context.CreateAsync(registration, true, cancellationToken);
 
-        if (options.CreateOrder && registration.Status != Registration.RegistrationStatus.WaitingList)
+        // Waiting-list registrations order nothing, neither mandatory nor selected products.
+        if (registration.Status != Registration.RegistrationStatus.WaitingList)
         {
-            var mandatoryItems = eventInfo.Products
-                .Where(p => p.IsMandatory)
-                .Select(p => new OrderLineModel(p.ProductId, null, p.MinimumQuantity))
-                .ToArray();
+            var mandatoryItems = options.CreateOrder
+                ? eventInfo.Products
+                    .Where(p => p.IsMandatory)
+                    .Select(p => new OrderLineModel(p.ProductId, null, p.MinimumQuantity))
+                    .ToArray()
+                : Array.Empty<OrderLineModel>();
 
-            if (mandatoryItems.Any())
+            if (mandatoryItems.Length > 0)
             {
                 await _orderManagementService
                     .CreateOrderForRegistrationAsync(
                         registration.RegistrationId,
                         mandatoryItems,
                         cancellationToken);
+            }
+
+            // Reconciled before the confirmation email below, so the receipt lists the whole order.
+            if (options.Products?.Count > 0)
+            {
+                // The reconciliation treats its argument as the complete order, so the mandatory
+                // lines are carried over. A caller that names a mandatory product keeps its own
+                // quantity; one that sends only its selections does not drop the rest.
+                var expectedLines = options.Products.ToList();
+                expectedLines.AddRange(mandatoryItems
+                    .Where(m => expectedLines.TrueForAll(p => p.ProductId != m.ProductId)));
+
+                await _orderManagementService.AutoCreateOrUpdateOrder(
+                    registration.RegistrationId, expectedLines, cancellationToken);
             }
         }
 

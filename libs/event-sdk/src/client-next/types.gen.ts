@@ -335,6 +335,11 @@ export type NewRegistrationDto = {
     eventId: number;
     createOrder?: boolean;
     /**
+     * Products the participant selected. They are ordered before the confirmation email is sent,
+     * so the receipt lists the complete order rather than only the mandatory products.
+     */
+    products?: null | Array<OrderLineModel>;
+    /**
      * Deprecated and ignored. Replaced by the registration/order confirmation email, which is
      * sent automatically based on the registration's status. Kept for backwards compatibility;
      * will be removed in the next API version.
