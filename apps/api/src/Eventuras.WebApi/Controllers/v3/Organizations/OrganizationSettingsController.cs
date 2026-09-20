@@ -59,14 +59,12 @@ public class OrganizationSettingsController : ControllerBase
         var settings = await _organizationSettingsCache
             .GetAllSettingsForOrganizationAsync(organizationId);
 
-        var values = settings.ToDictionary(
-            s => s.Name,
-            s => s.Value);
+        var stored = settings.ToDictionary(s => s.Name);
 
         return _organizationSettingsRegistry.GetEntries()
             .OrderBy(e => e.Section)
             .ThenBy(e => e.Name)
-            .Select(e => new OrganizationSettingDto(e, values.GetValueOrDefault(e.Name)))
+            .Select(e => new OrganizationSettingDto(e, stored.GetValueOrDefault(e.Name)))
             .ToArray();
     }
 
@@ -86,7 +84,7 @@ public class OrganizationSettingsController : ControllerBase
 
         var settings = (await _organizationSettingsCache
                 .GetAllSettingsForOrganizationAsync(organizationId))
-            .ToDictionary(s => s.Name, s => s);
+            .ToDictionary(s => s.Name);
 
         var entry = _organizationSettingsRegistry.GetEntries()
             .FirstOrDefault(e => e.Name == dto.Name);
@@ -96,34 +94,9 @@ public class OrganizationSettingsController : ControllerBase
             throw new NotFoundException($"Setting name {dto.Name} doesn't exist");
         }
 
-        if (string.IsNullOrWhiteSpace(dto.Value))
-        {
-            if (settings.ContainsKey(dto.Name))
-            {
-                await _organizationSettingsManagementService.RemoveOrganizationSettingAsync(settings[dto.Name]);
-            }
+        var stored = await StoreValueAsync(organizationId, dto, settings.GetValueOrDefault(dto.Name));
 
-            return Ok(new OrganizationSettingDto(entry));
-        }
-
-        if (settings.ContainsKey(dto.Name))
-        {
-            var setting = settings[dto.Name];
-            setting.Value = dto.Value;
-            await _organizationSettingsManagementService.UpdateOrganizationSettingAsync(setting);
-        }
-        else
-        {
-            await _organizationSettingsManagementService
-                .CreateOrganizationSettingAsync(new OrganizationSetting
-                {
-                    OrganizationId = organizationId,
-                    Name = dto.Name,
-                    Value = dto.Value
-                });
-        }
-
-        return Ok(new OrganizationSettingDto(entry, dto.Value));
+        return Ok(new OrganizationSettingDto(entry, stored));
     }
 
     [HttpPost]
@@ -162,54 +135,73 @@ public class OrganizationSettingsController : ControllerBase
         var result = new List<OrganizationSettingDto>();
         foreach (var dto in dtos)
         {
-            if (string.IsNullOrWhiteSpace(dto.Value))
+            var stored = await StoreValueAsync(organizationId, dto, settings.GetValueOrDefault(dto.Name));
+            if (stored == null)
             {
-                if (settings.ContainsKey(dto.Name))
-                {
-                    await _organizationSettingsManagementService.RemoveOrganizationSettingAsync(settings[dto.Name]);
-                }
-
                 continue;
             }
 
-            if (settings.ContainsKey(dto.Name))
-            {
-                var setting = settings[dto.Name];
-                setting.Value = dto.Value;
-                await _organizationSettingsManagementService.UpdateOrganizationSettingAsync(setting);
-            }
-            else
-            {
-                await _organizationSettingsManagementService
-                    .CreateOrganizationSettingAsync(new OrganizationSetting
-                    {
-                        OrganizationId = organizationId,
-                        Name = dto.Name,
-                        Value = dto.Value
-                    });
-            }
-
-            result.Add(new OrganizationSettingDto(entries[dto.Name], dto.Value));
+            result.Add(new OrganizationSettingDto(entries[dto.Name], stored));
         }
 
         return Ok(result);
+    }
+
+    /// <summary>
+    ///     Writes one value. A blank clears the stored value but keeps the row, so the
+    ///     setting's uuid survives being set again. Returns the stored setting, or
+    ///     <c>null</c> when a blank was written to a setting that was never set.
+    /// </summary>
+    private async Task<OrganizationSetting> StoreValueAsync(
+        int organizationId,
+        OrganizationSettingValueDto dto,
+        OrganizationSetting existing)
+    {
+        var value = string.IsNullOrWhiteSpace(dto.Value) ? null : dto.Value;
+
+        if (existing != null)
+        {
+            existing.Value = value;
+            await _organizationSettingsManagementService.UpdateOrganizationSettingAsync(existing);
+            return existing;
+        }
+
+        if (value == null)
+        {
+            return null;
+        }
+
+        var setting = new OrganizationSetting
+        {
+            OrganizationId = organizationId,
+            Name = dto.Name,
+            Value = value
+        };
+
+        await _organizationSettingsManagementService.CreateOrganizationSettingAsync(setting);
+        return setting;
     }
 }
 
 public class OrganizationSettingDto
 {
-    public OrganizationSettingDto(OrganizationSettingEntry entry, string value = null)
+    public OrganizationSettingDto(OrganizationSettingEntry entry, OrganizationSetting setting = null)
     {
         Name = entry.Name;
         Section = entry.Section;
         Description = entry.Description;
         Type = entry.Type;
         Sensitivity = entry.Sensitivity;
-        IsSet = !string.IsNullOrEmpty(value);
+        Uuid = setting?.Uuid;
+        // Whitespace is what a write treats as clearing, so it does not count as set.
+        IsSet = !string.IsNullOrWhiteSpace(setting?.Value);
 
         // A secret is write-only: callers learn whether it is set, never what it is.
-        Value = entry.Sensitivity == OrganizationSettingSensitivity.Secret ? null : value;
+        Value = entry.Sensitivity == OrganizationSettingSensitivity.Secret ? null : setting?.Value;
     }
+
+    /// <summary>Identity of the stored setting, null until it has been set once.</summary>
+    public Guid? Uuid { get; }
 
     public string Name { get; }
 

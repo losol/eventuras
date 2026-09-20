@@ -238,6 +238,110 @@ public class OrganizationSettingsControllerTest : IClassFixture<CustomWebApiAppl
     }
 
     [Fact]
+    public async Task List_Should_Report_The_Uuid_Of_A_Stored_Setting()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var org = await scope.CreateOrganizationAsync();
+
+        using var s = await scope
+            .CreateOrganizationSettingAsync(org.Entity,
+                OrgSettingsTestRegistryComponent.StringKey,
+                "anything");
+
+        var arr = await (await _factory.CreateClient()
+                .AuthenticatedAsSystemAdmin()
+                .GetAsync($"/v3/organizations/{org.Entity.OrganizationId}/settings"))
+            .CheckOk().AsArrayAsync();
+
+        var entries = arr.EnumerateArray().ToArray();
+
+        var stored = entries.Single(t => t.GetValue<string>("name") == OrgSettingsTestRegistryComponent.StringKey);
+        Assert.Equal(s.Entity.Uuid.ToString(), stored.GetValue<string>("uuid"));
+
+        // A setting that was never stored has no row, so it has no identity yet.
+        var never = entries.Single(t => t.GetValue<string>("name") == OrgSettingsTestRegistryComponent.EmailKey);
+        Assert.Null(never.GetValue<string>("uuid"));
+    }
+
+    [Fact]
+    public async Task Update_Should_Keep_The_Row_And_Uuid_When_A_Value_Is_Cleared()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var org = await scope.CreateOrganizationAsync();
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
+        var url = $"/v3/organizations/{org.Entity.OrganizationId}/settings";
+
+        var created = await (await client
+                .PutAsync(url, new { name = OrgSettingsTestRegistryComponent.StringKey, value = "first" }))
+            .CheckOk().AsTokenAsync();
+
+        var uuid = created.GetValue<string>("uuid");
+        Assert.NotNull(uuid);
+
+        var cleared = await (await client
+                .PutAsync(url, new { name = OrgSettingsTestRegistryComponent.StringKey, value = "" }))
+            .CheckOk().AsTokenAsync();
+
+        Assert.False(cleared.GetValue<bool>("isSet"));
+        Assert.Null(cleared.GetValue<string>("value"));
+        Assert.Equal(uuid, cleared.GetValue<string>("uuid"));
+
+        // The row survives the clear, so setting it again keeps the same identity.
+        var setting = await scope.Db.OrganizationSettings
+            .AsNoTracking()
+            .SingleAsync(x => x.Name == OrgSettingsTestRegistryComponent.StringKey &&
+                              x.OrganizationId == org.Entity.OrganizationId);
+
+        Assert.Null(setting.Value);
+
+        var again = await (await client
+                .PutAsync(url, new { name = OrgSettingsTestRegistryComponent.StringKey, value = "second" }))
+            .CheckOk().AsTokenAsync();
+
+        Assert.Equal(uuid, again.GetValue<string>("uuid"));
+        Assert.Equal("second", again.GetValue<string>("value"));
+    }
+
+    [Fact]
+    public async Task Update_Should_Not_Store_A_Row_For_A_Setting_That_Was_Never_Set()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var org = await scope.CreateOrganizationAsync();
+
+        var t = await (await _factory.CreateClient()
+                .AuthenticatedAsSystemAdmin()
+                .PutAsync($"/v3/organizations/{org.Entity.OrganizationId}/settings",
+                    new { name = OrgSettingsTestRegistryComponent.StringKey, value = "" }))
+            .CheckOk().AsTokenAsync();
+
+        Assert.Null(t.GetValue<string>("uuid"));
+        Assert.False(t.GetValue<bool>("isSet"));
+
+        Assert.False(await scope.Db.OrganizationSettings
+            .AnyAsync(x => x.Name == OrgSettingsTestRegistryComponent.StringKey &&
+                           x.OrganizationId == org.Entity.OrganizationId));
+    }
+
+    [Fact]
+    public async Task Update_Should_Report_A_Cleared_Secret_As_Not_Set()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var org = await scope.CreateOrganizationAsync();
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
+        var url = $"/v3/organizations/{org.Entity.OrganizationId}/settings";
+
+        (await client.PutAsync(url,
+            new { name = OrgSettingsTestRegistryComponent.SecretKey, value = "s3cr3t" })).CheckOk();
+
+        var cleared = await (await client
+                .PutAsync(url, new { name = OrgSettingsTestRegistryComponent.SecretKey, value = "" }))
+            .CheckOk().AsTokenAsync();
+
+        Assert.False(cleared.GetValue<bool>("isSet"));
+        Assert.Null(cleared.GetValue<string>("value"));
+    }
+
+    [Fact]
     public async Task Update_Should_Require_Auth()
     {
         var response = await _factory.CreateClient()
@@ -484,7 +588,7 @@ public class OrganizationSettingsControllerTest : IClassFixture<CustomWebApiAppl
     [InlineData(null)]
     [InlineData("")]
     [InlineData("   ")]
-    public async Task Update_Should_Remove_Existing_Setting_If_Value_Is_Not_Set(string value)
+    public async Task Update_Should_Clear_Existing_Setting_If_Value_Is_Not_Set(string value)
     {
         using var scope = _factory.Services.NewTestScope();
         var org = await scope.CreateOrganizationAsync();
@@ -510,9 +614,13 @@ public class OrganizationSettingsControllerTest : IClassFixture<CustomWebApiAppl
 
         response.CheckOk();
 
-        Assert.False(await scope.Db.OrganizationSettings
-            .AnyAsync(s => s.OrganizationId == org.Entity.OrganizationId &&
-                           s.Name == OrgSettingsTestRegistryComponent.StringKey));
+        // The row stays so the setting keeps its uuid; only the value goes.
+        var cleared = await scope.Db.OrganizationSettings
+            .AsNoTracking()
+            .SingleAsync(s => s.OrganizationId == org.Entity.OrganizationId &&
+                              s.Name == OrgSettingsTestRegistryComponent.StringKey);
+
+        Assert.Null(cleared.Value);
 
         // check that cache is invalidated
         await client.CheckSettingReturnedAsync(org,
@@ -707,7 +815,7 @@ public class OrganizationSettingsControllerTest : IClassFixture<CustomWebApiAppl
     }
 
     [Fact]
-    public async Task Batch_Update_Should_Create_Update_And_Delete_Entries()
+    public async Task Batch_Update_Should_Create_Update_And_Clear_Entries()
     {
         using var scope = _factory.Services.NewTestScope();
         using var org = await scope.CreateOrganizationAsync();
@@ -717,7 +825,7 @@ public class OrganizationSettingsControllerTest : IClassFixture<CustomWebApiAppl
         await scope.CreateOrganizationSettingAsync(org.Entity, OrgSettingsTestRegistryComponent.StringKey,
             "to be updated");
         await scope.CreateOrganizationSettingAsync(org.Entity, OrgSettingsTestRegistryComponent.EmailKey,
-            "to@be.removed");
+            "to@be.cleared");
 
         var response = await _factory.CreateClient()
             .AuthenticatedAsSystemAdmin()
@@ -732,12 +840,18 @@ public class OrganizationSettingsControllerTest : IClassFixture<CustomWebApiAppl
 
         var arr = await response.CheckOk().AsArrayAsync();
         Assert.Equal(JsonValueKind.Array, arr.ValueKind);
-        Assert.Equal(3, arr.GetArrayLength());
+        Assert.Equal(4, arr.GetArrayLength());
         var sortedArr = arr.EnumerateArray().OrderBy(a => a.GetValue<string>("name")).ToArray();
         Assert.Collection(sortedArr, t =>
         {
             Assert.Equal(OrgSettingsTestRegistryComponent.BooleanKey, t.GetValue<string>("name"));
             Assert.Equal("true", t.GetValue<string>("value"));
+        }, t =>
+        {
+            // A cleared setting comes back too, so its uuid and isSet stay visible.
+            Assert.Equal(OrgSettingsTestRegistryComponent.EmailKey, t.GetValue<string>("name"));
+            Assert.Null(t.GetValue<string>("value"));
+            Assert.False(t.GetValue<bool>("isSet"));
         }, t =>
         {
             Assert.Equal(OrgSettingsTestRegistryComponent.StringKey, t.GetValue<string>("name"));
@@ -753,11 +867,15 @@ public class OrganizationSettingsControllerTest : IClassFixture<CustomWebApiAppl
             .OrderBy(s => s.Name)
             .ToArrayAsync();
 
-        Assert.Equal(3, settings.Length);
+        Assert.Equal(4, settings.Length);
         Assert.Collection(settings, s =>
         {
             Assert.Equal(OrgSettingsTestRegistryComponent.BooleanKey, s.Name);
             Assert.Equal("true", s.Value);
+        }, s =>
+        {
+            Assert.Equal(OrgSettingsTestRegistryComponent.EmailKey, s.Name);
+            Assert.Null(s.Value);
         }, s =>
         {
             Assert.Equal(OrgSettingsTestRegistryComponent.StringKey, s.Name);

@@ -63,9 +63,12 @@ public class OrganizationSettingsAccessorService : IOrganizationSettingsAccessor
                 settingKey = orgSettingKey.Name;
             }
 
-            if (settingsMap.ContainsKey(settingKey))
+            // A cleared setting keeps its row with a null value, so blanks are left at
+            // the property's default — converting one throws for value types. Whitespace
+            // counts as blank here, matching what a write treats as clearing.
+            if (settingsMap.TryGetValue(settingKey, out var settingValue) &&
+                !string.IsNullOrWhiteSpace(settingValue))
             {
-                var settingValue = settingsMap[settingKey];
                 property.SetValue(poco, Convert.ChangeType(settingValue, property.PropertyType));
             }
         }

@@ -531,6 +531,10 @@ export type OrganizationMemberRoleDto = {
 };
 
 export type OrganizationSettingDto = {
+    /**
+     * Identity of the stored setting, null until it has been set once.
+     */
+    uuid?: null | string;
     name?: null | string;
     section?: null | string;
     description?: null | string;

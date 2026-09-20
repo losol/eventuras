@@ -66,6 +66,10 @@ public class ApplicationDbContext : DbContext
         builder.Entity<OrganizationSetting>()
             .HasKey(s => new { s.OrganizationId, s.Name });
 
+        builder.Entity<OrganizationSetting>()
+            .HasIndex(s => s.Uuid)
+            .IsUnique();
+
         var eventInfo = builder.Entity<EventInfo>();
         eventInfo.OwnsOne(e => e.Options,
             b1 =>
