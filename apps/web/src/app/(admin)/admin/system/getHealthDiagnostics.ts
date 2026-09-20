@@ -5,6 +5,9 @@ import { getAccessToken } from '@/utils/getAccesstoken';
 
 const logger = Logger.create({ namespace: 'web:admin:health' });
 
+/** The API is what we are reporting on, so it gets a short leash. */
+const BACKEND_TIMEOUT_MS = 5000;
+
 export interface HealthCheck {
   name: string;
   status: string;
@@ -30,6 +33,8 @@ export async function getHealthDiagnostics(): Promise<HealthDiagnosticsResult> {
     const response = await fetch(`${baseUrl}/health/diagnostics`, {
       headers: { Authorization: `Bearer ${token}` },
       cache: 'no-store',
+      // An unresponsive API must not hang the page you opened to find out why.
+      signal: AbortSignal.timeout(BACKEND_TIMEOUT_MS),
     });
     if (!response.ok) {
       logger.warn({ status: response.status }, 'Failed to load health diagnostics');
@@ -38,8 +43,12 @@ export async function getHealthDiagnostics(): Promise<HealthDiagnosticsResult> {
     const report = (await response.json()) as { checks?: HealthCheck[] };
     return { checks: report.checks ?? [], error: null };
   } catch (error) {
+    const timedOut = error instanceof Error && error.name === 'TimeoutError';
     logger.error({ error }, 'Error fetching health diagnostics');
-    return { checks: [], error: 'Error loading diagnostics.' };
+    return {
+      checks: [],
+      error: timedOut ? 'The API did not answer in time.' : 'Error loading diagnostics.',
+    };
   }
 }
 
