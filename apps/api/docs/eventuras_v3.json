@@ -1,24 +1,22 @@
 {
   "openapi": "3.1.1",
   "info": {
-    "title": "Eventuras.WebApi | v3",
-    "version": "1.0.0"
+    "title": "Eventuras API",
+    "description": "Course, event and conference management.",
+    "version": "v3"
   },
-  "servers": [
-    {
-      "url": "https://localhost:5001/"
-    }
-  ],
   "paths": {
     "/v3/users/{id}": {
       "get": {
         "tags": [
           "Users"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "string",
@@ -62,10 +60,12 @@
         "tags": [
           "Users"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "string",
@@ -131,10 +131,12 @@
         "tags": [
           "Users"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "Query",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "string"
             }
@@ -142,6 +144,7 @@
           {
             "name": "OrganizationId",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -150,6 +153,7 @@
           {
             "name": "IncludeOrgMembership",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "boolean"
             }
@@ -157,6 +161,7 @@
           {
             "name": "Order",
             "in": "query",
+            "description": "",
             "schema": {
               "$ref": "#/components/schemas/UserListOrder"
             }
@@ -164,6 +169,7 @@
           {
             "name": "Descending",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "boolean"
             }
@@ -171,6 +177,7 @@
           {
             "name": "Page",
             "in": "query",
+            "description": "",
             "schema": {
               "maximum": 2147483647,
               "minimum": 1,
@@ -181,6 +188,7 @@
           {
             "name": "Count",
             "in": "query",
+            "description": "",
             "schema": {
               "maximum": 250,
               "minimum": 0,
@@ -191,6 +199,7 @@
           {
             "name": "Limit",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -199,6 +208,7 @@
           {
             "name": "Offset",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -207,6 +217,7 @@
           {
             "name": "Ordering",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "array",
               "items": {
@@ -251,6 +262,7 @@
         "tags": [
           "Users"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "Eventuras-Org-Id",
@@ -350,6 +362,7 @@
         "tags": [
           "UserProfile"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "Eventuras-Org-Id",
@@ -410,6 +423,7 @@
         "tags": [
           "Database"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "Eventuras-Org-Id",
@@ -433,10 +447,12 @@
         "tags": [
           "RegistrationCertificate"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "integer",
@@ -465,10 +481,12 @@
         "tags": [
           "RegistrationOrders"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
@@ -522,10 +540,12 @@
         "tags": [
           "RegistrationOrders"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
@@ -575,10 +595,12 @@
         "tags": [
           "RegistrationOrders"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
@@ -634,6 +656,7 @@
           {
             "name": "EventId",
             "in": "query",
+            "description": "",
             "schema": {
               "maximum": 2147483647,
               "minimum": 1,
@@ -644,6 +667,7 @@
           {
             "name": "UserId",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "string",
               "format": "uuid"
@@ -652,7 +676,7 @@
           {
             "name": "Statuses",
             "in": "query",
-            "description": "Only include these statuses, e.g. Statuses=Verified&amp;Statuses=Attended. Empty means all.",
+            "description": "",
             "schema": {
               "type": "array",
               "items": {
@@ -663,6 +687,7 @@
           {
             "name": "IncludeEventInfo",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "boolean"
             }
@@ -670,6 +695,7 @@
           {
             "name": "IncludeUserInfo",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "boolean"
             }
@@ -677,6 +703,7 @@
           {
             "name": "IncludeProducts",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "boolean"
             }
@@ -684,6 +711,7 @@
           {
             "name": "IncludeOrders",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "boolean"
             }
@@ -691,6 +719,7 @@
           {
             "name": "Page",
             "in": "query",
+            "description": "",
             "schema": {
               "maximum": 2147483647,
               "minimum": 1,
@@ -701,6 +730,7 @@
           {
             "name": "Count",
             "in": "query",
+            "description": "",
             "schema": {
               "maximum": 250,
               "minimum": 0,
@@ -711,6 +741,7 @@
           {
             "name": "Limit",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -719,6 +750,7 @@
           {
             "name": "Offset",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -727,6 +759,7 @@
           {
             "name": "Ordering",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "array",
               "items": {
@@ -791,6 +824,7 @@
         "tags": [
           "Registrations"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "Eventuras-Org-Id",
@@ -851,10 +885,12 @@
         "tags": [
           "Registrations"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "integer",
@@ -864,6 +900,7 @@
           {
             "name": "EventId",
             "in": "query",
+            "description": "",
             "schema": {
               "maximum": 2147483647,
               "minimum": 1,
@@ -874,6 +911,7 @@
           {
             "name": "UserId",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "string",
               "format": "uuid"
@@ -882,7 +920,7 @@
           {
             "name": "Statuses",
             "in": "query",
-            "description": "Only include these statuses, e.g. Statuses=Verified&amp;Statuses=Attended. Empty means all.",
+            "description": "",
             "schema": {
               "type": "array",
               "items": {
@@ -893,6 +931,7 @@
           {
             "name": "IncludeEventInfo",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "boolean"
             }
@@ -900,6 +939,7 @@
           {
             "name": "IncludeUserInfo",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "boolean"
             }
@@ -907,6 +947,7 @@
           {
             "name": "IncludeProducts",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "boolean"
             }
@@ -914,6 +955,7 @@
           {
             "name": "IncludeOrders",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "boolean"
             }
@@ -921,6 +963,7 @@
           {
             "name": "Page",
             "in": "query",
+            "description": "",
             "schema": {
               "maximum": 2147483647,
               "minimum": 1,
@@ -931,6 +974,7 @@
           {
             "name": "Count",
             "in": "query",
+            "description": "",
             "schema": {
               "maximum": 250,
               "minimum": 0,
@@ -941,6 +985,7 @@
           {
             "name": "Limit",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -949,6 +994,7 @@
           {
             "name": "Offset",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -957,6 +1003,7 @@
           {
             "name": "Ordering",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "array",
               "items": {
@@ -1001,10 +1048,12 @@
         "tags": [
           "Registrations"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "integer",
@@ -1074,6 +1123,7 @@
           {
             "name": "id",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "integer",
@@ -1177,10 +1227,12 @@
         "tags": [
           "Registrations"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "integer",
@@ -1214,6 +1266,7 @@
           {
             "name": "eventId",
             "in": "path",
+            "description": "Alias for POST /v3/registrations",
             "required": true,
             "schema": {
               "type": "integer",
@@ -1223,6 +1276,7 @@
           {
             "name": "createOrder",
             "in": "query",
+            "description": "Alias for POST /v3/registrations",
             "schema": {
               "type": "boolean"
             }
@@ -1266,10 +1320,12 @@
         "tags": [
           "Products"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "productId",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
@@ -1316,10 +1372,12 @@
         "tags": [
           "OrganizationMemberRoles"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "organizationId",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
@@ -1330,6 +1388,7 @@
           {
             "name": "userId",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "string",
@@ -1382,10 +1441,12 @@
         "tags": [
           "OrganizationMemberRoles"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "organizationId",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
@@ -1396,6 +1457,7 @@
           {
             "name": "userId",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "string",
@@ -1468,10 +1530,12 @@
         "tags": [
           "OrganizationMemberRoles"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "organizationId",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
@@ -1482,6 +1546,7 @@
           {
             "name": "userId",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "string",
@@ -1556,10 +1621,12 @@
         "tags": [
           "OrganizationMembers"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "organizationId",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
@@ -1570,6 +1637,7 @@
           {
             "name": "userId",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "string",
@@ -1596,10 +1664,12 @@
         "tags": [
           "OrganizationMembers"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "organizationId",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
@@ -1610,6 +1680,7 @@
           {
             "name": "userId",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "string",
@@ -1638,6 +1709,7 @@
         "tags": [
           "Organizations"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "Eventuras-Org-Id",
@@ -1685,6 +1757,7 @@
         "tags": [
           "Organizations"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "Eventuras-Org-Id",
@@ -1745,10 +1818,12 @@
         "tags": [
           "Organizations"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "organizationId",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "integer",
@@ -1792,10 +1867,12 @@
         "tags": [
           "Organizations"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "organizationId",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "integer",
@@ -1859,10 +1936,12 @@
         "tags": [
           "Organizations"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "organizationId",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "integer",
@@ -1891,10 +1970,12 @@
         "tags": [
           "OrganizationSettings"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "organizationId",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
@@ -1948,10 +2029,12 @@
         "tags": [
           "OrganizationSettings"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "organizationId",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
@@ -1999,10 +2082,12 @@
         "tags": [
           "OrganizationSettings"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "organizationId",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
@@ -2064,10 +2149,12 @@
         "tags": [
           "Orders"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
@@ -2078,6 +2165,7 @@
           {
             "name": "IncludeUser",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "boolean"
             }
@@ -2085,6 +2173,7 @@
           {
             "name": "IncludeRegistration",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "boolean"
             }
@@ -2132,6 +2221,7 @@
           {
             "name": "id",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
@@ -2236,10 +2326,12 @@
         "tags": [
           "Orders"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
@@ -2287,10 +2379,12 @@
         "tags": [
           "Orders"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
@@ -2320,10 +2414,12 @@
         "tags": [
           "Orders"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "UserId",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "string",
               "format": "uuid"
@@ -2332,6 +2428,7 @@
           {
             "name": "EventId",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -2340,6 +2437,7 @@
           {
             "name": "RegistrationId",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -2348,6 +2446,7 @@
           {
             "name": "Status",
             "in": "query",
+            "description": "",
             "schema": {
               "$ref": "#/components/schemas/OrderStatus"
             }
@@ -2355,6 +2454,7 @@
           {
             "name": "IncludeUser",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "boolean"
             }
@@ -2362,6 +2462,7 @@
           {
             "name": "IncludeRegistration",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "boolean"
             }
@@ -2369,6 +2470,7 @@
           {
             "name": "OrganizationId",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -2377,6 +2479,7 @@
           {
             "name": "Page",
             "in": "query",
+            "description": "",
             "schema": {
               "maximum": 2147483647,
               "minimum": 1,
@@ -2387,6 +2490,7 @@
           {
             "name": "Count",
             "in": "query",
+            "description": "",
             "schema": {
               "maximum": 250,
               "minimum": 0,
@@ -2397,6 +2501,7 @@
           {
             "name": "Limit",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -2405,6 +2510,7 @@
           {
             "name": "Offset",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -2413,6 +2519,7 @@
           {
             "name": "Ordering",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "array",
               "items": {
@@ -2440,6 +2547,7 @@
         "tags": [
           "Orders"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "Eventuras-Org-Id",
@@ -2483,10 +2591,12 @@
         "tags": [
           "NotificationRecipients"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "integer",
@@ -2496,6 +2606,7 @@
           {
             "name": "Query",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "string"
             }
@@ -2503,6 +2614,7 @@
           {
             "name": "SentOnly",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "boolean"
             }
@@ -2510,6 +2622,7 @@
           {
             "name": "ErrorsOnly",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "boolean"
             }
@@ -2517,6 +2630,7 @@
           {
             "name": "Order",
             "in": "query",
+            "description": "",
             "schema": {
               "$ref": "#/components/schemas/NotificationRecipientListOrder"
             }
@@ -2524,6 +2638,7 @@
           {
             "name": "Desc",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "boolean"
             }
@@ -2531,6 +2646,7 @@
           {
             "name": "Page",
             "in": "query",
+            "description": "",
             "schema": {
               "maximum": 2147483647,
               "minimum": 1,
@@ -2541,6 +2657,7 @@
           {
             "name": "Count",
             "in": "query",
+            "description": "",
             "schema": {
               "maximum": 250,
               "minimum": 0,
@@ -2551,6 +2668,7 @@
           {
             "name": "Limit",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -2559,6 +2677,7 @@
           {
             "name": "Offset",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -2567,6 +2686,7 @@
           {
             "name": "Ordering",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "array",
               "items": {
@@ -2596,10 +2716,12 @@
         "tags": [
           "Notifications"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "integer",
@@ -2609,6 +2731,7 @@
           {
             "name": "includeStatistics",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "boolean",
               "default": false
@@ -2636,10 +2759,12 @@
         "tags": [
           "Notifications"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "EventId",
             "in": "query",
+            "description": "",
             "schema": {
               "maximum": 2147483647,
               "minimum": 1,
@@ -2650,6 +2775,7 @@
           {
             "name": "ProductId",
             "in": "query",
+            "description": "",
             "schema": {
               "maximum": 2147483647,
               "minimum": 1,
@@ -2660,6 +2786,7 @@
           {
             "name": "Status",
             "in": "query",
+            "description": "",
             "schema": {
               "$ref": "#/components/schemas/NotificationStatus"
             }
@@ -2667,6 +2794,7 @@
           {
             "name": "Type",
             "in": "query",
+            "description": "",
             "schema": {
               "$ref": "#/components/schemas/NotificationType"
             }
@@ -2674,6 +2802,7 @@
           {
             "name": "RecipientUserId",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "string",
               "format": "uuid"
@@ -2682,6 +2811,7 @@
           {
             "name": "Order",
             "in": "query",
+            "description": "",
             "schema": {
               "$ref": "#/components/schemas/NotificationListOrder"
             }
@@ -2689,6 +2819,7 @@
           {
             "name": "Desc",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "boolean"
             }
@@ -2696,7 +2827,7 @@
           {
             "name": "IncludeStatistics",
             "in": "query",
-            "description": "Whether to include delivery statistics into response.",
+            "description": "",
             "schema": {
               "type": "boolean"
             }
@@ -2704,6 +2835,7 @@
           {
             "name": "Page",
             "in": "query",
+            "description": "",
             "schema": {
               "maximum": 2147483647,
               "minimum": 1,
@@ -2714,6 +2846,7 @@
           {
             "name": "Count",
             "in": "query",
+            "description": "",
             "schema": {
               "maximum": 250,
               "minimum": 0,
@@ -2724,6 +2857,7 @@
           {
             "name": "Limit",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -2732,6 +2866,7 @@
           {
             "name": "Offset",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -2740,6 +2875,7 @@
           {
             "name": "Ordering",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "array",
               "items": {
@@ -2769,6 +2905,7 @@
         "tags": [
           "NotificationsQueueing"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "Eventuras-Org-Id",
@@ -2829,6 +2966,7 @@
         "tags": [
           "NotificationsQueueing"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "Eventuras-Org-Id",
@@ -2889,10 +3027,12 @@
         "tags": [
           "Invoices"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
@@ -2939,6 +3079,7 @@
         "tags": [
           "Invoices"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "Eventuras-Org-Id",
@@ -3004,6 +3145,7 @@
           {
             "name": "Type",
             "in": "query",
+            "description": "Filter and pagination options.",
             "schema": {
               "$ref": "#/components/schemas/EventInfoType"
             }
@@ -3011,6 +3153,7 @@
           {
             "name": "Start",
             "in": "query",
+            "description": "Filter and pagination options.",
             "schema": {
               "type": "string"
             }
@@ -3018,6 +3161,7 @@
           {
             "name": "End",
             "in": "query",
+            "description": "Filter and pagination options.",
             "schema": {
               "type": "string"
             }
@@ -3025,6 +3169,7 @@
           {
             "name": "Period",
             "in": "query",
+            "description": "Filter and pagination options.",
             "schema": {
               "$ref": "#/components/schemas/PeriodMatchingKind"
             }
@@ -3032,6 +3177,7 @@
           {
             "name": "IncludePastEvents",
             "in": "query",
+            "description": "Filter and pagination options.",
             "schema": {
               "type": "boolean"
             }
@@ -3039,6 +3185,7 @@
           {
             "name": "IncludeDraftEvents",
             "in": "query",
+            "description": "Filter and pagination options.",
             "schema": {
               "type": "boolean"
             }
@@ -3046,7 +3193,7 @@
           {
             "name": "IncludeStatistics",
             "in": "query",
-            "description": "Include registration statistics per event. Honored for administrators only;\nignored for anonymous or non-admin callers.",
+            "description": "Filter and pagination options.",
             "schema": {
               "type": "boolean"
             }
@@ -3054,6 +3201,7 @@
           {
             "name": "OrganizationId",
             "in": "query",
+            "description": "Filter and pagination options.",
             "schema": {
               "maximum": 2147483647,
               "minimum": 1,
@@ -3064,6 +3212,7 @@
           {
             "name": "CollectionId",
             "in": "query",
+            "description": "Filter and pagination options.",
             "schema": {
               "maximum": 2147483647,
               "minimum": 1,
@@ -3074,6 +3223,7 @@
           {
             "name": "Page",
             "in": "query",
+            "description": "Filter and pagination options.",
             "schema": {
               "maximum": 2147483647,
               "minimum": 1,
@@ -3084,6 +3234,7 @@
           {
             "name": "Count",
             "in": "query",
+            "description": "Filter and pagination options.",
             "schema": {
               "maximum": 250,
               "minimum": 0,
@@ -3094,6 +3245,7 @@
           {
             "name": "Limit",
             "in": "query",
+            "description": "Filter and pagination options.",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -3102,6 +3254,7 @@
           {
             "name": "Offset",
             "in": "query",
+            "description": "Filter and pagination options.",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -3110,6 +3263,7 @@
           {
             "name": "Ordering",
             "in": "query",
+            "description": "Filter and pagination options.",
             "schema": {
               "type": "array",
               "items": {
@@ -3157,7 +3311,6 @@
           }
         ],
         "requestBody": {
-          "description": "Event information.",
           "content": {
             "application/json": {
               "schema": {
@@ -3260,7 +3413,6 @@
           }
         ],
         "requestBody": {
-          "description": "Updated event information.",
           "content": {
             "application/json": {
               "schema": {
@@ -3297,7 +3449,7 @@
         "tags": [
           "Events"
         ],
-        "summary": "Partially updates a specific event by its ID.",
+        "summary": "Partially update an event",
         "description": "Updates specific fields of an event. For comprehensive updates with all fields, use PUT endpoint with EventFormDto instead.",
         "parameters": [
           {
@@ -3322,7 +3474,6 @@
           }
         ],
         "requestBody": {
-          "description": "Updated event information.",
           "content": {
             "application/json": {
               "schema": {
@@ -3417,6 +3568,7 @@
         "tags": [
           "OnlineCourse"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "Eventuras-Org-Id",
@@ -3466,10 +3618,12 @@
         "tags": [
           "OnlineCourse"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "integer",
@@ -3521,6 +3675,7 @@
           {
             "name": "eventId",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "integer",
@@ -3566,10 +3721,12 @@
         "tags": [
           "EventProducts"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "eventId",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "integer",
@@ -3579,6 +3736,7 @@
           {
             "name": "Visibility",
             "in": "query",
+            "description": "",
             "schema": {
               "$ref": "#/components/schemas/ProductVisibility"
             }
@@ -3629,10 +3787,12 @@
         "tags": [
           "EventProducts"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "eventId",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "integer",
@@ -3681,10 +3841,12 @@
         "tags": [
           "EventProducts"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "eventId",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "integer",
@@ -3694,6 +3856,7 @@
           {
             "name": "productId",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "integer",
@@ -3740,10 +3903,12 @@
         "tags": [
           "EventProducts"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "eventId",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "integer",
@@ -3753,6 +3918,7 @@
           {
             "name": "productId",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "integer",
@@ -3781,10 +3947,12 @@
         "tags": [
           "EventProductVariants"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "eventId",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "integer",
@@ -3794,6 +3962,7 @@
           {
             "name": "productId",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "integer",
@@ -3846,10 +4015,12 @@
         "tags": [
           "EventProductVariants"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "eventId",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "integer",
@@ -3859,6 +4030,7 @@
           {
             "name": "productId",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "integer",
@@ -3907,10 +4079,12 @@
         "tags": [
           "EventProductVariants"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "eventId",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "integer",
@@ -3920,6 +4094,7 @@
           {
             "name": "productId",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "integer",
@@ -3929,6 +4104,7 @@
           {
             "name": "id",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "integer",
@@ -3957,10 +4133,12 @@
         "tags": [
           "EventCertificates"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "integer",
@@ -3970,6 +4148,7 @@
           {
             "name": "Page",
             "in": "query",
+            "description": "",
             "schema": {
               "maximum": 2147483647,
               "minimum": 1,
@@ -3980,6 +4159,7 @@
           {
             "name": "Count",
             "in": "query",
+            "description": "",
             "schema": {
               "maximum": 250,
               "minimum": 0,
@@ -3990,6 +4170,7 @@
           {
             "name": "Limit",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -3998,6 +4179,7 @@
           {
             "name": "Offset",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -4006,6 +4188,7 @@
           {
             "name": "Ordering",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "array",
               "items": {
@@ -4035,10 +4218,12 @@
         "tags": [
           "EventCertificates"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "integer",
@@ -4067,10 +4252,12 @@
         "tags": [
           "EventCertificates"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "integer",
@@ -4080,6 +4267,7 @@
           {
             "name": "send",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "boolean",
               "default": true
@@ -4107,10 +4295,12 @@
         "tags": [
           "EventCertificates"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "integer",
@@ -4139,10 +4329,12 @@
         "tags": [
           "EventCollection"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "Featured",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "boolean"
             }
@@ -4150,6 +4342,7 @@
           {
             "name": "IncludePastCollections",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "boolean"
             }
@@ -4157,6 +4350,7 @@
           {
             "name": "Page",
             "in": "query",
+            "description": "",
             "schema": {
               "maximum": 2147483647,
               "minimum": 1,
@@ -4167,6 +4361,7 @@
           {
             "name": "Count",
             "in": "query",
+            "description": "",
             "schema": {
               "maximum": 250,
               "minimum": 0,
@@ -4177,6 +4372,7 @@
           {
             "name": "Limit",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -4185,6 +4381,7 @@
           {
             "name": "Offset",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -4193,6 +4390,7 @@
           {
             "name": "Ordering",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "array",
               "items": {
@@ -4237,6 +4435,7 @@
         "tags": [
           "EventCollection"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "Eventuras-Org-Id",
@@ -4297,10 +4496,12 @@
         "tags": [
           "EventCollection"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "integer",
@@ -4344,10 +4545,12 @@
         "tags": [
           "EventCollection"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "integer",
@@ -4411,10 +4614,12 @@
         "tags": [
           "EventCollection"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "integer",
@@ -4443,10 +4648,12 @@
         "tags": [
           "EventCollectionMapping"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "eventId",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "integer",
@@ -4456,6 +4663,7 @@
           {
             "name": "collectionId",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "integer",
@@ -4482,10 +4690,12 @@
         "tags": [
           "EventCollectionMapping"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "eventId",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "integer",
@@ -4495,6 +4705,7 @@
           {
             "name": "collectionId",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "integer",
@@ -4523,10 +4734,12 @@
         "tags": [
           "Certificates"
         ],
+        "summary": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "",
             "required": true,
             "schema": {
               "type": "integer",
@@ -4536,6 +4749,7 @@
           {
             "name": "format",
             "in": "query",
+            "description": "",
             "schema": {
               "$ref": "#/components/schemas/CertificateFormat"
             }
@@ -4585,7 +4799,7 @@
           {
             "name": "SubjectType",
             "in": "query",
-            "description": "Subject type to filter on. Free-form string matching the values produced\nby `BusinessEventSubjects.For*` factories (e.g. \"order\", \"registration\", \"user\").\nPair with SubjectUuid.",
+            "description": "",
             "schema": {
               "type": "string"
             }
@@ -4593,7 +4807,7 @@
           {
             "name": "SubjectUuid",
             "in": "query",
-            "description": "The subject entity's Uuid. Pair with SubjectType.",
+            "description": "",
             "schema": {
               "type": "string",
               "format": "uuid"
@@ -4602,7 +4816,7 @@
           {
             "name": "EventInfoUuid",
             "in": "query",
-            "description": "The event (EventInfo) Uuid: returns every business event recorded on that\nevent — the event itself, its registrations and their orders — instead of one subject.",
+            "description": "",
             "schema": {
               "type": "string",
               "format": "uuid"
@@ -4611,6 +4825,7 @@
           {
             "name": "Page",
             "in": "query",
+            "description": "",
             "schema": {
               "maximum": 2147483647,
               "minimum": 1,
@@ -4621,6 +4836,7 @@
           {
             "name": "Count",
             "in": "query",
+            "description": "",
             "schema": {
               "maximum": 250,
               "minimum": 0,
@@ -4631,6 +4847,7 @@
           {
             "name": "Limit",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -4639,6 +4856,7 @@
           {
             "name": "Offset",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -4647,6 +4865,7 @@
           {
             "name": "Ordering",
             "in": "query",
+            "description": "",
             "schema": {
               "type": "array",
               "items": {
@@ -4744,10 +4963,10 @@
                 "type": "null"
               },
               {
-                "description": "Parsed metadata. Rendered as a JSON object/array/primitive rather than\na JSON-encoded string. Null when the event has no metadata.",
                 "$ref": "#/components/schemas/JsonElement"
               }
-            ]
+            ],
+            "description": "Parsed metadata. Rendered as a JSON object/array/primitive rather than\na JSON-encoded string. Null when the event has no metadata."
           }
         }
       },
@@ -5599,10 +5818,10 @@
                 "type": "null"
               },
               {
-                "description": "The event type (e.g., Course, Conference).",
                 "$ref": "#/components/schemas/EventInfoType"
               }
-            ]
+            ],
+            "description": "The event type (e.g., Course, Conference)."
           },
           "status": {
             "oneOf": [
@@ -5610,10 +5829,10 @@
                 "type": "null"
               },
               {
-                "description": "The event status (e.g., Draft, Published, Cancelled).",
                 "$ref": "#/components/schemas/EventInfoStatus"
               }
-            ]
+            ],
+            "description": "The event status (e.g., Draft, Published, Cancelled)."
           },
           "title": {
             "type": [
@@ -5663,10 +5882,10 @@
                 "type": "null"
               },
               {
-                "description": "Event start date.",
                 "$ref": "#/components/schemas/LocalDate"
               }
-            ]
+            ],
+            "description": "Event start date."
           },
           "dateEnd": {
             "oneOf": [
@@ -5674,10 +5893,10 @@
                 "type": "null"
               },
               {
-                "description": "Event end date.",
                 "$ref": "#/components/schemas/LocalDate"
               }
-            ]
+            ],
+            "description": "Event end date."
           },
           "lastRegistrationDate": {
             "oneOf": [
@@ -5685,10 +5904,10 @@
                 "type": "null"
               },
               {
-                "description": "Last date for registration.",
                 "$ref": "#/components/schemas/LocalDate"
               }
-            ]
+            ],
+            "description": "Last date for registration."
           },
           "lastCancellationDate": {
             "oneOf": [
@@ -5696,10 +5915,10 @@
                 "type": "null"
               },
               {
-                "description": "Last date for cancellation.",
                 "$ref": "#/components/schemas/LocalDate"
               }
-            ]
+            ],
+            "description": "Last date for cancellation."
           },
           "maxParticipants": {
             "type": [
@@ -6264,10 +6483,10 @@
                 "type": "null"
               },
               {
-                "description": "The order status.",
                 "$ref": "#/components/schemas/OrderStatus"
               }
-            ]
+            ],
+            "description": "The order status."
           },
           "comments": {
             "type": [
@@ -6282,10 +6501,10 @@
                 "type": "null"
               },
               {
-                "description": "The payment method for the order.",
                 "$ref": "#/components/schemas/PaymentProvider"
               }
-            ]
+            ],
+            "description": "The payment method for the order."
           }
         },
         "description": "DTO for partial updates to an order.\nOnly allows updating Status, Comments, and PaymentMethod fields."
@@ -7153,10 +7372,10 @@
                 "type": "null"
               },
               {
-                "description": "Wall-clock date and time the registration was recorded, in the\ntenant's configured display zone (AppSettings.TimeZone, defaulting\nto Europe/Oslo). Timezone-less on purpose — same model as a flight\ndeparture time, which is always expressed in the local time of the\nairport regardless of where you view it from. Clients should render\nthis string verbatim and not re-parse via `new Date()` or\nequivalent, which would reinterpret the value in the client's zone.",
                 "$ref": "#/components/schemas/LocalDateTime"
               }
-            ]
+            ],
+            "description": "Wall-clock date and time the registration was recorded, in the\ntenant's configured display zone (AppSettings.TimeZone, defaulting\nto Europe/Oslo). Timezone-less on purpose — same model as a flight\ndeparture time, which is always expressed in the local time of the\nairport regardless of where you view it from. Clients should render\nthis string verbatim and not re-parse via `new Date()` or\nequivalent, which would reinterpret the value in the client's zone."
           },
           "paymentMethod": {
             "$ref": "#/components/schemas/PaymentProvider"

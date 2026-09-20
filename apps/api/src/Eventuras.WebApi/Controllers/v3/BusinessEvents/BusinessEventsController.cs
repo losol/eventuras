@@ -53,7 +53,7 @@ public class BusinessEventsController : ControllerBase
         // the service: both list methods call CheckListAccessAsync, which throws
         // NotAccessibleException that the exception filter maps to HTTP 403.
         var paging = new PagingRequest(query.Offset, query.Limit);
-        var events = query.HasSubject
+        var events = query.HasSubject()
             ? await _businessEventService.ListEventsAsync(
                 currentOrg.Uuid,
                 new BusinessEventSubject(query.SubjectType!, query.SubjectUuid!.Value),

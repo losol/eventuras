@@ -13,12 +13,12 @@ pnpm add @eventuras/event-sdk
 ## Usage
 
 ```typescript
-import { getV3Events } from '@eventuras/event-sdk';
-import { createClient } from '@eventuras/event-sdk/client-next';
+import { getV3Events } from "@eventuras/event-sdk";
+import { createClient } from "@eventuras/event-sdk/client-next";
 
 // Configure the client
 const client = createClient({
-  baseUrl: 'https://api.example.com',
+  baseUrl: "https://api.example.com",
   headers: {
     Authorization: `Bearer ${token}`,
   },
@@ -52,9 +52,8 @@ The OpenAPI specification must be updated whenever the API changes:
 pnpm openapi:update
 
 # This will:
-# 1. Start the API (or use running instance)
-# 2. Fetch apps/api/docs/eventuras-v3.json
-# 3. Regenerate libs/event-sdk automatically
+# 1. Build Eventuras.WebApi, which writes apps/api/docs/eventuras_v3.json
+# 2. Regenerate libs/event-sdk from it
 ```
 
 ### Configuration
@@ -62,7 +61,7 @@ pnpm openapi:update
 - `openapi-ts.config.ts`: Configuration for the OpenAPI TypeScript generator
   - Uses `@eventuras/api/openapi` export to access the spec
 - `tsconfig.json`: TypeScript compiler options (outputs to `dist/`)
-- Source spec: `@eventuras/api/openapi` → `apps/api/docs/eventuras-v3.json`
+- Source spec: `@eventuras/api/openapi` → `apps/api/docs/eventuras_v3.json`
 
 ## Known Issues
 
@@ -83,6 +82,5 @@ This SDK uses the modern `@hey-api/client-next` plugin which provides:
 - Runtime configuration support
 - Better error handling
 - Improved tree-shaking
-
 
 The generated code is in `src/client/` and is compiled to `dist/` for distribution.

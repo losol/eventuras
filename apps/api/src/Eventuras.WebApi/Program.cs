@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Reflection;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Asp.Versioning;
@@ -156,6 +157,7 @@ apiVersioningBuilder
     // group format above, so the spec stays at /openapi/v3.json.
     .AddOpenApi(options =>
     {
+        options.Document.AddDocumentTransformer<SetDocumentInfoTransformer>();
         options.Document.AddDocumentTransformer<AddSecuritySchemeTransformer>();
         options.Document.AddOperationTransformer<AddOrganizationHeaderTransformer>();
         options.Document.AddOperationTransformer<RemoveJsonPatchContentTypeTransformer>();
@@ -257,13 +259,23 @@ app.MapHealthChecks("/health/converto", new Microsoft.AspNetCore.Diagnostics.Hea
     Predicate = check => check.Tags.Contains("converto"),
 }).RequireAuthorization(Auth.AdministratorRole);
 
-// Seed database, run OnStartup builder.Services, etc.
-await PreStartupRoutine(app);
+// Seed database, run OnStartup builder.Services, etc. Skipped when the build
+// is only reading the OpenAPI document out of the app: describing the API must
+// not need a database. See the OpenApiDocumentsDirectory target in the csproj.
+if (!IsGeneratingOpenApiDocument())
+{
+    await PreStartupRoutine(app);
+}
 
 // Start the server
 await app.RunAsync();
 
 return;
+
+// dotnet-getdocument loads this assembly and builds the app to read its OpenAPI
+// document, running as GetDocument.Insider rather than as the entry point.
+static bool IsGeneratingOpenApiDocument() =>
+    Assembly.GetEntryAssembly()?.GetName().Name == "GetDocument.Insider";
 
 static FeatureManagement GetFeatureManagement(IConfiguration configuration)
 {
