@@ -2,9 +2,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
+using Eventuras.Services.BusinessEvents;
 using Eventuras.Services.Registrations.Notifications;
 using Losol.Communication.Email;
 using Microsoft.EntityFrameworkCore;
@@ -37,7 +39,7 @@ public class RegistrationNotificationServiceTest : IDisposable
     public async Task Transition_To_WaitingList_Sends_Waitlist_Email_Not_Confirmation()
     {
         var reg = await SeedRegistrationAsync(Registration.RegistrationStatus.WaitingList);
-        var (service, sent) = BuildService();
+        var (service, sent, _) = BuildService();
 
         await service.NotifyStatusChangeAsync(reg, Registration.RegistrationStatus.Verified);
 
@@ -51,7 +53,7 @@ public class RegistrationNotificationServiceTest : IDisposable
     public async Task Transition_To_Verified_Sends_Receipt()
     {
         var reg = await SeedRegistrationAsync(Registration.RegistrationStatus.Verified);
-        var (service, sent) = BuildService();
+        var (service, sent, _) = BuildService();
 
         await service.NotifyStatusChangeAsync(reg, previousStatus: null);
 
@@ -64,7 +66,7 @@ public class RegistrationNotificationServiceTest : IDisposable
     public async Task No_Email_When_Status_Unchanged()
     {
         var reg = await SeedRegistrationAsync(Registration.RegistrationStatus.Verified);
-        var (service, sent) = BuildService();
+        var (service, sent, _) = BuildService();
 
         await service.NotifyStatusChangeAsync(reg, Registration.RegistrationStatus.Verified);
 
@@ -75,29 +77,81 @@ public class RegistrationNotificationServiceTest : IDisposable
     public async Task No_Email_For_Non_Notifiable_Status()
     {
         var reg = await SeedRegistrationAsync(Registration.RegistrationStatus.Cancelled);
-        var (service, sent) = BuildService();
+        var (service, sent, _) = BuildService();
 
         await service.NotifyStatusChangeAsync(reg, Registration.RegistrationStatus.Verified);
 
         Assert.Empty(sent);
     }
 
-    private (RegistrationNotificationService Service, List<EmailModel> Sent) BuildService()
+    [Fact]
+    public async Task A_Failing_Email_Does_Not_Fail_The_Registration()
+    {
+        var reg = await SeedRegistrationAsync(Registration.RegistrationStatus.Verified);
+        var (service, _, audit) = BuildService(new InvalidOperationException("No email sender is enabled"));
+
+        // The registration is already saved; the caller must not be told it failed.
+        await service.NotifyStatusChangeAsync(reg, previousStatus: null);
+
+        // But it has to be findable afterwards, so the message can be sent again.
+        audit.Verify(a => a.AddEvent(
+            It.IsAny<BusinessEventSubject>(),
+            "registration.notification.failed",
+            It.Is<string>(m => m.Contains("No email sender is enabled")),
+            It.IsAny<Guid?>(),
+            It.IsAny<Guid?>(),
+            It.IsAny<object?>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task A_Cancelled_Request_Is_Not_Recorded_As_A_Delivery_Failure()
+    {
+        var reg = await SeedRegistrationAsync(Registration.RegistrationStatus.Verified);
+        var (service, _, audit) = BuildService(new OperationCanceledException());
+        using var cancelled = new CancellationTokenSource();
+        await cancelled.CancelAsync();
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
+            service.NotifyStatusChangeAsync(reg, previousStatus: null, cancelled.Token));
+
+        audit.Verify(a => a.AddEvent(
+            It.IsAny<BusinessEventSubject>(),
+            It.IsAny<string>(),
+            It.IsAny<string>(),
+            It.IsAny<Guid?>(),
+            It.IsAny<Guid?>(),
+            It.IsAny<object?>()), Times.Never);
+    }
+
+    private (RegistrationNotificationService Service, List<EmailModel> Sent, Mock<IBusinessEventService> Audit)
+        BuildService(Exception? sendFailure = null)
     {
         var sent = new List<EmailModel>();
         var emailSender = new Mock<IEmailSender>();
-        emailSender
-            .Setup(s => s.SendEmailAsync(It.IsAny<EmailModel>(), It.IsAny<EmailOptions>()))
-            .Callback<EmailModel, EmailOptions>((model, _) => sent.Add(model))
-            .Returns(Task.CompletedTask);
+        var setup = emailSender
+            .Setup(s => s.SendEmailAsync(It.IsAny<EmailModel>(), It.IsAny<EmailOptions>()));
+
+        if (sendFailure != null)
+        {
+            setup.ThrowsAsync(sendFailure);
+        }
+        else
+        {
+            setup
+                .Callback<EmailModel, EmailOptions>((model, _) => sent.Add(model))
+                .Returns(Task.CompletedTask);
+        }
+
+        var audit = new Mock<IBusinessEventService>();
 
         var service = new RegistrationNotificationService(
             _context,
             emailSender.Object,
             new RegistrationEmailRenderer(),
+            audit.Object,
             NullLogger<RegistrationNotificationService>.Instance);
 
-        return (service, sent);
+        return (service, sent, audit);
     }
 
     private async Task<Registration> SeedRegistrationAsync(Registration.RegistrationStatus status)
