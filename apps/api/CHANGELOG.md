@@ -1,5 +1,16 @@
 # @eventuras/api
 
+## 3.10.0
+
+### Minor Changes
+
+- b6d0398: `POST /v3/registrations` accepts the participant's selected products in `products`. They are ordered together with the event's mandatory products, before the confirmation email is sent, so the receipt lists the whole order. Previously the only way to add selected products was a second request, which arrived after the email had already gone out with the mandatory products alone. Waiting-list registrations order nothing, exactly as before.
+
+### Patch Changes
+
+- c20c31d: `GET /v3/events` without a date filter now keeps events that are still running, and keeps every event for one day after it ends. It previously required the start date to be today or later, so a multi-day course dropped out of the public listing the day after it started. The default now includes any event that starts or ends on or after yesterday; an event without an end date still ends on its start date.
+- fda83a4: A registration is no longer lost when its confirmation email cannot be sent. The send failure used to escape and fail the whole request with a 500, so the participant was told the registration failed while it sat saved in the database. The failure is now recorded on the registration's audit trail as `registration.notification.failed`, alongside the error, so the message can be found and sent again.
+
 ## 3.9.0
 
 ### Minor Changes
