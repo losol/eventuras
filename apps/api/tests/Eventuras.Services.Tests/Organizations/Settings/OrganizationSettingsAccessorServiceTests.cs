@@ -51,6 +51,22 @@ public class OrganizationSettingsAccessorServiceTests
         Assert.Equal(123, poco.Setting);
     }
 
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("   ")]
+    public async Task Should_Leave_Value_Type_At_Default_When_Setting_Is_Blank(string value)
+    {
+        // Clearing a setting keeps its row with a blank value, which must not be converted.
+        // Whitespace counts as blank, the same as a write does when it clears one.
+        _settings.Add(new OrganizationSetting { Name = TestSettingsConstants.SettingsKey, Value = value });
+
+        var poco = await _service.ReadOrganizationSettingsAsync<SettingsPocoWithIntegerMappedField>();
+
+        Assert.NotNull(poco);
+        Assert.Equal(0, poco.Setting);
+    }
+
     [Fact]
     public async Task Should_Not_Convert_Invalid_Poco_Value_Types()
     {

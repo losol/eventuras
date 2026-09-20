@@ -6680,6 +6680,14 @@
       "OrganizationSettingDto": {
         "type": "object",
         "properties": {
+          "uuid": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Identity of the stored setting, null until it has been set once.",
+            "format": "uuid"
+          },
           "name": {
             "type": [
               "null",
