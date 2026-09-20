@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Domain;
 using Eventuras.Infrastructure;
+using Eventuras.Services.BusinessEvents;
 using Losol.Communication.Email;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -32,6 +33,7 @@ public sealed class RegistrationNotificationService : IRegistrationNotificationS
     private const string DefaultLocale = "nb";
     private static readonly CultureInfo MoneyCulture = CultureInfo.GetCultureInfo("nb-NO");
 
+    private readonly IBusinessEventService _businessEventService;
     private readonly ApplicationDbContext _context;
     private readonly IEmailSender _emailSender;
     private readonly RegistrationEmailRenderer _renderer;
@@ -41,9 +43,11 @@ public sealed class RegistrationNotificationService : IRegistrationNotificationS
         ApplicationDbContext context,
         IEmailSender emailSender,
         RegistrationEmailRenderer renderer,
+        IBusinessEventService businessEventService,
         ILogger<RegistrationNotificationService> logger)
     {
         _context = context;
+        _businessEventService = businessEventService;
         _emailSender = emailSender;
         _renderer = renderer;
         _logger = logger;
@@ -109,9 +113,66 @@ public sealed class RegistrationNotificationService : IRegistrationNotificationS
             TextBody = rendered.TextBody
         };
 
-        await _emailSender.SendEmailAsync(email, new EmailOptions { OrganizationId = reg.EventInfo.OrganizationId });
-        _logger.LogInformation(
-            "Sent {Status} email for registration {RegistrationId}", status, reg.RegistrationId);
+        try
+        {
+            await _emailSender.SendEmailAsync(email,
+                new EmailOptions { OrganizationId = reg.EventInfo.OrganizationId });
+            _logger.LogInformation(
+                "Sent {Status} email for registration {RegistrationId}", status, reg.RegistrationId);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            // The caller gave up. That is not a delivery failure, and the request has to stop.
+            throw;
+        }
+        catch (Exception ex)
+        {
+            // The registration is already saved and valid. Letting a mail failure escape would
+            // fail the request the participant made, leaving them believing nothing was recorded
+            // while the registration sits in the database. It is recorded on the registration's
+            // audit trail instead, so the message can be found and sent again.
+            _logger.LogError(ex,
+                "Could not send {Status} email for registration {RegistrationId}",
+                status, reg.RegistrationId);
+
+            await RecordDeliveryFailureAsync(reg, status, ex, cancellationToken);
+        }
+    }
+
+    private async Task RecordDeliveryFailureAsync(
+        Registration reg,
+        Registration.RegistrationStatus status,
+        Exception exception,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var organizationUuid = await _context.Organizations
+                .AsNoTracking()
+                .Where(o => o.OrganizationId == reg.EventInfo!.OrganizationId)
+                .Select(o => (Guid?)o.Uuid)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            _businessEventService.AddEvent(
+                BusinessEventSubjects.ForRegistration(reg.Uuid),
+                "registration.notification.failed",
+                $"The {status} email could not be sent: {exception.Message}",
+                organizationUuid,
+                metadata: new { Status = status.ToString(), Error = exception.GetType().Name });
+
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            // Recording the failure must not become a second way for the request to fail.
+            _logger.LogError(ex,
+                "Could not record the failed {Status} email for registration {RegistrationId}",
+                status, reg.RegistrationId);
+        }
     }
 
     private static RegistrationReceiptEmailModel BuildReceiptModel(Registration reg, string participantName)
