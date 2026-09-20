@@ -244,8 +244,41 @@
     }
   },
   "system": {
+    "diagnostics": {
+      "backendApi": "Backend API",
+      "description": "These buttons raise errors on purpose, so you can confirm they reach the error tracker.",
+      "title": "Diagnostics",
+      "webApp": "Web app"
+    },
+    "health": {
+      "empty": "No health checks reported.",
+      "title": "Health checks"
+    },
     "page": {
-      "title": "System settings"
+      "description": "Status and configuration for this installation.",
+      "title": "System"
+    },
+    "settings": {
+      "description": "Registered settings for this organization. A secret's value never leaves the server; the API reports only whether one is set.",
+      "empty": "No settings registered.",
+      "error": "Could not load the organization settings.",
+      "noOrganization": "No organization is configured (ORGANIZATION_ID), so there are no settings to show.",
+      "notSet": "Not set",
+      "otherSection": "Other",
+      "secret": "Secret",
+      "set": "Set",
+      "title": "Organization settings"
+    },
+    "systemAdminOnly": "System admin only",
+    "version": {
+      "api": "Backend API",
+      "apiUnavailable": "Could not reach the backend API.",
+      "buildTime": "Built",
+      "commit": "Commit",
+      "imageTag": "Image tag",
+      "title": "Version",
+      "version": "Version",
+      "web": "Web app"
     }
   },
   "title": "Admin",

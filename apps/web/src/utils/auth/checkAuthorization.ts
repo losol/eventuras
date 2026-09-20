@@ -19,10 +19,20 @@ const SYSTEM_ADMIN_ROLE = 'SystemAdmin';
  * Pass `session?.user?.roles` from an already-fetched session to avoid redundant
  * network calls. For a standalone check, fetch the session yourself:
  *   const session = await getCurrentSession(oauthConfig);
- *   if (isSystemAdmin(session?.user?.roles ?? [])) { ... }
+ *   if (await isSystemAdmin(session?.user?.roles ?? [])) { ... }
  */
 export async function isSystemAdmin(sessionRoles: string[]): Promise<boolean> {
   return sessionRoles.includes(SYSTEM_ADMIN_ROLE);
+}
+
+/**
+ * True when the signed-in user holds the system-wide admin role, read from the
+ * signed session. Sound enough to guard a server action on its own, and the API
+ * checks the role again on anything that reaches it.
+ */
+export async function isCurrentUserSystemAdmin(): Promise<boolean> {
+  const session = await getCurrentSession(oauthConfig);
+  return isSystemAdmin(session?.user?.roles ?? []);
 }
 
 export interface AuthorizationResult {

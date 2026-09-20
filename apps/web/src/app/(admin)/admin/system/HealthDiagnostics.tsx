@@ -1,3 +1,5 @@
+import { getTranslations } from 'next-intl/server';
+
 import { Panel } from '@eventuras/ratio-ui/core/Panel';
 
 import { getHealthDiagnostics } from './getHealthDiagnostics';
@@ -21,13 +23,14 @@ const panelStatus = (status: string) => {
  * one per check, coloured by status (e.g. pending migrations show as a warning).
  */
 export const HealthDiagnostics = async () => {
+  const t = await getTranslations();
   const { checks, error } = await getHealthDiagnostics();
 
   if (error) {
     return <Panel status="error">{error}</Panel>;
   }
   if (checks.length === 0) {
-    return <Panel status="success">No diagnostics checks reported.</Panel>;
+    return <Panel status="success">{t('admin.system.health.empty')}</Panel>;
   }
 
   return (

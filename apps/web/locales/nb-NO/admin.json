@@ -244,8 +244,41 @@
     }
   },
   "system": {
+    "diagnostics": {
+      "backendApi": "Backend-API",
+      "description": "Disse knappene utløser feil med vilje, slik at du kan sjekke at de havner i feilsporingen.",
+      "title": "Diagnostikk",
+      "webApp": "Nettapp"
+    },
+    "health": {
+      "empty": "Ingen helsesjekker rapportert.",
+      "title": "Helsesjekker"
+    },
     "page": {
-      "title": "Innstillinger"
+      "description": "Status og konfigurasjon for denne installasjonen.",
+      "title": "System"
+    },
+    "settings": {
+      "description": "Registrerte innstillinger for denne organisasjonen. En hemmelighet forlater aldri serveren; API-et melder bare om den er satt.",
+      "empty": "Ingen innstillinger registrert.",
+      "error": "Kunne ikke laste organisasjonsinnstillingene.",
+      "noOrganization": "Ingen organisasjon er konfigurert (ORGANIZATION_ID), så det finnes ingen innstillinger å vise.",
+      "notSet": "Ikke satt",
+      "otherSection": "Annet",
+      "secret": "Hemmelig",
+      "set": "Satt",
+      "title": "Organisasjonsinnstillinger"
+    },
+    "systemAdminOnly": "Kun systemadmin",
+    "version": {
+      "api": "Backend-API",
+      "apiUnavailable": "Fikk ikke kontakt med backend-API-et.",
+      "buildTime": "Bygget",
+      "commit": "Commit",
+      "imageTag": "Image-tag",
+      "title": "Versjon",
+      "version": "Versjon",
+      "web": "Nettapp"
     }
   },
   "title": "Admin",
