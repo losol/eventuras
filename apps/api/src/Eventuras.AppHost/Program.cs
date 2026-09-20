@@ -15,6 +15,8 @@ var postgres = builder.AddPostgres("postgres", password: postgresPassword)
 var db = postgres.AddDatabase("DefaultConnection", databaseName: "eventuras")
     .WithCreationScript("CREATE DATABASE \"eventuras\";");
 
+var certificates = DevCertificate.Export(builder.AppHostDirectory);
+
 // Login delivers a one-time code by mail, so development needs somewhere for
 // that mail to land. Mailpit's web UI is where you read the code.
 var mailpit = builder.AddContainer("mailpit", "axllent/mailpit", "v1.27")
@@ -23,6 +25,10 @@ var mailpit = builder.AddContainer("mailpit", "axllent/mailpit", "v1.27")
     // Host ports only; Keycloak reaches the SMTP port over the container network.
     .WithHttpEndpoint(port: 5103, targetPort: 8025, name: "ui")
     .WithEndpoint(port: 5104, targetPort: 1025, name: "smtp")
+    .WithBindMount(certificates, "/certs", isReadOnly: true)
+    // The API's SMTP sender always issues STARTTLS, so Mailpit has to offer it or every
+    // message it sends fails to leave the machine. Same certificate as the rest of the stack.
+    .WithArgs("--smtp-tls-cert", "/certs/kc.pem", "--smtp-tls-key", "/certs/kc.key")
     .WithUrl("https://eventuras-mail.dev.localhost", "Mailpit");
 
 // The Losol Keycloak distribution, not stock Keycloak: it carries the tessera-otp
@@ -30,8 +36,6 @@ var mailpit = builder.AddContainer("mailpit", "axllent/mailpit", "v1.27")
 // development exercises the real login flow rather than a password stand-in.
 const string keycloakHost = "https://eventuras-id.dev.localhost";
 var keycloakIssuer = $"{keycloakHost}/realms/eventuras-dev";
-
-var certificates = DevCertificate.Export(builder.AppHostDirectory);
 
 var keycloak = builder.AddContainer("keycloak", "ghcr.io/losol/tessera-idp", "0.1.1")
     // Named so Traefik can route to it, and not published: the proxy is the only
@@ -68,6 +72,12 @@ builder.AddContainer("traefik", "traefik", "v3.3")
 // ever starts against a database that is already current.
 var migrations = builder.AddProject<Projects.Eventuras_MigrationService>("migrations")
     .WithReference(db)
+    // The API reads SMTP from organization settings, so pointing development mail at Mailpit
+    // is a database fact, not configuration. Deployments set none of this and seed nothing.
+    .WithEnvironment("DevelopmentSmtp__Host", "localhost")
+    .WithEnvironment("DevelopmentSmtp__Port", "5104")
+    .WithEnvironment("DevelopmentSmtp__FromAddress", "no-reply@localhost")
+    .WithEnvironment("DevelopmentSmtp__FromName", "Eventuras Dev")
     .WaitFor(db);
 
 builder.AddProject<Projects.Eventuras_WebApi>("api")

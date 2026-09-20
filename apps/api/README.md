@@ -50,7 +50,7 @@ This will:
 - Apply migrations and seed reference data (payment methods and a first organization) as a separate step, before the API starts
 - Start the API with the connection string automatically injected
 - Start **Keycloak** (`ghcr.io/losol/tessera-idp`) with the development realm imported
-- Start **Mailpit**, where the login codes are delivered
+- Start **Mailpit**, where the login codes and the API's own mail are delivered
 - Start the **web app**, with its API and issuer URLs injected
 - Start **Traefik**, fronting all of the above on `https://*.dev.localhost`
 - Open the **Aspire Dashboard** where you can inspect logs, traces, and metrics in real time
@@ -76,6 +76,16 @@ exactly as in a cluster.
 
 Log in as **`admin@example.com`**. Login is passwordless — the same email plus
 one-time code flow that staging runs — so the code arrives in Mailpit.
+
+#### Mail from the API
+
+The API's receipts and notifications land in Mailpit too, so a registration can be
+followed all the way to the message it produces. Two things make that work, and both
+are set up for you: Mailpit serves STARTTLS with the development certificate, because
+the API's SMTP sender always requires it, and the migration step points the first
+organization's SMTP settings at Mailpit. The API reads SMTP from organization settings
+rather than configuration, so without those rows it refuses to send at all. Deployments
+pass none of this and nothing is written.
 
 No identity provider setup is needed: everything the realm needs is in
 `src/Eventuras.AppHost/realms/eventuras-dev-realm.json`, which is the single
