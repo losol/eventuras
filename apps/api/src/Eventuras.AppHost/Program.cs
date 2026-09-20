@@ -5,6 +5,12 @@ var builder = DistributedApplication.CreateBuilder(args);
 // Pinned rather than generated: Postgres only applies a password when the data
 // volume is first initialised, so a per-run password locks the AppHost out of
 // its own volume on every subsequent start.
+// Every address the stack serves, defined once: the web app, the API and the suite that
+// drives them all read these rather than repeating the literals.
+const string webHost = "https://eventuras-web.dev.localhost";
+const string apiHost = "https://eventuras-api.dev.localhost";
+const int mailpitUiPort = 5103;
+
 var postgresPassword = builder.AddParameter("postgres-password", "eventuras", secret: true);
 
 var postgres = builder.AddPostgres("postgres", password: postgresPassword)
@@ -23,7 +29,7 @@ var mailpit = builder.AddContainer("mailpit", "axllent/mailpit", "v1.27")
     // Named so the realm's smtpServer host resolves to it on the shared network.
     .WithContainerName("eventuras-mailpit")
     // Host ports only; Keycloak reaches the SMTP port over the container network.
-    .WithHttpEndpoint(port: 5103, targetPort: 8025, name: "ui")
+    .WithHttpEndpoint(port: mailpitUiPort, targetPort: 8025, name: "ui")
     .WithEndpoint(port: 5104, targetPort: 1025, name: "smtp")
     .WithBindMount(certificates, "/certs", isReadOnly: true)
     // The API's SMTP sender always issues STARTTLS, so Mailpit has to offer it or every
@@ -60,7 +66,7 @@ var keycloak = builder.AddContainer("keycloak", "ghcr.io/losol/tessera-idp", "0.
 // hostnames and forwarded-header handling, exercised locally instead of only in
 // staging. `*.dev.localhost` resolves to loopback and is covered by the
 // development certificate, so no hosts file and no extra trust is needed.
-builder.AddContainer("traefik", "traefik", "v3.3")
+var traefik = builder.AddContainer("traefik", "traefik", "v3.3")
     // Published straight by the container runtime: Aspire's proxy runs as the
     // user and cannot bind a port below 1024.
     .WithHttpsEndpoint(port: 443, targetPort: 443, name: "https", isProxied: false)
@@ -80,7 +86,7 @@ var migrations = builder.AddProject<Projects.Eventuras_MigrationService>("migrat
     .WithEnvironment("DevelopmentSmtp__FromName", "Eventuras Dev")
     .WaitFor(db);
 
-builder.AddProject<Projects.Eventuras_WebApi>("api")
+var api = builder.AddProject<Projects.Eventuras_WebApi>("api")
     // Pinned for the same reason as Keycloak: apps/web reads BACKEND_URL from a
     // static .env, so the API cannot sit on a port Aspire picks per run.
     .WithHttpEndpoint(port: 5101, name: "http")
@@ -95,22 +101,61 @@ builder.AddProject<Projects.Eventuras_WebApi>("api")
     // Keycloak emits realm roles as a flat "roles" claim; without this the API
     // falls back to Auth0's inbound claim mapping and finds no roles at all.
     .WithEnvironment("Auth__RoleClaimType", "roles")
-    .WithUrl("https://eventuras-api.dev.localhost", "API");
+    .WithUrl(apiHost, "API");
 
 // The web app, so the whole stack is one command. Aspire owns the wiring that
 // otherwise drifts in apps/web/.env — the API and issuer URLs, and the CA that
 // makes Node trust the development Keycloak. Secrets stay in .env; see
 // apps/web/.env-template. Running `pnpm dev` by hand still works.
-builder.AddExecutable("web", "pnpm", "../../../web", "dev")
+var web = builder.AddExecutable("web", "pnpm", "../../../web", "dev")
     // Port only, no targetPort: a proxied non-container endpoint cannot have both.
     .WithHttpEndpoint(port: 5100, env: "PORT")
-    .WithEnvironment("APPLICATION_URL", "https://eventuras-web.dev.localhost")
-    .WithEnvironment("BACKEND_URL", "https://eventuras-api.dev.localhost")
+    .WithEnvironment("APPLICATION_URL", webHost)
+    .WithEnvironment("BACKEND_URL", apiHost)
     .WithEnvironment("OIDC_ISSUER", keycloakIssuer)
     // Node does not read the OS trust store, so it needs the certificate that
     // Keycloak serves handed to it explicitly.
     .WithEnvironment("NODE_EXTRA_CA_CERTS", Path.Combine(certificates, "kc.pem"))
-    .WithUrl("https://eventuras-web.dev.localhost", "Web")
+    .WithUrl(webHost, "Web")
     .WaitFor(keycloak);
+
+// Everything the Playwright suite needs to reach this stack. It is all derived from the
+// stack itself, so it cannot drift from the ports, hostnames and realm above.
+var e2eEnvironment = new Dictionary<string, string>
+{
+    ["E2E_WEB_URL"] = webHost,
+    ["E2E_API_URL"] = apiHost,
+    // Login codes are mail, and in development mail is Mailpit.
+    ["E2E_OTP_SOURCE"] = "mailpit",
+    ["E2E_MAILPIT_API_URL"] = $"http://localhost:{mailpitUiPort}",
+    // The realm seeds one user holding both roles; see realms/eventuras-dev-realm.json.
+    ["E2E_ADMIN_EMAIL"] = "admin@example.com",
+    ["E2E_SYSTEMADMIN_EMAIL"] = "admin@example.com",
+    // Regular users are created per run, so the pattern needs the placeholder.
+    ["E2E_USER_EMAIL_PATTERN"] = "test-{random}@e2e.test.example",
+    // Node does not read the OS trust store, so hand it the same certificate.
+    ["NODE_EXTRA_CA_CERTS"] = Path.Combine(certificates, "kc.pem")
+};
+
+// The suite as a resource you trigger, rather than something that runs with the stack:
+// start it from the dashboard or with `aspire resource e2e start`. It waits for the
+// services it drives, so a run cannot begin against a half-started stack.
+var e2e = builder.AddExecutable("e2e", "pnpm", "../../../../tests/e2e", "test")
+    .WithExplicitStart()
+    // Through the proxy, so the suite must not start before the proxy answers.
+    .WaitFor(traefik)
+    .WaitFor(web)
+    // It calls the API directly as well, not only through the web app.
+    .WaitFor(api)
+    .WaitFor(keycloak)
+    .WaitFor(mailpit);
+
+foreach (var (name, value) in e2eEnvironment)
+{
+    e2e.WithEnvironment(name, value);
+}
+
+// The same values on disk, so a terminal run of a single spec needs no environment either.
+E2EEnvironmentFile.Write(builder.AppHostDirectory, e2eEnvironment);
 
 builder.Build().Run();
