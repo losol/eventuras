@@ -66,7 +66,7 @@ public class OrganizationSettingsController : ControllerBase
         return _organizationSettingsRegistry.GetEntries()
             .OrderBy(e => e.Section)
             .ThenBy(e => e.Name)
-            .Select(e => new OrganizationSettingDto(e) { Value = values.ContainsKey(e.Name) ? values[e.Name] : null })
+            .Select(e => new OrganizationSettingDto(e, values.GetValueOrDefault(e.Name)))
             .ToArray();
     }
 
@@ -103,7 +103,7 @@ public class OrganizationSettingsController : ControllerBase
                 await _organizationSettingsManagementService.RemoveOrganizationSettingAsync(settings[dto.Name]);
             }
 
-            return Ok(new OrganizationSettingDto(entry) { Value = null });
+            return Ok(new OrganizationSettingDto(entry));
         }
 
         if (settings.ContainsKey(dto.Name))
@@ -123,7 +123,7 @@ public class OrganizationSettingsController : ControllerBase
                 });
         }
 
-        return Ok(new OrganizationSettingDto(entry) { Value = dto.Value });
+        return Ok(new OrganizationSettingDto(entry, dto.Value));
     }
 
     [HttpPost]
@@ -189,7 +189,7 @@ public class OrganizationSettingsController : ControllerBase
                     });
             }
 
-            result.Add(new OrganizationSettingDto(entries[dto.Name]) { Value = dto.Value });
+            result.Add(new OrganizationSettingDto(entries[dto.Name], dto.Value));
         }
 
         return Ok(result);
@@ -198,12 +198,17 @@ public class OrganizationSettingsController : ControllerBase
 
 public class OrganizationSettingDto
 {
-    public OrganizationSettingDto(OrganizationSettingEntry entry)
+    public OrganizationSettingDto(OrganizationSettingEntry entry, string value = null)
     {
         Name = entry.Name;
         Section = entry.Section;
         Description = entry.Description;
         Type = entry.Type;
+        Sensitivity = entry.Sensitivity;
+        IsSet = !string.IsNullOrEmpty(value);
+
+        // A secret is write-only: callers learn whether it is set, never what it is.
+        Value = entry.Sensitivity == OrganizationSettingSensitivity.Secret ? null : value;
     }
 
     public string Name { get; }
@@ -214,5 +219,10 @@ public class OrganizationSettingDto
 
     public OrganizationSettingType Type { get; }
 
-    public string Value { get; set; }
+    public OrganizationSettingSensitivity Sensitivity { get; }
+
+    /// <summary>Whether a value is stored, which is all a secret ever reports.</summary>
+    public bool IsSet { get; }
+
+    public string Value { get; }
 }

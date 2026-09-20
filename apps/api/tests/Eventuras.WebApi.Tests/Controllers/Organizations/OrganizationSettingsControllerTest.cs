@@ -146,6 +146,98 @@ public class OrganizationSettingsControllerTest : IClassFixture<CustomWebApiAppl
     }
 
     [Fact]
+    public async Task List_Should_Report_A_Secret_As_Set_Without_Its_Value()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var org = await scope.CreateOrganizationAsync();
+
+        using var s = await scope
+            .CreateOrganizationSettingAsync(org.Entity,
+                OrgSettingsTestRegistryComponent.SecretKey,
+                "s3cr3t");
+
+        var response = await _factory.CreateClient()
+            .AuthenticatedAsSystemAdmin()
+            .GetAsync($"/v3/organizations/{org.Entity.OrganizationId}/settings");
+
+        var body = await response.CheckOk().Content.ReadAsStringAsync();
+        Assert.DoesNotContain("s3cr3t", body);
+
+        using var json = JsonDocument.Parse(body);
+        var secret = json.RootElement.EnumerateArray()
+            .Single(t => t.GetValue<string>("name") == OrgSettingsTestRegistryComponent.SecretKey);
+
+        Assert.Equal("Secret", secret.GetValue<string>("sensitivity"));
+        Assert.True(secret.GetValue<bool>("isSet"));
+        Assert.Null(secret.GetValue<string>("value"));
+    }
+
+    [Fact]
+    public async Task List_Should_Report_An_Unset_Secret_As_Not_Set()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var org = await scope.CreateOrganizationAsync();
+
+        var response = await _factory.CreateClient()
+            .AuthenticatedAsSystemAdmin()
+            .GetAsync($"/v3/organizations/{org.Entity.OrganizationId}/settings");
+
+        var arr = await response.CheckOk().AsArrayAsync();
+        var secret = arr.EnumerateArray()
+            .Single(t => t.GetValue<string>("name") == OrgSettingsTestRegistryComponent.SecretKey);
+
+        Assert.False(secret.GetValue<bool>("isSet"));
+        Assert.Null(secret.GetValue<string>("value"));
+    }
+
+    [Fact]
+    public async Task List_Should_Return_The_Value_Of_An_Internal_Setting()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var org = await scope.CreateOrganizationAsync();
+
+        using var s = await scope
+            .CreateOrganizationSettingAsync(org.Entity,
+                OrgSettingsTestRegistryComponent.StringKey,
+                "not a secret");
+
+        var response = await _factory.CreateClient()
+            .AuthenticatedAsSystemAdmin()
+            .GetAsync($"/v3/organizations/{org.Entity.OrganizationId}/settings");
+
+        var arr = await response.CheckOk().AsArrayAsync();
+        var setting = arr.EnumerateArray()
+            .Single(t => t.GetValue<string>("name") == OrgSettingsTestRegistryComponent.StringKey);
+
+        Assert.Equal("Internal", setting.GetValue<string>("sensitivity"));
+        Assert.True(setting.GetValue<bool>("isSet"));
+        Assert.Equal("not a secret", setting.GetValue<string>("value"));
+    }
+
+    [Fact]
+    public async Task Update_Should_Store_A_Secret_Without_Echoing_It_Back()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var org = await scope.CreateOrganizationAsync();
+
+        var response = await _factory.CreateClient()
+            .AuthenticatedAsSystemAdmin()
+            .PutAsync($"/v3/organizations/{org.Entity.OrganizationId}/settings",
+                new { name = OrgSettingsTestRegistryComponent.SecretKey, value = "s3cr3t" });
+
+        var t = await response.CheckOk().AsTokenAsync();
+        Assert.True(t.GetValue<bool>("isSet"));
+        Assert.Null(t.GetValue<string>("value"));
+
+        var setting = await scope.Db.OrganizationSettings
+            .AsNoTracking()
+            .SingleAsync(x => x.Name == OrgSettingsTestRegistryComponent.SecretKey &&
+                              x.OrganizationId == org.Entity.OrganizationId);
+
+        Assert.Equal("s3cr3t", setting.Value);
+    }
+
+    [Fact]
     public async Task Update_Should_Require_Auth()
     {
         var response = await _factory.CreateClient()

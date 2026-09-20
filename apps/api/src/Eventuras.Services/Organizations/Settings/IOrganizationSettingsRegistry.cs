@@ -18,7 +18,15 @@ public interface IOrganizationSettingsRegistry
     ///     Required.
     /// </param>
     /// <param name="type">The type of the setting.</param>
-    void RegisterSetting(string name, string section, string description, OrganizationSettingType type);
+    /// <param name="sensitivity">
+    ///     How freely the value may be handed out. A <c>Secret</c> is never returned by the API.
+    /// </param>
+    void RegisterSetting(
+        string name,
+        string section,
+        string description,
+        OrganizationSettingType type,
+        OrganizationSettingSensitivity sensitivity = OrganizationSettingSensitivity.Internal);
 
     /// <summary>
     ///     Register all properties of the specified type as an organization settings.
@@ -27,6 +35,8 @@ public interface IOrganizationSettingsRegistry
     ///     then it tries to read section name from <see cref="System.ComponentModel.DisplayNameAttribute" />
     ///     applied to the given type. If type is not annotated with the display name attribute,
     ///     then the type name itself will be used as a section name.
+    ///     Use <see cref="OrgSettingSensitivityAttribute" /> to mark a property as a secret;
+    ///     unannotated properties are <see cref="OrganizationSettingSensitivity.Internal" />.
     /// </summary>
     /// <param name="section">The optional name of the settings section.</param>
     void RegisterSettings<T>(string section = null);

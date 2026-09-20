@@ -6,12 +6,14 @@ public class OrganizationSettingEntry
         string name,
         string section,
         string description,
-        OrganizationSettingType type)
+        OrganizationSettingType type,
+        OrganizationSettingSensitivity sensitivity = OrganizationSettingSensitivity.Internal)
     {
         Name = name;
         Section = section;
         Description = description;
         Type = type;
+        Sensitivity = sensitivity;
     }
 
     public string Name { get; }
@@ -21,4 +23,6 @@ public class OrganizationSettingEntry
     public string Description { get; }
 
     public OrganizationSettingType Type { get; }
+
+    public OrganizationSettingSensitivity Sensitivity { get; }
 }

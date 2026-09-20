@@ -14,7 +14,10 @@ internal class OrganizationTwilioSettings : IConfigurableSettings
 
     [Required][DisplayName("Twilio SID")] public string Sid { get; set; }
 
-    [Required][DisplayName("Auth token")] public string AuthToken { get; set; }
+    [Required]
+    [OrgSettingSensitivity(OrganizationSettingSensitivity.Secret)]
+    [DisplayName("Auth token")]
+    public string AuthToken { get; set; }
     [DisplayName("Twilio enabled")] public bool Enabled { get; set; }
 
     public TwilioOptions ToTwilioOptions() =>

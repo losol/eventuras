@@ -9,6 +9,7 @@ namespace Eventuras.Services.SendGrid;
 internal class OrganizationSendGridSettings : IConfigurableSettings
 {
     [Required]
+    [OrgSettingSensitivity(OrganizationSettingSensitivity.Secret)]
     [DisplayName("SendGrid key")]
     public string Key { get; set; }
 

@@ -17,7 +17,8 @@ public class OrganizationSettingsRegistry : IOrganizationSettingsRegistry
         string name,
         string section,
         string description,
-        OrganizationSettingType type)
+        OrganizationSettingType type,
+        OrganizationSettingSensitivity sensitivity = OrganizationSettingSensitivity.Internal)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
@@ -40,7 +41,7 @@ public class OrganizationSettingsRegistry : IOrganizationSettingsRegistry
             throw new DuplicateException($"Duplicate settings key {name} in section {section}");
         }
 
-        _entries.Add(key, new OrganizationSettingEntry(name, section, description, type));
+        _entries.Add(key, new OrganizationSettingEntry(name, section, description, type, sensitivity));
     }
 
     public void RegisterSettings<T>(string section)
@@ -77,7 +78,10 @@ public class OrganizationSettingsRegistry : IOrganizationSettingsRegistry
             }
 
             var settingType = GetSettingType(property);
-            RegisterSetting(settingKey, section, settingDescription, settingType);
+            var sensitivity = property.GetCustomAttribute<OrgSettingSensitivityAttribute>()?.Sensitivity
+                              ?? OrganizationSettingSensitivity.Internal;
+
+            RegisterSetting(settingKey, section, settingDescription, settingType, sensitivity);
         }
     }
 
