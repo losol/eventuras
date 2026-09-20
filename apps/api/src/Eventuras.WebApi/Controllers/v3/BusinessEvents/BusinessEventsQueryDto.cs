@@ -30,20 +30,22 @@ public class BusinessEventsQueryDto : PageQueryDto, IValidatableObject
     /// </summary>
     public Guid? EventInfoUuid { get; set; }
 
-    public bool HasSubject => !string.IsNullOrWhiteSpace(SubjectType) && SubjectUuid.HasValue;
+    // A method, not a property: a public get-only property on a [FromQuery] type is
+    // published as a query parameter callers can set, which this is not.
+    public bool HasSubject() => !string.IsNullOrWhiteSpace(SubjectType) && SubjectUuid.HasValue;
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
         var hasSubjectPart = !string.IsNullOrWhiteSpace(SubjectType) || SubjectUuid.HasValue;
 
-        if (hasSubjectPart && !HasSubject)
+        if (hasSubjectPart && !HasSubject())
         {
             yield return new ValidationResult(
                 "subjectType and subjectUuid must be given together.",
                 [nameof(SubjectType), nameof(SubjectUuid)]);
         }
 
-        if (HasSubject == EventInfoUuid.HasValue)
+        if (HasSubject() == EventInfoUuid.HasValue)
         {
             yield return new ValidationResult(
                 "Specify either subjectType + subjectUuid or eventInfoUuid.",

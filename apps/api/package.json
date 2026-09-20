@@ -5,13 +5,13 @@
   "license": "LGPL-3.0-or-later",
   "author": "",
   "exports": {
-    "./openapi": "./docs/eventuras-v3.json"
+    "./openapi": "./docs/eventuras_v3.json"
   },
   "main": "index.js",
   "files": [
-    "docs/eventuras-v3.json"
+    "docs/eventuras_v3.json"
   ],
   "scripts": {
-    "openapi:update": "./scripts/update-openapi.sh"
+    "openapi:update": "dotnet build src/Eventuras.WebApi"
   }
 }

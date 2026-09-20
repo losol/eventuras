@@ -8,6 +8,25 @@ using NodaTime;
 
 namespace Eventuras.WebApi.Extensions;
 
+/// <summary>
+///     Fixes the document's identity. Left alone, the title is taken from the entry
+///     assembly, which is the build-time generator rather than the API, and the
+///     version from the assembly version.
+/// </summary>
+public class SetDocumentInfoTransformer : IOpenApiDocumentTransformer
+{
+    public Task TransformAsync(OpenApiDocument document, OpenApiDocumentTransformerContext context,
+        CancellationToken cancellationToken)
+    {
+        document.Info ??= new OpenApiInfo();
+        document.Info.Title = "Eventuras API";
+        document.Info.Version = context.DocumentName;
+        document.Info.Description = "Course, event and conference management.";
+
+        return Task.CompletedTask;
+    }
+}
+
 public class AddSecuritySchemeTransformer : IOpenApiDocumentTransformer
 {
     public Task TransformAsync(OpenApiDocument document, OpenApiDocumentTransformerContext context,

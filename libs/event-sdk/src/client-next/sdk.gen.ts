@@ -297,7 +297,7 @@ export const deleteV3EventsById = <ThrowOnError extends boolean = false>(options
 export const getV3EventsById = <ThrowOnError extends boolean = false>(options: Options<GetV3EventsByIdData, ThrowOnError>): RequestResult<GetV3EventsByIdResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetV3EventsByIdResponses, unknown, ThrowOnError>({ url: '/v3/events/{id}', ...options });
 
 /**
- * Partially updates a specific event by its ID.
+ * Partially update an event
  *
  * Updates specific fields of an event. For comprehensive updates with all fields, use PUT endpoint with EventFormDto instead.
  */
