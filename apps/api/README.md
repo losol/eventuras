@@ -93,6 +93,12 @@ source of truth for it. Keycloak runs without a data volume on purpose, so the
 realm is re-imported on every start and cannot drift into a container nobody can
 reproduce. Anything you need on every run belongs in that file.
 
+The realm lists every required action, with `VERIFY_PROFILE` switched off. The
+login authenticator creates a user on first sign-in with no name, and that action
+would stop each one on a profile form before the login completes, so no test
+persona could ever log in. An import replaces the defaults wholesale, which is why
+the list is there in full rather than the single entry that differs.
+
 The realm's client secret and admin password are development fixtures for a
 localhost-only realm, deliberately committed so the setup is reproducible. Never
 import that realm into a deployed Keycloak.
