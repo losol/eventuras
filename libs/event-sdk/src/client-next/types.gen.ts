@@ -535,8 +535,21 @@ export type OrganizationSettingDto = {
     section?: null | string;
     description?: null | string;
     type?: OrganizationSettingType;
+    sensitivity?: OrganizationSettingSensitivity;
+    /**
+     * Whether a value is stored, which is all a secret ever reports.
+     */
+    isSet?: boolean;
     value?: null | string;
 };
+
+export const OrganizationSettingSensitivity = {
+    PUBLIC: 'Public',
+    INTERNAL: 'Internal',
+    SECRET: 'Secret'
+} as const;
+
+export type OrganizationSettingSensitivity = typeof OrganizationSettingSensitivity[keyof typeof OrganizationSettingSensitivity];
 
 export const OrganizationSettingType = {
     STRING: 'String',

@@ -15,7 +15,9 @@ internal class OrganizationSmtpSettings : IConfigurableSettings
     public int Port { get; set; }
 
     [DisplayName("SMTP username")] public string User { get; set; }
-    [DisplayName("SMTP password")] public string Password { get; set; }
+    [OrgSettingSensitivity(OrganizationSettingSensitivity.Secret)]
+    [DisplayName("SMTP password")]
+    public string Password { get; set; }
 
     [EmailAddress]
     [DisplayName("From: address")]

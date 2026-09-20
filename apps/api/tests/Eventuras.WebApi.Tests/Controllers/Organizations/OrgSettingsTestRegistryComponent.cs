@@ -10,6 +10,7 @@ internal class OrgSettingsTestRegistryComponent : IOrganizationSettingsRegistryC
     internal const string UrlKey = "TEST_URL";
     internal const string EmailKey = "TEST_EMAIL";
     internal const string BooleanKey = "TEST_BOOL";
+    internal const string SecretKey = "TEST_SECRET";
 
     public void RegisterSettings(IOrganizationSettingsRegistry registry)
     {
@@ -18,5 +19,7 @@ internal class OrgSettingsTestRegistryComponent : IOrganizationSettingsRegistryC
         registry.RegisterSetting(UrlKey, Section, "Testing URL", OrganizationSettingType.Url);
         registry.RegisterSetting(EmailKey, Section, "Testing email", OrganizationSettingType.Email);
         registry.RegisterSetting(BooleanKey, Section, "Testing boolean", OrganizationSettingType.Boolean);
+        registry.RegisterSetting(SecretKey, Section, "Testing secret", OrganizationSettingType.String,
+            OrganizationSettingSensitivity.Secret);
     }
 }

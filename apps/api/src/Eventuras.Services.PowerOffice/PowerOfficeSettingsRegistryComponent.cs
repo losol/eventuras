@@ -10,13 +10,15 @@ public class PowerOfficeSettingsRegistryComponent : IOrganizationSettingsRegistr
             .RegisterSetting(PowerOfficeConstants.ApplicationKey,
                 PowerOfficeConstants.SectionName,
                 PowerOfficeConstants.ApplicationKeyDescription,
-                OrganizationSettingType.String);
+                OrganizationSettingType.String,
+                OrganizationSettingSensitivity.Secret);
 
         registry
             .RegisterSetting(PowerOfficeConstants.ClientKey,
                 PowerOfficeConstants.SectionName,
                 PowerOfficeConstants.ClientKeyDescription,
-                OrganizationSettingType.String);
+                OrganizationSettingType.String,
+                OrganizationSettingSensitivity.Secret);
 
         registry
             .RegisterSetting(PowerOfficeConstants.DefaultSalesAccountKey,

@@ -6701,6 +6701,13 @@
           "type": {
             "$ref": "#/components/schemas/OrganizationSettingType"
           },
+          "sensitivity": {
+            "$ref": "#/components/schemas/OrganizationSettingSensitivity"
+          },
+          "isSet": {
+            "type": "boolean",
+            "description": "Whether a value is stored, which is all a secret ever reports."
+          },
           "value": {
             "type": [
               "null",
@@ -6708,6 +6715,13 @@
             ]
           }
         }
+      },
+      "OrganizationSettingSensitivity": {
+        "enum": [
+          "Public",
+          "Internal",
+          "Secret"
+        ]
       },
       "OrganizationSettingType": {
         "enum": [
