@@ -1,5 +1,45 @@
 # @eventuras/api
 
+## 3.12.0
+
+### Minor Changes
+
+- 671dfdf: Organization settings now carry a sensitivity: `Public`, `Internal` or `Secret`. It says how freely a value may be handed out, and the API reads it when it builds a response — a `Secret` never leaves the server. Callers get `isSet` instead, so the UI can still say whether an integration is configured.
+  
+  That closes a real hole: `GET /v3/organizations/{id}/settings` returned every value in clear text to any admin of the organization, so the SMTP password, the SendGrid key, the Twilio auth token and both PowerOffice keys could be read straight off the wire. Those five are now `Secret`. `PUT` and `POST` stop echoing a secret back in their response as well. Everything else defaults to `Internal`, which is what the endpoint did before, so no other value changes hands.
+  
+  Secrets become write-only: you can set one and replace it, never read it back. Internal services are unaffected — they read values through `IOrganizationSettingsAccessorService`, not through this endpoint.
+  
+  Register a secret with `[OrgSettingSensitivity(OrganizationSettingSensitivity.Secret)]` on the property, or by passing the sensitivity to `RegisterSetting`.
+  
+  Settings also gained a `uuid`, so one can be referred to from outside — an audit trail, for instance — now that its value may be unreadable. To make that identity stable, clearing a setting no longer deletes its row: the value is set to null and the row, with its uuid, stays. Setting it again keeps the same uuid instead of minting a new one. A setting that has never been set still has no row, and so no uuid; `PUT` with a blank value for one of those stores nothing, as before.
+  
+  `POST` (batch) now returns the cleared settings alongside the written ones, rather than omitting them, so a caller sees their `isSet` and `uuid`.
+  
+  Two consequences of keeping the row worth knowing about: `ReadOrganizationSettingsAsync<T>` now skips blank values rather than converting them, which would throw for `int` and `bool` properties; and `PUT`/`POST` with a blank value return the setting rather than an empty value object.
+- 2187162: Data model for processing purposes and user decisions: `ProcessingPurpose` (immutable, versioned purposes with opt-in/opt-out kind, one current version per purpose) and `PurposeDecision` (the user's current Allowed/Denied decision per purpose, tied to the exact purpose version by a composite foreign key), plus well-known codes in `PurposeCodes`. A decision can be scoped to a single registration, for purposes where one answer per organization is too coarse. `HasSpecialCategoryData` marks purposes covering GDPR article 9 data, which a check constraint keeps opt-in. Database migration required.
+  
+  Scoping a decision to a registration makes `Registrations.Uuid` the target of a foreign key, and so an alternate key. Its existing unique index is dropped in the same migration rather than kept beside the constraint — two unique indexes on one column cost every write twice and enforce nothing extra. This is the same change `Organizations.Uuid` went through when business events started pointing at it.
+  
+  `Kind` and `Decision` are also constrained to their defined values. Both enums start at 1 so that an unset field — the default, 0 — is detectable, but a plain integer column stored it without complaint, leaving a purpose that is neither opt-in nor opt-out and a decision that is neither allowed nor denied. Check constraints now make the database refuse it, alongside the one that already keeps special-category purposes opt-in.
+
+### Patch Changes
+
+- a1a30de: The development realm gained a second account, `orgadmin@example.com`, holding `Admin` and deliberately not `SystemAdmin`.
+  
+  Until now the realm seeded one user with both roles, and `E2E_ADMIN_EMAIL` and `E2E_SYSTEMADMIN_EMAIL` both pointed at it — the suite's "admin" and "systemadmin" personas were the same account. That is enough to show a system admin may do something, but never that an organization's own admin may not, so anything gated on that distinction could not be tested, and a test asserting a refusal would have passed for the wrong reason.
+  
+  The bootstrap step that grants org membership now covers both personas, so the new one is a real organization admin whose refusals say something about org-level rights rather than about not being a member. Three tests pin the persona itself: it is an org admin, it is refused a SystemAdmin-only endpoint, and it is a different account from the systemadmin persona.
+  
+  `personas.ts` documented the personas as members of `eventuras-admins` and `eventuras-systemadmins` groups. The realm has no groups; the comment is corrected.
+  
+  Recreate the Keycloak container to pick the new user up — `start-dev --import-realm` imports only when the realm is not already there.
+- 8b57fc7: Finishes renaming the OpenAPI document to `eventuras_v3.json`. Three references were missed, because the search that found the others filtered on file extensions and `Dockerfile` has none.
+  
+  `tests/e2e/Dockerfile` copied the old path, which broke the end-to-end image build for anything touching `tests/e2e`. `apps/api/docs/.gitignore` un-ignored the old name, so the committed document was only tracked because it was already added.
+  
+  The third was `OpenApiSpec_DiffCheck`, a test that compared the committed document against the generated one. It looked for the old filename, found nothing and returned early — but it could never have failed anyway: on a difference it wrote a warning to the console and asserted nothing. It is removed rather than repaired, since CI now verifies the committed document for real by rebuilding it and failing on a dirty working tree.
+
 ## 3.11.0
 
 ### Minor Changes

@@ -1,5 +1,32 @@
 # @eventuras/web
 
+## 3.11.0
+
+### Minor Changes
+
+- da9759d: The admin system page is split by role. Every admin sees the state of the installation — the health checks, and a new version section naming the running build of the web app and the API (version, commit, build time, image tag). The rest is SystemAdmin-only and labelled as such: the organization settings, and the diagnostics buttons that deliberately raise errors.
+  
+  The page no longer prints `POWER_OFFICE_APP_KEY` in clear text. It lists every registered setting grouped by section and reads the API's own `sensitivity`, so a secret is shown as a secret and its value never reaches the browser. Whether one is configured comes from `isSet` rather than being inferred from a blank value — once the value is withheld, an empty one means nothing.
+  
+  Both have a fallback for a deployment where the web app is ahead of the API: a credential-looking name still counts as a secret, and an absent `isSet` falls back to the value. Without them a version skew would print a credential in clear text, or report every configured secret as missing.
+  
+  `triggerErrorTest` had no role check of its own and `triggerWebServerError` accepted any org Admin; both now require SystemAdmin, matching who can see the buttons.
+- b2f1eb1: A person's name in admin now opens a user drawer: their personal details, their registrations and their orders in the organization, newest first, each linking on to the event or order. It is one drawer in the admin shell, so the same name opens it from the user list, the participant list, the event dashboard, the product delivery summary, the order and registration lists, and the registration details. Following a link out of it closes it.
+  
+  The participant list's user icon and the user list's "View" button are gone; the name does the job, and editing the user is in the drawer's footer.
+  
+  The detail pages for users, orders, certificates and collections lost their white header band in dark mode. It came from `dark:bg-black`, a variant that doesn't exist in ratio-ui's stylesheet, so only `bg-white` ever applied.
+- f533339: The admin tables run on `@eventuras/datatable` 0.8, which moved to TanStack Table v9 and ships it as its own dependency, so the web app no longer depends on TanStack at all. Columns are typed with the datatable's `DataTableColumnDef`, so columns built for another row type than the table's data are a type error.
+  
+  The tables look different: they render through Ratio UI's `Table`, so rows are separated by the theme's hairlines rather than zebra striping, and header and cell tones follow the theme in light and dark.
+  
+  `enableSorting: true` is gone from two columns. It never did anything — the datatable has never registered sorting, in 0.6 or now — but TanStack v8 accepted the option silently, where v9's types reject it. No table sorted before this change, and none does after.
+
+### Patch Changes
+
+- Updated dependencies [671dfdf]
+  - @eventuras/event-sdk@3.7.0
+
 ## 3.10.0
 
 ### Minor Changes
