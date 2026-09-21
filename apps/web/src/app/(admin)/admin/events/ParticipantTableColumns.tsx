@@ -1,4 +1,6 @@
-import { createColumnHelper } from '@eventuras/datatable';
+import type { ColumnDef } from '@tanstack/react-table';
+
+import { createColumnHelper, type DataTableFeatures } from '@eventuras/datatable';
 import { Badge } from '@eventuras/ratio-ui/core/Badge';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Loading } from '@eventuras/ratio-ui/core/Loading';
@@ -13,6 +15,10 @@ import FinishRegistrationButton from './FinishRegistrationButton';
 import RegistrationStatusSelect from './RegistrationStatusSelect';
 
 const columnHelper = createColumnHelper<RegistrationDto>();
+
+// The columns hold different value types, which only `any` unifies — `unknown` is rejected.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type ParticipantColumn = ColumnDef<DataTableFeatures, RegistrationDto, any>;
 
 function renderProducts(registration: RegistrationDto) {
   if (!registration.products || registration.products.length === 0) {
@@ -36,13 +42,14 @@ interface ColumnConfig {
   isLoadingRegistration: (registration: RegistrationDto) => boolean;
 }
 
+// Explicit because TanStack v9's inferred column type names an internal it doesn't export.
 export function createParticipantColumns({
   t,
   eventProducts,
   onProductsClick,
   onStatusUpdate,
   isLoadingRegistration,
-}: ColumnConfig) {
+}: ColumnConfig): ParticipantColumn[] {
   return [
     columnHelper.display({
       id: 'expander',
