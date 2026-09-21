@@ -3,13 +3,12 @@ import { getTranslations } from 'next-intl/server';
 
 import { Logger } from '@eventuras/logger';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
-import { Text } from '@eventuras/ratio-ui/core/Text';
 import { ChevronRight } from '@eventuras/ratio-ui/icons';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
-import { PinEvent } from '@/components/admin/shell';
+import { eventAdminHref, PinEvent } from '@/components/admin/shell';
 import { getV3EventsById, getV3ProductsByProductIdSummary } from '@/lib/eventuras-sdk';
 import { getOrganizationId } from '@/utils/organization';
 
@@ -54,29 +53,16 @@ const EventProducts: React.FC<EventProductsPage> = async props => {
 
   const productSummary = productResponse.data;
   const event = eventResponse.data;
-  const byRegistrationStatus = productSummary.statistics?.byRegistrationStatus;
-  const totals = {
-    active:
-      (byRegistrationStatus?.draft ?? 0) +
-      (byRegistrationStatus?.verified ?? 0) +
-      (byRegistrationStatus?.waitingList ?? 0) +
-      (byRegistrationStatus?.attended ?? 0) +
-      (byRegistrationStatus?.notAttended ?? 0) +
-      (byRegistrationStatus?.finished ?? 0),
-    cancelled: byRegistrationStatus?.cancelled ?? 0,
-    waitingList: byRegistrationStatus?.waitingList ?? 0,
-  };
   return (
     <>
-      <Section className="bg-white dark:bg-black py-10">
+      <Section className="py-10">
         <Container>
           {event && (
             <PinEvent event={{ id: eventId, title: event.title ?? '', uuid: event.uuid }} />
           )}
-          {/* Breadcrumb Navigation */}
           <nav className="flex items-center gap-2 text-sm mb-4" aria-label="Breadcrumb">
             <Link href="/admin/events" className="hover:underline">
-              Events
+              {t('admin.nav.events')}
             </Link>
             <ChevronRight className="w-4 h-4" />
             {event && (
@@ -87,27 +73,20 @@ const EventProducts: React.FC<EventProductsPage> = async props => {
                 <ChevronRight className="w-4 h-4" />
               </>
             )}
-            <Link href={`/admin/events/${eventId}?tab=products`} className="hover:underline">
-              Products
+            <Link href={eventAdminHref(eventId, 'products')} className="hover:underline">
+              {t('admin.participantColumns.products')}
             </Link>
             <ChevronRight className="w-4 h-4" />
-            <span className="text-gray-600">{productSummary.product?.name}</span>
+            {/* Theme token, not a fixed gray: this page renders in every theme. */}
+            <span className="text-(--text-muted)">{productSummary.product?.name}</span>
           </nav>
 
           <Heading as="h1" paddingTop="sm" marginBottom="xs">
             {productSummary.product?.name}
           </Heading>
-          <Link
-            href={`/admin/events/${eventId}/products/edit`}
-            variant="button-primary"
-            marginY="sm"
-          >
+          <Link href={eventAdminHref(eventId, 'products')} variant="button-primary" marginY="sm">
             {t('admin.products.labels.editProducts')}
           </Link>
-          <Text paddingY="xs">
-            Active {totals.active} &mdash; Cancelled {totals.cancelled} &mdash; Waiting list{' '}
-            {totals.waitingList}.
-          </Text>
         </Container>
       </Section>
       <Section className="py-10">

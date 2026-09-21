@@ -225,6 +225,10 @@
       "add-product": "New product",
       "edit-product": "Edit product"
     },
+    "columns": {
+      "quantity": "Quantity",
+      "registration": "Registration"
+    },
     "labels": {
       "addnewproduct": "Add new product",
       "editProducts": "Edit products",
