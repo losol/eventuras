@@ -286,6 +286,28 @@
     "detailspage": {
       "title": "User info"
     },
+    "drawer": {
+      "archived": "Archived",
+      "edit": "Edit user",
+      "fields": {
+        "birthDate": "Date of birth",
+        "email": "Email",
+        "location": "Location",
+        "notes": "Notes",
+        "phone": "Phone",
+        "professionalId": "Professional ID",
+        "work": "Work"
+      },
+      "loadFailed": "Could not be loaded right now.",
+      "noOrders": "No orders.",
+      "noRegistrations": "No registrations.",
+      "orders": "Orders",
+      "personalDetails": "Personal details",
+      "registrations": "Registrations",
+      "shownOf": "Showing the {shown} most recent of {total}.",
+      "title": "User",
+      "verified": "Verified"
+    },
     "labels": {
       "addUser": "Add user",
       "createUser": "Create user",

@@ -7,10 +7,15 @@ import { createColumnHelper, DataTable } from '@eventuras/datatable';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Pagination } from '@eventuras/ratio-ui/core/Pagination';
 
+import { UserName } from '@/components/admin/user';
 import { RegistrationDto } from '@/lib/eventuras-sdk';
 
 import RegistrationDrawer from './RegistrationDrawer';
 const columnHelper = createColumnHelper<RegistrationDto>();
+// Module-level, so the table doesn't remount the cell on every render.
+const UserCell = ({ row }: { row: { original: RegistrationDto } }) => (
+  <UserName user={row.original.user} />
+);
 type RegistrationsTableProps = {
   registrations: RegistrationDto[];
   currentPage: number;
@@ -42,7 +47,7 @@ export default function RegistrationsTable({
     }),
     columnHelper.accessor('user.name', {
       header: t('common.labels.name').toString(),
-      cell: info => info.getValue(),
+      cell: UserCell,
     }),
     columnHelper.accessor('event.title', {
       header: t('common.orders.labels.time').toString(),

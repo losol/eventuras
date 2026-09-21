@@ -8,11 +8,16 @@ import { Loading } from '@eventuras/ratio-ui/core/Loading';
 import { Pagination } from '@eventuras/ratio-ui/core/Pagination';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
+import { UserName } from '@/components/admin/user';
 import FatalError from '@/components/FatalError';
 import { OrderDto } from '@/lib/eventuras-sdk';
 
 import { getOrders } from './actions';
 const columnHelper = createColumnHelper<OrderDto>();
+// Module-level, so the table doesn't remount the cell on every render.
+const UserCell = ({ row }: { row: { original: OrderDto } }) => (
+  <UserName user={row.original.user} />
+);
 type OrdersResponse = {
   data?: OrderDto[];
   page?: number;
@@ -57,7 +62,7 @@ const AdminOrdersList: React.FC = () => {
     }),
     columnHelper.accessor('user.name', {
       header: t('common.labels.name').toString(),
-      cell: info => info.getValue(),
+      cell: UserCell,
     }),
     columnHelper.accessor('time', {
       header: t('common.orders.labels.time').toString(),

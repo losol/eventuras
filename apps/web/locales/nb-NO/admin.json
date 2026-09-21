@@ -286,6 +286,28 @@
     "detailspage": {
       "title": "Brukerinformasjon"
     },
+    "drawer": {
+      "archived": "Arkivert",
+      "edit": "Rediger bruker",
+      "fields": {
+        "birthDate": "Fødselsdato",
+        "email": "E-post",
+        "location": "Sted",
+        "notes": "Merknad",
+        "phone": "Telefon",
+        "professionalId": "Profesjonsnummer",
+        "work": "Arbeid"
+      },
+      "loadFailed": "Kunne ikke lastes akkurat nå.",
+      "noOrders": "Ingen ordrer.",
+      "noRegistrations": "Ingen registreringer.",
+      "orders": "Ordrer",
+      "personalDetails": "Personalia",
+      "registrations": "Registreringer",
+      "shownOf": "Viser de {shown} nyeste av {total}.",
+      "title": "Bruker",
+      "verified": "Verifisert"
+    },
     "labels": {
       "addUser": "Ny bruker",
       "createUser": "Ny bruker",

@@ -7,14 +7,23 @@ import { createColumnHelper, DataTable } from '@eventuras/datatable';
 import { Pagination } from '@eventuras/ratio-ui/core/Pagination';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
+import { UserName } from '@/components/admin/user';
 import { OrderDto } from '@/lib/eventuras-sdk';
 const columnHelper = createColumnHelper<OrderDto>();
+// Module-level, so the table doesn't remount the cell on every render.
+const UserCell = ({ row }: { row: { original: OrderDto } }) => (
+  <UserName user={row.original.user} />
+);
 type OrdersTableProps = {
   orders: OrderDto[];
   currentPage: number;
   totalPages: number;
 };
-export default function OrdersTable({ orders, currentPage, totalPages }: Readonly<OrdersTableProps>) {
+export default function OrdersTable({
+  orders,
+  currentPage,
+  totalPages,
+}: Readonly<OrdersTableProps>) {
   const t = useTranslations();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -41,7 +50,7 @@ export default function OrdersTable({ orders, currentPage, totalPages }: Readonl
     }),
     columnHelper.accessor('user.name', {
       header: t('common.labels.name').toString(),
-      cell: info => info.getValue(),
+      cell: UserCell,
     }),
     columnHelper.accessor('time', {
       header: t('common.orders.labels.time').toString(),

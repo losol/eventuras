@@ -10,6 +10,7 @@ import { Section } from '@eventuras/ratio-ui/layout/Section';
 import { useToast } from '@eventuras/ratio-ui/toast';
 import { Form, Select } from '@eventuras/smartform';
 
+import { UserName } from '@/components/admin/user';
 import { CertificateActionsButton } from '@/components/eventuras/CertificateActionsButton';
 import {
   RegistrationDto,
@@ -137,9 +138,9 @@ const Registration = ({
   if (!editMode) {
     return (
       <>
-        {userNameHeading && registration.user?.name && (
+        {userNameHeading && (registration.user?.name || registration.user?.email) && (
           <Heading as="h3" marginBottom="sm">
-            {registration.user.name}
+            <UserName user={registration.user} />
           </Heading>
         )}
         <dl className="flex flex-wrap gap-2 mb-4">
@@ -171,9 +172,9 @@ const Registration = ({
 
   return (
     <>
-      {userNameHeading && registration.user?.name && (
+      {userNameHeading && (registration.user?.name || registration.user?.email) && (
         <Heading as="h3" marginBottom="sm">
-          {registration.user.name}
+          <UserName user={registration.user} />
         </Heading>
       )}
       <DescriptionList>
@@ -185,7 +186,9 @@ const Registration = ({
         </DescriptionList.Item>
         <DescriptionList.Item>
           <DescriptionList.Term>{t('common.registrations.labels.userName')}</DescriptionList.Term>
-          <DescriptionList.Definition>{registration.user?.name}</DescriptionList.Definition>
+          <DescriptionList.Definition>
+            <UserName user={registration.user} />
+          </DescriptionList.Definition>
         </DescriptionList.Item>
         {registration.registrationTime && (
           <DescriptionList.Item>
