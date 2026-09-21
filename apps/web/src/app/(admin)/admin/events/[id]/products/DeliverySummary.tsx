@@ -109,7 +109,6 @@ const DeliverySummary: React.FC<DeliverySummaryProps> = ({ deliverySummary }) =>
           ''
         );
       },
-      enableSorting: true,
     }),
   ];
 

@@ -59,7 +59,6 @@ export function AdminEventListClient({
     columnHelper.accessor('dateStart', {
       header: translations.when,
       cell: info => info.getValue(),
-      enableSorting: true,
     }),
     columnHelper.accessor('maxParticipants', {
       header: translations.registrations,

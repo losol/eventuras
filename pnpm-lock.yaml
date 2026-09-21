@@ -107,7 +107,7 @@ importers:
         version: 0.1.3(next@16.3.4(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.63.0)(@types/node@24.13.3)(babel-plugin-macros@3.1.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(sass@1.77.4))(react@19.2.8)
       '@eventuras/datatable':
         specifier: ^0.7.0
-        version: 0.7.0(@eventuras/ratio-ui@2.23.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@tanstack/match-sorter-utils@8.19.4)(@tanstack/react-table@8.21.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@tanstack/table-core@8.21.3)(lucide-react@1.45.0(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 0.7.0(@eventuras/ratio-ui@2.23.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@tanstack/match-sorter-utils@9.1.2)(@tanstack/react-table@9.2.4(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@tanstack/table-core@9.2.4)(lucide-react@1.45.0(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@eventuras/event-sdk':
         specifier: workspace:^
         version: link:../../libs/event-sdk
@@ -144,6 +144,15 @@ importers:
       '@tailwindcss/postcss':
         specifier: ^4.3.3
         version: 4.3.3
+      '@tanstack/match-sorter-utils':
+        specifier: ^9.1.2
+        version: 9.1.2
+      '@tanstack/react-table':
+        specifier: ^9.2.4
+        version: 9.2.4(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@tanstack/table-core':
+        specifier: ^9.2.4
+        version: 9.2.4
       '@types/debug':
         specifier: ^4.1.13
         version: 4.1.13
@@ -2582,20 +2591,28 @@ packages:
     peerDependencies:
       vite: ^5.2.0 || ^6 || ^7 || ^8
 
-  '@tanstack/match-sorter-utils@8.19.4':
-    resolution: {integrity: sha512-Wo1iKt2b9OT7d+YGhvEPD3DXvPv2etTusIMhMUoG7fbhmxcXCtIjJDEygy91Y2JFlwGyjqiBPRozme7UD8hoqg==}
-    engines: {node: '>=12'}
+  '@tanstack/match-sorter-utils@9.1.2':
+    resolution: {integrity: sha512-aPkUQctDzpXLSWhlx7jUDi3mInsI18xcnrK1hvIyIa88ab1ax88cACr7xU+BKMCGB4NZYNwh4SoNSEbv3RY2NA==}
+    engines: {node: '>=20'}
 
-  '@tanstack/react-table@8.21.3':
-    resolution: {integrity: sha512-5nNMTSETP4ykGegmVkhjcS8tTLW6Vl4axfEGQN3v0zdHYbK4UfoqfPChclTrJ4EoK9QynqAu9oUf8VEmrpZ5Ww==}
-    engines: {node: '>=12'}
+  '@tanstack/react-store@0.11.1':
+    resolution: {integrity: sha512-HaIGKI3YLmjBYIvy5DFDY23oNaYZIsTZfngey07Uh5iLVJgM3bIGCnZeOFOqzjFld9JHWcaHJnasD/bKoGKwJQ==}
     peerDependencies:
-      react: '>=16.8'
-      react-dom: '>=16.8'
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  '@tanstack/table-core@8.21.3':
-    resolution: {integrity: sha512-ldZXEhOBb8Is7xLs01fR3YEc3DERiz5silj8tnGkFZytt1abEvl/GhUmCE0PMLaMPTa3Jk4HbKmRlHmu+gCftg==}
-    engines: {node: '>=12'}
+  '@tanstack/react-table@9.2.4':
+    resolution: {integrity: sha512-Rzp1Q4e0/nIgEjmISYR5HeEgLTNtrG+C7NFZf/AbCxPO5hg+zC3yNGwcoECigUk8SFzzvhXbd2rFdtP2ZiGrfA==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      react: '>=18'
+
+  '@tanstack/store@0.11.1':
+    resolution: {integrity: sha512-mzTOBhypOuDJAy/D8n2MfUZ1HFkXnmSETviRyhqEC8LUE7/IZQExOTxMANj3KjTofYTkFNpBY67qaVrT41YccA==}
+
+  '@tanstack/table-core@9.2.4':
+    resolution: {integrity: sha512-GwdDyGGr6UXAtubF14yAwcXvdaogqfsQgIk89Suebjxob/Rjq2xvfmXsjDF1rQmKmhHsJm9TOY7myxv3i6geJw==}
+    engines: {node: '>=20'}
 
   '@testing-library/dom@10.4.1':
     resolution: {integrity: sha512-o4PXJQidqJl82ckFaXUeoAW+XysPLauYI43Abki5hABd853iMhitooc6znOnczgbTYmEP6U6/y1ZyKAIsvMKGg==}
@@ -6599,12 +6616,12 @@ snapshots:
 
   '@eventuras/core@0.4.0': {}
 
-  '@eventuras/datatable@0.7.0(@eventuras/ratio-ui@2.23.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@tanstack/match-sorter-utils@8.19.4)(@tanstack/react-table@8.21.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@tanstack/table-core@8.21.3)(lucide-react@1.45.0(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
+  '@eventuras/datatable@0.7.0(@eventuras/ratio-ui@2.23.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@tanstack/match-sorter-utils@9.1.2)(@tanstack/react-table@9.2.4(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@tanstack/table-core@9.2.4)(lucide-react@1.45.0(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
       '@eventuras/ratio-ui': 2.23.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      '@tanstack/match-sorter-utils': 8.19.4
-      '@tanstack/react-table': 8.21.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      '@tanstack/table-core': 8.21.3
+      '@tanstack/match-sorter-utils': 9.1.2
+      '@tanstack/react-table': 9.2.4(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@tanstack/table-core': 9.2.4
       lucide-react: 1.45.0(react@19.2.8)
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
@@ -8012,17 +8029,30 @@ snapshots:
       tailwindcss: 4.3.3
       vite: 8.2.2(@types/node@25.9.3)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.77.4)(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.0)
 
-  '@tanstack/match-sorter-utils@8.19.4':
+  '@tanstack/match-sorter-utils@9.1.2':
     dependencies:
       remove-accents: 0.5.0
 
-  '@tanstack/react-table@8.21.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
+  '@tanstack/react-store@0.11.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
-      '@tanstack/table-core': 8.21.3
+      '@tanstack/store': 0.11.1
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
+      use-sync-external-store: 1.7.0(react@19.2.8)
 
-  '@tanstack/table-core@8.21.3': {}
+  '@tanstack/react-table@9.2.4(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
+    dependencies:
+      '@tanstack/react-store': 0.11.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@tanstack/table-core': 9.2.4
+      react: 19.2.8
+    transitivePeerDependencies:
+      - react-dom
+
+  '@tanstack/store@0.11.1': {}
+
+  '@tanstack/table-core@9.2.4':
+    dependencies:
+      '@tanstack/store': 0.11.1
 
   '@testing-library/dom@10.4.1':
     dependencies:
