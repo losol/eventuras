@@ -1,6 +1,4 @@
-import type { ColumnDef } from '@tanstack/react-table';
-
-import { createColumnHelper, type DataTableFeatures } from '@eventuras/datatable';
+import { createColumnHelper, type DataTableColumnDef } from '@eventuras/datatable';
 import { Badge } from '@eventuras/ratio-ui/core/Badge';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Loading } from '@eventuras/ratio-ui/core/Loading';
@@ -17,9 +15,7 @@ import RegistrationStatusSelect from './RegistrationStatusSelect';
 
 const columnHelper = createColumnHelper<RegistrationDto>();
 
-// The columns hold different value types, which only `any` unifies — `unknown` is rejected.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type ParticipantColumn = ColumnDef<DataTableFeatures, RegistrationDto, any>;
+type ParticipantColumn = DataTableColumnDef<RegistrationDto>;
 
 function renderProducts(registration: RegistrationDto) {
   if (!registration.products || registration.products.length === 0) {
