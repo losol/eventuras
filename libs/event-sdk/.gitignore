@@ -18,5 +18,5 @@ node_modules/
 # OS
 .DS_Store
 
-# Legacy OpenAPI file (now in /openapi/eventuras-v3.json)
+# Legacy OpenAPI file (the spec lives in apps/api/docs/eventuras_v3.json)
 swagger.json
