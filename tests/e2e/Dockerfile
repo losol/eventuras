@@ -36,7 +36,7 @@ COPY libs ./libs
 
 # event-sdk resolves the OpenAPI spec via @eventuras/api's exports map
 COPY apps/api/package.json ./apps/api/package.json
-COPY apps/api/docs/eventuras-v3.json ./apps/api/docs/eventuras-v3.json
+COPY apps/api/docs/eventuras_v3.json ./apps/api/docs/eventuras_v3.json
 
 RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store \
   pnpm install --frozen-lockfile --ignore-scripts --filter=@eventuras/e2e...
