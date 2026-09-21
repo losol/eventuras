@@ -6,33 +6,19 @@ import { createColumnHelper, DataTable } from '@eventuras/datatable';
 import { Badge } from '@eventuras/ratio-ui/core/Badge';
 import { ToggleButtonGroup, ToggleButtonOption } from '@eventuras/ratio-ui/core/ToggleButtonGroup';
 
+import { UserName } from '@/components/admin/user';
 import { ProductOrdersSummaryDto } from '@/lib/eventuras-sdk';
-import { RegistrationStatus } from '@/lib/eventuras-types';
 import { ParticipationTypes, ParticipationTypesKey } from '@/types';
-import { participationMap } from '@/utils/api/mappers';
+import { participationGroupOf, registrationBadgeStatus } from '@/utils/registration-helpers';
+
+// Module-level, so the table doesn't remount the cell on every render.
+const UserCell = ({ row }: { row: { original: ProductOrdersSummaryDto } }) => (
+  <UserName user={row.original.user} />
+);
 
 interface DeliverySummaryProps {
   deliverySummary: ProductOrdersSummaryDto[];
 }
-
-/** Which filter group a row belongs to, or undefined for a status we don't group. */
-const groupOf = (status?: string | null): ParticipationTypesKey | undefined =>
-  (Object.keys(participationMap) as ParticipationTypesKey[]).find(key =>
-    participationMap[key].includes(status as RegistrationStatus)
-  );
-
-const badgeStatus = (group?: ParticipationTypesKey) => {
-  switch (group) {
-    case ParticipationTypes.active:
-      return 'success' as const;
-    case ParticipationTypes.waitingList:
-      return 'warning' as const;
-    case ParticipationTypes.cancelled:
-      return 'error' as const;
-    default:
-      return 'neutral' as const;
-  }
-};
 
 const DeliverySummary: React.FC<DeliverySummaryProps> = ({ deliverySummary }) => {
   const t = useTranslations();
@@ -48,7 +34,7 @@ const DeliverySummary: React.FC<DeliverySummaryProps> = ({ deliverySummary }) =>
       [ParticipationTypes.cancelled]: 0,
     };
     for (const row of deliverySummary) {
-      const group = groupOf(row.registrationStatus);
+      const group = participationGroupOf(row.registrationStatus);
       if (group) tally[group] += 1;
     }
     return tally;
@@ -56,7 +42,7 @@ const DeliverySummary: React.FC<DeliverySummaryProps> = ({ deliverySummary }) =>
 
   const rows = useMemo(() => {
     if (!filter) return deliverySummary;
-    return deliverySummary.filter(row => groupOf(row.registrationStatus) === filter);
+    return deliverySummary.filter(row => participationGroupOf(row.registrationStatus) === filter);
   }, [deliverySummary, filter]);
 
   const options: ToggleButtonOption[] = Object.keys(ParticipationTypes).map(key => ({
@@ -69,7 +55,7 @@ const DeliverySummary: React.FC<DeliverySummaryProps> = ({ deliverySummary }) =>
   const columns = [
     columnHelper.accessor(row => row.user?.name, {
       header: t('admin.participantColumns.name'),
-      cell: info => info.getValue() || '',
+      cell: UserCell,
     }),
     // No mailto: contacting a participant belongs in the app, not the reader's mail client.
     columnHelper.accessor(row => row.user?.email, {
@@ -102,7 +88,7 @@ const DeliverySummary: React.FC<DeliverySummaryProps> = ({ deliverySummary }) =>
       cell: info => {
         const status = info.getValue();
         return status ? (
-          <Badge variant="subtle" status={badgeStatus(groupOf(status))}>
+          <Badge variant="subtle" status={registrationBadgeStatus(status)}>
             {status}
           </Badge>
         ) : (

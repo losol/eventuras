@@ -29,12 +29,12 @@ export default async function CollectionDetailPage({ params }: Readonly<EventCol
   }
   return (
     <>
-      <Section className="bg-white dark:bg-black   pb-8">
+      <Section className="pb-8">
         <Container>
           <Heading as="h1">{response.data.name ?? ''}</Heading>
         </Container>
       </Section>
-      <Section className="bg-white dark:bg-black   pb-8">
+      <Section className="pb-8">
         <Container>
           <CollectionEditor eventCollection={response.data} />
         </Container>

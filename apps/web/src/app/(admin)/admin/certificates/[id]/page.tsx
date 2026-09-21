@@ -30,7 +30,7 @@ export default async function CertificateDetailPage({ params }: Readonly<Certifi
   }
   return (
     <>
-      <Section className="bg-white dark:bg-black   pb-8">
+      <Section className="pb-8">
         <Container>
           <Heading as="h1">Order</Heading>
         </Container>

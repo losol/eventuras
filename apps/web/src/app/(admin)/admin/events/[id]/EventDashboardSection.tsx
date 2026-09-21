@@ -16,6 +16,7 @@ import { Link } from '@eventuras/ratio-ui-next/Link';
 
 import { ActivityTimeline, useActivityDrawer } from '@/components/admin/activity';
 import { eventAdminHref } from '@/components/admin/shell';
+import { UserName } from '@/components/admin/user';
 import {
   BusinessEventDto,
   EventDto,
@@ -210,7 +211,7 @@ export default function EventDashboardSection({
                     className="flex items-center gap-3 px-4 py-3 text-sm"
                   >
                     <span className="flex min-w-0 flex-1 flex-col">
-                      <span className="truncate font-semibold">{registration.user?.name}</span>
+                      <UserName user={registration.user} className="truncate font-semibold" />
                       <span className="truncate font-mono text-xs text-(--text-subtle)">
                         {formatRegistrationTime(registration.registrationTime, locale)}
                       </span>

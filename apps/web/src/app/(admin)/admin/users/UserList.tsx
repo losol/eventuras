@@ -5,11 +5,13 @@ import { useTranslations } from 'next-intl';
 
 import { createColumnHelper, DataTable } from '@eventuras/datatable';
 import { Pagination } from '@eventuras/ratio-ui/core/Pagination';
-import { Link } from '@eventuras/ratio-ui-next/Link';
 
+import { UserName, useUserDetails } from '@/components/admin/user';
 import { UserDto } from '@/lib/eventuras-sdk';
 
 const columnHelper = createColumnHelper<UserDto>();
+// Module-level, so the table doesn't remount the cell on every render.
+const UserCell = ({ row }: { row: { original: UserDto } }) => <UserName user={row.original} />;
 
 type UserListProps = {
   users: UserDto[];
@@ -24,6 +26,7 @@ const UserList: React.FC<UserListProps> = ({ users, currentPage, totalPages, que
   const searchParams = useSearchParams();
   const [input, setInput] = useState(query);
   const lastPushedRef = useRef(query);
+  const userDetails = useUserDetails();
 
   // Debounce the input → URL sync so typing one letter at a time doesn't
   // fire a server request per keystroke. Also resets ?page so a new search
@@ -51,27 +54,16 @@ const UserList: React.FC<UserListProps> = ({ users, currentPage, totalPages, que
 
   const columns = [
     columnHelper.accessor('name', {
-      header: 'Name',
-      cell: info => info.getValue(),
+      header: t('admin.participantColumns.name'),
+      cell: UserCell,
     }),
     columnHelper.accessor('email', {
-      header: 'Email',
+      header: t('admin.participantColumns.email'),
       cell: info => info.getValue(),
     }),
     columnHelper.accessor('phoneNumber', {
-      header: 'PhoneNumber',
+      header: t('admin.participantColumns.telephone'),
       cell: info => info.getValue(),
-    }),
-    columnHelper.display({
-      id: 'actions',
-      header: t('admin.participantColumns.actions').toString(),
-      cell: info => (
-        <div className="flex flex-row">
-          <Link variant="button-outline" href={`/admin/users/${info.row.original.id}`}>
-            {t('common.labels.view')}
-          </Link>
-        </div>
-      ),
     }),
   ];
 
@@ -86,7 +78,11 @@ const UserList: React.FC<UserListProps> = ({ users, currentPage, totalPages, que
           className="w-full max-w-md rounded border border-gray-300 px-3 py-2 dark:border-gray-600 dark:bg-gray-800"
         />
       </div>
-      <DataTable data={users} columns={columns} />
+      <DataTable
+        data={users}
+        columns={columns}
+        onRowClick={row => row.original.id && userDetails?.open(row.original.id)}
+      />
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}

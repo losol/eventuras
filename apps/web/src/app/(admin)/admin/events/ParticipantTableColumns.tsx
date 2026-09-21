@@ -4,9 +4,10 @@ import { createColumnHelper, type DataTableFeatures } from '@eventuras/datatable
 import { Badge } from '@eventuras/ratio-ui/core/Badge';
 import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Loading } from '@eventuras/ratio-ui/core/Loading';
-import { ChevronDown, ChevronRight, Pencil, User } from '@eventuras/ratio-ui/icons';
+import { ChevronDown, ChevronRight, Pencil } from '@eventuras/ratio-ui/icons';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
+import { UserName } from '@/components/admin/user';
 import { CertificateActionsButton } from '@/components/eventuras/CertificateActionsButton';
 import type { ProductDto, RegistrationDto } from '@/lib/eventuras-types';
 import { RegistrationStatus } from '@/lib/eventuras-types';
@@ -74,23 +75,14 @@ export function createParticipantColumns({
       cell: info => {
         const registration = info.row.original;
         return (
-          <div className="flex items-start gap-2 -ml-1">
-            <div className="flex flex-col">
-              <span className="font-medium">{registration.user?.name}</span>
-              <span className="text-sm text-gray-600 dark:text-gray-400">
-                {registration.user?.phoneNumber}
-              </span>
-              <span className="text-sm text-gray-600 dark:text-gray-400">
-                {registration.user?.email}
-              </span>
-            </div>
-            <Link
-              variant="button-text"
-              href={`/admin/users/${registration.userId}`}
-              className="p-1 h-auto"
-            >
-              <User className="w-4 h-4" />
-            </Link>
+          <div className="flex flex-col items-start">
+            <UserName user={registration.user} className="font-medium" />
+            <span className="text-sm text-gray-600 dark:text-gray-400">
+              {registration.user?.phoneNumber}
+            </span>
+            <span className="text-sm text-gray-600 dark:text-gray-400">
+              {registration.user?.email}
+            </span>
           </div>
         );
       },
