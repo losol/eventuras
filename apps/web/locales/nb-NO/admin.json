@@ -225,6 +225,10 @@
       "add-product": "Nytt produkt",
       "edit-product": "Endre"
     },
+    "columns": {
+      "quantity": "Antall",
+      "registration": "Registrering"
+    },
     "labels": {
       "addnewproduct": "Nytt produkt",
       "editProducts": "Endre produkter",
