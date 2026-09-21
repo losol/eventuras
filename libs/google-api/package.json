@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "google-auth-library": "^11.0.1",
-    "googleapis": "^178.1.1"
+    "googleapis": "^180.0.0"
   },
   "devDependencies": {
     "@eventuras/eslint-config": "^1.0.4",
