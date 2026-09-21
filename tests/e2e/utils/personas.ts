@@ -4,11 +4,13 @@
  * Persona email addresses for the E2E suite.
  *
  * Read from env so no address or domain is baked into the code (update the env
- * when the test realm's seeding changes). Authz is exercised via real logins:
- * the admin/systemadmin addresses map to realm-seeded users in the
- * `eventuras-admins` / `eventuras-systemadmins` groups, while the regular user
- * is auto-created fresh each run. Anonymous = no login (the `web:public`
- * project), so it needs no address here.
+ * when the test realm's seeding changes). Authz is exercised via real logins
+ * against realm-seeded users, while the regular user is auto-created fresh each
+ * run. Anonymous = no login (the `web:public` project), so it needs no address.
+ *
+ * `admin` and `systemadmin` are the same seeded account, which holds both roles:
+ * enough to prove a system admin may do something, never that an organization's
+ * own admin may not. `orgAdmin` is the account that can show the difference.
  */
 
 import { randomUUID } from 'node:crypto';
@@ -21,11 +23,18 @@ const required = (envName: string): string => {
   return value;
 };
 
-/** Realm-seeded systemadmin (member of `eventuras-systemadmins`). */
+/** Realm-seeded account holding `SystemAdmin`. */
 export const systemAdminEmail = (): string => required('E2E_SYSTEMADMIN_EMAIL');
 
-/** Realm-seeded admin (member of `eventuras-admins`). */
+/** Realm-seeded account holding `Admin`; the same account as {@link systemAdminEmail}. */
 export const adminEmail = (): string => required('E2E_ADMIN_EMAIL');
+
+/**
+ * Realm-seeded account holding `Admin` and deliberately **not** `SystemAdmin`,
+ * granted membership of the test organization by the bootstrap setup. Use it
+ * wherever a test needs to show that org-level admin rights stop somewhere.
+ */
+export const orgAdminEmail = (): string => required('E2E_ORGADMIN_EMAIL');
 
 /**
  * A fresh, auto-created regular user (no seeding). The env pattern must contain
