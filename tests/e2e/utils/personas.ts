@@ -33,8 +33,16 @@ export const adminEmail = (): string => required('E2E_ADMIN_EMAIL');
  * Realm-seeded account holding `Admin` and deliberately **not** `SystemAdmin`,
  * granted membership of the test organization by the bootstrap setup. Use it
  * wherever a test needs to show that org-level admin rights stop somewhere.
+ *
+ * Optional, unlike the others: only the development realm seeds this account.
+ * Where it is unset — staging, or the image smoke test — the setup and specs that
+ * need it skip rather than failing the whole suite at load time.
  */
-export const orgAdminEmail = (): string => required('E2E_ORGADMIN_EMAIL');
+export const orgAdminEmail = (): string | undefined => process.env.E2E_ORGADMIN_EMAIL || undefined;
+
+/** Why org-admin work is skipped, for the report. */
+export const ORG_ADMIN_SKIP_REASON =
+  'E2E_ORGADMIN_EMAIL is not set; only the development realm seeds this persona';
 
 /**
  * A fresh, auto-created regular user (no seeding). The env pattern must contain

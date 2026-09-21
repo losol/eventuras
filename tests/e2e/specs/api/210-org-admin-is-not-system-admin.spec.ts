@@ -10,6 +10,7 @@
 
 import { expect, test } from '@playwright/test';
 
+import { ORG_ADMIN_SKIP_REASON, orgAdminEmail } from '../../utils/personas';
 import { getAccessTokenFromAuthFile } from '../shared/api-helpers';
 
 const API_URL = process.env.E2E_API_URL;
@@ -33,6 +34,8 @@ const request = async (method: string, path: string, authFile: string, body?: un
 };
 
 test.describe('the org-admin persona', () => {
+  test.skip(!orgAdminEmail(), ORG_ADMIN_SKIP_REASON);
+
   test('is an admin of the test organization', async () => {
     const response = await request('GET', '/v3/userprofile', ORGADMIN_AUTH);
     expect(response.ok).toBeTruthy();

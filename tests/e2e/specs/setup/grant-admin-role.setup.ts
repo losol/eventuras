@@ -101,5 +101,10 @@ const grantOrgAdmin = async (email: string, authFile: string) => {
 
 setup('grant org Admin role to the admin personas', async () => {
   await grantOrgAdmin(adminEmail(), ADMIN_AUTH);
-  await grantOrgAdmin(orgAdminEmail(), ORGADMIN_AUTH);
+
+  // Only the development realm seeds the org-admin persona.
+  const orgAdmin = orgAdminEmail();
+  if (orgAdmin) {
+    await grantOrgAdmin(orgAdmin, ORGADMIN_AUTH);
+  }
 });
