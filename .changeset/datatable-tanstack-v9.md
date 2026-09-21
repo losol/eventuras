@@ -2,7 +2,7 @@
 '@eventuras/web': minor
 ---
 
-The admin tables run on `@eventuras/datatable` 0.7, which moved to TanStack Table v9. The datatable only peer-depends on TanStack and leaves providing it to the consumer, so the web app now depends on `@tanstack/react-table`, `@tanstack/table-core` and `@tanstack/match-sorter-utils` at v9 directly — without them it resolved v8 and the build failed on `columnFilteringFeature doesn't exist`.
+The admin tables run on `@eventuras/datatable` 0.8, which moved to TanStack Table v9 and ships it as its own dependency, so the web app no longer depends on TanStack at all. Columns are typed with the datatable's `DataTableColumnDef`, so columns built for another row type than the table's data are a type error.
 
 The tables look different: they render through Ratio UI's `Table`, so rows are separated by the theme's hairlines rather than zebra striping, and header and cell tones follow the theme in light and dark.
 
