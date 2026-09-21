@@ -128,9 +128,11 @@ var e2eEnvironment = new Dictionary<string, string>
     // Login codes are mail, and in development mail is Mailpit.
     ["E2E_OTP_SOURCE"] = "mailpit",
     ["E2E_MAILPIT_API_URL"] = $"http://localhost:{mailpitUiPort}",
-    // The realm seeds one user holding both roles; see realms/eventuras-dev-realm.json.
+    // admin@ holds both roles, so it cannot show what an organization's own admin
+    // is denied; orgadmin@ holds only Admin. See realms/eventuras-dev-realm.json.
     ["E2E_ADMIN_EMAIL"] = "admin@example.com",
     ["E2E_SYSTEMADMIN_EMAIL"] = "admin@example.com",
+    ["E2E_ORGADMIN_EMAIL"] = "orgadmin@example.com",
     // Regular users are created per run, so the pattern needs the placeholder.
     ["E2E_USER_EMAIL_PATTERN"] = "test-{random}@e2e.test.example",
     // Node does not read the OS trust store, so hand it the same certificate.

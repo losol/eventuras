@@ -112,6 +112,26 @@
         "SystemAdmin",
         "offline_access"
       ]
+    },
+    {
+      "id": "bbc82e84-684c-4ade-bb96-64d48477309f",
+      "username": "orgadmin@example.com",
+      "email": "orgadmin@example.com",
+      "firstName": "Dev",
+      "lastName": "Org Admin",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admin",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "Admin",
+        "offline_access"
+      ]
     }
   ],
   "loginTheme": "ratio",
