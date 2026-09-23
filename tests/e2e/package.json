@@ -28,7 +28,7 @@
     "tsx": "^4.23.13"
   },
   "devDependencies": {
-    "@eventuras/eslint-config": "^1.0.4",
+    "@eventuras/eslint-config": "^1.0.5",
     "@eventuras/typescript-config": "^1.0.0"
   },
   "readme": "README.md"
