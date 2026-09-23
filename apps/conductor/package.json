@@ -13,15 +13,15 @@
     "start": "node --env-file=.env dist/index.js"
   },
   "dependencies": {
-    "@eventuras/logger": "^0.8.1",
+    "@eventuras/logger": "^0.9.1",
     "discord.js": "^14.27.0",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "uuidv7": "^1.2.1",
-    "zod": "^4.6.2"
+    "zod": "^4.6.4"
   },
   "devDependencies": {
-    "@eventuras/typescript-config": "^1.0.0",
+    "@eventuras/typescript-config": "^1.1.0",
     "@types/express": "^5.0.6",
     "@types/node": "^24.12.0",
     "tsx": "^4.23.13",

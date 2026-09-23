@@ -28,12 +28,12 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@eventuras/fides-auth": "^0.14.0",
-    "@eventuras/logger": "^0.8.1"
+    "@eventuras/fides-auth": "^0.14.1",
+    "@eventuras/logger": "^0.9.1"
   },
   "devDependencies": {
-    "@eventuras/typescript-config": "^1.0.0",
-    "@eventuras/vite-config": "^0.3.1",
+    "@eventuras/typescript-config": "^1.1.0",
+    "@eventuras/vite-config": "^0.4.0",
     "@vitest/ui": "^5.0.0",
     "tsx": "^4.23.13",
     "typescript": "^6.0.2",
