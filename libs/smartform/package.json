@@ -28,13 +28,13 @@
     "dev": "vite build --watch"
   },
   "dependencies": {
-    "@eventuras/logger": "^0.8.1",
-    "@eventuras/ratio-ui": "^2.23.0"
+    "@eventuras/logger": "^0.9.1",
+    "@eventuras/ratio-ui": "^2.24.0"
   },
   "devDependencies": {
     "@eventuras/eslint-config": "^1.0.5",
-    "@eventuras/typescript-config": "^1.0.0",
-    "@eventuras/vite-config": "^0.3.1",
+    "@eventuras/typescript-config": "^1.1.0",
+    "@eventuras/vite-config": "^0.4.0",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "vite": "^8.3.0"
