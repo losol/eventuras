@@ -32,7 +32,7 @@
     "@eventuras/ratio-ui": "^2.23.0"
   },
   "devDependencies": {
-    "@eventuras/eslint-config": "^1.0.5",
+    "@eventuras/eslint-config": "^1.0.6",
     "@eventuras/typescript-config": "^1.0.0",
     "@eventuras/vite-config": "^0.3.1",
     "@types/react": "^19.3.0",
