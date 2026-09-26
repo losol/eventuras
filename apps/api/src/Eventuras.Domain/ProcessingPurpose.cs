@@ -31,12 +31,12 @@ public class ProcessingPurpose
     [Required]
     public string Text { get; init; } = string.Empty;
 
-    // Material change from the previous version: earlier OptIn decisions no longer count.
+    // Material change from the previous version: earlier consents no longer count.
     public bool RequiresReconsent { get; init; }
 
     // The purpose covers a special category of personal data (GDPR article 9,
     // e.g. dietary requirements, which reveal health). Such a purpose can only be
-    // OptIn — a reservation is not a valid basis for article 9 data — which a
+    // Consent — a reservation is not a valid basis for article 9 data — which a
     // check constraint enforces. Callers are expected to require an explicit
     // affirmative action rather than inferring consent from a filled-in field.
     public bool HasSpecialCategoryData { get; init; }
@@ -47,10 +47,10 @@ public class ProcessingPurpose
 
     public enum PurposeKind
     {
-        // Consent: denied unless the user has said yes.
-        OptIn = 1,
+        // Denied unless the user has said yes.
+        Consent = 1,
 
-        // Reservation: allowed unless the user has said no.
-        OptOut = 2,
+        // Allowed unless the user has said no.
+        Reservation = 2,
     }
 }

@@ -195,8 +195,8 @@ public class ApplicationDbContext : DbContext
                 .OnDelete(DeleteBehavior.Restrict);
 
             // A reservation is not a valid basis for article 9 data, so a special
-            // category purpose can only ever be OptIn (1). Enforced here rather than in
-            // the service layer: an OptOut written by mistake reads as reasonable in
+            // category purpose can only ever be a Consent (1). Enforced here rather than in
+            // the service layer: a Reservation written by mistake reads as reasonable in
             // review, and is wrong only for reasons that live outside the code.
             entity.ToTable(t => t.HasCheckConstraint(
                 "CK_ProcessingPurposes_SpecialCategoryIsOptIn",
@@ -206,7 +206,7 @@ public class ApplicationDbContext : DbContext
             // database refuse it rather than store a purpose that is neither kind.
             entity.ToTable(t => t.HasCheckConstraint(
                 "CK_ProcessingPurposes_Kind",
-                $@"""{nameof(ProcessingPurpose.Kind)}"" IN ({(int)ProcessingPurpose.PurposeKind.OptIn}, {(int)ProcessingPurpose.PurposeKind.OptOut})"));
+                $@"""{nameof(ProcessingPurpose.Kind)}"" IN ({(int)ProcessingPurpose.PurposeKind.Consent}, {(int)ProcessingPurpose.PurposeKind.Reservation})"));
         });
 
         builder.Entity<PurposeDecision>(entity =>
