@@ -44,10 +44,10 @@ public class PurposeDecision
 
     public enum DecisionValue
     {
-        // OptIn: consented. OptOut: explicitly fine with it (reservation lifted).
+        // For a consent: said yes. For a reservation: explicitly fine with it.
         Allowed = 1,
 
-        // OptIn: declined or withdrawn. OptOut: reserved against it.
+        // For a consent: declined or withdrawn. For a reservation: reserved against it.
         Denied = 2,
     }
 }
