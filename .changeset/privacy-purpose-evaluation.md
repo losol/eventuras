@@ -1,0 +1,11 @@
+---
+'@eventuras/api': minor
+---
+
+`PurposeEvaluation` in the new `Eventuras.Services.Privacy` namespace turns a processing purpose and a user's decision into a `PurposeOutcome`: a `PurposeStatus` saying what the user answered — `Unanswered`, `Allowed`, `Denied`, `Expired`, `Retired` or `Undefined` — and `MayProcess`, which is what enforcement reads. The two are separate because they answer different questions: an unanswered reservation may be processed, an unanswered consent may not, and the same status therefore means opposite things depending on the purpose kind. `MustAsk` follows from both, and says only that there is no valid answer on record; a refusal is an answer and does not set it.
+
+The rules live in one pure class, without dependencies, rather than being re-derived wherever a decision is read. A registration-scoped decision takes precedence over an organization-wide one — it is a narrower answer to the same question. A consent given before a version marked `RequiresReconsent` expires and is asked for again; a reservation is not affected, since rewriting the purpose text must not revive processing a user has already reserved against.
+
+Evaluation takes every version of a purpose rather than just the current one, because whether a consent survives depends on versions between the one it was given on and today. The current version is the single unretired one. A purpose whose every version is retired is out of use, and one an organization never defined at all is `Undefined` rather than retired — both are denied without being reported as a decision the user made, but they are not the same thing. The versions must run without gaps and put the unretired one last, because a version missing from the middle may be the material change that expires a consent and its absence would read as a consent that still counts. Versions spanning more than one organization or code are rejected, since no answer over a mixed collection means anything, and so are versions that disagree on kind: a purpose moving between consent and reservation is a new purpose rather than a new version, because its earlier decisions were given under the old kind and reading them under the new one would put people who were never asked on the permitted side.
+
+Nothing calls this yet — endpoints and enforcement follow.
