@@ -27,7 +27,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "pnpm run clean && vite build",
+    "build": "pnpm run clean && vite build && tsc --emitDeclarationOnly",
     "clean": "rm -rf dist",
     "test": "vitest",
     "typecheck": "tsc -p tsconfig.json --noEmit"

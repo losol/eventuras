@@ -20,7 +20,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "vite build",
+    "build": "vite build && tsc --emitDeclarationOnly",
     "dev": "vite build --watch",
     "label:download": "tsx --env-file=.env scripts/download-label.ts",
     "shipment:create": "tsx --env-file=.env scripts/create-shipment.ts",
