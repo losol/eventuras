@@ -24,7 +24,7 @@
   },
   "main": "src/main.tsx",
   "scripts": {
-    "build": "vite build",
+    "build": "vite build && tsc --emitDeclarationOnly",
     "build:site": "vite build --config vite.config.site.ts",
     "dev": "vite"
   },
