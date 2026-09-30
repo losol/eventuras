@@ -18,7 +18,6 @@ export default defineConfig({
         'express',
         'discord.js',
         'zod',
-        'dotenv',
         'uuidv7',
       ],
     },

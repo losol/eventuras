@@ -15,7 +15,6 @@
   "dependencies": {
     "@eventuras/logger": "^0.9.1",
     "discord.js": "^14.27.0",
-    "dotenv": "^18.0.1",
     "express": "^5.2.1",
     "uuidv7": "^1.2.1",
     "zod": "^4.6.5"

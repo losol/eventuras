@@ -28,7 +28,6 @@
     "dev": "vite build --watch"
   },
   "dependencies": {
-    "@eventuras/logger": "^0.9.1",
     "@eventuras/ratio-ui": "^2.27.0"
   },
   "devDependencies": {

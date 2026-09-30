@@ -19,7 +19,6 @@
   },
   "dependencies": {
     "@eventuras/event-sdk": "workspace:*",
-    "@eventuras/fides-auth": "^0.14.1",
     "@eventuras/google-api": "workspace:*",
     "@eventuras/logger": "^0.9.1",
     "@playwright/test": "1.63.0",
