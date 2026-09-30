@@ -24,7 +24,6 @@
     "googleapis": "^181.0.0"
   },
   "devDependencies": {
-    "@eventuras/eslint-config": "^1.0.6",
     "@eventuras/typescript-config": "^1.1.0",
     "@eventuras/vite-config": "^0.4.0",
     "vite": "^8.3.0"

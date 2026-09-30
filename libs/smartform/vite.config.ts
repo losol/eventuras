@@ -8,7 +8,6 @@ export default defineReactLibConfig({
     'react-aria-components',
     // Workspace packages - should not be bundled
     '@eventuras/ratio-ui',
-    '@eventuras/logger',
     // External subpath imports from ratio-ui
     /^@eventuras\/ratio-ui\//,
   ],
