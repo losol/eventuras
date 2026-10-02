@@ -38,7 +38,7 @@
     "@eventuras/ratio-ui-next": "^1.0.1",
     "@eventuras/scribo": "workspace:*",
     "@eventuras/smartform": "workspace:*",
-    "@sentry/nextjs": "^10.75.0",
+    "@sentry/nextjs": "^10.75.1",
     "@tailwindcss/postcss": "^4.3.3",
     "@xstate/react": "^6.1.0",
     "@xstate/store": "4.2.3",
@@ -64,7 +64,7 @@
     "vitest": "^5.0.1"
   },
   "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "4.63.3"
+    "@rollup/rollup-linux-x64-gnu": "4.63.4"
   },
   "engines": {
     "node": ">=22.0.0 <25.0.0",

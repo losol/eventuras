@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "@eventuras/ratio-ui": "^2.27.0",
-    "@eventuras/typescript-config": "^1.1.0",
+    "@eventuras/typescript-config": "^1.1.1",
     "@eventuras/vite-config": "^0.4.0",
     "@types/mdast": "^4.0.4",
     "@types/react": "^19.3.0",
