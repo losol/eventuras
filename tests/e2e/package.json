@@ -24,11 +24,11 @@
     "@playwright/test": "1.63.0",
     "allure-playwright": "^3.12.2",
     "jose": "6.2.12",
-    "tsx": "^4.23.13"
+    "tsx": "^4.23.15"
   },
   "devDependencies": {
     "@eventuras/eslint-config": "^1.0.6",
-    "@eventuras/typescript-config": "^1.1.0"
+    "@eventuras/typescript-config": "^1.1.1"
   },
   "readme": "README.md"
 }
