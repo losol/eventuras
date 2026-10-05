@@ -28,7 +28,7 @@
     "dev": "vite build --watch"
   },
   "dependencies": {
-    "@eventuras/ratio-ui": "^2.27.0"
+    "@eventuras/ratio-ui": "^2.30.0"
   },
   "devDependencies": {
     "@eventuras/eslint-config": "^1.0.6",
