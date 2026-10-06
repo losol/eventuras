@@ -20,7 +20,7 @@
   "dependencies": {
     "@eventuras/event-sdk": "workspace:*",
     "@eventuras/google-api": "workspace:*",
-    "@eventuras/logger": "^0.9.1",
+    "@eventuras/logger": "^0.9.2",
     "@playwright/test": "1.63.0",
     "allure-playwright": "^3.12.2",
     "jose": "6.2.12",
