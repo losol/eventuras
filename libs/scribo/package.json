@@ -47,7 +47,7 @@
     "@lexical/table": "0.41.0",
     "@lexical/utils": "0.41.0",
     "lexical": "0.41.0",
-    "yjs": "^13.6.32"
+    "yjs": "^13.6.33"
   },
   "devDependencies": {
     "@eventuras/eslint-config": "^1.0.6",
