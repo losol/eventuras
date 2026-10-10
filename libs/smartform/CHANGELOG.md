@@ -1,5 +1,12 @@
 # @eventuras/smartform
 
+## 0.3.27
+
+### Patch Changes
+
+- 141f698: Drop unused dependencies: `prismjs` from scribo (`@lexical/code` brings its own) and `@eventuras/logger` from smartform.
+- c575450: Ship type declarations again. `@eventuras/vite-config` 0.4.0 builds JavaScript only, so each package now runs `tsc --emitDeclarationOnly` after `vite build`. Test and story files stay out of the emitted types.
+
 ## 0.3.26
 
 ### Patch Changes
