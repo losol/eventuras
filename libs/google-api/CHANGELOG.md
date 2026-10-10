@@ -1,5 +1,11 @@
 # @eventuras/google-api
 
+## 0.2.4
+
+### Patch Changes
+
+- c575450: Ship type declarations again. `@eventuras/vite-config` 0.4.0 builds JavaScript only, so each package now runs `tsc --emitDeclarationOnly` after `vite build`. Test and story files stay out of the emitted types.
+
 ## 0.2.3
 
 ### Patch Changes
