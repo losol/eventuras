@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "google-auth-library": "^11.1.0",
-    "googleapis": "^181.0.0"
+    "googleapis": "^182.0.0"
   },
   "devDependencies": {
     "@eventuras/typescript-config": "^1.1.1",
