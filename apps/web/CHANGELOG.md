@@ -1,5 +1,16 @@
 # @eventuras/web
 
+## 3.11.1
+
+### Patch Changes
+
+- Updated dependencies [141f698]
+- Updated dependencies [c575450]
+  - @eventuras/scribo@0.10.7
+  - @eventuras/smartform@0.3.27
+  - @eventuras/markdown-plugin-happening@4.0.9
+  - @eventuras/event-sdk@3.7.1
+
 ## 3.11.0
 
 ### Minor Changes
