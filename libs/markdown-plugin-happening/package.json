@@ -36,7 +36,7 @@
     "unist-util-visit": "^5.1.0"
   },
   "devDependencies": {
-    "@eventuras/ratio-ui": "^2.31.1",
+    "@eventuras/ratio-ui": "^2.34.2",
     "@eventuras/typescript-config": "^1.1.1",
     "@eventuras/vite-config": "^0.5.0",
     "@types/mdast": "^4.0.4",
