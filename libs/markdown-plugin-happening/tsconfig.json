@@ -3,16 +3,5 @@
   "compilerOptions": {
     "rootDir": "src",
     "typeRoots": ["./node_modules/@types", "../../node_modules/@types"]
-  },
-  "include": ["src"],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "**/*.test.ts",
-    "**/*.test.tsx",
-    "**/*.spec.ts",
-    "**/*.spec.tsx",
-    "**/*.stories.ts",
-    "**/*.stories.tsx"
-  ]
+  }
 }
