@@ -468,6 +468,9 @@ importers:
       '@eventuras/typescript-config':
         specifier: ^1.1.1
         version: 1.1.1
+      googleapis:
+        specifier: ^181.0.0
+        version: 181.0.0
 
 packages:
 
