@@ -45,7 +45,7 @@
     "next": "16.3.6",
     "next-intl": "^4.14.7",
     "react": "^19.3.0",
-    "react-aria-components": "^1.22.0",
+    "react-aria-components": "^1.22.1",
     "react-dom": "^19.3.0",
     "react-hook-form": "^7.89.0",
     "xstate": "^5.33.2"
