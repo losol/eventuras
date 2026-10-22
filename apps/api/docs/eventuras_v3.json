@@ -1367,6 +1367,61 @@
         }
       }
     },
+    "/v3/processing-purposes": {
+      "get": {
+        "tags": [
+          "ProcessingPurposes"
+        ],
+        "summary": "List the current organization's processing purposes",
+        "description": "Returns the current version of each processing purpose in the current organization (resolved from the Eventuras-Org-Id header, else the orgId query parameter, else the request hostname), ordered by code. Retired purposes and superseded versions are left out. Requires the caller to be SystemAdmin or an Admin member of the resolved organization.",
+        "parameters": [
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProcessingPurposeDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v3/organizations/{organizationId}/members/{userId}/roles": {
       "get": {
         "tags": [
@@ -6965,6 +7020,40 @@
           }
         }
       },
+      "ProcessingPurposeDto": {
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "code": {
+            "type": "string"
+          },
+          "version": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/PurposeKind"
+          },
+          "name": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "requiresReconsent": {
+            "type": "boolean"
+          },
+          "hasSpecialCategoryData": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "$ref": "#/components/schemas/Instant"
+          }
+        }
+      },
       "ProductDeliverySummaryDto": {
         "type": "object",
         "properties": {
@@ -7289,6 +7378,12 @@
         "enum": [
           "Event",
           "Collection"
+        ]
+      },
+      "PurposeKind": {
+        "enum": [
+          "Consent",
+          "Reservation"
         ]
       },
       "RegistrationCustomerInfoDto": {
@@ -7960,6 +8055,9 @@
     },
     {
       "name": "Products"
+    },
+    {
+      "name": "ProcessingPurposes"
     },
     {
       "name": "OrganizationMemberRoles"

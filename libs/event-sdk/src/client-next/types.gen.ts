@@ -638,6 +638,18 @@ export type ProblemDetails = {
     instance?: null | string;
 };
 
+export type ProcessingPurposeDto = {
+    uuid?: string;
+    code?: string;
+    version?: number;
+    kind?: PurposeKind;
+    name?: string;
+    text?: string;
+    requiresReconsent?: boolean;
+    hasSpecialCategoryData?: boolean;
+    createdAt?: Instant;
+};
+
 export type ProductDeliverySummaryDto = {
     product?: ProductSummaryDto;
     orderSummary?: null | Array<ProductOrdersSummaryDto>;
@@ -726,6 +738,10 @@ export type ProductVariantDto = {
 export const ProductVisibility = { EVENT: 'Event', COLLECTION: 'Collection' } as const;
 
 export type ProductVisibility = typeof ProductVisibility[keyof typeof ProductVisibility];
+
+export const PurposeKind = { CONSENT: 'Consent', RESERVATION: 'Reservation' } as const;
+
+export type PurposeKind = typeof PurposeKind[keyof typeof PurposeKind];
 
 export type RegistrationCustomerInfoDto = {
     vatNumber?: null | string;
@@ -1419,6 +1435,41 @@ export type GetV3ProductsByProductIdSummaryResponses = {
 };
 
 export type GetV3ProductsByProductIdSummaryResponse = GetV3ProductsByProductIdSummaryResponses[keyof GetV3ProductsByProductIdSummaryResponses];
+
+export type GetV3ProcessingPurposesData = {
+    body?: never;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path?: never;
+    query?: never;
+    url: '/v3/processing-purposes';
+};
+
+export type GetV3ProcessingPurposesErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetails;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetails;
+};
+
+export type GetV3ProcessingPurposesError = GetV3ProcessingPurposesErrors[keyof GetV3ProcessingPurposesErrors];
+
+export type GetV3ProcessingPurposesResponses = {
+    /**
+     * OK
+     */
+    200: Array<ProcessingPurposeDto>;
+};
+
+export type GetV3ProcessingPurposesResponse = GetV3ProcessingPurposesResponses[keyof GetV3ProcessingPurposesResponses];
 
 export type DeleteV3OrganizationsByOrganizationIdMembersByUserIdRolesData = {
     body: RoleRequestDto;
