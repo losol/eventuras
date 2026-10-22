@@ -1367,6 +1367,152 @@
         }
       }
     },
+    "/v3/userprofile/purposes": {
+      "get": {
+        "tags": [
+          "MyPurposes"
+        ],
+        "summary": "List the current organization's processing purposes with my decisions",
+        "description": "Returns each current processing purpose in the current organization (resolved from the Eventuras-Org-Id header, else the orgId query parameter, else the request hostname) with the signed-in user's organization-wide decision and what it amounts to: mayProcess is the value to enforce, mustAsk says the user should be asked. Ordered by code.",
+        "parameters": [
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MyPurposeDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/userprofile/purposes/{code}": {
+      "put": {
+        "tags": [
+          "MyPurposes"
+        ],
+        "summary": "Record my decision on a processing purpose",
+        "description": "Records the signed-in user's organization-wide decision on the current version of a purpose in the current organization: Denied reserves against a reservation or declines a consent, Allowed accepts. Every change is logged as a business event on the user. 404 when the organization has no current purpose with the code.",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PurposeDecisionFormDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PurposeDecisionFormDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/PurposeDecisionFormDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MyPurposeDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v3/processing-purposes": {
       "get": {
         "tags": [
@@ -5280,6 +5426,13 @@
           null
         ]
       },
+      "DecisionValue": {
+        "enum": [
+          "Allowed",
+          "Denied",
+          null
+        ]
+      },
       "EmailNotificationDto": {
         "required": [
           "subject",
@@ -6152,6 +6305,48 @@
         "type": "string",
         "description": "Wall-clock date and time without timezone. Render verbatim; do not parse via `new Date()` or equivalent, which would reinterpret the value in the client's local zone.",
         "format": "local-date-time"
+      },
+      "MyPurposeDto": {
+        "type": "object",
+        "properties": {
+          "purpose": {
+            "$ref": "#/components/schemas/ProcessingPurposeDto"
+          },
+          "status": {
+            "description": "What the user answered, or why there is no answer.",
+            "$ref": "#/components/schemas/PurposeStatus"
+          },
+          "mayProcess": {
+            "type": "boolean",
+            "description": "Whether the organization may process for the purpose. The value to enforce."
+          },
+          "mustAsk": {
+            "type": "boolean",
+            "description": "Whether the user should be asked: an unanswered or expired consent."
+          },
+          "decision": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/DecisionValue"
+              }
+            ],
+            "description": "The user's stored decision, if any. It may be on an earlier version of the purpose."
+          },
+          "decidedAt": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Instant"
+              }
+            ]
+          }
+        },
+        "description": "A processing purpose as it stands for the signed-in user."
       },
       "NewOrderRequestDto": {
         "required": [
@@ -7500,10 +7695,39 @@
           "Collection"
         ]
       },
+      "PurposeDecisionFormDto": {
+        "required": [
+          "decision"
+        ],
+        "type": "object",
+        "properties": {
+          "decision": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/DecisionValue"
+              }
+            ],
+            "description": "Allowed or Denied. For a reservation, Denied is reserving oneself against it;\nfor a consent, Allowed is saying yes and Denied is declining or withdrawing."
+          }
+        }
+      },
       "PurposeKind": {
         "enum": [
           "Consent",
           "Reservation"
+        ]
+      },
+      "PurposeStatus": {
+        "enum": [
+          "Unanswered",
+          "Allowed",
+          "Denied",
+          "Expired",
+          "Retired",
+          "Undefined"
         ]
       },
       "RegistrationCustomerInfoDto": {
@@ -8175,6 +8399,9 @@
     },
     {
       "name": "Products"
+    },
+    {
+      "name": "MyPurposes"
     },
     {
       "name": "ProcessingPurposes"

@@ -72,6 +72,10 @@ export const CertificateFormat = {
 
 export type CertificateFormat = typeof CertificateFormat[keyof typeof CertificateFormat];
 
+export const DecisionValue = { ALLOWED: 'Allowed', DENIED: 'Denied' } as const;
+
+export type DecisionValue = typeof DecisionValue[keyof typeof DecisionValue];
+
 export type EmailNotificationDto = {
     subject: null | string;
     bodyMarkdown: null | string;
@@ -325,6 +329,30 @@ export type LocalDate = string;
  * Wall-clock date and time without timezone. Render verbatim; do not parse via `new Date()` or equivalent, which would reinterpret the value in the client's local zone.
  */
 export type LocalDateTime = string;
+
+/**
+ * A processing purpose as it stands for the signed-in user.
+ */
+export type MyPurposeDto = {
+    purpose?: ProcessingPurposeDto;
+    /**
+     * What the user answered, or why there is no answer.
+     */
+    status?: PurposeStatus;
+    /**
+     * Whether the organization may process for the purpose. The value to enforce.
+     */
+    mayProcess?: boolean;
+    /**
+     * Whether the user should be asked: an unanswered or expired consent.
+     */
+    mustAsk?: boolean;
+    /**
+     * The user's stored decision, if any. It may be on an earlier version of the purpose.
+     */
+    decision?: null | DecisionValue;
+    decidedAt?: null | Instant;
+};
 
 export type NewOrderRequestDto = {
     registrationId: number;
@@ -759,9 +787,28 @@ export const ProductVisibility = { EVENT: 'Event', COLLECTION: 'Collection' } as
 
 export type ProductVisibility = typeof ProductVisibility[keyof typeof ProductVisibility];
 
+export type PurposeDecisionFormDto = {
+    /**
+     * Allowed or Denied. For a reservation, Denied is reserving oneself against it;
+     * for a consent, Allowed is saying yes and Denied is declining or withdrawing.
+     */
+    decision: null | DecisionValue;
+};
+
 export const PurposeKind = { CONSENT: 'Consent', RESERVATION: 'Reservation' } as const;
 
 export type PurposeKind = typeof PurposeKind[keyof typeof PurposeKind];
+
+export const PurposeStatus = {
+    UNANSWERED: 'Unanswered',
+    ALLOWED: 'Allowed',
+    DENIED: 'Denied',
+    EXPIRED: 'Expired',
+    RETIRED: 'Retired',
+    UNDEFINED: 'Undefined'
+} as const;
+
+export type PurposeStatus = typeof PurposeStatus[keyof typeof PurposeStatus];
 
 export type RegistrationCustomerInfoDto = {
     vatNumber?: null | string;
@@ -1455,6 +1502,82 @@ export type GetV3ProductsByProductIdSummaryResponses = {
 };
 
 export type GetV3ProductsByProductIdSummaryResponse = GetV3ProductsByProductIdSummaryResponses[keyof GetV3ProductsByProductIdSummaryResponses];
+
+export type GetV3UserprofilePurposesData = {
+    body?: never;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path?: never;
+    query?: never;
+    url: '/v3/userprofile/purposes';
+};
+
+export type GetV3UserprofilePurposesErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetails;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetails;
+};
+
+export type GetV3UserprofilePurposesError = GetV3UserprofilePurposesErrors[keyof GetV3UserprofilePurposesErrors];
+
+export type GetV3UserprofilePurposesResponses = {
+    /**
+     * OK
+     */
+    200: Array<MyPurposeDto>;
+};
+
+export type GetV3UserprofilePurposesResponse = GetV3UserprofilePurposesResponses[keyof GetV3UserprofilePurposesResponses];
+
+export type PutV3UserprofilePurposesByCodeData = {
+    body: PurposeDecisionFormDto;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        code: string;
+    };
+    query?: never;
+    url: '/v3/userprofile/purposes/{code}';
+};
+
+export type PutV3UserprofilePurposesByCodeErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetails;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetails;
+    /**
+     * Not Found
+     */
+    404: ProblemDetails;
+};
+
+export type PutV3UserprofilePurposesByCodeError = PutV3UserprofilePurposesByCodeErrors[keyof PutV3UserprofilePurposesByCodeErrors];
+
+export type PutV3UserprofilePurposesByCodeResponses = {
+    /**
+     * OK
+     */
+    200: MyPurposeDto;
+};
+
+export type PutV3UserprofilePurposesByCodeResponse = PutV3UserprofilePurposesByCodeResponses[keyof PutV3UserprofilePurposesByCodeResponses];
 
 export type GetV3ProcessingPurposesData = {
     body?: never;
