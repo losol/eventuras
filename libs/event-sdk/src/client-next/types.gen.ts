@@ -650,6 +650,26 @@ export type ProcessingPurposeDto = {
     createdAt?: Instant;
 };
 
+export type ProcessingPurposeFormDto = {
+    /**
+     * Stable identifier, e.g. `marketing.newsletter`: lowercase words joined by dots or hyphens.
+     */
+    code: string;
+    /**
+     * Consent (denied until the user says yes) or Reservation (allowed until the user says no).
+     */
+    kind: null | PurposeKind;
+    name: string;
+    /**
+     * The text users are shown and decide on.
+     */
+    text: string;
+    /**
+     * Covers GDPR article 9 data, such as dietary requirements. Requires Kind to be Consent.
+     */
+    hasSpecialCategoryData?: boolean;
+};
+
 export type ProductDeliverySummaryDto = {
     product?: ProductSummaryDto;
     orderSummary?: null | Array<ProductOrdersSummaryDto>;
@@ -1470,6 +1490,45 @@ export type GetV3ProcessingPurposesResponses = {
 };
 
 export type GetV3ProcessingPurposesResponse = GetV3ProcessingPurposesResponses[keyof GetV3ProcessingPurposesResponses];
+
+export type PostV3ProcessingPurposesData = {
+    body: ProcessingPurposeFormDto;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path?: never;
+    query?: never;
+    url: '/v3/processing-purposes';
+};
+
+export type PostV3ProcessingPurposesErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetails;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetails;
+    /**
+     * Conflict
+     */
+    409: ProblemDetails;
+};
+
+export type PostV3ProcessingPurposesError = PostV3ProcessingPurposesErrors[keyof PostV3ProcessingPurposesErrors];
+
+export type PostV3ProcessingPurposesResponses = {
+    /**
+     * OK
+     */
+    200: ProcessingPurposeDto;
+};
+
+export type PostV3ProcessingPurposesResponse = PostV3ProcessingPurposesResponses[keyof PostV3ProcessingPurposesResponses];
 
 export type DeleteV3OrganizationsByOrganizationIdMembersByUserIdRolesData = {
     body: RoleRequestDto;
