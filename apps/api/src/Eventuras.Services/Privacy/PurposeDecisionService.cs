@@ -87,6 +87,36 @@ internal class PurposeDecisionService : IPurposeDecisionService
 
         var userId = RequireUserId();
 
+        try
+        {
+            return await DecideOnceAsync(organization, code, decision, userId, cancellationToken);
+        }
+        catch (DbUpdateException e) when (e.IsUniqueKeyViolation())
+        {
+            // A concurrent first decision (a double click, a client retry) inserted the
+            // row between our read and our insert. Drop what this attempt added and go
+            // again: the retry finds that row and updates it, and logs nothing if the
+            // answer is the same, so a repeat resolves as if it had come second.
+            var added = _dbContext.ChangeTracker.Entries()
+                .Where(entry => entry.State == EntityState.Added
+                                && entry.Entity is PurposeDecision or BusinessEvent)
+                .ToList();
+            foreach (var entry in added)
+            {
+                entry.State = EntityState.Detached;
+            }
+
+            return await DecideOnceAsync(organization, code, decision, userId, cancellationToken);
+        }
+    }
+
+    private async Task<MyPurpose> DecideOnceAsync(
+        Organization organization,
+        string code,
+        PurposeDecision.DecisionValue decision,
+        Guid userId,
+        CancellationToken cancellationToken)
+    {
         var versions = await _dbContext.ProcessingPurposes
             .AsNoTracking()
             .Where(p => p.OrganizationUuid == organization.Uuid && p.Code == code)
