@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asp.Versioning;
+using Eventuras.Services;
 using Eventuras.Services.Organizations;
 using Eventuras.Services.Privacy;
 using Microsoft.AspNetCore.Authorization;
@@ -44,4 +45,31 @@ public class ProcessingPurposesController : ControllerBase
 
         return purposes.Select(p => new ProcessingPurposeDto(p)).ToArray();
     }
+
+    [HttpPost]
+    [Authorize(Roles = Roles.SystemAdmin)]
+    [EndpointSummary("Create a processing purpose in the current organization")]
+    [EndpointDescription("Creates version 1 of a new processing purpose in the current organization (resolved like the list endpoint). SystemAdmin only. A code the organization already uses, in any version, is a conflict; a purpose covering special category data must be a Consent.")]
+    [ProducesResponseType(typeof(ProcessingPurposeDto), 200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(403)]
+    [ProducesResponseType(409)]
+    public async Task<ActionResult<ProcessingPurposeDto>> Create(
+        [FromBody] ProcessingPurposeFormDto dto,
+        CancellationToken cancellationToken)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState.FormatErrors());
+        }
+
+        var currentOrg = await _currentOrganizationAccessor.RequireCurrentOrganizationAsync(
+            cancellationToken: cancellationToken);
+
+        var purpose = await _processingPurposeService.CreateAsync(
+            currentOrg, dto.ToNewProcessingPurpose(), cancellationToken);
+
+        return Ok(new ProcessingPurposeDto(purpose));
+    }
 }
+

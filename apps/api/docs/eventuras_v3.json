@@ -1420,6 +1420,86 @@
             }
           }
         }
+      },
+      "post": {
+        "tags": [
+          "ProcessingPurposes"
+        ],
+        "summary": "Create a processing purpose in the current organization",
+        "description": "Creates version 1 of a new processing purpose in the current organization (resolved like the list endpoint). SystemAdmin only. A code the organization already uses, in any version, is a conflict; a purpose covering special category data must be a Consent.",
+        "parameters": [
+          {
+            "name": "Eventuras-Org-Id",
+            "in": "header",
+            "description": "Optional organization Id. Will be required in API version 4.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProcessingPurposeFormDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProcessingPurposeFormDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProcessingPurposeFormDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProcessingPurposeDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/v3/organizations/{organizationId}/members/{userId}/roles": {
@@ -7051,6 +7131,46 @@
           },
           "createdAt": {
             "$ref": "#/components/schemas/Instant"
+          }
+        }
+      },
+      "ProcessingPurposeFormDto": {
+        "required": [
+          "code",
+          "kind",
+          "name",
+          "text"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "maxLength": 100,
+            "pattern": "^[a-z0-9]+([.-][a-z0-9]+)*$",
+            "type": "string",
+            "description": "Stable identifier, e.g. `marketing.newsletter`: lowercase words joined by dots or hyphens."
+          },
+          "kind": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/PurposeKind"
+              }
+            ],
+            "description": "Consent (denied until the user says yes) or Reservation (allowed until the user says no)."
+          },
+          "name": {
+            "maxLength": 200,
+            "type": "string"
+          },
+          "text": {
+            "type": "string",
+            "description": "The text users are shown and decide on."
+          },
+          "hasSpecialCategoryData": {
+            "type": "boolean",
+            "description": "Covers GDPR article 9 data, such as dietary requirements. Requires Kind to be Consent."
           }
         }
       },

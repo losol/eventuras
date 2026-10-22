@@ -160,4 +160,107 @@ public class ProcessingPurposesControllerTest : IClassFixture<CustomWebApiApplic
 
         response.CheckForbidden();
     }
+
+    private static object NewPurposeBody(
+        string code = "marketing.newsletter",
+        string kind = "Reservation",
+        bool hasSpecialCategoryData = false) => new
+        {
+            code,
+            kind,
+            name = "Newsletter",
+            text = "News about our courses and events. Reserve yourself at any time.",
+            hasSpecialCategoryData
+        };
+
+    [Fact]
+    public async Task Create_Should_Create_Version_1_In_The_Current_Organization()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var org = await scope.CreateOrganizationAsync();
+
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
+
+        var response = await client.PostAsJsonAsync(
+            $"/v3/processing-purposes?orgId={org.Entity.OrganizationId}", NewPurposeBody());
+
+        var created = await response.CheckOk().Content.ReadFromJsonAsync<ProcessingPurposeDto>(JsonOptions);
+        Assert.NotNull(created);
+        Assert.Equal("marketing.newsletter", created!.Code);
+        Assert.Equal(1, created.Version);
+        Assert.Equal(ProcessingPurpose.PurposeKind.Reservation, created.Kind);
+        Assert.False(created.RequiresReconsent);
+
+        var listed = await (await client.GetAsync($"/v3/processing-purposes?orgId={org.Entity.OrganizationId}"))
+            .CheckOk().Content.ReadFromJsonAsync<ProcessingPurposeDto[]>(JsonOptions);
+        Assert.Equal(created.Uuid, Assert.Single(listed!).Uuid);
+    }
+
+    [Fact]
+    public async Task Create_Should_Forbid_Organization_Admin()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var admin = await scope.CreateUserAsync(role: Roles.Admin);
+        using var org = await scope.CreateOrganizationAsync();
+        using var member = await scope
+            .CreateOrganizationMemberAsync(admin.Entity, org.Entity, role: Roles.Admin);
+
+        var client = _factory.CreateClient().AuthenticatedAs(admin.Entity, Roles.Admin);
+
+        var response = await client.PostAsJsonAsync(
+            $"/v3/processing-purposes?orgId={org.Entity.OrganizationId}", NewPurposeBody());
+
+        response.CheckForbidden();
+    }
+
+    [Fact]
+    public async Task Create_Should_Reject_A_Code_The_Organization_Already_Uses()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var org = await scope.CreateOrganizationAsync();
+
+        // Retired still counts: a reused code would make old decisions answer a new purpose.
+        await SeedAsync(Purpose(org.Entity, "marketing.newsletter", retiredAt: Instant.FromUtc(2026, 10, 1, 12, 0)));
+
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
+
+        var response = await client.PostAsJsonAsync(
+            $"/v3/processing-purposes?orgId={org.Entity.OrganizationId}", NewPurposeBody());
+
+        Assert.Equal(System.Net.HttpStatusCode.Conflict, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Create_Should_Reject_Special_Category_Data_As_A_Reservation()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var org = await scope.CreateOrganizationAsync();
+
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
+
+        var response = await client.PostAsJsonAsync(
+            $"/v3/processing-purposes?orgId={org.Entity.OrganizationId}",
+            NewPurposeBody(code: "registration.dietary", hasSpecialCategoryData: true));
+
+        response.CheckBadRequest();
+    }
+
+    [Theory]
+    [InlineData("Marketing.Newsletter")]
+    [InlineData("marketing newsletter")]
+    [InlineData(".marketing")]
+    [InlineData("")]
+    public async Task Create_Should_Reject_An_Invalid_Code(string code)
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var org = await scope.CreateOrganizationAsync();
+
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
+
+        var response = await client.PostAsJsonAsync(
+            $"/v3/processing-purposes?orgId={org.Entity.OrganizationId}", NewPurposeBody(code: code));
+
+        response.CheckBadRequest();
+    }
 }
+
