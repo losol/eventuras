@@ -6,6 +6,7 @@ using Eventuras.Services.Invoicing;
 using Eventuras.Services.Notifications;
 using Eventuras.Services.Orders;
 using Eventuras.Services.Organizations;
+using Eventuras.Services.Privacy;
 using Eventuras.Services.Registrations;
 using Eventuras.Services.Users;
 using Eventuras.Services.Views;
@@ -29,6 +30,7 @@ public static class ServiceCollectionExtensions
         services.AddOrderServices();
         services.AddInvoicingServices();
         services.AddBusinessEventServices();
+        services.AddPrivacyServices();
         services.AddViewServices();
         return services;
     }
