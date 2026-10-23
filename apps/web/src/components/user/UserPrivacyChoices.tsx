@@ -26,30 +26,42 @@ const UserPrivacyChoices = ({ purposes }: UserPrivacyChoicesProps) => {
   const t = useTranslations();
   const toast = useToast();
   const [items, setItems] = useState(purposes);
-  const [saving, setSaving] = useState<string | null>(null);
+  // Every switch with a save in flight, so a second toggle cannot re-enable the first.
+  const [saving, setSaving] = useState<ReadonlySet<string>>(new Set());
+
+  const replace = (code: string, update: (item: MyPurposeDto) => MyPurposeDto) =>
+    setItems(current => current.map(item => (item.purpose?.code === code ? update(item) : item)));
 
   const handleChange = async (code: string, allowed: boolean) => {
-    const previous = items;
+    const before = items.find(item => item.purpose?.code === code);
+    // Only this switch is rolled back on failure, so a toggle on another switch made
+    // while this one was saving is not undone with it.
+    const revert = () => {
+      if (before) replace(code, () => before);
+    };
+
     // Optimistic: the switch moves at once, and moves back if saving fails.
-    setItems(current =>
-      current.map(item => (item.purpose?.code === code ? { ...item, mayProcess: allowed } : item))
-    );
-    setSaving(code);
+    replace(code, item => ({ ...item, mayProcess: allowed }));
+    setSaving(current => new Set(current).add(code));
     try {
       const result = await setPurposeDecision(code, allowed);
       if (!result.success) {
-        setItems(previous);
+        revert();
         toast.error(t('user.privacy.saveFailed'));
         return;
       }
-      setItems(current => current.map(item => (item.purpose?.code === code ? result.data : item)));
+      replace(code, () => result.data);
       toast.success(t('user.privacy.saved'));
     } catch {
       // The action itself failed (network, server error): same as a refused save.
-      setItems(previous);
+      revert();
       toast.error(t('user.privacy.saveFailed'));
     } finally {
-      setSaving(null);
+      setSaving(current => {
+        const next = new Set(current);
+        next.delete(code);
+        return next;
+      });
     }
   };
 
@@ -63,7 +75,7 @@ const UserPrivacyChoices = ({ purposes }: UserPrivacyChoicesProps) => {
           <Switch
             key={code}
             isSelected={item.mayProcess ?? false}
-            isDisabled={saving === code}
+            isDisabled={saving.has(code)}
             onChange={allowed => handleChange(code, allowed)}
             description={item.purpose?.text}
             className="my-3"
