@@ -29,7 +29,7 @@
   "devDependencies": {
     "@eventuras/eslint-config": "^1.0.6",
     "@eventuras/typescript-config": "^1.1.1",
-    "googleapis": "^181.0.0"
+    "googleapis": "^185.0.0"
   },
   "readme": "README.md"
 }

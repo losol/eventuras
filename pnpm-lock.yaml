@@ -216,8 +216,8 @@ importers:
         specifier: ^11.3.0
         version: 11.3.0
       googleapis:
-        specifier: ^181.0.0
-        version: 181.0.0
+        specifier: ^185.0.0
+        version: 185.0.0
     devDependencies:
       '@eventuras/typescript-config':
         specifier: ^1.1.1
@@ -469,8 +469,8 @@ importers:
         specifier: ^1.1.1
         version: 1.1.1
       googleapis:
-        specifier: ^181.0.0
-        version: 181.0.0
+        specifier: ^185.0.0
+        version: 185.0.0
 
 packages:
 
@@ -3101,6 +3101,9 @@ packages:
   caniuse-lite@1.0.30001815:
     resolution: {integrity: sha512-uDybUEyfgbyJJ93J1vikTylBX31AkdVYeVPeffMQpf8XN7hSfr0oZOn4VFOIMNvtU5+rHvC5Udg2TgtJKHm23Q==}
 
+  caniuse-lite@1.0.30001816:
+    resolution: {integrity: sha512-+8Yx7BXCoqk6IF8yTicjfUR6D/ldJzdlsodlEOiOSPmhK844WIgk67/zIQaGAOxNkZyyvBlrRFnLvqKIoqbAFw==}
+
   ccount@2.0.1:
     resolution: {integrity: sha512-eyrF0jiFpY+3drT6383f1qhkbGsLSifNAjA61IUjZjmLCWjItY6LB9ft9YhoDgwfmclB2zhu51Lc7+95b8NRAg==}
 
@@ -3697,12 +3700,12 @@ packages:
     resolution: {integrity: sha512-1R6uiq6XhXW2ZrcGtZpGgVDsYGzSmveVOn8Pp37qe1fbThHZ34e3t3eXj5mVu6PFSVx9fvB1KNVnYgVtq/BRcA==}
     engines: {node: '>=22'}
 
-  googleapis-common@9.1.0:
-    resolution: {integrity: sha512-UJBElspYPJb0+fI8q0LxARw1hPnwd9yd5NqhKqEUPxjhnB1jdsRP7rlRTBp69JS5Vo10bCiRE9+ISsIG2A+Ttg==}
+  googleapis-common@9.3.0:
+    resolution: {integrity: sha512-jgSY53R77I1zIGJ0uRx29KFQYj7pMGKWSecaOQiOeCdHu/8wHSiEWpt0G7RW2fttc+jd9pukoXbmq2VryvLxCg==}
     engines: {node: '>=22'}
 
-  googleapis@181.0.0:
-    resolution: {integrity: sha512-fCzsqaVjA5FrA9DdXn4WlnmnLUvqjWx0JGZzcHbSC9iMfb8PK1lTxsvYpnaRf0j4b6usfKlW+YHSKjHnkgqmjQ==}
+  googleapis@185.0.0:
+    resolution: {integrity: sha512-w/rO9+ank7JpAj65X6DzUoSLbxvHtsTf4F2kD9+8AScA3KEzDjeTFOUFVldDSePSuRSlpJkP/s36fMaqgFX3sw==}
     engines: {node: '>=22.0.0'}
 
   gopd@1.2.0:
@@ -8364,7 +8367,7 @@ snapshots:
   browserslist@4.29.3:
     dependencies:
       baseline-browser-mapping: 2.11.28
-      caniuse-lite: 1.0.30001815
+      caniuse-lite: 1.0.30001816
       electron-to-chromium: 1.5.453
       node-releases: 2.0.58
       update-browserslist-db: 1.3.4(browserslist@4.29.3)
@@ -8424,6 +8427,8 @@ snapshots:
   callsites@3.1.0: {}
 
   caniuse-lite@1.0.30001815: {}
+
+  caniuse-lite@1.0.30001816: {}
 
   ccount@2.0.1: {}
 
@@ -9114,7 +9119,7 @@ snapshots:
 
   google-logging-utils@2.1.0: {}
 
-  googleapis-common@9.1.0:
+  googleapis-common@9.3.0:
     dependencies:
       extend: 3.0.2
       gaxios: 7.3.1
@@ -9125,10 +9130,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  googleapis@181.0.0:
+  googleapis@185.0.0:
     dependencies:
       google-auth-library: 11.3.0
-      googleapis-common: 9.1.0
+      googleapis-common: 9.3.0
     transitivePeerDependencies:
       - supports-color
 
