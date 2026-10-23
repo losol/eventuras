@@ -3,6 +3,7 @@ import * as Sentry from '@sentry/nextjs';
 import { isBot } from '@eventuras/core/useragents';
 
 import type { SentryClientConfig } from '@/providers/sentry';
+import { sentryDataCollection } from '@/providers/sentry/dataCollection';
 
 declare global {
   interface Window {
@@ -18,8 +19,7 @@ if (isBot(userAgent)) {
 } else if (config?.dsn) {
   Sentry.init({
     dsn: config.dsn,
-    enableLogs: true,
-    sendDefaultPii: config.sendDefaultPii,
+    dataCollection: sentryDataCollection(config.sendDefaultPii),
     release: config.release,
   });
 

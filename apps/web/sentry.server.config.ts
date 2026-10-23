@@ -1,6 +1,7 @@
 import * as Sentry from '@sentry/nextjs';
 
 import { appConfig } from './src/config.server';
+import { sentryDataCollection } from './src/providers/sentry/dataCollection';
 
 const isSentryEnabled = appConfig.env.SENTRY_ENABLED === true;
 const sentryDsn = appConfig.env.SENTRY_DSN as string | undefined;
@@ -12,8 +13,7 @@ const release =
 if (isSentryEnabled && sentryDsn) {
   Sentry.init({
     dsn: sentryDsn,
-    enableLogs: true,
-    sendDefaultPii: appConfig.env.SENTRY_SEND_DEFAULT_PII !== false,
+    dataCollection: sentryDataCollection(appConfig.env.SENTRY_SEND_DEFAULT_PII !== false),
     release,
   });
 
