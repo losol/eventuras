@@ -44,6 +44,10 @@ const UserPrivacyChoices = ({ purposes }: UserPrivacyChoicesProps) => {
       }
       setItems(current => current.map(item => (item.purpose?.code === code ? result.data : item)));
       toast.success(t('user.privacy.saved'));
+    } catch {
+      // The action itself failed (network, server error): same as a refused save.
+      setItems(previous);
+      toast.error(t('user.privacy.saveFailed'));
     } finally {
       setSaving(null);
     }
