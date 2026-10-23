@@ -38,7 +38,7 @@
     "@eventuras/ratio-ui-next": "^1.0.1",
     "@eventuras/scribo": "workspace:*",
     "@eventuras/smartform": "workspace:*",
-    "@sentry/nextjs": "^10.75.1",
+    "@sentry/nextjs": "^11.7.0",
     "@xstate/react": "^6.1.0",
     "@xstate/store": "4.3.0",
     "jose": "6.2.12",
