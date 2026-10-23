@@ -216,8 +216,8 @@ importers:
         specifier: ^11.3.0
         version: 11.3.0
       googleapis:
-        specifier: ^181.0.0
-        version: 181.0.0
+        specifier: ^185.0.0
+        version: 185.0.0
     devDependencies:
       '@eventuras/typescript-config':
         specifier: ^1.1.1
@@ -469,8 +469,8 @@ importers:
         specifier: ^1.1.1
         version: 1.1.1
       googleapis:
-        specifier: ^181.0.0
-        version: 181.0.0
+        specifier: ^185.0.0
+        version: 185.0.0
 
 packages:
 
@@ -3698,12 +3698,12 @@ packages:
     resolution: {integrity: sha512-1R6uiq6XhXW2ZrcGtZpGgVDsYGzSmveVOn8Pp37qe1fbThHZ34e3t3eXj5mVu6PFSVx9fvB1KNVnYgVtq/BRcA==}
     engines: {node: '>=22'}
 
-  googleapis-common@9.1.0:
-    resolution: {integrity: sha512-UJBElspYPJb0+fI8q0LxARw1hPnwd9yd5NqhKqEUPxjhnB1jdsRP7rlRTBp69JS5Vo10bCiRE9+ISsIG2A+Ttg==}
+  googleapis-common@9.3.0:
+    resolution: {integrity: sha512-jgSY53R77I1zIGJ0uRx29KFQYj7pMGKWSecaOQiOeCdHu/8wHSiEWpt0G7RW2fttc+jd9pukoXbmq2VryvLxCg==}
     engines: {node: '>=22'}
 
-  googleapis@181.0.0:
-    resolution: {integrity: sha512-fCzsqaVjA5FrA9DdXn4WlnmnLUvqjWx0JGZzcHbSC9iMfb8PK1lTxsvYpnaRf0j4b6usfKlW+YHSKjHnkgqmjQ==}
+  googleapis@185.0.0:
+    resolution: {integrity: sha512-w/rO9+ank7JpAj65X6DzUoSLbxvHtsTf4F2kD9+8AScA3KEzDjeTFOUFVldDSePSuRSlpJkP/s36fMaqgFX3sw==}
     engines: {node: '>=22.0.0'}
 
   gopd@1.2.0:
@@ -8954,7 +8954,7 @@ snapshots:
 
   google-logging-utils@2.1.0: {}
 
-  googleapis-common@9.1.0:
+  googleapis-common@9.3.0:
     dependencies:
       extend: 3.0.2
       gaxios: 7.3.1
@@ -8965,10 +8965,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  googleapis@181.0.0:
+  googleapis@185.0.0:
     dependencies:
       google-auth-library: 11.3.0
-      googleapis-common: 9.1.0
+      googleapis-common: 9.3.0
     transitivePeerDependencies:
       - supports-color
 
