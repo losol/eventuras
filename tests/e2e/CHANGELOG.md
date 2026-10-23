@@ -1,5 +1,15 @@
 # web-e2e
 
+## 0.2.31
+
+### Patch Changes
+
+- Updated dependencies [eedea68]
+- Updated dependencies [b5fc153]
+- Updated dependencies [aa8e7d9]
+- Updated dependencies [70783cf]
+  - @eventuras/event-sdk@3.8.0
+
 ## 0.2.30
 
 ### Patch Changes

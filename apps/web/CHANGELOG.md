@@ -1,5 +1,20 @@
 # @eventuras/web
 
+## 3.12.0
+
+### Minor Changes
+
+- 8955adb: The user page has a "Privacy and consent" section: each of the organization's current processing purposes as a switch, so an existing customer can reserve themselves against marketing. On means the organization may process for the purpose, so an unanswered reservation starts on and an unanswered consent starts off. A change is saved straight away, with a toast, and the switch moves back if saving fails. The section is left out when the organization has no purposes.
+
+### Patch Changes
+
+- 35f2db7: Upgrade `@sentry/nextjs` to 11. `withSentryConfig` now comes from `@sentry/nextjs/config`, `enableLogs` is gone (logs are always on), and `sendDefaultPii` is replaced by `dataCollection`. `SENTRY_SEND_DEFAULT_PII` still switches user info, cookies, headers and query params, and request bodies and local variables are never sent, so events carry what they did with Sentry 10.
+- Updated dependencies [eedea68]
+- Updated dependencies [b5fc153]
+- Updated dependencies [aa8e7d9]
+- Updated dependencies [70783cf]
+  - @eventuras/event-sdk@3.8.0
+
 ## 3.11.1
 
 ### Patch Changes
