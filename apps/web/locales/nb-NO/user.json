@@ -160,5 +160,11 @@
         "title": "Velkommen"
       }
     }
+  },
+  "privacy": {
+    "heading": "Personvern og samtykker",
+    "intro": "Velg hva vi kan bruke opplysningene dine til. Endringer lagres med en gang, og du kan endre dem når du vil.",
+    "saved": "Valget ditt er lagret",
+    "saveFailed": "Kunne ikke lagre valget ditt. Prøv igjen."
   }
 }

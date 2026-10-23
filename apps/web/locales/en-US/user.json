@@ -162,5 +162,11 @@
         "title": "Welcome!"
       }
     }
+  },
+  "privacy": {
+    "heading": "Privacy and consent",
+    "intro": "Choose what we may use your information for. Changes are saved straight away, and you can change them at any time.",
+    "saved": "Your choice has been saved",
+    "saveFailed": "Could not save your choice. Please try again."
   }
 }
