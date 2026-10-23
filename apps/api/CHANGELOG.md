@@ -1,5 +1,17 @@
 # @eventuras/api
 
+## 3.14.0
+
+### Minor Changes
+
+- eedea68: `POST /v3/processing-purposes` lets a system admin create a processing purpose in the current organization, such as `marketing.newsletter` as a reservation. It creates version 1 of a new code; a code the organization already uses, retired versions included, is a conflict, and a purpose covering special category data must be a consent. Organization admins keep read access through `GET /v3/processing-purposes`.
+- b5fc153: Events can be read, updated, patched and deleted by UUID, next to the existing integer routes: `GET`, `PUT`, `PATCH` and `DELETE /v3/events/{uuid}`. They behave like the integer routes, except that an unknown UUID gives 404 on delete as well.
+- aa8e7d9: `GET /v3/processing-purposes` lists the current organization's processing purposes: the current version of each, ordered by code, with retired purposes and superseded versions left out. Read-only, for SystemAdmin or an Admin member of the organization. The first controller on top of the processing purpose data model; recording decisions comes later.
+- 70783cf: Users can see and set their own decisions on processing purposes, so an existing customer can reserve themselves against marketing (`marketing.newsletter`).
+  
+  - `GET /v3/userprofile/purposes` lists the current organization's current purposes with the signed-in user's organization-wide decision and what it amounts to: `mayProcess` is the value to enforce, `mustAsk` flags an unanswered or expired consent.
+  - `PUT /v3/userprofile/purposes/{code}` records `Allowed` or `Denied` on the current version. Every change is logged as a `purpose.decision.changed` business event on the user; repeating the same answer is not. 404 when the organization has no current purpose with the code.
+
 ## 3.13.0
 
 ### Minor Changes
