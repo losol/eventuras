@@ -20,17 +20,22 @@ export async function setPurposeDecision(
   code: string,
   allowed: boolean
 ): Promise<ServerActionResult<MyPurposeDto>> {
-  const response = await putV3UserprofilePurposesByCode({
-    client,
-    headers: { 'Eventuras-Org-Id': getOrganizationId() },
-    path: { code },
-    body: { decision: allowed ? DecisionValue.ALLOWED : DecisionValue.DENIED },
-  });
+  try {
+    const response = await putV3UserprofilePurposesByCode({
+      client,
+      headers: { 'Eventuras-Org-Id': getOrganizationId() },
+      path: { code },
+      body: { decision: allowed ? DecisionValue.ALLOWED : DecisionValue.DENIED },
+    });
 
-  if (!response.data) {
-    logger.error({ code, error: response.error }, 'Failed to record purpose decision');
+    if (!response.data) {
+      logger.error({ code, error: response.error }, 'Failed to record purpose decision');
+      return actionError('Could not save your choice');
+    }
+
+    return actionSuccess(response.data);
+  } catch (error) {
+    logger.error({ code, error }, 'Failed to record purpose decision');
     return actionError('Could not save your choice');
   }
-
-  return actionSuccess(response.data);
 }
