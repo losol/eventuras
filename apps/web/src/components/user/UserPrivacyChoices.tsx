@@ -66,8 +66,7 @@ const UserPrivacyChoices = ({ purposes }: UserPrivacyChoicesProps) => {
             isDisabled={saving === code}
             onChange={allowed => handleChange(code, allowed)}
             description={item.purpose?.text}
-            labelPosition="start"
-            className="w-full justify-between my-3"
+            className="my-3"
             testId={`purpose-switch-${code}`}
           >
             {item.purpose?.name}
