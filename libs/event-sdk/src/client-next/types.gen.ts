@@ -2518,6 +2518,156 @@ export type PutV3EventsByIdResponses = {
 
 export type PutV3EventsByIdResponse = PutV3EventsByIdResponses[keyof PutV3EventsByIdResponses];
 
+export type DeleteV3EventsByUuidData = {
+    body?: never;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        /**
+         * The UUID of the event to delete.
+         */
+        uuid: string;
+    };
+    query?: never;
+    url: '/v3/events/{uuid}';
+};
+
+export type DeleteV3EventsByUuidErrors = {
+    /**
+     * Not Found
+     */
+    404: ProblemDetails;
+};
+
+export type DeleteV3EventsByUuidError = DeleteV3EventsByUuidErrors[keyof DeleteV3EventsByUuidErrors];
+
+export type DeleteV3EventsByUuidResponses = {
+    /**
+     * OK
+     */
+    200: unknown;
+};
+
+export type GetV3EventsByUuidData = {
+    body?: never;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        /**
+         * The UUID of the event.
+         */
+        uuid: string;
+    };
+    query?: never;
+    url: '/v3/events/{uuid}';
+};
+
+export type GetV3EventsByUuidErrors = {
+    /**
+     * Not Found
+     */
+    404: ProblemDetails;
+};
+
+export type GetV3EventsByUuidError = GetV3EventsByUuidErrors[keyof GetV3EventsByUuidErrors];
+
+export type GetV3EventsByUuidResponses = {
+    /**
+     * OK
+     */
+    200: EventDto;
+};
+
+export type GetV3EventsByUuidResponse = GetV3EventsByUuidResponses[keyof GetV3EventsByUuidResponses];
+
+export type PatchV3EventsByUuidData = {
+    body: EventPatchDto;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        /**
+         * The UUID of the event to update.
+         */
+        uuid: string;
+    };
+    query?: never;
+    url: '/v3/events/{uuid}';
+};
+
+export type PatchV3EventsByUuidErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetails;
+    /**
+     * Not Found
+     */
+    404: ProblemDetails;
+};
+
+export type PatchV3EventsByUuidError = PatchV3EventsByUuidErrors[keyof PatchV3EventsByUuidErrors];
+
+export type PatchV3EventsByUuidResponses = {
+    /**
+     * OK
+     */
+    200: EventDto;
+};
+
+export type PatchV3EventsByUuidResponse = PatchV3EventsByUuidResponses[keyof PatchV3EventsByUuidResponses];
+
+export type PutV3EventsByUuidData = {
+    body: EventFormDto;
+    headers?: {
+        /**
+         * Optional organization Id. Will be required in API version 4.
+         */
+        'Eventuras-Org-Id'?: number;
+    };
+    path: {
+        /**
+         * The UUID of the event.
+         */
+        uuid: string;
+    };
+    query?: never;
+    url: '/v3/events/{uuid}';
+};
+
+export type PutV3EventsByUuidErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetails;
+    /**
+     * Not Found
+     */
+    404: ProblemDetails;
+};
+
+export type PutV3EventsByUuidError = PutV3EventsByUuidErrors[keyof PutV3EventsByUuidErrors];
+
+export type PutV3EventsByUuidResponses = {
+    /**
+     * OK
+     */
+    200: EventDto;
+};
+
+export type PutV3EventsByUuidResponse = PutV3EventsByUuidResponses[keyof PutV3EventsByUuidResponses];
+
 export type GetV3OnlinecoursesData = {
     body?: never;
     headers?: {

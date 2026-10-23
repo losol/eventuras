@@ -41,6 +41,14 @@ internal class EventInfoRetrievalService : IEventInfoRetrievalService
             .FirstOrDefaultAsync(e => e.EventInfoId == id, cancellationToken)
         ?? throw new NotFoundException($"Event {id} not found");
 
+    public async Task<EventInfo> GetEventInfoByUuidAsync(Guid uuid,
+        EventInfoRetrievalOptions options,
+        CancellationToken cancellationToken) =>
+        await _context.EventInfos
+            .UseOptions(options ?? new EventInfoRetrievalOptions())
+            .FirstOrDefaultAsync(e => e.Uuid == uuid, cancellationToken)
+        ?? throw new NotFoundException($"Event {uuid} not found");
+
     public async Task<Paging<EventInfo>> ListEventsAsync(
         EventListRequest request,
         EventInfoRetrievalOptions options,

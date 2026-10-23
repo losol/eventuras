@@ -1085,6 +1085,140 @@ public class EventsControllerTests : IClassFixture<CustomWebApiApplicationFactor
 
     #endregion
 
+    #region By UUID
+
+    [Fact]
+    public async Task Should_Read_Event_By_Uuid()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var evt = await scope.CreateEventAsync();
+
+        var client = _factory.CreateClient();
+        var response = await client.GetAsync($"/v3/events/{evt.Entity.Uuid}");
+        response.CheckOk();
+
+        var token = await response.AsTokenAsync();
+        token.CheckEvent(evt.Entity);
+        Assert.Equal(evt.Entity.Uuid, token.GetProperty("uuid").GetGuid());
+    }
+
+    [Fact]
+    public async Task Should_Return_Not_Found_When_Reading_Unknown_Uuid()
+    {
+        var client = _factory.CreateClient();
+        var response = await client.GetAsync($"/v3/events/{Guid.NewGuid()}");
+        response.CheckNotFound();
+    }
+
+    [Fact]
+    public async Task Should_Require_Admin_Role_To_Update_Event_By_Uuid()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var evt = await scope.CreateEventAsync();
+
+        var client = _factory.CreateClient().Authenticated();
+        var response = await client.PutAsync($"/v3/events/{evt.Entity.Uuid}",
+            new { title = "asdf", organizationId = 1, slug = "test" });
+        response.CheckForbidden();
+    }
+
+    [Fact]
+    public async Task Should_Update_Event_By_Uuid()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var evt = await scope.CreateEventAsync();
+
+        var client = _factory.CreateClient().AuthenticatedAsAdmin();
+        var response = await client.PutAsync($"/v3/events/{evt.Entity.Uuid}",
+            new { title = "Updated by uuid", organizationId = 1, slug = evt.Entity.Slug });
+        response.CheckOk();
+
+        var updated = await scope.Db.EventInfos
+            .AsNoTracking()
+            .SingleAsync(e => e.EventInfoId == evt.Entity.EventInfoId);
+        Assert.Equal("Updated by uuid", updated.Title);
+    }
+
+    [Fact]
+    public async Task Should_Reject_Mismatched_Id_When_Updating_Event_By_Uuid()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var evt = await scope.CreateEventAsync();
+
+        var client = _factory.CreateClient().AuthenticatedAsAdmin();
+        var response = await client.PutAsync($"/v3/events/{evt.Entity.Uuid}",
+            new { id = evt.Entity.EventInfoId + 1, title = "asdf", organizationId = 1, slug = evt.Entity.Slug });
+        response.CheckBadRequest();
+    }
+
+    [Fact]
+    public async Task Should_Return_Not_Found_When_Updating_Unknown_Uuid()
+    {
+        var client = _factory.CreateClient().AuthenticatedAsAdmin();
+        var response = await client.PutAsync($"/v3/events/{Guid.NewGuid()}",
+            new { title = "asdf", organizationId = 1, slug = "test" });
+        response.CheckNotFound();
+    }
+
+    [Fact]
+    public async Task Should_Patch_Event_By_Uuid()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var evt = await scope.CreateEventAsync();
+
+        var client = _factory.CreateClient().AuthenticatedAsAdmin();
+        var response = await client.PatchAsync($"/v3/events/{evt.Entity.Uuid}",
+            new { title = "Patched by uuid" });
+        response.CheckOk();
+
+        var updated = await scope.Db.EventInfos
+            .AsNoTracking()
+            .SingleAsync(e => e.EventInfoId == evt.Entity.EventInfoId);
+        Assert.Equal("Patched by uuid", updated.Title);
+    }
+
+    [Fact]
+    public async Task Should_Return_Not_Found_When_Patching_Unknown_Uuid()
+    {
+        var client = _factory.CreateClient().AuthenticatedAsAdmin();
+        var response = await client.PatchAsync($"/v3/events/{Guid.NewGuid()}", new { title = "x" });
+        response.CheckNotFound();
+    }
+
+    [Fact]
+    public async Task Should_Require_Admin_Role_To_Delete_Event_By_Uuid()
+    {
+        var client = _factory.CreateClient().Authenticated();
+        var response = await client.DeleteAsync($"/v3/events/{Guid.NewGuid()}");
+        response.CheckForbidden();
+    }
+
+    [Fact]
+    public async Task Should_Soft_Delete_Event_By_Uuid()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var evt = await scope.CreateEventAsync();
+
+        var client = _factory.CreateClient().AuthenticatedAsAdmin();
+        var response = await client.DeleteAsync($"/v3/events/{evt.Entity.Uuid}");
+        response.CheckOk();
+
+        var updated = await scope.Db.EventInfos
+            .AsNoTracking()
+            .SingleAsync(e => e.EventInfoId == evt.Entity.EventInfoId);
+        Assert.True(updated.Archived);
+    }
+
+    [Fact]
+    public async Task Should_Return_Not_Found_When_Deleting_Unknown_Uuid()
+    {
+        var client = _factory.CreateClient().AuthenticatedAsAdmin();
+        var response = await client.DeleteAsync($"/v3/events/{Guid.NewGuid()}");
+        response.CheckNotFound();
+    }
+
+    #endregion
+
     #region Delete
 
     [Fact]
