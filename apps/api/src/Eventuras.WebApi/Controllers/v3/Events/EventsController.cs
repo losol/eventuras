@@ -109,6 +109,23 @@ public class EventsController : ControllerBase
         return Ok(new EventDto(eventInfo));
     }
 
+    // GET: v3/events/0190a5b2-...
+    /// <summary>
+    ///     Retrieves event details by UUID.
+    /// </summary>
+    /// <param name="uuid">The UUID of the event.</param>
+    /// <param name="cancellationToken">Cancellation token for the async operation.</param>
+    /// <returns>Event details or NotFound if the event doesn't exist.</returns>
+    [AllowAnonymous]
+    [HttpGet("{uuid:guid}")]
+    [ProducesResponseType(typeof(EventDto), 200)]
+    [ProducesResponseType(404)]
+    public async Task<ActionResult<EventDto>> GetByUuid(Guid uuid, CancellationToken cancellationToken)
+    {
+        var eventInfo = await _eventInfoService.GetEventInfoByUuidAsync(uuid, cancellationToken);
+        return Ok(new EventDto(eventInfo));
+    }
+
     // POST: v3/events
     /// <summary>
     ///     Creates a new event.
@@ -145,15 +162,34 @@ public class EventsController : ControllerBase
         }
 
         var eventInfo = await _eventInfoService.GetEventInfoByIdAsync(id, cancellationToken);
-        if (eventInfo.Archived)
+        return await UpdateAsync(eventInfo, dto, cancellationToken);
+    }
+
+    // PUT: v3/events/0190a5b2-...
+    /// <summary>
+    ///     Updates an existing event by UUID.
+    /// </summary>
+    /// <param name="uuid">The UUID of the event.</param>
+    /// <param name="dto">Updated event information.</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>The updated event or NotFound if the event is archived.</returns>
+    [HttpPut("{uuid:guid}")]
+    [ProducesResponseType(typeof(EventDto), 200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(404)]
+    public async Task<ActionResult<EventDto>> PutByUuid(
+        Guid uuid,
+        [FromBody] EventFormDto dto,
+        CancellationToken cancellationToken = default)
+    {
+        var eventInfo = await _eventInfoService.GetEventInfoByUuidAsync(uuid, cancellationToken);
+        if (dto.Id.HasValue && eventInfo.EventInfoId != dto.Id.Value)
         {
-            _logger.LogWarning("Event with ID {Id} is archived and cannot be updated.", id);
-            return NotFound();
+            _logger.LogWarning("Event {Uuid} does not match the ID in the request body.", uuid);
+            return BadRequest($"Event {uuid} does not match the ID in the request body.");
         }
 
-        dto.CopyTo(eventInfo);
-        await _eventManagementService.UpdateEventAsync(eventInfo, cancellationToken);
-        return Ok(new EventDto(eventInfo));
+        return await UpdateAsync(eventInfo, dto, cancellationToken);
     }
 
     // PATCH: v3/events/{id}
@@ -189,11 +225,36 @@ public class EventsController : ControllerBase
             return NotFound("Event not found.");
         }
 
-        patchDto.ApplyTo(entity);
+        return await PatchAsync(entity, patchDto, cancellationToken);
+    }
 
-        await _eventManagementService.UpdateEventAsync(entity, cancellationToken);
+    // PATCH: v3/events/0190a5b2-...
+    /// <summary>
+    ///     Partially updates a specific event by its UUID.
+    /// </summary>
+    /// <param name="uuid">The UUID of the event to update.</param>
+    /// <param name="patchDto">The patch DTO with field updates.</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>The updated event.</returns>
+    [HttpPatch("{uuid:guid}")]
+    [EndpointSummary("Partially update an event by UUID")]
+    [EndpointDescription("Updates specific fields of an event. For comprehensive updates with all fields, use PUT endpoint with EventFormDto instead.")]
+    [ProducesResponseType(typeof(EventDto), 200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(404)]
+    public async Task<IActionResult> PatchEventByUuid(
+        Guid uuid,
+        [FromBody] EventPatchDto patchDto,
+        CancellationToken cancellationToken = default)
+    {
+        if (!ModelState.IsValid)
+        {
+            _logger.LogWarning("Invalid model state during PATCH operation.");
+            return BadRequest(ModelState);
+        }
 
-        return Ok(new EventDto(entity));
+        var entity = await _eventInfoService.GetEventInfoByUuidAsync(uuid, cancellationToken);
+        return await PatchAsync(entity, patchDto, cancellationToken);
     }
 
 
@@ -206,5 +267,47 @@ public class EventsController : ControllerBase
     public async Task Delete(int id)
     {
         await _eventManagementService.DeleteEventAsync(id);
+    }
+
+    // DELETE: v3/events/0190a5b2-...
+    /// <summary>
+    ///     Deletes (archives) an event by UUID.
+    /// </summary>
+    /// <param name="uuid">The UUID of the event to delete.</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    [HttpDelete("{uuid:guid}")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(404)]
+    public async Task<IActionResult> DeleteByUuid(Guid uuid, CancellationToken cancellationToken = default)
+    {
+        var eventInfo = await _eventInfoService.GetEventInfoByUuidAsync(uuid, cancellationToken);
+        await _eventManagementService.DeleteEventAsync(eventInfo.EventInfoId);
+        return Ok();
+    }
+
+    private async Task<ActionResult<EventDto>> UpdateAsync(
+        EventInfo eventInfo,
+        EventFormDto dto,
+        CancellationToken cancellationToken)
+    {
+        if (eventInfo.Archived)
+        {
+            _logger.LogWarning("Event {Uuid} is archived and cannot be updated.", eventInfo.Uuid);
+            return NotFound();
+        }
+
+        dto.CopyTo(eventInfo);
+        await _eventManagementService.UpdateEventAsync(eventInfo, cancellationToken);
+        return Ok(new EventDto(eventInfo));
+    }
+
+    private async Task<IActionResult> PatchAsync(
+        EventInfo entity,
+        EventPatchDto patchDto,
+        CancellationToken cancellationToken)
+    {
+        patchDto.ApplyTo(entity);
+        await _eventManagementService.UpdateEventAsync(entity, cancellationToken);
+        return Ok(new EventDto(entity));
     }
 }

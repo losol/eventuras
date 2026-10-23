@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -16,6 +17,15 @@ public static class EventInfoRetrievalServiceExtensions
         int id,
         CancellationToken cancellationToken = default) =>
         service.GetEventInfoByIdAsync(id, null, cancellationToken);
+
+    /// <summary>
+    ///     Shortcut for <see cref="IEventInfoRetrievalService.GetEventInfoByUuidAsync" />.
+    /// </summary>
+    public static Task<EventInfo> GetEventInfoByUuidAsync(
+        this IEventInfoRetrievalService service,
+        Guid uuid,
+        CancellationToken cancellationToken = default) =>
+        service.GetEventInfoByUuidAsync(uuid, null, cancellationToken);
 
     public static async Task<List<EventInfo>> GetAllEventsAsync(
         this IEventInfoRetrievalService service,

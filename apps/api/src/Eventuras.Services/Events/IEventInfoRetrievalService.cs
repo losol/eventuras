@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Domain;
@@ -14,6 +15,14 @@ public interface IEventInfoRetrievalService
     /// <exception cref="Exceptions.NotFoundException">No event found.</exception>
     /// <exception cref="Exceptions.NotAccessibleException">Event is not accessible in the context of the current org.</exception>
     Task<EventInfo> GetEventInfoByIdAsync(int id,
+        EventInfoRetrievalOptions options = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     Gets event info by its UUID, with the same checks as <see cref="GetEventInfoByIdAsync" />.
+    /// </summary>
+    /// <exception cref="Exceptions.NotFoundException">No event found.</exception>
+    Task<EventInfo> GetEventInfoByUuidAsync(Guid uuid,
         EventInfoRetrievalOptions options = null,
         CancellationToken cancellationToken = default);
 
