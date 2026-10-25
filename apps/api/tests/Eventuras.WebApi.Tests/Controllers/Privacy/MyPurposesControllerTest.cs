@@ -65,12 +65,14 @@ public class MyPurposesControllerTest : IClassFixture<CustomWebApiApplicationFac
         string code,
         ProcessingPurpose.PurposeKind kind = ProcessingPurpose.PurposeKind.Reservation,
         int version = 1,
-        Instant? retiredAt = null) => new()
+        Instant? retiredAt = null,
+        ProcessingPurpose.PurposeScope purposeScope = ProcessingPurpose.PurposeScope.Organization) => new()
         {
             OrganizationUuid = org.Uuid,
             Code = code,
             Version = version,
             Kind = kind,
+            Scope = purposeScope,
             Name = code,
             Text = $"Text for {code}",
             RetiredAt = retiredAt
@@ -98,7 +100,9 @@ public class MyPurposesControllerTest : IClassFixture<CustomWebApiApplicationFac
         await SeedAsync(
             Purpose(org.Entity, PurposeCodes.MarketingNewsletter),
             Purpose(org.Entity, "photos", ProcessingPurpose.PurposeKind.Consent),
-            Purpose(org.Entity, "retired", retiredAt: Instant.FromUtc(2026, 10, 1, 12, 0)));
+            Purpose(org.Entity, "retired", retiredAt: Instant.FromUtc(2026, 10, 1, 12, 0)),
+            Purpose(org.Entity, "registration.dietary", ProcessingPurpose.PurposeKind.Consent,
+                purposeScope: ProcessingPurpose.PurposeScope.Registration));
 
         var client = _factory.CreateClient().AuthenticatedAs(user.Entity);
 
@@ -225,6 +229,21 @@ public class MyPurposesControllerTest : IClassFixture<CustomWebApiApplicationFac
 
         var response = await _factory.CreateClient().AuthenticatedAs(user.Entity)
             .PutAsJsonAsync(Url(org.Entity, PurposeCodes.MarketingNewsletter), new { });
+
+        response.CheckBadRequest();
+    }
+
+    [Fact]
+    public async Task Decide_Should_Reject_A_Registration_Scoped_Purpose()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var user = await scope.CreateUserAsync();
+        using var org = await scope.CreateOrganizationAsync();
+        await SeedAsync(Purpose(org.Entity, "registration.dietary", ProcessingPurpose.PurposeKind.Consent,
+            purposeScope: ProcessingPurpose.PurposeScope.Registration));
+
+        var response = await _factory.CreateClient().AuthenticatedAs(user.Entity)
+            .PutAsJsonAsync(Url(org.Entity, "registration.dietary"), new { decision = "Allowed" });
 
         response.CheckBadRequest();
     }

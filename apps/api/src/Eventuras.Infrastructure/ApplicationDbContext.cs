@@ -207,6 +207,11 @@ public class ApplicationDbContext : DbContext
             entity.ToTable(t => t.HasCheckConstraint(
                 "CK_ProcessingPurposes_Kind",
                 $@"""{nameof(ProcessingPurpose.Kind)}"" IN ({(int)ProcessingPurpose.PurposeKind.Consent}, {(int)ProcessingPurpose.PurposeKind.Reservation})"));
+
+            // Same reasoning as Kind: refuse an unset (0) scope.
+            entity.ToTable(t => t.HasCheckConstraint(
+                "CK_ProcessingPurposes_Scope",
+                $@"""{nameof(ProcessingPurpose.Scope)}"" IN ({(int)ProcessingPurpose.PurposeScope.Organization}, {(int)ProcessingPurpose.PurposeScope.Registration})"));
         });
 
         builder.Entity<PurposeDecision>(entity =>

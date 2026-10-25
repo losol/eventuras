@@ -18,6 +18,7 @@ public class ProcessingPurposeDto
         Code = purpose.Code;
         Version = purpose.Version;
         Kind = purpose.Kind;
+        Scope = purpose.Scope;
         Name = purpose.Name;
         Text = purpose.Text;
         RequiresReconsent = purpose.RequiresReconsent;
@@ -32,6 +33,8 @@ public class ProcessingPurposeDto
     public int Version { get; set; }
 
     public ProcessingPurpose.PurposeKind Kind { get; set; }
+
+    public ProcessingPurpose.PurposeScope Scope { get; set; }
 
     public string Name { get; set; } = string.Empty;
 

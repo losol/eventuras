@@ -2712,3 +2712,28 @@ BEGIN
 END $EF$;
 COMMIT;
 
+START TRANSACTION;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20261025220208_AddScopeToProcessingPurposes') THEN
+    ALTER TABLE "ProcessingPurposes" ADD "Scope" integer NOT NULL DEFAULT 1;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20261025220208_AddScopeToProcessingPurposes') THEN
+    ALTER TABLE "ProcessingPurposes" ADD CONSTRAINT "CK_ProcessingPurposes_Scope" CHECK ("Scope" IN (1, 2));
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20261025220208_AddScopeToProcessingPurposes') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20261025220208_AddScopeToProcessingPurposes', '10.0.11');
+    END IF;
+END $EF$;
+COMMIT;
+

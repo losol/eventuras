@@ -671,6 +671,7 @@ export type ProcessingPurposeDto = {
     code?: string;
     version?: number;
     kind?: PurposeKind;
+    scope?: PurposeScope;
     name?: string;
     text?: string;
     requiresReconsent?: boolean;
@@ -687,6 +688,11 @@ export type ProcessingPurposeFormDto = {
      * Consent (denied until the user says yes) or Reservation (allowed until the user says no).
      */
     kind: null | PurposeKind;
+    /**
+     * Organization (one decision for everything, offered on the profile page) or
+     * Registration (decided for each registration). Defaults to Organization.
+     */
+    scope?: null | PurposeScope;
     name: string;
     /**
      * The text users are shown and decide on.
@@ -798,6 +804,10 @@ export type PurposeDecisionFormDto = {
 export const PurposeKind = { CONSENT: 'Consent', RESERVATION: 'Reservation' } as const;
 
 export type PurposeKind = typeof PurposeKind[keyof typeof PurposeKind];
+
+export const PurposeScope = { ORGANIZATION: 'Organization', REGISTRATION: 'Registration' } as const;
+
+export type PurposeScope = typeof PurposeScope[keyof typeof PurposeScope];
 
 export const PurposeStatus = {
     UNANSWERED: 'Unanswered',

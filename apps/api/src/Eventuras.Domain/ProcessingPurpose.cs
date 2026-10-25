@@ -24,6 +24,11 @@ public class ProcessingPurpose
 
     public PurposeKind Kind { get; init; }
 
+    // Whether the user decides once for the whole organization, or separately for
+    // each registration (e.g. sharing dietary requirements with an event's hotel).
+    // Every version of a purpose is expected to keep the same scope.
+    public PurposeScope Scope { get; init; } = PurposeScope.Organization;
+
     [Required]
     [MaxLength(200)]
     public string Name { get; init; } = string.Empty;
@@ -52,5 +57,14 @@ public class ProcessingPurpose
 
         // Allowed unless the user has said no.
         Reservation = 2,
+    }
+
+    public enum PurposeScope
+    {
+        // One decision covers everything the user does with the organization.
+        Organization = 1,
+
+        // Decided for each registration; the profile page does not offer it.
+        Registration = 2,
     }
 }

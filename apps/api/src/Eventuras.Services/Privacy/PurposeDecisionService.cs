@@ -66,7 +66,8 @@ internal class PurposeDecisionService : IPurposeDecisionService
             .GroupBy(v => v.Code)
             .Select(g => (Versions: (IReadOnlyCollection<ProcessingPurpose>)g.ToList(),
                 Current: PurposeEvaluation.CurrentVersion(g.ToList())))
-            .Where(p => p.Current is not null)
+            // A registration-scoped purpose is decided per registration, not here.
+            .Where(p => p.Current is { Scope: ProcessingPurpose.PurposeScope.Organization })
             .OrderBy(p => p.Current!.Code, StringComparer.Ordinal)
             .Select(p =>
             {
@@ -125,6 +126,12 @@ internal class PurposeDecisionService : IPurposeDecisionService
         // Unknown and retired purposes alike: there is nothing current to decide on.
         var current = PurposeEvaluation.CurrentVersion(versions)
                       ?? throw new NotFoundException($"The organization has no current purpose '{code}'.");
+
+        if (current.Scope != ProcessingPurpose.PurposeScope.Organization)
+        {
+            throw new ArgumentServiceException(
+                $"Purpose '{code}' is decided for each registration, not for the whole organization.");
+        }
 
         var entity = await _dbContext.PurposeDecisions
             .SingleOrDefaultAsync(d => d.UserId == userId

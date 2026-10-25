@@ -925,6 +925,9 @@ namespace Eventuras.Infrastructure.Migrations
                     b.Property<Instant?>("RetiredAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<int>("Scope")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasColumnType("text");
@@ -944,6 +947,8 @@ namespace Eventuras.Infrastructure.Migrations
                     b.ToTable("ProcessingPurposes", t =>
                         {
                             t.HasCheckConstraint("CK_ProcessingPurposes_Kind", "\"Kind\" IN (1, 2)");
+
+                            t.HasCheckConstraint("CK_ProcessingPurposes_Scope", "\"Scope\" IN (1, 2)");
 
                             t.HasCheckConstraint("CK_ProcessingPurposes_SpecialCategoryIsOptIn", "NOT \"HasSpecialCategoryData\" OR \"Kind\" = 1");
                         });

@@ -42,4 +42,5 @@ public sealed record NewProcessingPurpose(
     ProcessingPurpose.PurposeKind Kind,
     string Name,
     string Text,
-    bool HasSpecialCategoryData);
+    bool HasSpecialCategoryData,
+    ProcessingPurpose.PurposeScope Scope = ProcessingPurpose.PurposeScope.Organization);

@@ -31,7 +31,7 @@ public class MyPurposesController : ControllerBase
 
     [HttpGet]
     [EndpointSummary("List the current organization's processing purposes with my decisions")]
-    [EndpointDescription("Returns each current processing purpose in the current organization (resolved from the Eventuras-Org-Id header, else the orgId query parameter, else the request hostname) with the signed-in user's organization-wide decision and what it amounts to: mayProcess is the value to enforce, mustAsk says the user should be asked. Ordered by code.")]
+    [EndpointDescription("Returns each current organization-scoped processing purpose in the current organization (purposes decided per registration are left out) (resolved from the Eventuras-Org-Id header, else the orgId query parameter, else the request hostname) with the signed-in user's organization-wide decision and what it amounts to: mayProcess is the value to enforce, mustAsk says the user should be asked. Ordered by code.")]
     [ProducesResponseType(typeof(MyPurposeDto[]), 200)]
     [ProducesResponseType(400)]
     [ProducesResponseType(403)]
@@ -47,7 +47,7 @@ public class MyPurposesController : ControllerBase
 
     [HttpPut("{code}")]
     [EndpointSummary("Record my decision on a processing purpose")]
-    [EndpointDescription("Records the signed-in user's organization-wide decision on the current version of a purpose in the current organization: Denied reserves against a reservation or declines a consent, Allowed accepts. Every change is logged as a business event on the user. 404 when the organization has no current purpose with the code.")]
+    [EndpointDescription("Records the signed-in user's organization-wide decision on the current version of a purpose in the current organization: Denied reserves against a reservation or declines a consent, Allowed accepts. Every change is logged as a business event on the user. 404 when the organization has no current purpose with the code; 400 when the purpose is decided per registration.")]
     [ProducesResponseType(typeof(MyPurposeDto), 200)]
     [ProducesResponseType(400)]
     [ProducesResponseType(403)]
