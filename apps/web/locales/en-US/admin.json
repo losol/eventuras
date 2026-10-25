@@ -258,6 +258,36 @@
       "description": "Status and configuration for this installation.",
       "title": "System"
     },
+    "purposes": {
+      "create": {
+        "button": "New purpose",
+        "cancel": "Cancel",
+        "code": "Code",
+        "codeInvalid": "Use lowercase letters and digits, joined by dots or hyphens, e.g. marketing.newsletter.",
+        "consentHelp": "Not allowed until the user says yes.",
+        "error": "Could not create the purpose.",
+        "kind": "Kind",
+        "name": "Name",
+        "reservationHelp": "Allowed until the user reserves themselves, e.g. marketing to existing customers.",
+        "specialCategory": "Special category personal data",
+        "specialCategoryHelp": "Such as health or dietary requirements (GDPR art. 9). Requires consent.",
+        "submit": "Create",
+        "submitting": "Creating…",
+        "success": "The purpose was created",
+        "text": "Text shown to users",
+        "title": "New processing purpose"
+      },
+      "description": "The processing purposes users see on their profile page. A consent is off until the user says yes; a reservation is on until the user says no.",
+      "empty": "No purposes have been created yet.",
+      "error": "Could not load the processing purposes.",
+      "kind": {
+        "consent": "Consent",
+        "reservation": "Reservation"
+      },
+      "noOrganization": "No organization is configured (ORGANIZATION_ID), so there are no purposes to show.",
+      "specialCategory": "Special category",
+      "title": "Consents and reservations"
+    },
     "settings": {
       "description": "Registered settings for this organization. A secret's value never leaves the server; the API reports only whether one is set.",
       "empty": "No settings registered.",

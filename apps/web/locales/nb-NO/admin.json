@@ -258,6 +258,36 @@
       "description": "Status og konfigurasjon for denne installasjonen.",
       "title": "System"
     },
+    "purposes": {
+      "create": {
+        "button": "Nytt formål",
+        "cancel": "Avbryt",
+        "code": "Kode",
+        "codeInvalid": "Bruk små bokstaver og tall, skilt med punktum eller bindestrek, f.eks. marketing.newsletter.",
+        "consentHelp": "Ikke tillatt før brukeren sier ja.",
+        "error": "Kunne ikke opprette formålet.",
+        "kind": "Type",
+        "name": "Navn",
+        "reservationHelp": "Tillatt til brukeren reserverer seg, f.eks. markedsføring til eksisterende kunder.",
+        "specialCategory": "Særlige kategorier personopplysninger",
+        "specialCategoryHelp": "For eksempel helse eller kostbehov (GDPR art. 9). Krever samtykke.",
+        "submit": "Opprett",
+        "submitting": "Oppretter…",
+        "success": "Formålet er opprettet",
+        "text": "Tekst brukeren ser",
+        "title": "Nytt behandlingsformål"
+      },
+      "description": "Behandlingsformålene brukerne ser på profilsiden sin. Et samtykke er av til brukeren sier ja; en reservasjon er på til brukeren sier nei.",
+      "empty": "Ingen formål er opprettet ennå.",
+      "error": "Kunne ikke laste behandlingsformålene.",
+      "kind": {
+        "consent": "Samtykke",
+        "reservation": "Reservasjon"
+      },
+      "noOrganization": "Ingen organisasjon er konfigurert (ORGANIZATION_ID), så det finnes ingen formål å vise.",
+      "specialCategory": "Særlige kategorier",
+      "title": "Samtykker og reservasjoner"
+    },
     "settings": {
       "description": "Registrerte innstillinger for denne organisasjonen. En hemmelighet forlater aldri serveren; API-et melder bare om den er satt.",
       "empty": "Ingen innstillinger registrert.",
