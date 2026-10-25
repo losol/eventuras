@@ -1,5 +1,16 @@
 # @eventuras/web
 
+## 3.13.0
+
+### Minor Changes
+
+- d5f2b3b: The admin system page lists the organization's consents and reservations (processing purposes) for every admin, and lets a system admin create one: code, name, the text users decide on, consent or reservation, whether it applies to the whole organization or to each registration, and whether it covers special category data, which forces a consent.
+
+### Patch Changes
+
+- Updated dependencies [6bbfc26]
+  - @eventuras/event-sdk@3.9.0
+
 ## 3.12.0
 
 ### Minor Changes
