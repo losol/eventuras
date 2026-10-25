@@ -40,31 +40,25 @@ const emptyForm: Form = {
 
 /** Button + drawer to create a processing purpose (SystemAdmin only). */
 export const CreateProcessingPurpose = () => {
-  const t = useTranslations();
+  const t = useTranslations('admin.system.purposes');
   const router = useRouter();
   const toast = useToast();
 
-  const [isOpen, setIsOpen] = useState(false);
+  // Closed, open, or open with a save in flight; the drawer cannot close while saving.
+  const [status, setStatus] = useState<'closed' | 'open' | 'saving'>('closed');
   const [form, setForm] = useState(emptyForm);
-  const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const isSaving = status === 'saving';
 
-  const closeDrawer = () => {
+  const reset = () => {
     setForm(emptyForm);
     setError(null);
-    setIsSaving(false);
-    setIsOpen(false);
-  };
-
-  // Blocked while saving, so a request in flight cannot report into a closed drawer.
-  const requestClose = () => {
-    if (isSaving) return;
-    closeDrawer();
+    setStatus('closed');
   };
 
   const set = (patch: Partial<Form>) => {
     setForm(prev => ({ ...prev, ...patch }));
-    if (error) setError(null);
+    setError(null);
   };
 
   const codeIsValid = CODE_PATTERN.test(form.code.trim());
@@ -72,36 +66,35 @@ export const CreateProcessingPurpose = () => {
 
   const handleSave = async () => {
     if (!canSave) return;
-    setIsSaving(true);
+    setStatus('saving');
     setError(null);
     try {
       const result = await createProcessingPurpose(form);
-      if (!result.success) {
-        setError(result.error.message || t('admin.system.purposes.create.error'));
+      if (result.success) {
+        toast.success(t('create.success'));
+        reset();
+        router.refresh();
         return;
       }
-      toast.success(t('admin.system.purposes.create.success'));
-      closeDrawer();
-      router.refresh();
+      setError(result.error.message || t('create.error'));
     } catch (err) {
       logger.error({ error: err, code: form.code }, 'Failed to create processing purpose');
-      setError(t('admin.system.purposes.create.error'));
-    } finally {
-      setIsSaving(false);
+      setError(t('create.error'));
     }
+    setStatus('open');
   };
 
   return (
     <>
-      <Button onClick={() => setIsOpen(true)}>{t('admin.system.purposes.create.button')}</Button>
+      <Button onClick={() => setStatus('open')}>{t('create.button')}</Button>
 
-      <Drawer isOpen={isOpen} onClose={requestClose}>
-        <Drawer.Header as="h2">{t('admin.system.purposes.create.title')}</Drawer.Header>
+      <Drawer isOpen={status !== 'closed'} onClose={() => !isSaving && reset()}>
+        <Drawer.Header as="h2">{t('create.title')}</Drawer.Header>
         <Drawer.Body>
           <div className="space-y-4">
             <TextField
               name="code"
-              label={t('admin.system.purposes.create.code')}
+              label={t('create.code')}
               placeholder="marketing.newsletter"
               value={form.code}
               onChange={e => set({ code: e.target.value })}
@@ -111,12 +104,12 @@ export const CreateProcessingPurpose = () => {
             />
             {form.code.trim() !== '' && !codeIsValid && (
               <p className="text-sm" role="alert">
-                {t('admin.system.purposes.create.codeInvalid')}
+                {t('create.codeInvalid')}
               </p>
             )}
             <TextField
               name="name"
-              label={t('admin.system.purposes.create.name')}
+              label={t('create.name')}
               value={form.name}
               onChange={e => set({ name: e.target.value })}
               disabled={isSaving}
@@ -124,7 +117,7 @@ export const CreateProcessingPurpose = () => {
             />
             <TextField
               name="text"
-              label={t('admin.system.purposes.create.text')}
+              label={t('create.text')}
               value={form.text}
               onChange={e => set({ text: e.target.value })}
               disabled={isSaving}
@@ -143,27 +136,27 @@ export const CreateProcessingPurpose = () => {
                     : { hasSpecialCategoryData: false }
                 )
               }
-              description={t('admin.system.purposes.create.specialCategoryHelp')}
+              description={t('create.specialCategoryHelp')}
             >
-              {t('admin.system.purposes.create.specialCategory')}
+              {t('create.specialCategory')}
             </Switch>
             <RadioGroup<PurposeKind>
               name="kind"
-              label={t('admin.system.purposes.create.kind')}
+              label={t('create.kind')}
               value={form.kind}
               onChange={kind => set({ kind })}
               disabled={isSaving}
               options={[
                 {
                   value: PurposeKind.RESERVATION,
-                  label: t('admin.system.purposes.kind.reservation'),
-                  description: t('admin.system.purposes.create.reservationHelp'),
+                  label: t('kind.reservation'),
+                  description: t('create.reservationHelp'),
                   disabled: form.hasSpecialCategoryData,
                 },
                 {
                   value: PurposeKind.CONSENT,
-                  label: t('admin.system.purposes.kind.consent'),
-                  description: t('admin.system.purposes.create.consentHelp'),
+                  label: t('kind.consent'),
+                  description: t('create.consentHelp'),
                 },
               ]}
             />
@@ -176,13 +169,11 @@ export const CreateProcessingPurpose = () => {
         </Drawer.Body>
         <Drawer.Footer>
           <div className="flex gap-2 justify-end">
-            <Button variant="secondary" onClick={requestClose} disabled={isSaving}>
-              {t('admin.system.purposes.create.cancel')}
+            <Button variant="secondary" onClick={reset} disabled={isSaving}>
+              {t('create.cancel')}
             </Button>
             <Button onClick={handleSave} disabled={isSaving || !canSave}>
-              {isSaving
-                ? t('admin.system.purposes.create.submitting')
-                : t('admin.system.purposes.create.submit')}
+              {isSaving ? t('create.submitting') : t('create.submit')}
             </Button>
           </div>
         </Drawer.Footer>
