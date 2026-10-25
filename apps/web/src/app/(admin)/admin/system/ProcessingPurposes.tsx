@@ -15,13 +15,13 @@ import { CreateProcessingPurpose } from './CreateProcessingPurpose';
  * them; only a system admin can create one.
  */
 export const ProcessingPurposes = async ({ canCreate }: { canCreate: boolean }) => {
-  const t = await getTranslations();
+  const t = await getTranslations('admin.system.purposes');
 
   let organizationId: number;
   try {
     organizationId = getOrganizationId();
   } catch {
-    return <Panel status="warning">{t('admin.system.purposes.noOrganization')}</Panel>;
+    return <Panel status="warning">{t('noOrganization')}</Panel>;
   }
 
   const response = await getV3ProcessingPurposes({
@@ -29,13 +29,13 @@ export const ProcessingPurposes = async ({ canCreate }: { canCreate: boolean }) 
   });
 
   if (response.error || !response.data) {
-    return <Panel status="error">{t('admin.system.purposes.error')}</Panel>;
+    return <Panel status="error">{t('error')}</Panel>;
   }
 
   return (
     <>
       {response.data.length === 0 ? (
-        <Panel status="info">{t('admin.system.purposes.empty')}</Panel>
+        <Panel status="info">{t('empty')}</Panel>
       ) : (
         <DescriptionList>
           {response.data.map(purpose => (
@@ -52,13 +52,11 @@ export const ProcessingPurposes = async ({ canCreate }: { canCreate: boolean }) 
             >
               <span className="flex flex-wrap items-center gap-2">
                 <Badge variant="subtle" status="info">
-                  {purpose.kind === PurposeKind.CONSENT
-                    ? t('admin.system.purposes.kind.consent')
-                    : t('admin.system.purposes.kind.reservation')}
+                  {purpose.kind === PurposeKind.CONSENT ? t('kind.consent') : t('kind.reservation')}
                 </Badge>
                 {purpose.hasSpecialCategoryData && (
                   <Badge variant="subtle" status="warning">
-                    {t('admin.system.purposes.specialCategory')}
+                    {t('specialCategory')}
                   </Badge>
                 )}
               </span>
