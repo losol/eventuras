@@ -25,4 +25,9 @@ export type {
 } from '@eventuras/event-sdk';
 
 // Re-export enums (these have runtime values)
-export { PurposeKind, RegistrationStatus, RegistrationType } from '@eventuras/event-sdk';
+export {
+  PurposeKind,
+  PurposeScope,
+  RegistrationStatus,
+  RegistrationType,
+} from '@eventuras/event-sdk';

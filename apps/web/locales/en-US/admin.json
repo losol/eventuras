@@ -268,7 +268,10 @@
         "error": "Could not create the purpose.",
         "kind": "Kind",
         "name": "Name",
+        "organizationHelp": "One choice covering everything the user does with us. Shown on the profile page.",
+        "registrationHelp": "The user decides for each registration, e.g. sharing dietary requirements with the hotel.",
         "reservationHelp": "Allowed until the user reserves themselves, e.g. marketing to existing customers.",
+        "scope": "Applies to",
         "specialCategory": "Special category personal data",
         "specialCategoryHelp": "Such as health or dietary requirements (GDPR art. 9). Requires consent.",
         "submit": "Create",
@@ -285,6 +288,10 @@
         "reservation": "Reservation"
       },
       "noOrganization": "No organization is configured (ORGANIZATION_ID), so there are no purposes to show.",
+      "scope": {
+        "organization": "Whole organization",
+        "registration": "Per registration"
+      },
       "specialCategory": "Special category",
       "title": "Consents and reservations"
     },

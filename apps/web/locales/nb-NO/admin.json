@@ -268,7 +268,10 @@
         "error": "Kunne ikke opprette formålet.",
         "kind": "Type",
         "name": "Navn",
+        "organizationHelp": "Ett valg som gjelder alt brukeren gjør hos oss. Vises på profilsiden.",
+        "registrationHelp": "Brukeren velger for hver påmelding, f.eks. deling av kostbehov med hotellet.",
         "reservationHelp": "Tillatt til brukeren reserverer seg, f.eks. markedsføring til eksisterende kunder.",
+        "scope": "Gjelder",
         "specialCategory": "Særlige kategorier personopplysninger",
         "specialCategoryHelp": "For eksempel helse eller kostbehov (GDPR art. 9). Krever samtykke.",
         "submit": "Opprett",
@@ -285,6 +288,10 @@
         "reservation": "Reservasjon"
       },
       "noOrganization": "Ingen organisasjon er konfigurert (ORGANIZATION_ID), så det finnes ingen formål å vise.",
+      "scope": {
+        "organization": "Hele organisasjonen",
+        "registration": "Per påmelding"
+      },
       "specialCategory": "Særlige kategorier",
       "title": "Samtykker og reservasjoner"
     },

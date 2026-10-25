@@ -4,7 +4,7 @@ import { Badge } from '@eventuras/ratio-ui/core/Badge';
 import { DescriptionList } from '@eventuras/ratio-ui/core/DescriptionList';
 import { Panel } from '@eventuras/ratio-ui/core/Panel';
 
-import { getV3ProcessingPurposes, PurposeKind } from '@/lib/eventuras-sdk';
+import { getV3ProcessingPurposes, PurposeKind, PurposeScope } from '@/lib/eventuras-sdk';
 import { getOrganizationId } from '@/utils/organization';
 
 import { CreateProcessingPurpose } from './CreateProcessingPurpose';
@@ -54,6 +54,11 @@ export const ProcessingPurposes = async ({ canCreate }: { canCreate: boolean }) 
                 <Badge variant="subtle" status="info">
                   {purpose.kind === PurposeKind.CONSENT ? t('kind.consent') : t('kind.reservation')}
                 </Badge>
+                {purpose.scope === PurposeScope.REGISTRATION && (
+                  <Badge variant="subtle" status="neutral">
+                    {t('scope.registration')}
+                  </Badge>
+                )}
                 {purpose.hasSpecialCategoryData && (
                   <Badge variant="subtle" status="warning">
                     {t('specialCategory')}
