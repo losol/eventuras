@@ -10,7 +10,7 @@ import { RadioGroup, Switch, TextField } from '@eventuras/ratio-ui/forms';
 import { Drawer } from '@eventuras/ratio-ui/layout/Drawer';
 import { useToast } from '@eventuras/ratio-ui/toast';
 
-import { PurposeKind } from '@/lib/eventuras-types';
+import { PurposeKind, PurposeScope } from '@/lib/eventuras-types';
 
 import { createProcessingPurpose } from './actions';
 
@@ -27,6 +27,7 @@ type Form = {
   name: string;
   text: string;
   kind: PurposeKind;
+  scope: PurposeScope;
   hasSpecialCategoryData: boolean;
 };
 
@@ -35,6 +36,7 @@ const emptyForm: Form = {
   name: '',
   text: '',
   kind: PurposeKind.RESERVATION,
+  scope: PurposeScope.ORGANIZATION,
   hasSpecialCategoryData: false,
 };
 
@@ -124,6 +126,25 @@ export const CreateProcessingPurpose = () => {
               multiline
               rows={3}
               required
+            />
+            <RadioGroup<PurposeScope>
+              name="scope"
+              label={t('create.scope')}
+              value={form.scope}
+              onChange={scope => set({ scope })}
+              disabled={isSaving}
+              options={[
+                {
+                  value: PurposeScope.ORGANIZATION,
+                  label: t('scope.organization'),
+                  description: t('create.organizationHelp'),
+                },
+                {
+                  value: PurposeScope.REGISTRATION,
+                  label: t('scope.registration'),
+                  description: t('create.registrationHelp'),
+                },
+              ]}
             />
             <Switch
               isSelected={form.hasSpecialCategoryData}

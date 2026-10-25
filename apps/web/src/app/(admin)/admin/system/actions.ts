@@ -14,6 +14,7 @@ import {
   postV3ProcessingPurposes,
   type ProcessingPurposeDto,
   PurposeKind,
+  PurposeScope,
 } from '@/lib/eventuras-sdk';
 import { isCurrentUserSystemAdmin } from '@/utils/auth/checkAuthorization';
 import { getSentryUserId } from '@/utils/auth/getSentryUserId';
@@ -82,6 +83,7 @@ export interface CreateProcessingPurposeInput {
   name: string;
   text: string;
   kind: PurposeKind;
+  scope: PurposeScope;
   hasSpecialCategoryData: boolean;
 }
 
@@ -102,6 +104,7 @@ export async function createProcessingPurpose(
         name: input.name.trim(),
         text: input.text.trim(),
         kind: input.kind,
+        scope: input.scope,
         hasSpecialCategoryData: input.hasSpecialCategoryData,
       },
     });
