@@ -10,6 +10,7 @@ import { isCurrentUserSystemAdmin } from '@/utils/auth/checkAuthorization';
 import { ErrorTestButton } from './ErrorTestButton';
 import { HealthDiagnostics } from './HealthDiagnostics';
 import { OrganizationSettings } from './OrganizationSettings';
+import { ProcessingPurposes } from './ProcessingPurposes';
 import { SentryDiagnostics } from './SentryDiagnostics';
 import { VersionInfo } from './VersionInfo';
 
@@ -66,6 +67,13 @@ const AdminSystemPage = async () => {
 
       <SystemSection title={t('admin.system.version.title')}>
         <VersionInfo />
+      </SystemSection>
+
+      <SystemSection
+        title={t('admin.system.purposes.title')}
+        description={t('admin.system.purposes.description')}
+      >
+        <ProcessingPurposes canCreate={systemAdmin} />
       </SystemSection>
 
       {systemAdmin && (

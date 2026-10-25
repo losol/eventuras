@@ -1,5 +1,6 @@
 'use server';
 
+import { formatApiError } from '@eventuras/core/errors';
 import {
   actionError,
   actionSuccess,
@@ -8,9 +9,16 @@ import {
 import { Logger } from '@eventuras/logger';
 
 import { appConfig } from '@/config.server';
+import { readCorrelationIdFromResponse } from '@/lib/correlation-id';
+import {
+  postV3ProcessingPurposes,
+  type ProcessingPurposeDto,
+  PurposeKind,
+} from '@/lib/eventuras-sdk';
 import { isCurrentUserSystemAdmin } from '@/utils/auth/checkAuthorization';
 import { getSentryUserId } from '@/utils/auth/getSentryUserId';
 import { getAccessToken } from '@/utils/getAccesstoken';
+import { getOrganizationId } from '@/utils/organization';
 
 const logger = Logger.create({
   namespace: 'web:system',
@@ -66,5 +74,57 @@ export async function triggerErrorTest(): Promise<ServerActionResult<{ status: n
   } catch (error) {
     logger.error({ error }, 'Failed to trigger error test');
     return actionError('Failed to reach API');
+  }
+}
+
+export interface CreateProcessingPurposeInput {
+  code: string;
+  name: string;
+  text: string;
+  kind: PurposeKind;
+  hasSpecialCategoryData: boolean;
+}
+
+/** Create a processing purpose in the current organization. Requires SystemAdmin on the API. */
+export async function createProcessingPurpose(
+  input: CreateProcessingPurposeInput
+): Promise<ServerActionResult<ProcessingPurposeDto>> {
+  if (!(await isCurrentUserSystemAdmin())) {
+    logger.warn('Unauthorized call to createProcessingPurpose');
+    return actionError('Forbidden');
+  }
+
+  try {
+    const response = await postV3ProcessingPurposes({
+      headers: { 'Eventuras-Org-Id': getOrganizationId() },
+      body: {
+        code: input.code.trim(),
+        name: input.name.trim(),
+        text: input.text.trim(),
+        kind: input.kind,
+        hasSpecialCategoryData: input.hasSpecialCategoryData,
+      },
+    });
+
+    if (!response.data) {
+      logger.error(
+        { code: input.code, error: response.error },
+        'Failed to create processing purpose'
+      );
+      return actionError(
+        formatApiError(
+          response.error,
+          'Failed to create processing purpose',
+          response.response?.status,
+          response.response ? readCorrelationIdFromResponse(response.response) : undefined
+        )
+      );
+    }
+
+    logger.info({ code: response.data.code }, 'Processing purpose created');
+    return actionSuccess(response.data);
+  } catch (error) {
+    logger.error({ code: input.code, error }, 'Failed to create processing purpose');
+    return actionError('Failed to create processing purpose');
   }
 }
