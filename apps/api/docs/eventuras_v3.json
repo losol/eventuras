@@ -1373,7 +1373,7 @@
           "MyPurposes"
         ],
         "summary": "List the current organization's processing purposes with my decisions",
-        "description": "Returns each current processing purpose in the current organization (resolved from the Eventuras-Org-Id header, else the orgId query parameter, else the request hostname) with the signed-in user's organization-wide decision and what it amounts to: mayProcess is the value to enforce, mustAsk says the user should be asked. Ordered by code.",
+        "description": "Returns each current organization-scoped processing purpose in the current organization (purposes decided per registration are left out) (resolved from the Eventuras-Org-Id header, else the orgId query parameter, else the request hostname) with the signed-in user's organization-wide decision and what it amounts to: mayProcess is the value to enforce, mustAsk says the user should be asked. Ordered by code.",
         "parameters": [
           {
             "name": "Eventuras-Org-Id",
@@ -1428,7 +1428,7 @@
           "MyPurposes"
         ],
         "summary": "Record my decision on a processing purpose",
-        "description": "Records the signed-in user's organization-wide decision on the current version of a purpose in the current organization: Denied reserves against a reservation or declines a consent, Allowed accepts. Every change is logged as a business event on the user. 404 when the organization has no current purpose with the code.",
+        "description": "Records the signed-in user's organization-wide decision on the current version of a purpose in the current organization: Denied reserves against a reservation or declines a consent, Allowed accepts. Every change is logged as a business event on the user. 404 when the organization has no current purpose with the code; 400 when the purpose is decided per registration.",
         "parameters": [
           {
             "name": "code",
@@ -7567,6 +7567,9 @@
           "kind": {
             "$ref": "#/components/schemas/PurposeKind"
           },
+          "scope": {
+            "$ref": "#/components/schemas/PurposeScope"
+          },
           "name": {
             "type": "string"
           },
@@ -7609,6 +7612,17 @@
               }
             ],
             "description": "Consent (denied until the user says yes) or Reservation (allowed until the user says no)."
+          },
+          "scope": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/PurposeScope"
+              }
+            ],
+            "description": "Organization (one decision for everything, offered on the profile page) or\nRegistration (decided for each registration). Defaults to Organization."
           },
           "name": {
             "maxLength": 200,
@@ -7973,6 +7987,12 @@
         "enum": [
           "Consent",
           "Reservation"
+        ]
+      },
+      "PurposeScope": {
+        "enum": [
+          "Organization",
+          "Registration"
         ]
       },
       "PurposeStatus": {

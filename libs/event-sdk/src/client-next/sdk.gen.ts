@@ -131,14 +131,14 @@ export const getV3ProductsByProductIdSummary = <ThrowOnError extends boolean = f
 /**
  * List the current organization's processing purposes with my decisions
  *
- * Returns each current processing purpose in the current organization (resolved from the Eventuras-Org-Id header, else the orgId query parameter, else the request hostname) with the signed-in user's organization-wide decision and what it amounts to: mayProcess is the value to enforce, mustAsk says the user should be asked. Ordered by code.
+ * Returns each current organization-scoped processing purpose in the current organization (purposes decided per registration are left out) (resolved from the Eventuras-Org-Id header, else the orgId query parameter, else the request hostname) with the signed-in user's organization-wide decision and what it amounts to: mayProcess is the value to enforce, mustAsk says the user should be asked. Ordered by code.
  */
 export const getV3UserprofilePurposes = <ThrowOnError extends boolean = false>(options?: Options<GetV3UserprofilePurposesData, ThrowOnError>): RequestResult<GetV3UserprofilePurposesResponses, GetV3UserprofilePurposesErrors, ThrowOnError> => (options?.client ?? client).get<GetV3UserprofilePurposesResponses, GetV3UserprofilePurposesErrors, ThrowOnError>({ url: '/v3/userprofile/purposes', ...options });
 
 /**
  * Record my decision on a processing purpose
  *
- * Records the signed-in user's organization-wide decision on the current version of a purpose in the current organization: Denied reserves against a reservation or declines a consent, Allowed accepts. Every change is logged as a business event on the user. 404 when the organization has no current purpose with the code.
+ * Records the signed-in user's organization-wide decision on the current version of a purpose in the current organization: Denied reserves against a reservation or declines a consent, Allowed accepts. Every change is logged as a business event on the user. 404 when the organization has no current purpose with the code; 400 when the purpose is decided per registration.
  */
 export const putV3UserprofilePurposesByCode = <ThrowOnError extends boolean = false>(options: Options<PutV3UserprofilePurposesByCodeData, ThrowOnError>): RequestResult<PutV3UserprofilePurposesByCodeResponses, PutV3UserprofilePurposesByCodeErrors, ThrowOnError> => (options.client ?? client).put<PutV3UserprofilePurposesByCodeResponses, PutV3UserprofilePurposesByCodeErrors, ThrowOnError>({
     url: '/v3/userprofile/purposes/{code}',

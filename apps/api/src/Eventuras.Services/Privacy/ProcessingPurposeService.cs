@@ -96,7 +96,8 @@ internal class ProcessingPurposeService : IProcessingPurposeService
             Kind = purpose.Kind,
             Name = purpose.Name,
             Text = purpose.Text,
-            HasSpecialCategoryData = purpose.HasSpecialCategoryData
+            HasSpecialCategoryData = purpose.HasSpecialCategoryData,
+            Scope = purpose.Scope
         };
 
         _dbContext.ProcessingPurposes.Add(entity);

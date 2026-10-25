@@ -189,11 +189,34 @@ public class ProcessingPurposesControllerTest : IClassFixture<CustomWebApiApplic
         Assert.Equal("marketing.newsletter", created!.Code);
         Assert.Equal(1, created.Version);
         Assert.Equal(ProcessingPurpose.PurposeKind.Reservation, created.Kind);
+        Assert.Equal(ProcessingPurpose.PurposeScope.Organization, created.Scope);
         Assert.False(created.RequiresReconsent);
 
         var listed = await (await client.GetAsync($"/v3/processing-purposes?orgId={org.Entity.OrganizationId}"))
             .CheckOk().Content.ReadFromJsonAsync<ProcessingPurposeDto[]>(JsonOptions);
         Assert.Equal(created.Uuid, Assert.Single(listed!).Uuid);
+    }
+
+    [Fact]
+    public async Task Create_Should_Store_A_Registration_Scoped_Purpose()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var org = await scope.CreateOrganizationAsync();
+
+        var response = await _factory.CreateClient().AuthenticatedAsSystemAdmin().PostAsJsonAsync(
+            $"/v3/processing-purposes?orgId={org.Entity.OrganizationId}",
+            new
+            {
+                code = "registration.dietary",
+                kind = "Consent",
+                scope = "Registration",
+                name = "Dietary requirements",
+                text = "Share my dietary requirements with the venue.",
+                hasSpecialCategoryData = true
+            });
+
+        var created = await response.CheckOk().Content.ReadFromJsonAsync<ProcessingPurposeDto>(JsonOptions);
+        Assert.Equal(ProcessingPurpose.PurposeScope.Registration, created!.Scope);
     }
 
     [Fact]

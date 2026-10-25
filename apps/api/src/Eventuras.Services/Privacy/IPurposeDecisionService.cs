@@ -14,7 +14,7 @@ namespace Eventuras.Services.Privacy;
 public interface IPurposeDecisionService
 {
     /// <summary>
-    ///     The organization's current purposes, each with the user's organization-wide
+    ///     The organization's current organization-scoped purposes, each with the user's organization-wide
     ///     decision and what it amounts to now. Ordered by code.
     /// </summary>
     /// <exception cref="Exceptions.NotAccessibleException">The caller is not a known user.</exception>
@@ -29,6 +29,9 @@ public interface IPurposeDecisionService
     /// <exception cref="Exceptions.NotAccessibleException">The caller is not a known user.</exception>
     /// <exception cref="Exceptions.NotFoundException">
     ///     The organization has no current purpose with the code.
+    /// </exception>
+    /// <exception cref="Exceptions.ArgumentServiceException">
+    ///     The purpose is decided for each registration.
     /// </exception>
     Task<MyPurpose> DecideAsync(
         Organization organization,

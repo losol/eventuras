@@ -20,6 +20,13 @@ public class ProcessingPurposeFormDto
     [EnumDataType(typeof(ProcessingPurpose.PurposeKind))]
     public ProcessingPurpose.PurposeKind? Kind { get; set; }
 
+    /// <summary>
+    ///     Organization (one decision for everything, offered on the profile page) or
+    ///     Registration (decided for each registration). Defaults to Organization.
+    /// </summary>
+    [EnumDataType(typeof(ProcessingPurpose.PurposeScope))]
+    public ProcessingPurpose.PurposeScope? Scope { get; set; }
+
     [Required]
     [MaxLength(200)]
     public string Name { get; set; } = string.Empty;
@@ -32,5 +39,6 @@ public class ProcessingPurposeFormDto
     public bool HasSpecialCategoryData { get; set; }
 
     public NewProcessingPurpose ToNewProcessingPurpose() =>
-        new(Code, Kind!.Value, Name, Text, HasSpecialCategoryData);
+        new(Code, Kind!.Value, Name, Text, HasSpecialCategoryData,
+            Scope ?? ProcessingPurpose.PurposeScope.Organization);
 }
