@@ -21,7 +21,7 @@
     "@eventuras/event-sdk": "workspace:*",
     "@eventuras/google-api": "workspace:*",
     "@eventuras/logger": "^0.9.2",
-    "@playwright/test": "1.64.0",
+    "@playwright/test": "1.64.1",
     "allure-playwright": "^3.13.0",
     "jose": "6.2.12",
     "tsx": "^4.23.15"
