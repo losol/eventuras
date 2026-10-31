@@ -354,6 +354,42 @@ public class RegistrationProductsControllerTest : IClassFixture<CustomWebApiAppl
     }
 
     [Fact]
+    public async Task GetRegistrations_WithIncludeProducts_ShouldReturnOkForSeveralRegistrations()
+    {
+        // Regression: mapping rows in parallel shared one DbContext and could throw.
+        using var scope = _factory.Services.NewTestScope();
+        using var evt = await scope.CreateEventAsync();
+        using var product = await scope.CreateProductAsync(evt.Entity, "Ticket", price: 100);
+
+        for (var i = 1; i <= 5; i++)
+        {
+            var user = await scope.CreateUserAsync(email: $"includeproducts{i}@test.com");
+            var registration = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
+            var order = await scope.CreateOrderAsync(registration.Entity, user: user.Entity);
+            scope.Db.OrderLines.Add(new OrderLine
+            {
+                OrderId = order.Entity.OrderId,
+                ProductId = product.Entity.ProductId,
+                Quantity = i,
+                Price = 100
+            });
+        }
+
+        await scope.Db.SaveChangesAsync();
+
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
+
+        var response =
+            await client.GetAsync($"/v3/registrations?eventId={evt.Entity.EventInfoId}&includeProducts=true");
+
+        response.CheckOk();
+        var pageResponse = await response.Content.ReadFromJsonAsync<PageResponseDto<RegistrationDto>>(JsonOptions);
+        Assert.NotNull(pageResponse);
+        Assert.Equal(5, pageResponse.Data.Length);
+        Assert.All(pageResponse.Data, reg => Assert.NotNull(reg.Products));
+    }
+
+    [Fact]
     public async Task GetRegistrations_Performance_ShouldHandleMultipleRegistrationsEfficiently()
     {
         // Arrange - Performance test to catch N+1 query issues

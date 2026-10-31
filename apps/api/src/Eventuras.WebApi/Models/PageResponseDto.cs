@@ -37,8 +37,13 @@ public class PageResponseDto<T>
         Func<TD, Task<TR>> f,
         CancellationToken cancellationToken = default)
     {
-        var tasks = paging.Data.Select(f).ToArray();
-        var data = await Task.WhenAll(tasks);
+        // Map one at a time: mappers may share a scoped DbContext, which is not thread-safe.
+        var data = new TR[paging.Data.Length];
+        for (var i = 0; i < paging.Data.Length; i++)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            data[i] = await f(paging.Data[i]);
+        }
 
         return new PageResponseDto<TR>(query) { Total = paging.TotalRecords, Data = data };
     }
