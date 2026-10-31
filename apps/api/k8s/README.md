@@ -46,10 +46,11 @@ podDisruptionBudget:
 
 ### Database connections
 
-Each replica has its own pool (default 20). Worst case is
-`(replicaCount + maxSurge) × maxPoolSize`; keep it below the database's
-connection limit. If both `database.maxPoolSize` and `Maximum Pool Size` in the
-connection string are set, the lower wins.
+Each replica has its own pool (default 20). Budget at least
+`(replicaCount + maxSurge) × maxPoolSize` (`maxSurge` as a rounded-up pod count),
+plus headroom for terminating pods and other clients. If both
+`database.maxPoolSize` and `Maximum Pool Size` in the connection string are set,
+the lower wins.
 
 Sensitive values belong in `eventuras-api-secrets` (Kubernetes Secret / Infisical).
 
