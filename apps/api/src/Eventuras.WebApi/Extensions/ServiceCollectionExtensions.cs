@@ -28,11 +28,16 @@ public static class ServiceCollectionExtensions
     public static void ConfigureEf(this IServiceCollection services) =>
         services.AddDbContext<ApplicationDbContext>((sp, options) =>
         {
-            var connectionString = sp.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection");
+            var configuration = sp.GetRequiredService<IConfiguration>();
+            var connectionString = configuration.GetConnectionString("DefaultConnection");
             if (string.IsNullOrWhiteSpace(connectionString))
             {
                 throw new ArgumentException("Connection string is not set");
             }
+
+            connectionString = DatabaseConnectionPool.ApplyMaxPoolSize(
+                connectionString,
+                configuration.GetValue<int?>(DatabaseConnectionPool.MaxPoolSizeConfigKey));
 
             var env = sp.GetRequiredService<IHostEnvironment>();
             var isDevelopment = env.IsDevelopment() || env.IsEnvironment("IntegrationTests");

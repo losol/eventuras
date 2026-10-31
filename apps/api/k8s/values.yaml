@@ -23,6 +23,12 @@ resources:
     cpu: "1000m"
     ephemeral-storage: "2Gi"
 
+# Npgsql pool cap per replica. Empty → 20. Lowest of this and the
+# connection string wins. Budget at least (replicas + maxSurge) × maxPoolSize,
+# plus headroom for terminating pods.
+database:
+  maxPoolSize: ""
+
 # Health check configuration
 healthCheck:
   path: /health

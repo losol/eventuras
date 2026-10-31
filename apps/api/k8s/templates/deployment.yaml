@@ -38,6 +38,10 @@ spec:
           env:
             - name: ASPNETCORE_URLS
               value: "http://+:{{ .Values.service.targetPort }}"
+            {{- with .Values.database.maxPoolSize }}
+            - name: Database__MaxPoolSize
+              value: {{ . | quote }}
+            {{- end }}
             {{- range $key, $value := .Values.env }}
             - name: {{ $key }}
               value: {{ $value | quote }}

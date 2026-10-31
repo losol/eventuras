@@ -21,6 +21,7 @@ ArgoCD Application(Set) and routing are managed externally (e.g. eventuras-infra
 | `resources.limits.cpu`               | CPU limit                                    | `1000m`                 |
 | `healthCheck.path`                   | Health check path                            | `/health`               |
 | `podAnnotations`                     | Pod annotations (e.g. Infisical auto-reload) | `{}`                    |
+| `database.maxPoolSize`               | Npgsql pool cap per replica (see below)      | `""` (API default 20)   |
 | `env`                                | Non-sensitive environment variables          | `{}`                    |
 | `strategy`                           | Deployment strategy (e.g. RollingUpdate)     | `{}`                    |
 | `podDisruptionBudget.enabled`        | Enable PodDisruptionBudget                   | `false`                 |
@@ -42,6 +43,14 @@ podDisruptionBudget:
   enabled: true
   minAvailable: 1
 ```
+
+### Database connections
+
+Each replica has its own pool (default 20). Budget at least
+`(replicaCount + maxSurge) × maxPoolSize` (`maxSurge` as a rounded-up pod count),
+plus headroom for terminating pods and other clients. If both
+`database.maxPoolSize` and `Maximum Pool Size` in the connection string are set,
+the lower wins.
 
 Sensitive values belong in `eventuras-api-secrets` (Kubernetes Secret / Infisical).
 
