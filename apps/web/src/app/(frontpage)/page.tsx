@@ -58,6 +58,8 @@ export default async function Homepage() {
       headers: { 'Eventuras-Org-Id': ORGANIZATION_ID },
     });
 
+    // The SDK returns errors instead of throwing; surface them (e.g. 429).
+    if (collectionsResponse.error) throw collectionsResponse.error;
     const collections = collectionsResponse.data?.data ?? [];
 
     // Fetch events for each featured collection (sorted by category)
@@ -70,6 +72,7 @@ export default async function Homepage() {
             Ordering: ['Category', 'DateStart', 'Title'],
           },
         });
+        if (eventsResponse.error) throw eventsResponse.error;
         return {
           ...collection,
           events: eventsResponse.data?.data ?? [],
@@ -83,6 +86,7 @@ export default async function Homepage() {
           r.status === 'fulfilled'
       )
       .map(r => r.value);
+    if (results.some(r => r.status === 'rejected')) hasError = true;
 
     // Fetch all events (including those in featured collections)
     const eventsResponse = await getV3Events({
@@ -92,6 +96,7 @@ export default async function Homepage() {
       },
     });
 
+    if (eventsResponse.error) throw eventsResponse.error;
     events = eventsResponse.data?.data ?? [];
 
     logger.info(

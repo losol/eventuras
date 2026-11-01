@@ -55,7 +55,7 @@ the lower wins.
 ### Rate limiting
 
 The API caps concurrent unauthenticated requests to its public endpoints, per
-replica (default 10, queue 20; excess gets `429`). Authenticated requests are not
+replica (default 10, or half the DB pool if smaller; queue 20; excess gets `429`). Authenticated requests are not
 limited. Tune with `env`:
 
 ```yaml
@@ -64,8 +64,8 @@ env:
   RateLimiting__Anonymous__QueueLimit: "20"
 ```
 
-Keep `PermitLimit` below `database.maxPoolSize` so authenticated traffic always
-has connections left.
+If you set `PermitLimit`, keep it well below `database.maxPoolSize` so
+authenticated traffic always has connections left.
 
 For per-client limits, use the proxy, e.g. Traefik's
 [`RateLimit` middleware](https://doc.traefik.io/traefik/middlewares/http/ratelimit/)

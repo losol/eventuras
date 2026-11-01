@@ -93,9 +93,12 @@ async function fetchEvent(id: number) {
     );
 
     // The SDK client does not throw on HTTP errors; it returns { data, error }.
-    // Treat a populated error as a real failure rather than a missing event.
+    // Only a 404 means "not found"; other errors (e.g. 429) go to the error page.
     if (response.error) {
-      logger.error({ error: response.error, eventId: id }, 'Failed to load event details');
+      if (response.response?.status !== 404) {
+        throw new Error(`Failed to load event ${id} (HTTP ${response.response?.status})`);
+      }
+      logger.warn({ eventId: id }, 'Event not found');
       return null;
     }
 
@@ -108,7 +111,7 @@ async function fetchEvent(id: number) {
     return response.data;
   } catch (error) {
     logger.error({ error, eventId: id }, 'Failed to load event details');
-    return null;
+    throw error;
   }
 }
 

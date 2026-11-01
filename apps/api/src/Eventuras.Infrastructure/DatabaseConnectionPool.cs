@@ -26,22 +26,8 @@ public static class DatabaseConnectionPool
     /// </summary>
     public static string ApplyMaxPoolSize(string connectionString, int? configuredMaxPoolSize)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(connectionString);
-
-        if (configuredMaxPoolSize is < 1)
-        {
-            throw new ArgumentOutOfRangeException(nameof(configuredMaxPoolSize), configuredMaxPoolSize,
-                $"{MaxPoolSizeConfigKey} must be at least 1.");
-        }
-
+        var effective = GetMaxPoolSize(connectionString, configuredMaxPoolSize);
         var builder = new NpgsqlConnectionStringBuilder(connectionString);
-        int? explicitInConnectionString = HasExplicitMaxPoolSize(connectionString) ? builder.MaxPoolSize : null;
-
-        var effective = new[] { explicitInConnectionString, configuredMaxPoolSize }
-            .Where(v => v.HasValue)
-            .Select(v => v!.Value)
-            .DefaultIfEmpty(DefaultMaxPoolSize)
-            .Min();
 
         builder.MaxPoolSize = effective;
         if (builder.MinPoolSize > effective)
@@ -50,6 +36,28 @@ public static class DatabaseConnectionPool
         }
 
         return builder.ConnectionString;
+    }
+
+    /// <summary>The pool size <see cref="ApplyMaxPoolSize" /> would set.</summary>
+    public static int GetMaxPoolSize(string connectionString, int? configuredMaxPoolSize)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(connectionString);
+
+        if (configuredMaxPoolSize is < 1)
+        {
+            throw new ArgumentOutOfRangeException(nameof(configuredMaxPoolSize), configuredMaxPoolSize,
+                $"{MaxPoolSizeConfigKey} must be at least 1.");
+        }
+
+        int? explicitInConnectionString = HasExplicitMaxPoolSize(connectionString)
+            ? new NpgsqlConnectionStringBuilder(connectionString).MaxPoolSize
+            : null;
+
+        return new[] { explicitInConnectionString, configuredMaxPoolSize }
+            .Where(v => v.HasValue)
+            .Select(v => v!.Value)
+            .DefaultIfEmpty(DefaultMaxPoolSize)
+            .Min();
     }
 
     private static bool HasExplicitMaxPoolSize(string connectionString)
