@@ -43,6 +43,13 @@ public class RegistrationCustomerInfoDto : IValidatableObject
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
+        // PowerOffice bills whoever owns the organization number, so a private payer must not carry one.
+        if (PayerType == RegistrationPayerType.Private && !string.IsNullOrWhiteSpace(VatNumber))
+        {
+            yield return new ValidationResult("A private payer cannot have an organization number.",
+                [nameof(VatNumber)]);
+        }
+
         if (PayerType is not (RegistrationPayerType.OwnCompany or RegistrationPayerType.OtherOrganization))
         {
             yield break;

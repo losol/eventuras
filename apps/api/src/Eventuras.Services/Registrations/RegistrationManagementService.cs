@@ -237,12 +237,14 @@ internal class RegistrationManagementService : IRegistrationManagementService
             await EmitAuditEventsAsync(before, registration, cancellationToken);
         }
 
-        await _context.UpdateAsync(registration, cancellationToken);
-
         if (before != null && !before.HasSamePayerAs(registration))
         {
             await CopyPayerToOpenOrdersAsync(registration, cancellationToken);
         }
+
+        // One save for the registration and the order snapshots updated above, so a failure
+        // cannot leave orders behind a payer change that a retry would no longer detect.
+        await _context.UpdateAsync(registration, cancellationToken);
 
         // Send the status email on an actual status change (e.g. -> WaitingList
         // sends the waiting-list email, not a confirmation).
@@ -294,10 +296,13 @@ internal class RegistrationManagementService : IRegistrationManagementService
     ///     Orders snapshot the payer when they are created, which on self-registration happens
     ///     before the payer step's details are saved. Copying changed payer details to orders
     ///     not yet invoiced makes sure the invoice goes to the payer the participant chose.
+    ///     Does not save: the caller saves the orders together with the registration.
     /// </summary>
     private async Task CopyPayerToOpenOrdersAsync(Registration registration, CancellationToken cancellationToken)
     {
-        var orders = await _context.Orders
+        // Reuse loaded orders so saving the registration graph does not meet a second
+        // tracked instance of the same order.
+        var orders = registration.Orders ?? await _context.Orders
             .Where(o => o.RegistrationId == registration.RegistrationId)
             .ToListAsync(cancellationToken);
 
@@ -312,10 +317,8 @@ internal class RegistrationManagementService : IRegistrationManagementService
             order.CopyPayerFrom(registration);
         }
 
-        await _context.SaveChangesAsync(cancellationToken);
-
         _logger.LogInformation(
-            "Copied payer details from registration {RegistrationId} to {OrderCount} open orders",
+            "Copying payer details from registration {RegistrationId} to {OrderCount} open orders",
             registration.RegistrationId, openOrders.Count);
     }
 

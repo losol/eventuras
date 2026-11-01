@@ -180,6 +180,52 @@ public class RegistrationPayerTests(CustomWebApiApplicationFactory<Program> fact
     }
 
     [Fact]
+    public async Task Put_Should_Reject_Organization_Number_For_Private_Payer()
+    {
+        using var scope = factory.Services.NewTestScope();
+        using var user = await scope.CreateUserAsync();
+        using var e = await scope.CreateEventAsync();
+        using var reg = await scope.CreateRegistrationAsync(e.Entity, user.Entity);
+
+        var client = factory.CreateClient().AuthenticatedAsSystemAdmin();
+        var response = await client.PutAsync($"/v3/registrations/{reg.Entity.RegistrationId}", new
+        {
+            customer = new { payerType = "Private", name = "Kari Nordmann", vatNumber = "974760673" }
+        });
+        response.CheckBadRequest();
+    }
+
+    [Fact]
+    public async Task Put_Should_Clear_Organization_Details_When_Switching_To_Private()
+    {
+        using var scope = factory.Services.NewTestScope();
+        using var user = await scope.CreateUserAsync();
+        using var e = await scope.CreateEventAsync();
+        using var product = await scope.CreateProductAsync(e.Entity);
+        using var reg = await scope.CreateRegistrationAsync(e.Entity, user.Entity);
+        using var order = await scope.CreateOrderAsync(reg.Entity, product.Entity);
+
+        var client = factory.CreateClient().AuthenticatedAsSystemAdmin();
+        (await client.PutAsync($"/v3/registrations/{reg.Entity.RegistrationId}", new
+        {
+            paymentMethod = "PowerOfficeEHFInvoice",
+            customer = OtherOrganizationPayer()
+        })).CheckOk();
+
+        (await client.PutAsync($"/v3/registrations/{reg.Entity.RegistrationId}", new
+        {
+            paymentMethod = "PowerOfficeEmailInvoice",
+            customer = new { payerType = "Private", name = "Kari Nordmann", email = "kari@example.com" }
+        })).CheckOk();
+
+        var updated = await scope.Db.Orders.AsNoTracking().SingleAsync(o => o.OrderId == order.Entity.OrderId);
+        Assert.Equal("Kari Nordmann", updated.CustomerName);
+        Assert.Null(updated.CustomerVatNumber);
+        Assert.Null(updated.CustomerInvoiceReference);
+        Assert.Equal(PaymentProvider.PowerOfficeEmailInvoice, updated.PaymentMethod);
+    }
+
+    [Fact]
     public async Task Put_Should_Accept_Customer_Without_Payer_Type_As_Before()
     {
         using var scope = factory.Services.NewTestScope();
