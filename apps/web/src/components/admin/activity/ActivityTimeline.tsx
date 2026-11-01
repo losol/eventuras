@@ -5,10 +5,11 @@ import { useLocale, useTranslations } from 'next-intl';
 import { formatDate } from '@eventuras/core/datetime';
 import { Text } from '@eventuras/ratio-ui/core/Text';
 import { Timeline } from '@eventuras/ratio-ui/core/Timeline';
+import { Link } from '@eventuras/ratio-ui-next/Link';
 
 import type { BusinessEventDto } from '@/lib/eventuras-sdk';
 
-import { statusForEventType } from './businessEventPresentation';
+import { actorLabel, statusForEventType, subjectHref } from './businessEventPresentation';
 
 type ActivityTimelineProps = {
   events: BusinessEventDto[];
@@ -34,7 +35,8 @@ export function ActivityTimeline({ events, testId }: Readonly<ActivityTimelinePr
         <Timeline.Item
           key={event.uuid ?? `${event.createdAt}-${index}`}
           timestamp={event.createdAt ? formatDate(event.createdAt, { locale, showTime: true }) : ''}
-          title={event.message ?? event.eventType ?? ''}
+          title={<ActivityTitle event={event} />}
+          actor={actorLabel(event)}
           status={statusForEventType(event.eventType)}
         >
           <Text as="span" family="mono" size="xs" variant="subtle">
@@ -43,5 +45,20 @@ export function ActivityTimeline({ events, testId }: Readonly<ActivityTimelinePr
         </Timeline.Item>
       ))}
     </Timeline>
+  );
+}
+
+/** "Ola Nordmann · Status changed …", with the name linking to the subject. */
+function ActivityTitle({ event }: Readonly<{ event: BusinessEventDto }>) {
+  const message = event.message || event.eventType || '';
+  if (!event.subjectName) return <>{message}</>;
+
+  const href = subjectHref(event);
+  return (
+    <>
+      {href ? <Link href={href}>{event.subjectName}</Link> : event.subjectName}
+      {' · '}
+      {message}
+    </>
   );
 }

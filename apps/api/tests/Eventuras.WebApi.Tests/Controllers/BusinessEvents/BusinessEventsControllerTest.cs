@@ -195,6 +195,53 @@ public class BusinessEventsControllerTest : IClassFixture<CustomWebApiApplicatio
         Assert.Equal(new[] { "Event", "Order", "Registration" }, body.Data.Select(e => e.Message).ToArray());
     }
 
+    [Fact]
+    public async Task List_Should_Include_Subject_And_Actor_Names()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var org = await scope.CreateOrganizationAsync();
+        using var participant = await scope.CreateUserAsync(givenName: "Ola", familyName: "Nordmann");
+        using var admin = await scope.CreateUserAsync(givenName: "Kari", familyName: "Admin");
+        using var eventInfo = await scope.CreateEventAsync(organization: org.Entity, title: "Kurs i nord");
+        using var registration = await scope.CreateRegistrationAsync(eventInfo.Entity, participant.Entity);
+        using var order = await scope.CreateOrderAsync(registration.Entity, user: participant.Entity);
+
+        BusinessEvent Row(int hour, BusinessEventSubject subject, Guid? actor = null) => new()
+        {
+            CreatedAt = Instant.FromUtc(2026, 4, 19, hour, 0),
+            EventType = subject.Type + ".status.changed",
+            Message = subject.Type,
+            SubjectType = subject.Type,
+            SubjectUuid = subject.Uuid,
+            OrganizationUuid = org.Entity.Uuid,
+            ActorUserUuid = actor
+        };
+
+        scope.Db.BusinessEvents.AddRange(
+            Row(10, BusinessEventSubjects.ForRegistration(registration.Entity.Uuid), admin.Entity.Id),
+            Row(11, BusinessEventSubjects.ForOrder(order.Entity.Uuid)),
+            Row(12, BusinessEventSubjects.ForEvent(eventInfo.Entity.Uuid)));
+        await scope.Db.SaveChangesAsync();
+
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
+        var response = await client.GetAsync(
+            $"/v3/business-events?orgId={org.Entity.OrganizationId}&eventInfoUuid={eventInfo.Entity.Uuid}");
+
+        var body = await response.CheckOk().Content.ReadFromJsonAsync<PageResponseDto<BusinessEventDto>>(JsonOptions);
+        var byType = body!.Data.ToDictionary(e => e.SubjectType);
+
+        Assert.Equal("Ola Nordmann", byType["registration"].SubjectName);
+        Assert.Equal(registration.Entity.RegistrationId, byType["registration"].SubjectId);
+        Assert.Equal("Kari Admin", byType["registration"].ActorName);
+
+        Assert.Equal($"#{order.Entity.OrderId} – Ola Nordmann", byType["order"].SubjectName);
+        Assert.Equal(order.Entity.OrderId, byType["order"].SubjectId);
+        Assert.Null(byType["order"].ActorName);
+
+        Assert.Equal("Kurs i nord", byType["event"].SubjectName);
+        Assert.Equal(eventInfo.Entity.EventInfoId, byType["event"].SubjectId);
+    }
+
     [Theory]
     [InlineData("subjectType=order")]
     [InlineData("subjectUuid=7d5c0a5e-0000-4000-8000-000000000001")]

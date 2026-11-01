@@ -10,8 +10,20 @@ export type BusinessEventDto = {
     eventType?: string;
     subjectType?: string;
     subjectUuid?: string;
+    /**
+     * Display name of the subject, e.g. the participant. Null if unknown.
+     */
+    subjectName?: null | string;
+    /**
+     * Legacy int id of the subject, for admin links. Null for users or if unknown.
+     */
+    subjectId?: null | number;
     organizationUuid?: null | string;
     actorUserUuid?: null | string;
+    /**
+     * Name of the user who made the change. Null for system changes or if unknown.
+     */
+    actorName?: null | string;
     message?: string;
     /**
      * Parsed metadata. Rendered as a JSON object/array/primitive rather than

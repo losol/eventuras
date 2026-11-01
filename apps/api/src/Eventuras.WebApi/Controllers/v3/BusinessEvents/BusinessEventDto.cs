@@ -3,6 +3,7 @@
 using System;
 using System.Text.Json;
 using Eventuras.Domain;
+using Eventuras.Services.BusinessEvents;
 using NodaTime;
 
 namespace Eventuras.WebApi.Controllers.v3.BusinessEvents;
@@ -10,6 +11,25 @@ namespace Eventuras.WebApi.Controllers.v3.BusinessEvents;
 public class BusinessEventDto
 {
     public BusinessEventDto() { }
+
+    public BusinessEventDto(BusinessEvent entity, BusinessEventNames? names = null) : this(entity)
+    {
+        if (names is null)
+        {
+            return;
+        }
+
+        if (names.Subjects.TryGetValue(entity.SubjectUuid, out var subject))
+        {
+            SubjectName = subject.Name;
+            SubjectId = subject.Id;
+        }
+
+        if (entity.ActorUserUuid is { } actor && names.Actors.TryGetValue(actor, out var actorName))
+        {
+            ActorName = actorName;
+        }
+    }
 
     public BusinessEventDto(BusinessEvent entity)
     {
@@ -36,9 +56,18 @@ public class BusinessEventDto
 
     public Guid SubjectUuid { get; set; }
 
+    /// <summary>Display name of the subject, e.g. the participant. Null if unknown.</summary>
+    public string? SubjectName { get; set; }
+
+    /// <summary>Legacy int id of the subject, for admin links. Null for users or if unknown.</summary>
+    public int? SubjectId { get; set; }
+
     public Guid? OrganizationUuid { get; set; }
 
     public Guid? ActorUserUuid { get; set; }
+
+    /// <summary>Name of the user who made the change. Null for system changes or if unknown.</summary>
+    public string? ActorName { get; set; }
 
     public string Message { get; set; } = string.Empty;
 

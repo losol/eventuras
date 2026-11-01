@@ -65,6 +65,8 @@ public class BusinessEventsController : ControllerBase
                 paging,
                 cancellationToken);
 
-        return PageResponseDto<BusinessEventDto>.FromPaging(query, events, e => new BusinessEventDto(e));
+        var names = await _businessEventService.ResolveNamesAsync(events.Data, cancellationToken);
+
+        return PageResponseDto<BusinessEventDto>.FromPaging(query, events, e => new BusinessEventDto(e, names));
     }
 }

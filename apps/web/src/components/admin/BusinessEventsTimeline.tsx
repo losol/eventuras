@@ -9,7 +9,7 @@ import { client } from '@/lib/eventuras-client';
 import { BusinessEventDto, getV3BusinessEvents } from '@/lib/eventuras-sdk';
 import { getOrganizationId } from '@/utils/organization';
 
-import { statusForEventType } from './activity/businessEventPresentation';
+import { actorLabel, statusForEventType } from './activity/businessEventPresentation';
 
 const logger = Logger.create({
   namespace: 'web:admin:business-events',
@@ -76,7 +76,7 @@ export default async function BusinessEventsTimeline({
               key={e.uuid ?? `${e.createdAt ?? 'unknown'}-${e.eventType ?? 'unknown'}-${index}`}
               timestamp={formatTimestamp(e.createdAt)}
               title={e.message ?? e.eventType ?? ''}
-              actor={e.actorUserUuid ? <ActorLabel uuid={e.actorUserUuid} /> : undefined}
+              actor={actorLabel(e)}
               status={statusForEventType(e.eventType)}
             >
               {renderMetadata(e)}
@@ -93,12 +93,6 @@ function formatTimestamp(instant: string | undefined): string {
   const date = new Date(instant);
   if (Number.isNaN(date.getTime())) return instant;
   return date.toLocaleString();
-}
-
-function ActorLabel({ uuid }: { uuid: string }) {
-  // Resolving the user name requires an extra round-trip and is deferred to
-  // a follow-up; for now, render the short uuid so admins can correlate.
-  return <span className="font-mono text-xs">{uuid.slice(0, 8)}</span>;
 }
 
 function renderMetadata(event: BusinessEventDto) {
