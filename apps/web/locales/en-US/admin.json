@@ -114,6 +114,50 @@
     },
     "title": "Email"
   },
+  "eventOverview": {
+    "title": "Events",
+    "summary": "{upcoming} upcoming · {registrations, plural, one {# registration} other {# registrations}}",
+    "create": "New event",
+    "searchPlaceholder": "Search by title, location or date",
+    "clear": "Clear",
+    "tabsLabel": "Filter events",
+    "tabs": {
+      "upcoming": "Upcoming",
+      "draft": "Drafts",
+      "past": "Past",
+      "all": "All"
+    },
+    "columns": {
+      "title": "Title",
+      "location": "Location",
+      "when": "When",
+      "registrations": "Registrations"
+    },
+    "status": {
+      "draft": "Draft",
+      "cancelled": "Cancelled",
+      "past": "Finished",
+      "ongoing": "Ongoing",
+      "open": "Open",
+      "full": "Full",
+      "waitingList": "Waiting list",
+      "closed": "Closed",
+      "planned": "Planned"
+    },
+    "relative": {
+      "ongoing": "Ongoing now",
+      "today": "Today",
+      "tomorrow": "Tomorrow",
+      "inDays": "In {count, plural, one {# day} other {# days}}",
+      "inWeeks": "In {count, plural, one {# week} other {# weeks}}",
+      "daysAgo": "{count, plural, one {# day} other {# days}} ago",
+      "weeksAgo": "{count, plural, one {# week} other {# weeks}} ago"
+    },
+    "empty": "No events here.",
+    "emptyQuery": "No events match “{query}”.",
+    "searchAll": "Search all events",
+    "showAll": "Show all events"
+  },
   "events": {
     "export": {
       "button": "Export to Excel",

@@ -114,6 +114,50 @@
     },
     "title": "E-post"
   },
+  "eventOverview": {
+    "title": "Arrangementer",
+    "summary": "{upcoming} kommende · {registrations, plural, one {# påmeldt} other {# påmeldte}}",
+    "create": "Nytt arrangement",
+    "searchPlaceholder": "Søk etter tittel, sted eller dato",
+    "clear": "Tøm",
+    "tabsLabel": "Filtrer arrangementer",
+    "tabs": {
+      "upcoming": "Kommende",
+      "draft": "Utkast",
+      "past": "Tidligere",
+      "all": "Alle"
+    },
+    "columns": {
+      "title": "Tittel",
+      "location": "Sted",
+      "when": "Når",
+      "registrations": "Påmeldte"
+    },
+    "status": {
+      "draft": "Utkast",
+      "cancelled": "Avlyst",
+      "past": "Avsluttet",
+      "ongoing": "Pågår",
+      "open": "Åpen",
+      "full": "Fullt",
+      "waitingList": "Venteliste",
+      "closed": "Stengt",
+      "planned": "Planlagt"
+    },
+    "relative": {
+      "ongoing": "Pågår nå",
+      "today": "I dag",
+      "tomorrow": "I morgen",
+      "inDays": "Om {count, plural, one {# dag} other {# dager}}",
+      "inWeeks": "Om {count, plural, one {# uke} other {# uker}}",
+      "daysAgo": "{count, plural, one {# dag} other {# dager}} siden",
+      "weeksAgo": "{count, plural, one {# uke} other {# uker}} siden"
+    },
+    "empty": "Ingen arrangementer her.",
+    "emptyQuery": "Ingen arrangementer passer søket «{query}».",
+    "searchAll": "Søk i alle arrangementer",
+    "showAll": "Vis alle arrangementer"
+  },
   "events": {
     "export": {
       "button": "Eksporter til Excel",
