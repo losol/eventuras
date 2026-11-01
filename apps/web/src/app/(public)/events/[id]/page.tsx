@@ -1,6 +1,8 @@
 import { redirect } from 'next/navigation';
 
+import ServiceBusy from '@/components/ServiceBusy';
 import { getV3EventsById, publicClient } from '@/lib/eventuras-public-sdk';
+import { isApiBusy, throwIfApiError } from '@/utils/api/apiErrors';
 
 type EventInfoProps = {
   params: Promise<{
@@ -15,6 +17,8 @@ export default async function EventPage({ params }: Readonly<EventInfoProps>) {
     path: { id },
   });
 
+  if (isApiBusy(response)) return <ServiceBusy />;
+  throwIfApiError(response, `event ${id}`);
   if (!response.data) return <div>Event not found</div>;
 
   const eventinfo = response.data;

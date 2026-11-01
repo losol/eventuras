@@ -6,8 +6,10 @@ using Asp.Versioning;
 using Eventuras.Domain;
 using Eventuras.Services.Events;
 using Eventuras.Services.Exceptions;
+using Eventuras.WebApi.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Eventuras.WebApi.Controllers.v3.Events.Products;
 
@@ -34,6 +36,7 @@ public class EventProductVariantsController : ControllerBase
     // GET: v3/events/1001/products/203/variants
     [HttpGet]
     [AllowAnonymous]
+    [EnableRateLimiting(RateLimitingExtensions.AnonymousPolicy)]
     public async Task<ProductVariantDto[]> List(int eventId, int productId, CancellationToken token)
     {
         var product = await GetProductAsync(eventId, productId, token: token);

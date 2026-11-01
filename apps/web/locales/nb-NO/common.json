@@ -98,7 +98,12 @@
       "title": "Noe gikk veldig galt"
     },
     "tryRefresh": "Prøv gjerne å oppfrisk siden!",
-    "failedToLoadEvents": "Kunne ikke laste arrangementer"
+    "failedToLoadEvents": "Kunne ikke laste arrangementer",
+    "busy": {
+      "title": "Mange besøkende akkurat nå",
+      "description": "Det er litt travelt her akkurat nå. Prøv igjen om noen sekunder.",
+      "retry": "Prøv igjen"
+    }
   },
   "event-not-found": "Arrangement ikke funnet",
   "events": {

@@ -23,6 +23,7 @@ import {
   getV3Events,
   publicClient,
 } from '@/lib/eventuras-public-sdk';
+import { isApiBusy, throwIfApiError } from '@/utils/api/apiErrors';
 import { getOrganizationId } from '@/utils/organization';
 import getSiteSettings from '@/utils/site/getSiteSettings';
 
@@ -49,6 +50,7 @@ export default async function Homepage() {
   let featuredCollections: (EventCollectionDto & { events: EventDto[] })[] = [];
   let events: EventDto[] = [];
   let hasError = false;
+  let isBusy = false;
 
   try {
     // Fetch featured collections and their events
@@ -58,6 +60,12 @@ export default async function Homepage() {
       headers: { 'Eventuras-Org-Id': ORGANIZATION_ID },
     });
 
+    // The SDK returns errors instead of throwing. Flag them, but still load all events below.
+    if (collectionsResponse.error) {
+      logger.error({ error: collectionsResponse.error }, 'Failed to fetch featured collections');
+      hasError = true;
+      isBusy = isApiBusy(collectionsResponse);
+    }
     const collections = collectionsResponse.data?.data ?? [];
 
     // Fetch events for each featured collection (sorted by category)
@@ -69,6 +77,10 @@ export default async function Homepage() {
             CollectionId: collection.id!,
             Ordering: ['Category', 'DateStart', 'Title'],
           },
+        });
+        if (isApiBusy(eventsResponse)) isBusy = true;
+        throwIfApiError(eventsResponse, `events for collection ${collection.id}`, {
+          allowNotFound: false,
         });
         return {
           ...collection,
@@ -83,6 +95,15 @@ export default async function Homepage() {
           r.status === 'fulfilled'
       )
       .map(r => r.value);
+    results.forEach((r, i) => {
+      if (r.status === 'rejected') {
+        logger.warn(
+          { collectionId: collections[i]?.id, error: r.reason },
+          'Failed to fetch events for featured collection'
+        );
+        hasError = true;
+      }
+    });
 
     // Fetch all events (including those in featured collections)
     const eventsResponse = await getV3Events({
@@ -92,6 +113,8 @@ export default async function Homepage() {
       },
     });
 
+    if (isApiBusy(eventsResponse)) isBusy = true;
+    throwIfApiError(eventsResponse, 'events', { allowNotFound: false });
     events = eventsResponse.data?.data ?? [];
 
     logger.info(
@@ -194,9 +217,9 @@ export default async function Homepage() {
         <Section color="error" paddingY="lg">
           <Container>
             <Heading as="h2" paddingBottom="sm">
-              {t('common.errors.failedToLoadEvents')}
+              {t(isBusy ? 'common.errors.busy.title' : 'common.errors.failedToLoadEvents')}
             </Heading>
-            <Text>{t('common.errors.tryRefresh')}</Text>
+            <Text>{t(isBusy ? 'common.errors.busy.description' : 'common.errors.tryRefresh')}</Text>
           </Container>
         </Section>
       )}

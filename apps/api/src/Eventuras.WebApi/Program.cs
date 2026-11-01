@@ -28,6 +28,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Net.Http.Headers;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
 using Scalar.AspNetCore;
@@ -106,6 +107,7 @@ if (!builder.Environment.IsEnvironment("IntegrationTests"))
 
 builder.Services.ConfigureDbInitializationStrategy();
 builder.Services.ConfigureAuthorizationPolicies(builder.Configuration);
+builder.Services.AddAnonymousRateLimiting(builder.Configuration);
 builder.Services.AddEmailServices();
 builder.Services.AddSmsServices();
 builder.Services.AddInvoicingServices(builder.Configuration, features);
@@ -135,7 +137,7 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(corsBuilder => corsBuilder
         .WithOrigins(origins)
         .AllowAnyHeader()
-        .WithExposedHeaders(Api.OrganizationHeader, Api.CorrelationIdHeader)
+        .WithExposedHeaders(Api.OrganizationHeader, Api.CorrelationIdHeader, HeaderNames.RetryAfter)
         .AllowCredentials()
         .AllowAnyMethod());
 });
@@ -161,6 +163,7 @@ apiVersioningBuilder
         options.Document.AddDocumentTransformer<AddSecuritySchemeTransformer>();
         options.Document.AddOperationTransformer<AddOrganizationHeaderTransformer>();
         options.Document.AddOperationTransformer<RemoveJsonPatchContentTypeTransformer>();
+        options.Document.AddOperationTransformer<AddRateLimitResponseTransformer>();
         options.Document.AddSchemaTransformer<NodaTimeSchemaTransformer>();
         options.Document.AddSchemaTransformer<NumericSchemaTransformer>();
     });
@@ -233,6 +236,7 @@ app.UseStaticFiles();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRateLimiter();
 
 app.MapControllers();
 app.MapDefaultEndpoints();

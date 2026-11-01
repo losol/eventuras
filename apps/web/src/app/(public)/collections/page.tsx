@@ -7,8 +7,10 @@ import { Text } from '@eventuras/ratio-ui/core/Text';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
+import ServiceBusy from '@/components/ServiceBusy';
 import { getPublicClient } from '@/lib/eventuras-public-client';
 import { getV3Eventcollections } from '@/lib/eventuras-public-sdk';
+import { isApiBusy, throwIfApiError } from '@/utils/api/apiErrors';
 import { getOrganizationId } from '@/utils/organization';
 // Always render server-side so ORGANIZATION_ID is read at request time, not build time
 export const dynamic = 'force-dynamic';
@@ -24,6 +26,8 @@ const CollectionIndexPage: React.FC = async () => {
       'Eventuras-Org-Id': orgId,
     },
   });
+  if (isApiBusy(response)) return <ServiceBusy />;
+  throwIfApiError(response, 'collections', { allowNotFound: false });
   if (!response.data)
     return (
       <>
@@ -44,17 +48,17 @@ const CollectionIndexPage: React.FC = async () => {
       </Section>
       <Section>
         {collections?.data?.map(collection => (
-            <Card key={collection.id} className="my-4">
-              <Heading as="h2">{collection.name}</Heading>
-              <MarkdownContent markdown={collection.description} />
-              <Link
-                href={`/collections/${collection.id}/${collection.slug}`}
-                variant="button-primary"
-              >
-                {t('common.labels.view')}
-              </Link>
-            </Card>
-          ))}
+          <Card key={collection.id} className="my-4">
+            <Heading as="h2">{collection.name}</Heading>
+            <MarkdownContent markdown={collection.description} />
+            <Link
+              href={`/collections/${collection.id}/${collection.slug}`}
+              variant="button-primary"
+            >
+              {t('common.labels.view')}
+            </Link>
+          </Card>
+        ))}
       </Section>
     </>
   );

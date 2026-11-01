@@ -1,8 +1,10 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Services.Constants;
 using Microsoft.AspNetCore.OpenApi;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.OpenApi;
 using NodaTime;
 
@@ -202,6 +204,53 @@ public class RemoveJsonPatchContentTypeTransformer : IOpenApiOperationTransforme
                 }
             }
         }
+
+        return Task.CompletedTask;
+    }
+}
+
+/// <summary>
+///     Declares the 429 ProblemDetails response (and Retry-After) on operations
+///     with the anonymous rate-limit policy.
+/// </summary>
+public class AddRateLimitResponseTransformer : IOpenApiOperationTransformer
+{
+    public Task TransformAsync(OpenApiOperation operation, OpenApiOperationTransformerContext context,
+        CancellationToken cancellationToken)
+    {
+        var limited = context.Description.ActionDescriptor.EndpointMetadata
+            .OfType<EnableRateLimitingAttribute>()
+            .Any(a => a.PolicyName == RateLimitingExtensions.AnonymousPolicy);
+        if (!limited)
+        {
+            return Task.CompletedTask;
+        }
+
+        operation.Responses ??= new OpenApiResponses();
+        // Only type the body where other errors are documented; otherwise the
+        // SDK would claim every error is ProblemDetails (404s are plain strings).
+        var hasDocumentedErrors = operation.Responses.Keys.Any(k => k[0] is '4' or '5');
+        operation.Responses["429"] = new OpenApiResponse
+        {
+            Description = "Too many concurrent anonymous requests.",
+            Headers = new Dictionary<string, IOpenApiHeader>
+            {
+                ["Retry-After"] = new OpenApiHeader
+                {
+                    Description = "Seconds to wait before retrying.",
+                    Schema = new OpenApiSchema { Type = JsonSchemaType.Integer },
+                },
+            },
+            Content = hasDocumentedErrors
+                ? new Dictionary<string, OpenApiMediaType>
+                {
+                    ["application/problem+json"] = new()
+                    {
+                        Schema = new OpenApiSchemaReference("ProblemDetails", context.Document),
+                    },
+                }
+                : null,
+        };
 
         return Task.CompletedTask;
     }

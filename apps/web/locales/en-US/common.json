@@ -93,12 +93,17 @@
     "title": "Errrrrror."
   },
   "errors": {
-    "failedToLoadEvents": "No events...",
+    "failedToLoadEvents": "Could not load events",
     "fatalError": {
       "description": "We tried to perform the action, but something went wrong, please try again later.",
       "title": "Something went very wrong"
     },
-    "tryRefresh": "Feel free to refresh the page"
+    "tryRefresh": "Feel free to refresh the page",
+    "busy": {
+      "title": "Lots of visitors right now",
+      "description": "We're a bit busy at the moment. Please try again in a few seconds.",
+      "retry": "Try again"
+    }
   },
   "event-not-found": "Event not found",
   "events": {

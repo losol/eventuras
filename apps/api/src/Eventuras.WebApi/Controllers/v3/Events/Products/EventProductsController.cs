@@ -7,8 +7,10 @@ using Eventuras.Domain;
 using Eventuras.Services.Events;
 using Eventuras.Services.Events.Products;
 using Eventuras.Services.Exceptions;
+using Eventuras.WebApi.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Logging;
 
 namespace Eventuras.WebApi.Controllers.v3.Events.Products;
@@ -50,6 +52,7 @@ public class EventProductsController : ControllerBase
     // GET v3/events/1/products
     [HttpGet]
     [AllowAnonymous]
+    [EnableRateLimiting(RateLimitingExtensions.AnonymousPolicy)]
     public async Task<ProductDto[]> List(int eventId, [FromQuery] EventProductsQueryDto query,
         CancellationToken token)
     {

@@ -2378,6 +2378,13 @@ export type GetV3EventsData = {
     url: '/v3/events';
 };
 
+export type GetV3EventsErrors = {
+    /**
+     * Too many concurrent anonymous requests.
+     */
+    429: unknown;
+};
+
 export type GetV3EventsResponses = {
     /**
      * A paginated list of events.
@@ -2450,6 +2457,13 @@ export type GetV3EventsByIdData = {
     };
     query?: never;
     url: '/v3/events/{id}';
+};
+
+export type GetV3EventsByIdErrors = {
+    /**
+     * Too many concurrent anonymous requests.
+     */
+    429: unknown;
 };
 
 export type GetV3EventsByIdResponses = {
@@ -2585,6 +2599,10 @@ export type GetV3EventsByUuidErrors = {
      * Not Found
      */
     404: ProblemDetails;
+    /**
+     * Too many concurrent anonymous requests.
+     */
+    429: ProblemDetails;
 };
 
 export type GetV3EventsByUuidError = GetV3EventsByUuidErrors[keyof GetV3EventsByUuidErrors];
@@ -2691,6 +2709,13 @@ export type GetV3OnlinecoursesData = {
     url: '/v3/onlinecourses';
 };
 
+export type GetV3OnlinecoursesErrors = {
+    /**
+     * Too many concurrent anonymous requests.
+     */
+    429: unknown;
+};
+
 export type GetV3OnlinecoursesResponses = {
     /**
      * OK
@@ -2713,6 +2738,13 @@ export type GetV3OnlinecoursesByIdData = {
     };
     query?: never;
     url: '/v3/onlinecourses/{id}';
+};
+
+export type GetV3OnlinecoursesByIdErrors = {
+    /**
+     * Too many concurrent anonymous requests.
+     */
+    429: unknown;
 };
 
 export type GetV3OnlinecoursesByIdResponses = {
@@ -2763,6 +2795,13 @@ export type GetV3EventsByEventIdProductsData = {
         Visibility?: ProductVisibility;
     };
     url: '/v3/events/{eventId}/products';
+};
+
+export type GetV3EventsByEventIdProductsErrors = {
+    /**
+     * Too many concurrent anonymous requests.
+     */
+    429: unknown;
 };
 
 export type GetV3EventsByEventIdProductsResponses = {
@@ -2856,6 +2895,13 @@ export type GetV3EventsByEventIdProductsByProductIdVariantsData = {
     };
     query?: never;
     url: '/v3/events/{eventId}/products/{productId}/variants';
+};
+
+export type GetV3EventsByEventIdProductsByProductIdVariantsErrors = {
+    /**
+     * Too many concurrent anonymous requests.
+     */
+    429: unknown;
 };
 
 export type GetV3EventsByEventIdProductsByProductIdVariantsResponses = {
@@ -3031,6 +3077,13 @@ export type GetV3EventcollectionsData = {
     url: '/v3/eventcollections';
 };
 
+export type GetV3EventcollectionsErrors = {
+    /**
+     * Too many concurrent anonymous requests.
+     */
+    429: unknown;
+};
+
 export type GetV3EventcollectionsResponses = {
     /**
      * OK
@@ -3097,6 +3150,13 @@ export type GetV3EventcollectionsByIdData = {
     };
     query?: never;
     url: '/v3/eventcollections/{id}';
+};
+
+export type GetV3EventcollectionsByIdErrors = {
+    /**
+     * Too many concurrent anonymous requests.
+     */
+    429: unknown;
 };
 
 export type GetV3EventcollectionsByIdResponses = {

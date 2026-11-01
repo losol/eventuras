@@ -5,9 +5,11 @@ using Asp.Versioning;
 using Eventuras.Domain;
 using Eventuras.Services.EventCollections;
 using Eventuras.WebApi.Controllers.v3.EventCollections;
+using Eventuras.WebApi.Extensions;
 using Eventuras.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Logging;
 
 namespace Eventuras.WebApi.Controllers.v3.Events.Collections;
@@ -38,6 +40,7 @@ public class EventCollectionController : ControllerBase
 
     [HttpGet]
     [AllowAnonymous]
+    [EnableRateLimiting(RateLimitingExtensions.AnonymousPolicy)]
     public async Task<ActionResult<PageResponseDto<EventCollectionDto>>> List(
         [FromQuery] EventCollectionsQueryDto query, CancellationToken cancellationToken)
     {
@@ -61,6 +64,7 @@ public class EventCollectionController : ControllerBase
 
     [HttpGet("{id}")]
     [AllowAnonymous]
+    [EnableRateLimiting(RateLimitingExtensions.AnonymousPolicy)]
     public async Task<ActionResult<EventCollectionDto>> Get(int id, CancellationToken cancellationToken)
     {
         var c = await _eventCollectionRetrievalService

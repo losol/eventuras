@@ -3572,6 +3572,17 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Too many concurrent anonymous requests.",
+            "headers": {
+              "Retry-After": {
+                "description": "Seconds to wait before retrying.",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            }
           }
         }
       },
@@ -3660,6 +3671,17 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/EventDto"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many concurrent anonymous requests.",
+            "headers": {
+              "Retry-After": {
+                "description": "Seconds to wait before retrying.",
+                "schema": {
+                  "type": "integer"
                 }
               }
             }
@@ -3886,6 +3908,24 @@
             "description": "Not Found",
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many concurrent anonymous requests.",
+            "headers": {
+              "Retry-After": {
+                "description": "Seconds to wait before retrying.",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
                 "schema": {
                   "$ref": "#/components/schemas/ProblemDetails"
                 }
@@ -4145,6 +4185,17 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Too many concurrent anonymous requests.",
+            "headers": {
+              "Retry-After": {
+                "description": "Seconds to wait before retrying.",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            }
           }
         }
       }
@@ -4193,6 +4244,17 @@
               "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/OnlineCourseDto"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many concurrent anonymous requests.",
+            "headers": {
+              "Retry-After": {
+                "description": "Seconds to wait before retrying.",
+                "schema": {
+                  "type": "integer"
                 }
               }
             }
@@ -4313,6 +4375,17 @@
                   "items": {
                     "$ref": "#/components/schemas/ProductDto"
                   }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many concurrent anonymous requests.",
+            "headers": {
+              "Retry-After": {
+                "description": "Seconds to wait before retrying.",
+                "schema": {
+                  "type": "integer"
                 }
               }
             }
@@ -4541,6 +4614,17 @@
                   "items": {
                     "$ref": "#/components/schemas/ProductVariantDto"
                   }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many concurrent anonymous requests.",
+            "headers": {
+              "Retry-After": {
+                "description": "Seconds to wait before retrying.",
+                "schema": {
+                  "type": "integer"
                 }
               }
             }
@@ -4964,6 +5048,17 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Too many concurrent anonymous requests.",
+            "headers": {
+              "Retry-After": {
+                "description": "Seconds to wait before retrying.",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            }
           }
         }
       },
@@ -5071,6 +5166,17 @@
               "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/EventCollectionDto"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many concurrent anonymous requests.",
+            "headers": {
+              "Retry-After": {
+                "description": "Seconds to wait before retrying.",
+                "schema": {
+                  "type": "integer"
                 }
               }
             }

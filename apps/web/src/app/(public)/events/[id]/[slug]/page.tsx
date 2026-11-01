@@ -16,8 +16,10 @@ import EventDetails from '@/app/(public)/events/EventDetails';
 import { getEventFacts } from '@/app/(public)/events/eventFacts';
 import EventRegistrationButton from '@/app/(public)/events/EventRegistrationButton';
 import EventRegistrationCard from '@/app/(public)/events/EventRegistrationCard';
+import ServiceBusy from '@/components/ServiceBusy';
 import { getPublicClient } from '@/lib/eventuras-public-client';
 import { EventInfoStatus, getV3EventsById } from '@/lib/eventuras-public-sdk';
+import { isApiBusy, throwIfApiError } from '@/utils/api/apiErrors';
 
 import EventNotFound from '../../EventNotFound';
 
@@ -48,6 +50,7 @@ export async function generateMetadata({ params }: EventDetailsPageProps): Promi
       client: publicClient,
       path: { id },
     });
+    throwIfApiError(response, `event ${id}`);
 
     if (!response.data || response.data.status === EventInfoStatus.DRAFT) {
       return {
@@ -92,12 +95,8 @@ async function fetchEvent(id: number) {
       'Event details fetched'
     );
 
-    // The SDK client does not throw on HTTP errors; it returns { data, error }.
-    // Treat a populated error as a real failure rather than a missing event.
-    if (response.error) {
-      logger.error({ error: response.error, eventId: id }, 'Failed to load event details');
-      return null;
-    }
+    if (isApiBusy(response)) return 'busy' as const;
+    throwIfApiError(response, `event ${id}`);
 
     // Handle not found or draft events
     if (!response.data || response.data.status === EventInfoStatus.DRAFT) {
@@ -108,7 +107,7 @@ async function fetchEvent(id: number) {
     return response.data;
   } catch (error) {
     logger.error({ error, eventId: id }, 'Failed to load event details');
-    return null;
+    throw error;
   }
 }
 
@@ -122,6 +121,10 @@ export default async function EventDetailsPage({ params }: Readonly<EventDetails
   }
 
   const eventinfo = await fetchEvent(id);
+
+  if (eventinfo === 'busy') {
+    return <ServiceBusy />;
+  }
 
   if (!eventinfo) {
     return <EventNotFound />;
