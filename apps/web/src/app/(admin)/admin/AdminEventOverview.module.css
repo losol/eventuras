@@ -19,6 +19,7 @@
 }
 
 .table {
+  position: relative;
   overflow: hidden;
   border: 1px solid var(--border-1);
   border-radius: 0.75rem;
@@ -34,8 +35,14 @@
   border-bottom: 1px solid var(--border-1);
 }
 
+/* Visually hidden until the column layout kicks in. */
 .head {
-  display: none;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
   padding-block: 0.75rem;
   font-size: 0.875rem;
   font-weight: 600;
@@ -142,7 +149,12 @@
   }
 
   .head {
-    display: grid;
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+    white-space: normal;
   }
 
   .chevron {
