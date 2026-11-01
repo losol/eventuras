@@ -1,5 +1,17 @@
 # @eventuras/web
 
+## 3.14.0
+
+### Minor Changes
+
+- ebf53ba: New admin front page: searchable event overview with Upcoming/Drafts/Past/All tabs and counts, status badges, relative dates and a capacity bar per event.
+
+### Patch Changes
+
+- 9f405f6: Business events include `subjectName`, `subjectId` and `actorName`, looked up at read time. The admin activity timeline shows who the change was about (linked to its admin page) and who made it.
+- Updated dependencies [9f405f6]
+  - @eventuras/event-sdk@3.10.0
+
 ## 3.13.1
 
 ### Patch Changes
