@@ -60,10 +60,11 @@ export function AdminEventOverview({ events, today }: Readonly<Props>) {
   const upcoming = all.filter(r => inTab(r, 'upcoming'));
   const registrations = upcoming.reduce((sum, r) => sum + r.registrations, 0);
 
-  const relativeLabel = (relative?: Relative) =>
-    relative
-      ? t(`relative.${relative.kind}`, 'count' in relative ? { count: relative.count } : {})
-      : '';
+  const relativeLabel = (relative?: Relative) => {
+    if (!relative) return '';
+    const values: Record<string, number> = 'count' in relative ? { count: relative.count } : {};
+    return t(`relative.${relative.kind}`, values);
+  };
 
   return (
     <section className={styles.overview} data-testid="admin-event-overview">
