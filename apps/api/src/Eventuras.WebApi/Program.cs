@@ -28,6 +28,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Net.Http.Headers;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
 using Scalar.AspNetCore;
@@ -136,7 +137,7 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(corsBuilder => corsBuilder
         .WithOrigins(origins)
         .AllowAnyHeader()
-        .WithExposedHeaders(Api.OrganizationHeader, Api.CorrelationIdHeader)
+        .WithExposedHeaders(Api.OrganizationHeader, Api.CorrelationIdHeader, HeaderNames.RetryAfter)
         .AllowCredentials()
         .AllowAnyMethod());
 });
