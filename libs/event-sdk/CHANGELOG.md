@@ -1,5 +1,16 @@
 # @eventuras/event-sdk
 
+## 3.10.0
+
+### Minor Changes
+
+- 9f405f6: Business events include `subjectName`, `subjectId` and `actorName`, looked up at read time. The admin activity timeline shows who the change was about (linked to its admin page) and who made it.
+
+### Patch Changes
+
+- Updated dependencies [9f405f6]
+  - @eventuras/api@3.16.0
+
 ## 3.9.2
 
 ### Patch Changes
