@@ -92,36 +92,50 @@
     "address": {
       "city": "City",
       "country": "Country",
+      "invoiceLegend": "Invoice address",
       "legend": "Address",
-      "street": "Street",
+      "street": "Street address",
       "zip": "Zip code"
-    },
-    "businessinfo": {
-      "invoiceReference": "Invoice reference",
-      "legend": "Business info",
-      "vatNumber": "VAT number"
     },
     "complete": {
       "description": "We are really looking forward to seeing you!",
       "title": "Registration completed"
     },
-    "customertype": {
-      "business": "Business",
-      "legend": "Customer type",
-      "private": "Private"
-    },
     "description": "A few more details about the event.",
     "event-title": "Event Title",
     "id": "Registration ID",
     "labels": {
+      "contactPerson": "Contact person",
+      "payer": "Payer",
       "paymentDetails": "Payment details"
     },
     "not-found": "Registration not found",
     "orders": "Orders",
+    "organization": {
+      "contactDescription": "Who can answer questions about the invoice.",
+      "contactEmail": "Contact person's email",
+      "contactName": "Contact person",
+      "invoiceReference": "Invoice reference",
+      "invoiceReferenceOptional": "Optional. Fill in if the company uses references on incoming invoices.",
+      "invoiceReferenceRequired": "Such as a purchase order number. Without a reference the invoice may be rejected.",
+      "legend": "The organization paying",
+      "name": "Organization name",
+      "vatNumber": "Organization number"
+    },
     "page": {
       "texts": {
         "user-already-registered": "You are allready registered for this event!"
       }
+    },
+    "payer": {
+      "ehfNotice": "Organizations get the invoice as EHF (electronic invoice).",
+      "legend": "Who pays the invoice?",
+      "otherOrganization": "Another organization",
+      "otherOrganizationDescription": "Your employer, for example.",
+      "ownCompany": "My company",
+      "ownCompanyDescription": "A company you own or run yourself.",
+      "private": "Me, as a private person",
+      "privateDescription": "The invoice is sent to you by email."
     },
     "product-description": "Product Description",
     "product-name": "Product Name",
@@ -154,6 +168,11 @@
       "legend": "User details",
       "name": "Name",
       "phoneNumber": "Phone number"
+    },
+    "validation": {
+      "email": "Enter a valid email address",
+      "organizationNumber": "Check the organization number. It should be 9 digits.",
+      "required": "Required"
     }
   },
   "registrations": {

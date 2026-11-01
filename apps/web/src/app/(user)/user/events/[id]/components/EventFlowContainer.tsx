@@ -195,7 +195,7 @@ const EventFlowContainer: React.FC<EventFlowContainerProps> = ({
         {xState.matches(States.CONFIGURE_PAYMENT) && (
           <Step03PaymentConfiguration
             initialValues={context.paymentFormValues}
-            userProfile={user}
+            userProfile={context.user}
             onBack={() => {
               send({ type: Events.ON_STEP_BACK });
             }}

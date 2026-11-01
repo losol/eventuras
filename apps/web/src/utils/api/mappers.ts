@@ -7,6 +7,12 @@ import {
   RegistrationType,
   RegistrationUpdateDto,
 } from '@/lib/eventuras-sdk';
+import {
+  isNorway,
+  isOrganizationPayer,
+  normalizeOrganizationNumber,
+  paymentMethodForPayer,
+} from '@/lib/payer';
 import { ParticipationTypes, PaymentFormValues, RegistrationProduct } from '@/types';
 
 /**
@@ -39,17 +45,43 @@ export const mapEventProductsToView = (eventProducts: ProductDto[]): Registratio
     });
 };
 
-const customerFromPaymentForm = (
+const blankToNull = (value: string): string | null => value.trim() || null;
+
+/**
+ * The payer as the API expects it: the participant themselves, or the organization
+ * with its contact person, whose email is where the invoice goes.
+ */
+export const customerFromPaymentForm = (
   paymentDetails: PaymentFormValues
 ): RegistrationCustomerInfoDto => {
+  const address = {
+    address: blankToNull(paymentDetails.address),
+    zip: blankToNull(paymentDetails.zip),
+    city: blankToNull(paymentDetails.city),
+    country: blankToNull(paymentDetails.country),
+  };
+
+  if (!isOrganizationPayer(paymentDetails.payerType)) {
+    return {
+      payerType: paymentDetails.payerType,
+      name: paymentDetails.username,
+      email: paymentDetails.email,
+      ...address,
+    };
+  }
+
+  const vatNumber = isNorway(paymentDetails.country)
+    ? normalizeOrganizationNumber(paymentDetails.vatNumber)
+    : paymentDetails.vatNumber.trim();
+
   return {
-    vatNumber: paymentDetails.vatNumber,
-    name: paymentDetails.username,
-    email: paymentDetails.email,
-    zip: paymentDetails.zip,
-    city: paymentDetails.city,
-    country: paymentDetails.country,
-    invoiceReference: paymentDetails.invoiceReference,
+    payerType: paymentDetails.payerType,
+    name: paymentDetails.organizationName.trim(),
+    email: paymentDetails.contactEmail.trim(),
+    vatNumber,
+    invoiceReference: blankToNull(paymentDetails.invoiceReference),
+    contactName: paymentDetails.contactName.trim(),
+    ...address,
   };
 };
 
@@ -66,7 +98,7 @@ export const mapToNewRegistration = (
     customer,
     type,
     createOrder: true,
-    paymentMethod: paymentDetails.paymentMethod,
+    paymentMethod: paymentMethodForPayer(paymentDetails.payerType),
   };
 
   return newRegistration;
@@ -79,7 +111,7 @@ export const mapToUpdatedRegistration = (
   const updatedRegistration: RegistrationUpdateDto = {
     customer: customerFromPaymentForm(paymentDetails),
     type: registration.type,
-    paymentMethod: paymentDetails.paymentMethod,
+    paymentMethod: paymentMethodForPayer(paymentDetails.payerType),
   };
   return updatedRegistration;
 };

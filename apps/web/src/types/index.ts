@@ -1,4 +1,4 @@
-import { PaymentProvider, ProductOrderDto } from '@/lib/eventuras-sdk';
+import { ProductOrderDto, RegistrationPayerType } from '@/lib/eventuras-sdk';
 
 export type LocalesType = {
   component: {
@@ -9,16 +9,26 @@ export type LocalesType = {
   };
 };
 
+/**
+ * The payer step. `username`, `email` and `phoneNumber` are the participant. When an
+ * organization pays, `organizationName`, `vatNumber`, `contactName` and `contactEmail`
+ * describe it; the address is the payer's either way. The payment method follows from
+ * `payerType` (see `paymentMethodForPayer`).
+ */
 export type PaymentFormValues = {
   username: string;
   email: string;
   phoneNumber: string;
-  city: string;
-  zip: string;
-  country: string;
+  payerType: RegistrationPayerType;
+  organizationName: string;
   vatNumber: string;
   invoiceReference: string;
-  paymentMethod: PaymentProvider;
+  contactName: string;
+  contactEmail: string;
+  address: string;
+  zip: string;
+  city: string;
+  country: string;
 };
 
 export type RegistrationProduct = {
