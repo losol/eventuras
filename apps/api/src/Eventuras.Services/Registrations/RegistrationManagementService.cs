@@ -239,6 +239,11 @@ internal class RegistrationManagementService : IRegistrationManagementService
 
         await _context.UpdateAsync(registration, cancellationToken);
 
+        if (before != null && !before.HasSamePayerAs(registration))
+        {
+            await CopyPayerToOpenOrdersAsync(registration, cancellationToken);
+        }
+
         // Send the status email on an actual status change (e.g. -> WaitingList
         // sends the waiting-list email, not a confirmation).
         if (before != null && before.Status != registration.Status)
@@ -283,6 +288,35 @@ internal class RegistrationManagementService : IRegistrationManagementService
         await _context.UpdateAsync(registration, cancellationToken);
 
         return registration;
+    }
+
+    /// <summary>
+    ///     Orders snapshot the payer when they are created, which on self-registration happens
+    ///     before the payer step's details are saved. Copying changed payer details to orders
+    ///     not yet invoiced makes sure the invoice goes to the payer the participant chose.
+    /// </summary>
+    private async Task CopyPayerToOpenOrdersAsync(Registration registration, CancellationToken cancellationToken)
+    {
+        var orders = await _context.Orders
+            .Where(o => o.RegistrationId == registration.RegistrationId)
+            .ToListAsync(cancellationToken);
+
+        var openOrders = orders.Where(o => o.CanEdit).ToList();
+        if (openOrders.Count == 0)
+        {
+            return;
+        }
+
+        foreach (var order in openOrders)
+        {
+            order.CopyPayerFrom(registration);
+        }
+
+        await _context.SaveChangesAsync(cancellationToken);
+
+        _logger.LogInformation(
+            "Copied payer details from registration {RegistrationId} to {OrderCount} open orders",
+            registration.RegistrationId, openOrders.Count);
     }
 
     private async Task EmitAuditEventsAsync(

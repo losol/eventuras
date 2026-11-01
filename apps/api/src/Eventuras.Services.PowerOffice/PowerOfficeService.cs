@@ -65,7 +65,8 @@ public class PowerOfficeService : IInvoicingProvider
                 Status = OutgoingInvoiceStatus.Draft,
                 OrderDate = info.OrderDate?.ToDateTimeUnspecified(),
                 ContractNo = info.OrderId,
-                CustomerReference = info.CustomerInvoiceReference,
+                // "Deres ref." on the invoice: the reference the payer gave, else their contact person.
+                CustomerReference = NullIfEmpty(info.CustomerInvoiceReference) ?? NullIfEmpty(info.CustomerContactName),
                 CustomerCode = customer.Code
             };
 

@@ -832,14 +832,41 @@ export const PurposeStatus = {
 
 export type PurposeStatus = typeof PurposeStatus[keyof typeof PurposeStatus];
 
+/**
+ * The payer of a registration. When payerType is OwnCompany or OtherOrganization, the
+ * organization number, name, contact person and contact email are required, and
+ * OtherOrganization also requires an invoice reference. Without a payer type only the
+ * email format is checked, as before the payer step existed.
+ */
 export type RegistrationCustomerInfoDto = {
+    /**
+     * Who pays the invoice.
+     */
+    payerType?: null | RegistrationPayerType;
+    /**
+     * The organization number of an organization payer.
+     */
     vatNumber?: null | string;
+    /**
+     * The payer: the person's own name, or the organization's name.
+     */
     name?: null | string;
+    /**
+     * Where the invoice is sent: the person's own email, or the contact person's email.
+     */
     email?: null | string;
+    /**
+     * Street address.
+     */
+    address?: null | string;
     zip?: null | string;
     city?: null | string;
     country?: null | string;
     invoiceReference?: null | string;
+    /**
+     * Contact person at an organization payer.
+     */
+    contactName?: null | string;
 };
 
 export type RegistrationDto = {
@@ -864,8 +891,28 @@ export type RegistrationDto = {
      */
     registrationTime?: null | LocalDateTime;
     paymentMethod?: PaymentProvider;
+    /**
+     * Who pays the invoice. Null for registrations made before the payer step existed.
+     */
+    payerType?: null | RegistrationPayerType;
+    /**
+     * The payer: the person's own name, or the organization's name.
+     */
+    customerName?: null | string;
+    /**
+     * Where the invoice is sent: the person's own email, or the contact person's email.
+     */
+    customerEmail?: null | string;
+    customerAddress?: null | string;
+    customerZip?: null | string;
+    customerCity?: null | string;
+    customerCountry?: null | string;
     customerVatNumber?: null | string;
     customerInvoiceReference?: null | string;
+    /**
+     * Contact person at an organization payer.
+     */
+    customerContactName?: null | string;
     user?: null | UserDto;
     event?: null | EventDto;
     products?: null | Array<ProductOrderDto>;
@@ -915,6 +962,14 @@ export type RegistrationPatchDto = {
      */
     customerInvoiceReference?: null | string;
 };
+
+export const RegistrationPayerType = {
+    PRIVATE: 'Private',
+    OWN_COMPANY: 'OwnCompany',
+    OTHER_ORGANIZATION: 'OtherOrganization'
+} as const;
+
+export type RegistrationPayerType = typeof RegistrationPayerType[keyof typeof RegistrationPayerType];
 
 export const RegistrationStatus = {
     DRAFT: 'Draft',

@@ -28,6 +28,18 @@ public class Registration
         Artist = 4
     }
 
+    /// <summary>
+    ///     Who pays the invoice, as chosen by the participant. OwnCompany and
+    ///     OtherOrganization are stored alike; they differ only in how the form is
+    ///     prefilled and which fields it requires.
+    /// </summary>
+    public enum RegistrationPayerType
+    {
+        Private = 1,
+        OwnCompany = 2,
+        OtherOrganization = 3
+    }
+
     public int RegistrationId { get; set; }
     public Guid Uuid { get; set; } = Guid.CreateVersion7();
     public int EventInfoId { get; set; }
@@ -47,6 +59,11 @@ public class Registration
     public string ParticipantName { get; set; }
 
     // Who pays for it?
+
+    /// <summary>Who pays the invoice. Null for registrations made before the payer step existed.</summary>
+    public RegistrationPayerType? PayerType { get; set; }
+
+    /// <summary>The payer: the person's own name, or the organization's name.</summary>
     public string CustomerName { get; set; }
     public string CustomerEmail { get; set; }
     public string CustomerAddress { get; set; }
@@ -55,6 +72,23 @@ public class Registration
     public string CustomerCountry { get; set; }
     public string CustomerVatNumber { get; set; }
     public string CustomerInvoiceReference { get; set; }
+
+    /// <summary>Contact person at an organization payer. <see cref="CustomerEmail" /> is their email.</summary>
+    public string CustomerContactName { get; set; }
+
+    /// <summary>True when the payer details and payment method match <paramref name="other" />.</summary>
+    public bool HasSamePayerAs(Registration other) =>
+        PayerType == other.PayerType &&
+        CustomerName == other.CustomerName &&
+        CustomerEmail == other.CustomerEmail &&
+        CustomerAddress == other.CustomerAddress &&
+        CustomerZip == other.CustomerZip &&
+        CustomerCity == other.CustomerCity &&
+        CustomerCountry == other.CustomerCountry &&
+        CustomerVatNumber == other.CustomerVatNumber &&
+        CustomerInvoiceReference == other.CustomerInvoiceReference &&
+        CustomerContactName == other.CustomerContactName &&
+        PaymentMethod == other.PaymentMethod;
 
     public string Notes { get; set; }
 

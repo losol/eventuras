@@ -192,13 +192,10 @@ public class OrderManagementService : IOrderManagementService
         {
             User = registration.User,
             Registration = registration,
-            CustomerName = registration.CustomerName ?? registration.User?.Name ?? string.Empty,
-            CustomerEmail = registration.CustomerEmail ?? registration.CustomerEmail,
-            CustomerVatNumber = registration.CustomerVatNumber,
-            CustomerInvoiceReference = registration.CustomerInvoiceReference,
-            PaymentMethod = registration.PaymentMethod,
+            CustomerName = string.Empty,
             OrderLines = orderLinesMapped
         };
+        order.CopyPayerFrom(registration);
         // Order creation is tracked at persistence level
 
         await _context.AddAsync(order, cancellationToken);
