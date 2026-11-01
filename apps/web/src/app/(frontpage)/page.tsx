@@ -95,7 +95,15 @@ export default async function Homepage() {
           r.status === 'fulfilled'
       )
       .map(r => r.value);
-    if (results.some(r => r.status === 'rejected')) hasError = true;
+    results.forEach((r, i) => {
+      if (r.status === 'rejected') {
+        logger.warn(
+          { collectionId: collections[i]?.id, error: r.reason },
+          'Failed to fetch events for featured collection'
+        );
+        hasError = true;
+      }
+    });
 
     // Fetch all events (including those in featured collections)
     const eventsResponse = await getV3Events({
