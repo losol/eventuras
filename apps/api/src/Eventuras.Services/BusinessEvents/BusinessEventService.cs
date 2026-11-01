@@ -132,7 +132,6 @@ public class BusinessEventService : IBusinessEventService
                 {
                     r.Uuid,
                     r.RegistrationId,
-                    r.ParticipantName,
                     r.User.GivenName,
                     r.User.MiddleName,
                     r.User.FamilyName,
@@ -140,7 +139,8 @@ public class BusinessEventService : IBusinessEventService
                 .ToListAsync(cancellationToken);
             foreach (var r in rows)
             {
-                var name = FullName(r.GivenName, r.MiddleName, r.FamilyName) ?? NullIfBlank(r.ParticipantName);
+                // Live user name only: ParticipantName is a stale snapshot.
+                var name = FullName(r.GivenName, r.MiddleName, r.FamilyName);
                 subjects[r.Uuid] = new BusinessEventSubjectInfo(name, r.RegistrationId);
             }
         }
@@ -154,8 +154,9 @@ public class BusinessEventService : IBusinessEventService
                 .ToListAsync(cancellationToken);
             foreach (var o in rows)
             {
-                var customer = FullName(o.GivenName, o.MiddleName, o.FamilyName);
-                var name = customer is null ? $"#{o.OrderId}" : $"#{o.OrderId} – {customer}";
+                // Order.User is the participant; the payer may differ (CustomerName is a snapshot).
+                var participant = FullName(o.GivenName, o.MiddleName, o.FamilyName);
+                var name = participant is null ? $"#{o.OrderId}" : $"#{o.OrderId} – {participant}";
                 subjects[o.Uuid] = new BusinessEventSubjectInfo(name, o.OrderId);
             }
         }

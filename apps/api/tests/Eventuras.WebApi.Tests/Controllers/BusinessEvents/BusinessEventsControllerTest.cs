@@ -242,6 +242,40 @@ public class BusinessEventsControllerTest : IClassFixture<CustomWebApiApplicatio
         Assert.Equal(eventInfo.Entity.EventInfoId, byType["event"].SubjectId);
     }
 
+    [Fact]
+    public async Task List_Should_Not_Show_A_Removed_Participant_Name()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var org = await scope.CreateOrganizationAsync();
+        using var participant = await scope.CreateUserAsync(givenName: "Ola", familyName: "Nordmann");
+        using var eventInfo = await scope.CreateEventAsync(organization: org.Entity);
+        using var registration = await scope.CreateRegistrationAsync(eventInfo.Entity, participant.Entity);
+
+        // The registration keeps a snapshot of the old name; the user clears theirs.
+        registration.Entity.ParticipantName = "Ola Nordmann";
+        participant.Entity.GivenName = null;
+        participant.Entity.FamilyName = null;
+
+        scope.Db.BusinessEvents.Add(new BusinessEvent
+        {
+            EventType = "registration.status.changed",
+            Message = "registration",
+            SubjectType = BusinessEventSubjects.RegistrationType,
+            SubjectUuid = registration.Entity.Uuid,
+            OrganizationUuid = org.Entity.Uuid
+        });
+        await scope.Db.SaveChangesAsync();
+
+        var client = _factory.CreateClient().AuthenticatedAsSystemAdmin();
+        var response = await client.GetAsync(
+            $"/v3/business-events?orgId={org.Entity.OrganizationId}&eventInfoUuid={eventInfo.Entity.Uuid}");
+
+        var body = await response.CheckOk().Content.ReadFromJsonAsync<PageResponseDto<BusinessEventDto>>(JsonOptions);
+        var item = Assert.Single(body!.Data);
+        Assert.Null(item.SubjectName);
+        Assert.Equal(registration.Entity.RegistrationId, item.SubjectId);
+    }
+
     [Theory]
     [InlineData("subjectType=order")]
     [InlineData("subjectUuid=7d5c0a5e-0000-4000-8000-000000000001")]
