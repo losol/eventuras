@@ -5582,6 +5582,21 @@
             "type": "string",
             "format": "uuid"
           },
+          "subjectName": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Display name of the subject, e.g. the participant. Null if unknown."
+          },
+          "subjectId": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "description": "Legacy int id of the subject, for admin links. Null for users or if unknown.",
+            "format": "int32"
+          },
           "organizationUuid": {
             "type": [
               "null",
@@ -5595,6 +5610,13 @@
               "string"
             ],
             "format": "uuid"
+          },
+          "actorName": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Name of the user who made the change. Null for system changes or if unknown."
           },
           "message": {
             "type": "string"
