@@ -38,6 +38,14 @@ describe('toOverviewRow state and status', () => {
     expect([r.statusKey, r.badge, r.fill]).toEqual(['full', 'warning', 1]);
   });
 
+  it.each([
+    ['WaitingList', 'waitingList'],
+    ['RegistrationsClosed', 'closed'],
+  ] as const)('keeps %s at capacity instead of showing full', (status, statusKey) => {
+    const r = row({ status, dateStart: '2026-12-01', maxParticipants: 70 }, 70);
+    expect(r.statusKey).toBe(statusKey);
+  });
+
   it('has no capacity or fill without maxParticipants', () => {
     const r = row({ dateStart: '2026-12-01', maxParticipants: 0 }, 5);
     expect(r.capacity).toBeUndefined();

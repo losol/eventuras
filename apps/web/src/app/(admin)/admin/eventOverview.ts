@@ -61,10 +61,10 @@ function statusOf(event: EventDto, state: OverviewState, full: boolean): [Status
     case 'ongoing':
       return ['ongoing', 'info'];
   }
-  if (full) return ['full', 'warning'];
   switch (event.status) {
     case 'RegistrationsOpen':
-      return ['open', 'success'];
+      // Only infer "full" when registration is open; other statuses say more.
+      return full ? ['full', 'warning'] : ['open', 'success'];
     case 'WaitingList':
       return ['waitingList', 'warning'];
     case 'RegistrationsClosed':

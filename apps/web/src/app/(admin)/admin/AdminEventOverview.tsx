@@ -104,23 +104,26 @@ export function AdminEventOverview({ events, today }: Readonly<Props>) {
       />
 
       <div className={styles.table}>
-        <div className={styles.head}>
-          <span>{t('columns.title')}</span>
-          <span>{t('columns.location')}</span>
-          <span>{t('columns.when')}</span>
-          <span>{t('columns.registrations')}</span>
-          <span />
-        </div>
+        <div role="table" aria-label={t('title')}>
+          {/* Visually hidden on narrow screens, but kept for screen readers. */}
+          <div role="row" className={styles.head}>
+            <span role="columnheader">{t('columns.title')}</span>
+            <span role="columnheader">{t('columns.location')}</span>
+            <span role="columnheader">{t('columns.when')}</span>
+            <span role="columnheader">{t('columns.registrations')}</span>
+            <span aria-hidden="true" />
+          </div>
 
-        {rows.map(row => (
-          <EventRow
-            key={row.event.id}
-            row={row}
-            statusLabel={t(`status.${row.statusKey}`)}
-            dateLabel={row.event.dateStart ? formatDate(row.event.dateStart, { locale }) : ''}
-            relativeLabel={relativeLabel(row.relative)}
-          />
-        ))}
+          {rows.map(row => (
+            <EventRow
+              key={row.event.id}
+              row={row}
+              statusLabel={t(`status.${row.statusKey}`)}
+              dateLabel={row.event.dateStart ? formatDate(row.event.dateStart, { locale }) : ''}
+              relativeLabel={relativeLabel(row.relative)}
+            />
+          ))}
+        </div>
 
         {rows.length === 0 && (
           <div className={styles.empty}>
@@ -153,8 +156,8 @@ function EventRow({ row, statusLabel, dateLabel, relativeLabel }: Readonly<Event
   const href = `/admin/events/${event.id}`;
 
   return (
-    <div className={styles.row}>
-      <div className={styles.titleCell}>
+    <div role="row" className={styles.row}>
+      <div role="cell" className={styles.titleCell}>
         <Link href={href} className={styles.titleLink}>
           {event.title}
         </Link>
@@ -162,12 +165,14 @@ function EventRow({ row, statusLabel, dateLabel, relativeLabel }: Readonly<Event
           {statusLabel}
         </Badge>
       </div>
-      <span className={styles.muted}>{event.location}</span>
-      <div className={styles.stack}>
+      <span role="cell" className={styles.muted}>
+        {event.location}
+      </span>
+      <div role="cell" className={styles.stack}>
         <span>{dateLabel}</span>
         <span className={styles.subtle}>{relativeLabel}</span>
       </div>
-      <div className={styles.stack}>
+      <div role="cell" className={styles.stack}>
         <span>{capacity ? `${registrations} / ${capacity}` : registrations}</span>
         {fill !== undefined && (
           <div className={styles.bar}>
