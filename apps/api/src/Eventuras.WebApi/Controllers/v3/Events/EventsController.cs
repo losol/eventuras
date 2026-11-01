@@ -7,10 +7,12 @@ using Eventuras.Domain;
 using Eventuras.Services;
 using Eventuras.Services.Events;
 using Eventuras.Services.Registrations;
+using Eventuras.WebApi.Extensions;
 using Eventuras.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Logging;
 
 namespace Eventuras.WebApi.Controllers.v3.Events;
@@ -48,6 +50,7 @@ public class EventsController : ControllerBase
     /// <param name="cancellationToken">Cancellation token for the async operation.</param>
     /// <returns>A paginated list of events.</returns>
     [AllowAnonymous]
+    [EnableRateLimiting(RateLimitingExtensions.AnonymousPolicy)]
     [HttpGet]
     public async Task<ActionResult<PageResponseDto<EventDto>>> List([FromQuery] EventsQueryDto query,
         CancellationToken cancellationToken)
@@ -94,6 +97,7 @@ public class EventsController : ControllerBase
     /// <param name="cancellationToken">Cancellation token for the async operation.</param>
     /// <returns>Event details or NotFound if the event is archived or doesn't exist.</returns>
     [AllowAnonymous]
+    [EnableRateLimiting(RateLimitingExtensions.AnonymousPolicy)]
     [HttpGet("{id:int}")]
     public async Task<ActionResult<EventDto>> Get(int id, CancellationToken cancellationToken)
     {
@@ -117,6 +121,7 @@ public class EventsController : ControllerBase
     /// <param name="cancellationToken">Cancellation token for the async operation.</param>
     /// <returns>Event details or NotFound if the event doesn't exist.</returns>
     [AllowAnonymous]
+    [EnableRateLimiting(RateLimitingExtensions.AnonymousPolicy)]
     [HttpGet("{uuid:guid}")]
     [ProducesResponseType(typeof(EventDto), 200)]
     [ProducesResponseType(404)]

@@ -52,6 +52,27 @@ plus headroom for terminating pods and other clients. If both
 `database.maxPoolSize` and `Maximum Pool Size` in the connection string are set,
 the lower wins.
 
+### Rate limiting
+
+The API caps concurrent unauthenticated requests to its public endpoints, per
+replica (default 10, queue 20; excess gets `429`). Authenticated requests are not
+limited. Tune with `env`:
+
+```yaml
+env:
+  RateLimiting__Anonymous__PermitLimit: "10"
+  RateLimiting__Anonymous__QueueLimit: "20"
+```
+
+Keep `PermitLimit` below `database.maxPoolSize` so authenticated traffic always
+has connections left.
+
+For per-client limits, use the proxy, e.g. Traefik's
+[`RateLimit` middleware](https://doc.traefik.io/traefik/middlewares/http/ratelimit/)
+attached to the route. It needs the real client IP: if a TCP load balancer sits
+in front, enable PROXY protocol on it and trust it in Traefik
+(`proxyProtocol.trustedIPs`); otherwise all clients share one limit.
+
 Sensitive values belong in `eventuras-api-secrets` (Kubernetes Secret / Infisical).
 
 ## Local testing

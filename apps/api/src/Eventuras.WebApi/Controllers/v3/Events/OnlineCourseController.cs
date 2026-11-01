@@ -2,9 +2,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Asp.Versioning;
 using Eventuras.Services.Events;
+using Eventuras.WebApi.Extensions;
 using Eventuras.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Eventuras.WebApi.Controllers.v3.Events;
 
@@ -20,6 +22,7 @@ public class OnlineCourseController : ControllerBase
 
     // GET: v1/onlinecourses
     [AllowAnonymous]
+    [EnableRateLimiting(RateLimitingExtensions.AnonymousPolicy)]
     [HttpGet]
     public async Task<ActionResult<IQueryable<OnlineCourseDto>>> Get()
     {
@@ -37,6 +40,7 @@ public class OnlineCourseController : ControllerBase
 
     // GET: v1/onlinecourses/5
     [AllowAnonymous]
+    [EnableRateLimiting(RateLimitingExtensions.AnonymousPolicy)]
     [HttpGet("{id}")]
     public async Task<ActionResult<OnlineCourseDto>> Get(int id)
     {

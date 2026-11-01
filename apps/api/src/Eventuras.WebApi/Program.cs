@@ -106,6 +106,7 @@ if (!builder.Environment.IsEnvironment("IntegrationTests"))
 
 builder.Services.ConfigureDbInitializationStrategy();
 builder.Services.ConfigureAuthorizationPolicies(builder.Configuration);
+builder.Services.AddAnonymousRateLimiting(builder.Configuration);
 builder.Services.AddEmailServices();
 builder.Services.AddSmsServices();
 builder.Services.AddInvoicingServices(builder.Configuration, features);
@@ -233,6 +234,7 @@ app.UseStaticFiles();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRateLimiter();
 
 app.MapControllers();
 app.MapDefaultEndpoints();
