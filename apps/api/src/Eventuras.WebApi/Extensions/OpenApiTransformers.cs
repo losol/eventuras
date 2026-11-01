@@ -1,8 +1,10 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Eventuras.Services.Constants;
 using Microsoft.AspNetCore.OpenApi;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.OpenApi;
 using NodaTime;
 
@@ -202,6 +204,38 @@ public class RemoveJsonPatchContentTypeTransformer : IOpenApiOperationTransforme
                 }
             }
         }
+
+        return Task.CompletedTask;
+    }
+}
+
+/// <summary>Declares the 429 response on operations with the anonymous rate-limit policy.</summary>
+public class AddRateLimitResponseTransformer : IOpenApiOperationTransformer
+{
+    public Task TransformAsync(OpenApiOperation operation, OpenApiOperationTransformerContext context,
+        CancellationToken cancellationToken)
+    {
+        var limited = context.Description.ActionDescriptor.EndpointMetadata
+            .OfType<EnableRateLimitingAttribute>()
+            .Any(a => a.PolicyName == RateLimitingExtensions.AnonymousPolicy);
+        if (!limited)
+        {
+            return Task.CompletedTask;
+        }
+
+        operation.Responses ??= new OpenApiResponses();
+        operation.Responses["429"] = new OpenApiResponse
+        {
+            Description = "Too many concurrent anonymous requests. Retry after the Retry-After delay.",
+            Headers = new Dictionary<string, IOpenApiHeader>
+            {
+                ["Retry-After"] = new OpenApiHeader
+                {
+                    Description = "Seconds to wait before retrying.",
+                    Schema = new OpenApiSchema { Type = JsonSchemaType.Integer },
+                },
+            },
+        };
 
         return Task.CompletedTask;
     }

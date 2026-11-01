@@ -55,7 +55,9 @@ const CollectionPage: React.FC<EventInfoProps> = async props => {
     },
   });
   if (isApiBusy(eventsResponse)) return <ServiceBusy />;
-  throwIfApiError(eventsResponse, `events for collection ${collection.id}`);
+  throwIfApiError(eventsResponse, `events for collection ${collection.id}`, {
+    allowNotFound: false,
+  });
   return (
     <>
       {collection?.featuredImageUrl && (

@@ -17,6 +17,12 @@ describe('throwIfApiError', () => {
     );
   });
 
+  it('throws on 404 for lists', () => {
+    expect(() =>
+      throwIfApiError({ error: {}, response: { status: 404 } }, 'events', { allowNotFound: false })
+    ).toThrow('Failed to load events (HTTP 404)');
+  });
+
   it('throws when there is no response', () => {
     expect(() => throwIfApiError({ error: new Error('network') }, 'event')).toThrow('no response');
   });

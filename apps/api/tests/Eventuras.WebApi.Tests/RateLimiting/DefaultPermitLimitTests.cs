@@ -1,3 +1,5 @@
+#nullable enable
+
 using System.Collections.Generic;
 using Eventuras.WebApi.Extensions;
 using Microsoft.Extensions.Configuration;

@@ -79,7 +79,9 @@ export default async function Homepage() {
           },
         });
         if (isApiBusy(eventsResponse)) isBusy = true;
-        throwIfApiError(eventsResponse, `events for collection ${collection.id}`);
+        throwIfApiError(eventsResponse, `events for collection ${collection.id}`, {
+          allowNotFound: false,
+        });
         return {
           ...collection,
           events: eventsResponse.data?.data ?? [],
@@ -104,7 +106,7 @@ export default async function Homepage() {
     });
 
     if (isApiBusy(eventsResponse)) isBusy = true;
-    throwIfApiError(eventsResponse, 'events');
+    throwIfApiError(eventsResponse, 'events', { allowNotFound: false });
     events = eventsResponse.data?.data ?? [];
 
     logger.info(

@@ -27,7 +27,7 @@ const CollectionIndexPage: React.FC = async () => {
     },
   });
   if (isApiBusy(response)) return <ServiceBusy />;
-  throwIfApiError(response, 'collections');
+  throwIfApiError(response, 'collections', { allowNotFound: false });
   if (!response.data)
     return (
       <>

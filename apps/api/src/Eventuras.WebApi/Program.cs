@@ -162,6 +162,7 @@ apiVersioningBuilder
         options.Document.AddDocumentTransformer<AddSecuritySchemeTransformer>();
         options.Document.AddOperationTransformer<AddOrganizationHeaderTransformer>();
         options.Document.AddOperationTransformer<RemoveJsonPatchContentTypeTransformer>();
+        options.Document.AddOperationTransformer<AddRateLimitResponseTransformer>();
         options.Document.AddSchemaTransformer<NodaTimeSchemaTransformer>();
         options.Document.AddSchemaTransformer<NumericSchemaTransformer>();
     });
