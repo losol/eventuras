@@ -183,12 +183,12 @@ public class BusinessEventService : IBusinessEventService
                 .Where(u => userIds.Contains(u.Id))
                 .Select(u => new { u.Id, u.GivenName, u.MiddleName, u.FamilyName })
                 .ToListAsync(cancellationToken);
-            foreach (var u in rows)
+            var named = rows
+                .Select(u => (u.Id, Name: FullName(u.GivenName, u.MiddleName, u.FamilyName)))
+                .Where(u => u.Name is not null);
+            foreach (var (id, name) in named)
             {
-                if (FullName(u.GivenName, u.MiddleName, u.FamilyName) is { } name)
-                {
-                    userNames[u.Id] = name;
-                }
+                userNames[id] = name!;
             }
         }
 
