@@ -1,5 +1,14 @@
 # @eventuras/event-sdk
 
+## 3.9.1
+
+### Patch Changes
+
+- Updated dependencies [6cb7a18]
+- Updated dependencies [f78c6dc]
+- Updated dependencies [5b5b88f]
+  - @eventuras/api@3.15.1
+
 ## 3.9.0
 
 ### Minor Changes
