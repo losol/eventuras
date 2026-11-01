@@ -1,5 +1,13 @@
 # @eventuras/api
 
+## 3.15.1
+
+### Patch Changes
+
+- 6cb7a18: Cap concurrent unauthenticated requests on public endpoints (default 10 per replica or half the DB pool, queue 20, then `429`). Configurable via `RateLimiting__Anonymous__PermitLimit` / `__QueueLimit`.
+- f78c6dc: Bump MailKit and MimeKit to 4.18.2, which pulls in a patched System.Security.Cryptography.Pkcs (10.0.13) and fixes GHSA-846f-f764-76mx and GHSA-2fmv-rv2c-59x7.
+- 5b5b88f: Cap the Npgsql connection pool per replica (default 20, configurable via `Database__MaxPoolSize` / Helm `database.maxPoolSize`; the lowest explicit value wins).
+
 ## 3.15.0
 
 ### Minor Changes
