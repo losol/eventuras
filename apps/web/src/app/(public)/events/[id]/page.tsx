@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 
 import { getV3EventsById, publicClient } from '@/lib/eventuras-public-sdk';
+import { throwIfApiError } from '@/utils/api/apiErrors';
 
 type EventInfoProps = {
   params: Promise<{
@@ -15,10 +16,7 @@ export default async function EventPage({ params }: Readonly<EventInfoProps>) {
     path: { id },
   });
 
-  // Only a 404 means "not found"; other errors (e.g. 429) go to the error page.
-  if (response.error && response.response?.status !== 404) {
-    throw new Error(`Failed to load event ${id} (HTTP ${response.response?.status})`);
-  }
+  throwIfApiError(response, `event ${id}`);
   if (!response.data) return <div>Event not found</div>;
 
   const eventinfo = response.data;

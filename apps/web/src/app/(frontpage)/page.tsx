@@ -23,6 +23,7 @@ import {
   getV3Events,
   publicClient,
 } from '@/lib/eventuras-public-sdk';
+import { throwIfApiError } from '@/utils/api/apiErrors';
 import { getOrganizationId } from '@/utils/organization';
 import getSiteSettings from '@/utils/site/getSiteSettings';
 
@@ -58,8 +59,11 @@ export default async function Homepage() {
       headers: { 'Eventuras-Org-Id': ORGANIZATION_ID },
     });
 
-    // The SDK returns errors instead of throwing; surface them (e.g. 429).
-    if (collectionsResponse.error) throw collectionsResponse.error;
+    // The SDK returns errors instead of throwing. Flag them, but still load all events below.
+    if (collectionsResponse.error) {
+      logger.error({ error: collectionsResponse.error }, 'Failed to fetch featured collections');
+      hasError = true;
+    }
     const collections = collectionsResponse.data?.data ?? [];
 
     // Fetch events for each featured collection (sorted by category)
@@ -72,7 +76,7 @@ export default async function Homepage() {
             Ordering: ['Category', 'DateStart', 'Title'],
           },
         });
-        if (eventsResponse.error) throw eventsResponse.error;
+        throwIfApiError(eventsResponse, `events for collection ${collection.id}`);
         return {
           ...collection,
           events: eventsResponse.data?.data ?? [],
@@ -96,7 +100,7 @@ export default async function Homepage() {
       },
     });
 
-    if (eventsResponse.error) throw eventsResponse.error;
+    throwIfApiError(eventsResponse, 'events');
     events = eventsResponse.data?.data ?? [];
 
     logger.info(

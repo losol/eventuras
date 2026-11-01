@@ -18,6 +18,7 @@ import EventRegistrationButton from '@/app/(public)/events/EventRegistrationButt
 import EventRegistrationCard from '@/app/(public)/events/EventRegistrationCard';
 import { getPublicClient } from '@/lib/eventuras-public-client';
 import { EventInfoStatus, getV3EventsById } from '@/lib/eventuras-public-sdk';
+import { throwIfApiError } from '@/utils/api/apiErrors';
 
 import EventNotFound from '../../EventNotFound';
 
@@ -48,6 +49,7 @@ export async function generateMetadata({ params }: EventDetailsPageProps): Promi
       client: publicClient,
       path: { id },
     });
+    throwIfApiError(response, `event ${id}`);
 
     if (!response.data || response.data.status === EventInfoStatus.DRAFT) {
       return {
@@ -92,15 +94,7 @@ async function fetchEvent(id: number) {
       'Event details fetched'
     );
 
-    // The SDK client does not throw on HTTP errors; it returns { data, error }.
-    // Only a 404 means "not found"; other errors (e.g. 429) go to the error page.
-    if (response.error) {
-      if (response.response?.status !== 404) {
-        throw new Error(`Failed to load event ${id} (HTTP ${response.response?.status})`);
-      }
-      logger.warn({ eventId: id }, 'Event not found');
-      return null;
-    }
+    throwIfApiError(response, `event ${id}`);
 
     // Handle not found or draft events
     if (!response.data || response.data.status === EventInfoStatus.DRAFT) {
