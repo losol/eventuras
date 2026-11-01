@@ -10,9 +10,10 @@ import { Section } from '@eventuras/ratio-ui/layout/Section';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
 import { CategoryGroupedEvents } from '@/components/event/CategoryGroupedEvents';
+import ServiceBusy from '@/components/ServiceBusy';
 import { getPublicClient } from '@/lib/eventuras-public-client';
 import { getV3EventcollectionsById, getV3Events } from '@/lib/eventuras-public-sdk';
-import { throwIfApiError } from '@/utils/api/apiErrors';
+import { isApiBusy, throwIfApiError } from '@/utils/api/apiErrors';
 type EventInfoProps = {
   params: Promise<{
     id: number;
@@ -30,6 +31,7 @@ const CollectionPage: React.FC<EventInfoProps> = async props => {
     client: publicClient,
     path: { id: params.id },
   });
+  if (isApiBusy(response)) return <ServiceBusy />;
   throwIfApiError(response, `collection ${params.id}`);
   if (!response.data)
     return (
@@ -52,6 +54,7 @@ const CollectionPage: React.FC<EventInfoProps> = async props => {
       Ordering: ['Category', 'DateStart', 'Title'],
     },
   });
+  if (isApiBusy(eventsResponse)) return <ServiceBusy />;
   throwIfApiError(eventsResponse, `events for collection ${collection.id}`);
   return (
     <>

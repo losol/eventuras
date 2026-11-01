@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { throwIfApiError } from './apiErrors';
+import { isApiBusy, throwIfApiError } from './apiErrors';
 
 describe('throwIfApiError', () => {
   it('passes on success', () => {
@@ -19,5 +19,13 @@ describe('throwIfApiError', () => {
 
   it('throws when there is no response', () => {
     expect(() => throwIfApiError({ error: new Error('network') }, 'event')).toThrow('no response');
+  });
+});
+
+describe('isApiBusy', () => {
+  it('is true only for 429', () => {
+    expect(isApiBusy({ error: {}, response: { status: 429 } })).toBe(true);
+    expect(isApiBusy({ error: {}, response: { status: 500 } })).toBe(false);
+    expect(isApiBusy({ response: { status: 200 } })).toBe(false);
   });
 });

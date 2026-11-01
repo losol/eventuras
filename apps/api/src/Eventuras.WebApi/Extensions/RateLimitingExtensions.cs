@@ -1,5 +1,6 @@
 using System;
 using System.Threading.RateLimiting;
+using System.Threading.Tasks;
 using Eventuras.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -17,6 +18,7 @@ public static class RateLimitingExtensions
     /// <summary>Default cap, lowered to half the DB pool when that is smaller.</summary>
     public const int DefaultPermitLimit = 10;
     public const int DefaultQueueLimit = 20;
+    public const int RetryAfterSeconds = 5;
 
     /// <summary>
     ///     Caps concurrent unauthenticated requests per replica, so a flood cannot
@@ -38,6 +40,11 @@ public static class RateLimitingExtensions
         services.AddRateLimiter(options =>
         {
             options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+            options.OnRejected = (context, _) =>
+            {
+                context.HttpContext.Response.Headers.RetryAfter = RetryAfterSeconds.ToString();
+                return ValueTask.CompletedTask;
+            };
             options.AddPolicy(AnonymousPolicy, context =>
                 context.User.Identity?.IsAuthenticated == true
                     ? RateLimitPartition.GetNoLimiter("authenticated")

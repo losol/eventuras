@@ -7,9 +7,10 @@ import { Text } from '@eventuras/ratio-ui/core/Text';
 import { Section } from '@eventuras/ratio-ui/layout/Section';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
+import ServiceBusy from '@/components/ServiceBusy';
 import { getPublicClient } from '@/lib/eventuras-public-client';
 import { getV3Eventcollections } from '@/lib/eventuras-public-sdk';
-import { throwIfApiError } from '@/utils/api/apiErrors';
+import { isApiBusy, throwIfApiError } from '@/utils/api/apiErrors';
 import { getOrganizationId } from '@/utils/organization';
 // Always render server-side so ORGANIZATION_ID is read at request time, not build time
 export const dynamic = 'force-dynamic';
@@ -25,6 +26,7 @@ const CollectionIndexPage: React.FC = async () => {
       'Eventuras-Org-Id': orgId,
     },
   });
+  if (isApiBusy(response)) return <ServiceBusy />;
   throwIfApiError(response, 'collections');
   if (!response.data)
     return (

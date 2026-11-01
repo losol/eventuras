@@ -9,3 +9,6 @@ export function throwIfApiError(result: SdkResult, what: string): void {
     throw new Error(`Failed to load ${what} (HTTP ${result.response?.status ?? 'no response'})`);
   }
 }
+
+/** True when the API rejected the request because it is busy (HTTP 429). */
+export const isApiBusy = (result: SdkResult): boolean => result.response?.status === 429;

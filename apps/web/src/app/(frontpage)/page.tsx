@@ -23,7 +23,7 @@ import {
   getV3Events,
   publicClient,
 } from '@/lib/eventuras-public-sdk';
-import { throwIfApiError } from '@/utils/api/apiErrors';
+import { isApiBusy, throwIfApiError } from '@/utils/api/apiErrors';
 import { getOrganizationId } from '@/utils/organization';
 import getSiteSettings from '@/utils/site/getSiteSettings';
 
@@ -50,6 +50,7 @@ export default async function Homepage() {
   let featuredCollections: (EventCollectionDto & { events: EventDto[] })[] = [];
   let events: EventDto[] = [];
   let hasError = false;
+  let isBusy = false;
 
   try {
     // Fetch featured collections and their events
@@ -63,6 +64,7 @@ export default async function Homepage() {
     if (collectionsResponse.error) {
       logger.error({ error: collectionsResponse.error }, 'Failed to fetch featured collections');
       hasError = true;
+      isBusy = isApiBusy(collectionsResponse);
     }
     const collections = collectionsResponse.data?.data ?? [];
 
@@ -76,6 +78,7 @@ export default async function Homepage() {
             Ordering: ['Category', 'DateStart', 'Title'],
           },
         });
+        if (isApiBusy(eventsResponse)) isBusy = true;
         throwIfApiError(eventsResponse, `events for collection ${collection.id}`);
         return {
           ...collection,
@@ -100,6 +103,7 @@ export default async function Homepage() {
       },
     });
 
+    if (isApiBusy(eventsResponse)) isBusy = true;
     throwIfApiError(eventsResponse, 'events');
     events = eventsResponse.data?.data ?? [];
 
@@ -203,9 +207,9 @@ export default async function Homepage() {
         <Section color="error" paddingY="lg">
           <Container>
             <Heading as="h2" paddingBottom="sm">
-              {t('common.errors.failedToLoadEvents')}
+              {t(isBusy ? 'common.errors.busy.title' : 'common.errors.failedToLoadEvents')}
             </Heading>
-            <Text>{t('common.errors.tryRefresh')}</Text>
+            <Text>{t(isBusy ? 'common.errors.busy.description' : 'common.errors.tryRefresh')}</Text>
           </Container>
         </Section>
       )}

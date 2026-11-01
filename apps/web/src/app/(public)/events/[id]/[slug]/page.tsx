@@ -16,9 +16,10 @@ import EventDetails from '@/app/(public)/events/EventDetails';
 import { getEventFacts } from '@/app/(public)/events/eventFacts';
 import EventRegistrationButton from '@/app/(public)/events/EventRegistrationButton';
 import EventRegistrationCard from '@/app/(public)/events/EventRegistrationCard';
+import ServiceBusy from '@/components/ServiceBusy';
 import { getPublicClient } from '@/lib/eventuras-public-client';
 import { EventInfoStatus, getV3EventsById } from '@/lib/eventuras-public-sdk';
-import { throwIfApiError } from '@/utils/api/apiErrors';
+import { isApiBusy, throwIfApiError } from '@/utils/api/apiErrors';
 
 import EventNotFound from '../../EventNotFound';
 
@@ -94,6 +95,7 @@ async function fetchEvent(id: number) {
       'Event details fetched'
     );
 
+    if (isApiBusy(response)) return 'busy' as const;
     throwIfApiError(response, `event ${id}`);
 
     // Handle not found or draft events
@@ -119,6 +121,10 @@ export default async function EventDetailsPage({ params }: Readonly<EventDetails
   }
 
   const eventinfo = await fetchEvent(id);
+
+  if (eventinfo === 'busy') {
+    return <ServiceBusy />;
+  }
 
   if (!eventinfo) {
     return <EventNotFound />;
