@@ -1,5 +1,11 @@
 # web-e2e
 
+## 0.2.34
+
+### Patch Changes
+
+- @eventuras/event-sdk@3.9.2
+
 ## 0.2.33
 
 ### Patch Changes
