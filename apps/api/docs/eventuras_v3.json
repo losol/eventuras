@@ -3574,12 +3574,19 @@
             }
           },
           "429": {
-            "description": "Too many concurrent anonymous requests. Retry after the Retry-After delay.",
+            "description": "Too many concurrent anonymous requests.",
             "headers": {
               "Retry-After": {
                 "description": "Seconds to wait before retrying.",
                 "schema": {
                   "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }
@@ -3676,12 +3683,19 @@
             }
           },
           "429": {
-            "description": "Too many concurrent anonymous requests. Retry after the Retry-After delay.",
+            "description": "Too many concurrent anonymous requests.",
             "headers": {
               "Retry-After": {
                 "description": "Seconds to wait before retrying.",
                 "schema": {
                   "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }
@@ -3915,12 +3929,19 @@
             }
           },
           "429": {
-            "description": "Too many concurrent anonymous requests. Retry after the Retry-After delay.",
+            "description": "Too many concurrent anonymous requests.",
             "headers": {
               "Retry-After": {
                 "description": "Seconds to wait before retrying.",
                 "schema": {
                   "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }
@@ -4180,12 +4201,19 @@
             }
           },
           "429": {
-            "description": "Too many concurrent anonymous requests. Retry after the Retry-After delay.",
+            "description": "Too many concurrent anonymous requests.",
             "headers": {
               "Retry-After": {
                 "description": "Seconds to wait before retrying.",
                 "schema": {
                   "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }
@@ -4242,12 +4270,19 @@
             }
           },
           "429": {
-            "description": "Too many concurrent anonymous requests. Retry after the Retry-After delay.",
+            "description": "Too many concurrent anonymous requests.",
             "headers": {
               "Retry-After": {
                 "description": "Seconds to wait before retrying.",
                 "schema": {
                   "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }
@@ -4373,12 +4408,19 @@
             }
           },
           "429": {
-            "description": "Too many concurrent anonymous requests. Retry after the Retry-After delay.",
+            "description": "Too many concurrent anonymous requests.",
             "headers": {
               "Retry-After": {
                 "description": "Seconds to wait before retrying.",
                 "schema": {
                   "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }
@@ -4612,12 +4654,19 @@
             }
           },
           "429": {
-            "description": "Too many concurrent anonymous requests. Retry after the Retry-After delay.",
+            "description": "Too many concurrent anonymous requests.",
             "headers": {
               "Retry-After": {
                 "description": "Seconds to wait before retrying.",
                 "schema": {
                   "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }
@@ -5043,12 +5092,19 @@
             }
           },
           "429": {
-            "description": "Too many concurrent anonymous requests. Retry after the Retry-After delay.",
+            "description": "Too many concurrent anonymous requests.",
             "headers": {
               "Retry-After": {
                 "description": "Seconds to wait before retrying.",
                 "schema": {
                   "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }
@@ -5164,12 +5220,19 @@
             }
           },
           "429": {
-            "description": "Too many concurrent anonymous requests. Retry after the Retry-After delay.",
+            "description": "Too many concurrent anonymous requests.",
             "headers": {
               "Retry-After": {
                 "description": "Seconds to wait before retrying.",
                 "schema": {
                   "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }

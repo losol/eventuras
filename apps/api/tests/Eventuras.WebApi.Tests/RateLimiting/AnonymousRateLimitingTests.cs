@@ -63,6 +63,7 @@ public class AnonymousRateLimitingTests : IClassFixture<CustomWebApiApplicationF
 
         Assert.Equal(HttpStatusCode.TooManyRequests, second.StatusCode);
         Assert.Equal(TimeSpan.FromSeconds(5), second.Headers.RetryAfter?.Delta);
+        Assert.Equal("application/problem+json", second.Content.Headers.ContentType?.MediaType);
         Assert.Equal(HttpStatusCode.OK, authenticated.StatusCode);
         Assert.Equal(HttpStatusCode.OK, (await first).StatusCode);
     }

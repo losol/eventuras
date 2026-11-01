@@ -9,8 +9,10 @@ import { Section } from '@eventuras/ratio-ui/layout/Section';
 import { Link } from '@eventuras/ratio-ui-next/Link';
 
 import { EventListRow } from '@/components/event';
+import ServiceBusy from '@/components/ServiceBusy';
 import { getPublicClient } from '@/lib/eventuras-public-client';
 import { type EventDto, getV3Events } from '@/lib/eventuras-public-sdk';
+import { isApiBusy } from '@/utils/api/apiErrors';
 import { getOrganizationId } from '@/utils/organization';
 import { DEFAULT_TIME_ZONE, localDate } from '@/utils/site/occasions';
 
@@ -52,6 +54,7 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
   let events: EventDto[] = [];
   let totalPages = 1;
   let fetchError = false;
+  let busy = false;
 
   try {
     const publicClient = getPublicClient();
@@ -78,6 +81,7 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
         'Failed to fetch events'
       );
       fetchError = true;
+      busy = isApiBusy(response);
     } else {
       events = response.data?.data ?? [];
       totalPages = Math.max(1, response.data?.pages ?? 1);
@@ -132,7 +136,8 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
           </Link>
         </div>
 
-        {fetchError && <Text>{t('common.errors.failedToLoadEvents')}</Text>}
+        {fetchError && busy && <ServiceBusy />}
+        {fetchError && !busy && <Text>{t('common.errors.failedToLoadEvents')}</Text>}
 
         {!fetchError && events.length === 0 && <Text>{emptyLabel}</Text>}
 

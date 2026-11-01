@@ -1,6 +1,5 @@
 using System;
 using System.Threading.RateLimiting;
-using System.Threading.Tasks;
 using Eventuras.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -40,10 +39,14 @@ public static class RateLimitingExtensions
         services.AddRateLimiter(options =>
         {
             options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
-            options.OnRejected = (context, _) =>
+            options.OnRejected = async (context, _) =>
             {
                 context.HttpContext.Response.Headers.RetryAfter = RetryAfterSeconds.ToString();
-                return ValueTask.CompletedTask;
+                await Results.Problem(
+                        statusCode: StatusCodes.Status429TooManyRequests,
+                        title: "Too many requests",
+                        detail: "Too many concurrent anonymous requests. Try again shortly.")
+                    .ExecuteAsync(context.HttpContext);
             };
             options.AddPolicy(AnonymousPolicy, context =>
                 context.User.Identity?.IsAuthenticated == true

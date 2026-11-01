@@ -2380,10 +2380,12 @@ export type GetV3EventsData = {
 
 export type GetV3EventsErrors = {
     /**
-     * Too many concurrent anonymous requests. Retry after the Retry-After delay.
+     * Too many concurrent anonymous requests.
      */
-    429: unknown;
+    429: ProblemDetails;
 };
+
+export type GetV3EventsError = GetV3EventsErrors[keyof GetV3EventsErrors];
 
 export type GetV3EventsResponses = {
     /**
@@ -2461,10 +2463,12 @@ export type GetV3EventsByIdData = {
 
 export type GetV3EventsByIdErrors = {
     /**
-     * Too many concurrent anonymous requests. Retry after the Retry-After delay.
+     * Too many concurrent anonymous requests.
      */
-    429: unknown;
+    429: ProblemDetails;
 };
+
+export type GetV3EventsByIdError = GetV3EventsByIdErrors[keyof GetV3EventsByIdErrors];
 
 export type GetV3EventsByIdResponses = {
     /**
@@ -2600,9 +2604,9 @@ export type GetV3EventsByUuidErrors = {
      */
     404: ProblemDetails;
     /**
-     * Too many concurrent anonymous requests. Retry after the Retry-After delay.
+     * Too many concurrent anonymous requests.
      */
-    429: unknown;
+    429: ProblemDetails;
 };
 
 export type GetV3EventsByUuidError = GetV3EventsByUuidErrors[keyof GetV3EventsByUuidErrors];
@@ -2711,10 +2715,12 @@ export type GetV3OnlinecoursesData = {
 
 export type GetV3OnlinecoursesErrors = {
     /**
-     * Too many concurrent anonymous requests. Retry after the Retry-After delay.
+     * Too many concurrent anonymous requests.
      */
-    429: unknown;
+    429: ProblemDetails;
 };
+
+export type GetV3OnlinecoursesError = GetV3OnlinecoursesErrors[keyof GetV3OnlinecoursesErrors];
 
 export type GetV3OnlinecoursesResponses = {
     /**
@@ -2742,10 +2748,12 @@ export type GetV3OnlinecoursesByIdData = {
 
 export type GetV3OnlinecoursesByIdErrors = {
     /**
-     * Too many concurrent anonymous requests. Retry after the Retry-After delay.
+     * Too many concurrent anonymous requests.
      */
-    429: unknown;
+    429: ProblemDetails;
 };
+
+export type GetV3OnlinecoursesByIdError = GetV3OnlinecoursesByIdErrors[keyof GetV3OnlinecoursesByIdErrors];
 
 export type GetV3OnlinecoursesByIdResponses = {
     /**
@@ -2799,10 +2807,12 @@ export type GetV3EventsByEventIdProductsData = {
 
 export type GetV3EventsByEventIdProductsErrors = {
     /**
-     * Too many concurrent anonymous requests. Retry after the Retry-After delay.
+     * Too many concurrent anonymous requests.
      */
-    429: unknown;
+    429: ProblemDetails;
 };
+
+export type GetV3EventsByEventIdProductsError = GetV3EventsByEventIdProductsErrors[keyof GetV3EventsByEventIdProductsErrors];
 
 export type GetV3EventsByEventIdProductsResponses = {
     /**
@@ -2899,10 +2909,12 @@ export type GetV3EventsByEventIdProductsByProductIdVariantsData = {
 
 export type GetV3EventsByEventIdProductsByProductIdVariantsErrors = {
     /**
-     * Too many concurrent anonymous requests. Retry after the Retry-After delay.
+     * Too many concurrent anonymous requests.
      */
-    429: unknown;
+    429: ProblemDetails;
 };
+
+export type GetV3EventsByEventIdProductsByProductIdVariantsError = GetV3EventsByEventIdProductsByProductIdVariantsErrors[keyof GetV3EventsByEventIdProductsByProductIdVariantsErrors];
 
 export type GetV3EventsByEventIdProductsByProductIdVariantsResponses = {
     /**
@@ -3079,10 +3091,12 @@ export type GetV3EventcollectionsData = {
 
 export type GetV3EventcollectionsErrors = {
     /**
-     * Too many concurrent anonymous requests. Retry after the Retry-After delay.
+     * Too many concurrent anonymous requests.
      */
-    429: unknown;
+    429: ProblemDetails;
 };
+
+export type GetV3EventcollectionsError = GetV3EventcollectionsErrors[keyof GetV3EventcollectionsErrors];
 
 export type GetV3EventcollectionsResponses = {
     /**
@@ -3154,10 +3168,12 @@ export type GetV3EventcollectionsByIdData = {
 
 export type GetV3EventcollectionsByIdErrors = {
     /**
-     * Too many concurrent anonymous requests. Retry after the Retry-After delay.
+     * Too many concurrent anonymous requests.
      */
-    429: unknown;
+    429: ProblemDetails;
 };
+
+export type GetV3EventcollectionsByIdError = GetV3EventcollectionsByIdErrors[keyof GetV3EventcollectionsByIdErrors];
 
 export type GetV3EventcollectionsByIdResponses = {
     /**

@@ -93,7 +93,7 @@
     "title": "Errrrrror."
   },
   "errors": {
-    "failedToLoadEvents": "No events...",
+    "failedToLoadEvents": "Could not load events",
     "fatalError": {
       "description": "We tried to perform the action, but something went wrong, please try again later.",
       "title": "Something went very wrong"

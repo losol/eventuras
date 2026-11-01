@@ -209,7 +209,10 @@ public class RemoveJsonPatchContentTypeTransformer : IOpenApiOperationTransforme
     }
 }
 
-/// <summary>Declares the 429 response on operations with the anonymous rate-limit policy.</summary>
+/// <summary>
+///     Declares the 429 ProblemDetails response (and Retry-After) on operations
+///     with the anonymous rate-limit policy.
+/// </summary>
 public class AddRateLimitResponseTransformer : IOpenApiOperationTransformer
 {
     public Task TransformAsync(OpenApiOperation operation, OpenApiOperationTransformerContext context,
@@ -226,13 +229,20 @@ public class AddRateLimitResponseTransformer : IOpenApiOperationTransformer
         operation.Responses ??= new OpenApiResponses();
         operation.Responses["429"] = new OpenApiResponse
         {
-            Description = "Too many concurrent anonymous requests. Retry after the Retry-After delay.",
+            Description = "Too many concurrent anonymous requests.",
             Headers = new Dictionary<string, IOpenApiHeader>
             {
                 ["Retry-After"] = new OpenApiHeader
                 {
                     Description = "Seconds to wait before retrying.",
                     Schema = new OpenApiSchema { Type = JsonSchemaType.Integer },
+                },
+            },
+            Content = new Dictionary<string, OpenApiMediaType>
+            {
+                ["application/problem+json"] = new()
+                {
+                    Schema = new OpenApiSchemaReference("ProblemDetails", context.Document),
                 },
             },
         };
