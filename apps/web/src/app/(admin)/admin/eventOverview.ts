@@ -140,11 +140,16 @@ export function sortRows(rows: OverviewRow[], tab: OverviewTab): OverviewRow[] {
   return [...rows].sort((a, b) => {
     const x = a.event.dateStart ?? '';
     const y = b.event.dateStart ?? '';
-    if (!x || !y) return x ? -1 : y ? 1 : 0;
+    if (!x && !y) return 0;
+    if (!y) return -1;
+    if (!x) return 1;
     return desc ? y.localeCompare(x) : x.localeCompare(y);
   });
 }
 
 export type FillTone = 'primary' | 'accent' | 'warning';
-export const fillTone = (fill: number): FillTone =>
-  fill >= 1 ? 'warning' : fill >= 0.85 ? 'accent' : 'primary';
+export function fillTone(fill: number): FillTone {
+  if (fill >= 1) return 'warning';
+  if (fill >= 0.85) return 'accent';
+  return 'primary';
+}
