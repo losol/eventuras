@@ -1,0 +1,151 @@
+.overview {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.titleBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.table {
+  overflow: hidden;
+  border: 1px solid var(--border-1);
+  border-radius: 0.75rem;
+  background: var(--card);
+}
+
+.head,
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.5rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border-1);
+}
+
+.head {
+  display: none;
+  padding-block: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-subtle);
+}
+
+.row {
+  position: relative;
+  align-items: center;
+  transition: background 0.2s ease-in-out;
+}
+
+.row:last-child {
+  border-bottom: 0;
+}
+
+.row:hover {
+  background: var(--card-hover);
+}
+
+.titleCell {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+}
+
+/* The ::after overlay makes the whole row clickable. */
+.titleLink {
+  font-weight: 600;
+  color: var(--text);
+  text-wrap: pretty;
+}
+
+.titleLink::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.muted {
+  color: var(--text-muted);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.subtle {
+  font-size: 0.875rem;
+  color: var(--text-subtle);
+}
+
+.bar {
+  height: 4px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--color-secondary-300);
+}
+
+.barFill {
+  height: 100%;
+  border-radius: 4px;
+}
+
+.chevron {
+  display: none;
+  justify-self: end;
+  color: var(--text-subtle);
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 2.5rem 1.25rem;
+  text-align: center;
+}
+
+.linkButton {
+  border: 0;
+  background: transparent;
+  color: var(--primary);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.showAll {
+  align-self: flex-start;
+  font-weight: 600;
+}
+
+@media (min-width: 48rem) {
+  .head,
+  .row {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 1.5fr) 8rem 9rem 1.5rem;
+    gap: 1rem;
+  }
+
+  .head {
+    display: grid;
+  }
+
+  .chevron {
+    display: block;
+  }
+}

@@ -1,56 +1,30 @@
-import { getTranslations } from 'next-intl/server';
-
-import { ButtonGroup } from '@eventuras/ratio-ui/core/Button';
-import { Heading } from '@eventuras/ratio-ui/core/Heading';
-import { Box } from '@eventuras/ratio-ui/layout/Box';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
-import { Section } from '@eventuras/ratio-ui/layout/Section';
-import { Link } from '@eventuras/ratio-ui-next/Link';
 
 import { getOrganizationId } from '@/utils/organization';
 
-import AdminEventList from './events/AdminEventList';
+import { AdminEventOverview } from './AdminEventOverview';
+import { fetchEvents } from './events/eventActions';
 import { HealthAlert } from './HealthAlert';
 
-interface AdminPageProps {
-  searchParams?: Promise<{ page?: string }>;
-}
-const AdminPage = async (props: AdminPageProps) => {
-  const t = await getTranslations();
-  const params = props.searchParams ? await props.searchParams : {};
-  const page = params.page ? Number.parseInt(params.page, 10) : 1;
+/** Enough to cover upcoming events, drafts and recent history; the rest is on /admin/events. */
+const OVERVIEW_EVENT_COUNT = 100;
+
+/** Today as a LocalDate in the organization's time zone. */
+const todayInOslo = () =>
+  new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Oslo' }).format(new Date());
+
+const AdminPage = async () => {
+  const { data: events } = await fetchEvents({
+    organizationId: getOrganizationId(),
+    includePastEvents: true,
+    pageSize: OVERVIEW_EVENT_COUNT,
+    ordering: ['DateStart:desc'],
+  });
+
   return (
     <Container>
-      <Heading as="h1">{t('admin.title')}</Heading>
       <HealthAlert />
-      <Section className="py-10">
-        <ButtonGroup wrap gap="xs">
-          <Link href={`/admin/events/create`} variant="button-primary" testId="add-event-button">
-            {t('admin.events.labes.create')}
-          </Link>
-          <Link href={`/admin/users/`} variant="button-primary">
-            {t('admin.labels.users')}
-          </Link>
-          <Link href={`/admin/orders/`} variant="button-primary">
-            {t('admin.labels.orders')}
-          </Link>
-          <Link href={`/admin/registrations/`} variant="button-primary">
-            {t('admin.labels.registrations')}
-          </Link>
-          <Link href={`/admin/collections/`} variant="button-primary">
-            {t('admin.labels.collections')}
-          </Link>
-        </ButtonGroup>
-      </Section>
-      <Section paddingY="xl">
-        <Heading as="h2">{t('common.events.sectiontitle')}</Heading>
-        <Box marginY="xs">
-          <Link href={`/admin/events`} variant="button-secondary" marginY="sm">
-            {t('common.labels.allEvents')}
-          </Link>
-        </Box>
-        <AdminEventList organizationId={getOrganizationId()} page={page} />
-      </Section>
+      <AdminEventOverview events={events} today={todayInOslo()} />
     </Container>
   );
 };
