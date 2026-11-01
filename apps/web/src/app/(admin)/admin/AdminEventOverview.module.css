@@ -18,7 +18,7 @@
   gap: 0.25rem;
 }
 
-.table {
+.card {
   position: relative;
   overflow: hidden;
   border: 1px solid var(--border-1);
@@ -26,13 +26,22 @@
   background: var(--card);
 }
 
-.head,
-.row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 0.5rem;
+/* Narrow screens: block layout, each row stacks its cells. */
+.table,
+.table tbody {
+  display: block;
+  width: 100%;
+}
+
+.table colgroup {
+  display: none;
+}
+
+.table th,
+.table td {
   padding: 1rem 1.25rem;
-  border-bottom: 1px solid var(--border-1);
+  text-align: left;
+  vertical-align: middle;
 }
 
 /* Visually hidden until the column layout kicks in. */
@@ -43,7 +52,12 @@
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
+}
+
+.head th,
+.head td {
   padding-block: 0.75rem;
+  border-bottom: 1px solid var(--border-1);
   font-size: 0.875rem;
   font-weight: 600;
   color: var(--text-subtle);
@@ -51,8 +65,16 @@
 
 .row {
   position: relative;
-  align-items: center;
+  display: grid;
+  gap: 0.5rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border-1);
   transition: background 0.2s ease-in-out;
+}
+
+.table .row td {
+  display: block;
+  padding: 0;
 }
 
 .row:last-child {
@@ -113,9 +135,11 @@
 }
 
 .chevron {
-  display: none;
-  justify-self: end;
   color: var(--text-subtle);
+}
+
+.table .row .chevron {
+  display: none;
 }
 
 .empty {
@@ -141,11 +165,36 @@
   font-weight: 600;
 }
 
+.colLocation {
+  width: 25%;
+}
+
+.colWhen {
+  width: 8.5rem;
+}
+
+.colRegistrations {
+  width: 10rem;
+}
+
+.colChevron {
+  width: 3rem;
+}
+
 @media (min-width: 48rem) {
-  .head,
-  .row {
-    grid-template-columns: minmax(0, 3fr) minmax(0, 1.5fr) 8rem 9rem 1.5rem;
-    gap: 1rem;
+  /* Wide screens: a regular table. */
+  .table {
+    display: table;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+
+  .table tbody {
+    display: table-row-group;
+  }
+
+  .table colgroup {
+    display: table-column-group;
   }
 
   .head {
@@ -157,7 +206,23 @@
     white-space: normal;
   }
 
-  .chevron {
-    display: block;
+  .row {
+    display: table-row;
+    padding: 0;
+  }
+
+  .table .row td {
+    display: table-cell;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border-1);
+  }
+
+  .row:last-child td {
+    border-bottom: 0;
+  }
+
+  .table .row .chevron {
+    display: table-cell;
+    text-align: right;
   }
 }

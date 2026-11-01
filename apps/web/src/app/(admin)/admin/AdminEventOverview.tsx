@@ -103,27 +103,37 @@ export function AdminEventOverview({ events, today }: Readonly<Props>) {
         }))}
       />
 
-      <div className={styles.table}>
-        <div role="table" aria-label={t('title')}>
+      <div className={styles.card}>
+        <table className={styles.table} aria-label={t('title')}>
+          <colgroup>
+            <col />
+            <col className={styles.colLocation} />
+            <col className={styles.colWhen} />
+            <col className={styles.colRegistrations} />
+            <col className={styles.colChevron} />
+          </colgroup>
           {/* Visually hidden on narrow screens, but kept for screen readers. */}
-          <div role="row" className={styles.head}>
-            <span role="columnheader">{t('columns.title')}</span>
-            <span role="columnheader">{t('columns.location')}</span>
-            <span role="columnheader">{t('columns.when')}</span>
-            <span role="columnheader">{t('columns.registrations')}</span>
-            <span aria-hidden="true" />
-          </div>
-
-          {rows.map(row => (
-            <EventRow
-              key={row.event.id}
-              row={row}
-              statusLabel={t(`status.${row.statusKey}`)}
-              dateLabel={row.event.dateStart ? formatDate(row.event.dateStart, { locale }) : ''}
-              relativeLabel={relativeLabel(row.relative)}
-            />
-          ))}
-        </div>
+          <thead className={styles.head}>
+            <tr>
+              <th scope="col">{t('columns.title')}</th>
+              <th scope="col">{t('columns.location')}</th>
+              <th scope="col">{t('columns.when')}</th>
+              <th scope="col">{t('columns.registrations')}</th>
+              <td aria-hidden="true" />
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map(row => (
+              <EventRow
+                key={row.event.id}
+                row={row}
+                statusLabel={t(`status.${row.statusKey}`)}
+                dateLabel={row.event.dateStart ? formatDate(row.event.dateStart, { locale }) : ''}
+                relativeLabel={relativeLabel(row.relative)}
+              />
+            ))}
+          </tbody>
+        </table>
 
         {rows.length === 0 && (
           <div className={styles.empty}>
@@ -156,50 +166,54 @@ function EventRow({ row, statusLabel, dateLabel, relativeLabel }: Readonly<Event
   const href = `/admin/events/${event.id}`;
 
   return (
-    <div role="row" className={styles.row}>
-      <div role="cell" className={styles.titleCell}>
-        <Link href={href} className={styles.titleLink}>
-          {event.title}
-        </Link>
-        <Badge status={row.badge} variant="subtle">
-          {statusLabel}
-        </Badge>
-      </div>
-      <span role="cell" className={styles.muted}>
-        {event.location}
-      </span>
-      <div role="cell" className={styles.stack}>
-        <span>{dateLabel}</span>
-        <span className={styles.subtle}>{relativeLabel}</span>
-      </div>
-      <div role="cell" className={styles.stack}>
-        <span>{capacity ? `${registrations} / ${capacity}` : registrations}</span>
-        {fill !== undefined && (
-          <div className={styles.bar}>
-            <div
-              className={styles.barFill}
-              style={{
-                width: `${Math.min(fill, 1) * 100}%`,
-                background: FILL_COLOR[fillTone(fill)],
-              }}
-            />
-          </div>
-        )}
-      </div>
-      <svg
-        aria-hidden="true"
-        className={styles.chevron}
-        width="20"
-        height="20"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <path d="m9 18 6-6-6-6" />
-      </svg>
-    </div>
+    <tr className={styles.row}>
+      <td>
+        <div className={styles.titleCell}>
+          <Link href={href} className={styles.titleLink}>
+            {event.title}
+          </Link>
+          <Badge status={row.badge} variant="subtle">
+            {statusLabel}
+          </Badge>
+        </div>
+      </td>
+      <td className={styles.muted}>{event.location}</td>
+      <td>
+        <div className={styles.stack}>
+          <span>{dateLabel}</span>
+          <span className={styles.subtle}>{relativeLabel}</span>
+        </div>
+      </td>
+      <td>
+        <div className={styles.stack}>
+          <span>{capacity ? `${registrations} / ${capacity}` : registrations}</span>
+          {fill !== undefined && (
+            <div className={styles.bar}>
+              <div
+                className={styles.barFill}
+                style={{
+                  width: `${Math.min(fill, 1) * 100}%`,
+                  background: FILL_COLOR[fillTone(fill)],
+                }}
+              />
+            </div>
+          )}
+        </div>
+      </td>
+      <td aria-hidden="true" className={styles.chevron}>
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="m9 18 6-6-6-6" />
+        </svg>
+      </td>
+    </tr>
   );
 }
