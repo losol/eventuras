@@ -3582,13 +3582,6 @@
                   "type": "integer"
                 }
               }
-            },
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
             }
           }
         }
@@ -3689,13 +3682,6 @@
                 "description": "Seconds to wait before retrying.",
                 "schema": {
                   "type": "integer"
-                }
-              }
-            },
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }
@@ -4209,13 +4195,6 @@
                   "type": "integer"
                 }
               }
-            },
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
             }
           }
         }
@@ -4276,13 +4255,6 @@
                 "description": "Seconds to wait before retrying.",
                 "schema": {
                   "type": "integer"
-                }
-              }
-            },
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }
@@ -4414,13 +4386,6 @@
                 "description": "Seconds to wait before retrying.",
                 "schema": {
                   "type": "integer"
-                }
-              }
-            },
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }
@@ -4660,13 +4625,6 @@
                 "description": "Seconds to wait before retrying.",
                 "schema": {
                   "type": "integer"
-                }
-              }
-            },
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }
@@ -5100,13 +5058,6 @@
                   "type": "integer"
                 }
               }
-            },
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
             }
           }
         }
@@ -5226,13 +5177,6 @@
                 "description": "Seconds to wait before retrying.",
                 "schema": {
                   "type": "integer"
-                }
-              }
-            },
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }

@@ -227,6 +227,9 @@ public class AddRateLimitResponseTransformer : IOpenApiOperationTransformer
         }
 
         operation.Responses ??= new OpenApiResponses();
+        // Only type the body where other errors are documented; otherwise the
+        // SDK would claim every error is ProblemDetails (404s are plain strings).
+        var hasDocumentedErrors = operation.Responses.Keys.Any(k => k[0] is '4' or '5');
         operation.Responses["429"] = new OpenApiResponse
         {
             Description = "Too many concurrent anonymous requests.",
@@ -238,13 +241,15 @@ public class AddRateLimitResponseTransformer : IOpenApiOperationTransformer
                     Schema = new OpenApiSchema { Type = JsonSchemaType.Integer },
                 },
             },
-            Content = new Dictionary<string, OpenApiMediaType>
-            {
-                ["application/problem+json"] = new()
+            Content = hasDocumentedErrors
+                ? new Dictionary<string, OpenApiMediaType>
                 {
-                    Schema = new OpenApiSchemaReference("ProblemDetails", context.Document),
-                },
-            },
+                    ["application/problem+json"] = new()
+                    {
+                        Schema = new OpenApiSchemaReference("ProblemDetails", context.Document),
+                    },
+                }
+                : null,
         };
 
         return Task.CompletedTask;
