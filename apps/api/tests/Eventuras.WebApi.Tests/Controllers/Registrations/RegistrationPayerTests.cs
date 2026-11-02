@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Eventuras.Domain;
@@ -223,6 +224,74 @@ public class RegistrationPayerTests(CustomWebApiApplicationFactory<Program> fact
         Assert.Null(updated.CustomerVatNumber);
         Assert.Null(updated.CustomerInvoiceReference);
         Assert.Equal(PaymentProvider.PowerOfficeEmailInvoice, updated.PaymentMethod);
+    }
+
+    [Fact]
+    public async Task Put_Should_Name_The_Participant_When_Switching_To_Private_Without_A_Name()
+    {
+        using var scope = factory.Services.NewTestScope();
+        using var user = await scope.CreateUserAsync();
+        using var e = await scope.CreateEventAsync();
+        using var product = await scope.CreateProductAsync(e.Entity);
+        using var reg = await scope.CreateRegistrationAsync(e.Entity, user.Entity);
+        using var order = await scope.CreateOrderAsync(reg.Entity, product.Entity);
+
+        var client = factory.CreateClient().AuthenticatedAsSystemAdmin();
+        (await client.PutAsync($"/v3/registrations/{reg.Entity.RegistrationId}",
+            new { customer = OtherOrganizationPayer() })).CheckOk();
+        (await client.PutAsync($"/v3/registrations/{reg.Entity.RegistrationId}",
+            new { customer = new { payerType = "Private" } })).CheckOk();
+
+        var updated = await scope.Db.Orders.AsNoTracking().SingleAsync(o => o.OrderId == order.Entity.OrderId);
+        Assert.Equal(user.Entity.Name, updated.CustomerName);
+    }
+
+    [Fact]
+    public async Task Put_Should_Reject_Organization_Number_Without_Digits()
+    {
+        using var scope = factory.Services.NewTestScope();
+        using var user = await scope.CreateUserAsync();
+        using var e = await scope.CreateEventAsync();
+        using var reg = await scope.CreateRegistrationAsync(e.Entity, user.Entity);
+
+        var client = factory.CreateClient().AuthenticatedAsSystemAdmin();
+        var response = await client.PutAsync($"/v3/registrations/{reg.Entity.RegistrationId}", new
+        {
+            customer = new
+            {
+                payerType = "OwnCompany",
+                name = "Nordmann Consulting",
+                vatNumber = "MVA",
+                email = "kari@example.com",
+                contactName = "Kari Nordmann"
+            }
+        });
+        response.CheckBadRequest();
+    }
+
+    [Theory]
+    [InlineData("customerVatNumber")]
+    [InlineData("customerInvoiceReference")]
+    public async Task Patch_Should_Not_Clear_Required_Organization_Payer_Details(string field)
+    {
+        using var scope = factory.Services.NewTestScope();
+        using var user = await scope.CreateUserAsync();
+        using var e = await scope.CreateEventAsync();
+        using var product = await scope.CreateProductAsync(e.Entity);
+        using var reg = await scope.CreateRegistrationAsync(e.Entity, user.Entity);
+        using var order = await scope.CreateOrderAsync(reg.Entity, product.Entity);
+
+        var client = factory.CreateClient().AuthenticatedAsSystemAdmin();
+        (await client.PutAsync($"/v3/registrations/{reg.Entity.RegistrationId}",
+            new { customer = OtherOrganizationPayer() })).CheckOk();
+
+        var response = await client.PatchAsync($"/v3/registrations/{reg.Entity.RegistrationId}",
+            new Dictionary<string, object> { [field] = null });
+        response.CheckBadRequest();
+
+        var unchanged = await scope.Db.Orders.AsNoTracking().SingleAsync(o => o.OrderId == order.Entity.OrderId);
+        Assert.Equal("974760673", unchanged.CustomerVatNumber);
+        Assert.Equal("12345", unchanged.CustomerInvoiceReference);
     }
 
     [Fact]

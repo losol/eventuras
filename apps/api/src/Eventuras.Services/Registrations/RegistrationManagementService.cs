@@ -232,12 +232,24 @@ internal class RegistrationManagementService : IRegistrationManagementService
             .AsNoTracking()
             .FirstOrDefaultAsync(r => r.RegistrationId == registration.RegistrationId, cancellationToken);
 
+        // Checked here rather than only on the request DTOs, so every way of changing the
+        // payer (POST, PUT, PATCH) is held to the same rules before orders copy it.
+        var payerChanged = before != null && !before.HasSamePayerAs(registration);
+        if (payerChanged)
+        {
+            var problems = registration.FindPayerProblems();
+            if (problems.Count > 0)
+            {
+                throw new InvalidOperationServiceException(string.Join(" ", problems.Select(p => p.Message)));
+            }
+        }
+
         if (before != null)
         {
             await EmitAuditEventsAsync(before, registration, cancellationToken);
         }
 
-        if (before != null && !before.HasSamePayerAs(registration))
+        if (payerChanged)
         {
             await CopyPayerToOpenOrdersAsync(registration, cancellationToken);
         }

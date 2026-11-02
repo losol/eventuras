@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using Eventuras.Domain;
 using static Eventuras.Domain.Registration;
 
@@ -41,50 +42,9 @@ public class RegistrationCustomerInfoDto : IValidatableObject
     /// <summary>Contact person at an organization payer.</summary>
     public string? ContactName { get; set; }
 
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-    {
-        // PowerOffice bills whoever owns the organization number, so a private payer must not carry one.
-        if (PayerType == RegistrationPayerType.Private && !string.IsNullOrWhiteSpace(VatNumber))
-        {
-            yield return new ValidationResult("A private payer cannot have an organization number.",
-                [nameof(VatNumber)]);
-        }
-
-        if (PayerType is not (RegistrationPayerType.OwnCompany or RegistrationPayerType.OtherOrganization))
-        {
-            yield break;
-        }
-
-        if (string.IsNullOrWhiteSpace(VatNumber))
-        {
-            yield return new ValidationResult("Organization number is required for organization payers.",
-                [nameof(VatNumber)]);
-        }
-
-        if (string.IsNullOrWhiteSpace(Name))
-        {
-            yield return new ValidationResult("Organization name is required for organization payers.",
-                [nameof(Name)]);
-        }
-
-        if (string.IsNullOrWhiteSpace(ContactName))
-        {
-            yield return new ValidationResult("Contact person is required for organization payers.",
-                [nameof(ContactName)]);
-        }
-
-        if (string.IsNullOrWhiteSpace(Email))
-        {
-            yield return new ValidationResult("Contact email is required for organization payers.",
-                [nameof(Email)]);
-        }
-
-        if (PayerType == RegistrationPayerType.OtherOrganization && string.IsNullOrWhiteSpace(InvoiceReference))
-        {
-            yield return new ValidationResult("Invoice reference is required when another organization pays.",
-                [nameof(InvoiceReference)]);
-        }
-    }
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext) =>
+        Registration.CheckPayer(PayerType, VatNumber, Name, Email, ContactName, InvoiceReference)
+            .Select(problem => new ValidationResult(problem.Message, [problem.Field]));
 
     public void CopyTo(Registration registration)
     {
