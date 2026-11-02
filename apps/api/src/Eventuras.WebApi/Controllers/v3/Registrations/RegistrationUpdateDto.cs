@@ -29,16 +29,7 @@ public class RegistrationUpdateDto
             registration.Notes = Notes;
         }
 
-        if (Customer != null)
-        {
-            registration.CustomerName = Customer.Name;
-            registration.CustomerEmail = Customer.Email;
-            registration.CustomerVatNumber = Customer.VatNumber;
-            registration.CustomerCity = Customer.City;
-            registration.CustomerCountry = Customer.Country;
-            registration.CustomerZip = Customer.Zip;
-            registration.CustomerInvoiceReference = Customer.InvoiceReference;
-        }
+        Customer?.CopyTo(registration);
 
         if (PaymentMethod.HasValue)
         {

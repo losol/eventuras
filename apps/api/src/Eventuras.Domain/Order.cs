@@ -106,6 +106,24 @@ public class Order
     public bool CanEdit =>
         Status == OrderStatus.Draft || Status == OrderStatus.Verified;
 
+    /// <summary>
+    ///     Refreshes the customer snapshot and payment method from the registration's payer,
+    ///     so payer details given after the order was created reach the invoice.
+    /// </summary>
+    public void CopyPayerFrom(Registration registration)
+    {
+        // The participant is the payer when no payer name is given. ParticipantName covers callers
+        // that load the registration without its user, so an earlier organization name does not linger.
+        CustomerName = registration.CustomerName
+                       ?? registration.User?.Name
+                       ?? registration.ParticipantName
+                       ?? CustomerName;
+        CustomerEmail = registration.CustomerEmail;
+        CustomerVatNumber = registration.CustomerVatNumber;
+        CustomerInvoiceReference = registration.CustomerInvoiceReference;
+        PaymentMethod = registration.PaymentMethod;
+    }
+
     public decimal TotalAmount =>
         OrderLines.Sum(l => l.LineTotal);
 

@@ -133,6 +133,20 @@ const Registration = ({
   }
   const statusLabel = getStatusLabels(t).find(label => label.value === registration.status)?.label;
   const typeLabel = getTypeLabels(t).find(label => label.value === registration.type)?.label;
+  const payerTypeLabel = registration.payerType
+    ? {
+        Private: t('common.registrations.labels.payerPrivate'),
+        OwnCompany: t('common.registrations.labels.payerOwnCompany'),
+        OtherOrganization: t('common.registrations.labels.payerOtherOrganization'),
+      }[registration.payerType]
+    : null;
+  const invoiceAddress = [
+    registration.customerAddress,
+    [registration.customerZip, registration.customerCity].filter(Boolean).join(' '),
+    registration.customerCountry,
+  ]
+    .filter(Boolean)
+    .join(', ');
 
   // Use badge layout when not in edit mode
   if (!editMode) {
@@ -230,6 +244,35 @@ const Registration = ({
               </DescriptionList.Item>
             )}
           </>
+        )}
+        {registration.customerName && (
+          <DescriptionList.Item>
+            <DescriptionList.Term>{t('common.registrations.labels.payer')}</DescriptionList.Term>
+            <DescriptionList.Definition>
+              {registration.customerName}
+              {payerTypeLabel && ` (${payerTypeLabel})`}
+            </DescriptionList.Definition>
+          </DescriptionList.Item>
+        )}
+        {registration.customerContactName && (
+          <DescriptionList.Item>
+            <DescriptionList.Term>
+              {t('common.registrations.labels.contactPerson')}
+            </DescriptionList.Term>
+            <DescriptionList.Definition>
+              {[registration.customerContactName, registration.customerEmail]
+                .filter(Boolean)
+                .join(', ')}
+            </DescriptionList.Definition>
+          </DescriptionList.Item>
+        )}
+        {invoiceAddress && (
+          <DescriptionList.Item>
+            <DescriptionList.Term>
+              {t('common.registrations.labels.invoiceAddress')}
+            </DescriptionList.Term>
+            <DescriptionList.Definition>{invoiceAddress}</DescriptionList.Definition>
+          </DescriptionList.Item>
         )}
         {registration.customerVatNumber && (
           <DescriptionList.Item>

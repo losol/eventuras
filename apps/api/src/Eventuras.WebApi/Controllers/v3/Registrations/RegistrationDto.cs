@@ -38,8 +38,16 @@ public class RegistrationDto
             .With(TimeAdjusters.TruncateToSecond);
         PaymentMethod = registration.PaymentMethod;
         CertificateComment = registration.CertificateComment;
+        PayerType = registration.PayerType;
+        CustomerName = registration.CustomerName;
+        CustomerEmail = registration.CustomerEmail;
+        CustomerAddress = registration.CustomerAddress;
+        CustomerZip = registration.CustomerZip;
+        CustomerCity = registration.CustomerCity;
+        CustomerCountry = registration.CustomerCountry;
         CustomerVatNumber = registration.CustomerVatNumber;
         CustomerInvoiceReference = registration.CustomerInvoiceReference;
+        CustomerContactName = registration.CustomerContactName;
 
         if (includeOrders && registration.Orders != null)
         {
@@ -95,8 +103,20 @@ public class RegistrationDto
     /// </summary>
     public LocalDateTime? RegistrationTime { get; init; }
     public PaymentProvider PaymentMethod { get; init; }
+    /// <summary>Who pays the invoice. Null for registrations made before the payer step existed.</summary>
+    public Registration.RegistrationPayerType? PayerType { get; init; }
+    /// <summary>The payer: the person's own name, or the organization's name.</summary>
+    public string? CustomerName { get; init; }
+    /// <summary>Where the invoice is sent: the person's own email, or the contact person's email.</summary>
+    public string? CustomerEmail { get; init; }
+    public string? CustomerAddress { get; init; }
+    public string? CustomerZip { get; init; }
+    public string? CustomerCity { get; init; }
+    public string? CustomerCountry { get; init; }
     public string? CustomerVatNumber { get; init; }
     public string? CustomerInvoiceReference { get; init; }
+    /// <summary>Contact person at an organization payer.</summary>
+    public string? CustomerContactName { get; init; }
     public UserDto? User { get; init; }
     public EventDto? Event { get; init; }
     public IEnumerable<ProductOrderDto>? Products { get; init; }

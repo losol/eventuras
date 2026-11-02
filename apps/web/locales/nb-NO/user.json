@@ -90,36 +90,50 @@
     "address": {
       "city": "Poststed",
       "country": "Land",
+      "invoiceLegend": "Fakturaadresse",
       "legend": "Adresse",
-      "street": "Vei",
+      "street": "Gateadresse",
       "zip": "Postnummer"
-    },
-    "businessinfo": {
-      "invoiceReference": "Fakturareferanse",
-      "legend": "Bedriftsinformasjon",
-      "vatNumber": "Organisasjonsnummer"
     },
     "complete": {
       "description": "Vi ser virkelig frem til å se deg!",
       "title": "Registrering fullført"
     },
-    "customertype": {
-      "business": "Firma",
-      "legend": "Kundetype",
-      "private": "Privat"
-    },
     "description": "Noen flere detaljer...",
     "event-title": "Arrangement",
     "id": "ID",
     "labels": {
+      "contactPerson": "Kontaktperson",
+      "payer": "Betaler",
       "paymentDetails": "Betalingsdetaljer"
     },
     "not-found": "Registrering ikke funnet",
     "orders": "Ordre",
+    "organization": {
+      "contactDescription": "Den som kan svare på spørsmål om fakturaen.",
+      "contactEmail": "Kontaktpersonens e-post",
+      "contactName": "Kontaktperson",
+      "invoiceReference": "Fakturareferanse",
+      "invoiceReferenceOptional": "Valgfritt. Fyll inn hvis firmaet bruker referanser på innkommende fakturaer.",
+      "invoiceReferenceRequired": "For eksempel bestillingsnummer eller ressursnummer. Uten referanse kan fakturaen bli avvist.",
+      "legend": "Virksomheten som betaler",
+      "name": "Navn på virksomheten",
+      "vatNumber": "Organisasjonsnummer"
+    },
     "page": {
       "texts": {
         "user-already-registered": "Du er allerede registrert for dette arrangementet!"
       }
+    },
+    "payer": {
+      "ehfNotice": "Virksomheter får fakturaen som EHF (elektronisk faktura).",
+      "legend": "Hvem skal betale fakturaen?",
+      "otherOrganization": "En annen virksomhet",
+      "otherOrganizationDescription": "For eksempel arbeidsgiveren din.",
+      "ownCompany": "Firmaet mitt",
+      "ownCompanyDescription": "Et firma du eier eller driver selv.",
+      "private": "Meg som privatperson",
+      "privateDescription": "Fakturaen sendes på e-post til deg."
     },
     "product-description": "Beskrivelse",
     "product-name": "Navn",
@@ -152,6 +166,11 @@
       "legend": "Brukerdetaljer",
       "name": "Navn",
       "phoneNumber": "Telefonnummer"
+    },
+    "validation": {
+      "email": "Skriv inn en gyldig e-postadresse",
+      "organizationNumber": "Sjekk organisasjonsnummeret. Det skal være 9 siffer.",
+      "required": "Må fylles ut"
     }
   },
   "registrations": {

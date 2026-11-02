@@ -65,7 +65,8 @@ public class PowerOfficeService : IInvoicingProvider
                 Status = OutgoingInvoiceStatus.Draft,
                 OrderDate = info.OrderDate?.ToDateTimeUnspecified(),
                 ContractNo = info.OrderId,
-                CustomerReference = info.CustomerInvoiceReference,
+                // "Deres ref." on the invoice: the reference the payer gave, else their contact person.
+                CustomerReference = NullIfEmpty(info.CustomerInvoiceReference) ?? NullIfEmpty(info.CustomerContactName),
                 CustomerCode = customer.Code
             };
 
@@ -135,29 +136,18 @@ public class PowerOfficeService : IInvoicingProvider
     {
         var api = await GetApiAsync();
 
-        // Search for customer by VAT number
-        var vatNumber = info.CustomerVatNumber != null
-            ? new string(info.CustomerVatNumber.Where(char.IsDigit).ToArray())
-            : null;
-        vatNumber = NullIfEmpty(vatNumber);
-        _logger.LogDebug("Resolved VAT number");
-
-        var existingCustomer = !string.IsNullOrWhiteSpace(vatNumber)
-            ? api.Customer.Get()
-                .FirstOrDefault(c => c.VatNumber == info.CustomerVatNumber)
-            : null;
-
+        var vatNumber = PowerOfficeCustomerMapper.NormalizeVatNumber(info.CustomerVatNumber);
         var customerEmail = NullIfEmpty(info.CustomerEmail);
-        _logger.LogDebug("Resolved customer email");
 
-        // If no customer was found by VAT number, then search by email
-        if (customerEmail != null)
-        {
-            existingCustomer ??= api.Customer.Get()
-                .FirstOrDefault(c => c.EmailAddress == customerEmail);
-        }
+        // An organization payer is matched on its organization number only. Falling back
+        // to email would find the participant's private customer and bill the wrong party.
+        var existingCustomer = vatNumber != null
+            ? api.Customer.Get().FirstOrDefault(c => c.VatNumber == vatNumber)
+            : customerEmail != null
+                ? PowerOfficeCustomerMapper.SelectPrivateCustomerByEmail(
+                    api.Customer.Get().Where(c => c.EmailAddress == customerEmail).ToList())
+                : null;
 
-        // If we found a customer, return him!
         if (existingCustomer != null)
         {
             result.LogEntries.Add(
@@ -165,46 +155,9 @@ public class PowerOfficeService : IInvoicingProvider
             return existingCustomer;
         }
 
-        _logger.LogInformation("Creating new customer");
+        _logger.LogInformation("Creating new customer (organization: {IsOrganization})", vatNumber != null);
 
-        if (string.IsNullOrWhiteSpace(info.CustomerName))
-        {
-            throw new InvoicingException("Customer name is required");
-        }
-
-        // If not, create the customer
-        var customer = new Customer
-        {
-            // split name parts from info.CustomerName
-            FirstName = info.CustomerName.Split(' ')[0],
-            // if there are more than one part, use all the remaining parts as last name
-            LastName = info.CustomerName.Split(' ').Length > 1
-                ? info.CustomerName.Split(' ')[1..].Aggregate((a, b) => $"{a} {b}")
-                : null,
-            Name = info.CustomerName,
-            EmailAddress = customerEmail,
-            VatNumber = vatNumber,
-            InvoiceEmailAddress = customerEmail,
-            MailAddress = new Address
-            {
-                Address1 = NullIfEmpty(info.CustomerAddress),
-                City = NullIfEmpty(info.CustomerCity),
-                ZipCode = NullIfEmpty(info.CustomerZip),
-                CountryCode = NullIfEmpty(info.CustomerCountry)
-            }
-        };
-
-        _logger.LogDebug("Creating customer record");
-
-
-        if (info.PaymentMethod == PaymentProvider.PowerOfficeEHFInvoice && !string.IsNullOrWhiteSpace(vatNumber))
-        {
-            customer.InvoiceDeliveryType = InvoiceDeliveryType.EHF;
-        }
-        else
-        {
-            customer.InvoiceDeliveryType = InvoiceDeliveryType.PdfByEmail;
-        }
+        var customer = PowerOfficeCustomerMapper.CreateCustomer(info);
 
         result.LogEntries.Add($"Kunden {customer.Name} med epost {customer.EmailAddress} ble opprettet.");
         return await api.Customer.SaveAsync(customer);
@@ -257,7 +210,5 @@ public class PowerOfficeService : IInvoicingProvider
         }
     }
 
-    // PowerOffice Go v3 rejects empty strings in optional fields with a validation error.
-    private static string? NullIfEmpty(string? value) =>
-        string.IsNullOrWhiteSpace(value) ? null : value;
+    private static string? NullIfEmpty(string? value) => PowerOfficeCustomerMapper.NullIfEmpty(value);
 }

@@ -20,6 +20,7 @@ public class InvoiceInfo
     public string CustomerCountry { get; set; } = "NO";
     public string CustomerVatNumber { get; set; }
     public string CustomerInvoiceReference { get; set; }
+    public string CustomerContactName { get; set; }
     public string ProjectCode { get; set; }
     public LocalDate? DueDate { get; set; }
     public PaymentMethod.PaymentProvider PaymentMethod { get; set; }
@@ -40,6 +41,7 @@ public class InvoiceInfo
             CustomerCity = orders.FirstFilled(o => o.Registration.CustomerCity),
             CustomerZip = orders.FirstFilled(o => o.Registration.CustomerZip),
             CustomerInvoiceReference = orders.FirstFilled(o => o.Registration.CustomerInvoiceReference),
+            CustomerContactName = orders.FirstFilled(o => o.Registration.CustomerContactName),
             ProjectCode = orders.FirstFilled(o => o.Registration.EventInfo.ProjectCode),
             PaymentMethod = orders.First().PaymentMethod,
             Lines = orders.SelectMany(o =>
@@ -61,12 +63,13 @@ public class InvoiceInfo
 
     private static string FormatDescription(Order order)
     {
-        var customerName = order.CustomerName
-                           ?? order.Registration.ParticipantName
-                           ?? order.Registration.User.Name;
+        // The participant, not the payer: when an organization pays, CustomerName is the organization.
+        var participantName = order.Registration.ParticipantName
+                              ?? order.Registration.User?.Name
+                              ?? order.CustomerName;
 
         var eventInfoTitle = order.Registration.EventInfo.Title;
-        var invoiceDescription = $"Deltakelse for {customerName} på {eventInfoTitle}";
+        var invoiceDescription = $"Deltakelse for {participantName} på {eventInfoTitle}";
 
         if (order.Registration.EventInfo.DateStart != null)
         {

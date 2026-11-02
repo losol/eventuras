@@ -47,9 +47,9 @@ The service handles invoices for the following payment methods:
 ### Invoice Creation Flow
 
 1. **Customer Lookup/Creation**
-   - Searches for existing customer by VAT number
-   - Falls back to search by email if VAT number not found
-   - Creates new customer if not found
+   - Organization payers (with an organization number) are matched on the organization number only, after stripping everything but digits (`NO 974 760 673 MVA` → `974760673`). There is no email fallback, so an organization invoice never lands on the participant's private customer.
+   - Private payers (no organization number) are matched on email, skipping organization customers that share the email (a contact person who also pays privately)
+   - Creates a new customer if none matched. Organizations get the organization name, no first/last name split and EHF delivery when `PowerOfficeEHFInvoice` is chosen; persons get PDF by email. The matching and mapping rules live in `PowerOfficeCustomerMapper`.
 
 2. **Product Creation**
    - Creates products in PowerOffice if they don't exist (matched by product code)

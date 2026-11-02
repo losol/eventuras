@@ -8136,23 +8136,44 @@
       "RegistrationCustomerInfoDto": {
         "type": "object",
         "properties": {
+          "payerType": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/RegistrationPayerType"
+              }
+            ],
+            "description": "Who pays the invoice."
+          },
           "vatNumber": {
             "type": [
               "null",
               "string"
-            ]
+            ],
+            "description": "The organization number of an organization payer."
           },
           "name": {
             "type": [
               "null",
               "string"
-            ]
+            ],
+            "description": "The payer: the person's own name, or the organization's name."
           },
           "email": {
             "type": [
               "null",
               "string"
-            ]
+            ],
+            "description": "Where the invoice is sent: the person's own email, or the contact person's email."
+          },
+          "address": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Street address."
           },
           "zip": {
             "type": [
@@ -8177,8 +8198,16 @@
               "null",
               "string"
             ]
+          },
+          "contactName": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Contact person at an organization payer."
           }
-        }
+        },
+        "description": "The payer of a registration. When payerType is OwnCompany or OtherOrganization, the\norganization number, name, contact person and contact email are required, and\nOtherOrganization also requires an invoice reference. Without a payer type only the\nemail format is checked, as before the payer step existed."
       },
       "RegistrationDto": {
         "type": "object",
@@ -8244,6 +8273,55 @@
           "paymentMethod": {
             "$ref": "#/components/schemas/PaymentProvider"
           },
+          "payerType": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/RegistrationPayerType"
+              }
+            ],
+            "description": "Who pays the invoice. Null for registrations made before the payer step existed."
+          },
+          "customerName": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "The payer: the person's own name, or the organization's name."
+          },
+          "customerEmail": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Where the invoice is sent: the person's own email, or the contact person's email."
+          },
+          "customerAddress": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "customerZip": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "customerCity": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "customerCountry": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
           "customerVatNumber": {
             "type": [
               "null",
@@ -8255,6 +8333,13 @@
               "null",
               "string"
             ]
+          },
+          "customerContactName": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Contact person at an organization payer."
           },
           "user": {
             "oneOf": [
@@ -8341,6 +8426,14 @@
           }
         },
         "description": "DTO for partial updates to a registration (JSON Merge Patch semantics).\n\nOnly fields present in the request body are applied. Nullable string\nfields set to `null` clear the corresponding entity value.\nOmitted fields are left untouched. Sending `null` on non-nullable\nfields (status/type/paymentMethod) is rejected with a 400 by the JSON\ndeserializer.\n\nPresence is tracked via property setters: the JSON deserializer only\ninvokes a setter when the field is in the payload, so a dedicated\nbacking flag can distinguish \"absent\" from \"explicit null\"."
+      },
+      "RegistrationPayerType": {
+        "enum": [
+          "Private",
+          "OwnCompany",
+          "OtherOrganization",
+          null
+        ]
       },
       "RegistrationStatus": {
         "enum": [

@@ -13,6 +13,8 @@ export const visitAndClickEventRegistrationButton = async (page: Page, eventId: 
 
 export const fillOutPaymentDetails = async (page: Page) => {
   logger.debug('Filling payment details...');
+  // "Me as a private person" is the default payer, so only the address is needed.
+  await page.locator('[data-testid="registration-address-input"]').fill('Keizersgracht 1');
   await page.locator('[data-testid="registration-zipcode-input"]').click();
   await page.locator('[data-testid="registration-zipcode-input"]').fill('12345BC');
   await page.locator('[data-testid="registration-city-input"]').click();

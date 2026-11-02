@@ -2737,3 +2737,28 @@ BEGIN
 END $EF$;
 COMMIT;
 
+START TRANSACTION;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20261101233107_AddRegistrationPayer') THEN
+    ALTER TABLE "Registrations" ADD "CustomerContactName" text;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20261101233107_AddRegistrationPayer') THEN
+    ALTER TABLE "Registrations" ADD "PayerType" integer;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20261101233107_AddRegistrationPayer') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20261101233107_AddRegistrationPayer', '10.0.11');
+    END IF;
+END $EF$;
+COMMIT;
+
