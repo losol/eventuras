@@ -12,7 +12,8 @@ export const isOrganizationPayer = (payerType: RegistrationPayerType): boolean =
 
 /**
  * Organizations get an electronic invoice (EHF), people an invoice by email.
- * PowerOffice falls back to email for an organization that cannot receive EHF.
+ * Whether the organization can receive EHF is not checked here: PowerOffice rejects the
+ * invoice for one that cannot.
  */
 export const paymentMethodForPayer = (payerType: RegistrationPayerType): PaymentProvider =>
   isOrganizationPayer(payerType) ? 'PowerOfficeEHFInvoice' : 'PowerOfficeEmailInvoice';
