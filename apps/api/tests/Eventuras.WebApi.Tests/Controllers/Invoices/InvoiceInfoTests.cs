@@ -46,4 +46,37 @@ public class InvoiceInfoTests : IClassFixture<CustomWebApiApplicationFactory<Pro
         var productLine = info.Lines.Single(l => l.Type == InvoiceLineType.Product);
         Assert.Equal(expected, productLine.SalesAccount);
     }
+
+    [Fact]
+    public async Task CreateFromOrderList_Should_Bill_The_Organization_For_The_Participant()
+    {
+        using var scope = _factory.Services.NewTestScope();
+        using var evt = await scope.CreateEventAsync();
+        using var user = await scope.CreateUserAsync();
+        using var registration = await scope.CreateRegistrationAsync(evt.Entity, user.Entity);
+        using var product = await scope.CreateProductAsync(evt.Entity);
+
+        registration.Entity.CustomerName = "Oslo kommune";
+        registration.Entity.CustomerContactName = "Per Hansen";
+        await scope.Db.SaveChangesAsync();
+
+        using var order = await scope.CreateOrderAsync(registration.Entity, product.Entity);
+        order.Entity.CopyPayerFrom(registration.Entity);
+        await scope.Db.SaveChangesAsync();
+
+        var orders = await scope.Db.Orders
+            .Where(o => o.OrderId == order.Entity.OrderId)
+            .Include(o => o.Registration).ThenInclude(r => r.User)
+            .Include(o => o.Registration).ThenInclude(r => r.EventInfo)
+            .Include(o => o.OrderLines).ThenInclude(l => l.Product)
+            .AsNoTracking()
+            .ToListAsync();
+
+        var info = InvoiceInfo.CreateFromOrderList(orders);
+
+        Assert.Equal("Oslo kommune", info.CustomerName);
+        Assert.Equal("Per Hansen", info.CustomerContactName);
+        var textLine = info.Lines.First(l => l.Type == InvoiceLineType.Text);
+        Assert.StartsWith($"Deltakelse for {user.Entity.Name} på", textLine.Description);
+    }
 }

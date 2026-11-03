@@ -27,18 +27,28 @@ If no products are available for the event. We will just let the user confirm hi
 
 Retrieve user's name and email from the api endpoint
 
-Collect this info in a form:
+The payer step starts with **Who pays the invoice?** (`customer.payerType`):
 
-| Title                                                      | Field                        | Comment                                                                            |
-| ---------------------------------------------------------- | ---------------------------- | ---------------------------------------------------------------------------------- |
-| Name                                                       | From users api. Not editable |                                                                                    |
-| Email:email                                                | From users api. Not editable |                                                                                    |
-| Zip                                                        | zip                          |                                                                                    |
-| City                                                       | city                         |                                                                                    |
-| Country                                                    | country                      |                                                                                    |
-| VAT number                                                 | vatNumber                    |                                                                                    |
-| Invoice reference                                          | invoiceReference             |                                                                                    |
-| Payment method: radio buttons: Email or Electronic invoice | paymentMethod                | Maps to PowerOfficeEmailInvoice or PowerOfficeEHFInvoice as paymentMethod for now. |
+| Choice                  | `payerType`         | Payment method            |
+| ----------------------- | ------------------- | ------------------------- |
+| Me, as a private person | `Private`           | `PowerOfficeEmailInvoice` |
+| My company              | `OwnCompany`        | `PowerOfficeEHFInvoice`   |
+| Another organization    | `OtherOrganization` | `PowerOfficeEHFInvoice`   |
+
+Fields per choice:
+
+| Title                      | Field (`customer.*`)                | Private             | My company                               | Another organization |
+| -------------------------- | ----------------------------------- | ------------------- | ---------------------------------------- | -------------------- |
+| Name                       | `name`                              | Participant's name  | Organization name, required              | Same                 |
+| Email                      | `email`                             | Participant's email | Contact person's email, required         | Same                 |
+| Organization number        | `vatNumber`                         | –                   | Required                                 | Required             |
+| Invoice reference          | `invoiceReference`                  | –                   | Optional                                 | Required             |
+| Contact person             | `contactName`                       | –                   | Required, prefilled with the participant | Required             |
+| Street, zip, city, country | `address`, `zip`, `city`, `country` | Required            | Required (invoice address)               | Required             |
+
+Norwegian organization numbers (country Norway) are checked for nine digits and the modulus 11 control digit, and sent as digits only. The API enforces the organization rules whenever `payerType` is `OwnCompany` or `OtherOrganization`; requests without `payerType` are validated as before.
+
+When the payer details change, the API copies them to the registration's orders that are not invoiced yet (`Order.CopyPayerFrom`), since those orders were created before the payer step's details were saved.
 
 ### Step 3: Perform Registration
 
@@ -49,17 +59,20 @@ After user har registered the info in step 2, we will create an registration.
 ```json
 {
     "customer": {
-        "vatNumber": "string",
-        "name": "string",
-        "email": "user@example.com",
-        "zip": "string",
-        "city": "string",
-        "country": "string",
-        "invoiceReference": "string"
+        "payerType": "OtherOrganization",
+        "vatNumber": "974760673",
+        "name": "Oslo kommune",
+        "email": "contact.person@example.com",
+        "address": "Rådhusplassen 1",
+        "zip": "0037",
+        "city": "Oslo",
+        "country": "Norway",
+        "invoiceReference": "12345",
+        "contactName": "Per Hansen"
     },
     "notes": "string",
     "type": "Participant",
-    "paymentMethod": "EmailInvoice",
+    "paymentMethod": "PowerOfficeEHFInvoice",
     "userId": "string",
     "eventId": 2147483647,
     "createOrder": true

@@ -6,9 +6,18 @@ import { Button } from '@eventuras/ratio-ui/core/Button';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 
 import { EventDto, ProductDto } from '@/lib/eventuras-sdk';
+import { isOrganizationPayer } from '@/lib/payer';
 import { PaymentFormValues, ProductSelected } from '@/types';
 
 import { logStepComplete, logStepEntry, logUserAction } from '../../lib/eventFlowLogger';
+const DetailRow = ({ label, value }: { label: string; value?: string | null }) =>
+  value ? (
+    <div className="flex justify-between gap-4">
+      <dt className="text-gray-600 dark:text-gray-400">{label}:</dt>
+      <dd className="font-semibold text-right">{value}</dd>
+    </div>
+  ) : null;
+
 export interface Step04RegistrationConfirmationProps {
   eventInfo: EventDto;
   products: ProductDto[];
@@ -26,6 +35,12 @@ const Step04RegistrationConfirmation: React.FC<Step04RegistrationConfirmationPro
   eventInfo,
 }) => {
   const t = useTranslations();
+  const isOrganization = isOrganizationPayer(paymentDetails.payerType);
+  const payerLabel = {
+    Private: t('user.registration.payer.private'),
+    OwnCompany: t('user.registration.payer.ownCompany'),
+    OtherOrganization: t('user.registration.payer.otherOrganization'),
+  }[paymentDetails.payerType];
   useEffect(() => {
     logStepEntry('04', 'RegistrationConfirmation', {
       eventId: eventInfo.id,
@@ -76,69 +91,58 @@ const Step04RegistrationConfirmation: React.FC<Step04RegistrationConfirmationPro
           {t('user.registration.labels.paymentDetails')}
         </Heading>
         <dl className="space-y-2 bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
-          <div className="flex justify-between">
-            <dt className="text-gray-600 dark:text-gray-400">
-              {t('user.registration.customertype.legend')}:
-            </dt>
-            <dd className="font-semibold">
-              {paymentDetails.paymentMethod === 'PowerOfficeEmailInvoice'
-                ? t('user.registration.customertype.private')
-                : t('user.registration.customertype.business')}
-            </dd>
-          </div>
-          <div className="flex justify-between">
-            <dt className="text-gray-600 dark:text-gray-400">
-              {t('user.registration.user.name')}:
-            </dt>
-            <dd className="font-semibold">{paymentDetails.username}</dd>
-          </div>
-          <div className="flex justify-between">
-            <dt className="text-gray-600 dark:text-gray-400">
-              {t('user.registration.user.email')}:
-            </dt>
-            <dd className="font-semibold">{paymentDetails.email}</dd>
-          </div>
-          <div className="flex justify-between">
-            <dt className="text-gray-600 dark:text-gray-400">
-              {t('user.registration.user.phoneNumber')}:
-            </dt>
-            <dd className="font-semibold">{paymentDetails.phoneNumber}</dd>
-          </div>
-          <div className="flex justify-between">
-            <dt className="text-gray-600 dark:text-gray-400">
-              {t('user.registration.address.city')}:
-            </dt>
-            <dd className="font-semibold">{paymentDetails.city}</dd>
-          </div>
-          <div className="flex justify-between">
-            <dt className="text-gray-600 dark:text-gray-400">
-              {t('user.registration.address.country')}:
-            </dt>
-            <dd className="font-semibold">{paymentDetails.country}</dd>
-          </div>
-          <div className="flex justify-between">
-            <dt className="text-gray-600 dark:text-gray-400">
-              {t('user.registration.address.zip')}:
-            </dt>
-            <dd className="font-semibold">{paymentDetails.zip}</dd>
-          </div>
-          {paymentDetails.paymentMethod === 'PowerOfficeEHFInvoice' && (
+          <DetailRow label={t('user.registration.labels.payer')} value={payerLabel} />
+          {isOrganization ? (
             <>
-              <div className="flex justify-between">
-                <dt className="text-gray-600 dark:text-gray-400">
-                  {t('user.registration.businessinfo.vatNumber')}:
-                </dt>
-                <dd className="font-semibold">{paymentDetails.vatNumber}</dd>
-              </div>
-              <div className="flex justify-between">
-                <dt className="text-gray-600 dark:text-gray-400">
-                  {t('user.registration.businessinfo.invoiceReference')}:
-                </dt>
-                <dd className="font-semibold">{paymentDetails.invoiceReference}</dd>
-              </div>
+              <DetailRow
+                label={t('user.registration.organization.name')}
+                value={paymentDetails.organizationName}
+              />
+              <DetailRow
+                label={t('user.registration.organization.vatNumber')}
+                value={paymentDetails.vatNumber}
+              />
+              <DetailRow
+                label={t('user.registration.organization.invoiceReference')}
+                value={paymentDetails.invoiceReference}
+              />
+              <DetailRow
+                label={t('user.registration.labels.contactPerson')}
+                value={[paymentDetails.contactName, paymentDetails.contactEmail]
+                  .filter(Boolean)
+                  .join(', ')}
+              />
+            </>
+          ) : (
+            <>
+              <DetailRow label={t('user.registration.user.name')} value={paymentDetails.username} />
+              <DetailRow label={t('user.registration.user.email')} value={paymentDetails.email} />
+              <DetailRow
+                label={t('user.registration.user.phoneNumber')}
+                value={paymentDetails.phoneNumber}
+              />
             </>
           )}
+          <DetailRow
+            label={
+              isOrganization
+                ? t('user.registration.address.invoiceLegend')
+                : t('user.registration.address.legend')
+            }
+            value={[
+              paymentDetails.address,
+              [paymentDetails.zip, paymentDetails.city].filter(Boolean).join(' '),
+              paymentDetails.country,
+            ]
+              .filter(Boolean)
+              .join(', ')}
+          />
         </dl>
+        {isOrganization && (
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+            {t('user.registration.payer.ehfNotice')}
+          </p>
+        )}
       </div>
       <div className="flex gap-4">
         {onBack && (

@@ -232,11 +232,30 @@ internal class RegistrationManagementService : IRegistrationManagementService
             .AsNoTracking()
             .FirstOrDefaultAsync(r => r.RegistrationId == registration.RegistrationId, cancellationToken);
 
+        // Checked here rather than only on the request DTOs, so every way of changing the
+        // payer (POST, PUT, PATCH) is held to the same rules before orders copy it.
+        var payerChanged = before != null && !before.HasSamePayerAs(registration);
+        if (payerChanged)
+        {
+            var problems = registration.FindPayerProblems();
+            if (problems.Count > 0)
+            {
+                throw new InvalidOperationServiceException(string.Join(" ", problems.Select(p => p.Message)));
+            }
+        }
+
         if (before != null)
         {
             await EmitAuditEventsAsync(before, registration, cancellationToken);
         }
 
+        if (payerChanged)
+        {
+            await CopyPayerToOpenOrdersAsync(registration, cancellationToken);
+        }
+
+        // One save for the registration and the order snapshots updated above, so a failure
+        // cannot leave orders behind a payer change that a retry would no longer detect.
         await _context.UpdateAsync(registration, cancellationToken);
 
         // Send the status email on an actual status change (e.g. -> WaitingList
@@ -283,6 +302,36 @@ internal class RegistrationManagementService : IRegistrationManagementService
         await _context.UpdateAsync(registration, cancellationToken);
 
         return registration;
+    }
+
+    /// <summary>
+    ///     Orders snapshot the payer when they are created, which on self-registration happens
+    ///     before the payer step's details are saved. Copying changed payer details to orders
+    ///     not yet invoiced makes sure the invoice goes to the payer the participant chose.
+    ///     Does not save: the caller saves the orders together with the registration.
+    /// </summary>
+    private async Task CopyPayerToOpenOrdersAsync(Registration registration, CancellationToken cancellationToken)
+    {
+        // Reuse loaded orders so saving the registration graph does not meet a second
+        // tracked instance of the same order.
+        var orders = registration.Orders ?? await _context.Orders
+            .Where(o => o.RegistrationId == registration.RegistrationId)
+            .ToListAsync(cancellationToken);
+
+        var openOrders = orders.Where(o => o.CanEdit).ToList();
+        if (openOrders.Count == 0)
+        {
+            return;
+        }
+
+        foreach (var order in openOrders)
+        {
+            order.CopyPayerFrom(registration);
+        }
+
+        _logger.LogInformation(
+            "Copying payer details from registration {RegistrationId} to {OrderCount} open orders",
+            registration.RegistrationId, openOrders.Count);
     }
 
     private async Task EmitAuditEventsAsync(

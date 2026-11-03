@@ -1148,6 +1148,9 @@ namespace Eventuras.Infrastructure.Migrations
                     b.Property<string>("CustomerCity")
                         .HasColumnType("text");
 
+                    b.Property<string>("CustomerContactName")
+                        .HasColumnType("text");
+
                     b.Property<string>("CustomerCountry")
                         .HasColumnType("text");
 
@@ -1180,6 +1183,9 @@ namespace Eventuras.Infrastructure.Migrations
 
                     b.Property<string>("ParticipantName")
                         .HasColumnType("text");
+
+                    b.Property<int?>("PayerType")
+                        .HasColumnType("integer");
 
                     b.Property<int>("PaymentMethod")
                         .HasColumnType("integer");

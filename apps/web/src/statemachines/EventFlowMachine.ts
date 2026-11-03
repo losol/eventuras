@@ -3,6 +3,7 @@ import { assign, createMachine, fromPromise } from 'xstate';
 import { fetchUserEventRegistrations } from '@/app/(admin)/admin/actions/registrations';
 import { createEventRegistration, updateEventRegistration } from '@/app/(user)/user/events/actions';
 import { EventDto, ProductDto, RegistrationDto, UserDto } from '@/lib/eventuras-sdk';
+import { getInitialPaymentFormValues, paymentFormValuesFromRegistration } from '@/lib/payer';
 import { PaymentFormValues } from '@/types';
 import { mapToNewRegistration, mapToUpdatedRegistration } from '@/utils/api/mappers';
 
@@ -48,20 +49,6 @@ function toFlowError(error: unknown): Error {
   }
 
   return new Error('Unknown event registration flow error');
-}
-
-function getInitialPaymentFormValues(user: UserDto): PaymentFormValues {
-  return {
-    username: user.name ?? '',
-    email: user.email ?? '',
-    phoneNumber: user.phoneNumber ?? '',
-    city: '',
-    zip: '',
-    country: 'Norway',
-    vatNumber: '',
-    invoiceReference: '',
-    paymentMethod: 'PowerOfficeEmailInvoice',
-  };
 }
 
 export enum States {
@@ -133,6 +120,10 @@ const EventFlowMachine = createMachine({
             inEditMode: ({ event }) => event.output.length > 0,
             registrations: ({ event }) => event.output,
             selectedProducts: ({ event }) => getSelectedProductsMap(event.output[0]),
+            paymentFormValues: ({ context, event }) =>
+              event.output[0]
+                ? paymentFormValuesFromRegistration(context.user, event.output[0])
+                : context.paymentFormValues,
             error: () => null,
           }),
         },
