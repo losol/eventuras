@@ -92,10 +92,9 @@ The applications will be available at
 ## 📖 Documentation
 - **Docs**: Take a look at the `docs` folder
 - **API Documentation:** Available at `/swagger` when the backend is running
-- **AI Agent Guides:** Specialized instructions for AI-assisted development
-  - [Backend Agent](.github/agents/backend-developer.md) — for `apps/api`
-  - [Frontend Agent](.github/agents/frontend-developer.md) — for `apps/web` and `libs/*`
-  - [Complete AI Guide](.ai/README.md)
+- **AI agents:** [AGENTS.md](AGENTS.md) covers project-wide rules and the agent team. Area rules are in
+  [apps/api](apps/api/AGENTS.md), [apps/web](apps/web/AGENTS.md) and [tests/e2e](tests/e2e/AGENTS.md).
+  Claude Code subagents and skills are in [.claude/](.claude/).
 
 ---
 

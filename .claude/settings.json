@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(aspire ps *)",
+      "Bash(aspire describe *)",
+      "Bash(aspire logs *)",
+      "Bash(aspire otel *)",
+      "Bash(aspire wait *)",
+      "Bash(aspire start *)",
+      "Bash(aspire resource e2e *)",
+      "Bash(aspire stop --apphost apps/api/src/Eventuras.AppHost *)",
+      "Bash(pnpm lint *)",
+      "Bash(pnpm test *)",
+      "Bash(pnpm build:dev *)",
+      "Bash(pnpm turbo run lint *)",
+      "Bash(pnpm turbo run test *)",
+      "Bash(pnpm turbo run build *)",
+      "Bash(dotnet build *)",
+      "Bash(dotnet test *)",
+      "Bash(dotnet format *)",
+      "Bash(dotnet restore *)",
+      "Bash(git status *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git show *)",
+      "Bash(gh pr view *)",
+      "Bash(gh pr diff *)",
+      "Bash(gh pr checks *)",
+      "Bash(gh issue view *)",
+      "Bash(gh issue list *)",
+      "Bash(gh run view *)",
+      "Bash(gh run list *)"
+    ],
+    "deny": [
+      "Read(**/.env)",
+      "Read(**/.env.local)",
+      "Read(**/.env.staging)",
+      "Read(**/.env.production)"
+    ]
+  }
+}
