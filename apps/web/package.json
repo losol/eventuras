@@ -34,14 +34,14 @@
     "@eventuras/logger": "^0.9.2",
     "@eventuras/markdown": "^0.16.0",
     "@eventuras/markdown-plugin-happening": "workspace:*",
-    "@eventuras/ratio-ui": "^2.35.1",
-    "@eventuras/ratio-ui-next": "^1.0.1",
+    "@eventuras/ratio-ui": "^2.38.0",
+    "@eventuras/ratio-ui-next": "^1.0.2",
     "@eventuras/scribo": "workspace:*",
     "@eventuras/smartform": "workspace:*",
-    "@sentry/nextjs": "^11.9.0",
+    "@sentry/nextjs": "^11.10.0",
     "@xstate/react": "^6.1.0",
     "@xstate/store": "4.3.0",
-    "jose": "6.2.13",
+    "jose": "6.2.14",
     "next": "16.4.3",
     "next-intl": "^4.14.9",
     "react": "^19.3.1",
@@ -60,7 +60,7 @@
     "vitest": "^5.0.5"
   },
   "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "4.65.0"
+    "@rollup/rollup-linux-x64-gnu": "4.66.0"
   },
   "engines": {
     "node": ">=22.0.0 <25.0.0",
