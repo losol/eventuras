@@ -91,9 +91,12 @@ export const registerForEvent = async (
   logger.debug('Clicking registration confirmation button...');
   await page.locator('[data-testid="registration-confirmation-button"]').click();
 
-  // Wait for registration to complete by waiting for redirect to /user/events page
-  // Use a wildcard to allow query params like ?login=success
-  await page.waitForURL(`**/user/events/${eventId}**`, { timeout: 10000 });
+  // Wait for the saved registration, not the URL: the wizard is already on
+  // /user/events/<id>, so a URL wait returns at once and the test can close the
+  // page while the registration is still being submitted.
+  await expect(page.locator('[data-testid="registrationview-registration-tab"]')).toBeVisible({
+    timeout: 20000,
+  });
   logger.debug('Registration submitted');
 };
 
