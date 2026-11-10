@@ -189,8 +189,8 @@ importers:
         version: 5.0.5(@opentelemetry/api@1.10.0)(@types/node@24.13.3)(@vitest/ui@5.0.5)(happy-dom@20.10.6)(jsdom@30.0.1)(vite@8.3.5(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.77.4)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))
     optionalDependencies:
       '@rollup/rollup-linux-x64-gnu':
-        specifier: 4.66.0
-        version: 4.66.0
+        specifier: 4.67.2
+        version: 4.67.2
 
   docs: {}
 
@@ -2264,6 +2264,12 @@ packages:
     os: [linux]
     libc: [glibc]
 
+  '@rollup/rollup-linux-x64-gnu@4.67.2':
+    resolution: {integrity: sha512-ChzK9f3iE4N5GInBquiZtzWOqh+CYS5nlLlXGJxeG3d2T9rk8L1Hxg0s+v2Eh6vmAc/1T6IhOVkQU0ORP2eV7g==}
+    cpu: [x64]
+    os: [linux]
+    libc: [glibc]
+
   '@rollup/rollup-linux-x64-musl@4.66.0':
     resolution: {integrity: sha512-Uz1HiZe+qBzqgdPsON+z0wRx3WdATuyzwvGT6cr2VZVrqqko0ZJVfkrQJtwDMuDcAfXYdo7XucaxJ7lTLjEcgg==}
     cpu: [x64]
@@ -3396,8 +3402,8 @@ packages:
   ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
 
-  electron-to-chromium@1.5.469:
-    resolution: {integrity: sha512-HIR230i9MGRHzaB8QRfXePYN23CF5osVvSqrZWQxqmlIMkIrT//wCEiDMM8yK2Il8TTqw39sjbwR4W2/axBFag==}
+  electron-to-chromium@1.5.471:
+    resolution: {integrity: sha512-Lo7jyyneHRYUQYM3WZ2rBEei9FcUIwValFPLifTbr4NTpc6oyUB+nN2rrOtbn3CE5pgz930mYxRJeD+glR7d6Q==}
 
   emoji-regex@10.6.0:
     resolution: {integrity: sha512-toUI84YS5YmxW219erniWD0CIVOo46xGKColeNQRgOzDorgBi1v4D71/OFzgD9GO2UGKIv1C3Sp8DAn0+j5w7A==}
@@ -7480,6 +7486,9 @@ snapshots:
   '@rollup/rollup-linux-x64-gnu@4.66.0':
     optional: true
 
+  '@rollup/rollup-linux-x64-gnu@4.67.2':
+    optional: true
+
   '@rollup/rollup-linux-x64-musl@4.66.0':
     optional: true
 
@@ -8425,7 +8434,7 @@ snapshots:
     dependencies:
       baseline-browser-mapping: 2.11.34
       caniuse-lite: 1.0.30001820
-      electron-to-chromium: 1.5.469
+      electron-to-chromium: 1.5.471
       node-releases: 2.0.62
       update-browserslist-db: 1.3.4(browserslist@4.29.5)
 
@@ -8696,7 +8705,7 @@ snapshots:
 
   ee-first@1.1.1: {}
 
-  electron-to-chromium@1.5.469: {}
+  electron-to-chromium@1.5.471: {}
 
   emoji-regex@10.6.0: {}
 
