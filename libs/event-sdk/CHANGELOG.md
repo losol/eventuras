@@ -1,5 +1,18 @@
 # @eventuras/event-sdk
 
+## 3.10.0
+
+### Minor Changes
+
+- 9f405f6: Business events include `subjectName`, `subjectId` and `actorName`, looked up at read time. The admin activity timeline shows who the change was about (linked to its admin page) and who made it.
+- 45966c0: The registration flow asks who pays the invoice: the participant, their own company or another organization. Organization payers give an organization number (checked for Norwegian numbers), the organization's name, a contact person and an invoice address; another organization must also give an invoice reference. The API stores the payer type and contact person, and copies changed payer details to orders that are not invoiced yet, so the invoice goes to the chosen payer with the chosen payment method. PowerOffice matches organization customers on the organization number only, and no longer falls back to the participant's email.
+
+### Patch Changes
+
+- Updated dependencies [9f405f6]
+- Updated dependencies [45966c0]
+  - @eventuras/api@3.16.0
+
 ## 3.9.2
 
 ### Patch Changes
