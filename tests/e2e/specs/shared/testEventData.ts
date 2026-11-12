@@ -379,8 +379,6 @@ To help us provide the best experience, please provide the following details:
     certificateDescription: `This certificate acknowledges the successful completion of ${eventTitle}, demonstrating commitment to professional development and mastery of key concepts covered during the event.`,
 
     maxParticipants: 50,
-    featuredImageUrl: 'https://picsum.photos/1200/600',
-    featuredImageCaption: 'Join us for an unforgettable learning experience',
     city: location.city,
     location: location.venue,
     slug: '', // Will be auto-generated
@@ -404,8 +402,6 @@ export const generateMinimalTestEventData = (baseName: string): TestEventData =>
     certificateTitle: `${baseName} certificateTitle`,
     certificateDescription: `${baseName} certificateDescription`,
     maxParticipants: 20,
-    featuredImageUrl: 'https://picsum.photos/500/500',
-    featuredImageCaption: 'This is a picsum image',
     city: `${baseName} city`,
     location: `${baseName} location`,
     slug: '', // Will be auto-generated
