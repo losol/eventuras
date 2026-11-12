@@ -1,5 +1,20 @@
 # @eventuras/web
 
+## 3.14.0
+
+### Minor Changes
+
+- ebf53ba: New admin front page: searchable event overview with Upcoming/Drafts/Past/All tabs and counts, status badges, relative dates and a capacity bar per event.
+- 45966c0: The registration flow asks who pays the invoice: the participant, their own company or another organization. Organization payers give an organization number (checked for Norwegian numbers), the organization's name, a contact person and an invoice address; another organization must also give an invoice reference. The API stores the payer type and contact person, and copies changed payer details to orders that are not invoiced yet, so the invoice goes to the chosen payer with the chosen payment method. PowerOffice matches organization customers on the organization number only, and no longer falls back to the participant's email.
+
+### Patch Changes
+
+- 9f405f6: Business events include `subjectName`, `subjectId` and `actorName`, looked up at read time. The admin activity timeline shows who the change was about (linked to its admin page) and who made it.
+- d216dc3: Upgrade `@eventuras/fides-auth-next` to 0.8.0. The session helpers and the login, callback, logout and heartbeat routes now come from one `createFidesAuth` instance bound to `SESSION_SECRET` and the OIDC config, instead of reading the secret from the environment inside the library. Existing sessions stay valid; `SESSION_SECRET` is still 64 hex characters.
+- Updated dependencies [9f405f6]
+- Updated dependencies [45966c0]
+  - @eventuras/event-sdk@3.10.0
+
 ## 3.13.1
 
 ### Patch Changes
