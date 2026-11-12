@@ -4,9 +4,8 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 import { globalPOSTRateLimit } from '@eventuras/fides-auth-next/request';
-import { getCurrentSession } from '@eventuras/fides-auth-next/session';
 
-import { oauthConfig } from '@/utils/oauthConfig';
+import { auth } from '@/utils/auth/fidesAuth';
 
 export async function logoutAction(): Promise<ActionResult> {
   if (!globalPOSTRateLimit()) {
@@ -14,7 +13,7 @@ export async function logoutAction(): Promise<ActionResult> {
       message: 'Too many requests',
     };
   }
-  const session = await getCurrentSession(oauthConfig);
+  const session = await auth.getCurrentSession();
   if (session === null) {
     return {
       message: 'Not authenticated',

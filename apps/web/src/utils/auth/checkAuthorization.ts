@@ -1,11 +1,10 @@
 'use server';
 
-import { getCurrentSession } from '@eventuras/fides-auth-next/session';
 import { Logger } from '@eventuras/logger';
 
 import { client } from '@/lib/eventuras-client';
 import { getV3Userprofile } from '@/lib/eventuras-sdk';
-import { oauthConfig } from '@/utils/oauthConfig';
+import { auth } from '@/utils/auth/fidesAuth';
 import { getOrganizationId } from '@/utils/organization';
 
 const logger = Logger.create({ namespace: 'web:admin', context: { module: 'checkAuthorization' } });
@@ -18,7 +17,7 @@ const SYSTEM_ADMIN_ROLE = 'SystemAdmin';
  * Returns true if the provided session roles include the system-wide admin role.
  * Pass `session?.user?.roles` from an already-fetched session to avoid redundant
  * network calls. For a standalone check, fetch the session yourself:
- *   const session = await getCurrentSession(oauthConfig);
+ *   const session = await auth.getCurrentSession();
  *   if (await isSystemAdmin(session?.user?.roles ?? [])) { ... }
  */
 export async function isSystemAdmin(sessionRoles: string[]): Promise<boolean> {
@@ -31,7 +30,7 @@ export async function isSystemAdmin(sessionRoles: string[]): Promise<boolean> {
  * checks the role again on anything that reaches it.
  */
 export async function isCurrentUserSystemAdmin(): Promise<boolean> {
-  const session = await getCurrentSession(oauthConfig);
+  const session = await auth.getCurrentSession();
   return isSystemAdmin(session?.user?.roles ?? []);
 }
 
@@ -75,7 +74,7 @@ export async function checkAuthorization(requiredRole: string): Promise<Authoriz
 
     // SystemAdmin has global access – no org membership needed.
     // Fetch session once here so it can be reused and we avoid double calls.
-    const session = await getCurrentSession(oauthConfig);
+    const session = await auth.getCurrentSession();
     const sessionRoles = session?.user?.roles ?? [];
 
     if (await isSystemAdmin(sessionRoles)) {

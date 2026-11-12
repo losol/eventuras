@@ -1,7 +1,5 @@
-import { handleOidcLogout } from '@eventuras/fides-auth-next/oidc-logout';
-
 import { appConfig } from '@/config.server';
-import { oauthConfig } from '@/utils/oauthConfig';
+import { auth } from '@/utils/auth/fidesAuth';
 
 /**
  * RP-initiated logout: clears all session cookies and redirects to the
@@ -14,8 +12,7 @@ export async function POST(request: Request): Promise<Response> {
     applicationUrl
   ).toString();
 
-  return handleOidcLogout(request, {
-    oauthConfig,
+  return auth.handleOidcLogout(request, {
     postLogoutRedirectUri,
     applicationUrl,
   });

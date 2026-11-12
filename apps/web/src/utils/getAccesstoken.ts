@@ -1,13 +1,9 @@
 'use server';
 
-import {
-  accessTokenExpires,
-  getCurrentSession,
-  tryRefreshCurrentSession,
-} from '@eventuras/fides-auth-next';
+import { accessTokenExpires } from '@eventuras/fides-auth-next';
 import { Logger } from '@eventuras/logger';
 
-import { oauthConfig } from '@/utils/oauthConfig';
+import { auth } from '@/utils/auth/fidesAuth';
 
 const logger = Logger.create({ namespace: 'web:utils:getAccessToken' });
 
@@ -17,7 +13,7 @@ const logger = Logger.create({ namespace: 'web:utils:getAccessToken' });
  * updates the session cookies, so subsequent calls use the new token.
  */
 export async function getAccessToken(): Promise<string | null> {
-  const session = await getCurrentSession();
+  const session = await auth.getCurrentSession();
   if (!session) {
     logger.debug('No session found');
     return null;
@@ -33,7 +29,7 @@ export async function getAccessToken(): Promise<string | null> {
     return null;
   }
 
-  const result = await tryRefreshCurrentSession(oauthConfig);
+  const result = await auth.tryRefreshCurrentSession();
   if (!result.ok) {
     if (result.reason === 'refresh_failed' && result.cause !== 'invalid_grant') {
       // Provider blip — the session is likely still fine, just no token now.

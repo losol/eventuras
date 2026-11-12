@@ -2,7 +2,6 @@ import React from 'react';
 import { notFound, redirect } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
-import { getCurrentSession, refreshCurrentSession } from '@eventuras/fides-auth-next';
 import { Logger } from '@eventuras/logger';
 import { Heading } from '@eventuras/ratio-ui/core/Heading';
 import { Container } from '@eventuras/ratio-ui/layout/Container';
@@ -12,7 +11,7 @@ import {
   getV3EventsById,
   getV3Userprofile,
 } from '@/lib/eventuras-sdk';
-import { oauthConfig } from '@/utils/oauthConfig';
+import { auth } from '@/utils/auth/fidesAuth';
 import getSiteSettings from '@/utils/site/getSiteSettings';
 
 import EventFlowContainer from './components/EventFlowContainer';
@@ -58,11 +57,11 @@ export default async function UserEventPage({ params }: Readonly<UserEventPagePr
     );
 
     // Try to refresh the session in case the token expired
-    const currentSession = await getCurrentSession();
+    const currentSession = await auth.getCurrentSession();
     let retryUserError: unknown;
     if (currentSession?.tokens?.refreshToken) {
       logger.debug({ eventId: id }, 'Attempting to refresh session for event registration');
-      const refreshedSession = await refreshCurrentSession(oauthConfig);
+      const refreshedSession = await auth.refreshCurrentSession();
 
       if (refreshedSession) {
         logger.debug(
