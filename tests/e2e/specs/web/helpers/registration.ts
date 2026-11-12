@@ -109,9 +109,7 @@ export const validateRegistration = async (page: Page, eventId: string) => {
   logger.debug('Registered for event, validating...');
   await visitRegistrationPageForEvent(page, eventId);
 
-  // Get the registration tab
-  const tab = await page.locator('[data-key="tab-registration"]');
-  await tab.click();
+  await page.getByTestId('registrationview-registration-tab').click();
 
   await expect(page.locator('[data-testid="registration-registrationId"]')).toBeVisible();
 };
