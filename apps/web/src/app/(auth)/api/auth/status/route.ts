@@ -1,6 +1,7 @@
-import { accessTokenExpires, tryGetCurrentSession } from '@eventuras/fides-auth-next';
+import { accessTokenExpires } from '@eventuras/fides-auth-next';
 import { Logger } from '@eventuras/logger';
 
+import { auth } from '@/utils/auth/fidesAuth';
 import type { AuthStatus } from '@/utils/auth/getAuthStatus';
 
 const logger = Logger.create({ namespace: 'web:api:auth:status' });
@@ -21,7 +22,7 @@ function notAuthenticated(status = 200): Response {
  */
 export async function GET(): Promise<Response> {
   try {
-    const { session, reason } = await tryGetCurrentSession();
+    const { session, reason } = await auth.tryGetCurrentSession();
 
     if (!session?.user) {
       // no_session_cookie is the ordinary anonymous case — not worth a line.

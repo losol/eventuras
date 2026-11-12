@@ -2,10 +2,9 @@
 
 import { decodeJwt } from 'jose';
 
-import { getCurrentSession } from '@eventuras/fides-auth-next/session';
 import { Logger } from '@eventuras/logger';
 
-import { oauthConfig } from '@/utils/oauthConfig';
+import { auth } from '@/utils/auth/fidesAuth';
 
 const logger = Logger.create({ namespace: 'web:utils:getSentryUserId' });
 
@@ -16,7 +15,7 @@ const logger = Logger.create({ namespace: 'web:utils:getSentryUserId' });
  */
 export async function getSentryUserId(): Promise<string | null> {
   try {
-    const session = await getCurrentSession(oauthConfig);
+    const session = await auth.getCurrentSession();
     const accessToken = session?.tokens?.accessToken;
 
     if (!accessToken) {

@@ -1,12 +1,12 @@
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
-import { accessTokenExpires, getCurrentSession } from '@eventuras/fides-auth-next';
+import { accessTokenExpires } from '@eventuras/fides-auth-next';
 import { globalGETRateLimit } from '@eventuras/fides-auth-next/request';
 import { Logger } from '@eventuras/logger';
 
 import { appConfig } from '@/config.server';
-import { oauthConfig } from '@/utils/oauthConfig';
+import { auth } from '@/utils/auth/fidesAuth';
 
 const logger = Logger.create({ namespace: 'web:api:login' });
 
@@ -22,7 +22,7 @@ export async function GET() {
     }
 
     logger.debug('Checking for existing session');
-    const session = await getCurrentSession(oauthConfig);
+    const session = await auth.getCurrentSession();
 
     if (session !== null) {
       // Check if the session is actually valid (access token not expired and refresh token exists)

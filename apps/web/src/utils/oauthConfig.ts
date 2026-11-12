@@ -15,3 +15,6 @@ export const oauthConfig: OAuthConfig = {
   redirect_uri: redirect_uri,
   scope: 'openid profile email offline_access',
 };
+
+/** Encrypts the session cookies: 64 hex characters (32 bytes). */
+export const sessionSecret = String(appConfig.env.SESSION_SECRET ?? '');

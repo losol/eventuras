@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import {
-  getSessionSecret,
   SESSION_EVENT,
   type SessionRejectedReason,
   validateSessionJwt,
 } from '@eventuras/fides-auth-next';
 import { Logger } from '@eventuras/logger';
+
+import { sessionSecret } from '@/utils/oauthConfig';
 
 const logger = Logger.create({ namespace: 'web:proxy' });
 
@@ -111,7 +112,7 @@ export async function proxy(request: NextRequest) {
 
   const { status, session, accessTokenExpiresIn, reason } = await validateSessionJwt(
     sessionCookie,
-    getSessionSecret()
+    sessionSecret
   );
 
   if (status === 'INVALID') {
