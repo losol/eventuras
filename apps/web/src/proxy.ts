@@ -1,18 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import {
-  SESSION_EVENT,
-  type SessionRejectedReason,
-  validateSessionJwt,
-} from '@eventuras/fides-auth-next';
 import { Logger } from '@eventuras/logger';
 
-import { sessionSecret } from '@/utils/oauthConfig';
+import { auth } from '@/utils/auth/fidesAuth';
 
 const logger = Logger.create({ namespace: 'web:proxy' });
 
-/** Every cookie that may hold session state, split format included. */
-const SESSION_COOKIE_NAMES = ['session', 'session_at', 'session_it'];
+/** Paths that need a session: anonymous visitors are sent to login. */
+const PROTECTED_PATHS = ['/admin', '/user'];
+
+const isProtected = (pathname: string) =>
+  PROTECTED_PATHS.some(path => pathname === path || pathname.startsWith(`${path}/`));
 
 /**
  * Validates CORS for non-GET requests.
@@ -58,96 +56,31 @@ function validateCorsHeaders(request: NextRequest): NextResponse | null {
   return null;
 }
 
-/** Redirects to login with returnTo, clearing session cookies; `reason` is logged. */
-function redirectToLogin(
-  reason: SessionRejectedReason,
-  details: Record<string, unknown>,
-  pathname: string,
-  search: string,
-  originUrl: string
-): NextResponse {
-  const returnTo = pathname + search;
-  const loginUrl = new URL('/api/auth/login', originUrl);
-  loginUrl.searchParams.set('returnTo', returnTo);
-
-  logger.warn(
-    { event: SESSION_EVENT.REJECTED, reason, source: 'proxy', ...details, returnTo },
-    'Redirecting to login'
-  );
-
-  const response = NextResponse.redirect(loginUrl.toString());
-  for (const name of SESSION_COOKIE_NAMES) {
-    response.cookies.delete(name);
-  }
-  return response;
-}
-
 export async function proxy(request: NextRequest) {
-  const url = new URL(request.url);
-  const pathname = url.pathname;
-  const search = url.search;
-  const originUrl = url.origin;
+  const { pathname, search } = request.nextUrl;
 
-  logger.debug({ method: request.method, pathname }, 'Proxy processing request');
-
-  // ─── 1) CORS validation for non-GET requests ─────────────────────────────
   if (request.method !== 'GET') {
     const corsError = validateCorsHeaders(request);
-    if (corsError) {
-      return corsError;
-    }
+    if (corsError) return corsError;
+  }
 
-    // After validating headers, continue
+  if (!request.cookies.has(auth.cookieNames.session)) {
+    if (request.method === 'GET' && isProtected(pathname)) {
+      const loginUrl = new URL('/api/auth/login', request.url);
+      loginUrl.searchParams.set('returnTo', pathname + search);
+      logger.debug({ pathname }, 'No session, redirecting to login');
+      return NextResponse.redirect(loginUrl);
+    }
     return NextResponse.next();
   }
 
-  // ─── 2) Session validation for protected routes ──────────────────────────
-  // Validation only. Middleware cannot persist cookies, so a refresh from here
-  // would burn a rotated refresh token; refreshing belongs to the heartbeat.
-  const sessionCookie = request.cookies.get('session')?.value;
-
-  if (!sessionCookie) {
-    return redirectToLogin('no_session_cookie', {}, pathname, search, originUrl);
-  }
-
-  const { status, session, accessTokenExpiresIn, reason } = await validateSessionJwt(
-    sessionCookie,
-    sessionSecret
-  );
-
-  if (status === 'INVALID') {
-    return redirectToLogin(
-      'unreadable_session',
-      { validationReason: reason },
-      pathname,
-      search,
-      originUrl
-    );
-  }
-
-  // EXPIRED only fires for stale legacy single-cookie sessions — one re-login.
-  if (status === 'EXPIRED') {
-    return redirectToLogin(
-      'stale_legacy_session',
-      {
-        sid: session?.sid,
-        expiredSecondsAgo: accessTokenExpiresIn !== undefined ? -accessTokenExpiresIn : undefined,
-        hasRefreshToken: !!session?.tokens?.refreshToken,
-      },
-      pathname,
-      search,
-      originUrl
-    );
-  }
-
-  // ─── 3) All checks passed ─────────────────────────────────────────────────
-  logger.debug(
-    { pathname, sid: session?.sid, accessTokenExpiresIn },
-    'Request authorized, proceeding'
-  );
-  return NextResponse.next();
+  // Refresh here, before rendering: pages can read cookies but not write them.
+  // A session that can't be refreshed is left as is; the heartbeat ends it.
+  return auth.refreshInProxy(request);
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/admin', '/user/:path*', '/user'],
+  matcher: [
+    '/((?!api/auth|_next/static|_next/image|favicon.ico|.*[.](?:png|jpg|svg|ico|webp)$).*)',
+  ],
 };

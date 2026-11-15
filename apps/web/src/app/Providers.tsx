@@ -1,20 +1,17 @@
 'use client';
 import { useEffect } from 'react';
 
-import {
-  initializeAuth,
-  startSessionMonitor,
-  useHeartbeat,
-} from '@eventuras/fides-auth-next/store';
+import { initializeAuth, type SessionClientEvent } from '@eventuras/fides-auth/browser';
+import { useHeartbeat, useSessionMonitor } from '@eventuras/fides-auth-react';
 import { Logger } from '@eventuras/logger';
 import { ToastRenderer } from '@eventuras/ratio-ui/toast';
 
 import { authStore, useAuthStore } from '@/auth/authStore';
+import { fidesLogger } from '@/auth/fidesLogger';
 import { LoginSuccessHandler } from '@/components/auth/LoginSuccessHandler';
 import { SessionWarningOverlay } from '@/components/SessionWarningOverlay';
 import { SentryUserContext } from '@/providers/sentry/SentryUserContext';
 import { type Theme, ThemeProvider } from '@/providers/theme';
-import { getAuthStatus } from '@/utils/auth/getAuthStatus';
 
 const logger = Logger.create({
   namespace: 'web:app',
@@ -35,67 +32,44 @@ type ProvidersProps = {
  */
 function HeartbeatRunner() {
   useHeartbeat({
+    logger: fidesLogger,
     onSessionExpired: () => {
       logger.warn('Heartbeat detected expired refresh token');
-      authStore.send({ type: 'sessionExpired' });
+      authStore.sessionExpired();
     },
-    onEvent: event => {
-      // Failures are signal; routine refreshes are noise.
-      if (event.event === 'session.rejected' || event.event === 'session.refresh_failed') {
-        logger.warn({ ...event }, 'Heartbeat event');
-      } else {
-        logger.debug({ ...event }, 'Heartbeat event');
-      }
-    },
+    onEvent: event => logSessionEvent(event, 'Heartbeat event'),
   });
   return null;
+}
+
+/** Failures are signal; routine refreshes are noise. */
+function logSessionEvent(event: SessionClientEvent, message: string) {
+  if (event.event === 'session.rejected' || event.event === 'session.refresh_failed') {
+    logger.warn({ ...event }, message);
+  } else {
+    logger.debug({ ...event }, message);
+  }
 }
 
 export default function Providers({ children, forcedColorScheme }: Readonly<ProvidersProps>) {
   const { isAuthenticated } = useAuthStore();
 
-  // Initialize auth store and start session monitoring
   useEffect(() => {
     logger.info('Initializing auth store');
+    void initializeAuth(authStore);
 
-    // Initialize auth on mount
-    initializeAuth(authStore, getAuthStatus);
-
-    // Start session monitoring with cleanup
-    const cleanup = startSessionMonitor(authStore, getAuthStatus, {
-      interval: 30_000, // Check every 30 seconds
-      onSessionExpired: () => {
-        logger.warn('Session expired');
-      },
-      onEvent: event => {
-        if (event.event === 'session.rejected' || event.event === 'session.refresh_failed') {
-          logger.warn({ ...event }, 'Session monitor event');
-        } else {
-          logger.debug({ ...event }, 'Session monitor event');
-        }
-      },
+    if (process.env.NODE_ENV !== 'development') return;
+    return authStore.subscribe(() => {
+      logger.debug({ state: authStore.getSnapshot() }, 'Auth state changed');
     });
-
-    // Subscribe to state changes for debugging in development
-    if (process.env.NODE_ENV === 'development') {
-      const subscription = authStore.subscribe(snapshot => {
-        logger.debug(
-          {
-            context: snapshot.context,
-          },
-          'Auth state changed'
-        );
-      });
-
-      return () => {
-        logger.info('Cleaning up auth store');
-        cleanup();
-        subscription.unsubscribe();
-      };
-    }
-
-    return cleanup;
   }, []);
+
+  useSessionMonitor(authStore, {
+    interval: 30_000,
+    logger: fidesLogger,
+    onSessionExpired: () => logger.warn('Session expired'),
+    onEvent: event => logSessionEvent(event, 'Session monitor event'),
+  });
 
   return (
     <ThemeProvider forced={forcedColorScheme}>

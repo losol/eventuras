@@ -2,11 +2,10 @@
 
 import { useEffect, useRef } from 'react';
 
-import { checkAuth } from '@eventuras/fides-auth-next/store';
+import { checkAuth } from '@eventuras/fides-auth/browser';
 import { Logger } from '@eventuras/logger';
 
 import { authStore } from '@/auth/authStore';
-import { getAuthStatus } from '@/utils/auth/getAuthStatus';
 
 const logger = Logger.create({
   namespace: 'web:auth',
@@ -40,7 +39,7 @@ export function LoginSuccessHandler() {
 
     logger.info('Login success detected via query param, triggering immediate auth check');
 
-    checkAuth(authStore, getAuthStatus).catch((error: unknown) => {
+    checkAuth(authStore).catch((error: unknown) => {
       logger.error({ error }, 'Immediate auth check failed after login redirect');
     });
 
