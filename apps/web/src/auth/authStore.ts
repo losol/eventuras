@@ -1,33 +1,9 @@
-/**
- * Authentication Store Configuration for Web App
- *
- * This file configures the auth store from @eventuras/fides-auth-next
- * with app-specific settings and the auth status checker.
- */
+import { createAuthStore } from '@eventuras/fides-auth/browser';
+import { createAuthStoreHooks } from '@eventuras/fides-auth-react';
 
-import {
-  configureAuthLogger,
-  createAuthStore,
-  createAuthStoreHooks,
-} from '@eventuras/fides-auth-next/store';
+import { fidesLogger } from './fidesLogger';
 
-import { getAuthStatus } from '@/utils/auth/getAuthStatus';
+/** The browser's view of the session, from `/api/auth/session`. */
+export const authStore = createAuthStore({ adminRole: 'Admin', logger: fidesLogger });
 
-// Configure fides-auth to use @eventuras/logger (must happen before store creation)
-configureAuthLogger();
-
-/**
- * Create the configured auth store
- */
-export const authStore = createAuthStore({
-  checkAuthStatus: getAuthStatus,
-  config: {
-    loggerNamespace: 'web:auth',
-    adminRole: 'Admin',
-  },
-});
-
-/**
- * Create React hooks for accessing auth state and actions
- */
 export const { useAuthStore, useAuthActions } = createAuthStoreHooks(authStore);

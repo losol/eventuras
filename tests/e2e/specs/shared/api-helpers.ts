@@ -1,5 +1,5 @@
+import { createFidesAuth, type CookieStore } from '@eventuras/fides-auth/server';
 import { Logger } from '@eventuras/logger';
-import * as jose from 'jose';
 import * as fs from 'node:fs';
 
 const logger = Logger.create({ namespace: 'e2e:api' });
@@ -10,91 +10,48 @@ if (!BACKEND_API_URL) {
   throw new Error('E2E_API_URL environment variable is required');
 }
 
-// Get session secret for decrypting JWE tokens (same as used by the application)
+// The web app's session secret, so the tests can read its session cookies.
 const E2E_SESSION_SECRET = process.env.E2E_SESSION_SECRET;
 if (!E2E_SESSION_SECRET) {
-  throw new Error('E2E_SESSION_SECRET environment variable is required for decrypting session cookies');
+  throw new Error(
+    'E2E_SESSION_SECRET environment variable is required for reading session cookies'
+  );
 }
 
-/**
- * Converts a hex string to a Uint8Array.
- * Copied from @eventuras/fides-auth/utils to avoid ESM/CommonJS compatibility issues.
- */
-function hexToUint8Array(hex: string): Uint8Array {
-  if (hex.length % 2 !== 0) {
-    throw new Error('Invalid hex string');
-  }
-  const arr = new Uint8Array(hex.length / 2);
-  for (let i = 0; i < arr.length; i++) {
-    arr[i] = Number.parseInt(hex.slice(i * 2, i * 2 + 2), 16);
-  }
-  return arr;
-}
+// Reads sessions only, so the provider settings are placeholders. The redirect URI
+// sets the cookie names (`__Host-session` over https), so it must be the web app's.
+const sessionReader = createFidesAuth({
+  oauthConfig: {
+    issuer: 'https://e2e.invalid',
+    clientId: 'e2e',
+    clientSecret: 'unused',
+    redirectUri: new URL('/api/auth/callback/oidc', process.env.E2E_WEB_URL).toString(),
+    scope: 'openid',
+  },
+  secret: E2E_SESSION_SECRET,
+});
 
 /**
- * Decrypts a JWE cookie value with the same key as @eventuras/fides-auth.
- * @param jweToken - Encrypted value from a session cookie
- * @returns The payload: `accessToken` (split session_at) or `tokens` (legacy session)
- */
-async function decryptSessionToken(
-  jweToken: string
-): Promise<{ tokens?: { accessToken?: string }; accessToken?: string }> {
-  if (!E2E_SESSION_SECRET) {
-    throw new Error('E2E_SESSION_SECRET is required');
-  }
-
-  try {
-    // Convert the hex session secret to Uint8Array (same as getSessionSecretUint8Array in fides-auth)
-    const secretKey = hexToUint8Array(E2E_SESSION_SECRET);
-
-    // Decrypt the JWE token using jose library
-    const { payload } = await jose.jwtDecrypt(jweToken, secretKey);
-
-    return payload as { tokens?: { accessToken?: string }; accessToken?: string };
-  } catch (error) {
-    logger.error({ error }, 'Error decrypting session token');
-    throw new Error(`Failed to decrypt session token: ${error}`);
-  }
-}
-
-/**
- * Extract access token from Playwright auth storage state.
- * Decrypts the JWE session token to extract the access token.
+ * Extract the access token from a Playwright auth storage state, using
+ * fides-auth's own reader so the tests follow its cookie format.
  * @param authFile - Path to the auth storage state file (e.g., 'tmp/auth/admin.json')
  * @returns The access token or null if not found
  */
 export const getAccessTokenFromAuthFile = async (authFile: string): Promise<string | null> => {
   try {
     const authState = JSON.parse(fs.readFileSync(authFile, 'utf-8'));
-    const cookieValue = (name: string): string | undefined =>
-      authState.cookies?.find((cookie: { name: string }) => cookie.name === name)?.value;
+    const cookies: CookieStore = {
+      get: name =>
+        authState.cookies?.find((cookie: { name: string }) => cookie.name === name)?.value ?? null,
+      set: () => {},
+    };
 
-    // Split format: the access token lives in its own session_at cookie.
-    const accessTokenCookie = cookieValue('session_at');
-    if (accessTokenCookie) {
-      const { accessToken } = await decryptSessionToken(accessTokenCookie);
-      if (accessToken) {
-        logger.debug({ authFile }, 'Extracted access token from session_at cookie');
-        return accessToken;
-      }
-    }
-
-    // Legacy format: the whole session, access token included, in one cookie.
-    const sessionCookie = cookieValue('session');
-    if (!sessionCookie) {
-      logger.debug({ authFile }, 'No session cookie found in auth file');
+    const tokens = await sessionReader.getTokens(cookies);
+    if (!tokens?.accessToken) {
+      logger.debug({ authFile }, 'No access token in session');
       return null;
     }
-
-    const session = await decryptSessionToken(sessionCookie);
-    const accessToken = session.tokens?.accessToken;
-    if (!accessToken) {
-      logger.debug('No access token found in decrypted session');
-      return null;
-    }
-
-    logger.debug('Successfully extracted access token');
-    return accessToken;
+    return tokens.accessToken;
   } catch (error) {
     logger.error({ authFile, error }, 'Error reading auth file');
     return null;

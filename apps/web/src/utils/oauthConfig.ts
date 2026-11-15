@@ -1,18 +1,15 @@
 import { joinUrl } from '@eventuras/core/url';
-import type { OAuthConfig } from '@eventuras/fides-auth-next';
+import type { OidcClientConfig } from '@eventuras/fides-auth';
 
 import { appConfig } from '@/config.server';
 
-export const redirect_uri = joinUrl(
-  String(appConfig.env.APPLICATION_URL ?? ''),
-  '/api/auth/callback/oidc'
-);
+export const applicationUrl = String(appConfig.env.APPLICATION_URL ?? '');
 
-export const oauthConfig: OAuthConfig = {
+export const oauthConfig: OidcClientConfig = {
   issuer: String(appConfig.env.OIDC_ISSUER ?? ''),
   clientId: String(appConfig.env.OIDC_CLIENT_ID ?? ''),
   clientSecret: String(appConfig.env.OIDC_CLIENT_SECRET ?? ''),
-  redirect_uri: redirect_uri,
+  redirectUri: joinUrl(applicationUrl, '/api/auth/callback/oidc'),
   scope: 'openid profile email offline_access',
 };
 

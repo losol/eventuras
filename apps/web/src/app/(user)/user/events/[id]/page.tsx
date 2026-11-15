@@ -11,7 +11,6 @@ import {
   getV3EventsById,
   getV3Userprofile,
 } from '@/lib/eventuras-sdk';
-import { auth } from '@/utils/auth/fidesAuth';
 import getSiteSettings from '@/utils/site/getSiteSettings';
 
 import EventFlowContainer from './components/EventFlowContainer';
@@ -48,71 +47,12 @@ export default async function UserEventPage({ params }: Readonly<UserEventPagePr
     getV3EventsByEventIdProducts({ path: { eventId: id } }),
   ]);
 
-  // Handle user profile fetch error
-  // This is a critical flow - try everything possible to help the user register
+  // The proxy refreshed the session before this render, so a failure here needs a new login.
   if (!userResponse.data) {
-    logger.warn(
-      { error: userResponse.error, eventId: id },
-      'Failed to fetch user profile - attempting session refresh'
-    );
-
-    // Try to refresh the session in case the token expired
-    const currentSession = await auth.getCurrentSession();
-    let retryUserError: unknown;
-    if (currentSession?.tokens?.refreshToken) {
-      logger.debug({ eventId: id }, 'Attempting to refresh session for event registration');
-      const refreshedSession = await auth.refreshCurrentSession();
-
-      if (refreshedSession) {
-        logger.debug(
-          { eventId: id },
-          'Session refreshed successfully - retrying user profile fetch'
-        );
-
-        // Retry the user profile fetch with refreshed token
-        const retryUserResponse = await getV3Userprofile();
-
-        if (retryUserResponse.data) {
-          logger.debug({ eventId: id }, 'User profile fetch successful after session refresh');
-          // Continue with the rest of the page using retryUserResponse
-          return (
-            <section className="my-16">
-              {eventInfoResponse.data?.title && (
-                <>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    {t('user.events.registration.titleLabel')}
-                  </p>
-                  <Heading as="h1" marginY="sm">
-                    {eventInfoResponse.data.title}
-                  </Heading>
-                </>
-              )}
-              <EventFlowContainer
-                user={retryUserResponse.data}
-                eventInfo={eventInfoResponse.data!}
-                availableProducts={availableProductsResponse.data ?? []}
-                siteInfo={siteInfo!}
-              />
-            </section>
-          );
-        }
-
-        retryUserError = retryUserResponse.error;
-      }
-    }
-
-    // Session refresh failed or didn't help - redirect to login
     logger.error(
-      {
-        error: userResponse.error,
-        eventId: id,
-        hasRefreshToken: !!currentSession?.tokens?.refreshToken,
-        retryError: retryUserError,
-      },
-      'Failed to fetch user profile even after session refresh - redirecting to login'
+      { error: userResponse.error, eventId: id },
+      'Failed to fetch user profile, redirecting to login'
     );
-
-    // Redirect to login with return URL to come back to this event
     const returnUrl = `/user/events/${id}`;
     redirect(`/api/auth/login?returnTo=${encodeURIComponent(returnUrl)}`);
   }
