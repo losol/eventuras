@@ -61,7 +61,7 @@ export const registerForEvent = async (
 
   // Fill phone number
   logger.debug('Filling phone number...');
-  const phoneInput = page.getByRole('textbox', { name: 'Enter phone number' });
+  const phoneInput = page.getByTestId('accounteditor-form-phonenumber');
   await phoneInput.waitFor({ state: 'visible', timeout: 5000 });
   await phoneInput.fill('12345678');
 
