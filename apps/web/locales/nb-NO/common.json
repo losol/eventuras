@@ -22,6 +22,8 @@
   },
   "auth": {
     "login": "Logg inn",
+    "loginExpired": "Innloggingen tok for lang tid. Prøv igjen.",
+    "loginFailed": "Innloggingen mislyktes. Prøv igjen.",
     "logout": "Logg ut",
     "refreshing": "Fornyer økten din...",
     "sessionExpired": {

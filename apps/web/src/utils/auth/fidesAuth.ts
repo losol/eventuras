@@ -17,5 +17,7 @@ export const auth = createFidesAuth({
   applicationUrl,
   rolesClaim: (appConfig.env.OIDC_ROLES_CLAIM as string) || 'roles',
   postLogoutRedirectUri: postLogoutRedirectUri(),
+  // 1.0 defaults to 12 hours; keep the 30 days users have today.
+  sessionDurationSeconds: 30 * 24 * 60 * 60,
   logger: fidesLogger,
 });

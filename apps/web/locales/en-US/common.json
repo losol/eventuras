@@ -22,6 +22,8 @@
   },
   "auth": {
     "login": "Login",
+    "loginExpired": "The login took too long. Please try again.",
+    "loginFailed": "Login failed. Please try again.",
     "logout": "Logout",
     "refreshing": "Refreshing your session...",
     "sessionExpired": {
