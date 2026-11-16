@@ -20,7 +20,7 @@ const logger = Logger.create({
  * The OAuth callback redirects with ?login=success query parameter to signal
  * that login just completed. This component detects that parameter and triggers
  * an immediate auth check so the UI updates instantly (rather than waiting
- * for the 30-second polling interval). On ?login=error it shows a toast.
+ * for the 30-second polling interval). On ?login=error and ?logout=error it shows a toast.
  *
  * Place this component in the root layout so it runs on every page load.
  */
@@ -40,6 +40,7 @@ export function LoginSuccessHandler() {
     // pull a Suspense boundary into the layout for no real benefit.
     const url = new URL(window.location.href);
     const login = url.searchParams.get('login');
+    const logout = url.searchParams.get('logout');
 
     if (login === 'success') {
       logger.info('Login success detected via query param, triggering immediate auth check');
@@ -53,12 +54,17 @@ export function LoginSuccessHandler() {
       toast.error(
         code === 'login_expired' ? t('common.auth.loginExpired') : t('common.auth.loginFailed')
       );
+    } else if (logout === 'error') {
+      // A failed logout leaves the session in place: ?logout=error&error=<code>.
+      logger.warn({ code: url.searchParams.get('error') }, 'Logout failed');
+      toast.error(t('common.auth.logoutFailed'));
     } else {
       return;
     }
 
     // Clean up the URL without triggering navigation.
     url.searchParams.delete('login');
+    url.searchParams.delete('logout');
     url.searchParams.delete('error');
     window.history.replaceState({}, '', url.toString());
   }, [t, toast]);
