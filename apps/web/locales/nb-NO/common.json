@@ -25,6 +25,7 @@
     "loginExpired": "Innloggingen tok for lang tid. Prøv igjen.",
     "loginFailed": "Innloggingen mislyktes. Prøv igjen.",
     "logout": "Logg ut",
+    "logoutFailed": "Utloggingen mislyktes. Prøv igjen.",
     "refreshing": "Fornyer økten din...",
     "sessionExpired": {
       "description": "Din økt har utløpt. Vennligst logg inn på nytt for å fortsette.",

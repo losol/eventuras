@@ -25,6 +25,7 @@
     "loginExpired": "The login took too long. Please try again.",
     "loginFailed": "Login failed. Please try again.",
     "logout": "Logout",
+    "logoutFailed": "Logout failed. Please try again.",
     "refreshing": "Refreshing your session...",
     "sessionExpired": {
       "description": "Your session has expired. Please log in again to continue.",
