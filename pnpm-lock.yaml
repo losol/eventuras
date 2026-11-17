@@ -109,14 +109,14 @@ importers:
         specifier: workspace:^
         version: link:../../libs/event-sdk
       '@eventuras/fides-auth':
-        specifier: 1.0.0-beta.6
-        version: 1.0.0-beta.6
+        specifier: 1.0.0-beta.8
+        version: 1.0.0-beta.8
       '@eventuras/fides-auth-next':
-        specifier: 1.0.0-beta.5
-        version: 1.0.0-beta.5(@eventuras/fides-auth@1.0.0-beta.6)(next@16.4.5(@babel/core@7.29.7)(@opentelemetry/api@1.10.0)(@playwright/test@1.64.1)(@types/node@24.13.3)(babel-plugin-macros@3.1.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(sass@1.77.4))(react@19.3.1)
+        specifier: 1.0.0-beta.8
+        version: 1.0.0-beta.8(@eventuras/fides-auth@1.0.0-beta.8)(next@16.4.5(@babel/core@7.29.7)(@opentelemetry/api@1.10.0)(@playwright/test@1.64.1)(@types/node@24.13.3)(babel-plugin-macros@3.1.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(sass@1.77.4))(react@19.3.1)
       '@eventuras/fides-auth-react':
         specifier: 1.0.0-beta.0
-        version: 1.0.0-beta.0(@eventuras/fides-auth@1.0.0-beta.6)(react@19.3.1)
+        version: 1.0.0-beta.0(@eventuras/fides-auth@1.0.0-beta.8)(react@19.3.1)
       '@eventuras/logger':
         specifier: ^0.9.2
         version: 0.9.2(@opentelemetry/sdk-logs@0.220.0(@opentelemetry/api@1.10.0))
@@ -447,8 +447,8 @@ importers:
         specifier: workspace:*
         version: link:../../libs/event-sdk
       '@eventuras/fides-auth':
-        specifier: 1.0.0-beta.6
-        version: 1.0.0-beta.6
+        specifier: 1.0.0-beta.8
+        version: 1.0.0-beta.8
       '@eventuras/google-api':
         specifier: workspace:*
         version: link:../../libs/google-api
@@ -1134,12 +1134,12 @@ packages:
     peerDependencies:
       eslint: ^10.0.0
 
-  '@eventuras/fides-auth-next@1.0.0-beta.5':
-    resolution: {integrity: sha512-j2lSEglu9hJP2zSvje3uWmVbSNMGZSU3LWYNErz88VvVB5a6M1tQwEAaLIYYzwzHr0IRNgJPoBRlFYCjBW9fGQ==}
+  '@eventuras/fides-auth-next@1.0.0-beta.8':
+    resolution: {integrity: sha512-7JE7Q5jhkQa0uCRhmRG7yEskTBcPEyqmJ+JBisdVnnGZk8CziRHNgEbOk0687d0bAcbLMqZ9yuIWpuJL4w5crQ==}
     engines: {node: '>=22'}
     peerDependencies:
-      '@eventuras/fides-auth': ^1.0.0-beta.5
-      next: ^16.0.0
+      '@eventuras/fides-auth': ^1.0.0-beta.8
+      next: ^16.4.1
       react: ^19.0.0
 
   '@eventuras/fides-auth-react@1.0.0-beta.0':
@@ -1149,8 +1149,8 @@ packages:
       '@eventuras/fides-auth': ^1.0.0-beta.0
       react: ^19.0.0
 
-  '@eventuras/fides-auth@1.0.0-beta.6':
-    resolution: {integrity: sha512-gvFItPCUQ75aKNJpuicxrTnsqLlnN5pi3dmPprBDV6G+Isk2uuihVPlIzg6HqsyQpaLixaZdA1ZTkK3Y6jWQJw==}
+  '@eventuras/fides-auth@1.0.0-beta.8':
+    resolution: {integrity: sha512-LnQ7dQlTMpq/gu2tLdx/i1H6c9nzzFDAaLaCuPk2pLx8DpceYLvuiq3JlzxFO/dAq89GHyQlY0C/70cNIGR2Sw==}
     engines: {node: '>=22'}
 
   '@eventuras/lectio-docs-react@0.1.5':
@@ -4509,8 +4509,8 @@ packages:
     resolution: {integrity: sha512-smsWv2LzFjP03xmvFoJ331ss6h+jixfA4UUV/Bsiyuu4YJPfN+FIQGOIiv4w9/+MoHkfkJ22UIaQWRVFRfH6Vw==}
     engines: {node: '>=20'}
 
-  openid-client@6.8.8:
-    resolution: {integrity: sha512-ZsucJA5Ad04Uv7YN4ql+s4GXNmb9uAYQwyJTsJx7CH/MX3JZioLE2pVKi1SC+YrbSLA4Px3Gi30dMjgOZtb6pA==}
+  openid-client@6.8.9:
+    resolution: {integrity: sha512-6mXMRNJxDOf6BflEWLXul1UwzLFz++9Ofz1PYwPwwsJsyXBsbfkO+Jo255SW1qnFNLYz4EJWHz42X4OJJrya/g==}
 
   optionator@0.9.4:
     resolution: {integrity: sha512-6IpQ7mKUxRcZNLIObR0hz7lxsapSSIYNZJwXPGeF0mTVqGKFIXj1DQcMoT22S3ROcLyY/rz0PWaWZ9ayWmad9g==}
@@ -6384,21 +6384,21 @@ snapshots:
       - supports-color
       - turbo
 
-  '@eventuras/fides-auth-next@1.0.0-beta.5(@eventuras/fides-auth@1.0.0-beta.6)(next@16.4.5(@babel/core@7.29.7)(@opentelemetry/api@1.10.0)(@playwright/test@1.64.1)(@types/node@24.13.3)(babel-plugin-macros@3.1.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(sass@1.77.4))(react@19.3.1)':
+  '@eventuras/fides-auth-next@1.0.0-beta.8(@eventuras/fides-auth@1.0.0-beta.8)(next@16.4.5(@babel/core@7.29.7)(@opentelemetry/api@1.10.0)(@playwright/test@1.64.1)(@types/node@24.13.3)(babel-plugin-macros@3.1.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(sass@1.77.4))(react@19.3.1)':
     dependencies:
-      '@eventuras/fides-auth': 1.0.0-beta.6
+      '@eventuras/fides-auth': 1.0.0-beta.8
       next: 16.4.5(@babel/core@7.29.7)(@opentelemetry/api@1.10.0)(@playwright/test@1.64.1)(@types/node@24.13.3)(babel-plugin-macros@3.1.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(sass@1.77.4)
       react: 19.3.1
 
-  '@eventuras/fides-auth-react@1.0.0-beta.0(@eventuras/fides-auth@1.0.0-beta.6)(react@19.3.1)':
+  '@eventuras/fides-auth-react@1.0.0-beta.0(@eventuras/fides-auth@1.0.0-beta.8)(react@19.3.1)':
     dependencies:
-      '@eventuras/fides-auth': 1.0.0-beta.6
+      '@eventuras/fides-auth': 1.0.0-beta.8
       react: 19.3.1
 
-  '@eventuras/fides-auth@1.0.0-beta.6':
+  '@eventuras/fides-auth@1.0.0-beta.8':
     dependencies:
       jose: 6.2.15
-      openid-client: 6.8.8
+      openid-client: 6.8.9
 
   '@eventuras/lectio-docs-react@0.1.5(@eventuras/ratio-ui@2.23.0(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)':
     dependencies:
@@ -9964,7 +9964,7 @@ snapshots:
       powershell-utils: 0.1.0
       wsl-utils: 0.3.1
 
-  openid-client@6.8.8:
+  openid-client@6.8.9:
     dependencies:
       jose: 6.2.15
       oauth4webapi: 3.8.8

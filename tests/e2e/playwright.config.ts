@@ -44,19 +44,33 @@ if (existsSync(envPath)) {
   console.log('⚠ .env file not found - using existing environment variables');
 }
 
-// The session secret only has to match the web app's, so a local run takes it
-// from apps/web/.env instead of repeating it.
+// The session secret, issuer and client id only have to match the web app's, so a
+// local run takes them from apps/web/.env instead of repeating them.
 const webEnvPath = join(__dirname, '../../apps/web/.env');
-if (!process.env.E2E_SESSION_SECRET && existsSync(webEnvPath)) {
-  const sessionSecret = readEnvFile(webEnvPath).SESSION_SECRET;
-  // api-helpers decodes it as hex, so anything else would only fail later, at decrypt time.
-  if (sessionSecret && /^([0-9a-f]{2})+$/i.test(sessionSecret)) {
-    process.env.E2E_SESSION_SECRET = sessionSecret;
-    console.log('✓ E2E_SESSION_SECRET taken from apps/web/.env');
-  } else if (sessionSecret) {
-    console.log(
-      '⚠ SESSION_SECRET in apps/web/.env is not hex-encoded; set E2E_SESSION_SECRET explicitly'
-    );
+if (existsSync(webEnvPath)) {
+  const webEnv = readEnvFile(webEnvPath);
+
+  // api-helpers decodes the secret as hex, so anything else would only fail later.
+  const sessionSecret = webEnv.SESSION_SECRET;
+  if (!process.env.E2E_SESSION_SECRET && sessionSecret) {
+    if (/^([0-9a-f]{2})+$/i.test(sessionSecret)) {
+      process.env.E2E_SESSION_SECRET = sessionSecret;
+      console.log('✓ E2E_SESSION_SECRET taken from apps/web/.env');
+    } else {
+      console.log(
+        '⚠ SESSION_SECRET in apps/web/.env is not hex-encoded; set E2E_SESSION_SECRET explicitly'
+      );
+    }
+  }
+
+  for (const [target, source] of [
+    ['E2E_OIDC_ISSUER', 'OIDC_ISSUER'],
+    ['E2E_OIDC_CLIENT_ID', 'OIDC_CLIENT_ID'],
+  ] as const) {
+    if (!process.env[target] && webEnv[source]) {
+      process.env[target] = webEnv[source];
+      console.log(`✓ ${target} taken from apps/web/.env`);
+    }
   }
 }
 

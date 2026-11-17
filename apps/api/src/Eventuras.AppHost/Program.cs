@@ -125,6 +125,8 @@ var e2eEnvironment = new Dictionary<string, string>
 {
     ["E2E_WEB_URL"] = webHost,
     ["E2E_API_URL"] = apiHost,
+    // The session key is derived from the issuer too; the client id comes from apps/web/.env.
+    ["E2E_OIDC_ISSUER"] = keycloakIssuer,
     // Login codes are mail, and in development mail is Mailpit.
     ["E2E_OTP_SOURCE"] = "mailpit",
     ["E2E_MAILPIT_API_URL"] = $"http://localhost:{mailpitUiPort}",
