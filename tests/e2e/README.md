@@ -17,6 +17,8 @@ cp .env-template .env
 #    E2E_WEB_URL=http://localhost:3000    (your running web app)
 #    E2E_API_URL=http://localhost:5000    (your running API)
 #    E2E_SESSION_SECRET=...               (must match the web app's SESSION_SECRET)
+#    E2E_OIDC_ISSUER=...                  (must match the web app's OIDC_ISSUER)
+#    E2E_OIDC_CLIENT_ID=...               (must match the web app's OIDC_CLIENT_ID)
 #    + Gmail OAuth credentials (see below)
 
 # 4. Run all tests

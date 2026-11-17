@@ -70,6 +70,8 @@ jobs:
             -e E2E_SYSTEMADMIN_EMAIL=smoke2@example.com \
             -e E2E_USER_EMAIL_PATTERN='smoke+{random}@example.com' \
             -e E2E_SESSION_SECRET=smoke \
+            -e E2E_OIDC_ISSUER=https://smoke.invalid \
+            -e E2E_OIDC_CLIENT_ID=smoke \
             e2e-smoke:local pnpm exec playwright test --list 2>&1 | tee smoke.log | grep -oE 'Total: [0-9]+ tests?' | grep -oE '[0-9]+' || echo 0)
           echo "Playwright listed ${COUNT} tests"
           if [ "${COUNT}" -lt 1 ]; then

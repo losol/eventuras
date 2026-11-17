@@ -18,12 +18,23 @@ if (!E2E_SESSION_SECRET) {
   );
 }
 
-// Reads sessions only, so the provider settings are placeholders. The redirect URI
-// sets the cookie names (`__Host-session` over https), so it must be the web app's.
+// fides-auth derives the session key from the secret, the issuer and the client id,
+// so all three must be the web app's or its cookies don't open.
+const E2E_OIDC_ISSUER = process.env.E2E_OIDC_ISSUER;
+const E2E_OIDC_CLIENT_ID = process.env.E2E_OIDC_CLIENT_ID;
+if (!E2E_OIDC_ISSUER || !E2E_OIDC_CLIENT_ID) {
+  throw new Error(
+    'E2E_OIDC_ISSUER and E2E_OIDC_CLIENT_ID are required for reading session cookies ' +
+      "(the web app's OIDC_ISSUER and OIDC_CLIENT_ID)"
+  );
+}
+
+// Reads sessions only, so the client secret is a placeholder. The redirect URI sets
+// the cookie names (`__Host-session` over https), so it must be the web app's.
 const sessionReader = createFidesAuth({
   oauthConfig: {
-    issuer: 'https://e2e.invalid',
-    clientId: 'e2e',
+    issuer: E2E_OIDC_ISSUER,
+    clientId: E2E_OIDC_CLIENT_ID,
     clientSecret: 'unused',
     redirectUri: new URL('/api/auth/callback/oidc', process.env.E2E_WEB_URL).toString(),
     scope: 'openid',
