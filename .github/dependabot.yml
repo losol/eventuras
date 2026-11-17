@@ -42,6 +42,8 @@ updates:
       - dependency-name: "@lexical/*"
       # @types/node pinned to match engine requirements.
       - dependency-name: "@types/node"
+      # Must match the image in tests/e2e/Dockerfile — bump both by hand.
+      - dependency-name: "@playwright/test"
     groups:
       # Order matters: a dependency joins the FIRST group it matches.
       # Keep the specific groups above the catch-all minor/patch group, and
@@ -159,6 +161,8 @@ updates:
       # flow through.
       - dependency-name: "node"
         update-types: ["version-update:semver-major"]
+      # Must match @playwright/test in tests/e2e/package.json — bump both by hand.
+      - dependency-name: "mcr.microsoft.com/playwright"
     groups:
       docker:
         patterns:
